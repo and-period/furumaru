@@ -2,7 +2,7 @@ package updater
 
 import (
 	"context"
-	"errors"
+	"encoding/json"
 	"sync"
 	"time"
 
@@ -37,11 +37,11 @@ func NewCreator(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (c *creator) Lambda(ctx context.Context, event interface{}) error {
-	payload, ok := event.(CreatePayload)
-	if !ok {
-		c.logger.Error("Received unexpected event format", zap.Any("event", event))
-		return errors.New("updater: received unexpected event format")
+func (c *creator) Lambda(ctx context.Context, buf []byte) error {
+	payload := &CreatePayload{}
+	if err := json.Unmarshal(buf, payload); err != nil {
+		c.logger.Error("Received unexpected event format", zap.String("event", string(buf)))
+		return err
 	}
 	c.logger.Debug("Received event", zap.Any("event", payload))
 	params := &database.UpdateBroadcastParams{

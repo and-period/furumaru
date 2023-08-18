@@ -2,7 +2,7 @@ package updater
 
 import (
 	"context"
-	"errors"
+	"encoding/json"
 	"sync"
 	"time"
 
@@ -37,11 +37,11 @@ func NewRemover(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (r *remover) Lambda(ctx context.Context, event interface{}) error {
-	payload, ok := event.(RemovePayload)
-	if !ok {
-		r.logger.Error("Received unexpected event format", zap.Any("event", event))
-		return errors.New("updater: received unexpected event format")
+func (r *remover) Lambda(ctx context.Context, buf []byte) error {
+	payload := &RemovePayload{}
+	if err := json.Unmarshal(buf, payload); err != nil {
+		r.logger.Error("Received unexpected event format", zap.String("event", string(buf)))
+		return err
 	}
 	r.logger.Debug("Received event", zap.Any("event", payload))
 	params := &database.UpdateBroadcastParams{

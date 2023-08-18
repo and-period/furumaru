@@ -9,7 +9,7 @@ import (
 )
 
 type Updater interface {
-	Lambda(ctx context.Context, event interface{}) error
+	Lambda(ctx context.Context, event []byte) error
 }
 
 type Params struct {
