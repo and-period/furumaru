@@ -146,7 +146,7 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 }
 
 func (s *starter) newStartActions(schedule *entity.Schedule, broadcast *entity.Broadcast) []types.ScheduleAction {
-	if s.now().Before(schedule.StartAt.Add(-1 * time.Minute)) {
+	if s.now().After(schedule.StartAt.Add(-1 * time.Minute)) {
 		// ライブ配信開始1分前
 		return []types.ScheduleAction{
 			{
