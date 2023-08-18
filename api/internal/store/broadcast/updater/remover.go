@@ -2,7 +2,6 @@ package updater
 
 import (
 	"context"
-	"encoding/json"
 	"sync"
 	"time"
 
@@ -12,6 +11,10 @@ import (
 	"go.uber.org/zap"
 )
 
+type Remover interface {
+	Lambda(ctx context.Context, event RemovePayload) error
+}
+
 type remover struct {
 	now        func() time.Time
 	logger     *zap.Logger
@@ -20,7 +23,7 @@ type remover struct {
 	maxRetries int64
 }
 
-func NewRemover(params *Params, opts ...Option) Updater {
+func NewRemover(params *Params, opts ...Option) Remover {
 	dopts := &options{
 		logger:     zap.NewNop(),
 		maxRetries: 3,
@@ -37,12 +40,7 @@ func NewRemover(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (r *remover) Lambda(ctx context.Context, buf []byte) error {
-	payload := &RemovePayload{}
-	if err := json.Unmarshal(buf, payload); err != nil {
-		r.logger.Error("Received unexpected event format", zap.String("event", string(buf)))
-		return err
-	}
+func (r *remover) Lambda(ctx context.Context, payload RemovePayload) error {
 	r.logger.Debug("Received event", zap.Any("event", payload))
 	params := &database.UpdateBroadcastParams{
 		Status: entity.BroadcastStatusDisabled,

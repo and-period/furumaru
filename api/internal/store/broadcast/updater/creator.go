@@ -2,7 +2,6 @@ package updater
 
 import (
 	"context"
-	"encoding/json"
 	"sync"
 	"time"
 
@@ -12,6 +11,10 @@ import (
 	"go.uber.org/zap"
 )
 
+type Creator interface {
+	Lambda(ctx context.Context, event CreatePayload) error
+}
+
 type creator struct {
 	now        func() time.Time
 	logger     *zap.Logger
@@ -20,7 +23,7 @@ type creator struct {
 	maxRetries int64
 }
 
-func NewCreator(params *Params, opts ...Option) Updater {
+func NewCreator(params *Params, opts ...Option) Creator {
 	dopts := &options{
 		logger:     zap.NewNop(),
 		maxRetries: 3,
@@ -37,13 +40,8 @@ func NewCreator(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (c *creator) Lambda(ctx context.Context, buf []byte) error {
-	payload := &CreatePayload{}
-	if err := json.Unmarshal(buf, payload); err != nil {
-		c.logger.Error("Received unexpected event format", zap.String("event", string(buf)))
-		return err
-	}
-	c.logger.Debug("Received event", zap.Any("event", payload))
+func (c *creator) Lambda(ctx context.Context, payload CreatePayload) error {
+	c.logger.Debug("Received event", zap.Any("payload", payload))
 	params := &database.UpdateBroadcastParams{
 		Status: entity.BroadcastStatusIdle,
 		InitializeBroadcastParams: database.InitializeBroadcastParams{

@@ -1,16 +1,11 @@
 package updater
 
 import (
-	"context"
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"go.uber.org/zap"
 )
-
-type Updater interface {
-	Lambda(ctx context.Context, event []byte) error
-}
 
 type Params struct {
 	WaitGroup *sync.WaitGroup
