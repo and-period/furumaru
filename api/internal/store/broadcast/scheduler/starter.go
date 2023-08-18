@@ -8,7 +8,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sfn"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/medialive/types"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -21,6 +24,7 @@ type starter struct {
 	semaphore *semaphore.Weighted
 	db        *database.Database
 	sfn       sfn.StepFunction
+	media     medialive.MediaLive
 }
 
 func NewStarter(params *Params, opts ...Option) Scheduler {
@@ -38,6 +42,7 @@ func NewStarter(params *Params, opts ...Option) Scheduler {
 		semaphore: semaphore.NewWeighted(dopts.concurrency),
 		db:        params.Database,
 		sfn:       params.StepFunction,
+		media:     params.MediaLive,
 	}
 }
 
@@ -105,8 +110,22 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 					zap.String("scheduleId", schedule.ID), zap.Int("status", int(broadcast.Status)))
 				return nil // 停止中の場合のみ、起動処理を進める
 			}
-			// TODO: ライブ配信リソースの起動処理
-			s.logger.Info("Not implemented start function", zap.String("scheduleId", schedule.ID))
+
+			actions := s.newStartActions(schedule, broadcast)
+			s.logger.Info("Calling to create media live schedule", zap.String("scheduleId", schedule.ID))
+			if err := s.media.CreateSchedule(ctx, broadcast.MediaLiveChannelArn, actions...); err != nil {
+				s.logger.Error("Failed to create media live schedule", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				return err
+			}
+			s.logger.Info("Succeeded to create media live schedule", zap.String("scheduleId", schedule.ID))
+
+			s.logger.Info("Calling to start media live", zap.String("scheduleId", schedule.ID))
+			if err := s.media.StartChannel(ctx, broadcast.MediaLiveChannelArn); err != nil {
+				s.logger.Error("Failed to start media live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				return err
+			}
+			s.logger.Info("Succeeded to start media live", zap.String("scheduleId", schedule.ID))
+
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusActive,
 			}
@@ -114,6 +133,53 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 		})
 	}
 	return eg.Wait()
+}
+
+func (s *starter) newStartActions(schedule *entity.Schedule, broadcast *entity.Broadcast) []types.ScheduleAction {
+	if s.now().Before(schedule.StartAt.Add(-1 * time.Minute)) {
+		// ライブ配信開始1分前
+		return []types.ScheduleAction{
+			{
+				ActionName: aws.String("InputRtmp"),
+				ScheduleActionStartSettings: &types.ScheduleActionStartSettings{
+					ImmediateModeScheduleActionStartSettings: &types.ImmediateModeScheduleActionStartSettings{},
+				},
+				ScheduleActionSettings: &types.ScheduleActionSettings{
+					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
+						InputAttachmentNameReference: aws.String(broadcast.MediaLiveRTMPInputArn),
+					},
+				},
+			},
+		}
+	} else {
+		// ライブ配信開始1分より前
+		return []types.ScheduleAction{
+			{
+				ActionName: aws.String("InputMp4"),
+				ScheduleActionStartSettings: &types.ScheduleActionStartSettings{
+					ImmediateModeScheduleActionStartSettings: &types.ImmediateModeScheduleActionStartSettings{},
+				},
+				ScheduleActionSettings: &types.ScheduleActionSettings{
+					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
+						InputAttachmentNameReference: aws.String(broadcast.MediaLiveMP4InputArn),
+					},
+				},
+			},
+			{
+				ActionName: aws.String("InputRtmp"),
+				ScheduleActionStartSettings: &types.ScheduleActionStartSettings{
+					FixedModeScheduleActionStartSettings: &types.FixedModeScheduleActionStartSettings{
+						Time: aws.String(schedule.StartAt.Format(time.RFC3339)),
+					},
+				},
+				ScheduleActionSettings: &types.ScheduleActionSettings{
+					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
+						InputAttachmentNameReference: aws.String(broadcast.MediaLiveRTMPInputArn),
+					},
+				},
+			},
+		}
+	}
 }
 
 // createChannel - ライブ配信リソースの作成を開始 (30分前)
@@ -166,7 +232,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 			}
 			s.logger.Info("Calling step function", zap.String("scheduleId", schedule.ID))
 			if err := s.sfn.StartExecution(ectx, payload); err != nil {
-				s.logger.Error("Succeeded step function", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				s.logger.Error("Failed step function", zap.String("scheduleId", schedule.ID), zap.Error(err))
 				return err
 			}
 			s.logger.Info("Succeeded step function", zap.String("scheduleId", schedule.ID))

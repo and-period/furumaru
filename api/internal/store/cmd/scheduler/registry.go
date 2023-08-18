@@ -10,6 +10,7 @@ import (
 	storedb "github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sfn"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
@@ -61,6 +62,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	sfnClient := sfn.NewStepFunction(awscfg, sfnParams, sfn.WithLogger(logger))
 
+	// AWS Media Liveの設定
+	mediaLiveParams := &medialive.Params{}
+	mediaLiveClient := medialive.NewMediaLive(awscfg, mediaLiveParams, medialive.WithLogger(logger))
+
 	// Databaseの設定
 	dbClient, err := newDatabase("stores", params)
 	if err != nil {
@@ -75,6 +80,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		WaitGroup:    params.waitGroup,
 		Database:     storedb.NewDatabase(dbParams),
 		StepFunction: sfnClient,
+		MediaLive:    mediaLiveClient,
 	}
 	var job scheduler.Scheduler
 	switch conf.RunType {

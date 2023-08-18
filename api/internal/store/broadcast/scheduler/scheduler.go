@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sfn"
 	"go.uber.org/zap"
 )
@@ -17,6 +18,7 @@ type Scheduler interface {
 
 type Params struct {
 	StepFunction sfn.StepFunction
+	MediaLive    medialive.MediaLive
 	WaitGroup    *sync.WaitGroup
 	Database     *database.Database
 }

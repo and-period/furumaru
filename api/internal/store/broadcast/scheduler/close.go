@@ -62,8 +62,8 @@ func (c *closer) run(ctx context.Context, target time.Time) error {
 // stopChannel - ライブ配信を停止 (1時間後)
 func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 	params := &database.ListSchedulesParams{
-		EndAtGte: target.AddDate(0, 0, -1),   // 〜マルシェ開催終了1日後
-		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間後
+		EndAtGte: target.AddDate(0, 0, -1),  // 〜マルシェ開催終了1日後
+		EndAtLt:  target.Add(1 * time.Hour), // 〜マルシェ開催終了1時間後
 	}
 	schedules, err := c.db.Schedule.List(ctx, params)
 	if err != nil {
@@ -102,8 +102,8 @@ func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 // removeChannel - ライブ配信を削除 (1時間後&&停止中)
 func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 	params := &database.ListSchedulesParams{
-		EndAtGte: target.AddDate(0, 0, -1),   // 〜マルシェ開催終了1日後
-		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間後
+		EndAtGte: target.AddDate(0, 0, -1),  // 〜マルシェ開催終了1日後
+		EndAtLt:  target.Add(1 * time.Hour), // 〜マルシェ開催終了1時間後
 	}
 	schedules, err := c.db.Schedule.List(ctx, params)
 	if err != nil {

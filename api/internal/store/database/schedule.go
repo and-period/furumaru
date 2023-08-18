@@ -40,7 +40,7 @@ func (s *schedule) List(ctx context.Context, params *ListSchedulesParams, fields
 		stmt = stmt.Offset(params.Offset)
 	}
 
-	if err := stmt.Debug().Find(&schedules).Error; err != nil {
+	if err := stmt.Find(&schedules).Error; err != nil {
 		return nil, exception.InternalError(err)
 	}
 	if err := schedules.Fill(s.now()); err != nil {

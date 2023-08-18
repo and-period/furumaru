@@ -11,6 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.10.31
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.22.12
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.21.2
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.34.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.33.1
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.11
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.19.2
