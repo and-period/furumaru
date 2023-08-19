@@ -527,8 +527,5 @@ stepFunctions:
                     InputId.$: $.InputId
                   End: true
 
-
-
-
 plugins:
   - serverless-step-functions
