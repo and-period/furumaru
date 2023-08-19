@@ -55,8 +55,11 @@ resources:
                 - Effect: Allow
                   Action:
                     - mediaLive:CreateInput
+                    - mediaLive:DescribeInput
+                    - mediaLive:DeleteInput
+                    - mediaLive:DescribeChannel
                     - mediaLive:CreateChannel
-                    - mediaLive:BatchUpdateSchedule
+                    - mediaLive:DeleteChannel
                     - mediaStore:CreateContainer
                     - mediaStore:DescribeContainer
                     - mediaStore:PutContainerPolicy
@@ -455,6 +458,77 @@ stepFunctions:
             ResultPath: $.RegisterResoursesInfoResult
             Resource: arn:aws:lambda:ap-northeast-1:386661535629:function:furumaru-broadcast-create-updater-stg
             End: True
+    deleteMediaLiveMachine:
+      name: deleteMediaLiveResoursesFunction-${self:provider.stage}
+      role:
+        Fn::GetAtt: [defaultRole, Arn]
+      definition:
+        StartAt: DescribeChannel
+        States:
+          DescribeChannel:
+            Type: Task
+            Comment: MediaLiveのチャンネルを取得
+            InputPath: $
+            ResultPath: $.DescribeChannelResult
+            Resource: arn:aws:states:::aws-sdk:medialive:describeChannel
+            Parameters:
+              ChannelId.$: $.ChannelId
+            Next: DeleteChannel
+          DeleteChannel:
+            Type: Task
+            Comment: MediaLiveのチャンネルを削除
+            InputPath: $
+            ResultPath: $.DeleteChannelResult
+            Resource: arn:aws:states:::aws-sdk:medialive:deleteChannel
+            Parameters:
+              ChannelId.$: $.ChannelId
+            Next: DeleteInputMap
+          DeleteInputMap:
+            Type: Map
+            Comment: MediaLiveのInputを削除
+            InputPath: $
+            ItemsPath: $.DescribeChannelResult.InputAttachments
+            ResultPath: $.DeleteInputMapResult
+            End: true
+            ItemSelector:
+              InputId.$: $$.Map.Item.Value.InputId
+            MaxConcurrency: 5
+            ItemProcessor:
+              ProcessorConfig:
+                Mode: INLINE
+              StartAt: DescribeInput
+              States:
+                DescribeInput:
+                  Type: Task
+                  Comment: MediaLiveのInputを取得
+                  InputPath: $
+                  ResultPath: $.DescribeInputResult
+                  Resource: arn:aws:states:::aws-sdk:medialive:describeInput
+                  Parameters:
+                    InputId.$: $.InputId
+                  Next: WaitDettached
+                WaitDettached:
+                  Type: Wait
+                  Seconds: 1
+                  Next: CheckInputDetached
+                CheckInputDetached:
+                  Type: Choice
+                  InputPath: $
+                  Choices:
+                    - Variable: $.DescribeInputResult.State
+                      StringEquals: "DETACHED"
+                      Next: DeleteInput
+                  Default: DescribeInput
+                DeleteInput:
+                  Type: Task
+                  Resource: arn:aws:states:::aws-sdk:medialive:deleteInput
+                  InputPath: $
+                  Parameters:
+                    InputId.$: $.InputId
+                  End: true
+
+
+
 
 plugins:
   - serverless-step-functions
