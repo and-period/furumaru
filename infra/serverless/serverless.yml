@@ -213,12 +213,16 @@ stepFunctions:
             InputPath: $
             ResultSelector:
               ScheduleId.$: $[0][0].ScheduleId
-              CloudFrontUrl.$: $[1][2].DistributionResult.Location
+              CloudFrontUrl.$: $[1][2].DistributionResult.Distribution.DomainName
               CloudFrontDistributionArn.$: $[1][2].DistributionResult.Distribution.Arn
               MediaLiveRtmpInputArn.$: $[0][0].RtmpResult.Input.Arn
               MediaLiveRtmpInputUrl.$: $[0][0].RtmpResult.Input.Destinations[0].Url
+              MediaLiveRtmpInputName.$: $[0][0].RtmpResult.Input.Name
+              MediaLiveRtmpStreamName.$: $[0][0].RtmpInput.StreamName
               MediaLiveMp4InputArn.$: $[0][1].MP4Result.Input.Arn
+              MediaLiveMp4InputName.$: $[0][1].MP4Result.Input.Name
               MediaLiveChannelArn.$: $[0][0].ChannelResult.Channel.Arn
+              MediaLiveChannelId.$: $[0][0].ChannelResult.Channel.Id
               MediaStoreContainerArn.$: $[0][2].ContainerResult.Container.Arn
             Branches:
               - StartAt: CreateChannel
