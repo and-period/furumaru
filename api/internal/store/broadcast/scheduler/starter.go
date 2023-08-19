@@ -82,7 +82,7 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 	s.logger.Debug("Starting channel...", zap.Time("target", target))
 	params := &database.ListSchedulesParams{
 		StartAtLt: target.Add(5 * time.Minute), // マルシェ開催開始5分前〜
-		EndAtGte:  target,                      // マルシェ開催終了前
+		EndAtGte:  target,                      // 〜マルシェ開催終了
 	}
 	schedules, err := s.db.Schedule.List(ctx, params)
 	if err != nil {
@@ -197,7 +197,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 	s.logger.Debug("Creating channel...", zap.Time("target", target))
 	params := &database.ListSchedulesParams{
 		StartAtLt: target.Add(30 * time.Minute), // マルシェ開催開始30分前〜
-		EndAtGte:  target,                       // マルシェ開催終了前
+		EndAtGte:  target,                       // 〜マルシェ開催終了
 	}
 	schedules, err := s.db.Schedule.List(ctx, params)
 	if err != nil {
