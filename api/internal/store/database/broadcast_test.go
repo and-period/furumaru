@@ -140,13 +140,16 @@ func TestBroadcast_Update(t *testing.T) {
 				broadcastID: "broadcast-id",
 				params: &UpdateBroadcastParams{
 					Status: entity.BroadcastStatusActive,
-					InitializeBroadcastParams: InitializeBroadcastParams{
+					InitializeBroadcastParams: &InitializeBroadcastParams{
 						InputURL:                  "rtmp://127.0.0.1:1935/live/a",
 						OutputURL:                 "http://example.com/index.m3u8",
 						CloudFrontDistributionArn: "aws/arn",
 						MediaLiveChannelArn:       "aws/arn",
+						MediaLiveChannelID:        "channel-id",
 						MediaLiveRTMPInputArn:     "aws/arn",
+						MediaLiveRTMPInputName:    "rtmp-input-name",
 						MediaLiveMP4InputArn:      "aws/arn",
+						MediaLiveMP4InputName:     "mp4-input-name",
 						MediaStoreContainerArn:    "aws/arn",
 					},
 				},

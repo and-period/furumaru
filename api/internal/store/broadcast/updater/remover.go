@@ -6,9 +6,14 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"go.uber.org/zap"
 )
+
+type Remover interface {
+	Lambda(ctx context.Context, event RemovePayload) error
+}
 
 type remover struct {
 	now        func() time.Time
@@ -18,7 +23,7 @@ type remover struct {
 	maxRetries int64
 }
 
-func NewRemover(params *Params, opts ...Option) Updater {
+func NewRemover(params *Params, opts ...Option) Remover {
 	dopts := &options{
 		logger:     zap.NewNop(),
 		maxRetries: 3,
@@ -35,8 +40,15 @@ func NewRemover(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (r *remover) Lambda(_ context.Context, event interface{}) error {
-	r.logger.Debug("Received event", zap.Any("event", event))
-	// TODO: 取得内容が分かり次第、詳細の実装
+func (r *remover) Lambda(ctx context.Context, payload RemovePayload) error {
+	r.logger.Debug("Received event", zap.Any("event", payload))
+	params := &database.UpdateBroadcastParams{
+		Status: entity.BroadcastStatusDisabled,
+	}
+	if err := r.db.Broadcast.Update(ctx, payload.ScheduleID, params); err != nil {
+		r.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		return err
+	}
+	r.logger.Info("Succeeded to update broadcast", zap.String("scheduleId", payload.ScheduleID))
 	return nil
 }

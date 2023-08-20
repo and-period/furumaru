@@ -19,7 +19,8 @@ type registry struct {
 	appName   string
 	env       string
 	waitGroup *sync.WaitGroup
-	job       updater.Updater
+	creator   updater.Creator
+	remover   updater.Remover
 }
 
 type params struct {
@@ -68,22 +69,20 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		WaitGroup: params.waitGroup,
 		Database:  storedb.NewDatabase(dbParams),
 	}
-	var job updater.Updater
-	switch conf.RunType {
-	case "CREATE":
-		job = updater.NewCreator(jobParams, updater.WithLogger(logger))
-	case "REMOVE":
-		job = updater.NewRemover(jobParams, updater.WithLogger(logger))
-	default:
-		return nil, fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)
-	}
-
-	return &registry{
+	reg := &registry{
 		appName:   conf.AppName,
 		env:       conf.Environment,
 		waitGroup: params.waitGroup,
-		job:       job,
-	}, nil
+	}
+	switch conf.RunType {
+	case "CREATE":
+		reg.creator = updater.NewCreator(jobParams, updater.WithLogger(logger))
+	case "REMOVE":
+		reg.remover = updater.NewRemover(jobParams, updater.WithLogger(logger))
+	default:
+		return nil, fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)
+	}
+	return reg, nil
 }
 
 func getSecret(ctx context.Context, p *params) error {

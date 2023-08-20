@@ -2,12 +2,14 @@ package scheduler
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/medialive"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -19,6 +21,7 @@ type closer struct {
 	waitGroup *sync.WaitGroup
 	semaphore *semaphore.Weighted
 	db        *database.Database
+	media     medialive.MediaLive
 }
 
 func NewCloser(params *Params, opts ...Option) Scheduler {
@@ -35,6 +38,7 @@ func NewCloser(params *Params, opts ...Option) Scheduler {
 		waitGroup: params.WaitGroup,
 		semaphore: semaphore.NewWeighted(dopts.concurrency),
 		db:        params.Database,
+		media:     params.MediaLive,
 	}
 }
 
@@ -48,27 +52,37 @@ func (c *closer) Lambda(ctx context.Context) (err error) {
 }
 
 func (c *closer) Run(ctx context.Context, target time.Time) error {
-	return c.run(ctx, target)
+	if err := c.run(ctx, target); err != nil {
+		c.logger.Error("Failed to run", zap.Time("target", target), zap.Error(err))
+		return err
+	}
+	return nil
 }
 
 // run - ライブ配信のリソース削除と停止処理
 func (c *closer) run(ctx context.Context, target time.Time) error {
 	if err := c.removeChannel(ctx, target); err != nil {
+		c.logger.Error("Failed to remove channel", zap.Time("target", target), zap.Error(err))
 		return err
 	}
-	return c.stopChannel(ctx, target)
+	if err := c.stopChannel(ctx, target); err != nil {
+		c.logger.Error("Failed to stop channel", zap.Time("target", target), zap.Error(err))
+	}
+	return nil
 }
 
 // stopChannel - ライブ配信を停止 (1時間後)
 func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
+	c.logger.Debug("Stopping channel...", zap.Time("target", target))
 	params := &database.ListSchedulesParams{
-		EndAtGte: target.AddDate(0, 0, -1),   // 〜マルシェ開催終了1日後
-		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間後
+		EndAtGte: target.AddDate(0, 0, -1),   // マルシェ開催終了1日経過〜
+		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間経過
 	}
 	schedules, err := c.db.Schedule.List(ctx, params)
 	if err != nil {
 		return err
 	}
+	c.logger.Debug("Got schedules to stop", zap.Int("total", len(schedules)))
 	if len(schedules) == 0 {
 		return nil
 	}
@@ -87,9 +101,23 @@ func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 				return err
 			}
 			if broadcast.Status != entity.BroadcastStatusActive {
+				c.logger.Debug("Channels excluded from stop",
+					zap.String("scheduleId", schedule.ID), zap.Int("status", int(broadcast.Status)))
 				return nil // 起動中の場合のみ、停止処理を進める
 			}
-			// TODO: ライブ配信リソースの停止処理
+
+			if broadcast.MediaLiveChannelID == "" {
+				c.logger.Error("Empty media live channel id", zap.String("scheduleId", schedule.ID))
+				return fmt.Errorf("unexpected media live channel arn format. arn=%s", broadcast.MediaLiveChannelArn)
+			}
+
+			c.logger.Info("Calling to stop media live", zap.String("scheduleId", schedule.ID))
+			if err := c.media.StopChannel(ctx, broadcast.MediaLiveChannelID); err != nil {
+				c.logger.Error("Failed to stop media live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				return err
+			}
+			c.logger.Info("Succeeded to stop media live", zap.String("scheduleId", schedule.ID))
+
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusIdle,
 			}
@@ -102,7 +130,7 @@ func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 // removeChannel - ライブ配信を削除 (1時間後&&停止中)
 func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 	params := &database.ListSchedulesParams{
-		EndAtGte: target.AddDate(0, 0, -1),   // 〜マルシェ開催終了1日後
+		EndAtGte: target.AddDate(0, 0, -1),   // マルシェ開催終了1日後〜
 		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間後
 	}
 	schedules, err := c.db.Schedule.List(ctx, params)
@@ -129,9 +157,11 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 			if broadcast.Status != entity.BroadcastStatusIdle {
 				return nil // 停止中の場合のみ、削除処理を進める
 			}
-			// TODO: ライブ配信リソースの停止処理
+
+			c.logger.Warn("Not implemented to remove channel", zap.String("schedule", schedule.ID))
+
 			params := &database.UpdateBroadcastParams{
-				Status: entity.BroadcastStatusWaiting,
+				Status: entity.BroadcastStatusDisabled,
 			}
 			return c.db.Broadcast.Update(ctx, broadcast.ID, params)
 		})

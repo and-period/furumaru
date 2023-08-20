@@ -2,13 +2,20 @@ package updater
 
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"sync"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"go.uber.org/zap"
 )
+
+type Creator interface {
+	Lambda(ctx context.Context, event CreatePayload) error
+}
 
 type creator struct {
 	now        func() time.Time
@@ -18,7 +25,7 @@ type creator struct {
 	maxRetries int64
 }
 
-func NewCreator(params *Params, opts ...Option) Updater {
+func NewCreator(params *Params, opts ...Option) Creator {
 	dopts := &options{
 		logger:     zap.NewNop(),
 		maxRetries: 3,
@@ -35,8 +42,32 @@ func NewCreator(params *Params, opts ...Option) Updater {
 	}
 }
 
-func (c *creator) Lambda(_ context.Context, event interface{}) error {
-	c.logger.Debug("Received event", zap.Any("event", event))
-	// TODO: 取得内容が分かり次第、詳細の実装
+func (c *creator) Lambda(ctx context.Context, payload CreatePayload) error {
+	c.logger.Debug("Received event", zap.Any("payload", payload))
+	u := &url.URL{
+		Scheme: "https",
+		Host:   payload.CloudFrontURL,
+		Path:   fmt.Sprintf("%s.m3u8", payload.MediaLiveRtmpStreamName),
+	}
+	params := &database.UpdateBroadcastParams{
+		Status: entity.BroadcastStatusIdle,
+		InitializeBroadcastParams: &database.InitializeBroadcastParams{
+			InputURL:                  payload.MediaLiveRtmpInputURL,
+			OutputURL:                 u.String(),
+			CloudFrontDistributionArn: payload.CloudFrontDistributionARN,
+			MediaLiveChannelArn:       payload.MediaLiveChannelARN,
+			MediaLiveChannelID:        payload.MediaLiveChannelID,
+			MediaLiveRTMPInputArn:     payload.MediaLiveRtmpInputARN,
+			MediaLiveRTMPInputName:    payload.MediaLiveRtmpInputName,
+			MediaLiveMP4InputArn:      payload.MediaLiveMp4InputARN,
+			MediaLiveMP4InputName:     payload.MediaLiveMp4InputName,
+			MediaStoreContainerArn:    payload.MediaStoreContainerARN,
+		},
+	}
+	if err := c.db.Broadcast.Update(ctx, payload.ScheduleID, params); err != nil {
+		c.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		return err
+	}
+	c.logger.Info("Succeeded to update broadcast", zap.String("scheduleId", payload.ScheduleID))
 	return nil
 }

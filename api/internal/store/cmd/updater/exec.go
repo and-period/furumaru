@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -37,7 +38,14 @@ func Exec() error {
 	logger.Info("Started")
 	switch conf.RunMethod {
 	case "lambda":
-		lambda.StartWithOptions(reg.job.Lambda, lambda.WithContext(ctx))
+		switch conf.RunType {
+		case "CREATE":
+			lambda.StartWithOptions(reg.creator.Lambda, lambda.WithContext(ctx))
+		case "REMOVE":
+			lambda.StartWithOptions(reg.remover.Lambda, lambda.WithContext(ctx))
+		default:
+			return fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)
+		}
 	default:
 		err = errors.New("not implemented")
 	}

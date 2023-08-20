@@ -1,25 +1,28 @@
 package scheduler
 
-// CreateInput - 配信リソース作成リクエスト
-type CreateInput struct {
-	RtmpInput    *CreateChannelInput `json:"RtmpInput"`
-	MP4Input     *CreateMp4Input     `json:"MP4Input"`
-	ChannelInput *CreateChannelInput `json:"ChannelInput"`
+const streamName = "/live/a"
+
+// CreatePayload - 配信リソース作成リクエスト
+type CreatePayload struct {
+	ScheduleID   string                `json:"ScheduleId"`
+	ChannelInput *CreateChannelPayload `json:"ChannelInput"`
+	MP4Input     *CreateMp4Payload     `json:"MP4Input"`
+	RtmpInput    *CreateRtmpPayload    `json:"RtmpInput"`
 }
 
-// CreateRtmpInput - 配信リソース(MediaLive プッシュRTMPインプット)
-type CreateRtmpInput struct {
-	StreamName string `json:"StreamName"`
-}
-
-// CreateMp4Input - 配信リソース(MediaLive MP4インプット)
-type CreateMp4Input struct {
-	OpeningVideoURL string `json:"OpeningVideoUrl"`
-}
-
-// CreateChannelInput - 配信リソース(MediaLive チャンネル)
-type CreateChannelInput struct {
+// CreateChannelPayload - 配信リソース(MediaLive チャンネル)
+type CreateChannelPayload struct {
 	Name                   string `json:"Name"`
 	StartTime              string `json:"StartTime"`
 	InputLossImageSlateURI string `json:"InputLossImageSlateUri"`
+}
+
+// CreateMp4Payload - 配信リソース(MediaLive MP4インプット)
+type CreateMp4Payload struct {
+	OpeningVideoURL string `json:"OpeningVideoUrl"`
+}
+
+// CreateRtmpPayload - 配信リソース(MediaLive プッシュRTMPインプット)
+type CreateRtmpPayload struct {
+	StreamName string `json:"StreamName"`
 }

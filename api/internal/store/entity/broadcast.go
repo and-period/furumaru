@@ -27,8 +27,11 @@ type Broadcast struct {
 	ArchiveURL                string          `gorm:""`                     // アーカイブ配信URL
 	CloudFrontDistributionArn string          `gorm:"default:null"`         // CloudFrontディストリビューションARN
 	MediaLiveChannelArn       string          `gorm:"default:null"`         // MediaLiveチャンネルARN
+	MediaLiveChannelID        string          `gorm:"default:null"`         // MediaLiveチャンネルID
 	MediaLiveRTMPInputArn     string          `gorm:"default:null"`         // MediaLiveインプットARN(RTMP)
+	MediaLiveRTMPInputName    string          `gorm:"default:null"`         // MediaLiveインプット名(RTMP)
 	MediaLiveMP4InputArn      string          `gorm:"default:null"`         // MediaLiveインプットARN(MP4)
+	MediaLiveMP4InputName     string          `gorm:"default:null"`         // MediaLiveインプット名(MP4)
 	MediaStoreContainerArn    string          `gorm:"default:null"`         // MediaStoreコンテナARN
 	CreatedAt                 time.Time       `gorm:"<-:create"`            // 登録日時
 	UpdatedAt                 time.Time       `gorm:""`                     // 更新日時
@@ -46,20 +49,4 @@ func NewBroadcast(params *NewBroadcastParams) *Broadcast {
 		ScheduleID: params.ScheduleID,
 		Status:     BroadcastStatusDisabled,
 	}
-}
-
-type BroadcastResourceParams struct {
-	CloudFrontDistributionArn string
-	MediaLiveChannelArn       string
-	MediaLiveRTMPInputArn     string
-	MediaLiveMP4InputArn      string
-	MediaStoreContainerArn    string
-}
-
-func (b *Broadcast) SetResource(params *BroadcastResourceParams) {
-	b.CloudFrontDistributionArn = params.CloudFrontDistributionArn
-	b.MediaLiveChannelArn = params.MediaLiveChannelArn
-	b.MediaLiveRTMPInputArn = params.MediaLiveRTMPInputArn
-	b.MediaLiveMP4InputArn = params.MediaLiveMP4InputArn
-	b.MediaStoreContainerArn = params.MediaStoreContainerArn
 }
