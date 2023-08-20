@@ -77,7 +77,7 @@ export const MOCK_LIVE_ITEMS: LiveItemMock[] = [
 export const MOCK_LIVE_VIDEO: LiveVideoMock = {
   id: '1',
   imgSrc: '/img/live/6.png',
-  videoSrc: 'http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8',
+  videoSrc: 'https://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8',
   title: '［大崎上島マルシェ］瀬戸内海の島の美味しいものを紹介します！',
   startAt: 1665396001,
   published: true,
