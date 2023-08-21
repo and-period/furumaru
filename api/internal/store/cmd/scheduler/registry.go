@@ -63,8 +63,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	sfnClient := sfn.NewStepFunction(awscfg, sfnParams, sfn.WithLogger(logger))
 
 	// AWS Media Liveの設定
-	mediaLiveParams := &medialive.Params{}
-	mediaLiveClient := medialive.NewMediaLive(awscfg, mediaLiveParams, medialive.WithLogger(logger))
+	mediaLiveClient := medialive.NewMediaLive(awscfg, medialive.WithLogger(logger))
 
 	// Databaseの設定
 	dbClient, err := newDatabase("stores", params)

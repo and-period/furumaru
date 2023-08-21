@@ -11,8 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sfn"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/medialive/types"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -111,19 +109,21 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 					zap.String("scheduleId", schedule.ID), zap.Int("status", int(broadcast.Status)))
 				return nil // 停止中の場合のみ、起動処理を進める
 			}
-
-			actions := s.newStartActions(schedule, broadcast)
 			if broadcast.MediaLiveChannelID == "" {
 				s.logger.Error("Empty media live channel id", zap.String("scheduleId", schedule.ID))
 				return fmt.Errorf("unexpected media live channel arn format. arn=%s", broadcast.MediaLiveChannelArn)
 			}
 
+			settings := &medialive.CreateScheduleParams{
+				ChannelID: broadcast.MediaLiveChannelID,
+				Settings:  s.newStartScheduleSettings(schedule, broadcast),
+			}
 			s.logger.Info("Calling to create media live schedule", zap.String("scheduleId", schedule.ID))
-			if err := s.media.CreateSchedule(ctx, broadcast.MediaLiveChannelID, actions...); err != nil {
+			if err := s.media.CreateSchedule(ctx, settings); err != nil {
 				s.logger.Error("Failed to create media live schedule",
 					zap.String("scheduleId", schedule.ID),
 					zap.String("channelId", broadcast.MediaLiveChannelID),
-					zap.Any("actions", actions),
+					zap.Any("settings", settings),
 					zap.Error(err))
 				return err
 			}
@@ -145,48 +145,52 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 	return eg.Wait()
 }
 
-func (s *starter) newStartActions(schedule *entity.Schedule, broadcast *entity.Broadcast) []types.ScheduleAction {
-	if s.now().After(schedule.StartAt.Add(-1 * time.Minute)) {
-		// ライブ配信開始1分前
-		return []types.ScheduleAction{
+func (s *starter) newStartScheduleSettings(schedule *entity.Schedule, broadcast *entity.Broadcast) []*medialive.ScheduleSetting {
+	switch {
+	case s.now().After(schedule.StartAt.Add(-1 * time.Minute)): // ライブ配信開始まで1分を切っている
+		return []*medialive.ScheduleSetting{{
+			Name:       fmt.Sprintf("immediate-input-rtmp %s", jst.Format(s.now(), time.DateTime)),
+			ActionType: medialive.ScheduleActionTypeInputSwitch,
+			StartType:  medialive.ScheduleStartTypeImmediate,
+			Reference:  broadcast.MediaLiveRTMPInputName,
+		}}
+	case s.now().After(schedule.StartAt.Add(-6 * time.Minute)): // ライブ配信開始まで6分を切っている
+		return []*medialive.ScheduleSetting{
 			{
-				ActionName: aws.String("InputRtmp"),
-				ScheduleActionStartSettings: &types.ScheduleActionStartSettings{
-					ImmediateModeScheduleActionStartSettings: &types.ImmediateModeScheduleActionStartSettings{},
-				},
-				ScheduleActionSettings: &types.ScheduleActionSettings{
-					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
-						InputAttachmentNameReference: aws.String(broadcast.MediaLiveRTMPInputName),
-					},
-				},
+				Name:       fmt.Sprintf("immediate-input-mp4 %s", jst.Format(s.now(), time.DateTime)),
+				ActionType: medialive.ScheduleActionTypeInputSwitch,
+				StartType:  medialive.ScheduleStartTypeImmediate,
+				Reference:  broadcast.MediaLiveMP4InputName,
+			},
+			{
+				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
+				ActionType: medialive.ScheduleActionTypeInputSwitch,
+				StartType:  medialive.ScheduleStartTypeFixed,
+				ExecutedAt: schedule.StartAt,
+				Reference:  broadcast.MediaLiveRTMPInputName,
 			},
 		}
-	} else {
-		// ライブ配信開始1分より前
-		return []types.ScheduleAction{
+	default: // ライブ配信開始まで6分以上時間あり
+		return []*medialive.ScheduleSetting{
 			{
-				ActionName: aws.String("InputMp4"),
-				ScheduleActionStartSettings: &types.ScheduleActionStartSettings{
-					ImmediateModeScheduleActionStartSettings: &types.ImmediateModeScheduleActionStartSettings{},
-				},
-				ScheduleActionSettings: &types.ScheduleActionSettings{
-					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
-						InputAttachmentNameReference: aws.String(broadcast.MediaLiveMP4InputName),
-					},
-				},
+				Name:       fmt.Sprintf("immediate-input-rtmp %s", jst.Format(s.now(), time.DateTime)),
+				ActionType: medialive.ScheduleActionTypeInputSwitch,
+				StartType:  medialive.ScheduleStartTypeImmediate,
+				Reference:  broadcast.MediaLiveRTMPInputName,
 			},
 			{
-				ActionName: aws.String("InputRtmp"),
-				ScheduleActionStartSettings: &types.ScheduleActionStartSettings{
-					FixedModeScheduleActionStartSettings: &types.FixedModeScheduleActionStartSettings{
-						Time: aws.String(schedule.StartAt.Format(time.RFC3339)),
-					},
-				},
-				ScheduleActionSettings: &types.ScheduleActionSettings{
-					InputSwitchSettings: &types.InputSwitchScheduleActionSettings{
-						InputAttachmentNameReference: aws.String(broadcast.MediaLiveRTMPInputName),
-					},
-				},
+				Name:       fmt.Sprintf("fixed-input-mp4 %s", jst.Format(schedule.StartAt.Add(-5*time.Minute), time.DateTime)),
+				ActionType: medialive.ScheduleActionTypeInputSwitch,
+				StartType:  medialive.ScheduleStartTypeFixed,
+				ExecutedAt: schedule.StartAt.Add(-5 * time.Minute),
+				Reference:  broadcast.MediaLiveMP4InputName,
+			},
+			{
+				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
+				ActionType: medialive.ScheduleActionTypeInputSwitch,
+				StartType:  medialive.ScheduleStartTypeFixed,
+				ExecutedAt: schedule.StartAt,
+				Reference:  broadcast.MediaLiveRTMPInputName,
 			},
 		}
 	}

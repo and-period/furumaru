@@ -42,7 +42,7 @@ func Exec() error {
 		case "CREATE":
 			lambda.StartWithOptions(reg.creator.Lambda, lambda.WithContext(ctx))
 		case "REMOVE":
-			lambda.StartWithOptions(reg.remover.Lambda, lambda.WithContext(ctx))
+			return errors.New("cmd: not implemented")
 		default:
 			return fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)
 		}

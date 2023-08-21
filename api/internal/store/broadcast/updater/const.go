@@ -15,8 +15,3 @@ type CreatePayload struct {
 	MediaLiveRtmpStreamName   string `json:"MediaLiveRtmpStreamName"`
 	MediaStoreContainerARN    string `json:"MediaStoreContainerArn"`
 }
-
-// RemovePayload - 配信リソース削除時の情報
-type RemovePayload struct {
-	ScheduleID string `json:"ScheduleId"`
-}

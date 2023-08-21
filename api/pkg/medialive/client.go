@@ -8,17 +8,14 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/service/medialive"
-	"github.com/aws/aws-sdk-go-v2/service/medialive/types"
 	"go.uber.org/zap"
 )
 
 type MediaLive interface {
 	StartChannel(ctx context.Context, channelID string) error
 	StopChannel(ctx context.Context, channelID string) error
-	CreateSchedule(ctx context.Context, channelID string, actions ...types.ScheduleAction) error
+	CreateSchedule(ctx context.Context, params *CreateScheduleParams) error
 }
-
-type Params struct{}
 
 type client struct {
 	media  *medialive.Client
@@ -51,7 +48,7 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
-func NewMediaLive(cfg aws.Config, params *Params, opts ...Option) MediaLive {
+func NewMediaLive(cfg aws.Config, opts ...Option) MediaLive {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,

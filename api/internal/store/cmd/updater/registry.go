@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -20,7 +21,6 @@ type registry struct {
 	env       string
 	waitGroup *sync.WaitGroup
 	creator   updater.Creator
-	remover   updater.Remover
 }
 
 type params struct {
@@ -78,7 +78,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	case "CREATE":
 		reg.creator = updater.NewCreator(jobParams, updater.WithLogger(logger))
 	case "REMOVE":
-		reg.remover = updater.NewRemover(jobParams, updater.WithLogger(logger))
+		return nil, errors.New("cmd: not implemented")
 	default:
 		return nil, fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)
 	}
