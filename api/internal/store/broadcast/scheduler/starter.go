@@ -17,13 +17,14 @@ import (
 )
 
 type starter struct {
-	now       func() time.Time
-	logger    *zap.Logger
-	waitGroup *sync.WaitGroup
-	semaphore *semaphore.Weighted
-	db        *database.Database
-	sfn       sfn.StepFunction
-	media     medialive.MediaLive
+	now        func() time.Time
+	logger     *zap.Logger
+	waitGroup  *sync.WaitGroup
+	semaphore  *semaphore.Weighted
+	db         *database.Database
+	sfn        sfn.StepFunction
+	media      medialive.MediaLive
+	bucketName string
 }
 
 func NewStarter(params *Params, opts ...Option) Scheduler {
@@ -35,13 +36,14 @@ func NewStarter(params *Params, opts ...Option) Scheduler {
 		opts[i](dopts)
 	}
 	return &starter{
-		now:       jst.Now,
-		logger:    dopts.logger,
-		waitGroup: params.WaitGroup,
-		semaphore: semaphore.NewWeighted(dopts.concurrency),
-		db:        params.Database,
-		sfn:       params.StepFunction,
-		media:     params.MediaLive,
+		now:        jst.Now,
+		logger:     dopts.logger,
+		waitGroup:  params.WaitGroup,
+		semaphore:  semaphore.NewWeighted(dopts.concurrency),
+		db:         params.Database,
+		sfn:        params.StepFunction,
+		media:      params.MediaLive,
+		bucketName: params.ArchiveBucketName,
 	}
 }
 
@@ -242,6 +244,10 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 				},
 				RtmpInput: &CreateRtmpPayload{
 					StreamName: streamName,
+				},
+				ArchiveInput: &CreateArchivePayload{
+					BucketName: s.bucketName,
+					Path:       fmt.Sprintf(archivePathFormat, schedule.ID),
 				},
 			}
 			s.logger.Info("Calling step function", zap.String("scheduleId", schedule.ID))

@@ -76,10 +76,11 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Database: dbClient,
 	}
 	jobParams := &scheduler.Params{
-		WaitGroup:    params.waitGroup,
-		Database:     storedb.NewDatabase(dbParams),
-		StepFunction: sfnClient,
-		MediaLive:    mediaLiveClient,
+		WaitGroup:         params.waitGroup,
+		Database:          storedb.NewDatabase(dbParams),
+		StepFunction:      sfnClient,
+		MediaLive:         mediaLiveClient,
+		ArchiveBucketName: conf.ArchiveBucketName,
 	}
 	var job scheduler.Scheduler
 	switch conf.RunType {

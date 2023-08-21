@@ -17,10 +17,11 @@ type Scheduler interface {
 }
 
 type Params struct {
-	StepFunction sfn.StepFunction
-	MediaLive    medialive.MediaLive
-	WaitGroup    *sync.WaitGroup
-	Database     *database.Database
+	StepFunction      sfn.StepFunction
+	MediaLive         medialive.MediaLive
+	WaitGroup         *sync.WaitGroup
+	Database          *database.Database
+	ArchiveBucketName string
 }
 
 type options struct {

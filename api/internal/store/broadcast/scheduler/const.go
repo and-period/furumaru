@@ -1,6 +1,9 @@
 package scheduler
 
-const streamName = "/live/a"
+const (
+	streamName        = "/live/a"
+	archivePathFormat = "/schedules/archives/%s" // format: /schedules/archives/:scheduleId
+)
 
 // CreatePayload - 配信リソース作成リクエスト
 type CreatePayload struct {
@@ -8,6 +11,7 @@ type CreatePayload struct {
 	ChannelInput *CreateChannelPayload `json:"ChannelInput"`
 	MP4Input     *CreateMp4Payload     `json:"MP4Input"`
 	RtmpInput    *CreateRtmpPayload    `json:"RtmpInput"`
+	ArchiveInput *CreateArchivePayload `json:"ArchiveInput"`
 }
 
 // CreateChannelPayload - 配信リソース(MediaLive チャンネル)
@@ -25,4 +29,10 @@ type CreateMp4Payload struct {
 // CreateRtmpPayload - 配信リソース(MediaLive プッシュRTMPインプット)
 type CreateRtmpPayload struct {
 	StreamName string `json:"StreamName"`
+}
+
+// CreateArchivePayload - 配信リソース(MediaLive アーカイブグループ)
+type CreateArchivePayload struct {
+	BucketName string `json:"BucketName"` // 保管先S3バケット名
+	Path       string `json:"Path"`       // 保管先S3バケットPath
 }
