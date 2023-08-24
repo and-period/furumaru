@@ -343,9 +343,6 @@ stepFunctions:
                           - Name: S3
                             OutputGroupSettings:
                               ArchiveGroupSettings:
-                                ArchiveCdnSettings:
-                                  ArchiveS3Settings:
-                                    LogUploads: "DISABLED"
                                 Destination:
                                   DestinationRefId: S3
                                 RolloverInterval: 300
