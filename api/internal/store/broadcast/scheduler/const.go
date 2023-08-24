@@ -2,7 +2,8 @@ package scheduler
 
 const (
 	streamName        = "/live/a"
-	archivePathFormat = "/schedules/archives/%s" // format: /schedules/archives/:scheduleId
+	archivePathPrefix = "/schedules/archives"
+	playlistFilename  = "live.m3u8"
 )
 
 // CreatePayload - 配信リソース作成リクエスト

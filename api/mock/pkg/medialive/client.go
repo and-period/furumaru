@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	types "github.com/aws/aws-sdk-go-v2/service/medialive/types"
+	medialive "github.com/and-period/furumaru/api/pkg/medialive"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,22 +36,17 @@ func (m *MockMediaLive) EXPECT() *MockMediaLiveMockRecorder {
 }
 
 // CreateSchedule mocks base method.
-func (m *MockMediaLive) CreateSchedule(ctx context.Context, channelID string, actions ...types.ScheduleAction) error {
+func (m *MockMediaLive) CreateSchedule(ctx context.Context, params *medialive.CreateScheduleParams) error {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, channelID}
-	for _, a := range actions {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "CreateSchedule", varargs...)
+	ret := m.ctrl.Call(m, "CreateSchedule", ctx, params)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // CreateSchedule indicates an expected call of CreateSchedule.
-func (mr *MockMediaLiveMockRecorder) CreateSchedule(ctx, channelID interface{}, actions ...interface{}) *gomock.Call {
+func (mr *MockMediaLiveMockRecorder) CreateSchedule(ctx, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, channelID}, actions...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSchedule", reflect.TypeOf((*MockMediaLive)(nil).CreateSchedule), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSchedule", reflect.TypeOf((*MockMediaLive)(nil).CreateSchedule), ctx, params)
 }
 
 // StartChannel mocks base method.

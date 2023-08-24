@@ -10,6 +10,7 @@ import (
 	storedb "github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sfn"
@@ -65,6 +66,12 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	// AWS Media Liveの設定
 	mediaLiveClient := medialive.NewMediaLive(awscfg, medialive.WithLogger(logger))
 
+	// AWS Media Convertの設定
+	mediaConvertParams := mediaconvert.Params{
+		RoleARN: conf.MediaConvertRoleARN,
+	}
+	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(logger))
+
 	// Databaseの設定
 	dbClient, err := newDatabase("stores", params)
 	if err != nil {
@@ -76,12 +83,14 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Database: dbClient,
 	}
 	jobParams := &scheduler.Params{
-		WaitGroup:         params.waitGroup,
-		Database:          storedb.NewDatabase(dbParams),
-		StepFunction:      sfnClient,
-		MediaLive:         mediaLiveClient,
-		Environment:       conf.Environment,
-		ArchiveBucketName: conf.ArchiveBucketName,
+		WaitGroup:          params.waitGroup,
+		Database:           storedb.NewDatabase(dbParams),
+		StepFunction:       sfnClient,
+		MediaLive:          mediaLiveClient,
+		MediaConvert:       mediaConvertClient,
+		Environment:        conf.Environment,
+		ArchiveBucketName:  conf.ArchiveBucketName,
+		ConvertJobTemplate: conf.MediaConvertJobTemplate,
 	}
 	var job scheduler.Scheduler
 	switch conf.RunType {
