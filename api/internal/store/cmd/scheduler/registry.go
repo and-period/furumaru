@@ -68,7 +68,8 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 
 	// AWS Media Convertの設定
 	mediaConvertParams := mediaconvert.Params{
-		RoleARN: conf.MediaConvertRoleARN,
+		Endpoint: conf.MediaConvertEndpoint,
+		RoleARN:  conf.MediaConvertRoleARN,
 	}
 	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(logger))
 

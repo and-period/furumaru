@@ -17,7 +17,8 @@ type MediaConvert interface {
 }
 
 type Params struct {
-	RoleARN string
+	RoleARN  string
+	Endpoint string
 }
 
 type client struct {
@@ -62,6 +63,7 @@ func NewMediaConvert(cfg aws.Config, params *Params, opts ...Option) MediaConver
 		opts[i](dopts)
 	}
 	cli := mediaconvert.NewFromConfig(cfg, func(o *mediaconvert.Options) {
+		o.BaseEndpoint = aws.String(params.Endpoint)
 		o.Retryer = retry.NewStandard(func(o *retry.StandardOptions) {
 			o.MaxAttempts = dopts.maxRetries
 			o.MaxBackoff = dopts.interval

@@ -25,6 +25,7 @@ type config struct {
 	TargetDatetime          string `envconfig:"TARGET_DATETIME" default:""`
 	StepFunctionARN         string `envconfig:"STEP_FUNCTION_ARN" default:""`
 	ArchiveBucketName       string `envconfig:"ARCHIVE_BUCKET_NAME" default:""`
+	MediaConvertEndpoint    string `envconfig:"MEDIA_CONVERT_ENDPOINT" default:""`
 	MediaConvertRoleARN     string `envconfig:"MEDIA_CONVERT_ROLE_ARN" default:""`
 	MediaConvertJobTemplate string `envconfig:"MEDIA_CONVERT_JOB_TEMPLATE" default:""`
 }
