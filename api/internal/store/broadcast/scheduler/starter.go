@@ -249,7 +249,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 				},
 				ArchiveInput: &CreateArchivePayload{
 					BucketName: s.bucketName,
-					Path:       fmt.Sprintf(archivePathFormat, schedule.ID),
+					Path:       newArchiveHLSPath(schedule.ID),
 				},
 			}
 			s.logger.Info("Calling step function", zap.String("scheduleId", schedule.ID))

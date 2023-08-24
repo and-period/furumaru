@@ -3,25 +3,32 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"sync"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/mediaconvert/types"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
 
 type closer struct {
-	now       func() time.Time
-	logger    *zap.Logger
-	waitGroup *sync.WaitGroup
-	semaphore *semaphore.Weighted
-	db        *database.Database
-	media     medialive.MediaLive
+	now         func() time.Time
+	logger      *zap.Logger
+	waitGroup   *sync.WaitGroup
+	semaphore   *semaphore.Weighted
+	db          *database.Database
+	media       medialive.MediaLive
+	convert     mediaconvert.MediaConvert
+	bucketName  string
+	jobTemplate string
 }
 
 func NewCloser(params *Params, opts ...Option) Scheduler {
@@ -33,12 +40,15 @@ func NewCloser(params *Params, opts ...Option) Scheduler {
 		opts[i](dopts)
 	}
 	return &closer{
-		now:       jst.Now,
-		logger:    dopts.logger,
-		waitGroup: params.WaitGroup,
-		semaphore: semaphore.NewWeighted(dopts.concurrency),
-		db:        params.Database,
-		media:     params.MediaLive,
+		now:         jst.Now,
+		logger:      dopts.logger,
+		waitGroup:   params.WaitGroup,
+		semaphore:   semaphore.NewWeighted(dopts.concurrency),
+		db:          params.Database,
+		media:       params.MediaLive,
+		convert:     params.MediaConvert,
+		bucketName:  params.ArchiveBucketName,
+		jobTemplate: params.ConvertJobTemplate,
 	}
 }
 
@@ -160,6 +170,13 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 
 			c.logger.Warn("Not implemented to remove channel", zap.String("schedule", schedule.ID))
 
+			c.logger.Info("Calling to create convert job", zap.String("scheduleId", schedule.ID))
+			if err := c.convert.CreateJob(ctx, c.jobTemplate, c.newMediaConvertJobSettings(broadcast)); err != nil {
+				c.logger.Error("Failed to create convert job", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				return err
+			}
+			c.logger.Info("Succeeded to create convert job", zap.String("scheduleId", schedule.ID))
+
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusDisabled,
 			}
@@ -167,4 +184,24 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 		})
 	}
 	return eg.Wait()
+}
+
+func (c *closer) newMediaConvertJobSettings(broadcast *entity.Broadcast) *types.JobSettings {
+	src := fmt.Sprintf("s3://%s", filepath.Join(c.bucketName, newArchiveHLSPath(broadcast.ScheduleID), playlistFilename))
+	dst := fmt.Sprintf("s3://%s", filepath.Join(c.bucketName, newArchiveMP4Path(broadcast.ScheduleID)))
+
+	return &types.JobSettings{
+		Inputs: []types.Input{{
+			FileInput:      aws.String(src),
+			TimecodeSource: types.InputTimecodeSourceZerobased,
+		}},
+		OutputGroups: []types.OutputGroup{{
+			OutputGroupSettings: &types.OutputGroupSettings{
+				Type: types.OutputGroupTypeFileGroupSettings,
+				FileGroupSettings: &types.FileGroupSettings{
+					Destination: aws.String(dst),
+				},
+			},
+		}},
+	}
 }
