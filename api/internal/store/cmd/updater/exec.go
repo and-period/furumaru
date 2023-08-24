@@ -39,9 +39,9 @@ func Exec() error {
 	switch conf.RunMethod {
 	case "lambda":
 		switch conf.RunType {
-		case "CREATE":
-			lambda.StartWithOptions(reg.creator.Lambda, lambda.WithContext(ctx))
-		case "REMOVE":
+		case "START":
+			lambda.StartWithOptions(reg.starter.Lambda, lambda.WithContext(ctx))
+		case "CLOSE":
 			return errors.New("cmd: not implemented")
 		default:
 			return fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)

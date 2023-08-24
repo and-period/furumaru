@@ -20,7 +20,7 @@ type registry struct {
 	appName   string
 	env       string
 	waitGroup *sync.WaitGroup
-	creator   updater.Creator
+	starter   updater.Starter
 }
 
 type params struct {
@@ -75,9 +75,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		waitGroup: params.waitGroup,
 	}
 	switch conf.RunType {
-	case "CREATE":
-		reg.creator = updater.NewCreator(jobParams, updater.WithLogger(logger))
-	case "REMOVE":
+	case "START":
+		reg.starter = updater.NewStarter(jobParams, updater.WithLogger(logger))
+	case "CLOSE":
 		return nil, errors.New("cmd: not implemented")
 	default:
 		return nil, fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)

@@ -13,11 +13,11 @@ import (
 	"go.uber.org/zap"
 )
 
-type Creator interface {
+type Starter interface {
 	Lambda(ctx context.Context, event CreatePayload) error
 }
 
-type creator struct {
+type starter struct {
 	now        func() time.Time
 	logger     *zap.Logger
 	waitGroup  *sync.WaitGroup
@@ -25,7 +25,7 @@ type creator struct {
 	maxRetries int64
 }
 
-func NewCreator(params *Params, opts ...Option) Creator {
+func NewStarter(params *Params, opts ...Option) Starter {
 	dopts := &options{
 		logger:     zap.NewNop(),
 		maxRetries: 3,
@@ -33,7 +33,7 @@ func NewCreator(params *Params, opts ...Option) Creator {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	return &creator{
+	return &starter{
 		now:        jst.Now,
 		logger:     dopts.logger,
 		waitGroup:  params.WaitGroup,
@@ -42,8 +42,8 @@ func NewCreator(params *Params, opts ...Option) Creator {
 	}
 }
 
-func (c *creator) Lambda(ctx context.Context, payload CreatePayload) error {
-	c.logger.Debug("Received event", zap.Any("payload", payload))
+func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
+	s.logger.Debug("Received event", zap.Any("payload", payload))
 	u := &url.URL{
 		Scheme: "https",
 		Host:   payload.CloudFrontURL,
@@ -64,10 +64,10 @@ func (c *creator) Lambda(ctx context.Context, payload CreatePayload) error {
 			MediaStoreContainerArn:    payload.MediaStoreContainerARN,
 		},
 	}
-	if err := c.db.Broadcast.Update(ctx, payload.ScheduleID, params); err != nil {
-		c.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+	if err := s.db.Broadcast.Update(ctx, payload.ScheduleID, params); err != nil {
+		s.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
 		return err
 	}
-	c.logger.Info("Succeeded to update broadcast", zap.String("scheduleId", payload.ScheduleID))
+	s.logger.Info("Succeeded to update broadcast", zap.String("scheduleId", payload.ScheduleID))
 	return nil
 }

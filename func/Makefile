@@ -40,5 +40,5 @@ test: ## テストの実行
 	go test -v -cover -coverprofile=coverage.txt -covermode=atomic ./...
 
 build: ## アプリケーションのコンパイルと生成ファイルの圧縮
-	GOOS=linux go build -o main ${FUNC_DIR}/main.go
+	GOOS=linux GOARCH=amd64 go build -o main ${FUNC_DIR}/main.go
 	zip function.zip main

@@ -21,6 +21,7 @@ type Params struct {
 	MediaLive         medialive.MediaLive
 	WaitGroup         *sync.WaitGroup
 	Database          *database.Database
+	Environment       string
 	ArchiveBucketName string
 }
 

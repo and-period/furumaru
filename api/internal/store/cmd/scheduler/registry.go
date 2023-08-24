@@ -80,6 +80,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Database:          storedb.NewDatabase(dbParams),
 		StepFunction:      sfnClient,
 		MediaLive:         mediaLiveClient,
+		Environment:       conf.Environment,
 		ArchiveBucketName: conf.ArchiveBucketName,
 	}
 	var job scheduler.Scheduler

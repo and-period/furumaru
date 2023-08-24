@@ -24,6 +24,7 @@ type starter struct {
 	db         *database.Database
 	sfn        sfn.StepFunction
 	media      medialive.MediaLive
+	env        string
 	bucketName string
 }
 
@@ -43,6 +44,7 @@ func NewStarter(params *Params, opts ...Option) Scheduler {
 		db:         params.Database,
 		sfn:        params.StepFunction,
 		media:      params.MediaLive,
+		env:        params.Environment,
 		bucketName: params.ArchiveBucketName,
 	}
 }
@@ -235,7 +237,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 			payload := &CreatePayload{
 				ScheduleID: broadcast.ScheduleID,
 				ChannelInput: &CreateChannelPayload{
-					Name:                   schedule.ID,
+					Name:                   fmt.Sprintf("%s-%s", s.env, schedule.ID),
 					StartTime:              schedule.StartAt.Format(time.RFC3339),
 					InputLossImageSlateURI: schedule.ImageURL,
 				},
