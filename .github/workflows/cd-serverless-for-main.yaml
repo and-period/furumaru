@@ -11,6 +11,7 @@ env:
   TZ: 'Asia/Tokyo'
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  SERVICE: serverless
   NODE_VERSION: 18.14.0
 
 jobs:
