@@ -66,5 +66,5 @@ jobs:
     - name: serverless deploy
       uses: serverless/github-action@v3.1
       with:
-        args: -c "npm ci && serverless deploy"
+        args: -c "serverless deploy"
         entrypoint: /bin/bash
