@@ -39,7 +39,7 @@ jobs:
         cache-dependency-path: '**/yarn.lock'
 
     - name: install sls
-      run: yarn --cwd sls install
+      run: yarn add -D serverless
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
