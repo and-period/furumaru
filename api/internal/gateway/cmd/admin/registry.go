@@ -10,6 +10,7 @@ import (
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	shandler "github.com/and-period/furumaru/api/internal/gateway/stripe/handler"
 	"github.com/and-period/furumaru/api/internal/media"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
@@ -333,8 +334,16 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 }
 
 func newMediaService(p *params) (media.Service, error) {
+	mysql, err := newDatabase("media", p)
+	if err != nil {
+		return nil, err
+	}
+	dbParams := &mediadb.Params{
+		Database: mysql,
+	}
 	params := &mediasrv.Params{
 		WaitGroup: p.waitGroup,
+		Database:  mediadb.NewDatabase(dbParams),
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
 		Producer:  p.mediaQueue,
