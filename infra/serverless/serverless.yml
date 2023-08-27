@@ -13,7 +13,6 @@ provider:
     subnetIds: ${self:custom.envMap.${self:provider.stage}.vpc.subnetIds}
   iam:
     role: defaultRole
-  profile: ${env:AWS_PROFILE, 'default'}
 
 custom:
   defaultStage: stg
