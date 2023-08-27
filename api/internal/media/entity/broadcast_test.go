@@ -21,6 +21,7 @@ func TestBroadcast(t *testing.T) {
 			expect: &Broadcast{
 				ID:         "",
 				ScheduleID: "schedule-id",
+				Type:       BroadcastTypeNormal,
 				Status:     BroadcastStatusDisabled,
 			},
 		},
