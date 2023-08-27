@@ -65,3 +65,6 @@ jobs:
         audience: sts.amazonaws.com.cn
         aws-region: ${{ env.AWS_REGION }}
         role-to-assume: ${{ env.AWS_ROLE_ARN }}
+
+    - name: Deploy
+      run: sls deploy --stage stg
