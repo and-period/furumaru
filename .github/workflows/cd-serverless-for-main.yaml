@@ -66,5 +66,5 @@ jobs:
     - name: serverless deploy
       uses: serverless/github-action@v3.1
       with:
-        args: -c "serverless deploy"
+        args: -c "pwd && cd infra/serverless/ && serverless deploy"
         entrypoint: /bin/bash
