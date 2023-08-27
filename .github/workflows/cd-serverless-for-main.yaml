@@ -63,5 +63,8 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
         role-to-assume: ${{ env.AWS_ROLE_ARN }}
 
-    - name: Deploy
-      run: yarn --cwd sls deploy --stage stg
+    - name: serverless deploy
+      uses: serverless/github-action@v3.1
+      with:
+        args: -c "npm ci && serverless deploy"
+        entrypoint: /bin/bash
