@@ -1,8 +1,6 @@
 name: '[Infra] Deploy Serverless for main'
 on:
   push:
-    branches:
-      - 'main'
     paths:
       - '.github/workflows/cd-serverless-for-main.yaml'
       - 'infra/serverless/**'
@@ -62,7 +60,6 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
-        audience: sts.amazonaws.com.cn
         aws-region: ${{ env.AWS_REGION }}
         role-to-assume: ${{ env.AWS_ROLE_ARN }}
 
