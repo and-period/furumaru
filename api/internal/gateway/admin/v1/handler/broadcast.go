@@ -6,7 +6,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,10 +16,10 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) GetBroadcast(ctx *gin.Context) {
-	in := &store.GetBroadcastByScheduleIDInput{
+	in := &media.GetBroadcastByScheduleIDInput{
 		ScheduleID: util.GetParam(ctx, "scheduleId"),
 	}
-	broadcast, err := h.store.GetBroadcastByScheduleID(ctx, in)
+	broadcast, err := h.media.GetBroadcastByScheduleID(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return

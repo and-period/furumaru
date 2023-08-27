@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
 // BroadcastStatus - ライブ配信状況

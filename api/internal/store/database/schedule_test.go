@@ -240,11 +240,9 @@ func TestSchedule_Create(t *testing.T) {
 	err = db.DB.Create(&shipping).Error
 	require.NoError(t, err)
 	s := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
-	b := testBroadcast("broadcast-id", "schedule-id", now())
 
 	type args struct {
-		schedule  *entity.Schedule
-		broadcast *entity.Broadcast
+		schedule *entity.Schedule
 	}
 	type want struct {
 		hasErr bool
@@ -259,8 +257,7 @@ func TestSchedule_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
 			args: args{
-				schedule:  s,
-				broadcast: b,
+				schedule: s,
 			},
 			want: want{
 				hasErr: false,
@@ -274,8 +271,7 @@ func TestSchedule_Create(t *testing.T) {
 				require.NoError(t, err)
 			},
 			args: args{
-				schedule:  s,
-				broadcast: b,
+				schedule: s,
 			},
 			want: want{
 				hasErr: true,
@@ -295,7 +291,7 @@ func TestSchedule_Create(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &schedule{db: db, now: now}
-			err = db.Create(ctx, tt.args.schedule, tt.args.broadcast)
+			err = db.Create(ctx, tt.args.schedule)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

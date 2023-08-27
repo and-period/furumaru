@@ -14,6 +14,8 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/media/database"
+	mock_database "github.com/and-period/furumaru/api/mock/media/database"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	"github.com/golang/mock/gomock"
@@ -29,27 +31,42 @@ var (
 )
 
 type mocks struct {
+	db       *dbMocks
 	tmp      *mock_storage.MockBucket
 	storage  *mock_storage.MockBucket
 	producer *mock_sqs.MockProducer
+}
+
+type dbMocks struct {
+	Broadcast *mock_database.MockBroadcast
 }
 
 type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
+		db:       newDBMocks(ctrl),
 		tmp:      mock_storage.NewMockBucket(ctrl),
 		storage:  mock_storage.NewMockBucket(ctrl),
 		producer: mock_sqs.NewMockProducer(ctrl),
 	}
 }
 
+func newDBMocks(ctrl *gomock.Controller) *dbMocks {
+	return &dbMocks{
+		Broadcast: mock_database.NewMockBroadcast(ctrl),
+	}
+}
+
 func newService(mocks *mocks) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
-		Tmp:       mocks.tmp,
-		Storage:   mocks.storage,
-		Producer:  mocks.producer,
+		Database: &database.Database{
+			Broadcast: mocks.db.Broadcast,
+		},
+		Tmp:      mocks.tmp,
+		Storage:  mocks.storage,
+		Producer: mocks.producer,
 	}
 	tmpHost, _ := url.Parse(tmpURL)
 	storageHost, _ := url.Parse(storageURL)
@@ -142,6 +159,7 @@ func TestService(t *testing.T) {
 	surl, err := url.Parse(storageURL)
 	require.NoError(t, err)
 	turl, err := url.Parse(tmpURL)
+	require.NoError(t, err)
 	mocks.storage.EXPECT().GetHost().Return(surl, nil)
 	mocks.tmp.EXPECT().GetHost().Return(turl, nil)
 	srv, err := NewService(params, WithLogger(zap.NewNop()))

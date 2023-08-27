@@ -105,8 +105,6 @@ type Service interface {
 	UpdateLive(ctx context.Context, in *UpdateLiveInput) error
 	// マルシェタイムテーブル削除
 	DeleteLive(ctx context.Context, in *DeleteLiveInput) error
-	// マルシェライブ配信取得(開催スケジュールID指定)
-	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error)
 	// 注文履歴一覧取得
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)
 	// 注文履歴取得

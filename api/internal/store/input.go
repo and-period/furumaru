@@ -343,8 +343,12 @@ type DeletePromotionInput struct {
 }
 
 type ListSchedulesInput struct {
-	Limit  int64 `validate:"required,max=200"`
-	Offset int64 `validate:"min=0"`
+	StartAtGte time.Time `validate:""`
+	StartAtLt  time.Time `validate:""`
+	EndAtGte   time.Time `validate:""`
+	EndAtLt    time.Time `validate:""`
+	Limit      int64     `validate:"required,max=200"`
+	Offset     int64     `validate:"min=0"`
 }
 
 type GetScheduleInput struct {
@@ -409,10 +413,6 @@ type UpdateLiveInput struct {
 
 type DeleteLiveInput struct {
 	LiveID string `validate:"required"`
-}
-
-type GetBroadcastByScheduleIDInput struct {
-	ScheduleID string `validate:"required"`
 }
 
 type ListOrdersInput struct {
