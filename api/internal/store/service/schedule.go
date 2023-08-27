@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/backoff"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -99,11 +100,18 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		s.resizeSchedule(context.Background(), schedule.ID, in.ThumbnailURL)
 	}()
 	go func() {
-		defer s.waitGroup.Wait()
-		in := &media.CreateBroadcastInput{
-			ScheduleID: schedule.ID,
+		defer s.waitGroup.Done()
+		const maxRetries = 3
+		ctx := context.Background()
+		createFn := func() error {
+			in := &media.CreateBroadcastInput{
+				ScheduleID: schedule.ID,
+			}
+			_, err := s.media.CreateBroadcast(ctx, in)
+			return err
 		}
-		if _, err := s.media.CreateBroadcast(ctx, in); err != nil {
+		retry := backoff.NewExponentialBackoff(maxRetries)
+		if err := backoff.Retry(ctx, retry, createFn, backoff.WithRetryablel(exception.Retryable)); err != nil {
 			s.logger.Error("Failed to create broadcast", zap.String("scheduleId", schedule.ID), zap.Error(err))
 		}
 	}()

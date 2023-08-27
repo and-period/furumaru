@@ -231,7 +231,7 @@ func TestCreateSchedule(t *testing.T) {
 						return nil
 					})
 				mocks.media.EXPECT().ResizeScheduleThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
-				mocks.media.EXPECT().CreateBroadcast(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.media.EXPECT().CreateBroadcast(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
