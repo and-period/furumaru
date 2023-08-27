@@ -64,4 +64,4 @@ jobs:
         role-to-assume: ${{ env.AWS_ROLE_ARN }}
 
     - name: Deploy
-      run: sls deploy --stage stg
+      run: yarn --cwd sls deploy --stage stg
