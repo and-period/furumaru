@@ -9,6 +9,7 @@ import (
 	reflect "reflect"
 
 	media "github.com/and-period/furumaru/api/internal/media"
+	entity "github.com/and-period/furumaru/api/internal/media/entity"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -33,6 +34,21 @@ func NewMockService(ctrl *gomock.Controller) *MockService {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
+}
+
+// CreateBroadcast mocks base method.
+func (m *MockService) CreateBroadcast(ctx context.Context, in *media.CreateBroadcastInput) (*entity.Broadcast, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateBroadcast", ctx, in)
+	ret0, _ := ret[0].(*entity.Broadcast)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateBroadcast indicates an expected call of CreateBroadcast.
+func (mr *MockServiceMockRecorder) CreateBroadcast(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBroadcast", reflect.TypeOf((*MockService)(nil).CreateBroadcast), ctx, in)
 }
 
 // GenerateCoordinatorBonusVideo mocks base method.
@@ -243,6 +259,21 @@ func (m *MockService) GenerateScheduleThumbnail(ctx context.Context, in *media.G
 func (mr *MockServiceMockRecorder) GenerateScheduleThumbnail(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateScheduleThumbnail", reflect.TypeOf((*MockService)(nil).GenerateScheduleThumbnail), ctx, in)
+}
+
+// GetBroadcastByScheduleID mocks base method.
+func (m *MockService) GetBroadcastByScheduleID(ctx context.Context, in *media.GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBroadcastByScheduleID", ctx, in)
+	ret0, _ := ret[0].(*entity.Broadcast)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBroadcastByScheduleID indicates an expected call of GetBroadcastByScheduleID.
+func (mr *MockServiceMockRecorder) GetBroadcastByScheduleID(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBroadcastByScheduleID", reflect.TypeOf((*MockService)(nil).GetBroadcastByScheduleID), ctx, in)
 }
 
 // ResizeCoordinatorHeader mocks base method.

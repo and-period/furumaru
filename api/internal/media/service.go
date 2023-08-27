@@ -2,7 +2,11 @@
 //go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=./../../mock/$GOPACKAGE/$GOFILE
 package media
 
-import "context"
+import (
+	"context"
+
+	"github.com/and-period/furumaru/api/internal/media/entity"
+)
 
 type Service interface {
 	// コーディネータサムネイル画像を生成
@@ -73,4 +77,8 @@ type Service interface {
 	GenerateScheduleOpeningVideo(ctx context.Context, in *GenerateFileInput) (string, error)
 	// 開催スケジュールオープニング動画アップロード
 	UploadScheduleOpeningVideo(ctx context.Context, in *UploadFileInput) (string, error)
+	// ライブ配信取得(マルシェ開催スケジュールID指定)
+	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error)
+	// ライブ配信登録
+	CreateBroadcast(ctx context.Context, in *CreateBroadcastInput) (*entity.Broadcast, error)
 }

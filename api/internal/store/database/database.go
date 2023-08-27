@@ -21,7 +21,6 @@ type Params struct {
 
 type Database struct {
 	Address     Address
-	Broadcast   Broadcast
 	Category    Category
 	Order       Order
 	Product     Product
@@ -37,7 +36,6 @@ type Database struct {
 func NewDatabase(params *Params) *Database {
 	return &Database{
 		Address:     NewAddress(params.Database),
-		Broadcast:   NewBroadcast(params.Database),
 		Category:    NewCategory(params.Database),
 		Live:        NewLive(params.Database),
 		Order:       NewOrder(params.Database),
@@ -56,11 +54,6 @@ func NewDatabase(params *Params) *Database {
  */
 type Address interface {
 	MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error)
-}
-
-type Broadcast interface {
-	GetByScheduleID(ctx context.Context, scheduleID string, fields ...string) (*entity.Broadcast, error)
-	Update(ctx context.Context, broadcastID string, params *UpdateBroadcastParams) error
 }
 
 type Category interface {
@@ -139,7 +132,7 @@ type Schedule interface {
 	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
 	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
 	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
-	Create(ctx context.Context, schedule *entity.Schedule, broadcast *entity.Broadcast) error
+	Create(ctx context.Context, schedule *entity.Schedule) error
 	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
 	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
 }
@@ -157,24 +150,6 @@ type Shipping interface {
 /**
  * params
  */
-type UpdateBroadcastParams struct {
-	Status entity.BroadcastStatus
-	*InitializeBroadcastParams
-}
-
-type InitializeBroadcastParams struct {
-	InputURL                  string
-	OutputURL                 string
-	CloudFrontDistributionArn string
-	MediaLiveChannelArn       string
-	MediaLiveChannelID        string
-	MediaLiveRTMPInputArn     string
-	MediaLiveRTMPInputName    string
-	MediaLiveMP4InputArn      string
-	MediaLiveMP4InputName     string
-	MediaStoreContainerArn    string
-}
-
 type ListCategoriesParams struct {
 	Name   string
 	Limit  int

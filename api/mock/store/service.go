@@ -269,21 +269,6 @@ func (mr *MockServiceMockRecorder) DeleteShipping(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteShipping", reflect.TypeOf((*MockService)(nil).DeleteShipping), ctx, in)
 }
 
-// GetBroadcastByScheduleID mocks base method.
-func (m *MockService) GetBroadcastByScheduleID(ctx context.Context, in *store.GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetBroadcastByScheduleID", ctx, in)
-	ret0, _ := ret[0].(*entity.Broadcast)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetBroadcastByScheduleID indicates an expected call of GetBroadcastByScheduleID.
-func (mr *MockServiceMockRecorder) GetBroadcastByScheduleID(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBroadcastByScheduleID", reflect.TypeOf((*MockService)(nil).GetBroadcastByScheduleID), ctx, in)
-}
-
 // GetCategory mocks base method.
 func (m *MockService) GetCategory(ctx context.Context, in *store.GetCategoryInput) (*entity.Category, error) {
 	m.ctrl.T.Helper()

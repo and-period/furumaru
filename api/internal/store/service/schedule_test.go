@@ -212,8 +212,8 @@ func TestCreateSchedule(t *testing.T) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
 				mocks.db.Schedule.EXPECT().
-					Create(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, schedule *entity.Schedule, broadcast *entity.Broadcast) error {
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, schedule *entity.Schedule) error {
 						expect := &entity.Schedule{
 							ID:              schedule.ID, // ignore
 							CoordinatorID:   "coordinator-id",
@@ -231,6 +231,7 @@ func TestCreateSchedule(t *testing.T) {
 						return nil
 					})
 				mocks.media.EXPECT().ResizeScheduleThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.media.EXPECT().CreateBroadcast(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
@@ -337,7 +338,7 @@ func TestCreateSchedule(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
-				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",

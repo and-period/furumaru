@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/backoff"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -20,8 +21,12 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 		return nil, 0, exception.InternalError(err)
 	}
 	params := &database.ListSchedulesParams{
-		Limit:  int(in.Limit),
-		Offset: int(in.Offset),
+		StartAtGte: in.StartAtGte,
+		StartAtLt:  in.StartAtLt,
+		EndAtGte:   in.EndAtGte,
+		EndAtLt:    in.EndAtLt,
+		Limit:      int(in.Limit),
+		Offset:     int(in.Offset),
 	}
 	var (
 		schedules entity.Schedules
@@ -86,17 +91,29 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		EndAt:           in.EndAt,
 	}
 	schedule := entity.NewSchedule(sparams)
-	bparams := &entity.NewBroadcastParams{
-		ScheduleID: schedule.ID,
-	}
-	broadcast := entity.NewBroadcast(bparams)
-	if err := s.db.Schedule.Create(ctx, schedule, broadcast); err != nil {
+	if err := s.db.Schedule.Create(ctx, schedule); err != nil {
 		return nil, exception.InternalError(err)
 	}
-	s.waitGroup.Add(1)
+	s.waitGroup.Add(2)
 	go func() {
 		defer s.waitGroup.Done()
 		s.resizeSchedule(context.Background(), schedule.ID, in.ThumbnailURL)
+	}()
+	go func() {
+		defer s.waitGroup.Done()
+		const maxRetries = 3
+		ctx := context.Background()
+		createFn := func() error {
+			in := &media.CreateBroadcastInput{
+				ScheduleID: schedule.ID,
+			}
+			_, err := s.media.CreateBroadcast(ctx, in)
+			return err
+		}
+		retry := backoff.NewExponentialBackoff(maxRetries)
+		if err := backoff.Retry(ctx, retry, createFn, backoff.WithRetryablel(exception.Retryable)); err != nil {
+			s.logger.Error("Failed to create broadcast", zap.String("scheduleId", schedule.ID), zap.Error(err))
+		}
 	}()
 	return schedule, nil
 }

@@ -59,7 +59,7 @@ func (s *schedule) Get(ctx context.Context, scheduleID string, fields ...string)
 	return schedule, exception.InternalError(err)
 }
 
-func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule, broadcast *entity.Broadcast) error {
+func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if err := schedule.FillJSON(); err != nil {
 			return err
@@ -67,12 +67,8 @@ func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule, broadc
 
 		now := s.now()
 		schedule.CreatedAt, schedule.UpdatedAt = now, now
-		broadcast.CreatedAt, broadcast.UpdatedAt = now, now
 
-		if err := tx.WithContext(ctx).Table(scheduleTable).Create(&schedule).Error; err != nil {
-			return err
-		}
-		return tx.WithContext(ctx).Table(broadcastTable).Create(&broadcast).Error
+		return tx.WithContext(ctx).Table(scheduleTable).Create(&schedule).Error
 	})
 	return exception.InternalError(err)
 }

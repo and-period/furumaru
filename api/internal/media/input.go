@@ -18,3 +18,11 @@ type ResizeFileInput struct {
 	TargetID string   `validate:"required"`
 	URLs     []string `validate:"min=1,dive,required,url"`
 }
+
+type GetBroadcastByScheduleIDInput struct {
+	ScheduleID string `validate:"required"`
+}
+
+type CreateBroadcastInput struct {
+	ScheduleID string `validate:"required"`
+}
