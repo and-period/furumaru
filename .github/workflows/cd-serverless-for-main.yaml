@@ -41,7 +41,7 @@ jobs:
         cache-dependency-path: '**/yarn.lock'
 
     - name: install sls
-      run: yarn --cwd sls install
+      run: yarn add -D serverless
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -62,9 +62,11 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
-        audience: sts.amazonaws.com.cn
         aws-region: ${{ env.AWS_REGION }}
         role-to-assume: ${{ env.AWS_ROLE_ARN }}
 
-    - name: Deploy
-      run: sls deploy --stage stg
+    - name: serverless deploy
+      uses: serverless/github-action@v3.1
+      with:
+        args: -c "cd infra/serverless/ && serverless deploy"
+        entrypoint: /bin/bash
