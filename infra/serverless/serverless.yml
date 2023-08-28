@@ -592,6 +592,14 @@ stepFunctions:
             Parameters:
               ChannelId.$: $.ChannelId
             Next: DeleteChannel
+            Catch:
+              - ErrorEquals:
+                  - MediaLive.NotFoundException
+                Comment: チャンネルが存在しない場合は終了
+                Next: Pass
+          Pass:
+            Type: Pass
+            End: true
           DeleteChannel:
             Type: Task
             Comment: MediaLiveのチャンネルを削除
