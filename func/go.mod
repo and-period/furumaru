@@ -25,7 +25,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.15.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.9.13 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.1.33 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.7.33 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.7.35 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.35 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.15.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.13.5 // indirect
