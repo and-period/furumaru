@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	medialive "github.com/and-period/furumaru/api/pkg/medialive"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockMediaLive is a mock of MediaLive interface.

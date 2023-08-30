@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	dynamodb "github.com/and-period/furumaru/api/pkg/dynamodb"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockClient is a mock of Client interface.

@@ -10,7 +10,7 @@ import (
 
 	database "github.com/and-period/furumaru/api/internal/media/database"
 	entity "github.com/and-period/furumaru/api/internal/media/entity"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockBroadcast is a mock of Broadcast interface.

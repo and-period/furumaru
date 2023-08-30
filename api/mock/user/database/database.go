@@ -11,7 +11,7 @@ import (
 	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/user/database"
 	entity "github.com/and-period/furumaru/api/internal/user/entity"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockAdmin is a mock of Admin interface.

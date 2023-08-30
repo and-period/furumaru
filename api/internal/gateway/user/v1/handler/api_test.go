@@ -22,9 +22,9 @@ import (
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
 

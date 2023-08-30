@@ -11,7 +11,7 @@ import (
 	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/store/database"
 	entity "github.com/and-period/furumaru/api/internal/store/entity"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockAddress is a mock of Address interface.

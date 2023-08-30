@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	messaging "github.com/and-period/furumaru/api/pkg/firebase/messaging"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockClient is a mock of Client interface.
