@@ -281,7 +281,7 @@ type UpdateProductMedia struct {
 
 type UpdateProductMediaInput struct {
 	ProductID string                     `validate:"required"`
-	Images    []*UpdateProductMediaImage `validate:"omitempty,dive,required,unique=URL"`
+	Images    []*UpdateProductMediaImage `validate:"omitempty,unique=OriginURL,dive,required"`
 }
 
 type UpdateProductMediaImage struct {
