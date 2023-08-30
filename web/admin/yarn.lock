@@ -4897,6 +4897,14 @@
     hookable "^5.5.3"
     zhead "^2.0.4"
 
+"@unhead/schema@1.3.9":
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/@unhead/schema/-/schema-1.3.9.tgz#9312a2ecaf554f7c9d1f14ba7d05906182fbaffa"
+  integrity sha512-iIa0dczd2qTOxwYZbVR+iAKdlELnLTlKSFsN/YuJ/33sRi5VFa9D8TDBEPLec9gpcjB/bH0FhERfR4bb4UbRuA==
+  dependencies:
+    hookable "^5.5.3"
+    zhead "^2.0.10"
+
 "@unhead/shared@1.1.26":
   version "1.1.26"
   resolved "https://registry.yarnpkg.com/@unhead/shared/-/shared-1.1.26.tgz#51135d9e29c36848abbd76ff7da6fd47e1305688"
@@ -4904,13 +4912,20 @@
   dependencies:
     "@unhead/schema" "1.1.26"
 
-"@unhead/ssr@^1.1.26":
-  version "1.1.26"
-  resolved "https://registry.yarnpkg.com/@unhead/ssr/-/ssr-1.1.26.tgz#2d30085ed99025c41cede1d2d17fe1a2d668d958"
-  integrity sha512-KYJDGgVNtU2i+NHu17o2zFXqsoLukOFEz81XrWQ8nQdY5+VNjy7IiTLp1dlx3umn1ohZjHySz4LXQCT4zUApSw==
+"@unhead/shared@1.3.9":
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/@unhead/shared/-/shared-1.3.9.tgz#2e9815be59a97e02f302921e9c2bd3ae79f9fa4a"
+  integrity sha512-lBXK1gzsg3XOnsOgYUVTT2RKOvM+AB0myDXkwQb0jsJB3Tc1qVOSz9JAOR+ZGrosSr7+Iv91+Fu/0E+knxaj2Q==
   dependencies:
-    "@unhead/schema" "1.1.26"
-    "@unhead/shared" "1.1.26"
+    "@unhead/schema" "1.3.9"
+
+"@unhead/ssr@^1.1.26":
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/@unhead/ssr/-/ssr-1.3.9.tgz#6a3e332fcc347f05c0f4982a98a060626758a474"
+  integrity sha512-FTt4IQOAxHiSfRM7IoJJiFnUEBH8CG5zkJOQ/LydG19QpYa9/AGOi4xvngeCr++1as51p2hWoRO6gPxSRhV8cA==
+  dependencies:
+    "@unhead/schema" "1.3.9"
+    "@unhead/shared" "1.3.9"
 
 "@unhead/vue@^1.1.26":
   version "1.1.26"
@@ -12283,6 +12298,11 @@ zen-push@0.2.1:
   integrity sha512-Qv4qvc8ZIue51B/0zmeIMxpIGDVhz4GhJALBvnKs/FRa2T7jy4Ori9wFwaHVt0zWV7MIFglKAHbgnVxVTw7U1w==
   dependencies:
     zen-observable "^0.7.0"
+
+zhead@^2.0.10:
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.0.10.tgz#dc89c420081fae78a6f3d10687428ae676bc6291"
+  integrity sha512-irug8fXNKjqazkA27cFQs7C6/ZD3qNiEzLC56kDyzQART/Z9GMGfg8h2i6fb9c8ZWnIx/QgOgFJxK3A/CYHG0g==
 
 zhead@^2.0.4:
   version "2.0.4"
