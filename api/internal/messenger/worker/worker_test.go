@@ -20,8 +20,8 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
 

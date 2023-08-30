@@ -37,7 +37,7 @@ func (c *client) MultiSend(ctx context.Context, msg *Message, tokens ...string) 
 			ImageURL: msg.ImageURL,
 		},
 	}
-	res, err := c.messageing.SendMulticast(ctx, message)
+	res, err := c.messageing.SendEachForMulticast(ctx, message)
 	if err != nil {
 		return 0, 0, c.sendError(err)
 	}

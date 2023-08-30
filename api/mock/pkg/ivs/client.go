@@ -11,7 +11,7 @@ import (
 	ivs "github.com/and-period/furumaru/api/pkg/ivs"
 	ivs0 "github.com/aws/aws-sdk-go-v2/service/ivs"
 	types "github.com/aws/aws-sdk-go-v2/service/ivs/types"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockClient is a mock of Client interface.

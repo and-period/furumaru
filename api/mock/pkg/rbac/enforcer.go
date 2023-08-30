@@ -7,7 +7,7 @@ package mock_rbac
 import (
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockEnforcer is a mock of Enforcer interface.

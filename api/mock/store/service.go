@@ -10,7 +10,7 @@ import (
 
 	store "github.com/and-period/furumaru/api/internal/store"
 	entity "github.com/and-period/furumaru/api/internal/store/entity"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockService is a mock of Service interface.

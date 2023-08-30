@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	types "github.com/aws/aws-sdk-go-v2/service/mediaconvert/types"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockMediaConvert is a mock of MediaConvert interface.

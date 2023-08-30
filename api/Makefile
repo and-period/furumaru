@@ -1,9 +1,9 @@
 .PHONY: help setup install mockgen protoc fmt vet lint test build
 
-AIR_VERSION := 1.42.0
-GOFUMPT_VERSION := 0.4.0
-GOLANGCI_VERSION := 1.52.2
-MOCKGEN_VERSION := 1.6.0
+AIR_VERSION := 1.45.0
+GOFUMPT_VERSION := 0.5.0
+GOLANGCI_VERSION := 1.54.2
+MOCKGEN_VERSION := 0.2.0
 
 LINT_PACKAGES := $(shell go list $(CURDIR)/... | grep -v -e "mock" -v -e "proto" -v -e "third_party" -v -e "tmp")
 TEST_PACKAGES := $(shell go list $(CURDIR)/internal/... $(CURDIR)/pkg/...)
@@ -17,7 +17,7 @@ setup: install ## 初回環境構築用
 
 install: ## 依存ライブラリのインストール
 	go install mvdan.cc/gofumpt@v${GOFUMPT_VERSION}
-	go install github.com/golang/mock/mockgen@v${MOCKGEN_VERSION}
+	go install go.uber.org/mock/mockgen@v${MOCKGEN_VERSION}
 	go install github.com/cosmtrek/air@v${AIR_VERSION}
 
 mockgen: ## ユニットテストで使用するモックの生成

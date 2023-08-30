@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stripe/stripe-go/v73"
+	"go.uber.org/mock/gomock"
 )
 
 func TestEvent(t *testing.T) {

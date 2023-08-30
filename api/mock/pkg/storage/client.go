@@ -10,7 +10,7 @@ import (
 	url "net/url"
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockBucket is a mock of Bucket interface.

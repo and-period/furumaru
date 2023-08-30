@@ -10,7 +10,7 @@ import (
 
 	database "github.com/and-period/furumaru/api/internal/messenger/database"
 	entity "github.com/and-period/furumaru/api/internal/messenger/entity"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockContact is a mock of Contact interface.

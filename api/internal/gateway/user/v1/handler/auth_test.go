@@ -9,8 +9,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestGetAuth(t *testing.T) {

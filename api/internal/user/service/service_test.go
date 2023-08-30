@@ -13,8 +13,8 @@ import (
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_database "github.com/and-period/furumaru/api/mock/user/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
 

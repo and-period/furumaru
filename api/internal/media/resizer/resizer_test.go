@@ -15,9 +15,9 @@ import (
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
 
