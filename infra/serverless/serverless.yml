@@ -66,6 +66,7 @@ resources:
                     - mediaStore:PutLifecyclePolicy
                     - cloudfront:CreateOriginAccessControl
                     - cloudFront:CreateDistribution
+                    - cloudFront:GetDistribution
                     - iam:PassRole
                   Resource:
                     - '*'
@@ -653,6 +654,30 @@ stepFunctions:
                   Parameters:
                     InputId.$: $.InputId
                   End: true
+    deleteCloudFrontMachine:
+      name: deleteCloudFrontResoursesFunction-${self:provider.stage}
+      role:
+        Fn::GetAtt: [defaultRole, Arn]
+      definition:
+        StartAt: GetDistribution
+        States:
+          GetDistribution:
+            Type: Task
+            Comment: CloudFrontのディストリビューションを取得
+            InputPath: $
+            ResultPath: $.DescribeDistributionResult
+            Resource: arn:aws:states:::aws-sdk:cloudfront:getDistribution
+            Parameters:
+              Id.$: $.DistributionId
+            Catch:
+              - ErrorEquals:
+                  - CloudFront.NoSuchDistribution
+                Comment: ディストリビューションが存在しない場合は終了
+                Next: Pass
+            End: true
+          Pass:
+            Type: Pass
+            End: true
 
 plugins:
   - serverless-step-functions
