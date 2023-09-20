@@ -790,11 +790,12 @@ set-blocking@^2.0.0:
   integrity sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==
 
 set-function-name@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/set-function-name/-/set-function-name-2.0.0.tgz#e59e53e7fa23f9c2da1c0999fa202d5ed09c4756"
-  integrity sha512-WmS8UHojv5s1eSoRSmzO5zzgDq8PE1/X/ij0k+9fMYmINCc6+j+SF3Om8YyucKn2yjnK4ItNZOoQycNnHsZJTw==
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/set-function-name/-/set-function-name-2.0.1.tgz#12ce38b7954310b9f61faa12701620a0c882793a"
+  integrity sha512-tMNCiqYVkXIZgc2Hnoy2IvC/f8ezc5koaRFkCjrpWzGpCd3qbZXPzVy9MAZzK1ch/X0jvSkojys3oqJN0qCmdA==
   dependencies:
     define-data-property "^1.0.1"
+    functions-have-names "^1.2.3"
     has-property-descriptors "^1.0.0"
 
 shebang-command@^1.2.0:
