@@ -1,15 +1,14 @@
-name: '[Frontend] Build and Test (User Web)'
+name: '[Docs] Build and Test'
 on:
   push:
     paths:
-    - '.github/workflows/ci-web-user-for-all.yaml'
-    - 'web/user/**'
-    - 'infra/docker/web/user/**'
+    - '.github/workflows/ci-docs.yaml'
+    - 'docs/swagger/**'
 
 env:
-  SERVICE: user-web
+  SERVICE: docs
   TZ: 'Asia/Tokyo'
-  NODE_VERSION: 16.19.0
+  NODE_VERSION: 18.15.0
 
 jobs:
   setup:
@@ -18,7 +17,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./web/user
+        working-directory: ./docs/swagger
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -46,12 +45,12 @@ jobs:
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
+    - name: Setup
+      run: make setup
+
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
-
-    - name: Postinstall
-      run: yarn postinstall
 
   lint:
     name: lint
@@ -60,7 +59,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./web/user
+        working-directory: ./docs/swagger
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -88,12 +87,12 @@ jobs:
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
+    - name: Setup
+      run: make setup
+
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
-
-    - name: Postinstall
-      run: yarn postinstall
 
     - name: Lint
       run: yarn lint
@@ -105,7 +104,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./web/user
+        working-directory: ./docs/swagger
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -133,24 +132,24 @@ jobs:
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
+    - name: Setup
+      run: make setup
+
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
 
-    - name: Postinstall
-      run: yarn postinstall
-
     - name: Build
-      run: yarn build
+      run: yarn generate
 
-  test:
-    name: test
+  diff:
+    name: diff
     needs: setup
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
-        working-directory: ./web/user
+        working-directory: .
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -159,34 +158,14 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - uses: actions/cache@v3
-      id: yarn-cache
-      with:
-        path: |
-          **/node_modules
-          ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
     - name: Install
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: yarn --check-files --frozen-lockfile --non-interactive
+      run: |
+        docker compose run --rm swagger_generator yarn
 
-    - name: Postinstall
-      run: yarn postinstall
+    - name: Build
+      run: make swagger
 
-    - name: Test
-      run: yarn coverage
-
-    - uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
-        flags: user-web
-        verbose: true
+    - name: Diff
+      run: |
+        git add -A
+        if [ $(git diff HEAD | wc -l) != '0' ]; then exit 1; fi

@@ -2,7 +2,7 @@ name: '[Backend] Build and Test'
 on:
   push:
     paths:
-    - '.github/workflows/ci-backend-for-all.yaml'
+    - '.github/workflows/ci-backend.yaml'
     - 'api/**'
     - 'infra/docker/api/**'
     - 'infra/kubernetes/**'
@@ -114,26 +114,14 @@ jobs:
       if: steps.modules-cache.outputs.cache-hit != 'true'
       run: go mod download
 
-    - name: Build user gateway
-      run: make build SERVICE=gateway/user
+    - name: Build gateway
+      run: make build SERVICE=gateway
 
-    - name: Build admin gateway
-      run: make build SERVICE=gateway/admin
+    - name: Build media
+      run: make build SERVICE=media
 
-    - name: Build messenger worker
-      run: make build SERVICE=messenger/worker
-
-    - name: Build messenger scheduler
-      run: make build SERVICE=messenger/scheduler
-
-    - name: Build media resizer
-      run: make build SERVICE=media/resizer
-
-    - name: Build media scheduler
-      run: make build SERVICE=media/scheduler
-
-    - name: Build media updater
-      run: make build SERVICE=media/updater
+    - name: Build messenger
+      run: make build SERVICE=messenger
 
   test:
     name: test

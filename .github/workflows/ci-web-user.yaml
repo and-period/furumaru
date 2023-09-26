@@ -1,14 +1,15 @@
-name: '[Docs] Build and Test'
+name: '[Frontend] Build and Test (User Web)'
 on:
   push:
     paths:
-    - '.github/workflows/ci-docs-for-all.yaml'
-    - 'docs/swagger/**'
+    - '.github/workflows/ci-web-user.yaml'
+    - 'web/user/**'
+    - 'infra/docker/web/user/**'
 
 env:
-  SERVICE: docs
+  SERVICE: user-web
   TZ: 'Asia/Tokyo'
-  NODE_VERSION: 18.15.0
+  NODE_VERSION: 16.19.0
 
 jobs:
   setup:
@@ -17,7 +18,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./docs/swagger
+        working-directory: ./web/user
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -45,12 +46,12 @@ jobs:
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-    - name: Setup
-      run: make setup
-
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Postinstall
+      run: yarn postinstall
 
   lint:
     name: lint
@@ -59,7 +60,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./docs/swagger
+        working-directory: ./web/user
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -87,12 +88,12 @@ jobs:
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-    - name: Setup
-      run: make setup
-
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Postinstall
+      run: yarn postinstall
 
     - name: Lint
       run: yarn lint
@@ -104,7 +105,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./docs/swagger
+        working-directory: ./web/user
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -132,24 +133,24 @@ jobs:
           ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-    - name: Setup
-      run: make setup
-
     - name: Install
       if: steps.yarn-cache.outputs.cache-hit != 'true'
       run: yarn --check-files --frozen-lockfile --non-interactive
 
-    - name: Build
-      run: yarn generate
+    - name: Postinstall
+      run: yarn postinstall
 
-  diff:
-    name: diff
+    - name: Build
+      run: yarn build
+
+  test:
+    name: test
     needs: setup
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
-        working-directory: .
+        working-directory: ./web/user
     strategy:
       matrix:
         os: [ubuntu-latest] # exclude: macos-latest, windows-latest
@@ -158,14 +159,34 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
 
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - uses: actions/cache@v3
+      id: yarn-cache
+      with:
+        path: |
+          **/node_modules
+          ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
     - name: Install
-      run: |
-        docker compose run --rm swagger_generator yarn
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
 
-    - name: Build
-      run: make swagger
+    - name: Postinstall
+      run: yarn postinstall
 
-    - name: Diff
-      run: |
-        git add -A
-        if [ $(git diff HEAD | wc -l) != '0' ]; then exit 1; fi
+    - name: Test
+      run: yarn coverage
+
+    - uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+        flags: user-web
+        verbose: true

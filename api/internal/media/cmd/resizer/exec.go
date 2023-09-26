@@ -1,4 +1,4 @@
-package cmd
+package resizer
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func Exec() error {
+func (a *app) run() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

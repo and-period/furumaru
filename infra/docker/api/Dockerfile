@@ -1,17 +1,21 @@
 # ビルド用コンテナ
-FROM golang:1.21.0-alpine as builder
+FROM golang:1.21.1-alpine as builder
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
+
+ARG SERVICE
 
 WORKDIR /go/src/github.com/and-period/furumaru/api
 
 RUN apk add --update --no-cache \
       git \
-      make
+      make \
+      tzdata
 
-ADD ./api ./
-RUN make build SERVICE=messenger/worker
+ADD . .
+
+RUN make build SERVICE=${SERVICE}
 
 # 実行用コンテナ
 FROM alpine
@@ -22,10 +26,11 @@ ENV TZ Asia/Tokyo
 WORKDIR /var/api
 
 RUN apk add --update --no-cache \
-      ca-certificates
+      ca-certificates \
+      curl
 
 COPY --from=builder /go/src/github.com/and-period/furumaru/api/app ./app
+COPY --from=builder /usr/share/zoneinfo/Asia/Tokyo /usr/share/zoneinfo/Asia/Tokyo
 
-ADD ./api/config ./config
-
+EXPOSE 8080 9090
 CMD ["./app"]
