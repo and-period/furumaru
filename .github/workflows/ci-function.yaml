@@ -2,7 +2,7 @@ name: '[Function] Build and Test'
 on:
   push:
     paths:
-    - '.github/workflows/ci-function-for-all.yaml'
+    - '.github/workflows/ci-function.yaml'
     - 'func/**'
 
 env:

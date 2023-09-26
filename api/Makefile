@@ -5,9 +5,8 @@ GOFUMPT_VERSION := 0.5.0
 GOLANGCI_VERSION := 1.54.2
 MOCKGEN_VERSION := 0.2.0
 
-LINT_PACKAGES := $(shell go list $(CURDIR)/... | grep -v -e "mock" -v -e "proto" -v -e "third_party" -v -e "tmp")
+LINT_PACKAGES := $(shell go list $(CURDIR)/... | grep -v -e "mock" -v -e "tmp")
 TEST_PACKAGES := $(shell go list $(CURDIR)/internal/... $(CURDIR)/pkg/...)
-EXTERNAL_PACKAGE=$(CURDIR)/third_party
 
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -37,10 +36,10 @@ test: ## テストの実行
 	go test -v -cover -coverprofile=coverage.txt -covermode=atomic $(TEST_PACKAGES)
 
 build: ## アプリケーションのコンパイル
-	go build -o ./app ./cmd/${SERVICE}/main.go
+	GOOS=linux GOARCH=amd64 go build -o ./app ./cmd/${SERVICE}/main.go
 
 build-dev: ## アプリケーションのコンパイル(dev環境用)
-	go build -o ./cmd/${SERVICE}/app ./cmd/${SERVICE}/main.go
+	GOOS=linux GOARCH=amd64 go build -o ./cmd/${SERVICE}/app ./cmd/${SERVICE}/main.go
 
 start-dev: ## アプリケーションの起動(dev環境用)
 	air -c ./config/${SERVICE}/.air.toml

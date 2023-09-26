@@ -1,4 +1,4 @@
-package cmd
+package scheduler
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func Exec() error {
+func (a *app) run() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
