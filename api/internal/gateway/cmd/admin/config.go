@@ -19,7 +19,7 @@ type config struct {
 	DBPort               string `envconfig:"DB_PORT" default:"3306"`
 	DBUsername           string `envconfig:"DB_USERNAME" default:"root"`
 	DBPassword           string `envconfig:"DB_PASSWORD" default:""`
-	DBTimeZone           string `envconfig:"DB_TIMEZONE" default:""`
+	DBTimeZone           string `envconfig:"DB_TIMEZONE" default:"Asia/Tokyo"`
 	DBEnabledTLS         bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
 	DBSecretName         string `envconfig:"DB_SECRET_NAME" default:""`
 	NewRelicLicense      string `envconfig:"NEW_RELIC_LICENSE" default:""`
