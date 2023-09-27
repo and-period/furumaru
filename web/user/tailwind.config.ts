@@ -3,6 +3,9 @@ import type { Config } from 'tailwindcss'
 export default <Partial<Config>>{
   theme: {
     extend: {
+      inset: {
+        '9px': '9px',
+      },
       fontFamily: {
         sans: ['Noto Sans JP', 'sans-serif'],
       },
