@@ -36,8 +36,8 @@ github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.15.4 h1:v0jkRigbSD6uOd
 github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.15.4/go.mod h1:LhTyt8J04LL+9cIt7pYJ5lbS/U98ZmXovLOR/4LUsk8=
 github.com/aws/aws-sdk-go-v2/service/ivs v1.25.5 h1:YQ7BZG/n4VxYleWoSyTTe1X14CA2kNleoPUjxXUxPyU=
 github.com/aws/aws-sdk-go-v2/service/ivs v1.25.5/go.mod h1:ZSwe7Aadb5C0A3L6LFnSIr/AF9Yh4UWJCh2iuLDLYPQ=
-github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.41.0 h1:w9fxGk0zIER/tkJtvYLMvLADyPyNHFjWtHWSoGpH+PQ=
-github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.41.0/go.mod h1:SNJumDPXOTED9LGdhyRQTLtvBPWvnD52mF9ynxDhlrQ=
+github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.42.0 h1:8bclgyNDc/NoNZc748uUXzxvmFgl5GLTMn+aYUyJ9rU=
+github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.42.0/go.mod h1:SNJumDPXOTED9LGdhyRQTLtvBPWvnD52mF9ynxDhlrQ=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.38.5 h1:A42xdtStObqy7NGvzZKpnyNXvoOmm+FENobZ0/ssHWk=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.38.5/go.mod h1:rDGMZA7f4pbmTtPOk5v5UM2lmX6UAbRnMDJeDvnH7AM=
 github.com/aws/aws-sdk-go-v2/service/sso v1.13.5 h1:oCvTFSDi67AX0pOX3PuPdGFewvLRU2zzFSrTsgURNo0=
