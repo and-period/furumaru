@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.21.0
 	github.com/aws/aws-sdk-go-v2/config v1.18.37
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.10.39
-	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.21.5
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.22.0
 	github.com/aws/aws-sdk-go-v2/service/ivs v1.25.5
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.41.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.38.5
