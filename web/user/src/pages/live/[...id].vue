@@ -20,6 +20,7 @@ const live = MOCK_LIVE_VIDEO
         :cn-img-src="live.cnImgSrc"
         :cn-name="live.cnName"
       />
+      <the-live-timeline class="mt-4" />
     </div>
 
     <div class="col-span-1">
