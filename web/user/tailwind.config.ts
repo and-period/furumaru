@@ -9,6 +9,9 @@ export default <Partial<Config>>{
       fontFamily: {
         sans: ['Noto Sans JP', 'sans-serif'],
       },
+      dropShadow: {
+        sm: '2px 2px 8px rgba(0, 0, 0, 0.10)',
+      },
       colors: {
         base: '#F9F6EA',
         main: '#604C3F',

@@ -9,19 +9,33 @@ interface Props {
   published: boolean
 }
 
+interface Emits {
+  (e: 'click'): void
+}
+
 const props = defineProps<Props>()
+
+const emits = defineEmits<Emits>()
 
 const formattedStartAt = computed(() => {
   return dayjs.unix(props.startAt).format('YYYY/MM/DD HH:mm')
 })
+
+const handleClick = () => {
+  if (props.published) {
+    emits('click')
+  }
+}
 </script>
 
 <template>
   <div
     :class="{
       'p-4 text-main': true,
-      'bg-base': published,
+      'group cursor-pointer bg-base drop-shadow-sm duration-75  ease-in-out hover:scale-[1.2] hover:bg-white':
+        published,
     }"
+    @click="handleClick"
   >
     <div class="relative w-full">
       <div
@@ -54,6 +68,9 @@ const formattedStartAt = computed(() => {
       <p class="line-clamp-3">
         {{ title }}
       </p>
+      <div class="hidden group-hover:block">
+        <hr class="border-dashed" />
+      </div>
     </div>
   </div>
 </template>

@@ -6,6 +6,8 @@ import {
   MOCK_RECOMMEND_ITEMS,
 } from '~/constants/mock'
 
+const router = useRouter()
+
 const shoppingStore = useShoppingStore()
 
 shoppingStore.setupDummyData()
@@ -51,6 +53,10 @@ const handleClickArchiveRightButton = () => {
   }
 }
 
+const handleClickLiveItem = (_: string) => {
+  router.push('/live')
+}
+
 const banners: string[] = [
   '/img/banner.png',
   '/img/banner.png',
@@ -73,6 +79,7 @@ const banners: string[] = [
             :img-src="liveItem.imgSrc"
             :start-at="liveItem.startAt"
             :published="liveItem.published"
+            @click="handleClickLiveItem(id)"
           />
         </div>
         <div class="mb-4 mt-10 flex w-full justify-center">
