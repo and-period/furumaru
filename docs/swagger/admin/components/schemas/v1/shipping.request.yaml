@@ -23,7 +23,7 @@ createShippingRequest:
     name:
       type: string
       description: 配送設定名(64文字まで)
-    cordinatorId:
+    coordinatorId:
       type: string
       description: コーディネータID(必須)
     isDefault:
@@ -77,7 +77,7 @@ createShippingRequest:
       description: 送料無料になる金額(100万未満)
   required:
   - name
-  - cordinatorId
+  - coordinatorId
   - isDefault
   - box60Rates
   - box60Refrigerated
@@ -92,7 +92,7 @@ createShippingRequest:
   - freeShippingRates
   example:
     name: 'デフォルト配送設定'
-    cordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     isDefault: false
     box60Rates:
     - number: 1

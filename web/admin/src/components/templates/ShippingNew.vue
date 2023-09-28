@@ -26,7 +26,7 @@ const props = defineProps({
   formData: {
     type: Object as PropType<CreateShippingRequest>,
     default: (): CreateShippingRequest => ({
-      cordinatorId: '',
+      coordinatorId: '',
       name: '',
       isDefault: false,
       box60Rates: [
