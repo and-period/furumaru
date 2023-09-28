@@ -13,7 +13,7 @@ RUN apk add --update --no-cache \
       make \
       tzdata
 
-ADD . .
+ADD ./api ./
 
 RUN make build SERVICE=${SERVICE}
 
