@@ -14,7 +14,7 @@ const { auth } = storeToRefs(authStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<CreateShippingRequest>({
-  cordinatorId: '',
+  coordinatorId: '',
   name: '',
   isDefault: false,
   box60Rates: [
@@ -53,7 +53,7 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = true
     const req: CreateShippingRequest = {
       ...formData.value,
-      cordinatorId: auth.value?.adminId || ''
+      coordinatorId: auth.value?.adminId || ''
     }
     await shippingStore.createShipping(req)
     commonStore.addSnackbar({
