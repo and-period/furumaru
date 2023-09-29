@@ -125,7 +125,7 @@ jobs:
     - name: Deploy AWS Lambda function
       run: |
         aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_SCHEDULER}" \
+          --function-name="${LAMBDA_FUNCTION_START_SCHEDULER}" \
           --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
         | jq '. | del(.Environment)'
 
@@ -157,12 +157,12 @@ jobs:
     - name: Deploy AWS Lambda function
       run: |
         aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_SCHEDULER}" \
+          --function-name="${LAMBDA_FUNCTION_CLOSE_SCHEDULER}" \
           --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
         | jq '. | del(.Environment)'
 
-  deploy_worker:
-    name: deploy worker
+  deploy_start_updater:
+    name: deploy start updater
     needs: build_and_push
     runs-on: ${{ matrix.os }}
     defaults:
@@ -189,6 +189,6 @@ jobs:
     - name: Deploy AWS Lambda function
       run: |
         aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_WORKER}" \
+          --function-name="${LAMBDA_FUNCTION_START_UPDATER}" \
           --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
         | jq '. | del(.Environment)'
