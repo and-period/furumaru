@@ -24,9 +24,6 @@ type config struct {
 	DBSecretName         string `envconfig:"DB_SECRET_NAME" default:""`
 	NewRelicLicense      string `envconfig:"NEW_RELIC_LICENSE" default:""`
 	NewRelicSecretName   string `envconfig:"NEW_RELIC_SECRET_NAME" default:""`
-	StripeSecretKey      string `envconfig:"STRIPE_SECRET_KEY" default:""`
-	StripeWebhookKey     string `envconfig:"STRIPE_WEBHOOK_KEY" default:""`
-	StripeSecretName     string `envconfig:"STRIPE_SECRET_NAME" default:""`
 	AWSRegion            string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	S3Bucket             string `envconfig:"S3_BUCKET" default:""`
 	S3TmpBucket          string `envconfig:"S3_TMP_BUCKET" default:""`
