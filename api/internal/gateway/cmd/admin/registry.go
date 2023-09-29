@@ -51,34 +51,32 @@ type registry struct {
 }
 
 type params struct {
-	config           *config
-	logger           *zap.Logger
-	waitGroup        *sync.WaitGroup
-	enforcer         rbac.Enforcer
-	aws              aws.Config
-	secret           secret.Client
-	storage          storage.Bucket
-	tmpStorage       storage.Bucket
-	adminAuth        cognito.Client
-	userAuth         cognito.Client
-	dynamodb         dynamodb.Client
-	messengerQueue   sqs.Producer
-	mediaQueue       sqs.Producer
-	slack            slack.Client
-	newRelic         *newrelic.Application
-	adminWebURL      *url.URL
-	userWebURL       *url.URL
-	postalCode       postalcode.Client
-	now              func() time.Time
-	dbHost           string
-	dbPort           string
-	dbUsername       string
-	dbPassword       string
-	slackToken       string
-	slackChannelID   string
-	newRelicLicense  string
-	stripeSecretKey  string
-	stripeWebhookKey string
+	config          *config
+	logger          *zap.Logger
+	waitGroup       *sync.WaitGroup
+	enforcer        rbac.Enforcer
+	aws             aws.Config
+	secret          secret.Client
+	storage         storage.Bucket
+	tmpStorage      storage.Bucket
+	adminAuth       cognito.Client
+	userAuth        cognito.Client
+	dynamodb        dynamodb.Client
+	messengerQueue  sqs.Producer
+	mediaQueue      sqs.Producer
+	slack           slack.Client
+	newRelic        *newrelic.Application
+	adminWebURL     *url.URL
+	userWebURL      *url.URL
+	postalCode      postalcode.Client
+	now             func() time.Time
+	dbHost          string
+	dbPort          string
+	dbUsername      string
+	dbPassword      string
+	slackToken      string
+	slackChannelID  string
+	newRelicLicense string
 }
 
 //nolint:funlen
