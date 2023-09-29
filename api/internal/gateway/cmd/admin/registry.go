@@ -8,7 +8,7 @@ import (
 	"time"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
-	shandler "github.com/and-period/furumaru/api/internal/gateway/stripe/handler"
+	komoju "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
 	"github.com/and-period/furumaru/api/internal/media"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
@@ -31,7 +31,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
-	"github.com/and-period/furumaru/api/pkg/stripe"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -48,7 +47,7 @@ type registry struct {
 	slack     slack.Client
 	newRelic  *newrelic.Application
 	v1        v1.Handler
-	stripe    shandler.Handler
+	komoju    komoju.Handler
 }
 
 type params struct {
@@ -67,7 +66,6 @@ type params struct {
 	mediaQueue       sqs.Producer
 	slack            slack.Client
 	newRelic         *newrelic.Application
-	receiver         stripe.Receiver
 	adminWebURL      *url.URL
 	userWebURL       *url.URL
 	postalCode       postalcode.Client
@@ -163,13 +161,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		params.newRelic = newrelicApp
 	}
 
-	// Stripeの設定
-	stripeParams := &stripe.Params{
-		SecretKey:  params.stripeSecretKey,
-		WebhookKey: params.stripeWebhookKey,
-	}
-	params.receiver = stripe.NewReceiver(stripeParams, stripe.WithLogger(logger))
-
 	// Slackの設定
 	if params.slackToken != "" {
 		slackParams := &slack.Params{
@@ -221,9 +212,8 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Messenger: messengerService,
 		Media:     mediaService,
 	}
-	shandlerParams := &shandler.Params{
+	komojuParams := &komoju.Params{
 		WaitGroup: params.waitGroup,
-		Receiver:  params.receiver,
 	}
 	return &registry{
 		appName:   conf.AppName,
@@ -233,7 +223,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		slack:     params.slack,
 		newRelic:  params.newRelic,
 		v1:        v1.NewHandler(v1Params, v1.WithLogger(logger)),
-		stripe:    shandler.NewHandler(shandlerParams, shandler.WithLogger(logger)),
+		komoju:    komoju.NewHandler(komojuParams, komoju.WithLogger(logger)),
 	}, nil
 }
 
@@ -284,21 +274,6 @@ func getSecret(ctx context.Context, p *params) error {
 			return err
 		}
 		p.newRelicLicense = secrets["license"]
-		return nil
-	})
-	eg.Go(func() error {
-		// Stripe認証情報の取得
-		if p.config.StripeSecretName == "" {
-			p.stripeSecretKey = p.config.StripeSecretKey
-			p.stripeWebhookKey = p.config.StripeWebhookKey
-			return nil
-		}
-		secrets, err := p.secret.Get(ectx, p.config.StripeSecretName)
-		if err != nil {
-			return err
-		}
-		p.stripeSecretKey = secrets["secretKey"]
-		p.stripeWebhookKey = secrets["webhookKey"]
 		return nil
 	})
 	return eg.Wait()
