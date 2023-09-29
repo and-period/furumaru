@@ -2,6 +2,15 @@ package request
 
 import "time"
 
+type PingRequest struct {
+	ID        string       `json:"id"`
+	Type      string       `json:"type"`
+	Resource  string       `json:"resource"`
+	Payload   *PingPayload `json:"data"`
+	CreatedAt time.Time    `json:"created_at"`
+	Reason    string       `json:"reason"`
+}
+
 type PingPayload struct {
 	ID        string    `json:"id"`
 	Resource  string    `json:"resource"`

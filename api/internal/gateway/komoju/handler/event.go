@@ -26,7 +26,7 @@ func (h *handler) Event(ctx *gin.Context) {
 }
 
 func (h *handler) ping(ctx *gin.Context) {
-	req := &request.PingPayload{}
+	req := &request.PingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
 		return
