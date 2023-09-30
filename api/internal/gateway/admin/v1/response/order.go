@@ -22,7 +22,6 @@ type Order struct {
 // OrderPayment - 支払い情報
 type OrderPayment struct {
 	TransactionID string `json:"transactionId"` // 取引ID
-	MethodID      string `json:"methodId"`      // 決済手段ID
 	MethodType    int32  `json:"methodType"`    // 決済手段種別
 	Status        int32  `json:"status"`        // 支払い状況
 	Subtotal      int64  `json:"subtotal"`      // 購入金額
@@ -48,7 +47,6 @@ type OrderFulfillment struct {
 // OrderRefund - 注文キャンセル情報
 type OrderRefund struct {
 	Canceled bool   `json:"canceled"` // 注文キャンセルフラグ
-	Type     int32  `json:"type"`     // 注文キャンセル種別
 	Reason   string `json:"reason"`   // 注文キャンセル理由詳細
 	Total    int64  `json:"total"`    // 返金金額
 }
