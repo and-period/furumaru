@@ -97,7 +97,7 @@ func TestOrder(t *testing.T) {
 					OrderPayment: response.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
-						Status:        PaymentStatusUnpaid.Response(),
+						Status:        PaymentStatusPending.Response(),
 						Subtotal:      1100,
 						Discount:      0,
 						ShippingFee:   500,
@@ -731,7 +731,7 @@ func TestOrders(t *testing.T) {
 						OrderPayment: response.OrderPayment{
 							TransactionID: "transaction-id",
 							MethodType:    PaymentMethodTypeCreditCard.Response(),
-							Status:        PaymentStatusUnpaid.Response(),
+							Status:        PaymentStatusPending.Response(),
 							Subtotal:      1100,
 							Discount:      0,
 							ShippingFee:   500,
