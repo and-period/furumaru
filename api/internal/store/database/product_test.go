@@ -8,7 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -63,13 +63,13 @@ func TestProduct_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProductsParams{
 					Name:        "いも",
@@ -86,7 +86,7 @@ func TestProduct_List(t *testing.T) {
 		},
 		{
 			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProductsParams{
 					Orders: []*ListProductsOrder{
@@ -166,13 +166,13 @@ func TestProduct_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProductsParams{
 					Name:       "いも",
@@ -250,13 +250,13 @@ func TestProduct_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productIDs: []string{"product-id01", "product-id02", "product-id03"},
 			},
@@ -321,13 +321,13 @@ func TestProduct_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productID: "product-id",
 			},
@@ -389,13 +389,13 @@ func TestProduct_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				product: testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now()),
 			},
@@ -405,7 +405,7 @@ func TestProduct_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
@@ -470,13 +470,13 @@ func TestProduct_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
@@ -519,7 +519,7 @@ func TestProduct_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productID: "product-id",
 				params:    &UpdateProductParams{},
@@ -581,13 +581,13 @@ func TestProduct_UpdateMedia(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"product-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
@@ -618,7 +618,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productID: "product-id",
 				set:       func(media entity.MultiProductMedia) bool { return false },
@@ -629,7 +629,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 		},
 		{
 			name: "media is non existent",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
@@ -694,13 +694,13 @@ func TestProduct_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
@@ -714,7 +714,7 @@ func TestProduct_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productID: "product-id",
 			},

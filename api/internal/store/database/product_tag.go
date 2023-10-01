@@ -6,19 +6,19 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
 )
 
 const productTagTable = "product_tags"
 
 type productTag struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewProductTag(db *database.Client) ProductTag {
+func NewProductTag(db *mysql.Client) ProductTag {
 	return &productTag{
 		db:  db,
 		now: jst.Now,

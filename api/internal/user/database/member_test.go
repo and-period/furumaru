@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -41,13 +41,13 @@ func TestMember_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				userID: "user-id",
 			},
@@ -58,7 +58,7 @@ func TestMember_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				userID: "",
 			},
@@ -115,13 +115,13 @@ func TestMember_GetByCognitoID(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				cognitoID: "user-id",
 			},
@@ -132,7 +132,7 @@ func TestMember_GetByCognitoID(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				cognitoID: "",
 			},
@@ -189,13 +189,13 @@ func TestMember_GetByEmail(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				email: "test-user@and-period.jp",
 			},
@@ -206,7 +206,7 @@ func TestMember_GetByEmail(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				email: "test-other@and-period.jp",
 			},
@@ -261,13 +261,13 @@ func TestMember_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				user: testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
 				auth: func(ctx context.Context) error { return nil },
@@ -278,7 +278,7 @@ func TestMember_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate user entry",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
@@ -293,7 +293,7 @@ func TestMember_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate member entry",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
@@ -310,7 +310,7 @@ func TestMember_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate customer entry",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
@@ -329,7 +329,7 @@ func TestMember_Create(t *testing.T) {
 		},
 		{
 			name:  "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				user: testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
 				auth: func(ctx context.Context) error { return assert.AnError },
@@ -380,13 +380,13 @@ func TestMember_UpdateVerified(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
@@ -403,7 +403,7 @@ func TestMember_UpdateVerified(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				userID: "user-id",
 			},
@@ -413,7 +413,7 @@ func TestMember_UpdateVerified(t *testing.T) {
 		},
 		{
 			name: "failed to verified at is not zero value",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
@@ -472,13 +472,13 @@ func TestUser_UpdateAccount(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err := db.DB.Create(&user).Error
 				require.NoError(t, err)
@@ -496,7 +496,7 @@ func TestUser_UpdateAccount(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				userID:    "user-id",
 				accountID: "account-id",
@@ -508,7 +508,7 @@ func TestUser_UpdateAccount(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate account id",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err := db.DB.Create(&user).Error
 				require.NoError(t, err)
@@ -574,13 +574,13 @@ func TestUser_UpdateEmail(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
@@ -597,7 +597,7 @@ func TestUser_UpdateEmail(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				userID: "user-id",
 				email:  "test-other@and-period.jp",
@@ -608,7 +608,7 @@ func TestUser_UpdateEmail(t *testing.T) {
 		},
 		{
 			name: "failed to unmatch provider type",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				u.ProviderType = entity.ProviderTypeOAuth
 				err = db.DB.Create(&u).Error
@@ -666,13 +666,13 @@ func TestMember_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
@@ -689,7 +689,7 @@ func TestMember_Delete(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				userID: "user-id",
 				auth:   func(ctx context.Context) error { return nil },
@@ -700,7 +700,7 @@ func TestMember_Delete(t *testing.T) {
 		},
 		{
 			name:  "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				userID: "user-id",
 				auth:   func(ctx context.Context) error { return assert.AnError },

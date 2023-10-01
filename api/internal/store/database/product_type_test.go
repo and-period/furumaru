@@ -8,7 +8,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -54,13 +54,13 @@ func TestProductType_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProductTypesParams{
 					Name:       "物",
@@ -76,7 +76,7 @@ func TestProductType_List(t *testing.T) {
 		},
 		{
 			name:  "success with asc",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProductTypesParams{
 					Orders: []*ListProductTypesOrder{
@@ -91,7 +91,7 @@ func TestProductType_List(t *testing.T) {
 		},
 		{
 			name:  "success with desc",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProductTypesParams{
 					Orders: []*ListProductTypesOrder{
@@ -158,13 +158,13 @@ func TestProductType_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProductTypesParams{
 					Name:       "物",
@@ -230,13 +230,13 @@ func TestProductType_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productTypeIDs: []string{"category-id01", "category-id02"},
 			},
@@ -294,13 +294,13 @@ func TestProductType_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productTypeID: "type-id",
 			},
@@ -311,7 +311,7 @@ func TestProductType_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productTypeID: "other-id",
 			},
@@ -361,13 +361,13 @@ func TestProductType_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				category := testCategory("category-id", "野菜", now())
 				err := db.DB.Create(&category).Error
 				require.NoError(t, err)
@@ -381,7 +381,7 @@ func TestProductType_Create(t *testing.T) {
 		},
 		{
 			name:  "failed to not found parant record",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productType: testProductType("product-id", "category-id", "じゃがいも", now()),
 			},
@@ -391,7 +391,7 @@ func TestProductType_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				category := testCategory("category-id", "野菜", now())
 				err := db.DB.Create(&category).Error
 				require.NoError(t, err)
@@ -450,13 +450,13 @@ func TestProductType_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				category := testCategory("category-id", "野菜", now())
 				err := db.DB.Create(&category).Error
 				require.NoError(t, err)
@@ -475,7 +475,7 @@ func TestProductType_Update(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productTypeID: "product-id",
 				name:          "さつまいも",
@@ -528,13 +528,13 @@ func TestProductType_UpdateIcons(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				category := testCategory("category-id", "野菜", now())
 				err := db.DB.Create(&category).Error
 				require.NoError(t, err)
@@ -565,7 +565,7 @@ func TestProductType_UpdateIcons(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productTypeID: "product-id",
 			},
@@ -575,7 +575,7 @@ func TestProductType_UpdateIcons(t *testing.T) {
 		},
 		{
 			name: "failed to empty icon url",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				category := testCategory("category-id", "野菜", now())
 				err := db.DB.Create(&category).Error
 				require.NoError(t, err)
@@ -647,13 +647,13 @@ func TestProductType_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				category := testCategory("category-id", "野菜", now())
 				err := db.DB.Create(&category).Error
 				require.NoError(t, err)
@@ -670,7 +670,7 @@ func TestProductType_Delete(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				productTypeID: "product-id",
 			},

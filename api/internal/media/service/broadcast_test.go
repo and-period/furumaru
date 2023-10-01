@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -48,7 +47,7 @@ func TestGetBroadcastByScheduleID(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.GetBroadcastByScheduleIDInput{},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get broadcast",
@@ -59,7 +58,7 @@ func TestGetBroadcastByScheduleID(t *testing.T) {
 				ScheduleID: "schedule-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 
@@ -107,7 +106,7 @@ func TestCreateBroadcast(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.CreateBroadcastInput{},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create",
@@ -117,7 +116,7 @@ func TestCreateBroadcast(t *testing.T) {
 			input: &media.CreateBroadcastInput{
 				ScheduleID: "schedule-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 

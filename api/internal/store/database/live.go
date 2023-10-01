@@ -6,8 +6,8 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -15,11 +15,11 @@ import (
 const liveTable = "lives"
 
 type live struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewLive(db *database.Client) Live {
+func NewLive(db *mysql.Client) Live {
 	return &live{
 		db:  db,
 		now: jst.Now,

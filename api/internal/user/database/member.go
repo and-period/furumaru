@@ -7,19 +7,19 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
 )
 
 const memberTable = "members"
 
 type member struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewMember(db *database.Client) Member {
+func NewMember(db *mysql.Client) Member {
 	return &member{
 		db:  db,
 		now: jst.Now,

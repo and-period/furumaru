@@ -6,19 +6,19 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
 )
 
 const promotionTable = "promotions"
 
 type promotion struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewPromotion(db *database.Client) Promotion {
+func NewPromotion(db *mysql.Client) Promotion {
 	return &promotion{
 		db:  db,
 		now: jst.Now,

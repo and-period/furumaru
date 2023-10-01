@@ -6,19 +6,19 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
 )
 
 const adminTable = "admins"
 
 type admin struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewAdmin(db *database.Client) Admin {
+func NewAdmin(db *mysql.Client) Admin {
 	return &admin{
 		db:  db,
 		now: jst.Now,

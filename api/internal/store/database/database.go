@@ -9,13 +9,13 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
 )
 
 type Params struct {
-	Database *database.Client
+	Database *mysql.Client
 	DynamoDB dynamodb.Client
 }
 

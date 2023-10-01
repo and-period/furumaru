@@ -6,19 +6,19 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
 )
 
 const categoryTable = "categories"
 
 type category struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewCategory(db *database.Client) Category {
+func NewCategory(db *mysql.Client) Category {
 	return &category{
 		db:  db,
 		now: jst.Now,

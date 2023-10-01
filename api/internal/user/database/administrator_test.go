@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -52,13 +52,13 @@ func TestAdministrator_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListAdministratorsParams{
 					Limit:  1,
@@ -125,13 +125,13 @@ func TestAdministrator_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListAdministratorsParams{},
 			},
@@ -195,13 +195,13 @@ func TestAdministrator_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				adminIDs: []string{"admin-id01", "admin-id02"},
 			},
@@ -260,13 +260,13 @@ func TestAdministrator_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				adminID: "admin-id",
 			},
@@ -277,7 +277,7 @@ func TestAdministrator_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				adminID: "",
 			},
@@ -331,13 +331,13 @@ func TestAdministrator_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				administrator: a,
 				auth:          func(ctx context.Context) error { return nil },
@@ -348,7 +348,7 @@ func TestAdministrator_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry in admin auth",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				auth := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 				err = db.DB.Create(&auth).Error
 				require.NoError(t, err)
@@ -363,7 +363,7 @@ func TestAdministrator_Create(t *testing.T) {
 		},
 		{
 			name:  "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				administrator: a,
 				auth:          func(ctx context.Context) error { return assert.AnError },
@@ -415,13 +415,13 @@ func TestAdministrator_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -445,7 +445,7 @@ func TestAdministrator_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				administratorID: "admin-id",
 				params:          &UpdateAdministratorParams{},
@@ -497,13 +497,13 @@ func TestAdministrator_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -521,7 +521,7 @@ func TestAdministrator_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				administratorID: "admin-id",
 				auth:            func(ctx context.Context) error { return nil },
@@ -532,7 +532,7 @@ func TestAdministrator_Delete(t *testing.T) {
 		},
 		{
 			name: "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)

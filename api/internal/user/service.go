@@ -4,8 +4,20 @@ package user
 
 import (
 	"context"
+	"errors"
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
+)
+
+var (
+	ErrInvalidArgument    = errors.New("user: invalid argument")
+	ErrNotFound           = errors.New("user: not found")
+	ErrAlreadyExists      = errors.New("user: already exists")
+	ErrForbidden          = errors.New("user: forbidden")
+	ErrFailedPrecondition = errors.New("user: failed precondition")
+	ErrCanceled           = errors.New("user: canceled")
+	ErrDeadlineExceeded   = errors.New("user: deadline exceeded")
+	ErrInternal           = errors.New("user: internal")
 )
 
 type Service interface {

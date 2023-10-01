@@ -7,12 +7,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/stretchr/testify/require"
 )
 
 var (
-	dbClient *database.Client
+	dbClient *mysql.Client
 	current  = time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC)
 )
 
@@ -28,10 +28,10 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func newTestDBClient() (*database.Client, error) {
+func newTestDBClient() (*mysql.Client, error) {
 	setEnv()
 	// テスト用Database接続用クライアントの生成
-	params := &database.Params{
+	params := &mysql.Params{
 		Socket:   "tcp",
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
@@ -39,7 +39,7 @@ func newTestDBClient() (*database.Client, error) {
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 	}
-	return database.NewClient(params)
+	return mysql.NewClient(params)
 }
 
 func deleteAll(ctx context.Context) error {

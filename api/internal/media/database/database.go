@@ -4,39 +4,32 @@ package database
 
 import (
 	"context"
+	"errors"
 
 	"github.com/and-period/furumaru/api/internal/media/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
-	"github.com/and-period/furumaru/api/pkg/dynamodb"
 )
 
-type Params struct {
-	Database *database.Client
-	DynamoDB dynamodb.Client
-}
+var (
+	ErrInvalidArgument    = errors.New("database: invalid argument")
+	ErrNotFound           = errors.New("database: not found")
+	ErrAlreadyExists      = errors.New("database: already exists")
+	ErrFailedPrecondition = errors.New("database: failed precondition")
+	ErrCanceled           = errors.New("database: canceled")
+	ErrDeadlineExceeded   = errors.New("database: deadline exceeded")
+	ErrInternal           = errors.New("database: internal error")
+	ErrUnknown            = errors.New("database: unknown")
+)
 
 type Database struct {
 	Broadcast Broadcast
 }
 
-func NewDatabase(params *Params) *Database {
-	return &Database{
-		Broadcast: NewBroadcast(params.Database),
-	}
-}
-
-/**
- * interface
- */
 type Broadcast interface {
 	GetByScheduleID(ctx context.Context, scheduleID string, fields ...string) (*entity.Broadcast, error)
 	Create(ctx context.Context, broadcast *entity.Broadcast) error
 	Update(ctx context.Context, broadcastID string, params *UpdateBroadcastParams) error
 }
 
-/**
- * params
- */
 type UpdateBroadcastParams struct {
 	Status entity.BroadcastStatus
 	*InitializeBroadcastParams

@@ -10,10 +10,10 @@ import (
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	komoju "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
 	"github.com/and-period/furumaru/api/internal/media"
-	mediadb "github.com/and-period/furumaru/api/internal/media/database"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
-	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
+	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	storedb "github.com/and-period/furumaru/api/internal/store/database"
@@ -22,9 +22,9 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/secret"
@@ -277,8 +277,8 @@ func getSecret(ctx context.Context, p *params) error {
 	return eg.Wait()
 }
 
-func newDatabase(dbname string, p *params) (*database.Client, error) {
-	params := &database.Params{
+func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
 		Socket:   p.config.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
@@ -290,12 +290,12 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	cli, err := database.NewClient(
+	cli, err := mysql.NewClient(
 		params,
-		database.WithLogger(p.logger),
-		database.WithNow(p.now),
-		database.WithTLS(p.config.DBEnabledTLS),
-		database.WithLocation(location),
+		mysql.WithLogger(p.logger),
+		mysql.WithNow(p.now),
+		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithLocation(location),
 	)
 	if err != nil {
 		return nil, err
@@ -311,12 +311,9 @@ func newMediaService(p *params) (media.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &mediadb.Params{
-		Database: mysql,
-	}
 	params := &mediasrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  mediadb.NewDatabase(dbParams),
+		Database:  mediadb.NewDatabase(mysql),
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
 		Producer:  p.mediaQueue,
@@ -328,9 +325,6 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	mysql, err := newDatabase("messengers", p)
 	if err != nil {
 		return nil, err
-	}
-	dbParams := &messengerdb.Params{
-		Database: mysql,
 	}
 	user, err := newUserService(p, nil, nil)
 	if err != nil {
@@ -345,7 +339,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 		Producer:    p.messengerQueue,
 		AdminWebURL: p.adminWebURL,
 		UserWebURL:  p.userWebURL,
-		Database:    messengerdb.NewDatabase(dbParams),
+		Database:    messengerdb.NewDatabase(mysql),
 		User:        user,
 		Store:       store,
 	}

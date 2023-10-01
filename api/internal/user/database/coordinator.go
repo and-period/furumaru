@@ -8,8 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -17,11 +17,11 @@ import (
 const coordinatorTable = "coordinators"
 
 type coordinator struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewCoordinator(db *database.Client) Coordinator {
+func NewCoordinator(db *mysql.Client) Coordinator {
 	return &coordinator{
 		db:  db,
 		now: jst.Now,

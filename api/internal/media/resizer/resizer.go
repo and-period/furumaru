@@ -8,7 +8,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -23,8 +22,10 @@ import (
 
 var (
 	errRequiredMediaURL       = errors.New("resizer: required media url")
+	errInvalidFormat          = errors.New("resizer: invalid format")
 	errUnsupportedImageSize   = errors.New("resizer: unsupported image size")
 	errUnsupportedImageFormat = errors.New("resizer: unsupported image format")
+	errUnknownFileType        = errors.New("resizer: unknown file type")
 )
 
 type Resizer interface {
@@ -127,7 +128,7 @@ func (r *resizer) dispatch(ctx context.Context, record events.SQSMessage) error 
 		return nil
 	}
 	r.logger.Error("Failed to send message", zap.Error(err))
-	if exception.Retryable(err) {
+	if r.isRetryable(err) {
 		return err
 	}
 	return nil
@@ -136,7 +137,7 @@ func (r *resizer) dispatch(ctx context.Context, record events.SQSMessage) error 
 func (r *resizer) run(ctx context.Context, payload *entity.ResizerPayload) error {
 	r.logger.Debug("Dispatch", zap.Int32("fileType", int32(payload.FileType)), zap.String("targetId", payload.TargetID))
 	if len(payload.URLs) == 0 {
-		return fmt.Errorf("resizer: urls is length 0: %w", exception.ErrInvalidArgument)
+		return fmt.Errorf("resizer: urls is length 0: %w", errInvalidFormat)
 	}
 	switch payload.FileType {
 	case entity.FileTypeCoordinatorThumbnail:
@@ -152,13 +153,13 @@ func (r *resizer) run(ctx context.Context, payload *entity.ResizerPayload) error
 	case entity.FileTypeProductTypeIcon:
 		return r.productTypeIcon(ctx, payload)
 	default:
-		return fmt.Errorf("resizer: unknown file type. type=%d: %w", payload.FileType, exception.ErrInvalidArgument)
+		return fmt.Errorf("resizer: unknown file type. type=%d: %w", payload.FileType, errUnknownFileType)
 	}
 }
 
 func (r *resizer) notify(ctx context.Context, payload *entity.ResizerPayload, fn func() error) error {
 	retry := backoff.NewExponentialBackoff(r.maxRetries)
-	err := backoff.Retry(ctx, retry, fn, backoff.WithRetryablel(exception.Retryable))
+	err := backoff.Retry(ctx, retry, fn, backoff.WithRetryablel(r.isRetryable))
 	if err != nil {
 		r.logger.Error("Failed to notify resize action",
 			zap.Int32("fileType", int32(payload.FileType)),
@@ -167,4 +168,9 @@ func (r *resizer) notify(ctx context.Context, payload *entity.ResizerPayload, fn
 		return err
 	}
 	return nil
+}
+
+func (r *resizer) isRetryable(err error) bool {
+	return errors.Is(err, context.Canceled) ||
+		errors.Is(err, context.DeadlineExceeded)
 }

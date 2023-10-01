@@ -8,8 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -17,11 +17,11 @@ import (
 const producerTable = "producers"
 
 type producer struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewProducer(db *database.Client) Producer {
+func NewProducer(db *mysql.Client) Producer {
 	return &producer{
 		db:  db,
 		now: jst.Now,

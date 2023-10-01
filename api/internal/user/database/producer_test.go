@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -62,13 +62,13 @@ func TestProducer_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProducersParams{
 					CoordinatorID: "coordinator-id",
@@ -84,7 +84,7 @@ func TestProducer_List(t *testing.T) {
 		},
 		{
 			name:  "success only unrelated",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProducersParams{
 					Username:      "&.",
@@ -158,13 +158,13 @@ func TestProducer_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListProducersParams{
 					Username: "&.",
@@ -235,13 +235,13 @@ func TestProducer_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producerIDs: []string{"admin-id01", "admin-id02"},
 			},
@@ -306,13 +306,13 @@ func TestProducer_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producerID: "admin-id",
 			},
@@ -323,7 +323,7 @@ func TestProducer_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producerID: "",
 			},
@@ -377,13 +377,13 @@ func TestProducer_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -401,7 +401,7 @@ func TestProducer_Create(t *testing.T) {
 		},
 		{
 			name:  "failed to not found coordinator",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producer: p,
 				auth:     func(ctx context.Context) error { return nil },
@@ -412,7 +412,7 @@ func TestProducer_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry in admin auth",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -436,7 +436,7 @@ func TestProducer_Create(t *testing.T) {
 		},
 		{
 			name: "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -495,13 +495,13 @@ func TestProducer_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -538,7 +538,7 @@ func TestProducer_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producerID: "admin-id",
 				params:     &UpdateProducerParams{},
@@ -590,13 +590,13 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -633,7 +633,7 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producerID: "admin-id",
 			},
@@ -643,7 +643,7 @@ func TestProducer_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name: "failed precondition for thumbnail url is empty",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -722,13 +722,13 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -765,7 +765,7 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				ProducerID: "admin-id",
 			},
@@ -775,7 +775,7 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 		},
 		{
 			name: "failed precondition for header url is empty",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -854,13 +854,13 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success to relate",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -884,7 +884,7 @@ func TestProducer_UpdateRelationship(t *testing.T) {
 		},
 		{
 			name: "success to unrelate",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -949,13 +949,13 @@ func TestProducer_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -979,7 +979,7 @@ func TestProducer_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producerID: "admin-id",
 				auth:       func(ctx context.Context) error { return nil },
@@ -990,7 +990,7 @@ func TestProducer_Delete(t *testing.T) {
 		},
 		{
 			name: "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				coordinator := testCoordinator("coordinator-id", now())
 				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
 				err = db.DB.Create(&coordinator.Admin).Error
@@ -1074,13 +1074,13 @@ func TestProducer_AggregateByCoordinatorID(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinatorIDs: []string{"coordinator-id"},
 			},
@@ -1093,7 +1093,7 @@ func TestProducer_AggregateByCoordinatorID(t *testing.T) {
 		},
 		{
 			name:  "empty",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinatorIDs: []string{},
 			},

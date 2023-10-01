@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -55,13 +55,13 @@ func TestCoordinator_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListCoordinatorsParams{
 					Username: "&.",
@@ -128,13 +128,13 @@ func TestCoordinator_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListCoordinatorsParams{
 					Username: "&.",
@@ -201,13 +201,13 @@ func TestCoordinator_MultiGet(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				adminIDs: []string{"admin-id01", "admin-id02"},
 			},
@@ -266,13 +266,13 @@ func TestCoordinator_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				adminID: "admin-id",
 			},
@@ -283,7 +283,7 @@ func TestCoordinator_Get(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				adminID: "",
 			},
@@ -337,13 +337,13 @@ func TestCoordinator_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinator: c,
 				auth:        func(ctx context.Context) error { return nil },
@@ -354,7 +354,7 @@ func TestCoordinator_Create(t *testing.T) {
 		},
 		{
 			name: "failed to duplicate entry in admin auth",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -372,7 +372,7 @@ func TestCoordinator_Create(t *testing.T) {
 		},
 		{
 			name:  "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinator: c,
 				auth:        func(ctx context.Context) error { return assert.AnError },
@@ -424,13 +424,13 @@ func TestCoordinator_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -468,7 +468,7 @@ func TestCoordinator_Update(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
 				params:        &UpdateCoordinatorParams{},
@@ -520,13 +520,13 @@ func TestCoordinator_UpdateThumbnails(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -557,7 +557,7 @@ func TestCoordinator_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
 			},
@@ -567,7 +567,7 @@ func TestCoordinator_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name: "failed precondition for thumbnail url is empty",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -640,13 +640,13 @@ func TestCoordinator_UpdateHeaders(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -677,7 +677,7 @@ func TestCoordinator_UpdateHeaders(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
 			},
@@ -687,7 +687,7 @@ func TestCoordinator_UpdateHeaders(t *testing.T) {
 		},
 		{
 			name: "failed precondition for header url is empty",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -760,13 +760,13 @@ func TestCoordinator_Delete(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)
@@ -784,7 +784,7 @@ func TestCoordinator_Delete(t *testing.T) {
 		},
 		{
 			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
 				auth:          func(ctx context.Context) error { return nil },
@@ -795,7 +795,7 @@ func TestCoordinator_Delete(t *testing.T) {
 		},
 		{
 			name: "failed to execute external service",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
 				err = db.DB.Create(&admin).Error
 				require.NoError(t, err)

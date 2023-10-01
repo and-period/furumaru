@@ -7,8 +7,8 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -16,11 +16,11 @@ import (
 const productTable = "products"
 
 type product struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewProduct(db *database.Client) Product {
+func NewProduct(db *mysql.Client) Product {
 	return &product{
 		db:  db,
 		now: jst.Now,

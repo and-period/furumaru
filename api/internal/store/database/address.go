@@ -6,18 +6,18 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 )
 
 const adddressTable = "addresses"
 
 type address struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewAddress(db *database.Client) Address {
+func NewAddress(db *mysql.Client) Address {
 	return &address{
 		db:  db,
 		now: jst.Now,

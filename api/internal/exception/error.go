@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/line"
@@ -50,6 +52,12 @@ func InternalError(err error) error {
 		return wrapError("deadline exceeded", ErrDeadlineExceeded, err)
 	}
 
+	if err := mediaError(err); err != nil {
+		return err
+	}
+	if err := messengerError(err); err != nil {
+		return err
+	}
 	if err := validationError(err); err != nil {
 		return err
 	}
@@ -86,7 +94,50 @@ func Retryable(err error) bool {
 }
 
 func wrapError(prefix string, code, err error) error {
+	if prefix == "" {
+		return fmt.Errorf("%w: %s", code, err.Error())
+	}
 	return fmt.Errorf("%s: %w: %s", prefix, code, err.Error())
+}
+
+func mediaError(err error) error {
+	switch {
+	case errors.Is(err, media.ErrInvalidArgument):
+		return wrapError("", ErrInvalidArgument, err)
+	case errors.Is(err, media.ErrNotFound):
+		return wrapError("", ErrNotFound, err)
+	case errors.Is(err, media.ErrAlreadyExists):
+		return wrapError("", ErrAlreadyExists, err)
+	case errors.Is(err, media.ErrFailedPrecondition):
+		return wrapError("", ErrFailedPrecondition, err)
+	case errors.Is(err, media.ErrCanceled):
+		return wrapError("", ErrCanceled, err)
+	case errors.Is(err, media.ErrDeadlineExceeded):
+		return wrapError("", ErrDeadlineExceeded, err)
+	default:
+		return nil
+	}
+}
+
+func messengerError(err error) error {
+	switch {
+	case errors.Is(err, messenger.ErrInvalidArgument):
+		return wrapError("", ErrInvalidArgument, err)
+	case errors.Is(err, messenger.ErrNotFound):
+		return wrapError("", ErrNotFound, err)
+	case errors.Is(err, messenger.ErrAlreadyExists):
+		return wrapError("", ErrAlreadyExists, err)
+	case errors.Is(err, messenger.ErrForbidden):
+		return wrapError("", ErrForbidden, err)
+	case errors.Is(err, messenger.ErrFailedPrecondition):
+		return wrapError("", ErrFailedPrecondition, err)
+	case errors.Is(err, messenger.ErrCanceled):
+		return wrapError("", ErrCanceled, err)
+	case errors.Is(err, messenger.ErrDeadlineExceeded):
+		return wrapError("", ErrDeadlineExceeded, err)
+	default:
+		return nil
+	}
 }
 
 func isInternal(err error) bool {

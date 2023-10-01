@@ -7,7 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -49,13 +49,13 @@ func TestSchedule_List(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListSchedulesParams{
 					Limit:  1,
@@ -119,13 +119,13 @@ func TestSchedule_Count(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &ListSchedulesParams{
 					Limit:  1,
@@ -187,13 +187,13 @@ func TestSchedule_Get(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				scheduleID: "schedule-id",
 			},
@@ -249,13 +249,13 @@ func TestSchedule_Create(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				schedule: s,
 			},
@@ -265,7 +265,7 @@ func TestSchedule_Create(t *testing.T) {
 		},
 		{
 			name: "duplicate entry",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -324,13 +324,13 @@ func TestSchedule_Update(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -355,7 +355,7 @@ func TestSchedule_Update(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				scheduleID: "schedule-id",
 				params:     &UpdateScheduleParams{},
@@ -411,13 +411,13 @@ func TestSchedule_UpdateThumbnails(t *testing.T) {
 	}
 	tests := []struct {
 		name  string
-		setup func(ctx context.Context, t *testing.T, db *database.Client)
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
 		args  args
 		want  want
 	}{
 		{
 			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -445,7 +445,7 @@ func TestSchedule_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {},
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				scheduleID: "schedule-id",
 				thumbnails: common.Images{
@@ -469,7 +469,7 @@ func TestSchedule_UpdateThumbnails(t *testing.T) {
 		},
 		{
 			name: "failed to empty thumbnail url",
-			setup: func(ctx context.Context, t *testing.T, db *database.Client) {
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
 				schedule.ThumbnailURL = ""
 				err = db.DB.Create(&schedule).Error

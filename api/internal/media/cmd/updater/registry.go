@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/broadcast/updater"
-	mediadb "github.com/and-period/furumaru/api/internal/media/database"
-	"github.com/and-period/furumaru/api/pkg/database"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
@@ -62,12 +62,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 
 	// Jobの設定
-	dbParams := &mediadb.Params{
-		Database: dbClient,
-	}
 	jobParams := &updater.Params{
 		WaitGroup: params.waitGroup,
-		Database:  mediadb.NewDatabase(dbParams),
+		Database:  mediadb.NewDatabase(dbClient),
 	}
 	reg := &registry{
 		appName:   conf.AppName,
@@ -105,8 +102,8 @@ func getSecret(ctx context.Context, p *params) error {
 	return nil
 }
 
-func newDatabase(dbname string, p *params) (*database.Client, error) {
-	params := &database.Params{
+func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
 		Socket:   p.config.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
@@ -118,11 +115,11 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return database.NewClient(
+	return mysql.NewClient(
 		params,
-		database.WithLogger(p.logger),
-		database.WithNow(p.now),
-		database.WithTLS(p.config.DBEnabledTLS),
-		database.WithLocation(location),
+		mysql.WithLogger(p.logger),
+		mysql.WithNow(p.now),
+		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithLocation(location),
 	)
 }

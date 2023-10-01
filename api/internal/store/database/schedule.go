@@ -8,8 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -17,11 +17,11 @@ import (
 const scheduleTable = "schedules"
 
 type schedule struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewSchedule(db *database.Client) Schedule {
+func NewSchedule(db *mysql.Client) Schedule {
 	return &schedule{
 		db:  db,
 		now: jst.Now,

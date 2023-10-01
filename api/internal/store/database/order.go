@@ -6,8 +6,8 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 )
@@ -15,11 +15,11 @@ import (
 const orderTable = "orders"
 
 type order struct {
-	db  *database.Client
+	db  *mysql.Client
 	now func() time.Time
 }
 
-func NewOrder(db *database.Client) Order {
+func NewOrder(db *mysql.Client) Order {
 	return &order{
 		db:  db,
 		now: jst.Now,
