@@ -70,7 +70,9 @@ const banners: string[] = [
 
     <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
-        <div class="mx-auto grid max-w-7xl grid-cols-3 gap-x-10 gap-y-8 px-20">
+        <div
+          class="mx-auto grid max-w-7xl grid-cols-3 grid-rows-2 gap-x-10 gap-y-8 px-2"
+        >
           <the-live-item
             v-for="liveItem in MOCK_LIVE_ITEMS"
             :id="liveItem.id"
@@ -79,6 +81,10 @@ const banners: string[] = [
             :img-src="liveItem.imgSrc"
             :start-at="liveItem.startAt"
             :published="liveItem.published"
+            :marche-name="liveItem.marcheName"
+            :address="liveItem.address"
+            :cn-name="liveItem.cnName"
+            :cn-img-src="liveItem.cnImgSrc"
             @click="handleClickLiveItem(id)"
           />
         </div>
