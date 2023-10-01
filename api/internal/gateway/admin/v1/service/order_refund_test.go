@@ -9,72 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOrderRefundType(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name       string
-		cancelType entity.CancelType
-		expect     OrderRefundType
-	}{
-		{
-			name:       "unknown",
-			cancelType: entity.CancelTypeUnknown,
-			expect:     OrderRefundTypeUnknown,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, NewOrderRefundType(tt.cancelType))
-		})
-	}
-}
-
-func TestOrderRefundType_IsCanceled(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name       string
-		refundType OrderRefundType
-		expect     bool
-	}{
-		{
-			name:       "success non cancel",
-			refundType: OrderRefundTypeUnknown,
-			expect:     false,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.refundType.IsCanceled())
-		})
-	}
-}
-
-func TestOrderRefundType_Response(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name       string
-		refundType OrderRefundType
-		expect     int32
-	}{
-		{
-			name:       "unknown",
-			refundType: OrderRefundTypeUnknown,
-			expect:     0,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.refundType.Response())
-		})
-	}
-}
-
 func TestOrderRefund(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -90,10 +24,9 @@ func TestOrderRefund(t *testing.T) {
 				CoordinatorID:     "coordinator-id",
 				ScheduleID:        "schedule-id",
 				PromotionID:       "",
-				PaymentStatus:     entity.PaymentStatusInitialized,
+				PaymentStatus:     entity.PaymentStatusPending,
 				FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
-				CancelType:        entity.CancelTypeUnknown,
-				CancelReason:      "",
+				RefundReason:      "",
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				OrderItems: []*entity.OrderItem{
@@ -118,8 +51,7 @@ func TestOrderRefund(t *testing.T) {
 					OrderID:       "order-id",
 					AddressID:     "address-id",
 					TransactionID: "transaction-id",
-					MethodType:    entity.PaymentMethodTypeCard,
-					MethodID:      "payment-id",
+					MethodType:    entity.PaymentMethodTypeCreditCard,
 					Subtotal:      1100,
 					Discount:      0,
 					ShippingFee:   500,
@@ -151,7 +83,6 @@ func TestOrderRefund(t *testing.T) {
 			expect: &OrderRefund{
 				OrderRefund: response.OrderRefund{
 					Canceled: false,
-					Type:     int32(OrderRefundTypeUnknown),
 					Reason:   "",
 					Total:    0,
 				},
@@ -179,14 +110,12 @@ func TestOrderRefund_Response(t *testing.T) {
 			refund: &OrderRefund{
 				OrderRefund: response.OrderRefund{
 					Canceled: false,
-					Type:     OrderRefundTypeUnknown.Response(),
 					Reason:   "",
 					Total:    0,
 				},
 			},
 			expect: &response.OrderRefund{
 				Canceled: false,
-				Type:     OrderRefundTypeUnknown.Response(),
 				Reason:   "",
 				Total:    0,
 			},

@@ -524,7 +524,6 @@ func testOrder(id, userID, scheduleID, promotionID, coordinatorID string, now ti
 		CoordinatorID:     coordinatorID,
 		PaymentStatus:     entity.PaymentStatusCaptured,
 		FulfillmentStatus: entity.FulfillmentStatusFulfilled,
-		CancelType:        entity.CancelTypeUnknown,
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
