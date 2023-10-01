@@ -89,7 +89,12 @@ const banners: string[] = [
           />
         </div>
         <div class="mb-4 mt-10 flex w-full justify-center">
-          <button class="w-60 bg-main py-2 text-white">もっと見る</button>
+          <button class="relative w-60 bg-main py-2 text-white">
+            もっと見る
+            <div class="absolute bottom-3.5 right-4">
+              <the-down-arrow-icon fill="white" />
+            </div>
+          </button>
         </div>
       </the-content-box>
 
