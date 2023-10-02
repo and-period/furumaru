@@ -158,7 +158,7 @@ func setEnv() {
 		os.Setenv("DB_PORT", "3326")
 	}
 	if os.Getenv("DB_DATABASE") == "" {
-		os.Setenv("DB_DATABASE", "furumane")
+		os.Setenv("DB_DATABASE", "messenger")
 	}
 	if os.Getenv("DB_USERNAME") == "" {
 		os.Setenv("DB_USERNAME", "root")
