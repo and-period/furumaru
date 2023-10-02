@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -95,25 +94,15 @@ func (m *message) MultiCreate(ctx context.Context, messages entity.Messages) err
 }
 
 func (m *message) UpdateRead(ctx context.Context, messageID string) error {
-	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
-		current, err := m.get(ctx, tx, messageID, "read")
-		if err != nil {
-			return err
-		}
-		if current.Read {
-			return exception.ErrFailedPrecondition
-		}
+	params := map[string]interface{}{
+		"read":       true,
+		"updated_at": m.now(),
+	}
+	stmt := m.db.DB.WithContext(ctx).
+		Table(messageTable).
+		Where("id = ?", messageID)
 
-		params := map[string]interface{}{
-			"read":       true,
-			"updated_at": m.now(),
-		}
-		err = tx.WithContext(ctx).
-			Table(messageTable).
-			Where("id = ?", messageID).
-			Updates(params).Error
-		return err
-	})
+	err := stmt.Updates(params).Error
 	return dbError(err)
 }
 

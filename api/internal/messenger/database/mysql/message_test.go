@@ -360,31 +360,6 @@ func TestMessage_UpdateRead(t *testing.T) {
 				err: nil,
 			},
 		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				messageID: "message-id",
-			},
-			want: want{
-				err: database.ErrNotFound,
-			},
-		},
-		{
-			name: "already updated",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				msg := testMessage("message-id", now())
-				msg.Read = true
-				err := db.DB.Create(&msg).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				messageID: "message-id",
-			},
-			want: want{
-				err: database.ErrFailedPrecondition,
-			},
-		},
 	}
 
 	for _, tt := range tests {

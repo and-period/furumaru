@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -110,7 +109,7 @@ func (n *notification) Update(ctx context.Context, notificationID string, params
 			return err
 		}
 		if n.now().After(current.PublishedAt) {
-			return exception.ErrFailedPrecondition
+			return database.ErrFailedPrecondition
 		}
 
 		updates := map[string]interface{}{
@@ -124,7 +123,7 @@ func (n *notification) Update(ctx context.Context, notificationID string, params
 		if len(params.Targets) > 0 {
 			target, err := entity.NotificationMarshalTarget(params.Targets)
 			if err != nil {
-				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+				return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 			}
 			updates["targets"] = target
 		}

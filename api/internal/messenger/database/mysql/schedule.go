@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -70,7 +69,7 @@ func (s *schedule) UpsertProcessing(ctx context.Context, schedule *entity.Schedu
 			schedule.CreatedAt, schedule.UpdatedAt = now, now
 		} else {
 			if !current.Executable(now) {
-				return fmt.Errorf("database: schedule is not executable %w", exception.ErrFailedPrecondition)
+				return fmt.Errorf("database: schedule is not executable %w", database.ErrFailedPrecondition)
 			}
 			schedule.UpdatedAt = now
 		}
@@ -91,7 +90,7 @@ func (s *schedule) UpdateDone(ctx context.Context, messageType entity.ScheduleTy
 		}
 
 		if current.Status == entity.ScheduleStatusDone {
-			return fmt.Errorf("database: schedule is already done: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: schedule is already done: %w", database.ErrFailedPrecondition)
 		}
 
 		params := map[string]interface{}{
@@ -117,7 +116,7 @@ func (s *schedule) UpdateCancel(ctx context.Context, messageType entity.Schedule
 
 		now := s.now()
 		if !current.ShouldCancel(now) {
-			return fmt.Errorf("database: schedule should not cancel: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: schedule should not cancel: %w", database.ErrFailedPrecondition)
 		}
 
 		params := map[string]interface{}{
