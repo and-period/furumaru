@@ -13,6 +13,7 @@ import (
 	mock_cognito "github.com/and-period/furumaru/api/mock/pkg/cognito"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_database "github.com/and-period/furumaru/api/mock/user/database"
+	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
@@ -168,6 +169,36 @@ func TestInternalError(t *testing.T) {
 		{
 			name:   "database deadline exceeded",
 			err:    database.ErrDeadlineExceeded,
+			expect: user.ErrDeadlineExceeded,
+		},
+		{
+			name:   "auth invalid argument",
+			err:    cognito.ErrInvalidArgument,
+			expect: user.ErrInvalidArgument,
+		},
+		{
+			name:   "auth unauthenticated",
+			err:    cognito.ErrUnauthenticated,
+			expect: user.ErrUnauthenticated,
+		},
+		{
+			name:   "auth not found",
+			err:    cognito.ErrNotFound,
+			expect: user.ErrNotFound,
+		},
+		{
+			name:   "auth already exists",
+			err:    cognito.ErrAlreadyExists,
+			expect: user.ErrAlreadyExists,
+		},
+		{
+			name:   "auth resource exhausted",
+			err:    cognito.ErrResourceExhausted,
+			expect: user.ErrResourceExhausted,
+		},
+		{
+			name:   "auth deadline exceeded",
+			err:    cognito.ErrTimeout,
 			expect: user.ErrDeadlineExceeded,
 		},
 		{

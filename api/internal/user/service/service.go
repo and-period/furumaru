@@ -89,6 +89,9 @@ func internalError(err error) error {
 	if e := dbError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
 	}
+	if e := authError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
 
 	switch {
 	case errors.Is(err, context.Canceled):
@@ -113,6 +116,29 @@ func dbError(err error) error {
 	case errors.Is(err, database.ErrAlreadyExists):
 		return user.ErrAlreadyExists
 	case errors.Is(err, database.ErrDeadlineExceeded):
+		return user.ErrDeadlineExceeded
+	default:
+		return nil
+	}
+}
+
+func authError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, cognito.ErrInvalidArgument):
+		return user.ErrInvalidArgument
+	case errors.Is(err, cognito.ErrUnauthenticated):
+		return user.ErrUnauthenticated
+	case errors.Is(err, cognito.ErrNotFound):
+		return user.ErrNotFound
+	case errors.Is(err, cognito.ErrAlreadyExists):
+		return user.ErrAlreadyExists
+	case errors.Is(err, cognito.ErrResourceExhausted):
+		return user.ErrResourceExhausted
+	case errors.Is(err, cognito.ErrTimeout):
 		return user.ErrDeadlineExceeded
 	default:
 		return nil

@@ -12,11 +12,13 @@ import (
 var (
 	ErrInvalidArgument    = errors.New("user: invalid argument")
 	ErrNotFound           = errors.New("user: not found")
+	ErrUnauthenticated    = errors.New("user: unauthenticated")
 	ErrAlreadyExists      = errors.New("user: already exists")
 	ErrForbidden          = errors.New("user: forbidden")
 	ErrFailedPrecondition = errors.New("user: failed precondition")
 	ErrCanceled           = errors.New("user: canceled")
 	ErrDeadlineExceeded   = errors.New("user: deadline exceeded")
+	ErrResourceExhausted  = errors.New("user: resource exhausted")
 	ErrInternal           = errors.New("user: internal")
 )
 
