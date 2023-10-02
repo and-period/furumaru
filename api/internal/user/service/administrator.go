@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -19,7 +18,7 @@ func (s *service) ListAdministrators(
 	ctx context.Context, in *user.ListAdministratorsInput,
 ) (entity.Administrators, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	params := &database.ListAdministratorsParams{
 		Limit:  int(in.Limit),
@@ -39,7 +38,7 @@ func (s *service) ListAdministrators(
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return administrators, total, nil
 }
@@ -48,20 +47,20 @@ func (s *service) MultiGetAdministrators(
 	ctx context.Context, in *user.MultiGetAdministratorsInput,
 ) (entity.Administrators, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	administrators, err := s.db.Administrator.MultiGet(ctx, in.AdministratorIDs)
-	return administrators, exception.InternalError(err)
+	return administrators, internalError(err)
 }
 
 func (s *service) GetAdministrator(
 	ctx context.Context, in *user.GetAdministratorInput,
 ) (*entity.Administrator, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	administrator, err := s.db.Administrator.Get(ctx, in.AdministratorID)
-	return administrator, exception.InternalError(err)
+	return administrator, internalError(err)
 }
 
 func (s *service) CreateAdministrator(
@@ -69,7 +68,7 @@ func (s *service) CreateAdministrator(
 ) (*entity.Administrator, error) {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
@@ -89,7 +88,7 @@ func (s *service) CreateAdministrator(
 	administrator := entity.NewAdministrator(params)
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
 	if err := s.db.Administrator.Create(ctx, administrator, auth); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	s.logger.Debug("Create administrator",
 		zap.String("administratorId", administrator.ID), zap.String("password", password))
@@ -106,7 +105,7 @@ func (s *service) CreateAdministrator(
 
 func (s *service) UpdateAdministrator(ctx context.Context, in *user.UpdateAdministratorInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &database.UpdateAdministratorParams{
 		Lastname:      in.Lastname,
@@ -116,36 +115,36 @@ func (s *service) UpdateAdministrator(ctx context.Context, in *user.UpdateAdmini
 		PhoneNumber:   in.PhoneNumber,
 	}
 	err := s.db.Administrator.Update(ctx, in.AdministratorID, params)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) UpdateAdministratorEmail(ctx context.Context, in *user.UpdateAdministratorEmailInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	administrator, err := s.db.Administrator.Get(ctx, in.AdministratorID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &cognito.AdminChangeEmailParams{
 		Username: administrator.CognitoID,
 		Email:    in.Email,
 	}
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err = s.db.Admin.UpdateEmail(ctx, in.AdministratorID, in.Email)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.ResetAdministratorPasswordInput) error {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	administrator, err := s.db.Administrator.Get(ctx, in.AdministratorID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	password := random.NewStrings(size)
 	params := &cognito.AdminChangePasswordParams{
@@ -154,7 +153,7 @@ func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.Reset
 		Permanent: true,
 	}
 	if err := s.adminAuth.AdminChangePassword(ctx, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	s.logger.Debug("Reset administrator password",
 		zap.String("administrator", in.AdministratorID), zap.String("password", password),
@@ -174,10 +173,10 @@ func (s *service) ResetAdministratorPassword(ctx context.Context, in *user.Reset
 
 func (s *service) DeleteAdministrator(ctx context.Context, in *user.DeleteAdministratorInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Administrator.Delete(ctx, in.AdministratorID, s.deleteCognitoAdmin(in.AdministratorID))
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) createCognitoAdmin(cognitoID, email, password string) func(context.Context) error {

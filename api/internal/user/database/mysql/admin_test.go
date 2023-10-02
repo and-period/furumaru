@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 )
 
 func TestAdmin(t *testing.T) {
-	assert.NotNil(t, NewAdmin(nil))
+	assert.NotNil(t, newAdmin(nil))
 }
 
 func TestAdmin_MultiGet(t *testing.T) {

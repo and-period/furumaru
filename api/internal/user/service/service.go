@@ -1,6 +1,9 @@
 package service
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -12,6 +15,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/validator"
+	govalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 )
@@ -71,5 +75,46 @@ func NewService(params *Params, opts ...Option) user.Service {
 		store:       params.Store,
 		messenger:   params.Messenger,
 		media:       params.Media,
+	}
+}
+
+func internalError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	if e, ok := err.(govalidator.ValidationErrors); ok {
+		return fmt.Errorf("%w: %s", user.ErrInvalidArgument, e.Error())
+	}
+	if e := dbError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+
+	switch {
+	case errors.Is(err, context.Canceled):
+		return fmt.Errorf("%w: %s", user.ErrCanceled, err.Error())
+	case errors.Is(err, context.DeadlineExceeded):
+		return fmt.Errorf("%w: %s", user.ErrDeadlineExceeded, err.Error())
+	default:
+		return fmt.Errorf("%w: %s", user.ErrInternal, err.Error())
+	}
+}
+
+func dbError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, database.ErrNotFound):
+		return user.ErrNotFound
+	case errors.Is(err, database.ErrFailedPrecondition):
+		return user.ErrFailedPrecondition
+	case errors.Is(err, database.ErrAlreadyExists):
+		return user.ErrAlreadyExists
+	case errors.Is(err, database.ErrDeadlineExceeded):
+		return user.ErrDeadlineExceeded
+	default:
+		return nil
 	}
 }

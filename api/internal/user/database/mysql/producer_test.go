@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
@@ -17,7 +18,7 @@ import (
 )
 
 func TestProducer(t *testing.T) {
-	assert.NotNil(t, NewProducer(nil))
+	assert.NotNil(t, newProducer(nil))
 }
 
 func TestProducer_List(t *testing.T) {
@@ -54,7 +55,7 @@ func TestProducer_List(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *ListProducersParams
+		params *database.ListProducersParams
 	}
 	type want struct {
 		producers entity.Producers
@@ -70,7 +71,7 @@ func TestProducer_List(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListProducersParams{
+				params: &database.ListProducersParams{
 					CoordinatorID: "coordinator-id",
 					Username:      "&.",
 					Limit:         1,
@@ -86,7 +87,7 @@ func TestProducer_List(t *testing.T) {
 			name:  "success only unrelated",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListProducersParams{
+				params: &database.ListProducersParams{
 					Username:      "&.",
 					Limit:         1,
 					Offset:        1,
@@ -150,7 +151,7 @@ func TestProducer_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *ListProducersParams
+		params *database.ListProducersParams
 	}
 	type want struct {
 		total  int64
@@ -166,7 +167,7 @@ func TestProducer_Count(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListProducersParams{
+				params: &database.ListProducersParams{
 					Username: "&.",
 				},
 			},
@@ -488,7 +489,7 @@ func TestProducer_Update(t *testing.T) {
 
 	type args struct {
 		producerID string
-		params     *UpdateProducerParams
+		params     *database.UpdateProducerParams
 	}
 	type want struct {
 		hasErr bool
@@ -517,7 +518,7 @@ func TestProducer_Update(t *testing.T) {
 			},
 			args: args{
 				producerID: "admin-id",
-				params: &UpdateProducerParams{
+				params: &database.UpdateProducerParams{
 					Lastname:      "&.",
 					Firstname:     "スタッフ",
 					LastnameKana:  "あんどぴりおど",
@@ -541,7 +542,7 @@ func TestProducer_Update(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				producerID: "admin-id",
-				params:     &UpdateProducerParams{},
+				params:     &database.UpdateProducerParams{},
 			},
 			want: want{
 				hasErr: true,

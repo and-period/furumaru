@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
-	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -21,39 +21,57 @@ type coordinator struct {
 	now func() time.Time
 }
 
-func NewCoordinator(db *mysql.Client) Coordinator {
+func newCoordinator(db *mysql.Client) database.Coordinator {
 	return &coordinator{
 		db:  db,
 		now: jst.Now,
 	}
 }
 
+type listCoordinatorsParams database.ListCoordinatorsParams
+
+func (p listCoordinatorsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Username != "" {
+		stmt = stmt.Where("username LIKE ?", fmt.Sprintf("%%%s%%", p.Username))
+	}
+	return stmt
+}
+
+func (p listCoordinatorsParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
 func (c *coordinator) List(
-	ctx context.Context, params *ListCoordinatorsParams, fields ...string,
+	ctx context.Context, params *database.ListCoordinatorsParams, fields ...string,
 ) (entity.Coordinators, error) {
 	var coordinators entity.Coordinators
 
+	p := listCoordinatorsParams(*params)
+
 	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...)
-	stmt = params.stmt(stmt)
-	if params.Limit > 0 {
-		stmt = stmt.Limit(params.Limit)
-	}
-	if params.Offset > 0 {
-		stmt = stmt.Offset(params.Offset)
-	}
+	stmt = p.stmt(stmt)
+	stmt = p.pagination(stmt)
 
 	if err := stmt.Find(&coordinators).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return coordinators, nil
 }
 
-func (c *coordinator) Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error) {
-	total, err := c.db.Count(ctx, c.db.DB, &entity.Coordinator{}, params.stmt)
-	return total, exception.InternalError(err)
+func (c *coordinator) Count(ctx context.Context, params *database.ListCoordinatorsParams) (int64, error) {
+	p := listCoordinatorsParams(*params)
+
+	total, err := c.db.Count(ctx, c.db.DB, &entity.Coordinator{}, p.stmt)
+	return total, dbError(err)
 }
 
 func (c *coordinator) MultiGet(
@@ -65,10 +83,10 @@ func (c *coordinator) MultiGet(
 		Where("admin_id IN (?)", coordinatorIDs)
 
 	if err := stmt.Find(&coordinators).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return coordinators, nil
 }
@@ -78,10 +96,10 @@ func (c *coordinator) Get(
 ) (*entity.Coordinator, error) {
 	coordinator, err := c.get(ctx, c.db.DB, coordinatorID, fields...)
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinator); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return coordinator, nil
 }
@@ -104,10 +122,10 @@ func (c *coordinator) Create(
 		}
 		return auth(ctx)
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
-func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error {
+func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *database.UpdateCoordinatorParams) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
 			return err
@@ -141,7 +159,7 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 		if len(params.ProductTypeIDs) > 0 {
 			productTypeIDs, err := entity.CoordinatorMarshalProductTypeIDs(params.ProductTypeIDs)
 			if err != nil {
-				return fmt.Errorf("database: %w: %s", exception.ErrInvalidArgument, err.Error())
+				return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 			}
 			coordinatorParams["product_type_ids"] = datatypes.JSON(productTypeIDs)
 		}
@@ -159,7 +177,7 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			Updates(coordinatorParams).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (c *coordinator) UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error {
@@ -169,7 +187,7 @@ func (c *coordinator) UpdateThumbnails(ctx context.Context, coordinatorID string
 			return err
 		}
 		if coordinator.ThumbnailURL == "" {
-			return fmt.Errorf("database: thumbnail url is empty: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: thumbnail url is empty: %w", database.ErrFailedPrecondition)
 		}
 
 		buf, err := thumbnails.Marshal()
@@ -187,7 +205,7 @@ func (c *coordinator) UpdateThumbnails(ctx context.Context, coordinatorID string
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error {
@@ -197,7 +215,7 @@ func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, h
 			return err
 		}
 		if coordinator.HeaderURL == "" {
-			return fmt.Errorf("database: header url is empty: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: header url is empty: %w", database.ErrFailedPrecondition)
 		}
 
 		buf, err := headers.Marshal()
@@ -215,7 +233,7 @@ func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, h
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
@@ -250,7 +268,7 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 		}
 		return auth(ctx)
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (c *coordinator) get(

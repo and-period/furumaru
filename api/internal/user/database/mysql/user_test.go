@@ -1,10 +1,11 @@
-package database
+package mysql
 
 import (
 	"context"
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
@@ -13,7 +14,7 @@ import (
 )
 
 func TestUser(t *testing.T) {
-	assert.NotNil(t, NewUser(nil))
+	assert.NotNil(t, newUser(nil))
 }
 
 func TestUser_List(t *testing.T) {
@@ -41,7 +42,7 @@ func TestUser_List(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *ListUsersParams
+		params *database.ListUsersParams
 	}
 	type want struct {
 		users  entity.Users
@@ -57,7 +58,7 @@ func TestUser_List(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListUsersParams{
+				params: &database.ListUsersParams{
 					Limit:  1,
 					Offset: 1,
 				},
@@ -111,7 +112,7 @@ func TestUser_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *ListUsersParams
+		params *database.ListUsersParams
 	}
 	type want struct {
 		total  int64
@@ -127,7 +128,7 @@ func TestUser_Count(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListUsersParams{
+				params: &database.ListUsersParams{
 					Limit:  1,
 					Offset: 1,
 				},

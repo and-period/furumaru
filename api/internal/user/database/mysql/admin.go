@@ -1,10 +1,10 @@
-package database
+package mysql
 
 import (
 	"context"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -18,7 +18,7 @@ type admin struct {
 	now func() time.Time
 }
 
-func NewAdmin(db *mysql.Client) Admin {
+func newAdmin(db *mysql.Client) database.Admin {
 	return &admin{
 		db:  db,
 		now: jst.Now,
@@ -34,7 +34,7 @@ func (a *admin) MultiGet(
 		Where("id IN (?)", adminIDs)
 
 	if err := stmt.Find(&admins).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	admins.Fill()
 	return admins, nil
@@ -44,7 +44,7 @@ func (a *admin) Get(
 	ctx context.Context, adminID string, fields ...string,
 ) (*entity.Admin, error) {
 	admin, err := a.get(ctx, a.db.DB, adminID, fields...)
-	return admin, exception.InternalError(err)
+	return admin, dbError(err)
 }
 
 func (a *admin) GetByCognitoID(
@@ -56,7 +56,7 @@ func (a *admin) GetByCognitoID(
 		Where("cognito_id = ?", cognitoID)
 
 	if err := stmt.First(&admin).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	admin.Fill()
 	return admin, nil
@@ -69,7 +69,7 @@ func (a *admin) GetByEmail(ctx context.Context, email string, fields ...string) 
 		Where("email = ?", email)
 
 	if err := stmt.First(&admin).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	admin.Fill()
 	return admin, nil
@@ -91,7 +91,7 @@ func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (a *admin) UpdateDevice(ctx context.Context, adminID, device string) error {
@@ -110,7 +110,7 @@ func (a *admin) UpdateDevice(ctx context.Context, adminID, device string) error 
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (a *admin) UpdateSignInAt(ctx context.Context, adminID string) error {
@@ -134,7 +134,7 @@ func (a *admin) UpdateSignInAt(ctx context.Context, adminID string) error {
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (a *admin) get(ctx context.Context, tx *gorm.DB, adminID string, fields ...string) (*entity.Admin, error) {

@@ -4,17 +4,22 @@ package database
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/gorm"
 )
 
-type Params struct {
-	Database *mysql.Client
-}
+var (
+	ErrInvalidArgument    = errors.New("database: invalid argument")
+	ErrNotFound           = errors.New("database: not found")
+	ErrAlreadyExists      = errors.New("database: already exists")
+	ErrFailedPrecondition = errors.New("database: failed precondition")
+	ErrCanceled           = errors.New("database: canceled")
+	ErrDeadlineExceeded   = errors.New("database: deadline exceeded")
+	ErrInternal           = errors.New("database: internal error")
+	ErrUnknown            = errors.New("database: unknown")
+)
 
 type Database struct {
 	Admin         Admin
@@ -23,17 +28,6 @@ type Database struct {
 	Member        Member
 	Producer      Producer
 	User          User
-}
-
-func NewDatabase(params *Params) *Database {
-	return &Database{
-		Admin:         NewAdmin(params.Database),
-		Administrator: NewAdministrator(params.Database),
-		Coordinator:   NewCoordinator(params.Database),
-		Member:        NewMember(params.Database),
-		Producer:      NewProducer(params.Database),
-		User:          NewUser(params.Database),
-	}
 }
 
 /**
@@ -59,6 +53,19 @@ type Administrator interface {
 	Delete(ctx context.Context, administratorID string, auth func(ctx context.Context) error) error
 }
 
+type ListAdministratorsParams struct {
+	Limit  int
+	Offset int
+}
+
+type UpdateAdministratorParams struct {
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	PhoneNumber   string
+}
+
 type Coordinator interface {
 	List(ctx context.Context, params *ListCoordinatorsParams, fields ...string) (entity.Coordinators, error)
 	Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error)
@@ -69,6 +76,35 @@ type Coordinator interface {
 	UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error
 	UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error
 	Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error
+}
+
+type ListCoordinatorsParams struct {
+	Username string
+	Limit    int
+	Offset   int
+}
+
+type UpdateCoordinatorParams struct {
+	Lastname          string
+	Firstname         string
+	LastnameKana      string
+	FirstnameKana     string
+	MarcheName        string
+	Username          string
+	Profile           string
+	ProductTypeIDs    []string
+	ThumbnailURL      string
+	HeaderURL         string
+	PromotionVideoURL string
+	BonusVideoURL     string
+	InstagramID       string
+	FacebookID        string
+	PhoneNumber       string
+	PostalCode        string
+	Prefecture        int64
+	City              string
+	AddressLine1      string
+	AddressLine2      string
 }
 
 type Member interface {
@@ -96,84 +132,12 @@ type Producer interface {
 	AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error)
 }
 
-type User interface {
-	List(ctx context.Context, params *ListUsersParams, fields ...string) (entity.Users, error)
-	Count(ctx context.Context, params *ListUsersParams) (int64, error)
-	MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error)
-	Get(ctx context.Context, userID string, fields ...string) (*entity.User, error)
-}
-
-/**
- * params
- */
-type ListAdministratorsParams struct {
-	Limit  int
-	Offset int
-}
-
-type UpdateAdministratorParams struct {
-	Lastname      string
-	Firstname     string
-	LastnameKana  string
-	FirstnameKana string
-	PhoneNumber   string
-}
-
-type ListCoordinatorsParams struct {
-	Username string
-	Limit    int
-	Offset   int
-}
-
-func (p *ListCoordinatorsParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.Username != "" {
-		stmt = stmt.Where("username LIKE ?", fmt.Sprintf("%%%s%%", p.Username))
-	}
-	return stmt
-}
-
-type UpdateCoordinatorParams struct {
-	Lastname          string
-	Firstname         string
-	LastnameKana      string
-	FirstnameKana     string
-	MarcheName        string
-	Username          string
-	Profile           string
-	ProductTypeIDs    []string
-	ThumbnailURL      string
-	HeaderURL         string
-	PromotionVideoURL string
-	BonusVideoURL     string
-	InstagramID       string
-	FacebookID        string
-	PhoneNumber       string
-	PostalCode        string
-	Prefecture        int64
-	City              string
-	AddressLine1      string
-	AddressLine2      string
-}
-
 type ListProducersParams struct {
 	CoordinatorID string
 	Username      string
 	Limit         int
 	Offset        int
 	OnlyUnrelated bool
-}
-
-func (p *ListProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
-	}
-	if p.OnlyUnrelated {
-		stmt = stmt.Where("coordinator_id IS NULL")
-	}
-	if p.Username != "" {
-		stmt = stmt.Where("username LIKE ?", fmt.Sprintf("%%%s%%", p.Username))
-	}
-	return stmt
 }
 
 type UpdateProducerParams struct {
@@ -195,6 +159,13 @@ type UpdateProducerParams struct {
 	City              string
 	AddressLine1      string
 	AddressLine2      string
+}
+
+type User interface {
+	List(ctx context.Context, params *ListUsersParams, fields ...string) (entity.Users, error)
+	Count(ctx context.Context, params *ListUsersParams) (int64, error)
+	MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error)
+	Get(ctx context.Context, userID string, fields ...string) (*entity.User, error)
 }
 
 type ListUsersParams struct {

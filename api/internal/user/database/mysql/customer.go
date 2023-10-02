@@ -1,3 +1,3 @@
-package database
+package mysql
 
 const customerTable = "customers"

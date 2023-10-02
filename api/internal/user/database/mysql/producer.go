@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
-	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -21,39 +21,63 @@ type producer struct {
 	now func() time.Time
 }
 
-func NewProducer(db *mysql.Client) Producer {
+func newProducer(db *mysql.Client) database.Producer {
 	return &producer{
 		db:  db,
 		now: jst.Now,
 	}
 }
 
+type listProducersParams database.ListProducersParams
+
+func (p listProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.CoordinatorID != "" {
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
+	if p.OnlyUnrelated {
+		stmt = stmt.Where("coordinator_id IS NULL")
+	}
+	if p.Username != "" {
+		stmt = stmt.Where("username LIKE ?", fmt.Sprintf("%%%s%%", p.Username))
+	}
+	return stmt
+}
+
+func (p listProducersParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
 func (p *producer) List(
-	ctx context.Context, params *ListProducersParams, fields ...string,
+	ctx context.Context, params *database.ListProducersParams, fields ...string,
 ) (entity.Producers, error) {
 	var producers entity.Producers
 
+	prm := listProducersParams(*params)
+
 	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...)
-	stmt = params.stmt(stmt)
-	if params.Limit > 0 {
-		stmt = stmt.Limit(params.Limit)
-	}
-	if params.Offset > 0 {
-		stmt = stmt.Offset(params.Offset)
-	}
+	stmt = prm.stmt(stmt)
+	stmt = prm.pagination(stmt)
 
 	if err := stmt.Find(&producers).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := p.fill(ctx, p.db.DB, producers...); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return producers, nil
 }
 
-func (p *producer) Count(ctx context.Context, params *ListProducersParams) (int64, error) {
-	total, err := p.db.Count(ctx, p.db.DB, &entity.Producer{}, params.stmt)
-	return total, exception.InternalError(err)
+func (p *producer) Count(ctx context.Context, params *database.ListProducersParams) (int64, error) {
+	prm := listProducersParams(*params)
+
+	total, err := p.db.Count(ctx, p.db.DB, &entity.Producer{}, prm.stmt)
+	return total, dbError(err)
 }
 
 func (p *producer) MultiGet(
@@ -61,10 +85,10 @@ func (p *producer) MultiGet(
 ) (entity.Producers, error) {
 	producers, err := p.multiGet(ctx, p.db.DB, producerIDs, fields...)
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := p.fill(ctx, p.db.DB, producers...); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return producers, nil
 }
@@ -74,10 +98,10 @@ func (p *producer) Get(
 ) (*entity.Producer, error) {
 	producer, err := p.get(ctx, p.db.DB, producerID, fields...)
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := p.fill(ctx, p.db.DB, producer); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return producer, nil
 }
@@ -97,10 +121,10 @@ func (p *producer) Create(
 		}
 		return auth(ctx)
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
-func (p *producer) Update(ctx context.Context, producerID string, params *UpdateProducerParams) error {
+func (p *producer) Update(ctx context.Context, producerID string, params *database.UpdateProducerParams) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := p.get(ctx, tx, producerID); err != nil {
 			return err
@@ -144,7 +168,7 @@ func (p *producer) Update(ctx context.Context, producerID string, params *Update
 			Updates(producerParams).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (p *producer) UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error {
@@ -154,7 +178,7 @@ func (p *producer) UpdateThumbnails(ctx context.Context, producerID string, thum
 			return err
 		}
 		if producer.ThumbnailURL == "" {
-			return fmt.Errorf("database: thumbnail url is empty: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: thumbnail url is empty: %w", database.ErrFailedPrecondition)
 		}
 
 		buf, err := thumbnails.Marshal()
@@ -172,7 +196,7 @@ func (p *producer) UpdateThumbnails(ctx context.Context, producerID string, thum
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (p *producer) UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error {
@@ -182,7 +206,7 @@ func (p *producer) UpdateHeaders(ctx context.Context, producerID string, headers
 			return err
 		}
 		if producer.HeaderURL == "" {
-			return fmt.Errorf("database: header url is empty: %w", exception.ErrFailedPrecondition)
+			return fmt.Errorf("database: header url is empty: %w", database.ErrFailedPrecondition)
 		}
 
 		buf, err := headers.Marshal()
@@ -200,7 +224,7 @@ func (p *producer) UpdateHeaders(ctx context.Context, producerID string, headers
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (p *producer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
@@ -220,7 +244,7 @@ func (p *producer) UpdateRelationship(ctx context.Context, coordinatorID string,
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error {
@@ -255,7 +279,7 @@ func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx 
 		}
 		return auth(ctx)
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (p *producer) AggregateByCoordinatorID(
@@ -273,7 +297,7 @@ func (p *producer) AggregateByCoordinatorID(
 
 	rows, err := stmt.Rows()
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	defer rows.Close()
 
@@ -284,7 +308,7 @@ func (p *producer) AggregateByCoordinatorID(
 			total         int64
 		)
 		if err := rows.Scan(&coordinatorID, &total); err != nil {
-			return nil, exception.InternalError(err)
+			return nil, dbError(err)
 		}
 		res[coordinatorID] = total
 	}

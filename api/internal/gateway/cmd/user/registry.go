@@ -14,7 +14,7 @@ import (
 	storedb "github.com/and-period/furumaru/api/internal/store/database"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	userdb "github.com/and-period/furumaru/api/internal/user/database"
+	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -282,12 +282,9 @@ func newUserService(p *params, messenger messenger.Service) (user.Service, error
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &userdb.Params{
-		Database: mysql,
-	}
 	params := &usersrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  userdb.NewDatabase(dbParams),
+		Database:  userdb.NewDatabase(mysql),
 		UserAuth:  p.userAuth,
 		Messenger: messenger,
 	}

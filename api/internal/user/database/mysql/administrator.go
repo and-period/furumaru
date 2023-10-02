@@ -1,10 +1,10 @@
-package database
+package mysql
 
 import (
 	"context"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -18,7 +18,7 @@ type administrator struct {
 	now func() time.Time
 }
 
-func NewAdministrator(db *mysql.Client) Administrator {
+func newAdministrator(db *mysql.Client) database.Administrator {
 	return &administrator{
 		db:  db,
 		now: jst.Now,
@@ -26,7 +26,7 @@ func NewAdministrator(db *mysql.Client) Administrator {
 }
 
 func (a *administrator) List(
-	ctx context.Context, params *ListAdministratorsParams, fields ...string,
+	ctx context.Context, params *database.ListAdministratorsParams, fields ...string,
 ) (entity.Administrators, error) {
 	var administrators entity.Administrators
 
@@ -39,17 +39,17 @@ func (a *administrator) List(
 	}
 
 	if err := stmt.Find(&administrators).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := a.fill(ctx, a.db.DB, administrators...); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return administrators, nil
 }
 
-func (a *administrator) Count(ctx context.Context, _ *ListAdministratorsParams) (int64, error) {
+func (a *administrator) Count(ctx context.Context, _ *database.ListAdministratorsParams) (int64, error) {
 	total, err := a.db.Count(ctx, a.db.DB, &entity.Administrator{}, nil)
-	return total, exception.InternalError(err)
+	return total, dbError(err)
 }
 
 func (a *administrator) MultiGet(
@@ -61,10 +61,10 @@ func (a *administrator) MultiGet(
 		Where("admin_id IN (?)", administratorIDs)
 
 	if err := stmt.Find(&administrators).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := a.fill(ctx, a.db.DB, administrators...); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return administrators, nil
 }
@@ -74,10 +74,10 @@ func (a *administrator) Get(
 ) (*entity.Administrator, error) {
 	administrator, err := a.get(ctx, a.db.DB, administratorID, fields...)
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := a.fill(ctx, a.db.DB, administrator); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return administrator, nil
 }
@@ -97,10 +97,10 @@ func (a *administrator) Create(
 		}
 		return auth(ctx)
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
-func (a *administrator) Update(ctx context.Context, administratorID string, params *UpdateAdministratorParams) error {
+func (a *administrator) Update(ctx context.Context, administratorID string, params *database.UpdateAdministratorParams) error {
 	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		if _, err := a.get(ctx, tx, administratorID); err != nil {
 			return err
@@ -132,7 +132,7 @@ func (a *administrator) Update(ctx context.Context, administratorID string, para
 			Updates(administratorParams).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (a *administrator) Delete(
@@ -169,7 +169,7 @@ func (a *administrator) Delete(
 		}
 		return auth(ctx)
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (a *administrator) get(

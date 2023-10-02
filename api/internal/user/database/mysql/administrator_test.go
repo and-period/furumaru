@@ -1,10 +1,11 @@
-package database
+package mysql
 
 import (
 	"context"
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
@@ -13,7 +14,7 @@ import (
 )
 
 func TestAdministrator(t *testing.T) {
-	assert.NotNil(t, NewAdministrator(nil))
+	assert.NotNil(t, newAdministrator(nil))
 }
 
 func TestAdministrator_List(t *testing.T) {
@@ -44,7 +45,7 @@ func TestAdministrator_List(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *ListAdministratorsParams
+		params *database.ListAdministratorsParams
 	}
 	type want struct {
 		admins entity.Administrators
@@ -60,7 +61,7 @@ func TestAdministrator_List(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListAdministratorsParams{
+				params: &database.ListAdministratorsParams{
 					Limit:  1,
 					Offset: 1,
 				},
@@ -117,7 +118,7 @@ func TestAdministrator_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *ListAdministratorsParams
+		params *database.ListAdministratorsParams
 	}
 	type want struct {
 		total  int64
@@ -133,7 +134,7 @@ func TestAdministrator_Count(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListAdministratorsParams{},
+				params: &database.ListAdministratorsParams{},
 			},
 			want: want{
 				total:  2,
@@ -408,7 +409,7 @@ func TestAdministrator_Update(t *testing.T) {
 
 	type args struct {
 		administratorID string
-		params          *UpdateAdministratorParams
+		params          *database.UpdateAdministratorParams
 	}
 	type want struct {
 		hasErr bool
@@ -431,7 +432,7 @@ func TestAdministrator_Update(t *testing.T) {
 			},
 			args: args{
 				administratorID: "admin-id",
-				params: &UpdateAdministratorParams{
+				params: &database.UpdateAdministratorParams{
 					Lastname:      "&.",
 					Firstname:     "スタッフ",
 					LastnameKana:  "あんどぴりおど",
@@ -448,7 +449,7 @@ func TestAdministrator_Update(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				administratorID: "admin-id",
-				params:          &UpdateAdministratorParams{},
+				params:          &database.UpdateAdministratorParams{},
 			},
 			want: want{
 				hasErr: true,

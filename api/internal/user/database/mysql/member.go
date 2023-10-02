@@ -1,11 +1,11 @@
-package database
+package mysql
 
 import (
 	"context"
 	"errors"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -19,7 +19,7 @@ type member struct {
 	now func() time.Time
 }
 
-func NewMember(db *mysql.Client) Member {
+func newMember(db *mysql.Client) database.Member {
 	return &member{
 		db:  db,
 		now: jst.Now,
@@ -28,7 +28,7 @@ func NewMember(db *mysql.Client) Member {
 
 func (m *member) Get(ctx context.Context, userID string, fields ...string) (*entity.Member, error) {
 	member, err := m.get(ctx, m.db.DB, userID, fields...)
-	return member, exception.InternalError(err)
+	return member, dbError(err)
 }
 
 func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ...string) (*entity.Member, error) {
@@ -38,7 +38,7 @@ func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ..
 		Where("cognito_id = ?", cognitoID)
 
 	if err := stmt.First(&member).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return member, nil
 }
@@ -51,7 +51,7 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 		Where("provider_type = ?", entity.ProviderTypeEmail)
 
 	if err := stmt.First(&member).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return member, nil
 }
@@ -73,7 +73,7 @@ func (m *member) Create(ctx context.Context, user *entity.User, auth func(ctx co
 		}
 		return auth(ctx)
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (m *member) UpdateVerified(ctx context.Context, userID string) error {
@@ -83,7 +83,7 @@ func (m *member) UpdateVerified(ctx context.Context, userID string) error {
 			return err
 		}
 		if !current.VerifiedAt.IsZero() {
-			return exception.ErrFailedPrecondition
+			return database.ErrFailedPrecondition
 		}
 
 		now := m.now()
@@ -97,7 +97,7 @@ func (m *member) UpdateVerified(ctx context.Context, userID string) error {
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username string) error {
@@ -115,7 +115,7 @@ func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username 
 			return err
 		}
 		if current.UserID != "" {
-			return exception.ErrAlreadyExists
+			return database.ErrAlreadyExists
 		}
 
 		now := m.now()
@@ -130,7 +130,7 @@ func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username 
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
@@ -140,7 +140,7 @@ func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 			return err
 		}
 		if current.ProviderType != entity.ProviderTypeEmail {
-			return exception.ErrFailedPrecondition
+			return database.ErrFailedPrecondition
 		}
 
 		now := m.now()
@@ -154,7 +154,7 @@ func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 			Updates(params).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (m *member) Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error {
@@ -189,7 +189,7 @@ func (m *member) Delete(ctx context.Context, userID string, auth func(ctx contex
 		}
 		return auth(ctx)
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.Member, error) {

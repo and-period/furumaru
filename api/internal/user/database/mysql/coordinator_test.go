@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
@@ -17,7 +18,7 @@ import (
 )
 
 func TestCoordinator(t *testing.T) {
-	assert.NotNil(t, NewCoordinator(nil))
+	assert.NotNil(t, newCoordinator(nil))
 }
 
 func TestCoordinator_List(t *testing.T) {
@@ -47,7 +48,7 @@ func TestCoordinator_List(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *ListCoordinatorsParams
+		params *database.ListCoordinatorsParams
 	}
 	type want struct {
 		coordinators entity.Coordinators
@@ -63,7 +64,7 @@ func TestCoordinator_List(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListCoordinatorsParams{
+				params: &database.ListCoordinatorsParams{
 					Username: "&.",
 					Limit:    1,
 					Offset:   1,
@@ -120,7 +121,7 @@ func TestCoordinator_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		params *ListCoordinatorsParams
+		params *database.ListCoordinatorsParams
 	}
 	type want struct {
 		total  int64
@@ -136,7 +137,7 @@ func TestCoordinator_Count(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &ListCoordinatorsParams{
+				params: &database.ListCoordinatorsParams{
 					Username: "&.",
 					Limit:    1,
 					Offset:   1,
@@ -417,7 +418,7 @@ func TestCoordinator_Update(t *testing.T) {
 
 	type args struct {
 		coordinatorID string
-		params        *UpdateCoordinatorParams
+		params        *database.UpdateCoordinatorParams
 	}
 	type want struct {
 		hasErr bool
@@ -440,7 +441,7 @@ func TestCoordinator_Update(t *testing.T) {
 			},
 			args: args{
 				coordinatorID: "admin-id",
-				params: &UpdateCoordinatorParams{
+				params: &database.UpdateCoordinatorParams{
 					Lastname:          "&.",
 					Firstname:         "スタッフ",
 					LastnameKana:      "あんどぴりおど",
@@ -471,7 +472,7 @@ func TestCoordinator_Update(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				coordinatorID: "admin-id",
-				params:        &UpdateCoordinatorParams{},
+				params:        &database.UpdateCoordinatorParams{},
 			},
 			want: want{
 				hasErr: true,

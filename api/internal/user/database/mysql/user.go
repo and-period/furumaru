@@ -1,10 +1,10 @@
-package database
+package mysql
 
 import (
 	"context"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -18,14 +18,14 @@ type user struct {
 	now func() time.Time
 }
 
-func NewUser(db *mysql.Client) User {
+func newUser(db *mysql.Client) database.User {
 	return &user{
 		db:  db,
 		now: jst.Now,
 	}
 }
 
-func (u *user) List(ctx context.Context, params *ListUsersParams, fields ...string) (entity.Users, error) {
+func (u *user) List(ctx context.Context, params *database.ListUsersParams, fields ...string) (entity.Users, error) {
 	var users entity.Users
 
 	stmt := u.db.Statement(ctx, u.db.DB, userTable, fields...)
@@ -37,17 +37,17 @@ func (u *user) List(ctx context.Context, params *ListUsersParams, fields ...stri
 	}
 
 	if err := stmt.Find(&users).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := u.fill(ctx, u.db.DB, users...); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return users, nil
 }
 
-func (u *user) Count(ctx context.Context, _ *ListUsersParams) (int64, error) {
+func (u *user) Count(ctx context.Context, _ *database.ListUsersParams) (int64, error) {
 	total, err := u.db.Count(ctx, u.db.DB, &entity.User{}, nil)
-	return total, exception.InternalError(err)
+	return total, dbError(err)
 }
 
 func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error) {
@@ -58,10 +58,10 @@ func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string)
 		Where("id IN (?)", userIDs)
 
 	if err := stmt.Find(&users).Error; err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := u.fill(ctx, u.db.DB, users...); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return users, nil
 }
@@ -69,10 +69,10 @@ func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string)
 func (u *user) Get(ctx context.Context, userID string, fields ...string) (*entity.User, error) {
 	user, err := u.get(ctx, u.db.DB, userID, fields...)
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	if err := u.fill(ctx, u.db.DB, user); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, dbError(err)
 	}
 	return user, nil
 }
@@ -85,7 +85,7 @@ func (u *user) Create(ctx context.Context, user *entity.User) error {
 		err := tx.WithContext(ctx).Table(userTable).Create(&user).Error
 		return err
 	})
-	return exception.InternalError(err)
+	return dbError(err)
 }
 
 func (u *user) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.User, error) {
