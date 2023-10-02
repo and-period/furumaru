@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -15,23 +14,23 @@ import (
 
 func (s *service) ListLivesByScheduleID(ctx context.Context, in *store.ListLivesByScheduleIDInput) (entity.Lives, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	lives, err := s.db.Live.ListByScheduleID(ctx, in.ScheduleID)
-	return lives, exception.InternalError(err)
+	return lives, internalError(err)
 }
 
 func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.Live, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	live, err := s.db.Live.Get(ctx, in.LiveID)
-	return live, exception.InternalError(err)
+	return live, internalError(err)
 }
 
 func (s *service) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*entity.Live, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -51,16 +50,16 @@ func (s *service) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*e
 			return err
 		}
 		if len(products) != len(in.ProductIDs) {
-			return fmt.Errorf("api: unmatch product: %w", exception.ErrInvalidArgument)
+			return errUnmatchProducts
 		}
 		return nil
 	})
 	err := eg.Wait()
-	if errors.Is(err, exception.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	if errors.Is(err, database.ErrNotFound) || errors.Is(err, user.ErrNotFound) || errors.Is(err, errUnmatchProducts) {
+		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), store.ErrInvalidArgument)
 	}
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	params := &entity.NewLiveParams{
 		ScheduleID: in.ScheduleID,
@@ -72,24 +71,24 @@ func (s *service) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*e
 	}
 	live := entity.NewLive(params)
 	if err := s.db.Live.Create(ctx, live); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	return live, nil
 }
 
 func (s *service) UpdateLive(ctx context.Context, in *store.UpdateLiveInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	if _, err := s.db.Live.Get(ctx, in.LiveID); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	products, err := s.db.Product.MultiGet(ctx, in.ProductIDs)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	if len(products) != len(in.ProductIDs) {
-		return fmt.Errorf("api: umatch product: %w", exception.ErrInvalidArgument)
+		return fmt.Errorf("api: umatch product: %w", store.ErrInvalidArgument)
 	}
 	params := &database.UpdateLiveParams{
 		ProductIDs: in.ProductIDs,
@@ -98,13 +97,13 @@ func (s *service) UpdateLive(ctx context.Context, in *store.UpdateLiveInput) err
 		EndAt:      in.EndAt,
 	}
 	err = s.db.Live.Update(ctx, in.LiveID, params)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeleteLive(ctx context.Context, in *store.DeleteLiveInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Live.Delete(ctx, in.LiveID)
-	return exception.InternalError(err)
+	return internalError(err)
 }

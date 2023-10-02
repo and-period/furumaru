@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
@@ -27,11 +26,10 @@ func (w *worker) sendMail(ctx context.Context, emailID string, ps ...*mailer.Per
 	}
 	w.logger.Debug("Send email", zap.String("emailId", emailID), zap.Any("personalizations", ps))
 	sendFn := func() error {
-		err := w.mailer.MultiSendFromInfo(ctx, emailID, ps)
-		return exception.InternalError(err)
+		return w.mailer.MultiSendFromInfo(ctx, emailID, ps)
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
-	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(exception.Retryable))
+	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(w.isRetryable))
 }
 
 func (w *worker) newPersonalizations(

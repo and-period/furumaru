@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
@@ -39,7 +38,7 @@ func (s *service) ResizeScheduleThumbnail(ctx context.Context, in *media.ResizeF
 
 func (s *service) sendResizeMessage(ctx context.Context, in *media.ResizeFileInput, fileType entity.FileType) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	payload := &entity.ResizerPayload{
 		TargetID: in.TargetID,
@@ -48,8 +47,8 @@ func (s *service) sendResizeMessage(ctx context.Context, in *media.ResizeFileInp
 	}
 	buf, err := json.Marshal(payload)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	_, err = s.producer.SendMessage(ctx, buf)
-	return exception.InternalError(err)
+	return internalError(err)
 }

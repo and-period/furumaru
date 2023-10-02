@@ -3,10 +3,10 @@ package resizer
 import (
 	"bytes"
 	"context"
+	"image"
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/common"
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/golang/mock/gomock"
@@ -70,7 +70,7 @@ func TestScheduleThumbnail(t *testing.T) {
 				FileType: entity.FileTypeScheduleThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to resize images",
@@ -83,7 +83,7 @@ func TestScheduleThumbnail(t *testing.T) {
 				FileType: entity.FileTypeScheduleThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: image.ErrFormat,
 		},
 		{
 			name: "failed to upload images",
@@ -97,7 +97,7 @@ func TestScheduleThumbnail(t *testing.T) {
 				FileType: entity.FileTypeScheduleThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to update producer thumbnails",
@@ -113,7 +113,7 @@ func TestScheduleThumbnail(t *testing.T) {
 				FileType: entity.FileTypeScheduleThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 	}
 

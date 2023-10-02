@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -86,7 +85,7 @@ func TestMultiGetAdmins(t *testing.T) {
 				AdminIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: user.ErrInvalidArgument,
 		},
 		{
 			name: "failed to multi get admin auths",
@@ -97,7 +96,7 @@ func TestMultiGetAdmins(t *testing.T) {
 				AdminIDs: adminIDs,
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: user.ErrInternal,
 		},
 	}
 
@@ -148,7 +147,7 @@ func TestMultiGetAdminDevices(t *testing.T) {
 				AdminIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: user.ErrInvalidArgument,
 		},
 		{
 			name: "failed to multi get admin auths",
@@ -159,7 +158,7 @@ func TestMultiGetAdminDevices(t *testing.T) {
 				AdminIDs: []string{"admin-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: user.ErrInternal,
 		},
 	}
 
@@ -216,7 +215,7 @@ func TestGetAdmin(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.GetAdminInput{},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: user.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get producer",
@@ -227,7 +226,7 @@ func TestGetAdmin(t *testing.T) {
 				AdminID: "admin-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: user.ErrInternal,
 		},
 	}
 
@@ -267,7 +266,7 @@ func TestForgotAdminPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.ForgotAdminPasswordInput{},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: user.ErrInvalidArgument,
 		},
 		{
 			name: "failed to forgot password",
@@ -277,7 +276,7 @@ func TestForgotAdminPassword(t *testing.T) {
 			input: &user.ForgotAdminPasswordInput{
 				Email: "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: user.ErrInternal,
 		},
 		{
 			name: "failed to forgot password",
@@ -288,7 +287,7 @@ func TestForgotAdminPassword(t *testing.T) {
 			input: &user.ForgotAdminPasswordInput{
 				Email: "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrNotFound,
+			expectErr: user.ErrNotFound,
 		},
 	}
 
@@ -337,7 +336,7 @@ func TestVerifyAdminPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.VerifyAdminPasswordInput{},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: user.ErrInvalidArgument,
 		},
 		{
 			name: "failed to forgot password",
@@ -350,7 +349,7 @@ func TestVerifyAdminPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: user.ErrInternal,
 		},
 		{
 			name: "failed to forgot password",
@@ -364,7 +363,7 @@ func TestVerifyAdminPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: user.ErrInternal,
 		},
 	}
 

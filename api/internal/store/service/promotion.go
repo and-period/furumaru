@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -15,7 +14,7 @@ func (s *service) ListPromotions(
 	ctx context.Context, in *store.ListPromotionsInput,
 ) (entity.Promotions, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	orders := make([]*database.ListPromotionsOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -44,7 +43,7 @@ func (s *service) ListPromotions(
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return promotions, total, nil
 }
@@ -53,23 +52,23 @@ func (s *service) MultiGetPromotions(
 	ctx context.Context, in *store.MultiGetPromotionsInput,
 ) (entity.Promotions, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	promotions, err := s.db.Promotion.MultiGet(ctx, in.PromotionIDs)
-	return promotions, exception.InternalError(err)
+	return promotions, internalError(err)
 }
 
 func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput) (*entity.Promotion, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	promotion, err := s.db.Promotion.Get(ctx, in.PromotionID)
-	return promotion, exception.InternalError(err)
+	return promotion, internalError(err)
 }
 
 func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotionInput) (*entity.Promotion, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	params := &entity.NewPromotionParams{
 		Title:        in.Title,
@@ -84,17 +83,17 @@ func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotion
 	}
 	promotion := entity.NewPromotion(params)
 	if err := promotion.Validate(); err != nil {
-		return nil, fmt.Errorf("api: validation error: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: validation error: %s: %w", err.Error(), store.ErrInvalidArgument)
 	}
 	if err := s.db.Promotion.Create(ctx, promotion); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	return promotion, nil
 }
 
 func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotionInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &database.UpdatePromotionParams{
 		Title:        in.Title,
@@ -108,13 +107,13 @@ func (s *service) UpdatePromotion(ctx context.Context, in *store.UpdatePromotion
 		EndAt:        in.EndAt,
 	}
 	err := s.db.Promotion.Update(ctx, in.PromotionID, params)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeletePromotion(ctx context.Context, in *store.DeletePromotionInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Promotion.Delete(ctx, in.PromotionID)
-	return exception.InternalError(err)
+	return internalError(err)
 }

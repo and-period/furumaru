@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
@@ -71,14 +70,14 @@ func (s *service) generateFile(
 	ctx context.Context, in *media.GenerateFileInput, reg *entity.Regulation,
 ) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return "", exception.InternalError(err)
+		return "", internalError(err)
 	}
 	var buf bytes.Buffer
 	teeReader := io.TeeReader(in.File, &buf)
 	if err := reg.Validate(teeReader, in.Header); err != nil {
-		return "", fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
+		return "", fmt.Errorf("%w: %s", media.ErrInvalidArgument, err.Error())
 	}
 	path := reg.GenerateFilePath(in.Header)
 	url, err := s.tmp.Upload(ctx, path, &buf)
-	return url, exception.InternalError(err)
+	return url, internalError(err)
 }

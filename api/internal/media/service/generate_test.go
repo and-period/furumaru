@@ -7,7 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/golang/mock/gomock"
@@ -49,7 +48,7 @@ func TestGenerateCoordinatorThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -61,7 +60,7 @@ func TestGenerateCoordinatorThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -73,7 +72,7 @@ func TestGenerateCoordinatorThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -120,7 +119,7 @@ func TestGenerateCoordinatorHeader(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -132,7 +131,7 @@ func TestGenerateCoordinatorHeader(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -144,7 +143,7 @@ func TestGenerateCoordinatorHeader(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -191,7 +190,7 @@ func TestGenerateCoordinatorPromotionVideo(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -203,7 +202,7 @@ func TestGenerateCoordinatorPromotionVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -215,7 +214,7 @@ func TestGenerateCoordinatorPromotionVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -262,7 +261,7 @@ func TestGenerateCoordinatorBonusVideo(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -274,7 +273,7 @@ func TestGenerateCoordinatorBonusVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -286,7 +285,7 @@ func TestGenerateCoordinatorBonusVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -333,7 +332,7 @@ func TestGenerateProducerThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -345,7 +344,7 @@ func TestGenerateProducerThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -357,7 +356,7 @@ func TestGenerateProducerThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -404,7 +403,7 @@ func TestGenerateProducerHeader(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -416,7 +415,7 @@ func TestGenerateProducerHeader(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -428,7 +427,7 @@ func TestGenerateProducerHeader(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -475,7 +474,7 @@ func TestGenerateProducerPromotionVideo(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -487,7 +486,7 @@ func TestGenerateProducerPromotionVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -499,7 +498,7 @@ func TestGenerateProducerPromotionVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -546,7 +545,7 @@ func TestGenerateProducerBonusVideo(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -558,7 +557,7 @@ func TestGenerateProducerBonusVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -570,7 +569,7 @@ func TestGenerateProducerBonusVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -617,7 +616,7 @@ func TestGenerateProductMediaImage(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -629,7 +628,7 @@ func TestGenerateProductMediaImage(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -641,7 +640,7 @@ func TestGenerateProductMediaImage(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -688,7 +687,7 @@ func TestGenerateProductMediaVideo(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -700,7 +699,7 @@ func TestGenerateProductMediaVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -712,7 +711,7 @@ func TestGenerateProductMediaVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -759,7 +758,7 @@ func TestGenerateProductTypeIcon(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -771,7 +770,7 @@ func TestGenerateProductTypeIcon(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -783,7 +782,7 @@ func TestGenerateProductTypeIcon(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -830,7 +829,7 @@ func TestGenerateScheduleThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -842,7 +841,7 @@ func TestGenerateScheduleThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -854,7 +853,7 @@ func TestGenerateScheduleThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -901,7 +900,7 @@ func TestGenerateScheduleImage(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -913,7 +912,7 @@ func TestGenerateScheduleImage(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -925,7 +924,7 @@ func TestGenerateScheduleImage(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -972,7 +971,7 @@ func TestGenerateScheduleOpeningVideo(t *testing.T) {
 				return &media.GenerateFileInput{}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "invalid file regulation",
@@ -984,7 +983,7 @@ func TestGenerateScheduleOpeningVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to upload",
@@ -996,7 +995,7 @@ func TestGenerateScheduleOpeningVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

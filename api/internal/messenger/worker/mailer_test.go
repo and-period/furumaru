@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -135,7 +134,7 @@ func TestSendMail(t *testing.T) {
 			},
 			emailID:          "email-id",
 			personalizations: personalizations,
-			expectErr:        exception.ErrUnknown,
+			expectErr:        assert.AnError,
 		},
 		{
 			name: "failed to send info mail with retry",
@@ -146,7 +145,7 @@ func TestSendMail(t *testing.T) {
 			},
 			emailID:          "email-id",
 			personalizations: personalizations,
-			expectErr:        exception.ErrUnavailable,
+			expectErr:        mailer.ErrUnavailable,
 		},
 	}
 

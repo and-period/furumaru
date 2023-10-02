@@ -6,7 +6,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/golang/mock/gomock"
@@ -60,7 +59,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -69,7 +68,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -78,7 +77,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -89,7 +88,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -101,7 +100,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -112,7 +111,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -171,7 +170,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -180,7 +179,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -189,7 +188,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -200,7 +199,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -212,7 +211,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -223,7 +222,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -282,7 +281,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -291,7 +290,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -300,7 +299,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -311,7 +310,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -323,7 +322,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -334,7 +333,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -393,7 +392,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -402,7 +401,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -411,7 +410,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -422,7 +421,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -434,7 +433,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -445,7 +444,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -504,7 +503,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -513,7 +512,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -522,7 +521,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -533,7 +532,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -545,7 +544,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -556,7 +555,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -615,7 +614,7 @@ func TestUploadProducerHeader(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -624,7 +623,7 @@ func TestUploadProducerHeader(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -633,7 +632,7 @@ func TestUploadProducerHeader(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -644,7 +643,7 @@ func TestUploadProducerHeader(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -656,7 +655,7 @@ func TestUploadProducerHeader(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -667,7 +666,7 @@ func TestUploadProducerHeader(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -726,7 +725,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -735,7 +734,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -744,7 +743,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -755,7 +754,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -767,7 +766,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -778,7 +777,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -837,7 +836,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -846,7 +845,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -855,7 +854,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -866,7 +865,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -878,7 +877,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -889,7 +888,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -981,7 +980,7 @@ func TestUploadProductMedia(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -990,7 +989,7 @@ func TestUploadProductMedia(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -999,7 +998,7 @@ func TestUploadProductMedia(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -1010,7 +1009,7 @@ func TestUploadProductMedia(t *testing.T) {
 				URL: iturl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1022,7 +1021,7 @@ func TestUploadProductMedia(t *testing.T) {
 				URL: iturl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1033,7 +1032,7 @@ func TestUploadProductMedia(t *testing.T) {
 				URL: isurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1092,7 +1091,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -1101,7 +1100,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -1110,7 +1109,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -1121,7 +1120,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1133,7 +1132,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1144,7 +1143,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1203,7 +1202,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -1212,7 +1211,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -1221,7 +1220,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -1232,7 +1231,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1244,7 +1243,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1255,7 +1254,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1314,7 +1313,7 @@ func TestUploadScheduleImage(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -1323,7 +1322,7 @@ func TestUploadScheduleImage(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -1332,7 +1331,7 @@ func TestUploadScheduleImage(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -1343,7 +1342,7 @@ func TestUploadScheduleImage(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1355,7 +1354,7 @@ func TestUploadScheduleImage(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1366,7 +1365,7 @@ func TestUploadScheduleImage(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1425,7 +1424,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UploadFileInput{},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid url",
@@ -1434,7 +1433,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 				URL: unknownURL,
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name:  "unknown storage host",
@@ -1443,7 +1442,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 				URL: uurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: media.ErrInvalidArgument,
 		},
 		{
 			name: "failed to download temporary file when upload",
@@ -1454,7 +1453,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1466,7 +1465,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1477,7 +1476,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: media.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

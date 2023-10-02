@@ -1,6 +1,9 @@
 package service
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -13,9 +16,12 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/validator"
+	govalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 )
+
+var errUnmatchProducts = errors.New("service: umnatch products")
 
 type Params struct {
 	WaitGroup  *sync.WaitGroup
@@ -72,5 +78,75 @@ func NewService(params *Params, opts ...Option) store.Service {
 		media:       params.Media,
 		postalCode:  params.PostalCode,
 		ivs:         params.Ivs,
+	}
+}
+
+func (s *service) isRetryable(err error) bool {
+	return errors.Is(err, media.ErrDeadlineExceeded) ||
+		errors.Is(err, media.ErrInternal) ||
+		errors.Is(err, user.ErrDeadlineExceeded) ||
+		errors.Is(err, user.ErrInternal)
+}
+
+func internalError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	if e, ok := err.(govalidator.ValidationErrors); ok {
+		return fmt.Errorf("%w: %s", store.ErrInvalidArgument, e.Error())
+	}
+	if e := dbError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+	if e := postalCodeError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+
+	switch {
+	case errors.Is(err, context.Canceled):
+		return fmt.Errorf("%w: %s", store.ErrCanceled, err.Error())
+	case errors.Is(err, context.DeadlineExceeded):
+		return fmt.Errorf("%w: %s", store.ErrDeadlineExceeded, err.Error())
+	default:
+		return fmt.Errorf("%w: %s", store.ErrInternal, err.Error())
+	}
+}
+
+func dbError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, database.ErrNotFound):
+		return store.ErrNotFound
+	case errors.Is(err, database.ErrFailedPrecondition):
+		return store.ErrFailedPrecondition
+	case errors.Is(err, database.ErrAlreadyExists):
+		return store.ErrAlreadyExists
+	case errors.Is(err, database.ErrDeadlineExceeded):
+		return store.ErrDeadlineExceeded
+	default:
+		return nil
+	}
+}
+
+func postalCodeError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, postalcode.ErrInvalidArgument):
+		return store.ErrInvalidArgument
+	case errors.Is(err, postalcode.ErrNotFound):
+		return store.ErrNotFound
+	case errors.Is(err, postalcode.ErrUnavailable):
+		return store.ErrUnavailable
+	case errors.Is(err, postalcode.ErrTimeout):
+		return store.ErrDeadlineExceeded
+	default:
+		return nil
 	}
 }
