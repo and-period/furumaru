@@ -102,10 +102,6 @@ func (a *administrator) Create(
 
 func (a *administrator) Update(ctx context.Context, administratorID string, params *database.UpdateAdministratorParams) error {
 	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := a.get(ctx, tx, administratorID); err != nil {
-			return err
-		}
-
 		now := a.now()
 		adminParams := map[string]interface{}{
 			"lastname":       params.Lastname,
@@ -139,10 +135,6 @@ func (a *administrator) Delete(
 	ctx context.Context, administratorID string, auth func(ctx context.Context) error,
 ) error {
 	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := a.get(ctx, tx, administratorID); err != nil {
-			return err
-		}
-
 		now := a.now()
 		administratorParams := map[string]interface{}{
 			"updated_at": now,

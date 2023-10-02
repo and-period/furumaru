@@ -537,17 +537,6 @@ func TestProducer_Update(t *testing.T) {
 				hasErr: false,
 			},
 		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				producerID: "admin-id",
-				params:     &database.UpdateProducerParams{},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
 	}
 
 	for _, tt := range tests {
@@ -976,17 +965,6 @@ func TestProducer_Delete(t *testing.T) {
 			},
 			want: want{
 				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				producerID: "admin-id",
-				auth:       func(ctx context.Context) error { return nil },
-			},
-			want: want{
-				hasErr: true,
 			},
 		},
 		{

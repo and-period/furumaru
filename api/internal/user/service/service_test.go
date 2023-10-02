@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
@@ -13,6 +14,7 @@ import (
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_database "github.com/and-period/furumaru/api/mock/user/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
@@ -129,4 +131,67 @@ func TestService(t *testing.T) {
 	t.Parallel()
 	srv := NewService(&Params{}, WithLogger(zap.NewNop()))
 	assert.NotNil(t, srv)
+}
+
+func TestInternalError(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		err    error
+		expect error
+	}{
+		{
+			name:   "not error",
+			err:    nil,
+			expect: nil,
+		},
+		{
+			name:   "validation error",
+			err:    govalidator.ValidationErrors{},
+			expect: user.ErrInvalidArgument,
+		},
+		{
+			name:   "database not found",
+			err:    database.ErrNotFound,
+			expect: user.ErrNotFound,
+		},
+		{
+			name:   "database failed precondition",
+			err:    database.ErrFailedPrecondition,
+			expect: user.ErrFailedPrecondition,
+		},
+		{
+			name:   "database already exists",
+			err:    database.ErrAlreadyExists,
+			expect: user.ErrAlreadyExists,
+		},
+		{
+			name:   "database deadline exceeded",
+			err:    database.ErrDeadlineExceeded,
+			expect: user.ErrDeadlineExceeded,
+		},
+		{
+			name:   "context canceled",
+			err:    context.Canceled,
+			expect: user.ErrCanceled,
+		},
+		{
+			name:   "context deadline exceeded",
+			err:    context.DeadlineExceeded,
+			expect: user.ErrDeadlineExceeded,
+		},
+		{
+			name:   "other error",
+			err:    assert.AnError,
+			expect: user.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := internalError(tt.err)
+			assert.ErrorIs(t, actual, tt.expect)
+		})
+	}
 }

@@ -126,10 +126,6 @@ func (p *producer) Create(
 
 func (p *producer) Update(ctx context.Context, producerID string, params *database.UpdateProducerParams) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := p.get(ctx, tx, producerID); err != nil {
-			return err
-		}
-
 		now := p.now()
 		adminParams := map[string]interface{}{
 			"lastname":       params.Lastname,
@@ -228,31 +224,25 @@ func (p *producer) UpdateHeaders(ctx context.Context, producerID string, headers
 }
 
 func (p *producer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
-	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		var id *string
-		if coordinatorID != "" {
-			id = &coordinatorID
-		}
+	var id *string
+	if coordinatorID != "" {
+		id = &coordinatorID
+	}
 
-		params := map[string]interface{}{
-			"coordinator_id": id,
-			"updated_at":     p.now(),
-		}
-		err := tx.WithContext(ctx).
-			Table(producerTable).
-			Where("admin_id IN (?)", producerIDs).
-			Updates(params).Error
-		return err
-	})
+	params := map[string]interface{}{
+		"coordinator_id": id,
+		"updated_at":     p.now(),
+	}
+	stmt := p.db.DB.WithContext(ctx).
+		Table(producerTable).
+		Where("admin_id IN (?)", producerIDs)
+
+	err := stmt.Updates(params).Error
 	return dbError(err)
 }
 
 func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := p.get(ctx, tx, producerID); err != nil {
-			return err
-		}
-
 		now := p.now()
 		producerParams := map[string]interface{}{
 			"updated_at": now,

@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -14,7 +13,7 @@ func (s *service) ListProductTags(
 	ctx context.Context, in *store.ListProductTagsInput,
 ) (entity.ProductTags, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	orders := make([]*database.ListProductTagsOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -43,7 +42,7 @@ func (s *service) ListProductTags(
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return productTags, total, nil
 }
@@ -52,43 +51,43 @@ func (s *service) MultiGetProductTags(
 	ctx context.Context, in *store.MultiGetProductTagsInput,
 ) (entity.ProductTags, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	productTags, err := s.db.ProductTag.MultiGet(ctx, in.ProductTagIDs)
-	return productTags, exception.InternalError(err)
+	return productTags, internalError(err)
 }
 
 func (s *service) GetProductTag(ctx context.Context, in *store.GetProductTagInput) (*entity.ProductTag, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	productTag, err := s.db.ProductTag.Get(ctx, in.ProductTagID)
-	return productTag, exception.InternalError(err)
+	return productTag, internalError(err)
 }
 
 func (s *service) CreateProductTag(ctx context.Context, in *store.CreateProductTagInput) (*entity.ProductTag, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	productTag := entity.NewProductTag(in.Name)
 	if err := s.db.ProductTag.Create(ctx, productTag); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	return productTag, nil
 }
 
 func (s *service) UpdateProductTag(ctx context.Context, in *store.UpdateProductTagInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.ProductTag.Update(ctx, in.ProductTagID, in.Name)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeleteProductTag(ctx context.Context, in *store.DeleteProductTagInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.ProductTag.Delete(ctx, in.ProductTagID)
-	return exception.InternalError(err)
+	return internalError(err)
 }

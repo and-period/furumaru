@@ -4,20 +4,23 @@ package database
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/dynamodb"
-	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/gorm"
 )
 
-type Params struct {
-	Database *mysql.Client
-	DynamoDB dynamodb.Client
-}
+var (
+	ErrInvalidArgument    = errors.New("database: invalid argument")
+	ErrNotFound           = errors.New("database: not found")
+	ErrAlreadyExists      = errors.New("database: already exists")
+	ErrFailedPrecondition = errors.New("database: failed precondition")
+	ErrCanceled           = errors.New("database: canceled")
+	ErrDeadlineExceeded   = errors.New("database: deadline exceeded")
+	ErrInternal           = errors.New("database: internal error")
+	ErrUnknown            = errors.New("database: unknown")
+)
 
 type Database struct {
 	Address     Address
@@ -27,26 +30,9 @@ type Database struct {
 	ProductTag  ProductTag
 	ProductType ProductType
 	Promotion   Promotion
-	Rehearsal   Rehearsal
 	Shipping    Shipping
 	Schedule    Schedule
 	Live        Live
-}
-
-func NewDatabase(params *Params) *Database {
-	return &Database{
-		Address:     NewAddress(params.Database),
-		Category:    NewCategory(params.Database),
-		Live:        NewLive(params.Database),
-		Order:       NewOrder(params.Database),
-		Product:     NewProduct(params.Database),
-		ProductTag:  NewProductTag(params.Database),
-		ProductType: NewProductType(params.Database),
-		Promotion:   NewPromotion(params.Database),
-		Rehearsal:   NewRehearsal(params.DynamoDB),
-		Shipping:    NewShipping(params.Database),
-		Schedule:    NewSchedule(params.Database),
-	}
 }
 
 /**
@@ -66,90 +52,6 @@ type Category interface {
 	Delete(ctx context.Context, categoryID string) error
 }
 
-type Live interface {
-	ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error)
-	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
-	Create(ctx context.Context, live *entity.Live) error
-	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
-	Delete(ctx context.Context, liveID string) error
-}
-
-type Order interface {
-	List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error)
-	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
-	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
-	Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error)
-}
-
-type Product interface {
-	List(ctx context.Context, params *ListProductsParams, fields ...string) (entity.Products, error)
-	Count(ctx context.Context, params *ListProductsParams) (int64, error)
-	MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error)
-	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
-	Create(ctx context.Context, product *entity.Product) error
-	Update(ctx context.Context, productID string, params *UpdateProductParams) error
-	UpdateMedia(ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool) error
-	Delete(ctx context.Context, productID string) error
-}
-
-type ProductTag interface {
-	List(ctx context.Context, params *ListProductTagsParams, fields ...string) (entity.ProductTags, error)
-	Count(ctx context.Context, params *ListProductTagsParams) (int64, error)
-	MultiGet(ctx context.Context, productTagIDs []string, fields ...string) (entity.ProductTags, error)
-	Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error)
-	Create(ctx context.Context, category *entity.ProductTag) error
-	Update(ctx context.Context, productTagID, name string) error
-	Delete(ctx context.Context, productTagID string) error
-}
-
-type ProductType interface {
-	List(ctx context.Context, params *ListProductTypesParams, fields ...string) (entity.ProductTypes, error)
-	Count(ctx context.Context, params *ListProductTypesParams) (int64, error)
-	MultiGet(ctx context.Context, productTypeIDs []string, fields ...string) (entity.ProductTypes, error)
-	Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error)
-	Create(ctx context.Context, productType *entity.ProductType) error
-	Update(ctx context.Context, productTypeID, name, iconURL string) error
-	UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error
-	Delete(ctx context.Context, productTypeID string) error
-}
-
-type Promotion interface {
-	List(ctx context.Context, params *ListPromotionsParams, fields ...string) (entity.Promotions, error)
-	Count(ctx context.Context, params *ListPromotionsParams) (int64, error)
-	MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error)
-	Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error)
-	Create(ctx context.Context, promotion *entity.Promotion) error
-	Update(ctx context.Context, promotionID string, params *UpdatePromotionParams) error
-	Delete(ctx context.Context, promotionID string) error
-}
-
-type Rehearsal interface {
-	Get(ctx context.Context, liveID string) (*entity.Rehearsal, error)
-	Create(ctx context.Context, rehearsal *entity.Rehearsal) error
-}
-
-type Schedule interface {
-	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
-	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
-	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
-	Create(ctx context.Context, schedule *entity.Schedule) error
-	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
-	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
-}
-
-type Shipping interface {
-	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
-	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
-	Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error)
-	MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error)
-	Create(ctx context.Context, shipping *entity.Shipping) error
-	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
-	Delete(ctx context.Context, shippingID string) error
-}
-
-/**
- * params
- */
 type ListCategoriesParams struct {
 	Name   string
 	Limit  int
@@ -162,20 +64,12 @@ type ListCategoriesOrder struct {
 	OrderByASC bool
 }
 
-func (p *ListCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
+type Live interface {
+	ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error)
+	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
+	Create(ctx context.Context, live *entity.Live) error
+	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
+	Delete(ctx context.Context, liveID string) error
 }
 
 type UpdateLiveParams struct {
@@ -183,6 +77,13 @@ type UpdateLiveParams struct {
 	Comment    string
 	StartAt    time.Time
 	EndAt      time.Time
+}
+
+type Order interface {
+	List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error)
+	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
+	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
+	Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error)
 }
 
 type ListOrdersParams struct {
@@ -197,20 +98,15 @@ type ListOrdersOrder struct {
 	OrderByASC bool
 }
 
-func (p *ListOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
+type Product interface {
+	List(ctx context.Context, params *ListProductsParams, fields ...string) (entity.Products, error)
+	Count(ctx context.Context, params *ListProductsParams) (int64, error)
+	MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error)
+	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
+	Create(ctx context.Context, product *entity.Product) error
+	Update(ctx context.Context, productID string, params *UpdateProductParams) error
+	UpdateMedia(ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool) error
+	Delete(ctx context.Context, productID string) error
 }
 
 type ListProductsParams struct {
@@ -225,28 +121,6 @@ type ListProductsParams struct {
 type ListProductsOrder struct {
 	Key        entity.ProductOrderBy
 	OrderByASC bool
-}
-
-func (p *ListProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
-	}
-	if p.ProducerID != "" {
-		stmt = stmt.Where("producer_id = ?", p.ProducerID)
-	}
-	if len(p.ProducerIDs) > 0 {
-		stmt = stmt.Where("producer_id IN (?)", p.ProducerIDs)
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
 }
 
 type UpdateProductParams struct {
@@ -279,6 +153,16 @@ type UpdateProductParams struct {
 	EndAt             time.Time
 }
 
+type ProductTag interface {
+	List(ctx context.Context, params *ListProductTagsParams, fields ...string) (entity.ProductTags, error)
+	Count(ctx context.Context, params *ListProductTagsParams) (int64, error)
+	MultiGet(ctx context.Context, productTagIDs []string, fields ...string) (entity.ProductTags, error)
+	Get(ctx context.Context, productTagID string, fields ...string) (*entity.ProductTag, error)
+	Create(ctx context.Context, category *entity.ProductTag) error
+	Update(ctx context.Context, productTagID, name string) error
+	Delete(ctx context.Context, productTagID string) error
+}
+
 type ListProductTagsParams struct {
 	Name   string
 	Limit  int
@@ -291,20 +175,15 @@ type ListProductTagsOrder struct {
 	OrderByASC bool
 }
 
-func (p *ListProductTagsParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
+type ProductType interface {
+	List(ctx context.Context, params *ListProductTypesParams, fields ...string) (entity.ProductTypes, error)
+	Count(ctx context.Context, params *ListProductTypesParams) (int64, error)
+	MultiGet(ctx context.Context, productTypeIDs []string, fields ...string) (entity.ProductTypes, error)
+	Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error)
+	Create(ctx context.Context, productType *entity.ProductType) error
+	Update(ctx context.Context, productTypeID, name, iconURL string) error
+	UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error
+	Delete(ctx context.Context, productTypeID string) error
 }
 
 type ListProductTypesParams struct {
@@ -320,23 +199,14 @@ type ListProductTypesOrder struct {
 	OrderByASC bool
 }
 
-func (p *ListProductTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
-	}
-	if p.CategoryID != "" {
-		stmt = stmt.Where("category_id = ?", p.CategoryID)
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
+type Promotion interface {
+	List(ctx context.Context, params *ListPromotionsParams, fields ...string) (entity.Promotions, error)
+	Count(ctx context.Context, params *ListPromotionsParams) (int64, error)
+	MultiGet(ctx context.Context, promotionIDs []string, fields ...string) (entity.Promotions, error)
+	Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error)
+	Create(ctx context.Context, promotion *entity.Promotion) error
+	Update(ctx context.Context, promotionID string, params *UpdatePromotionParams) error
+	Delete(ctx context.Context, promotionID string) error
 }
 
 type ListPromotionsParams struct {
@@ -349,22 +219,6 @@ type ListPromotionsParams struct {
 type ListPromotionsOrder struct {
 	Key        entity.PromotionOrderBy
 	OrderByASC bool
-}
-
-func (p *ListPromotionsParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.Title != "" {
-		stmt = stmt.Where("title LIKE ?", fmt.Sprintf("%%%s%%", p.Title))
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
 }
 
 type UpdatePromotionParams struct {
@@ -380,6 +234,15 @@ type UpdatePromotionParams struct {
 	EndAt        time.Time
 }
 
+type Schedule interface {
+	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
+	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
+	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
+	Create(ctx context.Context, schedule *entity.Schedule) error
+	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
+	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
+}
+
 type ListSchedulesParams struct {
 	StartAtGte time.Time
 	StartAtLt  time.Time
@@ -387,22 +250,6 @@ type ListSchedulesParams struct {
 	EndAtLt    time.Time
 	Limit      int
 	Offset     int
-}
-
-func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if !p.StartAtGte.IsZero() {
-		stmt = stmt.Where("start_at >= ?", p.StartAtGte)
-	}
-	if !p.StartAtLt.IsZero() {
-		stmt = stmt.Where("start_at < ?", p.StartAtLt)
-	}
-	if !p.EndAtGte.IsZero() {
-		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
-	}
-	if !p.EndAtLt.IsZero() {
-		stmt = stmt.Where("end_at < ?", p.EndAtLt)
-	}
-	return stmt
 }
 
 type UpdateScheduleParams struct {
@@ -417,6 +264,16 @@ type UpdateScheduleParams struct {
 	EndAt           time.Time
 }
 
+type Shipping interface {
+	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
+	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
+	Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error)
+	MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error)
+	Create(ctx context.Context, shipping *entity.Shipping) error
+	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
+	Delete(ctx context.Context, shippingID string) error
+}
+
 type ListShippingsParams struct {
 	CoordinatorID string
 	Name          string
@@ -428,25 +285,6 @@ type ListShippingsParams struct {
 type ListShippingsOrder struct {
 	Key        entity.ShippingOrderBy
 	OrderByASC bool
-}
-
-func (p *ListShippingsParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
-	}
-	if p.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
 }
 
 type UpdateShippingParams struct {

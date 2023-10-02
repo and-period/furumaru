@@ -127,10 +127,6 @@ func (c *coordinator) Create(
 
 func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *database.UpdateCoordinatorParams) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
-			return err
-		}
-
 		now := c.now()
 		adminParams := map[string]interface{}{
 			"lastname":       params.Lastname,
@@ -238,10 +234,6 @@ func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, h
 
 func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := c.get(ctx, tx, coordinatorID); err != nil {
-			return err
-		}
-
 		now := c.now()
 		coordinatorParams := map[string]interface{}{
 			"updated_at": now,

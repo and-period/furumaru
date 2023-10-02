@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -99,7 +98,7 @@ func TestListShippings(t *testing.T) {
 			input:       &store.ListShippingsInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrInvalidArgument,
+			expectErr:   store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list shippings",
@@ -117,7 +116,7 @@ func TestListShippings(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   store.ErrInternal,
 		},
 		{
 			name: "failed to count shippings",
@@ -135,7 +134,7 @@ func TestListShippings(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   store.ErrInternal,
 		},
 	}
 
@@ -219,7 +218,7 @@ func TestMutiGetShippings(t *testing.T) {
 				ShippingIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to multiGet",
@@ -230,7 +229,7 @@ func TestMutiGetShippings(t *testing.T) {
 				ShippingIDs: []string{"shipping-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 	}
 
@@ -309,7 +308,7 @@ func TestGetShipping(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetShippingInput{},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get shipping",
@@ -320,7 +319,7 @@ func TestGetShipping(t *testing.T) {
 				ShippingID: "shipping-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 	}
 
@@ -415,7 +414,7 @@ func TestCreateShipping(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateShippingInput{},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create shipping",
@@ -438,7 +437,7 @@ func TestCreateShipping(t *testing.T) {
 				HasFreeShipping:    true,
 				FreeShippingRates:  3000,
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 	}
 
@@ -530,7 +529,7 @@ func TestUpdateShipping(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateShippingInput{},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update shipping",
@@ -553,7 +552,7 @@ func TestUpdateShipping(t *testing.T) {
 				HasFreeShipping:    true,
 				FreeShippingRates:  3000,
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 	}
 
@@ -589,7 +588,7 @@ func TestDeleteShipping(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteShippingInput{},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete shipping",
@@ -599,7 +598,7 @@ func TestDeleteShipping(t *testing.T) {
 			input: &store.DeleteShippingInput{
 				ShippingID: "shipping-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 	}
 

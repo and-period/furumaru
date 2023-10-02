@@ -295,6 +295,68 @@ func TestAdmin_GetByEmail(t *testing.T) {
 	}
 }
 
+func TestAdmin_UpdateEmail(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	type args struct {
+		adminID string
+		email   string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				a := testAdmin("admin-id", "cognito-id", "test-admin@and-period.jp", now())
+				err = db.DB.Create(&a).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				adminID: "admin-id",
+				email:   "other@and-period.jp",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, adminTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &admin{db: db, now: now}
+			err = db.UpdateEmail(ctx, tt.args.adminID, tt.args.email)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestAdmin_UpdateDevice(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -335,17 +397,6 @@ func TestAdmin_UpdateDevice(t *testing.T) {
 			},
 			want: want{
 				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				adminID: "admin-id",
-				device:  "device",
-			},
-			want: want{
-				hasErr: true,
 			},
 		},
 	}

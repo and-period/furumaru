@@ -467,17 +467,6 @@ func TestCoordinator_Update(t *testing.T) {
 				hasErr: false,
 			},
 		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				coordinatorID: "admin-id",
-				params:        &database.UpdateCoordinatorParams{},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
 	}
 
 	for _, tt := range tests {
@@ -781,17 +770,6 @@ func TestCoordinator_Delete(t *testing.T) {
 			},
 			want: want{
 				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				coordinatorID: "admin-id",
-				auth:          func(ctx context.Context) error { return nil },
-			},
-			want: want{
-				hasErr: true,
 			},
 		},
 		{

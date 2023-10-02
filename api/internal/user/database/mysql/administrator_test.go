@@ -444,17 +444,6 @@ func TestAdministrator_Update(t *testing.T) {
 				hasErr: false,
 			},
 		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				administratorID: "admin-id",
-				params:          &database.UpdateAdministratorParams{},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
 	}
 
 	for _, tt := range tests {
@@ -518,17 +507,6 @@ func TestAdministrator_Delete(t *testing.T) {
 			},
 			want: want{
 				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				administratorID: "admin-id",
-				auth:            func(ctx context.Context) error { return nil },
-			},
-			want: want{
-				hasErr: true,
 			},
 		},
 		{

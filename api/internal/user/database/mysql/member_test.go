@@ -495,18 +495,6 @@ func TestUser_UpdateAccount(t *testing.T) {
 			},
 		},
 		{
-			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				userID:    "user-id",
-				accountID: "account-id",
-				username:  "username",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
 			name: "failed to duplicate account id",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
@@ -685,17 +673,6 @@ func TestMember_Delete(t *testing.T) {
 			},
 			want: want{
 				hasErr: false,
-			},
-		},
-		{
-			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				userID: "user-id",
-				auth:   func(ctx context.Context) error { return nil },
-			},
-			want: want{
-				hasErr: true,
 			},
 		},
 		{

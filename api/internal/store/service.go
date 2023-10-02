@@ -15,6 +15,7 @@ var (
 	ErrAlreadyExists      = errors.New("store: already exists")
 	ErrForbidden          = errors.New("store: forbidden")
 	ErrFailedPrecondition = errors.New("store: failed precondition")
+	ErrUnavailable        = errors.New("store: unavailable")
 	ErrCanceled           = errors.New("store: canceled")
 	ErrDeadlineExceeded   = errors.New("store: deadline exceeded")
 	ErrInternal           = errors.New("store: internal")

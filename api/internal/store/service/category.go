@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -14,7 +13,7 @@ func (s *service) ListCategories(
 	ctx context.Context, in *store.ListCategoriesInput,
 ) (entity.Categories, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	orders := make([]*database.ListCategoriesOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -43,7 +42,7 @@ func (s *service) ListCategories(
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return categories, total, nil
 }
@@ -52,43 +51,43 @@ func (s *service) MultiGetCategories(
 	ctx context.Context, in *store.MultiGetCategoriesInput,
 ) (entity.Categories, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	categories, err := s.db.Category.MultiGet(ctx, in.CategoryIDs)
-	return categories, exception.InternalError(err)
+	return categories, internalError(err)
 }
 
 func (s *service) GetCategory(ctx context.Context, in *store.GetCategoryInput) (*entity.Category, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	category, err := s.db.Category.Get(ctx, in.CategoryID)
-	return category, exception.InternalError(err)
+	return category, internalError(err)
 }
 
 func (s *service) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	category := entity.NewCategory(in.Name)
 	if err := s.db.Category.Create(ctx, category); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	return category, nil
 }
 
 func (s *service) UpdateCategory(ctx context.Context, in *store.UpdateCategoryInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Category.Update(ctx, in.CategoryID, in.Name)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeleteCategory(ctx context.Context, in *store.DeleteCategoryInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Category.Delete(ctx, in.CategoryID)
-	return exception.InternalError(err)
+	return internalError(err)
 }

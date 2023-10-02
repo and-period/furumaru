@@ -76,40 +76,28 @@ func (a *admin) GetByEmail(ctx context.Context, email string, fields ...string) 
 }
 
 func (a *admin) UpdateEmail(ctx context.Context, adminID, email string) error {
-	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := a.get(ctx, tx, adminID); err != nil {
-			return err
-		}
+	params := map[string]interface{}{
+		"email":      email,
+		"updated_at": a.now(),
+	}
+	stmt := a.db.DB.WithContext(ctx).
+		Table(adminTable).
+		Where("id = ?", adminID)
 
-		params := map[string]interface{}{
-			"email":      email,
-			"updated_at": a.now(),
-		}
-		err := tx.WithContext(ctx).
-			Table(adminTable).
-			Where("id = ?", adminID).
-			Updates(params).Error
-		return err
-	})
+	err := stmt.Updates(params).Error
 	return dbError(err)
 }
 
 func (a *admin) UpdateDevice(ctx context.Context, adminID, device string) error {
-	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := a.get(ctx, tx, adminID); err != nil {
-			return err
-		}
+	params := map[string]interface{}{
+		"device":     device,
+		"updated_at": a.now(),
+	}
+	stmt := a.db.DB.WithContext(ctx).
+		Table(adminTable).
+		Where("id = ?", adminID)
 
-		params := map[string]interface{}{
-			"device":     device,
-			"updated_at": a.now(),
-		}
-		err := tx.WithContext(ctx).
-			Table(adminTable).
-			Where("id = ?", adminID).
-			Updates(params).Error
-		return err
-	})
+	err := stmt.Updates(params).Error
 	return dbError(err)
 }
 

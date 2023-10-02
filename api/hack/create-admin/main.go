@@ -17,7 +17,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	"github.com/and-period/furumaru/api/internal/user/database"
+	database "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/log"
@@ -112,7 +112,7 @@ func run() error {
 
 func (a *app) newUserService() user.Service {
 	params := &usersrv.Params{
-		Database:  database.NewDatabase(&database.Params{Database: a.db}),
+		Database:  database.NewDatabase(a.db),
 		AdminAuth: a.auth,
 		Messenger: a.messenger,
 		WaitGroup: a.waitGroup,

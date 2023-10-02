@@ -102,10 +102,6 @@ func (m *member) UpdateVerified(ctx context.Context, userID string) error {
 
 func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username string) error {
 	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := m.get(ctx, tx, userID); err != nil {
-			return err
-		}
-
 		var current *entity.Member
 		err := m.db.Statement(ctx, tx, memberTable, "user_id").
 			Where("user_id != ?", userID).
@@ -159,10 +155,6 @@ func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 
 func (m *member) Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error {
 	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
-		if _, err := m.get(ctx, tx, userID, "user_id"); err != nil {
-			return err
-		}
-
 		now := m.now()
 		memberParams := map[string]interface{}{
 			"exists":     nil,

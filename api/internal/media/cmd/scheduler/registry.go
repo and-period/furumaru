@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/broadcast/scheduler"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
@@ -165,12 +165,9 @@ func newStoreService(p *params) (store.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &storedb.Params{
-		Database: mysql,
-	}
 	params := &storesrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  storedb.NewDatabase(dbParams),
+		Database:  storedb.NewDatabase(mysql),
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

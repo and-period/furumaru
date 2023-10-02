@@ -16,13 +16,12 @@ import (
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
-	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
@@ -61,7 +60,6 @@ type params struct {
 	tmpStorage      storage.Bucket
 	adminAuth       cognito.Client
 	userAuth        cognito.Client
-	dynamodb        dynamodb.Client
 	messengerQueue  sqs.Producer
 	mediaQueue      sqs.Producer
 	slack           slack.Client
@@ -139,12 +137,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		QueueURL: conf.SQSMediaQueueURL,
 	}
 	params.mediaQueue = sqs.NewProducer(awscfg, mediaSQSParams, sqs.WithDryRun(conf.SQSMockEnabled))
-
-	// Amazon DynamoDBの設定
-	dynamodbParams := &dynamodb.Params{
-		TablePrefix: params.config.Environment,
-	}
-	params.dynamodb = dynamodb.NewClient(awscfg, dynamodbParams, dynamodb.WithLogger(params.logger))
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -374,13 +366,9 @@ func newStoreService(
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &storedb.Params{
-		Database: mysql,
-		DynamoDB: p.dynamodb,
-	}
 	params := &storesrv.Params{
 		WaitGroup:  p.waitGroup,
-		Database:   storedb.NewDatabase(dbParams),
+		Database:   storedb.NewDatabase(mysql),
 		User:       user,
 		Messenger:  messenger,
 		Media:      media,
