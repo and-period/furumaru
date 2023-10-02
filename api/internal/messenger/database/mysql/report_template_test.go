@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/media/database"
+	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
