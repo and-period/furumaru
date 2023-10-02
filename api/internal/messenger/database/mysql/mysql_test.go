@@ -100,6 +100,11 @@ func TestDBError(t *testing.T) {
 			expect: nil,
 		},
 		{
+			name:   "database error",
+			err:    database.ErrFailedPrecondition,
+			expect: database.ErrFailedPrecondition,
+		},
+		{
 			name:   "context canceled",
 			err:    context.Canceled,
 			expect: database.ErrCanceled,

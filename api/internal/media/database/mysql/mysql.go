@@ -18,8 +18,9 @@ func NewDatabase(db *mysql.Client) *database.Database {
 }
 
 func dbError(err error) error {
-	if err == nil {
-		return nil
+	var derr *database.Error
+	if err == nil || errors.As(err, &derr) {
+		return err
 	}
 
 	switch {

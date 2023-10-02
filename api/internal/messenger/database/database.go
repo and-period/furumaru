@@ -11,14 +11,14 @@ import (
 )
 
 var (
-	ErrInvalidArgument    = errors.New("database: invalid argument")
-	ErrNotFound           = errors.New("database: not found")
-	ErrAlreadyExists      = errors.New("database: already exists")
-	ErrFailedPrecondition = errors.New("database: failed precondition")
-	ErrCanceled           = errors.New("database: canceled")
-	ErrDeadlineExceeded   = errors.New("database: deadline exceeded")
-	ErrInternal           = errors.New("database: internal error")
-	ErrUnknown            = errors.New("database: unknown")
+	ErrInvalidArgument    = &Error{err: errors.New("database: invalid argument")}
+	ErrNotFound           = &Error{err: errors.New("database: not found")}
+	ErrAlreadyExists      = &Error{err: errors.New("database: already exists")}
+	ErrFailedPrecondition = &Error{err: errors.New("database: failed precondition")}
+	ErrCanceled           = &Error{err: errors.New("database: canceled")}
+	ErrDeadlineExceeded   = &Error{err: errors.New("database: deadline exceeded")}
+	ErrInternal           = &Error{err: errors.New("database: internal error")}
+	ErrUnknown            = &Error{err: errors.New("database: unknown")}
 )
 
 type Database struct {
@@ -189,4 +189,16 @@ type UpdateThreadParams struct {
 	Content  string
 	UserID   string
 	UserType entity.ThreadUserType
+}
+
+type Error struct {
+	err error
+}
+
+func (e *Error) Error() string {
+	return e.err.Error()
+}
+
+func (e *Error) Unwrap() error {
+	return e.err
 }
