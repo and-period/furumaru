@@ -44,13 +44,25 @@ const handleClick = () => {
     <div class="relative w-full p-4">
       <div
         v-if="published"
-        class="absolute -left-8 -top-8 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange"
+        class="absolute -left-8 -top-8 z-[1] flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange"
       >
         <the-live-icon />
         <div class="text-xl font-bold uppercase text-white">live</div>
       </div>
 
-      <img :src="imgSrc" :alt="`live-${title}-thumbnail`" />
+      <div class="relative">
+        <img
+          :src="imgSrc"
+          :alt="`live-${title}-thumbnail`"
+          class="aspect-video"
+        />
+        <div
+          v-if="!published"
+          class="absolute bottom-0 flex h-[48px] w-full items-center justify-center bg-black/50 text-[16px] font-bold tracking-[1.6px] text-white"
+        >
+          {{ formattedStartAt }} 〜 配信予定
+        </div>
+      </div>
 
       <div class="mt-4 flex w-full flex-col gap-2">
         <div class="flex items-center text-sm">
