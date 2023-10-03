@@ -62,6 +62,20 @@ const banners: string[] = [
   '/img/banner.png',
   '/img/banner.png',
 ]
+
+const isOpen = ref<boolean>(false)
+
+const handleClickMoreViewButton = () => {
+  isOpen.value = !isOpen.value
+}
+
+const liveItems = computed(() => {
+  if (isOpen.value) {
+    return MOCK_LIVE_ITEMS
+  } else {
+    return MOCK_LIVE_ITEMS.slice(0, 6)
+  }
+})
 </script>
 
 <template>
@@ -70,29 +84,40 @@ const banners: string[] = [
 
     <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
-        <div
-          class="mx-auto grid max-w-7xl grid-cols-3 grid-rows-2 gap-x-10 gap-y-8 px-2"
-        >
-          <the-live-item
-            v-for="liveItem in MOCK_LIVE_ITEMS"
-            :id="liveItem.id"
-            :key="liveItem.id"
-            :title="liveItem.title"
-            :img-src="liveItem.imgSrc"
-            :start-at="liveItem.startAt"
-            :published="liveItem.published"
-            :marche-name="liveItem.marcheName"
-            :address="liveItem.address"
-            :cn-name="liveItem.cnName"
-            :cn-img-src="liveItem.cnImgSrc"
-            @click="handleClickLiveItem(id)"
-          />
+        <div class="mx-auto grid max-w-7xl grid-cols-3 gap-x-10 gap-y-8 px-2">
+          <transition-group
+            enter-active-class="duration-300 ease-in-out"
+            enter-from-class="opacity-0 h-0"
+            enter-to-class="opacity-100 h-full"
+            leave-active-class="duration-300 ease-in-out"
+            leave-from-class="opacity-100 h-full"
+            leave-to-class="opacity-0 h-0"
+          >
+            <the-live-item
+              v-for="liveItem in liveItems"
+              :id="liveItem.id"
+              :key="liveItem.id"
+              :title="liveItem.title"
+              :img-src="liveItem.imgSrc"
+              :start-at="liveItem.startAt"
+              :published="liveItem.published"
+              :marche-name="liveItem.marcheName"
+              :address="liveItem.address"
+              :cn-name="liveItem.cnName"
+              :cn-img-src="liveItem.cnImgSrc"
+              @click="handleClickLiveItem(id)"
+            />
+          </transition-group>
         </div>
         <div class="mb-4 mt-10 flex w-full justify-center">
-          <button class="relative w-60 bg-main py-2 text-white">
+          <button
+            class="relative w-60 bg-main py-2 text-white"
+            @click="handleClickMoreViewButton"
+          >
             もっと見る
             <div class="absolute bottom-3.5 right-4">
-              <the-down-arrow-icon fill="white" />
+              <the-up-arrow-icon v-show="isOpen" fill="white" />
+              <the-down-arrow-icon v-show="!isOpen" fill="white" />
             </div>
           </button>
         </div>
