@@ -102,7 +102,7 @@ export const MOCK_LIVE_ITEMS: LiveItemMock[] = [
   },
   {
     id: '7',
-    imgSrc: '/img/live/6.png',
+    imgSrc: '/img/live/7.png',
     title: '［大崎上島マルシェ］瀬戸内海の島の美味しいものを紹介します！',
     startAt: 1665396001,
     published: false,
