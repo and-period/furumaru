@@ -87,5 +87,12 @@ export interface I18n {
       forthPointDescription: string
       forthPointLinkText: string
     }
-  }
+  };
+
+  purchase: {
+    complete: {
+      thanksMessage: string,
+      completeMessage: string
+    }
+  };
 }
