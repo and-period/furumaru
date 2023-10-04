@@ -18,6 +18,9 @@ https://www.and-period.co.jp/
 ## メールアドレス
 support@and-period.co.jp
 
+## URL
+https://www.furumaru.and-period.co.jp/
+
 ## 引き渡し時期
 ご注文から7日以内に発送いたします。（商品によっては収穫時期により異なる）
 
