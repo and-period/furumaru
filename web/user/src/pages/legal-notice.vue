@@ -1,0 +1,21 @@
+<script setup lang="ts">
+const { $md } = useNuxtApp()
+const content = ref<string>('# テスト')
+
+const renderedContent = computed<string>(() => {
+  return $md.render(content.value)
+})
+
+const fetchContent = async () => {
+  const response = await $fetch('/content/legalPolicy.md')
+  content.value = response as string
+}
+
+fetchContent()
+</script>
+
+<template>
+  <div class="mx-auto max-w-5xl">
+    <div class="prose max-w-none p-4" v-html="renderedContent"></div>
+  </div>
+</template>
