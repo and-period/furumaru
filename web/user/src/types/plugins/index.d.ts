@@ -1,8 +1,7 @@
 import 'pinia'
 import { AuthApi } from '../api'
 import { CustomErrorMessage } from '~/plugins/api-error-handler'
-import VueI18n from "vue-i18n";
-
+import VueI18n from 'vue-i18n'
 
 declare module 'pinia' {
   export interface PiniaCustomProperties {
@@ -14,9 +13,15 @@ declare module 'pinia' {
      */
     errorHandler: (
       error: unknown,
-      customObject?: CustomErrorMessage
+      customObject?: CustomErrorMessage,
     ) => Promise<never>
     authApiClient: (token?: string) => AuthApi
     i18n: VueI18
+  }
+}
+
+declare module '#app' {
+  interface NuxtApp {
+    $md: MarkdownIt
   }
 }
