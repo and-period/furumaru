@@ -1884,7 +1884,7 @@ export interface CreateShippingRequest {
      * @type {string}
      * @memberof CreateShippingRequest
      */
-    'cordinatorId': string;
+    'coordinatorId': string;
     /**
      * デフォルト設定
      * @type {boolean}

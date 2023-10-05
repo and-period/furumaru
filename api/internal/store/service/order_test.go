@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -29,10 +28,9 @@ func TestListOrders(t *testing.T) {
 			ScheduleID:        "schedule-id",
 			PromotionID:       "",
 			CoordinatorID:     "coordinator-id",
-			PaymentStatus:     entity.PaymentStatusInitialized,
+			PaymentStatus:     entity.PaymentStatusPending,
 			FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
-			CancelType:        entity.CancelTypeUnknown,
-			CancelReason:      "",
+			RefundReason:      "",
 			CreatedAt:         now,
 			UpdatedAt:         now,
 			OrderItems: []*entity.OrderItem{
@@ -57,8 +55,7 @@ func TestListOrders(t *testing.T) {
 				OrderID:       "order-id",
 				AddressID:     "address-id",
 				TransactionID: "transaction-id",
-				MethodType:    entity.PaymentMethodTypeCard,
-				MethodID:      "payment-id",
+				MethodType:    entity.PaymentMethodTypeCreditCard,
 				Subtotal:      1100,
 				Discount:      0,
 				ShippingFee:   500,
@@ -110,7 +107,7 @@ func TestListOrders(t *testing.T) {
 			input:       &store.ListOrdersInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrInvalidArgument,
+			expectErr:   store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list orders",
@@ -125,7 +122,7 @@ func TestListOrders(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   store.ErrInternal,
 		},
 		{
 			name: "failed to count orders",
@@ -140,7 +137,7 @@ func TestListOrders(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   store.ErrInternal,
 		},
 	}
 
@@ -162,9 +159,9 @@ func TestGetOrder(t *testing.T) {
 	order := &entity.Order{
 		ID:                "order-id",
 		UserID:            "user-id",
-		PaymentStatus:     entity.PaymentStatusInitialized,
+		PaymentStatus:     entity.PaymentStatusPending,
 		FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
-		CancelType:        entity.CancelTypeUnknown,
+		RefundReason:      "",
 		CreatedAt:         now,
 		UpdatedAt:         now,
 		OrderItems: []*entity.OrderItem{
@@ -189,8 +186,7 @@ func TestGetOrder(t *testing.T) {
 			OrderID:       "order-id",
 			AddressID:     "address-id",
 			TransactionID: "transaction-id",
-			MethodType:    entity.PaymentMethodTypeCard,
-			MethodID:      "payment-id",
+			MethodType:    entity.PaymentMethodTypeCreditCard,
 			Subtotal:      1100,
 			Discount:      0,
 			ShippingFee:   500,
@@ -235,7 +231,7 @@ func TestGetOrder(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetOrderInput{},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get order",
@@ -246,7 +242,7 @@ func TestGetOrder(t *testing.T) {
 				OrderID: "order-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 	}
 
@@ -297,7 +293,7 @@ func TestAggregateOrders(t *testing.T) {
 				UserIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to aggregate",
@@ -308,7 +304,7 @@ func TestAggregateOrders(t *testing.T) {
 				UserIDs: []string{"user-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 	}
 

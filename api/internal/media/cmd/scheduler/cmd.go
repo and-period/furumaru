@@ -9,7 +9,7 @@ type app struct {
 //nolint:revive
 func NewApp() *app {
 	cmd := &cobra.Command{
-		Use:   "media",
+		Use:   "scheduler",
 		Short: "media scheduler",
 	}
 	app := &app{Command: cmd}

@@ -8,30 +8,28 @@ import (
 	"time"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
-	shandler "github.com/and-period/furumaru/api/internal/gateway/stripe/handler"
+	komoju "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
 	"github.com/and-period/furumaru/api/internal/media"
-	mediadb "github.com/and-period/furumaru/api/internal/media/database"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
-	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
+	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	userdb "github.com/and-period/furumaru/api/internal/user/database"
+	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
-	"github.com/and-period/furumaru/api/pkg/database"
-	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
-	"github.com/and-period/furumaru/api/pkg/stripe"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -48,39 +46,35 @@ type registry struct {
 	slack     slack.Client
 	newRelic  *newrelic.Application
 	v1        v1.Handler
-	stripe    shandler.Handler
+	komoju    komoju.Handler
 }
 
 type params struct {
-	config           *config
-	logger           *zap.Logger
-	waitGroup        *sync.WaitGroup
-	enforcer         rbac.Enforcer
-	aws              aws.Config
-	secret           secret.Client
-	storage          storage.Bucket
-	tmpStorage       storage.Bucket
-	adminAuth        cognito.Client
-	userAuth         cognito.Client
-	dynamodb         dynamodb.Client
-	messengerQueue   sqs.Producer
-	mediaQueue       sqs.Producer
-	slack            slack.Client
-	newRelic         *newrelic.Application
-	receiver         stripe.Receiver
-	adminWebURL      *url.URL
-	userWebURL       *url.URL
-	postalCode       postalcode.Client
-	now              func() time.Time
-	dbHost           string
-	dbPort           string
-	dbUsername       string
-	dbPassword       string
-	slackToken       string
-	slackChannelID   string
-	newRelicLicense  string
-	stripeSecretKey  string
-	stripeWebhookKey string
+	config          *config
+	logger          *zap.Logger
+	waitGroup       *sync.WaitGroup
+	enforcer        rbac.Enforcer
+	aws             aws.Config
+	secret          secret.Client
+	storage         storage.Bucket
+	tmpStorage      storage.Bucket
+	adminAuth       cognito.Client
+	userAuth        cognito.Client
+	messengerQueue  sqs.Producer
+	mediaQueue      sqs.Producer
+	slack           slack.Client
+	newRelic        *newrelic.Application
+	adminWebURL     *url.URL
+	userWebURL      *url.URL
+	postalCode      postalcode.Client
+	now             func() time.Time
+	dbHost          string
+	dbPort          string
+	dbUsername      string
+	dbPassword      string
+	slackToken      string
+	slackChannelID  string
+	newRelicLicense string
 }
 
 //nolint:funlen
@@ -144,12 +138,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.mediaQueue = sqs.NewProducer(awscfg, mediaSQSParams, sqs.WithDryRun(conf.SQSMockEnabled))
 
-	// Amazon DynamoDBの設定
-	dynamodbParams := &dynamodb.Params{
-		TablePrefix: params.config.Environment,
-	}
-	params.dynamodb = dynamodb.NewClient(awscfg, dynamodbParams, dynamodb.WithLogger(params.logger))
-
 	// New Relicの設定
 	if params.newRelicLicense != "" {
 		newrelicApp, err := newrelic.NewApplication(
@@ -162,13 +150,6 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		}
 		params.newRelic = newrelicApp
 	}
-
-	// Stripeの設定
-	stripeParams := &stripe.Params{
-		SecretKey:  params.stripeSecretKey,
-		WebhookKey: params.stripeWebhookKey,
-	}
-	params.receiver = stripe.NewReceiver(stripeParams, stripe.WithLogger(logger))
 
 	// Slackの設定
 	if params.slackToken != "" {
@@ -221,9 +202,8 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Messenger: messengerService,
 		Media:     mediaService,
 	}
-	shandlerParams := &shandler.Params{
+	komojuParams := &komoju.Params{
 		WaitGroup: params.waitGroup,
-		Receiver:  params.receiver,
 	}
 	return &registry{
 		appName:   conf.AppName,
@@ -233,7 +213,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		slack:     params.slack,
 		newRelic:  params.newRelic,
 		v1:        v1.NewHandler(v1Params, v1.WithLogger(logger)),
-		stripe:    shandler.NewHandler(shandlerParams, shandler.WithLogger(logger)),
+		komoju:    komoju.NewHandler(komojuParams, komoju.WithLogger(logger)),
 	}, nil
 }
 
@@ -286,26 +266,11 @@ func getSecret(ctx context.Context, p *params) error {
 		p.newRelicLicense = secrets["license"]
 		return nil
 	})
-	eg.Go(func() error {
-		// Stripe認証情報の取得
-		if p.config.StripeSecretName == "" {
-			p.stripeSecretKey = p.config.StripeSecretKey
-			p.stripeWebhookKey = p.config.StripeWebhookKey
-			return nil
-		}
-		secrets, err := p.secret.Get(ectx, p.config.StripeSecretName)
-		if err != nil {
-			return err
-		}
-		p.stripeSecretKey = secrets["secretKey"]
-		p.stripeWebhookKey = secrets["webhookKey"]
-		return nil
-	})
 	return eg.Wait()
 }
 
-func newDatabase(dbname string, p *params) (*database.Client, error) {
-	params := &database.Params{
+func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
 		Socket:   p.config.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
@@ -317,12 +282,12 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	cli, err := database.NewClient(
+	cli, err := mysql.NewClient(
 		params,
-		database.WithLogger(p.logger),
-		database.WithNow(p.now),
-		database.WithTLS(p.config.DBEnabledTLS),
-		database.WithLocation(location),
+		mysql.WithLogger(p.logger),
+		mysql.WithNow(p.now),
+		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithLocation(location),
 	)
 	if err != nil {
 		return nil, err
@@ -338,12 +303,9 @@ func newMediaService(p *params) (media.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &mediadb.Params{
-		Database: mysql,
-	}
 	params := &mediasrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  mediadb.NewDatabase(dbParams),
+		Database:  mediadb.NewDatabase(mysql),
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
 		Producer:  p.mediaQueue,
@@ -355,9 +317,6 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	mysql, err := newDatabase("messengers", p)
 	if err != nil {
 		return nil, err
-	}
-	dbParams := &messengerdb.Params{
-		Database: mysql,
 	}
 	user, err := newUserService(p, nil, nil)
 	if err != nil {
@@ -372,7 +331,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 		Producer:    p.messengerQueue,
 		AdminWebURL: p.adminWebURL,
 		UserWebURL:  p.userWebURL,
-		Database:    messengerdb.NewDatabase(dbParams),
+		Database:    messengerdb.NewDatabase(mysql),
 		User:        user,
 		Store:       store,
 	}
@@ -384,16 +343,13 @@ func newUserService(p *params, media media.Service, messenger messenger.Service)
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &userdb.Params{
-		Database: mysql,
-	}
 	store, err := newStoreService(p, nil, nil, nil)
 	if err != nil {
 		return nil, err
 	}
 	params := &usersrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  userdb.NewDatabase(dbParams),
+		Database:  userdb.NewDatabase(mysql),
 		AdminAuth: p.adminAuth,
 		UserAuth:  p.userAuth,
 		Store:     store,
@@ -410,13 +366,9 @@ func newStoreService(
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &storedb.Params{
-		Database: mysql,
-		DynamoDB: p.dynamodb,
-	}
 	params := &storesrv.Params{
 		WaitGroup:  p.waitGroup,
-		Database:   storedb.NewDatabase(dbParams),
+		Database:   storedb.NewDatabase(mysql),
 		User:       user,
 		Messenger:  messenger,
 		Media:      media,

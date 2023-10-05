@@ -267,158 +267,38 @@ func (mr *MockContactReadMockRecorder) Create(ctx, contactRead interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockContactRead)(nil).Create), ctx, contactRead)
 }
 
-// Get mocks base method.
-func (m *MockContactRead) Get(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error) {
+// GetByContactIDAndUserID mocks base method.
+func (m *MockContactRead) GetByContactIDAndUserID(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, contactID, userID}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret := m.ctrl.Call(m, "GetByContactIDAndUserID", varargs...)
 	ret0, _ := ret[0].(*entity.ContactRead)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Get indicates an expected call of Get.
-func (mr *MockContactReadMockRecorder) Get(ctx, contactID, userID interface{}, fields ...interface{}) *gomock.Call {
+// GetByContactIDAndUserID indicates an expected call of GetByContactIDAndUserID.
+func (mr *MockContactReadMockRecorder) GetByContactIDAndUserID(ctx, contactID, userID interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, contactID, userID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockContactRead)(nil).Get), varargs...)
-}
-
-// UpdateRead mocks base method.
-func (m *MockContactRead) UpdateRead(ctx context.Context, params *database.UpdateContactReadFlagParams) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateRead", ctx, params)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateRead indicates an expected call of UpdateRead.
-func (mr *MockContactReadMockRecorder) UpdateRead(ctx, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRead", reflect.TypeOf((*MockContactRead)(nil).UpdateRead), ctx, params)
-}
-
-// MockThread is a mock of Thread interface.
-type MockThread struct {
-	ctrl     *gomock.Controller
-	recorder *MockThreadMockRecorder
-}
-
-// MockThreadMockRecorder is the mock recorder for MockThread.
-type MockThreadMockRecorder struct {
-	mock *MockThread
-}
-
-// NewMockThread creates a new mock instance.
-func NewMockThread(ctrl *gomock.Controller) *MockThread {
-	mock := &MockThread{ctrl: ctrl}
-	mock.recorder = &MockThreadMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockThread) EXPECT() *MockThreadMockRecorder {
-	return m.recorder
-}
-
-// Count mocks base method.
-func (m *MockThread) Count(ctx context.Context, params *database.ListThreadsByContactIDParams) (int64, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Count", ctx, params)
-	ret0, _ := ret[0].(int64)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Count indicates an expected call of Count.
-func (mr *MockThreadMockRecorder) Count(ctx, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockThread)(nil).Count), ctx, params)
-}
-
-// Create mocks base method.
-func (m *MockThread) Create(ctx context.Context, thread *entity.Thread) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, thread)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockThreadMockRecorder) Create(ctx, thread interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockThread)(nil).Create), ctx, thread)
-}
-
-// Delete mocks base method.
-func (m *MockThread) Delete(ctx context.Context, threadID string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", ctx, threadID)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Delete indicates an expected call of Delete.
-func (mr *MockThreadMockRecorder) Delete(ctx, threadID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockThread)(nil).Delete), ctx, threadID)
-}
-
-// Get mocks base method.
-func (m *MockThread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, threadID}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Get", varargs...)
-	ret0, _ := ret[0].(*entity.Thread)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockThreadMockRecorder) Get(ctx, threadID interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, threadID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockThread)(nil).Get), varargs...)
-}
-
-// ListByContactID mocks base method.
-func (m *MockThread) ListByContactID(ctx context.Context, params *database.ListThreadsByContactIDParams, fields ...string) (entity.Threads, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, params}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "ListByContactID", varargs...)
-	ret0, _ := ret[0].(entity.Threads)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListByContactID indicates an expected call of ListByContactID.
-func (mr *MockThreadMockRecorder) ListByContactID(ctx, params interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, params}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByContactID", reflect.TypeOf((*MockThread)(nil).ListByContactID), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByContactIDAndUserID", reflect.TypeOf((*MockContactRead)(nil).GetByContactIDAndUserID), varargs...)
 }
 
 // Update mocks base method.
-func (m *MockThread) Update(ctx context.Context, threadID string, params *database.UpdateThreadParams) error {
+func (m *MockContactRead) Update(ctx context.Context, params *database.UpdateContactReadParams) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, threadID, params)
+	ret := m.ctrl.Call(m, "Update", ctx, params)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockThreadMockRecorder) Update(ctx, threadID, params interface{}) *gomock.Call {
+func (mr *MockContactReadMockRecorder) Update(ctx, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockThread)(nil).Update), ctx, threadID, params)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockContactRead)(nil).Update), ctx, params)
 }
 
 // MockMessage is a mock of Message interface.
@@ -930,4 +810,124 @@ func (m *MockSchedule) UpsertProcessing(ctx context.Context, schedule *entity.Sc
 func (mr *MockScheduleMockRecorder) UpsertProcessing(ctx, schedule interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertProcessing", reflect.TypeOf((*MockSchedule)(nil).UpsertProcessing), ctx, schedule)
+}
+
+// MockThread is a mock of Thread interface.
+type MockThread struct {
+	ctrl     *gomock.Controller
+	recorder *MockThreadMockRecorder
+}
+
+// MockThreadMockRecorder is the mock recorder for MockThread.
+type MockThreadMockRecorder struct {
+	mock *MockThread
+}
+
+// NewMockThread creates a new mock instance.
+func NewMockThread(ctrl *gomock.Controller) *MockThread {
+	mock := &MockThread{ctrl: ctrl}
+	mock.recorder = &MockThreadMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockThread) EXPECT() *MockThreadMockRecorder {
+	return m.recorder
+}
+
+// Count mocks base method.
+func (m *MockThread) Count(ctx context.Context, params *database.ListThreadsParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockThreadMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockThread)(nil).Count), ctx, params)
+}
+
+// Create mocks base method.
+func (m *MockThread) Create(ctx context.Context, thread *entity.Thread) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, thread)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockThreadMockRecorder) Create(ctx, thread interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockThread)(nil).Create), ctx, thread)
+}
+
+// Delete mocks base method.
+func (m *MockThread) Delete(ctx context.Context, threadID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, threadID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockThreadMockRecorder) Delete(ctx, threadID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockThread)(nil).Delete), ctx, threadID)
+}
+
+// Get mocks base method.
+func (m *MockThread) Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, threadID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Thread)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockThreadMockRecorder) Get(ctx, threadID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, threadID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockThread)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockThread) List(ctx context.Context, params *database.ListThreadsParams, fields ...string) (entity.Threads, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Threads)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockThreadMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockThread)(nil).List), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockThread) Update(ctx context.Context, threadID string, params *database.UpdateThreadParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, threadID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockThreadMockRecorder) Update(ctx, threadID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockThread)(nil).Update), ctx, threadID, params)
 }

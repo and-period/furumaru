@@ -4,23 +4,27 @@ package database
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
-	"gorm.io/gorm"
 )
 
-type Params struct {
-	Database *database.Client
-}
+var (
+	ErrInvalidArgument    = &Error{err: errors.New("database: invalid argument")}
+	ErrNotFound           = &Error{err: errors.New("database: not found")}
+	ErrAlreadyExists      = &Error{err: errors.New("database: already exists")}
+	ErrFailedPrecondition = &Error{err: errors.New("database: failed precondition")}
+	ErrCanceled           = &Error{err: errors.New("database: canceled")}
+	ErrDeadlineExceeded   = &Error{err: errors.New("database: deadline exceeded")}
+	ErrInternal           = &Error{err: errors.New("database: internal error")}
+	ErrUnknown            = &Error{err: errors.New("database: unknown")}
+)
 
 type Database struct {
 	Contact         Contact
 	ContactCategory ContactCategory
 	ContactRead     ContactRead
-	Thread          Thread
 	Message         Message
 	MessageTemplate MessageTemplate
 	Notification    Notification
@@ -28,24 +32,8 @@ type Database struct {
 	ReceivedQueue   ReceivedQueue
 	ReportTemplate  ReportTemplate
 	Schedule        Schedule
+	Thread          Thread
 }
-
-func NewDatabase(params *Params) *Database {
-	return &Database{
-		Contact:         NewContact(params.Database),
-		Message:         NewMessage(params.Database),
-		MessageTemplate: NewMessageTemplate(params.Database),
-		Notification:    NewNotification(params.Database),
-		PushTemplate:    NewPushTemplate(params.Database),
-		ReceivedQueue:   NewReceivedQueue(params.Database),
-		ReportTemplate:  NewReportTemplate(params.Database),
-		Schedule:        NewSchedule(params.Database),
-	}
-}
-
-/**
- * interface
- */
 
 type Contact interface {
 	List(ctx context.Context, params *ListContactsParams, fields ...string) (entity.Contacts, error)
@@ -56,6 +44,24 @@ type Contact interface {
 	Delete(ctx context.Context, contactID string) error
 }
 
+type ListContactsParams struct {
+	Limit  int
+	Offset int
+}
+
+type UpdateContactParams struct {
+	Title       string
+	CategoryID  string
+	Content     string
+	Username    string
+	UserID      string
+	Email       string
+	PhoneNumber string
+	Status      entity.ContactStatus
+	ResponderID string
+	Note        string
+}
+
 type ContactCategory interface {
 	Get(ctx context.Context, categoryID string, fields ...string) (*entity.ContactCategory, error)
 	List(ctx context.Context, params *ListContactCategoriesParams, fields ...string) (entity.ContactCategories, error)
@@ -63,19 +69,21 @@ type ContactCategory interface {
 	Create(ctx context.Context, category *entity.ContactCategory) error
 }
 
-type ContactRead interface {
-	Get(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error)
-	Create(ctx context.Context, contactRead *entity.ContactRead) error
-	UpdateRead(ctx context.Context, params *UpdateContactReadFlagParams) error
+type ListContactCategoriesParams struct {
+	Limit  int
+	Offset int
 }
 
-type Thread interface {
-	Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error)
-	ListByContactID(ctx context.Context, params *ListThreadsByContactIDParams, fields ...string) (entity.Threads, error)
-	Count(ctx context.Context, params *ListThreadsByContactIDParams) (int64, error)
-	Create(ctx context.Context, thread *entity.Thread) error
-	Update(ctx context.Context, threadID string, params *UpdateThreadParams) error
-	Delete(ctx context.Context, threadID string) error
+type ContactRead interface {
+	GetByContactIDAndUserID(ctx context.Context, contactID, userID string, fields ...string) (*entity.ContactRead, error)
+	Create(ctx context.Context, contactRead *entity.ContactRead) error
+	Update(ctx context.Context, params *UpdateContactReadParams) error
+}
+
+type UpdateContactReadParams struct {
+	ContactID string
+	UserID    string
+	Read      bool
 }
 
 type Message interface {
@@ -84,6 +92,19 @@ type Message interface {
 	Get(ctx context.Context, messageID string, fields ...string) (*entity.Message, error)
 	MultiCreate(ctx context.Context, messages entity.Messages) error
 	UpdateRead(ctx context.Context, messageID string) error
+}
+
+type ListMessagesParams struct {
+	Limit    int
+	Offset   int
+	UserType entity.UserType
+	UserID   string
+	Orders   []*ListMessagesOrder
+}
+
+type ListMessagesOrder struct {
+	Key        entity.MessageOrderBy
+	OrderByASC bool
 }
 
 type MessageTemplate interface {
@@ -97,6 +118,28 @@ type Notification interface {
 	Create(ctx context.Context, notification *entity.Notification) error
 	Update(ctx context.Context, notificationID string, params *UpdateNotificationParams) error
 	Delete(ctx context.Context, notificationID string) error
+}
+
+type ListNotificationsParams struct {
+	Limit  int
+	Offset int
+	Since  time.Time
+	Until  time.Time
+	Orders []*ListNotificationsOrder
+}
+
+type ListNotificationsOrder struct {
+	Key        entity.NotificationOrderBy
+	OrderByASC bool
+}
+
+type UpdateNotificationParams struct {
+	Targets     []entity.NotificationTarget
+	Title       string
+	Body        string
+	Note        string
+	PublishedAt time.Time
+	UpdatedBy   string
 }
 
 type PushTemplate interface {
@@ -120,83 +163,6 @@ type Schedule interface {
 	UpdateCancel(ctx context.Context, messageType entity.ScheduleType, messageID string) error
 }
 
-/**
- * params
- */
-
-type ListMessagesParams struct {
-	Limit    int
-	Offset   int
-	UserType entity.UserType
-	UserID   string
-	Orders   []*ListMessagesOrder
-}
-
-type ListMessagesOrder struct {
-	Key        entity.MessageOrderBy
-	OrderByASC bool
-}
-
-func (p *ListMessagesParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.UserType != entity.UserTypeNone {
-		stmt = stmt.Where("user_type = ?", p.UserType)
-	}
-	if p.UserID != "" {
-		stmt = stmt.Where("user_id = ?", p.UserID)
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
-}
-
-type ListNotificationsParams struct {
-	Limit  int
-	Offset int
-	Since  time.Time
-	Until  time.Time
-	Orders []*ListNotificationsOrder
-}
-
-type ListNotificationsOrder struct {
-	Key        entity.NotificationOrderBy
-	OrderByASC bool
-}
-
-func (p *ListNotificationsParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if !p.Since.IsZero() {
-		stmt = stmt.Where("published_at >= ?", p.Since)
-	}
-	if !p.Until.IsZero() {
-		stmt = stmt.Where("published_at <= ?", p.Until)
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	return stmt
-}
-
-type UpdateNotificationParams struct {
-	Targets     []entity.NotificationTarget
-	Title       string
-	Body        string
-	Note        string
-	PublishedAt time.Time
-	UpdatedBy   string
-}
-
 type ListSchedulesParams struct {
 	Types    []entity.ScheduleType
 	Statuses []entity.ScheduleStatus
@@ -204,43 +170,19 @@ type ListSchedulesParams struct {
 	Until    time.Time
 }
 
-func (p *ListSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if len(p.Types) > 0 {
-		stmt = stmt.Where("message_type IN (?)", p.Types)
-	}
-	if len(p.Statuses) > 0 {
-		stmt = stmt.Where("status IN (?)", p.Statuses)
-	}
-	if !p.Since.IsZero() {
-		stmt = stmt.Where("sent_at >= ?", p.Since)
-	}
-	if !p.Until.IsZero() {
-		stmt = stmt.Where("sent_at <= ?", p.Until)
-	}
-	return stmt
+type Thread interface {
+	List(ctx context.Context, params *ListThreadsParams, fields ...string) (entity.Threads, error)
+	Count(ctx context.Context, params *ListThreadsParams) (int64, error)
+	Get(ctx context.Context, threadID string, fields ...string) (*entity.Thread, error)
+	Create(ctx context.Context, thread *entity.Thread) error
+	Update(ctx context.Context, threadID string, params *UpdateThreadParams) error
+	Delete(ctx context.Context, threadID string) error
 }
 
-type ListContactsParams struct {
-	Limit  int
-	Offset int
-}
-
-type ListContactCategoriesParams struct {
-	Limit  int
-	Offset int
-}
-
-type ListThreadsByContactIDParams struct {
+type ListThreadsParams struct {
 	ContactID string
 	Limit     int
 	Offset    int
-}
-
-func (p *ListThreadsByContactIDParams) stmt(stmt *gorm.DB) *gorm.DB {
-	if p.ContactID != "" {
-		stmt = stmt.Where("contact_id = ?", p.ContactID)
-	}
-	return stmt
 }
 
 type UpdateThreadParams struct {
@@ -249,21 +191,14 @@ type UpdateThreadParams struct {
 	UserType entity.ThreadUserType
 }
 
-type UpdateContactParams struct {
-	Title       string
-	CategoryID  string
-	Content     string
-	Username    string
-	UserID      string
-	Email       string
-	PhoneNumber string
-	Status      entity.ContactStatus
-	ResponderID string
-	Note        string
+type Error struct {
+	err error
 }
 
-type UpdateContactReadFlagParams struct {
-	ContactID string
-	UserID    string
-	Read      bool
+func (e *Error) Error() string {
+	return e.err.Error()
+}
+
+func (e *Error) Unwrap() error {
+	return e.err
 }

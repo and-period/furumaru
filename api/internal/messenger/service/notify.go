@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -16,7 +15,7 @@ import (
 // NotifyRegisterAdmin - 管理者登録
 func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	builder := entity.NewTemplateDataBuilder().
@@ -34,13 +33,13 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 		Email:     mail,
 	}
 	err := s.sendMessage(ctx, payload)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 // NotifyResetAdminPassword - 管理者パスワードリセット
 func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.NotifyResetAdminPasswordInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	builder := entity.NewTemplateDataBuilder().
@@ -58,17 +57,17 @@ func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.No
 		Email:     mail,
 	}
 	err := s.sendMessage(ctx, payload)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 // NotifyNotification - お知らせ発行
 func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNotificationInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	if notification.Type == entity.NotificationTypePromotion {
 		in := &store.GetPromotionInput{
@@ -76,7 +75,7 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 		}
 		promotion, err := s.store.GetPromotion(ctx, in)
 		if err != nil {
-			return exception.InternalError(err)
+			return internalError(err)
 		}
 		notification.Title = promotion.Title
 	}
@@ -94,7 +93,7 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 		return s.notifyAdminNotification(ectx, notification)
 	})
 	if err := eg.Wait(); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
@@ -155,11 +154,11 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 // NotifyReceivedContact - お問い合わせ受領
 func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.NotifyReceivedContactInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	contact, err := s.db.Contact.Get(ctx, in.ContactID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
@@ -172,7 +171,7 @@ func (s *service) NotifyReceivedContact(ctx context.Context, in *messenger.Notif
 		return s.notifyReportReceivedContact(ectx, contact)
 	})
 	if err := eg.Wait(); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	return nil
 }

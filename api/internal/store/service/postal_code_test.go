@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
@@ -53,7 +52,7 @@ func TestSearchPostalCode(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.SearchPostalCodeInput{},
 			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: store.ErrInvalidArgument,
 		},
 		{
 			name: "failed to search postal code",
@@ -64,7 +63,7 @@ func TestSearchPostalCode(t *testing.T) {
 				PostlCode: "1000014",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 		{
 			name: "failed to invalid postal code",
@@ -85,7 +84,7 @@ func TestSearchPostalCode(t *testing.T) {
 				PostlCode: "1000014",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: store.ErrInternal,
 		},
 	}
 

@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/common"
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -19,7 +18,7 @@ import (
 
 func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput) (entity.Products, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	orders := make([]*database.ListProductsOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -50,7 +49,7 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return products, total, nil
 }
@@ -59,40 +58,40 @@ func (s *service) MultiGetProducts(
 	ctx context.Context, in *store.MultiGetProductsInput,
 ) (entity.Products, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	products, err := s.db.Product.MultiGet(ctx, in.ProductIDs)
-	return products, exception.InternalError(err)
+	return products, internalError(err)
 }
 
 func (s *service) GetProduct(ctx context.Context, in *store.GetProductInput) (*entity.Product, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	product, err := s.db.Product.Get(ctx, in.ProductID)
-	return product, exception.InternalError(err)
+	return product, internalError(err)
 }
 
 func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInput) (*entity.Product, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	media := make(entity.MultiProductMedia, len(in.Media))
 	for i := range in.Media {
 		media[i] = entity.NewProductMedia(in.Media[i].URL, in.Media[i].IsThumbnail)
 	}
 	if err := media.Validate(); err != nil {
-		return nil, fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: invalid media format: %s: %w", err.Error(), store.ErrInvalidArgument)
 	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: in.ProducerID,
 	}
 	_, err := s.user.GetProducer(ctx, producerIn)
-	if errors.Is(err, exception.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	if errors.Is(err, store.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), store.ErrInvalidArgument)
 	}
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	params := &entity.NewProductParams{
 		ProducerID:        in.ProducerID,
@@ -125,7 +124,7 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 	}
 	product := entity.NewProduct(params)
 	if err := s.db.Product.Create(ctx, product); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	s.waitGroup.Add(1)
 	go func() {
@@ -137,11 +136,11 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 
 func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	product, err := s.db.Product.Get(ctx, in.ProductID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	currentMedia := product.Media.MapByURL()
 	media := make(entity.MultiProductMedia, len(in.Media))
@@ -152,17 +151,17 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		}
 	}
 	if err := media.Validate(); err != nil {
-		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), store.ErrInvalidArgument)
 	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: in.ProducerID,
 	}
 	_, err = s.user.GetProducer(ctx, producerIn)
-	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	if errors.Is(err, store.ErrNotFound) {
+		return fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), store.ErrInvalidArgument)
 	}
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &database.UpdateProductParams{
 		ProducerID:        in.ProducerID,
@@ -194,7 +193,7 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		EndAt:             in.EndAt,
 	}
 	if err := s.db.Product.Update(ctx, in.ProductID, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	s.waitGroup.Add(1)
 	go func() {
@@ -217,7 +216,7 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 
 func (s *service) UpdateProductMedia(ctx context.Context, in *store.UpdateProductMediaInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	resized := make(map[string]common.Images, len(in.Images))
 	for _, image := range in.Images {
@@ -235,15 +234,15 @@ func (s *service) UpdateProductMedia(ctx context.Context, in *store.UpdateProduc
 		return
 	}
 	err := s.db.Product.UpdateMedia(ctx, in.ProductID, setFn)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeleteProduct(ctx context.Context, in *store.DeleteProductInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Product.Delete(ctx, in.ProductID)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) resizeProduct(ctx context.Context, productID string, ms entity.MultiProductMedia) {

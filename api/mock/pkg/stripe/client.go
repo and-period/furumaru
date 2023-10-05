@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	stripe "github.com/and-period/furumaru/api/pkg/stripe"
-	v73 "github.com/stripe/stripe-go/v73"
+	stripe0 "github.com/stripe/stripe-go/v73"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -37,10 +37,10 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 }
 
 // AttachPayment mocks base method.
-func (m *MockClient) AttachPayment(ctx context.Context, customerID, paymentID string) (*v73.PaymentMethod, error) {
+func (m *MockClient) AttachPayment(ctx context.Context, customerID, paymentID string) (*stripe0.PaymentMethod, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AttachPayment", ctx, customerID, paymentID)
-	ret0, _ := ret[0].(*v73.PaymentMethod)
+	ret0, _ := ret[0].(*stripe0.PaymentMethod)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -52,10 +52,10 @@ func (mr *MockClientMockRecorder) AttachPayment(ctx, customerID, paymentID inter
 }
 
 // Cancel mocks base method.
-func (m *MockClient) Cancel(ctx context.Context, transactionID string, reason v73.PaymentIntentCancellationReason) (*v73.PaymentIntent, error) {
+func (m *MockClient) Cancel(ctx context.Context, transactionID string, reason stripe0.PaymentIntentCancellationReason) (*stripe0.PaymentIntent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Cancel", ctx, transactionID, reason)
-	ret0, _ := ret[0].(*v73.PaymentIntent)
+	ret0, _ := ret[0].(*stripe0.PaymentIntent)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -67,10 +67,10 @@ func (mr *MockClientMockRecorder) Cancel(ctx, transactionID, reason interface{})
 }
 
 // Capture mocks base method.
-func (m *MockClient) Capture(ctx context.Context, transactionID string) (*v73.PaymentIntent, error) {
+func (m *MockClient) Capture(ctx context.Context, transactionID string) (*stripe0.PaymentIntent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Capture", ctx, transactionID)
-	ret0, _ := ret[0].(*v73.PaymentIntent)
+	ret0, _ := ret[0].(*stripe0.PaymentIntent)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -82,10 +82,10 @@ func (mr *MockClientMockRecorder) Capture(ctx, transactionID interface{}) *gomoc
 }
 
 // CreateCustomer mocks base method.
-func (m *MockClient) CreateCustomer(ctx context.Context, in *stripe.CreateCustomerParams) (*v73.Customer, error) {
+func (m *MockClient) CreateCustomer(ctx context.Context, in *stripe.CreateCustomerParams) (*stripe0.Customer, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCustomer", ctx, in)
-	ret0, _ := ret[0].(*v73.Customer)
+	ret0, _ := ret[0].(*stripe0.Customer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -125,10 +125,10 @@ func (mr *MockClientMockRecorder) DetachPayment(ctx, customerID, paymentID inter
 }
 
 // GetCard mocks base method.
-func (m *MockClient) GetCard(ctx context.Context, customerID, paymentID string) (*v73.PaymentMethod, error) {
+func (m *MockClient) GetCard(ctx context.Context, customerID, paymentID string) (*stripe0.PaymentMethod, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCard", ctx, customerID, paymentID)
-	ret0, _ := ret[0].(*v73.PaymentMethod)
+	ret0, _ := ret[0].(*stripe0.PaymentMethod)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -140,10 +140,10 @@ func (mr *MockClientMockRecorder) GetCard(ctx, customerID, paymentID interface{}
 }
 
 // GetCustomer mocks base method.
-func (m *MockClient) GetCustomer(ctx context.Context, customerID string) (*v73.Customer, error) {
+func (m *MockClient) GetCustomer(ctx context.Context, customerID string) (*stripe0.Customer, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCustomer", ctx, customerID)
-	ret0, _ := ret[0].(*v73.Customer)
+	ret0, _ := ret[0].(*stripe0.Customer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -155,10 +155,10 @@ func (mr *MockClientMockRecorder) GetCustomer(ctx, customerID interface{}) *gomo
 }
 
 // GuestOrder mocks base method.
-func (m *MockClient) GuestOrder(ctx context.Context, in *stripe.GuestOrderParams) (*v73.PaymentIntent, error) {
+func (m *MockClient) GuestOrder(ctx context.Context, in *stripe.GuestOrderParams) (*stripe0.PaymentIntent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GuestOrder", ctx, in)
-	ret0, _ := ret[0].(*v73.PaymentIntent)
+	ret0, _ := ret[0].(*stripe0.PaymentIntent)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -170,10 +170,10 @@ func (mr *MockClientMockRecorder) GuestOrder(ctx, in interface{}) *gomock.Call {
 }
 
 // ListCards mocks base method.
-func (m *MockClient) ListCards(ctx context.Context, customerID string) ([]*v73.PaymentMethod, error) {
+func (m *MockClient) ListCards(ctx context.Context, customerID string) ([]*stripe0.PaymentMethod, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListCards", ctx, customerID)
-	ret0, _ := ret[0].([]*v73.PaymentMethod)
+	ret0, _ := ret[0].([]*stripe0.PaymentMethod)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -185,10 +185,10 @@ func (mr *MockClientMockRecorder) ListCards(ctx, customerID interface{}) *gomock
 }
 
 // Order mocks base method.
-func (m *MockClient) Order(ctx context.Context, in *stripe.OrderParams) (*v73.PaymentIntent, error) {
+func (m *MockClient) Order(ctx context.Context, in *stripe.OrderParams) (*stripe0.PaymentIntent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Order", ctx, in)
-	ret0, _ := ret[0].(*v73.PaymentIntent)
+	ret0, _ := ret[0].(*stripe0.PaymentIntent)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -200,10 +200,10 @@ func (mr *MockClientMockRecorder) Order(ctx, in interface{}) *gomock.Call {
 }
 
 // SetupCard mocks base method.
-func (m *MockClient) SetupCard(ctx context.Context, customerID string) (*v73.SetupIntent, error) {
+func (m *MockClient) SetupCard(ctx context.Context, customerID string) (*stripe0.SetupIntent, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetupCard", ctx, customerID)
-	ret0, _ := ret[0].(*v73.SetupIntent)
+	ret0, _ := ret[0].(*stripe0.SetupIntent)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -252,10 +252,10 @@ func (m *MockReceiver) EXPECT() *MockReceiverMockRecorder {
 }
 
 // Receive mocks base method.
-func (m *MockReceiver) Receive(payload []byte, signature string) (*v73.Event, error) {
+func (m *MockReceiver) Receive(payload []byte, signature string) (*stripe0.Event, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Receive", payload, signature)
-	ret0, _ := ret[0].(*v73.Event)
+	ret0, _ := ret[0].(*stripe0.Event)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

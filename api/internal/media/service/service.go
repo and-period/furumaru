@@ -1,7 +1,9 @@
 package service
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"net/url"
 	"sync"
 
@@ -10,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/and-period/furumaru/api/pkg/validator"
+	govalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 )
 
@@ -84,4 +87,63 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		storageURL: storageURL,
 		producer:   params.Producer,
 	}, nil
+}
+
+func internalError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	if e, ok := err.(govalidator.ValidationErrors); ok {
+		return fmt.Errorf("%w: %s", media.ErrInvalidArgument, e.Error())
+	}
+	if e := dbError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+	if e := storageError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+
+	switch {
+	case errors.Is(err, context.Canceled):
+		return fmt.Errorf("%w: %s", media.ErrCanceled, err.Error())
+	case errors.Is(err, context.DeadlineExceeded):
+		return fmt.Errorf("%w: %s", media.ErrDeadlineExceeded, err.Error())
+	default:
+		return fmt.Errorf("%w: %s", media.ErrInternal, err.Error())
+	}
+}
+
+func dbError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, database.ErrNotFound):
+		return media.ErrNotFound
+	case errors.Is(err, database.ErrFailedPrecondition):
+		return media.ErrFailedPrecondition
+	case errors.Is(err, database.ErrAlreadyExists):
+		return media.ErrAlreadyExists
+	case errors.Is(err, database.ErrDeadlineExceeded):
+		return media.ErrDeadlineExceeded
+	default:
+		return nil
+	}
+}
+
+func storageError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, storage.ErrInvalidURL):
+		return media.ErrInvalidArgument
+	case errors.Is(err, storage.ErrNotFound):
+		return media.ErrNotFound
+	default:
+		return nil
+	}
 }

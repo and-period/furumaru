@@ -17,11 +17,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	"github.com/and-period/furumaru/api/internal/user/database"
+	database "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
-	db "github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/log"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
@@ -35,7 +35,7 @@ const (
 )
 
 type app struct {
-	db        *db.Client
+	db        *mysql.Client
 	config    aws.Config
 	auth      cognito.Client
 	user      user.Service
@@ -92,10 +92,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	app.auth, err = app.setupAuth(authClientID, authPoolID)
-	if err != nil {
-		return err
-	}
+	app.auth = app.setupAuth(authClientID, authPoolID)
 
 	app.messenger = app.newMessengerService()
 	app.user = app.newUserService()
@@ -115,7 +112,7 @@ func run() error {
 
 func (a *app) newUserService() user.Service {
 	params := &usersrv.Params{
-		Database:  database.NewDatabase(&database.Params{Database: a.db}),
+		Database:  database.NewDatabase(a.db),
 		AdminAuth: a.auth,
 		Messenger: a.messenger,
 		WaitGroup: a.waitGroup,
@@ -131,8 +128,8 @@ func (a *app) newMessengerService() messenger.Service {
 	return messengersrv.NewService(params, messengersrv.WithLogger(a.logger))
 }
 
-func (a *app) setupDB(host, port, username, password string, tls bool) (*db.Client, error) {
-	params := &db.Params{
+func (a *app) setupDB(host, port, username, password string, tls bool) (*mysql.Client, error) {
+	params := &mysql.Params{
 		Socket:   "tcp",
 		Host:     host,
 		Port:     port,
@@ -140,7 +137,7 @@ func (a *app) setupDB(host, port, username, password string, tls bool) (*db.Clie
 		Username: username,
 		Password: password,
 	}
-	return db.NewClient(params, db.WithTLS(tls), db.WithLogger(a.logger))
+	return mysql.NewClient(params, mysql.WithTLS(tls), mysql.WithLogger(a.logger))
 }
 
 func (a *app) setupAWSConfig(ctx context.Context, accessKey, secretKey string) (aws.Config, error) {
@@ -153,10 +150,10 @@ func (a *app) setupAWSConfig(ctx context.Context, accessKey, secretKey string) (
 	)
 }
 
-func (a *app) setupAuth(clientID, poolID string) (cognito.Client, error) {
+func (a *app) setupAuth(clientID, poolID string) cognito.Client {
 	params := &cognito.Params{
 		UserPoolID:  poolID,
 		AppClientID: clientID,
 	}
-	return cognito.NewClient(a.config, params, cognito.WithLogger(a.logger)), nil
+	return cognito.NewClient(a.config, params, cognito.WithLogger(a.logger))
 }

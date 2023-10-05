@@ -24,10 +24,9 @@ func TestOrder(t *testing.T) {
 				CoordinatorID:     "coordinator-id",
 				ScheduleID:        "schedule-id",
 				PromotionID:       "",
-				PaymentStatus:     entity.PaymentStatusInitialized,
+				PaymentStatus:     entity.PaymentStatusPending,
 				FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
-				CancelType:        entity.CancelTypeUnknown,
-				CancelReason:      "",
+				RefundReason:      "",
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				OrderItems: entity.OrderItems{
@@ -52,8 +51,7 @@ func TestOrder(t *testing.T) {
 					OrderID:       "order-id",
 					AddressID:     "address-id",
 					TransactionID: "transaction-id",
-					MethodType:    entity.PaymentMethodTypeCard,
-					MethodID:      "payment-id",
+					MethodType:    entity.PaymentMethodTypeCreditCard,
 					Subtotal:      1100,
 					Discount:      0,
 					ShippingFee:   500,
@@ -98,9 +96,8 @@ func TestOrder(t *testing.T) {
 				payment: &OrderPayment{
 					OrderPayment: response.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodID:      "payment-id",
-						MethodType:    PaymentMethodTypeCard.Response(),
-						Status:        PaymentStatusUnpaid.Response(),
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
+						Status:        PaymentStatusPending.Response(),
 						Subtotal:      1100,
 						Discount:      0,
 						ShippingFee:   500,
@@ -124,7 +121,6 @@ func TestOrder(t *testing.T) {
 				refund: &OrderRefund{
 					OrderRefund: response.OrderRefund{
 						Canceled: false,
-						Type:     OrderRefundTypeUnknown.Response(),
 						Reason:   "",
 						Total:    0,
 					},
@@ -187,8 +183,7 @@ func TestOrder_Fill(t *testing.T) {
 				payment: &OrderPayment{
 					OrderPayment: response.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodID:      "payment-id",
-						MethodType:    PaymentMethodTypeCard.Response(),
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
 						Subtotal:      100,
 						Discount:      0,
@@ -213,7 +208,6 @@ func TestOrder_Fill(t *testing.T) {
 				refund: &OrderRefund{
 					OrderRefund: response.OrderRefund{
 						Canceled: false,
-						Type:     OrderRefundTypeUnknown.Response(),
 						Reason:   "",
 						Total:    0,
 					},
@@ -309,8 +303,7 @@ func TestOrder_Fill(t *testing.T) {
 				payment: &OrderPayment{
 					OrderPayment: response.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodID:      "payment-id",
-						MethodType:    PaymentMethodTypeCard.Response(),
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
 						Subtotal:      100,
 						Discount:      0,
@@ -355,7 +348,6 @@ func TestOrder_Fill(t *testing.T) {
 				refund: &OrderRefund{
 					OrderRefund: response.OrderRefund{
 						Canceled: false,
-						Type:     OrderRefundTypeUnknown.Response(),
 						Reason:   "",
 						Total:    0,
 					},
@@ -415,8 +407,7 @@ func TestOrder_ProductIDs(t *testing.T) {
 				payment: &OrderPayment{
 					OrderPayment: response.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodID:      "payment-id",
-						MethodType:    PaymentMethodTypeCard.Response(),
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
 						Subtotal:      100,
 						Discount:      0,
@@ -441,7 +432,6 @@ func TestOrder_ProductIDs(t *testing.T) {
 				refund: &OrderRefund{
 					OrderRefund: response.OrderRefund{
 						Canceled: false,
-						Type:     OrderRefundTypeUnknown.Response(),
 						Reason:   "",
 						Total:    0,
 					},
@@ -503,8 +493,7 @@ func TestOrder_Response(t *testing.T) {
 				payment: &OrderPayment{
 					OrderPayment: response.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodID:      "payment-id",
-						MethodType:    PaymentMethodTypeCard.Response(),
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
 						Subtotal:      100,
 						Discount:      0,
@@ -549,7 +538,6 @@ func TestOrder_Response(t *testing.T) {
 				refund: &OrderRefund{
 					OrderRefund: response.OrderRefund{
 						Canceled: false,
-						Type:     OrderRefundTypeUnknown.Response(),
 						Reason:   "",
 						Total:    0,
 					},
@@ -580,8 +568,7 @@ func TestOrder_Response(t *testing.T) {
 				PromotionID: "",
 				Payment: &response.OrderPayment{
 					TransactionID: "transaction-id",
-					MethodID:      "payment-id",
-					MethodType:    PaymentMethodTypeCard.Response(),
+					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
 					Subtotal:      100,
 					Discount:      0,
@@ -620,7 +607,6 @@ func TestOrder_Response(t *testing.T) {
 				},
 				Refund: &response.OrderRefund{
 					Canceled: false,
-					Type:     OrderRefundTypeUnknown.Response(),
 					Reason:   "",
 					Total:    0,
 				},
@@ -670,10 +656,9 @@ func TestOrders(t *testing.T) {
 					CoordinatorID:     "coordinator-id",
 					ScheduleID:        "schedule-id",
 					PromotionID:       "",
-					PaymentStatus:     entity.PaymentStatusInitialized,
+					PaymentStatus:     entity.PaymentStatusPending,
 					FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
-					CancelType:        entity.CancelTypeUnknown,
-					CancelReason:      "",
+					RefundReason:      "",
 					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					OrderItems: []*entity.OrderItem{
@@ -698,8 +683,7 @@ func TestOrders(t *testing.T) {
 						OrderID:       "order-id",
 						AddressID:     "address-id",
 						TransactionID: "transaction-id",
-						MethodType:    entity.PaymentMethodTypeCard,
-						MethodID:      "payment-id",
+						MethodType:    entity.PaymentMethodTypeCreditCard,
 						Subtotal:      1100,
 						Discount:      0,
 						ShippingFee:   500,
@@ -746,9 +730,8 @@ func TestOrders(t *testing.T) {
 					payment: &OrderPayment{
 						OrderPayment: response.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodID:      "payment-id",
-							MethodType:    PaymentMethodTypeCard.Response(),
-							Status:        PaymentStatusUnpaid.Response(),
+							MethodType:    PaymentMethodTypeCreditCard.Response(),
+							Status:        PaymentStatusPending.Response(),
 							Subtotal:      1100,
 							Discount:      0,
 							ShippingFee:   500,
@@ -772,7 +755,6 @@ func TestOrders(t *testing.T) {
 					refund: &OrderRefund{
 						OrderRefund: response.OrderRefund{
 							Canceled: false,
-							Type:     OrderRefundTypeUnknown.Response(),
 							Reason:   "",
 							Total:    0,
 						},
@@ -837,8 +819,7 @@ func TestOrders_Fill(t *testing.T) {
 					payment: &OrderPayment{
 						OrderPayment: response.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodID:      "payment-id",
-							MethodType:    PaymentMethodTypeCard.Response(),
+							MethodType:    PaymentMethodTypeCreditCard.Response(),
 							Status:        PaymentStatusPaid.Response(),
 							Subtotal:      100,
 							Discount:      0,
@@ -863,7 +844,6 @@ func TestOrders_Fill(t *testing.T) {
 					refund: &OrderRefund{
 						OrderRefund: response.OrderRefund{
 							Canceled: false,
-							Type:     OrderRefundTypeUnknown.Response(),
 							Reason:   "",
 							Total:    0,
 						},
@@ -963,8 +943,7 @@ func TestOrders_Fill(t *testing.T) {
 					payment: &OrderPayment{
 						OrderPayment: response.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodID:      "payment-id",
-							MethodType:    PaymentMethodTypeCard.Response(),
+							MethodType:    PaymentMethodTypeCreditCard.Response(),
 							Status:        PaymentStatusPaid.Response(),
 							Subtotal:      100,
 							Discount:      0,
@@ -1009,7 +988,6 @@ func TestOrders_Fill(t *testing.T) {
 					refund: &OrderRefund{
 						OrderRefund: response.OrderRefund{
 							Canceled: false,
-							Type:     OrderRefundTypeUnknown.Response(),
 							Reason:   "",
 							Total:    0,
 						},
@@ -1072,8 +1050,7 @@ func TestOrders_UserIDs(t *testing.T) {
 					payment: &OrderPayment{
 						OrderPayment: response.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodID:      "payment-id",
-							MethodType:    PaymentMethodTypeCard.Response(),
+							MethodType:    PaymentMethodTypeCreditCard.Response(),
 							Status:        PaymentStatusPaid.Response(),
 							Subtotal:      100,
 							Discount:      0,
@@ -1118,7 +1095,6 @@ func TestOrders_UserIDs(t *testing.T) {
 					refund: &OrderRefund{
 						OrderRefund: response.OrderRefund{
 							Canceled: false,
-							Type:     OrderRefundTypeUnknown.Response(),
 							Reason:   "",
 							Total:    0,
 						},
@@ -1180,8 +1156,7 @@ func TestOrders_ProductIDs(t *testing.T) {
 					payment: &OrderPayment{
 						OrderPayment: response.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodID:      "payment-id",
-							MethodType:    PaymentMethodTypeCard.Response(),
+							MethodType:    PaymentMethodTypeCreditCard.Response(),
 							Status:        PaymentStatusPaid.Response(),
 							Subtotal:      100,
 							Discount:      0,
@@ -1226,7 +1201,6 @@ func TestOrders_ProductIDs(t *testing.T) {
 					refund: &OrderRefund{
 						OrderRefund: response.OrderRefund{
 							Canceled: false,
-							Type:     OrderRefundTypeUnknown.Response(),
 							Reason:   "",
 							Total:    0,
 						},
@@ -1288,8 +1262,7 @@ func TestOrders_AddressIDs(t *testing.T) {
 					payment: &OrderPayment{
 						OrderPayment: response.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodID:      "payment-id",
-							MethodType:    PaymentMethodTypeCard.Response(),
+							MethodType:    PaymentMethodTypeCreditCard.Response(),
 							Status:        PaymentStatusPaid.Response(),
 							Subtotal:      100,
 							Discount:      0,
@@ -1334,7 +1307,6 @@ func TestOrders_AddressIDs(t *testing.T) {
 					refund: &OrderRefund{
 						OrderRefund: response.OrderRefund{
 							Canceled: false,
-							Type:     OrderRefundTypeUnknown.Response(),
 							Reason:   "",
 							Total:    0,
 						},
@@ -1396,8 +1368,7 @@ func TestOrders_Response(t *testing.T) {
 					payment: &OrderPayment{
 						OrderPayment: response.OrderPayment{
 							TransactionID: "transaction-id",
-							MethodID:      "payment-id",
-							MethodType:    PaymentMethodTypeCard.Response(),
+							MethodType:    PaymentMethodTypeCreditCard.Response(),
 							Status:        PaymentStatusPaid.Response(),
 							Subtotal:      100,
 							Discount:      0,
@@ -1442,7 +1413,6 @@ func TestOrders_Response(t *testing.T) {
 					refund: &OrderRefund{
 						OrderRefund: response.OrderRefund{
 							Canceled: false,
-							Type:     OrderRefundTypeUnknown.Response(),
 							Reason:   "",
 							Total:    0,
 						},
@@ -1475,8 +1445,7 @@ func TestOrders_Response(t *testing.T) {
 					PromotionID: "",
 					Payment: &response.OrderPayment{
 						TransactionID: "transaction-id",
-						MethodID:      "payment-id",
-						MethodType:    PaymentMethodTypeCard.Response(),
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
 						Status:        PaymentStatusPaid.Response(),
 						Subtotal:      100,
 						Discount:      0,
@@ -1515,7 +1484,6 @@ func TestOrders_Response(t *testing.T) {
 					},
 					Refund: &response.OrderRefund{
 						Canceled: false,
-						Type:     OrderRefundTypeUnknown.Response(),
 						Reason:   "",
 						Total:    0,
 					},

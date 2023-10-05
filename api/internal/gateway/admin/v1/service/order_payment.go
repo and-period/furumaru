@@ -9,9 +9,16 @@ import (
 type PaymentMethodType int32
 
 const (
-	PaymentMethodTypeUnknown PaymentMethodType = 0
-	PaymentMethodTypeCash    PaymentMethodType = 1 // 代引支払い
-	PaymentMethodTypeCard    PaymentMethodType = 2 // クレジットカード払い
+	PaymentMethodTypeUnknown     PaymentMethodType = 0
+	PaymentMethodTypeCash        PaymentMethodType = 1 // 代引支払い
+	PaymentMethodTypeCreditCard  PaymentMethodType = 2 // クレジットカード決済
+	PaymentMethodTypeKonbini     PaymentMethodType = 3 // コンビニ決済
+	PaymentMethodTypeBankTranser PaymentMethodType = 4 // 銀行振込決済
+	PaymentMethodTypePayPay      PaymentMethodType = 5 // QR決済（PayPay）
+	PaymentMethodTypeLinePay     PaymentMethodType = 6 // QR決済（LINE Pay）
+	PaymentMethodTypeMerpay      PaymentMethodType = 7 // QR決済（メルペイ）
+	PaymentMethodTypeRakutenPay  PaymentMethodType = 8 // QR決済（楽天ペイ）
+	PaymentMethodTypeAUPay       PaymentMethodType = 9 // QR決済（au PAY）
 )
 
 // PaymentStatus - 支払い状況
@@ -36,8 +43,22 @@ func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
 	switch typ {
 	case entity.PaymentMethodTypeCash:
 		return PaymentMethodTypeCash
-	case entity.PaymentMethodTypeCard:
-		return PaymentMethodTypeCard
+	case entity.PaymentMethodTypeCreditCard:
+		return PaymentMethodTypeCreditCard
+	case entity.PaymentMethodTypeKonbini:
+		return PaymentMethodTypeKonbini
+	case entity.PaymentMethodTypeBankTranser:
+		return PaymentMethodTypeBankTranser
+	case entity.PaymentMethodTypePayPay:
+		return PaymentMethodTypePayPay
+	case entity.PaymentMethodTypeLinePay:
+		return PaymentMethodTypeLinePay
+	case entity.PaymentMethodTypeMerpay:
+		return PaymentMethodTypeMerpay
+	case entity.PaymentMethodTypeRakutenPay:
+		return PaymentMethodTypeRakutenPay
+	case entity.PaymentMethodTypeAUPay:
+		return PaymentMethodTypeAUPay
 	default:
 		return PaymentMethodTypeUnknown
 	}
@@ -49,15 +70,13 @@ func (t PaymentMethodType) Response() int32 {
 
 func NewPaymentStatus(status entity.PaymentStatus) PaymentStatus {
 	switch status {
-	case entity.PaymentStatusInitialized:
-		return PaymentStatusUnpaid
 	case entity.PaymentStatusPending:
 		return PaymentStatusPending
 	case entity.PaymentStatusAuthorized:
 		return PaymentStatusAuthorized
 	case entity.PaymentStatusCaptured:
 		return PaymentStatusPaid
-	case entity.PaymentStatusCanceled:
+	case entity.PaymentStatusRefunded:
 		return PaymentStatusRefunded
 	case entity.PaymentStatusFailed:
 		return PaymentStatusExpired
@@ -74,7 +93,6 @@ func NewOrderPayment(payment *entity.Payment, status entity.PaymentStatus) *Orde
 	return &OrderPayment{
 		OrderPayment: response.OrderPayment{
 			TransactionID: payment.TransactionID,
-			MethodID:      payment.MethodID,
 			MethodType:    NewPaymentMethodType(payment.MethodType).Response(),
 			Status:        NewPaymentStatus(status).Response(),
 			Subtotal:      payment.Subtotal,
