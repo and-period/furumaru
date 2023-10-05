@@ -92,7 +92,9 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
   },
   {
     text: ft('lawLinkText'),
-    onClick: () => {},
+    onClick: () => {
+      router.push('/legal-notice')
+    },
   },
   {
     text: ft('inquiryLinkText'),
