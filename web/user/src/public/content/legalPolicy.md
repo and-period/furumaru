@@ -7,7 +7,8 @@
 藤中拓弥
 
 ## ホームページ
-https://www.and-period.co.jp/
+
+[https://www.and-period.co.jp/](https://www.and-period.co.jp/)
 
 ## 所在地
 広島県豊田郡大崎上島町中野5748-2
@@ -19,7 +20,8 @@ https://www.and-period.co.jp/
 support@and-period.co.jp
 
 ## URL
-https://www.furumaru.and-period.co.jp/
+
+[https://www.furumaru.and-period.co.jp/](https://www.furumaru.and-period.co.jp/)
 
 ## 引き渡し時期
 ご注文から7日以内に発送いたします。（商品によっては収穫時期により異なる）
