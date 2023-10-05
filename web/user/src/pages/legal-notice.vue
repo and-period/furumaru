@@ -11,7 +11,9 @@ const fetchContent = async () => {
   content.value = response as string
 }
 
-fetchContent()
+onMounted(() => {
+  fetchContent()
+})
 </script>
 
 <template>
