@@ -7,7 +7,7 @@ const renderedContent = computed<string>(() => {
 })
 
 const fetchContent = async () => {
-  const response = await $fetch('/content/legalPolicy.md')
+  const response = await $fetch('/_content/legalPolicy.md')
   content.value = response as string
 }
 
