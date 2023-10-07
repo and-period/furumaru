@@ -7,7 +7,13 @@ const renderedContent = computed<string>(() => {
 })
 
 const fetchContent = async () => {
-  const response = await $fetch('/_content/legalPolicy.md')
+  const response = await $fetch('/_content/legalPolicy.md', {
+    method: 'GET',
+    headers: {
+      'content-type': 'text/markdown',
+    },
+    redirect: 'follow',
+  })
   content.value = response as string
 }
 
