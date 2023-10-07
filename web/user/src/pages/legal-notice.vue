@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $md } = useNuxtApp()
-const content = ref<string>('# テスト')
+const content = ref<string>('')
 
 const renderedContent = computed<string>(() => {
   return $md.render(content.value)
