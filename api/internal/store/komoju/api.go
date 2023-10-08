@@ -112,7 +112,7 @@ func (c *APIClient) do(ctx context.Context, params *APIParams, out interface{}) 
 	}
 	//nolint:errcheck
 	defer c.closeResponseBody(res)
-	if err := c.statusCheck(res); err != nil {
+	if err := c.statusCheck(res, params); err != nil {
 		return err
 	}
 	return c.bind(out, res)
@@ -122,17 +122,17 @@ func (c *APIClient) isRetryable(err error) bool {
 	return errors.Is(err, ErrTooManyRequest) || errors.Is(err, ErrBadGateway) || errors.Is(err, ErrGatewayTimeout)
 }
 
-type errorResponse struct {
-	Data *errorData `json:"error"`
+type ErrorResponse struct {
+	Data *ErrorData `json:"error"`
 }
 
-type errorData struct {
+type ErrorData struct {
 	Param   string `json:"param"`
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
 
-func (c *APIClient) statusCheck(res *http.Response) error {
+func (c *APIClient) statusCheck(res *http.Response, params *APIParams) error {
 	switch res.StatusCode {
 	case http.StatusOK, http.StatusAccepted, http.StatusNoContent:
 		return nil // 正常系
@@ -143,7 +143,7 @@ func (c *APIClient) statusCheck(res *http.Response) error {
 	case http.StatusGatewayTimeout:
 		return ErrGatewayTimeout
 	}
-	out := &errorResponse{}
+	out := &ErrorResponse{}
 	if err := c.bind(out, res); err != nil {
 		return err
 	}
@@ -156,8 +156,8 @@ func (c *APIClient) statusCheck(res *http.Response) error {
 		zap.String("detail", out.Data.Message),
 	)
 	return &Error{
-		Method:  res.Request.Method,
-		Path:    res.Request.URL.Path,
+		Method:  params.Method,
+		Route:   params.Path,
 		Code:    ErrCode(out.Data.Code),
 		Message: out.Data.Message,
 	}
@@ -189,10 +189,12 @@ func (c *APIClient) bind(out interface{}, res *http.Response) error {
 	if err == nil {
 		return nil
 	}
+	body, _ := io.ReadAll(res.Body)
 	c.opts.logger.Error("Failed to decode komoju response body",
 		zap.Int("status", res.StatusCode),
 		zap.String("method", res.Request.Method),
 		zap.String("path", res.Request.URL.Path),
+		zap.String("body", string(body)),
 		zap.Error(err),
 	)
 	return fmt.Errorf("komoju: failed to decode body: %w", err)
@@ -208,11 +210,12 @@ type APIParams struct {
 	Host   string
 	Method string
 	Path   string
+	Params []interface{}
 	Body   interface{}
 }
 
 func (p *APIParams) newHTTPRequest(ctx context.Context) (*http.Request, error) {
-	u, err := url.ParseRequestURI(p.Host + p.Path)
+	u, err := url.ParseRequestURI(p.Host + fmt.Sprintf(p.Path, p.Params...))
 	if err != nil {
 		return nil, fmt.Errorf("komoju: failed to parse request uri: %w", err)
 	}

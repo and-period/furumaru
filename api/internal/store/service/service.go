@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -31,6 +32,7 @@ type Params struct {
 	Media      media.Service
 	PostalCode postalcode.Client
 	Ivs        ivs.Client
+	Komoju     *komoju.Komoju
 }
 
 type service struct {
@@ -45,6 +47,7 @@ type service struct {
 	media       media.Service
 	postalCode  postalcode.Client
 	ivs         ivs.Client
+	komoju      *komoju.Komoju
 }
 
 type options struct {
@@ -78,6 +81,7 @@ func NewService(params *Params, opts ...Option) store.Service {
 		media:       params.Media,
 		postalCode:  params.PostalCode,
 		ivs:         params.Ivs,
+		komoju:      params.Komoju,
 	}
 }
 

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
-	komoju "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
+	khandler "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
 	"github.com/and-period/furumaru/api/internal/media"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
@@ -17,6 +17,9 @@ import (
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
+	"github.com/and-period/furumaru/api/internal/store/komoju"
+	kpayment "github.com/and-period/furumaru/api/internal/store/komoju/payment"
+	ksession "github.com/and-period/furumaru/api/internal/store/komoju/session"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
@@ -46,35 +49,38 @@ type registry struct {
 	slack     slack.Client
 	newRelic  *newrelic.Application
 	v1        v1.Handler
-	komoju    komoju.Handler
+	komoju    khandler.Handler
 }
 
 type params struct {
-	config          *config
-	logger          *zap.Logger
-	waitGroup       *sync.WaitGroup
-	enforcer        rbac.Enforcer
-	aws             aws.Config
-	secret          secret.Client
-	storage         storage.Bucket
-	tmpStorage      storage.Bucket
-	adminAuth       cognito.Client
-	userAuth        cognito.Client
-	messengerQueue  sqs.Producer
-	mediaQueue      sqs.Producer
-	slack           slack.Client
-	newRelic        *newrelic.Application
-	adminWebURL     *url.URL
-	userWebURL      *url.URL
-	postalCode      postalcode.Client
-	now             func() time.Time
-	dbHost          string
-	dbPort          string
-	dbUsername      string
-	dbPassword      string
-	slackToken      string
-	slackChannelID  string
-	newRelicLicense string
+	config               *config
+	logger               *zap.Logger
+	waitGroup            *sync.WaitGroup
+	enforcer             rbac.Enforcer
+	aws                  aws.Config
+	secret               secret.Client
+	storage              storage.Bucket
+	tmpStorage           storage.Bucket
+	adminAuth            cognito.Client
+	userAuth             cognito.Client
+	messengerQueue       sqs.Producer
+	mediaQueue           sqs.Producer
+	slack                slack.Client
+	newRelic             *newrelic.Application
+	komoju               *komoju.Komoju
+	adminWebURL          *url.URL
+	userWebURL           *url.URL
+	postalCode           postalcode.Client
+	now                  func() time.Time
+	dbHost               string
+	dbPort               string
+	dbUsername           string
+	dbPassword           string
+	slackToken           string
+	slackChannelID       string
+	newRelicLicense      string
+	komojuClientID       string
+	komojuClientPassword string
 }
 
 //nolint:funlen
@@ -85,6 +91,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
+	debugMode := conf.LogLevel == "debug"
 
 	// Casbinの設定
 	enforcer, err := rbac.NewEnforcer(conf.RBACModelPath, conf.RBACPolicyPath)
@@ -160,6 +167,27 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		params.slack = slack.NewClient(slackParams, slack.WithLogger(logger))
 	}
 
+	// KOMOJUの設定
+	kpaymentParams := &kpayment.Params{
+		Host:         conf.KomojuHost,
+		ClientID:     params.komojuClientID,
+		ClientSecret: params.komojuClientPassword,
+	}
+	ksessionParams := &ksession.Params{
+		Host:         conf.KomojuHost,
+		ClientID:     params.komojuClientID,
+		ClientSecret: params.komojuClientPassword,
+	}
+	komojuOpts := []komoju.Option{
+		komoju.WithLogger(logger),
+		komoju.WithDebugMode(debugMode),
+	}
+	komojuParams := &komoju.Params{
+		Payment: kpayment.NewClient(&http.Client{}, kpaymentParams, komojuOpts...),
+		Session: ksession.NewClient(&http.Client{}, ksessionParams, komojuOpts...),
+	}
+	params.komoju = komoju.NewKomoju(komojuParams)
+
 	// PostalCodeの設定
 	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(logger))
 
@@ -202,18 +230,18 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Messenger: messengerService,
 		Media:     mediaService,
 	}
-	komojuParams := &komoju.Params{
+	khandlerParams := &khandler.Params{
 		WaitGroup: params.waitGroup,
 	}
 	return &registry{
 		appName:   conf.AppName,
 		env:       conf.Environment,
-		debugMode: conf.LogLevel == "debug",
+		debugMode: debugMode,
 		waitGroup: params.waitGroup,
 		slack:     params.slack,
 		newRelic:  params.newRelic,
 		v1:        v1.NewHandler(v1Params, v1.WithLogger(logger)),
-		komoju:    komoju.NewHandler(komojuParams, komoju.WithLogger(logger)),
+		komoju:    khandler.NewHandler(khandlerParams, khandler.WithLogger(logger)),
 	}, nil
 }
 
@@ -264,6 +292,21 @@ func getSecret(ctx context.Context, p *params) error {
 			return err
 		}
 		p.newRelicLicense = secrets["license"]
+		return nil
+	})
+	eg.Go(func() error {
+		// KOMOJU接続情報の取得
+		if p.config.KomojuSecretName == "" {
+			p.komojuClientID = p.config.KomojuClientID
+			p.komojuClientPassword = p.config.KomojuClientPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.KomojuSecretName)
+		if err != nil {
+			return err
+		}
+		p.komojuClientID = secrets["clientId"]
+		p.komojuClientPassword = secrets["clientPassword"]
 		return nil
 	})
 	return eg.Wait()
@@ -373,6 +416,7 @@ func newStoreService(
 		Messenger:  messenger,
 		Media:      media,
 		PostalCode: p.postalCode,
+		Komoju:     p.komoju,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

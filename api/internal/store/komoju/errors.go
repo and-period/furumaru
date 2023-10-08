@@ -37,11 +37,11 @@ const (
 
 type Error struct {
 	Method  string
-	Path    string
+	Route   string
 	Code    ErrCode
 	Message string
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("komoju: method=%s, path=%s, code=%s, message=%s", e.Method, e.Path, e.Code, e.Message)
+	return fmt.Sprintf("komoju: method=%s, route=%s, code=%s, message=%s", e.Method, e.Route, e.Code, e.Message)
 }

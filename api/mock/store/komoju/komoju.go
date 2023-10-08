@@ -51,17 +51,33 @@ func (mr *MockPaymentMockRecorder) Capture(ctx, paymentID interface{}) *gomock.C
 }
 
 // Refund mocks base method.
-func (m *MockPayment) Refund(ctx context.Context, paymentID string) error {
+func (m *MockPayment) Refund(ctx context.Context, params *komoju.RefundParams) (*komoju.PaymentResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Refund", ctx, paymentID)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "Refund", ctx, params)
+	ret0, _ := ret[0].(*komoju.PaymentResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Refund indicates an expected call of Refund.
-func (mr *MockPaymentMockRecorder) Refund(ctx, paymentID interface{}) *gomock.Call {
+func (mr *MockPaymentMockRecorder) Refund(ctx, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Refund", reflect.TypeOf((*MockPayment)(nil).Refund), ctx, paymentID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Refund", reflect.TypeOf((*MockPayment)(nil).Refund), ctx, params)
+}
+
+// RefundRequest mocks base method.
+func (m *MockPayment) RefundRequest(ctx context.Context, params *komoju.RefundRequestParams) (*komoju.PaymentResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefundRequest", ctx, params)
+	ret0, _ := ret[0].(*komoju.PaymentResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RefundRequest indicates an expected call of RefundRequest.
+func (mr *MockPaymentMockRecorder) RefundRequest(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefundRequest", reflect.TypeOf((*MockPayment)(nil).RefundRequest), ctx, params)
 }
 
 // MockSession is a mock of Session interface.
@@ -87,6 +103,21 @@ func (m *MockSession) EXPECT() *MockSessionMockRecorder {
 	return m.recorder
 }
 
+// Cancel mocks base method.
+func (m *MockSession) Cancel(ctx context.Context, sessionID string) (*komoju.SessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Cancel", ctx, sessionID)
+	ret0, _ := ret[0].(*komoju.SessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Cancel indicates an expected call of Cancel.
+func (mr *MockSessionMockRecorder) Cancel(ctx, sessionID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Cancel", reflect.TypeOf((*MockSession)(nil).Cancel), ctx, sessionID)
+}
+
 // Create mocks base method.
 func (m *MockSession) Create(ctx context.Context, params *komoju.CreateSessionParams) (*komoju.SessionResponse, error) {
 	m.ctrl.T.Helper()
@@ -102,17 +133,137 @@ func (mr *MockSessionMockRecorder) Create(ctx, params interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockSession)(nil).Create), ctx, params)
 }
 
-// Show mocks base method.
-func (m *MockSession) Show(ctx context.Context, sessionID string) (*komoju.SessionResponse, error) {
+// Get mocks base method.
+func (m *MockSession) Get(ctx context.Context, sessionID string) (*komoju.SessionResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Show", ctx, sessionID)
+	ret := m.ctrl.Call(m, "Get", ctx, sessionID)
 	ret0, _ := ret[0].(*komoju.SessionResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Show indicates an expected call of Show.
-func (mr *MockSessionMockRecorder) Show(ctx, sessionID interface{}) *gomock.Call {
+// Get indicates an expected call of Get.
+func (mr *MockSessionMockRecorder) Get(ctx, sessionID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Show", reflect.TypeOf((*MockSession)(nil).Show), ctx, sessionID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSession)(nil).Get), ctx, sessionID)
+}
+
+// OrderAUPay mocks base method.
+func (m *MockSession) OrderAUPay(ctx context.Context, params *komoju.OrderAUPayParams) (*komoju.OrderSessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrderAUPay", ctx, params)
+	ret0, _ := ret[0].(*komoju.OrderSessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrderAUPay indicates an expected call of OrderAUPay.
+func (mr *MockSessionMockRecorder) OrderAUPay(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderAUPay", reflect.TypeOf((*MockSession)(nil).OrderAUPay), ctx, params)
+}
+
+// OrderBankTransfer mocks base method.
+func (m *MockSession) OrderBankTransfer(ctx context.Context, params *komoju.OrderBankTransferParams) (*komoju.OrderSessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrderBankTransfer", ctx, params)
+	ret0, _ := ret[0].(*komoju.OrderSessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrderBankTransfer indicates an expected call of OrderBankTransfer.
+func (mr *MockSessionMockRecorder) OrderBankTransfer(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderBankTransfer", reflect.TypeOf((*MockSession)(nil).OrderBankTransfer), ctx, params)
+}
+
+// OrderCreditCard mocks base method.
+func (m *MockSession) OrderCreditCard(ctx context.Context, params *komoju.OrderCreditCardParams) (*komoju.OrderSessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrderCreditCard", ctx, params)
+	ret0, _ := ret[0].(*komoju.OrderSessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrderCreditCard indicates an expected call of OrderCreditCard.
+func (mr *MockSessionMockRecorder) OrderCreditCard(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderCreditCard", reflect.TypeOf((*MockSession)(nil).OrderCreditCard), ctx, params)
+}
+
+// OrderKonbini mocks base method.
+func (m *MockSession) OrderKonbini(ctx context.Context, params *komoju.OrderKonbiniParams) (*komoju.OrderSessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrderKonbini", ctx, params)
+	ret0, _ := ret[0].(*komoju.OrderSessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrderKonbini indicates an expected call of OrderKonbini.
+func (mr *MockSessionMockRecorder) OrderKonbini(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderKonbini", reflect.TypeOf((*MockSession)(nil).OrderKonbini), ctx, params)
+}
+
+// OrderLinePay mocks base method.
+func (m *MockSession) OrderLinePay(ctx context.Context, params *komoju.OrderLinePayParams) (*komoju.OrderSessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrderLinePay", ctx, params)
+	ret0, _ := ret[0].(*komoju.OrderSessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrderLinePay indicates an expected call of OrderLinePay.
+func (mr *MockSessionMockRecorder) OrderLinePay(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderLinePay", reflect.TypeOf((*MockSession)(nil).OrderLinePay), ctx, params)
+}
+
+// OrderMerpay mocks base method.
+func (m *MockSession) OrderMerpay(ctx context.Context, params *komoju.OrderMerpayParams) (*komoju.OrderSessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrderMerpay", ctx, params)
+	ret0, _ := ret[0].(*komoju.OrderSessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrderMerpay indicates an expected call of OrderMerpay.
+func (mr *MockSessionMockRecorder) OrderMerpay(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderMerpay", reflect.TypeOf((*MockSession)(nil).OrderMerpay), ctx, params)
+}
+
+// OrderPayPay mocks base method.
+func (m *MockSession) OrderPayPay(ctx context.Context, params *komoju.OrderPayPayParams) (*komoju.OrderSessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrderPayPay", ctx, params)
+	ret0, _ := ret[0].(*komoju.OrderSessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrderPayPay indicates an expected call of OrderPayPay.
+func (mr *MockSessionMockRecorder) OrderPayPay(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderPayPay", reflect.TypeOf((*MockSession)(nil).OrderPayPay), ctx, params)
+}
+
+// OrderRakutenPay mocks base method.
+func (m *MockSession) OrderRakutenPay(ctx context.Context, params *komoju.OrderRakutenPayParams) (*komoju.OrderSessionResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrderRakutenPay", ctx, params)
+	ret0, _ := ret[0].(*komoju.OrderSessionResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrderRakutenPay indicates an expected call of OrderRakutenPay.
+func (mr *MockSessionMockRecorder) OrderRakutenPay(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrderRakutenPay", reflect.TypeOf((*MockSession)(nil).OrderRakutenPay), ctx, params)
 }

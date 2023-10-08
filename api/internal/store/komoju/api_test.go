@@ -152,7 +152,7 @@ func TestAPIClient_statusCheck(t *testing.T) {
 			},
 			expect: &Error{
 				Method:  http.MethodPost,
-				Path:    "/hoge",
+				Route:   "/hoge",
 				Code:    "missing_parameter",
 				Message: "A required parameter (amount) is missing",
 			},
@@ -167,6 +167,10 @@ func TestAPIClient_statusCheck(t *testing.T) {
 			if tt.body != nil {
 				buf, _ = json.Marshal(tt.body)
 			}
+			params := &APIParams{
+				Method: http.MethodPost,
+				Path:   "/hoge",
+			}
 			res := &http.Response{
 				Request: &http.Request{
 					Method: http.MethodPost,
@@ -175,7 +179,7 @@ func TestAPIClient_statusCheck(t *testing.T) {
 				StatusCode: tt.status,
 				Body:       io.NopCloser(bytes.NewBuffer(buf)),
 			}
-			actual := client.statusCheck(res)
+			actual := client.statusCheck(res, params)
 			assert.Equal(t, actual, tt.expect)
 		})
 	}
@@ -214,7 +218,7 @@ func TestAPIClient_bind(t *testing.T) {
 					"param":   "amount",
 				},
 			},
-			out:    &errorResponse{},
+			out:    &ErrorResponse{},
 			hasErr: false,
 		},
 		{

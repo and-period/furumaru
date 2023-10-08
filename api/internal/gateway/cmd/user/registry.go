@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"net/http"
 	"net/url"
 	"sync"
 	"time"
@@ -12,6 +13,9 @@ import (
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
 	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
+	"github.com/and-period/furumaru/api/internal/store/komoju"
+	kpayment "github.com/and-period/furumaru/api/internal/store/komoju/payment"
+	ksession "github.com/and-period/furumaru/api/internal/store/komoju/session"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
@@ -42,26 +46,29 @@ type registry struct {
 }
 
 type params struct {
-	config          *config
-	logger          *zap.Logger
-	waitGroup       *sync.WaitGroup
-	aws             aws.Config
-	secret          secret.Client
-	storage         storage.Bucket
-	userAuth        cognito.Client
-	producer        sqs.Producer
-	slack           slack.Client
-	newRelic        *newrelic.Application
-	adminWebURL     *url.URL
-	userWebURL      *url.URL
-	now             func() time.Time
-	dbHost          string
-	dbPort          string
-	dbUsername      string
-	dbPassword      string
-	slackToken      string
-	slackChannelID  string
-	newRelicLicense string
+	config               *config
+	logger               *zap.Logger
+	waitGroup            *sync.WaitGroup
+	aws                  aws.Config
+	secret               secret.Client
+	storage              storage.Bucket
+	userAuth             cognito.Client
+	producer             sqs.Producer
+	slack                slack.Client
+	newRelic             *newrelic.Application
+	komoju               *komoju.Komoju
+	adminWebURL          *url.URL
+	userWebURL           *url.URL
+	now                  func() time.Time
+	dbHost               string
+	dbPort               string
+	dbUsername           string
+	dbPassword           string
+	slackToken           string
+	slackChannelID       string
+	newRelicLicense      string
+	komojuClientID       string
+	komojuClientPassword string
 }
 
 //nolint:funlen
@@ -72,6 +79,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
+	debugMode := conf.LogLevel == "debug"
 
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
@@ -127,6 +135,27 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		params.slack = slack.NewClient(slackParams, slack.WithLogger(logger))
 	}
 
+	// KOMOJUの設定
+	kpaymentParams := &kpayment.Params{
+		Host:         conf.KomojuHost,
+		ClientID:     params.komojuClientID,
+		ClientSecret: params.komojuClientPassword,
+	}
+	ksessionParams := &ksession.Params{
+		Host:         conf.KomojuHost,
+		ClientID:     params.komojuClientID,
+		ClientSecret: params.komojuClientPassword,
+	}
+	komojuOpts := []komoju.Option{
+		komoju.WithLogger(logger),
+		komoju.WithDebugMode(debugMode),
+	}
+	komojuParams := &komoju.Params{
+		Payment: kpayment.NewClient(&http.Client{}, kpaymentParams, komojuOpts...),
+		Session: ksession.NewClient(&http.Client{}, ksessionParams, komojuOpts...),
+	}
+	params.komoju = komoju.NewKomoju(komojuParams)
+
 	// WebURLの設定
 	adminWebURL, err := url.Parse(conf.AminWebURL)
 	if err != nil {
@@ -163,7 +192,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	return &registry{
 		appName:   conf.AppName,
 		env:       conf.Environment,
-		debugMode: conf.LogLevel == "debug",
+		debugMode: debugMode,
 		waitGroup: params.waitGroup,
 		slack:     params.slack,
 		newRelic:  params.newRelic,
@@ -218,6 +247,21 @@ func getSecret(ctx context.Context, p *params) error {
 			return err
 		}
 		p.newRelicLicense = secrets["license"]
+		return nil
+	})
+	eg.Go(func() error {
+		// KOMOJU接続情報の取得
+		if p.config.KomojuSecretName == "" {
+			p.komojuClientID = p.config.KomojuClientID
+			p.komojuClientPassword = p.config.KomojuClientPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, p.config.KomojuSecretName)
+		if err != nil {
+			return err
+		}
+		p.komojuClientID = secrets["clientId"]
+		p.komojuClientPassword = secrets["clientPassword"]
 		return nil
 	})
 	return eg.Wait()
@@ -301,6 +345,7 @@ func newStoreService(p *params, user user.Service, messenger messenger.Service) 
 		Database:  storedb.NewDatabase(mysql),
 		User:      user,
 		Messenger: messenger,
+		Komoju:    p.komoju,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }
