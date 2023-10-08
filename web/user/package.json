@@ -17,9 +17,12 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.6",
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/markdown-it": "^13.0.2",
     "axios": "^1.2.2",
     "dayjs": "^1.11.7",
     "hls.js": "^1.4.10",
+    "markdown-it": "^13.0.2",
     "nuxt": "^3.4.3",
     "pinia": "^2.0.30",
     "postcss-custom-properties": "^13.1.4",

@@ -84,19 +84,19 @@ const noAuthenticatedMenuItems = computed<LinkItem[]>(() => [
 const footerMenuList = computed<FooterMenuItem[]>(() => [
   {
     text: ft('qaLinkText'),
-    onClick: () => {},
+    to: '',
   },
   {
     text: ft('privacyPolicyLinkText'),
-    onClick: () => {},
+    to: '',
   },
   {
     text: ft('lawLinkText'),
-    onClick: () => {},
+    to: '/legal-notice',
   },
   {
     text: ft('inquiryLinkText'),
-    onClick: () => {},
+    to: '',
   },
 ])
 

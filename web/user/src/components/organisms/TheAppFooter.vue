@@ -36,9 +36,9 @@ defineProps<Props>()
           class="mt-4 flex list-none flex-col justify-center gap-4 md:flex-row md:gap-10"
         >
           <li v-for="(item, i) in menuItems" :key="i">
-            <a href="#" @click="item.onClick">
+            <nuxt-link :to="item.to">
               {{ item.text }}
-            </a>
+            </nuxt-link>
           </li>
         </ul>
 
