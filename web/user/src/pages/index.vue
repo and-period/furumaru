@@ -84,7 +84,9 @@ const liveItems = computed(() => {
 
     <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
-        <div class="mx-auto grid max-w-7xl grid-cols-3 gap-x-10 gap-y-8 px-2">
+        <div
+          class="mx-auto grid max-w-7xl gap-x-10 gap-y-8 px-2 md:grid-cols-2 lg:grid-cols-3"
+        >
           <transition-group
             enter-active-class="duration-300 ease-in-out"
             enter-from-class="opacity-0 h-0"
@@ -127,7 +129,7 @@ const liveItems = computed(() => {
         <div class="relative mx-auto flex max-w-[1440px]">
           <div class="absolute left-4 flex h-[208px] items-center">
             <the-icon-button
-              class="bg-white/50 hover:bg-white"
+              class="hidden bg-white/50 hover:bg-white md:block"
               @click="handleClickArchiveLeftButton"
             >
               <the-left-arrow-icon />
@@ -135,7 +137,7 @@ const liveItems = computed(() => {
           </div>
           <div
             ref="archiveRef"
-            class="hidden-scrollbar flex flex-nowrap gap-x-8 overflow-x-scroll"
+            class="hidden-scrollbar flex flex-col gap-8 md:flex-row md:flex-nowrap md:overflow-x-scroll"
           >
             <the-archive-item
               v-for="archiveItem in MOCK_ARCHIVES_ITEMS"
@@ -147,7 +149,7 @@ const liveItems = computed(() => {
           </div>
           <div class="absolute right-4 flex h-[208px] items-center">
             <the-icon-button
-              class="bg-white/50 hover:bg-white"
+              class="hidden bg-white/50 hover:bg-white md:block"
               @click="handleClickArchiveRightButton"
             >
               <the-right-arrow-icon />
@@ -161,7 +163,9 @@ const liveItems = computed(() => {
       </the-content-box>
 
       <the-content-box title="recommend" sub-title="おすすめの商品">
-        <div class="mx-auto grid max-w-[1440px] grid-cols-5 gap-x-8 gap-y-6">
+        <div
+          class="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        >
           <the-product-list-item
             v-for="productItem in MOCK_RECOMMEND_ITEMS"
             :id="productItem.id"
