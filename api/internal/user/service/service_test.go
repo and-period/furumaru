@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
@@ -149,72 +149,72 @@ func TestInternalError(t *testing.T) {
 		{
 			name:   "validation error",
 			err:    govalidator.ValidationErrors{},
-			expect: user.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "database not found",
 			err:    database.ErrNotFound,
-			expect: user.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "database failed precondition",
 			err:    database.ErrFailedPrecondition,
-			expect: user.ErrFailedPrecondition,
+			expect: exception.ErrFailedPrecondition,
 		},
 		{
 			name:   "database already exists",
 			err:    database.ErrAlreadyExists,
-			expect: user.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
 		},
 		{
 			name:   "database deadline exceeded",
 			err:    database.ErrDeadlineExceeded,
-			expect: user.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "auth invalid argument",
 			err:    cognito.ErrInvalidArgument,
-			expect: user.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "auth unauthenticated",
 			err:    cognito.ErrUnauthenticated,
-			expect: user.ErrUnauthenticated,
+			expect: exception.ErrUnauthenticated,
 		},
 		{
 			name:   "auth not found",
 			err:    cognito.ErrNotFound,
-			expect: user.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "auth already exists",
 			err:    cognito.ErrAlreadyExists,
-			expect: user.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
 		},
 		{
 			name:   "auth resource exhausted",
 			err:    cognito.ErrResourceExhausted,
-			expect: user.ErrResourceExhausted,
+			expect: exception.ErrResourceExhausted,
 		},
 		{
 			name:   "auth deadline exceeded",
 			err:    cognito.ErrTimeout,
-			expect: user.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "context canceled",
 			err:    context.Canceled,
-			expect: user.ErrCanceled,
+			expect: exception.ErrCanceled,
 		},
 		{
 			name:   "context deadline exceeded",
 			err:    context.DeadlineExceeded,
-			expect: user.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "other error",
 			err:    assert.AnError,
-			expect: user.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

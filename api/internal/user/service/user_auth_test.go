@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -52,7 +53,7 @@ func TestSignInUser(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.SignInUserInput{},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign in",
@@ -64,7 +65,7 @@ func TestSignInUser(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get username",
@@ -77,7 +78,7 @@ func TestSignInUser(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -91,7 +92,7 @@ func TestSignInUser(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -130,7 +131,7 @@ func TestSignOutUser(t *testing.T) {
 			input: &user.SignOutUserInput{
 				AccessToken: "",
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign out",
@@ -140,7 +141,7 @@ func TestSignOutUser(t *testing.T) {
 			input: &user.SignOutUserInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -189,7 +190,7 @@ func TestGetUserAuth(t *testing.T) {
 				AccessToken: "",
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
@@ -200,7 +201,7 @@ func TestGetUserAuth(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -212,7 +213,7 @@ func TestGetUserAuth(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -269,7 +270,7 @@ func TestRefreshUserToken(t *testing.T) {
 				RefreshToken: "",
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign in",
@@ -280,7 +281,7 @@ func TestRefreshUserToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get username",
@@ -292,7 +293,7 @@ func TestRefreshUserToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -305,7 +306,7 @@ func TestRefreshUserToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

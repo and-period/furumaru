@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -85,7 +86,7 @@ func (s *service) UpdateAdminEmail(ctx context.Context, in *user.UpdateAdminEmai
 		return internalError(err)
 	}
 	if admin.Email == in.Email {
-		return fmt.Errorf("this admin does not need to be changed email: %w", user.ErrFailedPrecondition)
+		return fmt.Errorf("this admin does not need to be changed email: %w", exception.ErrFailedPrecondition)
 	}
 	params := &cognito.ChangeEmailParams{
 		AccessToken: in.AccessToken,

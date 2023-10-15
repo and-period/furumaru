@@ -4,20 +4,8 @@ package messenger
 
 import (
 	"context"
-	"errors"
 
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
-)
-
-var (
-	ErrInvalidArgument    = errors.New("messenger: invalid argument")
-	ErrNotFound           = errors.New("messenger: not found")
-	ErrAlreadyExists      = errors.New("messenger: already exists")
-	ErrForbidden          = errors.New("messenger: forbidden")
-	ErrFailedPrecondition = errors.New("messenger: failed precondition")
-	ErrCanceled           = errors.New("messenger: canceled")
-	ErrDeadlineExceeded   = errors.New("messenger: deadline exceeded")
-	ErrInternal           = errors.New("messenger: internal")
 )
 
 type Service interface {

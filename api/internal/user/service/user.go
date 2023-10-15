@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -138,7 +139,7 @@ func (s *service) InitializeUser(ctx context.Context, in *user.InitializeUserInp
 		return internalError(err)
 	}
 	if m.AccountID != "" {
-		return fmt.Errorf("%w: %s", user.ErrFailedPrecondition, "api: already initialized")
+		return fmt.Errorf("%w: %s", exception.ErrFailedPrecondition, "api: already initialized")
 	}
 	err = s.db.Member.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
 	return internalError(err)
@@ -157,7 +158,7 @@ func (s *service) UpdateUserEmail(ctx context.Context, in *user.UpdateUserEmailI
 		return internalError(err)
 	}
 	if m.ProviderType != entity.ProviderTypeEmail {
-		return fmt.Errorf("%w: %s", user.ErrFailedPrecondition, "api: not allow provider type to change email")
+		return fmt.Errorf("%w: %s", exception.ErrFailedPrecondition, "api: not allow provider type to change email")
 	}
 	params := &cognito.ChangeEmailParams{
 		AccessToken: in.AccessToken,
@@ -216,7 +217,7 @@ func (s *service) ForgotUserPassword(ctx context.Context, in *user.ForgotUserPas
 		return internalError(err)
 	}
 	if err := s.userAuth.ForgotPassword(ctx, m.CognitoID); err != nil {
-		return fmt.Errorf("%w: %s", user.ErrNotFound, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrNotFound, err.Error())
 	}
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"sync"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/pkg/sqs"
@@ -95,7 +96,7 @@ func internalError(err error) error {
 	}
 
 	if e, ok := err.(govalidator.ValidationErrors); ok {
-		return fmt.Errorf("%w: %s", media.ErrInvalidArgument, e.Error())
+		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, e.Error())
 	}
 	if e := dbError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
@@ -106,11 +107,11 @@ func internalError(err error) error {
 
 	switch {
 	case errors.Is(err, context.Canceled):
-		return fmt.Errorf("%w: %s", media.ErrCanceled, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrCanceled, err.Error())
 	case errors.Is(err, context.DeadlineExceeded):
-		return fmt.Errorf("%w: %s", media.ErrDeadlineExceeded, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrDeadlineExceeded, err.Error())
 	default:
-		return fmt.Errorf("%w: %s", media.ErrInternal, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrInternal, err.Error())
 	}
 }
 
@@ -121,13 +122,13 @@ func dbError(err error) error {
 
 	switch {
 	case errors.Is(err, database.ErrNotFound):
-		return media.ErrNotFound
+		return exception.ErrNotFound
 	case errors.Is(err, database.ErrFailedPrecondition):
-		return media.ErrFailedPrecondition
+		return exception.ErrFailedPrecondition
 	case errors.Is(err, database.ErrAlreadyExists):
-		return media.ErrAlreadyExists
+		return exception.ErrAlreadyExists
 	case errors.Is(err, database.ErrDeadlineExceeded):
-		return media.ErrDeadlineExceeded
+		return exception.ErrDeadlineExceeded
 	default:
 		return nil
 	}
@@ -140,9 +141,9 @@ func storageError(err error) error {
 
 	switch {
 	case errors.Is(err, storage.ErrInvalidURL):
-		return media.ErrInvalidArgument
+		return exception.ErrInvalidArgument
 	case errors.Is(err, storage.ErrNotFound):
-		return media.ErrNotFound
+		return exception.ErrNotFound
 	default:
 		return nil
 	}

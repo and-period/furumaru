@@ -4,19 +4,8 @@ package media
 
 import (
 	"context"
-	"errors"
 
 	"github.com/and-period/furumaru/api/internal/media/entity"
-)
-
-var (
-	ErrInvalidArgument    = errors.New("media: invalid argument")
-	ErrNotFound           = errors.New("media: not found")
-	ErrAlreadyExists      = errors.New("media: already exists")
-	ErrFailedPrecondition = errors.New("media: failed precondition")
-	ErrCanceled           = errors.New("media: canceled")
-	ErrDeadlineExceeded   = errors.New("media: deadline exceeded")
-	ErrInternal           = errors.New("media: internal")
 )
 
 type Service interface {

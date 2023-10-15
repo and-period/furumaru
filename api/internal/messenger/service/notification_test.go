@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -78,7 +79,7 @@ func TestListNotificaitons(t *testing.T) {
 			input:       &messenger.ListNotificationsInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   messenger.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list notifications",
@@ -97,7 +98,7 @@ func TestListNotificaitons(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   messenger.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count notifications",
@@ -116,7 +117,7 @@ func TestListNotificaitons(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   messenger.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -170,7 +171,7 @@ func TestGetNotification(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.GetNotificationInput{},
 			expect:    nil,
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get notification",
@@ -181,7 +182,7 @@ func TestGetNotification(t *testing.T) {
 				NotificationID: "notification-id",
 			},
 			expect:    nil,
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -299,12 +300,12 @@ func TestCreateNotification(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.CreateNotificationInput{},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, user.ErrNotFound)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, exception.ErrNotFound)
 			},
 			input: &messenger.CreateNotificationInput{
 				Type:        entity.NotificationTypeSystem,
@@ -316,7 +317,7 @@ func TestCreateNotification(t *testing.T) {
 				CreatedBy:   "admin-id",
 				PromotionID: "",
 			},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "invalid domain validation",
@@ -333,7 +334,7 @@ func TestCreateNotification(t *testing.T) {
 				CreatedBy:   "admin-id",
 				PromotionID: "",
 			},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create notification",
@@ -351,7 +352,7 @@ func TestCreateNotification(t *testing.T) {
 				CreatedBy:   "admin-id",
 				PromotionID: "",
 			},
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -431,7 +432,7 @@ func TestUpdateNotification(t *testing.T) {
 		{
 			name: "failed to get admin",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, user.ErrNotFound)
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, exception.ErrNotFound)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
@@ -445,13 +446,13 @@ func TestUpdateNotification(t *testing.T) {
 				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.UpdateNotificationInput{},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get notification",
@@ -471,7 +472,7 @@ func TestUpdateNotification(t *testing.T) {
 				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "already published",
@@ -493,7 +494,7 @@ func TestUpdateNotification(t *testing.T) {
 				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
-			expectErr: messenger.ErrFailedPrecondition,
+			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
 			name: "invalid domain validation",
@@ -513,7 +514,7 @@ func TestUpdateNotification(t *testing.T) {
 				PublishedAt: now.AddDate(0, 0, -1),
 				UpdatedBy:   "admin-id",
 			},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update notification",
@@ -534,7 +535,7 @@ func TestUpdateNotification(t *testing.T) {
 				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -570,7 +571,7 @@ func TestDeleteNotification(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.DeleteNotificationInput{},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete notification",
@@ -580,7 +581,7 @@ func TestDeleteNotification(t *testing.T) {
 			input: &messenger.DeleteNotificationInput{
 				NotificationID: "notification-id",
 			},
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

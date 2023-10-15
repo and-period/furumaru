@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -71,15 +72,15 @@ func (s *service) CreateShipping(ctx context.Context, in *store.CreateShippingIn
 	}
 	box60Rates, err := s.newShippingRatesFromCreate(in.Box60Rates)
 	if err != nil {
-		return nil, fmt.Errorf("api: invalid box 60 rates format: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: invalid box 60 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	box80Rates, err := s.newShippingRatesFromCreate(in.Box80Rates)
 	if err != nil {
-		return nil, fmt.Errorf("api: invalid box 80 rates format: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: invalid box 80 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	box100Rates, err := s.newShippingRatesFromCreate(in.Box100Rates)
 	if err != nil {
-		return nil, fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &entity.NewShippingParams{
 		CoordinatorID:      in.CoordinatorID,
@@ -121,15 +122,15 @@ func (s *service) UpdateShipping(ctx context.Context, in *store.UpdateShippingIn
 	}
 	box60Rates, err := s.newShippingRatesFromUpdate(in.Box60Rates)
 	if err != nil {
-		return fmt.Errorf("api: invalid box 60 rates format: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return fmt.Errorf("api: invalid box 60 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	box80Rates, err := s.newShippingRatesFromUpdate(in.Box80Rates)
 	if err != nil {
-		return fmt.Errorf("api: invalid box 80 rates format: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return fmt.Errorf("api: invalid box 80 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	box100Rates, err := s.newShippingRatesFromUpdate(in.Box100Rates)
 	if err != nil {
-		return fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateShippingParams{
 		Name:               in.Name,

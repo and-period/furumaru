@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -76,7 +77,7 @@ func TestListSchedules(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list schedules",
@@ -90,7 +91,7 @@ func TestListSchedules(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count schedules",
@@ -104,7 +105,7 @@ func TestListSchedules(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -159,7 +160,7 @@ func TestGetSchedule(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetScheduleInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get schedule",
@@ -170,7 +171,7 @@ func TestGetSchedule(t *testing.T) {
 				ScheduleID: "schedule-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -250,7 +251,7 @@ func TestCreateSchedule(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateScheduleInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get coordinator",
@@ -270,12 +271,12 @@ func TestCreateSchedule(t *testing.T) {
 				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
 				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, store.ErrNotFound)
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
 				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
 			},
 			input: &store.CreateScheduleInput{
@@ -290,7 +291,7 @@ func TestCreateSchedule(t *testing.T) {
 				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
 				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get shipping",
@@ -310,13 +311,13 @@ func TestCreateSchedule(t *testing.T) {
 				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
 				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to not found shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(nil, store.ErrNotFound)
+				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(nil, exception.ErrNotFound)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
@@ -330,7 +331,7 @@ func TestCreateSchedule(t *testing.T) {
 				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
 				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create schedule",
@@ -351,7 +352,7 @@ func TestCreateSchedule(t *testing.T) {
 				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
 				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -426,7 +427,7 @@ func TestUpdateSchedule(t *testing.T) {
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
 			input:  &store.UpdateScheduleInput{},
-			expect: store.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get schedule",
@@ -445,13 +446,13 @@ func TestUpdateSchedule(t *testing.T) {
 				StartAt:         now.AddDate(0, -1, 0),
 				EndAt:           now.AddDate(0, 1, 0),
 			},
-			expect: store.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 		{
 			name: "not found shipping",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.db.Shipping.EXPECT().Get(ctx, "shipping-id").Return(nil, store.ErrNotFound)
+				mocks.db.Shipping.EXPECT().Get(ctx, "shipping-id").Return(nil, exception.ErrNotFound)
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
@@ -465,7 +466,7 @@ func TestUpdateSchedule(t *testing.T) {
 				StartAt:         now.AddDate(0, -1, 0),
 				EndAt:           now.AddDate(0, 1, 0),
 			},
-			expect: store.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get shipping",
@@ -485,7 +486,7 @@ func TestUpdateSchedule(t *testing.T) {
 				StartAt:         now.AddDate(0, -1, 0),
 				EndAt:           now.AddDate(0, 1, 0),
 			},
-			expect: store.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 		{
 			name: "failed to update schedule",
@@ -506,7 +507,7 @@ func TestUpdateSchedule(t *testing.T) {
 				StartAt:         now.AddDate(0, -1, 0),
 				EndAt:           now.AddDate(0, 1, 0),
 			},
-			expect: store.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 
@@ -558,7 +559,7 @@ func TestUpdateScheduleThumbnails(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateScheduleThumbnailsInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update thumbnails",
@@ -569,7 +570,7 @@ func TestUpdateScheduleThumbnails(t *testing.T) {
 				ScheduleID: "schedule-id",
 				Thumbnails: thumbnails,
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

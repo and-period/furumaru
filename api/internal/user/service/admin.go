@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -45,7 +46,7 @@ func (s *service) ForgotAdminPassword(ctx context.Context, in *user.ForgotAdminP
 		return internalError(err)
 	}
 	if err := s.adminAuth.ForgotPassword(ctx, admin.CognitoID); err != nil {
-		return fmt.Errorf("%w: %s", user.ErrNotFound, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrNotFound, err.Error())
 	}
 	return nil
 }

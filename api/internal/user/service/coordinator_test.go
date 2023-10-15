@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -84,7 +85,7 @@ func TestListCoordinators(t *testing.T) {
 			input:       &user.ListCoordinatorsInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list coordinators",
@@ -98,7 +99,7 @@ func TestListCoordinators(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count coordinators",
@@ -112,7 +113,7 @@ func TestListCoordinators(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -187,7 +188,7 @@ func TestMultiGetCoordinators(t *testing.T) {
 				CoordinatorIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to multi get coordinators",
@@ -198,7 +199,7 @@ func TestMultiGetCoordinators(t *testing.T) {
 				CoordinatorIDs: []string{"admin-id"},
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -268,7 +269,7 @@ func TestGetCoordinator(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.GetCoordinatorInput{},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get coordinator",
@@ -279,7 +280,7 @@ func TestGetCoordinator(t *testing.T) {
 				CoordinatorID: "admin-id",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -407,7 +408,7 @@ func TestCreateCoordinator(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.CreateCoordinatorInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to multi get product types",
@@ -435,7 +436,7 @@ func TestCreateCoordinator(t *testing.T) {
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch product types length",
@@ -463,7 +464,7 @@ func TestCreateCoordinator(t *testing.T) {
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create admin",
@@ -489,7 +490,7 @@ func TestCreateCoordinator(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -609,7 +610,7 @@ func TestUpdateCoordinator(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateCoordinatorInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get coordinator",
@@ -637,7 +638,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to multi get product types",
@@ -666,7 +667,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch product types length",
@@ -695,7 +696,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update coordinator",
@@ -725,7 +726,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -799,7 +800,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateCoordinatorEmailInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by admin id",
@@ -810,7 +811,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				Email:         "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change email",
@@ -822,7 +823,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				Email:         "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update email",
@@ -835,7 +836,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				Email:         "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -887,7 +888,7 @@ func TestUpdateCoordinatorThumbnails(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateCoordinatorThumbnailsInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update thumbnails",
@@ -898,7 +899,7 @@ func TestUpdateCoordinatorThumbnails(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				Thumbnails:    thumbnails,
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -950,7 +951,7 @@ func TestUpdateCoordinatorHeaders(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateCoordinatorHeadersInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update headers",
@@ -961,7 +962,7 @@ func TestUpdateCoordinatorHeaders(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				Headers:       headers,
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1051,7 +1052,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.ResetCoordinatorPasswordInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by admin id",
@@ -1061,7 +1062,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change password",
@@ -1072,7 +1073,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 			input: &user.ResetCoordinatorPasswordInput{
 				CoordinatorID: "coordinator-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1107,7 +1108,7 @@ func TestDeleteCoordinator(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.DeleteCoordinatorInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete",
@@ -1117,7 +1118,7 @@ func TestDeleteCoordinator(t *testing.T) {
 			input: &user.DeleteCoordinatorInput{
 				CoordinatorID: "coordinator-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1158,7 +1159,7 @@ func TestAggregateRelatedProducers(t *testing.T) {
 			input: &user.AggregateRealatedProducersInput{
 				CoordinatorIDs: []string{""},
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete",
@@ -1168,7 +1169,7 @@ func TestAggregateRelatedProducers(t *testing.T) {
 			input: &user.AggregateRealatedProducersInput{
 				CoordinatorIDs: []string{"coordinator-id"},
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

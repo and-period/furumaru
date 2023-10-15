@@ -36,7 +36,6 @@ require (
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
 	github.com/rs/cors v1.9.0
 	github.com/rs/cors/wrapper/gin v0.0.0-20230802123556-066574eebbd0
-	github.com/samber/lo v1.38.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.13.0+incompatible
 	github.com/shopspring/decimal v1.3.1
@@ -139,7 +138,6 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.4.0 // indirect
 	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 // indirect
 	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/oauth2 v0.11.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect

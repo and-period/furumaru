@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/messenger"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	mock_database "github.com/and-period/furumaru/api/mock/messenger/database"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
@@ -152,42 +152,42 @@ func TestInternalError(t *testing.T) {
 		{
 			name:   "validation error",
 			err:    govalidator.ValidationErrors{},
-			expect: messenger.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "database not found",
 			err:    database.ErrNotFound,
-			expect: messenger.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "database failed precondition",
 			err:    database.ErrFailedPrecondition,
-			expect: messenger.ErrFailedPrecondition,
+			expect: exception.ErrFailedPrecondition,
 		},
 		{
 			name:   "database already exists",
 			err:    database.ErrAlreadyExists,
-			expect: messenger.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
 		},
 		{
 			name:   "database deadline exceeded",
 			err:    database.ErrDeadlineExceeded,
-			expect: messenger.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "context canceled",
 			err:    context.Canceled,
-			expect: messenger.ErrCanceled,
+			expect: exception.ErrCanceled,
 		},
 		{
 			name:   "context deadline exceeded",
 			err:    context.DeadlineExceeded,
-			expect: messenger.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "other error",
 			err:    assert.AnError,
-			expect: messenger.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

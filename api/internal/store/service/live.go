@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -55,8 +56,8 @@ func (s *service) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*e
 		return nil
 	})
 	err := eg.Wait()
-	if errors.Is(err, database.ErrNotFound) || errors.Is(err, user.ErrNotFound) || errors.Is(err, errUnmatchProducts) {
-		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), store.ErrInvalidArgument)
+	if errors.Is(err, database.ErrNotFound) || errors.Is(err, exception.ErrNotFound) || errors.Is(err, errUnmatchProducts) {
+		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -88,7 +89,7 @@ func (s *service) UpdateLive(ctx context.Context, in *store.UpdateLiveInput) err
 		return internalError(err)
 	}
 	if len(products) != len(in.ProductIDs) {
-		return fmt.Errorf("api: umatch product: %w", store.ErrInvalidArgument)
+		return fmt.Errorf("api: umatch product: %w", exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateLiveParams{
 		ProductIDs: in.ProductIDs,

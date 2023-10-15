@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
@@ -172,62 +172,62 @@ func TestInternalError(t *testing.T) {
 		{
 			name:   "validation error",
 			err:    govalidator.ValidationErrors{},
-			expect: store.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "database not found",
 			err:    database.ErrNotFound,
-			expect: store.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "database failed precondition",
 			err:    database.ErrFailedPrecondition,
-			expect: store.ErrFailedPrecondition,
+			expect: exception.ErrFailedPrecondition,
 		},
 		{
 			name:   "database already exists",
 			err:    database.ErrAlreadyExists,
-			expect: store.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
 		},
 		{
 			name:   "database deadline exceeded",
 			err:    database.ErrDeadlineExceeded,
-			expect: store.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "postal code invalid argument",
 			err:    postalcode.ErrInvalidArgument,
-			expect: store.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "postal code not found",
 			err:    postalcode.ErrNotFound,
-			expect: store.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "postal code unavailable",
 			err:    postalcode.ErrUnavailable,
-			expect: store.ErrUnavailable,
+			expect: exception.ErrUnavailable,
 		},
 		{
 			name:   "postal code deadline exceeded",
 			err:    postalcode.ErrTimeout,
-			expect: store.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "context canceled",
 			err:    context.Canceled,
-			expect: store.ErrCanceled,
+			expect: exception.ErrCanceled,
 		},
 		{
 			name:   "context deadline exceeded",
 			err:    context.DeadlineExceeded,
-			expect: store.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "other error",
 			err:    assert.AnError,
-			expect: store.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

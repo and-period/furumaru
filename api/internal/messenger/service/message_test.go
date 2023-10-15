@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -73,7 +74,7 @@ func TestListMessages(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.ListMessagesInput{},
 			expect:    nil,
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list messages",
@@ -92,7 +93,7 @@ func TestListMessages(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   messenger.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count messagses",
@@ -111,7 +112,7 @@ func TestListMessages(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   messenger.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -206,7 +207,7 @@ func TestGetMessage(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.GetMessageInput{},
 			expect:    nil,
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get message",
@@ -219,7 +220,7 @@ func TestGetMessage(t *testing.T) {
 				UserID:    "user-id",
 			},
 			expect:    nil,
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get someone else",
@@ -232,7 +233,7 @@ func TestGetMessage(t *testing.T) {
 				UserID:    "other-id",
 			},
 			expect:    nil,
-			expectErr: messenger.ErrForbidden,
+			expectErr: exception.ErrForbidden,
 		},
 		{
 			name: "failed to update read",

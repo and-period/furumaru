@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/golang/mock/gomock"
@@ -48,7 +49,7 @@ func TestResizeCoordinatorThumbnail(t *testing.T) {
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
 			input:  &media.ResizeFileInput{},
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -59,7 +60,7 @@ func TestResizeCoordinatorThumbnail(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: media.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -107,7 +108,7 @@ func TestResizeCoordinatorHeader(t *testing.T) {
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
 			input:  &media.ResizeFileInput{},
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -118,7 +119,7 @@ func TestResizeCoordinatorHeader(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: media.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -166,7 +167,7 @@ func TestResizeProducerThumbnail(t *testing.T) {
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
 			input:  &media.ResizeFileInput{},
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -177,7 +178,7 @@ func TestResizeProducerThumbnail(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: media.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -225,7 +226,7 @@ func TestResizeProducerHeader(t *testing.T) {
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
 			input:  &media.ResizeFileInput{},
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -236,7 +237,7 @@ func TestResizeProducerHeader(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: media.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -284,7 +285,7 @@ func TestResizeProductMedia(t *testing.T) {
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
 			input:  &media.ResizeFileInput{},
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -295,7 +296,7 @@ func TestResizeProductMedia(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: media.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -343,7 +344,7 @@ func TestResizeProductTypeIcon(t *testing.T) {
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
 			input:  &media.ResizeFileInput{},
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -354,7 +355,7 @@ func TestResizeProductTypeIcon(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: media.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -402,7 +403,7 @@ func TestResizeScheduleThumbnail(t *testing.T) {
 			name:   "invalid argument",
 			setup:  func(ctx context.Context, mocks *mocks) {},
 			input:  &media.ResizeFileInput{},
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -413,7 +414,7 @@ func TestResizeScheduleThumbnail(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: media.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
