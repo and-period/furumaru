@@ -54,15 +54,15 @@ const hasStock = computed(() => {
 
     <div class="flex h-8 items-center gap-2 text-sm">
       <div class="inline-flex items-center">
-        <label class="mr-2 block">数量</label>
+        <label class="mr-2 block text-[10px] xl:text-[14px]">数量</label>
         <select class="h-full border-[1px] border-main px-2">
           <option value="0">0</option>
         </select>
       </div>
       <button
-        class="flex h-full grow items-center justify-center bg-main px-4 py-1 text-white"
+        class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white lg:px-4 lg:text-[14px]"
       >
-        <the-cart-icon id="add-cart-icon" class="mr-1 h-4 w-4" />
+        <the-cart-icon id="add-cart-icon" class="mr-1 h-3 w-3 lg:h-4 lg:w-4" />
         カゴに入れる
       </button>
     </div>
@@ -77,7 +77,7 @@ const hasStock = computed(() => {
         </span>
       </div>
       <div class="h-14 w-14">
-        <img :src="cnImgSrc" class="h-full w-full rounded-full" />
+        <img :src="cnImgSrc" class="aspect-square rounded-full" />
       </div>
     </div>
   </div>
