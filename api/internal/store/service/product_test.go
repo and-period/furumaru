@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -100,7 +101,7 @@ func TestListProducts(t *testing.T) {
 			input:       &store.ListProductsInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list products",
@@ -120,7 +121,7 @@ func TestListProducts(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count products",
@@ -140,7 +141,7 @@ func TestListProducts(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -282,7 +283,7 @@ func TestGetProduct(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetProductInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get product",
@@ -293,7 +294,7 @@ func TestGetProduct(t *testing.T) {
 				ProductID: "product-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -417,7 +418,7 @@ func TestCreateProduct(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateProductInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid media format",
@@ -453,7 +454,7 @@ func TestCreateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get producer",
@@ -491,7 +492,7 @@ func TestCreateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to create product",
@@ -530,7 +531,7 @@ func TestCreateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -751,7 +752,7 @@ func TestUpdateProduct(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateProductInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "invalid media format",
@@ -790,7 +791,7 @@ func TestUpdateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get product",
@@ -829,7 +830,7 @@ func TestUpdateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get producer",
@@ -869,7 +870,7 @@ func TestUpdateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update product",
@@ -910,7 +911,7 @@ func TestUpdateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -974,7 +975,7 @@ func TestUpdateProductMedia(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateProductMediaInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update media",
@@ -990,7 +991,7 @@ func TestUpdateProductMedia(t *testing.T) {
 					},
 				},
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1026,7 +1027,7 @@ func TestDeleteProduct(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteProductInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete product",
@@ -1036,7 +1037,7 @@ func TestDeleteProduct(t *testing.T) {
 			input: &store.DeleteProductInput{
 				ProductID: "product-id",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -89,7 +90,7 @@ func internalError(err error) error {
 	}
 
 	if e, ok := err.(govalidator.ValidationErrors); ok {
-		return fmt.Errorf("%w: %s", messenger.ErrInvalidArgument, e.Error())
+		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, e.Error())
 	}
 	if e := dbError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
@@ -97,11 +98,11 @@ func internalError(err error) error {
 
 	switch {
 	case errors.Is(err, context.Canceled):
-		return fmt.Errorf("%w: %s", messenger.ErrCanceled, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrCanceled, err.Error())
 	case errors.Is(err, context.DeadlineExceeded):
-		return fmt.Errorf("%w: %s", messenger.ErrDeadlineExceeded, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrDeadlineExceeded, err.Error())
 	default:
-		return fmt.Errorf("%w: %s", messenger.ErrInternal, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrInternal, err.Error())
 	}
 }
 
@@ -112,13 +113,13 @@ func dbError(err error) error {
 
 	switch {
 	case errors.Is(err, database.ErrNotFound):
-		return messenger.ErrNotFound
+		return exception.ErrNotFound
 	case errors.Is(err, database.ErrFailedPrecondition):
-		return messenger.ErrFailedPrecondition
+		return exception.ErrFailedPrecondition
 	case errors.Is(err, database.ErrAlreadyExists):
-		return messenger.ErrAlreadyExists
+		return exception.ErrAlreadyExists
 	case errors.Is(err, database.ErrDeadlineExceeded):
-		return messenger.ErrDeadlineExceeded
+		return exception.ErrDeadlineExceeded
 	default:
 		return nil
 	}

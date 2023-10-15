@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -81,14 +82,14 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		media[i] = entity.NewProductMedia(in.Media[i].URL, in.Media[i].IsThumbnail)
 	}
 	if err := media.Validate(); err != nil {
-		return nil, fmt.Errorf("api: invalid media format: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: in.ProducerID,
 	}
 	_, err := s.user.GetProducer(ctx, producerIn)
-	if errors.Is(err, store.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), store.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -151,14 +152,14 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		}
 	}
 	if err := media.Validate(); err != nil {
-		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	producerIn := &user.GetProducerInput{
 		ProducerID: in.ProducerID,
 	}
 	_, err = s.user.GetProducer(ctx, producerIn)
-	if errors.Is(err, store.ErrNotFound) {
-		return fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), store.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return internalError(err)

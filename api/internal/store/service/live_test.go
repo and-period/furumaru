@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -60,7 +61,7 @@ func TestListByScheduleID(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.ListLivesByScheduleIDInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list lives",
@@ -71,7 +72,7 @@ func TestListByScheduleID(t *testing.T) {
 				ScheduleID: "schedule-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -121,7 +122,7 @@ func TestGetLive(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetLiveInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get live",
@@ -132,7 +133,7 @@ func TestGetLive(t *testing.T) {
 				LiveID: "live-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -207,7 +208,7 @@ func TestCreateLive(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateLiveInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get schedule",
@@ -224,7 +225,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get producer",
@@ -241,7 +242,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch products",
@@ -258,7 +259,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get products",
@@ -275,7 +276,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to create live",
@@ -293,7 +294,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -360,7 +361,7 @@ func TestUpdateLive(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateLiveInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get live",
@@ -374,7 +375,7 @@ func TestUpdateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get products",
@@ -389,7 +390,7 @@ func TestUpdateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch products",
@@ -404,7 +405,7 @@ func TestUpdateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update live",
@@ -420,7 +421,7 @@ func TestUpdateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -456,7 +457,7 @@ func TestDeleteLive(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteLiveInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete live",
@@ -466,7 +467,7 @@ func TestDeleteLive(t *testing.T) {
 			input: &store.DeleteLiveInput{
 				LiveID: "live-id",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

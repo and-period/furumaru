@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -65,7 +66,7 @@ func TestListCategories(t *testing.T) {
 			input:       &store.ListCategoriesInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list",
@@ -83,7 +84,7 @@ func TestListCategories(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count",
@@ -101,7 +102,7 @@ func TestListCategories(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -154,7 +155,7 @@ func TestMultiGetCategories(t *testing.T) {
 				CategoryIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list",
@@ -165,7 +166,7 @@ func TestMultiGetCategories(t *testing.T) {
 				CategoryIDs: []string{"category-id"},
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -213,7 +214,7 @@ func TestGetCategory(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetCategoryInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get",
@@ -224,7 +225,7 @@ func TestGetCategory(t *testing.T) {
 				CategoryID: "category-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -270,7 +271,7 @@ func TestCreateCategory(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateCategoryInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create",
@@ -280,7 +281,7 @@ func TestCreateCategory(t *testing.T) {
 			input: &store.CreateCategoryInput{
 				Name: "野菜",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -317,7 +318,7 @@ func TestUpdateCategory(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateCategoryInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update",
@@ -328,7 +329,7 @@ func TestUpdateCategory(t *testing.T) {
 				CategoryID: "category-id",
 				Name:       "野菜",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -364,7 +365,7 @@ func TestDeleteCategory(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteCategoryInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete",
@@ -374,7 +375,7 @@ func TestDeleteCategory(t *testing.T) {
 			input: &store.DeleteCategoryInput{
 				CategoryID: "category-id",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

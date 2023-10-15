@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -71,8 +72,8 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		return
 	})
 	err := eg.Wait()
-	if errors.Is(err, store.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), store.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -126,8 +127,8 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 		return internalError(err)
 	}
 	_, err = s.db.Shipping.Get(ctx, in.ShippingID)
-	if errors.Is(err, store.ErrNotFound) {
-		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), store.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return internalError(err)

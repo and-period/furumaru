@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -107,7 +108,7 @@ func TestListOrders(t *testing.T) {
 			input:       &store.ListOrdersInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list orders",
@@ -122,7 +123,7 @@ func TestListOrders(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count orders",
@@ -137,7 +138,7 @@ func TestListOrders(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -231,7 +232,7 @@ func TestGetOrder(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetOrderInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get order",
@@ -242,7 +243,7 @@ func TestGetOrder(t *testing.T) {
 				OrderID: "order-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -293,7 +294,7 @@ func TestAggregateOrders(t *testing.T) {
 				UserIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to aggregate",
@@ -304,7 +305,7 @@ func TestAggregateOrders(t *testing.T) {
 				UserIDs: []string{"user-id"},
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

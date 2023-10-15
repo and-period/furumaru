@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -70,7 +71,7 @@ func TestListProductTypes(t *testing.T) {
 			input:       &store.ListProductTypesInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list",
@@ -89,7 +90,7 @@ func TestListProductTypes(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count",
@@ -108,7 +109,7 @@ func TestListProductTypes(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -163,7 +164,7 @@ func TestMultiGetProductTypes(t *testing.T) {
 				ProductTypeIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list",
@@ -174,7 +175,7 @@ func TestMultiGetProductTypes(t *testing.T) {
 				ProductTypeIDs: []string{"product-type-id"},
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -224,7 +225,7 @@ func TestGetProductType(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetProductTypeInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get product type",
@@ -235,7 +236,7 @@ func TestGetProductType(t *testing.T) {
 				ProductTypeID: "product-type-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -286,7 +287,7 @@ func TestCreateProductType(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateProductTypeInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create",
@@ -298,7 +299,7 @@ func TestCreateProductType(t *testing.T) {
 				IconURL:    "https://and-period.jp/icon.png",
 				CategoryID: "category-id",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -348,7 +349,7 @@ func TestUpdateProductType(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateProductTypeInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get product type",
@@ -360,7 +361,7 @@ func TestUpdateProductType(t *testing.T) {
 				Name:          "さつまいも",
 				IconURL:       "https://and-period.jp/icon.png",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update",
@@ -373,7 +374,7 @@ func TestUpdateProductType(t *testing.T) {
 				Name:          "さつまいも",
 				IconURL:       "https://and-period.jp/icon.png",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -425,7 +426,7 @@ func TestUpdateProductTypeIcons(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateProductTypeIconsInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update icons",
@@ -436,7 +437,7 @@ func TestUpdateProductTypeIcons(t *testing.T) {
 				ProductTypeID: "product-type-id",
 				Icons:         icons,
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -472,7 +473,7 @@ func TestDeleteProductType(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteProductTypeInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete",
@@ -482,7 +483,7 @@ func TestDeleteProductType(t *testing.T) {
 			input: &store.DeleteProductTypeInput{
 				ProductTypeID: "product-type-id",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

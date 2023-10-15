@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -84,7 +85,7 @@ func internalError(err error) error {
 	}
 
 	if e, ok := err.(govalidator.ValidationErrors); ok {
-		return fmt.Errorf("%w: %s", user.ErrInvalidArgument, e.Error())
+		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, e.Error())
 	}
 	if e := dbError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
@@ -95,11 +96,11 @@ func internalError(err error) error {
 
 	switch {
 	case errors.Is(err, context.Canceled):
-		return fmt.Errorf("%w: %s", user.ErrCanceled, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrCanceled, err.Error())
 	case errors.Is(err, context.DeadlineExceeded):
-		return fmt.Errorf("%w: %s", user.ErrDeadlineExceeded, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrDeadlineExceeded, err.Error())
 	default:
-		return fmt.Errorf("%w: %s", user.ErrInternal, err.Error())
+		return fmt.Errorf("%w: %s", exception.ErrInternal, err.Error())
 	}
 }
 
@@ -110,13 +111,13 @@ func dbError(err error) error {
 
 	switch {
 	case errors.Is(err, database.ErrNotFound):
-		return user.ErrNotFound
+		return exception.ErrNotFound
 	case errors.Is(err, database.ErrFailedPrecondition):
-		return user.ErrFailedPrecondition
+		return exception.ErrFailedPrecondition
 	case errors.Is(err, database.ErrAlreadyExists):
-		return user.ErrAlreadyExists
+		return exception.ErrAlreadyExists
 	case errors.Is(err, database.ErrDeadlineExceeded):
-		return user.ErrDeadlineExceeded
+		return exception.ErrDeadlineExceeded
 	default:
 		return nil
 	}
@@ -129,17 +130,17 @@ func authError(err error) error {
 
 	switch {
 	case errors.Is(err, cognito.ErrInvalidArgument):
-		return user.ErrInvalidArgument
+		return exception.ErrInvalidArgument
 	case errors.Is(err, cognito.ErrUnauthenticated):
-		return user.ErrUnauthenticated
+		return exception.ErrUnauthenticated
 	case errors.Is(err, cognito.ErrNotFound):
-		return user.ErrNotFound
+		return exception.ErrNotFound
 	case errors.Is(err, cognito.ErrAlreadyExists):
-		return user.ErrAlreadyExists
+		return exception.ErrAlreadyExists
 	case errors.Is(err, cognito.ErrResourceExhausted):
-		return user.ErrResourceExhausted
+		return exception.ErrResourceExhausted
 	case errors.Is(err, cognito.ErrTimeout):
-		return user.ErrDeadlineExceeded
+		return exception.ErrDeadlineExceeded
 	default:
 		return nil
 	}

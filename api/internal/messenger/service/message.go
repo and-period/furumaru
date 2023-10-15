@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -63,7 +64,7 @@ func (s *service) GetMessage(ctx context.Context, in *messenger.GetMessageInput)
 		return message, nil
 	}
 	if !message.IsMine(in.UserType, in.UserID) {
-		return nil, fmt.Errorf("service: this message is someone else: %w", messenger.ErrForbidden)
+		return nil, fmt.Errorf("service: this message is someone else: %w", exception.ErrForbidden)
 	}
 	if message.Read {
 		return message, nil

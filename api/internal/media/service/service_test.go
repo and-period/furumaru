@@ -14,7 +14,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	mock_database "github.com/and-period/furumaru/api/mock/media/database"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
@@ -185,52 +185,52 @@ func TestInternalError(t *testing.T) {
 		{
 			name:   "validation error",
 			err:    govalidator.ValidationErrors{},
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "database not found",
 			err:    database.ErrNotFound,
-			expect: media.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "database failed precondition",
 			err:    database.ErrFailedPrecondition,
-			expect: media.ErrFailedPrecondition,
+			expect: exception.ErrFailedPrecondition,
 		},
 		{
 			name:   "database already exists",
 			err:    database.ErrAlreadyExists,
-			expect: media.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
 		},
 		{
 			name:   "database deadline exceeded",
 			err:    database.ErrDeadlineExceeded,
-			expect: media.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "storage invalid argument",
 			err:    storage.ErrInvalidURL,
-			expect: media.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "storage not found",
 			err:    storage.ErrNotFound,
-			expect: media.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "context canceled",
 			err:    context.Canceled,
-			expect: media.ErrCanceled,
+			expect: exception.ErrCanceled,
 		},
 		{
 			name:   "context deadline exceeded",
 			err:    context.DeadlineExceeded,
-			expect: media.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "other error",
 			err:    assert.AnError,
-			expect: media.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

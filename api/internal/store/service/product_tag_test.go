@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -65,7 +66,7 @@ func TestListProductTags(t *testing.T) {
 			input:       &store.ListProductTagsInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list",
@@ -83,7 +84,7 @@ func TestListProductTags(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count",
@@ -101,7 +102,7 @@ func TestListProductTags(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -154,7 +155,7 @@ func TestMultiGetProductTags(t *testing.T) {
 				ProductTagIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list",
@@ -165,7 +166,7 @@ func TestMultiGetProductTags(t *testing.T) {
 				ProductTagIDs: []string{"product-tag-id"},
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -213,7 +214,7 @@ func TestGetProductTag(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetProductTagInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get",
@@ -224,7 +225,7 @@ func TestGetProductTag(t *testing.T) {
 				ProductTagID: "product-tag-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -270,7 +271,7 @@ func TestCreateProductTag(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateProductTagInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create",
@@ -280,7 +281,7 @@ func TestCreateProductTag(t *testing.T) {
 			input: &store.CreateProductTagInput{
 				Name: "野菜",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -317,7 +318,7 @@ func TestUpdateProductTag(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateProductTagInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update",
@@ -328,7 +329,7 @@ func TestUpdateProductTag(t *testing.T) {
 				ProductTagID: "product-tag-id",
 				Name:         "野菜",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -364,7 +365,7 @@ func TestDeleteProductTag(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteProductTagInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete",
@@ -374,7 +375,7 @@ func TestDeleteProductTag(t *testing.T) {
 			input: &store.DeleteProductTagInput{
 				ProductTagID: "product-tag-id",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

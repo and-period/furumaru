@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -68,8 +69,8 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 		return nil, internalError(err)
 	}
 	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
-	if errors.Is(err, user.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid coordinator id: %w", user.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -244,8 +245,8 @@ func (s *service) RelateProducers(ctx context.Context, in *user.RelateProducersI
 		return internalError(err)
 	}
 	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
-	if errors.Is(err, user.ErrNotFound) {
-		return fmt.Errorf("api: invalid coordinator id: %w", user.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return internalError(err)
@@ -256,7 +257,7 @@ func (s *service) RelateProducers(ctx context.Context, in *user.RelateProducersI
 	}
 	producers = producers.Unrelated()
 	if len(producers) != len(in.ProducerIDs) {
-		return fmt.Errorf("api: contains invalid producers: %w", user.ErrFailedPrecondition)
+		return fmt.Errorf("api: contains invalid producers: %w", exception.ErrFailedPrecondition)
 	}
 	err = s.db.Producer.UpdateRelationship(ctx, in.CoordinatorID, in.ProducerIDs...)
 	return internalError(err)

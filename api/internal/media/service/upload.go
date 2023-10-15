@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
@@ -68,7 +69,7 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 	}
 	u, err := s.parseURL(in, prefix)
 	if err != nil {
-		return "", fmt.Errorf("%s: %w", err.Error(), media.ErrInvalidArgument)
+		return "", fmt.Errorf("%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	var url string
 	switch u.Host {
@@ -77,7 +78,7 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 	case s.storageURL().Host:
 		url, err = s.downloadFile(ctx, u)
 	default:
-		return "", fmt.Errorf("service: unknown storage host. host=%s: %w", u.Host, media.ErrInvalidArgument)
+		return "", fmt.Errorf("service: unknown storage host. host=%s: %w", u.Host, exception.ErrInvalidArgument)
 	}
 	return url, internalError(err)
 }

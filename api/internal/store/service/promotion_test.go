@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -72,7 +73,7 @@ func TestListPromotions(t *testing.T) {
 			input:       &store.ListPromotionsInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list promotions",
@@ -89,7 +90,7 @@ func TestListPromotions(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count promotions",
@@ -106,7 +107,7 @@ func TestListPromotions(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   store.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -168,7 +169,7 @@ func TestMultiGetPromotions(t *testing.T) {
 				PromotionIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to multi get promotions",
@@ -179,7 +180,7 @@ func TestMultiGetPromotions(t *testing.T) {
 				PromotionIDs: []string{"promotion-id"},
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -236,7 +237,7 @@ func TestGetPromotion(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.GetPromotionInput{},
 			expect:    nil,
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get promotion",
@@ -247,7 +248,7 @@ func TestGetPromotion(t *testing.T) {
 				PromotionID: "promotion-id",
 			},
 			expect:    nil,
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -310,7 +311,7 @@ func TestCreatePromotion(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreatePromotionInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create promotion",
@@ -328,7 +329,7 @@ func TestCreatePromotion(t *testing.T) {
 				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -385,7 +386,7 @@ func TestUpdatePromotion(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdatePromotionInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update promotion",
@@ -404,7 +405,7 @@ func TestUpdatePromotion(t *testing.T) {
 				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -440,7 +441,7 @@ func TestDeletePromotion(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeletePromotionInput{},
-			expectErr: store.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete promotion",
@@ -450,7 +451,7 @@ func TestDeletePromotion(t *testing.T) {
 			input: &store.DeletePromotionInput{
 				PromotionID: "promotion-id",
 			},
-			expectErr: store.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

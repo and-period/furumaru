@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -83,8 +84,8 @@ func (s *service) CreateNotification(
 		return err
 	})
 	err := eg.Wait()
-	if errors.Is(err, user.ErrNotFound) || errors.Is(err, store.ErrNotFound) {
-		return nil, fmt.Errorf("service: not found reference: %s: %w", err.Error(), messenger.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("service: not found reference: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -101,7 +102,7 @@ func (s *service) CreateNotification(
 	}
 	notification := entity.NewNotification(params)
 	if err := notification.Validate(s.now()); err != nil {
-		return nil, fmt.Errorf("service: invalid notification: %s: %w", err.Error(), messenger.ErrInvalidArgument)
+		return nil, fmt.Errorf("service: invalid notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err := s.db.Notification.Create(ctx, notification); err != nil {
 		return nil, internalError(err)
@@ -117,8 +118,8 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 		AdminID: in.UpdatedBy,
 	}
 	_, err := s.user.GetAdmin(ctx, adminIn)
-	if errors.Is(err, user.ErrNotFound) {
-		return fmt.Errorf("api: invalid admin id format: %s: %w", err.Error(), messenger.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid admin id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return internalError(err)
@@ -129,7 +130,7 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 	}
 	if s.now().After(notification.PublishedAt) {
 		// すでに投稿済みの場合は更新できない
-		return fmt.Errorf("api: already notified: %w", messenger.ErrFailedPrecondition)
+		return fmt.Errorf("api: already notified: %w", exception.ErrFailedPrecondition)
 	}
 	notification.Targets = in.Targets
 	notification.Title = in.Title
@@ -137,7 +138,7 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 	notification.Note = in.Note
 	notification.PublishedAt = in.PublishedAt
 	if err := notification.Validate(s.now()); err != nil {
-		return fmt.Errorf("api: invalid notification: %s: %w", err.Error(), messenger.ErrInvalidArgument)
+		return fmt.Errorf("api: invalid notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateNotificationParams{
 		Targets:     in.Targets,

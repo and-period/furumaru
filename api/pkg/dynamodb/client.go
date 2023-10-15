@@ -14,7 +14,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const defaultDelimiter = "-"
+
 type Client interface {
+	Count(ctx context.Context, entity Entity) (int64, error)
 	Get(ctx context.Context, primaryKey map[string]interface{}, entity Entity) error
 	Insert(ctx context.Context, entity Entity) error
 }
@@ -26,18 +29,22 @@ type Entity interface {
 
 type Params struct {
 	TablePrefix string
+	TableSuffix string
 }
 
 type client struct {
 	db          *dynamodb.Client
 	logger      *zap.Logger
 	tablePrefix string
+	tableSuffix string
+	delimiter   string
 }
 
 type options struct {
 	maxRetries int
 	interval   time.Duration
 	logger     *zap.Logger
+	delimiter  string
 }
 
 type Option func(*options)
@@ -60,11 +67,18 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
+func WithDelimiter(delim string) Option {
+	return func(opts *options) {
+		opts.delimiter = delim
+	}
+}
+
 func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 	dopts := &options{
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
 		logger:     zap.NewNop(),
+		delimiter:  defaultDelimiter,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -79,7 +93,21 @@ func NewClient(cfg aws.Config, params *Params, opts ...Option) Client {
 		db:          cli,
 		logger:      dopts.logger,
 		tablePrefix: params.TablePrefix,
+		tableSuffix: params.TableSuffix,
+		delimiter:   dopts.delimiter,
 	}
+}
+
+func (c *client) Count(ctx context.Context, e Entity) (int64, error) {
+	in := &dynamodb.ScanInput{
+		TableName: c.tableName(e),
+		Select:    types.SelectCount,
+	}
+	out, err := c.db.Scan(ctx, in)
+	if err != nil {
+		return 0, err
+	}
+	return int64(out.Count), nil
 }
 
 func (c *client) Get(ctx context.Context, pk map[string]interface{}, e Entity) error {
@@ -113,7 +141,11 @@ func (c *client) Insert(ctx context.Context, e Entity) error {
 }
 
 func (c *client) tableName(e Entity) *string {
-	return aws.String(strings.Join([]string{c.tablePrefix, e.TableName()}, "_"))
+	strs := []string{c.tablePrefix, e.TableName()}
+	if c.tableSuffix != "" {
+		strs = append(strs, c.tableSuffix)
+	}
+	return aws.String(strings.Join(strs, c.delimiter))
 }
 
 func (c *client) keys(keys map[string]interface{}) (map[string]types.AttributeValue, error) {

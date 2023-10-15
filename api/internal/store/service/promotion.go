@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -83,7 +84,7 @@ func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotion
 	}
 	promotion := entity.NewPromotion(params)
 	if err := promotion.Validate(); err != nil {
-		return nil, fmt.Errorf("api: validation error: %s: %w", err.Error(), store.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: validation error: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err := s.db.Promotion.Create(ctx, promotion); err != nil {
 		return nil, internalError(err)

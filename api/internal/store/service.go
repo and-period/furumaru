@@ -4,21 +4,8 @@ package store
 
 import (
 	"context"
-	"errors"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
-)
-
-var (
-	ErrInvalidArgument    = errors.New("store: invalid argument")
-	ErrNotFound           = errors.New("store: not found")
-	ErrAlreadyExists      = errors.New("store: already exists")
-	ErrForbidden          = errors.New("store: forbidden")
-	ErrFailedPrecondition = errors.New("store: failed precondition")
-	ErrUnavailable        = errors.New("store: unavailable")
-	ErrCanceled           = errors.New("store: canceled")
-	ErrDeadlineExceeded   = errors.New("store: deadline exceeded")
-	ErrInternal           = errors.New("store: internal")
 )
 
 type Service interface {
