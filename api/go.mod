@@ -34,7 +34,7 @@ require (
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.2.1
 	github.com/prometheus/client_golang v1.16.0
 	github.com/rafaelhl/gorm-newrelic-telemetry-plugin v1.0.0
-	github.com/rs/cors v1.9.0
+	github.com/rs/cors v1.10.1
 	github.com/rs/cors/wrapper/gin v0.0.0-20230802123556-066574eebbd0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.13.0+incompatible
