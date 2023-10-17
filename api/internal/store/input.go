@@ -386,6 +386,12 @@ type UpdateScheduleThumbnailsInput struct {
 	Thumbnails common.Images `validate:""`
 }
 
+type ApproveScheduleInput struct {
+	ScheduleID string `validate:"required"`
+	AdminID    string `validate:"required"`
+	Approved   bool   `validate:""`
+}
+
 type GetLiveInput struct {
 	LiveID string `validate:"required"`
 }

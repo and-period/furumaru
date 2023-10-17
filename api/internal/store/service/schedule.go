@@ -167,6 +167,28 @@ func (s *service) UpdateScheduleThumbnails(ctx context.Context, in *store.Update
 	return internalError(err)
 }
 
+func (s *service) ApproveSchedule(ctx context.Context, in *store.ApproveScheduleInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	adminIn := &user.GetAdministratorInput{
+		AdministratorID: in.AdminID,
+	}
+	_, err := s.user.GetAdministrator(ctx, adminIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return internalError(err)
+	}
+	params := &database.ApproveScheduleParams{
+		Approved:        in.Approved,
+		ApprovedAdminID: in.AdminID,
+	}
+	err = s.db.Schedule.Approve(ctx, in.ScheduleID, params)
+	return internalError(err)
+}
+
 func (s *service) resizeSchedule(ctx context.Context, scheduleID, thumbnailURL string) {
 	if thumbnailURL == "" {
 		return
