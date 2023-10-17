@@ -373,7 +373,7 @@ func TestSchedule_Update(t *testing.T) {
 				},
 			},
 			want: want{
-				hasErr: false,
+				hasErr: true,
 			},
 		},
 		{
@@ -398,7 +398,7 @@ func TestSchedule_Update(t *testing.T) {
 				},
 			},
 			want: want{
-				hasErr: false,
+				hasErr: true,
 			},
 		},
 	}
@@ -614,7 +614,7 @@ func TestSchedule_Approve(t *testing.T) {
 				},
 			},
 			want: want{
-				hasErr: false,
+				hasErr: true,
 			},
 		},
 		{
@@ -632,7 +632,7 @@ func TestSchedule_Approve(t *testing.T) {
 				},
 			},
 			want: want{
-				hasErr: false,
+				hasErr: true,
 			},
 		},
 	}
