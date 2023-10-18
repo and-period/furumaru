@@ -85,7 +85,7 @@ func TestListUsers(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count users",
@@ -99,7 +99,7 @@ func TestListUsers(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -193,7 +193,7 @@ func TestMultiGetUsers(t *testing.T) {
 				UserIDs: []string{"user-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -321,7 +321,7 @@ func TestGetUser(t *testing.T) {
 				UserID: "user-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -413,7 +413,7 @@ func TestCreateUser(t *testing.T) {
 				Password:             "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -462,7 +462,7 @@ func TestVerifyUser(t *testing.T) {
 				UserID:     "user-id",
 				VerifyCode: "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update verified",
@@ -474,7 +474,7 @@ func TestVerifyUser(t *testing.T) {
 				UserID:     "user-id",
 				VerifyCode: "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -544,7 +544,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			input: &user.CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to create user",
@@ -555,7 +555,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			input: &user.CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -606,7 +606,7 @@ func TestInitializeUser(t *testing.T) {
 				AccountID: "account-id",
 				Username:  "username",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get user",
@@ -632,7 +632,7 @@ func TestInitializeUser(t *testing.T) {
 				AccountID: "account-id",
 				Username:  "username",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -693,7 +693,7 @@ func TestUpdateUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -705,7 +705,7 @@ func TestUpdateUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch provider type",
@@ -740,7 +740,7 @@ func TestUpdateUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -800,7 +800,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -812,7 +812,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to confirm change email",
@@ -830,7 +830,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update email",
@@ -849,7 +849,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -922,7 +922,7 @@ func TestUpdateUserPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -971,7 +971,7 @@ func TestForgotUserPassword(t *testing.T) {
 			input: &user.ForgotUserPasswordInput{
 				Email: "test-user@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to forget password",
@@ -1053,7 +1053,7 @@ func TestVerifyUserPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to confirm forgot password",
@@ -1072,7 +1072,7 @@ func TestVerifyUserPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1136,7 +1136,7 @@ func TestDeleteUser(t *testing.T) {
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to delete user",
@@ -1147,7 +1147,7 @@ func TestDeleteUser(t *testing.T) {
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

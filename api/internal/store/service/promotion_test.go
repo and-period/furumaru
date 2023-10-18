@@ -90,7 +90,7 @@ func TestListPromotions(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count promotions",
@@ -107,7 +107,7 @@ func TestListPromotions(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -180,7 +180,7 @@ func TestMultiGetPromotions(t *testing.T) {
 				PromotionIDs: []string{"promotion-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -248,7 +248,7 @@ func TestGetPromotion(t *testing.T) {
 				PromotionID: "promotion-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -329,7 +329,7 @@ func TestCreatePromotion(t *testing.T) {
 				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -405,7 +405,7 @@ func TestUpdatePromotion(t *testing.T) {
 				StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
 				EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -451,7 +451,7 @@ func TestDeletePromotion(t *testing.T) {
 			input: &store.DeletePromotionInput{
 				PromotionID: "promotion-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

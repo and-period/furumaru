@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -16,7 +15,7 @@ func (s *service) ListProductTypes(
 	ctx context.Context, in *store.ListProductTypesInput,
 ) (entity.ProductTypes, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	orders := make([]*database.ListProductTypesOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -46,7 +45,7 @@ func (s *service) ListProductTypes(
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return productTypes, total, nil
 }
@@ -55,29 +54,29 @@ func (s *service) MultiGetProductTypes(
 	ctx context.Context, in *store.MultiGetProductTypesInput,
 ) (entity.ProductTypes, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	productTypes, err := s.db.ProductType.MultiGet(ctx, in.ProductTypeIDs)
-	return productTypes, exception.InternalError(err)
+	return productTypes, internalError(err)
 }
 
 func (s *service) GetProductType(ctx context.Context, in *store.GetProductTypeInput) (*entity.ProductType, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	productType, err := s.db.ProductType.Get(ctx, in.ProductTypeID)
-	return productType, exception.InternalError(err)
+	return productType, internalError(err)
 }
 
 func (s *service) CreateProductType(
 	ctx context.Context, in *store.CreateProductTypeInput,
 ) (*entity.ProductType, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	productType := entity.NewProductType(in.Name, in.IconURL, in.CategoryID)
 	if err := s.db.ProductType.Create(ctx, productType); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	s.waitGroup.Add(1)
 	go func() {
@@ -89,14 +88,14 @@ func (s *service) CreateProductType(
 
 func (s *service) UpdateProductType(ctx context.Context, in *store.UpdateProductTypeInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	productType, err := s.db.ProductType.Get(ctx, in.ProductTypeID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	if err := s.db.ProductType.Update(ctx, in.ProductTypeID, in.Name, in.IconURL); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	s.waitGroup.Add(1)
 	go func() {
@@ -112,18 +111,18 @@ func (s *service) UpdateProductType(ctx context.Context, in *store.UpdateProduct
 
 func (s *service) UpdateProductTypeIcons(ctx context.Context, in *store.UpdateProductTypeIconsInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.ProductType.UpdateIcons(ctx, in.ProductTypeID, in.Icons)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeleteProductType(ctx context.Context, in *store.DeleteProductTypeInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.ProductType.Delete(ctx, in.ProductTypeID)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) resizeProductType(ctx context.Context, productTypeID, iconURL string) {

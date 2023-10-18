@@ -86,7 +86,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 				AdminID:  "admin-id",
 				Password: "!Qaz2wsx",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -169,7 +169,7 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 				AdminID:  "admin-id",
 				Password: "!Qaz2wsx",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -317,7 +317,7 @@ func TestNotifyNotification(t *testing.T) {
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to notify admin notification",
@@ -329,7 +329,7 @@ func TestNotifyNotification(t *testing.T) {
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

@@ -93,7 +93,7 @@ func TestListMessages(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count messagses",
@@ -112,7 +112,7 @@ func TestListMessages(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -220,7 +220,7 @@ func TestGetMessage(t *testing.T) {
 				UserID:    "user-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get someone else",

@@ -34,6 +34,10 @@ type config struct {
 	SQSMessengerQueueURL string `envconfig:"SQS_MESSENGER_QUEUE_URL" default:""`
 	SQSMediaQueueURL     string `envconfig:"SQS_MEDIA_QUEUE_URL" default:""`
 	SQSMockEnabled       bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
+	KomojuHost           string `envconfig:"KOMOJU_HOST" default:""`
+	KomojuClientID       string `encvonfig:"KOMOJU_CLIENT_ID" default:""`
+	KomojuClientPassword string `encvonfig:"KOMOJU_CLIENT_PASSWORD" default:""`
+	KomojuSecretName     string `encvonfig:"KOMOJU_SECRET_NAME" default:""`
 	AminWebURL           string `envconfig:"ADMIN_WEB_URL" default:""`
 	UserWebURL           string `envconfig:"USER_WEB_URL" default:""`
 	SlackAPIToken        string `envconfig:"SLACK_API_TOKEN" default:""`

@@ -57,10 +57,10 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 	contactIDs := contacts.IDs()
 	threads := make([]*entity.Thread, 0, len(contactIDs))
 	for _, contact := range contacts {
-		in := &messenger.ListThreadsByContactIDInput{
+		in := &messenger.ListThreadsInput{
 			ContactID: contact.ID,
 		}
-		thread, _, err := h.messenger.ListThreadsByContactID(ctx, in)
+		thread, _, err := h.messenger.ListThreads(ctx, in)
 		if err != nil {
 			httpError(ctx, err)
 			return
@@ -205,7 +205,7 @@ func (h *handler) GetContact(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		threads, _, err = h.getContactDetailsByContactID(ectx, contact)
+		threads, _, err = h.getContactDetailsByContactID(ectx, contact.ID)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -300,15 +300,14 @@ func (h *handler) getContact(ctx context.Context, contactID string) (*service.Co
 	return contact, nil
 }
 
-func (h *handler) getContactDetailsByContactID(ctx context.Context, contact *service.Contact) (service.Threads, int64, error) {
-	in := &messenger.ListThreadsByContactIDInput{
-		ContactID: contact.ID,
+func (h *handler) getContactDetailsByContactID(ctx context.Context, contactID string) (service.Threads, int64, error) {
+	in := &messenger.ListThreadsInput{
+		ContactID: contactID,
 	}
-	sthreads, total, err := h.messenger.ListThreadsByContactID(ctx, in)
+	sthreads, total, err := h.messenger.ListThreads(ctx, in)
 	if err != nil {
 		return nil, 0, err
 	}
 	threads := service.NewThreads(sthreads)
-
 	return threads, total, nil
 }

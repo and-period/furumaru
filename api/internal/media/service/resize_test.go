@@ -60,7 +60,7 @@ func TestResizeCoordinatorThumbnail(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: exception.ErrUnknown,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -119,7 +119,7 @@ func TestResizeCoordinatorHeader(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: exception.ErrUnknown,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -178,7 +178,7 @@ func TestResizeProducerThumbnail(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: exception.ErrUnknown,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -237,7 +237,7 @@ func TestResizeProducerHeader(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: exception.ErrUnknown,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -296,7 +296,7 @@ func TestResizeProductMedia(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: exception.ErrUnknown,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -355,7 +355,7 @@ func TestResizeProductTypeIcon(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: exception.ErrUnknown,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -414,7 +414,7 @@ func TestResizeScheduleThumbnail(t *testing.T) {
 				TargetID: "target-id",
 				URLs:     []string{"http://example.com/test.jpg"},
 			},
-			expect: exception.ErrUnknown,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

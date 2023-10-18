@@ -1,3 +1,13 @@
+<script setup lang="ts">
+interface Props {
+  fill?: string
+}
+
+withDefaults(defineProps<Props>(), {
+  fill: '#604C3F',
+})
+</script>
+
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -10,7 +20,7 @@
       fill-rule="evenodd"
       clip-rule="evenodd"
       d="M11.3135 5.65625L10.3437 6.626L5.65662 1.93889L0.969514 6.626L-0.000231743 5.65625L5.65662 -0.000604153L11.3135 5.65625Z"
-      fill="#604C3F"
+      :fill="fill"
     />
   </svg>
 </template>

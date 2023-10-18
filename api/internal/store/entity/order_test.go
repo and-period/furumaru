@@ -20,12 +20,12 @@ func TestOrder_Fill(t *testing.T) {
 		{
 			name:        "success",
 			order:       &Order{},
-			payment:     &Payment{OrderID: "order-id", MethodID: "payment-id"},
+			payment:     &Payment{OrderID: "order-id"},
 			fulfillment: &Fulfillment{OrderID: "order-id"},
 			activities:  Activities{{OrderID: "order-id", ID: "activity-id"}},
 			items:       OrderItems{{OrderID: "order-id", ProductID: "item-id"}},
 			expect: &Order{
-				Payment:     Payment{OrderID: "order-id", MethodID: "payment-id"},
+				Payment:     Payment{OrderID: "order-id"},
 				Fulfillment: Fulfillment{OrderID: "order-id"},
 				Activities:  Activities{{OrderID: "order-id", ID: "activity-id"}},
 				OrderItems:  OrderItems{{OrderID: "order-id", ProductID: "item-id"}},
@@ -54,7 +54,7 @@ func TestOrders_IDs(t *testing.T) {
 			orders: Orders{
 				{
 					ID:          "order-id",
-					Payment:     Payment{OrderID: "order-id", MethodID: "payment-id"},
+					Payment:     Payment{OrderID: "order-id"},
 					Fulfillment: Fulfillment{OrderID: "order-id"},
 					Activities:  Activities{{OrderID: "order-id", ID: "activity-id"}},
 					OrderItems:  OrderItems{{OrderID: "order-id", ProductID: "item-id"}},

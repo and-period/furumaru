@@ -17,13 +17,13 @@ import * as runtime from '../runtime';
 import type {
   CreateContactRequest,
   ErrorResponse,
-} from '../models';
+} from '../models/index';
 import {
     CreateContactRequestFromJSON,
     CreateContactRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-} from '../models';
+} from '../models/index';
 
 export interface V1CreateContactRequest {
     body: CreateContactRequest;

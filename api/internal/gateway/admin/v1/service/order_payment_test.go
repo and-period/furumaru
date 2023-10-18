@@ -23,8 +23,8 @@ func TestPaymentMethodType(t *testing.T) {
 		},
 		{
 			name:              "card",
-			PaymentMethodType: entity.PaymentMethodTypeCard,
-			expect:            PaymentMethodTypeCard,
+			PaymentMethodType: entity.PaymentMethodTypeCreditCard,
+			expect:            PaymentMethodTypeCreditCard,
 		},
 		{
 			name:              "unknown",
@@ -50,7 +50,7 @@ func TestPaymentMethodType_Response(t *testing.T) {
 	}{
 		{
 			name:              "success",
-			PaymentMethodType: PaymentMethodTypeCard,
+			PaymentMethodType: PaymentMethodTypeCreditCard,
 			expect:            2,
 		},
 	}
@@ -71,11 +71,6 @@ func TestPaymentStatus(t *testing.T) {
 		expect PaymentStatus
 	}{
 		{
-			name:   "unpaid",
-			status: entity.PaymentStatusInitialized,
-			expect: PaymentStatusUnpaid,
-		},
-		{
 			name:   "pending",
 			status: entity.PaymentStatusPending,
 			expect: PaymentStatusPending,
@@ -92,7 +87,7 @@ func TestPaymentStatus(t *testing.T) {
 		},
 		{
 			name:   "refunded",
-			status: entity.PaymentStatusCanceled,
+			status: entity.PaymentStatusRefunded,
 			expect: PaymentStatusRefunded,
 		},
 		{
@@ -151,8 +146,7 @@ func TestOrderPayment(t *testing.T) {
 				OrderID:       "order-id",
 				AddressID:     "address-id",
 				TransactionID: "transaction-id",
-				MethodType:    entity.PaymentMethodTypeCard,
-				MethodID:      "payment-id",
+				MethodType:    entity.PaymentMethodTypeCreditCard,
 				Subtotal:      1100,
 				Discount:      0,
 				ShippingFee:   500,
@@ -165,8 +159,7 @@ func TestOrderPayment(t *testing.T) {
 			expect: &OrderPayment{
 				OrderPayment: response.OrderPayment{
 					TransactionID: "transaction-id",
-					MethodID:      "payment-id",
-					MethodType:    PaymentMethodTypeCard.Response(),
+					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
 					Subtotal:      1100,
 					Discount:      0,
@@ -201,8 +194,7 @@ func TestOrderPayment_Fill(t *testing.T) {
 			payment: &OrderPayment{
 				OrderPayment: response.OrderPayment{
 					TransactionID: "transaction-id",
-					MethodID:      "payment-id",
-					MethodType:    PaymentMethodTypeCard.Response(),
+					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
 					Subtotal:      100,
 					Discount:      0,
@@ -229,8 +221,7 @@ func TestOrderPayment_Fill(t *testing.T) {
 			expect: &OrderPayment{
 				OrderPayment: response.OrderPayment{
 					TransactionID: "transaction-id",
-					MethodID:      "payment-id",
-					MethodType:    PaymentMethodTypeCard.Response(),
+					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
 					Subtotal:      100,
 					Discount:      0,
@@ -275,8 +266,7 @@ func TestOrderPayment_Response(t *testing.T) {
 			payment: &OrderPayment{
 				OrderPayment: response.OrderPayment{
 					TransactionID: "transaction-id",
-					MethodID:      "payment-id",
-					MethodType:    PaymentMethodTypeCard.Response(),
+					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
 					Subtotal:      100,
 					Discount:      0,
@@ -299,8 +289,7 @@ func TestOrderPayment_Response(t *testing.T) {
 			},
 			expect: &response.OrderPayment{
 				TransactionID: "transaction-id",
-				MethodID:      "payment-id",
-				MethodType:    PaymentMethodTypeCard.Response(),
+				MethodType:    PaymentMethodTypeCreditCard.Response(),
 				Status:        PaymentStatusPaid.Response(),
 				Subtotal:      100,
 				Discount:      0,

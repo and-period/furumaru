@@ -22,7 +22,7 @@ func (s *service) ListCoordinators(
 	ctx context.Context, in *user.ListCoordinatorsInput,
 ) (entity.Coordinators, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	params := &database.ListCoordinatorsParams{
 		Username: in.Username,
@@ -43,7 +43,7 @@ func (s *service) ListCoordinators(
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return coordinators, total, nil
 }
@@ -52,20 +52,20 @@ func (s *service) MultiGetCoordinators(
 	ctx context.Context, in *user.MultiGetCoordinatorsInput,
 ) (entity.Coordinators, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	coordinators, err := s.db.Coordinator.MultiGet(ctx, in.CoordinatorIDs)
-	return coordinators, exception.InternalError(err)
+	return coordinators, internalError(err)
 }
 
 func (s *service) GetCoordinator(
 	ctx context.Context, in *user.GetCoordinatorInput,
 ) (*entity.Coordinator, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
-	return coordinator, exception.InternalError(err)
+	return coordinator, internalError(err)
 }
 
 func (s *service) CreateCoordinator(
@@ -73,11 +73,11 @@ func (s *service) CreateCoordinator(
 ) (*entity.Coordinator, error) {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	if len(productTypes) != len(in.ProductTypeIDs) {
 		return nil, fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
@@ -115,7 +115,7 @@ func (s *service) CreateCoordinator(
 	coordinator := entity.NewCoordinator(params)
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
 	if err := s.db.Coordinator.Create(ctx, coordinator, auth); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
 	s.waitGroup.Add(2)
@@ -135,15 +135,15 @@ func (s *service) CreateCoordinator(
 
 func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordinatorInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	if len(productTypes) != len(in.ProductTypeIDs) {
 		return fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
@@ -171,7 +171,7 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 		AddressLine2:      in.AddressLine2,
 	}
 	if err := s.db.Coordinator.Update(ctx, in.CoordinatorID, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	s.waitGroup.Add(1)
 	go func() {
@@ -190,47 +190,47 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 
 func (s *service) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoordinatorEmailInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &cognito.AdminChangeEmailParams{
 		Username: coordinator.CognitoID,
 		Email:    in.Email,
 	}
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err = s.db.Admin.UpdateEmail(ctx, in.CoordinatorID, in.Email)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) UpdateCoordinatorThumbnails(ctx context.Context, in *user.UpdateCoordinatorThumbnailsInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Coordinator.UpdateThumbnails(ctx, in.CoordinatorID, in.Thumbnails)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) UpdateCoordinatorHeaders(ctx context.Context, in *user.UpdateCoordinatorHeadersInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Coordinator.UpdateHeaders(ctx, in.CoordinatorID, in.Headers)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCoordinatorPasswordInput) error {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	password := random.NewStrings(size)
 	params := &cognito.AdminChangePasswordParams{
@@ -239,7 +239,7 @@ func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCo
 		Permanent: true,
 	}
 	if err := s.adminAuth.AdminChangePassword(ctx, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	s.logger.Debug("Reset coordinator password",
 		zap.String("coordinatorId", in.CoordinatorID), zap.String("password", password),
@@ -259,20 +259,20 @@ func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCo
 
 func (s *service) DeleteCoordinator(ctx context.Context, in *user.DeleteCoordinatorInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Coordinator.Delete(ctx, in.CoordinatorID, s.deleteCognitoAdmin(in.CoordinatorID))
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) AggregateRealatedProducers(
 	ctx context.Context, in *user.AggregateRealatedProducersInput,
 ) (map[string]int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	res, err := s.db.Producer.AggregateByCoordinatorID(ctx, in.CoordinatorIDs)
-	return res, exception.InternalError(err)
+	return res, internalError(err)
 }
 
 func (s *service) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (sentity.ProductTypes, error) {

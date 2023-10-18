@@ -97,7 +97,7 @@ func TestMultiGetAdmins(t *testing.T) {
 				AdminIDs: adminIDs,
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -159,7 +159,7 @@ func TestMultiGetAdminDevices(t *testing.T) {
 				AdminIDs: []string{"admin-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -227,7 +227,7 @@ func TestGetAdmin(t *testing.T) {
 				AdminID: "admin-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -277,7 +277,7 @@ func TestForgotAdminPassword(t *testing.T) {
 			input: &user.ForgotAdminPasswordInput{
 				Email: "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to forgot password",
@@ -350,7 +350,7 @@ func TestVerifyAdminPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to forgot password",
@@ -364,7 +364,7 @@ func TestVerifyAdminPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

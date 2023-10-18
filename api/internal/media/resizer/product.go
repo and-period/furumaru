@@ -4,7 +4,6 @@ import (
 	"context"
 	"sync"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"golang.org/x/sync/errgroup"
@@ -39,15 +38,14 @@ func (r *resizer) productMedia(ctx context.Context, payload *entity.ResizerPaylo
 		})
 	}
 	if err := eg.Wait(); err != nil {
-		return exception.InternalError(err)
+		return err
 	}
 	in := &store.UpdateProductMediaInput{
 		ProductID: payload.TargetID,
 		Images:    media,
 	}
 	updateFn := func() error {
-		err := r.store.UpdateProductMedia(ctx, in)
-		return exception.InternalError(err)
+		return r.store.UpdateProductMedia(ctx, in)
 	}
 	return r.notify(ctx, payload, updateFn)
 }

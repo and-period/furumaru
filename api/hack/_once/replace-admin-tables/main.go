@@ -12,9 +12,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	userdb "github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/samber/lo"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -105,8 +105,8 @@ func run() error {
 	return err
 }
 
-func (a *app) newDatabase(host, port, username, password string) (*database.Client, error) {
-	params := &database.Params{
+func (a *app) newDatabase(host, port, username, password string) (*mysql.Client, error) {
+	params := &mysql.Params{
 		Socket:   "tcp",
 		Host:     host,
 		Port:     port,
@@ -114,7 +114,7 @@ func (a *app) newDatabase(host, port, username, password string) (*database.Clie
 		Username: username,
 		Password: password,
 	}
-	return database.NewClient(params, database.WithLogger(a.logger))
+	return mysql.NewClient(params, mysql.WithLogger(a.logger))
 }
 
 func (a *app) fetchAdminAuths(ctx context.Context, tx *gorm.DB) (entity.AdminAuths, error) {

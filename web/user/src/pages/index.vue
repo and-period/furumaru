@@ -6,6 +6,8 @@ import {
   MOCK_RECOMMEND_ITEMS,
 } from '~/constants/mock'
 
+const router = useRouter()
+
 const shoppingStore = useShoppingStore()
 
 shoppingStore.setupDummyData()
@@ -51,11 +53,29 @@ const handleClickArchiveRightButton = () => {
   }
 }
 
+const handleClickLiveItem = (_: string) => {
+  router.push('/live')
+}
+
 const banners: string[] = [
   '/img/banner.png',
   '/img/banner.png',
   '/img/banner.png',
 ]
+
+const isOpen = ref<boolean>(false)
+
+const handleClickMoreViewButton = () => {
+  isOpen.value = !isOpen.value
+}
+
+const liveItems = computed(() => {
+  if (isOpen.value) {
+    return MOCK_LIVE_ITEMS
+  } else {
+    return MOCK_LIVE_ITEMS.slice(0, 6)
+  }
+})
 </script>
 
 <template>
@@ -64,19 +84,44 @@ const banners: string[] = [
 
     <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
-        <div class="mx-auto grid max-w-7xl grid-cols-3 gap-x-10 gap-y-8 px-20">
-          <the-live-item
-            v-for="liveItem in MOCK_LIVE_ITEMS"
-            :id="liveItem.id"
-            :key="liveItem.id"
-            :title="liveItem.title"
-            :img-src="liveItem.imgSrc"
-            :start-at="liveItem.startAt"
-            :published="liveItem.published"
-          />
+        <div
+          class="mx-auto grid max-w-7xl gap-x-10 gap-y-8 px-2 md:grid-cols-2 lg:grid-cols-3"
+        >
+          <transition-group
+            enter-active-class="duration-300 ease-in-out"
+            enter-from-class="opacity-0 h-0"
+            enter-to-class="opacity-100 h-full"
+            leave-active-class="duration-300 ease-in-out"
+            leave-from-class="opacity-100 h-full"
+            leave-to-class="opacity-0 h-0"
+          >
+            <the-live-item
+              v-for="liveItem in liveItems"
+              :id="liveItem.id"
+              :key="liveItem.id"
+              :title="liveItem.title"
+              :img-src="liveItem.imgSrc"
+              :start-at="liveItem.startAt"
+              :published="liveItem.published"
+              :marche-name="liveItem.marcheName"
+              :address="liveItem.address"
+              :cn-name="liveItem.cnName"
+              :cn-img-src="liveItem.cnImgSrc"
+              @click="handleClickLiveItem(id)"
+            />
+          </transition-group>
         </div>
         <div class="mb-4 mt-10 flex w-full justify-center">
-          <button class="w-60 bg-main py-2 text-white">もっと見る</button>
+          <button
+            class="relative w-60 bg-main py-2 text-white"
+            @click="handleClickMoreViewButton"
+          >
+            もっと見る
+            <div class="absolute bottom-3.5 right-4">
+              <the-up-arrow-icon v-show="isOpen" fill="white" />
+              <the-down-arrow-icon v-show="!isOpen" fill="white" />
+            </div>
+          </button>
         </div>
       </the-content-box>
 
@@ -84,7 +129,7 @@ const banners: string[] = [
         <div class="relative mx-auto flex max-w-[1440px]">
           <div class="absolute left-4 flex h-[208px] items-center">
             <the-icon-button
-              class="bg-white/50 hover:bg-white"
+              class="hidden bg-white/50 hover:bg-white md:block"
               @click="handleClickArchiveLeftButton"
             >
               <the-left-arrow-icon />
@@ -92,7 +137,7 @@ const banners: string[] = [
           </div>
           <div
             ref="archiveRef"
-            class="hidden-scrollbar flex flex-nowrap gap-x-8 overflow-x-scroll"
+            class="hidden-scrollbar flex flex-col gap-8 md:flex-row md:flex-nowrap md:overflow-x-scroll"
           >
             <the-archive-item
               v-for="archiveItem in MOCK_ARCHIVES_ITEMS"
@@ -104,7 +149,7 @@ const banners: string[] = [
           </div>
           <div class="absolute right-4 flex h-[208px] items-center">
             <the-icon-button
-              class="bg-white/50 hover:bg-white"
+              class="hidden bg-white/50 hover:bg-white md:block"
               @click="handleClickArchiveRightButton"
             >
               <the-right-arrow-icon />
@@ -118,7 +163,9 @@ const banners: string[] = [
       </the-content-box>
 
       <the-content-box title="recommend" sub-title="おすすめの商品">
-        <div class="mx-auto grid max-w-[1440px] grid-cols-5 gap-x-8 gap-y-6">
+        <div
+          class="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        >
           <the-product-list-item
             v-for="productItem in MOCK_RECOMMEND_ITEMS"
             :id="productItem.id"

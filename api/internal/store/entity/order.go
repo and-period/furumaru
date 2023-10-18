@@ -10,13 +10,12 @@ import (
 type PaymentStatus int32
 
 const (
-	PaymentStatusUnknown     PaymentStatus = 0
-	PaymentStatusInitialized PaymentStatus = 1 // 未完了
-	PaymentStatusPending     PaymentStatus = 2 // 保留中
-	PaymentStatusAuthorized  PaymentStatus = 3 // 仮売上・オーソリ
-	PaymentStatusCaptured    PaymentStatus = 4 // 実売上・キャプチャ
-	PaymentStatusCanceled    PaymentStatus = 5 // キャンセル
-	PaymentStatusFailed      PaymentStatus = 6 // 失敗/期限切れ
+	PaymentStatusUnknown    PaymentStatus = 0
+	PaymentStatusPending    PaymentStatus = 1 // 保留中
+	PaymentStatusAuthorized PaymentStatus = 2 // 仮売上・オーソリ
+	PaymentStatusCaptured   PaymentStatus = 3 // 実売上・キャプチャ
+	PaymentStatusRefunded   PaymentStatus = 4 // 返金
+	PaymentStatusFailed     PaymentStatus = 5 // 失敗/期限切れ
 )
 
 // 配送ステータス
@@ -62,12 +61,11 @@ type Order struct {
 	PromotionID       string            `gorm:"default:null"`         // プロモーションID
 	PaymentStatus     PaymentStatus     `gorm:""`                     // 支払いステータス
 	FulfillmentStatus FulfillmentStatus `gorm:""`                     // 配送ステータス
-	CancelType        CancelType        `gorm:""`                     // 注文キャンセル種別
-	CancelReason      string            `gorm:""`                     // 注文キャンセル理由
+	RefundReason      string            `gorm:""`                     // 注文キャンセル理由
 	CreatedAt         time.Time         `gorm:"<-:create"`            // 登録日時
 	UpdatedAt         time.Time         `gorm:""`                     // 更新日時
 	OrderedAt         time.Time         `gorm:"default:null"`         // 決済要求日時
-	PaidAt            time.Time         `gorm:"default:null"`         // 決済実行日時(仮売上)
+	PaidAt            time.Time         `gorm:"default:null"`         // 決済承認日時(仮売上)
 	CapturedAt        time.Time         `gorm:"default:null"`         // 決済確定日時(実売上)
 	FailedAt          time.Time         `gorm:"default:null"`         // 決済失敗日時
 	RefundedAt        time.Time         `gorm:"default:null"`         // キャンセル日時(返金)
@@ -92,6 +90,10 @@ func (o *Order) Fill(payment *Payment, fulfillment *Fulfillment, activities Acti
 	o.Fulfillment = *fulfillment
 	o.Activities = activities
 	o.OrderItems = items
+}
+
+func (o *Order) IsCanceled() bool {
+	return o.PaymentStatus == PaymentStatusRefunded
 }
 
 func (os Orders) IDs() []string {

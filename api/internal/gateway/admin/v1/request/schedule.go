@@ -24,3 +24,7 @@ type UpdateScheduleRequest struct {
 	StartAt         int64  `json:"startAt,omitempty"`         // 配信開始日時
 	EndAt           int64  `json:"endAt,omitempty"`           // 配信終了日時
 }
+
+type ApproveScheduleRequest struct {
+	Approved bool `json:"approved"` // 承認フラグ
+}
