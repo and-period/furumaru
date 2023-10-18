@@ -51,6 +51,20 @@ func (mr *MockServiceMockRecorder) AggregateOrders(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateOrders", reflect.TypeOf((*MockService)(nil).AggregateOrders), ctx, in)
 }
 
+// ApproveSchedule mocks base method.
+func (m *MockService) ApproveSchedule(ctx context.Context, in *store.ApproveScheduleInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ApproveSchedule", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ApproveSchedule indicates an expected call of ApproveSchedule.
+func (mr *MockServiceMockRecorder) ApproveSchedule(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApproveSchedule", reflect.TypeOf((*MockService)(nil).ApproveSchedule), ctx, in)
+}
+
 // CreateCategory mocks base method.
 func (m *MockService) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	m.ctrl.T.Helper()

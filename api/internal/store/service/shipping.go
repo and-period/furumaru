@@ -13,7 +13,7 @@ import (
 
 func (s *service) ListShippings(ctx context.Context, in *store.ListShippingsInput) (entity.Shippings, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	orders := make([]*database.ListShippingsOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -43,7 +43,7 @@ func (s *service) ListShippings(ctx context.Context, in *store.ListShippingsInpu
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return shippings, total, nil
 }
@@ -52,23 +52,23 @@ func (s *service) MultiGetShippings(
 	ctx context.Context, in *store.MultiGetShippingsInput,
 ) (entity.Shippings, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	shippings, err := s.db.Shipping.MultiGet(ctx, in.ShippingIDs)
-	return shippings, exception.InternalError(err)
+	return shippings, internalError(err)
 }
 
 func (s *service) GetShipping(ctx context.Context, in *store.GetShippingInput) (*entity.Shipping, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	shipping, err := s.db.Shipping.Get(ctx, in.ShippingID)
-	return shipping, exception.InternalError(err)
+	return shipping, internalError(err)
 }
 
 func (s *service) CreateShipping(ctx context.Context, in *store.CreateShippingInput) (*entity.Shipping, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	box60Rates, err := s.newShippingRatesFromCreate(in.Box60Rates)
 	if err != nil {
@@ -100,7 +100,7 @@ func (s *service) CreateShipping(ctx context.Context, in *store.CreateShippingIn
 	}
 	shipping := entity.NewShipping(params)
 	if err := s.db.Shipping.Create(ctx, shipping); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	return shipping, nil
 }
@@ -118,7 +118,7 @@ func (s *service) newShippingRatesFromCreate(in []*store.CreateShippingRate) (en
 
 func (s *service) UpdateShipping(ctx context.Context, in *store.UpdateShippingInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	box60Rates, err := s.newShippingRatesFromUpdate(in.Box60Rates)
 	if err != nil {
@@ -148,7 +148,7 @@ func (s *service) UpdateShipping(ctx context.Context, in *store.UpdateShippingIn
 		FreeShippingRates:  in.FreeShippingRates,
 	}
 	err = s.db.Shipping.Update(ctx, in.ShippingID, params)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) newShippingRatesFromUpdate(in []*store.UpdateShippingRate) (entity.ShippingRates, error) {
@@ -164,8 +164,8 @@ func (s *service) newShippingRatesFromUpdate(in []*store.UpdateShippingRate) (en
 
 func (s *service) DeleteShipping(ctx context.Context, in *store.DeleteShippingInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Shipping.Delete(ctx, in.ShippingID)
-	return exception.InternalError(err)
+	return internalError(err)
 }

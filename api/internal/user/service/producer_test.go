@@ -98,7 +98,7 @@ func TestListProducers(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count producers",
@@ -112,7 +112,7 @@ func TestListProducers(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -199,7 +199,7 @@ func TestMultiGetProducers(t *testing.T) {
 				ProducerIDs: []string{"admin-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -281,7 +281,7 @@ func TestGetProducer(t *testing.T) {
 				ProducerID: "admin-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -454,7 +454,7 @@ func TestCreateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "not found coordinator",
@@ -507,7 +507,7 @@ func TestCreateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -637,7 +637,7 @@ func TestUpdateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update producer",
@@ -663,7 +663,7 @@ func TestUpdateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -749,7 +749,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 				ProducerID: "producer-id",
 				Email:      "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change email",
@@ -761,7 +761,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 				ProducerID: "producer-id",
 				Email:      "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update email",
@@ -774,7 +774,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 				ProducerID: "producer-id",
 				Email:      "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -837,7 +837,7 @@ func TestUpdateProducerThumbnails(t *testing.T) {
 				ProducerID: "producer-id",
 				Thumbnails: thumbnails,
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -900,7 +900,7 @@ func TestUpdateProducerHeaders(t *testing.T) {
 				ProducerID: "producer-id",
 				Headers:    headers,
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1002,7 +1002,7 @@ func TestResetProducerPassword(t *testing.T) {
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change password",
@@ -1013,7 +1013,7 @@ func TestResetProducerPassword(t *testing.T) {
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1081,7 +1081,7 @@ func TestRelateProducers(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				ProducerIDs:   []string{"producer-id"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to multi get producers",
@@ -1093,7 +1093,7 @@ func TestRelateProducers(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				ProducerIDs:   []string{"producer-id"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to contain invalid producers",
@@ -1122,7 +1122,7 @@ func TestRelateProducers(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				ProducerIDs:   []string{"producer-id"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1168,7 +1168,7 @@ func TestUnrelateProducer(t *testing.T) {
 			input: &user.UnrelateProducerInput{
 				ProducerID: "producer-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1213,7 +1213,7 @@ func TestDeleteProducer(t *testing.T) {
 			input: &user.DeleteProducerInput{
 				ProducerID: "producer-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

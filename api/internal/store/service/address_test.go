@@ -70,7 +70,7 @@ func TestMultiGetAddresses(t *testing.T) {
 				AddressIDs: []string{"address-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

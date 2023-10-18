@@ -65,7 +65,7 @@ func (s *service) UploadScheduleOpeningVideo(ctx context.Context, in *media.Uplo
 
 func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, prefix string) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return "", exception.InternalError(err)
+		return "", internalError(err)
 	}
 	u, err := s.parseURL(in, prefix)
 	if err != nil {
@@ -78,9 +78,9 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 	case s.storageURL().Host:
 		url, err = s.downloadFile(ctx, u)
 	default:
-		err = fmt.Errorf("service: unknown storage host. host=%s: %w", u.Host, exception.ErrInvalidArgument)
+		return "", fmt.Errorf("service: unknown storage host. host=%s: %w", u.Host, exception.ErrInvalidArgument)
 	}
-	return url, exception.InternalError(err)
+	return url, internalError(err)
 }
 
 func (s *service) parseURL(in *media.UploadFileInput, prefix string) (*url.URL, error) {

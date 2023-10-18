@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/broadcast/scheduler"
-	mediadb "github.com/and-period/furumaru/api/internal/media/database"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sfn"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
@@ -89,12 +89,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 
 	// Jobの設定
-	dbParams := &mediadb.Params{
-		Database: dbClient,
-	}
 	jobParams := &scheduler.Params{
 		WaitGroup:          params.waitGroup,
-		Database:           mediadb.NewDatabase(dbParams),
+		Database:           mediadb.NewDatabase(dbClient),
 		Store:              storeService,
 		StepFunction:       sfnClient,
 		MediaLive:          mediaLiveClient,
@@ -141,8 +138,8 @@ func getSecret(ctx context.Context, p *params) error {
 	return nil
 }
 
-func newDatabase(dbname string, p *params) (*database.Client, error) {
-	params := &database.Params{
+func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
 		Socket:   p.config.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
@@ -154,12 +151,12 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return database.NewClient(
+	return mysql.NewClient(
 		params,
-		database.WithLogger(p.logger),
-		database.WithNow(p.now),
-		database.WithTLS(p.config.DBEnabledTLS),
-		database.WithLocation(location),
+		mysql.WithLogger(p.logger),
+		mysql.WithNow(p.now),
+		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithLocation(location),
 	)
 }
 
@@ -168,12 +165,9 @@ func newStoreService(p *params) (store.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &storedb.Params{
-		Database: mysql,
-	}
 	params := &storesrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  storedb.NewDatabase(dbParams),
+		Database:  storedb.NewDatabase(mysql),
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

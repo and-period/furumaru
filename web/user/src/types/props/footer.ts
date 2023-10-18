@@ -1,4 +1,4 @@
 export interface FooterMenuItem {
   text: string
-  onClick: Function
+  to: string
 }

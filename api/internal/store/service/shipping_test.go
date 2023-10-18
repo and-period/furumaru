@@ -117,7 +117,7 @@ func TestListShippings(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count shippings",
@@ -135,7 +135,7 @@ func TestListShippings(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -230,7 +230,7 @@ func TestMutiGetShippings(t *testing.T) {
 				ShippingIDs: []string{"shipping-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -320,7 +320,7 @@ func TestGetShipping(t *testing.T) {
 				ShippingID: "shipping-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -438,7 +438,7 @@ func TestCreateShipping(t *testing.T) {
 				HasFreeShipping:    true,
 				FreeShippingRates:  3000,
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -553,7 +553,7 @@ func TestUpdateShipping(t *testing.T) {
 				HasFreeShipping:    true,
 				FreeShippingRates:  3000,
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -599,7 +599,7 @@ func TestDeleteShipping(t *testing.T) {
 			input: &store.DeleteShippingInput{
 				ShippingID: "shipping-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

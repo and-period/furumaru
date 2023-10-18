@@ -7,7 +7,7 @@ package mock_validator
 import (
 	reflect "reflect"
 
-	v10 "github.com/go-playground/validator/v10"
+	validator "github.com/go-playground/validator/v10"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -35,7 +35,7 @@ func (m *MockValidator) EXPECT() *MockValidatorMockRecorder {
 }
 
 // RegisterValidation mocks base method.
-func (m *MockValidator) RegisterValidation(tag string, fn v10.Func, callValidationEvenIfNull ...bool) error {
+func (m *MockValidator) RegisterValidation(tag string, fn validator.Func, callValidationEvenIfNull ...bool) error {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{tag, fn}
 	for _, a := range callValidationEvenIfNull {

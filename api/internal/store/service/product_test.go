@@ -121,7 +121,7 @@ func TestListProducts(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count products",
@@ -141,7 +141,7 @@ func TestListProducts(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -294,7 +294,7 @@ func TestGetProduct(t *testing.T) {
 				ProductID: "product-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -492,7 +492,7 @@ func TestCreateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to create product",
@@ -531,7 +531,7 @@ func TestCreateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -830,7 +830,7 @@ func TestUpdateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get producer",
@@ -870,7 +870,7 @@ func TestUpdateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update product",
@@ -911,7 +911,7 @@ func TestUpdateProduct(t *testing.T) {
 				StartAt:           now.AddDate(0, -1, 0),
 				EndAt:             now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -991,7 +991,7 @@ func TestUpdateProductMedia(t *testing.T) {
 					},
 				},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1037,7 +1037,7 @@ func TestDeleteProduct(t *testing.T) {
 			input: &store.DeleteProductInput{
 				ProductID: "product-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

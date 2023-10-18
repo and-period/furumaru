@@ -1,9 +1,13 @@
 package service
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"sync"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -12,6 +16,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/validator"
+	govalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 )
@@ -71,5 +76,72 @@ func NewService(params *Params, opts ...Option) user.Service {
 		store:       params.Store,
 		messenger:   params.Messenger,
 		media:       params.Media,
+	}
+}
+
+func internalError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	if e, ok := err.(govalidator.ValidationErrors); ok {
+		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, e.Error())
+	}
+	if e := dbError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+	if e := authError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+
+	switch {
+	case errors.Is(err, context.Canceled):
+		return fmt.Errorf("%w: %s", exception.ErrCanceled, err.Error())
+	case errors.Is(err, context.DeadlineExceeded):
+		return fmt.Errorf("%w: %s", exception.ErrDeadlineExceeded, err.Error())
+	default:
+		return fmt.Errorf("%w: %s", exception.ErrInternal, err.Error())
+	}
+}
+
+func dbError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, database.ErrNotFound):
+		return exception.ErrNotFound
+	case errors.Is(err, database.ErrFailedPrecondition):
+		return exception.ErrFailedPrecondition
+	case errors.Is(err, database.ErrAlreadyExists):
+		return exception.ErrAlreadyExists
+	case errors.Is(err, database.ErrDeadlineExceeded):
+		return exception.ErrDeadlineExceeded
+	default:
+		return nil
+	}
+}
+
+func authError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, cognito.ErrInvalidArgument):
+		return exception.ErrInvalidArgument
+	case errors.Is(err, cognito.ErrUnauthenticated):
+		return exception.ErrUnauthenticated
+	case errors.Is(err, cognito.ErrNotFound):
+		return exception.ErrNotFound
+	case errors.Is(err, cognito.ErrAlreadyExists):
+		return exception.ErrAlreadyExists
+	case errors.Is(err, cognito.ErrResourceExhausted):
+		return exception.ErrResourceExhausted
+	case errors.Is(err, cognito.ErrTimeout):
+		return exception.ErrDeadlineExceeded
+	default:
+		return nil
 	}
 }

@@ -14,11 +14,11 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListThreadsByContactID(ctx context.Context, in *messenger.ListThreadsByContactIDInput) (entity.Threads, int64, error) {
+func (s *service) ListThreads(ctx context.Context, in *messenger.ListThreadsInput) (entity.Threads, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
-	params := &database.ListThreadsByContactIDParams{
+	params := &database.ListThreadsParams{
 		ContactID: in.ContactID,
 		Limit:     int(in.Limit),
 		Offset:    int(in.Offset),
@@ -29,7 +29,7 @@ func (s *service) ListThreadsByContactID(ctx context.Context, in *messenger.List
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		threads, err = s.db.Thread.ListByContactID(ectx, params)
+		threads, err = s.db.Thread.List(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -37,49 +37,39 @@ func (s *service) ListThreadsByContactID(ctx context.Context, in *messenger.List
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
-	updateReadIn := &messenger.UpdateContactReadFlagInput{
+	updateReadParams := &database.UpdateContactReadParams{
 		ContactID: in.ContactID,
 		UserID:    in.UserID,
 		Read:      true,
 	}
-	err := s.UpdateContactReadFlag(ctx, updateReadIn)
+	err := s.db.ContactRead.Update(ctx, updateReadParams)
 	if err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
-
 	return threads, total, nil
 }
 
 func (s *service) GetThread(ctx context.Context, in *messenger.GetThreadInput) (*entity.Thread, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
-
 	thread, err := s.db.Thread.Get(ctx, in.ThreadID)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
-
-	return thread, exception.InternalError(err)
+	return thread, internalError(err)
 }
 
 func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadInput) (*entity.Thread, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
-	contactIn := &messenger.GetContactInput{
-		ContactID: in.ContactID,
-	}
-	_, err := s.GetContact(ctx, contactIn)
-	if errors.Is(err, exception.ErrNotFound) {
+	_, err := s.db.Contact.Get(ctx, in.ContactID)
+	if errors.Is(err, database.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid contact id: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
-
 	params := &entity.NewThreadParams{
 		ContactID: in.ContactID,
 		UserType:  in.UserType,
@@ -88,20 +78,22 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 	thread := entity.NewThread(params)
 	thread.Fill(in.UserID)
 	if err := s.db.Thread.Create(ctx, thread); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
-	readIn := &messenger.GetContactReadInput{
-		ContactID: in.ContactID,
-		UserID:    in.UserID,
-	}
-	_, err = s.GetContactRead(ctx, readIn)
-	if errors.Is(err, exception.ErrNotFound) {
-		in := &messenger.CreateContactReadInput{
+	_, err = s.db.ContactRead.GetByContactIDAndUserID(ctx, in.ContactID, in.UserID)
+	if errors.Is(err, database.ErrNotFound) {
+		params := &entity.NewContactReadParams{
 			ContactID: in.ContactID,
 			UserID:    in.UserID,
+			UserType:  entity.ContactUserType(in.UserType), // FIXME: ThreadUserTypeと統合
+			Read:      false,
 		}
-		if _, err := s.CreateContactRead(ctx, in); err != nil {
-			return nil, exception.InternalError(err)
+		contactRead, err := entity.NewContactRead(params)
+		if err != nil {
+			return nil, internalError(err)
+		}
+		if err := s.db.ContactRead.Create(ctx, contactRead); err != nil {
+			return nil, internalError(err)
 		}
 	}
 	s.waitGroup.Add(1)
@@ -114,21 +106,12 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 			s.logger.Error("Failed to notify received contact", zap.String("contactId", contactID), zap.Error(err))
 		}
 	}(thread.ContactID)
-	updateReadIn := &messenger.UpdateContactReadFlagInput{
-		ContactID: in.ContactID,
-		UserID:    in.UserID,
-		Read:      false,
-	}
-	err = s.UpdateContactReadFlag(ctx, updateReadIn)
-	if err != nil {
-		return nil, exception.InternalError(err)
-	}
 	return thread, nil
 }
 
 func (s *service) UpdateThread(ctx context.Context, in *messenger.UpdateThreadInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 
 	eg, ectx := errgroup.WithContext(ctx)
@@ -157,7 +140,7 @@ func (s *service) UpdateThread(ctx context.Context, in *messenger.UpdateThreadIn
 		return fmt.Errorf("api: invalid user id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &database.UpdateThreadParams{
 		Content:  in.Content,
@@ -165,13 +148,13 @@ func (s *service) UpdateThread(ctx context.Context, in *messenger.UpdateThreadIn
 		UserType: in.UserType,
 	}
 	err = s.db.Thread.Update(ctx, in.ThreadID, params)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeleteThread(ctx context.Context, in *messenger.DeleteThreadInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Thread.Delete(ctx, in.ThreadID)
-	return exception.InternalError(err)
+	return internalError(err)
 }

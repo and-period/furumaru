@@ -7,21 +7,23 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/messenger"
-	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database"
+	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	"github.com/and-period/furumaru/api/internal/messenger/scheduler"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	userdb "github.com/and-period/furumaru/api/internal/user/database"
+	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
 	"go.uber.org/zap"
 )
 
@@ -100,12 +102,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 
 	// Jobの設定
-	dbParams := &messengerdb.Params{
-		Database: dbClient,
-	}
 	jobParams := &scheduler.Params{
 		WaitGroup: params.waitGroup,
-		Database:  messengerdb.NewDatabase(dbParams),
+		Database:  messengerdb.NewDatabase(dbClient),
 		Messenger: messengerService,
 	}
 	return &registry{
@@ -136,8 +135,8 @@ func getSecret(ctx context.Context, p *params) error {
 	return nil
 }
 
-func newDatabase(dbname string, p *params) (*database.Client, error) {
-	params := &database.Params{
+func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
 		Socket:   p.config.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
@@ -149,22 +148,26 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return database.NewClient(
+	cli, err := mysql.NewClient(
 		params,
-		database.WithLogger(p.logger),
-		database.WithNow(p.now),
-		database.WithTLS(p.config.DBEnabledTLS),
-		database.WithLocation(location),
+		mysql.WithLogger(p.logger),
+		mysql.WithNow(p.now),
+		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithLocation(location),
 	)
+	if err != nil {
+		return nil, err
+	}
+	if err := cli.DB.Use(telemetry.NewNrTracer(dbname, p.dbHost, string(newrelic.DatastoreMySQL))); err != nil {
+		return nil, err
+	}
+	return cli, nil
 }
 
 func newMessengerService(p *params) (messenger.Service, error) {
 	mysql, err := newDatabase("messengers", p)
 	if err != nil {
 		return nil, err
-	}
-	dbParams := &messengerdb.Params{
-		Database: mysql,
 	}
 	user, err := newUserService(p)
 	if err != nil {
@@ -179,7 +182,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 		Producer:    p.producer,
 		AdminWebURL: p.adminWebURL,
 		UserWebURL:  p.userWebURL,
-		Database:    messengerdb.NewDatabase(dbParams),
+		Database:    messengerdb.NewDatabase(mysql),
 		User:        user,
 		Store:       store,
 	}
@@ -191,12 +194,9 @@ func newUserService(p *params) (user.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &userdb.Params{
-		Database: mysql,
-	}
 	params := &usersrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  userdb.NewDatabase(dbParams),
+		Database:  userdb.NewDatabase(mysql),
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
@@ -206,12 +206,9 @@ func newStoreService(p *params) (store.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &storedb.Params{
-		Database: mysql,
-	}
 	params := &storesrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  storedb.NewDatabase(dbParams),
+		Database:  storedb.NewDatabase(mysql),
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

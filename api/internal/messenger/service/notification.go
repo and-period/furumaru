@@ -16,7 +16,7 @@ import (
 
 func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotificationsInput) (entity.Notifications, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	orders := make([]*database.ListNotificationsOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -46,24 +46,24 @@ func (s *service) ListNotifications(ctx context.Context, in *messenger.ListNotif
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return notifications, total, nil
 }
 
 func (s *service) GetNotification(ctx context.Context, in *messenger.GetNotificationInput) (*entity.Notification, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
-	return notification, exception.InternalError(err)
+	return notification, internalError(err)
 }
 
 func (s *service) CreateNotification(
 	ctx context.Context, in *messenger.CreateNotificationInput,
 ) (*entity.Notification, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
@@ -85,10 +85,10 @@ func (s *service) CreateNotification(
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return nil, fmt.Errorf("api: not found reference: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("service: not found reference: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	params := &entity.NewNotificationParams{
 		Type:        in.Type,
@@ -102,17 +102,17 @@ func (s *service) CreateNotification(
 	}
 	notification := entity.NewNotification(params)
 	if err := notification.Validate(s.now()); err != nil {
-		return nil, fmt.Errorf("api: invalid notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("service: invalid notification: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err := s.db.Notification.Create(ctx, notification); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	return notification, nil
 }
 
 func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNotificationInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	adminIn := &user.GetAdminInput{
 		AdminID: in.UpdatedBy,
@@ -122,11 +122,11 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 		return fmt.Errorf("api: invalid admin id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	if s.now().After(notification.PublishedAt) {
 		// すでに投稿済みの場合は更新できない
@@ -149,13 +149,13 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 		UpdatedBy:   in.UpdatedBy,
 	}
 	err = s.db.Notification.Update(ctx, in.NotificationID, params)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeleteNotification(ctx context.Context, in *messenger.DeleteNotificationInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Notification.Delete(ctx, in.NotificationID)
-	return exception.InternalError(err)
+	return internalError(err)
 }

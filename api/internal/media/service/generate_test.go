@@ -73,7 +73,7 @@ func TestGenerateCoordinatorThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -144,7 +144,7 @@ func TestGenerateCoordinatorHeader(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -215,7 +215,7 @@ func TestGenerateCoordinatorPromotionVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -286,7 +286,7 @@ func TestGenerateCoordinatorBonusVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -357,7 +357,7 @@ func TestGenerateProducerThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -428,7 +428,7 @@ func TestGenerateProducerHeader(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -499,7 +499,7 @@ func TestGenerateProducerPromotionVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -570,7 +570,7 @@ func TestGenerateProducerBonusVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -641,7 +641,7 @@ func TestGenerateProductMediaImage(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -712,7 +712,7 @@ func TestGenerateProductMediaVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -783,7 +783,7 @@ func TestGenerateProductTypeIcon(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -854,7 +854,7 @@ func TestGenerateScheduleThumbnail(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -925,7 +925,7 @@ func TestGenerateScheduleImage(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -996,7 +996,7 @@ func TestGenerateScheduleOpeningVideo(t *testing.T) {
 				return &media.GenerateFileInput{File: file, Header: header}
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

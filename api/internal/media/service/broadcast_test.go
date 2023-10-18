@@ -59,7 +59,7 @@ func TestGetBroadcastByScheduleID(t *testing.T) {
 				ScheduleID: "schedule-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -117,7 +117,7 @@ func TestCreateBroadcast(t *testing.T) {
 			input: &media.CreateBroadcastInput{
 				ScheduleID: "schedule-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

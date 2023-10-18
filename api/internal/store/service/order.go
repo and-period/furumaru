@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -12,7 +11,7 @@ import (
 
 func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (entity.Orders, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	params := &database.ListOrdersParams{
 		CoordinatorID: in.CoordinatorID,
@@ -33,23 +32,23 @@ func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (en
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return orders, total, nil
 }
 
 func (s *service) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entity.Order, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	order, err := s.db.Order.Get(ctx, in.OrderID)
-	return order, exception.InternalError(err)
+	return order, internalError(err)
 }
 
 func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (entity.AggregatedOrders, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	orders, err := s.db.Order.Aggregate(ctx, in.UserIDs)
-	return orders, exception.InternalError(err)
+	return orders, internalError(err)
 }

@@ -72,7 +72,7 @@ func TestListByScheduleID(t *testing.T) {
 				ScheduleID: "schedule-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -133,7 +133,7 @@ func TestGetLive(t *testing.T) {
 				LiveID: "live-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -225,7 +225,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get producer",
@@ -242,7 +242,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch products",
@@ -276,7 +276,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to create live",
@@ -294,7 +294,7 @@ func TestCreateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -375,7 +375,7 @@ func TestUpdateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get products",
@@ -390,7 +390,7 @@ func TestUpdateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch products",
@@ -421,7 +421,7 @@ func TestUpdateLive(t *testing.T) {
 				StartAt:    now.AddDate(0, -1, 0),
 				EndAt:      now.AddDate(0, 1, 0),
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -467,7 +467,7 @@ func TestDeleteLive(t *testing.T) {
 			input: &store.DeleteLiveInput{
 				LiveID: "live-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

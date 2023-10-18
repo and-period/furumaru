@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/backoff"
@@ -38,10 +37,10 @@ func (w *worker) multiSendPush(ctx context.Context, payload *entity.WorkerPayloa
 	w.logger.Debug("Send push", zap.String("pushId", payload.Push.PushID), zap.Any("message", msg))
 	sendFn := func() error {
 		_, _, err := w.messaging.MultiSend(ctx, msg, tokens...)
-		return exception.InternalError(err)
+		return err
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
-	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(exception.Retryable))
+	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(w.isRetryable))
 }
 
 func (w *worker) fetchTokens(ctx context.Context, payload *entity.WorkerPayload) ([]string, error) {

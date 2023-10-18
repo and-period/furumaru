@@ -70,7 +70,7 @@ func TestSignInAdmin(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get username",
@@ -83,7 +83,7 @@ func TestSignInAdmin(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -97,7 +97,7 @@ func TestSignInAdmin(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -112,7 +112,7 @@ func TestSignInAdmin(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -161,7 +161,7 @@ func TestSignOutAdmin(t *testing.T) {
 			input: &user.SignOutAdminInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -226,7 +226,7 @@ func TestGetAdminAuth(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -238,7 +238,7 @@ func TestGetAdminAuth(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -311,7 +311,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get username",
@@ -323,7 +323,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -336,7 +336,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "success",
@@ -350,7 +350,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -399,7 +399,7 @@ func TestRegisterAdminDevice(t *testing.T) {
 				AdminID: "admin-id",
 				Device:  "device",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -459,7 +459,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -471,7 +471,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "does not need to be changed",
@@ -496,7 +496,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -557,7 +557,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -569,7 +569,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to confirm change email",
@@ -582,7 +582,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				VerifyCode:  "123456",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -640,7 +640,7 @@ func TestUpdateAdminPassword(t *testing.T) {
 				NewPassword:          "!Qaz2wsx",
 				PasswordConfirmation: "!Qaz2wsx",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

@@ -98,7 +98,7 @@ func TestListNotificaitons(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count notifications",
@@ -117,7 +117,7 @@ func TestListNotificaitons(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -182,7 +182,7 @@ func TestGetNotification(t *testing.T) {
 				NotificationID: "notification-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -352,7 +352,7 @@ func TestCreateNotification(t *testing.T) {
 				CreatedBy:   "admin-id",
 				PromotionID: "",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -472,7 +472,7 @@ func TestUpdateNotification(t *testing.T) {
 				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "already published",
@@ -535,7 +535,7 @@ func TestUpdateNotification(t *testing.T) {
 				PublishedAt: now.AddDate(0, 0, 1),
 				UpdatedBy:   "admin-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -581,7 +581,7 @@ func TestDeleteNotification(t *testing.T) {
 			input: &messenger.DeleteNotificationInput{
 				NotificationID: "notification-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
