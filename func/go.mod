@@ -11,7 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ivs v1.25.5
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.43.2
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.38.5
-	go.uber.org/zap v1.25.0
+	go.uber.org/zap v1.26.0
 )
 
 require (
