@@ -241,6 +241,7 @@ type Schedule interface {
 	Create(ctx context.Context, schedule *entity.Schedule) error
 	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
 	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
+	Approve(ctx context.Context, scheduleID string, params *ApproveScheduleParams) error
 }
 
 type ListSchedulesParams struct {
@@ -262,6 +263,11 @@ type UpdateScheduleParams struct {
 	Public          bool
 	StartAt         time.Time
 	EndAt           time.Time
+}
+
+type ApproveScheduleParams struct {
+	Approved        bool
+	ApprovedAdminID string
 }
 
 type Shipping interface {

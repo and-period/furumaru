@@ -1006,6 +1006,20 @@ func (m *MockSchedule) EXPECT() *MockScheduleMockRecorder {
 	return m.recorder
 }
 
+// Approve mocks base method.
+func (m *MockSchedule) Approve(ctx context.Context, scheduleID string, params *database.ApproveScheduleParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Approve", ctx, scheduleID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Approve indicates an expected call of Approve.
+func (mr *MockScheduleMockRecorder) Approve(ctx, scheduleID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Approve", reflect.TypeOf((*MockSchedule)(nil).Approve), ctx, scheduleID, params)
+}
+
 // Count mocks base method.
 func (m *MockSchedule) Count(ctx context.Context, params *database.ListSchedulesParams) (int64, error) {
 	m.ctrl.T.Helper()

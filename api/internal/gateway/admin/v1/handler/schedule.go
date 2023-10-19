@@ -23,6 +23,7 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	arg.POST("", h.CreateSchedule)
 	arg.GET("/:scheduleId", h.filterAccessSchedule, h.GetSchedule)
 	arg.PATCH("/:scheduleId", h.filterAccessSchedule, h.UpdateSchedule)
+	arg.PATCH("/:scheduleId/approval", h.filterAccessSchedule, h.ApproveSchedule)
 }
 
 func (h *handler) filterAccessSchedule(ctx *gin.Context) {
@@ -304,6 +305,25 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 		EndAt:           jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdateSchedule(ctx, in); err != nil {
+		httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ApproveSchedule(ctx *gin.Context) {
+	req := &request.ApproveScheduleRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		badRequest(ctx, err)
+		return
+	}
+
+	in := &store.ApproveScheduleInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+		AdminID:    getAdminID(ctx),
+		Approved:   req.Approved,
+	}
+	if err := h.store.ApproveSchedule(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

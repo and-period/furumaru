@@ -582,3 +582,90 @@ func TestUpdateScheduleThumbnails(t *testing.T) {
 		}))
 	}
 }
+
+func TestApproveSchedule(t *testing.T) {
+	t.Parallel()
+
+	adminIn := &user.GetAdministratorInput{
+		AdministratorID: "admin-id",
+	}
+	admin := &uentity.Administrator{
+		AdminID: "admin-id",
+	}
+	params := &database.ApproveScheduleParams{
+		Approved:        true,
+		ApprovedAdminID: "admin-id",
+	}
+
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *store.ApproveScheduleInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(admin, nil)
+				mocks.db.Schedule.EXPECT().Approve(ctx, "schedule-id", params).Return(nil)
+			},
+			input: &store.ApproveScheduleInput{
+				ScheduleID: "schedule-id",
+				AdminID:    "admin-id",
+				Approved:   true,
+			},
+			expect: nil,
+		},
+		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &store.ApproveScheduleInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get administrator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(nil, assert.AnError)
+			},
+			input: &store.ApproveScheduleInput{
+				ScheduleID: "schedule-id",
+				AdminID:    "admin-id",
+				Approved:   true,
+			},
+			expect: exception.ErrInternal,
+		},
+		{
+			name: "not found administartor",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(nil, exception.ErrNotFound)
+			},
+			input: &store.ApproveScheduleInput{
+				ScheduleID: "schedule-id",
+				AdminID:    "admin-id",
+				Approved:   true,
+			},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to approve schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(admin, nil)
+				mocks.db.Schedule.EXPECT().Approve(ctx, "schedule-id", params).Return(assert.AnError)
+			},
+			input: &store.ApproveScheduleInput{
+				ScheduleID: "schedule-id",
+				AdminID:    "admin-id",
+				Approved:   true,
+			},
+			expect: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ApproveSchedule(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
