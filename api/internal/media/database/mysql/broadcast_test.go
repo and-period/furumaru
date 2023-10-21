@@ -32,8 +32,8 @@ func TestBroadcast_List(t *testing.T) {
 	require.NoError(t, err)
 
 	broadcasts := make(entity.Broadcasts, 2)
-	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id", now().AddDate(0, 1, 0))
-	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id", now())
+	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id01", now().AddDate(0, 1, 0))
+	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id02", now())
 	err = db.DB.Create(&broadcasts).Error
 	require.NoError(t, err)
 
@@ -117,8 +117,8 @@ func TestBroadcast_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	broadcasts := make(entity.Broadcasts, 2)
-	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id", now().AddDate(0, 1, 0))
-	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id", now())
+	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id01", now().AddDate(0, 1, 0))
+	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id02", now())
 	err = db.DB.Create(&broadcasts).Error
 	require.NoError(t, err)
 
