@@ -77,6 +77,8 @@ type Service interface {
 	GenerateScheduleOpeningVideo(ctx context.Context, in *GenerateFileInput) (string, error)
 	// 開催スケジュールオープニング動画アップロード
 	UploadScheduleOpeningVideo(ctx context.Context, in *UploadFileInput) (string, error)
+	// ライブ配信一覧取得
+	ListBroadcasts(ctx context.Context, in *ListBroadcastsInput) (entity.Broadcasts, int64, error)
 	// ライブ配信取得(マルシェ開催スケジュールID指定)
 	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error)
 	// ライブ配信登録

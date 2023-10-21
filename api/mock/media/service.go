@@ -276,6 +276,22 @@ func (mr *MockServiceMockRecorder) GetBroadcastByScheduleID(ctx, in interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBroadcastByScheduleID", reflect.TypeOf((*MockService)(nil).GetBroadcastByScheduleID), ctx, in)
 }
 
+// ListBroadcasts mocks base method.
+func (m *MockService) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsInput) (entity.Broadcasts, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListBroadcasts", ctx, in)
+	ret0, _ := ret[0].(entity.Broadcasts)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListBroadcasts indicates an expected call of ListBroadcasts.
+func (mr *MockServiceMockRecorder) ListBroadcasts(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListBroadcasts", reflect.TypeOf((*MockService)(nil).ListBroadcasts), ctx, in)
+}
+
 // ResizeCoordinatorHeader mocks base method.
 func (m *MockService) ResizeCoordinatorHeader(ctx context.Context, in *media.ResizeFileInput) error {
 	m.ctrl.T.Helper()

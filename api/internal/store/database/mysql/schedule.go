@@ -43,6 +43,9 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.EndAtLt.IsZero() {
 		stmt = stmt.Where("end_at < ?", p.EndAtLt)
 	}
+	if len(p.Statuses) > 0 {
+		stmt = stmt.Where("status IN (?)", p.Statuses)
+	}
 	return stmt
 }
 
@@ -79,6 +82,21 @@ func (s *schedule) Count(ctx context.Context, params *database.ListSchedulesPara
 
 	total, err := s.db.Count(ctx, s.db.DB, &entity.Schedule{}, p.stmt)
 	return total, dbError(err)
+}
+
+func (s *schedule) MultiGet(ctx context.Context, scheduleIDs []string, fields ...string) (entity.Schedules, error) {
+	var schedules entity.Schedules
+
+	stmt := s.db.Statement(ctx, s.db.DB, scheduleTable, fields...).
+		Where("id IN (?)", scheduleIDs)
+
+	if err := stmt.Find(&schedules).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := schedules.Fill(s.now()); err != nil {
+		return nil, dbError(err)
+	}
+	return schedules, nil
 }
 
 func (s *schedule) Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error) {

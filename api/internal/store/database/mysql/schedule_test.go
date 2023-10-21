@@ -158,6 +158,73 @@ func TestSchedule_Count(t *testing.T) {
 	}
 }
 
+func TestSchedule_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shipping := testShipping("shipping-id", "coordinator-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedules := make(entity.Schedules, 2)
+	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
+	err = db.DB.Create(&schedules).Error
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleIDs []string
+	}
+	type want struct {
+		schedules entity.Schedules
+		hasErr    bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				scheduleIDs: []string{"schedule-id01", "schedule-id02"},
+			},
+			want: want{
+				schedules: schedules,
+				hasErr:    false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.scheduleIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.ElementsMatch(t, tt.want.schedules, actual)
+		})
+	}
+}
+
 func TestSchedule_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
