@@ -30,7 +30,7 @@ vet: ## コードの静的解析
 	go vet $(LINT_PACKAGES)
 
 lint: ## Linterの実行
-	./bin/golangci-lint run -c .golangci.yaml ./...
+	./bin/golangci-lint run -c .golangci.yaml ./... --timeout=10m
 
 test: ## テストの実行
 	go test -v -cover -coverprofile=coverage.txt -covermode=atomic $(TEST_PACKAGES)
