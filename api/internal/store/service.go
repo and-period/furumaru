@@ -87,6 +87,8 @@ type Service interface {
 	DeletePromotion(ctx context.Context, in *DeletePromotionInput) error
 	// マルシェ開催スケジュール一覧取得
 	ListSchedules(ctx context.Context, in *ListSchedulesInput) (entity.Schedules, int64, error)
+	// マルシェ開催スケジュール一覧取得(ID指定)
+	MultiGetSchedules(ctx context.Context, in *MultiGetSchedulesInput) (entity.Schedules, error)
 	// マルシェ開催スケジュール取得
 	GetSchedule(ctx context.Context, in *GetScheduleInput) (*entity.Schedule, error)
 	// マルシェ開催スケジュール登録

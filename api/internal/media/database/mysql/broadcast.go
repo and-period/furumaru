@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/gorm"
 )
 
 const broadcastTable = "broadcasts"
@@ -22,6 +23,45 @@ func newBroadcast(db *mysql.Client) database.Broadcast {
 		db:  db,
 		now: jst.Now,
 	}
+}
+
+type listBroadcastsParams database.ListBroadcastsParams
+
+func (p listBroadcastsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.OnlyArchived {
+		stmt = stmt.Where("archive_url != ''")
+	}
+	return stmt
+}
+
+func (p listBroadcastsParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
+func (b *broadcast) List(ctx context.Context, params *database.ListBroadcastsParams, fields ...string) (entity.Broadcasts, error) {
+	var broadcasts entity.Broadcasts
+
+	p := listBroadcastsParams(*params)
+
+	stmt := b.db.Statement(ctx, b.db.DB, broadcastTable, fields...)
+	stmt = p.stmt(stmt)
+	stmt = p.pagination(stmt)
+
+	err := stmt.Find(&broadcasts).Error
+	return broadcasts, dbError(err)
+}
+
+func (b *broadcast) Count(ctx context.Context, params *database.ListBroadcastsParams) (int64, error) {
+	p := listBroadcastsParams(*params)
+
+	total, err := b.db.Count(ctx, b.db.DB, &entity.Broadcast{}, p.stmt)
+	return total, dbError(err)
 }
 
 func (b *broadcast) GetByScheduleID(

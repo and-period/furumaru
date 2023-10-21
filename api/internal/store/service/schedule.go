@@ -25,6 +25,7 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 		StartAtLt:  in.StartAtLt,
 		EndAtGte:   in.EndAtGte,
 		EndAtLt:    in.EndAtLt,
+		Statuses:   in.Statuses,
 		Limit:      int(in.Limit),
 		Offset:     int(in.Offset),
 	}
@@ -45,6 +46,14 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 		return nil, 0, internalError(err)
 	}
 	return schedules, total, nil
+}
+
+func (s *service) MultiGetSchedules(ctx context.Context, in *store.MultiGetSchedulesInput) (entity.Schedules, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	schedules, err := s.db.Schedule.MultiGet(ctx, in.ScheduleIDs)
+	return schedules, internalError(err)
 }
 
 func (s *service) GetSchedule(ctx context.Context, in *store.GetScheduleInput) (*entity.Schedule, error) {

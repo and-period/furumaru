@@ -1089,6 +1089,26 @@ func (mr *MockScheduleMockRecorder) List(ctx, params interface{}, fields ...inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockSchedule)(nil).List), varargs...)
 }
 
+// MultiGet mocks base method.
+func (m *MockSchedule) MultiGet(ctx context.Context, scheduleIDs []string, fields ...string) (entity.Schedules, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, scheduleIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Schedules)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockScheduleMockRecorder) MultiGet(ctx, scheduleIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, scheduleIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockSchedule)(nil).MultiGet), varargs...)
+}
+
 // Update mocks base method.
 func (m *MockSchedule) Update(ctx context.Context, scheduleID string, params *database.UpdateScheduleParams) error {
 	m.ctrl.T.Helper()

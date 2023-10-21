@@ -25,9 +25,23 @@ type Database struct {
 }
 
 type Broadcast interface {
+	List(ctx context.Context, params *ListBroadcastsParams, fields ...string) (entity.Broadcasts, error)
+	Count(ctx context.Context, params *ListBroadcastsParams) (int64, error)
 	GetByScheduleID(ctx context.Context, scheduleID string, fields ...string) (*entity.Broadcast, error)
 	Create(ctx context.Context, broadcast *entity.Broadcast) error
 	Update(ctx context.Context, broadcastID string, params *UpdateBroadcastParams) error
+}
+
+type ListBroadcastsParams struct {
+	OnlyArchived bool
+	Limit        int
+	Offset       int
+	Orders       []*ListBroadcastsOrder
+}
+
+type ListBroadcastsOrder struct {
+	Key        entity.BroadcastOrderBy
+	OrderByASC bool
 }
 
 type UpdateBroadcastParams struct {

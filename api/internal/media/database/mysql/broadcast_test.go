@@ -17,6 +17,176 @@ func TestBroadcast(t *testing.T) {
 	assert.NotNil(t, newBroadcast(nil))
 }
 
+func TestBroadcast_List(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	broadcasts := make(entity.Broadcasts, 2)
+	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id", now().AddDate(0, 1, 0))
+	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id", now())
+	err = db.DB.Create(&broadcasts).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *database.ListBroadcastsParams
+	}
+	type want struct {
+		broadcasts entity.Broadcasts
+		err        error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListBroadcastsParams{
+					Limit:  20,
+					Offset: 1,
+				},
+			},
+			want: want{
+				broadcasts: broadcasts[1:],
+				err:        nil,
+			},
+		},
+		{
+			name:  "success only archived",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListBroadcastsParams{
+					OnlyArchived: true,
+					Orders: []*database.ListBroadcastsOrder{
+						{
+							Key:        entity.BroadcastOrderByUpdatedAt,
+							OrderByASC: true,
+						},
+					},
+				},
+			},
+			want: want{
+				broadcasts: entity.Broadcasts{},
+				err:        nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &broadcast{db: db, now: now}
+			actual, err := db.List(ctx, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.broadcasts, actual)
+		})
+	}
+}
+
+func TestBroadcast_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	broadcasts := make(entity.Broadcasts, 2)
+	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id", now().AddDate(0, 1, 0))
+	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id", now())
+	err = db.DB.Create(&broadcasts).Error
+	require.NoError(t, err)
+
+	type args struct {
+		params *database.ListBroadcastsParams
+	}
+	type want struct {
+		total int64
+		err   error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListBroadcastsParams{
+					Limit:  20,
+					Offset: 1,
+				},
+			},
+			want: want{
+				total: 2,
+				err:   nil,
+			},
+		},
+		{
+			name:  "success only archived",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListBroadcastsParams{
+					OnlyArchived: true,
+					Orders: []*database.ListBroadcastsOrder{
+						{
+							Key:        entity.BroadcastOrderByUpdatedAt,
+							OrderByASC: true,
+						},
+					},
+				},
+			},
+			want: want{
+				total: 0,
+				err:   nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &broadcast{db: db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.total, actual)
+		})
+	}
+}
+
 func TestBroadcast_GetByScheduleID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
