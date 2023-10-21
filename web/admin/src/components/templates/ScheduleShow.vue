@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import { AlertType } from '~/lib/hooks'
-import { Coordinator, CreateLiveRequest, Live, Product, Schedule, ScheduleStatus, Shipping, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
+import { Broadcast, BroadcastStatus, Coordinator, CreateLiveRequest, Live, Product, Schedule, ScheduleStatus, Shipping, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -94,6 +94,18 @@ const props = defineProps({
     type: Array<Live>,
     default: () => []
   },
+  broadcast: {
+    type: Object as PropType<Broadcast>,
+    default: (): Broadcast => ({
+      id: '',
+      scheduleId: '',
+      status: BroadcastStatus.UNKNOWN,
+      inputUrl: '',
+      outputUrl: '',
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
   coordinators: {
     type: Array<Coordinator>,
     default: () => []
@@ -109,6 +121,10 @@ const props = defineProps({
   products: {
     type: Array<Product>,
     default: () => []
+  },
+  video: {
+    type: Object as PropType<HTMLVideoElement | undefined>,
+    default: (): HTMLVideoElement | undefined => (undefined)
   },
   selectedTabItem: {
     type: String,
@@ -303,7 +319,10 @@ const onSubmitDeleteLive = (): void => {
     </v-window-item>
 
     <v-window-item value="streaming">
-      <organisms-schedule-streaming />
+      <organisms-schedule-streaming
+        :selected-tab-item="selectedTabItem"
+        :broadcast="broadcast"
+      />
     </v-window-item>
   </v-window>
 </template>

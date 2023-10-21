@@ -1,4 +1,4 @@
-package cmd
+package user
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func Exec() error {
+func (a *app) run() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

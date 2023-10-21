@@ -1,4 +1,4 @@
-package cmd
+package resizer
 
 import (
 	"context"
@@ -7,13 +7,13 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/media/resizer"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	userdb "github.com/and-period/furumaru/api/internal/user/database"
+	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
-	"github.com/and-period/furumaru/api/pkg/database"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -116,8 +116,8 @@ func getSecret(ctx context.Context, p *params) error {
 	return nil
 }
 
-func newDatabase(dbname string, p *params) (*database.Client, error) {
-	params := &database.Params{
+func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
 		Socket:   p.config.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
@@ -129,12 +129,12 @@ func newDatabase(dbname string, p *params) (*database.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	cli, err := database.NewClient(
+	cli, err := mysql.NewClient(
 		params,
-		database.WithLogger(p.logger),
-		database.WithNow(p.now),
-		database.WithTLS(p.config.DBEnabledTLS),
-		database.WithLocation(location),
+		mysql.WithLogger(p.logger),
+		mysql.WithNow(p.now),
+		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithLocation(location),
 	)
 	if err != nil {
 		return nil, err
@@ -150,12 +150,9 @@ func newUserService(p *params) (user.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &userdb.Params{
-		Database: mysql,
-	}
 	params := &usersrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  userdb.NewDatabase(dbParams),
+		Database:  userdb.NewDatabase(mysql),
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
@@ -165,12 +162,9 @@ func newStoreService(p *params) (store.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	dbParams := &storedb.Params{
-		Database: mysql,
-	}
 	params := &storesrv.Params{
 		WaitGroup: p.waitGroup,
-		Database:  storedb.NewDatabase(dbParams),
+		Database:  storedb.NewDatabase(mysql),
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

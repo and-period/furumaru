@@ -40,13 +40,13 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	threadsIn := &messenger.ListThreadsByContactIDInput{
+	threadsIn := &messenger.ListThreadsInput{
 		ContactID: util.GetParam(ctx, "contactId"),
 		Limit:     limit,
 		Offset:    offset,
 	}
 
-	sthreads, total, err := h.messenger.ListThreadsByContactID(ctx, threadsIn)
+	sthreads, total, err := h.messenger.ListThreads(ctx, threadsIn)
 	if err != nil {
 		httpError(ctx, err)
 	}

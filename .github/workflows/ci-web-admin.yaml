@@ -1,0 +1,196 @@
+name: '[Frontend] Build and Test (Admin Web)'
+on:
+  push:
+    paths:
+    - '.github/workflows/ci-web-admin.yaml'
+    - 'web/admin/**'
+    - 'infra/docker/web/admin/**'
+
+env:
+  SERVICE: admin-web
+  TZ: 'Asia/Tokyo'
+  NODE_VERSION: 18.15.0
+
+jobs:
+  setup:
+    name: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web/admin
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: |
+          **/node_modules
+          ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Postinstall
+      run: yarn postinstall
+
+  lint:
+    name: lint
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web/admin
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      id: yarn-cache
+      with:
+        path: |
+          **/node_modules
+          ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Postinstall
+      run: yarn postinstall
+
+    - name: Lint
+      run: yarn lint
+
+  build:
+    name: build
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web/admin
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      id: yarn-cache
+      with:
+        path: |
+          **/node_modules
+          ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Postinstall
+      run: yarn postinstall
+
+    - name: Build
+      run: yarn build
+
+  # test:
+  #   name: test
+  #   needs: setup
+  #   runs-on: ${{ matrix.os }}
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ./web/admin
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+  #   steps:
+  #   - name: Check out code
+  #     uses: actions/checkout@v4
+
+  #   - name: Use Node.js ${{ env.NODE_VERSION }}
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: ${{ env.NODE_VERSION }}
+  #       cache: 'yarn'
+  #       cache-dependency-path: '**/yarn.lock'
+
+  #   - name: Get yarn cache directory path
+  #     id: yarn-cache-dir-path
+  #     run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+  #   - uses: actions/cache@v3
+  #     id: yarn-cache
+  #     with:
+  #       path: |
+  #         **/node_modules
+  #         ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #       key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+  #   - name: Install
+  #     if: steps.yarn-cache.outputs.cache-hit != 'true'
+  #     run: yarn --check-files --frozen-lockfile --non-interactive
+
+  #   - name: Postinstall
+  #     run: yarn postinstall
+
+  #   - name: Test
+  #     run: yarn test
+
+  #   - uses: codecov/codecov-action@v3
+  #     with:
+  #       token: ${{ secrets.CODECOV_TOKEN }}
+  #       fail_ci_if_error: true
+  #       flags: admin-web
+  #       verbose: true

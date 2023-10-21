@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -133,7 +132,7 @@ func (w *worker) dispatch(ctx context.Context, record events.SQSMessage) error {
 		return nil
 	}
 	w.logger.Error("Failed to send message", zap.Error(err))
-	if exception.Retryable(err) {
+	if w.isRetryable(err) {
 		return err
 	}
 	return nil
@@ -143,7 +142,7 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 	w.logger.Debug("Dispatch", zap.String("queueId", payload.QueueID), zap.Any("payload", payload))
 	queue, err := w.db.ReceivedQueue.Get(ctx, payload.QueueID)
 	if err != nil {
-		return exception.InternalError(err)
+		return err
 	}
 	if queue.Done {
 		w.logger.Info("This queue is already done", zap.String("queueId", payload.QueueID))
@@ -179,10 +178,23 @@ func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
 		return w.reporter(ectx, payload)
 	})
 	if err := eg.Wait(); err != nil {
-		return exception.InternalError(err)
+		return err
 	}
-	if err := w.db.ReceivedQueue.UpdateDone(ctx, payload.QueueID, true); err != nil {
-		return exception.InternalError(err)
-	}
-	return nil
+	return w.db.ReceivedQueue.UpdateDone(ctx, payload.QueueID, true)
+}
+
+func (w *worker) isRetryable(err error) bool {
+	return errors.Is(err, context.Canceled) ||
+		errors.Is(err, context.DeadlineExceeded) ||
+		errors.Is(err, mailer.ErrInternal) ||
+		errors.Is(err, mailer.ErrUnavailable) ||
+		errors.Is(err, mailer.ErrTimeout) ||
+		errors.Is(err, messaging.ErrResourceExhausted) ||
+		errors.Is(err, messaging.ErrInternal) ||
+		errors.Is(err, messaging.ErrUnavailable) ||
+		errors.Is(err, messaging.ErrTimeout) ||
+		errors.Is(err, line.ErrInternal) ||
+		errors.Is(err, line.ErrUnavailable) ||
+		errors.Is(err, line.ErrResourceExhausted) ||
+		errors.Is(err, line.ErrTimeout)
 }

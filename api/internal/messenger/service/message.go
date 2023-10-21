@@ -9,13 +9,14 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/pkg/backoff"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 func (s *service) ListMessages(ctx context.Context, in *messenger.ListMessagesInput) (entity.Messages, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	orders := make([]*database.ListMessagesOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -45,18 +46,18 @@ func (s *service) ListMessages(ctx context.Context, in *messenger.ListMessagesIn
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return messages, total, nil
 }
 
 func (s *service) GetMessage(ctx context.Context, in *messenger.GetMessageInput) (*entity.Message, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	message, err := s.db.Message.Get(ctx, in.MessageID)
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	if in.UserType == entity.UserTypeNone && in.UserID == "" {
 		// ユーザー指定しない(システム的にメッセージを取得している)場合はその後の検証をスキップする
@@ -85,5 +86,5 @@ func (s *service) updateMessageRead(ctx context.Context, messageID string) error
 	}
 	const maxRetries = 3
 	retry := backoff.NewExponentialBackoff(maxRetries)
-	return backoff.Retry(ctx, retry, updateFn, backoff.WithRetryablel(exception.Retryable))
+	return backoff.Retry(ctx, retry, updateFn, backoff.WithRetryablel(mysql.Retryable))
 }

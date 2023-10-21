@@ -1,16 +1,22 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
-import { useCommonStore, useShippingStore } from '~/store'
+import { useAuthStore, useCommonStore, useShippingStore } from '~/store'
 import { CreateShippingRequest } from '~/types/api'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const commonStore = useCommonStore()
 const shippingStore = useShippingStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { auth } = storeToRefs(authStore)
+
 const loading = ref<boolean>(false)
 const formData = ref<CreateShippingRequest>({
+  coordinatorId: '',
   name: '',
+  isDefault: false,
   box60Rates: [
     {
       name: '',
@@ -45,7 +51,11 @@ const formData = ref<CreateShippingRequest>({
 const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
-    await shippingStore.createShipping(formData.value)
+    const req: CreateShippingRequest = {
+      ...formData.value,
+      coordinatorId: auth.value?.adminId || ''
+    }
+    await shippingStore.createShipping(req)
     commonStore.addSnackbar({
       color: 'info',
       message: `${formData.value.name}を登録しました。`

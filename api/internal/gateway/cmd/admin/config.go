@@ -1,4 +1,4 @@
-package cmd
+package admin
 
 import (
 	"fmt"
@@ -19,14 +19,11 @@ type config struct {
 	DBPort               string `envconfig:"DB_PORT" default:"3306"`
 	DBUsername           string `envconfig:"DB_USERNAME" default:"root"`
 	DBPassword           string `envconfig:"DB_PASSWORD" default:""`
-	DBTimeZone           string `envconfig:"DB_TIMEZONE" default:""`
+	DBTimeZone           string `envconfig:"DB_TIMEZONE" default:"Asia/Tokyo"`
 	DBEnabledTLS         bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
 	DBSecretName         string `envconfig:"DB_SECRET_NAME" default:""`
 	NewRelicLicense      string `envconfig:"NEW_RELIC_LICENSE" default:""`
 	NewRelicSecretName   string `envconfig:"NEW_RELIC_SECRET_NAME" default:""`
-	StripeSecretKey      string `envconfig:"STRIPE_SECRET_KEY" default:""`
-	StripeWebhookKey     string `envconfig:"STRIPE_WEBHOOK_KEY" default:""`
-	StripeSecretName     string `envconfig:"STRIPE_SECRET_NAME" default:""`
 	AWSRegion            string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	S3Bucket             string `envconfig:"S3_BUCKET" default:""`
 	S3TmpBucket          string `envconfig:"S3_TMP_BUCKET" default:""`
@@ -37,6 +34,10 @@ type config struct {
 	SQSMessengerQueueURL string `envconfig:"SQS_MESSENGER_QUEUE_URL" default:""`
 	SQSMediaQueueURL     string `envconfig:"SQS_MEDIA_QUEUE_URL" default:""`
 	SQSMockEnabled       bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
+	KomojuHost           string `envconfig:"KOMOJU_HOST" default:""`
+	KomojuClientID       string `encvonfig:"KOMOJU_CLIENT_ID" default:""`
+	KomojuClientPassword string `encvonfig:"KOMOJU_CLIENT_PASSWORD" default:""`
+	KomojuSecretName     string `encvonfig:"KOMOJU_SECRET_NAME" default:""`
 	AminWebURL           string `envconfig:"ADMIN_WEB_URL" default:""`
 	UserWebURL           string `envconfig:"USER_WEB_URL" default:""`
 	SlackAPIToken        string `envconfig:"SLACK_API_TOKEN" default:""`

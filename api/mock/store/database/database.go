@@ -11,7 +11,7 @@ import (
 	common "github.com/and-period/furumaru/api/internal/common"
 	database "github.com/and-period/furumaru/api/internal/store/database"
 	entity "github.com/and-period/furumaru/api/internal/store/entity"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockAddress is a mock of Address interface.
@@ -983,58 +983,6 @@ func (mr *MockPromotionMockRecorder) Update(ctx, promotionID, params interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockPromotion)(nil).Update), ctx, promotionID, params)
 }
 
-// MockRehearsal is a mock of Rehearsal interface.
-type MockRehearsal struct {
-	ctrl     *gomock.Controller
-	recorder *MockRehearsalMockRecorder
-}
-
-// MockRehearsalMockRecorder is the mock recorder for MockRehearsal.
-type MockRehearsalMockRecorder struct {
-	mock *MockRehearsal
-}
-
-// NewMockRehearsal creates a new mock instance.
-func NewMockRehearsal(ctrl *gomock.Controller) *MockRehearsal {
-	mock := &MockRehearsal{ctrl: ctrl}
-	mock.recorder = &MockRehearsalMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockRehearsal) EXPECT() *MockRehearsalMockRecorder {
-	return m.recorder
-}
-
-// Create mocks base method.
-func (m *MockRehearsal) Create(ctx context.Context, rehearsal *entity.Rehearsal) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, rehearsal)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockRehearsalMockRecorder) Create(ctx, rehearsal interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRehearsal)(nil).Create), ctx, rehearsal)
-}
-
-// Get mocks base method.
-func (m *MockRehearsal) Get(ctx context.Context, liveID string) (*entity.Rehearsal, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, liveID)
-	ret0, _ := ret[0].(*entity.Rehearsal)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockRehearsalMockRecorder) Get(ctx, liveID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockRehearsal)(nil).Get), ctx, liveID)
-}
-
 // MockSchedule is a mock of Schedule interface.
 type MockSchedule struct {
 	ctrl     *gomock.Controller
@@ -1056,6 +1004,20 @@ func NewMockSchedule(ctrl *gomock.Controller) *MockSchedule {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockSchedule) EXPECT() *MockScheduleMockRecorder {
 	return m.recorder
+}
+
+// Approve mocks base method.
+func (m *MockSchedule) Approve(ctx context.Context, scheduleID string, params *database.ApproveScheduleParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Approve", ctx, scheduleID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Approve indicates an expected call of Approve.
+func (mr *MockScheduleMockRecorder) Approve(ctx, scheduleID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Approve", reflect.TypeOf((*MockSchedule)(nil).Approve), ctx, scheduleID, params)
 }
 
 // Count mocks base method.
@@ -1125,6 +1087,26 @@ func (mr *MockScheduleMockRecorder) List(ctx, params interface{}, fields ...inte
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, params}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockSchedule)(nil).List), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockSchedule) MultiGet(ctx context.Context, scheduleIDs []string, fields ...string) (entity.Schedules, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, scheduleIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.Schedules)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockScheduleMockRecorder) MultiGet(ctx, scheduleIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, scheduleIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockSchedule)(nil).MultiGet), varargs...)
 }
 
 // Update mocks base method.

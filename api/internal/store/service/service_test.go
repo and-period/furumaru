@@ -6,26 +6,33 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/internal/store/komoju"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_ivs "github.com/and-period/furumaru/api/mock/pkg/ivs"
 	mock_postalcode "github.com/and-period/furumaru/api/mock/pkg/postalcode"
 	mock_database "github.com/and-period/furumaru/api/mock/store/database"
+	mock_komoju "github.com/and-period/furumaru/api/mock/store/komoju"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
-	"github.com/golang/mock/gomock"
+	"github.com/and-period/furumaru/api/pkg/postalcode"
+	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
 
 type mocks struct {
-	db         *dbMocks
-	user       *mock_user.MockService
-	messenger  *mock_messenger.MockService
-	media      *mock_media.MockService
-	postalCode *mock_postalcode.MockClient
-	ivs        *mock_ivs.MockClient
+	db            *dbMocks
+	user          *mock_user.MockService
+	messenger     *mock_messenger.MockService
+	media         *mock_media.MockService
+	postalCode    *mock_postalcode.MockClient
+	ivs           *mock_ivs.MockClient
+	komojuPayment *mock_komoju.MockPayment
+	komojuSession *mock_komoju.MockSession
 }
 
 type dbMocks struct {
@@ -59,12 +66,14 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db:         newDBMocks(ctrl),
-		user:       mock_user.NewMockService(ctrl),
-		messenger:  mock_messenger.NewMockService(ctrl),
-		media:      mock_media.NewMockService(ctrl),
-		postalCode: mock_postalcode.NewMockClient(ctrl),
-		ivs:        mock_ivs.NewMockClient(ctrl),
+		db:            newDBMocks(ctrl),
+		user:          mock_user.NewMockService(ctrl),
+		messenger:     mock_messenger.NewMockService(ctrl),
+		media:         mock_media.NewMockService(ctrl),
+		postalCode:    mock_postalcode.NewMockClient(ctrl),
+		ivs:           mock_ivs.NewMockClient(ctrl),
+		komojuPayment: mock_komoju.NewMockPayment(ctrl),
+		komojuSession: mock_komoju.NewMockSession(ctrl),
 	}
 }
 
@@ -109,6 +118,10 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Media:      mocks.media,
 		PostalCode: mocks.postalCode,
 		Ivs:        mocks.ivs,
+		Komoju: &komoju.Komoju{
+			Payment: mocks.komojuPayment,
+			Session: mocks.komojuSession,
+		},
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {
@@ -142,4 +155,87 @@ func TestService(t *testing.T) {
 	t.Parallel()
 	srv := NewService(&Params{}, WithLogger(zap.NewNop()))
 	assert.NotNil(t, srv)
+}
+
+func TestInternalError(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		err    error
+		expect error
+	}{
+		{
+			name:   "not error",
+			err:    nil,
+			expect: nil,
+		},
+		{
+			name:   "validation error",
+			err:    govalidator.ValidationErrors{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name:   "database not found",
+			err:    database.ErrNotFound,
+			expect: exception.ErrNotFound,
+		},
+		{
+			name:   "database failed precondition",
+			err:    database.ErrFailedPrecondition,
+			expect: exception.ErrFailedPrecondition,
+		},
+		{
+			name:   "database already exists",
+			err:    database.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
+		},
+		{
+			name:   "database deadline exceeded",
+			err:    database.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
+		},
+		{
+			name:   "postal code invalid argument",
+			err:    postalcode.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name:   "postal code not found",
+			err:    postalcode.ErrNotFound,
+			expect: exception.ErrNotFound,
+		},
+		{
+			name:   "postal code unavailable",
+			err:    postalcode.ErrUnavailable,
+			expect: exception.ErrUnavailable,
+		},
+		{
+			name:   "postal code deadline exceeded",
+			err:    postalcode.ErrTimeout,
+			expect: exception.ErrDeadlineExceeded,
+		},
+		{
+			name:   "context canceled",
+			err:    context.Canceled,
+			expect: exception.ErrCanceled,
+		},
+		{
+			name:   "context deadline exceeded",
+			err:    context.DeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
+		},
+		{
+			name:   "other error",
+			err:    assert.AnError,
+			expect: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := internalError(tt.err)
+			assert.ErrorIs(t, actual, tt.expect)
+		})
+	}
 }

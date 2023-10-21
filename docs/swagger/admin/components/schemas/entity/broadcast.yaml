@@ -1,0 +1,42 @@
+broadcast:
+  type: object
+  description: マルシェライブ配信情報
+  properties:
+    id:
+      type: string
+      description: マルシェライブ配信ID
+    scheduleId:
+      type: string
+      description: マルシェ開催スケジュールID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/broadcastStatus'
+    inputUrl:
+      type: string
+      description: ライブ配信URL(入力側)
+    outputUrl:
+      type: string
+      description: ライブ配信URL(出力側)
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - scheduleId
+  - status
+  - inputUrl
+  - outputUrl
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 4
+    inputUrl: 'rtmp://127.0.0.1:1935/app/instance'
+    outputUrl: 'http://example.com/index.m3u8'
+    createdAt: 1640962800
+    updatedAt: 1640962800

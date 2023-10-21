@@ -1,0 +1,187 @@
+name: '[Backend] Build and Test'
+on:
+  push:
+    paths:
+    - '.github/workflows/ci-backend.yaml'
+    - 'api/**'
+    - 'infra/docker/api/**'
+    - 'infra/kubernetes/**'
+
+env:
+  SERVICE: api
+  TZ: 'Asia/Tokyo'
+  DB_HOST: 127.0.0.1
+  DB_PORT: 3306
+  DB_USERNAME: root
+  DB_PASSWORD: 12345678
+  GO_VERSION: 1.21.0
+
+jobs:
+  setup:
+    name: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Golang ${{ env.GO_VERSION }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - uses: actions/cache@v3
+      id: modules-cache
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - name: Download modules
+      if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download
+
+  lint:
+    name: lint
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Golang ${{ env.GO_VERSION }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - name: Setup
+      run: make setup
+
+    - name: Fmt
+      run: make fmt
+
+    - name: Vet
+      run: make vet
+
+    - name: Lint
+      run: make lint
+
+  build:
+    name: build
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Golang ${{ env.GO_VERSION }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - uses: actions/cache@v3
+      id: modules-cache
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - name: Download modules
+      if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download
+
+    - name: Build gateway
+      run: make build SERVICE=gateway
+
+    - name: Build media
+      run: make build SERVICE=media
+
+    - name: Build messenger
+      run: make build SERVICE=messenger
+
+  test:
+    name: test
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Golang ${{ env.GO_VERSION }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - name: Start MySQL container
+      working-directory: .
+      run: docker compose --file=docker-compose.ci.yaml up --build --detach mysql
+
+    - name: Wait start MySQL
+      run: |
+        #!/bin/bash
+        retry=60
+        count=1
+        until mysqladmin ping -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME} -p${DB_PASSWORD}; do
+          echo 'mysql is unavailable - sleeping'
+          sleep 3
+          if [ $(expr $retry - $count) -le 0 ]; then
+            echo 'mysql is unavailable - throw error for timeout'
+            exit 1
+          fi
+          count=$(expr $count + 1)
+        done
+        echo 'mysql is up - executing command'
+
+    - uses: actions/cache@v3
+      id: modules-cache
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+    - name: Download modules
+      if: steps.modules-cache.outputs.cache-hit != 'true'
+      run: go mod download
+
+    - name: Test
+      run: make test
+
+    - uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+        flags: api
+        verbose: true

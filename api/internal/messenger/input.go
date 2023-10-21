@@ -129,19 +129,23 @@ type ListContactCategoriesInput struct {
 	Offset int64 `validate:"min=0"`
 }
 
-type GetContactCategoryInput struct {
-	CategoryID string `validate:"required"`
-}
-
 type MultiGetContactCategoriesInput struct {
 	CategoryIDs []string `validate:"opitempty,dive,required"`
 }
 
-type ListThreadsByContactIDInput struct {
+type GetContactCategoryInput struct {
+	CategoryID string `validate:"required"`
+}
+
+type ListThreadsInput struct {
 	ContactID string `validate:"required"`
 	UserID    string `validate:""`
 	Limit     int64  `validate:"required,max=200"`
 	Offset    int64  `validate:"min=0"`
+}
+
+type GetThreadInput struct {
+	ThreadID string `validate:"required"`
 }
 
 type CreateThreadInput struct {
@@ -149,10 +153,6 @@ type CreateThreadInput struct {
 	UserID    string                `validate:""`
 	UserType  entity.ThreadUserType `validate:"required"`
 	Content   string                `validate:"required,max=2000"`
-}
-
-type GetThreadInput struct {
-	ThreadID string `validate:"required"`
 }
 
 type UpdateThreadInput struct {
@@ -166,19 +166,8 @@ type DeleteThreadInput struct {
 	ThreadID string `validate:"required"`
 }
 
-type GetContactReadInput struct {
-	ContactID string `validate:"required"`
-	UserID    string `validate:""`
-}
-
 type CreateContactReadInput struct {
 	ContactID string                 `validate:"required"`
 	UserID    string                 `validate:""`
 	UserType  entity.ContactUserType `validate:"required"`
-}
-
-type UpdateContactReadFlagInput struct {
-	ContactID string `validate:"required"`
-	UserID    string `validate:""`
-	Read      bool   `validate:"required"`
 }

@@ -84,7 +84,7 @@ func TestListProductTags(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count",
@@ -102,7 +102,7 @@ func TestListProductTags(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -166,7 +166,7 @@ func TestMultiGetProductTags(t *testing.T) {
 				ProductTagIDs: []string{"product-tag-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -225,7 +225,7 @@ func TestGetProductTag(t *testing.T) {
 				ProductTagID: "product-tag-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -281,7 +281,7 @@ func TestCreateProductTag(t *testing.T) {
 			input: &store.CreateProductTagInput{
 				Name: "野菜",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -329,7 +329,7 @@ func TestUpdateProductTag(t *testing.T) {
 				ProductTagID: "product-tag-id",
 				Name:         "野菜",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -375,7 +375,7 @@ func TestDeleteProductTag(t *testing.T) {
 			input: &store.DeleteProductTagInput{
 				ProductTagID: "product-tag-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

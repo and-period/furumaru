@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { mdiPlus } from '@mdi/js'
+import { mdiPlus, mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { dateTimeFormatter } from '~/lib/formatter'
 import { AlertType } from '~/lib/hooks'
-import { AdminRole, Shipping } from '~/types/api'
+import { AdminRole, Coordinator, Shipping } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -13,6 +13,10 @@ const props = defineProps({
   role: {
     type: Number as PropType<AdminRole>,
     default: AdminRole.UNKNOWN
+  },
+  deleteDialog: {
+    type: Boolean,
+    default: false
   },
   isAlert: {
     type: Boolean,
@@ -30,6 +34,10 @@ const props = defineProps({
     type: Array<Shipping>,
     default: () => []
   },
+  coordinators: {
+    type: Array<Coordinator>,
+    default: () => []
+  },
   tableItemsPerPage: {
     type: Number,
     default: 20
@@ -41,37 +49,77 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click:update-page', page: number): void
-  (e: 'click:update-items-per-page', page: number): void
-  (e: 'click:row', notificationId: string): void
+  (e: 'click:row', shippingId: string): void
   (e: 'click:add'): void
+  (e: 'click:delete', shippingId: string): void
+  (e: 'update:delete-dialog', v: boolean): void
+  (e: 'update:page', page: number): void
+  (e: 'update:items-per-page', page: number): void
+  (e: 'submit:delete'): void
 }>()
 
 const headers: VDataTable['headers'] = [
   {
     title: '名前',
-    key: 'name'
+    key: 'name',
+    sortable: false
   },
   {
-    title: '配送無料オプション',
-    key: 'hasFreeShipping'
+    title: 'コーディネータ名',
+    key: 'coordinatorId',
+    sortable: false
   },
   {
-    title: '更新日',
-    key: 'updatedAt'
+    title: 'デフォルト設定',
+    key: 'isDefault',
+    sortable: false
+  },
+  {
+    title: '更新日時',
+    key: 'updatedAt',
+    sortable: false
+  },
+  {
+    title: '',
+    key: 'actions',
+    sortable: false
   }
 ]
 
+const deleteDialogValue = computed({
+  get: (): boolean => props.deleteDialog,
+  set: (v: boolean): void => emit('update:delete-dialog', v)
+})
+
 const isRegisterable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
+  return props.role === AdminRole.COORDINATOR
+}
+
+const getCoordinatorName = (coordinatorId: string) => {
+  const coordinator = props.coordinators.find((coordinator: Coordinator): boolean => {
+    return coordinator.id === coordinatorId
+  })
+  return coordinator ? coordinator.username : ''
+}
+
+const getIsDefault = (isDefault: boolean): string => {
+  return isDefault ? 'デフォルト' : '-'
+}
+
+const getIsDefaultColor = (isDefault: boolean): string => {
+  return isDefault ? 'primary' : ''
 }
 
 const onClickUpdatePage = (page: number): void => {
-  emit('click:update-page', page)
+  emit('update:page', page)
 }
 
 const onClickUpdateItemsPerPage = (page: number): void => {
-  emit('click:update-items-per-page', page)
+  emit('update:items-per-page', page)
+}
+
+const onClickCloseDeleteDialog = (): void => {
+  deleteDialogValue.value = false
 }
 
 const onClickRow = (shippingId: string): void => {
@@ -81,9 +129,36 @@ const onClickRow = (shippingId: string): void => {
 const onClickAdd = (): void => {
   emit('click:add')
 }
+
+const onClickDelete = (shippingId: string): void => {
+  emit('click:delete', shippingId)
+}
+
+const onSubmitDelete = (): void => {
+  emit('submit:delete')
+}
 </script>
 
 <template>
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
+  <v-dialog v-model="deleteDialogValue" width="500">
+    <v-card>
+      <v-card-title>
+        本当に削除しますか？
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+          キャンセル
+        </v-btn>
+        <v-btn :loading="props.loading" color="primary" variant="outlined" @click="onSubmitDelete">
+          削除
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <v-card class="mt-4" flat :loading="loading">
     <v-card-title class="d-flex flex-row">
       配送設定一覧
@@ -100,20 +175,32 @@ const onClickAdd = (): void => {
         :items="shippings"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
-        :multi-sort="true"
         hover
-        class="elevation-0"
+        no-data-text="登録されている配送設定がありません"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
       >
-        <template #[`item.hasFreeShipping`]="{ item }">
-          <v-chip size="small">
-            {{ item.raw.hasFreeShipping ? '有り' : '無し' }}
+        <template #[`item.coordinatorId`]="{ item }">
+          {{ getCoordinatorName(item.raw.coordinatorId) }}
+        </template>
+        <template #[`item.isDefault`]="{ item }">
+          <v-chip size="small" :color="getIsDefaultColor(item.raw.isDefault)">
+            {{ getIsDefault(item.raw.isDefault) }}
           </v-chip>
         </template>
         <template #[`item.updatedAt`]="{ item }">
           {{ dateTimeFormatter(item.raw.updatedAt) }}
+        </template>
+        <template #[`item.actions`]="{ item }">
+          <v-btn
+            color="primary"
+            size="small"
+            variant="outlined"
+            @click.stop="onClickDelete(item.raw)"
+          >
+            <v-icon size="small" :icon="mdiDelete" />削除
+          </v-btn>
         </template>
       </v-data-table-server>
     </v-card-text>

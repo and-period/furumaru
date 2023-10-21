@@ -1,0 +1,23 @@
+broadcastStatus:
+  type: integer
+  format: int32
+  description: マルシェライブ配信状況
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  x-enum-varnames:
+  - UNKNOWN
+  - DISABLED
+  - WAITING
+  - IDLE
+  - ACTIVE
+  x-enum-descriptions:
+  - 不明
+  - 配信リソース未作成
+  - 配信リソース作成/削除中
+  - 配信停止中
+  - 配信中

@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	postalcode "github.com/and-period/furumaru/api/pkg/postalcode"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockClient is a mock of Client interface.

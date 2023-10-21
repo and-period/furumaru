@@ -3,11 +3,11 @@ package resizer
 import (
 	"bytes"
 	"context"
+	"image"
 	"io"
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/common"
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/golang/mock/gomock"
@@ -84,7 +84,7 @@ func TestProductMedia(t *testing.T) {
 				FileType: entity.FileTypeProductMedia,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to resize images",
@@ -97,7 +97,7 @@ func TestProductMedia(t *testing.T) {
 				FileType: entity.FileTypeProductMedia,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: image.ErrFormat,
 		},
 		{
 			name: "failed to upload images",
@@ -111,7 +111,7 @@ func TestProductMedia(t *testing.T) {
 				FileType: entity.FileTypeProductMedia,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to update product media",
@@ -127,7 +127,7 @@ func TestProductMedia(t *testing.T) {
 				FileType: entity.FileTypeProductMedia,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 	}
 

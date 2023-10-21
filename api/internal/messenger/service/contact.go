@@ -15,7 +15,7 @@ import (
 
 func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsInput) (entity.Contacts, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 
 	params := &database.ListContactsParams{
@@ -36,22 +36,22 @@ func (s *service) ListContacts(ctx context.Context, in *messenger.ListContactsIn
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return contacts, total, nil
 }
 
 func (s *service) GetContact(ctx context.Context, in *messenger.GetContactInput) (*entity.Contact, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	contact, err := s.db.Contact.Get(ctx, in.ContactID)
-	return contact, exception.InternalError(err)
+	return contact, internalError(err)
 }
 
 func (s *service) CreateContact(ctx context.Context, in *messenger.CreateContactInput) (*entity.Contact, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	params := &entity.NewContactParams{
 		Title:       in.Title,
@@ -64,18 +64,17 @@ func (s *service) CreateContact(ctx context.Context, in *messenger.CreateContact
 	contact := entity.NewContact(params)
 	contact.Fill(in.CategoryID, in.UserID, in.ResponderID)
 	if err := s.db.Contact.Create(ctx, contact); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
-
 	return contact, nil
 }
 
 func (s *service) UpdateContact(ctx context.Context, in *messenger.UpdateContactInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	if _, err := s.db.Contact.Get(ctx, in.ContactID); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
@@ -103,7 +102,7 @@ func (s *service) UpdateContact(ctx context.Context, in *messenger.UpdateContact
 		return fmt.Errorf("api: invalid user id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &database.UpdateContactParams{
 		Title:       in.Title,
@@ -117,16 +116,14 @@ func (s *service) UpdateContact(ctx context.Context, in *messenger.UpdateContact
 		ResponderID: in.ResponderID,
 		Note:        in.Note,
 	}
-	if err := s.db.Contact.Update(ctx, in.ContactID, params); err != nil {
-		return exception.InternalError(err)
-	}
-	return nil
+	err = s.db.Contact.Update(ctx, in.ContactID, params)
+	return internalError(err)
 }
 
 func (s *service) DeleteContact(ctx context.Context, in *messenger.DeleteContactInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Contact.Delete(ctx, in.ContactID)
-	return exception.InternalError(err)
+	return internalError(err)
 }

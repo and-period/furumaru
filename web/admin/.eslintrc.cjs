@@ -9,6 +9,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'vue/no-mutating-props': 'warn',
+    'vue/no-v-html': 'off',
     'vue/no-v-text-v-html-on-component': 'off'
   },
 }

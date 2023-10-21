@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	validator "github.com/go-playground/validator/v10"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockValidator is a mock of Validator interface.

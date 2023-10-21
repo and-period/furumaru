@@ -360,7 +360,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		if err != nil {
 			return err
 		}
-		_, err = h.getCategory(ectx, productType.ID)
+		_, err = h.getCategory(ectx, productType.CategoryID)
 		return err
 	})
 	eg.Go(func() (err error) {

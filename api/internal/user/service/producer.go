@@ -19,7 +19,7 @@ import (
 
 func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	params := &database.ListProducersParams{
 		CoordinatorID: in.CoordinatorID,
@@ -42,38 +42,38 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return nil, 0, exception.InternalError(err)
+		return nil, 0, internalError(err)
 	}
 	return producers, total, nil
 }
 
 func (s *service) MultiGetProducers(ctx context.Context, in *user.MultiGetProducersInput) (entity.Producers, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	producers, err := s.db.Producer.MultiGet(ctx, in.ProducerIDs)
-	return producers, exception.InternalError(err)
+	return producers, internalError(err)
 }
 
 func (s *service) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
-	return producer, exception.InternalError(err)
+	return producer, internalError(err)
 }
 
 func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Producer, error) {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if errors.Is(err, exception.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
 	}
 	if err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
@@ -107,7 +107,7 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	producer := entity.NewProducer(params)
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
 	if err := s.db.Producer.Create(ctx, producer, auth); err != nil {
-		return nil, exception.InternalError(err)
+		return nil, internalError(err)
 	}
 	s.logger.Debug("Create producer", zap.String("producerId", producer.ID), zap.String("password", password))
 	s.waitGroup.Add(2)
@@ -127,11 +127,11 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 
 func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &database.UpdateProducerParams{
 		Lastname:          in.Lastname,
@@ -154,7 +154,7 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 		AddressLine2:      in.AddressLine2,
 	}
 	if err := s.db.Producer.Update(ctx, in.ProducerID, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	s.waitGroup.Add(1)
 	go func() {
@@ -173,47 +173,47 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 
 func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProducerEmailInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	params := &cognito.AdminChangeEmailParams{
 		Username: producer.CognitoID,
 		Email:    in.Email,
 	}
 	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err = s.db.Admin.UpdateEmail(ctx, in.ProducerID, in.Email)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) UpdateProducerThumbnails(ctx context.Context, in *user.UpdateProducerThumbnailsInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Producer.UpdateThumbnails(ctx, in.ProducerID, in.Thumbnails)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) UpdateProducerHeaders(ctx context.Context, in *user.UpdateProducerHeadersInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Producer.UpdateHeaders(ctx, in.ProducerID, in.Headers)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProducerPasswordInput) error {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	password := random.NewStrings(size)
 	params := &cognito.AdminChangePasswordParams{
@@ -222,7 +222,7 @@ func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProdu
 		Permanent: true,
 	}
 	if err := s.adminAuth.AdminChangePassword(ctx, params); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	s.logger.Debug("Reset producer password",
 		zap.String("producerId", in.ProducerID), zap.String("password", password),
@@ -242,41 +242,41 @@ func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProdu
 
 func (s *service) RelateProducers(ctx context.Context, in *user.RelateProducersInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if errors.Is(err, exception.ErrNotFound) {
 		return fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
 	}
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	producers, err := s.db.Producer.MultiGet(ctx, in.ProducerIDs)
 	if err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	producers = producers.Unrelated()
 	if len(producers) != len(in.ProducerIDs) {
 		return fmt.Errorf("api: contains invalid producers: %w", exception.ErrFailedPrecondition)
 	}
 	err = s.db.Producer.UpdateRelationship(ctx, in.CoordinatorID, in.ProducerIDs...)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) UnrelateProducer(ctx context.Context, in *user.UnrelateProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Producer.UpdateRelationship(ctx, "", in.ProducerID)
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
-		return exception.InternalError(err)
+		return internalError(err)
 	}
 	err := s.db.Producer.Delete(ctx, in.ProducerID, s.deleteCognitoAdmin(in.ProducerID))
-	return exception.InternalError(err)
+	return internalError(err)
 }
 
 func (s *service) resizeProducer(ctx context.Context, producerID, thumbnailURL, headerURL string) {

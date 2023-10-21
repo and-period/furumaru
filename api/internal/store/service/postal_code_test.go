@@ -64,7 +64,7 @@ func TestSearchPostalCode(t *testing.T) {
 				PostlCode: "1000014",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to invalid postal code",
@@ -85,7 +85,7 @@ func TestSearchPostalCode(t *testing.T) {
 				PostlCode: "1000014",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

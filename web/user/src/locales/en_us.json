@@ -77,5 +77,10 @@
       "forthPointDescription": "Furumaru shipping charges are added per marche, not per item. If you shop at the same marche, you will not be charged additional shipping fees no matter how many items you buy as long as they fit in the same box.",
       "forthPointLinkText": "For more information about shipping charges, click here."
     }
+  },
+  "purchase": {
+    "complete": {
+      "completeMessage": "A confirmation email has been sent to the email address you registered, so please check it. if you do not receive an email, please contact us here and include your order number above. you can also check your order details from your order history on your account page."
+    }
   }
 }

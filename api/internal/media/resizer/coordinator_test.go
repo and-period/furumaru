@@ -3,10 +3,10 @@ package resizer
 import (
 	"bytes"
 	"context"
+	"image"
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/common"
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/golang/mock/gomock"
@@ -70,7 +70,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to resize images",
@@ -83,7 +83,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: image.ErrFormat,
 		},
 		{
 			name: "failed to upload images",
@@ -97,7 +97,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to update coordinator thumbnails",
@@ -113,7 +113,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorThumbnail,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 	}
 
@@ -183,7 +183,7 @@ func TestCoordinatorHeader(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to resize images",
@@ -196,7 +196,7 @@ func TestCoordinatorHeader(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: image.ErrFormat,
 		},
 		{
 			name: "failed to upload images",
@@ -210,7 +210,7 @@ func TestCoordinatorHeader(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to update coordinator headers",
@@ -226,7 +226,7 @@ func TestCoordinatorHeader(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorHeader,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 	}
 

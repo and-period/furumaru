@@ -85,25 +85,29 @@ type Service interface {
 	UpdatePromotion(ctx context.Context, in *UpdatePromotionInput) error
 	// プロモーション削除
 	DeletePromotion(ctx context.Context, in *DeletePromotionInput) error
-	// 開催スケジュール一覧取得
+	// マルシェ開催スケジュール一覧取得
 	ListSchedules(ctx context.Context, in *ListSchedulesInput) (entity.Schedules, int64, error)
-	// 開催スケジュール取得
+	// マルシェ開催スケジュール一覧取得(ID指定)
+	MultiGetSchedules(ctx context.Context, in *MultiGetSchedulesInput) (entity.Schedules, error)
+	// マルシェ開催スケジュール取得
 	GetSchedule(ctx context.Context, in *GetScheduleInput) (*entity.Schedule, error)
-	// 開催スケジュール登録
+	// マルシェ開催スケジュール登録
 	CreateSchedule(ctx context.Context, in *CreateScheduleInput) (*entity.Schedule, error)
-	// 開催スケジュール更新
+	// マルシェ開催スケジュール更新
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleInput) error
-	// 開催スケジュールサムネイル画像(リサイズ済み)更新
+	// マルシェ開催スケジュールサムネイル画像(リサイズ済み)更新
 	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error
-	// ライブ配信一覧取得(開催スケジュールID指定)
+	// マルシェ開催スケジュール承認
+	ApproveSchedule(ctx context.Context, in *ApproveScheduleInput) error
+	// マルシェタイムテーブル一覧取得(開催スケジュールID指定)
 	ListLivesByScheduleID(ctx context.Context, in *ListLivesByScheduleIDInput) (entity.Lives, error)
-	// ライブ配信取得
+	// マルシェタイムテーブル取得
 	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)
-	// ライブ配信登録
+	// マルシェタイムテーブル登録
 	CreateLive(ctx context.Context, in *CreateLiveInput) (*entity.Live, error)
-	// ライブ配信更新
+	// マルシェタイムテーブル更新
 	UpdateLive(ctx context.Context, in *UpdateLiveInput) error
-	// ライブ配信削除
+	// マルシェタイムテーブル削除
 	DeleteLive(ctx context.Context, in *DeleteLiveInput) error
 	// 注文履歴一覧取得
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)

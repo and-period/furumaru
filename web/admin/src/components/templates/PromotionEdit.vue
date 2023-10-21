@@ -4,13 +4,17 @@ import dayjs, { unix } from 'dayjs'
 
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, minLength, minValue, required } from '~/lib/validations'
-import { DiscountType, PromotionResponse, UpdatePromotionRequest } from '~/types/api'
+import { AdminRole, DiscountType, Promotion, UpdatePromotionRequest } from '~/types/api'
 import { PromotionTime } from '~/types/props'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   isAlert: {
     type: Boolean,
@@ -38,8 +42,8 @@ const props = defineProps({
     })
   },
   promotion: {
-    type: Object as PropType<PromotionResponse>,
-    default: (): PromotionResponse => ({
+    type: Object as PropType<Promotion>,
+    default: (): Promotion => ({
       id: '',
       title: '',
       description: '',
@@ -57,7 +61,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:form-data', formData: UpdatePromotionRequest): void
-  (e: 'update:promotion', promotion: PromotionResponse): void
+  (e: 'update:promotion', promotion: Promotion): void
   (e: 'submit'): void
 }>()
 
@@ -103,12 +107,16 @@ const timeDataValue = computed({
   }
 })
 const promotionValue = computed({
-  get: (): PromotionResponse => props.promotion,
-  set: (promotion: PromotionResponse): void => emit('update:promotion', promotion)
+  get: (): Promotion => props.promotion,
+  set: (promotion: Promotion): void => emit('update:promotion', promotion)
 })
 
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
 const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+
+const isEditable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)
@@ -237,7 +245,14 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
+        <v-btn
+          v-show="isEditable()"
+          block
+          :loading="loading"
+          variant="outlined"
+          color="primary"
+          type="submit"
+        >
           更新
         </v-btn>
       </v-card-actions>

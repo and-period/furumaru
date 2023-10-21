@@ -3,16 +3,18 @@ import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
-import { usePromotionStore } from '~/store'
+import { useAuthStore, usePromotionStore } from '~/store'
 import { UpdatePromotionRequest } from '~/types/api'
 
 const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
 const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const promotionId = route.params.id as string
 
+const { role } = storeToRefs(authStore)
 const { promotion } = storeToRefs(promotionStore)
 
 const loading = ref<boolean>(false)
@@ -73,6 +75,7 @@ try {
   <templates-promotion-edit
     v-model:form-data="formData"
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

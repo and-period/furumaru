@@ -9,15 +9,14 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
 
@@ -136,17 +135,17 @@ func TestResizer_Dispatch(t *testing.T) {
 		{
 			name: "failed to run with retry",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(nil, exception.ErrUnavailable)
+				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(nil, context.Canceled)
 			},
 			record: events.SQSMessage{
 				Body: `{"id":"", "fileType":1, "urls":["http://example.com/media/image.png"]}`,
 			},
-			expectErr: exception.ErrUnavailable,
+			expectErr: context.Canceled,
 		},
 		{
 			name: "failed to run without retry",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(nil, exception.ErrInternal)
+				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(nil, assert.AnError)
 			},
 			record: events.SQSMessage{
 				Body: `{"id":"", "fileType":1, "urls":["http://example.com/media/image.png"]}`,
@@ -272,7 +271,7 @@ func TestResizer_Run(t *testing.T) {
 				FileType: entity.FileTypeCoordinatorThumbnail,
 				URLs:     []string{},
 			},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: errInvalidFormat,
 		},
 		{
 			name:  "failed to invalid file type",
@@ -282,7 +281,7 @@ func TestResizer_Run(t *testing.T) {
 				FileType: entity.FileTypeUnknown,
 				URLs:     []string{"http://example.com/media/image.png"},
 			},
-			expectErr: exception.ErrInvalidArgument,
+			expectErr: errUnknownFileType,
 		},
 	}
 

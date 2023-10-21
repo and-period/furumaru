@@ -29,10 +29,9 @@ func TestListOrders(t *testing.T) {
 			ScheduleID:        "schedule-id",
 			PromotionID:       "",
 			CoordinatorID:     "coordinator-id",
-			PaymentStatus:     entity.PaymentStatusInitialized,
+			PaymentStatus:     entity.PaymentStatusPending,
 			FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
-			CancelType:        entity.CancelTypeUnknown,
-			CancelReason:      "",
+			RefundReason:      "",
 			CreatedAt:         now,
 			UpdatedAt:         now,
 			OrderItems: []*entity.OrderItem{
@@ -57,8 +56,7 @@ func TestListOrders(t *testing.T) {
 				OrderID:       "order-id",
 				AddressID:     "address-id",
 				TransactionID: "transaction-id",
-				MethodType:    entity.PaymentMethodTypeCard,
-				MethodID:      "payment-id",
+				MethodType:    entity.PaymentMethodTypeCreditCard,
 				Subtotal:      1100,
 				Discount:      0,
 				ShippingFee:   500,
@@ -125,7 +123,7 @@ func TestListOrders(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count orders",
@@ -140,7 +138,7 @@ func TestListOrders(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -162,9 +160,9 @@ func TestGetOrder(t *testing.T) {
 	order := &entity.Order{
 		ID:                "order-id",
 		UserID:            "user-id",
-		PaymentStatus:     entity.PaymentStatusInitialized,
+		PaymentStatus:     entity.PaymentStatusPending,
 		FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
-		CancelType:        entity.CancelTypeUnknown,
+		RefundReason:      "",
 		CreatedAt:         now,
 		UpdatedAt:         now,
 		OrderItems: []*entity.OrderItem{
@@ -189,8 +187,7 @@ func TestGetOrder(t *testing.T) {
 			OrderID:       "order-id",
 			AddressID:     "address-id",
 			TransactionID: "transaction-id",
-			MethodType:    entity.PaymentMethodTypeCard,
-			MethodID:      "payment-id",
+			MethodType:    entity.PaymentMethodTypeCreditCard,
 			Subtotal:      1100,
 			Discount:      0,
 			ShippingFee:   500,
@@ -246,7 +243,7 @@ func TestGetOrder(t *testing.T) {
 				OrderID: "order-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -308,7 +305,7 @@ func TestAggregateOrders(t *testing.T) {
 				UserIDs: []string{"user-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

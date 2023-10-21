@@ -89,7 +89,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -101,7 +101,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -112,7 +112,7 @@ func TestUploadCoordinatorThumbnail(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -200,7 +200,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -212,7 +212,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -223,7 +223,7 @@ func TestUploadCoordinatorHeader(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -311,7 +311,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -323,7 +323,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -334,7 +334,7 @@ func TestUploadCoordinatorPromotionVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -422,7 +422,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -434,7 +434,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -445,7 +445,7 @@ func TestUploadCoordinatorBonusVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -533,7 +533,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -545,7 +545,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -556,7 +556,7 @@ func TestUploadProducerThumbnail(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -644,7 +644,7 @@ func TestUploadProducerHeader(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -656,7 +656,7 @@ func TestUploadProducerHeader(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -667,7 +667,7 @@ func TestUploadProducerHeader(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -755,7 +755,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -767,7 +767,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -778,7 +778,7 @@ func TestUploadProducerPromotionVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -866,7 +866,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -878,7 +878,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -889,7 +889,7 @@ func TestUploadProducerBonusVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1010,7 +1010,7 @@ func TestUploadProductMedia(t *testing.T) {
 				URL: iturl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1022,7 +1022,7 @@ func TestUploadProductMedia(t *testing.T) {
 				URL: iturl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1033,7 +1033,7 @@ func TestUploadProductMedia(t *testing.T) {
 				URL: isurl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1121,7 +1121,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1133,7 +1133,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1144,7 +1144,7 @@ func TestUploadProductTypeIcon(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1232,7 +1232,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1244,7 +1244,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1255,7 +1255,7 @@ func TestUploadScheduleThumbnail(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1343,7 +1343,7 @@ func TestUploadScheduleImage(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1355,7 +1355,7 @@ func TestUploadScheduleImage(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1366,7 +1366,7 @@ func TestUploadScheduleImage(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -1454,7 +1454,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to upload permanent file when upload",
@@ -1466,7 +1466,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 				URL: turl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to download permanent file when download",
@@ -1477,7 +1477,7 @@ func TestUploadScheduleOpeningVideo(t *testing.T) {
 				URL: surl.String(),
 			},
 			expect:    "",
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

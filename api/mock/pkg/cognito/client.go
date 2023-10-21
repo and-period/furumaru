@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	cognito "github.com/and-period/furumaru/api/pkg/cognito"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockClient is a mock of Client interface.

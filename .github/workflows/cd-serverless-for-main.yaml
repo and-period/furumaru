@@ -1,0 +1,72 @@
+name: '[Infra] Deploy Serverless for main'
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - '.github/workflows/cd-serverless-for-main.yaml'
+      - 'infra/serverless/**'
+
+env:
+  TZ: 'Asia/Tokyo'
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  SERVICE: serverless
+  NODE_VERSION: 18.14.0
+
+jobs:
+  build_and_deploy:
+    name: deploy and deploy
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./infra/serverless
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: install sls
+      run: yarn add -D serverless
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      id: yarn-cache
+      with:
+        path: |
+          **/node_modules
+          ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: yarn --check-files --frozen-lockfile --non-interactive
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+
+    - name: serverless deploy
+      uses: serverless/github-action@v3.2
+      with:
+        args: -c "cd infra/serverless/ && serverless deploy"
+        entrypoint: /bin/bash

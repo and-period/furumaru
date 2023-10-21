@@ -83,7 +83,7 @@ func TestListAdministrators(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count administrators",
@@ -97,7 +97,7 @@ func TestListAdministrators(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   exception.ErrUnknown,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -171,7 +171,7 @@ func TestMultiGetAdministrators(t *testing.T) {
 				AdministratorIDs: []string{"admin-id"},
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -240,7 +240,7 @@ func TestGetAdministrator(t *testing.T) {
 				AdministratorID: "admin-id",
 			},
 			expect:    nil,
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -333,7 +333,7 @@ func TestCreateAdministrator(t *testing.T) {
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -397,7 +397,7 @@ func TestUpdateAdministrator(t *testing.T) {
 				FirstnameKana:   "すたっふ",
 				PhoneNumber:     "+819012345678",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -469,7 +469,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 				AdministratorID: "administrator-id",
 				Email:           "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change email",
@@ -481,7 +481,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 				AdministratorID: "administrator-id",
 				Email:           "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update email",
@@ -494,7 +494,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 				AdministratorID: "administrator-id",
 				Email:           "test-admin@and-period.jp",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -582,7 +582,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change password",
@@ -593,7 +593,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -638,7 +638,7 @@ func TestDeleteAdministrator(t *testing.T) {
 			input: &user.DeleteAdministratorInput{
 				AdministratorID: "administrator-id",
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

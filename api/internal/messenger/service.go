@@ -45,8 +45,8 @@ type Service interface {
 	MultiGetContactCategories(ctx context.Context, in *MultiGetContactCategoriesInput) (entity.ContactCategories, error)
 	// お問い合わせ種別取得
 	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
-	// お問い合わせ会話履歴一覧取得(お問い合わせID指定)
-	ListThreadsByContactID(ctx context.Context, in *ListThreadsByContactIDInput) (entity.Threads, int64, error)
+	// お問い合わせ会話履歴一覧取得
+	ListThreads(ctx context.Context, in *ListThreadsInput) (entity.Threads, int64, error)
 	// お問い合わせ会話履歴取得
 	GetThread(ctx context.Context, in *GetThreadInput) (*entity.Thread, error)
 	// お問い合わせ会話履歴作成
@@ -55,10 +55,6 @@ type Service interface {
 	UpdateThread(ctx context.Context, in *UpdateThreadInput) error
 	// お問い合わせ会話履歴削除
 	DeleteThread(ctx context.Context, in *DeleteThreadInput) error
-	// お問い合わせ既読管理取得
-	GetContactRead(ctx context.Context, in *GetContactReadInput) (*entity.ContactRead, error)
 	// お問い合わせ既読管理作成
 	CreateContactRead(ctx context.Context, in *CreateContactReadInput) (*entity.ContactRead, error)
-	// お問い合わせ既読フラグ更新
-	UpdateContactReadFlag(ctx context.Context, in *UpdateContactReadFlagInput) error
 }

@@ -352,6 +352,57 @@ func TestShipping_FillJSON(t *testing.T) {
 	}
 }
 
+func TestShippings_CoordinatorIDs(t *testing.T) {
+	t.Parallel()
+	pref1 := []int64{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+	}
+	pref2 := []int64{
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	rates := ShippingRates{
+		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: pref2},
+	}
+	tests := []struct {
+		name      string
+		shippings Shippings
+		expect    []string
+	}{
+		{
+			name: "success",
+			shippings: Shippings{
+				{
+					CoordinatorID:      "coordinator-id",
+					Name:               "デフォルト配送設定",
+					IsDefault:          true,
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			expect: []string{"coordinator-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.shippings.CoordinatorIDs())
+		})
+	}
+}
+
 func TestShippingRate(t *testing.T) {
 	t.Parallel()
 	type input struct {

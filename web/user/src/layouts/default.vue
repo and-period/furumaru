@@ -84,19 +84,19 @@ const noAuthenticatedMenuItems = computed<LinkItem[]>(() => [
 const footerMenuList = computed<FooterMenuItem[]>(() => [
   {
     text: ft('qaLinkText'),
-    onClick: () => {},
+    to: '',
   },
   {
     text: ft('privacyPolicyLinkText'),
-    onClick: () => {},
+    to: '',
   },
   {
     text: ft('lawLinkText'),
-    onClick: () => {},
+    to: '/legal-notice',
   },
   {
     text: ft('inquiryLinkText'),
-    onClick: () => {},
+    to: '',
   },
 ])
 
@@ -113,6 +113,10 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
 })
+
+const handleClickBuyButton = () => {
+  router.push('/purchase')
+}
 </script>
 
 <template>
@@ -133,10 +137,11 @@ onUnmounted(() => {
         :cart-menu-message="cartMenuMessage"
         :sp-menu-items="spModeMenuItems"
         :footer-menu-items="footerMenuList"
+        @click:buy-button="handleClickBuyButton"
       />
     </div>
     <main class="grow overflow-hidden">
-      <div class="mx-auto pb-10">
+      <div class="mx-auto pb-16">
         <slot />
       </div>
     </main>

@@ -20,6 +20,12 @@ interface Props {
 
 defineProps<Props>()
 
+interface Emits {
+  (e: 'click:buyButton'): void
+}
+
+const emits = defineEmits<Emits>()
+
 const spMenuOpen = ref<boolean>(false)
 
 const handleClickMenuIconButton = () => {
@@ -34,6 +40,11 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
   item.onClick()
   closeSpMenu()
 }
+
+const handleClickBuyButton = () => {
+  emits('click:buyButton')
+  closeSpMenu()
+}
 </script>
 
 <template>
@@ -44,11 +55,7 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
       'md:h-[116px]': !isScrolled,
     }"
   >
-    <nuxt-link
-      :to="homePath"
-      class="flex h-full"
-      @click="closeSpMenu"
-    >
+    <nuxt-link :to="homePath" class="flex h-full" @click="closeSpMenu">
       <the-marche-logo class="m-0 max-h-full max-w-full items-center" />
     </nuxt-link>
 
@@ -85,6 +92,7 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
           :cart-is-empty="cartIsEmpty"
           :cart-menu-message="cartMenuMessage"
           :cart-items="cartItems"
+          @click:buy-button="handleClickBuyButton"
         />
 
         <the-icon-button

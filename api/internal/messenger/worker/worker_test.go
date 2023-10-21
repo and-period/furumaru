@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -20,8 +19,8 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 	"go.uber.org/zap"
 )
 
@@ -169,12 +168,12 @@ func TestWorker_Dispatch(t *testing.T) {
 		{
 			name: "failed to run with retry",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(nil, exception.ErrUnavailable)
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(nil, context.Canceled)
 			},
 			record: events.SQSMessage{
 				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[]}`,
 			},
-			expectErr: exception.ErrUnavailable,
+			expectErr: context.Canceled,
 		},
 		{
 			name: "failed to run without retry",
@@ -401,7 +400,7 @@ func TestWorker_Run(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to send mail",
@@ -419,7 +418,7 @@ func TestWorker_Run(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to send push",
@@ -437,7 +436,7 @@ func TestWorker_Run(t *testing.T) {
 					Data:   map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to create message",
@@ -458,7 +457,7 @@ func TestWorker_Run(t *testing.T) {
 					ReceivedAt:  time.Now(),
 				},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 		{
 			name: "failed to update received queue",
@@ -478,7 +477,7 @@ func TestWorker_Run(t *testing.T) {
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
-			expectErr: exception.ErrUnknown,
+			expectErr: assert.AnError,
 		},
 	}
 	for _, tt := range tests {

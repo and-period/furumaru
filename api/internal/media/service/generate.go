@@ -71,7 +71,7 @@ func (s *service) generateFile(
 	ctx context.Context, in *media.GenerateFileInput, reg *entity.Regulation,
 ) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return "", exception.InternalError(err)
+		return "", internalError(err)
 	}
 	var buf bytes.Buffer
 	teeReader := io.TeeReader(in.File, &buf)
@@ -80,5 +80,5 @@ func (s *service) generateFile(
 	}
 	path := reg.GenerateFilePath(in.Header)
 	url, err := s.tmp.Upload(ctx, path, &buf)
-	return url, exception.InternalError(err)
+	return url, internalError(err)
 }

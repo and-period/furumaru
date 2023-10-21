@@ -30,7 +30,7 @@ export const useProductTypeStore = defineStore('productType', {
         const categoryStore = useCategoryStore()
         this.productTypes = res.data.productTypes
         this.totalItems = res.data.total
-        categoryStore.categories = res.data.categories
+        categoryStore.categories = res.data.categories || []
       } catch (err) {
         return this.errorHandler(err)
       }

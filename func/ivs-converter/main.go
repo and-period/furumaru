@@ -49,8 +49,9 @@ func init() {
 		return
 	}
 	app.s3 = s3.NewFromConfig(cfg)
-	opts := mediaconvert.WithEndpointResolver(mediaconvert.EndpointResolverFromURL(os.Getenv("MEDIA_CONVERT_ENDPOINT")))
-	app.convert = mediaconvert.NewFromConfig(cfg, opts)
+	app.convert = mediaconvert.NewFromConfig(cfg, func(o *mediaconvert.Options) {
+		o.BaseEndpoint = aws.String(os.Getenv("MEDIA_CONVERT_ENDPOINT"))
+	})
 }
 
 func Handler(ctx context.Context, e events.CloudWatchEvent) error {

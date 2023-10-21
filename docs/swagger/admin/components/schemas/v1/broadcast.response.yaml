@@ -1,0 +1,16 @@
+broadcastResponse:
+  type: object
+  properties:
+    broadcast:
+      $ref: './../../../openapi.yaml#/components/schemas/broadcast'
+  required:
+  - broadcast
+  example:
+    broadcast:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 4
+      inputUrl: 'rtmp://127.0.0.1:1935/app/instance'
+      outputUrl: 'http://example.com/index.m3u8'
+      createdAt: 1640962800
+      updatedAt: 1640962800
