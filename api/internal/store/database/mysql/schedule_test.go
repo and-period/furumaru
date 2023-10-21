@@ -158,6 +158,73 @@ func TestSchedule_Count(t *testing.T) {
 	}
 }
 
+func TestSchedule_MultiGet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shipping := testShipping("shipping-id", "coordinator-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedules := make(entity.Schedules, 2)
+	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
+	err = db.DB.Create(&schedules).Error
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleIDs []string
+	}
+	type want struct {
+		schedules entity.Schedules
+		hasErr    bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				scheduleIDs: []string{"schedule-id01", "schedule-id02"},
+			},
+			want: want{
+				schedules: schedules,
+				hasErr:    false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			actual, err := db.MultiGet(ctx, tt.args.scheduleIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.ElementsMatch(t, tt.want.schedules, actual)
+		})
+	}
+}
+
 func TestSchedule_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -333,6 +400,7 @@ func TestSchedule_Update(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule.StartAt = now().AddDate(0, 1, 0)
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -346,12 +414,58 @@ func TestSchedule_Update(t *testing.T) {
 					ImageURL:        "https://and-period.jp/image.png",
 					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 					Public:          true,
-					StartAt:         now().AddDate(0, -1, 0),
-					EndAt:           now().AddDate(0, 1, 0),
+					StartAt:         now().AddDate(0, 1, 0),
+					EndAt:           now().AddDate(0, 2, 0),
 				},
 			},
 			want: want{
 				hasErr: false,
+			},
+		},
+		{
+			name:  "failed to not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				scheduleID: "schedule-id",
+				params: &database.UpdateScheduleParams{
+					ShippingID:      "shipping-id",
+					Title:           "開催スケジュール",
+					Description:     "開催スケジュールの詳細です。",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+					ImageURL:        "https://and-period.jp/image.png",
+					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+					Public:          true,
+					StartAt:         now().AddDate(0, 1, 0),
+					EndAt:           now().AddDate(0, 2, 0),
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed to update",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				err = db.DB.Create(&schedule).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				scheduleID: "schedule-id",
+				params: &database.UpdateScheduleParams{
+					ShippingID:      "shipping-id",
+					Title:           "開催スケジュール",
+					Description:     "開催スケジュールの詳細です。",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+					ImageURL:        "https://and-period.jp/image.png",
+					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+					Public:          true,
+					StartAt:         now().AddDate(0, 1, 0),
+					EndAt:           now().AddDate(0, 2, 0),
+				},
+			},
+			want: want{
+				hasErr: true,
 			},
 		},
 	}
@@ -501,6 +615,108 @@ func TestSchedule_UpdateThumbnails(t *testing.T) {
 
 			db := &schedule{db: db, now: now}
 			err = db.UpdateThumbnails(ctx, tt.args.scheduleID, tt.args.thumbnails)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestSchedule_Approve(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	shipping := testShipping("shipping-id", "coordinator-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleID string
+		params     *database.ApproveScheduleParams
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule.StartAt = now().AddDate(0, 1, 0)
+				err = db.DB.Create(&schedule).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				scheduleID: "schedule-id",
+				params: &database.ApproveScheduleParams{
+					Approved:        true,
+					ApprovedAdminID: "admin-id",
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "failed to not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				scheduleID: "schedule-id",
+				params: &database.ApproveScheduleParams{
+					Approved:        true,
+					ApprovedAdminID: "admin-id",
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed to update",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				err = db.DB.Create(&schedule).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				scheduleID: "schedule-id",
+				params: &database.ApproveScheduleParams{
+					Approved:        true,
+					ApprovedAdminID: "admin-id",
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, scheduleTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			err = db.Approve(ctx, tt.args.scheduleID, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

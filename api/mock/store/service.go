@@ -51,6 +51,20 @@ func (mr *MockServiceMockRecorder) AggregateOrders(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateOrders", reflect.TypeOf((*MockService)(nil).AggregateOrders), ctx, in)
 }
 
+// ApproveSchedule mocks base method.
+func (m *MockService) ApproveSchedule(ctx context.Context, in *store.ApproveScheduleInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ApproveSchedule", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ApproveSchedule indicates an expected call of ApproveSchedule.
+func (mr *MockServiceMockRecorder) ApproveSchedule(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApproveSchedule", reflect.TypeOf((*MockService)(nil).ApproveSchedule), ctx, in)
+}
+
 // CreateCategory mocks base method.
 func (m *MockService) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	m.ctrl.T.Helper()
@@ -635,6 +649,21 @@ func (m *MockService) MultiGetPromotions(ctx context.Context, in *store.MultiGet
 func (mr *MockServiceMockRecorder) MultiGetPromotions(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetPromotions", reflect.TypeOf((*MockService)(nil).MultiGetPromotions), ctx, in)
+}
+
+// MultiGetSchedules mocks base method.
+func (m *MockService) MultiGetSchedules(ctx context.Context, in *store.MultiGetSchedulesInput) (entity.Schedules, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetSchedules", ctx, in)
+	ret0, _ := ret[0].(entity.Schedules)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetSchedules indicates an expected call of MultiGetSchedules.
+func (mr *MockServiceMockRecorder) MultiGetSchedules(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetSchedules", reflect.TypeOf((*MockService)(nil).MultiGetSchedules), ctx, in)
 }
 
 // MultiGetShippings mocks base method.

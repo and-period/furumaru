@@ -246,6 +246,19 @@ export interface AdministratorsResponse {
 /**
  * 
  * @export
+ * @interface ApproveScheduleRequest
+ */
+export interface ApproveScheduleRequest {
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof ApproveScheduleRequest
+     */
+    'approve': boolean;
+}
+/**
+ * 
+ * @export
  * @interface AuthResponse
  */
 export interface AuthResponse {
@@ -6081,6 +6094,7 @@ export class AddressApi extends BaseAPI {
 }
 
 
+
 /**
  * AdministratorApi - axios parameter creator
  * @export
@@ -6652,6 +6666,7 @@ export class AdministratorApi extends BaseAPI {
         return AdministratorApiFp(this.configuration).v1UpdateAdministratorPassword(adminId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 
 /**
@@ -7460,6 +7475,7 @@ export class AuthApi extends BaseAPI {
 }
 
 
+
 /**
  * BroadcastApi - axios parameter creator
  * @export
@@ -7567,6 +7583,7 @@ export class BroadcastApi extends BaseAPI {
         return BroadcastApiFp(this.configuration).v1GetBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 
 /**
@@ -7925,6 +7942,7 @@ export class CategoryApi extends BaseAPI {
         return CategoryApiFp(this.configuration).v1UpdateCategory(categoryId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 
 /**
@@ -8340,6 +8358,7 @@ export class ContactApi extends BaseAPI {
 }
 
 
+
 /**
  * ContactCategoryApi - axios parameter creator
  * @export
@@ -8527,6 +8546,7 @@ export class ContactCategoryApi extends BaseAPI {
         return ContactCategoryApiFp(this.configuration).v1ListContactCategories(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 
 /**
@@ -9659,6 +9679,7 @@ export class CoordinatorApi extends BaseAPI {
 }
 
 
+
 /**
  * LiveApi - axios parameter creator
  * @export
@@ -10013,6 +10034,7 @@ export class LiveApi extends BaseAPI {
 }
 
 
+
 /**
  * MessageApi - axios parameter creator
  * @export
@@ -10208,6 +10230,7 @@ export class MessageApi extends BaseAPI {
         return MessageApiFp(this.configuration).v1ListMessages(limit, offset, orders, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 
 /**
@@ -10647,6 +10670,7 @@ export class NotificationApi extends BaseAPI {
 }
 
 
+
 /**
  * OrderApi - axios parameter creator
  * @export
@@ -10842,6 +10866,7 @@ export class OrderApi extends BaseAPI {
         return OrderApiFp(this.configuration).v1ListOrders(limit, offset, orders, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 
 /**
@@ -11735,6 +11760,7 @@ export class ProducerApi extends BaseAPI {
 }
 
 
+
 /**
  * ProductApi - axios parameter creator
  * @export
@@ -12324,6 +12350,7 @@ export class ProductApi extends BaseAPI {
 }
 
 
+
 /**
  * ProductTagApi - axios parameter creator
  * @export
@@ -12680,6 +12707,7 @@ export class ProductTagApi extends BaseAPI {
         return ProductTagApiFp(this.configuration).v1UpdateProductTag(productTagId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 
 /**
@@ -13240,6 +13268,7 @@ export class ProductTypeApi extends BaseAPI {
 }
 
 
+
 /**
  * PromotionApi - axios parameter creator
  * @export
@@ -13669,12 +13698,57 @@ export class PromotionApi extends BaseAPI {
 }
 
 
+
 /**
  * ScheduleApi - axios parameter creator
  * @export
  */
 export const ScheduleApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary マルシェ開催スケジュール承認
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {ApproveScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ApproveSchedule: async (scheduleId: string, body: ApproveScheduleRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1ApproveSchedule', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ApproveSchedule', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}/approval`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @summary マルシェ開催スケジュール登録
@@ -13982,6 +14056,18 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary マルシェ開催スケジュール承認
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {ApproveScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ApproveSchedule(scheduleId: string, body: ApproveScheduleRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ApproveSchedule(scheduleId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール登録
          * @param {CreateScheduleRequest} body 
          * @param {*} [options] Override http request option.
@@ -14071,6 +14157,17 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
     return {
         /**
          * 
+         * @summary マルシェ開催スケジュール承認
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {ApproveScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ApproveSchedule(scheduleId: string, body: ApproveScheduleRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ApproveSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール登録
          * @param {CreateScheduleRequest} body 
          * @param {*} [options] Override http request option.
@@ -14151,6 +14248,19 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
  * @extends {BaseAPI}
  */
 export class ScheduleApi extends BaseAPI {
+    /**
+     * 
+     * @summary マルシェ開催スケジュール承認
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {ApproveScheduleRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1ApproveSchedule(scheduleId: string, body: ApproveScheduleRequest, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1ApproveSchedule(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary マルシェ開催スケジュール登録
@@ -14237,6 +14347,7 @@ export class ScheduleApi extends BaseAPI {
         return ScheduleApiFp(this.configuration).v1UploadScheduleThumbnail(image, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 
 /**
@@ -14668,6 +14779,7 @@ export class ShippingApi extends BaseAPI {
 }
 
 
+
 /**
  * ThreadApi - axios parameter creator
  * @export
@@ -15088,6 +15200,7 @@ export class ThreadApi extends BaseAPI {
 }
 
 
+
 /**
  * UserApi - axios parameter creator
  * @export
@@ -15275,5 +15388,6 @@ export class UserApi extends BaseAPI {
         return UserApiFp(this.configuration).v1ListUsers(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 

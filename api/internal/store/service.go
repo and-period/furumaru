@@ -87,6 +87,8 @@ type Service interface {
 	DeletePromotion(ctx context.Context, in *DeletePromotionInput) error
 	// マルシェ開催スケジュール一覧取得
 	ListSchedules(ctx context.Context, in *ListSchedulesInput) (entity.Schedules, int64, error)
+	// マルシェ開催スケジュール一覧取得(ID指定)
+	MultiGetSchedules(ctx context.Context, in *MultiGetSchedulesInput) (entity.Schedules, error)
 	// マルシェ開催スケジュール取得
 	GetSchedule(ctx context.Context, in *GetScheduleInput) (*entity.Schedule, error)
 	// マルシェ開催スケジュール登録
@@ -95,6 +97,8 @@ type Service interface {
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleInput) error
 	// マルシェ開催スケジュールサムネイル画像(リサイズ済み)更新
 	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error
+	// マルシェ開催スケジュール承認
+	ApproveSchedule(ctx context.Context, in *ApproveScheduleInput) error
 	// マルシェタイムテーブル一覧取得(開催スケジュールID指定)
 	ListLivesByScheduleID(ctx context.Context, in *ListLivesByScheduleIDInput) (entity.Lives, error)
 	// マルシェタイムテーブル取得

@@ -120,6 +120,81 @@ func TestListSchedules(t *testing.T) {
 	}
 }
 
+func TestMultiGetSchedules(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
+	schedules := entity.Schedules{
+		{
+			ID:              "schedule-id",
+			CoordinatorID:   "coordinator-id",
+			ShippingID:      "shipping-id",
+			Status:          entity.ScheduleStatusLive,
+			Title:           "&.マルシェ",
+			Description:     "&.マルシェの開催内容です。",
+			ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+			ImageURL:        "https://and-period.jp/image.png",
+			OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+			Public:          true,
+			Approved:        true,
+			ApprovedAdminID: "admin-id",
+			StartAt:         now.AddDate(0, -1, 0),
+			EndAt:           now.AddDate(0, 1, 0),
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.MultiGetSchedulesInput
+		expect    entity.Schedules
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().MultiGet(gomock.Any(), []string{"schedule-id"}).Return(schedules, nil)
+			},
+			input: &store.MultiGetSchedulesInput{
+				ScheduleIDs: []string{"schedule-id"},
+			},
+			expect:    schedules,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.MultiGetSchedulesInput{
+				ScheduleIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list schedules",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().MultiGet(gomock.Any(), []string{"schedule-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.MultiGetSchedulesInput{
+				ScheduleIDs: []string{"schedule-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetSchedules(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetSchedule(t *testing.T) {
 	t.Parallel()
 
@@ -579,6 +654,93 @@ func TestUpdateScheduleThumbnails(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateScheduleThumbnails(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestApproveSchedule(t *testing.T) {
+	t.Parallel()
+
+	adminIn := &user.GetAdministratorInput{
+		AdministratorID: "admin-id",
+	}
+	admin := &uentity.Administrator{
+		AdminID: "admin-id",
+	}
+	params := &database.ApproveScheduleParams{
+		Approved:        true,
+		ApprovedAdminID: "admin-id",
+	}
+
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *store.ApproveScheduleInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(admin, nil)
+				mocks.db.Schedule.EXPECT().Approve(ctx, "schedule-id", params).Return(nil)
+			},
+			input: &store.ApproveScheduleInput{
+				ScheduleID: "schedule-id",
+				AdminID:    "admin-id",
+				Approved:   true,
+			},
+			expect: nil,
+		},
+		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &store.ApproveScheduleInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get administrator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(nil, assert.AnError)
+			},
+			input: &store.ApproveScheduleInput{
+				ScheduleID: "schedule-id",
+				AdminID:    "admin-id",
+				Approved:   true,
+			},
+			expect: exception.ErrInternal,
+		},
+		{
+			name: "not found administartor",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(nil, exception.ErrNotFound)
+			},
+			input: &store.ApproveScheduleInput{
+				ScheduleID: "schedule-id",
+				AdminID:    "admin-id",
+				Approved:   true,
+			},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to approve schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdministrator(ctx, adminIn).Return(admin, nil)
+				mocks.db.Schedule.EXPECT().Approve(ctx, "schedule-id", params).Return(assert.AnError)
+			},
+			input: &store.ApproveScheduleInput{
+				ScheduleID: "schedule-id",
+				AdminID:    "admin-id",
+				Approved:   true,
+			},
+			expect: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ApproveSchedule(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }

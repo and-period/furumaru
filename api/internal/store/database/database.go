@@ -237,10 +237,12 @@ type UpdatePromotionParams struct {
 type Schedule interface {
 	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
 	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
+	MultiGet(ctx context.Context, scheduleIDs []string, fields ...string) (entity.Schedules, error)
 	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
 	Create(ctx context.Context, schedule *entity.Schedule) error
 	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
 	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
+	Approve(ctx context.Context, scheduleID string, params *ApproveScheduleParams) error
 }
 
 type ListSchedulesParams struct {
@@ -248,6 +250,7 @@ type ListSchedulesParams struct {
 	StartAtLt  time.Time
 	EndAtGte   time.Time
 	EndAtLt    time.Time
+	Statuses   []entity.ScheduleStatus
 	Limit      int
 	Offset     int
 }
@@ -262,6 +265,11 @@ type UpdateScheduleParams struct {
 	Public          bool
 	StartAt         time.Time
 	EndAt           time.Time
+}
+
+type ApproveScheduleParams struct {
+	Approved        bool
+	ApprovedAdminID string
 }
 
 type Shipping interface {

@@ -343,12 +343,17 @@ type DeletePromotionInput struct {
 }
 
 type ListSchedulesInput struct {
-	StartAtGte time.Time `validate:""`
-	StartAtLt  time.Time `validate:""`
-	EndAtGte   time.Time `validate:""`
-	EndAtLt    time.Time `validate:""`
-	Limit      int64     `validate:"required,max=200"`
-	Offset     int64     `validate:"min=0"`
+	StartAtGte time.Time               `validate:""`
+	StartAtLt  time.Time               `validate:""`
+	EndAtGte   time.Time               `validate:""`
+	EndAtLt    time.Time               `validate:""`
+	Statuses   []entity.ScheduleStatus `validate:"dive,required,unique"`
+	Limit      int64                   `validate:"required,max=200"`
+	Offset     int64                   `validate:"min=0"`
+}
+
+type MultiGetSchedulesInput struct {
+	ScheduleIDs []string `validate:"omitempty,dive,required"`
 }
 
 type GetScheduleInput struct {
@@ -384,6 +389,12 @@ type UpdateScheduleInput struct {
 type UpdateScheduleThumbnailsInput struct {
 	ScheduleID string        `validate:"required"`
 	Thumbnails common.Images `validate:""`
+}
+
+type ApproveScheduleInput struct {
+	ScheduleID string `validate:"required"`
+	AdminID    string `validate:"required"`
+	Approved   bool   `validate:""`
 }
 
 type GetLiveInput struct {

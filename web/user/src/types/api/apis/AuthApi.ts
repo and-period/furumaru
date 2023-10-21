@@ -28,7 +28,7 @@ import type {
   UpdateAuthPasswordRequest,
   VerifyAuthEmailRequest,
   VerifyAuthRequest,
-} from '../models';
+} from '../models/index';
 import {
     AuthResponseFromJSON,
     AuthResponseToJSON,
@@ -56,7 +56,7 @@ import {
     VerifyAuthEmailRequestToJSON,
     VerifyAuthRequestFromJSON,
     VerifyAuthRequestToJSON,
-} from '../models';
+} from '../models/index';
 
 export interface V1CreateAuthRequest {
     body: CreateAuthRequest;
