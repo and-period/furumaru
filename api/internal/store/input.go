@@ -347,7 +347,7 @@ type ListSchedulesInput struct {
 	StartAtLt  time.Time               `validate:""`
 	EndAtGte   time.Time               `validate:""`
 	EndAtLt    time.Time               `validate:""`
-	Statuses   []entity.ScheduleStatus `validate:"dive,required,unique"`
+	Statuses   []entity.ScheduleStatus `validate:"dive,required"`
 	Limit      int64                   `validate:"required,max=200"`
 	Offset     int64                   `validate:"min=0"`
 }
