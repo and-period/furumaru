@@ -190,7 +190,7 @@ func TestLive_Count(t *testing.T) {
 			db := &live{db: db, now: now}
 			actual, err := db.Count(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			assert.ElementsMatch(t, tt.want.total, actual)
+			assert.Equal(t, tt.want.total, actual)
 		})
 	}
 }
