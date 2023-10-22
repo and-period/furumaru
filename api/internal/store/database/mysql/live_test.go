@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLive_ListByScheduleID(t *testing.T) {
+func TestLive_List(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -58,7 +58,7 @@ func TestLive_ListByScheduleID(t *testing.T) {
 	}
 
 	type args struct {
-		scheduleID string
+		params *database.ListLivesParams
 	}
 	type want struct {
 		lives  entity.Lives
@@ -74,10 +74,14 @@ func TestLive_ListByScheduleID(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				scheduleID: "schedule-id",
+				params: &database.ListLivesParams{
+					ScheduleIDs: []string{"schedule-id"},
+					Limit:       20,
+					Offset:      1,
+				},
 			},
 			want: want{
-				lives:  lives[:3],
+				lives:  lives[1:],
 				hasErr: false,
 			},
 		},
@@ -93,9 +97,100 @@ func TestLive_ListByScheduleID(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &live{db: db, now: now}
-			actual, err := db.ListByScheduleID(ctx, tt.args.scheduleID)
+			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.ElementsMatch(t, tt.want.lives, actual)
+		})
+	}
+}
+
+func TestLive_Count(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testCategory("category-id", "野菜", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 1)
+	products[0] = testProduct("product-id01", "type-id", "category-id", "producer-id", []string{}, now())
+	err = db.DB.Create(&products).Error
+	require.NoError(t, err)
+
+	shipping := testShipping("shipping-id", "coordinator-id", now())
+	err = db.DB.Create(&shipping).Error
+	require.NoError(t, err)
+	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	productIDs := []string{"product-id01"}
+	lives := make(entity.Lives, 3)
+	lives[0] = testLive("live-id01", "schedule-id", "producer-id", productIDs, now())
+	lives[1] = testLive("live-id02", "schedule-id", "producer-id", productIDs, now())
+	lives[2] = testLive("live-id03", "schedule-id", "producer-id", productIDs, now())
+	err = db.DB.Create(&lives).Error
+	require.NoError(t, err)
+	for _, live := range lives {
+		err = db.DB.Create(&live.LiveProducts).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		params *database.ListLivesParams
+	}
+	type want struct {
+		total  int64
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.ListLivesParams{
+					ScheduleIDs: []string{"schedule-id"},
+					Limit:       20,
+					Offset:      1,
+				},
+			},
+			want: want{
+				total:  3,
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &live{db: db, now: now}
+			actual, err := db.Count(ctx, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.ElementsMatch(t, tt.want.total, actual)
 		})
 	}
 }

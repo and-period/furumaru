@@ -19,7 +19,7 @@ type TopCommonLive struct {
 
 type TopCommonLiveProduct struct {
 	ProductID    string   `json:"id"`           // 商品ID
-	Title        string   `json:"title"`        // 商品名
+	Name         string   `json:"name"`         // 商品名
 	Price        int64    `json:"price"`        // 販売価格
 	Inventory    int64    `json:"inventory"`    // 在庫数
 	ThumbnailURL string   `json:"thumbnailUrl"` // サムネイルURL

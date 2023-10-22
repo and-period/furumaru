@@ -65,11 +65,18 @@ type ListCategoriesOrder struct {
 }
 
 type Live interface {
-	ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error)
+	List(ctx context.Context, params *ListLivesParams, fields ...string) (entity.Lives, error)
+	Count(ctx context.Context, params *ListLivesParams) (int64, error)
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 	Create(ctx context.Context, live *entity.Live) error
 	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
 	Delete(ctx context.Context, liveID string) error
+}
+
+type ListLivesParams struct {
+	ScheduleIDs []string
+	Limit       int
+	Offset      int
 }
 
 type UpdateLiveParams struct {

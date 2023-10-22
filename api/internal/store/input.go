@@ -401,8 +401,10 @@ type GetLiveInput struct {
 	LiveID string `validate:"required"`
 }
 
-type ListLivesByScheduleIDInput struct {
-	ScheduleID string `validate:"required"`
+type ListLivesInput struct {
+	ScheduleIDs []string `validate:"dive,required"`
+	Limit       int64    `validate:"min=0,max=200"`
+	Offset      int64    `validate:"min=0"`
 }
 
 type CreateLiveInput struct {

@@ -5,8 +5,7 @@ topLive:
       type: string
       description: 開催スケジュールID
     status:
-      type: string
-      description: 開催状況
+      $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
     title:
       type: string
       description: タイトル
@@ -44,7 +43,7 @@ topLive:
           id:
             type: string
             description: 商品ID
-          title:
+          name:
             type: string
             description: 商品名
           price:
@@ -74,7 +73,7 @@ topLive:
               - size
         required:
         - id
-        - title
+        - name
         - price
         - inventory
         - thumbnailUrl
@@ -104,7 +103,7 @@ topLive:
     endAt: 1640962800
     products:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      title: '芽が出たじゃがいも'
+      name: '芽が出たじゃがいも'
       price: 1980
       inventory: 30
       thumbnailUrl: 'https://example.com/thumbnail.png'

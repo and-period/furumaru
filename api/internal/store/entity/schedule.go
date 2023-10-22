@@ -121,6 +121,14 @@ func (ss Schedules) Fill(now time.Time) error {
 	return nil
 }
 
+func (ss Schedules) IDs() []string {
+	res := make([]string, len(ss))
+	for i := range ss {
+		res[i] = ss[i].ID
+	}
+	return res
+}
+
 func (ss Schedules) CoordinatorIDs() []string {
 	return set.UniqBy(ss, func(s *Schedule) string {
 		return s.CoordinatorID

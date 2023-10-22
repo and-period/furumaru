@@ -633,6 +633,51 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 	}
 }
 
+func TestProducts_Filter(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		products   Products
+		productIDs []string
+		expect     Products
+	}{
+		{
+			name: "success",
+			products: Products{
+				{ID: "product-id01"},
+				{ID: "product-id02"},
+				{ID: "product-id03"},
+			},
+			productIDs: []string{
+				"product-id01",
+				"product-id03",
+			},
+			expect: Products{
+				{ID: "product-id01"},
+				{ID: "product-id03"},
+			},
+		},
+		{
+			name: "empty",
+			products: Products{
+				{ID: "product-id01"},
+				{ID: "product-id02"},
+				{ID: "product-id03"},
+			},
+			productIDs: []string{},
+			expect:     Products{},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.products.Filter(tt.productIDs...)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestProductMedia(t *testing.T) {
 	t.Parallel()
 
