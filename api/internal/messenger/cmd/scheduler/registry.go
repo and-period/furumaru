@@ -27,15 +27,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type registry struct {
-	appName   string
-	env       string
-	waitGroup *sync.WaitGroup
-	job       scheduler.Scheduler
-}
-
 type params struct {
-	config      *config
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	aws         aws.Config
@@ -50,55 +42,54 @@ type params struct {
 	dbPassword  string
 }
 
-func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
+func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	params := &params{
-		config:    conf,
 		logger:    logger,
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
 	// AWS SDKの設定
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.aws = awscfg
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
-	if err := getSecret(ctx, params); err != nil {
-		return nil, err
+	if err := a.getSecret(ctx, params); err != nil {
+		return err
 	}
 
 	// Amazon SQSの設定
 	sqsParams := &sqs.Params{
-		QueueURL: conf.SQSQueueURL,
+		QueueURL: a.SQSQueueURL,
 	}
-	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
+	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(a.SQSMockEnabled))
 
 	// WebURLの設定
-	adminWebURL, err := url.Parse(conf.AminWebURL)
+	adminWebURL, err := url.Parse(a.AminWebURL)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.adminWebURL = adminWebURL
-	userWebURL, err := url.Parse(conf.UserWebURL)
+	userWebURL, err := url.Parse(a.UserWebURL)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.userWebURL = userWebURL
 
 	// Databaseの設定
-	dbClient, err := newDatabase("messengers", params)
+	dbClient, err := a.newDatabase("messengers", params)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Serviceの設定
-	messengerService, err := newMessengerService(params)
+	messengerService, err := a.newMessengerService(params)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Jobの設定
@@ -107,24 +98,21 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Database:  messengerdb.NewDatabase(dbClient),
 		Messenger: messengerService,
 	}
-	return &registry{
-		appName:   conf.AppName,
-		env:       conf.Environment,
-		waitGroup: params.waitGroup,
-		job:       scheduler.NewScheduler(jobParams, scheduler.WithLogger(logger)),
-	}, nil
+	a.job = scheduler.NewScheduler(jobParams, scheduler.WithLogger(logger))
+	a.waitGroup = params.waitGroup
+	return nil
 }
 
-func getSecret(ctx context.Context, p *params) error {
+func (a *app) getSecret(ctx context.Context, p *params) error {
 	// データベース認証情報の取得
-	if p.config.DBSecretName == "" {
-		p.dbHost = p.config.DBHost
-		p.dbPort = p.config.DBPort
-		p.dbUsername = p.config.DBUsername
-		p.dbPassword = p.config.DBPassword
+	if a.DBSecretName == "" {
+		p.dbHost = a.DBHost
+		p.dbPort = a.DBPort
+		p.dbUsername = a.DBUsername
+		p.dbPassword = a.DBPassword
 		return nil
 	}
-	secrets, err := p.secret.Get(ctx, p.config.DBSecretName)
+	secrets, err := p.secret.Get(ctx, a.DBSecretName)
 	if err != nil {
 		return err
 	}
@@ -135,16 +123,16 @@ func getSecret(ctx context.Context, p *params) error {
 	return nil
 }
 
-func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	params := &mysql.Params{
-		Socket:   p.config.DBSocket,
+		Socket:   a.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
 		Database: dbname,
 		Username: p.dbUsername,
 		Password: p.dbPassword,
 	}
-	location, err := time.LoadLocation(p.config.DBTimeZone)
+	location, err := time.LoadLocation(a.DBTimeZone)
 	if err != nil {
 		return nil, err
 	}
@@ -152,7 +140,7 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 		params,
 		mysql.WithLogger(p.logger),
 		mysql.WithNow(p.now),
-		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithTLS(a.DBEnabledTLS),
 		mysql.WithLocation(location),
 	)
 	if err != nil {
@@ -164,16 +152,16 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	return cli, nil
 }
 
-func newMessengerService(p *params) (messenger.Service, error) {
-	mysql, err := newDatabase("messengers", p)
+func (a *app) newMessengerService(p *params) (messenger.Service, error) {
+	mysql, err := a.newDatabase("messengers", p)
 	if err != nil {
 		return nil, err
 	}
-	user, err := newUserService(p)
+	user, err := a.newUserService(p)
 	if err != nil {
 		return nil, err
 	}
-	store, err := newStoreService(p)
+	store, err := a.newStoreService(p)
 	if err != nil {
 		return nil, err
 	}
@@ -189,8 +177,8 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func newUserService(p *params) (user.Service, error) {
-	mysql, err := newDatabase("users", p)
+func (a *app) newUserService(p *params) (user.Service, error) {
+	mysql, err := a.newDatabase("users", p)
 	if err != nil {
 		return nil, err
 	}
@@ -201,8 +189,8 @@ func newUserService(p *params) (user.Service, error) {
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
 
-func newStoreService(p *params) (store.Service, error) {
-	mysql, err := newDatabase("stores", p)
+func (a *app) newStoreService(p *params) (store.Service, error) {
+	mysql, err := a.newDatabase("stores", p)
 	if err != nil {
 		return nil, err
 	}

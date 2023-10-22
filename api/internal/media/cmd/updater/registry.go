@@ -16,15 +16,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type registry struct {
-	appName   string
-	env       string
-	waitGroup *sync.WaitGroup
-	starter   updater.Starter
-}
-
 type params struct {
-	config     *config
 	logger     *zap.Logger
 	waitGroup  *sync.WaitGroup
 	secret     secret.Client
@@ -35,30 +27,29 @@ type params struct {
 	dbPassword string
 }
 
-func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
+func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	params := &params{
-		config:    conf,
 		logger:    logger,
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
 	// AWS SDKの設定
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
-	if err := getSecret(ctx, params); err != nil {
-		return nil, err
+	if err := a.getSecret(ctx, params); err != nil {
+		return err
 	}
 
 	// Databaseの設定
-	dbClient, err := newDatabase("stores", params)
+	dbClient, err := a.newDatabase("stores", params)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Jobの設定
@@ -66,32 +57,28 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		WaitGroup: params.waitGroup,
 		Database:  mediadb.NewDatabase(dbClient),
 	}
-	reg := &registry{
-		appName:   conf.AppName,
-		env:       conf.Environment,
-		waitGroup: params.waitGroup,
-	}
-	switch conf.RunType {
+	switch a.RunType {
 	case "START":
-		reg.starter = updater.NewStarter(jobParams, updater.WithLogger(logger))
+		a.updater = updater.NewStarter(jobParams, updater.WithLogger(logger))
 	case "CLOSE":
-		return nil, errors.New("cmd: not implemented")
+		return errors.New("cmd: not implemented")
 	default:
-		return nil, fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)
+		return fmt.Errorf("cmd: unknown scheduler type. type=%s", a.RunType)
 	}
-	return reg, nil
+	a.waitGroup = params.waitGroup
+	return nil
 }
 
-func getSecret(ctx context.Context, p *params) error {
+func (a *app) getSecret(ctx context.Context, p *params) error {
 	// データベース認証情報の取得
-	if p.config.DBSecretName == "" {
-		p.dbHost = p.config.DBHost
-		p.dbPort = p.config.DBPort
-		p.dbUsername = p.config.DBUsername
-		p.dbPassword = p.config.DBPassword
+	if a.DBSecretName == "" {
+		p.dbHost = a.DBHost
+		p.dbPort = a.DBPort
+		p.dbUsername = a.DBUsername
+		p.dbPassword = a.DBPassword
 		return nil
 	}
-	secrets, err := p.secret.Get(ctx, p.config.DBSecretName)
+	secrets, err := p.secret.Get(ctx, a.DBSecretName)
 	if err != nil {
 		return err
 	}
@@ -102,16 +89,16 @@ func getSecret(ctx context.Context, p *params) error {
 	return nil
 }
 
-func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	params := &mysql.Params{
-		Socket:   p.config.DBSocket,
+		Socket:   a.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
 		Database: dbname,
 		Username: p.dbUsername,
 		Password: p.dbPassword,
 	}
-	location, err := time.LoadLocation(p.config.DBTimeZone)
+	location, err := time.LoadLocation(a.DBTimeZone)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +106,7 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 		params,
 		mysql.WithLogger(p.logger),
 		mysql.WithNow(p.now),
-		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithTLS(a.DBEnabledTLS),
 		mysql.WithLocation(location),
 	)
 }

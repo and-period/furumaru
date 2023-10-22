@@ -13,10 +13,6 @@ import (
 	"go.uber.org/zap"
 )
 
-type Starter interface {
-	Lambda(ctx context.Context, event CreatePayload) error
-}
-
 type starter struct {
 	now        func() time.Time
 	logger     *zap.Logger
@@ -25,7 +21,7 @@ type starter struct {
 	maxRetries int64
 }
 
-func NewStarter(params *Params, opts ...Option) Starter {
+func NewStarter(params *Params, opts ...Option) Updater {
 	dopts := &options{
 		logger:     zap.NewNop(),
 		maxRetries: 3,

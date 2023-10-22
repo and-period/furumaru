@@ -1,12 +1,23 @@
 package worker
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"sync"
 
+	"github.com/and-period/furumaru/api/internal/messenger/worker"
+	"github.com/and-period/furumaru/api/pkg/log"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
-type config struct {
+type app struct {
+	*cobra.Command
+	waitGroup             *sync.WaitGroup
+	worker                worker.Worker
 	AppName               string `envconfig:"APP_NAME" default:"messenger-worker"`
 	Environment           string `envconfig:"ENV" default:"none"`
 	RunMethod             string `envconfig:"RUN_METHOD" default:"lambda"`
@@ -34,10 +45,52 @@ type config struct {
 	GoogleSecretName      string `envconfig:"GOOGLE_SECRET_NAME" default:""`
 }
 
-func newConfig() (*config, error) {
-	conf := &config{}
-	if err := envconfig.Process("", conf); err != nil {
-		return conf, fmt.Errorf("config: failed to new config: %w", err)
+//nolint:revive
+func NewApp() *app {
+	cmd := &cobra.Command{
+		Use:   "worker",
+		Short: "messenger worker",
 	}
-	return conf, nil
+	app := &app{Command: cmd}
+	app.RunE = func(c *cobra.Command, args []string) error {
+		return app.run()
+	}
+	return app
+}
+
+func (a *app) run() error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// 環境変数の読み込み
+	if err := envconfig.Process("", a); err != nil {
+		return fmt.Errorf("worker: failed to load environment: %w", err)
+	}
+
+	// Loggerの設定
+	logger, err := log.NewLogger(log.WithLogLevel(a.LogLevel), log.WithOutput(a.LogPath))
+	if err != nil {
+		return fmt.Errorf("worker: failed to new logger: %w", err)
+	}
+	defer logger.Sync() //nolint:errcheck
+
+	// 依存関係の解決
+	if err := a.inject(ctx, logger); err != nil {
+		logger.Error("Failed to new registry", zap.Error(err))
+		return err
+	}
+
+	// Workerの起動
+	logger.Info("Started")
+	switch a.RunMethod {
+	case "lambda":
+		lambda.StartWithOptions(a.worker.Lambda, lambda.WithContext(ctx))
+	default:
+		err = errors.New("not implemented")
+	}
+
+	// Workerの停止
+	logger.Info("Shutdown...")
+	a.waitGroup.Wait()
+	return err
 }
