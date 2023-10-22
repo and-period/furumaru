@@ -8,6 +8,9 @@ import (
 	"time"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
+	"github.com/and-period/furumaru/api/internal/media"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
+	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
@@ -23,6 +26,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/and-period/furumaru/api/pkg/sqs"
@@ -59,6 +63,7 @@ type params struct {
 	komoju               *komoju.Komoju
 	adminWebURL          *url.URL
 	userWebURL           *url.URL
+	postalCode           postalcode.Client
 	now                  func() time.Time
 	dbHost               string
 	dbPort               string
@@ -156,6 +161,9 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.komoju = komoju.NewKomoju(komojuParams)
 
+	// PostalCodeの設定
+	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(logger))
+
 	// WebURLの設定
 	adminWebURL, err := url.Parse(conf.AminWebURL)
 	if err != nil {
@@ -169,15 +177,19 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	params.userWebURL = userWebURL
 
 	// Serviceの設定
+	mediaService, err := newMediaService(params)
+	if err != nil {
+		return nil, err
+	}
 	messengerService, err := newMessengerService(params)
 	if err != nil {
 		return nil, err
 	}
-	userService, err := newUserService(params, messengerService)
+	userService, err := newUserService(params, mediaService, messengerService)
 	if err != nil {
 		return nil, err
 	}
-	storeService, err := newStoreService(params, userService, messengerService)
+	storeService, err := newStoreService(params, userService, mediaService, messengerService)
 	if err != nil {
 		return nil, err
 	}
@@ -188,6 +200,7 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,
+		Media:     mediaService,
 	}
 	return &registry{
 		appName:   conf.AppName,
@@ -296,16 +309,29 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	return cli, nil
 }
 
+func newMediaService(p *params) (media.Service, error) {
+	mysql, err := newDatabase("media", p)
+	if err != nil {
+		return nil, err
+	}
+	params := &mediasrv.Params{
+		WaitGroup: p.waitGroup,
+		Database:  mediadb.NewDatabase(mysql),
+		Storage:   p.storage,
+	}
+	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
+}
+
 func newMessengerService(p *params) (messenger.Service, error) {
 	db, err := newDatabase("messengers", p)
 	if err != nil {
 		return nil, err
 	}
-	user, err := newUserService(p, nil)
+	user, err := newUserService(p, nil, nil)
 	if err != nil {
 		return nil, err
 	}
-	store, err := newStoreService(p, nil, nil)
+	store, err := newStoreService(p, nil, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -321,7 +347,7 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func newUserService(p *params, messenger messenger.Service) (user.Service, error) {
+func newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
 	mysql, err := newDatabase("users", p)
 	if err != nil {
 		return nil, err
@@ -331,21 +357,26 @@ func newUserService(p *params, messenger messenger.Service) (user.Service, error
 		Database:  userdb.NewDatabase(mysql),
 		UserAuth:  p.userAuth,
 		Messenger: messenger,
+		Media:     media,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
 
-func newStoreService(p *params, user user.Service, messenger messenger.Service) (store.Service, error) {
+func newStoreService(
+	p *params, user user.Service, media media.Service, messenger messenger.Service,
+) (store.Service, error) {
 	mysql, err := newDatabase("stores", p)
 	if err != nil {
 		return nil, err
 	}
 	params := &storesrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  storedb.NewDatabase(mysql),
-		User:      user,
-		Messenger: messenger,
-		Komoju:    p.komoju,
+		WaitGroup:  p.waitGroup,
+		Database:   storedb.NewDatabase(mysql),
+		User:       user,
+		Messenger:  messenger,
+		Media:      media,
+		PostalCode: p.postalCode,
+		Komoju:     p.komoju,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }
