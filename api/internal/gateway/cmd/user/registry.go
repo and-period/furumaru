@@ -56,6 +56,7 @@ type params struct {
 	aws                  aws.Config
 	secret               secret.Client
 	storage              storage.Bucket
+	tmpStorage           storage.Bucket
 	userAuth             cognito.Client
 	producer             sqs.Producer
 	slack                slack.Client
@@ -104,6 +105,10 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Bucket: conf.S3Bucket,
 	}
 	params.storage = storage.NewBucket(awscfg, storageParams)
+	tmpStorageParams := &storage.Params{
+		Bucket: conf.S3TmpBucket,
+	}
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
 
 	// Amazon Cognitoの設定
 	userAuthParams := &cognito.Params{
@@ -318,6 +323,7 @@ func newMediaService(p *params) (media.Service, error) {
 		WaitGroup: p.waitGroup,
 		Database:  mediadb.NewDatabase(mysql),
 		Storage:   p.storage,
+		Tmp:       p.tmpStorage,
 	}
 	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
 }

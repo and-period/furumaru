@@ -26,6 +26,7 @@ type config struct {
 	NewRelicSecretName   string `envconfig:"NEW_RELIC_SECRET_NAME" default:""`
 	AWSRegion            string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	S3Bucket             string `envconfig:"S3_BUCKET" default:""`
+	S3TmpBucket          string `envconfig:"S3_TMP_BUCKET" default:""`
 	CognitoUserPoolID    string `envconfig:"COGNITO_USER_POOL_ID" default:""`
 	CognitoUserClientID  string `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
 	SQSQueueURL          string `envconfig:"SQS_QUEUE_URL" default:""`
