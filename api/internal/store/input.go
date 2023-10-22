@@ -343,13 +343,13 @@ type DeletePromotionInput struct {
 }
 
 type ListSchedulesInput struct {
-	StartAtGte time.Time               `validate:""`
-	StartAtLt  time.Time               `validate:""`
-	EndAtGte   time.Time               `validate:""`
-	EndAtLt    time.Time               `validate:""`
-	Statuses   []entity.ScheduleStatus `validate:"dive,required"`
-	Limit      int64                   `validate:"required,max=200"`
-	Offset     int64                   `validate:"min=0"`
+	StartAtGte    time.Time `validate:""`
+	StartAtLt     time.Time `validate:""`
+	EndAtGte      time.Time `validate:""`
+	EndAtLt       time.Time `validate:""`
+	OnlyPublished bool      `validate:""`
+	Limit         int64     `validate:"required,max=200"`
+	Offset        int64     `validate:"min=0"`
 }
 
 type MultiGetSchedulesInput struct {
