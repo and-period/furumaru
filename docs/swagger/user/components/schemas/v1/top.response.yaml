@@ -1,0 +1,55 @@
+topCommonResponse:
+  type: object
+  properties:
+    lives:
+      type: array
+      description: 開催中・開催予定のマルシェ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/topLive'
+    archives:
+      type: array
+      description: 過去のマルシェ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/topArchive'
+  required:
+  - lives
+  - archives
+  example:
+    lives:
+    - scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
+      title: '&.マルシェ'
+      thumbnailUrl: 'https://example.com/thumbnail.png'
+      thumbnails:
+      - url: 'https://example.com/thumbnail_240.png'
+        size: 1
+      - url: 'https://example.com/thumbnail_675.png'
+        size: 2
+      - url: 'https://example.com/thumbnail_900.png'
+        size: 3
+      startAt: 1640962800
+      endAt: 1640962800
+      products:
+      - id: 'kSByoE6FetnPs5Byk3a9Zx'
+        title: '芽が出たじゃがいも'
+        price: 1980
+        inventory: 30
+        thumbnailUrl: 'https://example.com/thumbnail.png'
+        thumbnails:
+        - url: 'https://example.com/thumbnail_240.png'
+          size: 1
+        - url: 'https://example.com/thumbnail_675.png'
+          size: 2
+        - url: 'https://example.com/thumbnail_900.png'
+          size: 3
+    archives:
+    - scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: '&.マルシェ'
+      thumbnailUrl: 'https://example.com/thumbnail.png'
+      thumbnails:
+      - url: 'https://example.com/thumbnail_240.png'
+        size: 1
+      - url: 'https://example.com/thumbnail_675.png'
+        size: 2
+      - url: 'https://example.com/thumbnail_900.png'
+        size: 3
