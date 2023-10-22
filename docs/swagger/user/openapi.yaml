@@ -13,6 +13,8 @@ tags:
   description: 認証関連
 - name: Contact
   description: お問い合わせ関連
+- name: Top
+  description: トップページ関連
 paths:
   # Auth
   /v1/auth:
@@ -40,6 +42,9 @@ paths:
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
+  # Top
+  /v1/top/common:
+    $ref: './paths/v1/top/common.yaml'
 components:
   securitySchemes:
     BearerAuth:
@@ -47,8 +52,15 @@ components:
       scheme: bearer
   schemas:
     # Common
+    imageSize:
+      $ref: './components/schemas/codes/image.yaml#/imageSize'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
+    # Entity
+    topArchive:
+      $ref: './components/schemas/entity/top.yaml#/topArchive'
+    topLive:
+      $ref: './components/schemas/entity/top.yaml#/topLive'
     # Request
     v1SignInRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
@@ -79,3 +91,5 @@ components:
       $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
     v1CreateAuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/createAuthResponse'
+    v1TopCommonResponse:
+      $ref: './components/schemas/v1/top.response.yaml#/topCommonResponse'
