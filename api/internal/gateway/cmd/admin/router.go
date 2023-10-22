@@ -21,10 +21,10 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
+func (a *app) newRouter(logger *zap.Logger) *gin.Engine {
 	opts := make([]gin.HandlerFunc, 0)
-	opts = append(opts, nrgin.Middleware(reg.newRelic))
-	opts = append(opts, accessLogger(logger, reg))
+	opts = append(opts, nrgin.Middleware(a.newRelic))
+	opts = append(opts, a.accessLogger(logger))
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, ginzip.Gzip(ginzip.DefaultCompression))
 	opts = append(opts, ginzap.RecoveryWithZap(logger, true))
@@ -32,8 +32,8 @@ func newRouter(reg *registry, logger *zap.Logger) *gin.Engine {
 	rt := gin.New()
 	rt.Use(opts...)
 
-	reg.v1.Routes(rt.Group(""))
-	reg.komoju.Routes(rt.Group(""))
+	a.v1.Routes(rt.Group(""))
+	a.komoju.Routes(rt.Group(""))
 
 	// other routes
 	rt.GET("/health", func(ctx *gin.Context) {
@@ -70,14 +70,14 @@ func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
 	return res, json.NewDecoder(r).Decode(&res)
 }
 
-func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
+func (a *app) accessLogger(logger *zap.Logger) gin.HandlerFunc {
 	skipPaths := map[string]bool{
 		"/health": true,
 	}
 
 	return func(ctx *gin.Context) {
 		var req []byte
-		if reg.debugMode {
+		if a.debugMode {
 			req, _ = io.ReadAll(ctx.Request.Body)
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(req))
 		}
@@ -118,7 +118,7 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 			return
 		}
 
-		if reg.debugMode {
+		if a.debugMode {
 			str := strings.ReplaceAll(bytes.NewBuffer(req).String(), "\n", "")
 			fields = append(fields, zap.String("request", str))
 		}
@@ -138,15 +138,15 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
 		logger.Error(path, fields...)
 
-		if reg.slack == nil {
+		if a.slack == nil {
 			return
 		}
 
 		details, _ := json.Marshal(res)
 		params := &alertMessageParams{
 			title:   "ふるまる APIアラート",
-			appName: reg.appName,
-			env:     reg.env,
+			appName: a.AppName,
+			env:     a.Environment,
 			status:  int64(status),
 			method:  method,
 			path:    path,
@@ -154,10 +154,10 @@ func accessLogger(logger *zap.Logger, reg *registry) gin.HandlerFunc {
 		}
 		msg := newAlertMessage(params)
 
-		reg.waitGroup.Add(1)
+		a.waitGroup.Add(1)
 		go func(msg slack.MsgOption) {
-			defer reg.waitGroup.Done()
-			err := reg.slack.SendMessage(ctx, msg)
+			defer a.waitGroup.Done()
+			err := a.slack.SendMessage(ctx, msg)
 			if err != nil {
 				logger.Error("Failed to alert message", zap.Error(err))
 			}
