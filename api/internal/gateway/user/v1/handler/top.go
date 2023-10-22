@@ -31,11 +31,9 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		in := &store.ListSchedulesInput{
-			Statuses: []entity.ScheduleStatus{
-				entity.ScheduleStatusWaiting,
-				entity.ScheduleStatusLive,
-			},
-			Limit: defaultLivesLimit,
+			EndAtGte:      h.now(),
+			OnlyPublished: true,
+			Limit:         defaultLivesLimit,
 		}
 		schedules, _, err = h.store.ListSchedules(ectx, in)
 		if err != nil || len(schedules) == 0 {

@@ -253,13 +253,13 @@ type Schedule interface {
 }
 
 type ListSchedulesParams struct {
-	StartAtGte time.Time
-	StartAtLt  time.Time
-	EndAtGte   time.Time
-	EndAtLt    time.Time
-	Statuses   []entity.ScheduleStatus
-	Limit      int
-	Offset     int
+	StartAtGte    time.Time
+	StartAtLt     time.Time
+	EndAtGte      time.Time
+	EndAtLt       time.Time
+	OnlyPublished bool
+	Limit         int
+	Offset        int
 }
 
 type UpdateScheduleParams struct {

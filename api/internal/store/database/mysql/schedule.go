@@ -43,8 +43,8 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.EndAtLt.IsZero() {
 		stmt = stmt.Where("end_at < ?", p.EndAtLt)
 	}
-	if len(p.Statuses) > 0 {
-		stmt = stmt.Where("status IN (?)", p.Statuses)
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ?", true)
 	}
 	return stmt
 }
