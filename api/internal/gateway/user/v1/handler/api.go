@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -30,6 +31,7 @@ type Params struct {
 	User      user.Service
 	Store     store.Service
 	Messenger messenger.Service
+	Media     media.Service
 }
 
 type handler struct {
@@ -40,6 +42,7 @@ type handler struct {
 	user        user.Service
 	store       store.Service
 	messenger   messenger.Service
+	media       media.Service
 }
 
 type options struct {
@@ -69,6 +72,7 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		user:        params.User,
 		store:       params.Store,
 		messenger:   params.Messenger,
+		media:       params.Media,
 	}
 }
 

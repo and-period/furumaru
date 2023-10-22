@@ -321,6 +321,18 @@ func (ps Products) ProductTagIDs() []string {
 	return res.Slice()
 }
 
+func (ps Products) Filter(productIDs ...string) Products {
+	set := set.New(productIDs...)
+	res := make(Products, 0, len(ps))
+	for i := range ps {
+		if !set.Contains(ps[i].ID) {
+			continue
+		}
+		res = append(res, ps[i])
+	}
+	return res
+}
+
 func NewProductMedia(url string, isThumbnail bool) *ProductMedia {
 	return &ProductMedia{
 		URL:         url,

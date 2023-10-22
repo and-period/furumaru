@@ -48,10 +48,11 @@ func (h *handler) filterAccessLive(ctx *gin.Context) {
 }
 
 func (h *handler) ListLives(ctx *gin.Context) {
-	in := &store.ListLivesByScheduleIDInput{
-		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	scheduleID := util.GetParam(ctx, "scheduleId")
+	in := &store.ListLivesInput{
+		ScheduleIDs: []string{scheduleID},
 	}
-	lives, err := h.store.ListLivesByScheduleID(ctx, in)
+	lives, total, err := h.store.ListLives(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -77,7 +78,7 @@ func (h *handler) ListLives(ctx *gin.Context) {
 		Lives:     service.NewLives(lives).Response(),
 		Producers: producers.Response(),
 		Products:  products.Response(),
-		Total:     int64(len(lives)),
+		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

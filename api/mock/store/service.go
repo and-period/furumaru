@@ -434,19 +434,20 @@ func (mr *MockServiceMockRecorder) ListCategories(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCategories", reflect.TypeOf((*MockService)(nil).ListCategories), ctx, in)
 }
 
-// ListLivesByScheduleID mocks base method.
-func (m *MockService) ListLivesByScheduleID(ctx context.Context, in *store.ListLivesByScheduleIDInput) (entity.Lives, error) {
+// ListLives mocks base method.
+func (m *MockService) ListLives(ctx context.Context, in *store.ListLivesInput) (entity.Lives, int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListLivesByScheduleID", ctx, in)
+	ret := m.ctrl.Call(m, "ListLives", ctx, in)
 	ret0, _ := ret[0].(entity.Lives)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
-// ListLivesByScheduleID indicates an expected call of ListLivesByScheduleID.
-func (mr *MockServiceMockRecorder) ListLivesByScheduleID(ctx, in interface{}) *gomock.Call {
+// ListLives indicates an expected call of ListLives.
+func (mr *MockServiceMockRecorder) ListLives(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLivesByScheduleID", reflect.TypeOf((*MockService)(nil).ListLivesByScheduleID), ctx, in)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLives", reflect.TypeOf((*MockService)(nil).ListLives), ctx, in)
 }
 
 // ListOrders mocks base method.

@@ -54,6 +54,8 @@ components:
     # Common
     imageSize:
       $ref: './components/schemas/codes/image.yaml#/imageSize'
+    scheduleStatus:
+      $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity

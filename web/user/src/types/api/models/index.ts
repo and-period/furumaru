@@ -11,6 +11,7 @@ export * from './ImageSize';
 export * from './InitializeAuthRequest';
 export * from './RefreshAuthTokenRequest';
 export * from './ResetAuthPasswordRequest';
+export * from './ScheduleStatus';
 export * from './SignInRequest';
 export * from './TopCommonResponse';
 export * from './UpdateAuthEmailRequest';
