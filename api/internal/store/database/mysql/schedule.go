@@ -44,7 +44,7 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("end_at < ?", p.EndAtLt)
 	}
 	if p.OnlyPublished {
-		stmt = stmt.Where("public = ?", true)
+		stmt = stmt.Where("public = ?", true).Where("approved = ?", true)
 	}
 	return stmt
 }
