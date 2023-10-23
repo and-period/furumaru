@@ -187,12 +187,13 @@ type DeleteShippingInput struct {
 }
 
 type ListProductsInput struct {
-	Name        string               `validate:"omitempty,max=128"`
-	ProducerID  string               `validate:"omitempty"`
-	ProducerIDs []string             `validate:"dive,required"`
-	Limit       int64                `validate:"required,max=200"`
-	Offset      int64                `validate:"min=0"`
-	Orders      []*ListProductsOrder `validate:"omitempty,dive,required"`
+	Name          string               `validate:"omitempty,max=128"`
+	CoordinatorID string               `validate:"omitempty"`
+	ProducerID    string               `validate:"omitempty"`
+	ProducerIDs   []string             `validate:"dive,required"`
+	Limit         int64                `validate:"required,max=200"`
+	Offset        int64                `validate:"min=0"`
+	Orders        []*ListProductsOrder `validate:"omitempty,dive,required"`
 }
 
 type ListProductsOrder struct {
@@ -209,6 +210,7 @@ type GetProductInput struct {
 }
 
 type CreateProductInput struct {
+	CoordinatorID     string                   `validate:"required"`
 	ProducerID        string                   `validate:"required"`
 	TypeID            string                   `validate:"required"`
 	TagIDs            []string                 `validate:"max=8,dive,required"`
@@ -245,7 +247,6 @@ type CreateProductMedia struct {
 
 type UpdateProductInput struct {
 	ProductID         string                   `validate:"required"`
-	ProducerID        string                   `validate:"required"`
 	TypeID            string                   `validate:"required"`
 	TagIDs            []string                 `validate:"max=8,dive,required"`
 	Name              string                   `validate:"required,max=128"`

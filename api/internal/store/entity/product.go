@@ -70,6 +70,7 @@ const (
 // Product - 商品情報
 type Product struct {
 	ID                    string            `gorm:"primaryKey;<-:create"`                   // 商品ID
+	CoordinatorID         string            `gorm:""`                                       // コーディネータID
 	ProducerID            string            `gorm:""`                                       // 生産者ID
 	TypeID                string            `gorm:"column:product_type_id"`                 // 品目ID
 	TagIDs                []string          `gorm:"-"`                                      // 商品タグID一覧
@@ -119,6 +120,7 @@ type ProductMedia struct {
 type MultiProductMedia []*ProductMedia
 
 type NewProductParams struct {
+	CoordinatorID     string
 	ProducerID        string
 	TypeID            string
 	TagIDs            []string
@@ -151,6 +153,7 @@ type NewProductParams struct {
 func NewProduct(params *NewProductParams) *Product {
 	return &Product{
 		ID:                uuid.Base58Encode(uuid.New()),
+		CoordinatorID:     params.CoordinatorID,
 		ProducerID:        params.ProducerID,
 		TypeID:            params.TypeID,
 		TagIDs:            params.TagIDs,
@@ -299,6 +302,12 @@ func (ps Products) Fill(now time.Time) error {
 		}
 	}
 	return nil
+}
+
+func (ps Products) CoordinatorIDs() []string {
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.CoordinatorID
+	})
 }
 
 func (ps Products) ProducerIDs() []string {

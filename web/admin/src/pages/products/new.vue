@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import {
+  useAuthStore,
   useCategoryStore,
   useProducerStore,
   useProductStore,
@@ -13,6 +14,7 @@ import {
 import { CreateProductRequest, CreateProductRequestMediaInner, DeliveryType, Prefecture, StorageMethodType } from '~/types/api'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const categoryStore = useCategoryStore()
 const producerStore = useProducerStore()
 const productStore = useProductStore()
@@ -20,6 +22,7 @@ const productTagStore = useProductTagStore()
 const productTypeStore = useProductTypeStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { auth } = storeToRefs(authStore)
 const { categories } = storeToRefs(categoryStore)
 const { producers } = storeToRefs(producerStore)
 const { productTags } = storeToRefs(productTagStore)
@@ -31,6 +34,7 @@ const formData = ref<CreateProductRequest>({
   name: '',
   description: '',
   public: false,
+  coordinatorId: '',
   producerId: '',
   productTypeId: '',
   productTagIds: [],
@@ -152,9 +156,13 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
 }
 
 const handleSubmit = async (): Promise<void> => {
+  const req = {
+    ...formData.value,
+    coordinatorId: auth.value?.adminId || ''
+  }
   try {
     loading.value = true
-    await productStore.createProduct(formData.value)
+    await productStore.createProduct(req)
     router.push('/products')
   } catch (err) {
     if (err instanceof Error) {

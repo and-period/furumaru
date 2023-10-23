@@ -33,6 +33,9 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
 		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
 	}
+	if p.CoordinatorID != "" {
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
 	if p.ProducerID != "" {
 		stmt = stmt.Where("producer_id = ?", p.ProducerID)
 	}
@@ -134,7 +137,6 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 		}
 
 		updates := map[string]interface{}{
-			"producer_id":         params.ProducerID,
 			"product_type_id":     params.TypeID,
 			"product_tag_ids":     tagIDs,
 			"name":                params.Name,

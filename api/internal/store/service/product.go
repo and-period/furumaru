@@ -29,12 +29,13 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		}
 	}
 	params := &database.ListProductsParams{
-		Name:        in.Name,
-		ProducerID:  in.ProducerID,
-		ProducerIDs: in.ProducerIDs,
-		Limit:       int(in.Limit),
-		Offset:      int(in.Offset),
-		Orders:      orders,
+		Name:          in.Name,
+		CoordinatorID: in.CoordinatorID,
+		ProducerID:    in.ProducerID,
+		ProducerIDs:   in.ProducerIDs,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
+		Orders:        orders,
 	}
 	var (
 		products entity.Products
@@ -84,10 +85,22 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 	if err := media.Validate(); err != nil {
 		return nil, fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	producerIn := &user.GetProducerInput{
-		ProducerID: in.ProducerID,
-	}
-	_, err := s.user.GetProducer(ctx, producerIn)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &user.GetCoordinatorInput{
+			CoordinatorID: in.CoordinatorID,
+		}
+		_, err = s.user.GetCoordinator(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &user.GetProducerInput{
+			ProducerID: in.ProducerID,
+		}
+		_, err = s.user.GetProducer(ectx, in)
+		return
+	})
+	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
@@ -95,6 +108,7 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		return nil, internalError(err)
 	}
 	params := &entity.NewProductParams{
+		CoordinatorID:     in.CoordinatorID,
 		ProducerID:        in.ProducerID,
 		TypeID:            in.TypeID,
 		TagIDs:            in.TagIDs,
@@ -154,18 +168,7 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 	if err := media.Validate(); err != nil {
 		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	producerIn := &user.GetProducerInput{
-		ProducerID: in.ProducerID,
-	}
-	_, err = s.user.GetProducer(ctx, producerIn)
-	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("api: invalid admin id: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	if err != nil {
-		return internalError(err)
-	}
 	params := &database.UpdateProductParams{
-		ProducerID:        in.ProducerID,
 		TypeID:            in.TypeID,
 		TagIDs:            in.TagIDs,
 		Name:              in.Name,

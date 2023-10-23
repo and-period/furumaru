@@ -42,8 +42,8 @@ func TestOrder_List(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", []string{}, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", []string{}, now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", "coordinator-id", now())
@@ -179,8 +179,8 @@ func TestOrder_Count(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", []string{}, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", []string{}, now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", "coordinator-id", now())
@@ -299,8 +299,8 @@ func TestOrder_Get(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", []string{}, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", []string{}, now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", "coordinator-id", now())
@@ -417,8 +417,8 @@ func TestOrder_Aggregate(t *testing.T) {
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 2)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", []string{}, now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", []string{}, now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 	shipping := testShipping("shipping-id", "coordinator-id", now())
