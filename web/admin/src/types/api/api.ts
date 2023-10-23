@@ -254,7 +254,7 @@ export interface ApproveScheduleRequest {
      * @type {boolean}
      * @memberof ApproveScheduleRequest
      */
-    'approve': boolean;
+    'approved'?: boolean;
 }
 /**
  * 

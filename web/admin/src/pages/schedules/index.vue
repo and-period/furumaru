@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCoordinatorStore, useScheduleStore, useShippingStore } from '~/store'
+import { Schedule } from '~/types/api'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -55,6 +56,23 @@ const handleClickRow = (scheduleId: string): void => {
   router.push(`/schedules/${scheduleId}`)
 }
 
+const handleClickApproval = async (scheduleId: string): Promise<void> => {
+  try {
+    const schedule = schedules.value.find((schedule: Schedule): boolean => {
+      return schedule.id === scheduleId
+    })
+    if (!schedule) {
+      throw new Error(`failed to find schedule. scheduleId=${scheduleId}`)
+    }
+    await scheduleStore.approveSchedule(schedule)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
 const handleClickDelete = (): void => {
   console.log('debug', 'click:delete-schedule')
 }
@@ -82,6 +100,7 @@ try {
     @click:row="handleClickRow"
     @click:add="handleClickAdd"
     @click:delete="handleClickDelete"
+    @click:approval="handleClickApproval"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
   />
