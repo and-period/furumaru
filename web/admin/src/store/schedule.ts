@@ -3,7 +3,7 @@ import { useCommonStore } from './common'
 import { useCoordinatorStore } from './coordinator'
 import { useShippingStore } from './shipping'
 import { apiClient } from '~/plugins/api-client'
-import { CreateScheduleRequest, Schedule, UpdateScheduleRequest, UploadImageResponse, UploadVideoResponse } from '~/types/api'
+import { ApproveScheduleRequest, CreateScheduleRequest, Schedule, UpdateScheduleRequest, UploadImageResponse, UploadVideoResponse } from '~/types/api'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
@@ -81,6 +81,25 @@ export const useScheduleStore = defineStore('schedule', {
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
           message: `${payload.title}を更新しました。`,
+          color: 'info'
+        })
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * マルシェ開催スケジュールの承認/却下をする非同期関数
+     * @param schedule スケジュール
+     * @returns
+     */
+    async approveSchedule (schedule: Schedule): Promise<void> {
+      try {
+        const req: ApproveScheduleRequest = { approved: !schedule.approved }
+        await apiClient.scheduleApi().v1ApproveSchedule(schedule.id, req)
+        const commonStore = useCommonStore()
+        commonStore.addSnackbar({
+          message: `${schedule.title}を更新しました。`,
           color: 'info'
         })
       } catch (err) {

@@ -186,18 +186,20 @@ func (s *schedule) Approve(ctx context.Context, scheduleID string, params *datab
 			return fmt.Errorf("database: this schedule has already started: %w", database.ErrFailedPrecondition)
 		}
 
-		update := map[string]interface{}{
-			"approved":   params.Approved,
-			"updated_at": s.now(),
-		}
+		var approvedAdminID *string
 		if params.Approved {
-			update["approved_admin_id"] = params.ApprovedAdminID
+			approvedAdminID = &params.ApprovedAdminID
+		}
+		update := map[string]interface{}{
+			"approved":          params.Approved,
+			"approved_admin_id": approvedAdminID,
+			"updated_at":        s.now(),
 		}
 
 		err = tx.WithContext(ctx).
 			Table(scheduleTable).
 			Where("id = ?", scheduleID).
-			Updates(params).Error
+			Updates(update).Error
 		return err
 	})
 	return dbError(err)

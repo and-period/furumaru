@@ -110,10 +110,10 @@ updateScheduleRequest:
 approveScheduleRequest:
   type: object
   properties:
-    approve:
+    approved:
       type: boolean
       description: 承認フラグ
   required:
   - approve
   example:
-    approve: true
+    approved: true
