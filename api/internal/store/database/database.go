@@ -117,12 +117,13 @@ type Product interface {
 }
 
 type ListProductsParams struct {
-	Name        string
-	ProducerID  string
-	ProducerIDs []string
-	Limit       int
-	Offset      int
-	Orders      []*ListProductsOrder
+	Name          string
+	CoordinatorID string
+	ProducerID    string
+	ProducerIDs   []string
+	Limit         int
+	Offset        int
+	Orders        []*ListProductsOrder
 }
 
 type ListProductsOrder struct {
@@ -131,7 +132,6 @@ type ListProductsOrder struct {
 }
 
 type UpdateProductParams struct {
-	ProducerID        string
 	TypeID            string
 	TagIDs            []string
 	Name              string

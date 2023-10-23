@@ -21,6 +21,7 @@ func TestProduct(t *testing.T) {
 		{
 			name: "success",
 			params: &NewProductParams{
+				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				TypeID:          "type-id",
 				TagIDs:          []string{"tag-id"},
@@ -54,6 +55,7 @@ func TestProduct(t *testing.T) {
 			},
 			expect: &Product{
 				ID:              "", // ignore
+				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				TypeID:          "type-id",
 				TagIDs:          []string{"tag-id"},
@@ -459,6 +461,65 @@ func TestProducts_Fill(t *testing.T) {
 	}
 }
 
+func TestProducts_CoordinatorIDs(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name     string
+		products Products
+		expect   []string
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:              "", // ignore
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:             400,
+					Cost:              300,
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginCity:        "彦根市",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+				},
+			},
+			expect: []string{"coordinator-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.products.CoordinatorIDs())
+		})
+	}
+}
+
 func TestProducts_ProducerIDs(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
@@ -472,6 +533,7 @@ func TestProducts_ProducerIDs(t *testing.T) {
 			products: Products{
 				{
 					ID:              "", // ignore
+					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
 					TagIDs:          []string{"tag-id"},
@@ -530,6 +592,7 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 			products: Products{
 				{
 					ID:              "", // ignore
+					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
 					TagIDs:          []string{"tag-id"},
@@ -588,6 +651,7 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 			products: Products{
 				{
 					ID:              "", // ignore
+					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
 					TagIDs:          []string{"tag-id"},

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { useCategoryStore } from './category'
+import { useCoordinatorStore } from './coordinator'
 import { useProductTypeStore } from './product-type'
 import { useProductTagStore } from './product-tag'
 import { useProducerStore } from './producer'
@@ -31,12 +32,14 @@ export const useProductStore = defineStore('product', {
       try {
         const res = await apiClient.productApi().v1ListProducts(limit, offset)
 
+        const coordinatorStore = useCoordinatorStore()
         const producerStore = useProducerStore()
         const categoryStore = useCategoryStore()
         const productTypeStore = useProductTypeStore()
         const productTagStore = useProductTagStore()
         this.products = res.data.products
         this.totalItems = res.data.total
+        coordinatorStore.coordinators = res.data.coordinators
         producerStore.producers = res.data.producers
         categoryStore.categories = res.data.categories
         productTypeStore.productTypes = res.data.productTypes
@@ -84,11 +87,13 @@ export const useProductStore = defineStore('product', {
       try {
         const res = await apiClient.productApi().v1GetProduct(productId)
 
+        const coordinatorStore = useCoordinatorStore()
         const producerStore = useProducerStore()
         const categoryStore = useCategoryStore()
         const productTypeStore = useProductTypeStore()
         const productTagStore = useProductTagStore()
         this.product = res.data.product
+        coordinatorStore.coordinators = [res.data.coordinator]
         producerStore.producers = [res.data.producer]
         categoryStore.categories = [res.data.category]
         productTypeStore.productTypes = [res.data.productType]

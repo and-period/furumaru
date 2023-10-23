@@ -36,7 +36,6 @@ const formData = ref<UpdateProductRequest>({
   name: '',
   description: '',
   public: false,
-  producerId: '',
   productTypeId: '',
   productTagIds: [],
   media: [],

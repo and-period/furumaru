@@ -1534,6 +1534,12 @@ export interface CreateProductRequest {
      */
     'public': boolean;
     /**
+     * コーディネータID
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'coordinatorId': string;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof CreateProductRequest
@@ -3572,6 +3578,12 @@ export interface Product {
      */
     'status': ProductStatus;
     /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Product
+     */
+    'coordinatorId': string;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof Product
@@ -3794,6 +3806,12 @@ export interface ProductResponse {
      * @memberof ProductResponse
      */
     'product': Product;
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof ProductResponse
+     */
+    'coordinator': Coordinator;
     /**
      * 
      * @type {Producer}
@@ -4040,6 +4058,12 @@ export interface ProductsResponse {
      * @memberof ProductsResponse
      */
     'products': Array<Product>;
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof ProductsResponse
+     */
+    'coordinators': Array<Coordinator>;
     /**
      * 生産者一覧
      * @type {Array<Producer>}
@@ -5340,12 +5364,6 @@ export interface UpdateProductRequest {
      * @memberof UpdateProductRequest
      */
     'public': boolean;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof UpdateProductRequest
-     */
-    'producerId': string;
     /**
      * 品目ID
      * @type {string}

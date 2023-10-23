@@ -16,6 +16,9 @@ product:
       description: 公開フラグ
     status:
       $ref: './../../../openapi.yaml#/components/schemas/productStatus'
+    coordinatorId:
+      type: string
+      description: コーディネータID
     producerId:
       type: string
       description: 生産者ID
@@ -143,6 +146,7 @@ product:
   - description
   - public
   - status
+  - coordinatorId
   - producerId
   - categoryId
   - productTypeId
@@ -176,6 +180,7 @@ product:
     description: '新鮮なじゃがいもをお届けします。'
     public: true
     status: 2
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
