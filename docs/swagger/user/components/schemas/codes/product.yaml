@@ -8,10 +8,8 @@ productStatus:
   - 1
   - 2
   - 3
-  - 4
   x-enum-varnames:
   - UNKNOWN
-  - PRIVATE
   - PRESALE
   - FOR_SALE
   - OUT_OF_SALES
