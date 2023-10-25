@@ -274,6 +274,47 @@ func TestProduct_SetStatus(t *testing.T) {
 	}
 }
 
+func TestProduct_WeightGram(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		product *Product
+		expect  int64
+	}{
+		{
+			name: "success gram",
+			product: &Product{
+				ID:         "product-id",
+				Weight:     100,
+				WeightUnit: WeightUnitGram,
+				Box60Rate:  50,
+				Box80Rate:  40,
+				Box100Rate: 30,
+			},
+			expect: 100,
+		},
+		{
+			name: "success kilogram",
+			product: &Product{
+				ID:         "product-id",
+				Weight:     1,
+				WeightUnit: WeightUnitKilogram,
+				Box60Rate:  50,
+				Box80Rate:  40,
+				Box100Rate: 30,
+			},
+			expect: 1000,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.product.WeightGram())
+		})
+	}
+}
+
 func TestProduct_FillJSON(t *testing.T) {
 	t.Parallel()
 
@@ -457,6 +498,167 @@ func TestProducts_Fill(t *testing.T) {
 			err := tt.products.Fill(now)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.ElementsMatch(t, tt.expect, tt.products)
+		})
+	}
+}
+
+func TestProducts_Box60Rate(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   int64
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     200,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 100,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.Box60Rate())
+		})
+	}
+}
+
+func TestProducts_Box80Rate(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   int64
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     200,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 85,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.Box80Rate())
+		})
+	}
+}
+
+func TestProducts_WeightGram(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   int64
+	}{
+		{
+			name: "success gram",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     200,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 300,
+		},
+		{
+			name: "success kilogram",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     1,
+					WeightUnit: WeightUnitKilogram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     2,
+					WeightUnit: WeightUnitKilogram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 3000,
+		},
+		{
+			name: "success mix",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     2,
+					WeightUnit: WeightUnitKilogram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 2100,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.WeightGram())
 		})
 	}
 }
@@ -693,6 +895,101 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.products.ProductTagIDs())
+		})
+	}
+}
+
+func TestProducts_Map(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name     string
+		products Products
+		expect   map[string]*Product
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:              "product-id",
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:             400,
+					Cost:              300,
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginCity:        "彦根市",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+				},
+			},
+			expect: map[string]*Product{
+				"product-id": {
+					ID:              "product-id",
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:             400,
+					Cost:              300,
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginCity:        "彦根市",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.Map())
 		})
 	}
 }
