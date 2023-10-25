@@ -13,6 +13,8 @@ tags:
   description: 認証関連
 - name: Contact
   description: お問い合わせ関連
+- name: Product
+  description: 商品関連
 - name: Top
   description: トップページ関連
 paths:
@@ -42,6 +44,11 @@ paths:
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
+  # Product
+  /v1/products:
+    $ref: './paths/v1/products/index.yaml'
+  /v1/products/{productId}:
+    $ref: './paths/v1/products/_productId/index.yaml'
   # Top
   /v1/top/common:
     $ref: './paths/v1/top/common.yaml'
@@ -52,13 +59,33 @@ components:
       scheme: bearer
   schemas:
     # Common
+    prefecture:
+      $ref: './components/schemas/codes/common.yaml#/prefecture'
     imageSize:
       $ref: './components/schemas/codes/image.yaml#/imageSize'
+    productStatus:
+      $ref: './components/schemas/codes/product.yaml#/productStatus'
+    deliveryType:
+      $ref: './components/schemas/codes/product.yaml#/deliveryType'
+    storageMethodType:
+      $ref: './components/schemas/codes/product.yaml#/storageMethodType'
     scheduleStatus:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity
+    category:
+      $ref: './components/schemas/entity/category.yaml#/category'
+    coordinator:
+      $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
+    producer:
+      $ref: './components/schemas/entity/producer.yaml#/producer'
+    productTag:
+      $ref: './components/schemas/entity/product-tag.yaml#/productTag'
+    productType:
+      $ref: './components/schemas/entity/product-type.yaml#/productType'
+    product:
+      $ref: './components/schemas/entity/product.yaml#/product'
     topArchive:
       $ref: './components/schemas/entity/top.yaml#/topArchive'
     topLive:
@@ -93,5 +120,9 @@ components:
       $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
     v1CreateAuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/createAuthResponse'
+    v1ProductResponse:
+      $ref: './components/schemas/v1/product.response.yaml#/productResponse'
+    v1ProductsResponse:
+      $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
     v1TopCommonResponse:
       $ref: './components/schemas/v1/top.response.yaml#/topCommonResponse'

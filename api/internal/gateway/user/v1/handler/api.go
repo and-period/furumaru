@@ -85,6 +85,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	h.authRoutes(v1.Group("/auth"))
 	h.topRoutes(v1.Group("/top"))
+	h.productRoutes(v1.Group("/products"))
 }
 
 /**
