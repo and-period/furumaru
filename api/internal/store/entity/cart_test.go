@@ -1002,7 +1002,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id01",
+					coordinatorID: "coordinator-id",
 				},
 				{
 					BoxNumber: 2,
@@ -1014,7 +1014,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id02",
+					coordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
