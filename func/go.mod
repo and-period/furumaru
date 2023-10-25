@@ -30,7 +30,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.15.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.13.5 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.15.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.21.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.23.2 // indirect
 	github.com/aws/smithy-go v1.15.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
