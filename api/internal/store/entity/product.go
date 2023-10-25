@@ -227,6 +227,13 @@ func (p *Product) SetStatus(now time.Time) {
 	}
 }
 
+func (p *Product) WeightGram() int64 {
+	if p.WeightUnit == WeightUnitGram {
+		return p.Weight
+	}
+	return p.Weight * 1e3
+}
+
 func (p *Product) unmarshalTagIDs() ([]string, error) {
 	if p.TagIDsJSON == nil {
 		return []string{}, nil
@@ -304,6 +311,30 @@ func (ps Products) Fill(now time.Time) error {
 	return nil
 }
 
+func (ps Products) Box60Rate() int64 {
+	var rate int64
+	for i := range ps {
+		rate += ps[i].Box60Rate
+	}
+	return rate
+}
+
+func (ps Products) Box80Rate() int64 {
+	var rate int64
+	for i := range ps {
+		rate += ps[i].Box80Rate
+	}
+	return rate
+}
+
+func (ps Products) WeightGram() int64 {
+	var weight int64
+	for i := range ps {
+		weight += ps[i].WeightGram()
+	}
+	return weight
+}
+
 func (ps Products) CoordinatorIDs() []string {
 	return set.UniqBy(ps, func(p *Product) string {
 		return p.CoordinatorID
@@ -328,6 +359,14 @@ func (ps Products) ProductTagIDs() []string {
 		res.Add(ps[i].TagIDs...)
 	}
 	return res.Slice()
+}
+
+func (ps Products) Map() map[string]*Product {
+	res := make(map[string]*Product, len(ps))
+	for _, p := range ps {
+		res[p.ID] = p
+	}
+	return res
 }
 
 func (ps Products) Filter(productIDs ...string) Products {
