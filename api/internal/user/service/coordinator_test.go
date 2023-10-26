@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
@@ -52,6 +53,7 @@ func TestListCoordinators(t *testing.T) {
 			City:         "千代田区",
 			AddressLine1: "永田町1-7-1",
 			AddressLine2: "",
+			BusinessDays: []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			CreatedAt:    now,
 			UpdatedAt:    now,
 		},
@@ -158,6 +160,7 @@ func TestMultiGetCoordinators(t *testing.T) {
 			City:         "千代田区",
 			AddressLine1: "永田町1-7-1",
 			AddressLine2: "",
+			BusinessDays: []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			CreatedAt:    now,
 			UpdatedAt:    now,
 		},
@@ -242,6 +245,7 @@ func TestGetCoordinator(t *testing.T) {
 		City:         "千代田区",
 		AddressLine1: "永田町1-7-1",
 		AddressLine2: "",
+		BusinessDays: []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
@@ -339,6 +343,7 @@ func TestCreateCoordinator(t *testing.T) {
 					City:           "千代田区",
 					AddressLine1:   "永田町1-7-1",
 					AddressLine2:   "",
+					BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				}
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(productTypes, nil)
 				mocks.db.Coordinator.EXPECT().
@@ -374,6 +379,7 @@ func TestCreateCoordinator(t *testing.T) {
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: nil,
 		},
@@ -401,6 +407,7 @@ func TestCreateCoordinator(t *testing.T) {
 				City:          "千代田区",
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
+				BusinessDays:  []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: nil,
 		},
@@ -435,6 +442,7 @@ func TestCreateCoordinator(t *testing.T) {
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -463,6 +471,7 @@ func TestCreateCoordinator(t *testing.T) {
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -489,6 +498,7 @@ func TestCreateCoordinator(t *testing.T) {
 				City:          "千代田区",
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
+				BusinessDays:  []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -532,6 +542,7 @@ func TestUpdateCoordinator(t *testing.T) {
 		City:         "千代田区",
 		AddressLine1: "永田町1-7-1",
 		AddressLine2: "",
+		BusinessDays: []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
@@ -563,6 +574,7 @@ func TestUpdateCoordinator(t *testing.T) {
 		City:           "千代田区",
 		AddressLine1:   "永田町1-7-1",
 		AddressLine2:   "",
+		BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 	}
 
 	tests := []struct {
@@ -603,6 +615,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: nil,
 		},
@@ -637,6 +650,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -666,6 +680,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -695,6 +710,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -725,6 +741,7 @@ func TestUpdateCoordinator(t *testing.T) {
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expectErr: exception.ErrInternal,
 		},

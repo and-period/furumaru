@@ -127,6 +127,15 @@ func (c *coordinator) Create(
 
 func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *database.UpdateCoordinatorParams) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
+		productTypeIDs, err := entity.CoordinatorMarshalProductTypeIDs(params.ProductTypeIDs)
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
+		businessDays, err := entity.CoordinatorMarshalBusinessDays(params.BusinessDays)
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
+
 		now := c.now()
 		adminParams := map[string]interface{}{
 			"lastname":       params.Lastname,
@@ -136,6 +145,7 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			"updated_at":     now,
 		}
 		coordinatorParams := map[string]interface{}{
+			"product_type_ids":    productTypeIDs,
 			"marche_name":         params.MarcheName,
 			"username":            params.Username,
 			"profile":             params.Profile,
@@ -150,17 +160,11 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			"city":                params.City,
 			"address_line1":       params.AddressLine1,
 			"address_line2":       params.AddressLine2,
+			"business_days":       businessDays,
 			"updated_at":          now,
 		}
-		if len(params.ProductTypeIDs) > 0 {
-			productTypeIDs, err := entity.CoordinatorMarshalProductTypeIDs(params.ProductTypeIDs)
-			if err != nil {
-				return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-			}
-			coordinatorParams["product_type_ids"] = datatypes.JSON(productTypeIDs)
-		}
 
-		err := tx.WithContext(ctx).
+		err = tx.WithContext(ctx).
 			Table(adminTable).
 			Where("id = ?", coordinatorID).
 			Updates(adminParams).Error

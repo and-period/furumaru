@@ -5,6 +5,7 @@ package database
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -105,6 +106,7 @@ type UpdateCoordinatorParams struct {
 	City              string
 	AddressLine1      string
 	AddressLine2      string
+	BusinessDays      []time.Weekday
 }
 
 type Member interface {

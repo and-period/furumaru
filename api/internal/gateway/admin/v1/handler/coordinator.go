@@ -201,6 +201,7 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		City:              req.City,
 		AddressLine1:      req.AddressLine1,
 		AddressLine2:      req.AddressLine2,
+		BusinessDays:      req.BusinessDays,
 	}
 	coordinator, err := h.user.CreateCoordinator(ctx, in)
 	if err != nil {
@@ -299,6 +300,7 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		City:              req.City,
 		AddressLine1:      req.AddressLine1,
 		AddressLine2:      req.AddressLine2,
+		BusinessDays:      req.BusinessDays,
 	}
 	if err := h.user.UpdateCoordinator(ctx, in); err != nil {
 		httpError(ctx, err)

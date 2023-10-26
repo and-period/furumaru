@@ -39,6 +39,7 @@ const props = defineProps({
       name: '',
       description: '',
       public: false,
+      coordinatorId: '',
       producerId: '',
       productTypeId: '',
       productTagIds: [],

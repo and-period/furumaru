@@ -2,10 +2,12 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/datatypes"
 )
 
 func TestCoordinator(t *testing.T) {
@@ -44,6 +46,7 @@ func TestCoordinator(t *testing.T) {
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expect: &Coordinator{
 				AdminID:           "admin-id",
@@ -63,6 +66,7 @@ func TestCoordinator(t *testing.T) {
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				Admin: Admin{
 					CognitoID:     "cognito-id",
 					Lastname:      "&.",
@@ -99,9 +103,10 @@ func TestCoordinator_Fill(t *testing.T) {
 			name: "success",
 			coordinator: &Coordinator{
 				AdminID:            "admin-id",
-				ProductTypeIDsJSON: []byte(`["product-type-id"]`),
-				ThumbnailsJSON:     []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				HeadersJSON:        []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
+				ThumbnailsJSON:     datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
+				HeadersJSON:        datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
+				BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
 			},
 			admin: &Admin{
 				ID:        "admin-id",
@@ -121,6 +126,8 @@ func TestCoordinator_Fill(t *testing.T) {
 				Headers: common.Images{
 					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
 				},
+				BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+				BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
@@ -142,6 +149,7 @@ func TestCoordinator_Fill(t *testing.T) {
 				ProductTypeIDs: []string{},
 				Thumbnails:     common.Images{},
 				Headers:        common.Images{},
+				BusinessDays:   []time.Weekday{},
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",

@@ -111,6 +111,7 @@ func (s *service) CreateCoordinator(
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
+		BusinessDays:      in.BusinessDays,
 	}
 	coordinator := entity.NewCoordinator(params)
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
@@ -169,6 +170,7 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
+		BusinessDays:      in.BusinessDays,
 	}
 	if err := s.db.Coordinator.Update(ctx, in.CoordinatorID, params); err != nil {
 		return internalError(err)

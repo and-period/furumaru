@@ -40,6 +40,7 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 			City:              coordinator.City,
 			AddressLine1:      coordinator.AddressLine1,
 			AddressLine2:      coordinator.AddressLine2,
+			BusinessDays:      coordinator.BusinessDays,
 			ProducerTotal:     0,
 			CreatedAt:         coordinator.CreatedAt.Unix(),
 			UpdatedAt:         coordinator.CreatedAt.Unix(),

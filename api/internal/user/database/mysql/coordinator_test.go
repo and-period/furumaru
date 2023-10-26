@@ -461,6 +461,7 @@ func TestCoordinator_Update(t *testing.T) {
 					City:              "千代田区",
 					AddressLine1:      "永田町1-7-1",
 					AddressLine2:      "",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				},
 			},
 			want: want{
@@ -831,6 +832,7 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 		City:              "千代田区",
 		AddressLine1:      "永田町1-7-1",
 		AddressLine2:      "",
+		BusinessDays:      []time.Weekday{time.Monday},
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
@@ -841,8 +843,10 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 func fillCoordinatorJSON(c *entity.Coordinator) {
 	thumbnails, _ := json.Marshal(c.Thumbnails)
 	headers, _ := json.Marshal(c.Headers)
+	businessDays, _ := json.Marshal(c.BusinessDays)
 	c.ThumbnailsJSON = datatypes.JSON(thumbnails)
 	c.HeadersJSON = datatypes.JSON(headers)
+	c.BusinessDaysJSON = datatypes.JSON(businessDays)
 }
 
 func fillIgnoreCoordinatorField(c *entity.Coordinator, now time.Time) {

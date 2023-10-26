@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
-import { Category, DeliveryType, Prefecture, Producer, ProductResponse, ProductStatus, ProductTag, ProductType, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
+import { Category, DeliveryType, Prefecture, Producer, Product, ProductStatus, ProductTag, ProductType, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -39,7 +39,6 @@ const props = defineProps({
       name: '',
       description: '',
       public: false,
-      producerId: '',
       productTypeId: '',
       productTagIds: [],
       media: [],
@@ -66,21 +65,17 @@ const props = defineProps({
     })
   },
   product: {
-    type: Object as PropType<ProductResponse>,
-    default: (): ProductResponse => ({
+    type: Object as PropType<Product>,
+    default: (): Product => ({
       id: '',
       name: '',
       description: '',
       public: false,
       status: ProductStatus.UNKNOWN,
+      coordinatorId: '',
       producerId: '',
-      producerName: '',
       categoryId: '',
-      categoryName: '',
       productTypeId: '',
-      productTypeName: '',
-      productTypeIconUrl: '',
-      productTypeIcons: [],
       productTagIds: [],
       media: [],
       price: 0,
@@ -176,7 +171,6 @@ const formDataRules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
   description: { required },
   public: {},
-  producerId: { required },
   productTypeId: { required },
   productTagIds: { maxLengthArray: maxLengthArray(8) },
   media: { maxLengthArray: maxLengthArray(8) },
