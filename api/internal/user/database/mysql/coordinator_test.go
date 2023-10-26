@@ -461,6 +461,7 @@ func TestCoordinator_Update(t *testing.T) {
 					City:              "千代田区",
 					AddressLine1:      "永田町1-7-1",
 					AddressLine2:      "",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				},
 			},
 			want: want{
@@ -831,6 +832,7 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 		City:              "千代田区",
 		AddressLine1:      "永田町1-7-1",
 		AddressLine2:      "",
+		BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}

@@ -100,6 +100,11 @@ coordinator:
     facebookId:
       type: string
       description: Facebookアカウント
+    businessDays:
+      type: array
+      description: 営業曜日
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/weekday'
     createdAt:
       type: integer
       format: int64
@@ -134,6 +139,7 @@ coordinator:
   - headers
   - instagramId
   - facebookId
+  - businessDays
   - createdAt
   - updatedAt
   example:
@@ -173,5 +179,6 @@ coordinator:
     bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
     instagramId: 'instagram-id'
     facebookId: 'facebook-id'
+    businessDays: [1,2,3,4,5]
     createdAt: 1640962800
     updatedAt: 1640962800

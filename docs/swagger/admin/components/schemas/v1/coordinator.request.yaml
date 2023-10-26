@@ -67,6 +67,11 @@ createCoordinatorRequest:
     facebookId:
       type: string
       description: Facebookアカウント(50文字まで)
+    businessDays:
+      type: array
+      description: 営業曜日
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/weekday'
   required:
   - lastname
   - firstname
@@ -89,6 +94,7 @@ createCoordinatorRequest:
   - bonusVideoUrl
   - instagramId
   - facebookId
+  - businessDays
   example:
     lastname: '&.'
     firstname: '管理者'
@@ -111,6 +117,7 @@ createCoordinatorRequest:
     bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
     instagramId: 'instagram-id'
     facebookId: 'facebook-id'
+    businessDays: [1,2,3,4,5]
 updateCoordinatorRequest:
   type: object
   properties:
@@ -176,6 +183,11 @@ updateCoordinatorRequest:
     facebookId:
       type: string
       description: Facebookアカウント(50文字まで)
+    businessDays:
+      type: array
+      description: 営業曜日
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/weekday'
   required:
   - lastname
   - firstname
@@ -197,6 +209,7 @@ updateCoordinatorRequest:
   - bonusVideoUrl
   - instagramId
   - facebookId
+  - businessDays
   example:
     lastname: '&.'
     firstname: '管理者'
@@ -218,6 +231,7 @@ updateCoordinatorRequest:
     bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
     instagramId: 'instagram-id'
     facebookId: 'facebook-id'
+    businessDays: [1,2,3,4,5]
 updateCoordinatorEmailRequest:
   type: object
   properties:

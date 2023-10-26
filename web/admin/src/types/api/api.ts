@@ -940,6 +940,12 @@ export interface Coordinator {
      */
     'facebookId': string;
     /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof Coordinator
+     */
+    'businessDays': Array<Weekday>;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof Coordinator
@@ -1289,6 +1295,12 @@ export interface CreateCoordinatorRequest {
      * @memberof CreateCoordinatorRequest
      */
     'facebookId': string;
+    /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof CreateCoordinatorRequest
+     */
+    'businessDays': Array<Weekday>;
 }
 
 
@@ -5139,6 +5151,12 @@ export interface UpdateCoordinatorRequest {
      * @memberof UpdateCoordinatorRequest
      */
     'facebookId': string;
+    /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'businessDays': Array<Weekday>;
 }
 
 

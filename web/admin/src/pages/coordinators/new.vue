@@ -36,7 +36,8 @@ const formData = ref<CreateCoordinatorRequest>({
   promotionVideoUrl: '',
   bonusVideoUrl: '',
   instagramId: '',
-  facebookId: ''
+  facebookId: '',
+  businessDays: []
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,

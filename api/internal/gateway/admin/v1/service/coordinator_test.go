@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
@@ -56,6 +57,7 @@ func TestCoordinator(t *testing.T) {
 				PostalCode:        "1000014",
 				Prefecture:        codes.PrefectureValues["tokyo"],
 				City:              "千代田区",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
@@ -92,6 +94,7 @@ func TestCoordinator(t *testing.T) {
 					PostalCode:        "1000014",
 					Prefecture:        "tokyo",
 					City:              "千代田区",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					CreatedAt:         1640962800,
 					UpdatedAt:         1640962800,
 				},
@@ -149,6 +152,7 @@ func TestCoordinator_Response(t *testing.T) {
 					PostalCode:        "1000014",
 					Prefecture:        "tokyo",
 					City:              "千代田区",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					CreatedAt:         1640962800,
 					UpdatedAt:         1640962800,
 				},
@@ -185,6 +189,7 @@ func TestCoordinator_Response(t *testing.T) {
 				PostalCode:        "1000014",
 				Prefecture:        "tokyo",
 				City:              "千代田区",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				CreatedAt:         1640962800,
 				UpdatedAt:         1640962800,
 			},
@@ -245,6 +250,7 @@ func TestCoordinators(t *testing.T) {
 					PostalCode:        "1000014",
 					Prefecture:        codes.PrefectureValues["tokyo"],
 					City:              "千代田区",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
@@ -274,6 +280,7 @@ func TestCoordinators(t *testing.T) {
 					PostalCode:        "1000014",
 					Prefecture:        codes.PrefectureValues["tokyo"],
 					City:              "千代田区",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
@@ -312,6 +319,7 @@ func TestCoordinators(t *testing.T) {
 						PostalCode:        "1000014",
 						Prefecture:        "tokyo",
 						City:              "千代田区",
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 						CreatedAt:         1640962800,
 						UpdatedAt:         1640962800,
 					},
@@ -341,6 +349,7 @@ func TestCoordinators(t *testing.T) {
 						PostalCode:        "1000014",
 						Prefecture:        "tokyo",
 						City:              "千代田区",
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 						CreatedAt:         1640962800,
 						UpdatedAt:         1640962800,
 					},
@@ -400,6 +409,7 @@ func TestCoordinators_Response(t *testing.T) {
 						PostalCode:        "1000014",
 						Prefecture:        "tokyo",
 						City:              "千代田区",
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 						CreatedAt:         1640962800,
 						UpdatedAt:         1640962800,
 					},
@@ -429,6 +439,7 @@ func TestCoordinators_Response(t *testing.T) {
 						PostalCode:        "1000014",
 						Prefecture:        "tokyo",
 						City:              "千代田区",
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 						CreatedAt:         1640962800,
 						UpdatedAt:         1640962800,
 					},
@@ -467,6 +478,7 @@ func TestCoordinators_Response(t *testing.T) {
 					PostalCode:        "1000014",
 					Prefecture:        "tokyo",
 					City:              "千代田区",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					CreatedAt:         1640962800,
 					UpdatedAt:         1640962800,
 				},
@@ -494,6 +506,7 @@ func TestCoordinators_Response(t *testing.T) {
 					PostalCode:        "1000014",
 					Prefecture:        "tokyo",
 					City:              "千代田区",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					CreatedAt:         1640962800,
 					UpdatedAt:         1640962800,
 				},
