@@ -19,10 +19,9 @@
  */
 export const ProductStatus = {
     UNKNOWN: 0,
-    PRIVATE: 1,
-    PRESALE: 2,
-    FOR_SALE: 3,
-    OUT_OF_SALES: 4
+    PRESALE: 1,
+    FOR_SALE: 2,
+    OUT_OF_SALES: 3
 } as const;
 export type ProductStatus = typeof ProductStatus[keyof typeof ProductStatus];
 
