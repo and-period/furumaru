@@ -37,22 +37,22 @@ const cartMenuMessage = computed<string>(() => {
 const navbarMenuList = computed<HeaderMenuItem[]>(() => [
   {
     text: ht('topLinkText'),
-    onClick: () => router.push(localePath('/')),
+    to: localePath('/'),
     active: route.path === localePath('/'),
   },
   {
     text: ht('searchItemLinkText'),
-    onClick: () => router.push(localePath('/search')),
+    to: localePath('/search'),
     active: route.path === localePath('/search'),
   },
   {
     text: ht('allItemLinkText'),
-    onClick: () => router.push(localePath('/items')),
-    active: route.path === localePath('/search'),
+    to: localePath('/items'),
+    active: route.path === localePath('/items'),
   },
   {
     text: ht('aboutLinkText'),
-    onClick: () => router.push(localePath('/about')),
+    to: localePath('/about'),
     active: route.path === localePath('/about'),
   },
 ])
