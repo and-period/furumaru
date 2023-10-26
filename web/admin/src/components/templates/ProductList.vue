@@ -299,7 +299,7 @@ const onClickDelete = (): void => {
         <template #[`item.categoryName`]="{ item }">
           {{ getCategoryName(item.raw.categoryId) }}
         </template>
-        <template #[`item.productTypename`]="{ item }">
+        <template #[`item.productTypeName`]="{ item }">
           {{ getProductTypeName(item.raw.productTypeId) }}
         </template>
         <template #[`item.producerName`]="{ item }">
