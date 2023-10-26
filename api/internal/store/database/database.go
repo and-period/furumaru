@@ -121,6 +121,7 @@ type ListProductsParams struct {
 	CoordinatorID string
 	ProducerID    string
 	ProducerIDs   []string
+	OnlyPublished bool
 	Limit         int
 	Offset        int
 	Orders        []*ListProductsOrder

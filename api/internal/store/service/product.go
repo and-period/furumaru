@@ -33,6 +33,7 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		CoordinatorID: in.CoordinatorID,
 		ProducerID:    in.ProducerID,
 		ProducerIDs:   in.ProducerIDs,
+		OnlyPublished: in.OnlyPublished,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),
 		Orders:        orders,

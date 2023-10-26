@@ -42,6 +42,9 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.ProducerIDs) > 0 {
 		stmt = stmt.Where("producer_id IN (?)", p.ProducerIDs)
 	}
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ?", true)
+	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
