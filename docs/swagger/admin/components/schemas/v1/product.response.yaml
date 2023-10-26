@@ -3,6 +3,8 @@ productResponse:
   properties:
     product:
       $ref: './../../../openapi.yaml#/components/schemas/product'
+    coordinator:
+      $ref: './../../../openapi.yaml#/components/schemas/coordinator'
     producer:
       $ref: './../../../openapi.yaml#/components/schemas/producer'
     category:
@@ -16,6 +18,7 @@ productResponse:
         $ref: './../../../openapi.yaml#/components/schemas/productTag'
   required:
   - product
+  - coordinator
   - producer
   - category
   - productType
@@ -66,11 +69,49 @@ productResponse:
       endAt: 1640962800
       createdAt: 1640962800
       updatedAt: 1640962800
+    coordinator:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      storeName: '&.農園'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefecture: 'tokyo'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      createdAt: 1640962800
+      updatedAt: 1640962800
     producer:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 2
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
-      coordinatorName: '&.コーディネータ'
       lastname: '&.'
       firstname: '管理者'
       lastnameKana: 'あんどどっと'
@@ -142,6 +183,11 @@ productsResponse:
       description: 商品一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/product'
+    coordinators:
+      type: array
+      description: コーディネータ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
     producers:
       type: array
       description: 生産者一覧
@@ -168,6 +214,7 @@ productsResponse:
       description: 合計数
   required:
   - products
+  - coordinators
   - producers
   - categories
   - productTypes
@@ -219,11 +266,51 @@ productsResponse:
       endAt: 1640962800
       createdAt: 1640962800
       updatedAt: 1640962800
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      marcheName: '&.マルシェ'
+      storeName: '&.農園'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefecture: 'tokyo'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      profile: '紹介文です。'
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      producerTotal: 0
+      createdAt: 1640962800
+      updatedAt: 1640962800
     producers:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 2
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
-      coordinatorName: '&.コーディネータ'
       lastname: '&.'
       firstname: '管理者'
       lastnameKana: 'あんどどっと'

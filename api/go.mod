@@ -17,7 +17,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.21.3
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.19.5
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.24.5
-	github.com/casbin/casbin/v2 v2.77.1
+	github.com/casbin/casbin/v2 v2.77.2
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/zap v0.1.0
 	github.com/gin-gonic/gin v1.9.1
@@ -29,7 +29,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0
 	github.com/jbenet/go-base58 v0.0.0-20150317085156-6237cf65f3a6
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/line/line-bot-sdk-go/v7 v7.20.0
+	github.com/line/line-bot-sdk-go/v7 v7.21.0
 	github.com/newrelic/go-agent/v3 v3.24.1
 	github.com/newrelic/go-agent/v3/integrations/nrgin v1.2.1
 	github.com/prometheus/client_golang v1.16.0
@@ -43,7 +43,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/stripe/stripe-go/v73 v73.16.0
-	go.uber.org/mock v0.2.0
+	go.uber.org/mock v0.3.0
 	go.uber.org/zap v1.25.0
 	golang.org/x/image v0.13.0
 	golang.org/x/sync v0.3.0
@@ -125,7 +125,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/prometheus/client_model v0.4.0 // indirect
+	github.com/prometheus/client_model v0.5.0 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.11.1 // indirect
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect

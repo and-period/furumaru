@@ -10,6 +10,9 @@ createProductRequest:
     public:
       type: boolean
       description: 公開フラグ
+    coordinatorId:
+      type: string
+      description: コーディネータID
     producerId:
       type: string
       description: 生産者ID
@@ -111,6 +114,7 @@ createProductRequest:
   - name
   - description
   - public
+  - coordinatorId
   - producerId
   - productTypeId
   - productTagIds
@@ -139,6 +143,7 @@ createProductRequest:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
     public: true
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
@@ -179,9 +184,6 @@ updateProductRequest:
     public:
       type: boolean
       description: 公開フラグ
-    producerId:
-      type: string
-      description: 生産者ID
     productTypeId:
       type: string
       description: 品目ID
@@ -279,7 +281,6 @@ updateProductRequest:
   - name
   - description
   - public
-  - producerId
   - productTypeId
   - productTagIds
   - media
@@ -307,7 +308,6 @@ updateProductRequest:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
     public: true
-    producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
     media:

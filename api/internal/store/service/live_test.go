@@ -15,10 +15,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListByScheduleID(t *testing.T) {
+func TestListLives(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
+	params := &database.ListLivesParams{
+		ScheduleIDs: []string{"schedule-id"},
+		Limit:       20,
+		Offset:      0,
+	}
 	lives := entity.Lives{
 		{
 			ID:         "live-id01",
@@ -39,49 +44,78 @@ func TestListByScheduleID(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.ListLivesByScheduleIDInput
-		expect    entity.Lives
-		expectErr error
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *store.ListLivesInput
+		expect      entity.Lives
+		expectTotal int64
+		expectErr   error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().ListByScheduleID(ctx, "schedule-id").Return(lives, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), params).Return(lives, nil)
+				mocks.db.Live.EXPECT().Count(gomock.Any(), params).Return(int64(2), nil)
 			},
-			input: &store.ListLivesByScheduleIDInput{
-				ScheduleID: "schedule-id",
+			input: &store.ListLivesInput{
+				ScheduleIDs: []string{"schedule-id"},
+				Limit:       20,
+				Offset:      0,
 			},
-			expect:    lives,
-			expectErr: nil,
+			expect:      lives,
+			expectTotal: 2,
+			expectErr:   nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.ListLivesByScheduleIDInput{},
-			expect:    nil,
-			expectErr: exception.ErrInvalidArgument,
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.ListLivesInput{
+				Limit:  1000,
+				Offset: -1,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list lives",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Live.EXPECT().ListByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Live.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.Live.EXPECT().Count(gomock.Any(), params).Return(int64(2), nil)
 			},
-			input: &store.ListLivesByScheduleIDInput{
-				ScheduleID: "schedule-id",
+			input: &store.ListLivesInput{
+				ScheduleIDs: []string{"schedule-id"},
+				Limit:       20,
+				Offset:      0,
 			},
-			expect:    nil,
-			expectErr: exception.ErrInternal,
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
+		{
+			name: "failed to count lives",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().List(gomock.Any(), params).Return(lives, nil)
+				mocks.db.Live.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+			},
+			input: &store.ListLivesInput{
+				ScheduleIDs: []string{"schedule-id"},
+				Limit:       20,
+				Offset:      0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.ListLivesByScheduleID(ctx, tt.input)
+			actual, total, err := service.ListLives(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
 		}))
 	}
 }

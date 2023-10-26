@@ -220,6 +220,21 @@ func (m *MockLive) EXPECT() *MockLiveMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockLive) Count(ctx context.Context, params *database.ListLivesParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockLiveMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockLive)(nil).Count), ctx, params)
+}
+
 // Create mocks base method.
 func (m *MockLive) Create(ctx context.Context, live *entity.Live) error {
 	m.ctrl.T.Helper()
@@ -268,24 +283,24 @@ func (mr *MockLiveMockRecorder) Get(ctx, liveID interface{}, fields ...interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockLive)(nil).Get), varargs...)
 }
 
-// ListByScheduleID mocks base method.
-func (m *MockLive) ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error) {
+// List mocks base method.
+func (m *MockLive) List(ctx context.Context, params *database.ListLivesParams, fields ...string) (entity.Lives, error) {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, scheduleID}
+	varargs := []interface{}{ctx, params}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "ListByScheduleID", varargs...)
+	ret := m.ctrl.Call(m, "List", varargs...)
 	ret0, _ := ret[0].(entity.Lives)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListByScheduleID indicates an expected call of ListByScheduleID.
-func (mr *MockLiveMockRecorder) ListByScheduleID(ctx, scheduleID interface{}, fields ...interface{}) *gomock.Call {
+// List indicates an expected call of List.
+func (mr *MockLiveMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, scheduleID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByScheduleID", reflect.TypeOf((*MockLive)(nil).ListByScheduleID), varargs...)
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockLive)(nil).List), varargs...)
 }
 
 // Update mocks base method.

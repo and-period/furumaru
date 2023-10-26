@@ -152,7 +152,7 @@ coordinator:
     addressLine1: '永田町1-7-1'
     addressLine2: ''
     profile: '紹介文です。'
-    productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+    productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     thumbnails:
     - url: 'https://and-period.jp/thumbnail_240.png'

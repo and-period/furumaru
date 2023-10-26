@@ -1,0 +1,153 @@
+topLive:
+  type: object
+  description:
+    scheduleId:
+      type: string
+      description: 開催スケジュールID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
+    title:
+      type: string
+      description: タイトル
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    thumbnails:
+      type: array
+      description: リサイズ済みサムネイルURL一覧
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: リサイズ済みサムネイルURL
+          size:
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+        required:
+        - url
+        - size
+    startAt:
+      type: integer
+      format: int64
+      description: マルシェ開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: マルシェ終了日時 (unixtime)
+    products:
+      type: array
+      description: 販売商品一覧
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            description: 商品ID
+          name:
+            type: string
+            description: 商品名
+          price:
+            type: integer
+            format: int64
+            description: 販売価格
+          inventory:
+            type: integer
+            format: int64
+            description: 在庫数
+          thumbnailUrl:
+            type: string
+            description: サムネイルURL
+          thumbnails:
+            type: array
+            description: リサイズ済みサムネイルURL一覧
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: リサイズ済みサムネイルURL
+                size:
+                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+              required:
+              - url
+              - size
+        required:
+        - id
+        - name
+        - price
+        - inventory
+        - thumbnailUrl
+        - thumbnails
+  required:
+  - scheduleId
+  - status
+  - title
+  - thumbnailUrl
+  - thumbnails
+  - startAt
+  - endAt
+  - products
+  example:
+    scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 2
+    title: '&.マルシェ'
+    thumbnailUrl: 'https://example.com/thumbnail.png'
+    thumbnails:
+    - url: 'https://example.com/thumbnail_240.png'
+      size: 1
+    - url: 'https://example.com/thumbnail_675.png'
+      size: 2
+    - url: 'https://example.com/thumbnail_900.png'
+      size: 3
+    startAt: 1640962800
+    endAt: 1640962800
+    products:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '芽が出たじゃがいも'
+      price: 1980
+      inventory: 30
+      thumbnailUrl: 'https://example.com/thumbnail.png'
+      thumbnails:
+      - url: 'https://example.com/thumbnail_240.png'
+        size: 1
+      - url: 'https://example.com/thumbnail_675.png'
+        size: 2
+      - url: 'https://example.com/thumbnail_900.png'
+        size: 3
+topArchive:
+  type: object
+  description:
+    scheduleId:
+      type: string
+      description: 開催スケジュールID
+    title:
+      type: string
+      description: タイトル
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    thumbnails:
+      type: array
+      description: リサイズ済みサムネイルURL一覧
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: リサイズ済みサムネイルURL
+          size:
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+        required:
+        - url
+        - size
+  example:
+    scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    title: '&.マルシェ'
+    thumbnailUrl: 'https://example.com/thumbnail.png'
+    thumbnails:
+    - url: 'https://example.com/thumbnail_240.png'
+      size: 1
+    - url: 'https://example.com/thumbnail_675.png'
+      size: 2
+    - url: 'https://example.com/thumbnail_900.png'
+      size: 3

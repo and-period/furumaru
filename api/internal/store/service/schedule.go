@@ -21,13 +21,13 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListSchedulesParams{
-		StartAtGte: in.StartAtGte,
-		StartAtLt:  in.StartAtLt,
-		EndAtGte:   in.EndAtGte,
-		EndAtLt:    in.EndAtLt,
-		Statuses:   in.Statuses,
-		Limit:      int(in.Limit),
-		Offset:     int(in.Offset),
+		StartAtGte:    in.StartAtGte,
+		StartAtLt:     in.StartAtLt,
+		EndAtGte:      in.EndAtGte,
+		EndAtLt:       in.EndAtLt,
+		OnlyPublished: in.OnlyPublished,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
 	}
 	var (
 		schedules entity.Schedules

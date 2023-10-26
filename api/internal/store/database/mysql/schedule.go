@@ -43,8 +43,8 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.EndAtLt.IsZero() {
 		stmt = stmt.Where("end_at < ?", p.EndAtLt)
 	}
-	if len(p.Statuses) > 0 {
-		stmt = stmt.Where("status IN (?)", p.Statuses)
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ?", true).Where("approved = ?", true)
 	}
 	return stmt
 }
@@ -186,18 +186,20 @@ func (s *schedule) Approve(ctx context.Context, scheduleID string, params *datab
 			return fmt.Errorf("database: this schedule has already started: %w", database.ErrFailedPrecondition)
 		}
 
-		update := map[string]interface{}{
-			"approved":   params.Approved,
-			"updated_at": s.now(),
-		}
+		var approvedAdminID *string
 		if params.Approved {
-			update["approved_admin_id"] = params.ApprovedAdminID
+			approvedAdminID = &params.ApprovedAdminID
+		}
+		update := map[string]interface{}{
+			"approved":          params.Approved,
+			"approved_admin_id": approvedAdminID,
+			"updated_at":        s.now(),
 		}
 
 		err = tx.WithContext(ctx).
 			Table(scheduleTable).
 			Where("id = ?", scheduleID).
-			Updates(params).Error
+			Updates(update).Error
 		return err
 	})
 	return dbError(err)

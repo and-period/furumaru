@@ -106,7 +106,6 @@ producer:
   - id
   - status
   - coordinatorId
-  - coordinatorName
   - lastname
   - firstname
   - lastnameKana
@@ -134,7 +133,6 @@ producer:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     status: 2
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
-    coordinatorName: '&.コーディネータ'
     lastname: '&.'
     firstname: '管理者'
     lastnameKana: 'あんどどっと'

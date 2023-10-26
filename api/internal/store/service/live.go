@@ -13,12 +13,32 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListLivesByScheduleID(ctx context.Context, in *store.ListLivesByScheduleIDInput) (entity.Lives, error) {
+func (s *service) ListLives(ctx context.Context, in *store.ListLivesInput) (entity.Lives, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, internalError(err)
+		return nil, 0, internalError(err)
 	}
-	lives, err := s.db.Live.ListByScheduleID(ctx, in.ScheduleID)
-	return lives, internalError(err)
+	params := &database.ListLivesParams{
+		ScheduleIDs: in.ScheduleIDs,
+		Limit:       int(in.Limit),
+		Offset:      int(in.Offset),
+	}
+	var (
+		lives entity.Lives
+		total int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		lives, err = s.db.Live.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Live.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, internalError(err)
+	}
+	return lives, total, nil
 }
 
 func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.Live, error) {

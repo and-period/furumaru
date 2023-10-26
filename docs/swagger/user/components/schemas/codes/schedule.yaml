@@ -1,0 +1,20 @@
+scheduleStatus:
+  type: integer
+  format: int32
+  description: マルシェ開催状況
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  x-enum-varnames:
+  - UNKNOWN
+  - WAITING
+  - LIVE
+  - CLOSED
+  x-enum-description:
+  - 不明
+  - マルシェ開催前
+  - マルシェ開催中
+  - マルシェ開催後

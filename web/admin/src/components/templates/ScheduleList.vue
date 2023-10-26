@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus } from '@mdi/js'
+import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { getResizedImages } from '~/lib/helpers'
@@ -63,6 +63,7 @@ const emit = defineEmits<{
   (e: 'click:row', scheduleId: string): void
   (e: 'click:add'): void
   (e: 'click:delete', scheduleId: string): void
+  (e: 'click:approval', scheduleId: string): void
   (e: 'update:delete-dialog', v: boolean): void
 }>()
 
@@ -170,6 +171,10 @@ const getTerm = (schedule: Schedule): string => {
   return `${getDay(schedule.startAt)} ~ ${getDay(schedule.endAt)}`
 }
 
+const getApproval = (schedule: Schedule): string => {
+  return schedule.approved ? '取り消し' : '承認する'
+}
+
 const onClickRow = (scheduleId: string): void => {
   emit('click:row', scheduleId)
 }
@@ -189,6 +194,10 @@ const onClickAdd = (): void => {
 
 const onClickDelete = (): void => {
   emit('click:delete', selectedItem?.value?.id || '')
+}
+
+const onClickApproval = (scheduleId: string): void => {
+  emit('click:approval', scheduleId)
 }
 </script>
 
@@ -249,6 +258,10 @@ const onClickDelete = (): void => {
           {{ getTerm(item.raw) }}
         </template>
         <template #[`item.actions`]="{ item }">
+          <v-btn variant="outlined" class="mr-2" color="primary" size="small" @click.stop="onClickApproval(item.raw.id)">
+            <v-icon size="small" :icon="mdiPencil" />
+            {{ getApproval(item.raw) }}
+          </v-btn>
           <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickOpenDeleteDialog(item.raw)">
             <v-icon size="small" :icon="mdiDelete" />
             削除

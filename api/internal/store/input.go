@@ -187,12 +187,13 @@ type DeleteShippingInput struct {
 }
 
 type ListProductsInput struct {
-	Name        string               `validate:"omitempty,max=128"`
-	ProducerID  string               `validate:"omitempty"`
-	ProducerIDs []string             `validate:"dive,required"`
-	Limit       int64                `validate:"required,max=200"`
-	Offset      int64                `validate:"min=0"`
-	Orders      []*ListProductsOrder `validate:"omitempty,dive,required"`
+	Name          string               `validate:"omitempty,max=128"`
+	CoordinatorID string               `validate:"omitempty"`
+	ProducerID    string               `validate:"omitempty"`
+	ProducerIDs   []string             `validate:"dive,required"`
+	Limit         int64                `validate:"required,max=200"`
+	Offset        int64                `validate:"min=0"`
+	Orders        []*ListProductsOrder `validate:"omitempty,dive,required"`
 }
 
 type ListProductsOrder struct {
@@ -209,6 +210,7 @@ type GetProductInput struct {
 }
 
 type CreateProductInput struct {
+	CoordinatorID     string                   `validate:"required"`
 	ProducerID        string                   `validate:"required"`
 	TypeID            string                   `validate:"required"`
 	TagIDs            []string                 `validate:"max=8,dive,required"`
@@ -245,7 +247,6 @@ type CreateProductMedia struct {
 
 type UpdateProductInput struct {
 	ProductID         string                   `validate:"required"`
-	ProducerID        string                   `validate:"required"`
 	TypeID            string                   `validate:"required"`
 	TagIDs            []string                 `validate:"max=8,dive,required"`
 	Name              string                   `validate:"required,max=128"`
@@ -343,13 +344,13 @@ type DeletePromotionInput struct {
 }
 
 type ListSchedulesInput struct {
-	StartAtGte time.Time               `validate:""`
-	StartAtLt  time.Time               `validate:""`
-	EndAtGte   time.Time               `validate:""`
-	EndAtLt    time.Time               `validate:""`
-	Statuses   []entity.ScheduleStatus `validate:"dive,required,unique"`
-	Limit      int64                   `validate:"required,max=200"`
-	Offset     int64                   `validate:"min=0"`
+	StartAtGte    time.Time `validate:""`
+	StartAtLt     time.Time `validate:""`
+	EndAtGte      time.Time `validate:""`
+	EndAtLt       time.Time `validate:""`
+	OnlyPublished bool      `validate:""`
+	Limit         int64     `validate:"required,max=200"`
+	Offset        int64     `validate:"min=0"`
 }
 
 type MultiGetSchedulesInput struct {
@@ -401,8 +402,10 @@ type GetLiveInput struct {
 	LiveID string `validate:"required"`
 }
 
-type ListLivesByScheduleIDInput struct {
-	ScheduleID string `validate:"required"`
+type ListLivesInput struct {
+	ScheduleIDs []string `validate:"dive,required"`
+	Limit       int64    `validate:"min=0,max=200"`
+	Offset      int64    `validate:"min=0"`
 }
 
 type CreateLiveInput struct {

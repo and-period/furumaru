@@ -8,6 +8,9 @@ import (
 	"time"
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
+	"github.com/and-period/furumaru/api/internal/media"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
+	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
@@ -23,6 +26,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/and-period/furumaru/api/pkg/sqs"
@@ -35,23 +39,13 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type registry struct {
-	appName   string
-	env       string
-	debugMode bool
-	waitGroup *sync.WaitGroup
-	slack     slack.Client
-	newRelic  *newrelic.Application
-	v1        v1.Handler
-}
-
 type params struct {
-	config               *config
 	logger               *zap.Logger
 	waitGroup            *sync.WaitGroup
 	aws                  aws.Config
 	secret               secret.Client
 	storage              storage.Bucket
+	tmpStorage           storage.Bucket
 	userAuth             cognito.Client
 	producer             sqs.Producer
 	slack                slack.Client
@@ -59,7 +53,9 @@ type params struct {
 	komoju               *komoju.Komoju
 	adminWebURL          *url.URL
 	userWebURL           *url.URL
+	postalCode           postalcode.Client
 	now                  func() time.Time
+	debugMode            bool
 	dbHost               string
 	dbPort               string
 	dbUsername           string
@@ -72,56 +68,59 @@ type params struct {
 }
 
 //nolint:funlen
-func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
+func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	params := &params{
-		config:    conf,
 		logger:    logger,
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
+		debugMode: a.LogLevel == "debug",
 	}
-	debugMode := conf.LogLevel == "debug"
 
 	// AWS SDKの設定
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.aws = awscfg
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
-	if err := getSecret(ctx, params); err != nil {
-		return nil, err
+	if err := a.getSecret(ctx, params); err != nil {
+		return err
 	}
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
-		Bucket: conf.S3Bucket,
+		Bucket: a.S3Bucket,
 	}
 	params.storage = storage.NewBucket(awscfg, storageParams)
+	tmpStorageParams := &storage.Params{
+		Bucket: a.S3TmpBucket,
+	}
+	params.tmpStorage = storage.NewBucket(awscfg, tmpStorageParams, storage.WithLogger(params.logger))
 
 	// Amazon Cognitoの設定
 	userAuthParams := &cognito.Params{
-		UserPoolID:  conf.CognitoUserPoolID,
-		AppClientID: conf.CognitoUserClientID,
+		UserPoolID:  a.CognitoUserPoolID,
+		AppClientID: a.CognitoUserClientID,
 	}
 	params.userAuth = cognito.NewClient(awscfg, userAuthParams)
 
 	// Amazon SQSの設定
 	sqsParams := &sqs.Params{
-		QueueURL: conf.SQSQueueURL,
+		QueueURL: a.SQSQueueURL,
 	}
-	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(conf.SQSMockEnabled))
+	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(a.SQSMockEnabled))
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
 		newrelicApp, err := newrelic.NewApplication(
-			newrelic.ConfigAppName(conf.AppName),
+			newrelic.ConfigAppName(a.AppName),
 			newrelic.ConfigLicense(params.newRelicLicense),
 			newrelic.ConfigAppLogForwardingEnabled(true),
 		)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		params.newRelic = newrelicApp
 	}
@@ -137,18 +136,18 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 
 	// KOMOJUの設定
 	kpaymentParams := &kpayment.Params{
-		Host:         conf.KomojuHost,
+		Host:         a.KomojuHost,
 		ClientID:     params.komojuClientID,
 		ClientSecret: params.komojuClientPassword,
 	}
 	ksessionParams := &ksession.Params{
-		Host:         conf.KomojuHost,
+		Host:         a.KomojuHost,
 		ClientID:     params.komojuClientID,
 		ClientSecret: params.komojuClientPassword,
 	}
 	komojuOpts := []komoju.Option{
 		komoju.WithLogger(logger),
-		komoju.WithDebugMode(debugMode),
+		komoju.WithDebugMode(params.debugMode),
 	}
 	komojuParams := &komoju.Params{
 		Payment: kpayment.NewClient(&http.Client{}, kpaymentParams, komojuOpts...),
@@ -156,30 +155,37 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	params.komoju = komoju.NewKomoju(komojuParams)
 
+	// PostalCodeの設定
+	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(logger))
+
 	// WebURLの設定
-	adminWebURL, err := url.Parse(conf.AminWebURL)
+	adminWebURL, err := url.Parse(a.AminWebURL)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.adminWebURL = adminWebURL
-	userWebURL, err := url.Parse(conf.UserWebURL)
+	userWebURL, err := url.Parse(a.UserWebURL)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.userWebURL = userWebURL
 
 	// Serviceの設定
-	messengerService, err := newMessengerService(params)
+	mediaService, err := a.newMediaService(params)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	userService, err := newUserService(params, messengerService)
+	messengerService, err := a.newMessengerService(params)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	storeService, err := newStoreService(params, userService, messengerService)
+	userService, err := a.newUserService(params, mediaService, messengerService)
 	if err != nil {
-		return nil, err
+		return err
+	}
+	storeService, err := a.newStoreService(params, userService, mediaService, messengerService)
+	if err != nil {
+		return err
 	}
 
 	// Handlerの設定
@@ -188,30 +194,28 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		User:      userService,
 		Store:     storeService,
 		Messenger: messengerService,
+		Media:     mediaService,
 	}
-	return &registry{
-		appName:   conf.AppName,
-		env:       conf.Environment,
-		debugMode: debugMode,
-		waitGroup: params.waitGroup,
-		slack:     params.slack,
-		newRelic:  params.newRelic,
-		v1:        v1.NewHandler(v1Params, v1.WithLogger(logger)),
-	}, nil
+	a.v1 = v1.NewHandler(v1Params, v1.WithLogger(logger))
+	a.debugMode = params.debugMode
+	a.waitGroup = params.waitGroup
+	a.slack = params.slack
+	a.newRelic = params.newRelic
+	return nil
 }
 
-func getSecret(ctx context.Context, p *params) error {
+func (a *app) getSecret(ctx context.Context, p *params) error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		// データベース認証情報の取得
-		if p.config.DBSecretName == "" {
-			p.dbHost = p.config.DBHost
-			p.dbPort = p.config.DBPort
-			p.dbUsername = p.config.DBUsername
-			p.dbPassword = p.config.DBPassword
+		if a.DBSecretName == "" {
+			p.dbHost = a.DBHost
+			p.dbPort = a.DBPort
+			p.dbUsername = a.DBUsername
+			p.dbPassword = a.DBPassword
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.DBSecretName)
+		secrets, err := p.secret.Get(ectx, a.DBSecretName)
 		if err != nil {
 			return err
 		}
@@ -223,12 +227,12 @@ func getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// Slack認証情報の取得
-		if p.config.SlackSecretName == "" {
-			p.slackToken = p.config.SlackAPIToken
-			p.slackChannelID = p.config.SlackChannelID
+		if a.SlackSecretName == "" {
+			p.slackToken = a.SlackAPIToken
+			p.slackChannelID = a.SlackChannelID
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.SlackSecretName)
+		secrets, err := p.secret.Get(ectx, a.SlackSecretName)
 		if err != nil {
 			return err
 		}
@@ -238,11 +242,11 @@ func getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// New Relic認証情報の取得
-		if p.config.NewRelicSecretName == "" {
-			p.newRelicLicense = p.config.NewRelicLicense
+		if a.NewRelicSecretName == "" {
+			p.newRelicLicense = a.NewRelicLicense
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.NewRelicSecretName)
+		secrets, err := p.secret.Get(ectx, a.NewRelicSecretName)
 		if err != nil {
 			return err
 		}
@@ -251,12 +255,12 @@ func getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// KOMOJU接続情報の取得
-		if p.config.KomojuSecretName == "" {
-			p.komojuClientID = p.config.KomojuClientID
-			p.komojuClientPassword = p.config.KomojuClientPassword
+		if a.KomojuSecretName == "" {
+			p.komojuClientID = a.KomojuClientID
+			p.komojuClientPassword = a.KomojuClientPassword
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.KomojuSecretName)
+		secrets, err := p.secret.Get(ectx, a.KomojuSecretName)
 		if err != nil {
 			return err
 		}
@@ -267,16 +271,16 @@ func getSecret(ctx context.Context, p *params) error {
 	return eg.Wait()
 }
 
-func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	params := &mysql.Params{
-		Socket:   p.config.DBSocket,
+		Socket:   a.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
 		Database: dbname,
 		Username: p.dbUsername,
 		Password: p.dbPassword,
 	}
-	location, err := time.LoadLocation(p.config.DBTimeZone)
+	location, err := time.LoadLocation(a.DBTimeZone)
 	if err != nil {
 		return nil, err
 	}
@@ -284,7 +288,7 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 		params,
 		mysql.WithLogger(p.logger),
 		mysql.WithNow(p.now),
-		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithTLS(a.DBEnabledTLS),
 		mysql.WithLocation(location),
 	)
 	if err != nil {
@@ -296,16 +300,30 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	return cli, nil
 }
 
-func newMessengerService(p *params) (messenger.Service, error) {
-	db, err := newDatabase("messengers", p)
+func (a *app) newMediaService(p *params) (media.Service, error) {
+	mysql, err := a.newDatabase("media", p)
 	if err != nil {
 		return nil, err
 	}
-	user, err := newUserService(p, nil)
+	params := &mediasrv.Params{
+		WaitGroup: p.waitGroup,
+		Database:  mediadb.NewDatabase(mysql),
+		Storage:   p.storage,
+		Tmp:       p.tmpStorage,
+	}
+	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
+}
+
+func (a *app) newMessengerService(p *params) (messenger.Service, error) {
+	db, err := a.newDatabase("messengers", p)
 	if err != nil {
 		return nil, err
 	}
-	store, err := newStoreService(p, nil, nil)
+	user, err := a.newUserService(p, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	store, err := a.newStoreService(p, nil, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -321,8 +339,8 @@ func newMessengerService(p *params) (messenger.Service, error) {
 	return messengersrv.NewService(params, messengersrv.WithLogger(p.logger)), nil
 }
 
-func newUserService(p *params, messenger messenger.Service) (user.Service, error) {
-	mysql, err := newDatabase("users", p)
+func (a *app) newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
+	mysql, err := a.newDatabase("users", p)
 	if err != nil {
 		return nil, err
 	}
@@ -331,21 +349,26 @@ func newUserService(p *params, messenger messenger.Service) (user.Service, error
 		Database:  userdb.NewDatabase(mysql),
 		UserAuth:  p.userAuth,
 		Messenger: messenger,
+		Media:     media,
 	}
 	return usersrv.NewService(params, usersrv.WithLogger(p.logger)), nil
 }
 
-func newStoreService(p *params, user user.Service, messenger messenger.Service) (store.Service, error) {
-	mysql, err := newDatabase("stores", p)
+func (a *app) newStoreService(
+	p *params, user user.Service, media media.Service, messenger messenger.Service,
+) (store.Service, error) {
+	mysql, err := a.newDatabase("stores", p)
 	if err != nil {
 		return nil, err
 	}
 	params := &storesrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  storedb.NewDatabase(mysql),
-		User:      user,
-		Messenger: messenger,
-		Komoju:    p.komoju,
+		WaitGroup:  p.waitGroup,
+		Database:   storedb.NewDatabase(mysql),
+		User:       user,
+		Messenger:  messenger,
+		Media:      media,
+		PostalCode: p.postalCode,
+		Komoju:     p.komoju,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }

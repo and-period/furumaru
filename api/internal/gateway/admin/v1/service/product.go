@@ -177,6 +177,7 @@ func NewProduct(product *entity.Product) *Product {
 	return &Product{
 		Product: response.Product{
 			ID:                product.ID,
+			CoordinatorID:     product.CoordinatorID,
 			ProducerID:        product.ProducerID,
 			CategoryID:        "",
 			ProductTypeID:     product.TypeID,

@@ -99,8 +99,8 @@ type Service interface {
 	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error
 	// マルシェ開催スケジュール承認
 	ApproveSchedule(ctx context.Context, in *ApproveScheduleInput) error
-	// マルシェタイムテーブル一覧取得(開催スケジュールID指定)
-	ListLivesByScheduleID(ctx context.Context, in *ListLivesByScheduleIDInput) (entity.Lives, error)
+	// マルシェタイムテーブル一覧取得
+	ListLives(ctx context.Context, in *ListLivesInput) (entity.Lives, int64, error)
 	// マルシェタイムテーブル取得
 	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)
 	// マルシェタイムテーブル登録

@@ -76,3 +76,14 @@ func (ls Lives) Fill(products map[string]LiveProducts) {
 		ls[i].Fill(products[ls[i].ID])
 	}
 }
+
+func (ls Lives) GroupByScheduleID() map[string]Lives {
+	res := make(map[string]Lives, len(ls))
+	for _, live := range ls {
+		if _, ok := res[live.ScheduleID]; !ok {
+			res[live.ScheduleID] = make(Lives, 0, len(ls))
+		}
+		res[live.ScheduleID] = append(res[live.ScheduleID], live)
+	}
+	return res
+}
