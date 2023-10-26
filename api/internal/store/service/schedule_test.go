@@ -29,7 +29,6 @@ func TestListSchedules(t *testing.T) {
 		{
 			ID:              "schedule-id",
 			CoordinatorID:   "coordinator-id",
-			ShippingID:      "shipping-id",
 			Status:          entity.ScheduleStatusLive,
 			Title:           "&.マルシェ",
 			Description:     "&.マルシェの開催内容です。",
@@ -128,7 +127,6 @@ func TestMultiGetSchedules(t *testing.T) {
 		{
 			ID:              "schedule-id",
 			CoordinatorID:   "coordinator-id",
-			ShippingID:      "shipping-id",
 			Status:          entity.ScheduleStatusLive,
 			Title:           "&.マルシェ",
 			Description:     "&.マルシェの開催内容です。",
@@ -202,7 +200,6 @@ func TestGetSchedule(t *testing.T) {
 	schedule := &entity.Schedule{
 		ID:            "schedule-id",
 		CoordinatorID: "coordinator-id",
-		ShippingID:    "shipping-id",
 		Title:         "タイトル",
 		Description:   "説明",
 		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
@@ -292,7 +289,6 @@ func TestCreateSchedule(t *testing.T) {
 						expect := &entity.Schedule{
 							ID:              schedule.ID, // ignore
 							CoordinatorID:   "coordinator-id",
-							ShippingID:      "shipping-id",
 							Title:           "タイトル",
 							Description:     "説明",
 							ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -310,7 +306,6 @@ func TestCreateSchedule(t *testing.T) {
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -336,7 +331,6 @@ func TestCreateSchedule(t *testing.T) {
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -356,7 +350,6 @@ func TestCreateSchedule(t *testing.T) {
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -376,7 +369,6 @@ func TestCreateSchedule(t *testing.T) {
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -396,7 +388,6 @@ func TestCreateSchedule(t *testing.T) {
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -417,7 +408,6 @@ func TestCreateSchedule(t *testing.T) {
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -447,7 +437,6 @@ func TestUpdateSchedule(t *testing.T) {
 	schedule := &entity.Schedule{
 		ID:            "schedule-id",
 		CoordinatorID: "coordinator-id",
-		ShippingID:    "shipping-id",
 		Title:         "タイトル",
 		Description:   "説明",
 		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
@@ -457,7 +446,6 @@ func TestUpdateSchedule(t *testing.T) {
 		UpdatedAt:     now,
 	}
 	params := &database.UpdateScheduleParams{
-		ShippingID:      "shipping-id",
 		Title:           "タイトル",
 		Description:     "説明",
 		ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -486,7 +474,6 @@ func TestUpdateSchedule(t *testing.T) {
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://tmp.and-period.jp/thumbnail.png",
@@ -511,7 +498,6 @@ func TestUpdateSchedule(t *testing.T) {
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -531,7 +517,6 @@ func TestUpdateSchedule(t *testing.T) {
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -551,7 +536,6 @@ func TestUpdateSchedule(t *testing.T) {
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -572,7 +556,6 @@ func TestUpdateSchedule(t *testing.T) {
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",

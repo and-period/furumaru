@@ -127,7 +127,6 @@ func (s *schedule) Update(ctx context.Context, scheduleID string, params *databa
 		}
 
 		update := map[string]interface{}{
-			"shipping_id":       params.ShippingID,
 			"title":             params.Title,
 			"description":       params.Description,
 			"thumbnail_url":     params.ThumbnailURL,

@@ -2,7 +2,6 @@ package request
 
 type CreateScheduleRequest struct {
 	CoordinatorID   string `json:"coordinatorId,omitempty"`   // コーディネータID
-	ShippingID      string `json:"shippingId,omitempty"`      // 配送設定ID
 	Title           string `json:"title,omitempty"`           // タイトル
 	Description     string `json:"description,omitempty"`     // 説明
 	ThumbnailURL    string `json:"thumbnailUrl,omitempty"`    // サムネイルURL
@@ -14,7 +13,6 @@ type CreateScheduleRequest struct {
 }
 
 type UpdateScheduleRequest struct {
-	ShippingID      string `json:"shippingId,omitempty"`      // 配送設定ID
 	Title           string `json:"title,omitempty"`           // タイトル
 	Description     string `json:"description,omitempty"`     // 説明
 	ThumbnailURL    string `json:"thumbnailUrl,omitempty"`    // サムネイルURL

@@ -134,7 +134,6 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		Box100Rate:        in.Box100Rate,
 		OriginPrefecture:  in.OriginPrefecture,
 		OriginCity:        in.OriginCity,
-		BusinessDays:      in.BusinessDays,
 		StartAt:           in.StartAt,
 		EndAt:             in.EndAt,
 	}
@@ -193,7 +192,6 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		Box100Rate:        in.Box100Rate,
 		OriginPrefecture:  in.OriginPrefecture,
 		OriginCity:        in.OriginCity,
-		BusinessDays:      in.BusinessDays,
 		StartAt:           in.StartAt,
 		EndAt:             in.EndAt,
 	}
