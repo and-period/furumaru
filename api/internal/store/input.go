@@ -191,6 +191,7 @@ type ListProductsInput struct {
 	CoordinatorID string               `validate:"omitempty"`
 	ProducerID    string               `validate:"omitempty"`
 	ProducerIDs   []string             `validate:"dive,required"`
+	OnlyPublished bool                 `validate:""`
 	Limit         int64                `validate:"required,max=200"`
 	Offset        int64                `validate:"min=0"`
 	Orders        []*ListProductsOrder `validate:"omitempty,dive,required"`
