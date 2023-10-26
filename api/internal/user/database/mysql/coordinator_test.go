@@ -832,7 +832,7 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 		City:              "千代田区",
 		AddressLine1:      "永田町1-7-1",
 		AddressLine2:      "",
-		BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+		BusinessDays:      []time.Weekday{time.Monday},
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
