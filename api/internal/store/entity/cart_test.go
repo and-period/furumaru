@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCart_Refresh(t *testing.T) {
@@ -1026,6 +1027,11 @@ func TestRefreshCart(t *testing.T) {
 			t.Parallel()
 			actual, err := refreshCart(tt.baskets, tt.products)
 			assert.Equal(t, tt.hasErr, err != nil, err)
+			require.Len(t, actual, len(tt.expect))
+			for i := range actual {
+				assert.ElementsMatch(t, tt.expect[i].Items, actual[i].Items)
+				tt.expect[i].Items = actual[i].Items // 商品順は保証されていないため
+			}
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

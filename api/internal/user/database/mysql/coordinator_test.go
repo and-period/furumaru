@@ -843,8 +843,10 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 func fillCoordinatorJSON(c *entity.Coordinator) {
 	thumbnails, _ := json.Marshal(c.Thumbnails)
 	headers, _ := json.Marshal(c.Headers)
+	businessDays, _ := json.Marshal(c.BusinessDays)
 	c.ThumbnailsJSON = datatypes.JSON(thumbnails)
 	c.HeadersJSON = datatypes.JSON(headers)
+	c.BusinessDaysJSON = datatypes.JSON(businessDays)
 }
 
 func fillIgnoreCoordinatorField(c *entity.Coordinator, now time.Time) {
