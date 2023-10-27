@@ -97,11 +97,6 @@ createProductRequest:
     originCity:
       type: string
       description: 原産地(市区町村)(32文字まで)
-    businessDays:
-      type: array
-      description: 営業曜日
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/weekday'
     startAt:
       type: integer
       format: int64
@@ -136,7 +131,6 @@ createProductRequest:
   - box100Rate
   - originPrefecture
   - originCity
-  - businessDays
   - startAt
   - endAt
   example:
@@ -169,7 +163,6 @@ createProductRequest:
     box100Rate: 40
     originPrefecture: 'tokyo'
     originCity: '彦根市'
-    businessDays: [1,2,3,4,5]
     startAt: 1640962800
     endAt: 1640962800
 updateProductRequest:
@@ -264,11 +257,6 @@ updateProductRequest:
     originCity:
       type: string
       description: 原産地(市区町村)(32文字まで)
-    businessDays:
-      type: array
-      description: 営業曜日
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/weekday'
     startAt:
       type: integer
       format: int64
@@ -301,7 +289,6 @@ updateProductRequest:
   - box100Rate
   - originPrefecture
   - originCity
-  - businessDays
   - startAt
   - endAt
   example:
@@ -332,6 +319,5 @@ updateProductRequest:
     box100Rate: 40
     originPrefecture: 'tokyo'
     originCity: '彦根市'
-    businessDays: [1,2,3,4,5]
     startAt: 1640962800
     endAt: 1640962800

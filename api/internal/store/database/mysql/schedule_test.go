@@ -32,12 +32,9 @@ func TestSchedule_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
 	schedules := make(entity.Schedules, 2)
-	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
-	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
+	schedules[0] = testSchedule("schedule-id01", "coordinator-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", now())
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
@@ -102,12 +99,9 @@ func TestSchedule_Count(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
 	schedules := make(entity.Schedules, 2)
-	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
-	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
+	schedules[0] = testSchedule("schedule-id01", "coordinator-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", now())
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
@@ -172,12 +166,9 @@ func TestSchedule_MultiGet(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
 	schedules := make(entity.Schedules, 2)
-	schedules[0] = testSchedule("schedule-id01", "coordinator-id", "shipping-id", now())
-	schedules[1] = testSchedule("schedule-id02", "coordinator-id", "shipping-id", now())
+	schedules[0] = testSchedule("schedule-id01", "coordinator-id", now())
+	schedules[1] = testSchedule("schedule-id02", "coordinator-id", now())
 	err = db.DB.Create(&schedules).Error
 	require.NoError(t, err)
 
@@ -239,10 +230,7 @@ func TestSchedule_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-	s := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+	s := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&s).Error
 	require.NoError(t, err)
 
@@ -304,10 +292,7 @@ func TestSchedule_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-	s := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+	s := testSchedule("schedule-id", "coordinator-id", now())
 
 	type args struct {
 		schedule *entity.Schedule
@@ -334,7 +319,7 @@ func TestSchedule_Create(t *testing.T) {
 		{
 			name: "duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -379,10 +364,6 @@ func TestSchedule_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-
 	type args struct {
 		scheduleID string
 		params     *database.UpdateScheduleParams
@@ -399,7 +380,7 @@ func TestSchedule_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
 				schedule.StartAt = now().AddDate(0, 1, 0)
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -407,7 +388,6 @@ func TestSchedule_Update(t *testing.T) {
 			args: args{
 				scheduleID: "schedule-id",
 				params: &database.UpdateScheduleParams{
-					ShippingID:      "shipping-id",
 					Title:           "開催スケジュール",
 					Description:     "開催スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -428,7 +408,6 @@ func TestSchedule_Update(t *testing.T) {
 			args: args{
 				scheduleID: "schedule-id",
 				params: &database.UpdateScheduleParams{
-					ShippingID:      "shipping-id",
 					Title:           "開催スケジュール",
 					Description:     "開催スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -446,14 +425,13 @@ func TestSchedule_Update(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				scheduleID: "schedule-id",
 				params: &database.UpdateScheduleParams{
-					ShippingID:      "shipping-id",
 					Title:           "開催スケジュール",
 					Description:     "開催スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -502,10 +480,6 @@ func TestSchedule_UpdateThumbnails(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-
 	type args struct {
 		scheduleID string
 		thumbnails common.Images
@@ -522,7 +496,7 @@ func TestSchedule_UpdateThumbnails(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -574,7 +548,7 @@ func TestSchedule_UpdateThumbnails(t *testing.T) {
 		{
 			name: "failed to empty thumbnail url",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
 				schedule.ThumbnailURL = ""
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -634,10 +608,6 @@ func TestSchedule_Approve(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-
 	type args struct {
 		scheduleID string
 		params     *database.ApproveScheduleParams
@@ -654,7 +624,7 @@ func TestSchedule_Approve(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
 				schedule.StartAt = now().AddDate(0, 1, 0)
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
@@ -687,7 +657,7 @@ func TestSchedule_Approve(t *testing.T) {
 		{
 			name: "failed to update",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},
@@ -722,11 +692,10 @@ func TestSchedule_Approve(t *testing.T) {
 	}
 }
 
-func testSchedule(id, coordinatorID, shippingID string, now time.Time) *entity.Schedule {
+func testSchedule(id, coordinatorID string, now time.Time) *entity.Schedule {
 	schedule := &entity.Schedule{
 		ID:              id,
 		CoordinatorID:   coordinatorID,
-		ShippingID:      shippingID,
 		Status:          entity.ScheduleStatusLive,
 		Title:           "旬の夏野菜配信",
 		Description:     "旬の夏野菜特集",

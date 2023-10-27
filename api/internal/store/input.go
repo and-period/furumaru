@@ -236,7 +236,6 @@ type CreateProductInput struct {
 	Box100Rate        int64                    `validate:"min=0,max=100"`
 	OriginPrefecture  int64                    `validate:"min=0"`
 	OriginCity        string                   `validate:"omitempty,max=32"`
-	BusinessDays      []time.Weekday           `validate:"max=7,unique"`
 	StartAt           time.Time                `validate:"required"`
 	EndAt             time.Time                `validate:"required,gtfield=StartAt"`
 }
@@ -271,7 +270,6 @@ type UpdateProductInput struct {
 	Box100Rate        int64                    `validate:"min=0,max=100"`
 	OriginPrefecture  int64                    `validate:"min=0"`
 	OriginCity        string                   `validate:"omitempty,max=32"`
-	BusinessDays      []time.Weekday           `validate:"max=7,unique"`
 	StartAt           time.Time                `validate:"required"`
 	EndAt             time.Time                `validate:"required,gtfield=StartAt"`
 }
@@ -364,7 +362,6 @@ type GetScheduleInput struct {
 
 type CreateScheduleInput struct {
 	CoordinatorID   string    `validate:"required"`
-	ShippingID      string    `validate:"required"`
 	Title           string    `validate:"required,max=64"`
 	Description     string    `validate:"required,max=2000"`
 	ThumbnailURL    string    `validate:"omitempty,url"`
@@ -377,7 +374,6 @@ type CreateScheduleInput struct {
 
 type UpdateScheduleInput struct {
 	ScheduleID      string    `validate:"required"`
-	ShippingID      string    `validate:"required"`
 	Title           string    `validate:"required,max=64"`
 	Description     string    `validate:"required,max=2000"`
 	ThumbnailURL    string    `validate:"omitempty,url"`

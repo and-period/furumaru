@@ -64,7 +64,6 @@ productResponse:
       box100Rate: 40
       originPrefecture: 'tokyo'
       originCity: '彦根市'
-      businessDays: [1,2,3,4,5]
       startAt: 1640962800
       endAt: 1640962800
       createdAt: 1640962800
@@ -261,7 +260,6 @@ productsResponse:
       box100Rate: 40
       originPrefecture: 'tokyo'
       originCity: '彦根市'
-      businessDays: [1,2,3,4,5]
       startAt: 1640962800
       endAt: 1640962800
       createdAt: 1640962800

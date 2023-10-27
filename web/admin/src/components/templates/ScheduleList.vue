@@ -4,7 +4,7 @@ import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { getResizedImages } from '~/lib/helpers'
 import { AlertType } from '~/lib/hooks'
-import { Coordinator, ScheduleStatus, Schedule, Shipping, AdminRole } from '~/types/api'
+import { Coordinator, ScheduleStatus, Schedule, AdminRole } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -41,10 +41,6 @@ const props = defineProps({
   },
   schedules: {
     type: Array<Schedule>,
-    default: () => []
-  },
-  shippings: {
-    type: Array<Shipping>,
     default: () => []
   },
   tableItemsPerPage: {

@@ -4,7 +4,6 @@ package response
 type Schedule struct {
 	ID              string   `json:"id"`              // スケジュールID
 	CoordinatorID   string   `json:"coordinatorId"`   // コーディネータID
-	ShippingID      string   `json:"shippingId"`      // 配送設定ID
 	Status          int32    `json:"status"`          // 開催状況
 	Title           string   `json:"title"`           // タイトル
 	Description     string   `json:"description"`     // 説明
@@ -23,12 +22,10 @@ type Schedule struct {
 type ScheduleResponse struct {
 	Schedule    *Schedule    `json:"schedule"`    // マルシェ開催情報
 	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
-	Shipping    *Shipping    `json:"shipping"`    // 配送設定情報
 }
 
 type SchedulesResponse struct {
 	Schedules    []*Schedule    `json:"schedules"`    // マルシェ開催一覧
 	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
-	Shippings    []*Shipping    `json:"shippings"`    // 配送設定一覧
 	Total        int64          `json:"total"`        // 合計数
 }

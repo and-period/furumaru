@@ -204,7 +204,6 @@ func NewProduct(product *entity.Product) *Product {
 			Box100Rate:        product.Box100Rate,
 			OriginPrefecture:  codes.PrefectureNames[product.OriginPrefecture],
 			OriginCity:        product.OriginCity,
-			BusinessDays:      product.BusinessDays,
 			StartAt:           product.StartAt.Unix(),
 			EndAt:             product.EndAt.Unix(),
 			CreatedAt:         product.CreatedAt.Unix(),

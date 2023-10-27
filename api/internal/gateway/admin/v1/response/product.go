@@ -1,7 +1,5 @@
 package response
 
-import "time"
-
 // Product - 商品情報
 type Product struct {
 	ID                string          `json:"id"`                // 商品ID
@@ -32,7 +30,6 @@ type Product struct {
 	Box100Rate        int64           `json:"box100Rate"`        // 箱の占有率(サイズ:100)
 	OriginPrefecture  string          `json:"originPrefecture"`  // 原産地(都道府県)
 	OriginCity        string          `json:"originCity"`        // 原産地(市区町村)
-	BusinessDays      []time.Weekday  `json:"businessDays"`      // 営業曜日(発送可能日)
 	StartAt           int64           `json:"startAt"`           // 販売開始日時
 	EndAt             int64           `json:"endAt"`             // 販売終了日時
 	CreatedAt         int64           `json:"createdAt"`         // 登録日時

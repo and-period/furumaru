@@ -77,20 +77,8 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 		return
 	}
 
-	var (
-		shippings    service.Shippings
-		coordinators service.Coordinators
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		shippings, err = h.multiGetShippings(ectx, schedules.ShippingIDs())
-		return
-	})
-	eg.Go(func() (err error) {
-		coordinators, err = h.multiGetCoordinators(ectx, schedules.CoordinatorIDs())
-		return
-	})
-	if err := eg.Wait(); err != nil {
+	coordinators, err := h.multiGetCoordinators(ctx, schedules.CoordinatorIDs())
+	if err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -98,7 +86,6 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 	res := &response.SchedulesResponse{
 		Schedules:    service.NewSchedules(schedules).Response(),
 		Coordinators: coordinators.Response(),
-		Shippings:    shippings.Response(),
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -112,20 +99,8 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 		return
 	}
 
-	var (
-		coordinator *service.Coordinator
-		shipping    *service.Shipping
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		coordinator, err = h.getCoordinator(ectx, schedule.CoordinatorID)
-		return
-	})
-	eg.Go(func() (err error) {
-		shipping, err = h.getShipping(ectx, schedule.ShippingID)
-		return
-	})
-	if err := eg.Wait(); err != nil {
+	coordinator, err := h.getCoordinator(ctx, schedule.CoordinatorID)
+	if err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -133,7 +108,6 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 	res := response.ScheduleResponse{
 		Schedule:    schedule.Response(),
 		Coordinator: coordinator.Response(),
-		Shipping:    shipping.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -151,20 +125,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		}
 	}
 
-	var (
-		coordinator *service.Coordinator
-		shipping    *service.Shipping
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		coordinator, err = h.getCoordinator(ectx, req.CoordinatorID)
-		return
-	})
-	eg.Go(func() (err error) {
-		shipping, err = h.getShipping(ectx, req.ShippingID)
-		return
-	})
-	err := eg.Wait()
+	coordinator, err := h.getCoordinator(ctx, req.CoordinatorID)
 	if errors.Is(err, exception.ErrNotFound) {
 		badRequest(ctx, err)
 		return
@@ -175,7 +136,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	}
 
 	var thumbnailURL, imageURL, openingVideoURL string
-	eg, ectx = errgroup.WithContext(ctx)
+	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if req.ThumbnailURL == "" {
 			return
@@ -213,7 +174,6 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 
 	in := &store.CreateScheduleInput{
 		CoordinatorID:   req.CoordinatorID,
-		ShippingID:      req.ShippingID,
 		Title:           req.Title,
 		Description:     req.Description,
 		ThumbnailURL:    thumbnailURL,
@@ -233,7 +193,6 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	res := &response.ScheduleResponse{
 		Schedule:    sschedule.Response(),
 		Coordinator: coordinator.Response(),
-		Shipping:    shipping.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -242,16 +201,6 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 	req := &request.UpdateScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		badRequest(ctx, err)
-		return
-	}
-
-	_, err := h.getShipping(ctx, req.ShippingID)
-	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, err)
-		return
-	}
-	if err != nil {
-		httpError(ctx, err)
 		return
 	}
 
@@ -294,7 +243,6 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 
 	in := &store.UpdateScheduleInput{
 		ScheduleID:      util.GetParam(ctx, "scheduleId"),
-		ShippingID:      req.ShippingID,
 		Title:           req.Title,
 		Description:     req.Description,
 		ThumbnailURL:    thumbnailURL,

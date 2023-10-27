@@ -29,7 +29,6 @@ func TestListSchedules(t *testing.T) {
 		{
 			ID:              "schedule-id",
 			CoordinatorID:   "coordinator-id",
-			ShippingID:      "shipping-id",
 			Status:          entity.ScheduleStatusLive,
 			Title:           "&.マルシェ",
 			Description:     "&.マルシェの開催内容です。",
@@ -128,7 +127,6 @@ func TestMultiGetSchedules(t *testing.T) {
 		{
 			ID:              "schedule-id",
 			CoordinatorID:   "coordinator-id",
-			ShippingID:      "shipping-id",
 			Status:          entity.ScheduleStatusLive,
 			Title:           "&.マルシェ",
 			Description:     "&.マルシェの開催内容です。",
@@ -202,7 +200,6 @@ func TestGetSchedule(t *testing.T) {
 	schedule := &entity.Schedule{
 		ID:            "schedule-id",
 		CoordinatorID: "coordinator-id",
-		ShippingID:    "shipping-id",
 		Title:         "タイトル",
 		Description:   "説明",
 		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
@@ -270,10 +267,6 @@ func TestCreateSchedule(t *testing.T) {
 		AdminID:  "coordinator-id",
 		Username: "&.コーディネータ",
 	}
-	shipping := &entity.Shipping{
-		ID:   "shipping-id",
-		Name: "デフォルト配送設定",
-	}
 
 	tests := []struct {
 		name      string
@@ -284,15 +277,13 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.db.Schedule.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, schedule *entity.Schedule) error {
 						expect := &entity.Schedule{
 							ID:              schedule.ID, // ignore
 							CoordinatorID:   "coordinator-id",
-							ShippingID:      "shipping-id",
 							Title:           "タイトル",
 							Description:     "説明",
 							ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -310,7 +301,6 @@ func TestCreateSchedule(t *testing.T) {
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -331,12 +321,10 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to get coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(nil, assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -351,52 +339,10 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(nil, exception.ErrNotFound)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
-				Title:           "タイトル",
-				Description:     "説明",
-				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
-				ImageURL:        "https://and-period.jp/image.png",
-				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
-				Public:          true,
-				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get shipping",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(nil, assert.AnError)
-			},
-			input: &store.CreateScheduleInput{
-				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
-				Title:           "タイトル",
-				Description:     "説明",
-				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
-				ImageURL:        "https://and-period.jp/image.png",
-				OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
-				Public:          true,
-				StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
-				EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to not found shipping",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(nil, exception.ErrNotFound)
-			},
-			input: &store.CreateScheduleInput{
-				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -411,13 +357,11 @@ func TestCreateSchedule(t *testing.T) {
 		{
 			name: "failed to create schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
-				mocks.db.Shipping.EXPECT().Get(gomock.Any(), "shipping-id").Return(shipping, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.db.Schedule.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -447,7 +391,6 @@ func TestUpdateSchedule(t *testing.T) {
 	schedule := &entity.Schedule{
 		ID:            "schedule-id",
 		CoordinatorID: "coordinator-id",
-		ShippingID:    "shipping-id",
 		Title:         "タイトル",
 		Description:   "説明",
 		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
@@ -457,7 +400,6 @@ func TestUpdateSchedule(t *testing.T) {
 		UpdatedAt:     now,
 	}
 	params := &database.UpdateScheduleParams{
-		ShippingID:      "shipping-id",
 		Title:           "タイトル",
 		Description:     "説明",
 		ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -480,13 +422,11 @@ func TestUpdateSchedule(t *testing.T) {
 				params := *params
 				params.ThumbnailURL = "https://tmp.and-period.jp/thumbnail.png"
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.db.Shipping.EXPECT().Get(ctx, "shipping-id").Return(&entity.Shipping{}, nil)
 				mocks.db.Schedule.EXPECT().Update(ctx, "schedule-id", &params).Return(nil)
 				mocks.media.EXPECT().ResizeScheduleThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://tmp.and-period.jp/thumbnail.png",
@@ -511,47 +451,6 @@ func TestUpdateSchedule(t *testing.T) {
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
-				Title:           "タイトル",
-				Description:     "説明",
-				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
-				ImageURL:        "https://and-period.jp/image.png",
-				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-				Public:          true,
-				StartAt:         now.AddDate(0, -1, 0),
-				EndAt:           now.AddDate(0, 1, 0),
-			},
-			expect: exception.ErrInternal,
-		},
-		{
-			name: "not found shipping",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.db.Shipping.EXPECT().Get(ctx, "shipping-id").Return(nil, exception.ErrNotFound)
-			},
-			input: &store.UpdateScheduleInput{
-				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
-				Title:           "タイトル",
-				Description:     "説明",
-				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
-				ImageURL:        "https://and-period.jp/image.png",
-				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-				Public:          true,
-				StartAt:         now.AddDate(0, -1, 0),
-				EndAt:           now.AddDate(0, 1, 0),
-			},
-			expect: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get shipping",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.db.Shipping.EXPECT().Get(ctx, "shipping-id").Return(nil, assert.AnError)
-			},
-			input: &store.UpdateScheduleInput{
-				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -567,12 +466,10 @@ func TestUpdateSchedule(t *testing.T) {
 			name: "failed to update schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
-				mocks.db.Shipping.EXPECT().Get(ctx, "shipping-id").Return(&entity.Shipping{}, nil)
 				mocks.db.Schedule.EXPECT().Update(ctx, "schedule-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",
-				ShippingID:      "shipping-id",
 				Title:           "タイトル",
 				Description:     "説明",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",

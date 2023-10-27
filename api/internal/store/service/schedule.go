@@ -68,19 +68,10 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		in := &user.GetCoordinatorInput{
-			CoordinatorID: in.CoordinatorID,
-		}
-		_, err = s.user.GetCoordinator(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		_, err = s.db.Shipping.Get(ectx, in.ShippingID)
-		return
-	})
-	err := eg.Wait()
+	coordinatorIn := &user.GetCoordinatorInput{
+		CoordinatorID: in.CoordinatorID,
+	}
+	_, err := s.user.GetCoordinator(ctx, coordinatorIn)
 	if errors.Is(err, exception.ErrNotFound) {
 		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
@@ -89,7 +80,6 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	}
 	sparams := &entity.NewScheduleParams{
 		CoordinatorID:   in.CoordinatorID,
-		ShippingID:      in.ShippingID,
 		Title:           in.Title,
 		Description:     in.Description,
 		ThumbnailURL:    in.ThumbnailURL,
@@ -135,15 +125,7 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 	if err != nil {
 		return internalError(err)
 	}
-	_, err = s.db.Shipping.Get(ctx, in.ShippingID)
-	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	if err != nil {
-		return internalError(err)
-	}
 	params := &database.UpdateScheduleParams{
-		ShippingID:      in.ShippingID,
 		Title:           in.Title,
 		Description:     in.Description,
 		ThumbnailURL:    in.ThumbnailURL,

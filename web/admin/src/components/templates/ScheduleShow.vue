@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import { AlertType } from '~/lib/hooks'
-import { Broadcast, BroadcastStatus, Coordinator, CreateLiveRequest, Live, Product, Schedule, ScheduleStatus, Shipping, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
+import { Broadcast, BroadcastStatus, Coordinator, CreateLiveRequest, Live, Product, Schedule, ScheduleStatus, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -25,7 +25,6 @@ const props = defineProps({
   scheduleFormData: {
     type: Object as PropType<UpdateScheduleRequest>,
     default: (): UpdateScheduleRequest => ({
-      shippingId: '',
       title: '',
       description: '',
       thumbnailUrl: '',
@@ -60,7 +59,6 @@ const props = defineProps({
     default: (): Schedule => ({
       id: '',
       coordinatorId: '',
-      shippingId: '',
       title: '',
       description: '',
       status: ScheduleStatus.UNKNOWN,
@@ -112,10 +110,6 @@ const props = defineProps({
   },
   producers: {
     type: Array<Product>,
-    default: () => []
-  },
-  shippings: {
-    type: Array<Shipping>,
     default: () => []
   },
   products: {
@@ -173,7 +167,6 @@ const emit = defineEmits<{
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
   (e: 'update:opening-video', files: FileList): void
-  (e: 'search:shipping', name: string): void
   (e: 'search:producer', name: string): void
   (e: 'search:product', producerId: string, name: string): void
   (e: 'submit:schedule'): void
@@ -233,10 +226,6 @@ const onChangeOpeningVideo = (files: FileList): void => {
   emit('update:opening-video', files)
 }
 
-const onSearchShipping = (name: string): void => {
-  emit('search:shipping', name)
-}
-
 const onSearchProducer = (name: string): void => {
   emit('search:producer', name)
 }
@@ -284,14 +273,12 @@ const onSubmitDeleteLive = (): void => {
         :loading="loading"
         :schedule="schedule"
         :coordinators="coordinators"
-        :shippings="shippings"
         :thumbnail-upload-status="thumbnailUploadStatus"
         :image-upload-status="imageUploadStatus"
         :opening-video-upload-status="openingVideoUploadStatus"
         @update:thumbnail="onChangeThumbnailFile"
         @update:image="onChangeImageFile"
         @update:opening-video="onChangeOpeningVideo"
-        @search:shipping="onSearchShipping"
         @submit="onSubmitSchedule"
       />
     </v-window-item>

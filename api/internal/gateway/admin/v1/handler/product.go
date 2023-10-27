@@ -354,7 +354,6 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		Box100Rate:        req.Box100Rate,
 		OriginPrefecture:  codes.PrefectureValues[req.OriginPrefecture],
 		OriginCity:        req.OriginCity,
-		BusinessDays:      req.BusinessDays,
 		StartAt:           jst.ParseFromUnix(req.StartAt),
 		EndAt:             jst.ParseFromUnix(req.EndAt),
 	}
@@ -460,7 +459,6 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		Box100Rate:        req.Box100Rate,
 		OriginPrefecture:  codes.PrefectureValues[req.OriginPrefecture],
 		OriginCity:        req.OriginCity,
-		BusinessDays:      req.BusinessDays,
 		StartAt:           jst.ParseFromUnix(req.StartAt),
 		EndAt:             jst.ParseFromUnix(req.EndAt),
 	}
@@ -495,7 +493,6 @@ func (h *handler) DeleteProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-//nolint:unused
 func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
 	if len(productIDs) == 0 {
 		return service.Products{}, nil

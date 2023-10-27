@@ -5,17 +5,13 @@ scheduleResponse:
       $ref: './../../../openapi.yaml#/components/schemas/schedule'
     coordinator:
       $ref: './../../../openapi.yaml#/components/schemas/coordinator'
-    shipping:
-      $ref: './../../../openapi.yaml#/components/schemas/shipping'
   required:
   - schedule
   - coordinator
-  - shipping
   example:
     schedule:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       coordinatorId: 'coordinator-id'
-      shippingId: 'shipping-id'
       status: 4
       title: 'スケジュールタイトル'
       description: 'スケジュールの説明'
@@ -74,46 +70,6 @@ scheduleResponse:
       facebookId: 'facebook-id'
       createdAt: 1640962800
       updatedAt: 1640962800
-    shipping:
-      id: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: 'デフォルト配送設定'
-      box60Rates:
-      - number: 1
-        name: '離島'
-        price: 2000
-        prefectures: ['hokkaido', 'okinawa']
-      - number: 2
-        name: 'その他'
-        price: 1200
-        prefectures: ['aomori', 'iwate', 'akita', '...']
-      box60Refrigerated: 300
-      box60Frozen: 500
-      box80Rates:
-      - number: 1
-        name: '離島'
-        price: 2000
-        prefectures: ['hokkaido', 'okinawa']
-      - number: 2
-        name: 'その他'
-        price: 1200
-        prefectures: ['aomori', 'iwate', 'akita', '...']
-      box80Refrigerated: 300
-      box80Frozen: 500
-      box100Rates:
-      - number: 1
-        name: '離島'
-        price: 2000
-        prefectures: ['hokkaido', 'okinawa']
-      - number: 2
-        name: 'その他'
-        price: 1200
-        prefectures: ['aomori', 'iwate', 'akita', '...']
-      box100Refrigerated: 300
-      box100Frozen: 500
-      hasFreeShipping: true
-      freeShippingRates: 3000
-      createdAt: 1640962800
-      updatedAt: 1640962800
 schedulesResponse:
   type: object
   properties:
@@ -127,11 +83,6 @@ schedulesResponse:
       description: コーディネータ一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/coordinator'
-    shippings:
-      type: array
-      description: 配送設定一覧
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/shipping'
     total:
       type: integer
       format: int64
@@ -139,14 +90,12 @@ schedulesResponse:
   required:
   - schedules
   - coordinators
-  - shippings
   - total
   example:
     schedules:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       coordinatorId: 'coordinator-id'
       coordinatorName: '&.コーディネータ'
-      shippingId: 'shipping-id'
       shippingName: '配送設定名'
       status: 4
       title: 'スケジュールタイトル'
@@ -222,46 +171,6 @@ schedulesResponse:
       bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
-      createdAt: 1640962800
-      updatedAt: 1640962800
-    shippings:
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: 'デフォルト配送設定'
-      box60Rates:
-      - number: 1
-        name: '離島'
-        price: 2000
-        prefectures: ['hokkaido', 'okinawa']
-      - number: 2
-        name: 'その他'
-        price: 1200
-        prefectures: ['aomori', 'iwate', 'akita', '...']
-      box60Refrigerated: 300
-      box60Frozen: 500
-      box80Rates:
-      - number: 1
-        name: '離島'
-        price: 2000
-        prefectures: ['hokkaido', 'okinawa']
-      - number: 2
-        name: 'その他'
-        price: 1200
-        prefectures: ['aomori', 'iwate', 'akita', '...']
-      box80Refrigerated: 300
-      box80Frozen: 500
-      box100Rates:
-      - number: 1
-        name: '離島'
-        price: 2000
-        prefectures: ['hokkaido', 'okinawa']
-      - number: 2
-        name: 'その他'
-        price: 1200
-        prefectures: ['aomori', 'iwate', 'akita', '...']
-      box100Refrigerated: 300
-      box100Frozen: 500
-      hasFreeShipping: true
-      freeShippingRates: 3000
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2

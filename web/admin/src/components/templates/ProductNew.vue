@@ -61,7 +61,6 @@ const props = defineProps({
       box100Rate: 0,
       originPrefecture: Prefecture.HOKKAIDO,
       originCity: '',
-      businessDays: [],
       startAt: dayjs().unix(),
       endAt: dayjs().unix()
     })
@@ -156,8 +155,7 @@ const formDataRules = computed(() => ({
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   originPrefecture: {},
-  originCity: {},
-  businessDays: {}
+  originCity: {}
 }))
 const timeDataRules = computed(() => ({
   startDate: { required },
@@ -510,17 +508,6 @@ const onSubmit = async (): Promise<void> => {
         <v-card elevation="0" class="mb-4">
           <v-card-title>配送設定</v-card-title>
           <v-card-text>
-            <v-select
-              v-model="formDataValidate.businessDays.$model"
-              label="営業日(発送可能日)"
-              :error-messages="getErrorMessage(formDataValidate.businessDays.$errors)"
-              :items="weekdays"
-              item-title="title"
-              item-value="value"
-              chips
-              closable-chips
-              multiple
-            />
             <v-select
               v-model="formDataValidate.deliveryType.$model"
               :error-messages="getErrorMessage(formDataValidate.deliveryType.$errors)"

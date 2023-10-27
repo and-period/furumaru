@@ -99,8 +99,6 @@ type Product struct {
 	Box100Rate            int64             `gorm:""`                                       // 箱の占有率(サイズ:100)
 	OriginPrefecture      int64             `gorm:""`                                       // 原産地(都道府県)
 	OriginCity            string            `gorm:""`                                       // 原産地(市区町村)
-	BusinessDays          []time.Weekday    `gorm:"-"`                                      // 営業曜日(発送可能日)一覧
-	BusinessDaysJSON      datatypes.JSON    `gorm:"default:null;column:business_days"`      // 営業曜日(発送可能日)一覧(JSON)
 	StartAt               time.Time         `gorm:""`                                       // 販売開始日時
 	EndAt                 time.Time         `gorm:""`                                       // 販売終了日時
 	CreatedAt             time.Time         `gorm:"<-:create"`                              // 登録日時
@@ -145,7 +143,6 @@ type NewProductParams struct {
 	Box100Rate        int64
 	OriginPrefecture  int64
 	OriginCity        string
-	BusinessDays      []time.Weekday
 	StartAt           time.Time
 	EndAt             time.Time
 }
@@ -178,7 +175,6 @@ func NewProduct(params *NewProductParams) *Product {
 		Box100Rate:        params.Box100Rate,
 		OriginPrefecture:  params.OriginPrefecture,
 		OriginCity:        params.OriginCity,
-		BusinessDays:      params.BusinessDays,
 		StartAt:           params.StartAt,
 		EndAt:             params.EndAt,
 	}
@@ -201,10 +197,6 @@ func (p *Product) Fill(now time.Time) (err error) {
 		return
 	}
 	p.RecommendedPoints, err = p.unmarshalRecommendedPoints()
-	if err != nil {
-		return
-	}
-	p.BusinessDays, err = p.unmarshalBusinessDays()
 	if err != nil {
 		return
 	}
@@ -258,14 +250,6 @@ func (p *Product) unmarshalRecommendedPoints() ([]string, error) {
 	return points, json.Unmarshal(p.RecommendedPointsJSON, &points)
 }
 
-func (p *Product) unmarshalBusinessDays() ([]time.Weekday, error) {
-	if p.BusinessDaysJSON == nil {
-		return []time.Weekday{}, nil
-	}
-	var days []time.Weekday
-	return days, json.Unmarshal(p.BusinessDaysJSON, &days)
-}
-
 func (p *Product) FillJSON() error {
 	media, err := p.Media.Marshal()
 	if err != nil {
@@ -279,14 +263,9 @@ func (p *Product) FillJSON() error {
 	if err != nil {
 		return err
 	}
-	days, err := ProductMarshalBusinessDays(p.BusinessDays)
-	if err != nil {
-		return err
-	}
 	p.MediaJSON = datatypes.JSON(media)
 	p.TagIDsJSON = datatypes.JSON(tagIDs)
 	p.RecommendedPointsJSON = datatypes.JSON(points)
-	p.BusinessDaysJSON = datatypes.JSON(days)
 	return nil
 }
 

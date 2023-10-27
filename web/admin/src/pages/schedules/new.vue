@@ -2,23 +2,20 @@
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
-import { useAuthStore, useScheduleStore, useShippingStore } from '~/store'
+import { useAuthStore, useScheduleStore } from '~/store'
 import { CreateScheduleRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const scheduleStore = useScheduleStore()
-const shippingStore = useShippingStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { auth } = storeToRefs(authStore)
-const { shippings } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<CreateScheduleRequest>({
   coordinatorId: '',
-  shippingId: '',
   title: '',
   description: '',
   thumbnailUrl: '',
@@ -40,25 +37,6 @@ const openingVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
 })
-
-const fetchState = useAsyncData(async (): Promise<void> => {
-  await shippingStore.fetchShippings()
-})
-
-const isLoading = (): boolean => {
-  return fetchState?.pending?.value || loading.value
-}
-
-const handleSearchShipping = async (name: string): Promise<void> => {
-  try {
-    await shippingStore.searchShippings(name)
-  } catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
-    console.log(err)
-  }
-}
 
 const handleUploadThumbnail = (files: FileList): void => {
   if (files.length === 0) {
@@ -148,14 +126,12 @@ const handleSubmit = async (): Promise<void> => {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :shippings="shippings"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :image-upload-status="imageUploadStatus"
     :opening-video-upload-status="openingVideoUploadStatus"
     @update:thumbnail="handleUploadThumbnail"
     @update:image="handleUploadImage"
     @update:opening-video="handleUploadOpeningVideo"
-    @search:shipping="handleSearchShipping"
     @submit="handleSubmit"
   />
 </template>
