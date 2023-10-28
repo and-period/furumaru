@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"net/http"
 	"sync"
 	"time"
 
@@ -148,6 +149,7 @@ func (h *handler) authentication(ctx *gin.Context) {
 func (h *handler) setCookie(ctx *gin.Context) {
 	sessionID, err := ctx.Cookie(sessionKey)
 	if err != nil || sessionID == "" {
+		ctx.SetSameSite(http.SameSiteNoneMode)
 		ctx.SetCookie(sessionKey, h.generateID(), sessionTTL, "/", "", false, true)
 	}
 
