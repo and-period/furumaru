@@ -66,6 +66,10 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_id
   schemas:
     # Common
     prefecture:

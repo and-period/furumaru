@@ -3,6 +3,8 @@ post:
   operationId: v1AddCartItem
   tags:
   - Cart
+  security:
+  - cookieAuth: []
   requestBody:
     required: true
     content:

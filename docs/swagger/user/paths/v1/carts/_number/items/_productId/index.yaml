@@ -3,6 +3,8 @@ post:
   operationId: v1RemoveCartItem
   tags:
   - Cart
+  security:
+  - cookieAuth: []
   parameters:
   - in: path
     name: number

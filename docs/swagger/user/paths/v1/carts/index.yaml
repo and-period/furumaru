@@ -3,9 +3,18 @@ get:
   operationId: v1GetCart
   tags:
   - Cart
+  security:
+  - cookieAuth: []
   responses:
     200:
       description: 成功
+      headers:
+        Set-Cookie:
+          schema:
+            type: string
+          description: |
+            Contains the session cookie named `session_id`.
+            Pass this cookie back in subsequent requests.
       content:
         application/json:
           schema:
