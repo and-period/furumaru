@@ -4,7 +4,7 @@ get:
   tags:
   - User
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: userId

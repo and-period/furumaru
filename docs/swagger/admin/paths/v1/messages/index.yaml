@@ -4,7 +4,7 @@ get:
   tags:
   - Message
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit

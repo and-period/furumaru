@@ -4,7 +4,7 @@ get:
   tags:
   - Auth
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   responses:
     200:
       description: 成功

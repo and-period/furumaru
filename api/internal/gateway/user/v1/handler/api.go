@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
@@ -71,7 +72,10 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		opts[i](dopts)
 	}
 	return &handler{
-		now:         jst.Now,
+		now: jst.Now,
+		generateID: func() string {
+			return uuid.Base58Encode(uuid.New())
+		},
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
@@ -160,6 +164,7 @@ func getUserID(ctx *gin.Context) string {
 	return ctx.GetHeader("userId")
 }
 
+//nolint:unused
 func getSessionID(ctx *gin.Context) string {
 	sessionID, _ := ctx.Cookie(sessionKey)
 	return sessionID

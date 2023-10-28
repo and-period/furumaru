@@ -4,7 +4,7 @@ patch:
   tags:
   - ProductType
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: categoryId
@@ -56,7 +56,7 @@ delete:
   tags:
   - ProductType
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: categoryId

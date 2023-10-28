@@ -4,7 +4,7 @@ patch:
   tags:
   - Category
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: categoryId
@@ -49,7 +49,7 @@ delete:
   tags:
   - Category
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: categoryId

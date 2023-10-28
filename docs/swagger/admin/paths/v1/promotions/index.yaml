@@ -4,7 +4,7 @@ get:
   tags:
   - Promotion
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit
@@ -53,7 +53,7 @@ post:
   tags:
   - Promotion
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   requestBody:
     required: true
     content:

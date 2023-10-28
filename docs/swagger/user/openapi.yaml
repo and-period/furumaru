@@ -63,7 +63,7 @@ paths:
     $ref: './paths/v1/carts/_number/items/_productId/index.yaml'
 components:
   securitySchemes:
-    BearerAuth:
+    bearerAuth:
       type: http
       scheme: bearer
   schemas:
