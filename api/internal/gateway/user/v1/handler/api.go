@@ -17,6 +17,11 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+const (
+	sessionKey = "session_id"
+	sessionTTL = 14 * 24 * 60 * 60 // 14days
+)
+
 /**
  * ###############################################
  * handler
@@ -36,6 +41,7 @@ type Params struct {
 
 type handler struct {
 	now         func() time.Time
+	generateID  func() string
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	sharedGroup *singleflight.Group
@@ -82,10 +88,14 @@ func NewHandler(params *Params, opts ...Option) Handler {
  * ###############################################
  */
 func (h *handler) Routes(rg *gin.RouterGroup) {
-	v1 := rg.Group("/v1")
+	v1 := rg.Group("/v1", h.setCookie)
+	// 公開エンドポイント
 	h.authRoutes(v1.Group("/auth"))
 	h.topRoutes(v1.Group("/top"))
 	h.productRoutes(v1.Group("/products"))
+
+	// 要認証エンドポイント
+	h.cartRoutes(v1.Group("/carts"))
 }
 
 /**
@@ -131,6 +141,15 @@ func (h *handler) authentication(ctx *gin.Context) {
 	ctx.Next()
 }
 
+func (h *handler) setCookie(ctx *gin.Context) {
+	sessionID, err := ctx.Cookie(sessionKey)
+	if err != nil || sessionID == "" {
+		ctx.SetCookie(sessionKey, h.generateID(), sessionTTL, "/", "", false, true)
+	}
+
+	ctx.Next()
+}
+
 func setAuth(ctx *gin.Context, userID string) {
 	if userID != "" {
 		ctx.Request.Header.Set("userId", userID)
@@ -139,4 +158,9 @@ func setAuth(ctx *gin.Context, userID string) {
 
 func getUserID(ctx *gin.Context) string {
 	return ctx.GetHeader("userId")
+}
+
+func getSessionID(ctx *gin.Context) string {
+	sessionID, _ := ctx.Cookie(sessionKey)
+	return sessionID
 }

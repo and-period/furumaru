@@ -1,0 +1,22 @@
+post:
+  summary: 買い物かごへ商品を追加
+  operationId: v1AddCartItem
+  tags:
+  - Cart
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1AddCartItemRequest'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
