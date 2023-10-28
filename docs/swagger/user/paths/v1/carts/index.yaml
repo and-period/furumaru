@@ -1,0 +1,12 @@
+get:
+  summary: 買い物かご取得
+  operationId: v1GetCart
+  tags:
+  - Cart
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1CartResponse'

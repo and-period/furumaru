@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { ImageSize } from './ImageSize';
-import {
-    ImageSizeFromJSON,
-    ImageSizeFromJSONTyped,
-    ImageSizeToJSON,
-} from './ImageSize';
-
 /**
  * 
  * @export
@@ -34,10 +27,10 @@ export interface CoordinatorHeadersInner {
     url: string;
     /**
      * 
-     * @type {ImageSize}
+     * @type {object}
      * @memberof CoordinatorHeadersInner
      */
-    size: ImageSize;
+    size: object;
 }
 
 /**
@@ -62,7 +55,7 @@ export function CoordinatorHeadersInnerFromJSONTyped(json: any, ignoreDiscrimina
     return {
         
         'url': json['url'],
-        'size': ImageSizeFromJSON(json['size']),
+        'size': json['size'],
     };
 }
 
@@ -76,7 +69,7 @@ export function CoordinatorHeadersInnerToJSON(value?: CoordinatorHeadersInner | 
     return {
         
         'url': value.url,
-        'size': ImageSizeToJSON(value.size),
+        'size': value.size,
     };
 }
 

@@ -217,7 +217,7 @@ paths:
     $ref: './paths/v1/upload/schedules/opening-video.yaml'
 components:
   securitySchemes:
-    BearerAuth:
+    bearerAuth:
       type: http
       scheme: bearer
   schemas:

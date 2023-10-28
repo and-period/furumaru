@@ -4,7 +4,7 @@ get:
   tags:
   - Shipping
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: shippingId
@@ -32,7 +32,7 @@ patch:
   tags:
   - Shipping
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: shippingId
@@ -71,7 +71,7 @@ delete:
   tags:
   - Shipping
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: shippingId

@@ -37,7 +37,7 @@ type CartBasket struct {
 
 type CartBaskets []*CartBasket
 
-// CartItem - 買い物かご
+// CartItem - 買い物かご内の商品情報
 type CartItem struct {
 	ProductID string `dynamodbav:"product_id"` // 商品ID
 	Quantity  int64  `dynamodbav:"quantity"`   // 数量

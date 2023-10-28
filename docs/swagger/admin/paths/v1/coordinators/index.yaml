@@ -4,7 +4,7 @@ get:
   tags:
   - Coordinator
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit
@@ -42,7 +42,7 @@ post:
   tags:
   - Coordinator
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   requestBody:
     required: true
     content:
