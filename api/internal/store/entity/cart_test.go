@@ -488,6 +488,48 @@ func TestCartBaskets_ProductIDs(t *testing.T) {
 	}
 }
 
+func TestCartBaskets_CoordinatorIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		baskets CartBaskets
+		expect  []string
+	}{
+		{
+			name: "success",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 3},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+			},
+			expect: []string{"coordinator-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.baskets.CoordinatorID())
+		})
+	}
+}
+
 func TestCartItem(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

@@ -57,12 +57,6 @@ export interface Cart {
      */
     size: ShippingSize;
     /**
-     * 箱の占有率
-     * @type {number}
-     * @memberof Cart
-     */
-    rate: number;
-    /**
      * 
      * @type {Array<CartItemsInner>}
      * @memberof Cart
@@ -84,7 +78,6 @@ export function instanceOfCart(value: object): boolean {
     isInstance = isInstance && "number" in value;
     isInstance = isInstance && "type" in value;
     isInstance = isInstance && "size" in value;
-    isInstance = isInstance && "rate" in value;
     isInstance = isInstance && "items" in value;
     isInstance = isInstance && "coordinatorId" in value;
 
@@ -104,7 +97,6 @@ export function CartFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cart
         'number': json['number'],
         'type': DeliveryTypeFromJSON(json['type']),
         'size': ShippingSizeFromJSON(json['size']),
-        'rate': json['rate'],
         'items': ((json['items'] as Array<any>).map(CartItemsInnerFromJSON)),
         'coordinatorId': json['coordinatorId'],
     };
@@ -122,7 +114,6 @@ export function CartToJSON(value?: Cart | null): any {
         'number': value.number,
         'type': DeliveryTypeToJSON(value.type),
         'size': ShippingSizeToJSON(value.size),
-        'rate': value.rate,
         'items': ((value.items as Array<any>).map(CartItemsInnerToJSON)),
         'coordinatorId': value.coordinatorId,
     };

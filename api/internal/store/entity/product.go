@@ -360,6 +360,17 @@ func (ps Products) Filter(productIDs ...string) Products {
 	return res
 }
 
+func (ps Products) FilterByPublished() Products {
+	res := make(Products, 0, len(ps))
+	for _, p := range ps {
+		if !p.Public {
+			continue
+		}
+		res = append(res, p)
+	}
+	return res
+}
+
 func NewProductMedia(url string, isThumbnail bool) *ProductMedia {
 	return &ProductMedia{
 		URL:         url,
