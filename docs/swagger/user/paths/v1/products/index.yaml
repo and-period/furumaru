@@ -3,8 +3,6 @@ get:
   operationId: v1ListProducts
   tags:
   - Product
-  security:
-  - bearerAuth: []
   parameters:
   - in: query
     name: limit

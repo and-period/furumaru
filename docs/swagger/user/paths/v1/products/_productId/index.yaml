@@ -3,8 +3,6 @@ get:
   operationId: v1GetProduct
   tags:
   - Product
-  security:
-  - bearerAuth: []
   parameters:
   - in: path
     name: productId
