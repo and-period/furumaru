@@ -38,7 +38,7 @@ const handleClickAddCartButton = () => {
 <template>
   <div class="grid grid-cols-2 bg-white px-[112px] pb-6 pt-[40px] text-main">
     <div class="w-full">
-      <div class="h=[500px] mx-auto aspect-square w-[500px]">
+      <div class="mx-auto aspect-square h-[500px] w-[500px]">
         <img :src="selectItem?.imgSrc" />
       </div>
     </div>
