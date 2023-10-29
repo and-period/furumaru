@@ -14,6 +14,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
@@ -25,9 +26,15 @@ import (
 
 var errUnmatchProducts = errors.New("service: umnatch products")
 
+const (
+	defaultCartTTL             = 14 * 24 * time.Hour // 14days
+	defaultCartRefreshInterval = 2 * time.Hour       // 2hours
+)
+
 type Params struct {
 	WaitGroup  *sync.WaitGroup
 	Database   *database.Database
+	Cache      dynamodb.Client
 	User       user.Service
 	Messenger  messenger.Service
 	Media      media.Service
@@ -37,22 +44,27 @@ type Params struct {
 }
 
 type service struct {
-	now         func() time.Time
-	logger      *zap.Logger
-	waitGroup   *sync.WaitGroup
-	sharedGroup *singleflight.Group
-	validator   validator.Validator
-	db          *database.Database
-	user        user.Service
-	messenger   messenger.Service
-	media       media.Service
-	postalCode  postalcode.Client
-	ivs         ivs.Client
-	komoju      *komoju.Komoju
+	now                 func() time.Time
+	logger              *zap.Logger
+	waitGroup           *sync.WaitGroup
+	sharedGroup         *singleflight.Group
+	validator           validator.Validator
+	db                  *database.Database
+	cache               dynamodb.Client
+	user                user.Service
+	messenger           messenger.Service
+	media               media.Service
+	postalCode          postalcode.Client
+	ivs                 ivs.Client
+	komoju              *komoju.Komoju
+	cartTTL             time.Duration
+	cartRefreshInterval time.Duration
 }
 
 type options struct {
-	logger *zap.Logger
+	logger              *zap.Logger
+	cartTTL             time.Duration
+	cartRefreshInterval time.Duration
 }
 
 type Option func(*options)
@@ -63,26 +75,43 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
+func WithCartTTL(ttl time.Duration) Option {
+	return func(opts *options) {
+		opts.cartTTL = ttl
+	}
+}
+
+func WithCartRefreshInterval(interval time.Duration) Option {
+	return func(opts *options) {
+		opts.cartRefreshInterval = interval
+	}
+}
+
 func NewService(params *Params, opts ...Option) store.Service {
 	dopts := &options{
-		logger: zap.NewNop(),
+		logger:              zap.NewNop(),
+		cartTTL:             defaultCartTTL,
+		cartRefreshInterval: defaultCartRefreshInterval,
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &service{
-		now:         jst.Now,
-		logger:      dopts.logger,
-		waitGroup:   params.WaitGroup,
-		sharedGroup: &singleflight.Group{},
-		validator:   validator.NewValidator(),
-		db:          params.Database,
-		user:        params.User,
-		messenger:   params.Messenger,
-		media:       params.Media,
-		postalCode:  params.PostalCode,
-		ivs:         params.Ivs,
-		komoju:      params.Komoju,
+		now:                 jst.Now,
+		logger:              dopts.logger,
+		waitGroup:           params.WaitGroup,
+		sharedGroup:         &singleflight.Group{},
+		validator:           validator.NewValidator(),
+		db:                  params.Database,
+		cache:               params.Cache,
+		user:                params.User,
+		messenger:           params.Messenger,
+		media:               params.Media,
+		postalCode:          params.PostalCode,
+		ivs:                 params.Ivs,
+		komoju:              params.Komoju,
+		cartTTL:             dopts.cartTTL,
+		cartRefreshInterval: defaultCartRefreshInterval,
 	}
 }
 
@@ -102,6 +131,9 @@ func internalError(err error) error {
 		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, e.Error())
 	}
 	if e := dbError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+	if e := cacheError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
 	}
 	if e := postalCodeError(err); e != nil {
@@ -132,6 +164,25 @@ func dbError(err error) error {
 		return exception.ErrAlreadyExists
 	case errors.Is(err, database.ErrDeadlineExceeded):
 		return exception.ErrDeadlineExceeded
+	default:
+		return nil
+	}
+}
+
+func cacheError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, dynamodb.ErrNotFound):
+		return exception.ErrNotFound
+	case errors.Is(err, dynamodb.ErrAlreadyExists):
+		return exception.ErrAlreadyExists
+	case errors.Is(err, dynamodb.ErrResourceExhausted), errors.Is(err, dynamodb.ErrOutOfRange):
+		return exception.ErrResourceExhausted
+	case errors.Is(err, dynamodb.ErrAborted), errors.Is(err, dynamodb.ErrCanceled):
+		return exception.ErrCanceled
 	default:
 		return nil
 	}

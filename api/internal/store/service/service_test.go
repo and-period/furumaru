@@ -11,11 +11,13 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
+	mock_dynamodb "github.com/and-period/furumaru/api/mock/pkg/dynamodb"
 	mock_ivs "github.com/and-period/furumaru/api/mock/pkg/ivs"
 	mock_postalcode "github.com/and-period/furumaru/api/mock/pkg/postalcode"
 	mock_database "github.com/and-period/furumaru/api/mock/store/database"
 	mock_komoju "github.com/and-period/furumaru/api/mock/store/komoju"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	govalidator "github.com/go-playground/validator/v10"
@@ -26,6 +28,7 @@ import (
 
 type mocks struct {
 	db            *dbMocks
+	cache         *mock_dynamodb.MockClient
 	user          *mock_user.MockService
 	messenger     *mock_messenger.MockService
 	media         *mock_media.MockService
@@ -67,6 +70,7 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		db:            newDBMocks(ctrl),
+		cache:         mock_dynamodb.NewMockClient(ctrl),
 		user:          mock_user.NewMockService(ctrl),
 		messenger:     mock_messenger.NewMockService(ctrl),
 		media:         mock_media.NewMockService(ctrl),
@@ -113,6 +117,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Schedule:    mocks.db.Schedule,
 			Live:        mocks.db.Live,
 		},
+		Cache:      mocks.cache,
 		User:       mocks.user,
 		Messenger:  mocks.messenger,
 		Media:      mocks.media,
@@ -193,6 +198,26 @@ func TestInternalError(t *testing.T) {
 			name:   "database deadline exceeded",
 			err:    database.ErrDeadlineExceeded,
 			expect: exception.ErrDeadlineExceeded,
+		},
+		{
+			name:   "cache not found",
+			err:    dynamodb.ErrNotFound,
+			expect: exception.ErrNotFound,
+		},
+		{
+			name:   "cache already exists",
+			err:    dynamodb.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
+		},
+		{
+			name:   "cache resource exhausted",
+			err:    dynamodb.ErrResourceExhausted,
+			expect: exception.ErrResourceExhausted,
+		},
+		{
+			name:   "cache canceled",
+			err:    dynamodb.ErrCanceled,
+			expect: exception.ErrCanceled,
 		},
 		{
 			name:   "postal code invalid argument",

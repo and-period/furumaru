@@ -11,6 +11,8 @@ import (
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
+var ErrInsufficientProductStock = errors.New("entity: insufficient product stock")
+
 var bascketWeightLimits = map[ShippingSize]int64{
 	ShippingSize60:  2e3,  //  2kg =  2,000g
 	ShippingSize80:  5e3,  //  5kg =  5,000g
@@ -28,11 +30,11 @@ type Cart struct {
 
 // CartBasket - 買い物かご情報
 type CartBasket struct {
-	BoxNumber     int64        `dynamodbav:"box_number"` // 箱の通番
-	BoxType       DeliveryType `dynamodbav:"box_type"`   // 箱の種別
-	BoxSize       ShippingSize `dynamodbav:"box_size"`   // 箱のサイズ
-	Items         CartItems    `dynamodbav:"items"`      // 商品一覧
-	coordinatorID string       `dynamodbav:"-"`          // コーディネータID
+	BoxNumber     int64        `dynamodbav:"box_number"`     // 箱の通番
+	BoxType       DeliveryType `dynamodbav:"box_type"`       // 箱の種別
+	BoxSize       ShippingSize `dynamodbav:"box_size"`       // 箱のサイズ
+	Items         CartItems    `dynamodbav:"items"`          // 商品一覧
+	CoordinatorID string       `dynamodbav:"coordinator_id"` // コーディネータID
 }
 
 type CartBaskets []*CartBasket
@@ -55,6 +57,32 @@ type cartGroup struct {
 
 type cartGroups []*cartGroup
 
+type CartParams struct {
+	SessionID string
+	Now       time.Time
+	TTL       time.Duration
+}
+
+func NewCart(params *CartParams) *Cart {
+	return &Cart{
+		SessionID: params.SessionID,
+		Baskets:   CartBaskets{},
+		ExpiredAt: params.Now.Add(params.TTL),
+		CreatedAt: params.Now,
+		UpdatedAt: params.Now,
+	}
+}
+
+func (c *Cart) TableName() string {
+	return "carts"
+}
+
+func (c *Cart) PrimaryKey() map[string]interface{} {
+	return map[string]interface{}{
+		"session_id": c.SessionID,
+	}
+}
+
 // Refresh - カート内の整理
 func (c *Cart) Refresh(products Products) error {
 	baskets, err := refreshCart(c.Baskets, products.Map())
@@ -63,6 +91,24 @@ func (c *Cart) Refresh(products Products) error {
 	}
 	c.Baskets = baskets
 	return nil
+}
+
+// AddItem - カート内に商品を追加
+func (c *Cart) AddItem(productID string, quantity int64) {
+	basket := &CartBasket{
+		Items: NewCartItems(map[string]int64{productID: quantity}),
+	}
+	c.Baskets = append(c.Baskets, basket)
+}
+
+// RemoveItem - カート内から商品を削除（箱の通番が未指定の場合、すべての買い物かごから削除する）
+func (c *Cart) RemoveItem(productID string, boxNumber int64) {
+	for _, basket := range c.Baskets {
+		if boxNumber != 0 && boxNumber != basket.BoxNumber {
+			continue
+		}
+		basket.Items = basket.Items.remove(productID)
+	}
 }
 
 // MergeByProductID - 商品IDを基に、買い物かご内の商品を統合
@@ -101,12 +147,31 @@ func (bs CartBaskets) AdjustItems(products map[string]*Product) CartItems {
 	return res
 }
 
+func (bs CartBaskets) VerifyQuantity(additional int64, product *Product) error {
+	items := bs.getQuantityByProductID()
+	quantity := additional + items[product.ID]
+	if quantity > product.Inventory {
+		return ErrInsufficientProductStock
+	}
+	return nil
+}
+
 func (bs CartBaskets) ProductIDs() []string {
 	set := set.NewEmpty[string](len(bs))
 	for i := range bs {
 		set.Add(bs[i].Items.ProductIDs()...)
 	}
 	return set.Slice()
+}
+
+// getQuantityByProductID - 商品IDごとに買い物かご内の数量をまとめる
+func (bs CartBaskets) getQuantityByProductID() map[string]int64 {
+	items := bs.MergeByProductID()
+	res := make(map[string]int64, len(items))
+	for _, item := range items {
+		res[item.ProductID] = item.Quantity
+	}
+	return res
 }
 
 func NewCartItem(productID string, quantity int64) *CartItem {
@@ -136,6 +201,25 @@ func (is CartItems) ProductIDs() []string {
 	return set.UniqBy(is, func(i *CartItem) string {
 		return i.ProductID
 	})
+}
+
+func (is CartItems) MapByProductID() map[string]*CartItem {
+	res := make(map[string]*CartItem, len(is))
+	for _, i := range is {
+		res[i.ProductID] = i
+	}
+	return res
+}
+
+func (is CartItems) remove(productID string) CartItems {
+	items := is.MapByProductID()
+	delete(items, productID)
+
+	res := make(CartItems, 0, len(items))
+	for _, item := range items {
+		res = append(res, item)
+	}
+	return res
 }
 
 func (is CartItems) divide(products map[string]*Product) (cartGroups, error) {
@@ -231,7 +315,7 @@ func refreshCart(baskets CartBaskets, products map[string]*Product) (CartBaskets
 				BoxType:       group.boxType,
 				BoxSize:       calcShippingSize(picked),
 				Items:         NewCartItemsWithProducts(picked),
-				coordinatorID: group.coordinatorID,
+				CoordinatorID: group.coordinatorID,
 			}
 			res = append(res, basket)
 
