@@ -96,7 +96,7 @@ func NewHandler(params *Params, opts ...Option) Handler {
  * ###############################################
  */
 func (h *handler) Routes(rg *gin.RouterGroup) {
-	v1 := rg.Group("/v1", h.setCookie)
+	v1 := rg.Group("/v1")
 	// 公開エンドポイント
 	h.authRoutes(v1.Group("/auth"))
 	h.topRoutes(v1.Group("/top"))
@@ -153,14 +153,16 @@ func (h *handler) authentication(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func (h *handler) setCookie(ctx *gin.Context) {
+func (h *handler) getSessionID(ctx *gin.Context) string {
 	sessionID, err := ctx.Cookie(sessionKey)
-	if err != nil || sessionID == "" {
-		ctx.SetSameSite(http.SameSiteNoneMode)
-		ctx.SetCookie(sessionKey, h.generateID(), sessionTTL, "/", "", false, true)
+	if err == nil && sessionID != "" {
+		return sessionID
 	}
-
-	ctx.Next()
+	// セッションIDが取得できない場合、新規IDを生成してCookieへ保存する
+	sessionID = h.generateID()
+	ctx.SetSameSite(http.SameSiteNoneMode)
+	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", "", false, true)
+	return sessionID
 }
 
 func setAuth(ctx *gin.Context, userID string) {
@@ -171,10 +173,4 @@ func setAuth(ctx *gin.Context, userID string) {
 
 func getUserID(ctx *gin.Context) string {
 	return ctx.GetHeader("userId")
-}
-
-//nolint:unused
-func getSessionID(ctx *gin.Context) string {
-	sessionID, _ := ctx.Cookie(sessionKey)
-	return sessionID
 }

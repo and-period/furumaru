@@ -20,7 +20,7 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 
 func (h *handler) GetCart(ctx *gin.Context) {
 	in := &store.GetCartInput{
-		SessionID: getSessionID(ctx),
+		SessionID: h.getSessionID(ctx),
 	}
 	cart, err := h.store.GetCart(ctx, in)
 	if err != nil {
@@ -63,7 +63,7 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 		return
 	}
 	in := &store.AddCartItemInput{
-		SessionID: getSessionID(ctx),
+		SessionID: h.getSessionID(ctx),
 		ProductID: req.ProductID,
 		Quantity:  req.Quantity,
 	}
@@ -81,7 +81,7 @@ func (h *handler) RemoveCartItem(ctx *gin.Context) {
 		return
 	}
 	in := &store.RemoveCartItemInput{
-		SessionID: getSessionID(ctx),
+		SessionID: h.getSessionID(ctx),
 		BoxNumber: boxNumber,
 		ProductID: util.GetParam(ctx, "productId"),
 	}
