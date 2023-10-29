@@ -72,11 +72,104 @@ const userInforamtionItem = MOCK_USER_INFOMATION
               type="radio"
               checked
             />
-            <label
-              class="pl-2 text-main"
-            >
-              クレジットカード支払い
-            </label>
+            <label class="pl-2 text-main"> クレジットカード支払い </label>
+            <the-text-input
+              placeholder="カード番号"
+              :with-label="false"
+              name="cc-number"
+              type="text"
+              class="mt-4"
+              required
+            />
+            <the-text-input
+              placeholder="カード名義"
+              name="cc-name"
+              :with-label="false"
+              type="text"
+              class="mt-4"
+              required
+            />
+            <div class="flex gap-4">
+              <the-text-input
+                placeholder="有効期限 (月)"
+                :with-label="false"
+                name="cc-exp"
+                type="text"
+                pattern="[0-9]*"
+                class="mt-4 w-1/2"
+                required
+              />
+              <the-text-input
+                placeholder="有効期限 (年)"
+                :with-label="false"
+                name="cc-exp"
+                type="text"
+                pattern="[0-9]*"
+                class="mt-4 w-1/2"
+                required
+              />
+              <the-text-input
+                placeholder="セキュリティコード"
+                :with-label="false"
+                type="text"
+                pattern="[0-9]*"
+                class="mt-4 w-1/2"
+                required
+              />
+            </div>
+          </div>
+          <div
+            class="pl-10 pt-12 text-left text-[16px] font-bold tracking-[1.6px] text-main"
+          >
+            お届け日の指定
+          </div>
+          <div class="flex gap-4 pl-10">
+            <the-text-input
+              placeholder="お届け希望日"
+              :with-label="false"
+              type="text"
+              pattern="[0-9]*"
+              class="mt-4 w-1/2"
+              required
+            />
+            <the-text-input
+              placeholder="お届け時間帯"
+              :with-label="false"
+              type="text"
+              pattern="[0-9]*"
+              class="mt-4 w-1/2"
+              required
+            />
+          </div>
+          <div class="flex pb-4 pl-10 pt-[80px]">
+            <div class="grid grid-cols-2">
+              <div class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="7"
+                  height="12"
+                  viewBox="0 0 7 12"
+                  fill="none"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M5.65674 0L6.62648 0.969746L1.93938 5.65685L6.62648 10.344L5.65674 11.3137L-0.000115871 5.65685L5.65674 0Z"
+                    fill="#604C3F"
+                  />
+                </svg>
+                <p
+                  class="pl-2 text-[16px] font-bold tracking-[1.6px] text-main"
+                >
+                  前のページへ戻る
+                </p>
+              </div>
+            </div>
+            <div class="pb-6">
+              <button class="w-[240px] bg-main p-[14px] text-[16px] text-white">
+                注文確定
+              </button>
+            </div>
           </div>
         </div>
         <div class="mr-10 mt-10 bg-base"></div>
