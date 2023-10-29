@@ -1,5 +1,5 @@
 export interface HeaderMenuItem {
   text: string
-  onClick: Function
+  to: string
   active: boolean
 }

@@ -37,7 +37,6 @@ const closeSpMenu = () => {
 }
 
 const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
-  item.onClick()
   closeSpMenu()
 }
 
@@ -63,13 +62,13 @@ const handleClickBuyButton = () => {
       <nav class="mr-16 hidden xl:block">
         <ul class="flex list-none gap-x-10">
           <li v-for="(item, i) in menuItems" :key="i">
-            <a
+            <nuxt-link
               href="#"
               :class="{ 'border-b border-main pb-1': item.active }"
-              @click="item.onClick"
+              :to="item.to"
             >
               {{ item.text }}
-            </a>
+            </nuxt-link>
           </li>
         </ul>
       </nav>
@@ -136,14 +135,14 @@ const handleClickBuyButton = () => {
         </the-icon-button>
       </div>
 
-      <a
+      <nuxt-link
         v-for="(item, i) in footerMenuItems"
         :key="i"
-        href="#"
+        :to="item.to"
         @click="handleClickMenuItem(item)"
       >
         {{ item.text }}
-      </a>
+      </nuxt-link>
     </div>
   </div>
 </template>
