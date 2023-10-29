@@ -120,26 +120,26 @@ const handleClickBuyButton = () => {
 </script>
 
 <template>
+  <div class="sticky top-0 z-[60]">
+    <the-app-header
+      :home-path="localePath('/')"
+      :is-authenticated="isAuthenticated"
+      :is-scrolled="isScrolled"
+      :authenticated-account-menu-item="authenticatedMenuItems"
+      :no-authenticated-account-menu-item="noAuthenticatedMenuItems"
+      :menu-items="navbarMenuList"
+      :notification-title="ht('notificationTitle')"
+      :no-notification-item-text="ht('noNotificationItemText')"
+      :notification-items="notifications"
+      :cart-is-empty="cartIsEmpty"
+      :cart-items="cartItems"
+      :cart-menu-message="cartMenuMessage"
+      :sp-menu-items="spModeMenuItems"
+      :footer-menu-items="footerMenuList"
+      @click:buy-button="handleClickBuyButton"
+    />
+  </div>
   <div class="flex min-h-screen flex-col bg-base">
-    <div class="sticky top-0 z-[60]">
-      <the-app-header
-        :home-path="localePath('/')"
-        :is-authenticated="isAuthenticated"
-        :is-scrolled="isScrolled"
-        :authenticated-account-menu-item="authenticatedMenuItems"
-        :no-authenticated-account-menu-item="noAuthenticatedMenuItems"
-        :menu-items="navbarMenuList"
-        :notification-title="ht('notificationTitle')"
-        :no-notification-item-text="ht('noNotificationItemText')"
-        :notification-items="notifications"
-        :cart-is-empty="cartIsEmpty"
-        :cart-items="cartItems"
-        :cart-menu-message="cartMenuMessage"
-        :sp-menu-items="spModeMenuItems"
-        :footer-menu-items="footerMenuList"
-        @click:buy-button="handleClickBuyButton"
-      />
-    </div>
     <main class="grow overflow-hidden">
       <div class="mx-auto pb-16">
         <slot />
