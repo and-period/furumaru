@@ -55,12 +55,13 @@ const hasStock = computed(() => {
     <div class="flex h-8 items-center gap-2 text-sm">
       <div class="inline-flex items-center">
         <label class="mr-2 block text-[10px] xl:text-[14px]">数量</label>
-        <select class="h-full border-[1px] border-main px-2">
+        <select class="h-full border-[1px] border-main px-2" @click.stop>
           <option value="0">0</option>
         </select>
       </div>
       <button
         class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white lg:px-4 lg:text-[14px]"
+        @click.stop
       >
         <the-cart-icon id="add-cart-icon" class="mr-1 h-3 w-3 lg:h-4 lg:w-4" />
         カゴに入れる
