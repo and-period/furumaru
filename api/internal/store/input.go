@@ -450,6 +450,22 @@ type MultiGetAddressesInput struct {
 	AddressIDs []string `validate:"omitempty,dive,required"`
 }
 
+type GetCartInput struct {
+	SessionID string `validate:"required"`
+}
+
+type AddCartItemInput struct {
+	SessionID string `validate:"required"`
+	ProductID string `validate:"required"`
+	Quantity  int64  `validate:"min=1"`
+}
+
+type RemoveCartItemInput struct {
+	SessionID string `validate:"required"`
+	BoxNumber int64  `validate:"required"`
+	ProductID string `validate:"required"`
+}
+
 type SearchPostalCodeInput struct {
 	PostlCode string `validate:"required,numeric,len=7"`
 }

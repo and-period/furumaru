@@ -117,6 +117,12 @@ type Service interface {
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)
 	// 住所一覧取得(ID指定)
 	MultiGetAddresses(ctx context.Context, in *MultiGetAddressesInput) (entity.Addresses, error)
+	// 買い物かご取得
+	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error)
+	// 買い物かごに商品を追加
+	AddCartItem(ctx context.Context, in *AddCartItemInput) error
+	// 買い物かごから商品を削除
+	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error
 	// 郵便番号情報検索
 	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error)
 }

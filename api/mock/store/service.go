@@ -36,6 +36,20 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
+// AddCartItem mocks base method.
+func (m *MockService) AddCartItem(ctx context.Context, in *store.AddCartItemInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddCartItem", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddCartItem indicates an expected call of AddCartItem.
+func (mr *MockServiceMockRecorder) AddCartItem(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCartItem", reflect.TypeOf((*MockService)(nil).AddCartItem), ctx, in)
+}
+
 // AggregateOrders mocks base method.
 func (m *MockService) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (entity.AggregatedOrders, error) {
 	m.ctrl.T.Helper()
@@ -281,6 +295,21 @@ func (m *MockService) DeleteShipping(ctx context.Context, in *store.DeleteShippi
 func (mr *MockServiceMockRecorder) DeleteShipping(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteShipping", reflect.TypeOf((*MockService)(nil).DeleteShipping), ctx, in)
+}
+
+// GetCart mocks base method.
+func (m *MockService) GetCart(ctx context.Context, in *store.GetCartInput) (*entity.Cart, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCart", ctx, in)
+	ret0, _ := ret[0].(*entity.Cart)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCart indicates an expected call of GetCart.
+func (mr *MockServiceMockRecorder) GetCart(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCart", reflect.TypeOf((*MockService)(nil).GetCart), ctx, in)
 }
 
 // GetCategory mocks base method.
@@ -680,6 +709,20 @@ func (m *MockService) MultiGetShippings(ctx context.Context, in *store.MultiGetS
 func (mr *MockServiceMockRecorder) MultiGetShippings(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetShippings", reflect.TypeOf((*MockService)(nil).MultiGetShippings), ctx, in)
+}
+
+// RemoveCartItem mocks base method.
+func (m *MockService) RemoveCartItem(ctx context.Context, in *store.RemoveCartItemInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveCartItem", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveCartItem indicates an expected call of RemoveCartItem.
+func (mr *MockServiceMockRecorder) RemoveCartItem(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveCartItem", reflect.TypeOf((*MockService)(nil).RemoveCartItem), ctx, in)
 }
 
 // SearchPostalCode mocks base method.
