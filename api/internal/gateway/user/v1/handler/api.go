@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"sync"
 	"time"
@@ -23,6 +24,8 @@ const (
 	sessionKey = "session_id"
 	sessionTTL = 14 * 24 * 60 * 60 // 14days
 )
+
+var errNotFoundCart = errors.New("handler: not found cart")
 
 /**
  * ###############################################
@@ -120,6 +123,10 @@ func badRequest(ctx *gin.Context, err error) {
 
 func unauthorized(ctx *gin.Context, err error) {
 	httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
+}
+
+func notFound(ctx *gin.Context, err error) {
+	httpError(ctx, status.Error(codes.NotFound, err.Error()))
 }
 
 /**

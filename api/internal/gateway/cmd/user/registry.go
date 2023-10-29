@@ -24,6 +24,7 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
@@ -47,6 +48,7 @@ type params struct {
 	storage              storage.Bucket
 	tmpStorage           storage.Bucket
 	userAuth             cognito.Client
+	cache                dynamodb.Client
 	producer             sqs.Producer
 	slack                slack.Client
 	newRelic             *newrelic.Application
@@ -111,6 +113,13 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 		QueueURL: a.SQSQueueURL,
 	}
 	params.producer = sqs.NewProducer(awscfg, sqsParams, sqs.WithDryRun(a.SQSMockEnabled))
+
+	// Amazon DynamoDBの設定
+	dbParams := &dynamodb.Params{
+		TablePrefix: "furumaru",
+		TableSuffix: a.Environment,
+	}
+	params.cache = dynamodb.NewClient(awscfg, dbParams, dynamodb.WithLogger(logger))
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -364,6 +373,7 @@ func (a *app) newStoreService(
 	params := &storesrv.Params{
 		WaitGroup:  p.waitGroup,
 		Database:   storedb.NewDatabase(mysql),
+		Cache:      p.cache,
 		User:       user,
 		Messenger:  messenger,
 		Media:      media,

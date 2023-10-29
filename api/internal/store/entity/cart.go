@@ -164,6 +164,14 @@ func (bs CartBaskets) ProductIDs() []string {
 	return set.Slice()
 }
 
+func (bs CartBaskets) CoordinatorID() []string {
+	set := set.NewEmpty[string](len(bs))
+	for i := range bs {
+		set.Add(bs[i].CoordinatorID)
+	}
+	return set.Slice()
+}
+
 // getQuantityByProductID - 商品IDごとに買い物かご内の数量をまとめる
 func (bs CartBaskets) getQuantityByProductID() map[string]int64 {
 	items := bs.MergeByProductID()
