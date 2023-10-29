@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
+const router = useRouter()
 
 const cartItems = MOCK_PURCHASE_ITEMS
+
+const handleClickBuyButton = () => {
+  router.push('/v1/purchase/address')
+}
 </script>
 
 <template>
@@ -29,6 +34,7 @@ const cartItems = MOCK_PURCHASE_ITEMS
         :address="cartItem.address"
         :sender="cartItem.sender"
         :cart-items="cartItem.cartItems"
+        @click:buy-button="handleClickBuyButton"
       />
     </div>
   </div>
