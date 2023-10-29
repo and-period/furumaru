@@ -51,17 +51,17 @@ func (mr *MockClientMockRecorder) Count(ctx, entity interface{}) *gomock.Call {
 }
 
 // Get mocks base method.
-func (m *MockClient) Get(ctx context.Context, primaryKey map[string]interface{}, entity dynamodb.Entity) error {
+func (m *MockClient) Get(ctx context.Context, entity dynamodb.Entity) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, primaryKey, entity)
+	ret := m.ctrl.Call(m, "Get", ctx, entity)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockClientMockRecorder) Get(ctx, primaryKey, entity interface{}) *gomock.Call {
+func (mr *MockClientMockRecorder) Get(ctx, entity interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockClient)(nil).Get), ctx, primaryKey, entity)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockClient)(nil).Get), ctx, entity)
 }
 
 // Insert mocks base method.

@@ -8,6 +8,39 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestCart(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	params := &CartParams{
+		SessionID: "session-id",
+		Now:       now,
+		TTL:       time.Hour,
+	}
+	cart := NewCart(params)
+	t.Run("new", func(t *testing.T) {
+		t.Parallel()
+		expect := &Cart{
+			SessionID: "session-id",
+			Baskets:   []*CartBasket{},
+			ExpiredAt: now.Add(time.Hour),
+			CreatedAt: now,
+			UpdatedAt: now,
+		}
+		assert.Equal(t, expect, cart)
+	})
+	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+		assert.Equal(t, "carts", cart.TableName())
+	})
+	t.Run("primary key", func(t *testing.T) {
+		t.Parallel()
+		expect := map[string]interface{}{
+			"session_id": "session-id",
+		}
+		assert.Equal(t, expect, cart.PrimaryKey())
+	})
+}
+
 func TestCart_Refresh(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
@@ -29,7 +62,7 @@ func TestCart_Refresh(t *testing.T) {
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
 						},
-						coordinatorID: "",
+						CoordinatorID: "",
 					},
 				},
 				ExpiredAt: now.AddDate(0, 0, 7),
@@ -57,6 +90,356 @@ func TestCart_Refresh(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			err := tt.cart.Refresh(tt.products)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestCart_AddItem(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name      string
+		cart      *Cart
+		productID string
+		quantity  int64
+		expect    *Cart
+	}{
+		{
+			name: "success",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			productID: "product-id",
+			quantity:  1,
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 0,
+						BoxType:   DeliveryTypeUnknown,
+						BoxSize:   ShippingSizeUnknown,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+		},
+		{
+			name:      "empty",
+			cart:      &Cart{},
+			productID: "product-id",
+			quantity:  1,
+			expect: &Cart{
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 0,
+						BoxType:   DeliveryTypeUnknown,
+						BoxSize:   ShippingSizeUnknown,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.cart.AddItem(tt.productID, tt.quantity)
+			assert.Equal(t, tt.expect, tt.cart)
+		})
+	}
+}
+
+func TestCart_RemoveItem(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name      string
+		cart      *Cart
+		productID string
+		boxNumber int64
+		expect    *Cart
+	}{
+		{
+			name: "success with box number",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 2,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			productID: "product-id",
+			boxNumber: 2,
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber:     2,
+						BoxType:       DeliveryTypeNormal,
+						BoxSize:       ShippingSize60,
+						Items:         CartItems{},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+		},
+		{
+			name: "success without box number",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber: 2,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			productID: "product-id",
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber:     1,
+						BoxType:       DeliveryTypeNormal,
+						BoxSize:       ShippingSize60,
+						Items:         CartItems{},
+						CoordinatorID: "",
+					},
+					{
+						BoxNumber:     2,
+						BoxType:       DeliveryTypeNormal,
+						BoxSize:       ShippingSize60,
+						Items:         CartItems{},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+		},
+		{
+			name: "success without item",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			productID: "other-id",
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+		},
+		{
+			name: "success empty",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets:   []*CartBasket{},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			productID: "product-id",
+			boxNumber: 1,
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets:   []*CartBasket{},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.cart.RemoveItem(tt.productID, tt.boxNumber)
+			assert.Equal(t, tt.expect, tt.cart)
+		})
+	}
+}
+
+func TestCartBaskets_VerifyQuantity(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		baskets    CartBaskets
+		additional int64
+		product    *Product
+		hasErr     bool
+	}{
+		{
+			name: "success with item",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+				},
+			},
+			additional: 1,
+			product: &Product{
+				ID:        "product-id01",
+				Inventory: 2,
+			},
+			hasErr: false,
+		},
+		{
+			name: "success without item",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items:     CartItems{},
+				},
+			},
+			additional: 2,
+			product: &Product{
+				ID:        "product-id01",
+				Inventory: 2,
+			},
+			hasErr: false,
+		},
+		{
+			name: "insufficient product stock",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+				},
+			},
+			additional: 2,
+			product: &Product{
+				ID:        "product-id01",
+				Inventory: 2,
+			},
+			hasErr: true,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.baskets.VerifyQuantity(tt.additional, tt.product)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 		})
 	}
@@ -241,6 +624,46 @@ func TestCartItems_ProductIDs(t *testing.T) {
 	}
 }
 
+func TestCartItems_MapByProductID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		items  CartItems
+		expect map[string]*CartItem
+	}{
+		{
+			name: "success",
+			items: CartItems{
+				{
+					ProductID: "product-id01",
+					Quantity:  1,
+				},
+				{
+					ProductID: "product-id02",
+					Quantity:  2,
+				},
+			},
+			expect: map[string]*CartItem{
+				"product-id01": {
+					ProductID: "product-id01",
+					Quantity:  1,
+				},
+				"product-id02": {
+					ProductID: "product-id02",
+					Quantity:  2,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.items.MapByProductID())
+		})
+	}
+}
+
 func TestGenerateBascketKey(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -328,7 +751,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 1},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{},
@@ -345,7 +768,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 1},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -374,7 +797,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 1},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -401,7 +824,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  1,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -416,7 +839,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 2},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -443,7 +866,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -458,7 +881,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 3},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -485,7 +908,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  3,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -500,7 +923,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 4},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -527,7 +950,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  3,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 				{
 					BoxNumber: 2,
@@ -539,7 +962,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  1,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -555,7 +978,7 @@ func TestRefreshCart(t *testing.T) {
 						{ProductID: "product-id01", Quantity: 1},
 						{ProductID: "product-id02", Quantity: 2},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -597,7 +1020,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -614,7 +1037,7 @@ func TestRefreshCart(t *testing.T) {
 						{ProductID: "product-id02", Quantity: 4},
 						{ProductID: "product-id03", Quantity: 2},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -663,7 +1086,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 				{
 					BoxNumber: 2,
@@ -675,7 +1098,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 				{
 					BoxNumber: 3,
@@ -691,7 +1114,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  1,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 				{
 					BoxNumber: 4,
@@ -703,7 +1126,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  1,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -718,7 +1141,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 4},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -745,7 +1168,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  4,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -760,7 +1183,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 2},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -787,7 +1210,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -802,7 +1225,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 4},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -829,7 +1252,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  4,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -844,7 +1267,7 @@ func TestRefreshCart(t *testing.T) {
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 5},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			products: map[string]*Product{
@@ -871,7 +1294,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  4,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 				{
 					BoxNumber: 2,
@@ -883,7 +1306,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  1,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
@@ -899,7 +1322,7 @@ func TestRefreshCart(t *testing.T) {
 						{ProductID: "product-id01", Quantity: 2},
 						{ProductID: "product-id02", Quantity: 2},
 					},
-					coordinatorID: "",
+					CoordinatorID: "",
 				},
 			},
 			products: map[string]*Product{
@@ -937,7 +1360,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id01",
+					CoordinatorID: "coordinator-id01",
 				},
 				{
 					BoxNumber: 2,
@@ -949,7 +1372,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id02",
+					CoordinatorID: "coordinator-id02",
 				},
 			},
 			hasErr: false,
@@ -965,7 +1388,7 @@ func TestRefreshCart(t *testing.T) {
 						{ProductID: "product-id01", Quantity: 2},
 						{ProductID: "product-id02", Quantity: 2},
 					},
-					coordinatorID: "",
+					CoordinatorID: "",
 				},
 			},
 			products: map[string]*Product{
@@ -1003,7 +1426,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 				{
 					BoxNumber: 2,
@@ -1015,7 +1438,7 @@ func TestRefreshCart(t *testing.T) {
 							Quantity:  2,
 						},
 					},
-					coordinatorID: "coordinator-id",
+					CoordinatorID: "coordinator-id",
 				},
 			},
 			hasErr: false,
