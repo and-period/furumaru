@@ -1,7 +1,28 @@
 <script setup lang="ts">
-import { MOCK_USER_INFOMATION } from '~/constants/mock'
+import { MOCK_USER_INFOMATION, MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 
 const userInformationItem = MOCK_USER_INFOMATION
+const cartItem = MOCK_PURCHASE_ITEMS[0]
+
+const discount = -500
+const shipping = 2500
+
+const itemsTotalPrice = computed(() => {
+  return cartItem.cartItems[0].items
+    .map((item) => item.price)
+    .reduce((sum, price) => sum + price)
+})
+
+const totalPrice = computed(() => {
+  return itemsTotalPrice.value + discount + shipping
+})
+
+const priceFormatter = (price: number) => {
+  return new Intl.NumberFormat('ja-JP', {
+    style: 'currency',
+    currency: 'JPY',
+  }).format(price)
+}
 </script>
 
 <template>
@@ -9,7 +30,7 @@ const userInformationItem = MOCK_USER_INFOMATION
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
       ご購入手続き
     </div>
-    <div class="my-10 bg-white px-6">
+    <div class="my-10 bg-white px-6 pb-10">
       <div class="grid grid-cols-2 gap-[80px]">
         <div class="pl-10">
           <div>
@@ -82,14 +103,22 @@ const userInformationItem = MOCK_USER_INFOMATION
                 checked
               />
               <label class="pl-2 text-main"> クレジットカード支払い </label>
-              <the-text-input
-                placeholder="カード番号"
-                :with-label="false"
-                name="cc-number"
-                type="text"
-                class="mt-4"
-                required
-              />
+              <div class="flex w-full items-center gap-4">
+                <the-text-input
+                  placeholder="カード番号"
+                  :with-label="false"
+                  name="cc-number"
+                  type="text"
+                  class="mt-4 w-full"
+                  required
+                />
+                <div class="flex h-[24px] min-w-max gap-2">
+                  <img src="~/assets/img/cc/visa.png" alt="visa icon" />
+                  <img src="~/assets/img/cc/jcb.png" alt="jcb icon" />
+                  <img src="~/assets/img/cc/amex.png" alt="amex icon" />
+                  <img src="~/assets/img/cc/master.png" alt="master icon" />
+                </div>
+              </div>
               <the-text-input
                 placeholder="カード名義"
                 name="cc-name"
@@ -120,6 +149,7 @@ const userInformationItem = MOCK_USER_INFOMATION
                 <the-text-input
                   placeholder="セキュリティコード"
                   :with-label="false"
+                  name="cc-csc"
                   type="text"
                   pattern="[0-9]*"
                   class="mt-4 w-1/2"
@@ -127,18 +157,19 @@ const userInformationItem = MOCK_USER_INFOMATION
                 />
               </div>
             </div>
+
             <div
-              class="pt-12 text-left text-[16px] font-bold tracking-[1.6px] text-main"
+              class="mt-12 text-left text-[16px] font-bold tracking-[1.6px] text-main"
             >
               お届け日の指定
             </div>
-            <div class="flex gap-4">
+            <div class="mt-4 grid grid-cols-2 gap-4">
               <the-text-input
                 placeholder="お届け希望日"
                 :with-label="false"
                 type="date"
                 pattern="[0-9]*"
-                class="mt-4 w-1/2"
+                class="w-full"
                 required
               />
               <the-text-input
@@ -146,41 +177,24 @@ const userInformationItem = MOCK_USER_INFOMATION
                 :with-label="false"
                 type="time"
                 pattern="[0-9]*"
-                class="mt-4 w-1/2"
+                class="w-full"
                 required
               />
             </div>
-            <div class="flex pb-4 pt-[80px]">
-              <div class="grid grid-cols-2">
-                <div class="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="7"
-                    height="12"
-                    viewBox="0 0 7 12"
-                    fill="none"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M5.65674 0L6.62648 0.969746L1.93938 5.65685L6.62648 10.344L5.65674 11.3137L-0.000115871 5.65685L5.65674 0Z"
-                      fill="#604C3F"
-                    />
-                  </svg>
-                  <p
-                    class="pl-2 text-[16px] font-bold tracking-[1.6px] text-main"
-                  >
-                    前のページへ戻る
-                  </p>
-                </div>
+
+            <div class="mt-12 grid grid-cols-2">
+              <div class="inline-flex items-center">
+                <the-left-arrow-icon class="h-4 w-4" />
+                <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
+                  前のページへ戻る
+                </p>
               </div>
-              <div class="pb-6">
-                <button
-                  class="w-[240px] bg-main p-[14px] text-[16px] text-white"
-                >
-                  注文確定
-                </button>
-              </div>
+
+              <button
+                class="w-[240px] justify-self-end bg-main p-[14px] text-[16px] text-white"
+              >
+                注文確定
+              </button>
             </div>
           </div>
         </div>
@@ -188,6 +202,67 @@ const userInformationItem = MOCK_USER_INFOMATION
         <div class="mr-10 mt-10">
           <div class="w-full bg-base p-10 text-main">
             <div class="text-[16px] font-bold tracking-[1.6px]">注文内容</div>
+            <div class="my-6 text-[12px] tracking-[1.2px]">
+              <p>
+                {{ cartItem.marche }}
+              </p>
+              <p>発想地：{{ cartItem.address }}</p>
+              <p>
+                取扱元：
+                {{ cartItem.sender }}
+              </p>
+              <p>箱の数：2（常温・冷蔵 ✕ 2）</p>
+            </div>
+            <div>
+              <div>
+                <div
+                  v-for="(item, i) in cartItem.cartItems[0].items"
+                  :key="i"
+                  class="grid grid-cols-5 border-t py-2 text-[12px] tracking-[1.2px]"
+                >
+                  <img
+                    :src="item.imgSrc"
+                    :alt="`${item.name}の画像`"
+                    class="block aspect-square h-[56px] w-[56px]"
+                  />
+                  <div class="col-span-2">{{ item.name }}</div>
+                  <div
+                    class="flex w-full items-center justify-self-end text-right"
+                  >
+                    数量：{{ 1 }}
+                  </div>
+                  <div class="flex items-center justify-self-end text-right">
+                    {{ priceFormatter(item.price) }}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="grid grid-cols-2 gap-y-4 border-y border-main py-6 text-[14px] tracking-[1.4px]"
+              >
+                <div>商品合計（税込み）</div>
+                <div class="text-right">
+                  {{ priceFormatter(itemsTotalPrice) }}
+                </div>
+                <div>クーポン利用</div>
+                <div class="text-right">
+                  {{ priceFormatter(discount) }}
+                </div>
+                <div>送料（合計）</div>
+                <div class="text-right">
+                  {{ priceFormatter(shipping) }}
+                </div>
+              </div>
+
+              <div
+                class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
+              >
+                <div>合計（税込み）</div>
+                <div class="text-right">
+                  {{ priceFormatter(totalPrice) }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
