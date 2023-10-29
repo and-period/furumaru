@@ -29,6 +29,10 @@ const priceFormatter = (price: number) => {
 const handleClickPreviousStepButton = () => {
   router.back()
 }
+
+const handleClickNextStepButton = () => {
+  router.push('/v1/purchase/complete')
+}
 </script>
 
 <template>
@@ -201,6 +205,7 @@ const handleClickPreviousStepButton = () => {
 
               <button
                 class="w-[240px] justify-self-end bg-main p-[14px] text-[16px] text-white"
+                @click="handleClickNextStepButton"
               >
                 注文確定
               </button>
