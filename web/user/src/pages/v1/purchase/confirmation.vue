@@ -93,7 +93,7 @@ const userInforamtionItem = MOCK_USER_INFOMATION
               <the-text-input
                 placeholder="有効期限 (月)"
                 :with-label="false"
-                name="cc-exp"
+                name="cc-exp-month"
                 type="text"
                 pattern="[0-9]*"
                 class="mt-4 w-1/2"
@@ -102,7 +102,7 @@ const userInforamtionItem = MOCK_USER_INFOMATION
               <the-text-input
                 placeholder="有効期限 (年)"
                 :with-label="false"
-                name="cc-exp"
+                name="cc-exp-year"
                 type="text"
                 pattern="[0-9]*"
                 class="mt-4 w-1/2"
