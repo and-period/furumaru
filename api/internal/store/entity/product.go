@@ -70,6 +70,7 @@ const (
 // Product - 商品情報
 type Product struct {
 	ID                    string            `gorm:"primaryKey;<-:create"`                   // 商品ID
+	CoordinatorID         string            `gorm:""`                                       // コーディネータID
 	ProducerID            string            `gorm:""`                                       // 生産者ID
 	TypeID                string            `gorm:"column:product_type_id"`                 // 品目ID
 	TagIDs                []string          `gorm:"-"`                                      // 商品タグID一覧
@@ -98,8 +99,6 @@ type Product struct {
 	Box100Rate            int64             `gorm:""`                                       // 箱の占有率(サイズ:100)
 	OriginPrefecture      int64             `gorm:""`                                       // 原産地(都道府県)
 	OriginCity            string            `gorm:""`                                       // 原産地(市区町村)
-	BusinessDays          []time.Weekday    `gorm:"-"`                                      // 営業曜日(発送可能日)一覧
-	BusinessDaysJSON      datatypes.JSON    `gorm:"default:null;column:business_days"`      // 営業曜日(発送可能日)一覧(JSON)
 	StartAt               time.Time         `gorm:""`                                       // 販売開始日時
 	EndAt                 time.Time         `gorm:""`                                       // 販売終了日時
 	CreatedAt             time.Time         `gorm:"<-:create"`                              // 登録日時
@@ -119,6 +118,7 @@ type ProductMedia struct {
 type MultiProductMedia []*ProductMedia
 
 type NewProductParams struct {
+	CoordinatorID     string
 	ProducerID        string
 	TypeID            string
 	TagIDs            []string
@@ -143,7 +143,6 @@ type NewProductParams struct {
 	Box100Rate        int64
 	OriginPrefecture  int64
 	OriginCity        string
-	BusinessDays      []time.Weekday
 	StartAt           time.Time
 	EndAt             time.Time
 }
@@ -151,6 +150,7 @@ type NewProductParams struct {
 func NewProduct(params *NewProductParams) *Product {
 	return &Product{
 		ID:                uuid.Base58Encode(uuid.New()),
+		CoordinatorID:     params.CoordinatorID,
 		ProducerID:        params.ProducerID,
 		TypeID:            params.TypeID,
 		TagIDs:            params.TagIDs,
@@ -175,7 +175,6 @@ func NewProduct(params *NewProductParams) *Product {
 		Box100Rate:        params.Box100Rate,
 		OriginPrefecture:  params.OriginPrefecture,
 		OriginCity:        params.OriginCity,
-		BusinessDays:      params.BusinessDays,
 		StartAt:           params.StartAt,
 		EndAt:             params.EndAt,
 	}
@@ -201,10 +200,6 @@ func (p *Product) Fill(now time.Time) (err error) {
 	if err != nil {
 		return
 	}
-	p.BusinessDays, err = p.unmarshalBusinessDays()
-	if err != nil {
-		return
-	}
 	p.SetStatus(now)
 	return
 }
@@ -222,6 +217,13 @@ func (p *Product) SetStatus(now time.Time) {
 	default:
 		p.Status = ProductStatusOutOfSale
 	}
+}
+
+func (p *Product) WeightGram() int64 {
+	if p.WeightUnit == WeightUnitGram {
+		return p.Weight
+	}
+	return p.Weight * 1e3
 }
 
 func (p *Product) unmarshalTagIDs() ([]string, error) {
@@ -248,14 +250,6 @@ func (p *Product) unmarshalRecommendedPoints() ([]string, error) {
 	return points, json.Unmarshal(p.RecommendedPointsJSON, &points)
 }
 
-func (p *Product) unmarshalBusinessDays() ([]time.Weekday, error) {
-	if p.BusinessDaysJSON == nil {
-		return []time.Weekday{}, nil
-	}
-	var days []time.Weekday
-	return days, json.Unmarshal(p.BusinessDaysJSON, &days)
-}
-
 func (p *Product) FillJSON() error {
 	media, err := p.Media.Marshal()
 	if err != nil {
@@ -269,14 +263,9 @@ func (p *Product) FillJSON() error {
 	if err != nil {
 		return err
 	}
-	days, err := ProductMarshalBusinessDays(p.BusinessDays)
-	if err != nil {
-		return err
-	}
 	p.MediaJSON = datatypes.JSON(media)
 	p.TagIDsJSON = datatypes.JSON(tagIDs)
 	p.RecommendedPointsJSON = datatypes.JSON(points)
-	p.BusinessDaysJSON = datatypes.JSON(days)
 	return nil
 }
 
@@ -301,6 +290,36 @@ func (ps Products) Fill(now time.Time) error {
 	return nil
 }
 
+func (ps Products) Box60Rate() int64 {
+	var rate int64
+	for i := range ps {
+		rate += ps[i].Box60Rate
+	}
+	return rate
+}
+
+func (ps Products) Box80Rate() int64 {
+	var rate int64
+	for i := range ps {
+		rate += ps[i].Box80Rate
+	}
+	return rate
+}
+
+func (ps Products) WeightGram() int64 {
+	var weight int64
+	for i := range ps {
+		weight += ps[i].WeightGram()
+	}
+	return weight
+}
+
+func (ps Products) CoordinatorIDs() []string {
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.CoordinatorID
+	})
+}
+
 func (ps Products) ProducerIDs() []string {
 	return set.UniqBy(ps, func(p *Product) string {
 		return p.ProducerID
@@ -319,6 +338,26 @@ func (ps Products) ProductTagIDs() []string {
 		res.Add(ps[i].TagIDs...)
 	}
 	return res.Slice()
+}
+
+func (ps Products) Map() map[string]*Product {
+	res := make(map[string]*Product, len(ps))
+	for _, p := range ps {
+		res[p.ID] = p
+	}
+	return res
+}
+
+func (ps Products) Filter(productIDs ...string) Products {
+	set := set.New(productIDs...)
+	res := make(Products, 0, len(ps))
+	for i := range ps {
+		if !set.Contains(ps[i].ID) {
+			continue
+		}
+		res = append(res, ps[i])
+	}
+	return res
 }
 
 func NewProductMedia(url string, isThumbnail bool) *ProductMedia {

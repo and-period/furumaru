@@ -65,11 +65,18 @@ type ListCategoriesOrder struct {
 }
 
 type Live interface {
-	ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error)
+	List(ctx context.Context, params *ListLivesParams, fields ...string) (entity.Lives, error)
+	Count(ctx context.Context, params *ListLivesParams) (int64, error)
 	Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error)
 	Create(ctx context.Context, live *entity.Live) error
 	Update(ctx context.Context, liveID string, params *UpdateLiveParams) error
 	Delete(ctx context.Context, liveID string) error
+}
+
+type ListLivesParams struct {
+	ScheduleIDs []string
+	Limit       int
+	Offset      int
 }
 
 type UpdateLiveParams struct {
@@ -110,12 +117,14 @@ type Product interface {
 }
 
 type ListProductsParams struct {
-	Name        string
-	ProducerID  string
-	ProducerIDs []string
-	Limit       int
-	Offset      int
-	Orders      []*ListProductsOrder
+	Name          string
+	CoordinatorID string
+	ProducerID    string
+	ProducerIDs   []string
+	OnlyPublished bool
+	Limit         int
+	Offset        int
+	Orders        []*ListProductsOrder
 }
 
 type ListProductsOrder struct {
@@ -124,7 +133,6 @@ type ListProductsOrder struct {
 }
 
 type UpdateProductParams struct {
-	ProducerID        string
 	TypeID            string
 	TagIDs            []string
 	Name              string
@@ -148,7 +156,6 @@ type UpdateProductParams struct {
 	Box100Rate        int64
 	OriginPrefecture  int64
 	OriginCity        string
-	BusinessDays      []time.Weekday
 	StartAt           time.Time
 	EndAt             time.Time
 }
@@ -237,23 +244,25 @@ type UpdatePromotionParams struct {
 type Schedule interface {
 	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
 	Count(ctx context.Context, params *ListSchedulesParams) (int64, error)
+	MultiGet(ctx context.Context, scheduleIDs []string, fields ...string) (entity.Schedules, error)
 	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
 	Create(ctx context.Context, schedule *entity.Schedule) error
 	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
 	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
+	Approve(ctx context.Context, scheduleID string, params *ApproveScheduleParams) error
 }
 
 type ListSchedulesParams struct {
-	StartAtGte time.Time
-	StartAtLt  time.Time
-	EndAtGte   time.Time
-	EndAtLt    time.Time
-	Limit      int
-	Offset     int
+	StartAtGte    time.Time
+	StartAtLt     time.Time
+	EndAtGte      time.Time
+	EndAtLt       time.Time
+	OnlyPublished bool
+	Limit         int
+	Offset        int
 }
 
 type UpdateScheduleParams struct {
-	ShippingID      string
 	Title           string
 	Description     string
 	ThumbnailURL    string
@@ -262,6 +271,11 @@ type UpdateScheduleParams struct {
 	Public          bool
 	StartAt         time.Time
 	EndAt           time.Time
+}
+
+type ApproveScheduleParams struct {
+	Approved        bool
+	ApprovedAdminID string
 }
 
 type Shipping interface {

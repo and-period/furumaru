@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -73,7 +74,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.NotifyRegisterAdminInput{},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -85,7 +86,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 				AdminID:  "admin-id",
 				Password: "!Qaz2wsx",
 			},
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -156,7 +157,7 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.NotifyResetAdminPasswordInput{},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to send message",
@@ -168,7 +169,7 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 				AdminID:  "admin-id",
 				Password: "!Qaz2wsx",
 			},
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -306,7 +307,7 @@ func TestNotifyNotification(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.NotifyNotificationInput{},
-			expectErr: messenger.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get notification",
@@ -316,7 +317,7 @@ func TestNotifyNotification(t *testing.T) {
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
 			},
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to notify admin notification",
@@ -328,7 +329,7 @@ func TestNotifyNotification(t *testing.T) {
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
 			},
-			expectErr: messenger.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

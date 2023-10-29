@@ -49,9 +49,9 @@ func TestProduct_List(t *testing.T) {
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", productTags.IDs(), now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", productTags.IDs(), now())
-	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", productTags.IDs(), now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", productTags.IDs(), now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", productTags.IDs(), now())
+	products[2] = testProduct("product-id03", "type-id02", "category-id02", "coordinator-id", "producer-id", productTags.IDs(), now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
@@ -73,11 +73,12 @@ func TestProduct_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProductsParams{
-					Name:        "いも",
-					ProducerID:  "producer-id",
-					ProducerIDs: []string{"producer-id"},
-					Limit:       2,
-					Offset:      1,
+					Name:          "いも",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					ProducerIDs:   []string{"producer-id"},
+					Limit:         2,
+					Offset:        1,
 				},
 			},
 			want: want{
@@ -152,9 +153,9 @@ func TestProduct_Count(t *testing.T) {
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", productTags.IDs(), now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", productTags.IDs(), now())
-	products[2] = testProduct("product-id03", "type-id02", "category-id02", "producer-id", productTags.IDs(), now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", productTags.IDs(), now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", productTags.IDs(), now())
+	products[2] = testProduct("product-id03", "type-id02", "category-id02", "coordinator-id", "producer-id", productTags.IDs(), now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
@@ -176,8 +177,9 @@ func TestProduct_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProductsParams{
-					Name:       "いも",
-					ProducerID: "producer-id",
+					Name:          "いも",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
 				},
 			},
 			want: want{
@@ -236,9 +238,9 @@ func TestProduct_MultiGet(t *testing.T) {
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
 	products := make(entity.Products, 3)
-	products[0] = testProduct("product-id01", "type-id01", "category-id01", "producer-id", productTags.IDs(), now())
-	products[1] = testProduct("product-id02", "type-id02", "category-id02", "producer-id", productTags.IDs(), now())
-	products[2] = testProduct("product-id03", "type-id03", "category-id02", "producer-id", productTags.IDs(), now())
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", productTags.IDs(), now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", productTags.IDs(), now())
+	products[2] = testProduct("product-id03", "type-id03", "category-id02", "coordinator-id", "producer-id", productTags.IDs(), now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
 
@@ -309,7 +311,7 @@ func TestProduct_Get(t *testing.T) {
 	productTag := testProductTag("tag-id", "贈答品", now())
 	err = db.DB.Create(&productTag).Error
 	require.NoError(t, err)
-	p := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
+	p := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, now())
 	err = db.DB.Create(&p).Error
 	require.NoError(t, err)
 
@@ -398,7 +400,7 @@ func TestProduct_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				product: testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now()),
+				product: testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, now()),
 			},
 			want: want{
 				hasErr: false,
@@ -407,12 +409,12 @@ func TestProduct_Create(t *testing.T) {
 		{
 			name: "failed to duplicate entry",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				product: testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now()),
+				product: testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, now()),
 			},
 			want: want{
 				hasErr: true,
@@ -478,14 +480,13 @@ func TestProduct_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				productID: "product-id",
 				params: &database.UpdateProductParams{
-					ProducerID:      "producer-id",
 					TypeID:          "type-id",
 					TagIDs:          []string{"tag-id"},
 					Name:            "新鮮なじゃがいも",
@@ -578,7 +579,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"product-id"}, now())
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"product-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
@@ -620,7 +621,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 		{
 			name: "media is non existent",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
@@ -691,7 +692,7 @@ func TestProduct_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "category-id", "producer-id", []string{"tag-id"}, now())
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, now())
 				err = db.DB.Create(&product).Error
 				require.NoError(t, err)
 			},
@@ -722,11 +723,12 @@ func TestProduct_Delete(t *testing.T) {
 	}
 }
 
-func testProduct(id, typeID, categoryID, producerID string, tagIDs []string, now time.Time) *entity.Product {
+func testProduct(productID, typeID, categoryID, coordinatorID, producerID string, tagIDs []string, now time.Time) *entity.Product {
 	p := &entity.Product{
-		ID:              id,
+		ID:              productID,
 		TypeID:          typeID,
 		TagIDs:          tagIDs,
+		CoordinatorID:   coordinatorID,
 		ProducerID:      producerID,
 		Name:            "新鮮なじゃがいも",
 		Description:     "新鮮なじゃがいもをお届けします。",
@@ -752,7 +754,6 @@ func testProduct(id, typeID, categoryID, producerID string, tagIDs []string, now
 		Box100Rate:        30,
 		OriginPrefecture:  codes.PrefectureValues["shiga"],
 		OriginCity:        "彦根市",
-		BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 		StartAt:           now.AddDate(0, -1, 0),
 		EndAt:             now.AddDate(0, 1, 0),
 		CreatedAt:         now,

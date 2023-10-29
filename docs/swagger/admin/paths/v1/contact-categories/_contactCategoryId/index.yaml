@@ -4,7 +4,7 @@ get:
   tags:
   - ContactCategory
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: contactCategoryId

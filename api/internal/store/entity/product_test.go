@@ -21,6 +21,7 @@ func TestProduct(t *testing.T) {
 		{
 			name: "success",
 			params: &NewProductParams{
+				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				TypeID:          "type-id",
 				TagIDs:          []string{"tag-id"},
@@ -48,12 +49,12 @@ func TestProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
-				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				StartAt:           now,
 				EndAt:             now.AddDate(1, 0, 0),
 			},
 			expect: &Product{
 				ID:              "", // ignore
+				CoordinatorID:   "coordinator-id",
 				ProducerID:      "producer-id",
 				TypeID:          "type-id",
 				TagIDs:          []string{"tag-id"},
@@ -82,7 +83,6 @@ func TestProduct(t *testing.T) {
 				Box100Rate:        30,
 				OriginPrefecture:  codes.PrefectureValues["shiga"],
 				OriginCity:        "彦根市",
-				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				StartAt:           now,
 				EndAt:             now.AddDate(1, 0, 0),
 			},
@@ -166,7 +166,6 @@ func TestProduct_Fill(t *testing.T) {
 				TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 				MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-				BusinessDaysJSON:      datatypes.JSON([]byte(`[1,3,5]`)),
 				Public:                true,
 				StartAt:               now.AddDate(0, -1, 0),
 				EndAt:                 now.AddDate(0, 1, 0),
@@ -198,8 +197,6 @@ func TestProduct_Fill(t *testing.T) {
 					"ポイント2",
 				},
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-				BusinessDays:          []time.Weekday{time.Monday, time.Wednesday, time.Friday},
-				BusinessDaysJSON:      datatypes.JSON([]byte(`[1,3,5]`)),
 				Public:                true,
 				StartAt:               now.AddDate(0, -1, 0),
 				EndAt:                 now.AddDate(0, 1, 0),
@@ -272,6 +269,47 @@ func TestProduct_SetStatus(t *testing.T) {
 	}
 }
 
+func TestProduct_WeightGram(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		product *Product
+		expect  int64
+	}{
+		{
+			name: "success gram",
+			product: &Product{
+				ID:         "product-id",
+				Weight:     100,
+				WeightUnit: WeightUnitGram,
+				Box60Rate:  50,
+				Box80Rate:  40,
+				Box100Rate: 30,
+			},
+			expect: 100,
+		},
+		{
+			name: "success kilogram",
+			product: &Product{
+				ID:         "product-id",
+				Weight:     1,
+				WeightUnit: WeightUnitKilogram,
+				Box60Rate:  50,
+				Box80Rate:  40,
+				Box100Rate: 30,
+			},
+			expect: 1000,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.product.WeightGram())
+		})
+	}
+}
+
 func TestProduct_FillJSON(t *testing.T) {
 	t.Parallel()
 
@@ -306,11 +344,6 @@ func TestProduct_FillJSON(t *testing.T) {
 					"ポイント1",
 					"ポイント2",
 				},
-				BusinessDays: []time.Weekday{
-					time.Monday,
-					time.Wednesday,
-					time.Friday,
-				},
 			},
 			expect: &Product{
 				ID:   "product-id",
@@ -338,12 +371,6 @@ func TestProduct_FillJSON(t *testing.T) {
 					"ポイント2",
 				},
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-				BusinessDays: []time.Weekday{
-					time.Monday,
-					time.Wednesday,
-					time.Friday,
-				},
-				BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
 			},
 			hasErr: false,
 		},
@@ -379,7 +406,6 @@ func TestProducts_Fill(t *testing.T) {
 					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-					BusinessDaysJSON:      datatypes.JSON([]byte(`[1,3,5]`)),
 				},
 			},
 			expect: Products{
@@ -411,8 +437,6 @@ func TestProducts_Fill(t *testing.T) {
 						"ポイント2",
 					},
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
-					BusinessDays:          []time.Weekday{time.Monday, time.Wednesday, time.Friday},
-					BusinessDaysJSON:      datatypes.JSON([]byte(`[1,3,5]`)),
 				},
 			},
 			hasErr: false,
@@ -426,7 +450,6 @@ func TestProducts_Fill(t *testing.T) {
 					TagIDsJSON:            datatypes.JSON(nil),
 					MediaJSON:             datatypes.JSON(nil),
 					RecommendedPointsJSON: datatypes.JSON(nil),
-					BusinessDaysJSON:      datatypes.JSON(nil),
 				},
 			},
 			expect: Products{
@@ -440,8 +463,6 @@ func TestProducts_Fill(t *testing.T) {
 					MediaJSON:             datatypes.JSON(nil),
 					RecommendedPoints:     []string{},
 					RecommendedPointsJSON: datatypes.JSON(nil),
-					BusinessDays:          []time.Weekday{},
-					BusinessDaysJSON:      datatypes.JSON(nil),
 				},
 			},
 			hasErr: false,
@@ -459,7 +480,168 @@ func TestProducts_Fill(t *testing.T) {
 	}
 }
 
-func TestProducts_ProducerIDs(t *testing.T) {
+func TestProducts_Box60Rate(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   int64
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     200,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 100,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.Box60Rate())
+		})
+	}
+}
+
+func TestProducts_Box80Rate(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   int64
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     200,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 85,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.Box80Rate())
+		})
+	}
+}
+
+func TestProducts_WeightGram(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   int64
+	}{
+		{
+			name: "success gram",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     200,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 300,
+		},
+		{
+			name: "success kilogram",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     1,
+					WeightUnit: WeightUnitKilogram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     2,
+					WeightUnit: WeightUnitKilogram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 3000,
+		},
+		{
+			name: "success mix",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     2,
+					WeightUnit: WeightUnitKilogram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 2100,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.WeightGram())
+		})
+	}
+}
+
+func TestProducts_CoordinatorIDs(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
@@ -472,6 +654,7 @@ func TestProducts_ProducerIDs(t *testing.T) {
 			products: Products{
 				{
 					ID:              "", // ignore
+					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
 					TagIDs:          []string{"tag-id"},
@@ -500,7 +683,64 @@ func TestProducts_ProducerIDs(t *testing.T) {
 					Box100Rate:        30,
 					OriginPrefecture:  codes.PrefectureValues["shiga"],
 					OriginCity:        "彦根市",
-					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+				},
+			},
+			expect: []string{"coordinator-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.products.CoordinatorIDs())
+		})
+	}
+}
+
+func TestProducts_ProducerIDs(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name     string
+		products Products
+		expect   []string
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:              "", // ignore
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:             400,
+					Cost:              300,
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
 				},
@@ -530,6 +770,7 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 			products: Products{
 				{
 					ID:              "", // ignore
+					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
 					TagIDs:          []string{"tag-id"},
@@ -558,7 +799,6 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 					Box100Rate:        30,
 					OriginPrefecture:  codes.PrefectureValues["shiga"],
 					OriginCity:        "彦根市",
-					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
 				},
@@ -588,6 +828,7 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 			products: Products{
 				{
 					ID:              "", // ignore
+					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
 					TagIDs:          []string{"tag-id"},
@@ -616,7 +857,6 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 					Box100Rate:        30,
 					OriginPrefecture:  codes.PrefectureValues["shiga"],
 					OriginCity:        "彦根市",
-					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
 				},
@@ -629,6 +869,144 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.products.ProductTagIDs())
+		})
+	}
+}
+
+func TestProducts_Map(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name     string
+		products Products
+		expect   map[string]*Product
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:              "product-id",
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:             400,
+					Cost:              300,
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginCity:        "彦根市",
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+				},
+			},
+			expect: map[string]*Product{
+				"product-id": {
+					ID:              "product-id",
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					Price:             400,
+					Cost:              300,
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginCity:        "彦根市",
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.Map())
+		})
+	}
+}
+
+func TestProducts_Filter(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		products   Products
+		productIDs []string
+		expect     Products
+	}{
+		{
+			name: "success",
+			products: Products{
+				{ID: "product-id01"},
+				{ID: "product-id02"},
+				{ID: "product-id03"},
+			},
+			productIDs: []string{
+				"product-id01",
+				"product-id03",
+			},
+			expect: Products{
+				{ID: "product-id01"},
+				{ID: "product-id03"},
+			},
+		},
+		{
+			name: "empty",
+			products: Products{
+				{ID: "product-id01"},
+				{ID: "product-id02"},
+				{ID: "product-id03"},
+			},
+			productIDs: []string{},
+			expect:     Products{},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.products.Filter(tt.productIDs...)
+			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }

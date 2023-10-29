@@ -131,8 +131,6 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 	}
 	productType := service.NewProductType(sproductType)
 
-	productType.Fill(category)
-
 	res := &response.ProductTypeResponse{
 		ProductType: productType.Response(),
 	}
@@ -191,16 +189,7 @@ func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []str
 	if err != nil {
 		return nil, err
 	}
-	productTypes := service.NewProductTypes(sproductTypes)
-	if len(productTypes) == 0 {
-		return productTypes, nil
-	}
-	categories, err := h.multiGetCategories(ctx, productTypes.CategoryIDs())
-	if err != nil {
-		return nil, err
-	}
-	productTypes.Fill(categories.Map())
-	return productTypes, nil
+	return service.NewProductTypes(sproductTypes), nil
 }
 
 func (h *handler) getProductType(ctx context.Context, productTypeID string) (*service.ProductType, error) {
@@ -211,11 +200,5 @@ func (h *handler) getProductType(ctx context.Context, productTypeID string) (*se
 	if err != nil {
 		return nil, err
 	}
-	productType := service.NewProductType(sproductType)
-	category, err := h.getCategory(ctx, productType.CategoryID)
-	if err != nil {
-		return nil, err
-	}
-	productType.Fill(category)
-	return productType, nil
+	return service.NewProductType(sproductType), nil
 }

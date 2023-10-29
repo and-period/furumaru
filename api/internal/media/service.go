@@ -4,19 +4,8 @@ package media
 
 import (
 	"context"
-	"errors"
 
 	"github.com/and-period/furumaru/api/internal/media/entity"
-)
-
-var (
-	ErrInvalidArgument    = errors.New("media: invalid argument")
-	ErrNotFound           = errors.New("media: not found")
-	ErrAlreadyExists      = errors.New("media: already exists")
-	ErrFailedPrecondition = errors.New("media: failed precondition")
-	ErrCanceled           = errors.New("media: canceled")
-	ErrDeadlineExceeded   = errors.New("media: deadline exceeded")
-	ErrInternal           = errors.New("media: internal")
 )
 
 type Service interface {
@@ -88,6 +77,8 @@ type Service interface {
 	GenerateScheduleOpeningVideo(ctx context.Context, in *GenerateFileInput) (string, error)
 	// 開催スケジュールオープニング動画アップロード
 	UploadScheduleOpeningVideo(ctx context.Context, in *UploadFileInput) (string, error)
+	// ライブ配信一覧取得
+	ListBroadcasts(ctx context.Context, in *ListBroadcastsInput) (entity.Broadcasts, int64, error)
 	// ライブ配信取得(マルシェ開催スケジュールID指定)
 	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error)
 	// ライブ配信登録

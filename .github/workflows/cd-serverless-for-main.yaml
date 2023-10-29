@@ -31,10 +31,10 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'yarn'
@@ -60,13 +60,13 @@ jobs:
       run: yarn --check-files --frozen-lockfile --non-interactive
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v3
+      uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: ${{ env.AWS_REGION }}
         role-to-assume: ${{ env.AWS_ROLE_ARN }}
 
     - name: serverless deploy
-      uses: serverless/github-action@v3.1
+      uses: serverless/github-action@v3.2
       with:
         args: -c "cd infra/serverless/ && serverless deploy"
         entrypoint: /bin/bash

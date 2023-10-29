@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { AlertType } from '~/lib/hooks'
-import { Category, DeliveryType, Prefecture, Producer, ProductResponse, ProductStatus, ProductTag, ProductType, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
+import { Category, DeliveryType, Prefecture, Producer, Product, ProductStatus, ProductTag, ProductType, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -39,7 +39,6 @@ const props = defineProps({
       name: '',
       description: '',
       public: false,
-      producerId: '',
       productTypeId: '',
       productTagIds: [],
       media: [],
@@ -60,27 +59,22 @@ const props = defineProps({
       box100Rate: 0,
       originPrefecture: Prefecture.HOKKAIDO,
       originCity: '',
-      businessDays: [],
       startAt: dayjs().unix(),
       endAt: dayjs().unix()
     })
   },
   product: {
-    type: Object as PropType<ProductResponse>,
-    default: (): ProductResponse => ({
+    type: Object as PropType<Product>,
+    default: (): Product => ({
       id: '',
       name: '',
       description: '',
       public: false,
       status: ProductStatus.UNKNOWN,
+      coordinatorId: '',
       producerId: '',
-      producerName: '',
       categoryId: '',
-      categoryName: '',
       productTypeId: '',
-      productTypeName: '',
-      productTypeIconUrl: '',
-      productTypeIcons: [],
       productTagIds: [],
       media: [],
       price: 0,
@@ -100,7 +94,6 @@ const props = defineProps({
       box100Rate: 0,
       originPrefecture: Prefecture.HOKKAIDO,
       originCity: '',
-      businessDays: [],
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,
@@ -176,7 +169,6 @@ const formDataRules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
   description: { required },
   public: {},
-  producerId: { required },
   productTypeId: { required },
   productTagIds: { maxLengthArray: maxLengthArray(8) },
   media: { maxLengthArray: maxLengthArray(8) },
@@ -196,8 +188,7 @@ const formDataRules = computed(() => ({
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   originPrefecture: {},
-  originCity: {},
-  businessDays: {}
+  originCity: {}
 }))
 const timeDataRules = computed(() => ({
   startDate: { required },
@@ -544,17 +535,6 @@ const onSubmit = async (): Promise<void> => {
         <v-card elevation="0" class="mb-4">
           <v-card-title>配送設定</v-card-title>
           <v-card-text>
-            <v-select
-              v-model="formDataValidate.businessDays.$model"
-              label="営業日(発送可能日)"
-              :error-messages="getErrorMessage(formDataValidate.businessDays.$errors)"
-              :items="weekdays"
-              item-title="title"
-              item-value="value"
-              chips
-              closable-chips
-              multiple
-            />
             <v-select
               v-model="formDataValidate.deliveryType.$model"
               :error-messages="getErrorMessage(formDataValidate.deliveryType.$errors)"

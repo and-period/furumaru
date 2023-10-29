@@ -3,7 +3,14 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+)
+
+type BroadcastOrderBy string
+
+const (
+	BroadcastOrderByUpdatedAt BroadcastOrderBy = "updated_at"
 )
 
 // BroadcastType - ライブ配信種別
@@ -60,4 +67,10 @@ func NewBroadcast(params *NewBroadcastParams) *Broadcast {
 		Type:       BroadcastTypeNormal,
 		Status:     BroadcastStatusDisabled,
 	}
+}
+
+func (bs Broadcasts) ScheduleIDs() []string {
+	return set.UniqBy(bs, func(b *Broadcast) string {
+		return b.ScheduleID
+	})
 }

@@ -177,6 +177,7 @@ func NewProduct(product *entity.Product) *Product {
 	return &Product{
 		Product: response.Product{
 			ID:                product.ID,
+			CoordinatorID:     product.CoordinatorID,
 			ProducerID:        product.ProducerID,
 			CategoryID:        "",
 			ProductTypeID:     product.TypeID,
@@ -203,7 +204,6 @@ func NewProduct(product *entity.Product) *Product {
 			Box100Rate:        product.Box100Rate,
 			OriginPrefecture:  codes.PrefectureNames[product.OriginPrefecture],
 			OriginCity:        product.OriginCity,
-			BusinessDays:      product.BusinessDays,
 			StartAt:           product.StartAt.Unix(),
 			EndAt:             product.EndAt.Unix(),
 			CreatedAt:         product.CreatedAt.Unix(),

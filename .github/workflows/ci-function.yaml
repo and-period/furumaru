@@ -24,7 +24,7 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v4
@@ -56,7 +56,7 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v4
@@ -89,7 +89,7 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v4
@@ -125,7 +125,7 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Golang ${{ env.GO_VERSION }}
       uses: actions/setup-go@v4

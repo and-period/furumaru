@@ -8,9 +8,6 @@ schedule:
     coordinatorId:
       type: string
       description: コーディネーターID
-    shippingId:
-      type: string
-      description: 配送設定ID
     status:
       $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
     title:
@@ -67,7 +64,6 @@ schedule:
   required:
   - id
   - coordinatorId
-  - shippingId
   - status
   - title
   - description
@@ -84,7 +80,6 @@ schedule:
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'coordinator-id'
-    shippingId: 'shipping-id'
     status: 4
     title: 'マルシェ開催スケジュールタイトル'
     description: 'マルシェ開催スケジュールの説明'

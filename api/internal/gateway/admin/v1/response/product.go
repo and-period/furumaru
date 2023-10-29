@@ -1,10 +1,9 @@
 package response
 
-import "time"
-
 // Product - 商品情報
 type Product struct {
 	ID                string          `json:"id"`                // 商品ID
+	CoordinatorID     string          `json:"coordinatorId"`     // コーディネータID
 	ProducerID        string          `json:"producerId"`        // 生産者ID
 	CategoryID        string          `json:"categoryId"`        // 商品種別ID
 	ProductTypeID     string          `json:"productTypeId"`     // 品目ID
@@ -31,7 +30,6 @@ type Product struct {
 	Box100Rate        int64           `json:"box100Rate"`        // 箱の占有率(サイズ:100)
 	OriginPrefecture  string          `json:"originPrefecture"`  // 原産地(都道府県)
 	OriginCity        string          `json:"originCity"`        // 原産地(市区町村)
-	BusinessDays      []time.Weekday  `json:"businessDays"`      // 営業曜日(発送可能日)
 	StartAt           int64           `json:"startAt"`           // 販売開始日時
 	EndAt             int64           `json:"endAt"`             // 販売終了日時
 	CreatedAt         int64           `json:"createdAt"`         // 登録日時
@@ -47,6 +45,7 @@ type ProductMedia struct {
 
 type ProductResponse struct {
 	Product     *Product      `json:"product"`     // 商品情報
+	Coordinator *Coordinator  `json:"coordinator"` // コーディネータ情報
 	Producer    *Producer     `json:"producer"`    // 生産者情報
 	Category    *Category     `json:"category"`    // 商品種別情報
 	ProductType *ProductType  `json:"productType"` // 品目情報
@@ -55,6 +54,7 @@ type ProductResponse struct {
 
 type ProductsResponse struct {
 	Products     []*Product     `json:"products"`     // 商品一覧
+	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
 	Producers    []*Producer    `json:"producers"`    // 生産者一覧
 	Categories   []*Category    `json:"categories"`   // 商品種別一覧
 	ProductTypes []*ProductType `json:"productTypes"` // 品目一覧

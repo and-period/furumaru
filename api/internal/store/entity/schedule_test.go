@@ -20,7 +20,6 @@ func TestSchedule(t *testing.T) {
 			name: "success",
 			params: &NewScheduleParams{
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "スケジュールタイトル",
 				Description:     "スケジュールの詳細です。",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -33,7 +32,6 @@ func TestSchedule(t *testing.T) {
 			expect: &Schedule{
 				ID:              "",
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Title:           "スケジュールタイトル",
 				Description:     "スケジュールの詳細です。",
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -71,7 +69,6 @@ func TestSchedule_FIllJSON(t *testing.T) {
 			schedule: &Schedule{
 				ID:            "schedule-id",
 				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
 				Title:         "スケジュールタイトル",
 				Description:   "スケジュールの詳細です。",
 				ThumbnailURL:  "http://example.com/thumbnail.png",
@@ -88,7 +85,6 @@ func TestSchedule_FIllJSON(t *testing.T) {
 			expect: &Schedule{
 				ID:             "schedule-id",
 				CoordinatorID:  "coordinator-id",
-				ShippingID:     "shipping-id",
 				Title:          "スケジュールタイトル",
 				Description:    "スケジュールの詳細です。",
 				ThumbnailURL:   "http://example.com/thumbnail.png",
@@ -201,7 +197,6 @@ func TestSchedules_FIll(t *testing.T) {
 				{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					ShippingID:      "shipping-id",
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "http://example.com/thumbnail.png",
@@ -218,7 +213,6 @@ func TestSchedules_FIll(t *testing.T) {
 				{
 					ID:             "schedule-id",
 					CoordinatorID:  "coordinator-id",
-					ShippingID:     "shipping-id",
 					Status:         ScheduleStatusInProgress,
 					Title:          "スケジュールタイトル",
 					Description:    "スケジュールの詳細です。",
@@ -249,6 +243,42 @@ func TestSchedules_FIll(t *testing.T) {
 	}
 }
 
+func TestSchedules_IDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		schedules Schedules
+		expect    []string
+	}{
+		{
+			name: "success",
+			schedules: Schedules{
+				{
+					ID:              "schedule-id",
+					CoordinatorID:   "coordinator-id",
+					Title:           "スケジュールタイトル",
+					Description:     "スケジュールの詳細です。",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+					ImageURL:        "https://and-period.jp/image.png",
+					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+					Approved:        false,
+					ApprovedAdminID: "",
+					StartAt:         jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:           jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				},
+			},
+			expect: []string{"schedule-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.schedules.IDs())
+		})
+	}
+}
+
 func TestSchedules_CoordinatorIDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -262,7 +292,6 @@ func TestSchedules_CoordinatorIDs(t *testing.T) {
 				{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					ShippingID:      "shipping-id",
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
@@ -282,43 +311,6 @@ func TestSchedules_CoordinatorIDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.schedules.CoordinatorIDs())
-		})
-	}
-}
-
-func TestSchedules_ShippingIDs(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name      string
-		schedules Schedules
-		expect    []string
-	}{
-		{
-			name: "success",
-			schedules: Schedules{
-				{
-					ID:              "schedule-id",
-					CoordinatorID:   "coordinator-id",
-					ShippingID:      "shipping-id",
-					Title:           "スケジュールタイトル",
-					Description:     "スケジュールの詳細です。",
-					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
-					ImageURL:        "https://and-period.jp/image.png",
-					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-					Approved:        false,
-					ApprovedAdminID: "",
-					StartAt:         jst.Date(2022, 8, 1, 0, 0, 0, 0),
-					EndAt:           jst.Date(2022, 9, 1, 0, 0, 0, 0),
-				},
-			},
-			expect: []string{"shipping-id"},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.ElementsMatch(t, tt.expect, tt.schedules.ShippingIDs())
 		})
 	}
 }

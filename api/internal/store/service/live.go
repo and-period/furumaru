@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -12,12 +13,32 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListLivesByScheduleID(ctx context.Context, in *store.ListLivesByScheduleIDInput) (entity.Lives, error) {
+func (s *service) ListLives(ctx context.Context, in *store.ListLivesInput) (entity.Lives, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
-		return nil, internalError(err)
+		return nil, 0, internalError(err)
 	}
-	lives, err := s.db.Live.ListByScheduleID(ctx, in.ScheduleID)
-	return lives, internalError(err)
+	params := &database.ListLivesParams{
+		ScheduleIDs: in.ScheduleIDs,
+		Limit:       int(in.Limit),
+		Offset:      int(in.Offset),
+	}
+	var (
+		lives entity.Lives
+		total int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		lives, err = s.db.Live.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Live.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, internalError(err)
+	}
+	return lives, total, nil
 }
 
 func (s *service) GetLive(ctx context.Context, in *store.GetLiveInput) (*entity.Live, error) {
@@ -55,8 +76,8 @@ func (s *service) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*e
 		return nil
 	})
 	err := eg.Wait()
-	if errors.Is(err, database.ErrNotFound) || errors.Is(err, user.ErrNotFound) || errors.Is(err, errUnmatchProducts) {
-		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), store.ErrInvalidArgument)
+	if errors.Is(err, database.ErrNotFound) || errors.Is(err, exception.ErrNotFound) || errors.Is(err, errUnmatchProducts) {
+		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -88,7 +109,7 @@ func (s *service) UpdateLive(ctx context.Context, in *store.UpdateLiveInput) err
 		return internalError(err)
 	}
 	if len(products) != len(in.ProductIDs) {
-		return fmt.Errorf("api: umatch product: %w", store.ErrInvalidArgument)
+		return fmt.Errorf("api: umatch product: %w", exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateLiveParams{
 		ProductIDs: in.ProductIDs,

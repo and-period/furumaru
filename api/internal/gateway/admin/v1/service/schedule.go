@@ -49,7 +49,6 @@ func NewSchedule(schedule *entity.Schedule) *Schedule {
 		Schedule: response.Schedule{
 			ID:              schedule.ID,
 			CoordinatorID:   schedule.CoordinatorID,
-			ShippingID:      schedule.ShippingID,
 			Status:          NewScheduleStatus(schedule.Status).Response(),
 			Title:           schedule.Title,
 			Description:     schedule.Description,

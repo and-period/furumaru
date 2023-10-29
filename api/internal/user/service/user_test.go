@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -70,7 +71,7 @@ func TestListUsers(t *testing.T) {
 			input:       &user.ListUsersInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list users",
@@ -84,7 +85,7 @@ func TestListUsers(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count users",
@@ -98,7 +99,7 @@ func TestListUsers(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -181,7 +182,7 @@ func TestMultiGetUsers(t *testing.T) {
 				UserIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get user",
@@ -192,7 +193,7 @@ func TestMultiGetUsers(t *testing.T) {
 				UserIDs: []string{"user-id"},
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -232,7 +233,7 @@ func TestMultiGetUserDevices(t *testing.T) {
 				UserIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 	}
 
@@ -309,7 +310,7 @@ func TestGetUser(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.GetUserInput{},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get user",
@@ -320,7 +321,7 @@ func TestGetUser(t *testing.T) {
 				UserID: "user-id",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -388,7 +389,7 @@ func TestCreateUser(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.CreateUserInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name:  "failed to unmatch password",
@@ -399,7 +400,7 @@ func TestCreateUser(t *testing.T) {
 				Password:             "12345678",
 				PasswordConfirmation: "11111111",
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create",
@@ -412,7 +413,7 @@ func TestCreateUser(t *testing.T) {
 				Password:             "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -450,7 +451,7 @@ func TestVerifyUser(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.VerifyUserInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to confirm sign up",
@@ -461,7 +462,7 @@ func TestVerifyUser(t *testing.T) {
 				UserID:     "user-id",
 				VerifyCode: "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update verified",
@@ -473,7 +474,7 @@ func TestVerifyUser(t *testing.T) {
 				UserID:     "user-id",
 				VerifyCode: "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -533,7 +534,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.CreateUserWithOAuthInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get user",
@@ -543,7 +544,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			input: &user.CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to create user",
@@ -554,7 +555,7 @@ func TestCreateUserWithOAuth(t *testing.T) {
 			input: &user.CreateUserWithOAuthInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -593,7 +594,7 @@ func TestInitializeUser(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.InitializeUserInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get user",
@@ -605,7 +606,7 @@ func TestInitializeUser(t *testing.T) {
 				AccountID: "account-id",
 				Username:  "username",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get user",
@@ -618,7 +619,7 @@ func TestInitializeUser(t *testing.T) {
 				AccountID: "account-id",
 				Username:  "username",
 			},
-			expectErr: user.ErrFailedPrecondition,
+			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
 			name: "failed to initilaze user",
@@ -631,7 +632,7 @@ func TestInitializeUser(t *testing.T) {
 				AccountID: "account-id",
 				Username:  "username",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -681,7 +682,7 @@ func TestUpdateUserEmail(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateUserEmailInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
@@ -692,7 +693,7 @@ func TestUpdateUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -704,7 +705,7 @@ func TestUpdateUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch provider type",
@@ -720,7 +721,7 @@ func TestUpdateUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: user.ErrFailedPrecondition,
+			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
 			name: "failed to change email",
@@ -739,7 +740,7 @@ func TestUpdateUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -788,7 +789,7 @@ func TestVerifyUserEmail(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.VerifyUserEmailInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
@@ -799,7 +800,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -811,7 +812,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to confirm change email",
@@ -829,7 +830,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update email",
@@ -848,7 +849,7 @@ func TestVerifyUserEmail(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				VerifyCode:  "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -892,7 +893,7 @@ func TestUpdateUserPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateUserPasswordInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid argument for password unmatch",
@@ -903,7 +904,7 @@ func TestUpdateUserPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "123456789",
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to change password",
@@ -921,7 +922,7 @@ func TestUpdateUserPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -960,7 +961,7 @@ func TestForgotUserPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.ForgotUserPasswordInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by email",
@@ -970,7 +971,7 @@ func TestForgotUserPassword(t *testing.T) {
 			input: &user.ForgotUserPasswordInput{
 				Email: "test-user@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to forget password",
@@ -981,7 +982,7 @@ func TestForgotUserPassword(t *testing.T) {
 			input: &user.ForgotUserPasswordInput{
 				Email: "test-user@and-period.jp",
 			},
-			expectErr: user.ErrNotFound,
+			expectErr: exception.ErrNotFound,
 		},
 	}
 
@@ -1028,7 +1029,7 @@ func TestVerifyUserPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.VerifyUserPasswordInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name:  "invalid argument",
@@ -1039,7 +1040,7 @@ func TestVerifyUserPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "123456789",
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by email",
@@ -1052,7 +1053,7 @@ func TestVerifyUserPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to confirm forgot password",
@@ -1071,7 +1072,7 @@ func TestVerifyUserPassword(t *testing.T) {
 				NewPassword:          "12345678",
 				PasswordConfirmation: "12345678",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1125,7 +1126,7 @@ func TestDeleteUser(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.DeleteUserInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete cognito user",
@@ -1135,7 +1136,7 @@ func TestDeleteUser(t *testing.T) {
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to delete user",
@@ -1146,7 +1147,7 @@ func TestDeleteUser(t *testing.T) {
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

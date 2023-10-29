@@ -1,6 +1,10 @@
 package response
 
-import "github.com/and-period/furumaru/api/internal/user/entity"
+import (
+	"time"
+
+	"github.com/and-period/furumaru/api/internal/user/entity"
+)
 
 // Coordinator - コーディネータ情報
 type Coordinator struct {
@@ -29,6 +33,7 @@ type Coordinator struct {
 	City              string             `json:"city"`              // 市区町村
 	AddressLine1      string             `json:"addressLine1"`      // 町名・番地
 	AddressLine2      string             `json:"addressLine2"`      // ビル名・号室など
+	BusinessDays      []time.Weekday     `json:"businessDays"`      // 営業曜日(発送可能日)
 	ProducerTotal     int64              `json:"producerTotal"`     // 担当する生産者数
 	CreatedAt         int64              `json:"createdAt"`         // 登録日時
 	UpdatedAt         int64              `json:"updatedAt"`         // 更新日時

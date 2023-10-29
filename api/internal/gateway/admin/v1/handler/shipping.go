@@ -281,20 +281,6 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *handler) multiGetShippings(ctx context.Context, shippingIDs []string) (service.Shippings, error) {
-	if len(shippingIDs) == 0 {
-		return service.Shippings{}, nil
-	}
-	in := &store.MultiGetShippingsInput{
-		ShippingIDs: shippingIDs,
-	}
-	shippings, err := h.store.MultiGetShippings(ctx, in)
-	if err != nil {
-		return nil, err
-	}
-	return service.NewShippings(shippings)
-}
-
 func (h *handler) getShipping(ctx context.Context, shippingID string) (*service.Shipping, error) {
 	in := &store.GetShippingInput{
 		ShippingID: shippingID,

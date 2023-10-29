@@ -44,7 +44,7 @@ const handleClick = () => {
     <div class="relative w-full p-4">
       <div
         v-if="published"
-        class="absolute -left-8 -top-8 z-[1] flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange"
+        class="absolute -left-4 -top-4 z-[1] flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange xl:-left-8 xl:-top-8"
       >
         <the-live-icon />
         <div class="text-xl font-bold uppercase text-white">live</div>

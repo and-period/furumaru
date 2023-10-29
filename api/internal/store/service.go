@@ -4,21 +4,8 @@ package store
 
 import (
 	"context"
-	"errors"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
-)
-
-var (
-	ErrInvalidArgument    = errors.New("store: invalid argument")
-	ErrNotFound           = errors.New("store: not found")
-	ErrAlreadyExists      = errors.New("store: already exists")
-	ErrForbidden          = errors.New("store: forbidden")
-	ErrFailedPrecondition = errors.New("store: failed precondition")
-	ErrUnavailable        = errors.New("store: unavailable")
-	ErrCanceled           = errors.New("store: canceled")
-	ErrDeadlineExceeded   = errors.New("store: deadline exceeded")
-	ErrInternal           = errors.New("store: internal")
 )
 
 type Service interface {
@@ -100,6 +87,8 @@ type Service interface {
 	DeletePromotion(ctx context.Context, in *DeletePromotionInput) error
 	// マルシェ開催スケジュール一覧取得
 	ListSchedules(ctx context.Context, in *ListSchedulesInput) (entity.Schedules, int64, error)
+	// マルシェ開催スケジュール一覧取得(ID指定)
+	MultiGetSchedules(ctx context.Context, in *MultiGetSchedulesInput) (entity.Schedules, error)
 	// マルシェ開催スケジュール取得
 	GetSchedule(ctx context.Context, in *GetScheduleInput) (*entity.Schedule, error)
 	// マルシェ開催スケジュール登録
@@ -108,8 +97,10 @@ type Service interface {
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleInput) error
 	// マルシェ開催スケジュールサムネイル画像(リサイズ済み)更新
 	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error
-	// マルシェタイムテーブル一覧取得(開催スケジュールID指定)
-	ListLivesByScheduleID(ctx context.Context, in *ListLivesByScheduleIDInput) (entity.Lives, error)
+	// マルシェ開催スケジュール承認
+	ApproveSchedule(ctx context.Context, in *ApproveScheduleInput) error
+	// マルシェタイムテーブル一覧取得
+	ListLives(ctx context.Context, in *ListLivesInput) (entity.Lives, int64, error)
 	// マルシェタイムテーブル取得
 	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)
 	// マルシェタイムテーブル登録
@@ -126,6 +117,12 @@ type Service interface {
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)
 	// 住所一覧取得(ID指定)
 	MultiGetAddresses(ctx context.Context, in *MultiGetAddressesInput) (entity.Addresses, error)
+	// 買い物かご取得
+	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error)
+	// 買い物かごに商品を追加
+	AddCartItem(ctx context.Context, in *AddCartItemInput) error
+	// 買い物かごから商品を削除
+	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error
 	// 郵便番号情報検索
 	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error)
 }

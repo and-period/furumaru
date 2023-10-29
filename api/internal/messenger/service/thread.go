@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -64,7 +65,7 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 	}
 	_, err := s.db.Contact.Get(ctx, in.ContactID)
 	if errors.Is(err, database.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid contact id: %s: %w", err.Error(), messenger.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: invalid contact id: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
@@ -135,8 +136,8 @@ func (s *service) UpdateThread(ctx context.Context, in *messenger.UpdateThreadIn
 		return err
 	})
 	err := eg.Wait()
-	if errors.Is(err, user.ErrNotFound) {
-		return fmt.Errorf("api: invalid user id format: %s: %w", err.Error(), messenger.ErrInvalidArgument)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid user id format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return internalError(err)

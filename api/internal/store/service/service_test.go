@@ -6,14 +6,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store/database"
+	"github.com/and-period/furumaru/api/internal/store/komoju"
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
+	mock_dynamodb "github.com/and-period/furumaru/api/mock/pkg/dynamodb"
 	mock_ivs "github.com/and-period/furumaru/api/mock/pkg/ivs"
 	mock_postalcode "github.com/and-period/furumaru/api/mock/pkg/postalcode"
 	mock_database "github.com/and-period/furumaru/api/mock/store/database"
+	mock_komoju "github.com/and-period/furumaru/api/mock/store/komoju"
 	mock_user "github.com/and-period/furumaru/api/mock/user"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	govalidator "github.com/go-playground/validator/v10"
@@ -23,12 +27,15 @@ import (
 )
 
 type mocks struct {
-	db         *dbMocks
-	user       *mock_user.MockService
-	messenger  *mock_messenger.MockService
-	media      *mock_media.MockService
-	postalCode *mock_postalcode.MockClient
-	ivs        *mock_ivs.MockClient
+	db            *dbMocks
+	cache         *mock_dynamodb.MockClient
+	user          *mock_user.MockService
+	messenger     *mock_messenger.MockService
+	media         *mock_media.MockService
+	postalCode    *mock_postalcode.MockClient
+	ivs           *mock_ivs.MockClient
+	komojuPayment *mock_komoju.MockPayment
+	komojuSession *mock_komoju.MockSession
 }
 
 type dbMocks struct {
@@ -62,12 +69,15 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db:         newDBMocks(ctrl),
-		user:       mock_user.NewMockService(ctrl),
-		messenger:  mock_messenger.NewMockService(ctrl),
-		media:      mock_media.NewMockService(ctrl),
-		postalCode: mock_postalcode.NewMockClient(ctrl),
-		ivs:        mock_ivs.NewMockClient(ctrl),
+		db:            newDBMocks(ctrl),
+		cache:         mock_dynamodb.NewMockClient(ctrl),
+		user:          mock_user.NewMockService(ctrl),
+		messenger:     mock_messenger.NewMockService(ctrl),
+		media:         mock_media.NewMockService(ctrl),
+		postalCode:    mock_postalcode.NewMockClient(ctrl),
+		ivs:           mock_ivs.NewMockClient(ctrl),
+		komojuPayment: mock_komoju.NewMockPayment(ctrl),
+		komojuSession: mock_komoju.NewMockSession(ctrl),
 	}
 }
 
@@ -107,11 +117,16 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Schedule:    mocks.db.Schedule,
 			Live:        mocks.db.Live,
 		},
+		Cache:      mocks.cache,
 		User:       mocks.user,
 		Messenger:  mocks.messenger,
 		Media:      mocks.media,
 		PostalCode: mocks.postalCode,
 		Ivs:        mocks.ivs,
+		Komoju: &komoju.Komoju{
+			Payment: mocks.komojuPayment,
+			Session: mocks.komojuSession,
+		},
 	}
 	service := NewService(params).(*service)
 	service.now = func() time.Time {
@@ -162,62 +177,82 @@ func TestInternalError(t *testing.T) {
 		{
 			name:   "validation error",
 			err:    govalidator.ValidationErrors{},
-			expect: store.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "database not found",
 			err:    database.ErrNotFound,
-			expect: store.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "database failed precondition",
 			err:    database.ErrFailedPrecondition,
-			expect: store.ErrFailedPrecondition,
+			expect: exception.ErrFailedPrecondition,
 		},
 		{
 			name:   "database already exists",
 			err:    database.ErrAlreadyExists,
-			expect: store.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
 		},
 		{
 			name:   "database deadline exceeded",
 			err:    database.ErrDeadlineExceeded,
-			expect: store.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
+		},
+		{
+			name:   "cache not found",
+			err:    dynamodb.ErrNotFound,
+			expect: exception.ErrNotFound,
+		},
+		{
+			name:   "cache already exists",
+			err:    dynamodb.ErrAlreadyExists,
+			expect: exception.ErrAlreadyExists,
+		},
+		{
+			name:   "cache resource exhausted",
+			err:    dynamodb.ErrResourceExhausted,
+			expect: exception.ErrResourceExhausted,
+		},
+		{
+			name:   "cache canceled",
+			err:    dynamodb.ErrCanceled,
+			expect: exception.ErrCanceled,
 		},
 		{
 			name:   "postal code invalid argument",
 			err:    postalcode.ErrInvalidArgument,
-			expect: store.ErrInvalidArgument,
+			expect: exception.ErrInvalidArgument,
 		},
 		{
 			name:   "postal code not found",
 			err:    postalcode.ErrNotFound,
-			expect: store.ErrNotFound,
+			expect: exception.ErrNotFound,
 		},
 		{
 			name:   "postal code unavailable",
 			err:    postalcode.ErrUnavailable,
-			expect: store.ErrUnavailable,
+			expect: exception.ErrUnavailable,
 		},
 		{
 			name:   "postal code deadline exceeded",
 			err:    postalcode.ErrTimeout,
-			expect: store.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "context canceled",
 			err:    context.Canceled,
-			expect: store.ErrCanceled,
+			expect: exception.ErrCanceled,
 		},
 		{
 			name:   "context deadline exceeded",
 			err:    context.DeadlineExceeded,
-			expect: store.ErrDeadlineExceeded,
+			expect: exception.ErrDeadlineExceeded,
 		},
 		{
 			name:   "other error",
 			err:    assert.AnError,
-			expect: store.ErrInternal,
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

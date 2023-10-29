@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -79,7 +80,7 @@ func (s *service) CreateCoordinator(
 		return nil, internalError(err)
 	}
 	if len(productTypes) != len(in.ProductTypeIDs) {
-		return nil, fmt.Errorf("api: invalid product type ids: %w", user.ErrInvalidArgument)
+		return nil, fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
@@ -110,6 +111,7 @@ func (s *service) CreateCoordinator(
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
+		BusinessDays:      in.BusinessDays,
 	}
 	coordinator := entity.NewCoordinator(params)
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
@@ -145,7 +147,7 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 		return internalError(err)
 	}
 	if len(productTypes) != len(in.ProductTypeIDs) {
-		return fmt.Errorf("api: invalid product type ids: %w", user.ErrInvalidArgument)
+		return fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateCoordinatorParams{
 		Lastname:          in.Lastname,
@@ -168,6 +170,7 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
+		BusinessDays:      in.BusinessDays,
 	}
 	if err := s.db.Coordinator.Update(ctx, in.CoordinatorID, params); err != nil {
 		return internalError(err)

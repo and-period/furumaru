@@ -21,15 +21,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type registry struct {
-	appName   string
-	env       string
-	waitGroup *sync.WaitGroup
-	job       scheduler.Scheduler
-}
-
 type params struct {
-	config     *config
 	logger     *zap.Logger
 	waitGroup  *sync.WaitGroup
 	secret     secret.Client
@@ -40,29 +32,28 @@ type params struct {
 	dbPassword string
 }
 
-func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
+func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	params := &params{
-		config:    conf,
 		logger:    logger,
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
 	// AWS SDKの設定
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
-	if err := getSecret(ctx, params); err != nil {
-		return nil, err
+	if err := a.getSecret(ctx, params); err != nil {
+		return err
 	}
 
 	// AWS Step Functionsの設定
 	sfnParams := &sfn.Params{
-		StateMachineARN: conf.StepFunctionARN,
+		StateMachineARN: a.StepFunctionARN,
 	}
 	sfnClient := sfn.NewStepFunction(awscfg, sfnParams, sfn.WithLogger(logger))
 
@@ -71,21 +62,21 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 
 	// AWS Media Convertの設定
 	mediaConvertParams := mediaconvert.Params{
-		Endpoint: conf.MediaConvertEndpoint,
-		RoleARN:  conf.MediaConvertRoleARN,
+		Endpoint: a.MediaConvertEndpoint,
+		RoleARN:  a.MediaConvertRoleARN,
 	}
 	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(logger))
 
 	// Databaseの設定
-	dbClient, err := newDatabase("media", params)
+	dbClient, err := a.newDatabase("media", params)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Serviceの設定
-	storeService, err := newStoreService(params)
+	storeService, err := a.newStoreService(params)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Jobの設定
@@ -96,38 +87,32 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		StepFunction:       sfnClient,
 		MediaLive:          mediaLiveClient,
 		MediaConvert:       mediaConvertClient,
-		Environment:        conf.Environment,
-		ArchiveBucketName:  conf.ArchiveBucketName,
-		ConvertJobTemplate: conf.MediaConvertJobTemplate,
+		Environment:        a.Environment,
+		ArchiveBucketName:  a.ArchiveBucketName,
+		ConvertJobTemplate: a.MediaConvertJobTemplate,
 	}
-	var job scheduler.Scheduler
-	switch conf.RunType {
+	switch a.RunType {
 	case "START":
-		job = scheduler.NewStarter(jobParams, scheduler.WithLogger(logger))
+		a.job = scheduler.NewStarter(jobParams, scheduler.WithLogger(logger))
 	case "CLOSE":
-		job = scheduler.NewCloser(jobParams, scheduler.WithLogger(logger))
+		a.job = scheduler.NewCloser(jobParams, scheduler.WithLogger(logger))
 	default:
-		return nil, fmt.Errorf("cmd: unknown scheduler type. type=%s", conf.RunType)
+		return fmt.Errorf("cmd: unknown scheduler type. type=%s", a.RunType)
 	}
-
-	return &registry{
-		appName:   conf.AppName,
-		env:       conf.Environment,
-		waitGroup: params.waitGroup,
-		job:       job,
-	}, nil
+	a.waitGroup = params.waitGroup
+	return nil
 }
 
-func getSecret(ctx context.Context, p *params) error {
+func (a *app) getSecret(ctx context.Context, p *params) error {
 	// データベース認証情報の取得
-	if p.config.DBSecretName == "" {
-		p.dbHost = p.config.DBHost
-		p.dbPort = p.config.DBPort
-		p.dbUsername = p.config.DBUsername
-		p.dbPassword = p.config.DBPassword
+	if a.DBSecretName == "" {
+		p.dbHost = a.DBHost
+		p.dbPort = a.DBPort
+		p.dbUsername = a.DBUsername
+		p.dbPassword = a.DBPassword
 		return nil
 	}
-	secrets, err := p.secret.Get(ctx, p.config.DBSecretName)
+	secrets, err := p.secret.Get(ctx, a.DBSecretName)
 	if err != nil {
 		return err
 	}
@@ -138,16 +123,16 @@ func getSecret(ctx context.Context, p *params) error {
 	return nil
 }
 
-func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	params := &mysql.Params{
-		Socket:   p.config.DBSocket,
+		Socket:   a.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
 		Database: dbname,
 		Username: p.dbUsername,
 		Password: p.dbPassword,
 	}
-	location, err := time.LoadLocation(p.config.DBTimeZone)
+	location, err := time.LoadLocation(a.DBTimeZone)
 	if err != nil {
 		return nil, err
 	}
@@ -155,13 +140,13 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 		params,
 		mysql.WithLogger(p.logger),
 		mysql.WithNow(p.now),
-		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithTLS(a.DBEnabledTLS),
 		mysql.WithLocation(location),
 	)
 }
 
-func newStoreService(p *params) (store.Service, error) {
-	mysql, err := newDatabase("stores", p)
+func (a *app) newStoreService(p *params) (store.Service, error) {
+	mysql, err := a.newDatabase("stores", p)
 	if err != nil {
 		return nil, err
 	}

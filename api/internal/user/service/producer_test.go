@@ -6,6 +6,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -83,7 +84,7 @@ func TestListProducers(t *testing.T) {
 			input:       &user.ListProducersInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list producers",
@@ -97,7 +98,7 @@ func TestListProducers(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count producers",
@@ -111,7 +112,7 @@ func TestListProducers(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -187,7 +188,7 @@ func TestMultiGetProducers(t *testing.T) {
 				ProducerIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to multi get producers",
@@ -198,7 +199,7 @@ func TestMultiGetProducers(t *testing.T) {
 				ProducerIDs: []string{"admin-id"},
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -269,7 +270,7 @@ func TestGetProducer(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.GetProducerInput{},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get producer",
@@ -280,7 +281,7 @@ func TestGetProducer(t *testing.T) {
 				ProducerID: "admin-id",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -427,7 +428,7 @@ func TestCreateProducer(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.CreateProducerInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get coordinator",
@@ -453,12 +454,12 @@ func TestCreateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, user.ErrNotFound)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, exception.ErrNotFound)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID: "coordinator-id",
@@ -479,7 +480,7 @@ func TestCreateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create admin",
@@ -506,7 +507,7 @@ func TestCreateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -611,7 +612,7 @@ func TestUpdateProducer(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateProducerInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get producer",
@@ -636,7 +637,7 @@ func TestUpdateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update producer",
@@ -662,7 +663,7 @@ func TestUpdateProducer(t *testing.T) {
 				AddressLine1:  "永田町1-7-1",
 				AddressLine2:  "",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -737,7 +738,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateProducerEmailInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by admin id",
@@ -748,7 +749,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 				ProducerID: "producer-id",
 				Email:      "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change email",
@@ -760,7 +761,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 				ProducerID: "producer-id",
 				Email:      "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update email",
@@ -773,7 +774,7 @@ func TestUpdateProducerEmail(t *testing.T) {
 				ProducerID: "producer-id",
 				Email:      "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -825,7 +826,7 @@ func TestUpdateProducerThumbnails(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateProducerThumbnailsInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update thumbnails",
@@ -836,7 +837,7 @@ func TestUpdateProducerThumbnails(t *testing.T) {
 				ProducerID: "producer-id",
 				Thumbnails: thumbnails,
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -888,7 +889,7 @@ func TestUpdateProducerHeaders(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateProducerHeadersInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update headers",
@@ -899,7 +900,7 @@ func TestUpdateProducerHeaders(t *testing.T) {
 				ProducerID: "producer-id",
 				Headers:    headers,
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -991,7 +992,7 @@ func TestResetProducerPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.ResetProducerPasswordInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by admin id",
@@ -1001,7 +1002,7 @@ func TestResetProducerPassword(t *testing.T) {
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change password",
@@ -1012,7 +1013,7 @@ func TestResetProducerPassword(t *testing.T) {
 			input: &user.ResetProducerPasswordInput{
 				ProducerID: "producer-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1058,18 +1059,18 @@ func TestRelateProducers(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.RelateProducersInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to not found coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, user.ErrNotFound)
+				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, exception.ErrNotFound)
 			},
 			input: &user.RelateProducersInput{
 				CoordinatorID: "coordinator-id",
 				ProducerIDs:   []string{"producer-id"},
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get coordinator",
@@ -1080,7 +1081,7 @@ func TestRelateProducers(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				ProducerIDs:   []string{"producer-id"},
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to multi get producers",
@@ -1092,7 +1093,7 @@ func TestRelateProducers(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				ProducerIDs:   []string{"producer-id"},
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to contain invalid producers",
@@ -1108,7 +1109,7 @@ func TestRelateProducers(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				ProducerIDs:   []string{"producer-id"},
 			},
-			expectErr: user.ErrFailedPrecondition,
+			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
 			name: "failed to update relationship",
@@ -1121,7 +1122,7 @@ func TestRelateProducers(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				ProducerIDs:   []string{"producer-id"},
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1157,7 +1158,7 @@ func TestUnrelateProducer(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UnrelateProducerInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update relationship",
@@ -1167,7 +1168,7 @@ func TestUnrelateProducer(t *testing.T) {
 			input: &user.UnrelateProducerInput{
 				ProducerID: "producer-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -1202,7 +1203,7 @@ func TestDeleteProducer(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.DeleteProducerInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete",
@@ -1212,7 +1213,7 @@ func TestDeleteProducer(t *testing.T) {
 			input: &user.DeleteProducerInput{
 				ProducerID: "producer-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

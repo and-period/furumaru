@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
-import { useBroadcastStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore, useShippingStore } from '~/store'
+import { useBroadcastStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore } from '~/store'
 import { CreateLiveRequest, Live, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 
@@ -13,7 +13,6 @@ const broadcastStore = useBroadcastStore()
 const coordinatorStore = useCoordinatorStore()
 const producerStore = useProducerStore()
 const productStore = useProductStore()
-const shippingStore = useShippingStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const scheduleId = route.params.id as string
@@ -25,7 +24,6 @@ const { broadcast } = storeToRefs(broadcastStore)
 const { coordinators } = storeToRefs(coordinatorStore)
 const { producers } = storeToRefs(producerStore)
 const { products } = storeToRefs(productStore)
-const { shippings } = storeToRefs(shippingStore)
 
 const initialLive: Live = {
   id: '',
@@ -45,7 +43,6 @@ const selectedLive = ref<Live>({ ...initialLive })
 const createLiveDialog = ref<boolean>(false)
 const updateLiveDialog = ref<boolean>(false)
 const scheduleFormData = ref<UpdateScheduleRequest>({
-  shippingId: '',
   title: '',
   description: '',
   thumbnailUrl: '',
@@ -106,17 +103,6 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 
 const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
-}
-
-const handleSearchShipping = async (name: string): Promise<void> => {
-  try {
-    await shippingStore.searchShippings(name, [scheduleFormData.value.shippingId])
-  } catch (err) {
-    if (err instanceof Error) {
-      show(err.message)
-    }
-    console.log(err)
-  }
 }
 
 const handleSearchProducer = async (name: string): Promise<void> => {
@@ -331,7 +317,6 @@ try {
     :coordinators="coordinators"
     :producers="producers"
     :products="products"
-    :shippings="shippings"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :image-upload-status="imageUploadStatus"
     :opening-video-upload-status="openingVideoUploadStatus"
@@ -340,7 +325,6 @@ try {
     @update:thumbnail="handleUploadThumbnail"
     @update:image="handleUploadImage"
     @update:opening-video="handleUploadOpeningVideo"
-    @search:shipping="handleSearchShipping"
     @search:producer="handleSearchProducer"
     @search:product="handleSearchProduct"
     @submit:schedule="handleSubmitUpdateSchedule"

@@ -4,7 +4,7 @@ patch:
   tags:
   - Live
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: scheduleId
@@ -56,7 +56,7 @@ delete:
   tags:
   - Live
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: scheduleId

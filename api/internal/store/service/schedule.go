@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -20,12 +21,13 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListSchedulesParams{
-		StartAtGte: in.StartAtGte,
-		StartAtLt:  in.StartAtLt,
-		EndAtGte:   in.EndAtGte,
-		EndAtLt:    in.EndAtLt,
-		Limit:      int(in.Limit),
-		Offset:     int(in.Offset),
+		StartAtGte:    in.StartAtGte,
+		StartAtLt:     in.StartAtLt,
+		EndAtGte:      in.EndAtGte,
+		EndAtLt:       in.EndAtLt,
+		OnlyPublished: in.OnlyPublished,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
 	}
 	var (
 		schedules entity.Schedules
@@ -46,6 +48,14 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 	return schedules, total, nil
 }
 
+func (s *service) MultiGetSchedules(ctx context.Context, in *store.MultiGetSchedulesInput) (entity.Schedules, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	schedules, err := s.db.Schedule.MultiGet(ctx, in.ScheduleIDs)
+	return schedules, internalError(err)
+}
+
 func (s *service) GetSchedule(ctx context.Context, in *store.GetScheduleInput) (*entity.Schedule, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
@@ -58,28 +68,18 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		in := &user.GetCoordinatorInput{
-			CoordinatorID: in.CoordinatorID,
-		}
-		_, err = s.user.GetCoordinator(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		_, err = s.db.Shipping.Get(ectx, in.ShippingID)
-		return
-	})
-	err := eg.Wait()
-	if errors.Is(err, store.ErrNotFound) {
-		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), store.ErrInvalidArgument)
+	coordinatorIn := &user.GetCoordinatorInput{
+		CoordinatorID: in.CoordinatorID,
+	}
+	_, err := s.user.GetCoordinator(ctx, coordinatorIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err != nil {
 		return nil, internalError(err)
 	}
 	sparams := &entity.NewScheduleParams{
 		CoordinatorID:   in.CoordinatorID,
-		ShippingID:      in.ShippingID,
 		Title:           in.Title,
 		Description:     in.Description,
 		ThumbnailURL:    in.ThumbnailURL,
@@ -125,15 +125,7 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 	if err != nil {
 		return internalError(err)
 	}
-	_, err = s.db.Shipping.Get(ctx, in.ShippingID)
-	if errors.Is(err, store.ErrNotFound) {
-		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), store.ErrInvalidArgument)
-	}
-	if err != nil {
-		return internalError(err)
-	}
 	params := &database.UpdateScheduleParams{
-		ShippingID:      in.ShippingID,
 		Title:           in.Title,
 		Description:     in.Description,
 		ThumbnailURL:    in.ThumbnailURL,
@@ -163,6 +155,28 @@ func (s *service) UpdateScheduleThumbnails(ctx context.Context, in *store.Update
 		return internalError(err)
 	}
 	err := s.db.Schedule.UpdateThumbnails(ctx, in.ScheduleID, in.Thumbnails)
+	return internalError(err)
+}
+
+func (s *service) ApproveSchedule(ctx context.Context, in *store.ApproveScheduleInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	adminIn := &user.GetAdministratorInput{
+		AdministratorID: in.AdminID,
+	}
+	_, err := s.user.GetAdministrator(ctx, adminIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return internalError(err)
+	}
+	params := &database.ApproveScheduleParams{
+		Approved:        in.Approved,
+		ApprovedAdminID: in.AdminID,
+	}
+	err = s.db.Schedule.Approve(ctx, in.ScheduleID, params)
 	return internalError(err)
 }
 

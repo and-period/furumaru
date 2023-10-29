@@ -43,6 +43,9 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.EndAtLt.IsZero() {
 		stmt = stmt.Where("end_at < ?", p.EndAtLt)
 	}
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ?", true).Where("approved = ?", true)
+	}
 	return stmt
 }
 
@@ -81,6 +84,21 @@ func (s *schedule) Count(ctx context.Context, params *database.ListSchedulesPara
 	return total, dbError(err)
 }
 
+func (s *schedule) MultiGet(ctx context.Context, scheduleIDs []string, fields ...string) (entity.Schedules, error) {
+	var schedules entity.Schedules
+
+	stmt := s.db.Statement(ctx, s.db.DB, scheduleTable, fields...).
+		Where("id IN (?)", scheduleIDs)
+
+	if err := stmt.Find(&schedules).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := schedules.Fill(s.now()); err != nil {
+		return nil, dbError(err)
+	}
+	return schedules, nil
+}
+
 func (s *schedule) Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error) {
 	schedule, err := s.get(ctx, s.db.DB, scheduleID, fields...)
 	return schedule, dbError(err)
@@ -99,24 +117,33 @@ func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule) error 
 }
 
 func (s *schedule) Update(ctx context.Context, scheduleID string, params *database.UpdateScheduleParams) error {
-	update := map[string]interface{}{
-		"shipping_id":       params.ShippingID,
-		"title":             params.Title,
-		"description":       params.Description,
-		"thumbnail_url":     params.ThumbnailURL,
-		"image_url":         params.ImageURL,
-		"opening_video_url": params.OpeningVideoURL,
-		"public":            params.Public,
-		"start_at":          params.StartAt,
-		"end_at":            params.EndAt,
-		"updated_at":        s.now(),
-	}
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		schedule, err := s.get(ctx, tx, scheduleID, "start_at")
+		if err != nil {
+			return err
+		}
+		if s.now().After(schedule.StartAt) {
+			return fmt.Errorf("database: this schedule has already started: %w", database.ErrFailedPrecondition)
+		}
 
-	stmt := s.db.DB.WithContext(ctx).
-		Table(scheduleTable).
-		Where("id = ?", scheduleID)
+		update := map[string]interface{}{
+			"title":             params.Title,
+			"description":       params.Description,
+			"thumbnail_url":     params.ThumbnailURL,
+			"image_url":         params.ImageURL,
+			"opening_video_url": params.OpeningVideoURL,
+			"public":            params.Public,
+			"start_at":          params.StartAt,
+			"end_at":            params.EndAt,
+			"updated_at":        s.now(),
+		}
 
-	err := stmt.Updates(update).Error
+		err = s.db.DB.WithContext(ctx).
+			Table(scheduleTable).
+			Where("id = ?", scheduleID).
+			Updates(update).Error
+		return err
+	})
 	return dbError(err)
 }
 
@@ -143,6 +170,35 @@ func (s *schedule) UpdateThumbnails(ctx context.Context, scheduleID string, thum
 			Table(scheduleTable).
 			Where("id = ?", scheduleID).
 			Updates(params).Error
+		return err
+	})
+	return dbError(err)
+}
+
+func (s *schedule) Approve(ctx context.Context, scheduleID string, params *database.ApproveScheduleParams) error {
+	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		schedule, err := s.get(ctx, tx, scheduleID, "start_at")
+		if err != nil {
+			return err
+		}
+		if s.now().After(schedule.StartAt) {
+			return fmt.Errorf("database: this schedule has already started: %w", database.ErrFailedPrecondition)
+		}
+
+		var approvedAdminID *string
+		if params.Approved {
+			approvedAdminID = &params.ApprovedAdminID
+		}
+		update := map[string]interface{}{
+			"approved":          params.Approved,
+			"approved_admin_id": approvedAdminID,
+			"updated_at":        s.now(),
+		}
+
+		err = tx.WithContext(ctx).
+			Table(scheduleTable).
+			Where("id = ?", scheduleID).
+			Updates(update).Error
 		return err
 	})
 	return dbError(err)

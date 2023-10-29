@@ -26,7 +26,6 @@ const (
 type Schedule struct {
 	ID              string         `gorm:"primaryKey;<-:create"`           // テンプレートID
 	CoordinatorID   string         `gorm:""`                               // コーディネータID
-	ShippingID      string         `gorm:""`                               // 配送設定ID
 	Status          ScheduleStatus `gorm:"-"`                              // 開催状況
 	Title           string         `gorm:""`                               // タイトル
 	Description     string         `gorm:""`                               // 説明
@@ -49,7 +48,6 @@ type Schedules []*Schedule
 
 type NewScheduleParams struct {
 	CoordinatorID   string
-	ShippingID      string
 	Title           string
 	Description     string
 	ThumbnailURL    string
@@ -64,7 +62,6 @@ func NewSchedule(params *NewScheduleParams) *Schedule {
 	return &Schedule{
 		ID:              uuid.Base58Encode(uuid.New()),
 		CoordinatorID:   params.CoordinatorID,
-		ShippingID:      params.ShippingID,
 		Title:           params.Title,
 		Description:     params.Description,
 		ThumbnailURL:    params.ThumbnailURL,
@@ -121,14 +118,16 @@ func (ss Schedules) Fill(now time.Time) error {
 	return nil
 }
 
+func (ss Schedules) IDs() []string {
+	res := make([]string, len(ss))
+	for i := range ss {
+		res[i] = ss[i].ID
+	}
+	return res
+}
+
 func (ss Schedules) CoordinatorIDs() []string {
 	return set.UniqBy(ss, func(s *Schedule) string {
 		return s.CoordinatorID
-	})
-}
-
-func (ss Schedules) ShippingIDs() []string {
-	return set.UniqBy(ss, func(s *Schedule) string {
-		return s.ShippingID
 	})
 }

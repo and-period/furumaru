@@ -187,12 +187,14 @@ type DeleteShippingInput struct {
 }
 
 type ListProductsInput struct {
-	Name        string               `validate:"omitempty,max=128"`
-	ProducerID  string               `validate:"omitempty"`
-	ProducerIDs []string             `validate:"dive,required"`
-	Limit       int64                `validate:"required,max=200"`
-	Offset      int64                `validate:"min=0"`
-	Orders      []*ListProductsOrder `validate:"omitempty,dive,required"`
+	Name          string               `validate:"omitempty,max=128"`
+	CoordinatorID string               `validate:"omitempty"`
+	ProducerID    string               `validate:"omitempty"`
+	ProducerIDs   []string             `validate:"dive,required"`
+	OnlyPublished bool                 `validate:""`
+	Limit         int64                `validate:"required,max=200"`
+	Offset        int64                `validate:"min=0"`
+	Orders        []*ListProductsOrder `validate:"omitempty,dive,required"`
 }
 
 type ListProductsOrder struct {
@@ -209,6 +211,7 @@ type GetProductInput struct {
 }
 
 type CreateProductInput struct {
+	CoordinatorID     string                   `validate:"required"`
 	ProducerID        string                   `validate:"required"`
 	TypeID            string                   `validate:"required"`
 	TagIDs            []string                 `validate:"max=8,dive,required"`
@@ -233,7 +236,6 @@ type CreateProductInput struct {
 	Box100Rate        int64                    `validate:"min=0,max=100"`
 	OriginPrefecture  int64                    `validate:"min=0"`
 	OriginCity        string                   `validate:"omitempty,max=32"`
-	BusinessDays      []time.Weekday           `validate:"max=7,unique"`
 	StartAt           time.Time                `validate:"required"`
 	EndAt             time.Time                `validate:"required,gtfield=StartAt"`
 }
@@ -245,7 +247,6 @@ type CreateProductMedia struct {
 
 type UpdateProductInput struct {
 	ProductID         string                   `validate:"required"`
-	ProducerID        string                   `validate:"required"`
 	TypeID            string                   `validate:"required"`
 	TagIDs            []string                 `validate:"max=8,dive,required"`
 	Name              string                   `validate:"required,max=128"`
@@ -269,7 +270,6 @@ type UpdateProductInput struct {
 	Box100Rate        int64                    `validate:"min=0,max=100"`
 	OriginPrefecture  int64                    `validate:"min=0"`
 	OriginCity        string                   `validate:"omitempty,max=32"`
-	BusinessDays      []time.Weekday           `validate:"max=7,unique"`
 	StartAt           time.Time                `validate:"required"`
 	EndAt             time.Time                `validate:"required,gtfield=StartAt"`
 }
@@ -343,12 +343,17 @@ type DeletePromotionInput struct {
 }
 
 type ListSchedulesInput struct {
-	StartAtGte time.Time `validate:""`
-	StartAtLt  time.Time `validate:""`
-	EndAtGte   time.Time `validate:""`
-	EndAtLt    time.Time `validate:""`
-	Limit      int64     `validate:"required,max=200"`
-	Offset     int64     `validate:"min=0"`
+	StartAtGte    time.Time `validate:""`
+	StartAtLt     time.Time `validate:""`
+	EndAtGte      time.Time `validate:""`
+	EndAtLt       time.Time `validate:""`
+	OnlyPublished bool      `validate:""`
+	Limit         int64     `validate:"required,max=200"`
+	Offset        int64     `validate:"min=0"`
+}
+
+type MultiGetSchedulesInput struct {
+	ScheduleIDs []string `validate:"omitempty,dive,required"`
 }
 
 type GetScheduleInput struct {
@@ -357,7 +362,6 @@ type GetScheduleInput struct {
 
 type CreateScheduleInput struct {
 	CoordinatorID   string    `validate:"required"`
-	ShippingID      string    `validate:"required"`
 	Title           string    `validate:"required,max=64"`
 	Description     string    `validate:"required,max=2000"`
 	ThumbnailURL    string    `validate:"omitempty,url"`
@@ -370,7 +374,6 @@ type CreateScheduleInput struct {
 
 type UpdateScheduleInput struct {
 	ScheduleID      string    `validate:"required"`
-	ShippingID      string    `validate:"required"`
 	Title           string    `validate:"required,max=64"`
 	Description     string    `validate:"required,max=2000"`
 	ThumbnailURL    string    `validate:"omitempty,url"`
@@ -386,12 +389,20 @@ type UpdateScheduleThumbnailsInput struct {
 	Thumbnails common.Images `validate:""`
 }
 
+type ApproveScheduleInput struct {
+	ScheduleID string `validate:"required"`
+	AdminID    string `validate:"required"`
+	Approved   bool   `validate:""`
+}
+
 type GetLiveInput struct {
 	LiveID string `validate:"required"`
 }
 
-type ListLivesByScheduleIDInput struct {
-	ScheduleID string `validate:"required"`
+type ListLivesInput struct {
+	ScheduleIDs []string `validate:"dive,required"`
+	Limit       int64    `validate:"min=0,max=200"`
+	Offset      int64    `validate:"min=0"`
 }
 
 type CreateLiveInput struct {
@@ -437,6 +448,22 @@ type AggregateOrdersInput struct {
 
 type MultiGetAddressesInput struct {
 	AddressIDs []string `validate:"omitempty,dive,required"`
+}
+
+type GetCartInput struct {
+	SessionID string `validate:"required"`
+}
+
+type AddCartItemInput struct {
+	SessionID string `validate:"required"`
+	ProductID string `validate:"required"`
+	Quantity  int64  `validate:"min=1"`
+}
+
+type RemoveCartItemInput struct {
+	SessionID string `validate:"required"`
+	BoxNumber int64  `validate:"required"`
+	ProductID string `validate:"required"`
 }
 
 type SearchPostalCodeInput struct {

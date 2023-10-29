@@ -28,7 +28,7 @@ import type {
   UpdateAuthPasswordRequest,
   VerifyAuthEmailRequest,
   VerifyAuthRequest,
-} from '../models';
+} from '../models/index';
 import {
     AuthResponseFromJSON,
     AuthResponseToJSON,
@@ -56,7 +56,7 @@ import {
     VerifyAuthEmailRequestToJSON,
     VerifyAuthRequestFromJSON,
     VerifyAuthRequestToJSON,
-} from '../models';
+} from '../models/index';
 
 export interface V1CreateAuthRequest {
     body: CreateAuthRequest;
@@ -156,7 +156,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -191,7 +191,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -258,7 +258,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -292,7 +292,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -332,7 +332,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -373,7 +373,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -447,7 +447,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -482,7 +482,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -522,7 +522,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -563,7 +563,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
@@ -637,7 +637,7 @@ export class AuthApi extends runtime.BaseAPI {
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
+            const tokenString = await token("bearerAuth", []);
 
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;

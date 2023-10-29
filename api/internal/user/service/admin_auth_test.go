@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/cognito"
@@ -57,7 +58,7 @@ func TestSignInAdmin(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.SignInAdminInput{},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign in",
@@ -69,7 +70,7 @@ func TestSignInAdmin(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get username",
@@ -82,7 +83,7 @@ func TestSignInAdmin(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -96,7 +97,7 @@ func TestSignInAdmin(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -111,7 +112,7 @@ func TestSignInAdmin(t *testing.T) {
 				Password: "password",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -150,7 +151,7 @@ func TestSignOutAdmin(t *testing.T) {
 			input: &user.SignOutAdminInput{
 				AccessToken: "",
 			},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign out",
@@ -160,7 +161,7 @@ func TestSignOutAdmin(t *testing.T) {
 			input: &user.SignOutAdminInput{
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -214,7 +215,7 @@ func TestGetAdminAuth(t *testing.T) {
 				AccessToken: "",
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
@@ -225,7 +226,7 @@ func TestGetAdminAuth(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -237,7 +238,7 @@ func TestGetAdminAuth(t *testing.T) {
 				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -299,7 +300,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "",
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to sign in",
@@ -310,7 +311,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get username",
@@ -322,7 +323,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -335,7 +336,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "success",
@@ -349,7 +350,7 @@ func TestRefreshAdminToken(t *testing.T) {
 				RefreshToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -387,7 +388,7 @@ func TestRegisterAdminDevice(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.RegisterAdminDeviceInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update device",
@@ -398,7 +399,7 @@ func TestRegisterAdminDevice(t *testing.T) {
 				AdminID: "admin-id",
 				Device:  "device",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -447,7 +448,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateAdminEmailInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
@@ -458,7 +459,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -470,7 +471,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "does not need to be changed",
@@ -482,7 +483,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				Email:       "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrFailedPrecondition,
+			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
 			name: "failed to change email",
@@ -495,7 +496,7 @@ func TestUpdateAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				Email:       "test-other@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -545,7 +546,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.VerifyAdminEmailInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get username",
@@ -556,7 +557,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				VerifyCode:  "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -568,7 +569,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				VerifyCode:  "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to confirm change email",
@@ -581,7 +582,7 @@ func TestVerifyAdminEmail(t *testing.T) {
 				AccessToken: "access-token",
 				VerifyCode:  "123456",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -626,7 +627,7 @@ func TestUpdateAdminPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateAdminPasswordInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by cognito id",
@@ -639,7 +640,7 @@ func TestUpdateAdminPassword(t *testing.T) {
 				NewPassword:          "!Qaz2wsx",
 				PasswordConfirmation: "!Qaz2wsx",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

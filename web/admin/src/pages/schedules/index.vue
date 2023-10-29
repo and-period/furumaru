@@ -1,20 +1,19 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, useCoordinatorStore, useScheduleStore, useShippingStore } from '~/store'
+import { useAuthStore, useCoordinatorStore, useScheduleStore } from '~/store'
+import { Schedule } from '~/types/api'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const coordinatorStore = useCoordinatorStore()
 const scheduleStore = useScheduleStore()
-const shippingStore = useShippingStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { role } = storeToRefs(authStore)
 const { coordinators } = storeToRefs(coordinatorStore)
 const { schedules, total } = storeToRefs(scheduleStore)
-const { shippings } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
@@ -55,6 +54,23 @@ const handleClickRow = (scheduleId: string): void => {
   router.push(`/schedules/${scheduleId}`)
 }
 
+const handleClickApproval = async (scheduleId: string): Promise<void> => {
+  try {
+    const schedule = schedules.value.find((schedule: Schedule): boolean => {
+      return schedule.id === scheduleId
+    })
+    if (!schedule) {
+      throw new Error(`failed to find schedule. scheduleId=${scheduleId}`)
+    }
+    await scheduleStore.approveSchedule(schedule)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
 const handleClickDelete = (): void => {
   console.log('debug', 'click:delete-schedule')
 }
@@ -76,12 +92,12 @@ try {
     :alert-text="alertText"
     :schedules="schedules"
     :coordinators="coordinators"
-    :shippings="shippings"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="total"
     @click:row="handleClickRow"
     @click:add="handleClickAdd"
     @click:delete="handleClickDelete"
+    @click:approval="handleClickApproval"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
   />

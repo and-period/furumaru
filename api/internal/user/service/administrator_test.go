@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -68,7 +69,7 @@ func TestListAdministrators(t *testing.T) {
 			input:       &user.ListAdministratorsInput{},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInvalidArgument,
+			expectErr:   exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to list administrators",
@@ -82,7 +83,7 @@ func TestListAdministrators(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 		{
 			name: "failed to count administrators",
@@ -96,7 +97,7 @@ func TestListAdministrators(t *testing.T) {
 			},
 			expect:      nil,
 			expectTotal: 0,
-			expectErr:   user.ErrInternal,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 
@@ -159,7 +160,7 @@ func TestMultiGetAdministrators(t *testing.T) {
 				AdministratorIDs: []string{""},
 			},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to multi get administrators",
@@ -170,7 +171,7 @@ func TestMultiGetAdministrators(t *testing.T) {
 				AdministratorIDs: []string{"admin-id"},
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -228,7 +229,7 @@ func TestGetAdministrator(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.GetAdministratorInput{},
 			expect:    nil,
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get administrator",
@@ -239,7 +240,7 @@ func TestGetAdministrator(t *testing.T) {
 				AdministratorID: "admin-id",
 			},
 			expect:    nil,
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -317,7 +318,7 @@ func TestCreateAdministrator(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.CreateAdministratorInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to create admin",
@@ -332,7 +333,7 @@ func TestCreateAdministrator(t *testing.T) {
 				Email:         "test-admin@and-period.jp",
 				PhoneNumber:   "+819012345678",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -381,7 +382,7 @@ func TestUpdateAdministrator(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateAdministratorInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to update administrator",
@@ -396,7 +397,7 @@ func TestUpdateAdministrator(t *testing.T) {
 				FirstnameKana:   "すたっふ",
 				PhoneNumber:     "+819012345678",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -457,7 +458,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateAdministratorEmailInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by admin id",
@@ -468,7 +469,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 				AdministratorID: "administrator-id",
 				Email:           "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change email",
@@ -480,7 +481,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 				AdministratorID: "administrator-id",
 				Email:           "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to update email",
@@ -493,7 +494,7 @@ func TestUpdateAdministratorEmail(t *testing.T) {
 				AdministratorID: "administrator-id",
 				Email:           "test-admin@and-period.jp",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -571,7 +572,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.ResetAdministratorPasswordInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get by admin id",
@@ -581,7 +582,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to admin change password",
@@ -592,7 +593,7 @@ func TestResetAdministratorPassword(t *testing.T) {
 			input: &user.ResetAdministratorPasswordInput{
 				AdministratorID: "administrator-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -627,7 +628,7 @@ func TestDeleteAdministrator(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.DeleteAdministratorInput{},
-			expectErr: user.ErrInvalidArgument,
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to delete",
@@ -637,7 +638,7 @@ func TestDeleteAdministrator(t *testing.T) {
 			input: &user.DeleteAdministratorInput{
 				AdministratorID: "administrator-id",
 			},
-			expectErr: user.ErrInternal,
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

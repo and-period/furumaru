@@ -26,10 +26,33 @@ func newLive(db *mysql.Client) database.Live {
 	}
 }
 
-func (l *live) ListByScheduleID(ctx context.Context, scheduleID string, fields ...string) (entity.Lives, error) {
+type listLivesParams database.ListLivesParams
+
+func (p listLivesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if len(p.ScheduleIDs) > 0 {
+		stmt = stmt.Where("schedule_id IN (?)", p.ScheduleIDs)
+	}
+	return stmt
+}
+
+func (p listLivesParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
+func (l *live) List(ctx context.Context, params *database.ListLivesParams, fields ...string) (entity.Lives, error) {
 	var lives entity.Lives
 
-	stmt := l.db.Statement(ctx, l.db.DB, liveTable, fields...).Where("schedule_id = ?", scheduleID)
+	p := listLivesParams(*params)
+
+	stmt := l.db.Statement(ctx, l.db.DB, liveTable, fields...)
+	stmt = p.stmt(stmt)
+	stmt = p.pagination(stmt)
 
 	if err := stmt.Find(&lives).Error; err != nil {
 		return nil, dbError(err)
@@ -38,6 +61,13 @@ func (l *live) ListByScheduleID(ctx context.Context, scheduleID string, fields .
 		return nil, dbError(err)
 	}
 	return lives, nil
+}
+
+func (l *live) Count(ctx context.Context, params *database.ListLivesParams) (int64, error) {
+	p := listLivesParams(*params)
+
+	total, err := l.db.Count(ctx, l.db.DB, &entity.Live{}, p.stmt)
+	return total, dbError(err)
 }
 
 func (l *live) Get(ctx context.Context, liveID string, fields ...string) (*entity.Live, error) {

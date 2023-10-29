@@ -26,12 +26,6 @@ func NewProductType(productType *entity.ProductType) *ProductType {
 	}
 }
 
-func (t *ProductType) Fill(category *Category) {
-	if category != nil {
-		t.CategoryName = category.Name
-	}
-}
-
 func (t *ProductType) Response() *response.ProductType {
 	return &t.ProductType
 }
@@ -56,16 +50,6 @@ func (ts ProductTypes) Map() map[string]*ProductType {
 		res[t.ID] = t
 	}
 	return res
-}
-
-func (ts ProductTypes) Fill(categories map[string]*Category) {
-	for i := range ts {
-		category, ok := categories[ts[i].CategoryID]
-		if !ok {
-			continue
-		}
-		ts[i].Fill(category)
-	}
 }
 
 func (ts ProductTypes) Response() []*response.ProductType {

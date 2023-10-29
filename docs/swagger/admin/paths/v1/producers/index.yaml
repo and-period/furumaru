@@ -4,7 +4,7 @@ get:
   tags:
   - Producer
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit
@@ -52,7 +52,7 @@ post:
   tags:
   - Producer
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   requestBody:
     required: true
     content:

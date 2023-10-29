@@ -4,9 +4,6 @@ createScheduleRequest:
     coordinatorId:
       type: string
       description: コーディネーターID
-    shippingId:
-      type: string
-      description: 配送設定ID
     title:
       type: string
       description: タイトル(128文字まで)
@@ -35,7 +32,6 @@ createScheduleRequest:
       description: マルシェ終了日時
   required:
   - coordinatorId
-  - shippingId
   - title
   - description
   - thumbnailUrl
@@ -46,7 +42,6 @@ createScheduleRequest:
   - endAt
   example:
     coordinatorId: 'coordinator-id'
-    shippingId: 'shipping-id'
     title: 'スケジュールタイトル'
     description: 'スケジュールの説明'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
@@ -58,9 +53,6 @@ createScheduleRequest:
 updateScheduleRequest:
   type: object
   properties:
-    shippingId:
-      type: string
-      description: 配送設定ID
     title:
       type: string
       description: タイトル(128文字まで)
@@ -88,7 +80,6 @@ updateScheduleRequest:
       format: int64
       description: マルシェ終了日時
   required:
-  - shippingId
   - title
   - description
   - thumbnailUrl
@@ -98,7 +89,6 @@ updateScheduleRequest:
   - startAt
   - endAt
   example:
-    shippingId: 'shipping-id'
     title: 'スケジュールタイトル'
     description: 'スケジュールの説明'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
@@ -107,3 +97,13 @@ updateScheduleRequest:
     public: true
     startAt: 1640962800
     endAt: 1640962800
+approveScheduleRequest:
+  type: object
+  properties:
+    approved:
+      type: boolean
+      description: 承認フラグ
+  required:
+  - approve
+  example:
+    approved: true

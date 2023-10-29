@@ -4,7 +4,7 @@ get:
   tags:
   - Schedule
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit
@@ -35,7 +35,7 @@ post:
   tags:
   - Schedule
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   requestBody:
     required: true
     content:

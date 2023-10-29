@@ -28,15 +28,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type registry struct {
-	appName   string
-	env       string
-	waitGroup *sync.WaitGroup
-	worker    worker.Worker
-}
-
 type params struct {
-	config            *config
 	logger            *zap.Logger
 	waitGroup         *sync.WaitGroup
 	mailer            mailer.Client
@@ -57,50 +49,49 @@ type params struct {
 	googleCredentials []byte
 }
 
-func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*registry, error) {
+func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	params := &params{
-		config:    conf,
 		logger:    logger,
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
 
 	// AWS SDKの設定
-	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(conf.AWSRegion))
+	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.aws = awscfg
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
-	if err := getSecret(ctx, params); err != nil {
-		return nil, err
+	if err := a.getSecret(ctx, params); err != nil {
+		return err
 	}
 
 	// Databaseの設定
-	dbClient, err := newDatabase("messengers", params)
+	dbClient, err := a.newDatabase("messengers", params)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// メールテンプレートの設定
-	f, err := os.Open(conf.SendGridTemplatePath)
+	f, err := os.Open(a.SendGridTemplatePath)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer f.Close()
 	var templateMap map[string]string
 	d := yaml.NewDecoder(f)
 	if err := d.Decode(&templateMap); err != nil {
-		return nil, err
+		return err
 	}
 
 	// Mailerの設定
 	mailParams := &mailer.Params{
 		APIKey:      params.sendGridAPIKey,
-		FromName:    conf.MailFromName,
-		FromAddress: conf.MailFromAddress,
+		FromName:    a.MailFromName,
+		FromAddress: a.MailFromAddress,
 		TemplateMap: templateMap,
 	}
 	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(logger))
@@ -113,28 +104,28 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 	}
 	linebot, err := line.NewClient(lineParams, line.WithLogger(logger))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.line = linebot
 
 	// Firebaseの設定
 	fbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.googleCredentials))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.firebase = fbapp
 
 	// Firebase Cloud Messagingの設定
 	messaging, err := messaging.NewClient(ctx, fbapp, messaging.WithLogger(logger))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	params.messaging = messaging
 
 	// Serviceの設定
-	userService, err := newUserService(params)
+	userService, err := a.newUserService(params)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Workerの設定
@@ -146,26 +137,23 @@ func newRegistry(ctx context.Context, conf *config, logger *zap.Logger) (*regist
 		Messaging: params.messaging,
 		User:      userService,
 	}
-	return &registry{
-		appName:   conf.AppName,
-		env:       conf.Environment,
-		waitGroup: params.waitGroup,
-		worker:    worker.NewWorker(workerParams, worker.WithLogger(logger)),
-	}, nil
+	a.worker = worker.NewWorker(workerParams, worker.WithLogger(logger))
+	a.waitGroup = params.waitGroup
+	return nil
 }
 
-func getSecret(ctx context.Context, p *params) error {
+func (a *app) getSecret(ctx context.Context, p *params) error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		// データベース認証情報の取得
-		if p.config.DBSecretName == "" {
-			p.dbHost = p.config.DBHost
-			p.dbPort = p.config.DBPort
-			p.dbUsername = p.config.DBUsername
-			p.dbPassword = p.config.DBPassword
+		if a.DBSecretName == "" {
+			p.dbHost = a.DBHost
+			p.dbPort = a.DBPort
+			p.dbUsername = a.DBUsername
+			p.dbPassword = a.DBPassword
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.DBSecretName)
+		secrets, err := p.secret.Get(ectx, a.DBSecretName)
 		if err != nil {
 			return err
 		}
@@ -177,11 +165,11 @@ func getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// SendGrid認証情報の取得
-		if p.config.SendGridSecretName == "" {
-			p.sendGridAPIKey = p.config.SendGridAPIKey
+		if a.SendGridSecretName == "" {
+			p.sendGridAPIKey = a.SendGridAPIKey
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.SendGridSecretName)
+		secrets, err := p.secret.Get(ectx, a.SendGridSecretName)
 		if err != nil {
 			return err
 		}
@@ -190,13 +178,13 @@ func getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// LINE認証情報の取得
-		if p.config.LINESecretName == "" {
-			p.lineToken = p.config.LINEChannelToken
-			p.lineSecret = p.config.LINEChannelSecret
-			p.lineRoomID = p.config.LINERoomID
+		if a.LINESecretName == "" {
+			p.lineToken = a.LINEChannelToken
+			p.lineSecret = a.LINEChannelSecret
+			p.lineRoomID = a.LINERoomID
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.LINESecretName)
+		secrets, err := p.secret.Get(ectx, a.LINESecretName)
 		if err != nil {
 			return err
 		}
@@ -207,11 +195,11 @@ func getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// Google認証情報の取得
-		if p.config.GoogleSecretName == "" {
-			p.googleCredentials = []byte(p.config.GoogleCredentialsJSON)
+		if a.GoogleSecretName == "" {
+			p.googleCredentials = []byte(a.GoogleCredentialsJSON)
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, p.config.GoogleSecretName)
+		secrets, err := p.secret.Get(ectx, a.GoogleSecretName)
 		if err != nil {
 			return err
 		}
@@ -221,16 +209,16 @@ func getSecret(ctx context.Context, p *params) error {
 	return eg.Wait()
 }
 
-func newDatabase(dbname string, p *params) (*mysql.Client, error) {
+func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	params := &mysql.Params{
-		Socket:   p.config.DBSocket,
+		Socket:   a.DBSocket,
 		Host:     p.dbHost,
 		Port:     p.dbPort,
 		Database: dbname,
 		Username: p.dbUsername,
 		Password: p.dbPassword,
 	}
-	location, err := time.LoadLocation(p.config.DBTimeZone)
+	location, err := time.LoadLocation(a.DBTimeZone)
 	if err != nil {
 		return nil, err
 	}
@@ -238,7 +226,7 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 		params,
 		mysql.WithLogger(p.logger),
 		mysql.WithNow(p.now),
-		mysql.WithTLS(p.config.DBEnabledTLS),
+		mysql.WithTLS(a.DBEnabledTLS),
 		mysql.WithLocation(location),
 	)
 	if err != nil {
@@ -250,8 +238,8 @@ func newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	return cli, nil
 }
 
-func newUserService(p *params) (user.Service, error) {
-	mysql, err := newDatabase("users", p)
+func (a *app) newUserService(p *params) (user.Service, error) {
+	mysql, err := a.newDatabase("users", p)
 	if err != nil {
 		return nil, err
 	}

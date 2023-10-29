@@ -4,7 +4,7 @@ get:
   tags:
   - Producer
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: producerId
@@ -38,7 +38,7 @@ patch:
   tags:
   - Producer
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: producerId
@@ -83,7 +83,7 @@ delete:
   tags:
   - Producer
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: producerId

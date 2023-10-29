@@ -246,6 +246,19 @@ export interface AdministratorsResponse {
 /**
  * 
  * @export
+ * @interface ApproveScheduleRequest
+ */
+export interface ApproveScheduleRequest {
+    /**
+     * 承認フラグ
+     * @type {boolean}
+     * @memberof ApproveScheduleRequest
+     */
+    'approved'?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface AuthResponse
  */
 export interface AuthResponse {
@@ -927,6 +940,12 @@ export interface Coordinator {
      */
     'facebookId': string;
     /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof Coordinator
+     */
+    'businessDays': Array<Weekday>;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof Coordinator
@@ -1276,6 +1295,12 @@ export interface CreateCoordinatorRequest {
      * @memberof CreateCoordinatorRequest
      */
     'facebookId': string;
+    /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof CreateCoordinatorRequest
+     */
+    'businessDays': Array<Weekday>;
 }
 
 
@@ -1521,6 +1546,12 @@ export interface CreateProductRequest {
      */
     'public': boolean;
     /**
+     * コーディネータID
+     * @type {string}
+     * @memberof CreateProductRequest
+     */
+    'coordinatorId': string;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof CreateProductRequest
@@ -1646,12 +1677,6 @@ export interface CreateProductRequest {
      * @memberof CreateProductRequest
      */
     'originCity': string;
-    /**
-     * 営業曜日
-     * @type {Array<Weekday>}
-     * @memberof CreateProductRequest
-     */
-    'businessDays': Array<Weekday>;
     /**
      * 販売開始日時 (unixtime)
      * @type {number}
@@ -1787,12 +1812,6 @@ export interface CreateScheduleRequest {
      * @memberof CreateScheduleRequest
      */
     'coordinatorId': string;
-    /**
-     * 配送設定ID
-     * @type {string}
-     * @memberof CreateScheduleRequest
-     */
-    'shippingId': string;
     /**
      * タイトル(128文字まで)
      * @type {string}
@@ -3559,6 +3578,12 @@ export interface Product {
      */
     'status': ProductStatus;
     /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Product
+     */
+    'coordinatorId': string;
+    /**
      * 生産者ID
      * @type {string}
      * @memberof Product
@@ -3691,12 +3716,6 @@ export interface Product {
      */
     'originCity': string;
     /**
-     * 営業曜日
-     * @type {Array<Weekday>}
-     * @memberof Product
-     */
-    'businessDays': Array<Weekday>;
-    /**
      * 販売開始日時 (unixtime)
      * @type {number}
      * @memberof Product
@@ -3781,6 +3800,12 @@ export interface ProductResponse {
      * @memberof ProductResponse
      */
     'product': Product;
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof ProductResponse
+     */
+    'coordinator': Coordinator;
     /**
      * 
      * @type {Producer}
@@ -4028,6 +4053,12 @@ export interface ProductsResponse {
      */
     'products': Array<Product>;
     /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof ProductsResponse
+     */
+    'coordinators': Array<Coordinator>;
+    /**
      * 生産者一覧
      * @type {Array<Producer>}
      * @memberof ProductsResponse
@@ -4254,12 +4285,6 @@ export interface Schedule {
      */
     'coordinatorId': string;
     /**
-     * 配送設定ID
-     * @type {string}
-     * @memberof Schedule
-     */
-    'shippingId': string;
-    /**
      * 
      * @type {ScheduleStatus}
      * @memberof Schedule
@@ -4358,12 +4383,6 @@ export interface ScheduleResponse {
      * @memberof ScheduleResponse
      */
     'coordinator': Coordinator;
-    /**
-     * 
-     * @type {Shipping}
-     * @memberof ScheduleResponse
-     */
-    'shipping': Shipping;
 }
 /**
  * マルシェ開催状況
@@ -4401,12 +4420,6 @@ export interface SchedulesResponse {
      * @memberof SchedulesResponse
      */
     'coordinators': Array<Coordinator>;
-    /**
-     * 配送設定一覧
-     * @type {Array<Shipping>}
-     * @memberof SchedulesResponse
-     */
-    'shippings': Array<Shipping>;
     /**
      * 合計数
      * @type {number}
@@ -5102,6 +5115,12 @@ export interface UpdateCoordinatorRequest {
      * @memberof UpdateCoordinatorRequest
      */
     'facebookId': string;
+    /**
+     * 営業曜日
+     * @type {Array<Weekday>}
+     * @memberof UpdateCoordinatorRequest
+     */
+    'businessDays': Array<Weekday>;
 }
 
 
@@ -5328,12 +5347,6 @@ export interface UpdateProductRequest {
      */
     'public': boolean;
     /**
-     * 生産者ID
-     * @type {string}
-     * @memberof UpdateProductRequest
-     */
-    'producerId': string;
-    /**
      * 品目ID
      * @type {string}
      * @memberof UpdateProductRequest
@@ -5454,12 +5467,6 @@ export interface UpdateProductRequest {
      */
     'originCity': string;
     /**
-     * 営業曜日
-     * @type {Array<Weekday>}
-     * @memberof UpdateProductRequest
-     */
-    'businessDays': Array<Weekday>;
-    /**
      * 販売開始日時 (unixtime)
      * @type {number}
      * @memberof UpdateProductRequest
@@ -5569,12 +5576,6 @@ export interface UpdatePromotionRequest {
  * @interface UpdateScheduleRequest
  */
 export interface UpdateScheduleRequest {
-    /**
-     * 配送設定ID
-     * @type {string}
-     * @memberof UpdateScheduleRequest
-     */
-    'shippingId': string;
     /**
      * タイトル(128文字まで)
      * @type {string}
@@ -6001,7 +6002,7 @@ export const AddressApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6081,6 +6082,7 @@ export class AddressApi extends BaseAPI {
 }
 
 
+
 /**
  * AdministratorApi - axios parameter creator
  * @export
@@ -6109,7 +6111,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6150,7 +6152,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6188,7 +6190,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6224,7 +6226,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6273,7 +6275,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6317,7 +6319,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6361,7 +6363,7 @@ export const AdministratorApiAxiosParamCreator = function (configuration?: Confi
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6654,6 +6656,7 @@ export class AdministratorApi extends BaseAPI {
 }
 
 
+
 /**
  * AuthApi - axios parameter creator
  * @export
@@ -6715,7 +6718,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6749,7 +6752,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6786,7 +6789,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6826,7 +6829,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6902,7 +6905,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6939,7 +6942,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -6976,7 +6979,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7016,7 +7019,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7056,7 +7059,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7460,6 +7463,7 @@ export class AuthApi extends BaseAPI {
 }
 
 
+
 /**
  * BroadcastApi - axios parameter creator
  * @export
@@ -7489,7 +7493,7 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7569,6 +7573,7 @@ export class BroadcastApi extends BaseAPI {
 }
 
 
+
 /**
  * CategoryApi - axios parameter creator
  * @export
@@ -7597,7 +7602,7 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7638,7 +7643,7 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7676,7 +7681,7 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7733,7 +7738,7 @@ export const CategoryApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7927,6 +7932,7 @@ export class CategoryApi extends BaseAPI {
 }
 
 
+
 /**
  * ContactApi - axios parameter creator
  * @export
@@ -7955,7 +7961,7 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -7996,7 +8002,7 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8034,7 +8040,7 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8070,7 +8076,7 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8119,7 +8125,7 @@ export const ContactApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8340,6 +8346,7 @@ export class ContactApi extends BaseAPI {
 }
 
 
+
 /**
  * ContactCategoryApi - axios parameter creator
  * @export
@@ -8369,7 +8376,7 @@ export const ContactCategoryApiAxiosParamCreator = function (configuration?: Con
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8405,7 +8412,7 @@ export const ContactCategoryApiAxiosParamCreator = function (configuration?: Con
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8529,6 +8536,7 @@ export class ContactCategoryApi extends BaseAPI {
 }
 
 
+
 /**
  * CoordinatorApi - axios parameter creator
  * @export
@@ -8557,7 +8565,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8598,7 +8606,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8636,7 +8644,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8673,7 +8681,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8725,7 +8733,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8774,7 +8782,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8819,7 +8827,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8860,7 +8868,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8904,7 +8912,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8948,7 +8956,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -8987,7 +8995,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -9030,7 +9038,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -9073,7 +9081,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -9116,7 +9124,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -9659,6 +9667,7 @@ export class CoordinatorApi extends BaseAPI {
 }
 
 
+
 /**
  * LiveApi - axios parameter creator
  * @export
@@ -9691,7 +9700,7 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -9736,7 +9745,7 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -9774,7 +9783,7 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -9819,7 +9828,7 @@ export const LiveApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10013,6 +10022,7 @@ export class LiveApi extends BaseAPI {
 }
 
 
+
 /**
  * MessageApi - axios parameter creator
  * @export
@@ -10042,7 +10052,7 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10079,7 +10089,7 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10210,6 +10220,7 @@ export class MessageApi extends BaseAPI {
 }
 
 
+
 /**
  * NotificationApi - axios parameter creator
  * @export
@@ -10238,7 +10249,7 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10279,7 +10290,7 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10317,7 +10328,7 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10356,7 +10367,7 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10417,7 +10428,7 @@ export const NotificationApiAxiosParamCreator = function (configuration?: Config
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10647,6 +10658,7 @@ export class NotificationApi extends BaseAPI {
 }
 
 
+
 /**
  * OrderApi - axios parameter creator
  * @export
@@ -10676,7 +10688,7 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10713,7 +10725,7 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10844,6 +10856,7 @@ export class OrderApi extends BaseAPI {
 }
 
 
+
 /**
  * ProducerApi - axios parameter creator
  * @export
@@ -10872,7 +10885,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10913,7 +10926,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10951,7 +10964,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -10989,7 +11002,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11046,7 +11059,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11090,7 +11103,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11132,7 +11145,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11171,7 +11184,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11214,7 +11227,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11257,7 +11270,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11300,7 +11313,7 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11735,6 +11748,7 @@ export class ProducerApi extends BaseAPI {
 }
 
 
+
 /**
  * ProductApi - axios parameter creator
  * @export
@@ -11763,7 +11777,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11804,7 +11818,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11842,7 +11856,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11881,7 +11895,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11942,7 +11956,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -11981,7 +11995,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12024,7 +12038,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12324,6 +12338,7 @@ export class ProductApi extends BaseAPI {
 }
 
 
+
 /**
  * ProductTagApi - axios parameter creator
  * @export
@@ -12352,7 +12367,7 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12393,7 +12408,7 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12431,7 +12446,7 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12488,7 +12503,7 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12682,6 +12697,7 @@ export class ProductTagApi extends BaseAPI {
 }
 
 
+
 /**
  * ProductTypeApi - axios parameter creator
  * @export
@@ -12714,7 +12730,7 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12759,7 +12775,7 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12797,7 +12813,7 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12855,7 +12871,7 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12916,7 +12932,7 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -12955,7 +12971,7 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13240,6 +13256,7 @@ export class ProductTypeApi extends BaseAPI {
 }
 
 
+
 /**
  * PromotionApi - axios parameter creator
  * @export
@@ -13268,7 +13285,7 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13309,7 +13326,7 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13347,7 +13364,7 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13385,7 +13402,7 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13442,7 +13459,7 @@ export const PromotionApiAxiosParamCreator = function (configuration?: Configura
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13669,12 +13686,57 @@ export class PromotionApi extends BaseAPI {
 }
 
 
+
 /**
  * ScheduleApi - axios parameter creator
  * @export
  */
 export const ScheduleApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary マルシェ開催スケジュール承認
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {ApproveScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ApproveSchedule: async (scheduleId: string, body: ApproveScheduleRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1ApproveSchedule', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ApproveSchedule', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}/approval`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @summary マルシェ開催スケジュール登録
@@ -13697,7 +13759,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13738,7 +13800,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13774,7 +13836,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13823,7 +13885,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13862,7 +13924,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13905,7 +13967,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13948,7 +14010,7 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             const localVarQueryParameter = {} as any;
             const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -13980,6 +14042,18 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
 export const ScheduleApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = ScheduleApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary マルシェ開催スケジュール承認
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {ApproveScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ApproveSchedule(scheduleId: string, body: ApproveScheduleRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ApproveSchedule(scheduleId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
         /**
          * 
          * @summary マルシェ開催スケジュール登録
@@ -14071,6 +14145,17 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
     return {
         /**
          * 
+         * @summary マルシェ開催スケジュール承認
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {ApproveScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ApproveSchedule(scheduleId: string, body: ApproveScheduleRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ApproveSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール登録
          * @param {CreateScheduleRequest} body 
          * @param {*} [options] Override http request option.
@@ -14151,6 +14236,19 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
  * @extends {BaseAPI}
  */
 export class ScheduleApi extends BaseAPI {
+    /**
+     * 
+     * @summary マルシェ開催スケジュール承認
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {ApproveScheduleRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1ApproveSchedule(scheduleId: string, body: ApproveScheduleRequest, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1ApproveSchedule(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary マルシェ開催スケジュール登録
@@ -14239,6 +14337,7 @@ export class ScheduleApi extends BaseAPI {
 }
 
 
+
 /**
  * ShippingApi - axios parameter creator
  * @export
@@ -14267,7 +14366,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14308,7 +14407,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14346,7 +14445,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14384,7 +14483,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14441,7 +14540,7 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14668,6 +14767,7 @@ export class ShippingApi extends BaseAPI {
 }
 
 
+
 /**
  * ThreadApi - axios parameter creator
  * @export
@@ -14696,7 +14796,7 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14737,7 +14837,7 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14775,7 +14875,7 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14815,7 +14915,7 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -14864,7 +14964,7 @@ export const ThreadApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -15088,6 +15188,7 @@ export class ThreadApi extends BaseAPI {
 }
 
 
+
 /**
  * UserApi - axios parameter creator
  * @export
@@ -15117,7 +15218,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -15153,7 +15254,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            // authentication BearerAuth required
+            // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
@@ -15275,5 +15376,6 @@ export class UserApi extends BaseAPI {
         return UserApiFp(this.configuration).v1ListUsers(limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
 
 

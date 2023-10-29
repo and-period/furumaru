@@ -1,19 +1,27 @@
 package handler
 
 import (
+	"net/http"
 	"sync"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/singleflight"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+)
+
+const (
+	sessionKey = "session_id"
+	sessionTTL = 14 * 24 * 60 * 60 // 14days
 )
 
 /**
@@ -30,16 +38,19 @@ type Params struct {
 	User      user.Service
 	Store     store.Service
 	Messenger messenger.Service
+	Media     media.Service
 }
 
 type handler struct {
 	now         func() time.Time
+	generateID  func() string
 	logger      *zap.Logger
 	waitGroup   *sync.WaitGroup
 	sharedGroup *singleflight.Group
 	user        user.Service
 	store       store.Service
 	messenger   messenger.Service
+	media       media.Service
 }
 
 type options struct {
@@ -62,13 +73,17 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		opts[i](dopts)
 	}
 	return &handler{
-		now:         jst.Now,
+		now: jst.Now,
+		generateID: func() string {
+			return uuid.Base58Encode(uuid.New())
+		},
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
 		user:        params.User,
 		store:       params.Store,
 		messenger:   params.Messenger,
+		media:       params.Media,
 	}
 }
 
@@ -78,8 +93,14 @@ func NewHandler(params *Params, opts ...Option) Handler {
  * ###############################################
  */
 func (h *handler) Routes(rg *gin.RouterGroup) {
-	v1 := rg.Group("/v1")
+	v1 := rg.Group("/v1", h.setCookie)
+	// 公開エンドポイント
 	h.authRoutes(v1.Group("/auth"))
+	h.topRoutes(v1.Group("/top"))
+	h.productRoutes(v1.Group("/products"))
+
+	// 要認証エンドポイント
+	h.cartRoutes(v1.Group("/carts"))
 }
 
 /**
@@ -125,6 +146,16 @@ func (h *handler) authentication(ctx *gin.Context) {
 	ctx.Next()
 }
 
+func (h *handler) setCookie(ctx *gin.Context) {
+	sessionID, err := ctx.Cookie(sessionKey)
+	if err != nil || sessionID == "" {
+		ctx.SetSameSite(http.SameSiteNoneMode)
+		ctx.SetCookie(sessionKey, h.generateID(), sessionTTL, "/", "", false, true)
+	}
+
+	ctx.Next()
+}
+
 func setAuth(ctx *gin.Context, userID string) {
 	if userID != "" {
 		ctx.Request.Header.Set("userId", userID)
@@ -133,4 +164,10 @@ func setAuth(ctx *gin.Context, userID string) {
 
 func getUserID(ctx *gin.Context) string {
 	return ctx.GetHeader("userId")
+}
+
+//nolint:unused
+func getSessionID(ctx *gin.Context) string {
+	sessionID, _ := ctx.Cookie(sessionKey)
+	return sessionID
 }

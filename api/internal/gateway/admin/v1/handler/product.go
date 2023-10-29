@@ -108,12 +108,17 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	}
 
 	var (
+		coordinators service.Coordinators
 		producers    service.Producers
 		categories   service.Categories
 		productTypes service.ProductTypes
 		productTags  service.ProductTags
 	)
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinators, err = h.multiGetCoordinators(ectx, products.CoordinatorIDs())
+		return
+	})
 	eg.Go(func() (err error) {
 		producers, err = h.multiGetProducers(ectx, products.ProducerIDs())
 		return
@@ -140,6 +145,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 
 	res := &response.ProductsResponse{
 		Products:     sproducts.Response(),
+		Coordinators: coordinators.Response(),
 		Producers:    producers.Response(),
 		Categories:   categories.Response(),
 		ProductTypes: productTypes.Response(),
@@ -183,12 +189,17 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 	}
 
 	var (
+		coordinator *service.Coordinator
 		producer    *service.Producer
 		category    *service.Category
 		productType *service.ProductType
 		productTags service.ProductTags
 	)
 	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, product.CoordinatorID)
+		return
+	})
 	eg.Go(func() (err error) {
 		producer, err = h.getProducer(ectx, product.ProducerID)
 		return
@@ -214,6 +225,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 
 	res := &response.ProductResponse{
 		Product:     product.Response(),
+		Coordinator: coordinator.Response(),
 		Producer:    producer.Response(),
 		Category:    category.Response(),
 		ProductType: productType.Response(),
@@ -229,6 +241,10 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return
 	}
 	if getRole(ctx).IsCoordinator() {
+		if req.CoordinatorID != getAdminID(ctx) {
+			forbidden(ctx, errors.New("handler: not authorized this coordinator"))
+			return
+		}
 		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
 		if err != nil {
 			httpError(ctx, err)
@@ -240,6 +256,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	}
 
 	var (
+		coordinator *service.Coordinator
 		producer    *service.Producer
 		category    *service.Category
 		productType *service.ProductType
@@ -247,7 +264,17 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, req.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
 		producer, err = h.getProducer(ectx, req.ProducerID)
+		if err != nil {
+			return
+		}
+		if producer.CoordinatorID != req.CoordinatorID {
+			return fmt.Errorf("handler: unmatch coordinator id: %w", exception.ErrInvalidArgument)
+		}
 		return
 	})
 	eg.Go(func() (err error) {
@@ -302,6 +329,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.CreateProductInput{
+		CoordinatorID:     req.CoordinatorID,
 		ProducerID:        req.ProducerID,
 		TypeID:            req.TypeID,
 		TagIDs:            req.TagIDs,
@@ -326,7 +354,6 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		Box100Rate:        req.Box100Rate,
 		OriginPrefecture:  codes.PrefectureValues[req.OriginPrefecture],
 		OriginCity:        req.OriginCity,
-		BusinessDays:      req.BusinessDays,
 		StartAt:           jst.ParseFromUnix(req.StartAt),
 		EndAt:             jst.ParseFromUnix(req.EndAt),
 	}
@@ -338,6 +365,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 
 	res := &response.ProductResponse{
 		Product:     service.NewProduct(sproduct).Response(),
+		Coordinator: coordinator.Response(),
 		Producer:    producer.Response(),
 		Category:    category.Response(),
 		ProductType: productType.Response(),
@@ -360,7 +388,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		if err != nil {
 			return err
 		}
-		_, err = h.getCategory(ectx, productType.ID)
+		_, err = h.getCategory(ectx, productType.CategoryID)
 		return err
 	})
 	eg.Go(func() (err error) {
@@ -408,7 +436,6 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.UpdateProductInput{
 		ProductID:         util.GetParam(ctx, "productId"),
-		ProducerID:        req.ProducerID,
 		TypeID:            req.TypeID,
 		TagIDs:            req.TagIDs,
 		Name:              req.Name,
@@ -432,7 +459,6 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		Box100Rate:        req.Box100Rate,
 		OriginPrefecture:  codes.PrefectureValues[req.OriginPrefecture],
 		OriginCity:        req.OriginCity,
-		BusinessDays:      req.BusinessDays,
 		StartAt:           jst.ParseFromUnix(req.StartAt),
 		EndAt:             jst.ParseFromUnix(req.EndAt),
 	}
@@ -467,7 +493,6 @@ func (h *handler) DeleteProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-//nolint:unused
 func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {
 	if len(productIDs) == 0 {
 		return service.Products{}, nil

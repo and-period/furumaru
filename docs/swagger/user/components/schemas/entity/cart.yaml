@@ -1,0 +1,50 @@
+cart:
+  type: object
+  description: カート情報
+  properties:
+    number:
+      type: integer
+      format: int64
+      description: 箱の通番
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
+    size:
+      $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
+    rate:
+      type: integer
+      format: int64
+      description: 箱の占有率
+    items:
+      type: array
+      items:
+        type: object
+        properties:
+          productId:
+            type: string
+            format: 商品ID
+          quantity:
+            type: integer
+            format: int64
+            description: 数量
+        required:
+        - producerId
+        - quantity
+    coordinatorId:
+      type: string
+      description: コーディネータID
+  required:
+  - number
+  - type
+  - size
+  - rate
+  - items
+  - coordinatorId
+  example:
+    number: 1
+    type: 1
+    size: 1
+    rate: 75
+    items:
+    - productId: 'kSByoE6FetnPs5Byk3a9Zx'
+      quantity: 1
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'

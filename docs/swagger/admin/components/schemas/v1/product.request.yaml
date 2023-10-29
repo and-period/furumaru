@@ -10,6 +10,9 @@ createProductRequest:
     public:
       type: boolean
       description: 公開フラグ
+    coordinatorId:
+      type: string
+      description: コーディネータID
     producerId:
       type: string
       description: 生産者ID
@@ -94,11 +97,6 @@ createProductRequest:
     originCity:
       type: string
       description: 原産地(市区町村)(32文字まで)
-    businessDays:
-      type: array
-      description: 営業曜日
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/weekday'
     startAt:
       type: integer
       format: int64
@@ -111,6 +109,7 @@ createProductRequest:
   - name
   - description
   - public
+  - coordinatorId
   - producerId
   - productTypeId
   - productTagIds
@@ -132,13 +131,13 @@ createProductRequest:
   - box100Rate
   - originPrefecture
   - originCity
-  - businessDays
   - startAt
   - endAt
   example:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
     public: true
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
@@ -164,7 +163,6 @@ createProductRequest:
     box100Rate: 40
     originPrefecture: 'tokyo'
     originCity: '彦根市'
-    businessDays: [1,2,3,4,5]
     startAt: 1640962800
     endAt: 1640962800
 updateProductRequest:
@@ -179,9 +177,6 @@ updateProductRequest:
     public:
       type: boolean
       description: 公開フラグ
-    producerId:
-      type: string
-      description: 生産者ID
     productTypeId:
       type: string
       description: 品目ID
@@ -262,11 +257,6 @@ updateProductRequest:
     originCity:
       type: string
       description: 原産地(市区町村)(32文字まで)
-    businessDays:
-      type: array
-      description: 営業曜日
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/weekday'
     startAt:
       type: integer
       format: int64
@@ -279,7 +269,6 @@ updateProductRequest:
   - name
   - description
   - public
-  - producerId
   - productTypeId
   - productTagIds
   - media
@@ -300,14 +289,12 @@ updateProductRequest:
   - box100Rate
   - originPrefecture
   - originCity
-  - businessDays
   - startAt
   - endAt
   example:
     name: '新鮮なじゃがいも'
     description: '新鮮なじゃがいもをお届けします。'
     public: true
-    producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
     media:
@@ -332,6 +319,5 @@ updateProductRequest:
     box100Rate: 40
     originPrefecture: 'tokyo'
     originCity: '彦根市'
-    businessDays: [1,2,3,4,5]
     startAt: 1640962800
     endAt: 1640962800
