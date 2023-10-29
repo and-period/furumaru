@@ -22,6 +22,7 @@ func TestGetCart(t *testing.T) {
 			CoordinatorID: "coordinator-id",
 			DeliveryType:  entity.DeliveryTypeNormal,
 			Inventory:     invenroty,
+			Public:        true,
 			Weight:        500,
 			WeightUnit:    entity.WeightUnitGram,
 			Box60Rate:     80,
@@ -282,6 +283,7 @@ func TestAddCartItem(t *testing.T) {
 			CoordinatorID: "coordinator-id",
 			DeliveryType:  entity.DeliveryTypeNormal,
 			Inventory:     invenroty,
+			Public:        true,
 			Weight:        500,
 			WeightUnit:    entity.WeightUnitGram,
 			Box60Rate:     80,
@@ -367,6 +369,20 @@ func TestAddCartItem(t *testing.T) {
 				Quantity:  1,
 			},
 			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "product is not published",
+			setup: func(ctx context.Context, mocks *mocks) {
+				product := product("product-id", 1)
+				product.Public = false
+				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
+			},
+			input: &store.AddCartItemInput{
+				SessionID: "session-id",
+				ProductID: "product-id",
+				Quantity:  1,
+			},
+			expectErr: exception.ErrForbidden,
 		},
 		{
 			name: "insufficient product stock",
@@ -475,6 +491,7 @@ func TestRemoveCartItem(t *testing.T) {
 			CoordinatorID: "coordinator-id",
 			DeliveryType:  entity.DeliveryTypeNormal,
 			Inventory:     invenroty,
+			Public:        true,
 			Weight:        500,
 			WeightUnit:    entity.WeightUnitGram,
 			Box60Rate:     80,

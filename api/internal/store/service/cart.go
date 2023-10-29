@@ -37,6 +37,9 @@ func (s *service) AddCartItem(ctx context.Context, in *store.AddCartItemInput) e
 	if err != nil {
 		return internalError(err)
 	}
+	if !product.Public {
+		return fmt.Errorf("service: this product is not published: %w", exception.ErrForbidden)
+	}
 	cart, err := s.getCart(ctx, in.SessionID)
 	if err != nil {
 		return internalError(err)
@@ -86,7 +89,7 @@ func (s *service) refreshCart(ctx context.Context, cart *entity.Cart) error {
 	if err != nil {
 		return err
 	}
-	if err := cart.Refresh(products); err != nil {
+	if err := cart.Refresh(products.FilterByPublished()); err != nil {
 		return err
 	}
 	now := s.now()

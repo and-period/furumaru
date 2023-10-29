@@ -27,3 +27,21 @@ post:
         application/json:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: 商品が非公開になっている
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: 商品が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: 商品在庫が不足している
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
