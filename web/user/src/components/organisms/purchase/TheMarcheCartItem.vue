@@ -139,7 +139,7 @@ const totalPrice = computed(() => {
               <div>※送料はご購入手続き画面で加算されます。</div>
 
               <button class="bg-main p-[14px] text-[16px] text-white">
-                このかごのご購入手続きへ
+                このカゴのご購入手続きへ
               </button>
             </div>
           </div>

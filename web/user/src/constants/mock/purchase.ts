@@ -15,6 +15,13 @@ export interface PurchaseMock {
   cartItems: PurchaseInnerItemMock[]
 }
 
+export interface PurcahseUserInformationMock {
+  name: string
+  phoneNumber: string
+  email: string
+  address: string
+}
+
 export const MOCK_PURCHASE_ITEMS: PurchaseMock[] = [
   {
     marche: '大崎上島マルシェ',
@@ -128,3 +135,10 @@ export const MOCK_PURCHASE_ITEMS: PurchaseMock[] = [
     ],
   },
 ]
+
+export const MOCK_USER_INFOMATION: PurcahseUserInformationMock = {
+  name: '故里 まるしぇ（フルサト マルシェ）',
+  phoneNumber: '090-1234-5678',
+  email: 'furumaru@gmai.com',
+  address: '〒 725-0200　広島県豊田郡大崎上島町123'
+}
