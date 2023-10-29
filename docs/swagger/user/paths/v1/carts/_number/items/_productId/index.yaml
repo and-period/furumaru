@@ -1,0 +1,28 @@
+post:
+  summary: 買い物かごから商品を削除
+  operationId: v1RemoveCartItem
+  tags:
+  - Cart
+  security:
+  - cookieAuth: []
+  parameters:
+  - in: path
+    name: number
+    schema:
+      type: integer
+      format: int64
+    description: 買い物かごの通番
+    required: true
+    example: 1
+  - in: path
+    name: productId
+    schema:
+      type: string
+    description: 商品ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json: {}

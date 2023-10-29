@@ -4,7 +4,7 @@ get:
   tags:
   - ProductType
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit
@@ -60,7 +60,7 @@ post:
   tags:
   - ProductType
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: categoryId

@@ -4,7 +4,7 @@ get:
   tags:
   - Product
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit

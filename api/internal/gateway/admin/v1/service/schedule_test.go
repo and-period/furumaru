@@ -70,7 +70,6 @@ func TestSchedule(t *testing.T) {
 			schedule: &entity.Schedule{
 				ID:            "schedule-id",
 				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
 				Status:        entity.ScheduleStatusLive,
 				Title:         "スケジュールタイトル",
 				Description:   "スケジュールの詳細です。",
@@ -94,7 +93,6 @@ func TestSchedule(t *testing.T) {
 				Schedule: response.Schedule{
 					ID:            "schedule-id",
 					CoordinatorID: "coordinator-id",
-					ShippingID:    "shipping-id",
 					Status:        ScheduleStatusLive.Response(),
 					Title:         "スケジュールタイトル",
 					Description:   "スケジュールの詳細です。",
@@ -138,7 +136,6 @@ func TestSchedule_Response(t *testing.T) {
 				Schedule: response.Schedule{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					ShippingID:      "shipping-id",
 					Status:          ScheduleStatusLive.Response(),
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",
@@ -156,7 +153,6 @@ func TestSchedule_Response(t *testing.T) {
 			expect: &response.Schedule{
 				ID:              "schedule-id",
 				CoordinatorID:   "coordinator-id",
-				ShippingID:      "shipping-id",
 				Status:          ScheduleStatusLive.Response(),
 				Title:           "スケジュールタイトル",
 				Description:     "スケジュールの詳細です。",
@@ -195,7 +191,6 @@ func TestSchedules(t *testing.T) {
 				{
 					ID:            "schedule-id",
 					CoordinatorID: "coordinator-id",
-					ShippingID:    "shipping-id",
 					Status:        entity.ScheduleStatusLive,
 					Title:         "スケジュールタイトル",
 					Description:   "スケジュールの詳細です。",
@@ -221,7 +216,6 @@ func TestSchedules(t *testing.T) {
 					Schedule: response.Schedule{
 						ID:            "schedule-id",
 						CoordinatorID: "coordinator-id",
-						ShippingID:    "shipping-id",
 						Status:        ScheduleStatusLive.Response(),
 						Title:         "スケジュールタイトル",
 						Description:   "スケジュールの詳細です。",
@@ -267,7 +261,6 @@ func TestSchedules_Response(t *testing.T) {
 					Schedule: response.Schedule{
 						ID:              "schedule-id",
 						CoordinatorID:   "coordinator-id",
-						ShippingID:      "shipping-id",
 						Status:          ScheduleStatusLive.Response(),
 						Title:           "スケジュールタイトル",
 						Description:     "スケジュールの詳細です。",
@@ -287,7 +280,6 @@ func TestSchedules_Response(t *testing.T) {
 				{
 					ID:              "schedule-id",
 					CoordinatorID:   "coordinator-id",
-					ShippingID:      "shipping-id",
 					Status:          ScheduleStatusLive.Response(),
 					Title:           "スケジュールタイトル",
 					Description:     "スケジュールの詳細です。",

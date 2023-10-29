@@ -23,11 +23,9 @@ export const useScheduleStore = defineStore('schedule', {
         const res = await apiClient.scheduleApi().v1ListSchedules(limit, offset)
 
         const coordinatorStore = useCoordinatorStore()
-        const shippingStore = useShippingStore()
         this.schedules = res.data.schedules
         this.total = res.data.total
         coordinatorStore.coordinators = res.data.coordinators
-        shippingStore.shippings = res.data.shippings
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -43,10 +41,8 @@ export const useScheduleStore = defineStore('schedule', {
         const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
 
         const coordinatorStore = useCoordinatorStore()
-        const shippingStore = useShippingStore()
         this.schedule = res.data.schedule
         coordinatorStore.coordinators.push(res.data.coordinator)
-        shippingStore.shippings.splice(0, shippingStore.shippings.length, res.data.shipping)
       } catch (err) {
         return this.errorHandler(err)
       }

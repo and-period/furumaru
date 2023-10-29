@@ -46,10 +46,7 @@ func TestOrder_List(t *testing.T) {
 	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	address := testAddress("address-id", "user-id", now())
@@ -183,10 +180,7 @@ func TestOrder_Count(t *testing.T) {
 	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	address := testAddress("address-id", "user-id", now())
@@ -303,10 +297,7 @@ func TestOrder_Get(t *testing.T) {
 	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	address := testAddress("address-id", "user-id", now())
@@ -421,10 +412,7 @@ func TestOrder_Aggregate(t *testing.T) {
 	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, now())
 	err = db.DB.Create(&products).Error
 	require.NoError(t, err)
-	shipping := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&shipping).Error
-	require.NoError(t, err)
-	schedule := testSchedule("schedule-id", "coordinator-id", "shipping-id", now())
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 	address := testAddress("address-id", "user-id", now())

@@ -4,7 +4,7 @@ get:
   tags:
   - Administrator
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: adminId
@@ -32,7 +32,7 @@ patch:
   tags:
   - Administrator
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: adminId
@@ -71,7 +71,7 @@ delete:
   tags:
   - Administrator
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: adminId

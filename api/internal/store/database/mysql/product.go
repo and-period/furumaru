@@ -42,6 +42,9 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.ProducerIDs) > 0 {
 		stmt = stmt.Where("producer_id IN (?)", p.ProducerIDs)
 	}
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ?", true)
+	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
@@ -131,10 +134,6 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 		}
-		days, err := entity.ProductMarshalBusinessDays(params.BusinessDays)
-		if err != nil {
-			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-		}
 
 		updates := map[string]interface{}{
 			"product_type_id":     params.TypeID,
@@ -158,7 +157,6 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			"box80_rate":          params.Box80Rate,
 			"box100_rate":         params.Box100Rate,
 			"origin_prefecture":   params.OriginPrefecture,
-			"business_days":       days,
 			"origin_city":         params.OriginCity,
 			"start_at":            params.StartAt,
 			"end_at":              params.EndAt,

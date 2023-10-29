@@ -4,7 +4,7 @@ get:
   tags:
   - Auth
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   responses:
     200:
       description: 成功
@@ -24,7 +24,7 @@ post:
   tags:
   - Auth
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   requestBody:
     required: true
     content:
@@ -50,7 +50,7 @@ delete:
   tags:
   - Auth
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   responses:
     204:
       description: 成功

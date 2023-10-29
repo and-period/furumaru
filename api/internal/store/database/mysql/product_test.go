@@ -754,7 +754,6 @@ func testProduct(productID, typeID, categoryID, coordinatorID, producerID string
 		Box100Rate:        30,
 		OriginPrefecture:  codes.PrefectureValues["shiga"],
 		OriginCity:        "彦根市",
-		BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 		StartAt:           now.AddDate(0, -1, 0),
 		EndAt:             now.AddDate(0, 1, 0),
 		CreatedAt:         now,

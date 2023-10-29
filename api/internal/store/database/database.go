@@ -121,6 +121,7 @@ type ListProductsParams struct {
 	CoordinatorID string
 	ProducerID    string
 	ProducerIDs   []string
+	OnlyPublished bool
 	Limit         int
 	Offset        int
 	Orders        []*ListProductsOrder
@@ -155,7 +156,6 @@ type UpdateProductParams struct {
 	Box100Rate        int64
 	OriginPrefecture  int64
 	OriginCity        string
-	BusinessDays      []time.Weekday
 	StartAt           time.Time
 	EndAt             time.Time
 }
@@ -263,7 +263,6 @@ type ListSchedulesParams struct {
 }
 
 type UpdateScheduleParams struct {
-	ShippingID      string
 	Title           string
 	Description     string
 	ThumbnailURL    string

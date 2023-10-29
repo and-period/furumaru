@@ -8,6 +8,7 @@ run:
   - tmp
   skip-files:
   - '.*_test.go'
+  timeout: 10m
 
 linters:
   disable-all: true

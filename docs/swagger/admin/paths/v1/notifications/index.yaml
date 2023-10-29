@@ -4,7 +4,7 @@ get:
   tags:
   - Notification
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit
@@ -58,7 +58,7 @@ post:
   tags:
   - Notification
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   requestBody:
     required: true
     content:

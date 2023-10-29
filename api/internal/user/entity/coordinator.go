@@ -35,6 +35,8 @@ type Coordinator struct {
 	City               string         `gorm:""`                                     // 市区町村
 	AddressLine1       string         `gorm:""`                                     // 町名・番地
 	AddressLine2       string         `gorm:""`                                     // ビル名・号室など
+	BusinessDays       []time.Weekday `gorm:"-"`                                    // 営業曜日(発送可能日)一覧
+	BusinessDaysJSON   datatypes.JSON `gorm:"default:null;column:business_days"`    // 営業曜日(発送可能日)一覧(JSON)
 	CreatedAt          time.Time      `gorm:"<-:create"`                            // 登録日時
 	UpdatedAt          time.Time      `gorm:""`                                     // 更新日時
 	DeletedAt          gorm.DeletedAt `gorm:"default:null"`                         // 退会日時
@@ -60,6 +62,7 @@ type NewCoordinatorParams struct {
 	City              string
 	AddressLine1      string
 	AddressLine2      string
+	BusinessDays      []time.Weekday
 }
 
 func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
@@ -81,50 +84,68 @@ func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 		City:              params.City,
 		AddressLine1:      params.AddressLine1,
 		AddressLine2:      params.AddressLine2,
+		BusinessDays:      params.BusinessDays,
 		Admin:             *params.Admin,
 	}
 }
 
 func (c *Coordinator) Fill(admin *Admin) (err error) {
-	var (
-		thumbnails, headers common.Images
-		productTypeIDs      []string
-	)
-	if thumbnails, err = common.NewImagesFromBytes(c.ThumbnailsJSON); err != nil {
-		return err
-	}
-	if headers, err = common.NewImagesFromBytes(c.HeadersJSON); err != nil {
-		return err
-	}
-	if productTypeIDs, err = c.unmarshalProductTypeIDs(c.ProductTypeIDsJSON); err != nil {
-		return err
-	}
-	c.Admin = *admin
-	c.Thumbnails = thumbnails
-	c.Headers = headers
-	c.ProductTypeIDs = productTypeIDs
-	return nil
-}
-
-func (c *Coordinator) unmarshalProductTypeIDs(b []byte) ([]string, error) {
-	if b == nil {
-		return []string{}, nil
-	}
-	var ids []string
-	return ids, json.Unmarshal(b, &ids)
-}
-
-func (c *Coordinator) FillJSON() error {
-	v, err := CoordinatorMarshalProductTypeIDs(c.ProductTypeIDs)
+	c.Thumbnails, err = common.NewImagesFromBytes(c.ThumbnailsJSON)
 	if err != nil {
 		return err
 	}
-	c.ProductTypeIDsJSON = datatypes.JSON(v)
+	c.Headers, err = common.NewImagesFromBytes(c.HeadersJSON)
+	if err != nil {
+		return err
+	}
+	c.ProductTypeIDs, err = c.unmarshalProductTypeIDs()
+	if err != nil {
+		return err
+	}
+	c.BusinessDays, err = c.unmarshalBusinessDays()
+	if err != nil {
+		return err
+	}
+	c.Admin = *admin
+	return nil
+}
+
+func (c *Coordinator) unmarshalProductTypeIDs() ([]string, error) {
+	if c.ProductTypeIDsJSON == nil {
+		return []string{}, nil
+	}
+	var ids []string
+	return ids, json.Unmarshal(c.ProductTypeIDsJSON, &ids)
+}
+
+func (c *Coordinator) unmarshalBusinessDays() ([]time.Weekday, error) {
+	if c.BusinessDaysJSON == nil {
+		return []time.Weekday{}, nil
+	}
+	var days []time.Weekday
+	return days, json.Unmarshal(c.BusinessDaysJSON, &days)
+}
+
+func (c *Coordinator) FillJSON() error {
+	tagsIDs, err := CoordinatorMarshalProductTypeIDs(c.ProductTypeIDs)
+	if err != nil {
+		return err
+	}
+	days, err := CoordinatorMarshalBusinessDays(c.BusinessDays)
+	if err != nil {
+		return err
+	}
+	c.ProductTypeIDsJSON = datatypes.JSON(tagsIDs)
+	c.BusinessDaysJSON = datatypes.JSON(days)
 	return nil
 }
 
 func CoordinatorMarshalProductTypeIDs(types []string) ([]byte, error) {
 	return json.Marshal(types)
+}
+
+func CoordinatorMarshalBusinessDays(days []time.Weekday) ([]byte, error) {
+	return json.Marshal(days)
 }
 
 func (cs Coordinators) IDs() []string {

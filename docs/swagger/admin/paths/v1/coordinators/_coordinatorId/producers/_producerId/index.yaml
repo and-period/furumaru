@@ -4,7 +4,7 @@ delete:
   tags:
   - Coordinator
   security:
-  - BearerAuth: []
+  - bearerAuth: []
   parameters:
   - in: path
     name: coordinatorId

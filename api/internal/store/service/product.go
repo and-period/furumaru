@@ -33,6 +33,7 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		CoordinatorID: in.CoordinatorID,
 		ProducerID:    in.ProducerID,
 		ProducerIDs:   in.ProducerIDs,
+		OnlyPublished: in.OnlyPublished,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),
 		Orders:        orders,
@@ -133,7 +134,6 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		Box100Rate:        in.Box100Rate,
 		OriginPrefecture:  in.OriginPrefecture,
 		OriginCity:        in.OriginCity,
-		BusinessDays:      in.BusinessDays,
 		StartAt:           in.StartAt,
 		EndAt:             in.EndAt,
 	}
@@ -192,7 +192,6 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		Box100Rate:        in.Box100Rate,
 		OriginPrefecture:  in.OriginPrefecture,
 		OriginCity:        in.OriginCity,
-		BusinessDays:      in.BusinessDays,
 		StartAt:           in.StartAt,
 		EndAt:             in.EndAt,
 	}

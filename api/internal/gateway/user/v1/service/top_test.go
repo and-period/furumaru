@@ -2,7 +2,6 @@ package service
 
 import (
 	"testing"
-	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
@@ -73,7 +72,6 @@ func TestTopCommonLive(t *testing.T) {
 			schedule: &entity.Schedule{
 				ID:            "schedule-id",
 				CoordinatorID: "coordinator-id",
-				ShippingID:    "shipping-id",
 				Status:        entity.ScheduleStatusLive,
 				Title:         "スケジュールタイトル",
 				Description:   "スケジュールの詳細です。",
@@ -135,7 +133,6 @@ func TestTopCommonLive(t *testing.T) {
 					Box100Rate:       30,
 					OriginPrefecture: codes.PrefectureValues["shiga"],
 					OriginCity:       "彦根市",
-					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					StartAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					EndAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -275,7 +272,6 @@ func TestTopCommonLives(t *testing.T) {
 				{
 					ID:            "schedule-id",
 					CoordinatorID: "coordinator-id",
-					ShippingID:    "shipping-id",
 					Status:        entity.ScheduleStatusLive,
 					Title:         "スケジュールタイトル",
 					Description:   "スケジュールの詳細です。",
@@ -351,7 +347,6 @@ func TestTopCommonLives(t *testing.T) {
 					Box100Rate:       30,
 					OriginPrefecture: codes.PrefectureValues["shiga"],
 					OriginCity:       "彦根市",
-					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					StartAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					EndAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					CreatedAt:        jst.Date(2022, 1, 1, 0, 0, 0, 0),

@@ -45,7 +45,8 @@ const props = defineProps({
       promotionVideoUrl: '',
       bonusVideoUrl: '',
       instagramId: '',
-      facebookId: ''
+      facebookId: '',
+      businessDays: []
     })
   },
   coordinator: {
@@ -77,7 +78,8 @@ const props = defineProps({
       instagramId: '',
       facebookId: '',
       createdAt: 0,
-      updatedAt: 0
+      updatedAt: 0,
+      businessDays: []
     })
   },
   productTypes: {
@@ -142,7 +144,8 @@ const rules = computed(() => ({
   phoneNumber: { required, tel },
   profile: { maxLength: maxLength(2000) },
   instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) }
+  facebookId: { maxLength: maxLength(50) },
+  businessDays: {}
 }))
 const formDataValue = computed({
   get: (): UpdateCoordinatorRequest => props.formData,
@@ -245,6 +248,17 @@ const onClickSearchAddress = (): void => {
             />
           </template>
         </v-autocomplete>
+        <v-select
+          v-model="formDataValidate.businessDays.$model"
+          label="営業日(発送可能日)"
+          :error-messages="getErrorMessage(formDataValidate.businessDays.$errors)"
+          :items="weekdays"
+          item-title="title"
+          item-value="value"
+          chips
+          closable-chips
+          multiple
+        />
         <v-row>
           <v-col cols="12" ms="12" lg="6">
             <molecules-video-select-form

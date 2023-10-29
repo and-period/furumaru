@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { Schedule, ScheduleStatus, Shipping, UpdateScheduleRequest } from '~/types/api'
+import { Schedule, ScheduleStatus, UpdateScheduleRequest } from '~/types/api'
 import { ImageUploadStatus, ScheduleTime } from '~/types/props'
 
 const props = defineProps({
@@ -13,7 +13,6 @@ const props = defineProps({
   formData: {
     type: Object as PropType<UpdateScheduleRequest>,
     default: (): UpdateScheduleRequest => ({
-      shippingId: '',
       title: '',
       description: '',
       thumbnailUrl: '',
@@ -29,7 +28,6 @@ const props = defineProps({
     default: (): Schedule => ({
       id: '',
       coordinatorId: '',
-      shippingId: '',
       title: '',
       description: '',
       status: ScheduleStatus.UNKNOWN,
@@ -44,10 +42,6 @@ const props = defineProps({
       createdAt: 0,
       updatedAt: 0
     })
-  },
-  shippings: {
-    type: Array<Shipping>,
-    default: () => []
   },
   thumbnailUploadStatus: {
     type: Object,
@@ -78,7 +72,6 @@ const emit = defineEmits<{
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
   (e: 'update:opening-video', files: FileList): void
-  (e: 'search:shipping', name: string): void
   (e: 'submit'): void
 }>()
 
@@ -98,7 +91,6 @@ const scheduleValue = computed({
 const formDataRules = computed(() => ({
   title: { required, maxLength: maxLength(200) },
   description: { required, maxLength: maxLength(2000) },
-  shippingId: { required },
   public: {}
 }))
 const timeDataRules = computed(() => ({
@@ -158,10 +150,6 @@ const onChangeOpeningVideo = (files?: FileList) => {
     return
   }
   emit('update:opening-video', files)
-}
-
-const onSearchShipping = (name: string): void => {
-  emit('search:shipping', name)
 }
 
 const onSubmit = async (): Promise<void> => {
@@ -226,14 +214,6 @@ const onSubmit = async (): Promise<void> => {
                 />
               </v-col>
             </v-row>
-            <v-autocomplete
-              v-model="formDataValidate.shippingId.$model"
-              label="配送設定"
-              :items="shippings"
-              item-title="name"
-              item-value="id"
-              @update:search="onSearchShipping"
-            />
           </v-card-text>
         </v-card>
       </div>
