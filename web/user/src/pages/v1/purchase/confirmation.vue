@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { MOCK_USER_INFOMATION, MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 
+const router = useRouter()
+
 const userInformationItem = MOCK_USER_INFOMATION
 const cartItem = MOCK_PURCHASE_ITEMS[0]
 
@@ -22,6 +24,14 @@ const priceFormatter = (price: number) => {
     style: 'currency',
     currency: 'JPY',
   }).format(price)
+}
+
+const handleClickPreviousStepButton = () => {
+  router.back()
+}
+
+const handleClickNextStepButton = () => {
+  router.push('/v1/purchase/complete')
 }
 </script>
 
@@ -183,15 +193,19 @@ const priceFormatter = (price: number) => {
             </div>
 
             <div class="mt-12 grid grid-cols-2">
-              <div class="inline-flex items-center">
+              <button
+                class="inline-flex items-center"
+                @click="handleClickPreviousStepButton"
+              >
                 <the-left-arrow-icon class="h-4 w-4" />
                 <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
                   前のページへ戻る
                 </p>
-              </div>
+              </button>
 
               <button
                 class="w-[240px] justify-self-end bg-main p-[14px] text-[16px] text-white"
+                @click="handleClickNextStepButton"
               >
                 注文確定
               </button>

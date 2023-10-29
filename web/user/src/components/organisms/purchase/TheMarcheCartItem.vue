@@ -8,7 +8,12 @@ interface Props {
   cartItems: PurchaseInnerItemMock[]
 }
 
+interface Emits {
+  (e: 'click:buyButton'): void
+}
+
 const props = defineProps<Props>()
+const emits = defineEmits<Emits>()
 
 const priceStringFormatter = (price: number): string => {
   return new Intl.NumberFormat('ja-JP', {
@@ -27,6 +32,10 @@ const itemPrices = computed(() => {
 const totalPrice = computed(() => {
   return itemPrices.value.reduce((a, b) => a + b)
 })
+
+const handleBuyButton = () => {
+  emits('click:buyButton')
+}
 </script>
 
 <template>
@@ -49,7 +58,10 @@ const totalPrice = computed(() => {
 
       <div>※送料はご購入手続き画面で加算されます。</div>
 
-      <button class="mt-8 bg-main p-[14px] text-[16px] text-white">
+      <button
+        class="mt-8 bg-main p-[14px] text-[16px] text-white"
+        @click="handleBuyButton"
+      >
         ご購入手続きへ
       </button>
     </div>
