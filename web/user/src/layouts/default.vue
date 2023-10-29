@@ -7,6 +7,7 @@ import { useShoppingStore } from '~/store/shopping'
 import { I18n } from '~/types/locales'
 import { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
 
+
 const router = useRouter()
 const route = useRoute()
 const i18n = useI18n()
@@ -103,7 +104,12 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
 const isScrolled = ref<boolean>(false)
 
 const onScroll = () => {
-  isScrolled.value = window.scrollY > 50
+  if(!isScrolled.value && window.scrollY > 50) {
+    isScrolled.value = true
+  } else if(isScrolled.value && window.scrollY < 30) {
+      isScrolled.value=false
+  }
+
 }
 
 onMounted(() => {
