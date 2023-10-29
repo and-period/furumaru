@@ -20,7 +20,7 @@ import { exists, mapValues } from '../runtime';
  */
 export interface CartItemsInner {
     /**
-     * 
+     * 商品ID
      * @type {string}
      * @memberof CartItemsInner
      */

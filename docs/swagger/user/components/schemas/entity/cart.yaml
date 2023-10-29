@@ -17,7 +17,7 @@ cart:
         properties:
           productId:
             type: string
-            format: 商品ID
+            description: 商品ID
           quantity:
             type: integer
             format: int64
