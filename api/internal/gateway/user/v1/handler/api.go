@@ -100,10 +100,13 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	// 公開エンドポイント
 	h.authRoutes(v1.Group("/auth"))
 	h.topRoutes(v1.Group("/top"))
+	h.scheduleRoutes(v1.Group("/schedules"))
 	h.productRoutes(v1.Group("/products"))
 
 	// 要認証エンドポイント
+	h.addressRoutes(v1.Group("/addresses"))
 	h.cartRoutes(v1.Group("/carts"))
+	h.postalCodeRoutes(v1.Group("/postal-codes"))
 }
 
 /**

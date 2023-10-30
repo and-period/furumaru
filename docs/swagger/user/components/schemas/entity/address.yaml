@@ -1,0 +1,55 @@
+address:
+  type: object
+  description: アドレス情報
+  properties:
+    id:
+      type: string
+      description: アドレス帳ID
+    isDefault:
+      type: boolean
+      description: デフォルト設定フラグ
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    postalCode:
+      type: string
+      description: 郵便番号
+    prefecture:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+    city:
+      type: string
+      description: 市区町村
+    addressLine1:
+      type: string
+      description: 町名・番地
+    addressLine2:
+      type: string
+      description: ビル名・号室など
+    phoneNumber:
+      type: string
+      description: 電話番号 (国際番号 + 電話番号)
+  required:
+  - id
+  - isDefault
+  - lastname
+  - firstname
+  - postalCode
+  - prefecture
+  - city
+  - addressLine1
+  - addressLine2
+  - phoneNumber
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    isDefault: true
+    lastname: '&.'
+    firstname: '利用者'
+    postalCode: '1000014'
+    prefecture: 'tokyo'
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    phoneNumber: '+819012345678'

@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './AddCartItemRequest';
+export * from './Address';
+export * from './AddressResponse';
+export * from './AddressesResponse';
 export * from './AuthResponse';
 export * from './AuthUserResponse';
 export * from './Cart';
@@ -17,6 +20,8 @@ export * from './ErrorResponse';
 export * from './ForgotAuthPasswordRequest';
 export * from './ImageSize';
 export * from './InitializeAuthRequest';
+export * from './Live';
+export * from './PostalCodeResponse';
 export * from './Prefecture';
 export * from './Producer';
 export * from './Product';
@@ -30,7 +35,10 @@ export * from './ProductTypeIconsInner';
 export * from './ProductsResponse';
 export * from './RefreshAuthTokenRequest';
 export * from './ResetAuthPasswordRequest';
+export * from './Schedule';
+export * from './ScheduleResponse';
 export * from './ScheduleStatus';
+export * from './ScheduleThumbnailsInner';
 export * from './ShippingSize';
 export * from './SignInRequest';
 export * from './StorageMethodType';

@@ -118,7 +118,7 @@ export class CartApi extends runtime.BaseAPI {
 
         const response = await this.request({
             path: `/v1/carts/{number}/items/{productId}`.replace(`{${"number"}}`, encodeURIComponent(String(requestParameters.number))).replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters.productId))),
-            method: 'POST',
+            method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);

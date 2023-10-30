@@ -11,14 +11,20 @@ servers:
 tags:
 - name: Auth
   description: 認証関連
+- name: Address
+  description: アドレス帳関連
 - name: Contact
   description: お問い合わせ関連
+- name: Schedule
+  description: マルシェ開催スケジュール関連
 - name: Product
   description: 商品関連
 - name: Top
   description: トップページ関連
 - name: Cart
   description: 買い物かご関連
+- name: Other
+  description: その他（外部APIなど）
 paths:
   # Auth
   /v1/auth:
@@ -43,9 +49,17 @@ paths:
     $ref: './paths/v1/auth/user/oauth.yaml'
   /v1/auth/user/verified:
     $ref: './paths/v1/auth/user/verified.yaml'
+  # Address
+  /v1/addresses:
+    $ref: './paths/v1/addresses/index.yaml'
+  /v1/addresses/{addressId}:
+    $ref: './paths/v1/addresses/_addressId/index.yaml'
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
+  # Schedule
+  /v1/schedules/{scheduleId}:
+    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
   # Product
   /v1/products:
     $ref: './paths/v1/products/index.yaml'
@@ -61,6 +75,9 @@ paths:
     $ref: './paths/v1/carts/-/items/index.yaml'
   /v1/carts/{number}/items/{productId}:
     $ref: './paths/v1/carts/_number/items/_productId/index.yaml'
+  # Address
+  /v1/postal-codes/{postalCode}:
+    $ref: './paths/v1/postal-codes/_postalCode.yaml'
 components:
   securitySchemes:
     bearerAuth:
@@ -89,12 +106,16 @@ components:
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity
+    address:
+      $ref: './components/schemas/entity/address.yaml#/address'
     cart:
       $ref: './components/schemas/entity/cart.yaml#/cart'
     category:
       $ref: './components/schemas/entity/category.yaml#/category'
     coordinator:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
+    live:
+      $ref: './components/schemas/entity/live.yaml#/live'
     producer:
       $ref: './components/schemas/entity/producer.yaml#/producer'
     productTag:
@@ -103,6 +124,8 @@ components:
       $ref: './components/schemas/entity/product-type.yaml#/productType'
     product:
       $ref: './components/schemas/entity/product.yaml#/product'
+    schedule:
+      $ref: './components/schemas/entity/schedule.yaml#/schedule'
     topArchive:
       $ref: './components/schemas/entity/top.yaml#/topArchive'
     topLive:
@@ -137,11 +160,19 @@ components:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
     v1AuthUserResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
+    v1AddressResponse:
+      $ref: './components/schemas/v1/address.response.yaml#/addressResponse'
+    v1AddressesResponse:
+      $ref: './components/schemas/v1/address.response.yaml#/addressesResponse'
     v1CartResponse:
       $ref: './components/schemas/v1/cart.response.yaml#/cartResponse'
+    v1ScheduleResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
     v1ProductResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
     v1TopCommonResponse:
       $ref: './components/schemas/v1/top.response.yaml#/topCommonResponse'
+    v1PostalCodeResponse:
+      $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
