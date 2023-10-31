@@ -23,5 +23,5 @@ type LivesResponse struct {
 	Lives     []*Live     `json:"lives"`     // ライブ配信一覧
 	Producers []*Producer `json:"producers"` // 生産者一覧
 	Products  []*Product  `json:"products"`  // 商品一覧
-	Total     int64       `json:"total"`     // 号係数
+	Total     int64       `json:"total"`     // 合計数
 }

@@ -1,0 +1,74 @@
+schedule:
+  type: object
+  description: マルシェ開催スケジュール情報
+  properties:
+    id:
+      type: string
+      description: マルシェ開催スケジュールID
+    coordinatorId:
+      type: string
+      description: コーディネーターID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
+    title:
+      type: string
+      description: タイトル
+    description:
+      type: string
+      description: 説明
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    thumbnails:
+      type: array
+      description: リサイズ済みサムネイルURL一覧
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: リサイズ済みサムネイルURL
+          size:
+            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+        required:
+        - url
+        - size
+    distributionUrl:
+      type: string
+      description: 映像配信URL
+    startAt:
+      type: integer
+      format: int64
+      description: ライブ開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: ライブ終了日時 (unixtime)
+  required:
+  - id
+  - coordinatorId
+  - status
+  - title
+  - description
+  - thumbnailUrl
+  - thumbnails
+  - distributionUrl
+  - startAt
+  - endAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'coordinator-id'
+    status: 2
+    title: 'マルシェ開催スケジュールタイトル'
+    description: 'マルシェ開催スケジュールの説明'
+    thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+    thumbnails:
+    - url: 'https://and-period.jp/thumbnail_240.png'
+      size: 1
+    - url: 'https://and-period.jp/thumbnail_675.png'
+      size: 2
+    - url: 'https://and-period.jp/thumbnail_900.png'
+      size: 3
+    imageUrl: 'https://and-period.jp/video.mp4'
+    startAt: 1640962800
+    endAt: 1640962800

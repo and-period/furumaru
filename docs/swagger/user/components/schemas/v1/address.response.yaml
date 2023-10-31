@@ -1,0 +1,47 @@
+addressResponse:
+  type: object
+  properties:
+    address:
+      $ref: './../../../openapi.yaml#/components/schemas/address'
+  required:
+  - address
+  example:
+    address:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      isDefault: true
+      lastname: '&.'
+      firstname: '利用者'
+      postalCode: '1000014'
+      prefecture: 'tokyo'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
+addressesResponse:
+  type: object
+  properties:
+    addresses:
+      type: array
+      description: アドレス一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/address'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - addresses
+  - total
+  example:
+    addresses:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      isDefault: true
+      lastname: '&.'
+      firstname: '利用者'
+      postalCode: '1000014'
+      prefecture: 'tokyo'
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
+    total: 1

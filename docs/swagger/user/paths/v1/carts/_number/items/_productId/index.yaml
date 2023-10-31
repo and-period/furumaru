@@ -1,4 +1,4 @@
-post:
+delete:
   summary: 買い物かごから商品を削除
   operationId: v1RemoveCartItem
   tags:
