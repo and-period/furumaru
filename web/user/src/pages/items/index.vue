@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { MOCK_ALL_PRODUCT_ITEMS } from '~/constants/mock'
+import { useProductStore } from '~/store/product'
 
 const router = useRouter()
+
+const { fetchProducts } = useProductStore()
 
 const handleClick = (id: string) => {
   router.push(`/items/${id}`)
 }
+
+fetchProducts()
 </script>
 
 <template>
@@ -41,10 +46,10 @@ const handleClick = (id: string) => {
         class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
         <the-product-list-item
-          class="cursor-pointer"
           v-for="productItem in MOCK_ALL_PRODUCT_ITEMS"
-          :key="productItem.id"
           :id="productItem.id"
+          :key="productItem.id"
+          class="cursor-pointer"
           :name="productItem.name"
           :price="productItem.price"
           :img-src="productItem.imgSrc"
