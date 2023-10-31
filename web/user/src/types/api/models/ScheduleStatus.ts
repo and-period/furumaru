@@ -21,7 +21,8 @@ export const ScheduleStatus = {
     UNKNOWN: 0,
     WAITING: 1,
     LIVE: 2,
-    CLOSED: 3
+    CLOSED: 3,
+    ARCHIVED: 4
 } as const;
 export type ScheduleStatus = typeof ScheduleStatus[keyof typeof ScheduleStatus];
 

@@ -8,13 +8,16 @@ scheduleStatus:
   - 1
   - 2
   - 3
+  - 4
   x-enum-varnames:
   - UNKNOWN
   - WAITING
   - LIVE
   - CLOSED
+  - ARCHIVED
   x-enum-description:
   - 不明
-  - マルシェ開催前
-  - マルシェ開催中
-  - マルシェ開催後
+  - ライブ配信前
+  - ライブ配信中
+  - ライブ配信終了
+  - アーカイブ配信
