@@ -231,31 +231,45 @@ const onClickSearchAddress = (): void => {
           label="プロフィール"
           maxlength="2000"
         />
-        <div class="d-flex">
-          <v-text-field
-            v-model="validate.lastname.$model"
-            :error-messages="getErrorMessage(validate.lastname.$errors)"
-            class="mr-4"
-            label="生産者名:姓"
-          />
-          <v-text-field
-            v-model="validate.firstname.$model"
-            :error-messages="getErrorMessage(validate.firstname.$errors)"
-            label="生産者名:名"
-          />
+        <div>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="validate.lastname.$model"
+                :error-messages="getErrorMessage(validate.lastname.$errors)"
+                class="mr-4"
+                label="生産者名:姓"
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="validate.firstname.$model"
+                :error-messages="getErrorMessage(validate.firstname.$errors)"
+                label="生産者名:名"
+              />
+            </v-col>
+          </v-row>
         </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="validate.lastnameKana.$model"
-            :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
-            class="mr-4"
-            label="生産者名:姓（ふりがな）"
-          />
-          <v-text-field
-            v-model="validate.firstnameKana.$model"
-            :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
-            label="生産者名:名（ふりがな）"
-          />
+        <div>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="validate.lastnameKana.$model"
+                :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
+                class="mr-4"
+                label="生産者名:姓（ふりがな）"
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="validate.firstnameKana.$model"
+                :error-messages="
+                  getErrorMessage(validate.firstnameKana.$errors)
+                "
+                label="生産者名:名（ふりがな）"
+              />
+            </v-col>
+          </v-row>
         </div>
         <v-text-field
           v-model="producerValue.email"
