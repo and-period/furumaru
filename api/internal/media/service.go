@@ -9,78 +9,47 @@ import (
 )
 
 type Service interface {
-	// コーディネータサムネイル画像を生成
-	GenerateCoordinatorThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)
-	// コーディネータサムネイル画像アップロード
-	UploadCoordinatorThumbnail(ctx context.Context, in *UploadFileInput) (string, error)
-	// コーディネータサムネイル画像リサイズ
-	ResizeCoordinatorThumbnail(ctx context.Context, in *ResizeFileInput) error
-	// コーディネータヘッダー画像を生成
-	GenerateCoordinatorHeader(ctx context.Context, in *GenerateFileInput) (string, error)
-	// コーディネータヘッダー画像アップロード
-	UploadCoordinatorHeader(ctx context.Context, in *UploadFileInput) (string, error)
-	// コーディネータヘッダー画像リサイズ
-	ResizeCoordinatorHeader(ctx context.Context, in *ResizeFileInput) error
-	// コーディネータ紹介映像を生成
-	GenerateCoordinatorPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error)
-	// コーディネータ紹介映像アップロード
-	UploadCoordinatorPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)
-	// コーディネータ購入特典映像を生成
-	GenerateCoordinatorBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)
-	// コーディネータ購入特典映像アップロード
-	UploadCoordinatorBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)
-	// 生産者サムネイル画像を生成
-	GenerateProducerThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 生産者サムネイル画像アップロード
-	UploadProducerThumbnail(ctx context.Context, in *UploadFileInput) (string, error)
-	// 生産者サムネイル画像リサイズ
-	ResizeProducerThumbnail(ctx context.Context, in *ResizeFileInput) error
-	// 生産者ヘッダー画像を生成
-	GenerateProducerHeader(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 生産者ヘッダー画像アップロード
-	UploadProducerHeader(ctx context.Context, in *UploadFileInput) (string, error)
-	// 生産者ヘッダー画像リサイズ
-	ResizeProducerHeader(ctx context.Context, in *ResizeFileInput) error
-	// 生産者紹介映像を生成
-	GenerateProducerPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 生産者紹介映像アップロード
-	UploadProducerPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)
-	// 生産者購入特典映像を生成
-	GenerateProducerBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 生産者購入特典映像アップロード
-	UploadProducerBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)
-	// 商品メディア(画像)を生成
-	GenerateProductMediaImage(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 商品メディア(映像)を生成
-	GenerateProductMediaVideo(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 商品メディアアップロード
-	UploadProductMedia(ctx context.Context, in *UploadFileInput) (string, error)
-	// 商品メディアリサイズ
-	ResizeProductMedia(ctx context.Context, in *ResizeFileInput) error
-	// 品目アイコン画像を生成
-	GenerateProductTypeIcon(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 品目アイコン画像アップロード
-	UploadProductTypeIcon(ctx context.Context, in *UploadFileInput) (string, error)
-	// 品目アイコン画像リサイズ
-	ResizeProductTypeIcon(ctx context.Context, in *ResizeFileInput) error
-	// 開催スケジュールサムネイル画像を生成
-	GenerateScheduleThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 開催スケジュールサムネイル画像アップロード
-	UploadScheduleThumbnail(ctx context.Context, in *UploadFileInput) (string, error)
-	// 開催スケジュールサムネイル画像リサイズ
-	ResizeScheduleThumbnail(ctx context.Context, in *ResizeFileInput) error
-	// 開催スケジュール蓋絵画像を生成
-	GenerateScheduleImage(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 開催スケジュール蓋絵画像アップロード
-	UploadScheduleImage(ctx context.Context, in *UploadFileInput) (string, error)
-	// 開催スケジュールオープニング動画を生成
-	GenerateScheduleOpeningVideo(ctx context.Context, in *GenerateFileInput) (string, error)
-	// 開催スケジュールオープニング動画アップロード
-	UploadScheduleOpeningVideo(ctx context.Context, in *UploadFileInput) (string, error)
-	// ライブ配信一覧取得
-	ListBroadcasts(ctx context.Context, in *ListBroadcastsInput) (entity.Broadcasts, int64, error)
-	// ライブ配信取得(マルシェ開催スケジュールID指定)
-	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error)
-	// ライブ配信登録
-	CreateBroadcast(ctx context.Context, in *CreateBroadcastInput) (*entity.Broadcast, error)
+	// ライブ配信
+	ListBroadcasts(ctx context.Context, in *ListBroadcastsInput) (entity.Broadcasts, int64, error)              // 一覧取得
+	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) // 一覧取得(マルシェ開催スケジュールID指定)
+	CreateBroadcast(ctx context.Context, in *CreateBroadcastInput) (*entity.Broadcast, error)                   // 登録
+	// コーディネータ
+	GenerateCoordinatorThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)      // サムネイル画像を生成
+	UploadCoordinatorThumbnail(ctx context.Context, in *UploadFileInput) (string, error)          // サムネイル画像アップロード
+	ResizeCoordinatorThumbnail(ctx context.Context, in *ResizeFileInput) error                    // サムネイル画像リサイズ
+	GenerateCoordinatorHeader(ctx context.Context, in *GenerateFileInput) (string, error)         // ヘッダー画像を生成
+	UploadCoordinatorHeader(ctx context.Context, in *UploadFileInput) (string, error)             // ヘッダー画像アップロード
+	ResizeCoordinatorHeader(ctx context.Context, in *ResizeFileInput) error                       // ヘッダー画像リサイズ
+	GenerateCoordinatorPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error) // 紹介映像を生成
+	UploadCoordinatorPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)     // 紹介映像アップロード
+	GenerateCoordinatorBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)     // 購入特典映像を生成
+	UploadCoordinatorBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)         // 購入特典映像アップロード
+	// 生産者
+	GenerateProducerThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)      // サムネイル画像を生成
+	UploadProducerThumbnail(ctx context.Context, in *UploadFileInput) (string, error)          // サムネイル画像アップロード
+	ResizeProducerThumbnail(ctx context.Context, in *ResizeFileInput) error                    // サムネイル画像リサイズ
+	GenerateProducerHeader(ctx context.Context, in *GenerateFileInput) (string, error)         // ヘッダー画像を生成
+	UploadProducerHeader(ctx context.Context, in *UploadFileInput) (string, error)             // ヘッダー画像アップロード
+	ResizeProducerHeader(ctx context.Context, in *ResizeFileInput) error                       // ヘッダー画像リサイズ
+	GenerateProducerPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error) // 紹介映像を生成
+	UploadProducerPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)     // 紹介映像アップロード
+	GenerateProducerBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)     // 購入特典映像を生成
+	UploadProducerBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)         // 購入特典映像アップロード
+	// 商品
+	GenerateProductMediaImage(ctx context.Context, in *GenerateFileInput) (string, error) // メディア(画像)を生成
+	GenerateProductMediaVideo(ctx context.Context, in *GenerateFileInput) (string, error) // メディア(映像)を生成
+	UploadProductMedia(ctx context.Context, in *UploadFileInput) (string, error)          // メディアアップロード
+	ResizeProductMedia(ctx context.Context, in *ResizeFileInput) error                    // メディアリサイズ
+	// 品目
+	GenerateProductTypeIcon(ctx context.Context, in *GenerateFileInput) (string, error) // アイコン画像を生成
+	UploadProductTypeIcon(ctx context.Context, in *UploadFileInput) (string, error)     // アイコン画像アップロード
+	ResizeProductTypeIcon(ctx context.Context, in *ResizeFileInput) error               // アイコン画像リサイズ
+	// 開催スケジュール
+	GenerateScheduleThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)    // サムネイル画像を生成
+	UploadScheduleThumbnail(ctx context.Context, in *UploadFileInput) (string, error)        // サムネイル画像アップロード
+	ResizeScheduleThumbnail(ctx context.Context, in *ResizeFileInput) error                  // サムネイル画像リサイズ
+	GenerateScheduleImage(ctx context.Context, in *GenerateFileInput) (string, error)        // 蓋絵画像を生成
+	UploadScheduleImage(ctx context.Context, in *UploadFileInput) (string, error)            // 蓋絵画像アップロード
+	GenerateScheduleOpeningVideo(ctx context.Context, in *GenerateFileInput) (string, error) // オープニング動画を生成
+	UploadScheduleOpeningVideo(ctx context.Context, in *UploadFileInput) (string, error)     // オープニング動画アップロード
 }
