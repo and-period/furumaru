@@ -9,52 +9,36 @@ import (
 )
 
 type Service interface {
-	// お知らせ一覧取得
-	ListNotifications(ctx context.Context, in *ListNotificationsInput) (entity.Notifications, int64, error)
-	// お知らせ取得
-	GetNotification(ctx context.Context, in *GetNotificationInput) (*entity.Notification, error)
-	// お知らせ作成
-	CreateNotification(ctx context.Context, in *CreateNotificationInput) (*entity.Notification, error)
-	// お知らせ編集
-	UpdateNotification(ctx context.Context, in *UpdateNotificationInput) error
-	// お知らせ削除
-	DeleteNotification(ctx context.Context, in *DeleteNotificationInput) error
-	// メッセージ一覧取得
-	ListMessages(ctx context.Context, in *ListMessagesInput) (entity.Messages, int64, error)
-	// メッセージ取得
-	GetMessage(ctx context.Context, in *GetMessageInput) (*entity.Message, error)
-	// 管理者登録通知
-	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error
-	// 管理者パスワードリセット通知
-	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error
-	// お知らせ通知
-	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error
-	// お問い合わせ一覧取得
-	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, int64, error)
-	// お問い合わせ取得
-	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)
-	// お問い合わせ作成
-	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)
-	// お問い合わせ編集
-	UpdateContact(ctx context.Context, in *UpdateContactInput) error
-	// お問い合わせ削除
-	DeleteContact(ctx context.Context, in *DeleteContactInput) error
-	// お問い合わせ種別一覧取得
-	ListContactCategories(ctx context.Context, in *ListContactCategoriesInput) (entity.ContactCategories, error)
-	// お問い合わせ種別一覧取得(ID指定)
-	MultiGetContactCategories(ctx context.Context, in *MultiGetContactCategoriesInput) (entity.ContactCategories, error)
-	// お問い合わせ種別取得
-	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)
-	// お問い合わせ会話履歴一覧取得
-	ListThreads(ctx context.Context, in *ListThreadsInput) (entity.Threads, int64, error)
-	// お問い合わせ会話履歴取得
-	GetThread(ctx context.Context, in *GetThreadInput) (*entity.Thread, error)
-	// お問い合わせ会話履歴作成
-	CreateThread(ctx context.Context, in *CreateThreadInput) (*entity.Thread, error)
-	// お問い合わせ会話履歴編集
-	UpdateThread(ctx context.Context, in *UpdateThreadInput) error
-	// お問い合わせ会話履歴削除
-	DeleteThread(ctx context.Context, in *DeleteThreadInput) error
-	// お問い合わせ既読管理作成
-	CreateContactRead(ctx context.Context, in *CreateContactReadInput) (*entity.ContactRead, error)
+	// お知らせ
+	ListNotifications(ctx context.Context, in *ListNotificationsInput) (entity.Notifications, int64, error) // 一覧取得
+	GetNotification(ctx context.Context, in *GetNotificationInput) (*entity.Notification, error)            // １件取得
+	CreateNotification(ctx context.Context, in *CreateNotificationInput) (*entity.Notification, error)      // 登録
+	UpdateNotification(ctx context.Context, in *UpdateNotificationInput) error                              // 更新
+	DeleteNotification(ctx context.Context, in *DeleteNotificationInput) error                              // 削除
+	// メッセージ
+	ListMessages(ctx context.Context, in *ListMessagesInput) (entity.Messages, int64, error) // 一覧取得
+	GetMessage(ctx context.Context, in *GetMessageInput) (*entity.Message, error)            // １件取得
+	// お問い合わせ
+	ListContacts(ctx context.Context, in *ListContactsInput) (entity.Contacts, int64, error) // 一覧取得
+	GetContact(ctx context.Context, in *GetContactInput) (*entity.Contact, error)            // １件取得
+	CreateContact(ctx context.Context, in *CreateContactInput) (*entity.Contact, error)      // 登録
+	UpdateContact(ctx context.Context, in *UpdateContactInput) error                         // 更新
+	DeleteContact(ctx context.Context, in *DeleteContactInput) error                         // 削除
+	// お問い合わせ種別
+	ListContactCategories(ctx context.Context, in *ListContactCategoriesInput) (entity.ContactCategories, error)         // 一覧取得
+	MultiGetContactCategories(ctx context.Context, in *MultiGetContactCategoriesInput) (entity.ContactCategories, error) // 一覧取得(ID指定)
+	GetContactCategory(ctx context.Context, in *GetContactCategoryInput) (*entity.ContactCategory, error)                // １件取得
+	// お問い合わせ会話履歴
+	ListThreads(ctx context.Context, in *ListThreadsInput) (entity.Threads, int64, error) // 一覧取得
+	GetThread(ctx context.Context, in *GetThreadInput) (*entity.Thread, error)            // １件取得
+	CreateThread(ctx context.Context, in *CreateThreadInput) (*entity.Thread, error)      // 登録
+	UpdateThread(ctx context.Context, in *UpdateThreadInput) error                        // 更新
+	DeleteThread(ctx context.Context, in *DeleteThreadInput) error                        // 削除
+	// お問い合わせ既読管理
+	CreateContactRead(ctx context.Context, in *CreateContactReadInput) (*entity.ContactRead, error) // 登録
+	// 通知関連(共通)
+	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error // お知らせ通知
+	// 通知関連(管理者宛)
+	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error           // 登録通知
+	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error // パスワードリセット通知
 }
