@@ -268,13 +268,13 @@ const onClickSearchAddress = (): void => {
           v-model="validate.instagramId.$model"
           :error-messages="getErrorMessage(validate.instagramId.$errors)"
           :prepend-icon="mdiInstagram"
-          prefix="https://www.instagram.com/"
+          placeholder="https://www.instagram.com/"
         />
         <v-text-field
           v-model="validate.facebookId.$model"
           :error-messages="getErrorMessage(validate.facebookId.$errors)"
           :prepend-icon="mdiFacebook"
-          prefix="https://www.facebook.com/"
+          placeholder="https://www.facebook.com/"
         />
       </v-card-text>
 
