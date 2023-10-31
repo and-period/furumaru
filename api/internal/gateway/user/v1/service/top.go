@@ -5,33 +5,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-// ScheduleStatus - 開催状況
-type ScheduleStatus int32
-
-const (
-	ScheduleStatusUnknown ScheduleStatus = 0
-	ScheduleStatusWaiting ScheduleStatus = 1 // 開催前
-	ScheduleStatusLive    ScheduleStatus = 2 // 開催中
-	ScheduleStatusClosed  ScheduleStatus = 3 // 開催終了
-)
-
-func NewScheduleStatus(status entity.ScheduleStatus) ScheduleStatus {
-	switch status {
-	case entity.ScheduleStatusWaiting:
-		return ScheduleStatusWaiting
-	case entity.ScheduleStatusLive:
-		return ScheduleStatusLive
-	case entity.ScheduleStatusClosed:
-		return ScheduleStatusClosed
-	default:
-		return ScheduleStatusUnknown
-	}
-}
-
-func (s ScheduleStatus) Response() int32 {
-	return int32(s)
-}
-
 type TopCommonLive struct {
 	response.TopCommonLive
 }
@@ -48,7 +21,7 @@ func NewTopCommonLive(schedule *entity.Schedule, products entity.Products) *TopC
 	return &TopCommonLive{
 		TopCommonLive: response.TopCommonLive{
 			ScheduleID:   schedule.ID,
-			Status:       NewScheduleStatus(schedule.Status).Response(),
+			Status:       NewScheduleStatus(schedule.Status, false).Response(),
 			Title:        schedule.Title,
 			ThumbnailURL: schedule.ThumbnailURL,
 			Thumbnails:   NewImages(schedule.Thumbnails).Response(),

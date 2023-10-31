@@ -11,53 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestScheduleStatus(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		status entity.ScheduleStatus
-		expect ScheduleStatus
-	}{
-		{
-			name:   "private",
-			status: entity.ScheduleStatusPrivate,
-			expect: ScheduleStatusUnknown,
-		},
-		{
-			name:   "in progress",
-			status: entity.ScheduleStatusInProgress,
-			expect: ScheduleStatusUnknown,
-		},
-		{
-			name:   "waiting",
-			status: entity.ScheduleStatusWaiting,
-			expect: ScheduleStatusWaiting,
-		},
-		{
-			name:   "live",
-			status: entity.ScheduleStatusLive,
-			expect: ScheduleStatusLive,
-		},
-		{
-			name:   "closed",
-			status: entity.ScheduleStatusClosed,
-			expect: ScheduleStatusClosed,
-		},
-		{
-			name:   "unknown",
-			status: entity.ScheduleStatusUnknown,
-			expect: ScheduleStatusUnknown,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, NewScheduleStatus(tt.status))
-		})
-	}
-}
-
 func TestTopCommonLive(t *testing.T) {
 	t.Parallel()
 	now := jst.Date(2022, 1, 1, 0, 0, 0, 0)
