@@ -30,25 +30,27 @@ type Worker interface {
 }
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Mailer    mailer.Client
-	Line      line.Client
-	Messaging messaging.Client
-	DB        *database.Database
-	User      user.Service
+	WaitGroup      *sync.WaitGroup
+	Mailer         mailer.Client
+	Line           line.Client
+	AdminMessaging messaging.Client
+	UserMessaging  messaging.Client
+	DB             *database.Database
+	User           user.Service
 }
 
 type worker struct {
-	now         func() time.Time
-	logger      *zap.Logger
-	waitGroup   *sync.WaitGroup
-	mailer      mailer.Client
-	line        line.Client
-	messaging   messaging.Client
-	db          *database.Database
-	user        user.Service
-	concurrency int64
-	maxRetries  int64
+	now            func() time.Time
+	logger         *zap.Logger
+	waitGroup      *sync.WaitGroup
+	mailer         mailer.Client
+	line           line.Client
+	adminMessaging messaging.Client
+	userMessagging messaging.Client
+	db             *database.Database
+	user           user.Service
+	concurrency    int64
+	maxRetries     int64
 }
 
 type options struct {
@@ -87,16 +89,17 @@ func NewWorker(params *Params, opts ...Option) Worker {
 		opts[i](dopts)
 	}
 	return &worker{
-		now:         jst.Now,
-		logger:      dopts.logger,
-		waitGroup:   params.WaitGroup,
-		mailer:      params.Mailer,
-		line:        params.Line,
-		messaging:   params.Messaging,
-		db:          params.DB,
-		user:        params.User,
-		concurrency: dopts.concurrency,
-		maxRetries:  dopts.maxRetries,
+		now:            jst.Now,
+		logger:         dopts.logger,
+		waitGroup:      params.WaitGroup,
+		mailer:         params.Mailer,
+		line:           params.Line,
+		adminMessaging: params.AdminMessaging,
+		userMessagging: params.UserMessaging,
+		db:             params.DB,
+		user:           params.User,
+		concurrency:    dopts.concurrency,
+		maxRetries:     dopts.maxRetries,
 	}
 }
 

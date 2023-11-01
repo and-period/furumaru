@@ -36,8 +36,7 @@ func (w *worker) multiSendPush(ctx context.Context, payload *entity.WorkerPayloa
 	}
 	w.logger.Debug("Send push", zap.String("pushId", payload.Push.PushID), zap.Any("message", msg))
 	sendFn := func() error {
-		_, _, err := w.messaging.MultiSend(ctx, msg, tokens...)
-		return err
+		return w.sendMessaing(ctx, msg, payload.UserType, tokens)
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
 	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(w.isRetryable))
@@ -69,4 +68,20 @@ func (w *worker) fetchUserTokens(ctx context.Context, userIDs []string) ([]strin
 		UserIDs: userIDs,
 	}
 	return w.user.MultiGetUserDevices(ctx, in)
+}
+
+func (w *worker) sendMessaing(ctx context.Context, msg *messaging.Message, userType entity.UserType, tokens []string) error {
+	switch userType {
+	case entity.UserTypeAdmin,
+		entity.UserTypeAdministrator,
+		entity.UserTypeCoordinator,
+		entity.UserTypeProducer:
+		_, _, err := w.adminMessaging.MultiSend(ctx, msg, tokens...)
+		return err
+	case entity.UserTypeUser:
+		_, _, err := w.userMessagging.MultiSend(ctx, msg, tokens...)
+		return err
+	default:
+		return fmt.Errorf("worker: failed to multi send push: %w", errUnknownUserType)
+	}
 }
