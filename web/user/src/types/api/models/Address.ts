@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Prefecture } from './Prefecture';
-import {
-    PrefectureFromJSON,
-    PrefectureFromJSONTyped,
-    PrefectureToJSON,
-} from './Prefecture';
-
 /**
  * アドレス情報
  * @export
@@ -57,11 +50,11 @@ export interface Address {
      */
     postalCode: string;
     /**
-     * 
-     * @type {Prefecture}
+     * 都道府県
+     * @type {string}
      * @memberof Address
      */
-    prefecture: Prefecture;
+    prefecture: string;
     /**
      * 市区町村
      * @type {string}
@@ -122,7 +115,7 @@ export function AddressFromJSONTyped(json: any, ignoreDiscriminator: boolean): A
         'lastname': json['lastname'],
         'firstname': json['firstname'],
         'postalCode': json['postalCode'],
-        'prefecture': PrefectureFromJSON(json['prefecture']),
+        'prefecture': json['prefecture'],
         'city': json['city'],
         'addressLine1': json['addressLine1'],
         'addressLine2': json['addressLine2'],
@@ -144,7 +137,7 @@ export function AddressToJSON(value?: Address | null): any {
         'lastname': value.lastname,
         'firstname': value.firstname,
         'postalCode': value.postalCode,
-        'prefecture': PrefectureToJSON(value.prefecture),
+        'prefecture': value.prefecture,
         'city': value.city,
         'addressLine1': value.addressLine1,
         'addressLine2': value.addressLine2,

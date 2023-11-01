@@ -3,6 +3,7 @@ get:
   operationId: v1SearchPostalCode
   tags:
   - Address
+  - Other
   security:
   - bearerAuth: []
   parameters:
