@@ -46,7 +46,7 @@ require (
 	go.uber.org/mock v0.3.0
 	go.uber.org/zap v1.25.0
 	golang.org/x/image v0.13.0
-	golang.org/x/sync v0.3.0
+	golang.org/x/sync v0.4.0
 	google.golang.org/api v0.138.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d
 	google.golang.org/grpc v1.59.0
