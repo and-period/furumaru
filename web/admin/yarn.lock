@@ -4748,9 +4748,9 @@
   integrity sha512-RCln6ARn16jvKTjhkcAD5KzYXYS0xRMc0/LrHeV8TKdCd4Yd0YYHe0PU4F9gAgAfPQn7Dgt4uTVJLN11ICl8sQ==
 
 "@tiptap/extension-heading@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@tiptap/extension-heading/-/extension-heading-2.0.3.tgz#5e9e779f33f366afcf729d9f68ef49721f825e11"
-  integrity sha512-f0IEv5ms6aCzL80WeZ1qLCXTkRVwbpRr1qAETjg3gG4eoJN18+lZNOJYpyZy3P92C5KwF2T3Av00eFyVLIbb8Q==
+  version "2.1.12"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-heading/-/extension-heading-2.1.12.tgz#05ae4684d6f29ae611495ab114038e14a5d1dff6"
+  integrity sha512-MoANP3POAP68Ko9YXarfDKLM/kXtscgp6m+xRagPAghRNujVY88nK1qBMZ3JdvTVN6b/ATJhp8UdrZX96TLV2w==
 
 "@tiptap/extension-history@^2.0.3":
   version "2.0.3"
