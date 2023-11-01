@@ -348,8 +348,9 @@ type ListSchedulesInput struct {
 	EndAtGte      time.Time `validate:""`
 	EndAtLt       time.Time `validate:""`
 	OnlyPublished bool      `validate:""`
-	Limit         int64     `validate:"required,max=200"`
+	Limit         int64     `validate:"required_without=NoLimit,min=0,max=200"`
 	Offset        int64     `validate:"min=0"`
+	NoLimit       bool      `validate:""`
 }
 
 type MultiGetSchedulesInput struct {
