@@ -90,6 +90,7 @@ func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 	in := &store.ListSchedulesInput{
 		EndAtGte: target.AddDate(0, 0, -1),   // マルシェ開催終了1日経過〜
 		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間経過
+		NoLimit:  true,
 	}
 	schedules, total, err := c.store.ListSchedules(ctx, in)
 	if err != nil || total == 0 {
@@ -142,6 +143,7 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 	in := &store.ListSchedulesInput{
 		EndAtGte: target.AddDate(0, 0, -1),   // マルシェ開催終了1日後〜
 		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間後
+		NoLimit:  true,
 	}
 	schedules, total, err := c.store.ListSchedules(ctx, in)
 	if err != nil || total == 0 {

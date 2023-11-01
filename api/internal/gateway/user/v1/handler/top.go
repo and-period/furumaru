@@ -19,7 +19,6 @@ func (h *handler) topRoutes(rg *gin.RouterGroup) {
 
 func (h *handler) TopCommon(ctx *gin.Context) {
 	const (
-		defaultLivesLimit    = 100
 		defaultArchivesLimit = 6
 	)
 	var (
@@ -33,7 +32,7 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 		in := &store.ListSchedulesInput{
 			EndAtGte:      h.now(),
 			OnlyPublished: true,
-			Limit:         defaultLivesLimit,
+			NoLimit:       true,
 		}
 		schedules, _, err = h.store.ListSchedules(ectx, in)
 		if err != nil || len(schedules) == 0 {
@@ -41,6 +40,7 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 		}
 		livesIn := &store.ListLivesInput{
 			ScheduleIDs: schedules.IDs(),
+			NoLimit:     true,
 		}
 		lives, _, err = h.store.ListLives(ectx, livesIn)
 		if err != nil || len(lives) == 0 {
