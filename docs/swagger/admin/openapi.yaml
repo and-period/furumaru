@@ -51,6 +51,8 @@ tags:
   description: お知らせ関連
 - name: Message
   description: メッセージ関連
+- name: Other
+  description: その他（外部APIなど）
 paths:
   # Auth
   /v1/auth:

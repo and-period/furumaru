@@ -14,12 +14,13 @@ type Address struct {
 type Addresses []*Address
 
 func NewAddress(address *entity.Address) *Address {
+	prefecture, _ := codes.ToPrefectureName(address.Prefecture)
 	return &Address{
 		Address: response.Address{
 			Lastname:     address.Lastname,
 			Firstname:    address.Firstname,
 			PostalCode:   address.PostalCode,
-			Prefecture:   codes.PrefectureNames[address.Prefecture],
+			Prefecture:   prefecture,
 			City:         address.City,
 			AddressLine1: address.AddressLine1,
 			AddressLine2: address.AddressLine2,
@@ -45,6 +46,14 @@ func (as Addresses) Map() map[string]*Address {
 	res := make(map[string]*Address, len(as))
 	for _, a := range as {
 		res[a.id] = a
+	}
+	return res
+}
+
+func (as Addresses) Response() []*response.Address {
+	res := make([]*response.Address, len(as))
+	for i := range as {
+		res[i] = as[i].Response()
 	}
 	return res
 }

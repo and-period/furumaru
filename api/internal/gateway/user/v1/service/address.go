@@ -13,6 +13,7 @@ type Address struct {
 type Addresses []*Address
 
 func NewAddress(address *entity.Address) *Address {
+	prefecture, _ := codes.ToPrefectureJapanese(address.Prefecture)
 	return &Address{
 		Address: response.Address{
 			ID:           address.ID,
@@ -20,7 +21,7 @@ func NewAddress(address *entity.Address) *Address {
 			Lastname:     address.Lastname,
 			Firstname:    address.Firstname,
 			PostalCode:   address.PostalCode,
-			Prefecture:   codes.PrefectureNames[address.Prefecture],
+			Prefecture:   prefecture,
 			City:         address.City,
 			AddressLine1: address.AddressLine1,
 			AddressLine2: address.AddressLine2,

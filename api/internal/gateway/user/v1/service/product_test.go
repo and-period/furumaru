@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -246,7 +245,7 @@ func TestProduct(t *testing.T) {
 				Box60Rate:         50,
 				Box80Rate:         40,
 				Box100Rate:        30,
-				OriginPrefecture:  codes.PrefectureValues["shiga"],
+				OriginPrefecture:  25,
 				OriginCity:        "彦根市",
 				StartAt:           jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				EndAt:             jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -289,7 +288,7 @@ func TestProduct(t *testing.T) {
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
-					OriginPrefecture:  "shiga",
+					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
 					StartAt:           1640962800,
 					EndAt:             1640962800,
@@ -347,7 +346,7 @@ func TestProduct_Fill(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "shiga",
+					OriginPrefecture: "滋賀県",
 					OriginCity:       "彦根市",
 					StartAt:          1640962800,
 					EndAt:            1640962800,
@@ -390,7 +389,7 @@ func TestProduct_Fill(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "shiga",
+					OriginPrefecture: "滋賀県",
 					OriginCity:       "彦根市",
 					StartAt:          1640962800,
 					EndAt:            1640962800,
@@ -448,7 +447,7 @@ func TestProduct_Response(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "shiga",
+					OriginPrefecture: "滋賀県",
 					OriginCity:       "彦根市",
 					StartAt:          1640962800,
 					EndAt:            1640962800,
@@ -484,7 +483,7 @@ func TestProduct_Response(t *testing.T) {
 				Box60Rate:        50,
 				Box80Rate:        40,
 				Box100Rate:       30,
-				OriginPrefecture: "shiga",
+				OriginPrefecture: "滋賀県",
 				OriginCity:       "彦根市",
 				StartAt:          1640962800,
 				EndAt:            1640962800,
@@ -550,7 +549,7 @@ func TestProducts(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: codes.PrefectureValues["shiga"],
+					OriginPrefecture: 25,
 					OriginCity:       "彦根市",
 					StartAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					EndAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -598,7 +597,7 @@ func TestProducts(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "shiga",
+						OriginPrefecture: "滋賀県",
 						OriginCity:       "彦根市",
 						StartAt:          1640962800,
 						EndAt:            1640962800,
@@ -612,6 +611,124 @@ func TestProducts(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewProducts(tt.products))
+		})
+	}
+}
+
+func TestProducts_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		products     Products
+		productTypes map[string]*ProductType
+		categories   map[string]*Category
+		expect       Products
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					Product: response.Product{
+						ID:              "product-id",
+						ProductTypeID:   "product-type-id",
+						CategoryID:      "",
+						CoordinatorID:   "coordinator-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Status:          int32(ProductStatusForSale),
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{
+								URL:         "https://and-period.jp/thumbnail01.png",
+								IsThumbnail: true,
+								Images:      []*response.Image{},
+							},
+							{
+								URL:         "https://and-period.jp/thumbnail02.png",
+								IsThumbnail: false,
+								Images:      []*response.Image{},
+							},
+						},
+						Price:            400,
+						DeliveryType:     int32(DeliveryTypeNormal),
+						Box60Rate:        50,
+						Box80Rate:        40,
+						Box100Rate:       30,
+						OriginPrefecture: "滋賀県",
+						OriginCity:       "彦根市",
+						StartAt:          1640962800,
+						EndAt:            1640962800,
+					},
+				},
+			},
+			productTypes: map[string]*ProductType{
+				"product-type-id": {
+					ProductType: response.ProductType{
+						ID:         "product-type-id",
+						CategoryID: "category-id",
+						Name:       "じゃがいも",
+					},
+				},
+			},
+			categories: map[string]*Category{
+				"category-id": {
+					Category: response.Category{
+						ID:   "category-id",
+						Name: "野菜",
+					},
+				},
+			},
+			expect: Products{
+				{
+					Product: response.Product{
+						ID:              "product-id",
+						ProductTypeID:   "product-type-id",
+						CategoryID:      "category-id",
+						CoordinatorID:   "coordinator-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Status:          int32(ProductStatusForSale),
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{
+								URL:         "https://and-period.jp/thumbnail01.png",
+								IsThumbnail: true,
+								Images:      []*response.Image{},
+							},
+							{
+								URL:         "https://and-period.jp/thumbnail02.png",
+								IsThumbnail: false,
+								Images:      []*response.Image{},
+							},
+						},
+						Price:            400,
+						DeliveryType:     int32(DeliveryTypeNormal),
+						Box60Rate:        50,
+						Box80Rate:        40,
+						Box100Rate:       30,
+						OriginPrefecture: "滋賀県",
+						OriginCity:       "彦根市",
+						StartAt:          1640962800,
+						EndAt:            1640962800,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.products.Fill(tt.productTypes, tt.categories)
+			assert.Equal(t, tt.expect, tt.products)
 		})
 	}
 }
@@ -649,7 +766,7 @@ func TestProducts_Response(t *testing.T) {
 						Box60Rate:        50,
 						Box80Rate:        40,
 						Box100Rate:       30,
-						OriginPrefecture: "shiga",
+						OriginPrefecture: "滋賀県",
 						OriginCity:       "彦根市",
 						StartAt:          1640962800,
 						EndAt:            1640962800,
@@ -679,7 +796,7 @@ func TestProducts_Response(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: "shiga",
+					OriginPrefecture: "滋賀県",
 					OriginCity:       "彦根市",
 					StartAt:          1640962800,
 					EndAt:            1640962800,

@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,17 +33,16 @@ func TestAddress(t *testing.T) {
 			},
 			expect: &Address{
 				Address: response.Address{
-					ID:           "address-id",
-					IsDefault:    true,
 					Lastname:     "&.",
 					Firstname:    "購入者",
 					PostalCode:   "1000014",
-					Prefecture:   "東京都",
+					Prefecture:   "tokyo",
 					City:         "千代田区",
 					AddressLine1: "永田町1-7-1",
 					AddressLine2: "",
 					PhoneNumber:  "+819012345678",
 				},
+				id: "address-id",
 			},
 		},
 	}
@@ -68,25 +67,22 @@ func TestAddress_Response(t *testing.T) {
 			name: "success",
 			address: &Address{
 				Address: response.Address{
-					ID:           "address-id",
-					IsDefault:    true,
 					Lastname:     "&.",
 					Firstname:    "購入者",
 					PostalCode:   "1000014",
-					Prefecture:   "東京都",
+					Prefecture:   "tokyo",
 					City:         "千代田区",
 					AddressLine1: "永田町1-7-1",
 					AddressLine2: "",
 					PhoneNumber:  "+819012345678",
 				},
+				id: "address-id",
 			},
 			expect: &response.Address{
-				ID:           "address-id",
-				IsDefault:    true,
 				Lastname:     "&.",
 				Firstname:    "購入者",
 				PostalCode:   "1000014",
-				Prefecture:   "東京都",
+				Prefecture:   "tokyo",
 				City:         "千代田区",
 				AddressLine1: "永田町1-7-1",
 				AddressLine2: "",
@@ -131,17 +127,16 @@ func TestAddresses(t *testing.T) {
 			expect: Addresses{
 				{
 					Address: response.Address{
-						ID:           "address-id",
-						IsDefault:    true,
 						Lastname:     "&.",
 						Firstname:    "購入者",
 						PostalCode:   "1000014",
-						Prefecture:   "東京都",
+						Prefecture:   "tokyo",
 						City:         "千代田区",
 						AddressLine1: "永田町1-7-1",
 						AddressLine2: "",
 						PhoneNumber:  "+819012345678",
 					},
+					id: "address-id",
 				},
 			},
 		},
@@ -168,27 +163,24 @@ func TestAddresses_Response(t *testing.T) {
 			addresses: Addresses{
 				{
 					Address: response.Address{
-						ID:           "address-id",
-						IsDefault:    true,
 						Lastname:     "&.",
 						Firstname:    "購入者",
 						PostalCode:   "1000014",
-						Prefecture:   "東京都",
+						Prefecture:   "tokyo",
 						City:         "千代田区",
 						AddressLine1: "永田町1-7-1",
 						AddressLine2: "",
 						PhoneNumber:  "+819012345678",
 					},
+					id: "address-id",
 				},
 			},
 			expect: []*response.Address{
 				{
-					ID:           "address-id",
-					IsDefault:    true,
 					Lastname:     "&.",
 					Firstname:    "購入者",
 					PostalCode:   "1000014",
-					Prefecture:   "東京都",
+					Prefecture:   "tokyo",
 					City:         "千代田区",
 					AddressLine1: "永田町1-7-1",
 					AddressLine2: "",

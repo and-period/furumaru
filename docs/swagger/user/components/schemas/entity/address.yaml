@@ -18,7 +18,8 @@ address:
       type: string
       description: 郵便番号
     prefecture:
-      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+      type: string
+      description: 都道府県
     city:
       type: string
       description: 市区町村
@@ -48,7 +49,7 @@ address:
     lastname: '&.'
     firstname: '利用者'
     postalCode: '1000014'
-    prefecture: 'tokyo'
+    prefecture: '東京都'
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
