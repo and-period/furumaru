@@ -89,6 +89,7 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 	in := &store.ListSchedulesInput{
 		StartAtLt: target.Add(5 * time.Minute), // マルシェ開催開始5分前〜
 		EndAtGte:  target,                      // 〜マルシェ開催終了
+		NoLimit:   true,
 	}
 	schedules, total, err := s.store.ListSchedules(ctx, in)
 	if err != nil || total == 0 {
@@ -207,6 +208,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 	in := &store.ListSchedulesInput{
 		StartAtLt: target.Add(30 * time.Minute), // マルシェ開催開始30分前〜
 		EndAtGte:  target,                       // 〜マルシェ開催終了
+		NoLimit:   true,
 	}
 	schedules, total, err := s.store.ListSchedules(ctx, in)
 	if err != nil || total == 0 {

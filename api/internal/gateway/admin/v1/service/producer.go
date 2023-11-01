@@ -15,6 +15,7 @@ type Producer struct {
 type Producers []*Producer
 
 func NewProducer(producer *entity.Producer) *Producer {
+	prefecture, _ := codes.ToPrefectureName(producer.Prefecture)
 	return &Producer{
 		Producer: response.Producer{
 			ID:                producer.ID,
@@ -37,7 +38,7 @@ func NewProducer(producer *entity.Producer) *Producer {
 			Email:             producer.Email,
 			PhoneNumber:       producer.PhoneNumber,
 			PostalCode:        producer.PostalCode,
-			Prefecture:        codes.PrefectureNames[producer.Prefecture],
+			Prefecture:        prefecture,
 			City:              producer.City,
 			AddressLine1:      producer.AddressLine1,
 			AddressLine2:      producer.AddressLine2,

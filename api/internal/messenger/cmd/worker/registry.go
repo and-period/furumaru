@@ -18,7 +18,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
@@ -29,24 +28,24 @@ import (
 )
 
 type params struct {
-	logger            *zap.Logger
-	waitGroup         *sync.WaitGroup
-	mailer            mailer.Client
-	line              line.Client
-	messaging         messaging.Client
-	aws               aws.Config
-	firebase          *firebase.App
-	secret            secret.Client
-	now               func() time.Time
-	dbHost            string
-	dbPort            string
-	dbUsername        string
-	dbPassword        string
-	sendGridAPIKey    string
-	lineToken         string
-	lineSecret        string
-	lineRoomID        string
-	googleCredentials []byte
+	logger                   *zap.Logger
+	waitGroup                *sync.WaitGroup
+	mailer                   mailer.Client
+	line                     line.Client
+	adminMessaging           messaging.Client
+	userMessaging            messaging.Client
+	secret                   secret.Client
+	now                      func() time.Time
+	dbHost                   string
+	dbPort                   string
+	dbUsername               string
+	dbPassword               string
+	sendGridAPIKey           string
+	lineToken                string
+	lineSecret               string
+	lineRoomID               string
+	adminFirebaseCredentials []byte
+	userFirebaseCredentials  []byte
 }
 
 func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
@@ -61,7 +60,6 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	if err != nil {
 		return err
 	}
-	params.aws = awscfg
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
@@ -108,19 +106,31 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	}
 	params.line = linebot
 
-	// Firebaseの設定
-	fbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.googleCredentials))
+	// Firebaseの設定（管理者用）
+	afbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.adminFirebaseCredentials))
 	if err != nil {
 		return err
 	}
-	params.firebase = fbapp
 
-	// Firebase Cloud Messagingの設定
-	messaging, err := messaging.NewClient(ctx, fbapp, messaging.WithLogger(logger))
+	// Firebase Cloud Messagingの設定（管理者用）
+	amessaging, err := messaging.NewClient(ctx, afbapp, messaging.WithLogger(logger))
 	if err != nil {
 		return err
 	}
-	params.messaging = messaging
+	params.adminMessaging = amessaging
+
+	// Firebaseの設定（利用者用）
+	ufbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.userFirebaseCredentials))
+	if err != nil {
+		return err
+	}
+
+	// Firebase Cloud Messagingの設定（利用者用）
+	umessaging, err := messaging.NewClient(ctx, ufbapp, messaging.WithLogger(logger))
+	if err != nil {
+		return err
+	}
+	params.userMessaging = umessaging
 
 	// Serviceの設定
 	userService, err := a.newUserService(params)
@@ -130,12 +140,13 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 
 	// Workerの設定
 	workerParams := &worker.Params{
-		WaitGroup: params.waitGroup,
-		DB:        messengerdb.NewDatabase(dbClient),
-		Mailer:    params.mailer,
-		Line:      params.line,
-		Messaging: params.messaging,
-		User:      userService,
+		WaitGroup:      params.waitGroup,
+		DB:             messengerdb.NewDatabase(dbClient),
+		Mailer:         params.mailer,
+		Line:           params.line,
+		AdminMessaging: params.adminMessaging,
+		UserMessaging:  params.userMessaging,
+		User:           userService,
 	}
 	a.worker = worker.NewWorker(workerParams, worker.WithLogger(logger))
 	a.waitGroup = params.waitGroup
@@ -194,16 +205,29 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		return nil
 	})
 	eg.Go(func() error {
-		// Google認証情報の取得
-		if a.GoogleSecretName == "" {
-			p.googleCredentials = []byte(a.GoogleCredentialsJSON)
+		// Firebase認証情報の取得（管理者用）
+		if a.AdminFirebaseSecretName == "" {
+			p.adminFirebaseCredentials = []byte(a.AdminFirebaseCredentialsJSON)
 			return nil
 		}
-		secrets, err := p.secret.Get(ectx, a.GoogleSecretName)
+		secrets, err := p.secret.Get(ectx, a.AdminFirebaseSecretName)
 		if err != nil {
 			return err
 		}
-		p.googleCredentials = []byte(secrets["credentials"])
+		p.adminFirebaseCredentials = []byte(secrets["credentials"])
+		return nil
+	})
+	eg.Go(func() error {
+		// Firebase認証情報の取得（利用者用）
+		if a.UserFirebaseSecretName == "" {
+			p.userFirebaseCredentials = []byte(a.UserFirebaseCredentialsJSON)
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.UserFirebaseSecretName)
+		if err != nil {
+			return err
+		}
+		p.userFirebaseCredentials = []byte(secrets["credentials"])
 		return nil
 	})
 	return eg.Wait()

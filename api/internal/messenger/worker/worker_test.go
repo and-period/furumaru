@@ -88,10 +88,11 @@ func newWorker(mocks *mocks, opts ...testOption) *worker {
 		opts[i](dopts)
 	}
 	params := &Params{
-		WaitGroup: &sync.WaitGroup{},
-		Mailer:    mocks.mailer,
-		Line:      mocks.line,
-		Messaging: mocks.messaging,
+		WaitGroup:      &sync.WaitGroup{},
+		Mailer:         mocks.mailer,
+		Line:           mocks.line,
+		AdminMessaging: mocks.messaging,
+		UserMessaging:  mocks.messaging,
 		DB: &database.Database{
 			Message:         mocks.db.Message,
 			MessageTemplate: mocks.db.MessageTemplate,
