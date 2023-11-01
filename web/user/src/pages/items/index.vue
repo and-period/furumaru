@@ -6,7 +6,7 @@ const router = useRouter()
 
 const productStore = useProductStore()
 const { fetchProducts } = productStore
-const { isLoading, products } = storeToRefs(productStore)
+const { productsFetchState, products } = storeToRefs(productStore)
 
 const handleClick = (id: string) => {
   router.push(`/items/${id}`)
@@ -48,7 +48,7 @@ fetchProducts()
       <div
         class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
-        <template v-if="isLoading">
+        <template v-if="productsFetchState.isLoading">
           <div
             v-for="i in [1, 2, 3, 4, 5]"
             :key="i"
@@ -63,6 +63,7 @@ fetchProducts()
         <the-product-list-item
           v-for="product in products"
           :key="product.id"
+          class="cursor-pointer"
           :name="product.name"
           :price="product.price"
           :inventory="product.inventory"

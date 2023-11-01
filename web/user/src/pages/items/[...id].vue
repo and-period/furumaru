@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { MOCK_ALL_PRODUCT_ITEMS, ProductItemMock } from '~/constants/mock'
+import { storeToRefs } from 'pinia'
+import { useProductStore } from '~/store/product'
 
 const router = useRouter()
 const route = useRoute()
+
+const productStore = useProductStore()
+const { fetchProduct } = productStore
+const { product } = storeToRefs(productStore)
 
 const id = computed<string>(() => {
   const ids = route.params.id
@@ -13,18 +18,14 @@ const id = computed<string>(() => {
   }
 })
 
-const selectItem = computed<ProductItemMock | undefined>(() => {
-  return MOCK_ALL_PRODUCT_ITEMS.find((item) => {
-    return item.id === id.value
-  })
-})
+fetchProduct(id.value)
 
 const priceString = computed<string>(() => {
-  if (selectItem.value) {
+  if (product.value) {
     return new Intl.NumberFormat('ja-JP', {
       style: 'currency',
       currency: 'JPY',
-    }).format(selectItem.value.price)
+    }).format(product.value.price)
   } else {
     return ''
   }
@@ -38,8 +39,14 @@ const handleClickAddCartButton = () => {
 <template>
   <div class="grid grid-cols-2 bg-white px-[112px] pb-6 pt-[40px] text-main">
     <div class="w-full">
-      <div class="mx-auto aspect-square h-[500px] w-[500px]">
-        <img :src="selectItem?.imgSrc" />
+      <div
+        v-if="product.thumbnail"
+        class="mx-auto aspect-square h-[500px] w-[500px]"
+      >
+        <img
+          :src="product.thumbnail.url"
+          :alt="`${product.name}のサムネイル画像`"
+        />
       </div>
     </div>
 
@@ -48,26 +55,35 @@ const handleClickAddCartButton = () => {
         {{ selectItem?.name }}
       </div>
 
-      <div class="mt-4 flex flex-col leading-[32px]">
+      <div v-if="product.producer" class="mt-4 flex flex-col leading-[32px]">
         <div class="text-[16px] tracking-[1.6px]">
           生産者:
-          <a href="#" class="font-bold underline">{{ selectItem?.cnName }}</a>
+          <a href="#" class="font-bold underline">{{
+            product.producer.username
+          }}</a>
         </div>
         <div class="text-[14px] tracking-[1.4px]">
-          {{ selectItem?.address }}
+          {{ product.originPrefecture }} {{ product.originCity }}
         </div>
       </div>
 
       <div
+        v-if="product && product.recommendedPoint1"
         class="mt-8 w-full rounded-2xl bg-base px-[20px] py-[28px] text-main"
       >
         <p class="mb-[12px] text-[14px] tracking-[1.4px]">おすすめポイント</p>
         <ol
           class="recommend-list flex flex-col divide-y divide-dashed divide-main px-[4px] pl-[24px]"
         >
-          <li class="py-3">キリっとした酸味と華やかな香りが特徴です</li>
-          <li class="py-3">島ならではの資材を使った土づくりをしています</li>
-          <li class="py-3">防腐剤・ワックスは一切使用しておりません</li>
+          <li v-if="product.recommendedPoint1" class="py-3">
+            {{ product.recommendedPoint1 }}
+          </li>
+          <li v-if="product.recommendedPoint2" class="py-3">
+            {{ product.recommendedPoint2 }}
+          </li>
+          <li v-if="product.recommendedPoint3" class="py-3">
+            {{ product.recommendedPoint3 }}
+          </li>
         </ol>
       </div>
 
@@ -78,10 +94,22 @@ const handleClickAddCartButton = () => {
           {{ priceString }}
         </div>
 
-        <div class="mt-8 inline-flex items-center">
+        <div v-if="product" class="mt-8 inline-flex items-center">
           <label class="mr-2 block text-[16px]">数量</label>
-          <select class="h-full border-[1px] border-main px-2" @click.stop>
-            <option value="0">0</option>
+          <select
+            class="h-full border-[1px] border-main px-2"
+            :disabled="!product.hasStock"
+            @click.stop
+          >
+            <option
+              v-for="(_, i) in Array.from({
+                length: product.inventory < 10 ? product.inventory : 10,
+              })"
+              :key="i + 1"
+              :value="i + 1"
+            >
+              {{ i + 1 }}
+            </option>
           </select>
         </div>
       </div>
@@ -92,6 +120,20 @@ const handleClickAddCartButton = () => {
       >
         買い物カゴに入れる
       </button>
+
+      <div class="mt-4 inline-flex gap-4">
+        <span
+          v-for="productTag in product.productTags"
+          :key="productTag?.id"
+          class="rounded-2xl border border-main px-4 py-1"
+        >
+          {{ productTag?.name }}
+        </span>
+      </div>
+    </div>
+
+    <div class="col-span-2">
+      <article class="leading-[32px]" v-html="product.description" />
     </div>
   </div>
 </template>
