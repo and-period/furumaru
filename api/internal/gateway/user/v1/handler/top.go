@@ -41,6 +41,7 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 		}
 		livesIn := &store.ListLivesInput{
 			ScheduleIDs: schedules.IDs(),
+			NoLimit:     true,
 		}
 		lives, _, err = h.store.ListLives(ectx, livesIn)
 		if err != nil || len(lives) == 0 {

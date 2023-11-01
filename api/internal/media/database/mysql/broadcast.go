@@ -28,6 +28,9 @@ func newBroadcast(db *mysql.Client) database.Broadcast {
 type listBroadcastsParams database.ListBroadcastsParams
 
 func (p listBroadcastsParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if len(p.ScheduleIDs) > 0 {
+		stmt = stmt.Where("schedule_id IN (?)", p.ScheduleIDs)
+	}
 	if p.OnlyArchived {
 		stmt = stmt.Where("archive_url != ''")
 	}
