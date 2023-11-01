@@ -108,7 +108,8 @@ product:
       format: int64
       description: 箱の占有率(サイズ:100)
     originPrefecture:
-      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+      type: string
+      description: 原産地(都道府県)
     originCity:
       type: string
       description: 原産地(市区町村)
@@ -186,7 +187,7 @@ product:
     box60Rate: 80
     box80Rate: 50
     box100Rate: 40
-    originPrefecture: 'tokyo'
+    originPrefecture: '滋賀県'
     originCity: '彦根市'
     startAt: 1640962800
     endAt: 1640962800
