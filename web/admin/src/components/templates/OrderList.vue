@@ -3,15 +3,15 @@ import { mdiImport, mdiExport } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { unix } from 'dayjs'
 
-import { AlertType } from '~/lib/hooks'
-import { DeliveryType, FulfillmentStatus, OrdersResponse, PaymentStatus } from '~/types/api'
-import { Order } from '~/types/props'
+import type { AlertType } from '~/lib/hooks'
+import type { DeliveryType, FulfillmentStatus, OrdersResponse, PaymentStatus } from '~/types/api'
+import type { Order } from '~/types/props'
 
 // TODO: API設計が決まり次第型定義の厳格化
-interface importFormData {
+interface ImportFormData {
   company: boolean
 }
-interface exportFormData {
+interface ExportFormData {
   company: boolean
 }
 
@@ -123,12 +123,12 @@ const exportDialogValue = computed({
   set: (v: boolean): void => emit('update:export-dialog', v)
 })
 const importFormDataValue = computed({
-  get: (): importFormData => props.importFormData as importFormData,
-  set: (v: importFormData): void => emit('update:import-form-data', v)
+  get: (): ImportFormData => props.importFormData as ImportFormData,
+  set: (v: ImportFormData): void => emit('update:import-form-data', v)
 })
 const exportFormDataValue = computed({
-  get: (): exportFormData => props.importFormData as exportFormData,
-  set: (v: exportFormData): void => emit('update:export-form-data', v)
+  get: (): ExportFormData => props.importFormData as ExportFormData,
+  set: (v: ExportFormData): void => emit('update:export-form-data', v)
 })
 
 const getPaymentStatus = (status: PaymentStatus): string => {

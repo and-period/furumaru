@@ -2,7 +2,7 @@
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert } from '~/lib/hooks'
 import { useAdministratorStore } from '~/store'
-import { CreateAdministratorRequest } from '~/types/api'
+import type { CreateAdministratorRequest } from '~/types/api'
 
 const router = useRouter()
 const administratorStore = useAdministratorStore()

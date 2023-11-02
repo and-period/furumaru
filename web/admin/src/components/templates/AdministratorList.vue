@@ -2,8 +2,8 @@
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
-import { AlertType } from '~/lib/hooks'
-import { Administrator } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import type { Administrator } from '~/types/api'
 
 const props = defineProps({
   loading: {

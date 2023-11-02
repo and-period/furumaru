@@ -3,8 +3,22 @@ import { mdiPencil, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { getResizedImages } from '~/lib/helpers'
-import { getErrorMessage, maxLength, maxLengthArray, required } from '~/lib/validations'
-import { CreateLiveRequest, Live, Producer, Product, ProductMediaInner, Schedule, ScheduleStatus, UpdateLiveRequest } from '~/types/api'
+import {
+  getErrorMessage,
+  maxLength,
+  maxLengthArray,
+  required
+} from '~/lib/validations'
+import {
+  CreateLiveRequest,
+  Live,
+  Producer,
+  Product,
+  ProductMediaInner,
+  Schedule,
+  ScheduleStatus,
+  UpdateLiveRequest
+} from '~/types/api'
 import { LiveTime } from '~/types/props'
 
 const props = defineProps({
@@ -89,18 +103,18 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (e: 'click:new'): void
-  (e: 'click:edit', liveId: string): void
-  (e: 'update:live', live: Live): void
-  (e: 'update:create-dialog', val: boolean): void
-  (e: 'update:update-dialog', val: boolean): void
-  (e: 'update:create-form-data', formData: CreateLiveRequest): void
-  (e: 'update:update-form-data', formData: UpdateLiveRequest): void
-  (e: 'search:producer', name: string): void
-  (e: 'search:product', producerId: string, name: string): void
-  (e: 'submit:create'): void
-  (e: 'submit:update'): void
-  (e: 'submit:delete'): void
+  (e: 'click:new'): void;
+  (e: 'click:edit', liveId: string): void;
+  (e: 'update:live', live: Live): void;
+  (e: 'update:create-dialog', val: boolean): void;
+  (e: 'update:update-dialog', val: boolean): void;
+  (e: 'update:create-form-data', formData: CreateLiveRequest): void;
+  (e: 'update:update-form-data', formData: UpdateLiveRequest): void;
+  (e: 'search:producer', name: string): void;
+  (e: 'search:product', producerId: string, name: string): void;
+  (e: 'submit:create'): void;
+  (e: 'submit:update'): void;
+  (e: 'submit:delete'): void;
 }>()
 
 const liveValue = computed({
@@ -138,11 +152,13 @@ const updateDialogValue = computed({
 })
 const createFormDataValue = computed({
   get: (): CreateLiveRequest => props.createFormData,
-  set: (formData: CreateLiveRequest): void => emits('update:create-form-data', formData)
+  set: (formData: CreateLiveRequest): void =>
+    emits('update:create-form-data', formData)
 })
 const updateFormDataValue = computed({
   get: (): UpdateLiveRequest => props.updateFormData,
-  set: (formData: UpdateLiveRequest): void => emits('update:update-form-data', formData)
+  set: (formData: UpdateLiveRequest): void =>
+    emits('update:update-form-data', formData)
 })
 const createTimeDataValue = computed({
   get: (): LiveTime => ({
@@ -173,18 +189,34 @@ const updateTimeDataValue = computed({
   }
 })
 
-const createFormDataValidate = useVuelidate(createFormDataRules, createFormDataValue)
-const updateFormDataValidate = useVuelidate(updateFormDataRules, updateFormDataValue)
-const createTimeDataValidate = useVuelidate(createTimeDataRules, createTimeDataValue)
-const updateTimeDataValidate = useVuelidate(updateTimeDataRules, updateTimeDataValue)
+const createFormDataValidate = useVuelidate(
+  createFormDataRules,
+  createFormDataValue
+)
+const updateFormDataValidate = useVuelidate(
+  updateFormDataRules,
+  updateFormDataValue
+)
+const createTimeDataValidate = useVuelidate(
+  createTimeDataRules,
+  createTimeDataValue
+)
+const updateTimeDataValidate = useVuelidate(
+  updateTimeDataRules,
+  updateTimeDataValue
+)
 
 const onChangeCreateStartAt = (): void => {
-  const startAt = dayjs(`${createTimeDataValue.value.startDate} ${createTimeDataValue.value.startTime}`)
+  const startAt = dayjs(
+    `${createTimeDataValue.value.startDate} ${createTimeDataValue.value.startTime}`
+  )
   createFormDataValue.value.startAt = startAt.unix()
 }
 
 const onChangeCreateEndAt = (): void => {
-  const endAt = dayjs(`${createTimeDataValue.value.endDate} ${createTimeDataValue.value.endTime}`)
+  const endAt = dayjs(
+    `${createTimeDataValue.value.endDate} ${createTimeDataValue.value.endTime}`
+  )
   createFormDataValue.value.endAt = endAt.unix()
 }
 
@@ -194,12 +226,16 @@ const onChangeCreateProducerId = (): void => {
 }
 
 const onChangeUpdateStartAt = (): void => {
-  const startAt = dayjs(`${updateTimeDataValue.value.startDate} ${updateTimeDataValue.value.startTime}`)
+  const startAt = dayjs(
+    `${updateTimeDataValue.value.startDate} ${updateTimeDataValue.value.startTime}`
+  )
   updateFormDataValue.value.startAt = startAt.unix()
 }
 
 const onChangeUpdateEndAt = (): void => {
-  const endAt = dayjs(`${updateTimeDataValue.value.endDate} ${updateTimeDataValue.value.endTime}`)
+  const endAt = dayjs(
+    `${updateTimeDataValue.value.endDate} ${updateTimeDataValue.value.endTime}`
+  )
   updateFormDataValue.value.endAt = endAt.unix()
 }
 
@@ -299,7 +335,6 @@ const onSubmitCreate = async (): Promise<void> => {
   const formDataValid = await createFormDataValidate.value.$validate()
   const timeDataValid = await createTimeDataValidate.value.$validate()
   if (!formDataValid || !timeDataValid) {
-    console.log('ここきた', { formDataValid, timeDataValid })
     return
   }
 
@@ -342,7 +377,9 @@ const onSubmitDelete = (): void => {
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="createTimeDataValidate.startDate.$model"
-            :error-messages="getErrorMessage(createTimeDataValidate.startDate.$errors)"
+            :error-messages="
+              getErrorMessage(createTimeDataValidate.startDate.$errors)
+            "
             type="date"
             variant="outlined"
             density="compact"
@@ -351,7 +388,9 @@ const onSubmitDelete = (): void => {
           />
           <v-text-field
             v-model="createTimeDataValidate.startTime.$model"
-            :error-messages="getErrorMessage(createTimeDataValidate.startTime.$errors)"
+            :error-messages="
+              getErrorMessage(createTimeDataValidate.startTime.$errors)
+            "
             type="time"
             variant="outlined"
             density="compact"
@@ -364,7 +403,9 @@ const onSubmitDelete = (): void => {
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="createTimeDataValidate.endDate.$model"
-            :error-messages="getErrorMessage(createTimeDataValidate.endDate.$errors)"
+            :error-messages="
+              getErrorMessage(createTimeDataValidate.endDate.$errors)
+            "
             type="date"
             variant="outlined"
             density="compact"
@@ -373,7 +414,9 @@ const onSubmitDelete = (): void => {
           />
           <v-text-field
             v-model="createTimeDataValidate.endTime.$model"
-            :error-messages="getErrorMessage(createTimeDataValidate.endTime.$errors)"
+            :error-messages="
+              getErrorMessage(createTimeDataValidate.endTime.$errors)
+            "
             type="time"
             variant="outlined"
             density="compact"
@@ -382,7 +425,9 @@ const onSubmitDelete = (): void => {
         </div>
         <v-autocomplete
           v-model="createFormDataValidate.producerId.$model"
-          :error-messages="getErrorMessage(createFormDataValidate.producerId.$errors)"
+          :error-messages="
+            getErrorMessage(createFormDataValidate.producerId.$errors)
+          "
           label="生産者"
           :items="producers"
           item-title="username"
@@ -393,7 +438,9 @@ const onSubmitDelete = (): void => {
         />
         <v-autocomplete
           v-model="createFormDataValidate.productIds.$model"
-          :error-messages="getErrorMessage(createFormDataValidate.productIds.$errors)"
+          :error-messages="
+            getErrorMessage(createFormDataValidate.productIds.$errors)
+          "
           label="関連する商品"
           :items="getProductsByProducerId(createFormDataValue.producerId)"
           item-title="name"
@@ -429,7 +476,9 @@ const onSubmitDelete = (): void => {
         <client-only>
           <tiptap-editor
             v-model="createFormDataValidate.comment.$model"
-            :error-message="getErrorMessage(createFormDataValidate.comment.$errors)"
+            :error-message="
+              getErrorMessage(createFormDataValidate.comment.$errors)
+            "
             class="mb-4"
           />
         </client-only>
@@ -439,7 +488,12 @@ const onSubmitDelete = (): void => {
         <v-btn color="" variant="text" @click="onClickCloseCreateDialog">
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="text" @click="onSubmitCreate">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="text"
+          @click="onSubmitCreate"
+        >
           登録
         </v-btn>
       </v-card-actions>
@@ -458,7 +512,9 @@ const onSubmitDelete = (): void => {
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="updateTimeDataValidate.startDate.$model"
-            :error-messages="getErrorMessage(updateTimeDataValidate.startDate.$errors)"
+            :error-messages="
+              getErrorMessage(updateTimeDataValidate.startDate.$errors)
+            "
             type="date"
             variant="outlined"
             density="compact"
@@ -467,7 +523,9 @@ const onSubmitDelete = (): void => {
           />
           <v-text-field
             v-model="updateTimeDataValidate.startTime.$model"
-            :error-messages="getErrorMessage(updateTimeDataValidate.startTime.$errors)"
+            :error-messages="
+              getErrorMessage(updateTimeDataValidate.startTime.$errors)
+            "
             type="time"
             variant="outlined"
             density="compact"
@@ -480,7 +538,9 @@ const onSubmitDelete = (): void => {
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="updateTimeDataValidate.endDate.$model"
-            :error-messages="getErrorMessage(updateTimeDataValidate.endDate.$errors)"
+            :error-messages="
+              getErrorMessage(updateTimeDataValidate.endDate.$errors)
+            "
             type="date"
             variant="outlined"
             density="compact"
@@ -489,7 +549,9 @@ const onSubmitDelete = (): void => {
           />
           <v-text-field
             v-model="updateTimeDataValidate.endTime.$model"
-            :error-messages="getErrorMessage(updateTimeDataValidate.endTime.$errors)"
+            :error-messages="
+              getErrorMessage(updateTimeDataValidate.endTime.$errors)
+            "
             type="time"
             variant="outlined"
             density="compact"
@@ -506,7 +568,9 @@ const onSubmitDelete = (): void => {
         />
         <v-autocomplete
           v-model="updateFormDataValidate.productIds.$model"
-          :error-messages="getErrorMessage(updateFormDataValidate.productIds.$errors)"
+          :error-messages="
+            getErrorMessage(updateFormDataValidate.productIds.$errors)
+          "
           label="関連する商品"
           :items="getProductsByProducerId(liveValue.producerId)"
           item-title="name"
@@ -542,7 +606,9 @@ const onSubmitDelete = (): void => {
         <client-only>
           <tiptap-editor
             v-model="updateFormDataValidate.comment.$model"
-            :error-message="getErrorMessage(updateFormDataValidate.comment.$errors)"
+            :error-message="
+              getErrorMessage(updateFormDataValidate.comment.$errors)
+            "
             class="mb-4"
           />
         </client-only>
@@ -552,10 +618,20 @@ const onSubmitDelete = (): void => {
         <v-btn color="" variant="text" @click="onClickCloseUpdateDialog">
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="error" variant="text" @click="onSubmitDelete">
+        <v-btn
+          :loading="loading"
+          color="error"
+          variant="text"
+          @click="onSubmitDelete"
+        >
           削除
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="text" @click="onSubmitUpdate">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="text"
+          @click="onSubmitUpdate"
+        >
           更新
         </v-btn>
       </v-card-actions>
@@ -587,7 +663,12 @@ const onSubmitDelete = (): void => {
             <v-list-item-title>{{ getProducerName(item) }}</v-list-item-title>
             <v-list-item-subtitle>{{ getLiveTerm(item) }}</v-list-item-subtitle>
             <template #append>
-              <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickEdit(item.id)">
+              <v-btn
+                variant="outlined"
+                color="primary"
+                size="small"
+                @click.stop="onClickEdit(item.id)"
+              >
                 <v-icon size="small" :icon="mdiPencil" />
               </v-btn>
             </template>
@@ -616,7 +697,10 @@ const onSubmitDelete = (): void => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(product, j) in getProductsByLive(item)" :key="`product-${j}`">
+                  <tr
+                    v-for="(product, j) in getProductsByLive(item)"
+                    :key="`product-${j}`"
+                  >
                     <td>
                       <v-img
                         aspect-ratio="1/1"

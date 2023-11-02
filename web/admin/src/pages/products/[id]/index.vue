@@ -10,7 +10,7 @@ import {
   useProductTagStore,
   useProductTypeStore
 } from '~/store'
-import { UpdateProductRequest, CreateProductRequestMediaInner, DeliveryType, StorageMethodType, Prefecture } from '~/types/api'
+import type { UpdateProductRequest, CreateProductRequestMediaInner, DeliveryType, StorageMethodType, Prefecture } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()

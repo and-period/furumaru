@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required, tel } from '~/lib/validations'
-import { AdminStatus, Prefecture, ProducerResponse, UpdateProducerRequest } from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
+import type { AdminStatus, Prefecture, ProducerResponse, UpdateProducerRequest } from '~/types/api'
+import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
   loading: {

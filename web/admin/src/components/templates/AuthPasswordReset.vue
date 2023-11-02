@@ -3,7 +3,7 @@ import { mdiEye, mdiEyeOff } from '@mdi/js'
 import useVuelidate, { ValidationArgs } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
 
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import {
   required,
   minLength,
@@ -11,7 +11,7 @@ import {
   sameAs,
   getErrorMessage
 } from '~/lib/validations'
-import { ResetAuthPasswordRequest } from '~/types/api'
+import type { ResetAuthPasswordRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {

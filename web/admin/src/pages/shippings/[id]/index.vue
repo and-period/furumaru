@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useCommonStore, useShippingStore } from '~/store'
-import { UpdateShippingRequest } from '~/types/api'
+import type { UpdateShippingRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()

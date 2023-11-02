@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { CreateScheduleRequest } from '~/types/api'
-import { ImageUploadStatus, ScheduleTime } from '~/types/props'
+import type { CreateScheduleRequest } from '~/types/api'
+import type { ImageUploadStatus, ScheduleTime } from '~/types/props'
 
 const props = defineProps({
   loading: {

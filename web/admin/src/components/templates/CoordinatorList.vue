@@ -4,8 +4,8 @@ import { VDataTable } from 'vuetify/labs/components'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 
 import { getResizedImages } from '~/lib/helpers'
-import { AlertType } from '~/lib/hooks'
-import { AdminStatus, Coordinator, ProductType } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import type { AdminStatus, Coordinator, ProductType } from '~/types/api'
 
 const props = defineProps({
   loading: {
