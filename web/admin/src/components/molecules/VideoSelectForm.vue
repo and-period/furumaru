@@ -12,7 +12,7 @@ const props = defineProps({
   },
   accept: {
     type: Array<String>,
-    default: (): string[] => ['video/*']
+    default: (): string[] => ['video/mp4']
   },
   error: {
     type: Boolean,

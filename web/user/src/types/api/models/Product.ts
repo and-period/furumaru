@@ -19,12 +19,6 @@ import {
     DeliveryTypeFromJSONTyped,
     DeliveryTypeToJSON,
 } from './DeliveryType';
-import type { Prefecture } from './Prefecture';
-import {
-    PrefectureFromJSON,
-    PrefectureFromJSONTyped,
-    PrefectureToJSON,
-} from './Prefecture';
 import type { ProductMediaInner } from './ProductMediaInner';
 import {
     ProductMediaInnerFromJSON,
@@ -195,11 +189,11 @@ export interface Product {
      */
     box100Rate: number;
     /**
-     * 
-     * @type {Prefecture}
+     * 原産地(都道府県)
+     * @type {string}
      * @memberof Product
      */
-    originPrefecture: Prefecture;
+    originPrefecture: string;
     /**
      * 原産地(市区町村)
      * @type {string}
@@ -291,7 +285,7 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         'box60Rate': json['box60Rate'],
         'box80Rate': json['box80Rate'],
         'box100Rate': json['box100Rate'],
-        'originPrefecture': PrefectureFromJSON(json['originPrefecture']),
+        'originPrefecture': json['originPrefecture'],
         'originCity': json['originCity'],
         'startAt': json['startAt'],
         'endAt': json['endAt'],
@@ -331,7 +325,7 @@ export function ProductToJSON(value?: Product | null): any {
         'box60Rate': value.box60Rate,
         'box80Rate': value.box80Rate,
         'box100Rate': value.box100Rate,
-        'originPrefecture': PrefectureToJSON(value.originPrefecture),
+        'originPrefecture': value.originPrefecture,
         'originCity': value.originCity,
         'startAt': value.startAt,
         'endAt': value.endAt,

@@ -21,6 +21,7 @@ func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsIn
 		}
 	}
 	params := &database.ListBroadcastsParams{
+		ScheduleIDs:  in.ScheduleIDs,
 		OnlyArchived: in.OnlyArchived,
 		Limit:        int(in.Limit),
 		Offset:       int(in.Offset),

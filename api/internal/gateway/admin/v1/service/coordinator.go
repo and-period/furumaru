@@ -13,6 +13,7 @@ type Coordinator struct {
 type Coordinators []*Coordinator
 
 func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
+	prefecture, _ := codes.ToPrefectureName(coordinator.Prefecture)
 	return &Coordinator{
 		Coordinator: response.Coordinator{
 			ID:                coordinator.ID,
@@ -36,7 +37,7 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 			Email:             coordinator.Email,
 			PhoneNumber:       coordinator.PhoneNumber,
 			PostalCode:        coordinator.PostalCode,
-			Prefecture:        codes.PrefectureNames[coordinator.Prefecture],
+			Prefecture:        prefecture,
 			City:              coordinator.City,
 			AddressLine1:      coordinator.AddressLine1,
 			AddressLine2:      coordinator.AddressLine2,

@@ -17,19 +17,33 @@ import * as runtime from '../runtime';
 import type {
   AddressResponse,
   AddressesResponse,
+  CreateAddressRequest,
   ErrorResponse,
   PostalCodeResponse,
+  UpdateAddressRequest,
 } from '../models/index';
 import {
     AddressResponseFromJSON,
     AddressResponseToJSON,
     AddressesResponseFromJSON,
     AddressesResponseToJSON,
+    CreateAddressRequestFromJSON,
+    CreateAddressRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     PostalCodeResponseFromJSON,
     PostalCodeResponseToJSON,
+    UpdateAddressRequestFromJSON,
+    UpdateAddressRequestToJSON,
 } from '../models/index';
+
+export interface V1CreateAddressRequest {
+    body: CreateAddressRequest;
+}
+
+export interface V1DeleteAddressRequest {
+    addressId: string;
+}
 
 export interface V1GetAddressRequest {
     addressId: string;
@@ -44,10 +58,94 @@ export interface V1SearchPostalCodeRequest {
     postalCode: string;
 }
 
+export interface V1UpdateAddressRequest {
+    addressId: string;
+    body: UpdateAddressRequest;
+}
+
 /**
  * 
  */
 export class AddressApi extends runtime.BaseAPI {
+
+    /**
+     * アドレス登録
+     */
+    async v1CreateAddressRaw(requestParameters: V1CreateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AddressResponse>> {
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateAddress.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/addresses`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AddressResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * アドレス登録
+     */
+    async v1CreateAddress(requestParameters: V1CreateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AddressResponse> {
+        const response = await this.v1CreateAddressRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * アドレス削除
+     */
+    async v1DeleteAddressRaw(requestParameters: V1DeleteAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.addressId === null || requestParameters.addressId === undefined) {
+            throw new runtime.RequiredError('addressId','Required parameter requestParameters.addressId was null or undefined when calling v1DeleteAddress.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters.addressId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * アドレス削除
+     */
+    async v1DeleteAddress(requestParameters: V1DeleteAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.v1DeleteAddressRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * アドレス取得
@@ -148,6 +246,51 @@ export class AddressApi extends runtime.BaseAPI {
      */
     async v1SearchPostalCode(requestParameters: V1SearchPostalCodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PostalCodeResponse> {
         const response = await this.v1SearchPostalCodeRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * アドレス更新
+     */
+    async v1UpdateAddressRaw(requestParameters: V1UpdateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.addressId === null || requestParameters.addressId === undefined) {
+            throw new runtime.RequiredError('addressId','Required parameter requestParameters.addressId was null or undefined when calling v1UpdateAddress.');
+        }
+
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAddress.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters.addressId))),
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * アドレス更新
+     */
+    async v1UpdateAddress(requestParameters: V1UpdateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.v1UpdateAddressRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

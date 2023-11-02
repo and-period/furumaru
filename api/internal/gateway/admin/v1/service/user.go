@@ -22,6 +22,7 @@ type UserSummary struct {
 type UserSummaries []*UserSummary
 
 func NewUser(user *uentity.User) *User {
+	prefecture, _ := codes.ToPrefectureName(user.Prefecture)
 	return &User{
 		User: response.User{
 			ID:            user.ID,
@@ -33,7 +34,7 @@ func NewUser(user *uentity.User) *User {
 			Email:         user.Email(),
 			PhoneNumber:   user.PhoneNumber(),
 			PostalCode:    user.Customer.PostalCode,
-			Prefecture:    codes.PrefectureNames[user.Customer.Prefecture],
+			Prefecture:    prefecture,
 			City:          user.Customer.City,
 			AddressLine1:  user.Customer.AddressLine1,
 			AddressLine2:  user.Customer.AddressLine2,

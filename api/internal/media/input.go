@@ -22,6 +22,7 @@ type ResizeFileInput struct {
 }
 
 type ListBroadcastsInput struct {
+	ScheduleIDs  []string               `validate:"dive,required"`
 	OnlyArchived bool                   `validate:""`
 	Limit        int64                  `validate:"required,max=200"`
 	Offset       int64                  `validate:"min=0"`
