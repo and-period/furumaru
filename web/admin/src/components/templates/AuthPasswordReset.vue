@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiEye, mdiEyeOff } from '@mdi/js'
-import useVuelidate, { ValidationArgs } from '@vuelidate/core'
+import useVuelidate, { type ValidationArgs } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
 
 import type { AlertType } from '~/lib/hooks'
