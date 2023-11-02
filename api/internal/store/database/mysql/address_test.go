@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -475,22 +476,10 @@ func TestAddress_Update(t *testing.T) {
 }
 
 func testAddress(addressID, userID string, now time.Time) *entity.Address {
-	params := &entity.NewAddressParams{
-		UserID:       userID,
-		IsDefault:    false,
-		Lastname:     "&.",
-		Firstname:    "購入者",
-		PostalCode:   "1000014",
-		Prefecture:   13,
-		City:         "千代田区",
-		AddressLine1: "永田町1-7-1",
-		AddressLine2: "",
-		PhoneNumber:  "+819012345678",
-	}
 	return &entity.Address{
 		ID:           addressID,
 		UserID:       userID,
-		Hash:         entity.NewAddressHash(params),
+		Hash:         fmt.Sprintf("%s:%s", userID, addressID),
 		IsDefault:    false,
 		Lastname:     "&.",
 		Firstname:    "購入者",
