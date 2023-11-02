@@ -1,15 +1,28 @@
 <script lang="ts" setup>
-import { mdiHome, mdiMenu, mdiOrderBoolAscendingVariant, mdiCart, mdiAntenna, mdiAccountDetails, mdiForum, mdiBellRing, mdiCash100, mdiAccount, mdiCog, mdiBell } from '@mdi/js'
+import {
+  mdiHome,
+  mdiMenu,
+  mdiOrderBoolAscendingVariant,
+  mdiCart,
+  mdiAntenna,
+  mdiAccountDetails,
+  mdiForum,
+  mdiBellRing,
+  mdiCash100,
+  mdiAccount,
+  mdiCog,
+  mdiBell
+} from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
 import { useAuthStore, useCommonStore, useMessageStore } from '~/store'
 import { AdminRole } from '~/types/api'
 
 interface NavigationDrawerItem {
-  to: string
-  icon: string
-  title: string
-  roles?: AdminRole[]
+  to: string;
+  icon: string;
+  title: string;
+  roles?: AdminRole[];
 }
 
 const drawer = ref<boolean>(true)
@@ -175,9 +188,9 @@ const calcStyle = (i: number) => {
             <v-icon v-else :icon="mdiAccount" />
           </template>
 
-          <div>{{ user?.username || '' }}</div>
+          <div>{{ user?.username || "" }}</div>
           <div class="text-caption text-grey">
-            {{ user?.email || '' }}
+            {{ user?.email || "" }}
           </div>
         </v-list-item>
       </v-list>
@@ -185,7 +198,12 @@ const calcStyle = (i: number) => {
       <v-divider />
 
       <v-list>
-        <v-list-item :to="homeDrawer.to" exact :prepend-icon="homeDrawer.icon" color="primary">
+        <v-list-item
+          :to="homeDrawer.to"
+          exact
+          :prepend-icon="homeDrawer.icon"
+          color="primary"
+        >
           <v-list-item-title>{{ homeDrawer.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -231,7 +249,11 @@ const calcStyle = (i: number) => {
     >
       {{ snackbar.message }}
       <template #actions>
-        <v-btn variant="text" color="white" @click="commonStore.hideSnackbar(i)">
+        <v-btn
+          variant="text"
+          color="white"
+          @click="commonStore.hideSnackbar(i)"
+        >
           閉じる
         </v-btn>
       </template>

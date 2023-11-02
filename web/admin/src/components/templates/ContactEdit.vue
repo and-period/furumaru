@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength } from '~/lib/validations'
-import { ContactResponse, ContactStatus, UpdateContactRequest } from '~/types/api'
+import type { ContactResponse, ContactStatus, UpdateContactRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {

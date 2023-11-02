@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
-import { UpdateAuthEmailRequest } from '~/types/api'
-import { AlertType } from '~/lib/hooks'
+import type { UpdateAuthEmailRequest } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
 import { required, email, getErrorMessage } from '~/lib/validations'
 
 const props = defineProps({

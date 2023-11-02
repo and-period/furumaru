@@ -2,9 +2,9 @@
 import { unix } from 'dayjs'
 import { prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import { DeliveryType, FulfillmentStatus, OrderRefundType, OrderResponse, PaymentMethodType, PaymentStatus, Prefecture, ShippingCarrier, ShippingSize } from '~/types/api'
-import { Order, OrderItems } from '~/types/props'
+import type { Order, OrderItems } from '~/types/props'
 
 const props = defineProps({
   loading: {

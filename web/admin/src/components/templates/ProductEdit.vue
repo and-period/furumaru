@@ -3,8 +3,8 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
-import { AlertType } from '~/lib/hooks'
-import { Category, DeliveryType, Prefecture, Producer, Product, ProductStatus, ProductTag, ProductType, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import type { Category, DeliveryType, Prefecture, Producer, Product, ProductStatus, ProductTag, ProductType, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -13,8 +13,8 @@ import {
   maxValue,
   maxLengthArray
 } from '~/lib/validations'
-import { prefecturesList, cityList, PrefecturesListItem, CityListItem } from '~/constants'
-import { ProductTime } from '~/types/props'
+import type { prefecturesList, cityList, PrefecturesListItem, CityListItem } from '~/constants'
+import type { ProductTime } from '~/types/props'
 
 const props = defineProps({
   loading: {

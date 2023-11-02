@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { mdiEye, mdiEyeOff } from '@mdi/js'
-import useVuelidate, { ValidationArgs } from '@vuelidate/core'
+import useVuelidate, { type ValidationArgs } from '@vuelidate/core'
 
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import {
   required,
   minLength,
@@ -10,7 +10,7 @@ import {
   sameAs,
   getErrorMessage
 } from '~/lib/validations'
-import { UpdateAuthPasswordRequest } from '~/types/api'
+import type { UpdateAuthPasswordRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {

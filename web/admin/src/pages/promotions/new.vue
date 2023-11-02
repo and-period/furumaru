@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { useAlert } from '~/lib/hooks'
 
 import { usePromotionStore } from '~/store'
-import { CreatePromotionRequest } from '~/types/api'
+import type { CreatePromotionRequest } from '~/types/api'
 
 const router = useRouter()
 const promotionStore = usePromotionStore()

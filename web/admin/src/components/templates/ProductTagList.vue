@@ -2,8 +2,8 @@
 import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import useVuelidate from '@vuelidate/core'
-import { AlertType } from '~/lib/hooks'
-import { AdminRole, CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import type { AdminRole, CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
 import { required, getErrorMessage, maxLength } from '~/lib/validations'
 
 const props = defineProps({

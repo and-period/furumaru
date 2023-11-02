@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js'
 
-import { CalendarEvent } from '~/types/props'
+import type { CalendarEvent } from '~/types/props'
 
-const props = defineProps({
-  events: {
-    type: Array<CalendarEvent>,
-    default: () => []
-  }
-})
+interface Props {
+  events: CalendarEvent[]
+}
+
+const props = defineProps<Props>()
 
 const calendarValue = ref<string>('')
 const type = ref<string>('month')

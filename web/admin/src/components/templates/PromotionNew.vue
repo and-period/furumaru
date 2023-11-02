@@ -4,8 +4,8 @@ import dayjs, { unix } from 'dayjs'
 
 import { AlertType } from '~/lib/hooks'
 import { getErrorMessage, minValue, maxLength, minLength, required } from '~/lib/validations'
-import { CreatePromotionRequest, DiscountType } from '~/types/api'
-import { PromotionTime } from '~/types/props'
+import type { CreatePromotionRequest, DiscountType } from '~/types/api'
+import type { PromotionTime } from '~/types/props'
 
 const props = defineProps({
   loading: {

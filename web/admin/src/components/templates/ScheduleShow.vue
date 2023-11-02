@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
-import { AlertType } from '~/lib/hooks'
-import { Broadcast, BroadcastStatus, Coordinator, CreateLiveRequest, Live, Product, Schedule, ScheduleStatus, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
+import type { AlertType } from '~/lib/hooks'
+import type { Broadcast, BroadcastStatus, Coordinator, CreateLiveRequest, Live, Product, Schedule, ScheduleStatus, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
+import type{ ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
   loading: {

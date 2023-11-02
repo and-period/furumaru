@@ -2,10 +2,10 @@
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, Promotion } from '~/types/api'
-import { NotificationTime } from '~/types/props'
+import type { CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, Promotion } from '~/types/api'
+import type { NotificationTime } from '~/types/props'
 
 const props = defineProps({
   loading: {

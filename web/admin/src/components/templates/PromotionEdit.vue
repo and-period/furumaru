@@ -2,10 +2,10 @@
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, minLength, minValue, required } from '~/lib/validations'
-import { AdminRole, DiscountType, Promotion, UpdatePromotionRequest } from '~/types/api'
-import { PromotionTime } from '~/types/props'
+import type { AdminRole, DiscountType, Promotion, UpdatePromotionRequest } from '~/types/api'
+import type { PromotionTime } from '~/types/props'
 
 const props = defineProps({
   loading: {
