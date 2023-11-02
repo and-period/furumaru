@@ -27,3 +27,35 @@ get:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/v1AddressesResponse'
+post:
+  summary: アドレス登録
+  operationId: v1CreateAddress
+  tags:
+  - Address
+  security:
+  - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1CreateAddressRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1AddressResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    409:
+      description: すでに登録済みの情報
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

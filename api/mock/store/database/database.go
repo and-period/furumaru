@@ -37,6 +37,89 @@ func (m *MockAddress) EXPECT() *MockAddressMockRecorder {
 	return m.recorder
 }
 
+// Count mocks base method.
+func (m *MockAddress) Count(ctx context.Context, params *database.ListAddressesParams) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, params)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockAddressMockRecorder) Count(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockAddress)(nil).Count), ctx, params)
+}
+
+// Create mocks base method.
+func (m *MockAddress) Create(ctx context.Context, address *entity.Address) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, address)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockAddressMockRecorder) Create(ctx, address interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAddress)(nil).Create), ctx, address)
+}
+
+// Delete mocks base method.
+func (m *MockAddress) Delete(ctx context.Context, addressID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, addressID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockAddressMockRecorder) Delete(ctx, addressID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockAddress)(nil).Delete), ctx, addressID)
+}
+
+// Get mocks base method.
+func (m *MockAddress) Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, addressID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Address)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockAddressMockRecorder) Get(ctx, addressID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, addressID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAddress)(nil).Get), varargs...)
+}
+
+// List mocks base method.
+func (m *MockAddress) List(ctx context.Context, params *database.ListAddressesParams, fields ...string) (entity.Addresses, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, params}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "List", varargs...)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockAddressMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, params}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAddress)(nil).List), varargs...)
+}
+
 // MultiGet mocks base method.
 func (m *MockAddress) MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error) {
 	m.ctrl.T.Helper()
@@ -55,6 +138,20 @@ func (mr *MockAddressMockRecorder) MultiGet(ctx, addressIDs interface{}, fields 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, addressIDs}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAddress)(nil).MultiGet), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockAddress) Update(ctx context.Context, addressID, userID string, params *database.UpdateAddressParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, addressID, userID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockAddressMockRecorder) Update(ctx, addressID, userID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockAddress)(nil).Update), ctx, addressID, userID, params)
 }
 
 // MockCategory is a mock of Category interface.
