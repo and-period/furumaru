@@ -10858,6 +10858,116 @@ export class OrderApi extends BaseAPI {
 
 
 /**
+ * OtherApi - axios parameter creator
+ * @export
+ */
+export const OtherApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1SearchPostalCode: async (postalCode: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postalCode' is not null or undefined
+            assertParamExists('v1SearchPostalCode', 'postalCode', postalCode)
+            const localVarPath = `/v1/postal-codes/{postalCode}`
+                .replace(`{${"postalCode"}}`, encodeURIComponent(String(postalCode)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * OtherApi - functional programming interface
+ * @export
+ */
+export const OtherApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = OtherApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1SearchPostalCode(postalCode: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostalCodeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1SearchPostalCode(postalCode, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * OtherApi - factory interface
+ * @export
+ */
+export const OtherApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = OtherApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 郵便番号情報検索
+         * @param {string} postalCode 郵便番号(ハイフンなし)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1SearchPostalCode(postalCode: string, options?: any): AxiosPromise<PostalCodeResponse> {
+            return localVarFp.v1SearchPostalCode(postalCode, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * OtherApi - object-oriented interface
+ * @export
+ * @class OtherApi
+ * @extends {BaseAPI}
+ */
+export class OtherApi extends BaseAPI {
+    /**
+     * 
+     * @summary 郵便番号情報検索
+     * @param {string} postalCode 郵便番号(ハイフンなし)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OtherApi
+     */
+    public v1SearchPostalCode(postalCode: string, options?: AxiosRequestConfig) {
+        return OtherApiFp(this.configuration).v1SearchPostalCode(postalCode, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * ProducerApi - axios parameter creator
  * @export
  */

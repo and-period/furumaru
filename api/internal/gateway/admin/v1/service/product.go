@@ -174,6 +174,7 @@ func NewProduct(product *entity.Product) *Product {
 	if len(product.RecommendedPoints) > 2 {
 		point3 = product.RecommendedPoints[2]
 	}
+	prefecture, _ := codes.ToPrefectureName(product.OriginPrefecture)
 	return &Product{
 		Product: response.Product{
 			ID:                product.ID,
@@ -202,7 +203,7 @@ func NewProduct(product *entity.Product) *Product {
 			Box60Rate:         product.Box60Rate,
 			Box80Rate:         product.Box80Rate,
 			Box100Rate:        product.Box100Rate,
-			OriginPrefecture:  codes.PrefectureNames[product.OriginPrefecture],
+			OriginPrefecture:  prefecture,
 			OriginCity:        product.OriginCity,
 			StartAt:           product.StartAt.Unix(),
 			EndAt:             product.EndAt.Unix(),

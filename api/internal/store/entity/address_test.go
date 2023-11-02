@@ -30,7 +30,7 @@ func TestAddress(t *testing.T) {
 			},
 			expect: &Address{
 				UserID:       "user-id",
-				Hash:         "789ef22a79a364f95c66a3d3b1fda213c1316a6c7f8b6306b493d8c46d2dce75",
+				Hash:         "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
 				IsDefault:    true,
 				Lastname:     "&.",
 				Firstname:    "購入者",
@@ -85,25 +85,31 @@ func TestAddressHash(t *testing.T) {
 	}
 	tests := []struct {
 		name   string
-		args   args
+		params *NewAddressParams
 		expect string
 	}{
 		{
 			name: "success",
-			args: args{
-				userID:       "user-id",
-				postalCode:   "1000014",
-				addressLine1: "永田町1-7-1",
-				addressLine2: "",
+			params: &NewAddressParams{
+				UserID:       "user-id",
+				IsDefault:    true,
+				Lastname:     "&.",
+				Firstname:    "購入者",
+				PostalCode:   "1000014",
+				Prefecture:   0,
+				City:         "千代田区",
+				AddressLine1: "永田町1-7-1",
+				AddressLine2: "",
+				PhoneNumber:  "+819012345678",
 			},
-			expect: "789ef22a79a364f95c66a3d3b1fda213c1316a6c7f8b6306b493d8c46d2dce75",
+			expect: "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewAddressHash(tt.args.userID, tt.args.postalCode, tt.args.addressLine1, tt.args.addressLine2)
+			actual := NewAddressHash(tt.params)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

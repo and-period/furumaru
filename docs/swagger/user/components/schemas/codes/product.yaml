@@ -55,7 +55,7 @@ storageMethodType:
   - COOL_DARK_PLACE
   - REFRIGERATED
   - FROZEN
-  x-enum-descrptions:
+  x-enum-descriptions:
   - 不明
   - 常温保存
   - 冷暗所保存

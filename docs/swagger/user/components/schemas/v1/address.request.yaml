@@ -1,0 +1,98 @@
+createAddressRequest:
+  type: object
+  properties:
+    lastname:
+      type: string
+      description: 姓(32文字まで)
+    firstname:
+      type: string
+      description: 名(32文字まで)
+    postalCode:
+      type: string
+      description: 郵便番号(ハイフンなし)
+    prefecture:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+    city:
+      type: string
+      description: 市区町村(32文字まで)
+    addressLine1:
+      type: string
+      description: 町名・番地(64文字まで)
+    addressLine2:
+      type: string
+      description: ビル名・号室など(64文字まで)
+    phoneNumber:
+      type: string
+      description: 電話番号 (国際番号 + 電話番号)
+    isDefault:
+      type: boolean
+      description: デフォルト設定
+  required:
+  - lastname
+  - firstname
+  - postalCode
+  - prefecture
+  - city
+  - addressLine1
+  - addressLine2
+  - phoneNumber
+  - isDefault
+  example:
+    lastname: '&.'
+    firstname: '利用者'
+    postalCode: '1000014'
+    prefecture: 'tokyo'
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    phoneNumber: '+819012345678'
+    isDefault: true
+updateAddressRequest:
+  type: object
+  properties:
+    lastname:
+      type: string
+      description: 姓(32文字まで)
+    firstname:
+      type: string
+      description: 名(32文字まで)
+    postalCode:
+      type: string
+      description: 郵便番号(ハイフンなし)
+    prefecture:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+    city:
+      type: string
+      description: 市区町村(32文字まで)
+    addressLine1:
+      type: string
+      description: 町名・番地(64文字まで)
+    addressLine2:
+      type: string
+      description: ビル名・号室など(64文字まで)
+    phoneNumber:
+      type: string
+      description: 電話番号 (国際番号 + 電話番号)
+    isDefault:
+      type: boolean
+      description: デフォルト設定
+  required:
+  - lastname
+  - firstname
+  - postalCode
+  - prefecture
+  - city
+  - addressLine1
+  - addressLine2
+  - phoneNumber
+  - isDefault
+  example:
+    lastname: '&.'
+    firstname: '利用者'
+    postalCode: '1000014'
+    prefecture: 'tokyo'
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    phoneNumber: '+819012345678'
+    isDefault: true

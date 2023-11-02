@@ -33,6 +33,7 @@ type Broadcast interface {
 }
 
 type ListBroadcastsParams struct {
+	ScheduleIDs  []string
 	OnlyArchived bool
 	Limit        int
 	Offset       int

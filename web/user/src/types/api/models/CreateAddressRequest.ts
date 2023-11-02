@@ -13,81 +13,80 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { Prefecture } from './Prefecture';
+import {
+    PrefectureFromJSON,
+    PrefectureFromJSONTyped,
+    PrefectureToJSON,
+} from './Prefecture';
+
 /**
- * アドレス情報
+ * 
  * @export
- * @interface Address
+ * @interface CreateAddressRequest
  */
-export interface Address {
+export interface CreateAddressRequest {
     /**
-     * アドレス帳ID
+     * 姓(32文字まで)
      * @type {string}
-     * @memberof Address
-     */
-    id: string;
-    /**
-     * デフォルト設定フラグ
-     * @type {boolean}
-     * @memberof Address
-     */
-    isDefault: boolean;
-    /**
-     * 姓
-     * @type {string}
-     * @memberof Address
+     * @memberof CreateAddressRequest
      */
     lastname: string;
     /**
-     * 名
+     * 名(32文字まで)
      * @type {string}
-     * @memberof Address
+     * @memberof CreateAddressRequest
      */
     firstname: string;
     /**
-     * 郵便番号
+     * 郵便番号(ハイフンなし)
      * @type {string}
-     * @memberof Address
+     * @memberof CreateAddressRequest
      */
     postalCode: string;
     /**
-     * 都道府県
-     * @type {string}
-     * @memberof Address
+     * 
+     * @type {Prefecture}
+     * @memberof CreateAddressRequest
      */
-    prefecture: string;
+    prefecture: Prefecture;
     /**
-     * 市区町村
+     * 市区町村(32文字まで)
      * @type {string}
-     * @memberof Address
+     * @memberof CreateAddressRequest
      */
     city: string;
     /**
-     * 町名・番地
+     * 町名・番地(64文字まで)
      * @type {string}
-     * @memberof Address
+     * @memberof CreateAddressRequest
      */
     addressLine1: string;
     /**
-     * ビル名・号室など
+     * ビル名・号室など(64文字まで)
      * @type {string}
-     * @memberof Address
+     * @memberof CreateAddressRequest
      */
     addressLine2: string;
     /**
      * 電話番号 (国際番号 + 電話番号)
      * @type {string}
-     * @memberof Address
+     * @memberof CreateAddressRequest
      */
     phoneNumber: string;
+    /**
+     * デフォルト設定
+     * @type {boolean}
+     * @memberof CreateAddressRequest
+     */
+    isDefault: boolean;
 }
 
 /**
- * Check if a given object implements the Address interface.
+ * Check if a given object implements the CreateAddressRequest interface.
  */
-export function instanceOfAddress(value: object): boolean {
+export function instanceOfCreateAddressRequest(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "isDefault" in value;
     isInstance = isInstance && "lastname" in value;
     isInstance = isInstance && "firstname" in value;
     isInstance = isInstance && "postalCode" in value;
@@ -96,34 +95,34 @@ export function instanceOfAddress(value: object): boolean {
     isInstance = isInstance && "addressLine1" in value;
     isInstance = isInstance && "addressLine2" in value;
     isInstance = isInstance && "phoneNumber" in value;
+    isInstance = isInstance && "isDefault" in value;
 
     return isInstance;
 }
 
-export function AddressFromJSON(json: any): Address {
-    return AddressFromJSONTyped(json, false);
+export function CreateAddressRequestFromJSON(json: any): CreateAddressRequest {
+    return CreateAddressRequestFromJSONTyped(json, false);
 }
 
-export function AddressFromJSONTyped(json: any, ignoreDiscriminator: boolean): Address {
+export function CreateAddressRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAddressRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'id': json['id'],
-        'isDefault': json['isDefault'],
         'lastname': json['lastname'],
         'firstname': json['firstname'],
         'postalCode': json['postalCode'],
-        'prefecture': json['prefecture'],
+        'prefecture': PrefectureFromJSON(json['prefecture']),
         'city': json['city'],
         'addressLine1': json['addressLine1'],
         'addressLine2': json['addressLine2'],
         'phoneNumber': json['phoneNumber'],
+        'isDefault': json['isDefault'],
     };
 }
 
-export function AddressToJSON(value?: Address | null): any {
+export function CreateAddressRequestToJSON(value?: CreateAddressRequest | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -132,16 +131,15 @@ export function AddressToJSON(value?: Address | null): any {
     }
     return {
         
-        'id': value.id,
-        'isDefault': value.isDefault,
         'lastname': value.lastname,
         'firstname': value.firstname,
         'postalCode': value.postalCode,
-        'prefecture': value.prefecture,
+        'prefecture': PrefectureToJSON(value.prefecture),
         'city': value.city,
         'addressLine1': value.addressLine1,
         'addressLine2': value.addressLine2,
         'phoneNumber': value.phoneNumber,
+        'isDefault': value.isDefault,
     };
 }
 
