@@ -131,6 +131,10 @@ components:
     topLive:
       $ref: './components/schemas/entity/top.yaml#/topLive'
     # Request
+    v1CreateAddressRequest:
+      $ref: './components/schemas/v1/address.request.yaml#/createAddressRequest'
+    v1UpdateAddressRequest:
+      $ref: './components/schemas/v1/address.request.yaml#/updateAddressRequest'
     v1SignInRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
     v1RefreshAuthTokenRequest:

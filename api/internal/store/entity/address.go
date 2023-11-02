@@ -52,7 +52,7 @@ func NewAddress(params *NewAddressParams) (*Address, error) {
 	return &Address{
 		ID:           uuid.Base58Encode(uuid.New()),
 		UserID:       params.UserID,
-		Hash:         NewAddressHash(params.UserID, params.PostalCode, params.AddressLine1, params.AddressLine2),
+		Hash:         NewAddressHash(params),
 		IsDefault:    params.IsDefault,
 		Lastname:     params.Lastname,
 		Firstname:    params.Firstname,
@@ -65,8 +65,15 @@ func NewAddress(params *NewAddressParams) (*Address, error) {
 	}, nil
 }
 
-func NewAddressHash(userID, postalCode, addressLine1, addressLine2 string) string {
-	fields := []string{userID, postalCode, addressLine1, addressLine2}
+func NewAddressHash(params *NewAddressParams) string {
+	fields := []string{
+		params.UserID,
+		params.Firstname,
+		params.Lastname,
+		params.PostalCode,
+		params.AddressLine1,
+		params.AddressLine2,
+	}
 	for i := range fields {
 		fields[i] = strings.TrimSpace(fields[i])
 	}
