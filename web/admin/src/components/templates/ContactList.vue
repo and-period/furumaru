@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
-import { AlertType } from '~/lib/hooks'
-import { ContactStatus, ContactsResponse } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import { ContactStatus, type ContactsResponse } from '~/types/api'
 
 const props = defineProps({
   loading: {

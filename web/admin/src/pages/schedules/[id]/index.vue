@@ -3,8 +3,8 @@ import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useBroadcastStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore } from '~/store'
-import { CreateLiveRequest, Live, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
+import type { CreateLiveRequest, Live, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
+import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
 const scheduleStore = useScheduleStore()

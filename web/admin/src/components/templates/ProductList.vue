@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
-import { PrefecturesListItem, prefecturesList } from '~/constants'
+import { type PrefecturesListItem, prefecturesList } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
-import { AlertType } from '~/lib/hooks'
-import { Product, ProductMediaInner, Prefecture, ProductStatus, Category, ProductTag, ProductType, Producer, AdminRole } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import type { Product, ProductMediaInner, Prefecture, ProductStatus, Category, ProductTag, ProductType, Producer, AdminRole } from '~/types/api'
 
 const props = defineProps({
   loading: {

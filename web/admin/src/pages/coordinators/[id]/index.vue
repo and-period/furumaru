@@ -4,8 +4,8 @@ import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCoordinatorStore, useProductTypeStore } from '~/store'
-import { Prefecture, UpdateCoordinatorRequest } from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
+import { Prefecture, type UpdateCoordinatorRequest } from '~/types/api'
+import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
 const router = useRouter()

@@ -3,9 +3,9 @@ import { mdiImport, mdiExport } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { unix } from 'dayjs'
 
-import { AlertType } from '~/lib/hooks'
-import { DeliveryType, FulfillmentStatus, OrdersResponse, PaymentStatus } from '~/types/api'
-import { Order } from '~/types/props'
+import type { AlertType } from '~/lib/hooks'
+import type { DeliveryType, FulfillmentStatus, OrdersResponse, PaymentStatus } from '~/types/api'
+import type { Order } from '~/types/props'
 
 // TODO: API設計が決まり次第型定義の厳格化
 interface importFormData {

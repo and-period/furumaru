@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCoordinatorStore, useScheduleStore } from '~/store'
-import { Schedule } from '~/types/api'
+import type { Schedule } from '~/types/api'
 
 const router = useRouter()
 const authStore = useAuthStore()

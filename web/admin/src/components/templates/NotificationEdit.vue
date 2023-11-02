@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
-import { PropType } from 'nuxt/dist/app/compat/capi'
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { AdminRole, DiscountType, Notification, NotificationStatus, NotificationTarget, NotificationType, Promotion, UpdateNotificationRequest } from '~/types/api'
-import { NotificationTime } from '~/types/props'
+import type { AdminRole, DiscountType, Notification, NotificationStatus, NotificationTarget, NotificationType, Promotion, UpdateNotificationRequest } from '~/types/api'
+import type { NotificationTime } from '~/types/props'
 
 const props = defineProps({
   loading: {

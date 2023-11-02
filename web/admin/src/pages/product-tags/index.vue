@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useProductTagStore } from '~/store'
-import { CreateProductTagRequest, UpdateProductTagRequest } from '~/types/api'
+import type { CreateProductTagRequest, UpdateProductTagRequest } from '~/types/api'
 
 const authStore = useAuthStore()
 const productTagStore = useProductTagStore()

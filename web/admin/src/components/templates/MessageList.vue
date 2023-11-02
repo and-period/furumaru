@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiEmailOpenOutline, mdiEmailOutline } from '@mdi/js'
-import { AlertType } from '~/lib/hooks'
-import { Message } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import type { Message } from '~/types/api'
 
 interface Props {
   loading: boolean,

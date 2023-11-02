@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required, tel } from '~/lib/validations'
-import { AdminStatus, Administrator, UpdateAdministratorRequest } from '~/types/api'
+import { AdminStatus, type Administrator, type UpdateAdministratorRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {

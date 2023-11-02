@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
-import { AlertType } from '~/lib/hooks'
+import type { AlertType } from '~/lib/hooks'
 import { Shipping, UpdateShippingRequest } from '~/types/api'
 import { required, getErrorMessage, minValue } from '~/lib/validations'
-import { PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
+import type { PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
 
 const props = defineProps({
   loading: {

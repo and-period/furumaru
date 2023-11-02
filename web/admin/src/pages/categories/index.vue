@@ -2,8 +2,8 @@
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAuthStore, useCategoryStore, useProductTypeStore } from '~/store'
-import { Category, CreateCategoryRequest, CreateProductTypeRequest, ProductType, UpdateCategoryRequest } from '~/types/api'
-import { ImageUploadStatus } from '~/types/props'
+import type { Category, CreateCategoryRequest, CreateProductTypeRequest, ProductType, UpdateCategoryRequest } from '~/types/api'
+import type { ImageUploadStatus } from '~/types/props'
 
 const authStore = useAuthStore()
 const categoryStore = useCategoryStore()

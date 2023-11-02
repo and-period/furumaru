@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AlertType } from '~/lib/hooks'
-import { ResetAuthPasswordRequest } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import type { ResetAuthPasswordRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 
-import { AlertType } from '~/lib/hooks'
-import { SignInRequest } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import type { SignInRequest } from '~/types/api'
 
 const props = defineProps({
   isAlert: {
