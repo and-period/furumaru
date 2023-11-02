@@ -11,12 +11,12 @@ import {
   mdiCash100,
   mdiAccount,
   mdiCog,
-  mdiBell,
-} from "@mdi/js";
-import { storeToRefs } from "pinia";
-import { getResizedImages } from "~/lib/helpers";
-import { useAuthStore, useCommonStore, useMessageStore } from "~/store";
-import { AdminRole } from "~/types/api";
+  mdiBell
+} from '@mdi/js'
+import { storeToRefs } from 'pinia'
+import { getResizedImages } from '~/lib/helpers'
+import { useAuthStore, useCommonStore, useMessageStore } from '~/store'
+import { AdminRole } from '~/types/api'
 
 interface NavigationDrawerItem {
   to: string;
@@ -25,135 +25,135 @@ interface NavigationDrawerItem {
   roles?: AdminRole[];
 }
 
-const drawer = ref<boolean>(true);
-const router = useRouter();
-const authStore = useAuthStore();
-const commonStore = useCommonStore();
-const messageStore = useMessageStore();
+const drawer = ref<boolean>(true)
+const router = useRouter()
+const authStore = useAuthStore()
+const commonStore = useCommonStore()
+const messageStore = useMessageStore()
 
-const { user, role } = storeToRefs(authStore);
+const { user, role } = storeToRefs(authStore)
 
 const snackbars = computed(() => {
-  return commonStore.snackbars.filter((item) => item.isOpen);
-});
-const hasUnread = computed<boolean>(() => messageStore.hasUnread);
+  return commonStore.snackbars.filter(item => item.isOpen)
+})
+const hasUnread = computed<boolean>(() => messageStore.hasUnread)
 
 const homeDrawer: NavigationDrawerItem = {
-  to: "/",
+  to: '/',
   icon: mdiHome,
-  title: "ホーム",
-};
+  title: 'ホーム'
+}
 
 const generalDrawers: NavigationDrawerItem[] = [
   {
-    to: "/orders",
+    to: '/orders',
     icon: mdiOrderBoolAscendingVariant,
-    title: "注文",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: '注文',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/products",
+    to: '/products',
     icon: mdiCart,
-    title: "商品管理",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: '商品管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/schedules",
+    to: '/schedules',
     icon: mdiAntenna,
-    title: "ライブ配信",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: 'ライブ配信',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/customers",
+    to: '/customers',
     icon: mdiAccountDetails,
-    title: "顧客管理",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: '顧客管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/contacts",
+    to: '/contacts',
     icon: mdiForum,
-    title: "お問い合わせ管理",
-    roles: [AdminRole.ADMINISTRATOR],
+    title: 'お問い合わせ管理',
+    roles: [AdminRole.ADMINISTRATOR]
   },
   {
-    to: "/notifications",
+    to: '/notifications',
     icon: mdiBellRing,
-    title: "お知らせ管理",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: 'お知らせ管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/promotions",
+    to: '/promotions',
     icon: mdiCash100,
-    title: "セール情報管理",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: 'セール情報管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/producers",
+    to: '/producers',
     icon: mdiAccount,
-    title: "生産者管理",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
-  },
-];
+    title: '生産者管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+  }
+]
 
 const settingDrawers: NavigationDrawerItem[] = [
   {
-    to: "/accounts",
+    to: '/accounts',
     icon: mdiAccount,
-    title: "マイページ",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: 'マイページ',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/system",
+    to: '/system',
     icon: mdiCog,
-    title: "システム設定",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: 'システム設定',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/version",
+    to: '/version',
     icon: mdiCog,
-    title: "バージョン情報",
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+    title: 'バージョン情報',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
-    to: "/livestreaming",
+    to: '/livestreaming',
     icon: mdiAntenna,
-    title: "配信(テスト用)",
-    roles: [AdminRole.ADMINISTRATOR],
-  },
-];
+    title: '配信(テスト用)',
+    roles: [AdminRole.ADMINISTRATOR]
+  }
+]
 
 const getImages = (): string => {
   if (!user.value?.thumbnails) {
-    return "";
+    return ''
   }
-  return getResizedImages(user.value.thumbnails);
-};
+  return getResizedImages(user.value.thumbnails)
+}
 
 const getGeneralDrawers = (): NavigationDrawerItem[] => {
   return generalDrawers.filter((drawer: NavigationDrawerItem): boolean => {
-    return drawer.roles?.includes(role.value) || false;
-  });
-};
+    return drawer.roles?.includes(role.value) || false
+  })
+}
 
 const getSettingDrawers = (): NavigationDrawerItem[] => {
   return settingDrawers.filter((drawer: NavigationDrawerItem): boolean => {
-    return drawer.roles?.includes(role.value) || false;
-  });
-};
+    return drawer.roles?.includes(role.value) || false
+  })
+}
 
 const handleClickNavIcon = () => {
-  drawer.value = !drawer.value;
-};
+  drawer.value = !drawer.value
+}
 
 const handleClickMessage = () => {
-  router.push("/messages");
-};
+  router.push('/messages')
+}
 
 const calcStyle = (i: number) => {
   if (i > 0) {
-    return `top: ${60 * i}px;`;
+    return `top: ${60 * i}px;`
   }
-};
+}
 </script>
 
 <template>

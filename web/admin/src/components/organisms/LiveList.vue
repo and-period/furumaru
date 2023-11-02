@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { mdiPencil, mdiPlus } from "@mdi/js";
-import useVuelidate from "@vuelidate/core";
-import dayjs, { unix } from "dayjs";
-import { getResizedImages } from "~/lib/helpers";
+import { mdiPencil, mdiPlus } from '@mdi/js'
+import useVuelidate from '@vuelidate/core'
+import dayjs, { unix } from 'dayjs'
+import { getResizedImages } from '~/lib/helpers'
 import {
   getErrorMessage,
   maxLength,
   maxLengthArray,
-  required,
-} from "~/lib/validations";
+  required
+} from '~/lib/validations'
 import {
   CreateLiveRequest,
   Live,
@@ -17,359 +17,363 @@ import {
   ProductMediaInner,
   Schedule,
   ScheduleStatus,
-  UpdateLiveRequest,
-} from "~/types/api";
-import { LiveTime } from "~/types/props";
+  UpdateLiveRequest
+} from '~/types/api'
+import { LiveTime } from '~/types/props'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false,
+    default: false
   },
   createDialog: {
     type: Boolean,
-    default: false,
+    default: false
   },
   updateDialog: {
     type: Boolean,
-    default: false,
+    default: false
   },
   createFormData: {
     type: Object as PropType<CreateLiveRequest>,
     default: (): CreateLiveRequest => ({
-      producerId: "",
+      producerId: '',
       productIds: [],
-      comment: "",
+      comment: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix(),
-    }),
+      endAt: dayjs().unix()
+    })
   },
   updateFormData: {
     type: Object as PropType<UpdateLiveRequest>,
     default: (): UpdateLiveRequest => ({
       productIds: [],
-      comment: "",
+      comment: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix(),
-    }),
+      endAt: dayjs().unix()
+    })
   },
   schedule: {
     type: Object as PropType<Schedule>,
     default: (): Schedule => ({
-      id: "",
-      coordinatorId: "",
-      shippingId: "",
-      title: "",
-      description: "",
+      id: '',
+      coordinatorId: '',
+      shippingId: '',
+      title: '',
+      description: '',
       status: ScheduleStatus.UNKNOWN,
-      thumbnailUrl: "",
+      thumbnailUrl: '',
       thumbnails: [],
-      imageUrl: "",
-      openingVideoUrl: "",
+      imageUrl: '',
+      openingVideoUrl: '',
       public: false,
       approved: false,
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,
-      updatedAt: 0,
-    }),
+      updatedAt: 0
+    })
   },
   live: {
     type: Object as PropType<Live>,
     default: (): Live => ({
-      id: "",
-      scheduleId: "",
-      producerId: "",
+      id: '',
+      scheduleId: '',
+      producerId: '',
       productIds: [],
-      comment: "",
+      comment: '',
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,
-      updatedAt: 0,
-    }),
+      updatedAt: 0
+    })
   },
   lives: {
     type: Array<Live>,
-    default: () => [],
+    default: () => []
   },
   producers: {
     type: Array<Producer>,
-    default: () => [],
+    default: () => []
   },
   products: {
     type: Array<Product>,
-    default: () => [],
-  },
-});
+    default: () => []
+  }
+})
 
 const emits = defineEmits<{
-  (e: "click:new"): void;
-  (e: "click:edit", liveId: string): void;
-  (e: "update:live", live: Live): void;
-  (e: "update:create-dialog", val: boolean): void;
-  (e: "update:update-dialog", val: boolean): void;
-  (e: "update:create-form-data", formData: CreateLiveRequest): void;
-  (e: "update:update-form-data", formData: UpdateLiveRequest): void;
-  (e: "search:producer", name: string): void;
-  (e: "search:product", producerId: string, name: string): void;
-  (e: "submit:create"): void;
-  (e: "submit:update"): void;
-  (e: "submit:delete"): void;
-}>();
+  (e: 'click:new'): void;
+  (e: 'click:edit', liveId: string): void;
+  (e: 'update:live', live: Live): void;
+  (e: 'update:create-dialog', val: boolean): void;
+  (e: 'update:update-dialog', val: boolean): void;
+  (e: 'update:create-form-data', formData: CreateLiveRequest): void;
+  (e: 'update:update-form-data', formData: UpdateLiveRequest): void;
+  (e: 'search:producer', name: string): void;
+  (e: 'search:product', producerId: string, name: string): void;
+  (e: 'submit:create'): void;
+  (e: 'submit:update'): void;
+  (e: 'submit:delete'): void;
+}>()
 
 const liveValue = computed({
   get: (): Live => props.live,
-  set: (live: Live): void => emits("update:live", live),
-});
+  set: (live: Live): void => emits('update:live', live)
+})
 const createFormDataRules = computed(() => ({
   producerId: { required },
   productIds: { maxLengthArray: maxLengthArray(8) },
-  comment: { required, maxLength: maxLength(2000) },
-}));
+  comment: { required, maxLength: maxLength(2000) }
+}))
 const updateFormDataRules = computed(() => ({
   productIds: { maxLengthArray: maxLengthArray(8) },
-  comment: { required, maxLength: maxLength(2000) },
-}));
+  comment: { required, maxLength: maxLength(2000) }
+}))
 const createTimeDataRules = computed(() => ({
   startDate: { required },
   startTime: { required },
   endDate: { required },
-  endTime: { required },
-}));
+  endTime: { required }
+}))
 const updateTimeDataRules = computed(() => ({
   startDate: { required },
   startTime: { required },
   endDate: { required },
-  endTime: { required },
-}));
+  endTime: { required }
+}))
 const createDialogValue = computed({
   get: (): boolean => props.createDialog,
-  set: (val: boolean): void => emits("update:create-dialog", val),
-});
+  set: (val: boolean): void => emits('update:create-dialog', val)
+})
 const updateDialogValue = computed({
   get: (): boolean => props.updateDialog,
-  set: (val: boolean): void => emits("update:update-dialog", val),
-});
+  set: (val: boolean): void => emits('update:update-dialog', val)
+})
 const createFormDataValue = computed({
   get: (): CreateLiveRequest => props.createFormData,
   set: (formData: CreateLiveRequest): void =>
-    emits("update:create-form-data", formData),
-});
+    emits('update:create-form-data', formData)
+})
 const updateFormDataValue = computed({
   get: (): UpdateLiveRequest => props.updateFormData,
   set: (formData: UpdateLiveRequest): void =>
-    emits("update:update-form-data", formData),
-});
+    emits('update:update-form-data', formData)
+})
 const createTimeDataValue = computed({
   get: (): LiveTime => ({
-    startDate: unix(props.createFormData?.startAt).format("YYYY-MM-DD"),
-    startTime: unix(props.createFormData?.startAt).format("HH:mm"),
-    endDate: unix(props.createFormData.endAt).format("YYYY-MM-DD"),
-    endTime: unix(props.createFormData.endAt).format("HH:mm"),
+    startDate: unix(props.createFormData?.startAt).format('YYYY-MM-DD'),
+    startTime: unix(props.createFormData?.startAt).format('HH:mm'),
+    endDate: unix(props.createFormData.endAt).format('YYYY-MM-DD'),
+    endTime: unix(props.createFormData.endAt).format('HH:mm')
   }),
   set: (timeData: LiveTime): void => {
-    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`);
-    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`);
-    createFormDataValue.value.startAt = startAt.unix();
-    createFormDataValue.value.endAt = endAt.unix();
-  },
-});
+    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`)
+    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`)
+    createFormDataValue.value.startAt = startAt.unix()
+    createFormDataValue.value.endAt = endAt.unix()
+  }
+})
 const updateTimeDataValue = computed({
   get: (): LiveTime => ({
-    startDate: unix(props.updateFormData?.startAt).format("YYYY-MM-DD"),
-    startTime: unix(props.updateFormData?.startAt).format("HH:mm"),
-    endDate: unix(props.updateFormData.endAt).format("YYYY-MM-DD"),
-    endTime: unix(props.updateFormData.endAt).format("HH:mm"),
+    startDate: unix(props.updateFormData?.startAt).format('YYYY-MM-DD'),
+    startTime: unix(props.updateFormData?.startAt).format('HH:mm'),
+    endDate: unix(props.updateFormData.endAt).format('YYYY-MM-DD'),
+    endTime: unix(props.updateFormData.endAt).format('HH:mm')
   }),
   set: (timeData: LiveTime): void => {
-    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`);
-    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`);
-    updateFormDataValue.value.startAt = startAt.unix();
-    updateFormDataValue.value.endAt = endAt.unix();
-  },
-});
+    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`)
+    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`)
+    updateFormDataValue.value.startAt = startAt.unix()
+    updateFormDataValue.value.endAt = endAt.unix()
+  }
+})
 
 const createFormDataValidate = useVuelidate(
   createFormDataRules,
   createFormDataValue
-);
+)
 const updateFormDataValidate = useVuelidate(
   updateFormDataRules,
   updateFormDataValue
-);
+)
 const createTimeDataValidate = useVuelidate(
   createTimeDataRules,
   createTimeDataValue
-);
+)
 const updateTimeDataValidate = useVuelidate(
   updateTimeDataRules,
   updateTimeDataValue
-);
+)
 
 const onChangeCreateStartAt = (): void => {
   const startAt = dayjs(
     `${createTimeDataValue.value.startDate} ${createTimeDataValue.value.startTime}`
-  );
-  createFormDataValue.value.startAt = startAt.unix();
-};
+  )
+  createFormDataValue.value.startAt = startAt.unix()
+}
 
 const onChangeCreateEndAt = (): void => {
   const endAt = dayjs(
     `${createTimeDataValue.value.endDate} ${createTimeDataValue.value.endTime}`
-  );
-  createFormDataValue.value.endAt = endAt.unix();
-};
+  )
+  createFormDataValue.value.endAt = endAt.unix()
+}
 
 const onChangeCreateProducerId = (): void => {
-  onSearchProductFromCreate("");
-  createFormDataValue.value.productIds = [];
-};
+  onSearchProductFromCreate('')
+  createFormDataValue.value.productIds = []
+}
 
 const onChangeUpdateStartAt = (): void => {
   const startAt = dayjs(
     `${updateTimeDataValue.value.startDate} ${updateTimeDataValue.value.startTime}`
-  );
-  updateFormDataValue.value.startAt = startAt.unix();
-};
+  )
+  updateFormDataValue.value.startAt = startAt.unix()
+}
 
 const onChangeUpdateEndAt = (): void => {
   const endAt = dayjs(
     `${updateTimeDataValue.value.endDate} ${updateTimeDataValue.value.endTime}`
-  );
-  updateFormDataValue.value.endAt = endAt.unix();
-};
+  )
+  updateFormDataValue.value.endAt = endAt.unix()
+}
 
 const getDay = (unixTime: number): string => {
-  return unix(unixTime).format("YYYY/MM/DD HH:mm");
-};
+  return unix(unixTime).format('YYYY/MM/DD HH:mm')
+}
 
 const getScheduleTerm = (schedule: Schedule): string => {
-  return `${getDay(schedule.startAt)} ~ ${getDay(schedule.endAt)}`;
-};
+  return `${getDay(schedule.startAt)} ~ ${getDay(schedule.endAt)}`
+}
 
 const getLiveTerm = (live: Live): string => {
-  return `${getDay(live.startAt)} ~ ${getDay(live.endAt)}`;
-};
+  return `${getDay(live.startAt)} ~ ${getDay(live.endAt)}`
+}
 
 const getProducer = (live: Live): Producer | undefined => {
   return props.producers.find((producer: Producer): boolean => {
-    return producer.id === live?.producerId;
-  });
-};
+    return producer.id === live?.producerId
+  })
+}
 
 const getProductsByLive = (live: Live): Product[] => {
-  const products: Product[] = [];
+  const products: Product[] = []
   props.products.forEach((product: Product): void => {
     if (!live.productIds.includes(product.id)) {
-      return;
+      return
     }
-    products.push(product);
-  });
-  return products;
-};
+    products.push(product)
+  })
+  return products
+}
 
 const getProductsByProducerId = (producerId: string): Product[] => {
-  const products: Product[] = [];
+  const products: Product[] = []
   return props.products.filter((product: Product): boolean => {
-    return product.producerId === producerId;
-  });
-};
+    return product.producerId === producerId
+  })
+}
 
 const getProducerName = (live: Live): string => {
-  const producer = getProducer(live);
-  return producer ? producer.username : "";
-};
+  const producer = getProducer(live)
+  return producer ? producer.username : ''
+}
 
 const getProducerThumbnailUrl = (live: Live): string => {
-  const producer = getProducer(live);
-  return producer ? producer.thumbnailUrl : "";
-};
+  const producer = getProducer(live)
+  return producer ? producer.thumbnailUrl : ''
+}
 
 const getProducerThumbnails = (live: Live): string => {
-  const producer = getProducer(live);
+  const producer = getProducer(live)
   if (!producer?.thumbnails) {
-    return "";
+    return ''
   }
-  return getResizedImages(producer.thumbnails);
-};
+  return getResizedImages(producer.thumbnails)
+}
 
 const getProductInventoryColor = (product: Product): string => {
-  return product.inventory > 0 ? "" : "text-error";
-};
+  return product.inventory > 0 ? '' : 'text-error'
+}
 
 const getProductThumbnailUrl = (product: Product): string => {
   const thumbnail = product.media?.find((media: ProductMediaInner) => {
-    return media.isThumbnail;
-  });
-  return thumbnail ? thumbnail.url : "";
-};
+    return media.isThumbnail
+  })
+  return thumbnail ? thumbnail.url : ''
+}
 
 const getProductThumbnails = (product: Product): string => {
   const thumbnail = product.media?.find((media: ProductMediaInner) => {
-    return media.isThumbnail;
-  });
-  return thumbnail ? getResizedImages(thumbnail.images) : "";
-};
+    return media.isThumbnail
+  })
+  return thumbnail ? getResizedImages(thumbnail.images) : ''
+}
 
 const onSearchProducer = (name: string): void => {
-  emits("search:producer", name);
-};
+  emits('search:producer', name)
+}
 
 const onSearchProductFromCreate = (name: string): void => {
-  emits("search:product", props.createFormData.producerId, name);
-};
+  emits('search:product', props.createFormData.producerId, name)
+}
 
 const onSearchProductFromUpdate = (name: string): void => {
-  emits("search:product", props.live.producerId, name);
-};
+  emits('search:product', props.live.producerId, name)
+}
 
 const onClickNew = (): void => {
-  emits("click:new");
-};
+  emits('click:new')
+}
 
 const onClickCloseCreateDialog = (): void => {
-  createDialogValue.value = false;
-};
+  createDialogValue.value = false
+}
 
 const onSubmitCreate = async (): Promise<void> => {
-  const formDataValid = await createFormDataValidate.value.$validate();
-  const timeDataValid = await createTimeDataValidate.value.$validate();
+  const formDataValid = await createFormDataValidate.value.$validate()
+  const timeDataValid = await createTimeDataValidate.value.$validate()
   if (!formDataValid || !timeDataValid) {
-    return;
+    return
   }
 
-  emits("submit:create");
-};
+  emits('submit:create')
+}
 
 const onClickEdit = (liveId: string): void => {
-  emits("click:edit", liveId);
-};
+  emits('click:edit', liveId)
+}
 
 const onClickCloseUpdateDialog = (): void => {
-  updateDialogValue.value = false;
-};
+  updateDialogValue.value = false
+}
 
 const onSubmitUpdate = async (): Promise<void> => {
-  const formDataValid = await updateFormDataValidate.value.$validate();
-  const timeDataValid = await updateTimeDataValidate.value.$validate();
+  const formDataValid = await updateFormDataValidate.value.$validate()
+  const timeDataValid = await updateTimeDataValidate.value.$validate()
   if (!formDataValid || !timeDataValid) {
-    return;
+    return
   }
 
-  emits("submit:update");
-};
+  emits('submit:update')
+}
 
 const onSubmitDelete = (): void => {
-  emits("submit:delete");
-};
+  emits('submit:delete')
+}
 </script>
 
 <template>
   <v-dialog v-model="createDialogValue" width="500">
     <v-card :loading="props.loading">
-      <v-card-title class="text-h6 primaryLight"> 出演者登録 </v-card-title>
+      <v-card-title class="text-h6 primaryLight">
+        出演者登録
+      </v-card-title>
       <v-card-text>
-        <p class="text-subtitle-2 text-grey pb-2">ライブ配開始日時</p>
+        <p class="text-subtitle-2 text-grey pb-2">
+          ライブ配開始日時
+        </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="createTimeDataValidate.startDate.$model"
@@ -393,7 +397,9 @@ const onSubmitDelete = (): void => {
             @update:model-value="onChangeCreateStartAt"
           />
         </div>
-        <p class="text-subtitle-2 text-grey pb-2">ライブ配終了日時</p>
+        <p class="text-subtitle-2 text-grey pb-2">
+          ライブ配終了日時
+        </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="createTimeDataValidate.endDate.$model"
@@ -464,7 +470,9 @@ const onSubmitDelete = (): void => {
             />
           </template>
         </v-autocomplete>
-        <p class="text-subtitle-2 text-grey py-2">概要</p>
+        <p class="text-subtitle-2 text-grey py-2">
+          概要
+        </p>
         <client-only>
           <tiptap-editor
             v-model="createFormDataValidate.comment.$model"
@@ -494,9 +502,13 @@ const onSubmitDelete = (): void => {
 
   <v-dialog v-model="updateDialogValue" width="500">
     <v-card :loading="props.loading">
-      <v-card-title class="text-h6 primaryLight"> 出演者更新 </v-card-title>
+      <v-card-title class="text-h6 primaryLight">
+        出演者更新
+      </v-card-title>
       <v-card-text>
-        <p class="text-subtitle-2 text-grey pb-2">ライブ配開始日時</p>
+        <p class="text-subtitle-2 text-grey pb-2">
+          ライブ配開始日時
+        </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="updateTimeDataValidate.startDate.$model"
@@ -520,7 +532,9 @@ const onSubmitDelete = (): void => {
             @update:model-value="onChangeUpdateStartAt"
           />
         </div>
-        <p class="text-subtitle-2 text-grey pb-2">ライブ配終了日時</p>
+        <p class="text-subtitle-2 text-grey pb-2">
+          ライブ配終了日時
+        </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="updateTimeDataValidate.endDate.$model"
@@ -586,7 +600,9 @@ const onSubmitDelete = (): void => {
             />
           </template>
         </v-autocomplete>
-        <p class="text-subtitle-2 text-grey py-2">概要</p>
+        <p class="text-subtitle-2 text-grey py-2">
+          概要
+        </p>
         <client-only>
           <tiptap-editor
             v-model="updateFormDataValidate.comment.$model"
@@ -624,7 +640,9 @@ const onSubmitDelete = (): void => {
 
   <v-row>
     <v-col sm="12">
-      <p class="text-subtitle-2 pb-2">マルシェ開催期間</p>
+      <p class="text-subtitle-2 pb-2">
+        マルシェ開催期間
+      </p>
       <p class="text-subtitle-2">
         {{ getScheduleTerm(schedule) }}
       </p>
@@ -660,11 +678,15 @@ const onSubmitDelete = (): void => {
         <v-card-text>
           <v-row>
             <v-col sm="12">
-              <p class="text-subtitle-2 text-grey pb-2">概要</p>
+              <p class="text-subtitle-2 text-grey pb-2">
+                概要
+              </p>
               <p class="text-subtitle-2" v-html="item.comment" />
             </v-col>
             <v-col sm="12">
-              <p class="text-subtitle-2 text-grey pb-2">関連商品</p>
+              <p class="text-subtitle-2 text-grey pb-2">
+                関連商品
+              </p>
               <v-table>
                 <thead>
                   <tr>
