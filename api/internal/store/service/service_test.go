@@ -39,7 +39,6 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Address     *mock_database.MockAddress
 	Category    *mock_database.MockCategory
 	Order       *mock_database.MockOrder
 	Product     *mock_database.MockProduct
@@ -83,7 +82,6 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Address:     mock_database.NewMockAddress(ctrl),
 		Category:    mock_database.NewMockCategory(ctrl),
 		Order:       mock_database.NewMockOrder(ctrl),
 		Product:     mock_database.NewMockProduct(ctrl),
@@ -106,7 +104,6 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
-			Address:     mocks.db.Address,
 			Category:    mocks.db.Category,
 			Order:       mocks.db.Order,
 			Product:     mocks.db.Product,

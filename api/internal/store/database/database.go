@@ -23,7 +23,6 @@ var (
 )
 
 type Database struct {
-	Address     Address
 	Category    Category
 	Order       Order
 	Product     Product
@@ -38,34 +37,6 @@ type Database struct {
 /**
  * interface
  */
-type Address interface {
-	List(ctx context.Context, params *ListAddressesParams, fields ...string) (entity.Addresses, error)
-	Count(ctx context.Context, params *ListAddressesParams) (int64, error)
-	MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error)
-	Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error)
-	Create(ctx context.Context, address *entity.Address) error
-	Update(ctx context.Context, addressID, userID string, params *UpdateAddressParams) error
-	Delete(ctx context.Context, addressID string) error
-}
-
-type ListAddressesParams struct {
-	UserID string
-	Limit  int
-	Offset int
-}
-
-type UpdateAddressParams struct {
-	Lastname     string
-	Firstname    string
-	PostalCode   string
-	Prefecture   int64
-	City         string
-	AddressLine1 string
-	AddressLine2 string
-	PhoneNumber  string
-	IsDefault    bool
-}
-
 type Category interface {
 	List(ctx context.Context, params *ListCategoriesParams, fields ...string) (entity.Categories, error)
 	Count(ctx context.Context, params *ListCategoriesParams) (int64, error)

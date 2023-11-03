@@ -79,21 +79,6 @@ func (mr *MockServiceMockRecorder) ApproveSchedule(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApproveSchedule", reflect.TypeOf((*MockService)(nil).ApproveSchedule), ctx, in)
 }
 
-// CreateAddress mocks base method.
-func (m *MockService) CreateAddress(ctx context.Context, in *store.CreateAddressInput) (*entity.Address, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateAddress", ctx, in)
-	ret0, _ := ret[0].(*entity.Address)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateAddress indicates an expected call of CreateAddress.
-func (mr *MockServiceMockRecorder) CreateAddress(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAddress", reflect.TypeOf((*MockService)(nil).CreateAddress), ctx, in)
-}
-
 // CreateCategory mocks base method.
 func (m *MockService) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	m.ctrl.T.Helper()
@@ -214,20 +199,6 @@ func (mr *MockServiceMockRecorder) CreateShipping(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateShipping", reflect.TypeOf((*MockService)(nil).CreateShipping), ctx, in)
 }
 
-// DeleteAddress mocks base method.
-func (m *MockService) DeleteAddress(ctx context.Context, in *store.DeleteAddressInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteAddress", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteAddress indicates an expected call of DeleteAddress.
-func (mr *MockServiceMockRecorder) DeleteAddress(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAddress", reflect.TypeOf((*MockService)(nil).DeleteAddress), ctx, in)
-}
-
 // DeleteCategory mocks base method.
 func (m *MockService) DeleteCategory(ctx context.Context, in *store.DeleteCategoryInput) error {
 	m.ctrl.T.Helper()
@@ -324,21 +295,6 @@ func (m *MockService) DeleteShipping(ctx context.Context, in *store.DeleteShippi
 func (mr *MockServiceMockRecorder) DeleteShipping(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteShipping", reflect.TypeOf((*MockService)(nil).DeleteShipping), ctx, in)
-}
-
-// GetAddress mocks base method.
-func (m *MockService) GetAddress(ctx context.Context, in *store.GetAddressInput) (*entity.Address, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAddress", ctx, in)
-	ret0, _ := ret[0].(*entity.Address)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAddress indicates an expected call of GetAddress.
-func (mr *MockServiceMockRecorder) GetAddress(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAddress", reflect.TypeOf((*MockService)(nil).GetAddress), ctx, in)
 }
 
 // GetCart mocks base method.
@@ -491,22 +447,6 @@ func (mr *MockServiceMockRecorder) GetShipping(ctx, in interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShipping", reflect.TypeOf((*MockService)(nil).GetShipping), ctx, in)
 }
 
-// ListAddresses mocks base method.
-func (m *MockService) ListAddresses(ctx context.Context, in *store.ListAddressesInput) (entity.Addresses, int64, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAddresses", ctx, in)
-	ret0, _ := ret[0].(entity.Addresses)
-	ret1, _ := ret[1].(int64)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// ListAddresses indicates an expected call of ListAddresses.
-func (mr *MockServiceMockRecorder) ListAddresses(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAddresses", reflect.TypeOf((*MockService)(nil).ListAddresses), ctx, in)
-}
-
 // ListCategories mocks base method.
 func (m *MockService) ListCategories(ctx context.Context, in *store.ListCategoriesInput) (entity.Categories, int64, error) {
 	m.ctrl.T.Helper()
@@ -651,21 +591,6 @@ func (mr *MockServiceMockRecorder) ListShippings(ctx, in interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListShippings", reflect.TypeOf((*MockService)(nil).ListShippings), ctx, in)
 }
 
-// MultiGetAddresses mocks base method.
-func (m *MockService) MultiGetAddresses(ctx context.Context, in *store.MultiGetAddressesInput) (entity.Addresses, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MultiGetAddresses", ctx, in)
-	ret0, _ := ret[0].(entity.Addresses)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// MultiGetAddresses indicates an expected call of MultiGetAddresses.
-func (mr *MockServiceMockRecorder) MultiGetAddresses(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAddresses", reflect.TypeOf((*MockService)(nil).MultiGetAddresses), ctx, in)
-}
-
 // MultiGetCategories mocks base method.
 func (m *MockService) MultiGetCategories(ctx context.Context, in *store.MultiGetCategoriesInput) (entity.Categories, error) {
 	m.ctrl.T.Helper()
@@ -798,20 +723,6 @@ func (m *MockService) SearchPostalCode(ctx context.Context, in *store.SearchPost
 func (mr *MockServiceMockRecorder) SearchPostalCode(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchPostalCode", reflect.TypeOf((*MockService)(nil).SearchPostalCode), ctx, in)
-}
-
-// UpdateAddress mocks base method.
-func (m *MockService) UpdateAddress(ctx context.Context, in *store.UpdateAddressInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateAddress", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateAddress indicates an expected call of UpdateAddress.
-func (mr *MockServiceMockRecorder) UpdateAddress(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAddress", reflect.TypeOf((*MockService)(nil).UpdateAddress), ctx, in)
 }
 
 // UpdateCategory mocks base method.

@@ -49,9 +49,6 @@ func TestOrder_List(t *testing.T) {
 	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
-	address := testAddress("address-id", "user-id", now())
-	err = db.DB.Create(&address).Error
-	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
 	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "", "coordinator-id", now())
@@ -183,9 +180,6 @@ func TestOrder_Count(t *testing.T) {
 	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
-	address := testAddress("address-id", "user-id", now())
-	err = db.DB.Create(&address).Error
-	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
 	orders[0] = testOrder("order-id01", "user-id", "schedule-id", "", "coordinator-id", now())
@@ -300,9 +294,6 @@ func TestOrder_Get(t *testing.T) {
 	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
-	address := testAddress("address-id", "user-id", now())
-	err = db.DB.Create(&address).Error
-	require.NoError(t, err)
 
 	o := testOrder("order-id", "user-id", "schedule-id", "", "coordinator-id", now())
 	err = db.DB.Create(&o).Error
@@ -414,9 +405,6 @@ func TestOrder_Aggregate(t *testing.T) {
 	require.NoError(t, err)
 	schedule := testSchedule("schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&schedule).Error
-	require.NoError(t, err)
-	address := testAddress("address-id", "user-id", now())
-	err = db.DB.Create(&address).Error
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
