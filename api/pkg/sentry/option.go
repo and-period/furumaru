@@ -48,7 +48,7 @@ func WithEnvironment(env string) ClientOption {
 
 func WithDebug(debug bool) ClientOption {
 	return func(o *options) {
-		o.opts.Debug = true
+		o.opts.Debug = debug
 	}
 }
 
