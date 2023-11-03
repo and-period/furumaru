@@ -26,6 +26,7 @@ import (
 	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/rbac"
+	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -328,7 +329,13 @@ func getFilepath(t *testing.T) string {
 
 func TestHandler(t *testing.T) {
 	t.Parallel()
-	h := NewHandler(&Params{}, WithLogger(zap.NewNop()))
+	opts := []Option{
+		WithAppName("app-name"),
+		WithEnvironment("test"),
+		WithLogger(zap.NewNop()),
+		WithSentry(sentry.NewFixedMockClient()),
+	}
+	h := NewHandler(&Params{}, opts...)
 	assert.NotNil(t, h)
 }
 

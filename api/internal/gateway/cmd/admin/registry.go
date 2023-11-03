@@ -31,6 +31,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/rbac"
 	"github.com/and-period/furumaru/api/pkg/secret"
+	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
@@ -57,6 +58,7 @@ type params struct {
 	mediaQueue           sqs.Producer
 	slack                slack.Client
 	newRelic             *newrelic.Application
+	sentry               sentry.Client
 	komoju               *komoju.Komoju
 	adminWebURL          *url.URL
 	userWebURL           *url.URL
@@ -165,6 +167,11 @@ func (a *app) inject(ctx context.Context) error {
 		if err := sentrygo.Init(sentryOptions); err != nil {
 			return err
 		}
+		sentryApp, err := sentry.NewClient(sentry.WithDSN(params.sentryDsn))
+		if err != nil {
+			return err
+		}
+		params.sentry = sentryApp
 	}
 
 	// Slackの設定
@@ -242,9 +249,14 @@ func (a *app) inject(ctx context.Context) error {
 	khandlerParams := &khandler.Params{
 		WaitGroup: params.waitGroup,
 	}
-	a.logger = params.logger
-	a.v1 = v1.NewHandler(v1Params, v1.WithLogger(params.logger))
+	a.v1 = v1.NewHandler(v1Params,
+		v1.WithAppName(a.AppName),
+		v1.WithEnvironment(a.Environment),
+		v1.WithLogger(params.logger),
+		v1.WithSentry(params.sentry),
+	)
 	a.komoju = khandler.NewHandler(khandlerParams, khandler.WithLogger(params.logger))
+	a.logger = params.logger
 	a.debugMode = params.debugMode
 	a.waitGroup = params.waitGroup
 	a.slack = params.slack

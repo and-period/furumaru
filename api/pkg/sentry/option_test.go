@@ -16,7 +16,9 @@ func TestReportOption(t *testing.T) {
 		WithTraceID("trace-id"),
 		WithTag("tag", "value"),
 		WithTags(map[string]string{"key": "value"}),
+		WithFingerprint("fingerprint"),
 		WithRequest(req),
+		WithUser(&User{}),
 	}
 	scope := sentry.NewScope()
 	attachReportOption(scope, opts...)

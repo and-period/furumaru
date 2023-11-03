@@ -137,7 +137,7 @@ func (a *app) accessLogger() gin.HandlerFunc {
 
 		// 500 ~
 		fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
-		a.logger.Error(path, fields...)
+		a.logger.Warn(path, fields...)
 
 		if a.slack == nil {
 			return
