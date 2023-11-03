@@ -12,6 +12,7 @@ import (
 	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -19,6 +20,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/sfn"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 type params struct {
@@ -30,11 +32,12 @@ type params struct {
 	dbPort     string
 	dbUsername string
 	dbPassword string
+	sentryDsn  string
 }
 
-func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
+func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    logger,
+		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
@@ -51,21 +54,28 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 		return err
 	}
 
+	// Loggerの設定
+	logger, err := log.NewSentryLogger(params.sentryDsn, log.WithLogLevel(a.LogLevel), log.WithSentryLevel("error"))
+	if err != nil {
+		return err
+	}
+	params.logger = logger
+
 	// AWS Step Functionsの設定
 	sfnParams := &sfn.Params{
 		StateMachineARN: a.StepFunctionARN,
 	}
-	sfnClient := sfn.NewStepFunction(awscfg, sfnParams, sfn.WithLogger(logger))
+	sfnClient := sfn.NewStepFunction(awscfg, sfnParams, sfn.WithLogger(params.logger))
 
 	// AWS Media Liveの設定
-	mediaLiveClient := medialive.NewMediaLive(awscfg, medialive.WithLogger(logger))
+	mediaLiveClient := medialive.NewMediaLive(awscfg, medialive.WithLogger(params.logger))
 
 	// AWS Media Convertの設定
 	mediaConvertParams := mediaconvert.Params{
 		Endpoint: a.MediaConvertEndpoint,
 		RoleARN:  a.MediaConvertRoleARN,
 	}
-	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(logger))
+	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(params.logger))
 
 	// Databaseの設定
 	dbClient, err := a.newDatabase("media", params)
@@ -93,34 +103,52 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	}
 	switch a.RunType {
 	case "START":
-		a.job = scheduler.NewStarter(jobParams, scheduler.WithLogger(logger))
+		a.job = scheduler.NewStarter(jobParams, scheduler.WithLogger(params.logger))
 	case "CLOSE":
-		a.job = scheduler.NewCloser(jobParams, scheduler.WithLogger(logger))
+		a.job = scheduler.NewCloser(jobParams, scheduler.WithLogger(params.logger))
 	default:
 		return fmt.Errorf("cmd: unknown scheduler type. type=%s", a.RunType)
 	}
+	a.logger = params.logger
 	a.waitGroup = params.waitGroup
 	return nil
 }
 
 func (a *app) getSecret(ctx context.Context, p *params) error {
-	// データベース認証情報の取得
-	if a.DBSecretName == "" {
-		p.dbHost = a.DBHost
-		p.dbPort = a.DBPort
-		p.dbUsername = a.DBUsername
-		p.dbPassword = a.DBPassword
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		// データベース認証情報の取得
+		if a.DBSecretName == "" {
+			p.dbHost = a.DBHost
+			p.dbPort = a.DBPort
+			p.dbUsername = a.DBUsername
+			p.dbPassword = a.DBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.DBSecretName)
+		if err != nil {
+			return err
+		}
+		p.dbHost = secrets["host"]
+		p.dbPort = secrets["port"]
+		p.dbUsername = secrets["username"]
+		p.dbPassword = secrets["password"]
 		return nil
-	}
-	secrets, err := p.secret.Get(ctx, a.DBSecretName)
-	if err != nil {
-		return err
-	}
-	p.dbHost = secrets["host"]
-	p.dbPort = secrets["port"]
-	p.dbUsername = secrets["username"]
-	p.dbPassword = secrets["password"]
-	return nil
+	})
+	eg.Go(func() error {
+		// Sentry認証情報の取得
+		if a.SentrySecretName == "" {
+			p.sentryDsn = a.SentryDsn
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.SentrySecretName)
+		if err != nil {
+			return err
+		}
+		p.sentryDsn = secrets["dsn"]
+		return nil
+	})
+	return eg.Wait()
 }
 
 func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
