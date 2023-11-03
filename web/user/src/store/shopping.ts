@@ -30,7 +30,11 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       }
     },
     cartIsEmpty: (state) => {
-      return state._shoppingCart.carts.length === 0
+      if (state._shoppingCart && state._shoppingCart.carts) {
+        return state._shoppingCart.carts.length === 0
+      } else {
+        return true
+      }
     },
   },
 
