@@ -5,13 +5,13 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/store/database"
-	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListAddresses(ctx context.Context, in *store.ListAddressesInput) (entity.Addresses, int64, error) {
+func (s *service) ListAddresses(ctx context.Context, in *user.ListAddressesInput) (entity.Addresses, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
@@ -39,7 +39,7 @@ func (s *service) ListAddresses(ctx context.Context, in *store.ListAddressesInpu
 	return addresses, total, nil
 }
 
-func (s *service) MultiGetAddresses(ctx context.Context, in *store.MultiGetAddressesInput) (entity.Addresses, error) {
+func (s *service) MultiGetAddresses(ctx context.Context, in *user.MultiGetAddressesInput) (entity.Addresses, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -47,7 +47,7 @@ func (s *service) MultiGetAddresses(ctx context.Context, in *store.MultiGetAddre
 	return addresses, internalError(err)
 }
 
-func (s *service) GetAddress(ctx context.Context, in *store.GetAddressInput) (*entity.Address, error) {
+func (s *service) GetAddress(ctx context.Context, in *user.GetAddressInput) (*entity.Address, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -61,21 +61,21 @@ func (s *service) GetAddress(ctx context.Context, in *store.GetAddressInput) (*e
 	return address, nil
 }
 
-func (s *service) CreateAddress(ctx context.Context, in *store.CreateAddressInput) (*entity.Address, error) {
+func (s *service) CreateAddress(ctx context.Context, in *user.CreateAddressInput) (*entity.Address, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
 	params := &entity.NewAddressParams{
-		UserID:       in.UserID,
-		IsDefault:    in.IsDefault,
-		Lastname:     in.Lastname,
-		Firstname:    in.Firstname,
-		PostalCode:   in.PostalCode,
-		Prefecture:   in.Prefecture,
-		City:         in.City,
-		AddressLine1: in.AddressLine1,
-		AddressLine2: in.AddressLine2,
-		PhoneNumber:  in.PhoneNumber,
+		UserID:         in.UserID,
+		IsDefault:      in.IsDefault,
+		Lastname:       in.Lastname,
+		Firstname:      in.Firstname,
+		PostalCode:     in.PostalCode,
+		PrefectureCode: in.PrefectureCode,
+		City:           in.City,
+		AddressLine1:   in.AddressLine1,
+		AddressLine2:   in.AddressLine2,
+		PhoneNumber:    in.PhoneNumber,
 	}
 	address, err := entity.NewAddress(params)
 	if err != nil {
@@ -87,7 +87,7 @@ func (s *service) CreateAddress(ctx context.Context, in *store.CreateAddressInpu
 	return address, nil
 }
 
-func (s *service) UpdateAddress(ctx context.Context, in *store.UpdateAddressInput) error {
+func (s *service) UpdateAddress(ctx context.Context, in *user.UpdateAddressInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -99,21 +99,21 @@ func (s *service) UpdateAddress(ctx context.Context, in *store.UpdateAddressInpu
 		return fmt.Errorf("service: this address belongs to another user: %w", exception.ErrForbidden)
 	}
 	params := &database.UpdateAddressParams{
-		Lastname:     in.Lastname,
-		Firstname:    in.Firstname,
-		PostalCode:   in.PostalCode,
-		Prefecture:   in.Prefecture,
-		City:         in.City,
-		AddressLine1: in.AddressLine1,
-		AddressLine2: in.AddressLine2,
-		PhoneNumber:  in.PhoneNumber,
-		IsDefault:    in.IsDefault,
+		Lastname:       in.Lastname,
+		Firstname:      in.Firstname,
+		PostalCode:     in.PostalCode,
+		PrefectureCode: in.PrefectureCode,
+		City:           in.City,
+		AddressLine1:   in.AddressLine1,
+		AddressLine2:   in.AddressLine2,
+		PhoneNumber:    in.PhoneNumber,
+		IsDefault:      in.IsDefault,
 	}
 	err = s.db.Address.Update(ctx, in.AddressID, in.UserID, params)
 	return internalError(err)
 }
 
-func (s *service) DeleteAddress(ctx context.Context, in *store.DeleteAddressInput) error {
+func (s *service) DeleteAddress(ctx context.Context, in *user.DeleteAddressInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}

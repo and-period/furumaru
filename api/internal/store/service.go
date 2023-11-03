@@ -71,13 +71,6 @@ type Service interface {
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)              // 一覧取得
 	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)                         // １件取得
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error) // 集計結果一覧取得
-	// アドレス帳
-	ListAddresses(ctx context.Context, in *ListAddressesInput) (entity.Addresses, int64, error)  // 一覧取得
-	MultiGetAddresses(ctx context.Context, in *MultiGetAddressesInput) (entity.Addresses, error) // 一覧取得(ID指定)
-	GetAddress(ctx context.Context, in *GetAddressInput) (*entity.Address, error)                // １件取得
-	CreateAddress(ctx context.Context, in *CreateAddressInput) (*entity.Address, error)          // 登録
-	UpdateAddress(ctx context.Context, in *UpdateAddressInput) error                             // 更新
-	DeleteAddress(ctx context.Context, in *DeleteAddressInput) error                             // 削除
 	// 買い物かご
 	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error) // 取得
 	AddCartItem(ctx context.Context, in *AddCartItemInput) error         // 商品を追加

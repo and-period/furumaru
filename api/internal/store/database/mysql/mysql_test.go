@@ -62,7 +62,6 @@ func deleteAll(ctx context.Context) error {
 		productTypeTable,
 		categoryTable,
 		promotionTable,
-		adddressTable,
 		shippingTable,
 	}
 	if err := dbClient.DB.Exec("SET foreign_key_checks = 0").Error; err != nil {

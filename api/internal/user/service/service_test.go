@@ -31,6 +31,7 @@ type mocks struct {
 }
 
 type dbMocks struct {
+	Address       *mock_database.MockAddress
 	Admin         *mock_database.MockAdmin
 	Administrator *mock_database.MockAdministrator
 	Coordinator   *mock_database.MockCoordinator
@@ -68,6 +69,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
+		Address:       mock_database.NewMockAddress(ctrl),
 		Admin:         mock_database.NewMockAdmin(ctrl),
 		Administrator: mock_database.NewMockAdministrator(ctrl),
 		Coordinator:   mock_database.NewMockCoordinator(ctrl),
@@ -87,6 +89,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
+			Address:       mocks.db.Address,
 			Admin:         mocks.db.Admin,
 			Administrator: mocks.db.Administrator,
 			Coordinator:   mocks.db.Coordinator,

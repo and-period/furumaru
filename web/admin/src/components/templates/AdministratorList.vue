@@ -5,39 +5,25 @@ import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
 import type { Administrator } from '~/types/api'
 
-const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  deleteDialog: {
-    type: Boolean,
-    default: false
-  },
-  isAlert: {
-    type: Boolean,
-    default: false
-  },
-  alertType: {
-    type: String as PropType<AlertType>,
-    default: undefined
-  },
-  alertText: {
-    type: String,
-    default: ''
-  },
-  administrators: {
-    type: Array<Administrator>,
-    default: () => []
-  },
-  tableItemsPerPage: {
-    type: Number,
-    default: 20
-  },
-  tableItemsTotal: {
-    type: Number,
-    default: 0
-  }
+interface Props {
+  loading: boolean,
+  deleteDialog: boolean
+  isAlert: boolean
+  alertType: AlertType | undefined
+  alertText: string
+  administrators: Administrator[]
+  tableItemsPerPage: number
+  tableItemsTotal: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  loading: false,
+  deleteDialog: false,
+  isAlert: false,
+  alertText: '',
+  administrators: () => [],
+  tableItemsPerPage: 20,
+  tableItemsTotal: 0
 })
 
 const emit = defineEmits<{

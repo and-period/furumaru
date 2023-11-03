@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useProducerStore } from '~/store'
-import type { Prefecture, UpdateProducerRequest } from '~/types/api'
+import { Prefecture, type UpdateProducerRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()

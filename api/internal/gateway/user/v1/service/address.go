@@ -1,9 +1,8 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
-	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
 type Address struct {
@@ -13,7 +12,6 @@ type Address struct {
 type Addresses []*Address
 
 func NewAddress(address *entity.Address) *Address {
-	prefecture, _ := codes.ToPrefectureJapanese(address.Prefecture)
 	return &Address{
 		Address: response.Address{
 			ID:           address.ID,
@@ -21,7 +19,7 @@ func NewAddress(address *entity.Address) *Address {
 			Lastname:     address.Lastname,
 			Firstname:    address.Firstname,
 			PostalCode:   address.PostalCode,
-			Prefecture:   prefecture,
+			Prefecture:   address.Prefecture,
 			City:         address.City,
 			AddressLine1: address.AddressLine1,
 			AddressLine2: address.AddressLine2,

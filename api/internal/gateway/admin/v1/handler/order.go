@@ -185,10 +185,10 @@ func (h *handler) getOrderDetails(ctx context.Context, orders ...*service.Order)
 		return nil
 	})
 	eg.Go(func() error {
-		in := &store.MultiGetAddressesInput{
+		in := &user.MultiGetAddressesInput{
 			AddressIDs: os.AddressIDs(),
 		}
-		saddresses, err := h.store.MultiGetAddresses(ectx, in)
+		saddresses, err := h.user.MultiGetAddresses(ectx, in)
 		if err != nil {
 			return err
 		}

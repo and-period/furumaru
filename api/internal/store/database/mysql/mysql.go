@@ -13,7 +13,6 @@ import (
 
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		Address:     newAddress(db),
 		Category:    newCategory(db),
 		Live:        newLive(db),
 		Order:       newOrder(db),

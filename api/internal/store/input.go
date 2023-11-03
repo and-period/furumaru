@@ -448,53 +448,6 @@ type AggregateOrdersInput struct {
 	UserIDs []string `validate:"omitempty,dive,required"`
 }
 
-type ListAddressesInput struct {
-	UserID string `validate:"required"`
-	Limit  int64  `validate:"min=1,max=200"`
-	Offset int64  `validate:"min=0"`
-}
-
-type MultiGetAddressesInput struct {
-	AddressIDs []string `validate:"omitempty,dive,required"`
-}
-
-type GetAddressInput struct {
-	AddressID string `validate:"required"`
-	UserID    string `validate:"required"`
-}
-
-type CreateAddressInput struct {
-	UserID       string `validate:"required"`
-	Lastname     string `validate:"required,max=32"`
-	Firstname    string `validate:"required,max=32"`
-	PostalCode   string `validate:"required,max=16,numeric"`
-	Prefecture   int64  `validate:"required"`
-	City         string `validate:"required,max=32"`
-	AddressLine1 string `validate:"required,max=64"`
-	AddressLine2 string `validate:"omitempty,max=64"`
-	PhoneNumber  string `validate:"min=12,max=18,phone_number"`
-	IsDefault    bool   `validate:""`
-}
-
-type UpdateAddressInput struct {
-	AddressID    string `validate:"required"`
-	UserID       string `validate:"required"`
-	Lastname     string `validate:"required,max=32"`
-	Firstname    string `validate:"required,max=32"`
-	PostalCode   string `validate:"required,max=16,numeric"`
-	Prefecture   int64  `validate:"required"`
-	City         string `validate:"required,max=32"`
-	AddressLine1 string `validate:"required,max=64"`
-	AddressLine2 string `validate:"omitempty,max=64"`
-	PhoneNumber  string `validate:"min=12,max=18,phone_number"`
-	IsDefault    bool   `validate:""`
-}
-
-type DeleteAddressInput struct {
-	AddressID string `validate:"required"`
-	UserID    string `validate:"required"`
-}
-
 type GetCartInput struct {
 	SessionID string `validate:"required"`
 }
