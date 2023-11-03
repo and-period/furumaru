@@ -38,22 +38,23 @@ func NewZapHookFn(client Client, opts ...ReportOption) func(entry zapcore.Entry)
 }
 
 func NewClient(opts ...ClientOption) (Client, error) {
-	dopts := &sentry.ClientOptions{}
-	for i := range opts {
-		opts[i](dopts)
-	}
+	dopts := buildOptions(opts...)
 	if emptySentryKey(dopts) {
 		return NewFixedMockClient(), nil
 	}
-	cli, err := sentry.NewClient(*dopts)
+	hub := sentry.CurrentHub()
+	cli, err := sentry.NewClient(dopts.opts)
 	if err != nil {
 		return nil, err
+	}
+	if dopts.bind {
+		hub.BindClient(cli)
 	}
 	return &client{client: cli}, nil
 }
 
-func emptySentryKey(opts *sentry.ClientOptions) bool {
-	if opts.Dsn != "" {
+func emptySentryKey(opts *options) bool {
+	if opts.opts.Dsn != "" {
 		return false
 	}
 	return os.Getenv("SENTRY_DSN") == ""

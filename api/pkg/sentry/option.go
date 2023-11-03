@@ -6,11 +6,55 @@ import (
 	"github.com/getsentry/sentry-go"
 )
 
-type ClientOption func(*sentry.ClientOptions)
+type options struct {
+	bind bool
+	opts sentry.ClientOptions
+}
+
+type ClientOption func(*options)
+
+func buildOptions(opts ...ClientOption) *options {
+	dopts := &options{
+		bind: false,
+		opts: sentry.ClientOptions{
+			Environment:   "",
+			Debug:         false,
+			EnableTracing: false,
+		},
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
+	return dopts
+}
+
+func WithBind(bind bool) ClientOption {
+	return func(o *options) {
+		o.bind = bind
+	}
+}
 
 func WithDSN(dsn string) ClientOption {
-	return func(opts *sentry.ClientOptions) {
-		opts.Dsn = dsn
+	return func(o *options) {
+		o.opts.Dsn = dsn
+	}
+}
+
+func WithEnvironment(env string) ClientOption {
+	return func(o *options) {
+		o.opts.Environment = env
+	}
+}
+
+func WithDebug(debug bool) ClientOption {
+	return func(o *options) {
+		o.opts.Debug = true
+	}
+}
+
+func WithTrace(enable bool) ClientOption {
+	return func(o *options) {
+		o.opts.EnableTracing = enable
 	}
 }
 

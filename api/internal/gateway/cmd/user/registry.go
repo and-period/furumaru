@@ -36,7 +36,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
-	sentrygo "github.com/getsentry/sentry-go"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
 	"go.uber.org/zap"
@@ -148,14 +147,12 @@ func (a *app) inject(ctx context.Context) error {
 
 	// Sentryの設定
 	if params.sentryDsn != "" {
-		sentryOptions := sentrygo.ClientOptions{
-			Dsn:   params.sentryDsn,
-			Debug: params.debugMode,
-		}
-		if err := sentrygo.Init(sentryOptions); err != nil {
-			return err
-		}
-		sentryApp, err := sentry.NewClient(sentry.WithDSN(params.sentryDsn))
+		sentryApp, err := sentry.NewClient(
+			sentry.WithDSN(params.sentryDsn),
+			sentry.WithDebug(params.debugMode),
+			sentry.WithEnvironment(a.Environment),
+			sentry.WithBind(true),
+		)
 		if err != nil {
 			return err
 		}
