@@ -1,5 +1,5 @@
 import 'pinia'
-import { AuthApi } from '../api'
+import { AuthApi, ProductApi } from '../api'
 import { CustomErrorMessage } from '~/plugins/api-error-handler'
 import VueI18n from 'vue-i18n'
 
@@ -15,7 +15,8 @@ declare module 'pinia' {
       error: unknown,
       customObject?: CustomErrorMessage,
     ) => Promise<never>
-    authApiClient: (token?: string) => AuthApi
+    authApiClient: (token?: string | undefined) => AuthApi
+    productApiClient: (token?: string | undefined) => ProductApi
     i18n: VueI18
   }
 }

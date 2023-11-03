@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { MOCK_ALL_PRODUCT_ITEMS } from '~/constants/mock'
+import { storeToRefs } from 'pinia'
+import { useProductStore } from '~/store/product'
 
 const router = useRouter()
+
+const productStore = useProductStore()
+const { fetchProducts } = productStore
+const { productsFetchState, products } = storeToRefs(productStore)
 
 const handleClick = (id: string) => {
   router.push(`/items/${id}`)
 }
+
+fetchProducts()
 </script>
 
 <template>
@@ -37,23 +44,37 @@ const handleClick = (id: string) => {
           </div>
         </div>
       </div>
+
       <div
         class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
-        <the-product-list-item
-          class="cursor-pointer"
-          v-for="productItem in MOCK_ALL_PRODUCT_ITEMS"
-          :key="productItem.id"
-          :id="productItem.id"
-          :name="productItem.name"
-          :price="productItem.price"
-          :img-src="productItem.imgSrc"
-          :inventory="productItem.inventory"
-          :address="productItem.address"
-          :cn-name="productItem.cnName"
-          :cn-img-src="productItem.cnImgSrc"
-          @click="handleClick(productItem.id)"
-        />
+        <template v-if="productsFetchState.isLoading">
+          <div
+            v-for="i in [1, 2, 3, 4, 5]"
+            :key="i"
+            class="w-full animate-pulse"
+          >
+            <div class="aspect-square w-full bg-slate-200"></div>
+            <div class="mt-2 h-[24px] w-[80%] rounded-lg bg-slate-200"></div>
+            <div class="mt-2 h-[24px] w-[60%] rounded-lg bg-slate-200"></div>
+          </div>
+        </template>
+
+        <template v-else>
+          <the-product-list-item
+            v-for="product in products"
+            :key="product.id"
+            class="cursor-pointer"
+            :name="product.name"
+            :price="product.price"
+            :inventory="product.inventory"
+            :has-stock="product.hasStock"
+            :thumbnail="product.thumbnail"
+            :coordinator="product.coordinator"
+            :origin-city="product.originCity"
+            @click="handleClick(product.id)"
+          />
+        </template>
       </div>
     </div>
   </div>

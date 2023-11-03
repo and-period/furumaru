@@ -1,13 +1,19 @@
 import { PiniaPluginContext } from 'pinia'
 import ApiClientFactory from './helpter/factory'
-import { AuthApi } from '~/types/api'
+import { AuthApi, ProductApi } from '~/types/api'
 
-function apiClientInjector ({ store }: PiniaPluginContext) {
+function apiClientInjector({ store }: PiniaPluginContext) {
   const apiClientFactory = new ApiClientFactory()
 
   // authのAPIをstoreに定義
-  const authApiClient = (token?: string) => apiClientFactory.create(AuthApi, token)
+  const authApiClient = (token?: string) =>
+    apiClientFactory.create(AuthApi, token)
+
+  const productApiClient = (token?: string): ProductApi =>
+    apiClientFactory.create<ProductApi>(ProductApi, token)
+
   store.authApiClient = authApiClient
+  store.productApiClient = productApiClient
 }
 
 /**

@@ -1,13 +1,14 @@
 <script lang="ts" setup>
+import { Coordinator, ProductMediaInner } from '~/types/api'
+
 interface Props {
-  id: string
   name: string
   inventory: number
   price: number
-  imgSrc: string
-  address: string
-  cnName: string
-  cnImgSrc: string
+  hasStock: boolean
+  originCity: string
+  coordinator: Coordinator | undefined
+  thumbnail: ProductMediaInner | undefined
 }
 
 const props = defineProps<Props>()
@@ -17,14 +18,6 @@ const priceString = computed<string>(() => {
     style: 'currency',
     currency: 'JPY',
   }).format(props.price)
-})
-
-const thumbnail = computed(() => {
-  return props.imgSrc
-})
-
-const hasStock = computed(() => {
-  return props.inventory > 0
 })
 </script>
 
@@ -37,9 +30,13 @@ const hasStock = computed(() => {
       >
         <p class="text-lg font-semibold text-white">在庫なし</p>
       </div>
-      <div v-if="thumbnail" class="w-full">
-        <img :src="thumbnail" :alt="name" class="aspect-square w-full" />
-      </div>
+      <picture v-if="thumbnail" class="w-full">
+        <img
+          :src="thumbnail.url"
+          :alt="`${name}のサムネイル画像`"
+          class="aspect-square w-full"
+        />
+      </picture>
     </div>
 
     <p class="mt-2">
@@ -55,11 +52,24 @@ const hasStock = computed(() => {
     <div class="flex h-8 items-center gap-2 text-sm">
       <div class="inline-flex items-center">
         <label class="mr-2 block text-[10px] xl:text-[14px]">数量</label>
-        <select class="h-full border-[1px] border-main px-2" @click.stop>
-          <option value="0">0</option>
+        <select
+          class="h-full border-[1px] border-main px-2"
+          :disabled="!hasStock"
+          @click.stop
+        >
+          <option
+            v-for="(_, i) in Array.from({
+              length: inventory < 10 ? inventory : 10,
+            })"
+            :key="i + 1"
+            :value="i + 1"
+          >
+            {{ i + 1 }}
+          </option>
         </select>
       </div>
       <button
+        :disabled="!hasStock"
         class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white lg:px-4 lg:text-[14px]"
         @click.stop
       >
@@ -67,18 +77,24 @@ const hasStock = computed(() => {
         カゴに入れる
       </button>
     </div>
-    <div class="mt-4 flex items-center gap-x-4 text-xs">
+    <div v-if="coordinator" class="mt-4 flex items-center gap-x-4 text-xs">
       <div class="grow">
-        <span class="whitespace-pre-wrap">
-          {{ address }}
+        <span
+          class="inline-block whitespace-pre-wrap"
+          v-text="`${coordinator.marcheName}\n${originCity}`"
+        >
         </span>
         <hr class="my-2 border-dashed border-main" />
         <span class="before:content-['CN：']">
-          {{ cnName }}
+          {{ coordinator.username }}
         </span>
       </div>
       <div class="h-14 w-14">
-        <img :src="cnImgSrc" class="aspect-square rounded-full" />
+        <img
+          :src="coordinator.thumbnailUrl"
+          :alt="`${coordinator.username}のサムネイル画像`"
+          class="aspect-square rounded-full"
+        />
       </div>
     </div>
   </div>
