@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS `stores`.`addresses`;
+DROP TABLE IF EXISTS `stores`.`addresses` CASCADE CONSTRAINTS;
