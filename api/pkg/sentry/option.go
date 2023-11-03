@@ -29,13 +29,22 @@ func buildOptions(opts ...ClientOption) *options {
 		}
 		return event
 	}
+	tracesSamplerFn := sentry.TracesSampler(func(ctx sentry.SamplingContext) float64 {
+		if ctx.Span.Name == "GET /health" {
+			return 0.0
+		}
+		return 1.0
+	})
 	dopts := &options{
 		bind: false,
 		opts: sentry.ClientOptions{
-			Environment:   "",
-			Debug:         false,
-			EnableTracing: false,
-			BeforeSend:    beforeSendFn,
+			Environment:        "",
+			Debug:              false,
+			EnableTracing:      false,
+			BeforeSend:         beforeSendFn,
+			TracesSampleRate:   1.0,
+			TracesSampler:      tracesSamplerFn,
+			ProfilesSampleRate: 1.0,
 		},
 	}
 	for i := range opts {
