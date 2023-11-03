@@ -60,19 +60,21 @@ fetchProducts()
           </div>
         </template>
 
-        <the-product-list-item
-          v-for="product in products"
-          :key="product.id"
-          class="cursor-pointer"
-          :name="product.name"
-          :price="product.price"
-          :inventory="product.inventory"
-          :has-stock="product.hasStock"
-          :thumbnail="product.thumbnail"
-          :coordinator="product.coordinator"
-          :origin-city="product.originCity"
-          @click="handleClick(product.id)"
-        />
+        <template v-else>
+          <the-product-list-item
+            v-for="product in products"
+            :key="product.id"
+            class="cursor-pointer"
+            :name="product.name"
+            :price="product.price"
+            :inventory="product.inventory"
+            :has-stock="product.hasStock"
+            :thumbnail="product.thumbnail"
+            :coordinator="product.coordinator"
+            :origin-city="product.originCity"
+            @click="handleClick(product.id)"
+          />
+        </template>
       </div>
     </div>
   </div>
