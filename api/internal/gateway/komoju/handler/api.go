@@ -57,12 +57,15 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	komoju.POST("/webhooks", h.Event)
 }
 
-func httpError(ctx *gin.Context, err error) {
+func (h *handler) httpError(ctx *gin.Context, err error) {
 	res, code := util.NewErrorResponse(err)
+	if code >= 500 {
+		h.logger.Error("Internal server error", zap.Error(err), zap.Any("request", ctx.Request))
+	}
 	ctx.JSON(code, res)
 	ctx.Abort()
 }
 
-func badRequest(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
+func (h *handler) badRequest(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
 }

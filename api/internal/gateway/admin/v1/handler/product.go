@@ -21,12 +21,13 @@ import (
 )
 
 func (h *handler) productRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListProducts)
-	arg.POST("", h.CreateProduct)
-	arg.GET("/:productId", h.filterAccessProduct, h.GetProduct)
-	arg.PATCH("/:productId", h.filterAccessProduct, h.UpdateProduct)
-	arg.DELETE("/:productId", h.filterAccessProduct, h.DeleteProduct)
+	r := rg.Group("/products", h.authentication)
+
+	r.GET("", h.ListProducts)
+	r.POST("", h.CreateProduct)
+	r.GET("/:productId", h.filterAccessProduct, h.GetProduct)
+	r.PATCH("/:productId", h.filterAccessProduct, h.UpdateProduct)
+	r.DELETE("/:productId", h.filterAccessProduct, h.DeleteProduct)
 }
 
 func (h *handler) filterAccessProduct(ctx *gin.Context) {
@@ -51,7 +52,7 @@ func (h *handler) filterAccessProduct(ctx *gin.Context) {
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.Next()
@@ -65,17 +66,17 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	orders, err := h.newProductOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -89,14 +90,14 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
 		if err != nil {
-			httpError(ctx, err)
+			h.httpError(ctx, err)
 			return
 		}
 		in.ProducerIDs = producers.IDs()
 	}
 	products, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(products) == 0 {
@@ -136,7 +137,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -184,7 +185,7 @@ func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder
 func (h *handler) GetProduct(ctx *gin.Context) {
 	product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -217,7 +218,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -237,20 +238,20 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 func (h *handler) CreateProduct(ctx *gin.Context) {
 	req := &request.CreateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if getRole(ctx).IsCoordinator() {
 		if req.CoordinatorID != getAdminID(ctx) {
-			forbidden(ctx, errors.New("handler: not authorized this coordinator"))
+			h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
 			return
 		}
 		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
 		if err != nil {
-			httpError(ctx, err)
+			h.httpError(ctx, err)
 		}
 		if !producers.Contains(req.ProducerID) {
-			forbidden(ctx, errors.New("handler: not authorized this coordinator"))
+			h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
 			return
 		}
 	}
@@ -291,15 +292,15 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if len(productTags) != len(req.TagIDs) {
-		badRequest(ctx, errors.New("handler: unmatch product tags"))
+		h.badRequest(ctx, errors.New("handler: unmatch product tags"))
 		return
 	}
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -323,7 +324,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		})
 	}
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -359,7 +360,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 	}
 	sproduct, err := h.store.CreateProduct(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -377,7 +378,7 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 func (h *handler) UpdateProduct(ctx *gin.Context) {
 	req := &request.UpdateProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -397,15 +398,15 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if len(productTags) != len(req.TagIDs) {
-		badRequest(ctx, errors.New("handler: unmatch product tags"))
+		h.badRequest(ctx, errors.New("handler: unmatch product tags"))
 		return
 	}
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -429,7 +430,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		})
 	}
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -463,7 +464,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		EndAt:             jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdateProduct(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -486,7 +487,7 @@ func (h *handler) DeleteProduct(ctx *gin.Context) {
 		ProductID: util.GetParam(ctx, "productId"),
 	}
 	if err := h.store.DeleteProduct(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

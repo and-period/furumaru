@@ -97,31 +97,30 @@ func NewHandler(params *Params, opts ...Option) Handler {
  */
 func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
-	h.authRoutes(v1.Group("/auth"))
-	h.administratorRoutes(v1.Group("/administrators"))
-	h.coordinatorRoutes(v1.Group("/coordinators"))
-	h.producerRoutes(v1.Group("/producers"))
-	h.relatedProducerRoutes(v1.Group("/coordinators/:coordinatorId/producers"))
-	h.categoryRoutes(v1.Group("/categories"))
-	h.productTypeRoutes(v1.Group("/categories/:categoryId/product-types"))
-	h.productTagRoutes(v1.Group("/product-tags"))
-	h.shippingRoutes(v1.Group("/shippings"))
-	h.productRoutes(v1.Group("/products"))
-	h.promotionRoutes(v1.Group("/promotions"))
-	h.orderRoutes(v1.Group("/orders"))
-	h.notificationRoutes(v1.Group("/notifications"))
-	h.messageRoutes(v1.Group("/messages"))
-	h.scheduleRoutes(v1.Group("/schedules"))
-	h.liveRoutes(v1.Group("/schedules/:scheduleId/lives"))
-	h.broadcastRoutes(v1.Group("/schedules/:scheduleId/broadcasts"))
-	h.userRoutes(v1.Group("/users"))
-	h.postalCodeRoutes(v1.Group("/postal-codes"))
-	v1.GET("/categories/-/product-types", h.authentication, h.ListProductTypes)
-	h.uploadRoutes(v1.Group("/upload"))
-	h.contactRoutes(v1.Group("/contacts"))
-	h.threadRoutes(v1.Group("/contacts/:contactId/threads"))
-	h.contactCategoryRoutes(v1.Group("/contact-categories"))
-	h.contactReadRoutes(v1.Group("/contact-reads"))
+	h.administratorRoutes(v1)
+	h.authRoutes(v1)
+	h.broadcastRoutes(v1)
+	h.categoryRoutes(v1)
+	h.contactRoutes(v1)
+	h.contactCategoryRoutes(v1)
+	h.contactReadRoutes(v1)
+	h.coordinatorRoutes(v1)
+	h.liveRoutes(v1)
+	h.messageRoutes(v1)
+	h.notificationRoutes(v1)
+	h.orderRoutes(v1)
+	h.postalCodeRoutes(v1)
+	h.producerRoutes(v1)
+	h.productRoutes(v1)
+	h.productTagRoutes(v1)
+	h.productTypeRoutes(v1)
+	h.promotionRoutes(v1)
+	h.relatedProducerRoutes(v1)
+	h.scheduleRoutes(v1)
+	h.shippingRoutes(v1)
+	h.threadRoutes(v1)
+	h.uploadRoutes(v1)
+	h.userRoutes(v1)
 }
 
 /**
@@ -129,22 +128,25 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
  * error handling
  * ###############################################
  */
-func httpError(ctx *gin.Context, err error) {
+func (h *handler) httpError(ctx *gin.Context, err error) {
 	res, code := util.NewErrorResponse(err)
+	if code >= 500 {
+		h.logger.Error("Internal server error", zap.Error(err), zap.Any("request", ctx.Request))
+	}
 	ctx.JSON(code, res)
 	ctx.Abort()
 }
 
-func badRequest(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
+func (h *handler) badRequest(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
 }
 
-func unauthorized(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
+func (h *handler) unauthorized(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
 }
 
-func forbidden(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.PermissionDenied, err.Error()))
+func (h *handler) forbidden(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.PermissionDenied, err.Error()))
 }
 
 /**
@@ -156,14 +158,14 @@ func (h *handler) authentication(ctx *gin.Context) {
 	// 認証情報の検証
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 
 	in := &user.GetAdminAuthInput{AccessToken: token}
 	auth, err := h.user.GetAdminAuth(ctx, in)
 	if err != nil || auth.AdminID == "" {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 	role := service.NewAdminRole(auth.Role)
@@ -179,11 +181,11 @@ func (h *handler) authentication(ctx *gin.Context) {
 	enforce, err := h.enforcer.Enforce(role.String(), ctx.Request.URL.Path, ctx.Request.Method)
 	if err != nil {
 		fmt.Println("debug", err)
-		httpError(ctx, status.Error(codes.Internal, err.Error()))
+		h.httpError(ctx, status.Error(codes.Internal, err.Error()))
 		return
 	}
 	if !enforce {
-		forbidden(ctx, errors.New("handler: you don't have the correct permissions"))
+		h.forbidden(ctx, errors.New("handler: you don't have the correct permissions"))
 		return
 	}
 

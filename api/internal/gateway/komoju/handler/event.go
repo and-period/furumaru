@@ -28,7 +28,7 @@ func (h *handler) Event(ctx *gin.Context) {
 func (h *handler) ping(ctx *gin.Context) {
 	req := &request.PingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	h.logger.Debug("Received ping event", zap.Any("request", req))
@@ -38,7 +38,7 @@ func (h *handler) ping(ctx *gin.Context) {
 func (h *handler) unexpected(ctx *gin.Context, event string) {
 	req, err := httputil.DumpRequest(ctx.Request, true)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	h.logger.Debug("Received unexpected event", zap.String("event", event), zap.Any("request", req))

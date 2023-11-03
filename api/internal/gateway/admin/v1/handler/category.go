@@ -15,11 +15,12 @@ import (
 )
 
 func (h *handler) categoryRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListCategories)
-	arg.POST("", h.CreateCategory)
-	arg.PATCH("/:categoryId", h.UpdateCategory)
-	arg.DELETE("/:categoryId", h.DeleteCategory)
+	r := rg.Group("/categories", h.authentication)
+
+	r.GET("", h.ListCategories)
+	r.POST("", h.CreateCategory)
+	r.PATCH("/:categoryId", h.UpdateCategory)
+	r.DELETE("/:categoryId", h.DeleteCategory)
 }
 
 func (h *handler) ListCategories(ctx *gin.Context) {
@@ -30,17 +31,17 @@ func (h *handler) ListCategories(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	orders, err := h.newCategoryOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -52,7 +53,7 @@ func (h *handler) ListCategories(ctx *gin.Context) {
 	}
 	categories, total, err := h.store.ListCategories(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -85,7 +86,7 @@ func (h *handler) newCategoryOrders(ctx *gin.Context) ([]*store.ListCategoriesOr
 func (h *handler) CreateCategory(ctx *gin.Context) {
 	req := &request.CreateCategoryRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -94,7 +95,7 @@ func (h *handler) CreateCategory(ctx *gin.Context) {
 	}
 	category, err := h.store.CreateCategory(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -107,7 +108,7 @@ func (h *handler) CreateCategory(ctx *gin.Context) {
 func (h *handler) UpdateCategory(ctx *gin.Context) {
 	req := &request.UpdateCategoryRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -116,7 +117,7 @@ func (h *handler) UpdateCategory(ctx *gin.Context) {
 		Name:       req.Name,
 	}
 	if err := h.store.UpdateCategory(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -128,7 +129,7 @@ func (h *handler) DeleteCategory(ctx *gin.Context) {
 		CategoryID: util.GetParam(ctx, "categoryId"),
 	}
 	if err := h.store.DeleteCategory(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

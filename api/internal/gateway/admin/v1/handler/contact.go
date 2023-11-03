@@ -19,12 +19,13 @@ import (
 )
 
 func (h *handler) contactRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListContacts)
-	arg.GET("/:contactId", h.GetContact)
-	arg.POST("", h.CreateContact)
-	arg.PATCH("/:contactId", h.UpdateContact)
-	arg.DELETE("/:contactId", h.DeleteContact)
+	r := rg.Group("/contacts", h.authentication)
+
+	r.GET("", h.ListContacts)
+	r.GET("/:contactId", h.GetContact)
+	r.POST("", h.CreateContact)
+	r.PATCH("/:contactId", h.UpdateContact)
+	r.DELETE("/:contactId", h.DeleteContact)
 }
 
 func (h *handler) ListContacts(ctx *gin.Context) {
@@ -35,12 +36,12 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	in := &messenger.ListContactsInput{
@@ -50,7 +51,7 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 
 	contacts, total, err := h.messenger.ListContacts(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -62,7 +63,7 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 		}
 		thread, _, err := h.messenger.ListThreads(ctx, in)
 		if err != nil {
-			httpError(ctx, err)
+			h.httpError(ctx, err)
 			return
 		}
 		threads = append(threads, thread...)
@@ -90,7 +91,7 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.ContactsResponse{
@@ -107,7 +108,7 @@ func (h *handler) ListContacts(ctx *gin.Context) {
 func (h *handler) CreateContact(ctx *gin.Context) {
 	req := &request.CreateContactRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -143,11 +144,11 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -164,7 +165,7 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 	}
 	scontact, err := h.messenger.CreateContact(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	threadIn := &messenger.CreateThreadInput{
@@ -175,7 +176,7 @@ func (h *handler) CreateContact(ctx *gin.Context) {
 	}
 	sthread, err := h.messenger.CreateThread(ctx, threadIn)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.ContactResponse{
@@ -193,7 +194,7 @@ func (h *handler) GetContact(ctx *gin.Context) {
 	contactID := util.GetParam(ctx, "contactId")
 	contact, err := h.getContact(ctx, contactID)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -233,7 +234,7 @@ func (h *handler) GetContact(ctx *gin.Context) {
 		return err
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -250,7 +251,7 @@ func (h *handler) GetContact(ctx *gin.Context) {
 func (h *handler) UpdateContact(ctx *gin.Context) {
 	req := &request.UpdateContactRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -269,7 +270,7 @@ func (h *handler) UpdateContact(ctx *gin.Context) {
 	}
 
 	if err := h.messenger.UpdateContact(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -281,7 +282,7 @@ func (h *handler) DeleteContact(ctx *gin.Context) {
 		ContactID: util.GetParam(ctx, "contactId"),
 	}
 	if err := h.messenger.DeleteContact(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

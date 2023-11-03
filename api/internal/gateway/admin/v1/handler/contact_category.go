@@ -12,9 +12,10 @@ import (
 )
 
 func (h *handler) contactCategoryRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListContactCategories)
-	arg.GET("/:contactCategoryId")
+	r := rg.Group("/contact-categories", h.authentication)
+
+	r.GET("", h.ListContactCategories)
+	r.GET("/:contactCategoryId")
 }
 
 func (h *handler) ListContactCategories(ctx *gin.Context) {
@@ -25,12 +26,12 @@ func (h *handler) ListContactCategories(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -40,7 +41,7 @@ func (h *handler) ListContactCategories(ctx *gin.Context) {
 	}
 	categories, err := h.messenger.ListContactCategories(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -53,7 +54,7 @@ func (h *handler) ListContactCategories(ctx *gin.Context) {
 func (h *handler) GetContactCategory(ctx *gin.Context) {
 	category, err := h.getContactCategory(ctx, util.GetParam(ctx, "contactCategoryId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

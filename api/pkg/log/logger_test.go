@@ -2,6 +2,7 @@ package log
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap/zapcore"
@@ -9,35 +10,15 @@ import (
 
 func TestLogger(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
-		name    string
-		options []Option
-		isErr   bool
-	}{
-		{
-			name: "success only stdout",
-			options: []Option{
-				WithLogLevel("debug"),
-				WithOutput(""),
-			},
-			isErr: false,
-		},
+	opts := []Option{
+		WithLogLevel("debug"),
+		WithOutput(""),
+		WithSentryLevel("debug"),
+		WithSentryFlushTimeout(10 * time.Millisecond),
 	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			logger, err := NewLogger(tt.options...)
-			if tt.isErr {
-				assert.Error(t, err)
-				assert.Nil(t, logger)
-				return
-			}
-			assert.NoError(t, err)
-			assert.NotNil(t, logger)
-		})
-	}
+	logger, err := NewLogger(opts...)
+	assert.NoError(t, err)
+	assert.NotNil(t, logger)
 }
 
 func TestLogger_GetLogLevel(t *testing.T) {

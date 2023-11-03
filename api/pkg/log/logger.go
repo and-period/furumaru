@@ -3,21 +3,43 @@ package log
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 type options struct {
-	logLevel   string
-	outputPath string
+	logLevel           string
+	outputPath         string
+	sentryLevel        string
+	sentryFlushTimeout time.Duration
 }
 
 type Option func(opts *options)
 
+func buildOptions(opts ...Option) *options {
+	dopts := &options{
+		logLevel:           "info",
+		outputPath:         "",
+		sentryLevel:        "warn",
+		sentryFlushTimeout: 5 * time.Second,
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
+	return dopts
+}
+
 func WithLogLevel(level string) Option {
 	return func(opts *options) {
 		opts.logLevel = level
+	}
+}
+
+func WithSentryLevel(level string) Option {
+	return func(opts *options) {
+		opts.sentryLevel = level
 	}
 }
 
@@ -27,17 +49,19 @@ func WithOutput(path string) Option {
 	}
 }
 
+func WithSentryFlushTimeout(timeout time.Duration) Option {
+	return func(opts *options) {
+		opts.sentryFlushTimeout = timeout
+	}
+}
+
 // NewLogger - ログ出力用クライアントの生成
 func NewLogger(opts ...Option) (*zap.Logger, error) {
-	dopts := &options{
-		logLevel:   "info",
-		outputPath: "",
-	}
-	for i := range opts {
-		opts[i](dopts)
-	}
+	dopts := buildOptions(opts...)
+	return newLogger(dopts)
+}
 
-	level := getLogLevel(dopts.logLevel)
+func newLogger(opts *options) (*zap.Logger, error) {
 	encoderConfig := zapcore.EncoderConfig{
 		MessageKey:     "msg",
 		LevelKey:       "level",
@@ -53,32 +77,24 @@ func NewLogger(opts ...Option) (*zap.Logger, error) {
 	}
 
 	// 標準出力設定
-	consoleCore := zapcore.NewCore(
-		zapcore.NewJSONEncoder(encoderConfig),
-		zapcore.AddSync(os.Stdout),
-		level,
-	)
+	level := getLogLevel(opts.logLevel)
+	consoleCore := zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(os.Stdout), level)
 
 	// Path==""のとき、標準出力のみ
-	if dopts.outputPath == "" {
+	if opts.outputPath == "" {
 		logger := zap.New(zapcore.NewTee(consoleCore))
 		return logger, nil
 	}
 
 	// logPath!==""のとき、ファイル出力も追加
-	outputPath := fmt.Sprintf("%s/outputs.log", dopts.outputPath)
+	outputPath := fmt.Sprintf("%s/outputs.log", opts.outputPath)
 	file, err := os.OpenFile(outputPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o755)
 	if err != nil {
 		return nil, err
 	}
 
 	// ファイル出力設定
-	logCore := zapcore.NewCore(
-		zapcore.NewJSONEncoder(encoderConfig),
-		zapcore.AddSync(file),
-		level,
-	)
-
+	logCore := zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(file), level)
 	logger := zap.New(zapcore.NewTee(consoleCore, logCore))
 	return logger, nil
 }

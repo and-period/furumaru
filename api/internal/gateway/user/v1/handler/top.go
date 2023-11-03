@@ -14,7 +14,9 @@ import (
 )
 
 func (h *handler) topRoutes(rg *gin.RouterGroup) {
-	rg.GET("/common", h.TopCommon)
+	r := rg.Group("/top")
+
+	r.GET("/common", h.TopCommon)
 }
 
 func (h *handler) TopCommon(ctx *gin.Context) {
@@ -72,7 +74,7 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
