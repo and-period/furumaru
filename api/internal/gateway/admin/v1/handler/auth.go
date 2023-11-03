@@ -13,23 +13,25 @@ import (
 )
 
 func (h *handler) authRoutes(rg *gin.RouterGroup) {
-	rg.GET("", h.GetAuth)
-	rg.POST("", h.SignIn)
-	rg.DELETE("", h.SignOut)
-	rg.POST("/refresh-token", h.RefreshAuthToken)
-	rg.POST("/device", h.authentication, h.RegisterDevice)
-	rg.PATCH("/email", h.authentication, h.UpdateAuthEmail)
-	rg.POST("/email/verified", h.VerifyAuthEmail)
-	rg.PATCH("/password", h.authentication, h.UpdateAuthPassword)
-	rg.POST("/forgot-password", h.ForgotAuthPassword)
-	rg.POST("/forgot-password/verified", h.ResetAuthPassword)
-	rg.GET("/user", h.authentication, h.GetAuthUser)
+	r := rg.Group("/auth")
+
+	r.GET("", h.GetAuth)
+	r.POST("", h.SignIn)
+	r.DELETE("", h.SignOut)
+	r.POST("/refresh-token", h.RefreshAuthToken)
+	r.POST("/device", h.authentication, h.RegisterDevice)
+	r.PATCH("/email", h.authentication, h.UpdateAuthEmail)
+	r.POST("/email/verified", h.VerifyAuthEmail)
+	r.PATCH("/password", h.authentication, h.UpdateAuthPassword)
+	r.POST("/forgot-password", h.ForgotAuthPassword)
+	r.POST("/forgot-password/verified", h.ResetAuthPassword)
+	r.GET("/user", h.authentication, h.GetAuthUser)
 }
 
 func (h *handler) GetAuth(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 
@@ -38,7 +40,7 @@ func (h *handler) GetAuth(ctx *gin.Context) {
 	}
 	auth, err := h.user.GetAdminAuth(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -66,11 +68,11 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 	case service.AdminRoleProducer:
 		auth, err = h.getProducer(ctx, adminID)
 	default:
-		forbidden(ctx, errors.New("handler: unknown admin role"))
+		h.forbidden(ctx, errors.New("handler: unknown admin role"))
 		return
 	}
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.AuthUserResponse{
@@ -82,7 +84,7 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 func (h *handler) SignIn(ctx *gin.Context) {
 	req := &request.SignInRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -92,7 +94,7 @@ func (h *handler) SignIn(ctx *gin.Context) {
 	}
 	auth, err := h.user.SignInAdmin(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -105,14 +107,14 @@ func (h *handler) SignIn(ctx *gin.Context) {
 func (h *handler) SignOut(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 	}
 
 	in := &user.SignOutAdminInput{
 		AccessToken: token,
 	}
 	if err := h.user.SignOutAdmin(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -122,7 +124,7 @@ func (h *handler) SignOut(ctx *gin.Context) {
 func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 	req := &request.RefreshAuthTokenRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -131,7 +133,7 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 	}
 	auth, err := h.user.RefreshAdminToken(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -144,7 +146,7 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 func (h *handler) RegisterDevice(ctx *gin.Context) {
 	req := &request.RegisterAuthDeviceRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -153,7 +155,7 @@ func (h *handler) RegisterDevice(ctx *gin.Context) {
 		Device:  req.Device,
 	}
 	if err := h.user.RegisterAdminDevice(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -163,12 +165,12 @@ func (h *handler) RegisterDevice(ctx *gin.Context) {
 func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 	req := &request.UpdateAuthEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -177,7 +179,7 @@ func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 		Email:       req.Email,
 	}
 	if err := h.user.UpdateAdminEmail(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -187,12 +189,12 @@ func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 	req := &request.VerifyAuthEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -201,7 +203,7 @@ func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 		VerifyCode:  req.VerifyCode,
 	}
 	if err := h.user.VerifyAdminEmail(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -211,12 +213,12 @@ func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 	req := &request.UpdateAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -227,7 +229,7 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
 	if err := h.user.UpdateAdminPassword(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -237,7 +239,7 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 	req := &request.ForgotAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -245,7 +247,7 @@ func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 		Email: req.Email,
 	}
 	if err := h.user.ForgotAdminPassword(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -255,7 +257,7 @@ func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 	req := &request.ResetAuthPasswordRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -266,7 +268,7 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
 	if err := h.user.VerifyAdminPassword(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

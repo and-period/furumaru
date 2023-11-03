@@ -11,8 +11,9 @@ import (
 )
 
 func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication, h.filterAccessSchedule)
-	arg.GET("", h.GetBroadcast)
+	r := rg.Group("/schedules/:scheduleId/broadcasts", h.authentication, h.filterAccessSchedule)
+
+	r.GET("", h.GetBroadcast)
 }
 
 func (h *handler) GetBroadcast(ctx *gin.Context) {
@@ -21,7 +22,7 @@ func (h *handler) GetBroadcast(ctx *gin.Context) {
 	}
 	broadcast, err := h.media.GetBroadcastByScheduleID(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.BroadcastResponse{

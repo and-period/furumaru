@@ -13,9 +13,10 @@ import (
 )
 
 func (h *handler) messageRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListMessages)
-	arg.GET("/:messageId", h.GetMessage)
+	r := rg.Group("/messages", h.authentication)
+
+	r.GET("", h.ListMessages)
+	r.GET("/:messageId", h.GetMessage)
 }
 
 func (h *handler) ListMessages(ctx *gin.Context) {
@@ -26,17 +27,17 @@ func (h *handler) ListMessages(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	orders, err := h.newMessageOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -49,7 +50,7 @@ func (h *handler) ListMessages(ctx *gin.Context) {
 	}
 	messages, total, err := h.messenger.ListMessages(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -89,7 +90,7 @@ func (h *handler) GetMessage(ctx *gin.Context) {
 	}
 	message, err := h.messenger.GetMessage(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

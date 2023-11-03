@@ -55,7 +55,7 @@ func TestMailError(t *testing.T) {
 			expect: ErrUnauthenticated,
 		},
 		{
-			name:   "send grid error to forbidden",
+			name:   "send grid error to h.h.forbidden(",
 			err:    &SendGridError{Code: http.StatusForbidden},
 			expect: ErrPermissionDenied,
 		},

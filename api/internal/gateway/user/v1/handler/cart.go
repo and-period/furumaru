@@ -13,9 +13,11 @@ import (
 )
 
 func (h *handler) cartRoutes(rg *gin.RouterGroup) {
-	rg.GET("", h.GetCart)
-	rg.POST("/-/items", h.AddCartItem)
-	rg.DELETE("/:number/items/:productId", h.RemoveCartItem)
+	r := rg.Group("/carts")
+
+	r.GET("", h.GetCart)
+	r.POST("/-/items", h.AddCartItem)
+	r.DELETE("/:number/items/:productId", h.RemoveCartItem)
 }
 
 func (h *handler) GetCart(ctx *gin.Context) {
@@ -24,11 +26,11 @@ func (h *handler) GetCart(ctx *gin.Context) {
 	}
 	cart, err := h.store.GetCart(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if cart == nil {
-		notFound(ctx, errNotFoundCart)
+		h.notFound(ctx, errNotFoundCart)
 		return
 	}
 	var (
@@ -45,7 +47,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.CartResponse{
@@ -59,7 +61,7 @@ func (h *handler) GetCart(ctx *gin.Context) {
 func (h *handler) AddCartItem(ctx *gin.Context) {
 	req := &request.AddCartItemRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	in := &store.AddCartItemInput{
@@ -68,7 +70,7 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 		Quantity:  req.Quantity,
 	}
 	if err := h.store.AddCartItem(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
@@ -77,7 +79,7 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 func (h *handler) RemoveCartItem(ctx *gin.Context) {
 	boxNumber, err := util.GetParamInt64(ctx, "number")
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	in := &store.RemoveCartItemInput{
@@ -86,7 +88,7 @@ func (h *handler) RemoveCartItem(ctx *gin.Context) {
 		ProductID: util.GetParam(ctx, "productId"),
 	}
 	if err := h.store.RemoveCartItem(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusNoContent, gin.H{})

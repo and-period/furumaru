@@ -18,14 +18,15 @@ import (
 )
 
 func (h *handler) producerRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListProducers)
-	arg.POST("", h.CreateProducer)
-	arg.GET("/:producerId", h.filterAccessProducer, h.GetProducer)
-	arg.PATCH("/:producerId", h.filterAccessProducer, h.UpdateProducer)
-	arg.PATCH("/:producerId/email", h.filterAccessProducer, h.UpdateProducerEmail)
-	arg.PATCH("/:producerId/password", h.filterAccessProducer, h.ResetProducerPassword)
-	arg.DELETE("/:producerId", h.filterAccessProducer, h.DeleteProducer)
+	r := rg.Group("/producers", h.authentication)
+
+	r.GET("", h.ListProducers)
+	r.POST("", h.CreateProducer)
+	r.GET("/:producerId", h.filterAccessProducer, h.GetProducer)
+	r.PATCH("/:producerId", h.filterAccessProducer, h.UpdateProducer)
+	r.PATCH("/:producerId/email", h.filterAccessProducer, h.UpdateProducerEmail)
+	r.PATCH("/:producerId/password", h.filterAccessProducer, h.ResetProducerPassword)
+	r.DELETE("/:producerId", h.filterAccessProducer, h.DeleteProducer)
 }
 
 func (h *handler) filterAccessProducer(ctx *gin.Context) {
@@ -39,7 +40,7 @@ func (h *handler) filterAccessProducer(ctx *gin.Context) {
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.Next()
@@ -53,12 +54,12 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -70,12 +71,12 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 	h.addlistProducerFilters(ctx, in)
 	producers, total, err := h.user.ListProducers(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -103,12 +104,12 @@ func (h *handler) addlistProducerFilters(ctx *gin.Context, in *user.ListProducer
 func (h *handler) GetProducer(ctx *gin.Context) {
 	producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	coordinator, err := h.getCoordinator(ctx, producer.CoordinatorID)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -122,12 +123,12 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 func (h *handler) CreateProducer(ctx *gin.Context) {
 	req := &request.CreateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		if !currentAdmin(ctx, req.CoordinatorID) {
-			forbidden(ctx, errors.New("handler: invalid coordinator id"))
+			h.forbidden(ctx, errors.New("handler: invalid coordinator id"))
 			return
 		}
 	}
@@ -175,7 +176,7 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -203,12 +204,12 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 	}
 	producer, err := h.user.CreateProducer(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	coordinator, err := h.getCoordinator(ctx, producer.CoordinatorID)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -222,7 +223,7 @@ func (h *handler) CreateProducer(ctx *gin.Context) {
 func (h *handler) UpdateProducer(ctx *gin.Context) {
 	req := &request.UpdateProducerRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -269,7 +270,7 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -295,7 +296,7 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		AddressLine2:      req.AddressLine2,
 	}
 	if err := h.user.UpdateProducer(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -305,7 +306,7 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 func (h *handler) UpdateProducerEmail(ctx *gin.Context) {
 	req := &request.UpdateProducerEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -314,7 +315,7 @@ func (h *handler) UpdateProducerEmail(ctx *gin.Context) {
 		Email:      req.Email,
 	}
 	if err := h.user.UpdateProducerEmail(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -326,7 +327,7 @@ func (h *handler) ResetProducerPassword(ctx *gin.Context) {
 		ProducerID: util.GetParam(ctx, "producerId"),
 	}
 	if err := h.user.ResetProducerPassword(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -338,7 +339,7 @@ func (h *handler) DeleteProducer(ctx *gin.Context) {
 		ProducerID: util.GetParam(ctx, "producerId"),
 	}
 	if err := h.user.DeleteProducer(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

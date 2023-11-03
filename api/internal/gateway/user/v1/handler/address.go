@@ -12,12 +12,13 @@ import (
 )
 
 func (h *handler) addressRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListAddresses)
-	arg.POST("", h.CreateAddress)
-	arg.GET("/:addressId", h.GetAddress)
-	arg.PATCH("/:addressId", h.UpdateAddress)
-	arg.DELETE("/:addressId", h.DeleteAddress)
+	r := rg.Group("/addresses", h.authentication)
+
+	r.GET("", h.ListAddresses)
+	r.POST("", h.CreateAddress)
+	r.GET("/:addressId", h.GetAddress)
+	r.PATCH("/:addressId", h.UpdateAddress)
+	r.DELETE("/:addressId", h.DeleteAddress)
 }
 
 func (h *handler) ListAddresses(ctx *gin.Context) {
@@ -28,12 +29,12 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -44,7 +45,7 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 	}
 	addresses, total, err := h.user.ListAddresses(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -62,7 +63,7 @@ func (h *handler) GetAddress(ctx *gin.Context) {
 	}
 	address, err := h.user.GetAddress(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.AddressResponse{
@@ -74,7 +75,7 @@ func (h *handler) GetAddress(ctx *gin.Context) {
 func (h *handler) CreateAddress(ctx *gin.Context) {
 	req := &request.CreateAddressRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	in := &user.CreateAddressInput{
@@ -91,7 +92,7 @@ func (h *handler) CreateAddress(ctx *gin.Context) {
 	}
 	address, err := h.user.CreateAddress(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.AddressResponse{
@@ -103,7 +104,7 @@ func (h *handler) CreateAddress(ctx *gin.Context) {
 func (h *handler) UpdateAddress(ctx *gin.Context) {
 	req := &request.UpdateAddressRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	in := &user.UpdateAddressInput{
@@ -120,7 +121,7 @@ func (h *handler) UpdateAddress(ctx *gin.Context) {
 		IsDefault:      req.IsDefault,
 	}
 	if err := h.user.UpdateAddress(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
@@ -132,7 +133,7 @@ func (h *handler) DeleteAddress(ctx *gin.Context) {
 		UserID:    getUserID(ctx),
 	}
 	if err := h.user.DeleteAddress(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusNoContent, gin.H{})

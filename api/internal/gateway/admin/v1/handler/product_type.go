@@ -16,11 +16,14 @@ import (
 )
 
 func (h *handler) productTypeRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListProductTypes)
-	arg.POST("", h.CreateProductType)
-	arg.PATCH("/:productTypeId", h.UpdateProductType)
-	arg.DELETE("/:productTypeId", h.DeleteProductType)
+	r := rg.Group("/categories/:categoryId/product-types", h.authentication)
+
+	r.GET("", h.ListProductTypes)
+	r.POST("", h.CreateProductType)
+	r.PATCH("/:productTypeId", h.UpdateProductType)
+	r.DELETE("/:productTypeId", h.DeleteProductType)
+
+	rg.GET("/categories/-/product-types", h.authentication, h.ListProductTypes)
 }
 
 func (h *handler) ListProductTypes(ctx *gin.Context) {
@@ -31,17 +34,17 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	orders, err := h.newProductTypeOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -54,7 +57,7 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 	}
 	productTypes, total, err := h.store.ListProductTypes(ctx, typesIn)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(productTypes) == 0 {
@@ -67,7 +70,7 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 
 	categories, err := h.multiGetCategories(ctx, productTypes.CategoryIDs())
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -101,13 +104,13 @@ func (h *handler) newProductTypeOrders(ctx *gin.Context) ([]*store.ListProductTy
 func (h *handler) CreateProductType(ctx *gin.Context) {
 	req := &request.CreateProductTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
 	category, err := h.getCategory(ctx, util.GetParam(ctx, "categoryId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	uploadIn := &media.UploadFileInput{
@@ -115,7 +118,7 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 	}
 	iconURL, err := h.media.UploadProductTypeIcon(ctx, uploadIn)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -126,7 +129,7 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 	}
 	sproductType, err := h.store.CreateProductType(ctx, typeIn)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	productType := service.NewProductType(sproductType)
@@ -140,7 +143,7 @@ func (h *handler) CreateProductType(ctx *gin.Context) {
 func (h *handler) UpdateProductType(ctx *gin.Context) {
 	req := &request.UpdateProductTypeRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -149,7 +152,7 @@ func (h *handler) UpdateProductType(ctx *gin.Context) {
 	}
 	iconURL, err := h.media.UploadProductTypeIcon(ctx, uploadIn)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -159,7 +162,7 @@ func (h *handler) UpdateProductType(ctx *gin.Context) {
 		IconURL:       iconURL,
 	}
 	if err := h.store.UpdateProductType(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -171,7 +174,7 @@ func (h *handler) DeleteProductType(ctx *gin.Context) {
 		ProductTypeID: util.GetParam(ctx, "productTypeId"),
 	}
 	if err := h.store.DeleteProductType(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

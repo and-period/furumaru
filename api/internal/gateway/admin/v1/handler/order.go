@@ -16,9 +16,10 @@ import (
 )
 
 func (h *handler) orderRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListOrders)
-	arg.GET("/:orderId", h.filterAccessOrder, h.GetOrder)
+	r := rg.Group("/orders", h.authentication)
+
+	r.GET("", h.ListOrders)
+	r.GET("/:orderId", h.filterAccessOrder, h.GetOrder)
 }
 
 func (h *handler) filterAccessOrder(ctx *gin.Context) {
@@ -36,7 +37,7 @@ func (h *handler) filterAccessOrder(ctx *gin.Context) {
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.Next()
@@ -50,17 +51,17 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	os, err := h.newOrderOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -74,7 +75,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	}
 	sorders, total, err := h.store.ListOrders(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	orders := service.NewOrders(sorders)
@@ -86,7 +87,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		return
 	}
 	if err := h.getOrderDetails(ctx, orders...); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -126,7 +127,7 @@ func (h *handler) newOrderOrders(ctx *gin.Context) ([]*store.ListOrdersOrder, er
 func (h *handler) GetOrder(ctx *gin.Context) {
 	order, err := h.getOrder(ctx, util.GetParam(ctx, "orderId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

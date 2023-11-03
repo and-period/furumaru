@@ -16,13 +16,15 @@ import (
 )
 
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
-	rg.GET("/:scheduleId", h.GetSchedule)
+	r := rg.Group("/schedules")
+
+	r.GET("/:scheduleId", h.GetSchedule)
 }
 
 func (h *handler) GetSchedule(ctx *gin.Context) {
 	schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -32,7 +34,7 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 	}
 	lives, _, err := h.store.ListLives(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -55,7 +57,7 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

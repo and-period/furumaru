@@ -12,7 +12,6 @@ import (
 	v1 "github.com/and-period/furumaru/api/internal/gateway/admin/v1/handler"
 	khandler "github.com/and-period/furumaru/api/internal/gateway/komoju/handler"
 	"github.com/and-period/furumaru/api/pkg/http"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -24,6 +23,7 @@ import (
 type app struct {
 	*cobra.Command
 	debugMode            bool
+	logger               *zap.Logger
 	waitGroup            *sync.WaitGroup
 	slack                slack.Client
 	newRelic             *newrelic.Application
@@ -44,8 +44,11 @@ type app struct {
 	DBTimeZone           string `envconfig:"DB_TIMEZONE" default:"Asia/Tokyo"`
 	DBEnabledTLS         bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
 	DBSecretName         string `envconfig:"DB_SECRET_NAME" default:""`
+	GinMode              string `envconfig:"GIN_MODE" default:"release"`
 	NewRelicLicense      string `envconfig:"NEW_RELIC_LICENSE" default:""`
 	NewRelicSecretName   string `envconfig:"NEW_RELIC_SECRET_NAME" default:""`
+	SentryDsn            string `envconfig:"SENTRY_DSN" default:""`
+	SentrySecretName     string `envconfig:"SENTRY_SECRET_NAME" default:""`
 	AWSRegion            string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	S3Bucket             string `envconfig:"S3_BUCKET" default:""`
 	S3TmpBucket          string `envconfig:"S3_TMP_BUCKET" default:""`
@@ -91,21 +94,14 @@ func (a *app) run() error {
 		return fmt.Errorf("admin: failed to load environment: %w", err)
 	}
 
-	// Loggerの設定
-	logger, err := log.NewLogger(log.WithLogLevel(a.LogLevel), log.WithOutput(a.LogPath))
-	if err != nil {
-		return fmt.Errorf("admin: failed to new logger: %w", err)
-	}
-	defer logger.Sync() //nolint:errcheck
-
 	// 依存関係の解決
-	if err := a.inject(ctx, logger); err != nil {
-		logger.Error("Failed to new registry", zap.Error(err))
-		return err
+	if err := a.inject(ctx); err != nil {
+		return fmt.Errorf("admin: failed to new registry: %w", err)
 	}
+	defer a.logger.Sync() //nolint:errcheck
 
 	// HTTP Serverの設定
-	rt := a.newRouter(logger)
+	rt := a.newRouter()
 	hs := http.NewHTTPServer(rt, a.Port)
 
 	// Metrics Serverの設定
@@ -115,39 +111,39 @@ func (a *app) run() error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if err = ms.Serve(); err != nil {
-			logger.Error("Failed to run metrics server", zap.Error(err))
+			a.logger.Error("Failed to run metrics server", zap.Error(err))
 		}
 		return
 	})
 	eg.Go(func() (err error) {
 		if err = hs.Serve(); err != nil {
-			logger.Error("Failed to run http server", zap.Error(err))
+			a.logger.Error("Failed to run http server", zap.Error(err))
 		}
 		return
 	})
-	logger.Info("Started server", zap.Int64("port", a.Port))
+	a.logger.Info("Started server", zap.Int64("port", a.Port))
 
 	// シグナル検知設定
 	signalCh := make(chan os.Signal, 1)
 	signal.Notify(signalCh, syscall.SIGTERM, syscall.SIGINT)
 	select {
 	case <-ectx.Done():
-		logger.Error("Done context", zap.Error(ectx.Err()))
+		a.logger.Error("Done context", zap.Error(ectx.Err()))
 	case signal := <-signalCh:
-		logger.Info("Received signal", zap.Any("signal", signal))
+		a.logger.Info("Received signal", zap.Any("signal", signal))
 		delay := time.Duration(a.ShutdownDelaySec) * time.Second
-		logger.Info("Pre-shutdown", zap.Duration("delay", delay))
+		a.logger.Info("Pre-shutdown", zap.Duration("delay", delay))
 		time.Sleep(delay)
 	}
 
 	// Serverの停止
-	logger.Info("Shutdown...")
-	if err = hs.Stop(ectx); err != nil {
-		logger.Error("Failed to stopeed http server", zap.Error(err))
+	a.logger.Info("Shutdown...")
+	if err := hs.Stop(ectx); err != nil {
+		a.logger.Error("Failed to stopeed http server", zap.Error(err))
 		return err
 	}
-	if err = ms.Stop(ectx); err != nil {
-		logger.Error("Failed to stopeed metrics server", zap.Error(err))
+	if err := ms.Stop(ectx); err != nil {
+		a.logger.Error("Failed to stopeed metrics server", zap.Error(err))
 		return err
 	}
 	a.waitGroup.Wait()

@@ -13,14 +13,15 @@ import (
 )
 
 func (h *handler) administratorRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListAdministrators)
-	arg.POST("", h.CreateAdministrator)
-	arg.GET("/:adminId", h.GetAdministrator)
-	arg.PATCH("/:adminId", h.UpdateAdministrator)
-	arg.PATCH("/:adminId/email", h.UpdateAdministratorEmail)
-	arg.PATCH("/:adminId/password", h.ResetAdministratorPassword)
-	arg.DELETE("/:adminId", h.DeleteAdministrator)
+	r := rg.Group("/administrators", h.authentication)
+
+	r.GET("", h.ListAdministrators)
+	r.POST("", h.CreateAdministrator)
+	r.GET("/:adminId", h.GetAdministrator)
+	r.PATCH("/:adminId", h.UpdateAdministrator)
+	r.PATCH("/:adminId/email", h.UpdateAdministratorEmail)
+	r.PATCH("/:adminId/password", h.ResetAdministratorPassword)
+	r.DELETE("/:adminId", h.DeleteAdministrator)
 }
 
 func (h *handler) ListAdministrators(ctx *gin.Context) {
@@ -31,12 +32,12 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -46,7 +47,7 @@ func (h *handler) ListAdministrators(ctx *gin.Context) {
 	}
 	admins, total, err := h.user.ListAdministrators(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -63,7 +64,7 @@ func (h *handler) GetAdministrator(ctx *gin.Context) {
 	}
 	admin, err := h.user.GetAdministrator(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -76,7 +77,7 @@ func (h *handler) GetAdministrator(ctx *gin.Context) {
 func (h *handler) CreateAdministrator(ctx *gin.Context) {
 	req := &request.CreateAdministratorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -90,7 +91,7 @@ func (h *handler) CreateAdministrator(ctx *gin.Context) {
 	}
 	admin, err := h.user.CreateAdministrator(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -103,7 +104,7 @@ func (h *handler) CreateAdministrator(ctx *gin.Context) {
 func (h *handler) UpdateAdministrator(ctx *gin.Context) {
 	req := &request.UpdateAdministratorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -116,7 +117,7 @@ func (h *handler) UpdateAdministrator(ctx *gin.Context) {
 		PhoneNumber:     req.PhoneNumber,
 	}
 	if err := h.user.UpdateAdministrator(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -126,7 +127,7 @@ func (h *handler) UpdateAdministrator(ctx *gin.Context) {
 func (h *handler) UpdateAdministratorEmail(ctx *gin.Context) {
 	req := &request.UpdateAdministratorEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -135,7 +136,7 @@ func (h *handler) UpdateAdministratorEmail(ctx *gin.Context) {
 		Email:           req.Email,
 	}
 	if err := h.user.UpdateAdministratorEmail(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -147,7 +148,7 @@ func (h *handler) ResetAdministratorPassword(ctx *gin.Context) {
 		AdministratorID: util.GetParam(ctx, "adminId"),
 	}
 	if err := h.user.ResetAdministratorPassword(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -159,7 +160,7 @@ func (h *handler) DeleteAdministrator(ctx *gin.Context) {
 		AdministratorID: util.GetParam(ctx, "adminId"),
 	}
 	if err := h.user.DeleteAdministrator(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

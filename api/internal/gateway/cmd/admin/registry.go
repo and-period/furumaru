@@ -26,6 +26,7 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/rbac"
@@ -35,6 +36,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	sentrygo "github.com/getsentry/sentry-go"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
 	"go.uber.org/zap"
@@ -68,14 +70,15 @@ type params struct {
 	slackToken           string
 	slackChannelID       string
 	newRelicLicense      string
+	sentryDsn            string
 	komojuClientID       string
 	komojuClientPassword string
 }
 
 //nolint:funlen
-func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
+func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    logger,
+		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 		debugMode: a.LogLevel == "debug",
@@ -100,6 +103,13 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	if err := a.getSecret(ctx, params); err != nil {
 		return err
 	}
+
+	// Loggerの設定
+	logger, err := log.NewSentryLogger(params.sentryDsn, log.WithLogLevel(a.LogLevel), log.WithSentryLevel("error"))
+	if err != nil {
+		return err
+	}
+	params.logger = logger
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
@@ -146,13 +156,24 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 		params.newRelic = newrelicApp
 	}
 
+	// Sentryの設定
+	if params.sentryDsn != "" {
+		sentryOptions := sentrygo.ClientOptions{
+			Dsn:   params.sentryDsn,
+			Debug: params.debugMode,
+		}
+		if err := sentrygo.Init(sentryOptions); err != nil {
+			return err
+		}
+	}
+
 	// Slackの設定
 	if params.slackToken != "" {
 		slackParams := &slack.Params{
 			Token:     params.slackToken,
 			ChannelID: params.slackChannelID,
 		}
-		params.slack = slack.NewClient(slackParams, slack.WithLogger(logger))
+		params.slack = slack.NewClient(slackParams, slack.WithLogger(params.logger))
 	}
 
 	// KOMOJUの設定
@@ -177,7 +198,7 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	params.komoju = komoju.NewKomoju(komojuParams)
 
 	// PostalCodeの設定
-	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(logger))
+	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(params.logger))
 
 	// WebURLの設定
 	adminWebURL, err := url.Parse(a.AminWebURL)
@@ -221,6 +242,7 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	khandlerParams := &khandler.Params{
 		WaitGroup: params.waitGroup,
 	}
+	a.logger = params.logger
 	a.v1 = v1.NewHandler(v1Params, v1.WithLogger(logger))
 	a.komoju = khandler.NewHandler(khandlerParams, khandler.WithLogger(logger))
 	a.debugMode = params.debugMode

@@ -11,8 +11,9 @@ import (
 )
 
 func (h *handler) postalCodeRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("/:postalCode", h.SearchPostalCode)
+	r := rg.Group("/postal-codes")
+
+	r.GET("/:postalCode", h.SearchPostalCode)
 }
 
 func (h *handler) SearchPostalCode(ctx *gin.Context) {
@@ -21,7 +22,7 @@ func (h *handler) SearchPostalCode(ctx *gin.Context) {
 	}
 	postalCode, err := h.store.SearchPostalCode(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.PostalCodeResponse{

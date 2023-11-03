@@ -98,15 +98,14 @@ func NewHandler(params *Params, opts ...Option) Handler {
 func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	// 公開エンドポイント
-	h.authRoutes(v1.Group("/auth"))
-	h.topRoutes(v1.Group("/top"))
-	h.scheduleRoutes(v1.Group("/schedules"))
-	h.productRoutes(v1.Group("/products"))
-
+	h.authRoutes(v1)
+	h.scheduleRoutes(v1)
+	h.topRoutes(v1)
+	h.postalCodeRoutes(v1)
+	h.productRoutes(v1)
 	// 要認証エンドポイント
-	h.addressRoutes(v1.Group("/addresses"))
-	h.cartRoutes(v1.Group("/carts"))
-	h.postalCodeRoutes(v1.Group("/postal-codes"))
+	h.addressRoutes(v1)
+	h.cartRoutes(v1)
 }
 
 /**
@@ -114,22 +113,25 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
  * error handling
  * ###############################################
  */
-func httpError(ctx *gin.Context, err error) {
+func (h *handler) httpError(ctx *gin.Context, err error) {
 	res, code := util.NewErrorResponse(err)
+	if code >= 500 {
+		h.logger.Error("Internal server error", zap.Error(err), zap.Any("request", ctx.Request))
+	}
 	ctx.JSON(code, res)
 	ctx.Abort()
 }
 
-func badRequest(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
+func (h *handler) badRequest(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
 }
 
-func unauthorized(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
+func (h *handler) unauthorized(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
 }
 
-func notFound(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.NotFound, err.Error()))
+func (h *handler) notFound(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.NotFound, err.Error()))
 }
 
 /**
@@ -140,14 +142,14 @@ func notFound(ctx *gin.Context, err error) {
 func (h *handler) authentication(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 
 	in := &user.GetUserAuthInput{AccessToken: token}
 	auth, err := h.user.GetUserAuth(ctx, in)
 	if err != nil || auth.UserID == "" {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 

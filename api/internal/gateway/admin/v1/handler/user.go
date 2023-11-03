@@ -12,9 +12,10 @@ import (
 )
 
 func (h *handler) userRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListUsers)
-	arg.GET("/:userId", h.GetUser)
+	r := rg.Group("/users", h.authentication)
+
+	r.GET("", h.ListUsers)
+	r.GET("/:userId", h.GetUser)
 }
 
 func (h *handler) ListUsers(ctx *gin.Context) {
@@ -25,12 +26,12 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -40,7 +41,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	}
 	uusers, total, err := h.user.ListUsers(ctx, usersIn)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	users := service.NewUsers(uusers)
@@ -57,7 +58,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	}
 	sorders, err := h.store.AggregateOrders(ctx, ordersIn)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -74,7 +75,7 @@ func (h *handler) GetUser(ctx *gin.Context) {
 	}
 	uuser, err := h.user.GetUser(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
