@@ -148,9 +148,10 @@ func (a *app) inject(ctx context.Context) error {
 	// Sentryの設定
 	if params.sentryDsn != "" {
 		sentryApp, err := sentry.NewClient(
+			sentry.WithEnvironment(a.Environment),
 			sentry.WithDSN(params.sentryDsn),
 			sentry.WithDebug(params.debugMode),
-			sentry.WithEnvironment(a.Environment),
+			sentry.WithTrace(true),
 			sentry.WithBind(true),
 		)
 		if err != nil {

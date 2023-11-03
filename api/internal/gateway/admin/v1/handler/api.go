@@ -190,7 +190,7 @@ func (h *handler) filterResponse(res *util.ErrorResponse) {
 }
 
 func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorResponse) {
-	if h.sentry == nil || res == nil || res.Status >= 500 {
+	if h.sentry == nil || res.Status < 500 {
 		return
 	}
 	opts := []sentry.ReportOption{
@@ -199,7 +199,7 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
 		sentry.WithFingerprint(
 			ctx.Request.Method,
 			ctx.FullPath(),
-			res.Detail,
+			res.GetDetail(),
 		),
 		sentry.WithUser(&sentry.User{
 			ID:        getAdminID(ctx),

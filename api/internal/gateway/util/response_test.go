@@ -73,6 +73,37 @@ func TestErrorResponse(t *testing.T) {
 	}
 }
 
+func TestErrorResponse_GetDetail(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		res    *ErrorResponse
+		expect string
+	}{
+		{
+			name: "success",
+			res: &ErrorResponse{
+				Detail: "some error",
+			},
+			expect: "some error",
+		},
+		{
+			name:   "empty",
+			res:    nil,
+			expect: "",
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.res.GetDetail())
+		})
+	}
+}
+
 func TestErrorResponse_InternalError(t *testing.T) {
 	t.Parallel()
 

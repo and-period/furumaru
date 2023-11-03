@@ -39,6 +39,13 @@ func NewErrorResponse(err error) (*ErrorResponse, int) {
 	return res, http.StatusInternalServerError
 }
 
+func (r *ErrorResponse) GetDetail() string {
+	if r == nil {
+		return ""
+	}
+	return r.Detail
+}
+
 func newErrorResponse(status int, err error) *ErrorResponse {
 	return &ErrorResponse{
 		Status:  status,
