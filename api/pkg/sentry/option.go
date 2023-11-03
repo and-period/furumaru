@@ -61,3 +61,30 @@ func WithRequest(req *http.Request) ReportOption {
 		scope.SetRequest(req)
 	}
 }
+
+func WithFingerprint(fingerprint ...string) ReportOption {
+	return func(scope *sentry.Scope) {
+		scope.SetFingerprint(fingerprint)
+	}
+}
+
+type User struct {
+	ID        string
+	Email     string
+	IPAddress string
+	Username  string
+	Name      string
+	Data      map[string]string
+}
+
+func WithUser(user *User) ReportOption {
+	return func(scope *sentry.Scope) {
+		scope.SetUser(sentry.User{
+			ID:        user.ID,
+			Email:     user.Email,
+			IPAddress: user.IPAddress,
+			Username:  user.Username,
+			Data:      user.Data,
+		})
+	}
+}

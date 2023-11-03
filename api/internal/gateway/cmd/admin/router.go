@@ -12,6 +12,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/pkg/cors"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	ginzip "github.com/gin-contrib/gzip"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,7 @@ import (
 func (a *app) newRouter() *gin.Engine {
 	opts := make([]gin.HandlerFunc, 0)
 	opts = append(opts, nrgin.Middleware(a.newRelic))
+	opts = append(opts, sentrygin.New(sentrygin.Options{}))
 	opts = append(opts, a.accessLogger())
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, ginzip.Gzip(ginzip.DefaultCompression))
@@ -136,7 +138,7 @@ func (a *app) accessLogger() gin.HandlerFunc {
 
 		// 500 ~
 		fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
-		a.logger.Error(path, fields...)
+		a.logger.Warn(path, fields...)
 
 		if a.slack == nil {
 			return

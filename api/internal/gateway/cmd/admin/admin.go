@@ -111,13 +111,13 @@ func (a *app) run() error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		if err = ms.Serve(); err != nil {
-			a.logger.Error("Failed to run metrics server", zap.Error(err))
+			a.logger.Warn("Failed to run metrics server", zap.Error(err))
 		}
 		return
 	})
 	eg.Go(func() (err error) {
 		if err = hs.Serve(); err != nil {
-			a.logger.Error("Failed to run http server", zap.Error(err))
+			a.logger.Warn("Failed to run http server", zap.Error(err))
 		}
 		return
 	})
@@ -128,7 +128,7 @@ func (a *app) run() error {
 	signal.Notify(signalCh, syscall.SIGTERM, syscall.SIGINT)
 	select {
 	case <-ectx.Done():
-		a.logger.Error("Done context", zap.Error(ectx.Err()))
+		a.logger.Warn("Done context", zap.Error(ectx.Err()))
 	case signal := <-signalCh:
 		a.logger.Info("Received signal", zap.Any("signal", signal))
 		delay := time.Duration(a.ShutdownDelaySec) * time.Second
