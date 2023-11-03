@@ -3,10 +3,9 @@ import { storeToRefs } from 'pinia'
 import { MOCK_CART_ITEMS } from '~/constants/mock'
 import { useAuthStore } from '~/store/auth'
 import { useNotificationStore } from '~/store/notification'
-import { useShoppingStore } from '~/store/shopping'
+import { useShoppingCartStore } from '~/store/shopping'
 import { I18n } from '~/types/locales'
 import { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
-
 
 const router = useRouter()
 const route = useRoute()
@@ -19,9 +18,12 @@ const { notifications } = storeToRefs(notificationStore)
 const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
-const shoppingStore = useShoppingStore()
+const shoppingStore = useShoppingCartStore()
+const { getCart } = shoppingStore
 const { cartIsEmpty } = storeToRefs(shoppingStore)
 const cartItems = MOCK_CART_ITEMS
+
+getCart()
 
 const ht = (str: keyof I18n['layout']['header']) => {
   return i18n.t(`layout.header.${str}`)
@@ -104,12 +106,11 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
 const isScrolled = ref<boolean>(false)
 
 const onScroll = () => {
-  if(!isScrolled.value && window.scrollY > 50) {
+  if (!isScrolled.value && window.scrollY > 50) {
     isScrolled.value = true
-  } else if(isScrolled.value && window.scrollY < 30) {
-      isScrolled.value=false
+  } else if (isScrolled.value && window.scrollY < 30) {
+    isScrolled.value = false
   }
-
 }
 
 onMounted(() => {
