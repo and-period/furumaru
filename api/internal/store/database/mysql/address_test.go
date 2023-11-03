@@ -359,14 +359,16 @@ func TestAddress_Create(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
+
+			err := delete(ctx, adddressTable)
+			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
-			err := db.Create(ctx, tt.args.address)
+			err = db.Create(ctx, tt.args.address)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
@@ -466,10 +468,13 @@ func TestAddress_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
+			err := delete(ctx, adddressTable)
+			require.NoError(t, err)
+
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
-			err := db.Update(ctx, tt.args.addressID, tt.args.userID, tt.args.params)
+			err = db.Update(ctx, tt.args.addressID, tt.args.userID, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
