@@ -243,8 +243,8 @@ func (a *app) inject(ctx context.Context) error {
 		WaitGroup: params.waitGroup,
 	}
 	a.logger = params.logger
-	a.v1 = v1.NewHandler(v1Params, v1.WithLogger(logger))
-	a.komoju = khandler.NewHandler(khandlerParams, khandler.WithLogger(logger))
+	a.v1 = v1.NewHandler(v1Params, v1.WithLogger(params.logger))
+	a.komoju = khandler.NewHandler(khandlerParams, khandler.WithLogger(params.logger))
 	a.debugMode = params.debugMode
 	a.waitGroup = params.waitGroup
 	a.slack = params.slack
@@ -299,6 +299,19 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 			return err
 		}
 		p.newRelicLicense = secrets["license"]
+		return nil
+	})
+	eg.Go(func() error {
+		// Sentry認証情報の取得
+		if a.SentrySecretName == "" {
+			p.sentryDsn = a.SentryDsn
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.SentrySecretName)
+		if err != nil {
+			return err
+		}
+		p.sentryDsn = secrets["dsn"]
 		return nil
 	})
 	eg.Go(func() error {
