@@ -3,7 +3,6 @@ import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
 
-const router = useRouter()
 const route = useRoute()
 
 const productStore = useProductStore()
