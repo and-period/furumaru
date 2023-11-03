@@ -2,6 +2,7 @@ package sentry
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/getsentry/sentry-go"
 )
@@ -14,12 +15,27 @@ type options struct {
 type ClientOption func(*options)
 
 func buildOptions(opts ...ClientOption) *options {
+	beforeSendFn := func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
+		for i := range event.Exception {
+			exception := &event.Exception[i]
+			if !strings.Contains(exception.Type, "wrapError") {
+				continue
+			}
+			strs := strings.SplitN(exception.Value, ":", 2)
+			if len(strs) != 2 {
+				continue
+			}
+			exception.Type, exception.Value = strs[0], strs[1]
+		}
+		return event
+	}
 	dopts := &options{
 		bind: false,
 		opts: sentry.ClientOptions{
 			Environment:   "",
 			Debug:         false,
 			EnableTracing: false,
+			BeforeSend:    beforeSendFn,
 		},
 	}
 	for i := range opts {

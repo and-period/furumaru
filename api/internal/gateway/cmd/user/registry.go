@@ -150,7 +150,6 @@ func (a *app) inject(ctx context.Context) error {
 		sentryApp, err := sentry.NewClient(
 			sentry.WithEnvironment(a.Environment),
 			sentry.WithDSN(params.sentryDsn),
-			sentry.WithDebug(params.debugMode),
 			sentry.WithTrace(true),
 			sentry.WithBind(true),
 		)
