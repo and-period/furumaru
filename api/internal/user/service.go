@@ -76,4 +76,11 @@ type Service interface {
 	ForgotUserPassword(ctx context.Context, in *ForgotUserPasswordInput) error                   // パスワードリセット (メール送信)
 	VerifyUserPassword(ctx context.Context, in *VerifyUserPasswordInput) error                   // パスワードリセット (パスワード更新)
 	DeleteUser(ctx context.Context, in *DeleteUserInput) error                                   // 退会
+	// アドレス帳
+	ListAddresses(ctx context.Context, in *ListAddressesInput) (entity.Addresses, int64, error)  // 一覧取得
+	MultiGetAddresses(ctx context.Context, in *MultiGetAddressesInput) (entity.Addresses, error) // 一覧取得(ID指定)
+	GetAddress(ctx context.Context, in *GetAddressInput) (*entity.Address, error)                // １件取得
+	CreateAddress(ctx context.Context, in *CreateAddressInput) (*entity.Address, error)          // 登録
+	UpdateAddress(ctx context.Context, in *UpdateAddressInput) error                             // 更新
+	DeleteAddress(ctx context.Context, in *DeleteAddressInput) error                             // 削除
 }

@@ -6,6 +6,7 @@ on:
     - 'api/**'
     - 'infra/docker/api/**'
     - 'infra/kubernetes/**'
+    - 'infra/mysql/**'
 
 env:
   SERVICE: api

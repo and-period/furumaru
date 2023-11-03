@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/store/database"
-	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
@@ -55,8 +55,13 @@ func (a *address) List(ctx context.Context, params *database.ListAddressesParams
 	stmt = p.stmt(stmt)
 	stmt = p.pagination(stmt)
 
-	err := stmt.Find(&addresses).Error
-	return addresses, dbError(err)
+	if err := stmt.Find(&addresses).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := addresses.Fill(); err != nil {
+		return nil, dbError(err)
+	}
+	return addresses, nil
 }
 
 func (a *address) Count(ctx context.Context, params *database.ListAddressesParams) (int64, error) {
@@ -69,22 +74,21 @@ func (a *address) Count(ctx context.Context, params *database.ListAddressesParam
 func (a *address) MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error) {
 	var addresses entity.Addresses
 
-	err := a.db.Statement(ctx, a.db.DB, adddressTable, fields...).
-		Where("id IN (?)", addressIDs).
-		Find(&addresses).Error
-	return addresses, dbError(err)
+	stmt := a.db.Statement(ctx, a.db.DB, adddressTable, fields...).
+		Where("id IN (?)", addressIDs)
+
+	if err := stmt.Find(&addresses).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := addresses.Fill(); err != nil {
+		return nil, dbError(err)
+	}
+	return addresses, nil
 }
 
 func (a *address) Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error) {
-	var address *entity.Address
-
-	stmt := a.db.Statement(ctx, a.db.DB, adddressTable, fields...).
-		Where("id = ?", addressID)
-
-	if err := stmt.First(&address).Error; err != nil {
-		return nil, dbError(err)
-	}
-	return address, nil
+	address, err := a.get(ctx, a.db.DB, addressID, fields...)
+	return address, dbError(err)
 }
 
 func (a *address) Create(ctx context.Context, address *entity.Address) error {
@@ -134,8 +138,8 @@ func (a *address) Update(ctx context.Context, addressID, userID string, params *
 		updates := map[string]interface{}{
 			"lastname":      params.Lastname,
 			"firstname":     params.Firstname,
-			"posta_code":    params.PostalCode,
-			"prefecture":    params.Prefecture,
+			"postal_code":   params.PostalCode,
+			"prefecture":    params.PrefectureCode,
 			"city":          params.City,
 			"address_line1": params.AddressLine1,
 			"address_line2": params.AddressLine2,
@@ -158,4 +162,19 @@ func (a *address) Delete(ctx context.Context, addressID string) error {
 
 	err := stmt.Delete(&entity.Address{}).Error
 	return dbError(err)
+}
+
+func (a *address) get(ctx context.Context, tx *gorm.DB, addressID string, fields ...string) (*entity.Address, error) {
+	var address *entity.Address
+
+	stmt := a.db.Statement(ctx, tx, adddressTable, fields...).
+		Where("id = ?", addressID)
+
+	if err := stmt.First(&address).Error; err != nil {
+		return nil, err
+	}
+	if err := address.Fill(); err != nil {
+		return nil, err
+	}
+	return address, nil
 }

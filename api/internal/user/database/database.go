@@ -23,6 +23,7 @@ var (
 )
 
 type Database struct {
+	Address       Address
 	Admin         Admin
 	Administrator Administrator
 	Coordinator   Coordinator
@@ -34,6 +35,34 @@ type Database struct {
 /**
  * interface
  */
+type Address interface {
+	List(ctx context.Context, params *ListAddressesParams, fields ...string) (entity.Addresses, error)
+	Count(ctx context.Context, params *ListAddressesParams) (int64, error)
+	MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error)
+	Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error)
+	Create(ctx context.Context, address *entity.Address) error
+	Update(ctx context.Context, addressID, userID string, params *UpdateAddressParams) error
+	Delete(ctx context.Context, addressID string) error
+}
+
+type ListAddressesParams struct {
+	UserID string
+	Limit  int
+	Offset int
+}
+
+type UpdateAddressParams struct {
+	Lastname       string
+	Firstname      string
+	PostalCode     string
+	PrefectureCode int64
+	City           string
+	AddressLine1   string
+	AddressLine2   string
+	PhoneNumber    string
+	IsDefault      bool
+}
+
 type Admin interface {
 	MultiGet(ctx context.Context, adminIDs []string, fields ...string) (entity.Admins, error)
 	Get(ctx context.Context, adminID string, fields ...string) (*entity.Admin, error)

@@ -51,6 +51,21 @@ func (mr *MockServiceMockRecorder) AggregateRealatedProducers(ctx, in interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateRealatedProducers", reflect.TypeOf((*MockService)(nil).AggregateRealatedProducers), ctx, in)
 }
 
+// CreateAddress mocks base method.
+func (m *MockService) CreateAddress(ctx context.Context, in *user.CreateAddressInput) (*entity.Address, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateAddress", ctx, in)
+	ret0, _ := ret[0].(*entity.Address)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAddress indicates an expected call of CreateAddress.
+func (mr *MockServiceMockRecorder) CreateAddress(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAddress", reflect.TypeOf((*MockService)(nil).CreateAddress), ctx, in)
+}
+
 // CreateAdministrator mocks base method.
 func (m *MockService) CreateAdministrator(ctx context.Context, in *user.CreateAdministratorInput) (*entity.Administrator, error) {
 	m.ctrl.T.Helper()
@@ -124,6 +139,20 @@ func (m *MockService) CreateUserWithOAuth(ctx context.Context, in *user.CreateUs
 func (mr *MockServiceMockRecorder) CreateUserWithOAuth(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserWithOAuth", reflect.TypeOf((*MockService)(nil).CreateUserWithOAuth), ctx, in)
+}
+
+// DeleteAddress mocks base method.
+func (m *MockService) DeleteAddress(ctx context.Context, in *user.DeleteAddressInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAddress", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAddress indicates an expected call of DeleteAddress.
+func (mr *MockServiceMockRecorder) DeleteAddress(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAddress", reflect.TypeOf((*MockService)(nil).DeleteAddress), ctx, in)
 }
 
 // DeleteAdministrator mocks base method.
@@ -208,6 +237,21 @@ func (m *MockService) ForgotUserPassword(ctx context.Context, in *user.ForgotUse
 func (mr *MockServiceMockRecorder) ForgotUserPassword(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForgotUserPassword", reflect.TypeOf((*MockService)(nil).ForgotUserPassword), ctx, in)
+}
+
+// GetAddress mocks base method.
+func (m *MockService) GetAddress(ctx context.Context, in *user.GetAddressInput) (*entity.Address, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAddress", ctx, in)
+	ret0, _ := ret[0].(*entity.Address)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAddress indicates an expected call of GetAddress.
+func (mr *MockServiceMockRecorder) GetAddress(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAddress", reflect.TypeOf((*MockService)(nil).GetAddress), ctx, in)
 }
 
 // GetAdmin mocks base method.
@@ -329,6 +373,22 @@ func (mr *MockServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockService)(nil).InitializeUser), ctx, in)
 }
 
+// ListAddresses mocks base method.
+func (m *MockService) ListAddresses(ctx context.Context, in *user.ListAddressesInput) (entity.Addresses, int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAddresses", ctx, in)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(int64)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListAddresses indicates an expected call of ListAddresses.
+func (mr *MockServiceMockRecorder) ListAddresses(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAddresses", reflect.TypeOf((*MockService)(nil).ListAddresses), ctx, in)
+}
+
 // ListAdministrators mocks base method.
 func (m *MockService) ListAdministrators(ctx context.Context, in *user.ListAdministratorsInput) (entity.Administrators, int64, error) {
 	m.ctrl.T.Helper()
@@ -391,6 +451,21 @@ func (m *MockService) ListUsers(ctx context.Context, in *user.ListUsersInput) (e
 func (mr *MockServiceMockRecorder) ListUsers(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsers", reflect.TypeOf((*MockService)(nil).ListUsers), ctx, in)
+}
+
+// MultiGetAddresses mocks base method.
+func (m *MockService) MultiGetAddresses(ctx context.Context, in *user.MultiGetAddressesInput) (entity.Addresses, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetAddresses", ctx, in)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetAddresses indicates an expected call of MultiGetAddresses.
+func (mr *MockServiceMockRecorder) MultiGetAddresses(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAddresses", reflect.TypeOf((*MockService)(nil).MultiGetAddresses), ctx, in)
 }
 
 // MultiGetAdminDevices mocks base method.
@@ -668,6 +743,20 @@ func (m *MockService) UnrelateProducer(ctx context.Context, in *user.UnrelatePro
 func (mr *MockServiceMockRecorder) UnrelateProducer(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnrelateProducer", reflect.TypeOf((*MockService)(nil).UnrelateProducer), ctx, in)
+}
+
+// UpdateAddress mocks base method.
+func (m *MockService) UpdateAddress(ctx context.Context, in *user.UpdateAddressInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateAddress", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateAddress indicates an expected call of UpdateAddress.
+func (mr *MockServiceMockRecorder) UpdateAddress(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAddress", reflect.TypeOf((*MockService)(nil).UpdateAddress), ctx, in)
 }
 
 // UpdateAdminEmail mocks base method.
