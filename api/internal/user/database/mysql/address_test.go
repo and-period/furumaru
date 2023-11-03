@@ -147,7 +147,7 @@ func TestAddress_Count(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &address{db: db, now: now}
-			actual, err := db.List(ctx, tt.args.params)
+			actual, err := db.Count(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 			assert.Equal(t, tt.want.total, actual)
 		})

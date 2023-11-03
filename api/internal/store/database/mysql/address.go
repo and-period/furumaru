@@ -134,7 +134,7 @@ func (a *address) Update(ctx context.Context, addressID, userID string, params *
 		updates := map[string]interface{}{
 			"lastname":      params.Lastname,
 			"firstname":     params.Firstname,
-			"posta_code":    params.PostalCode,
+			"postal_code":   params.PostalCode,
 			"prefecture":    params.Prefecture,
 			"city":          params.City,
 			"address_line1": params.AddressLine1,
