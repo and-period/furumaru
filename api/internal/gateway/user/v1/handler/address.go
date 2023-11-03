@@ -7,7 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,12 +37,12 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 		return
 	}
 
-	in := &store.ListAddressesInput{
+	in := &user.ListAddressesInput{
 		UserID: getUserID(ctx),
 		Limit:  limit,
 		Offset: offset,
 	}
-	addresses, total, err := h.store.ListAddresses(ctx, in)
+	addresses, total, err := h.user.ListAddresses(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -56,11 +56,11 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 }
 
 func (h *handler) GetAddress(ctx *gin.Context) {
-	in := &store.GetAddressInput{
+	in := &user.GetAddressInput{
 		AddressID: util.GetParam(ctx, "addressId"),
 		UserID:    getUserID(ctx),
 	}
-	address, err := h.store.GetAddress(ctx, in)
+	address, err := h.user.GetAddress(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -77,19 +77,19 @@ func (h *handler) CreateAddress(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	in := &store.CreateAddressInput{
-		UserID:       getUserID(ctx),
-		Lastname:     req.Lastname,
-		Firstname:    req.Firstname,
-		PostalCode:   req.PostalCode,
-		Prefecture:   req.Prefecture,
-		City:         req.City,
-		AddressLine1: req.AddressLine1,
-		AddressLine2: req.AddressLine1,
-		PhoneNumber:  req.PhoneNumber,
-		IsDefault:    req.IsDefault,
+	in := &user.CreateAddressInput{
+		UserID:         getUserID(ctx),
+		Lastname:       req.Lastname,
+		Firstname:      req.Firstname,
+		PostalCode:     req.PostalCode,
+		PrefectureCode: req.Prefecture,
+		City:           req.City,
+		AddressLine1:   req.AddressLine1,
+		AddressLine2:   req.AddressLine1,
+		PhoneNumber:    req.PhoneNumber,
+		IsDefault:      req.IsDefault,
 	}
-	address, err := h.store.CreateAddress(ctx, in)
+	address, err := h.user.CreateAddress(ctx, in)
 	if err != nil {
 		httpError(ctx, err)
 		return
@@ -106,20 +106,20 @@ func (h *handler) UpdateAddress(ctx *gin.Context) {
 		badRequest(ctx, err)
 		return
 	}
-	in := &store.UpdateAddressInput{
-		AddressID:    util.GetParam(ctx, "addressId"),
-		UserID:       getUserID(ctx),
-		Lastname:     req.Lastname,
-		Firstname:    req.Firstname,
-		PostalCode:   req.PostalCode,
-		Prefecture:   req.Prefecture,
-		City:         req.City,
-		AddressLine1: req.AddressLine1,
-		AddressLine2: req.AddressLine1,
-		PhoneNumber:  req.PhoneNumber,
-		IsDefault:    req.IsDefault,
+	in := &user.UpdateAddressInput{
+		AddressID:      util.GetParam(ctx, "addressId"),
+		UserID:         getUserID(ctx),
+		Lastname:       req.Lastname,
+		Firstname:      req.Firstname,
+		PostalCode:     req.PostalCode,
+		PrefectureCode: req.Prefecture,
+		City:           req.City,
+		AddressLine1:   req.AddressLine1,
+		AddressLine2:   req.AddressLine1,
+		PhoneNumber:    req.PhoneNumber,
+		IsDefault:      req.IsDefault,
 	}
-	if err := h.store.UpdateAddress(ctx, in); err != nil {
+	if err := h.user.UpdateAddress(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}
@@ -127,11 +127,11 @@ func (h *handler) UpdateAddress(ctx *gin.Context) {
 }
 
 func (h *handler) DeleteAddress(ctx *gin.Context) {
-	in := &store.DeleteAddressInput{
+	in := &user.DeleteAddressInput{
 		AddressID: util.GetParam(ctx, "addressId"),
 		UserID:    getUserID(ctx),
 	}
-	if err := h.store.DeleteAddress(ctx, in); err != nil {
+	if err := h.user.DeleteAddress(ctx, in); err != nil {
 		httpError(ctx, err)
 		return
 	}

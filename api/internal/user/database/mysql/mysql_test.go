@@ -49,6 +49,7 @@ func newTestDBClient() (*mysql.Client, error) {
 func deleteAll(ctx context.Context) error {
 	tables := []string{
 		// テストに対応したテーブルから追記(削除順)
+		adddressTable,
 		producerTable,
 		coordinatorTable,
 		administratorTable,
