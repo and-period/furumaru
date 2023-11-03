@@ -9,8 +9,12 @@ export default class ApiClientFactory {
     Client: new (config: Configuration) => T,
     token?: string,
   ): T {
-    const { API_BASE_URL: basePath } = useRuntimeConfig()
-    const config = new Configuration({ accessToken: token, basePath })
+    const runtimeConfig = useRuntimeConfig()
+    const config = new Configuration({
+      accessToken: token,
+      basePath: runtimeConfig.public.API_BASE_URL,
+      credentials: 'include',
+    })
     return new Client(config)
   }
 }
