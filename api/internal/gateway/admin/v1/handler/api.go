@@ -193,6 +193,7 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
 	if h.sentry == nil || res.Status < 500 {
 		return
 	}
+	h.logger.Debug("動作確認1")
 	opts := []sentry.ReportOption{
 		sentry.WithLevel("error"),
 		sentry.WithRequest(ctx.Request),
@@ -214,8 +215,13 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
 			"user_agent": ctx.Request.UserAgent(),
 		}),
 	}
+	h.logger.Debug("動作確認2", zap.Any("opts", opts))
+	h.waitGroup.Add(1)
 	go func(ctx context.Context, opts []sentry.ReportOption) {
+		defer h.waitGroup.Done()
+		h.logger.Debug("動作確認3", zap.Any("opts", opts))
 		h.sentry.ReportError(ctx, err, opts...)
+		h.logger.Debug("動作確認4", zap.Any("opts", opts))
 	}(ctx, opts)
 }
 
