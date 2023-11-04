@@ -38,6 +38,10 @@ const openingVideoUploadStatus = ref<ImageUploadStatus>({
   message: ''
 })
 
+const isLoading = (): boolean => {
+  return loading.value
+}
+
 const handleUploadThumbnail = (files: FileList): void => {
   if (files.length === 0) {
     return

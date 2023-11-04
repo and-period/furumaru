@@ -3,7 +3,7 @@ import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import type { AlertType } from '~/lib/hooks'
-import type { AdminRole, DiscountType, Promotion } from '~/types/api'
+import { AdminRole, DiscountType, type Promotion } from '~/types/api'
 
 const props = defineProps({
   loading: {

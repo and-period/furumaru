@@ -3,7 +3,7 @@ import { unix } from 'dayjs'
 import { prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { DeliveryType, FulfillmentStatus, OrderRefundType, OrderResponse, PaymentMethodType, PaymentStatus, Prefecture, ShippingCarrier, ShippingSize } from '~/types/api'
+import { DeliveryType, FulfillmentStatus, OrderRefundType, type OrderResponse, PaymentMethodType, PaymentStatus, Prefecture, ShippingCarrier, ShippingSize } from '~/types/api'
 import type { Order, OrderItems } from '~/types/props'
 
 const props = defineProps({

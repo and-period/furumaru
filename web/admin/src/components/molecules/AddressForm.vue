@@ -8,8 +8,8 @@ const props = defineProps({
     default: ''
   },
   prefectureCode: {
-    type: String as PropType<Prefecture>,
-    default: ''
+    type: Number as PropType<Prefecture>,
+    default: Prefecture.UNKNOWN
   },
   city: {
     type: String,

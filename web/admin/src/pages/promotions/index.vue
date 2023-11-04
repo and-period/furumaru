@@ -27,7 +27,7 @@ watch(pagination.itemsPerPage, (): void => {
 
 const fetchPromotions = async (): Promise<void> => {
   try {
-    const orders: string[] = sortBy.value.map((item) => {
+    const orders: string[] = sortBy.value.map((item: any) => {
       switch (item.order) {
         case 'asc':
           return item.key

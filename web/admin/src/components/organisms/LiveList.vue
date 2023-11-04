@@ -10,14 +10,14 @@ import {
   required
 } from '~/lib/validations'
 import {
-  CreateLiveRequest,
-  Live,
-  Producer,
-  Product,
-  ProductMediaInner,
-  Schedule,
+  type CreateLiveRequest,
+  type Live,
+  type Producer,
+  type Product,
+  type ProductMediaInner,
+  type Schedule,
   ScheduleStatus,
-  UpdateLiveRequest
+  type UpdateLiveRequest
 } from '~/types/api'
 import { LiveTime } from '~/types/props'
 
@@ -58,7 +58,6 @@ const props = defineProps({
     default: (): Schedule => ({
       id: '',
       coordinatorId: '',
-      shippingId: '',
       title: '',
       description: '',
       status: ScheduleStatus.UNKNOWN,
