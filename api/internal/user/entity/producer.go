@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"gorm.io/datatypes"
@@ -28,7 +29,8 @@ type Producer struct {
 	InstagramID       string         `gorm:""`                               // SNS(Instagram)アカウント名
 	FacebookID        string         `gorm:""`                               // SNS(Facebook)アカウント名
 	PostalCode        string         `gorm:""`                               // 郵便番号
-	Prefecture        int64          `gorm:""`                               // 都道府県
+	Prefecture        string         `gorm:"-"`                              // 都道府県
+	PrefectureCode    int32          `gorm:"column:prefecture"`              // 都道府県コード
 	City              string         `gorm:""`                               // 市区町村
 	AddressLine1      string         `gorm:""`                               // 町名・番地
 	AddressLine2      string         `gorm:""`                               // ビル名・号室など
@@ -52,13 +54,17 @@ type NewProducerParams struct {
 	InstagramID       string
 	FacebookID        string
 	PostalCode        string
-	Prefecture        int64
+	PrefectureCode    int32
 	City              string
 	AddressLine1      string
 	AddressLine2      string
 }
 
-func NewProducer(params *NewProducerParams) *Producer {
+func NewProducer(params *NewProducerParams) (*Producer, error) {
+	prefecture, err := codes.ToPrefectureJapanese(params.PrefectureCode)
+	if err != nil {
+		return nil, err
+	}
 	return &Producer{
 		AdminID:           params.Admin.ID,
 		CoordinatorID:     params.CoordinatorID,
@@ -72,25 +78,26 @@ func NewProducer(params *NewProducerParams) *Producer {
 		InstagramID:       params.InstagramID,
 		FacebookID:        params.FacebookID,
 		PostalCode:        params.PostalCode,
-		Prefecture:        params.Prefecture,
+		Prefecture:        prefecture,
+		PrefectureCode:    params.PrefectureCode,
 		City:              params.City,
 		AddressLine1:      params.AddressLine1,
 		AddressLine2:      params.AddressLine2,
 		Admin:             *params.Admin,
-	}
+	}, nil
 }
 
 func (p *Producer) Fill(admin *Admin) (err error) {
-	var thumbnails, headers common.Images
-	if thumbnails, err = common.NewImagesFromBytes(p.ThumbnailsJSON); err != nil {
+	p.Thumbnails, err = common.NewImagesFromBytes(p.ThumbnailsJSON)
+	if err != nil {
 		return err
 	}
-	if headers, err = common.NewImagesFromBytes(p.HeadersJSON); err != nil {
+	p.Headers, err = common.NewImagesFromBytes(p.HeadersJSON)
+	if err != nil {
 		return err
 	}
 	p.Admin = *admin
-	p.Thumbnails = thumbnails
-	p.Headers = headers
+	p.Prefecture, _ = codes.ToPrefectureJapanese(p.PrefectureCode)
 	return nil
 }
 

@@ -23,7 +23,7 @@ postalCodeResponse:
   - town
   example:
     postalCode: '1000014'
-    prefectureCode: 'tokyo'
+    prefectureCode: 13
     prefecture: '東京都'
     city: '千代田区'
     town: '永田町'

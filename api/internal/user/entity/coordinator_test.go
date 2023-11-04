@@ -17,6 +17,7 @@ func TestCoordinator(t *testing.T) {
 		name   string
 		params *NewCoordinatorParams
 		expect *Coordinator
+		hasErr bool
 	}{
 		{
 			name: "success",
@@ -42,7 +43,7 @@ func TestCoordinator(t *testing.T) {
 				InstagramID:       "instagram-id",
 				FacebookID:        "facebook-id",
 				PostalCode:        "1000014",
-				Prefecture:        codes.PrefectureValues["tokyo"],
+				PrefectureCode:    codes.PrefectureValues["tokyo"],
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
@@ -62,7 +63,8 @@ func TestCoordinator(t *testing.T) {
 				InstagramID:       "instagram-id",
 				FacebookID:        "facebook-id",
 				PostalCode:        "1000014",
-				Prefecture:        codes.PrefectureValues["tokyo"],
+				Prefecture:        "東京都",
+				PrefectureCode:    13,
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
@@ -76,6 +78,40 @@ func TestCoordinator(t *testing.T) {
 					Email:         "test-coordinator@and-period.jp",
 				},
 			},
+			hasErr: false,
+		},
+		{
+			name: "invalid prefecture code",
+			params: &NewCoordinatorParams{
+				Admin: &Admin{
+					ID:            "admin-id",
+					CognitoID:     "cognito-id",
+					Lastname:      "&.",
+					Firstname:     "スタッフ",
+					LastnameKana:  "あんどぴりおど",
+					FirstnameKana: "すたっふ",
+					Email:         "test-coordinator@and-period.jp",
+				},
+				PhoneNumber:       "+819012345678",
+				MarcheName:        "&.マルシェ",
+				Username:          "&.農園",
+				Profile:           "紹介文です。",
+				ProductTypeIDs:    []string{"product-type-id"},
+				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+				HeaderURL:         "https://and-period.jp/header.png",
+				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+				BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+				InstagramID:       "instagram-id",
+				FacebookID:        "facebook-id",
+				PostalCode:        "1000014",
+				PrefectureCode:    0,
+				City:              "千代田区",
+				AddressLine1:      "永田町1-7-1",
+				AddressLine2:      "",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+			},
+			expect: nil,
+			hasErr: false,
 		},
 	}
 
@@ -83,7 +119,12 @@ func TestCoordinator(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewCoordinator(tt.params)
+			actual, err := NewCoordinator(tt.params)
+			if tt.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -103,6 +144,7 @@ func TestCoordinator_Fill(t *testing.T) {
 			name: "success",
 			coordinator: &Coordinator{
 				AdminID:            "admin-id",
+				PrefectureCode:     13,
 				ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
 				ThumbnailsJSON:     datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
 				HeadersJSON:        datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
@@ -114,6 +156,8 @@ func TestCoordinator_Fill(t *testing.T) {
 			},
 			expect: &Coordinator{
 				AdminID:            "admin-id",
+				Prefecture:         "東京都",
+				PrefectureCode:     13,
 				ProductTypeIDsJSON: []byte(`["product-type-id"]`),
 				ProductTypeIDs: []string{
 					"product-type-id",

@@ -62,7 +62,7 @@ productResponse:
       box60Rate: 80
       box80Rate: 50
       box100Rate: 40
-      originPrefecture: 'tokyo'
+      originprefectureCode: 13
       originCity: '彦根市'
       startAt: 1640962800
       endAt: 1640962800
@@ -79,7 +79,7 @@ productResponse:
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
-      prefecture: 'tokyo'
+      prefectureCode: 13
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
@@ -119,7 +119,7 @@ productResponse:
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
-      prefecture: 'tokyo'
+      prefectureCode: 13
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
@@ -258,7 +258,7 @@ productsResponse:
       box60Rate: 80
       box80Rate: 50
       box100Rate: 40
-      originPrefecture: 'tokyo'
+      originprefectureCode: 13
       originCity: '彦根市'
       startAt: 1640962800
       endAt: 1640962800
@@ -276,7 +276,7 @@ productsResponse:
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
-      prefecture: 'tokyo'
+      prefectureCode: 13
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
@@ -317,7 +317,7 @@ productsResponse:
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
-      prefecture: 'tokyo'
+      prefectureCode: 13
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''

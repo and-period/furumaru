@@ -55,7 +55,7 @@ type UpdateAddressParams struct {
 	Lastname       string
 	Firstname      string
 	PostalCode     string
-	PrefectureCode int64
+	PrefectureCode int32
 	City           string
 	AddressLine1   string
 	AddressLine2   string
@@ -131,7 +131,7 @@ type UpdateCoordinatorParams struct {
 	FacebookID        string
 	PhoneNumber       string
 	PostalCode        string
-	Prefecture        int64
+	PrefectureCode    int32
 	City              string
 	AddressLine1      string
 	AddressLine2      string
@@ -186,7 +186,7 @@ type UpdateProducerParams struct {
 	FacebookID        string
 	PhoneNumber       string
 	PostalCode        string
-	Prefecture        int64
+	PrefectureCode    int32
 	City              string
 	AddressLine1      string
 	AddressLine2      string

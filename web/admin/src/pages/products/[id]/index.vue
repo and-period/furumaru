@@ -54,7 +54,7 @@ const formData = ref<UpdateProductRequest>({
   box60Rate: 0,
   box80Rate: 0,
   box100Rate: 0,
-  originPrefecture: Prefecture.HOKKAIDO,
+  originPrefectureCode: Prefecture.HOKKAIDO,
   originCity: '',
   startAt: dayjs().unix(),
   endAt: dayjs().unix()

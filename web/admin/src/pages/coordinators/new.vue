@@ -25,7 +25,7 @@ const formData = ref<CreateCoordinatorRequest>({
   email: '',
   phoneNumber: '',
   postalCode: '',
-  prefecture: Prefecture.UNKNOWN,
+  prefectureCode: Prefecture.UNKNOWN,
   city: '',
   addressLine1: '',
   addressLine2: '',
@@ -170,7 +170,7 @@ const handleSearchAddress = async (): Promise<void> => {
     const res = await searchAddress.searchAddressByPostalCode(formData.value.postalCode)
     formData.value = {
       ...formData.value,
-      prefecture: res.prefecture,
+      prefectureCode: res.prefecture,
       city: res.city,
       addressLine1: res.town
     }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -97,7 +98,8 @@ type Product struct {
 	Box60Rate             int64             `gorm:""`                                       // 箱の占有率(サイズ:60)
 	Box80Rate             int64             `gorm:""`                                       // 箱の占有率(サイズ:80)
 	Box100Rate            int64             `gorm:""`                                       // 箱の占有率(サイズ:100)
-	OriginPrefecture      int64             `gorm:""`                                       // 原産地(都道府県)
+	OriginPrefecture      string            `gorm:"-"`                                      // 原産地(都道府県)
+	OriginPrefectureCode  int32             `gorm:"column:origin_prefecture"`               // 原産地(都道府県コード)
 	OriginCity            string            `gorm:""`                                       // 原産地(市区町村)
 	StartAt               time.Time         `gorm:""`                                       // 販売開始日時
 	EndAt                 time.Time         `gorm:""`                                       // 販売終了日時
@@ -118,66 +120,71 @@ type ProductMedia struct {
 type MultiProductMedia []*ProductMedia
 
 type NewProductParams struct {
-	CoordinatorID     string
-	ProducerID        string
-	TypeID            string
-	TagIDs            []string
-	Name              string
-	Description       string
-	Public            bool
-	Inventory         int64
-	Weight            int64
-	WeightUnit        WeightUnit
-	Item              int64
-	ItemUnit          string
-	ItemDescription   string
-	Media             MultiProductMedia
-	Price             int64
-	Cost              int64
-	ExpirationDate    int64
-	RecommendedPoints []string
-	StorageMethodType StorageMethodType
-	DeliveryType      DeliveryType
-	Box60Rate         int64
-	Box80Rate         int64
-	Box100Rate        int64
-	OriginPrefecture  int64
-	OriginCity        string
-	StartAt           time.Time
-	EndAt             time.Time
+	CoordinatorID        string
+	ProducerID           string
+	TypeID               string
+	TagIDs               []string
+	Name                 string
+	Description          string
+	Public               bool
+	Inventory            int64
+	Weight               int64
+	WeightUnit           WeightUnit
+	Item                 int64
+	ItemUnit             string
+	ItemDescription      string
+	Media                MultiProductMedia
+	Price                int64
+	Cost                 int64
+	ExpirationDate       int64
+	RecommendedPoints    []string
+	StorageMethodType    StorageMethodType
+	DeliveryType         DeliveryType
+	Box60Rate            int64
+	Box80Rate            int64
+	Box100Rate           int64
+	OriginPrefectureCode int32
+	OriginCity           string
+	StartAt              time.Time
+	EndAt                time.Time
 }
 
-func NewProduct(params *NewProductParams) *Product {
-	return &Product{
-		ID:                uuid.Base58Encode(uuid.New()),
-		CoordinatorID:     params.CoordinatorID,
-		ProducerID:        params.ProducerID,
-		TypeID:            params.TypeID,
-		TagIDs:            params.TagIDs,
-		Name:              params.Name,
-		Description:       params.Description,
-		Public:            params.Public,
-		Inventory:         params.Inventory,
-		Weight:            params.Weight,
-		WeightUnit:        params.WeightUnit,
-		Item:              params.Item,
-		ItemUnit:          params.ItemUnit,
-		ItemDescription:   params.ItemDescription,
-		Media:             params.Media,
-		Price:             params.Price,
-		Cost:              params.Cost,
-		ExpirationDate:    params.ExpirationDate,
-		RecommendedPoints: params.RecommendedPoints,
-		StorageMethodType: params.StorageMethodType,
-		DeliveryType:      params.DeliveryType,
-		Box60Rate:         params.Box60Rate,
-		Box80Rate:         params.Box80Rate,
-		Box100Rate:        params.Box100Rate,
-		OriginPrefecture:  params.OriginPrefecture,
-		OriginCity:        params.OriginCity,
-		StartAt:           params.StartAt,
-		EndAt:             params.EndAt,
+func NewProduct(params *NewProductParams) (*Product, error) {
+	prefecture, err := codes.ToPrefectureJapanese(params.OriginPrefectureCode)
+	if err != nil {
+		return nil, err
 	}
+	return &Product{
+		ID:                   uuid.Base58Encode(uuid.New()),
+		CoordinatorID:        params.CoordinatorID,
+		ProducerID:           params.ProducerID,
+		TypeID:               params.TypeID,
+		TagIDs:               params.TagIDs,
+		Name:                 params.Name,
+		Description:          params.Description,
+		Public:               params.Public,
+		Inventory:            params.Inventory,
+		Weight:               params.Weight,
+		WeightUnit:           params.WeightUnit,
+		Item:                 params.Item,
+		ItemUnit:             params.ItemUnit,
+		ItemDescription:      params.ItemDescription,
+		Media:                params.Media,
+		Price:                params.Price,
+		Cost:                 params.Cost,
+		ExpirationDate:       params.ExpirationDate,
+		RecommendedPoints:    params.RecommendedPoints,
+		StorageMethodType:    params.StorageMethodType,
+		DeliveryType:         params.DeliveryType,
+		Box60Rate:            params.Box60Rate,
+		Box80Rate:            params.Box80Rate,
+		Box100Rate:           params.Box100Rate,
+		OriginPrefecture:     prefecture,
+		OriginPrefectureCode: params.OriginPrefectureCode,
+		OriginCity:           params.OriginCity,
+		StartAt:              params.StartAt,
+		EndAt:                params.EndAt,
+	}, nil
 }
 
 func (p *Product) Validate() error {
@@ -201,6 +208,7 @@ func (p *Product) Fill(now time.Time) (err error) {
 		return
 	}
 	p.SetStatus(now)
+	p.OriginPrefecture, _ = codes.ToPrefectureJapanese(p.OriginPrefectureCode)
 	return
 }
 

@@ -21,7 +21,7 @@ type Address struct {
 	Firstname      string         `gorm:""`                     // 名
 	PostalCode     string         `gorm:""`                     // 郵便番号
 	Prefecture     string         `gorm:"-"`                    // 都道府県
-	PrefectureCode int64          `gorm:"column:prefecture"`    // 都道府県コード
+	PrefectureCode int32          `gorm:"column:prefecture"`    // 都道府県コード
 	City           string         `gorm:""`                     // 市区町村
 	AddressLine1   string         `gorm:""`                     // 町名・番地
 	AddressLine2   string         `gorm:""`                     // ビル名・号室など
@@ -39,7 +39,7 @@ type NewAddressParams struct {
 	Lastname       string
 	Firstname      string
 	PostalCode     string
-	PrefectureCode int64
+	PrefectureCode int32
 	City           string
 	AddressLine1   string
 	AddressLine2   string
@@ -84,16 +84,12 @@ func NewAddressHash(params *NewAddressParams) string {
 	return hex.EncodeToString(hash[:])
 }
 
-func (a *Address) Fill() (err error) {
-	a.Prefecture, err = codes.ToPrefectureJapanese(a.PrefectureCode)
-	return
+func (a *Address) Fill() {
+	a.Prefecture, _ = codes.ToPrefectureJapanese(a.PrefectureCode)
 }
 
-func (as Addresses) Fill() error {
+func (as Addresses) Fill() {
 	for i := range as {
-		if err := as[i].Fill(); err != nil {
-			return err
-		}
+		as[i].Fill()
 	}
-	return nil
 }

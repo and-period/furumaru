@@ -45,7 +45,7 @@ const props = defineProps({
         lastname: '',
         firstname: '',
         postalCode: '',
-        prefecture: Prefecture.UNKNOWN,
+        prefectureCode: Prefecture.UNKNOWN,
         city: '',
         addressLine1: '',
         addressLine2: '',
@@ -61,7 +61,7 @@ const props = defineProps({
         lastname: '',
         firstname: '',
         postalCode: '',
-        prefecture: Prefecture.UNKNOWN,
+        prefectureCode: Prefecture.UNKNOWN,
         city: '',
         addressLine1: '',
         addressLine2: '',
@@ -423,7 +423,7 @@ const getBoxSize = (size: ShippingSize): string => {
             />
             <div class="d-flex align-center">
               <v-text-field
-                v-model="orderValue.payment.prefecture"
+                v-model="orderValue.payment.prefectureCode"
                 :items="prefecturesList"
                 item-title="text"
                 item-value="value"
@@ -593,7 +593,7 @@ const getBoxSize = (size: ShippingSize): string => {
             />
             <div class="d-flex align-center">
               <v-text-field
-                v-model="orderValue.fulfillment.prefecture"
+                v-model="orderValue.fulfillment.prefectureCode"
                 :items="prefecturesList"
                 item-title="text"
                 item-value="value"

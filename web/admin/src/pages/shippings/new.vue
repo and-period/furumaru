@@ -21,7 +21,7 @@ const formData = ref<CreateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: []
+      prefectureCodes: []
     }
   ],
   box60Refrigerated: 0,
@@ -30,7 +30,7 @@ const formData = ref<CreateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: []
+      prefectureCodes: []
     }
   ],
   box80Refrigerated: 0,
@@ -39,7 +39,7 @@ const formData = ref<CreateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: []
+      prefectureCodes: []
     }
   ],
   box100Refrigerated: 0,

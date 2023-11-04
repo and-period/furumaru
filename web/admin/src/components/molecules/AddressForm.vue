@@ -7,7 +7,7 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  prefecture: {
+  prefectureCode: {
     type: String as PropType<Prefecture>,
     default: ''
   },
@@ -47,7 +47,7 @@ const postalCodeValue = computed({
   set: (val: string) => emit('update:postalCode', val)
 })
 const prefectureValue = computed({
-  get: (): Prefecture => props.prefecture,
+  get: (): Prefecture => props.prefectureCode,
   set: (val: Prefecture) => emit('update:prefecture', val)
 })
 const cityValue = computed({

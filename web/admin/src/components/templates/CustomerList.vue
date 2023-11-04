@@ -91,7 +91,7 @@ const getStatusColor = (account: boolean): string => {
 
 const getAddress = (customer: User): string => {
   const prefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
-    return prefecture.value === customer.prefecture
+    return prefecture.value === customer.prefectureCode
   })
   return `${prefecture?.text || ''} ${customer.city}`
 }

@@ -3,7 +3,6 @@ package entity
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,6 +14,7 @@ func TestProducer(t *testing.T) {
 		name   string
 		params *NewProducerParams
 		expect *Producer
+		hasErr bool
 	}{
 		{
 			name: "success",
@@ -39,7 +39,7 @@ func TestProducer(t *testing.T) {
 				InstagramID:       "instagram-id",
 				FacebookID:        "facebook-id",
 				PostalCode:        "1000014",
-				Prefecture:        codes.PrefectureValues["tokyo"],
+				PrefectureCode:    13,
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
@@ -57,7 +57,8 @@ func TestProducer(t *testing.T) {
 				InstagramID:       "instagram-id",
 				FacebookID:        "facebook-id",
 				PostalCode:        "1000014",
-				Prefecture:        codes.PrefectureValues["tokyo"],
+				Prefecture:        "東京都",
+				PrefectureCode:    13,
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
@@ -70,6 +71,7 @@ func TestProducer(t *testing.T) {
 					Email:         "test-admin@and-period.jp",
 				},
 			},
+			hasErr: false,
 		},
 	}
 
@@ -77,7 +79,12 @@ func TestProducer(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewProducer(tt.params)
+			actual, err := NewProducer(tt.params)
+			if tt.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -97,6 +104,7 @@ func TestProducer_Fill(t *testing.T) {
 			name: "success",
 			producer: &Producer{
 				AdminID:        "admin-id",
+				PrefectureCode: 13,
 				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 				HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 			},
@@ -106,6 +114,8 @@ func TestProducer_Fill(t *testing.T) {
 			},
 			expect: &Producer{
 				AdminID:        "admin-id",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
 				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 				Thumbnails: common.Images{
 					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},

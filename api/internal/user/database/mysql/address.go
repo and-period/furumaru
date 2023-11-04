@@ -58,9 +58,7 @@ func (a *address) List(ctx context.Context, params *database.ListAddressesParams
 	if err := stmt.Find(&addresses).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := addresses.Fill(); err != nil {
-		return nil, dbError(err)
-	}
+	addresses.Fill()
 	return addresses, nil
 }
 
@@ -80,9 +78,7 @@ func (a *address) MultiGet(ctx context.Context, addressIDs []string, fields ...s
 	if err := stmt.Find(&addresses).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := addresses.Fill(); err != nil {
-		return nil, dbError(err)
-	}
+	addresses.Fill()
 	return addresses, nil
 }
 
@@ -173,8 +169,6 @@ func (a *address) get(ctx context.Context, tx *gorm.DB, addressID string, fields
 	if err := stmt.First(&address).Error; err != nil {
 		return nil, err
 	}
-	if err := address.Fill(); err != nil {
-		return nil, err
-	}
+	address.Fill()
 	return address, nil
 }

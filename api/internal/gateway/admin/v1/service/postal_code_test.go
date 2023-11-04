@@ -19,7 +19,7 @@ func TestPostalCode(t *testing.T) {
 			name: "success",
 			postalCode: &entity.PostalCode{
 				PostalCode:     "1000014",
-				PrefectureCode: "tokyo",
+				PrefectureCode: 13,
 				Prefecture:     "東京都",
 				City:           "千代田区",
 				Town:           "永田町",
@@ -27,7 +27,7 @@ func TestPostalCode(t *testing.T) {
 			expect: &PostalCode{
 				PostalCode: response.PostalCode{
 					PostalCode:     "1000014",
-					PrefectureCode: "tokyo",
+					PrefectureCode: 13,
 					Prefecture:     "東京都",
 					City:           "千代田区",
 					Town:           "永田町",
@@ -57,7 +57,7 @@ func TestPostalCode_Response(t *testing.T) {
 			postalCode: &PostalCode{
 				PostalCode: response.PostalCode{
 					PostalCode:     "1000014",
-					PrefectureCode: "tokyo",
+					PrefectureCode: 13,
 					Prefecture:     "東京都",
 					City:           "千代田区",
 					Town:           "永田町",
@@ -65,7 +65,7 @@ func TestPostalCode_Response(t *testing.T) {
 			},
 			expect: &response.PostalCode{
 				PostalCode:     "1000014",
-				PrefectureCode: "tokyo",
+				PrefectureCode: 13,
 				Prefecture:     "東京都",
 				City:           "千代田区",
 				Town:           "永田町",

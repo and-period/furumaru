@@ -89,7 +89,7 @@ cartResponse:
       box60Rate: 80
       box80Rate: 50
       box100Rate: 40
-      originPrefecture: 'tokyo'
+      originPrefecture: '東京都'
       originCity: '彦根市'
       startAt: 1640962800
       endAt: 1640962800

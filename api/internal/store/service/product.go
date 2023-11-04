@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
@@ -109,35 +110,38 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 		return nil, internalError(err)
 	}
 	params := &entity.NewProductParams{
-		CoordinatorID:     in.CoordinatorID,
-		ProducerID:        in.ProducerID,
-		TypeID:            in.TypeID,
-		TagIDs:            in.TagIDs,
-		Name:              in.Name,
-		Description:       in.Description,
-		Public:            in.Public,
-		Inventory:         in.Inventory,
-		Weight:            in.Weight,
-		WeightUnit:        in.WeightUnit,
-		Item:              in.Item,
-		ItemUnit:          in.ItemUnit,
-		ItemDescription:   in.ItemDescription,
-		Media:             media,
-		Price:             in.Price,
-		Cost:              in.Cost,
-		ExpirationDate:    in.ExpirationDate,
-		RecommendedPoints: in.RecommendedPoints,
-		StorageMethodType: in.StorageMethodType,
-		DeliveryType:      in.DeliveryType,
-		Box60Rate:         in.Box60Rate,
-		Box80Rate:         in.Box80Rate,
-		Box100Rate:        in.Box100Rate,
-		OriginPrefecture:  in.OriginPrefecture,
-		OriginCity:        in.OriginCity,
-		StartAt:           in.StartAt,
-		EndAt:             in.EndAt,
+		CoordinatorID:        in.CoordinatorID,
+		ProducerID:           in.ProducerID,
+		TypeID:               in.TypeID,
+		TagIDs:               in.TagIDs,
+		Name:                 in.Name,
+		Description:          in.Description,
+		Public:               in.Public,
+		Inventory:            in.Inventory,
+		Weight:               in.Weight,
+		WeightUnit:           in.WeightUnit,
+		Item:                 in.Item,
+		ItemUnit:             in.ItemUnit,
+		ItemDescription:      in.ItemDescription,
+		Media:                media,
+		Price:                in.Price,
+		Cost:                 in.Cost,
+		ExpirationDate:       in.ExpirationDate,
+		RecommendedPoints:    in.RecommendedPoints,
+		StorageMethodType:    in.StorageMethodType,
+		DeliveryType:         in.DeliveryType,
+		Box60Rate:            in.Box60Rate,
+		Box80Rate:            in.Box80Rate,
+		Box100Rate:           in.Box100Rate,
+		OriginPrefectureCode: in.OriginPrefectureCode,
+		OriginCity:           in.OriginCity,
+		StartAt:              in.StartAt,
+		EndAt:                in.EndAt,
 	}
-	product := entity.NewProduct(params)
+	product, err := entity.NewProduct(params)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to new product: %w: %s", exception.ErrInvalidArgument, err.Error())
+	}
 	if err := s.db.Product.Create(ctx, product); err != nil {
 		return nil, internalError(err)
 	}
@@ -152,6 +156,9 @@ func (s *service) CreateProduct(ctx context.Context, in *store.CreateProductInpu
 func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
+	}
+	if _, err := codes.ToPrefectureJapanese(in.OriginPrefectureCode); err != nil {
+		return fmt.Errorf("service: invalid prefecture: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	product, err := s.db.Product.Get(ctx, in.ProductID)
 	if err != nil {
@@ -169,31 +176,31 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateProductParams{
-		TypeID:            in.TypeID,
-		TagIDs:            in.TagIDs,
-		Name:              in.Name,
-		Description:       in.Description,
-		Public:            in.Public,
-		Inventory:         in.Inventory,
-		Weight:            in.Weight,
-		WeightUnit:        in.WeightUnit,
-		Item:              in.Item,
-		ItemUnit:          in.ItemUnit,
-		ItemDescription:   in.ItemDescription,
-		Media:             media,
-		Price:             in.Price,
-		Cost:              in.Cost,
-		ExpirationDate:    in.ExpirationDate,
-		RecommendedPoints: in.RecommendedPoints,
-		StorageMethodType: in.StorageMethodType,
-		DeliveryType:      in.DeliveryType,
-		Box60Rate:         in.Box60Rate,
-		Box80Rate:         in.Box80Rate,
-		Box100Rate:        in.Box100Rate,
-		OriginPrefecture:  in.OriginPrefecture,
-		OriginCity:        in.OriginCity,
-		StartAt:           in.StartAt,
-		EndAt:             in.EndAt,
+		TypeID:               in.TypeID,
+		TagIDs:               in.TagIDs,
+		Name:                 in.Name,
+		Description:          in.Description,
+		Public:               in.Public,
+		Inventory:            in.Inventory,
+		Weight:               in.Weight,
+		WeightUnit:           in.WeightUnit,
+		Item:                 in.Item,
+		ItemUnit:             in.ItemUnit,
+		ItemDescription:      in.ItemDescription,
+		Media:                media,
+		Price:                in.Price,
+		Cost:                 in.Cost,
+		ExpirationDate:       in.ExpirationDate,
+		RecommendedPoints:    in.RecommendedPoints,
+		StorageMethodType:    in.StorageMethodType,
+		DeliveryType:         in.DeliveryType,
+		Box60Rate:            in.Box60Rate,
+		Box80Rate:            in.Box80Rate,
+		Box100Rate:           in.Box100Rate,
+		OriginPrefectureCode: in.OriginPrefectureCode,
+		OriginCity:           in.OriginCity,
+		StartAt:              in.StartAt,
+		EndAt:                in.EndAt,
 	}
 	if err := s.db.Product.Update(ctx, in.ProductID, params); err != nil {
 		return internalError(err)

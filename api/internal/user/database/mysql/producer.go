@@ -145,6 +145,7 @@ func (p *producer) Update(ctx context.Context, producerID string, params *databa
 			"facebook_id":         params.FacebookID,
 			"phone_number":        params.PhoneNumber,
 			"postal_code":         params.PostalCode,
+			"prefecture":          params.PrefectureCode,
 			"city":                params.City,
 			"address_line1":       params.AddressLine1,
 			"address_line2":       params.AddressLine2,

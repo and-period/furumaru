@@ -305,8 +305,8 @@ const onClickDelete = (): void => {
         <template #[`item.producerName`]="{ item }">
           {{ getProducerName(item.raw.producerId) }}
         </template>
-        <template #[`item.originPrefecture`]="{ item }">
-          {{ getPrefecture(item.raw.originPrefecture) }}
+        <template #[`item.originPrefectureCode`]="{ item }">
+          {{ getPrefecture(item.raw.originPrefectureCode) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item.raw)">

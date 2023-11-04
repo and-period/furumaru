@@ -22,10 +22,10 @@ type Shipping struct {
 }
 
 type ShippingRate struct {
-	Number      int64    `json:"number"`      // No.
-	Name        string   `json:"name"`        // 配送料金設定名
-	Price       int64    `json:"price"`       // 配送料金
-	Prefectures []string `json:"prefectures"` // 対象都道府県一覧
+	Number          int64   `json:"number"`          // No.
+	Name            string  `json:"name"`            // 配送料金設定名
+	Price           int64   `json:"price"`           // 配送料金
+	PrefectureCodes []int32 `json:"prefectureCodes"` // 対象都道府県一覧
 }
 
 type ShippingResponse struct {

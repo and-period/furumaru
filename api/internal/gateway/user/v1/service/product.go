@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/shopspring/decimal"
@@ -133,7 +132,6 @@ func NewProduct(product *entity.Product) *Product {
 	if len(product.RecommendedPoints) > 2 {
 		point3 = product.RecommendedPoints[2]
 	}
-	prefecture, _ := codes.ToPrefectureJapanese(product.OriginPrefecture)
 	return &Product{
 		Product: response.Product{
 			ID:                product.ID,
@@ -160,7 +158,7 @@ func NewProduct(product *entity.Product) *Product {
 			Box60Rate:         product.Box60Rate,
 			Box80Rate:         product.Box80Rate,
 			Box100Rate:        product.Box100Rate,
-			OriginPrefecture:  prefecture,
+			OriginPrefecture:  product.OriginPrefecture,
 			OriginCity:        product.OriginCity,
 			StartAt:           product.StartAt.Unix(),
 			EndAt:             product.EndAt.Unix(),

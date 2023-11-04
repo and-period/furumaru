@@ -27,14 +27,14 @@ func TestListShippings(t *testing.T) {
 			{Key: entity.ShippingOrderByName, OrderByASC: true},
 		},
 	}
-	shikoku := []int64{
+	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(shikoku...)
-	others := make([]int64, 0, 47-len(shikoku))
+	others := make([]int32, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
 			continue
@@ -42,8 +42,8 @@ func TestListShippings(t *testing.T) {
 		others = append(others, val)
 	}
 	rates := entity.ShippingRates{
-		{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-		{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 	}
 	shippings := entity.Shippings{
 		{
@@ -154,14 +154,14 @@ func TestMutiGetShippings(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 7, 16, 18, 30, 0, 0)
-	shikoku := []int64{
+	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(shikoku...)
-	others := make([]int64, 0, 47-len(shikoku))
+	others := make([]int32, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
 			continue
@@ -169,8 +169,8 @@ func TestMutiGetShippings(t *testing.T) {
 		others = append(others, val)
 	}
 	rates := entity.ShippingRates{
-		{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-		{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 	}
 	shippings := entity.Shippings{
 		{
@@ -248,14 +248,14 @@ func TestGetShipping(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 7, 16, 18, 30, 0, 0)
-	shikoku := []int64{
+	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(shikoku...)
-	others := make([]int64, 0, 47-len(shikoku))
+	others := make([]int32, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
 			continue
@@ -263,8 +263,8 @@ func TestGetShipping(t *testing.T) {
 		others = append(others, val)
 	}
 	rates := entity.ShippingRates{
-		{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-		{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 	}
 	shipping := &entity.Shipping{
 		ID:                 "shipping-id",
@@ -337,14 +337,14 @@ func TestGetShipping(t *testing.T) {
 func TestCreateShipping(t *testing.T) {
 	t.Parallel()
 
-	shikoku := []int64{
+	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(shikoku...)
-	others := make([]int64, 0, 47-len(shikoku))
+	others := make([]int32, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
 			continue
@@ -352,8 +352,8 @@ func TestCreateShipping(t *testing.T) {
 		others = append(others, val)
 	}
 	rates := []*store.CreateShippingRate{
-		{Name: "四国", Price: 250, Prefectures: shikoku},
-		{Name: "その他", Price: 500, Prefectures: others},
+		{Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Name: "その他", Price: 500, PrefectureCodes: others},
 	}
 
 	tests := []struct {
@@ -369,8 +369,8 @@ func TestCreateShipping(t *testing.T) {
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, shipping *entity.Shipping) error {
 						rates := entity.ShippingRates{
-							{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-							{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+							{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+							{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 						}
 						expect := &entity.Shipping{
 							ID:                 shipping.ID, // ignore
@@ -454,14 +454,14 @@ func TestCreateShipping(t *testing.T) {
 func TestUpdateShipping(t *testing.T) {
 	t.Parallel()
 
-	shikoku := []int64{
+	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(shikoku...)
-	others := make([]int64, 0, 47-len(shikoku))
+	others := make([]int32, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
 			continue
@@ -469,27 +469,27 @@ func TestUpdateShipping(t *testing.T) {
 		others = append(others, val)
 	}
 	rates := []*store.UpdateShippingRate{
-		{Name: "四国", Price: 250, Prefectures: shikoku},
-		{Name: "その他", Price: 500, Prefectures: others},
+		{Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Name: "その他", Price: 500, PrefectureCodes: others},
 	}
 	params := &database.UpdateShippingParams{
 		Name:      "デフォルト配送設定",
 		IsDefault: true,
 		Box60Rates: entity.ShippingRates{
-			{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-			{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+			{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+			{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 		},
 		Box60Refrigerated: 500,
 		Box60Frozen:       800,
 		Box80Rates: entity.ShippingRates{
-			{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-			{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+			{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+			{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 		},
 		Box80Refrigerated: 500,
 		Box80Frozen:       800,
 		Box100Rates: entity.ShippingRates{
-			{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-			{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+			{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+			{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 		},
 		Box100Refrigerated: 500,
 		Box100Frozen:       800,

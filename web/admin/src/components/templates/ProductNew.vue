@@ -59,7 +59,7 @@ const props = defineProps({
       box60Rate: 0,
       box80Rate: 0,
       box100Rate: 0,
-      originPrefecture: Prefecture.HOKKAIDO,
+      originPrefectureCode: Prefecture.HOKKAIDO,
       originCity: '',
       startAt: dayjs().unix(),
       endAt: dayjs().unix()
@@ -154,7 +154,7 @@ const formDataRules = computed(() => ({
   box60Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
-  originPrefecture: {},
+  originPrefectureCode: {},
   originCity: {}
 }))
 const timeDataRules = computed(() => ({
@@ -205,7 +205,7 @@ const selectedCategoryIdValue = computed({
 })
 const cityListItems = computed(() => {
   const selectedPrefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
-    return props.formData.originPrefecture === prefecture.value
+    return props.formData.originPrefectureCode === prefecture.value
   })
   if (!selectedPrefecture) {
     return []

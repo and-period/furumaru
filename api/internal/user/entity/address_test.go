@@ -158,7 +158,6 @@ func TestAddresses_Fill(t *testing.T) {
 					PhoneNumber:    "+819012345678",
 				},
 			},
-			hasErr: false,
 		},
 		{
 			name: "invalid prefecture",
@@ -194,15 +193,13 @@ func TestAddresses_Fill(t *testing.T) {
 					PhoneNumber:    "+819012345678",
 				},
 			},
-			hasErr: true,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.addresses.Fill()
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.addresses.Fill()
 			assert.Equal(t, tt.expect, tt.addresses)
 		})
 	}

@@ -10,7 +10,7 @@ import (
 
 func TestPrefectureNames(t *testing.T) {
 	t.Parallel()
-	tests := map[int64]string{
+	tests := map[int32]string{
 		0:  "",
 		1:  "hokkaido",
 		2:  "aomori",
@@ -72,7 +72,7 @@ func TestPrefectureNames(t *testing.T) {
 
 func TestPrefectureJapanese(t *testing.T) {
 	t.Parallel()
-	tests := map[int64]string{
+	tests := map[int32]string{
 		0:  "",
 		1:  "北海道",
 		2:  "青森県",
@@ -134,7 +134,7 @@ func TestPrefectureJapanese(t *testing.T) {
 
 func TestPrefectureValues(t *testing.T) {
 	t.Parallel()
-	tests := map[string]int64{
+	tests := map[string]int32{
 		"":          0,
 		"hokkaido":  1,
 		"aomori":    2,
@@ -198,19 +198,19 @@ func TestToPrefectureNames(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name      string
-		values    []int64
+		values    []int32
 		expect    []string
 		expectErr error
 	}{
 		{
 			name:      "success",
-			values:    []int64{1, 2, 3},
+			values:    []int32{1, 2, 3},
 			expect:    []string{"hokkaido", "aomori", "iwate"},
 			expectErr: nil,
 		},
 		{
 			name:      "failed to convert",
-			values:    []int64{0},
+			values:    []int32{0},
 			expect:    nil,
 			expectErr: ErrUnknownPrefecture,
 		},
@@ -230,7 +230,7 @@ func TestToPrefectureJapanese(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name      string
-		values    int64
+		values    int32
 		expect    string
 		expectErr error
 	}{
@@ -263,13 +263,13 @@ func TestToPrefectureValues(t *testing.T) {
 	tests := []struct {
 		name      string
 		values    []string
-		expect    []int64
+		expect    []int32
 		expectErr error
 	}{
 		{
 			name:      "success",
 			values:    []string{"hokkaido", "aomori", "iwate"},
-			expect:    []int64{1, 2, 3},
+			expect:    []int32{1, 2, 3},
 			expectErr: nil,
 		},
 		{
@@ -307,13 +307,13 @@ func TestValidatePrefectureNames(t *testing.T) {
 
 func TestValidatePrefectureValues(t *testing.T) {
 	t.Parallel()
-	tests := map[int64]error{
+	tests := map[int32]error{
 		0: ErrUnknownPrefecture,
 		1: nil,
 	}
 	for key, expect := range tests {
 		key, expect := key, expect
-		t.Run(strconv.FormatInt(key, 10), func(t *testing.T) {
+		t.Run(strconv.Itoa(int(key)), func(t *testing.T) {
 			t.Parallel()
 			assert.ErrorIs(t, ValidatePrefectureValues(key), expect)
 		})

@@ -108,7 +108,7 @@ func (s *service) CreateShipping(ctx context.Context, in *store.CreateShippingIn
 func (s *service) newShippingRatesFromCreate(in []*store.CreateShippingRate) (entity.ShippingRates, error) {
 	rates := make(entity.ShippingRates, len(in))
 	for i := range in {
-		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].Prefectures)
+		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].PrefectureCodes)
 	}
 	if err := rates.Validate(); err != nil {
 		return nil, err
@@ -154,7 +154,7 @@ func (s *service) UpdateShipping(ctx context.Context, in *store.UpdateShippingIn
 func (s *service) newShippingRatesFromUpdate(in []*store.UpdateShippingRate) (entity.ShippingRates, error) {
 	rates := make(entity.ShippingRates, len(in))
 	for i := range in {
-		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].Prefectures)
+		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].PrefectureCodes)
 	}
 	if err := rates.Validate(); err != nil {
 		return nil, err

@@ -91,7 +91,7 @@ createProductRequest:
       type: integer
       format: int64
       description: 箱の占有率(サイズ:100)(0以上,100以下)
-    originPrefecture:
+    originPrefectureCode:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
       description: 原産地(都道府県)
     originCity:
@@ -129,7 +129,7 @@ createProductRequest:
   - box60Rate
   - box80Rate
   - box100Rate
-  - originPrefecture
+  - originPrefectureCode
   - originCity
   - startAt
   - endAt
@@ -161,7 +161,7 @@ createProductRequest:
     box60Rate: 80
     box80Rate: 50
     box100Rate: 40
-    originPrefecture: 'tokyo'
+    originprefectureCode: 13
     originCity: '彦根市'
     startAt: 1640962800
     endAt: 1640962800
@@ -252,7 +252,7 @@ updateProductRequest:
       type: integer
       format: int64
       description: 箱の占有率(サイズ:100)(0以上,100以下)
-    originPrefecture:
+    originPrefectureCode:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     originCity:
       type: string
@@ -287,7 +287,7 @@ updateProductRequest:
   - box60Rate
   - box80Rate
   - box100Rate
-  - originPrefecture
+  - originPrefectureCode
   - originCity
   - startAt
   - endAt
@@ -317,7 +317,7 @@ updateProductRequest:
     box60Rate: 80
     box80Rate: 50
     box100Rate: 40
-    originPrefecture: 'tokyo'
+    originprefectureCode: 13
     originCity: '彦根市'
     startAt: 1640962800
     endAt: 1640962800

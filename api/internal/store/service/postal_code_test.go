@@ -41,7 +41,7 @@ func TestSearchPostalCode(t *testing.T) {
 			},
 			expect: &entity.PostalCode{
 				PostalCode:     "1000014",
-				PrefectureCode: "tokyo",
+				PrefectureCode: 13,
 				Prefecture:     "東京都",
 				City:           "千代田区",
 				Town:           "永田町",

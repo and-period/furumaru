@@ -16,7 +16,7 @@ userResponse:
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
-      prefecture: 'tokyo'
+      prefectureCode: 13
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
@@ -43,7 +43,7 @@ usersResponse:
       lastname: '&.'
       firstname: '購入者'
       registered: true
-      prefecture: 'tokyo'
+      prefectureCode: 13
       city: '横浜市'
       totalOrder: 2
       totalAmount: 5000

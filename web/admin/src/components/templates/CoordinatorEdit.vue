@@ -34,7 +34,7 @@ const props = defineProps({
       username: '',
       phoneNumber: '',
       postalCode: '',
-      prefecture: Prefecture.UNKNOWN,
+      prefectureCode: Prefecture.UNKNOWN,
       city: '',
       addressLine1: '',
       addressLine2: '',
@@ -63,7 +63,7 @@ const props = defineProps({
       email: '',
       phoneNumber: '',
       postalCode: '',
-      prefecture: Prefecture.UNKNOWN,
+      prefectureCode: Prefecture.UNKNOWN,
       city: '',
       addressLine1: '',
       addressLine2: '',
@@ -344,7 +344,7 @@ const onClickSearchAddress = (): void => {
         </v-row>
         <molecules-address-form
           v-model:postal-code="formDataValue.postalCode"
-          v-model:prefecture="formDataValue.prefecture"
+          v-model:prefecture="formDataValue.prefectureCode"
           v-model:city="formDataValue.city"
           v-model:address-line1="formDataValue.addressLine1"
           v-model:address-line2="formDataValue.addressLine2"
