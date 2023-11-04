@@ -1,15 +1,26 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store/product'
+import { useShoppingCartStore } from '~/store/shopping'
 
 const router = useRouter()
 
 const productStore = useProductStore()
+const shoppingCartStore = useShoppingCartStore()
+
 const { fetchProducts } = productStore
+const { addCart } = shoppingCartStore
 const { productsFetchState, products } = storeToRefs(productStore)
 
 const handleClick = (id: string) => {
   router.push(`/items/${id}`)
+}
+
+const handleClickAddCartButton = async (id: string, quantity: number) => {
+  await addCart({
+    productId: id,
+    quantity,
+  })
 }
 
 fetchProducts()
@@ -63,8 +74,8 @@ fetchProducts()
         <template v-else>
           <the-product-list-item
             v-for="product in products"
+            :id="product.id"
             :key="product.id"
-            class="cursor-pointer"
             :name="product.name"
             :price="product.price"
             :inventory="product.inventory"
@@ -72,7 +83,8 @@ fetchProducts()
             :thumbnail="product.thumbnail"
             :coordinator="product.coordinator"
             :origin-city="product.originCity"
-            @click="handleClick(product.id)"
+            @click:item="handleClick"
+            @click:add-cart="handleClickAddCartButton"
           />
         </template>
       </div>

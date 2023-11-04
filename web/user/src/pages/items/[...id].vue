@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store/product'
+import { useShoppingCartStore } from '~/store/shopping'
 
-const router = useRouter()
 const route = useRoute()
 
 const productStore = useProductStore()
+const shoppingCartStore = useShoppingCartStore()
+
 const { fetchProduct } = productStore
+const { addCart } = shoppingCartStore
+
 const { product, productFetchState } = storeToRefs(productStore)
 
 const id = computed<string>(() => {
@@ -20,6 +24,8 @@ const id = computed<string>(() => {
 
 fetchProduct(id.value)
 
+const quantity = ref<number>(1)
+
 const priceString = computed<string>(() => {
   if (product.value) {
     return new Intl.NumberFormat('ja-JP', {
@@ -32,7 +38,10 @@ const priceString = computed<string>(() => {
 })
 
 const handleClickAddCartButton = () => {
-  router.push('/purchase')
+  addCart({
+    productId: id.value,
+    quantity: quantity.value,
+  })
 }
 </script>
 
@@ -112,9 +121,9 @@ const handleClickAddCartButton = () => {
           <div v-if="product" class="mt-8 inline-flex items-center">
             <label class="mr-2 block text-[16px]">数量</label>
             <select
+              v-model="quantity"
               class="h-full border-[1px] border-main px-2"
               :disabled="!product.hasStock"
-              @click.stop
             >
               <option
                 v-for="(_, i) in Array.from({

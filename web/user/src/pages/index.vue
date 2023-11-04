@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useShoppingStore } from '~/store/shopping'
+import { useShoppingCartStore } from '~/store/shopping'
 import {
   MOCK_LIVE_ITEMS,
   MOCK_ARCHIVES_ITEMS,
@@ -8,9 +8,9 @@ import {
 
 const router = useRouter()
 
-const shoppingStore = useShoppingStore()
+const shoppingCartStore = useShoppingCartStore()
 
-shoppingStore.setupDummyData()
+shoppingCartStore.setupDummyData()
 
 const archiveRef = ref<HTMLDivElement | null>(null)
 const archiveRefScrollLeft = ref<number>(0)

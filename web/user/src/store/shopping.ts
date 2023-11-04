@@ -1,27 +1,58 @@
 import { defineStore } from 'pinia'
+import { AddCartItemRequest, CartResponse } from '~/types/api'
 import { ProductItem } from '~/types/store'
+
 /**
  * 買い物かごを管理するグローバルステート
  */
-export const useShoppingStore = defineStore('shopping', {
+export const useShoppingCartStore = defineStore('shopping-cart', {
   state: () => {
     return {
       cartItems: [],
-      recommendProducts: [] as ProductItem[]
+      recommendProducts: [] as ProductItem[],
+
+      _shoppingCart: {} as CartResponse,
     }
   },
 
   getters: {
+    shoppingCart(state) {
+      return {
+        carts: state._shoppingCart.carts.map((cart) => {
+          return {
+            ...cart,
+            // コーディネーターのマッピング
+            coordinator: state._shoppingCart.coordinators.find(
+              (coordinator) => coordinator.id === cart.coordinatorId,
+            ),
+          }
+        }),
+      }
+    },
     cartIsEmpty: (state) => {
-      return state.cartItems.length === 0
-    }
+      if (state._shoppingCart && state._shoppingCart.carts) {
+        return state._shoppingCart.carts.length === 0
+      } else {
+        return true
+      }
+    },
   },
 
   actions: {
+    async getCart() {
+      const response = await this.cartApiClient().v1GetCart()
+      this._shoppingCart = response
+    },
+
+    async addCart(payload: AddCartItemRequest) {
+      await this.cartApiClient().v1AddCartItem({ body: payload })
+      this.getCart()
+    },
+
     /**
      * ダミーデータセットアップ用の関数
-    */
-    setupDummyData () {
+     */
+    setupDummyData() {
       const baseItem: ProductItem = {
         id: '',
         name: 'たまねぎ',
@@ -45,18 +76,18 @@ export const useShoppingStore = defineStore('shopping', {
             images: [
               {
                 url: 'https://and-period.jp/thumbnail_240.png',
-                size: 1
+                size: 1,
               },
               {
                 url: 'https://and-period.jp/thumbnail_675.png',
-                size: 2
+                size: 2,
               },
               {
                 url: 'https://and-period.jp/thumbnail_900.png',
-                size: 3
-              }
-            ]
-          }
+                size: 3,
+              },
+            ],
+          },
         ],
         price: 3000,
         deliveryType: 0,
@@ -66,7 +97,7 @@ export const useShoppingStore = defineStore('shopping', {
         originPrefecture: '',
         originCity: '',
         createdAt: 0,
-        updatedAt: 0
+        updatedAt: 0,
       }
 
       const items = Array.from(Array(5)).map((_) => {
@@ -74,6 +105,6 @@ export const useShoppingStore = defineStore('shopping', {
       })
 
       this.recommendProducts = items
-    }
-  }
+    },
+  },
 })
