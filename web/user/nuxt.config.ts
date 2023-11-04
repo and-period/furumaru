@@ -6,15 +6,18 @@ export default defineNuxtConfig({
   srcDir: 'src',
   app: {
     head: {
-      titleTemplate: '%s - user',
-      title: 'user',
+      titleTemplate: '%s - ふるマル',
       htmlAttrs: {
         lang: 'ja',
       },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { hid: 'description', name: 'description', content: '' },
+        {
+          hid: 'description',
+          name: 'description',
+          content: '生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ',
+        },
         { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],

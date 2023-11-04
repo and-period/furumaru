@@ -24,6 +24,10 @@ const handleClickAddCartButton = async (id: string, quantity: number) => {
 }
 
 fetchProducts()
+
+useSeoMeta({
+  title: 'すべての商品',
+})
 </script>
 
 <template>
