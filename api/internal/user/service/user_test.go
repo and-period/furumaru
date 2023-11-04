@@ -358,7 +358,7 @@ func TestCreateUser(t *testing.T) {
 				expectSignUp := &cognito.SignUpParams{
 					Email:       "test@and-period.jp",
 					PhoneNumber: "+819012345678",
-					Password:    "12345678",
+					Password:    "Passw0rd",
 				}
 				mocks.userAuth.EXPECT().
 					SignUp(ctx, gomock.Any()).
@@ -380,8 +380,8 @@ func TestCreateUser(t *testing.T) {
 			input: &user.CreateUserInput{
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
-				Password:             "12345678",
-				PasswordConfirmation: "12345678",
+				Password:             "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: nil,
 		},
@@ -397,7 +397,7 @@ func TestCreateUser(t *testing.T) {
 			input: &user.CreateUserInput{
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
-				Password:             "12345678",
+				Password:             "Passw0rd",
 				PasswordConfirmation: "11111111",
 			},
 			expectErr: exception.ErrInvalidArgument,
@@ -410,8 +410,8 @@ func TestCreateUser(t *testing.T) {
 			input: &user.CreateUserInput{
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
-				Password:             "12345678",
-				PasswordConfirmation: "12345678",
+				Password:             "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -877,15 +877,15 @@ func TestUpdateUserPassword(t *testing.T) {
 				params := &cognito.ChangePasswordParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					OldPassword: "12345678",
-					NewPassword: "12345678",
+					NewPassword: "Passw0rd",
 				}
 				mocks.userAuth.EXPECT().ChangePassword(ctx, params).Return(nil)
 			},
 			input: &user.UpdateUserPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
-				NewPassword:          "12345678",
-				PasswordConfirmation: "12345678",
+				NewPassword:          "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: nil,
 		},
@@ -901,7 +901,7 @@ func TestUpdateUserPassword(t *testing.T) {
 			input: &user.UpdateUserPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
-				NewPassword:          "12345678",
+				NewPassword:          "Passw0rd",
 				PasswordConfirmation: "123456789",
 			},
 			expectErr: exception.ErrInvalidArgument,
@@ -912,15 +912,15 @@ func TestUpdateUserPassword(t *testing.T) {
 				params := &cognito.ChangePasswordParams{
 					AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 					OldPassword: "12345678",
-					NewPassword: "12345678",
+					NewPassword: "Passw0rd",
 				}
 				mocks.userAuth.EXPECT().ChangePassword(ctx, params).Return(assert.AnError)
 			},
 			input: &user.UpdateUserPasswordInput{
 				AccessToken:          "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
 				OldPassword:          "12345678",
-				NewPassword:          "12345678",
-				PasswordConfirmation: "12345678",
+				NewPassword:          "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -1012,7 +1012,7 @@ func TestVerifyUserPassword(t *testing.T) {
 				params := &cognito.ConfirmForgotPasswordParams{
 					Username:    "cognito-id",
 					VerifyCode:  "123456",
-					NewPassword: "12345678",
+					NewPassword: "Passw0rd",
 				}
 				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(nil)
@@ -1020,8 +1020,8 @@ func TestVerifyUserPassword(t *testing.T) {
 			input: &user.VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
-				NewPassword:          "12345678",
-				PasswordConfirmation: "12345678",
+				NewPassword:          "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: nil,
 		},
@@ -1037,7 +1037,7 @@ func TestVerifyUserPassword(t *testing.T) {
 			input: &user.VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
-				NewPassword:          "12345678",
+				NewPassword:          "Passw0rd",
 				PasswordConfirmation: "123456789",
 			},
 			expectErr: exception.ErrInvalidArgument,
@@ -1050,8 +1050,8 @@ func TestVerifyUserPassword(t *testing.T) {
 			input: &user.VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
-				NewPassword:          "12345678",
-				PasswordConfirmation: "12345678",
+				NewPassword:          "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -1061,7 +1061,7 @@ func TestVerifyUserPassword(t *testing.T) {
 				params := &cognito.ConfirmForgotPasswordParams{
 					Username:    "cognito-id",
 					VerifyCode:  "123456",
-					NewPassword: "12345678",
+					NewPassword: "Passw0rd",
 				}
 				mocks.db.Member.EXPECT().GetByEmail(ctx, "test-user@and-period.jp", "cognito_id").Return(m, nil)
 				mocks.userAuth.EXPECT().ConfirmForgotPassword(ctx, params).Return(assert.AnError)
@@ -1069,8 +1069,8 @@ func TestVerifyUserPassword(t *testing.T) {
 			input: &user.VerifyUserPasswordInput{
 				Email:                "test-user@and-period.jp",
 				VerifyCode:           "123456",
-				NewPassword:          "12345678",
-				PasswordConfirmation: "12345678",
+				NewPassword:          "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: exception.ErrInternal,
 		},

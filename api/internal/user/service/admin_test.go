@@ -310,7 +310,7 @@ func TestVerifyAdminPassword(t *testing.T) {
 	params := &cognito.ConfirmForgotPasswordParams{
 		Username:    "cognito-id",
 		VerifyCode:  "123456",
-		NewPassword: "12345678",
+		NewPassword: "Passw0rd",
 	}
 
 	tests := []struct {
@@ -328,8 +328,8 @@ func TestVerifyAdminPassword(t *testing.T) {
 			input: &user.VerifyAdminPasswordInput{
 				Email:                "test-admin@and-period.jp",
 				VerifyCode:           "123456",
-				NewPassword:          "12345678",
-				PasswordConfirmation: "12345678",
+				NewPassword:          "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: nil,
 		},
@@ -347,8 +347,8 @@ func TestVerifyAdminPassword(t *testing.T) {
 			input: &user.VerifyAdminPasswordInput{
 				Email:                "test-admin@and-period.jp",
 				VerifyCode:           "123456",
-				NewPassword:          "12345678",
-				PasswordConfirmation: "12345678",
+				NewPassword:          "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -361,8 +361,8 @@ func TestVerifyAdminPassword(t *testing.T) {
 			input: &user.VerifyAdminPasswordInput{
 				Email:                "test-admin@and-period.jp",
 				VerifyCode:           "123456",
-				NewPassword:          "12345678",
-				PasswordConfirmation: "12345678",
+				NewPassword:          "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
 			},
 			expectErr: exception.ErrInternal,
 		},

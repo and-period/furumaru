@@ -64,12 +64,20 @@ func NewService(params *Params, opts ...Option) user.Service {
 	for i := range opts {
 		opts[i](dopts)
 	}
+	vopts := []validator.Option{
+		validator.WithPasswordValidation(&validator.PasswordParams{
+			RequireNumbers:   true,
+			RequireSymbols:   false,
+			RequireUppercase: false,
+			RequireLowercase: true,
+		}),
+	}
 	return &service{
 		now:         jst.Now,
 		logger:      dopts.logger,
 		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
-		validator:   validator.NewValidator(),
+		validator:   validator.NewValidator(vopts...),
 		db:          params.Database,
 		adminAuth:   params.AdminAuth,
 		userAuth:    params.UserAuth,
