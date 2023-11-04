@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import { Schedule, ScheduleStatus, UpdateScheduleRequest } from '~/types/api'
+import { type Schedule, ScheduleStatus, type UpdateScheduleRequest } from '~/types/api'
 import { ImageUploadStatus, ScheduleTime } from '~/types/props'
 
 const props = defineProps({

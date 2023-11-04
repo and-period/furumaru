@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { PrefecturesListSelectItems } from '~/lib/prefectures'
 import { required, getErrorMessage, minValue, minLengthArray } from '~/lib/validations'
-import { CreateShippingRate } from '~/types/api'
+import { type CreateShippingRate } from '~/types/api'
 
 interface Props {
   modelValue: CreateShippingRate

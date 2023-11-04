@@ -11,7 +11,7 @@ import {
   useProductTagStore,
   useProductTypeStore
 } from '~/store'
-import type { CreateProductRequest, CreateProductRequestMediaInner, DeliveryType, Prefecture, StorageMethodType } from '~/types/api'
+import { type CreateProductRequest, type CreateProductRequestMediaInner, DeliveryType, Prefecture, StorageMethodType } from '~/types/api'
 
 const router = useRouter()
 const authStore = useAuthStore()

@@ -5,7 +5,7 @@ import { type PrefecturesListItem, prefecturesList } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import type { Product, ProductMediaInner, Prefecture, ProductStatus, Category, ProductTag, ProductType, Producer, AdminRole } from '~/types/api'
+import { type Product, type ProductMediaInner, Prefecture, ProductStatus, type Category, type ProductTag, type ProductType, type Producer, AdminRole } from '~/types/api'
 
 const props = defineProps({
   loading: {

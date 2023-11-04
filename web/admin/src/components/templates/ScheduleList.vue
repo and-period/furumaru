@@ -4,7 +4,7 @@ import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import type { Coordinator, ScheduleStatus, Schedule, AdminRole } from '~/types/api'
+import { type Coordinator, ScheduleStatus, type Schedule, AdminRole } from '~/types/api'
 
 const props = defineProps({
   loading: {

@@ -4,7 +4,6 @@ import { useCommonStore } from './common'
 import {
   CreatePromotionRequest,
   PromotionResponse,
-  PromotionsResponse,
   Promotion,
   UpdatePromotionRequest
 } from '~/types/api'

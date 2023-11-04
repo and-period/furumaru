@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
-import type { UpdateCoordinatorRequest, ProductType, Coordinator, AdminStatus, Prefecture } from '~/types/api'
+import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage, kana, maxLength, required, tel } from '~/lib/validations'
 

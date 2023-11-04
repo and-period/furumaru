@@ -52,6 +52,7 @@ func (h *handler) ListLives(ctx *gin.Context) {
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	in := &store.ListLivesInput{
 		ScheduleIDs: []string{scheduleID},
+		NoLimit:     true,
 	}
 	lives, total, err := h.store.ListLives(ctx, in)
 	if err != nil {

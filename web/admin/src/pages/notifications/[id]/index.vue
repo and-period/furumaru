@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { useAlert } from '~/lib/hooks'
 
+import { useAlert } from '~/lib/hooks'
 import { useAdminStore, useAuthStore, useNotificationStore, usePromotionStore } from '~/store'
 import { NotificationType, type UpdateNotificationRequest } from '~/types/api'
 

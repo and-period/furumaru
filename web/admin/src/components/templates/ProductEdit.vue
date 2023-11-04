@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
-import type { Category, DeliveryType, Prefecture, Producer, Product, ProductStatus, ProductTag, ProductType, StorageMethodType, UpdateProductRequest, Weekday } from '~/types/api'
+import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, ProductTag, ProductType, StorageMethodType, type UpdateProductRequest, Weekday } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -13,7 +13,7 @@ import {
   maxValue,
   maxLengthArray
 } from '~/lib/validations'
-import type { prefecturesList, cityList, PrefecturesListItem, CityListItem } from '~/constants'
+import { prefecturesList, cityList, PrefecturesListItem, CityListItem } from '~/constants'
 import type { ProductTime } from '~/types/props'
 
 const props = defineProps({
@@ -155,15 +155,6 @@ const deliveryTypes = [
   { title: '冷凍便', value: DeliveryType.FROZEN }
 ]
 const itemUnits = ['個', '瓶']
-const weekdays = [
-  { title: '日曜日', value: Weekday.SUNDAY },
-  { title: '月曜日', value: Weekday.MONDAY },
-  { title: '火曜日', value: Weekday.TUESDAY },
-  { title: '水曜日', value: Weekday.WEDNESDAY },
-  { title: '木曜日', value: Weekday.THURSDAY },
-  { title: '金曜日', value: Weekday.FRIDAY },
-  { title: '土曜日', value: Weekday.SATURDAY }
-]
 
 const formDataRules = computed(() => ({
   name: { required, maxLength: maxLength(128) },
@@ -267,6 +258,7 @@ const thumbnailIndex = computed<number>({
       })
   }
 })
+const producerIdValue = computed(() => props.product.producerId)
 
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
 const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
@@ -348,8 +340,7 @@ const onSubmit = async (): Promise<void> => {
           <v-card-title>基本情報</v-card-title>
           <v-card-text>
             <v-select
-              v-model="formDataValidate.producerId.$model"
-              :error-messages="getErrorMessage(formDataValidate.producerId.$errors)"
+              v-model="producerIdValue"
               label="生産者名"
               :items="producers"
               item-title="username"
@@ -668,8 +659,8 @@ const onSubmit = async (): Promise<void> => {
             @update:search="onChangeSearchProductType"
           />
           <v-select
-            v-model="formDataValidate.originPrefecture.$model"
-            :error-messages="getErrorMessage(formDataValidate.originPrefecture.$errors)"
+            v-model="formDataValidate.originPrefectureCode.$model"
+            :error-messages="getErrorMessage(formDataValidate.originPrefectureCode.$errors)"
             label="原産地（都道府県）"
             :items="prefecturesList"
             item-title="text"

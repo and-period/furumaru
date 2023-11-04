@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { useCommonStore } from './common'
 import { useCoordinatorStore } from './coordinator'
-import { useShippingStore } from './shipping'
 import { apiClient } from '~/plugins/api-client'
 import { ApproveScheduleRequest, CreateScheduleRequest, Schedule, UpdateScheduleRequest, UploadImageResponse, UploadVideoResponse } from '~/types/api'
 

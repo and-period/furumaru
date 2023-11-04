@@ -2,7 +2,7 @@
 import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
-import { AdminRole, Category, CreateProductTypeRequest, ProductType, UpdateProductTypeRequest } from '~/types/api'
+import { AdminRole, type Category, type CreateProductTypeRequest, type ProductType, type UpdateProductTypeRequest } from '~/types/api'
 import { ImageUploadStatus } from '~/types/props'
 import { required, getErrorMessage, maxLength } from '~/lib/validations'
 import { getResizedImages } from '~/lib/helpers'

@@ -3,7 +3,7 @@ import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required, tel } from '~/lib/validations'
-import type { AdminStatus, Prefecture, ProducerResponse, UpdateProducerRequest } from '~/types/api'
+import { AdminStatus, Prefecture, type Producer, type UpdateProducerRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -24,12 +24,11 @@ const props = defineProps({
     default: ''
   },
   producer: {
-    type: Object as PropType<ProducerResponse>,
-    default: (): ProducerResponse => ({
+    type: Object as PropType<Producer>,
+    default: (): Producer => ({
       id: '',
       status: AdminStatus.UNKNOWN,
       coordinatorId: '',
-      coordinatorName: '',
       lastname: '',
       lastnameKana: '',
       firstname: '',
@@ -65,7 +64,7 @@ const props = defineProps({
       username: '',
       phoneNumber: '',
       postalCode: '',
-      prefectureCode: '',
+      prefectureCode: Prefecture.HOKKAIDO,
       city: '',
       addressLine1: '',
       addressLine2: '',
@@ -118,7 +117,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:form-data', formData: UpdateProducerRequest): void
-  (e: 'update:producer', producer: ProducerResponse): void
+  (e: 'update:producer', producer: Producer): void
   (e: 'update:thumbnail-file', files: FileList): void
   (e: 'update:header-file', files: FileList): void
   (e: 'update:promotion-video', files: FileList): void
@@ -143,8 +142,8 @@ const formDataValue = computed({
   set: (val: UpdateProducerRequest): void => emit('update:form-data', val)
 })
 const producerValue = computed({
-  get: (): ProducerResponse => props.producer,
-  set: (producer: ProducerResponse): void => emit('update:producer', producer)
+  get: (): Producer => props.producer,
+  set: (producer: Producer): void => emit('update:producer', producer)
 })
 
 const validate = useVuelidate(rules, formDataValue)

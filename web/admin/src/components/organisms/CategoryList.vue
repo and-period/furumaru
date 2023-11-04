@@ -3,7 +3,7 @@ import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import useVuelidate from '@vuelidate/core'
-import { AdminRole, Category, CreateCategoryRequest, UpdateCategoryRequest } from '~/types/api'
+import { AdminRole, type Category, type CreateCategoryRequest, type UpdateCategoryRequest } from '~/types/api'
 import { required, getErrorMessage, maxLength } from '~/lib/validations'
 
 const props = defineProps({

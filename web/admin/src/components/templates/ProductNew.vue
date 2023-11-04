@@ -4,7 +4,7 @@ import useVuelidate from '@vuelidate/core'
 
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
-import type { Category, CreateProductRequest, DeliveryType, Prefecture, Producer, ProductStatus, ProductTag, ProductType, StorageMethodType, Weekday } from '~/types/api'
+import { type Category, type CreateProductRequest, DeliveryType, Prefecture, type Producer, ProductStatus, type ProductTag, type ProductType, StorageMethodType, Weekday } from '~/types/api'
 import type { ProductTime } from '~/types/props'
 import {
   required,
@@ -641,8 +641,8 @@ const onSubmit = async (): Promise<void> => {
             @update:search="onChangeSearchProductType"
           />
           <v-select
-            v-model="formDataValidate.originPrefecture.$model"
-            :error-messages="getErrorMessage(formDataValidate.originPrefecture.$errors)"
+            v-model="formDataValidate.originPrefectureCode.$model"
+            :error-messages="getErrorMessage(formDataValidate.originPrefectureCode.$errors)"
             label="原産地（都道府県）"
             :items="prefecturesList"
             item-title="text"
