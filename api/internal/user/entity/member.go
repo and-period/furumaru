@@ -19,7 +19,7 @@ const (
 type Member struct {
 	UserID       string         `gorm:"primaryKey;<-:create"` // ユーザーID
 	CognitoID    string         `gorm:""`                     // ユーザーID (Cognito用)
-	AccountID    string         `gorm:""`                     // ユーザーID (検索用)
+	AccountID    string         `gorm:"default:null"`         // ユーザーID (検索用)
 	Username     string         `gorm:""`                     // 表示名
 	ProviderType ProviderType   `gorm:""`                     // 認証方法
 	Email        string         `gorm:"default:null"`         // メールアドレス

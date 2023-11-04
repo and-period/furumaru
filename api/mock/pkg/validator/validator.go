@@ -7,7 +7,6 @@ package mock_validator
 import (
 	reflect "reflect"
 
-	validator "github.com/go-playground/validator/v10"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -32,25 +31,6 @@ func NewMockValidator(ctrl *gomock.Controller) *MockValidator {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockValidator) EXPECT() *MockValidatorMockRecorder {
 	return m.recorder
-}
-
-// RegisterValidation mocks base method.
-func (m *MockValidator) RegisterValidation(tag string, fn validator.Func, callValidationEvenIfNull ...bool) error {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{tag, fn}
-	for _, a := range callValidationEvenIfNull {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "RegisterValidation", varargs...)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// RegisterValidation indicates an expected call of RegisterValidation.
-func (mr *MockValidatorMockRecorder) RegisterValidation(tag, fn interface{}, callValidationEvenIfNull ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{tag, fn}, callValidationEvenIfNull...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterValidation", reflect.TypeOf((*MockValidator)(nil).RegisterValidation), varargs...)
 }
 
 // Struct mocks base method.
