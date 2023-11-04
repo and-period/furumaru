@@ -12,6 +12,8 @@ import (
 type options struct {
 	logLevel           string
 	outputPath         string
+	sentryServerName   string
+	sentryEnvironment  string
 	sentryLevel        string
 	sentryFlushTimeout time.Duration
 }
@@ -22,6 +24,8 @@ func buildOptions(opts ...Option) *options {
 	dopts := &options{
 		logLevel:           "info",
 		outputPath:         "",
+		sentryServerName:   "",
+		sentryEnvironment:  "",
 		sentryLevel:        "warn",
 		sentryFlushTimeout: 5 * time.Second,
 	}
@@ -34,6 +38,18 @@ func buildOptions(opts ...Option) *options {
 func WithLogLevel(level string) Option {
 	return func(opts *options) {
 		opts.logLevel = level
+	}
+}
+
+func WithSentryServerName(name string) Option {
+	return func(opts *options) {
+		opts.sentryServerName = name
+	}
+}
+
+func WithSentryEnvironment(env string) Option {
+	return func(opts *options) {
+		opts.sentryEnvironment = env
 	}
 }
 

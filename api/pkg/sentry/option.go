@@ -38,6 +38,7 @@ func buildOptions(opts ...ClientOption) *options {
 	dopts := &options{
 		bind: false,
 		opts: sentry.ClientOptions{
+			ServerName:         "",
 			Environment:        "",
 			Debug:              false,
 			EnableTracing:      false,
@@ -65,6 +66,12 @@ func WithDSN(dsn string) ClientOption {
 	}
 }
 
+func WithServerName(name string) ClientOption {
+	return func(o *options) {
+		o.opts.ServerName = name
+	}
+}
+
 func WithEnvironment(env string) ClientOption {
 	return func(o *options) {
 		o.opts.Environment = env
@@ -80,6 +87,18 @@ func WithDebug(debug bool) ClientOption {
 func WithTrace(enable bool) ClientOption {
 	return func(o *options) {
 		o.opts.EnableTracing = enable
+	}
+}
+
+func WithTracesSampleRate(rate float64) ClientOption {
+	return func(o *options) {
+		o.opts.TracesSampleRate = rate
+	}
+}
+
+func WithProfilesSampleRate(rate float64) ClientOption {
+	return func(o *options) {
+		o.opts.ProfilesSampleRate = rate
 	}
 }
 

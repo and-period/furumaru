@@ -29,7 +29,12 @@ func NewSentryLogger(dsn string, opts ...Option) (*zap.Logger, error) {
 	if err != nil {
 		return nil, err
 	}
-	sclient, err := sentry.NewClient(sentry.WithDSN(dsn))
+	sopts := []sentry.ClientOption{
+		sentry.WithServerName(dopts.sentryServerName),
+		sentry.WithEnvironment(dopts.sentryEnvironment),
+		sentry.WithDSN(dsn),
+	}
+	sclient, err := sentry.NewClient(sopts...)
 	if err != nil {
 		return nil, err
 	}
