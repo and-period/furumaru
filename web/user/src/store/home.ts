@@ -1,10 +1,10 @@
-import { TopCommonResponse } from '~/types/api'
+import { TopArchive, TopCommonResponse, TopLive } from '~/types/api'
 
 export const useTopPageStore = defineStore('top-page', {
   state: () => {
     return {
-      _lives: [] as object[],
-      _archives: [] as object[],
+      _lives: [] as TopLive[],
+      _archives: [] as TopArchive[],
     }
   },
 
