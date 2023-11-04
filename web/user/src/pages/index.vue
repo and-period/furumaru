@@ -5,12 +5,17 @@ import {
   MOCK_ARCHIVES_ITEMS,
   MOCK_RECOMMEND_ITEMS,
 } from '~/constants/mock'
+import { useTopPageStore } from '~/store/home'
 
 const router = useRouter()
 
 const shoppingCartStore = useShoppingCartStore()
+const topPageStore = useTopPageStore()
+
+const { getHomeContent } = topPageStore
 
 shoppingCartStore.setupDummyData()
+getHomeContent()
 
 const archiveRef = ref<HTMLDivElement | null>(null)
 const archiveRefScrollLeft = ref<number>(0)
