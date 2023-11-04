@@ -1,6 +1,7 @@
 topLive:
   type: object
-  description:
+  description: 開催中・開催予定のマルシェ情報
+  properties:
     scheduleId:
       type: string
       description: 開催スケジュールID
@@ -116,7 +117,8 @@ topLive:
         size: 3
 topArchive:
   type: object
-  description:
+  description: 過去のマルシェ情報
+  properties:
     scheduleId:
       type: string
       description: 開催スケジュールID
