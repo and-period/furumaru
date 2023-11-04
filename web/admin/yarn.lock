@@ -4500,7 +4500,15 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@unhead/dom@1.8.2", "@unhead/dom@^1.7.4":
+"@unhead/dom@1.8.3":
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@unhead/dom/-/dom-1.8.3.tgz#af0cc0cb182c5e6b9059d204e7003d5fbd1f7577"
+  integrity sha512-rPj9PiRTDf+Qy7tSK/UCGxwKfsOOQ+YniANxQy9v2AhWsDy2amW7kbfgR9fVaSlOFdpsyuh2wLCbMcyj9Wn0Jw==
+  dependencies:
+    "@unhead/schema" "1.8.3"
+    "@unhead/shared" "1.8.3"
+
+"@unhead/dom@^1.7.4":
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/@unhead/dom/-/dom-1.8.2.tgz#84c9d90627492e9537e9334f1f5304234653076b"
   integrity sha512-wyWf2bFItWvWHdfv8BlIyS7fcPYQBhJkwvkCjf3D7bnTXrd2ZyoUck07x3XApFiZavW8KD+A3S6jS39f/h4lBw==
@@ -4516,12 +4524,27 @@
     hookable "^5.5.3"
     zhead "^2.2.4"
 
+"@unhead/schema@1.8.3":
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@unhead/schema/-/schema-1.8.3.tgz#dca988e9adcb1ce817bb4b7bf00258823e8f52af"
+  integrity sha512-3XbcJzdlyLr/RV2TKaygI21YorlU6XPgHn/MoWjQvH4PYiHkH8PtTGg8Je6k3gvcUURSiDfucFKaGEYdJXAVqQ==
+  dependencies:
+    hookable "^5.5.3"
+    zhead "^2.2.4"
+
 "@unhead/shared@1.8.2":
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/@unhead/shared/-/shared-1.8.2.tgz#4536044d000bd829852ceaa539b5427830792fc3"
   integrity sha512-GDrUDN3x2anpNQQOgjmKjpi2ygNsBAwok9C6Z1YCeM2YtjF1lhqF9cTCXaapNEq81FkC0R0LTgnVxa/HJ4n3lQ==
   dependencies:
     "@unhead/schema" "1.8.2"
+
+"@unhead/shared@1.8.3":
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@unhead/shared/-/shared-1.8.3.tgz#a216d158e28e61ba035b4359feea30fc4fa24f80"
+  integrity sha512-E1knEiAO0iENLzZd+LjWA4mUp8JRaSxo5V0vMjSENyf5hSVB/SxAVjDPmTIelLY7KrP5mJrNMen2ZmQrr/AZJw==
+  dependencies:
+    "@unhead/schema" "1.8.3"
 
 "@unhead/ssr@^1.7.4":
   version "1.8.2"
@@ -4532,14 +4555,14 @@
     "@unhead/shared" "1.8.2"
 
 "@unhead/vue@^1.7.4":
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/@unhead/vue/-/vue-1.8.2.tgz#68596443544a690a26bdcd43f328fb9b1a56a0a1"
-  integrity sha512-EcXw7Q++GFcsaJhZ9s6SdRnyVGelOqfhY5/xOt7FfWnTkYGqBaOxWhTrIvNSThh58lkMnAxCr/azI/z6pBVNgw==
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@unhead/vue/-/vue-1.8.3.tgz#409ccc5a0f72b1f38db4e5d6ea358bb66b126b9e"
+  integrity sha512-sj/1VosMreUQXd68rn5jDLdpgFVdN0mKrjW/8eZMWbomZkzbzs7FxyRUApd584xNjFVdtyWrTepmrNSKmEwKgg==
   dependencies:
-    "@unhead/schema" "1.8.2"
-    "@unhead/shared" "1.8.2"
+    "@unhead/schema" "1.8.3"
+    "@unhead/shared" "1.8.3"
     hookable "^5.5.3"
-    unhead "1.8.2"
+    unhead "1.8.3"
 
 "@vercel/nft@^0.24.3":
   version "0.24.3"
@@ -11274,14 +11297,14 @@ unfetch@^4.2.0:
   resolved "https://registry.yarnpkg.com/unfetch/-/unfetch-4.2.0.tgz#7e21b0ef7d363d8d9af0fb929a5555f6ef97a3be"
   integrity sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==
 
-unhead@1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/unhead/-/unhead-1.8.2.tgz#97598439deaec7efb987cc6818b51a25f980c1fd"
-  integrity sha512-f7Ha07cT+cgYav06tRNKxUrOZ722QtvYExn0McE68DYUGUM2boPCxXWlHcZXpSAbOj5OQI5AwQE5Xb3Qp2dWDQ==
+unhead@1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/unhead/-/unhead-1.8.3.tgz#d6a609d7e4ce5fcd5a7e161164e73ebf7daa97f1"
+  integrity sha512-2/5NJs7nY1MgCkUNuyevALM9nSgGp2loRv5QPhYyZXUPdF+F76CpKvkqATEOEJ/1yDzWjCaWrNh4u5lS6BEioA==
   dependencies:
-    "@unhead/dom" "1.8.2"
-    "@unhead/schema" "1.8.2"
-    "@unhead/shared" "1.8.2"
+    "@unhead/dom" "1.8.3"
+    "@unhead/schema" "1.8.3"
+    "@unhead/shared" "1.8.3"
     hookable "^5.5.3"
 
 unimport@^3.0.6, unimport@^3.4.0:
@@ -11897,9 +11920,9 @@ yallist@^4.0.0:
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
 yaml@^2.3.2:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.3.3.tgz#01f6d18ef036446340007db8e016810e5d64aad9"
-  integrity sha512-zw0VAJxgeZ6+++/su5AFoqBbZbrEakwu+X0M5HmcwUiBL7AzcuPKjj5we4xfQLp78LkEMpD0cOnUhmgOVy3KdQ==
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.3.4.tgz#53fc1d514be80aabf386dc6001eb29bf3b7523b2"
+  integrity sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==
 
 yargs-parser@^20.2.2, yargs-parser@^20.2.9:
   version "20.2.9"

@@ -13,6 +13,19 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { TopArchive } from './TopArchive';
+import {
+    TopArchiveFromJSON,
+    TopArchiveFromJSONTyped,
+    TopArchiveToJSON,
+} from './TopArchive';
+import type { TopLive } from './TopLive';
+import {
+    TopLiveFromJSON,
+    TopLiveFromJSONTyped,
+    TopLiveToJSON,
+} from './TopLive';
+
 /**
  * 
  * @export
@@ -21,16 +34,16 @@ import { exists, mapValues } from '../runtime';
 export interface TopCommonResponse {
     /**
      * 開催中・開催予定のマルシェ一覧
-     * @type {Array<object>}
+     * @type {Array<TopLive>}
      * @memberof TopCommonResponse
      */
-    lives: Array<object>;
+    lives: Array<TopLive>;
     /**
      * 過去のマルシェ一覧
-     * @type {Array<object>}
+     * @type {Array<TopArchive>}
      * @memberof TopCommonResponse
      */
-    archives: Array<object>;
+    archives: Array<TopArchive>;
 }
 
 /**
@@ -54,8 +67,8 @@ export function TopCommonResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'lives': json['lives'],
-        'archives': json['archives'],
+        'lives': ((json['lives'] as Array<any>).map(TopLiveFromJSON)),
+        'archives': ((json['archives'] as Array<any>).map(TopArchiveFromJSON)),
     };
 }
 
@@ -68,8 +81,8 @@ export function TopCommonResponseToJSON(value?: TopCommonResponse | null): any {
     }
     return {
         
-        'lives': value.lives,
-        'archives': value.archives,
+        'lives': ((value.lives as Array<any>).map(TopLiveToJSON)),
+        'archives': ((value.archives as Array<any>).map(TopArchiveToJSON)),
     };
 }
 

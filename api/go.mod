@@ -18,6 +18,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.19.5
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.24.5
 	github.com/casbin/casbin/v2 v2.77.2
+	github.com/dlclark/regexp2 v1.10.0
 	github.com/getsentry/sentry-go v0.25.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/zap v0.1.0
@@ -27,7 +28,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
 	github.com/jbenet/go-base58 v0.0.0-20150317085156-6237cf65f3a6
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/line/line-bot-sdk-go/v7 v7.21.0

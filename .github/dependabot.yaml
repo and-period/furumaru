@@ -17,21 +17,6 @@ updates:
   labels:
   - 'backend'
   - 'dependencies'
-- package-ecosystem: 'gomod'
-  directory: '/func'
-  schedule:
-    interval: 'weekly'
-    day: 'wednesday'
-    time: '19:00'
-    timezone: 'Asia/Tokyo'
-  allow:
-  - dependency-name: '*'
-  ignore:
-  - dependency-name: '*'
-    update-types: ['version-update:semver-major']
-  labels:
-  - 'backend'
-  - 'dependencies'
 # web
 - package-ecosystem: 'npm'
   directory: '/web/admin'
@@ -75,18 +60,6 @@ updates:
   - dependency-name: '*'
   labels:
   - 'docs'
-  - 'dependencies'
-- package-ecosystem: 'terraform'
-  directory: '/infra/terraform'
-  schedule:
-    interval: 'weekly'
-    day: 'wednesday'
-    time: '19:00'
-    timezone: 'Asia/Tokyo'
-  allow:
-  - dependency-name: '*'
-  labels:
-  - 'infra (terraform)'
   - 'dependencies'
 - package-ecosystem: 'github-actions'
   directory: '/'

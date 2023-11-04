@@ -60,7 +60,12 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn, log.WithLogLevel(a.LogLevel), log.WithSentryLevel("error"))
+	logger, err := log.NewSentryLogger(params.sentryDsn,
+		log.WithLogLevel(a.LogLevel),
+		log.WithSentryServerName(a.AppName),
+		log.WithSentryEnvironment(a.Environment),
+		log.WithSentryLevel("error"),
+	)
 	if err != nil {
 		return err
 	}
