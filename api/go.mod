@@ -16,7 +16,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.38.5
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.21.3
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.19.5
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.24.5
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.26.0
 	github.com/casbin/casbin/v2 v2.77.2
 	github.com/dlclark/regexp2 v1.10.0
 	github.com/getsentry/sentry-go v0.25.0
