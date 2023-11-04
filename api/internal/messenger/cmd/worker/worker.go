@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	"github.com/and-period/furumaru/api/internal/messenger/worker"
-	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/spf13/cobra"
@@ -16,6 +15,7 @@ import (
 
 type app struct {
 	*cobra.Command
+	logger                       *zap.Logger
 	waitGroup                    *sync.WaitGroup
 	worker                       worker.Worker
 	AppName                      string `envconfig:"APP_NAME" default:"messenger-worker"`
@@ -31,6 +31,8 @@ type app struct {
 	DBTimeZone                   string `envconfig:"DB_TIMEZONE" default:"Asia/Tokyo"`
 	DBEnabledTLS                 bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
 	DBSecretName                 string `envconfig:"DB_SECRET_NAME" default:""`
+	SentryDsn                    string `envconfig:"SENTRY_DSN" default:""`
+	SentrySecretName             string `envconfig:"SENTRY_SECRET_NAME" default:""`
 	AWSRegion                    string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	SendGridAPIKey               string `envconfig:"SENDGRID_API_KEY" default:""`
 	SendGridTemplatePath         string `envconfig:"SENDGRID_TEMPLATE_PATH" default:""`
@@ -69,30 +71,23 @@ func (a *app) run() error {
 		return fmt.Errorf("worker: failed to load environment: %w", err)
 	}
 
-	// Loggerの設定
-	logger, err := log.NewLogger(log.WithLogLevel(a.LogLevel), log.WithOutput(a.LogPath))
-	if err != nil {
-		return fmt.Errorf("worker: failed to new logger: %w", err)
-	}
-	defer logger.Sync() //nolint:errcheck
-
 	// 依存関係の解決
-	if err := a.inject(ctx, logger); err != nil {
-		logger.Error("Failed to new registry", zap.Error(err))
-		return err
+	if err := a.inject(ctx); err != nil {
+		return fmt.Errorf("worker: failed to new registry: %w", err)
 	}
+	defer a.logger.Sync() //nolint:errcheck
 
 	// Workerの起動
-	logger.Info("Started")
+	a.logger.Info("Started")
 	switch a.RunMethod {
 	case "lambda":
 		lambda.StartWithOptions(a.worker.Lambda, lambda.WithContext(ctx))
 	default:
-		err = errors.New("not implemented")
+		return errors.New("not implemented")
 	}
 
 	// Workerの停止
-	logger.Info("Shutdown...")
+	a.logger.Info("Shutdown...")
 	a.waitGroup.Wait()
-	return err
+	return nil
 }

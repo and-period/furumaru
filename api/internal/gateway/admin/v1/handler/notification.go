@@ -16,12 +16,13 @@ import (
 )
 
 func (h *handler) notificationRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListNotifications)
-	arg.POST("", h.CreateNotification)
-	arg.GET("/:notificationId", h.GetNotification)
-	arg.PATCH("/:notificationId", h.UpdateNotifcation)
-	arg.DELETE("/:notificationId", h.DeleteNotification)
+	r := rg.Group("/notifications", h.authentication)
+
+	r.GET("", h.ListNotifications)
+	r.POST("", h.CreateNotification)
+	r.GET("/:notificationId", h.GetNotification)
+	r.PATCH("/:notificationId", h.UpdateNotifcation)
+	r.DELETE("/:notificationId", h.DeleteNotification)
 }
 
 func (h *handler) ListNotifications(ctx *gin.Context) {
@@ -32,27 +33,27 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	orders, err := h.newNotificationOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	since, err := util.GetQueryInt64(ctx, "since", 0)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	until, err := util.GetQueryInt64(ctx, "until", 0)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -65,7 +66,7 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 	}
 	notifications, total, err := h.messenger.ListNotifications(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(notifications) == 0 {
@@ -90,7 +91,7 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -111,7 +112,7 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 	}
 	notification, err := h.messenger.GetNotification(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -132,7 +133,7 @@ func (h *handler) GetNotification(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -175,7 +176,7 @@ func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNoti
 func (h *handler) CreateNotification(ctx *gin.Context) {
 	req := &request.CreateNotificationRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	targets := make([]mentity.NotificationTarget, len(req.Targets))
@@ -197,7 +198,7 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 
 	notification, err := h.messenger.CreateNotification(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -210,7 +211,7 @@ func (h *handler) CreateNotification(ctx *gin.Context) {
 func (h *handler) UpdateNotifcation(ctx *gin.Context) {
 	req := &request.UpdateNotificationRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	targets := make([]mentity.NotificationTarget, len(req.Targets))
@@ -229,7 +230,7 @@ func (h *handler) UpdateNotifcation(ctx *gin.Context) {
 		UpdatedBy:      getAdminID(ctx),
 	}
 	if err := h.messenger.UpdateNotification(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -241,7 +242,7 @@ func (h *handler) DeleteNotification(ctx *gin.Context) {
 		NotificationID: util.GetParam(ctx, "notificationId"),
 	}
 	if err := h.messenger.DeleteNotification(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

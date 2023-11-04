@@ -17,14 +17,15 @@ import (
 )
 
 func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListCoordinators)
-	arg.POST("", h.CreateCoordinator)
-	arg.GET("/:coordinatorId", h.GetCoordinator)
-	arg.PATCH("/:coordinatorId", h.UpdateCoordinator)
-	arg.PATCH("/:coordinatorId/email", h.UpdateCoordinatorEmail)
-	arg.PATCH("/:coordinatorId/password", h.ResetCoordinatorPassword)
-	arg.DELETE("/:coordinatorId", h.DeleteCoordinator)
+	r := rg.Group("/coordinators", h.authentication)
+
+	r.GET("", h.ListCoordinators)
+	r.POST("", h.CreateCoordinator)
+	r.GET("/:coordinatorId", h.GetCoordinator)
+	r.PATCH("/:coordinatorId", h.UpdateCoordinator)
+	r.PATCH("/:coordinatorId/email", h.UpdateCoordinatorEmail)
+	r.PATCH("/:coordinatorId/password", h.ResetCoordinatorPassword)
+	r.DELETE("/:coordinatorId", h.DeleteCoordinator)
 }
 
 func (h *handler) ListCoordinators(ctx *gin.Context) {
@@ -35,12 +36,12 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -51,7 +52,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 	}
 	coordinators, total, err := h.user.ListCoordinators(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(coordinators) == 0 {
@@ -79,7 +80,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -100,12 +101,12 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	}
 	coordinator, err := h.user.GetCoordinator(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	productTypes, err := h.multiGetProductTypes(ctx, coordinator.ProductTypeIDs)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -119,16 +120,16 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 func (h *handler) CreateCoordinator(ctx *gin.Context) {
 	req := &request.CreateCoordinatorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	productTypes, err := h.multiGetProductTypes(ctx, req.ProductTypeIDs)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(productTypes) != len(req.ProductTypeIDs) {
-		badRequest(ctx, errors.New("handler: unmatch product types length"))
+		h.badRequest(ctx, errors.New("handler: unmatch product types length"))
 		return
 	}
 
@@ -175,7 +176,7 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -205,7 +206,7 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 	}
 	coordinator, err := h.user.CreateCoordinator(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -218,16 +219,16 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 	req := &request.UpdateCoordinatorRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	productTypes, err := h.multiGetProductTypes(ctx, req.ProductTypeIDs)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(productTypes) != len(req.ProductTypeIDs) {
-		badRequest(ctx, errors.New("handler: unmatch product types length"))
+		h.badRequest(ctx, errors.New("handler: unmatch product types length"))
 		return
 	}
 
@@ -274,7 +275,7 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -303,7 +304,7 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		BusinessDays:      req.BusinessDays,
 	}
 	if err := h.user.UpdateCoordinator(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -313,7 +314,7 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
 	req := &request.UpdateCoordinatorEmailRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -322,7 +323,7 @@ func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
 		Email:         req.Email,
 	}
 	if err := h.user.UpdateCoordinatorEmail(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -334,7 +335,7 @@ func (h *handler) ResetCoordinatorPassword(ctx *gin.Context) {
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
 	}
 	if err := h.user.ResetCoordinatorPassword(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -346,7 +347,7 @@ func (h *handler) DeleteCoordinator(ctx *gin.Context) {
 		CoordinatorID: util.GetParam(ctx, "coordinatorId"),
 	}
 	if err := h.user.DeleteCoordinator(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

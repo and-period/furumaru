@@ -13,6 +13,7 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/storage"
@@ -21,6 +22,7 @@ import (
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 type params struct {
@@ -34,11 +36,12 @@ type params struct {
 	dbPort     string
 	dbUsername string
 	dbPassword string
+	sentryDsn  string
 }
 
-func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
+func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    logger,
+		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
@@ -55,6 +58,13 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	if err := a.getSecret(ctx, params); err != nil {
 		return err
 	}
+
+	// Loggerの設定
+	logger, err := log.NewSentryLogger(params.sentryDsn, log.WithLogLevel(a.LogLevel), log.WithSentryLevel("error"))
+	if err != nil {
+		return err
+	}
+	params.logger = logger
 
 	// Amazon S3の設定
 	storageParams := &storage.Params{
@@ -79,29 +89,47 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 		User:      userService,
 		Store:     storeService,
 	}
-	a.resizer = resizer.NewResizer(resizerParams, resizer.WithLogger(logger))
+	a.resizer = resizer.NewResizer(resizerParams, resizer.WithLogger(params.logger))
+	a.logger = params.logger
 	a.waitGroup = params.waitGroup
 	return nil
 }
 
 func (a *app) getSecret(ctx context.Context, p *params) error {
-	// データベース認証情報の取得
-	if a.DBSecretName == "" {
-		p.dbHost = a.DBHost
-		p.dbPort = a.DBPort
-		p.dbUsername = a.DBUsername
-		p.dbPassword = a.DBPassword
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		// データベース認証情報の取得
+		if a.DBSecretName == "" {
+			p.dbHost = a.DBHost
+			p.dbPort = a.DBPort
+			p.dbUsername = a.DBUsername
+			p.dbPassword = a.DBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.DBSecretName)
+		if err != nil {
+			return err
+		}
+		p.dbHost = secrets["host"]
+		p.dbPort = secrets["port"]
+		p.dbUsername = secrets["username"]
+		p.dbPassword = secrets["password"]
 		return nil
-	}
-	secrets, err := p.secret.Get(ctx, a.DBSecretName)
-	if err != nil {
-		return err
-	}
-	p.dbHost = secrets["host"]
-	p.dbPort = secrets["port"]
-	p.dbUsername = secrets["username"]
-	p.dbPassword = secrets["password"]
-	return nil
+	})
+	eg.Go(func() error {
+		// Sentry認証情報の取得
+		if a.SentrySecretName == "" {
+			p.sentryDsn = a.SentryDsn
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.SentrySecretName)
+		if err != nil {
+			return err
+		}
+		p.sentryDsn = secrets["dsn"]
+		return nil
+	})
+	return eg.Wait()
 }
 
 func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {

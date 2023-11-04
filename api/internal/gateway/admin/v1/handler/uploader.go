@@ -16,21 +16,22 @@ import (
 )
 
 func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
-	arg.POST("/coordinators/header", h.uploadCoordinatorHeader)
-	arg.POST("/coordinators/promotion-video", h.uploadCoordinatorPromotionVideo)
-	arg.POST("/coordinators/bonus-video", h.uploadCoordinatorBonusVideo)
-	arg.POST("/producers/thumbnail", h.uploadProducerThumbnail)
-	arg.POST("/producers/header", h.uploadProducerHeader)
-	arg.POST("/producers/promotion-video", h.uploadProducerPromotionVideo)
-	arg.POST("/producers/bonus-video", h.UploadProducerBonusVideo)
-	arg.POST("/products/image", h.uploadProductImage)
-	arg.POST("/products/video", h.uploadProductVideo)
-	arg.POST("/product-types/icon", h.uploadProductTypeIcon)
-	arg.POST("/schedules/thumbnail", h.uploadScheduleThumbnail)
-	arg.POST("/schedules/image", h.uploadScheduleImage)
-	arg.POST("/schedules/opening-video", h.uploadScheduleOpeningVideo)
+	r := rg.Group("/upload", h.authentication)
+
+	r.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
+	r.POST("/coordinators/header", h.uploadCoordinatorHeader)
+	r.POST("/coordinators/promotion-video", h.uploadCoordinatorPromotionVideo)
+	r.POST("/coordinators/bonus-video", h.uploadCoordinatorBonusVideo)
+	r.POST("/producers/thumbnail", h.uploadProducerThumbnail)
+	r.POST("/producers/header", h.uploadProducerHeader)
+	r.POST("/producers/promotion-video", h.uploadProducerPromotionVideo)
+	r.POST("/producers/bonus-video", h.UploadProducerBonusVideo)
+	r.POST("/products/image", h.uploadProductImage)
+	r.POST("/products/video", h.uploadProductVideo)
+	r.POST("/product-types/icon", h.uploadProductTypeIcon)
+	r.POST("/schedules/thumbnail", h.uploadScheduleThumbnail)
+	r.POST("/schedules/image", h.uploadScheduleImage)
+	r.POST("/schedules/opening-video", h.uploadScheduleOpeningVideo)
 }
 
 func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
@@ -110,7 +111,7 @@ func (h *handler) uploadFile(
 ) {
 	file, header, err := h.parseFile(ctx, filename)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	in := &media.GenerateFileInput{
@@ -119,7 +120,7 @@ func (h *handler) uploadFile(
 	}
 	url, err := generate(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.UploadImageResponse{

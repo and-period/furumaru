@@ -16,12 +16,13 @@ import (
 )
 
 func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListPromotions)
-	arg.POST("", h.CreatePromotion)
-	arg.GET("/:promotionId", h.GetPromotion)
-	arg.PATCH("/:promotionId", h.UpdatePromotion)
-	arg.DELETE("/:promotionId", h.DeletePromotion)
+	r := rg.Group("/promotions", h.authentication)
+
+	r.GET("", h.ListPromotions)
+	r.POST("", h.CreatePromotion)
+	r.GET("/:promotionId", h.GetPromotion)
+	r.PATCH("/:promotionId", h.UpdatePromotion)
+	r.DELETE("/:promotionId", h.DeletePromotion)
 }
 
 func (h *handler) ListPromotions(ctx *gin.Context) {
@@ -32,17 +33,17 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	orders, err := h.newPromotionOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -54,7 +55,7 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 	}
 	promotions, total, err := h.store.ListPromotions(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -103,7 +104,7 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 	}
 	promotion, err := h.store.GetPromotion(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -116,7 +117,7 @@ func (h *handler) GetPromotion(ctx *gin.Context) {
 func (h *handler) CreatePromotion(ctx *gin.Context) {
 	req := &request.CreatePromotionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -133,7 +134,7 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 	}
 	promotion, err := h.store.CreatePromotion(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -146,7 +147,7 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 func (h *handler) UpdatePromotion(ctx *gin.Context) {
 	req := &request.UpdatePromotionRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -163,7 +164,7 @@ func (h *handler) UpdatePromotion(ctx *gin.Context) {
 		EndAt:        jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdatePromotion(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -175,7 +176,7 @@ func (h *handler) DeletePromotion(ctx *gin.Context) {
 		PromotionID: util.GetParam(ctx, "promotionId"),
 	}
 	if err := h.store.DeletePromotion(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

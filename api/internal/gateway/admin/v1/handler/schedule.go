@@ -18,12 +18,13 @@ import (
 )
 
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListSchedules)
-	arg.POST("", h.CreateSchedule)
-	arg.GET("/:scheduleId", h.filterAccessSchedule, h.GetSchedule)
-	arg.PATCH("/:scheduleId", h.filterAccessSchedule, h.UpdateSchedule)
-	arg.PATCH("/:scheduleId/approval", h.filterAccessSchedule, h.ApproveSchedule)
+	r := rg.Group("/schedules", h.authentication)
+
+	r.GET("", h.ListSchedules)
+	r.POST("", h.CreateSchedule)
+	r.GET("/:scheduleId", h.filterAccessSchedule, h.GetSchedule)
+	r.PATCH("/:scheduleId", h.filterAccessSchedule, h.UpdateSchedule)
+	r.PATCH("/:scheduleId/approval", h.filterAccessSchedule, h.ApproveSchedule)
 }
 
 func (h *handler) filterAccessSchedule(ctx *gin.Context) {
@@ -37,7 +38,7 @@ func (h *handler) filterAccessSchedule(ctx *gin.Context) {
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.Next()
@@ -51,12 +52,12 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -66,7 +67,7 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 	}
 	schedules, total, err := h.store.ListSchedules(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(schedules) == 0 {
@@ -79,7 +80,7 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 
 	coordinators, err := h.multiGetCoordinators(ctx, schedules.CoordinatorIDs())
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -95,13 +96,13 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 	scheduleID := util.GetParam(ctx, "scheduleId")
 	schedule, err := h.getSchedule(ctx, scheduleID)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
 	coordinator, err := h.getCoordinator(ctx, schedule.CoordinatorID)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -115,23 +116,23 @@ func (h *handler) GetSchedule(ctx *gin.Context) {
 func (h *handler) CreateSchedule(ctx *gin.Context) {
 	req := &request.CreateScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if getRole(ctx).IsCoordinator() {
 		if !currentAdmin(ctx, req.CoordinatorID) {
-			forbidden(ctx, errors.New("handler: invalid coordinator id"))
+			h.forbidden(ctx, errors.New("handler: invalid coordinator id"))
 			return
 		}
 	}
 
 	coordinator, err := h.getCoordinator(ctx, req.CoordinatorID)
 	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -168,7 +169,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -185,7 +186,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 	}
 	schedule, err := h.store.CreateSchedule(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	sschedule := service.NewSchedule(schedule)
@@ -200,7 +201,7 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 func (h *handler) UpdateSchedule(ctx *gin.Context) {
 	req := &request.UpdateScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -237,7 +238,7 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -253,7 +254,7 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 		EndAt:           jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdateSchedule(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
@@ -262,7 +263,7 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 func (h *handler) ApproveSchedule(ctx *gin.Context) {
 	req := &request.ApproveScheduleRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -272,7 +273,7 @@ func (h *handler) ApproveSchedule(ctx *gin.Context) {
 		Approved:   req.Approved,
 	}
 	if err := h.store.ApproveSchedule(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusNoContent, gin.H{})

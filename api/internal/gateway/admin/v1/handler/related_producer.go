@@ -12,10 +12,11 @@ import (
 )
 
 func (h *handler) relatedProducerRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication, h.filterAccessRelatedProducer)
-	arg.GET("", h.ListRelatedProducers)
-	arg.POST("", h.RelateProducers)
-	arg.DELETE("/:producerId", h.filterAccessProducer, h.UnrelateProducer)
+	r := rg.Group("/coordinators/:coordinatorId/producers", h.authentication, h.filterAccessRelatedProducer)
+
+	r.GET("", h.ListRelatedProducers)
+	r.POST("", h.RelateProducers)
+	r.DELETE("/:producerId", h.filterAccessProducer, h.UnrelateProducer)
 }
 
 func (h *handler) filterAccessRelatedProducer(ctx *gin.Context) {
@@ -26,7 +27,7 @@ func (h *handler) filterAccessRelatedProducer(ctx *gin.Context) {
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.Next()
@@ -40,12 +41,12 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -56,12 +57,12 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 	}
 	producers, total, err := h.user.ListProducers(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	coordinators, err := h.multiGetCoordinators(ctx, producers.CoordinatorIDs())
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -76,13 +77,13 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 func (h *handler) RelateProducers(ctx *gin.Context) {
 	req := &request.RelateProducersRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
 	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -91,7 +92,7 @@ func (h *handler) RelateProducers(ctx *gin.Context) {
 		ProducerIDs:   req.ProducerIDs,
 	}
 	if err := h.user.RelateProducers(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -100,7 +101,7 @@ func (h *handler) RelateProducers(ctx *gin.Context) {
 
 func (h *handler) UnrelateProducer(ctx *gin.Context) {
 	if _, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId")); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -108,7 +109,7 @@ func (h *handler) UnrelateProducer(ctx *gin.Context) {
 		ProducerID: util.GetParam(ctx, "producerId"),
 	}
 	if err := h.user.UnrelateProducer(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

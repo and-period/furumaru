@@ -15,11 +15,12 @@ import (
 )
 
 func (h *handler) productTagRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListProductTags)
-	arg.POST("", h.CreateProductTag)
-	arg.PATCH("/:productTagId", h.UpdateProductTag)
-	arg.DELETE("/:productTagId", h.DeleteProductTag)
+	r := rg.Group("/product-tags", h.authentication)
+
+	r.GET("", h.ListProductTags)
+	r.POST("", h.CreateProductTag)
+	r.PATCH("/:productTagId", h.UpdateProductTag)
+	r.DELETE("/:productTagId", h.DeleteProductTag)
 }
 
 func (h *handler) ListProductTags(ctx *gin.Context) {
@@ -30,17 +31,17 @@ func (h *handler) ListProductTags(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	orders, err := h.newProductTagOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -52,7 +53,7 @@ func (h *handler) ListProductTags(ctx *gin.Context) {
 	}
 	productTags, total, err := h.store.ListProductTags(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -85,7 +86,7 @@ func (h *handler) newProductTagOrders(ctx *gin.Context) ([]*store.ListProductTag
 func (h *handler) CreateProductTag(ctx *gin.Context) {
 	req := &request.CreateProductTagRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -94,7 +95,7 @@ func (h *handler) CreateProductTag(ctx *gin.Context) {
 	}
 	productTag, err := h.store.CreateProductTag(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -107,7 +108,7 @@ func (h *handler) CreateProductTag(ctx *gin.Context) {
 func (h *handler) UpdateProductTag(ctx *gin.Context) {
 	req := &request.UpdateProductTagRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -116,7 +117,7 @@ func (h *handler) UpdateProductTag(ctx *gin.Context) {
 		Name:         req.Name,
 	}
 	if err := h.store.UpdateProductTag(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -128,7 +129,7 @@ func (h *handler) DeleteProductTag(ctx *gin.Context) {
 		ProductTagID: util.GetParam(ctx, "productTagId"),
 	}
 	if err := h.store.DeleteProductTag(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

@@ -18,12 +18,13 @@ import (
 )
 
 func (h *handler) liveRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication, h.filterAccessSchedule)
-	arg.GET("", h.ListLives)
-	arg.POST("", h.CreateLive)
-	arg.GET("/:liveId", h.filterAccessLive, h.GetLive)
-	arg.PATCH("/:liveId", h.filterAccessLive, h.UpdateLive)
-	arg.DELETE("/:liveId", h.filterAccessLive, h.DeleteLive)
+	r := rg.Group("/schedules/:scheduleId/lives", h.authentication, h.filterAccessSchedule)
+
+	r.GET("", h.ListLives)
+	r.POST("", h.CreateLive)
+	r.GET("/:liveId", h.filterAccessLive, h.GetLive)
+	r.PATCH("/:liveId", h.filterAccessLive, h.UpdateLive)
+	r.DELETE("/:liveId", h.filterAccessLive, h.DeleteLive)
 }
 
 func (h *handler) filterAccessLive(ctx *gin.Context) {
@@ -41,7 +42,7 @@ func (h *handler) filterAccessLive(ctx *gin.Context) {
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.Next()
@@ -54,7 +55,7 @@ func (h *handler) ListLives(ctx *gin.Context) {
 	}
 	lives, total, err := h.store.ListLives(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	var (
@@ -71,7 +72,7 @@ func (h *handler) ListLives(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.LivesResponse{
@@ -87,7 +88,7 @@ func (h *handler) GetLive(ctx *gin.Context) {
 	liveID := util.GetParam(ctx, "liveId")
 	live, err := h.getLive(ctx, liveID)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	var (
@@ -104,7 +105,7 @@ func (h *handler) GetLive(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.LiveResponse{
@@ -118,7 +119,7 @@ func (h *handler) GetLive(ctx *gin.Context) {
 func (h *handler) CreateLive(ctx *gin.Context) {
 	req := &request.CreateLiveRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -140,17 +141,17 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		if !currentAdmin(ctx, producer.CoordinatorID) {
-			forbidden(ctx, errors.New("handler: invalid coordinator id"))
+			h.forbidden(ctx, errors.New("handler: invalid coordinator id"))
 			return
 		}
 	}
@@ -165,7 +166,7 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 	}
 	live, err := h.store.CreateLive(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -180,17 +181,17 @@ func (h *handler) CreateLive(ctx *gin.Context) {
 func (h *handler) UpdateLive(ctx *gin.Context) {
 	req := &request.UpdateLiveRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
 	products, err := h.multiGetProducts(ctx, req.ProductIDs)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(products) != len(req.ProductIDs) {
-		badRequest(ctx, errors.New("handler: unmatch products length"))
+		h.badRequest(ctx, errors.New("handler: unmatch products length"))
 		return
 	}
 
@@ -202,7 +203,7 @@ func (h *handler) UpdateLive(ctx *gin.Context) {
 		EndAt:      jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdateLive(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
@@ -213,7 +214,7 @@ func (h *handler) DeleteLive(ctx *gin.Context) {
 		LiveID: util.GetParam(ctx, "liveId"),
 	}
 	if err := h.store.DeleteLive(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusNoContent, gin.H{})

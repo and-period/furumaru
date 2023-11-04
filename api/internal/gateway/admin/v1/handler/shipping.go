@@ -17,12 +17,13 @@ import (
 )
 
 func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListShippings)
-	arg.POST("", h.CreateShipping)
-	arg.GET("/:shippingId", h.GetShipping)
-	arg.PATCH("/:shippingId", h.UpdateShipping)
-	arg.DELETE("/:shippingId", h.DeleteShipping)
+	r := rg.Group("/shippings", h.authentication)
+
+	r.GET("", h.ListShippings)
+	r.POST("", h.CreateShipping)
+	r.GET("/:shippingId", h.GetShipping)
+	r.PATCH("/:shippingId", h.UpdateShipping)
+	r.DELETE("/:shippingId", h.DeleteShipping)
 }
 
 func (h *handler) ListShippings(ctx *gin.Context) {
@@ -33,17 +34,17 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	orders, err := h.newShippingOrders(ctx)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -58,7 +59,7 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 	}
 	shippings, total, err := h.store.ListShippings(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(shippings) == 0 {
@@ -71,13 +72,13 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 
 	coordinators, err := h.multiGetCoordinators(ctx, shippings.CoordinatorIDs())
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
 	sshippings, err := service.NewShippings(shippings)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -114,7 +115,7 @@ func (h *handler) newShippingOrders(ctx *gin.Context) ([]*store.ListShippingsOrd
 func (h *handler) GetShipping(ctx *gin.Context) {
 	shipping, err := h.getShipping(ctx, util.GetParam(ctx, "shippingId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.ShippingResponse{
@@ -126,29 +127,29 @@ func (h *handler) GetShipping(ctx *gin.Context) {
 func (h *handler) CreateShipping(ctx *gin.Context) {
 	req := &request.CreateShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		if !currentAdmin(ctx, req.CoordinatorID) {
-			forbidden(ctx, errors.New("handler: invalid coordinator id"))
+			h.forbidden(ctx, errors.New("handler: invalid coordinator id"))
 			return
 		}
 	}
 
 	box60Rates, err := h.newShippingRatesForCreate(req.Box60Rates)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	box80Rates, err := h.newShippingRatesForCreate(req.Box80Rates)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	box100Rates, err := h.newShippingRatesForCreate(req.Box100Rates)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -170,18 +171,18 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 	}
 	sshipping, err := h.store.CreateShipping(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	coordinator, err := h.getCoordinator(ctx, sshipping.CoordinatorID)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
 	shipping, err := service.NewShipping(sshipping)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	res := &response.ShippingResponse{
@@ -210,22 +211,22 @@ func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) ([
 func (h *handler) UpdateShipping(ctx *gin.Context) {
 	req := &request.UpdateShippingRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	box60Rates, err := h.newShippingRatesForUpdate(req.Box60Rates)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	box80Rates, err := h.newShippingRatesForUpdate(req.Box80Rates)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	box100Rates, err := h.newShippingRatesForUpdate(req.Box100Rates)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -246,7 +247,7 @@ func (h *handler) UpdateShipping(ctx *gin.Context) {
 		FreeShippingRates:  req.FreeShippingRates,
 	}
 	if err := h.store.UpdateShipping(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -274,7 +275,7 @@ func (h *handler) DeleteShipping(ctx *gin.Context) {
 		ShippingID: util.GetParam(ctx, "shippingId"),
 	}
 	if err := h.store.DeleteShipping(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

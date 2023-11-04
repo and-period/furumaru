@@ -12,6 +12,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/pkg/cors"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	ginzip "github.com/gin-contrib/gzip"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -21,13 +22,14 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func (a *app) newRouter(logger *zap.Logger) *gin.Engine {
+func (a *app) newRouter() *gin.Engine {
 	opts := make([]gin.HandlerFunc, 0)
 	opts = append(opts, nrgin.Middleware(a.newRelic))
-	opts = append(opts, a.accessLogger(logger))
+	opts = append(opts, sentrygin.New(sentrygin.Options{}))
+	opts = append(opts, a.accessLogger())
 	opts = append(opts, cors.NewGinMiddleware())
 	opts = append(opts, ginzip.Gzip(ginzip.DefaultCompression))
-	opts = append(opts, ginzap.RecoveryWithZap(logger, true))
+	opts = append(opts, ginzap.RecoveryWithZap(a.logger, true))
 
 	rt := gin.New()
 	rt.Use(opts...)
@@ -70,7 +72,7 @@ func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
 	return res, json.NewDecoder(r).Decode(&res)
 }
 
-func (a *app) accessLogger(logger *zap.Logger) gin.HandlerFunc {
+func (a *app) accessLogger() gin.HandlerFunc {
 	skipPaths := map[string]bool{
 		"/health": true,
 	}
@@ -114,7 +116,7 @@ func (a *app) accessLogger(logger *zap.Logger) gin.HandlerFunc {
 
 		// ~ 399
 		if status < 400 {
-			logger.Info(path, fields...)
+			a.logger.Info(path, fields...)
 			return
 		}
 
@@ -124,19 +126,19 @@ func (a *app) accessLogger(logger *zap.Logger) gin.HandlerFunc {
 		}
 		res, err := w.errorResponse()
 		if err != nil {
-			logger.Error("Failed to parse http response", zap.Error(err))
+			a.logger.Error("Failed to parse http response", zap.Error(err))
 		}
 		fields = append(fields, zap.Any("response", res))
 
 		// 400 ~ 499
 		if status < 500 {
-			logger.Warn(path, fields...)
+			a.logger.Warn(path, fields...)
 			return
 		}
 
 		// 500 ~
 		fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
-		logger.Error(path, fields...)
+		a.logger.Warn(path, fields...)
 
 		if a.slack == nil {
 			return
@@ -159,7 +161,7 @@ func (a *app) accessLogger(logger *zap.Logger) gin.HandlerFunc {
 			defer a.waitGroup.Done()
 			err := a.slack.SendMessage(ctx, msg)
 			if err != nil {
-				logger.Error("Failed to alert message", zap.Error(err))
+				a.logger.Error("Failed to alert message", zap.Error(err))
 			}
 		}(msg)
 	}

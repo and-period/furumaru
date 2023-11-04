@@ -12,14 +12,15 @@ import (
 )
 
 func (h *handler) contactReadRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.POST("", h.CreateContactRead)
+	r := rg.Group("/contact-reads", h.authentication)
+
+	r.POST("", h.CreateContactRead)
 }
 
 func (h *handler) CreateContactRead(ctx *gin.Context) {
 	req := &request.CreateContactReadRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -30,7 +31,7 @@ func (h *handler) CreateContactRead(ctx *gin.Context) {
 	}
 	scontactRead, err := h.messenger.CreateContactRead(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	contactRead := service.NewContactRead(scontactRead)

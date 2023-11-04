@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -12,6 +14,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -45,9 +48,12 @@ type Params struct {
 }
 
 type handler struct {
+	appName     string
+	env         string
 	now         func() time.Time
 	generateID  func() string
 	logger      *zap.Logger
+	sentry      sentry.Client
 	waitGroup   *sync.WaitGroup
 	sharedGroup *singleflight.Group
 	user        user.Service
@@ -57,10 +63,25 @@ type handler struct {
 }
 
 type options struct {
-	logger *zap.Logger
+	appName string
+	env     string
+	logger  *zap.Logger
+	sentry  sentry.Client
 }
 
 type Option func(opts *options)
+
+func WithAppName(name string) Option {
+	return func(opts *options) {
+		opts.appName = name
+	}
+}
+
+func WithEnvironment(env string) Option {
+	return func(opts *options) {
+		opts.env = env
+	}
+}
 
 func WithLogger(logger *zap.Logger) Option {
 	return func(opts *options) {
@@ -68,19 +89,31 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
+func WithSentry(sentry sentry.Client) Option {
+	return func(opts *options) {
+		opts.sentry = sentry
+	}
+}
+
 func NewHandler(params *Params, opts ...Option) Handler {
 	dopts := &options{
-		logger: zap.NewNop(),
+		appName: "user-gateway",
+		env:     "",
+		logger:  zap.NewNop(),
+		sentry:  sentry.NewFixedMockClient(),
 	}
 	for i := range opts {
 		opts[i](dopts)
 	}
 	return &handler{
-		now: jst.Now,
+		appName: dopts.appName,
+		env:     dopts.env,
+		now:     jst.Now,
 		generateID: func() string {
 			return uuid.Base58Encode(uuid.New())
 		},
 		logger:      dopts.logger,
+		sentry:      dopts.sentry,
 		waitGroup:   params.WaitGroup,
 		sharedGroup: &singleflight.Group{},
 		user:        params.User,
@@ -98,15 +131,14 @@ func NewHandler(params *Params, opts ...Option) Handler {
 func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	// 公開エンドポイント
-	h.authRoutes(v1.Group("/auth"))
-	h.topRoutes(v1.Group("/top"))
-	h.scheduleRoutes(v1.Group("/schedules"))
-	h.productRoutes(v1.Group("/products"))
-
+	h.authRoutes(v1)
+	h.scheduleRoutes(v1)
+	h.topRoutes(v1)
+	h.postalCodeRoutes(v1)
+	h.productRoutes(v1)
 	// 要認証エンドポイント
-	h.addressRoutes(v1.Group("/addresses"))
-	h.cartRoutes(v1.Group("/carts"))
-	h.postalCodeRoutes(v1.Group("/postal-codes"))
+	h.addressRoutes(v1)
+	h.cartRoutes(v1)
 }
 
 /**
@@ -114,22 +146,61 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
  * error handling
  * ###############################################
  */
-func httpError(ctx *gin.Context, err error) {
+func (h *handler) httpError(ctx *gin.Context, err error) {
 	res, code := util.NewErrorResponse(err)
+	h.reportError(ctx, err, res)
+	h.filterResponse(res)
 	ctx.JSON(code, res)
 	ctx.Abort()
 }
 
-func badRequest(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
+func (h *handler) badRequest(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.InvalidArgument, err.Error()))
 }
 
-func unauthorized(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
+func (h *handler) unauthorized(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
 }
 
-func notFound(ctx *gin.Context, err error) {
-	httpError(ctx, status.Error(codes.NotFound, err.Error()))
+func (h *handler) notFound(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.NotFound, err.Error()))
+}
+
+func (h *handler) filterResponse(res *util.ErrorResponse) {
+	if res == nil || !strings.Contains(h.env, "prd") {
+		return
+	}
+	// 本番環境の場合、エラーメッセージは返却しない
+	res.Detail = ""
+}
+
+func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorResponse) {
+	if h.sentry == nil || res.Status < 500 {
+		return
+	}
+	opts := []sentry.ReportOption{
+		sentry.WithLevel("error"),
+		sentry.WithRequest(ctx.Request),
+		sentry.WithFingerprint(
+			ctx.Request.Method,
+			ctx.FullPath(),
+			res.GetDetail(),
+		),
+		sentry.WithUser(&sentry.User{
+			ID:        getUserID(ctx),
+			IPAddress: ctx.ClientIP(),
+		}),
+		sentry.WithTags(map[string]string{
+			"app_name":   h.appName,
+			"env":        h.env,
+			"method":     ctx.Request.Method,
+			"path":       ctx.FullPath(),
+			"user_agent": ctx.Request.UserAgent(),
+		}),
+	}
+	go func(ctx context.Context, opts []sentry.ReportOption) {
+		h.sentry.ReportError(ctx, err, opts...)
+	}(ctx, opts)
 }
 
 /**
@@ -140,14 +211,14 @@ func notFound(ctx *gin.Context, err error) {
 func (h *handler) authentication(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 
 	in := &user.GetUserAuthInput{AccessToken: token}
 	auth, err := h.user.GetUserAuth(ctx, in)
 	if err != nil || auth.UserID == "" {
-		unauthorized(ctx, err)
+		h.unauthorized(ctx, err)
 		return
 	}
 

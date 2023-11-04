@@ -16,12 +16,13 @@ import (
 )
 
 func (h *handler) threadRoutes(rg *gin.RouterGroup) {
-	arg := rg.Use(h.authentication)
-	arg.GET("", h.ListThreadsByContactID)
-	arg.GET("/:threadId", h.GetThread)
-	arg.POST("", h.CreateThread)
-	arg.PATCH("/:threadId", h.UpdateThread)
-	arg.DELETE("/:threadId", h.DeleteThread)
+	r := rg.Group("/contacts/:contactId/threads", h.authentication)
+
+	r.GET("", h.ListThreadsByContactID)
+	r.GET("/:threadId", h.GetThread)
+	r.POST("", h.CreateThread)
+	r.PATCH("/:threadId", h.UpdateThread)
+	r.DELETE("/:threadId", h.DeleteThread)
 }
 
 func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
@@ -32,12 +33,12 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	threadsIn := &messenger.ListThreadsInput{
@@ -48,7 +49,7 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 
 	sthreads, total, err := h.messenger.ListThreads(ctx, threadsIn)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 	}
 	if len(sthreads) == 0 {
 		res := &response.ThreadsResponse{
@@ -76,7 +77,7 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -93,7 +94,7 @@ func (h *handler) ListThreadsByContactID(ctx *gin.Context) {
 func (h *handler) CreateThread(ctx *gin.Context) {
 	req := &request.CreateThreadRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -118,7 +119,7 @@ func (h *handler) CreateThread(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -130,7 +131,7 @@ func (h *handler) CreateThread(ctx *gin.Context) {
 	}
 	sthread, err := h.messenger.CreateThread(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	thread := service.NewThread(sthread)
@@ -146,7 +147,7 @@ func (h *handler) CreateThread(ctx *gin.Context) {
 func (h *handler) GetThread(ctx *gin.Context) {
 	thread, err := h.getThread(ctx, util.GetParam(ctx, "threadId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -172,7 +173,7 @@ func (h *handler) GetThread(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -199,7 +200,7 @@ func (h *handler) getThread(ctx context.Context, threadID string) (*service.Thre
 func (h *handler) UpdateThread(ctx *gin.Context) {
 	req := &request.UpdateThreadRequest{}
 	if err := ctx.BindJSON(req); err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -211,7 +212,7 @@ func (h *handler) UpdateThread(ctx *gin.Context) {
 	}
 
 	if err := h.messenger.UpdateThread(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -223,7 +224,7 @@ func (h *handler) DeleteThread(ctx *gin.Context) {
 		ThreadID: util.GetParam(ctx, "threadId"),
 	}
 	if err := h.messenger.DeleteThread(ctx, in); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 

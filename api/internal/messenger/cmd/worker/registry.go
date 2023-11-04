@@ -15,6 +15,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/line"
+	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/mailer"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
@@ -40,6 +41,7 @@ type params struct {
 	dbPort                   string
 	dbUsername               string
 	dbPassword               string
+	sentryDsn                string
 	sendGridAPIKey           string
 	lineToken                string
 	lineSecret               string
@@ -48,9 +50,9 @@ type params struct {
 	userFirebaseCredentials  []byte
 }
 
-func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
+func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    logger,
+		logger:    zap.NewNop(),
 		now:       jst.Now,
 		waitGroup: &sync.WaitGroup{},
 	}
@@ -66,6 +68,13 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	if err := a.getSecret(ctx, params); err != nil {
 		return err
 	}
+
+	// Loggerの設定
+	logger, err := log.NewSentryLogger(params.sentryDsn, log.WithLogLevel(a.LogLevel), log.WithSentryLevel("error"))
+	if err != nil {
+		return err
+	}
+	params.logger = logger
 
 	// Databaseの設定
 	dbClient, err := a.newDatabase("messengers", params)
@@ -92,7 +101,7 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 		FromAddress: a.MailFromAddress,
 		TemplateMap: templateMap,
 	}
-	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(logger))
+	params.mailer = mailer.NewClient(mailParams, mailer.WithLogger(params.logger))
 
 	// LINEの設定
 	lineParams := &line.Params{
@@ -100,7 +109,7 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 		Secret: params.lineSecret,
 		RoomID: params.lineRoomID,
 	}
-	linebot, err := line.NewClient(lineParams, line.WithLogger(logger))
+	linebot, err := line.NewClient(lineParams, line.WithLogger(params.logger))
 	if err != nil {
 		return err
 	}
@@ -113,7 +122,7 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	}
 
 	// Firebase Cloud Messagingの設定（管理者用）
-	amessaging, err := messaging.NewClient(ctx, afbapp, messaging.WithLogger(logger))
+	amessaging, err := messaging.NewClient(ctx, afbapp, messaging.WithLogger(params.logger))
 	if err != nil {
 		return err
 	}
@@ -126,7 +135,7 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 	}
 
 	// Firebase Cloud Messagingの設定（利用者用）
-	umessaging, err := messaging.NewClient(ctx, ufbapp, messaging.WithLogger(logger))
+	umessaging, err := messaging.NewClient(ctx, ufbapp, messaging.WithLogger(params.logger))
 	if err != nil {
 		return err
 	}
@@ -148,7 +157,8 @@ func (a *app) inject(ctx context.Context, logger *zap.Logger) error {
 		UserMessaging:  params.userMessaging,
 		User:           userService,
 	}
-	a.worker = worker.NewWorker(workerParams, worker.WithLogger(logger))
+	a.worker = worker.NewWorker(workerParams, worker.WithLogger(params.logger))
+	a.logger = params.logger
 	a.waitGroup = params.waitGroup
 	return nil
 }
@@ -172,6 +182,19 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		p.dbPort = secrets["port"]
 		p.dbUsername = secrets["username"]
 		p.dbPassword = secrets["password"]
+		return nil
+	})
+	eg.Go(func() error {
+		// Sentry認証情報の取得
+		if a.SentrySecretName == "" {
+			p.sentryDsn = a.SentryDsn
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.SentrySecretName)
+		if err != nil {
+			return err
+		}
+		p.sentryDsn = secrets["dsn"]
 		return nil
 	})
 	eg.Go(func() error {

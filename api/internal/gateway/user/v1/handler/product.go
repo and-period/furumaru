@@ -14,8 +14,10 @@ import (
 )
 
 func (h *handler) productRoutes(rg *gin.RouterGroup) {
-	rg.GET("", h.ListProducts)
-	rg.GET("/:productId", h.GetProduct)
+	r := rg.Group("/products")
+
+	r.GET("", h.ListProducts)
+	r.GET("/:productId", h.GetProduct)
 }
 
 func (h *handler) ListProducts(ctx *gin.Context) {
@@ -26,12 +28,12 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 
 	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
 	if err != nil {
-		badRequest(ctx, err)
+		h.badRequest(ctx, err)
 		return
 	}
 
@@ -42,7 +44,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	}
 	products, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 	if len(products) == 0 {
@@ -82,7 +84,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -104,7 +106,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 func (h *handler) GetProduct(ctx *gin.Context) {
 	product, err := h.getProduct(ctx, util.GetParam(ctx, "productId"))
 	if err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
@@ -137,7 +139,7 @@ func (h *handler) GetProduct(ctx *gin.Context) {
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		httpError(ctx, err)
+		h.httpError(ctx, err)
 		return
 	}
 
