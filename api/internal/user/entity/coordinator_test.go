@@ -104,14 +104,14 @@ func TestCoordinator(t *testing.T) {
 				InstagramID:       "instagram-id",
 				FacebookID:        "facebook-id",
 				PostalCode:        "1000014",
-				PrefectureCode:    0,
+				PrefectureCode:    -1,
 				City:              "千代田区",
 				AddressLine1:      "永田町1-7-1",
 				AddressLine2:      "",
 				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 			},
 			expect: nil,
-			hasErr: false,
+			hasErr: true,
 		},
 	}
 
