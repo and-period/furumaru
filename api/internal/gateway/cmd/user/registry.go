@@ -96,7 +96,12 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// Loggerの設定
-	logger, err := log.NewSentryLogger(params.sentryDsn, log.WithLogLevel(a.LogLevel), log.WithSentryLevel("error"))
+	logger, err := log.NewSentryLogger(params.sentryDsn,
+		log.WithLogLevel(a.LogLevel),
+		log.WithSentryServerName(a.AppName),
+		log.WithSentryEnvironment(a.Environment),
+		log.WithSentryLevel("error"),
+	)
 	if err != nil {
 		return err
 	}
@@ -148,6 +153,7 @@ func (a *app) inject(ctx context.Context) error {
 	// Sentryの設定
 	if params.sentryDsn != "" {
 		sentryApp, err := sentry.NewClient(
+			sentry.WithServerName(a.AppName),
 			sentry.WithEnvironment(a.Environment),
 			sentry.WithDSN(params.sentryDsn),
 			sentry.WithTrace(true),
@@ -231,7 +237,6 @@ func (a *app) inject(ctx context.Context) error {
 		Media:     mediaService,
 	}
 	a.v1 = v1.NewHandler(v1Params,
-		v1.WithAppName(a.AppName),
 		v1.WithEnvironment(a.Environment),
 		v1.WithLogger(params.logger),
 		v1.WithSentry(params.sentry),

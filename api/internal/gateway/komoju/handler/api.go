@@ -140,7 +140,9 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
 			"user_agent": ctx.Request.UserAgent(),
 		}),
 	}
+	h.waitGroup.Add(1)
 	go func(ctx context.Context, opts []sentry.ReportOption) {
+		defer h.waitGroup.Done()
 		h.sentry.ReportError(ctx, err, opts...)
 	}(ctx, opts)
 }

@@ -13,6 +13,8 @@ func TestLogger(t *testing.T) {
 	opts := []Option{
 		WithLogLevel("debug"),
 		WithOutput(""),
+		WithSentryServerName("server"),
+		WithSentryEnvironment("test"),
 		WithSentryLevel("debug"),
 		WithSentryFlushTimeout(10 * time.Millisecond),
 	}
