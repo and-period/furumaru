@@ -40,7 +40,7 @@
     "@types/hls.js": "^1.0.0",
     "@vitest/coverage-c8": "^0.28.5",
     "@vue/test-utils": "^2.2.6",
-    "eslint": "^8.32.0",
+    "eslint": "^8.53.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-tailwindcss": "^3.13.0",
     "happy-dom": "^8.1.1",
