@@ -17,7 +17,7 @@
     "sw:build": "node src/sw/firebase-messaging-sw.ts"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.4.9",
+    "@pinia/nuxt": "^0.5.1",
     "@tiptap/pm": "^2.0.3",
     "@tiptap/starter-kit": "^2.1.12",
     "@tiptap/vue-3": "^2.0.3",
