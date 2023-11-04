@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -174,41 +173,40 @@ func NewProduct(product *entity.Product) *Product {
 	if len(product.RecommendedPoints) > 2 {
 		point3 = product.RecommendedPoints[2]
 	}
-	prefecture, _ := codes.ToPrefectureName(product.OriginPrefecture)
 	return &Product{
 		Product: response.Product{
-			ID:                product.ID,
-			CoordinatorID:     product.CoordinatorID,
-			ProducerID:        product.ProducerID,
-			CategoryID:        "",
-			ProductTypeID:     product.TypeID,
-			ProductTagIDs:     product.TagIDs,
-			Name:              product.Name,
-			Description:       product.Description,
-			Public:            product.Public,
-			Status:            NewProductStatus(product.Status).Response(),
-			Inventory:         product.Inventory,
-			Weight:            NewProductWeight(product.Weight, product.WeightUnit),
-			ItemUnit:          product.ItemUnit,
-			ItemDescription:   product.ItemDescription,
-			Media:             NewMultiProductMedia(product.Media).Response(),
-			Price:             product.Price,
-			Cost:              product.Cost,
-			ExpirationDate:    product.ExpirationDate,
-			RecommendedPoint1: point1,
-			RecommendedPoint2: point2,
-			RecommendedPoint3: point3,
-			StorageMethodType: NewStorageMethodType(product.StorageMethodType).Response(),
-			DeliveryType:      NewDeliveryType(product.DeliveryType).Response(),
-			Box60Rate:         product.Box60Rate,
-			Box80Rate:         product.Box80Rate,
-			Box100Rate:        product.Box100Rate,
-			OriginPrefecture:  prefecture,
-			OriginCity:        product.OriginCity,
-			StartAt:           product.StartAt.Unix(),
-			EndAt:             product.EndAt.Unix(),
-			CreatedAt:         product.CreatedAt.Unix(),
-			UpdatedAt:         product.CreatedAt.Unix(),
+			ID:                   product.ID,
+			CoordinatorID:        product.CoordinatorID,
+			ProducerID:           product.ProducerID,
+			CategoryID:           "",
+			ProductTypeID:        product.TypeID,
+			ProductTagIDs:        product.TagIDs,
+			Name:                 product.Name,
+			Description:          product.Description,
+			Public:               product.Public,
+			Status:               NewProductStatus(product.Status).Response(),
+			Inventory:            product.Inventory,
+			Weight:               NewProductWeight(product.Weight, product.WeightUnit),
+			ItemUnit:             product.ItemUnit,
+			ItemDescription:      product.ItemDescription,
+			Media:                NewMultiProductMedia(product.Media).Response(),
+			Price:                product.Price,
+			Cost:                 product.Cost,
+			ExpirationDate:       product.ExpirationDate,
+			RecommendedPoint1:    point1,
+			RecommendedPoint2:    point2,
+			RecommendedPoint3:    point3,
+			StorageMethodType:    NewStorageMethodType(product.StorageMethodType).Response(),
+			DeliveryType:         NewDeliveryType(product.DeliveryType).Response(),
+			Box60Rate:            product.Box60Rate,
+			Box80Rate:            product.Box80Rate,
+			Box100Rate:           product.Box100Rate,
+			OriginPrefectureCode: product.OriginPrefectureCode,
+			OriginCity:           product.OriginCity,
+			StartAt:              product.StartAt.Unix(),
+			EndAt:                product.EndAt.Unix(),
+			CreatedAt:            product.CreatedAt.Unix(),
+			UpdatedAt:            product.CreatedAt.Unix(),
 		},
 	}
 }

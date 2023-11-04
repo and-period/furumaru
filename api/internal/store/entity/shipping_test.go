@@ -11,14 +11,14 @@ import (
 
 func TestShipping(t *testing.T) {
 	t.Parallel()
-	shikoku := []int64{
+	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(shikoku...)
-	others := make([]int64, 0, 47-len(shikoku))
+	others := make([]int32, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
 			continue
@@ -26,8 +26,8 @@ func TestShipping(t *testing.T) {
 		others = append(others, val)
 	}
 	rates := ShippingRates{
-		{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-		{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 	}
 	tests := []struct {
 		name   string
@@ -83,17 +83,17 @@ func TestShipping(t *testing.T) {
 
 func TestShipping_Fill(t *testing.T) {
 	t.Parallel()
-	pref1 := []int64{
+	pref1 := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 	}
-	pref2 := []int64{
+	pref2 := []int32{
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	rates := ShippingRates{
-		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: pref1},
-		{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: pref2},
+		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 	}
 	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
 	tests := []struct {
@@ -280,17 +280,17 @@ func TestShipping_Fill(t *testing.T) {
 
 func TestShipping_FillJSON(t *testing.T) {
 	t.Parallel()
-	pref1 := []int64{
+	pref1 := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 	}
-	pref2 := []int64{
+	pref2 := []int32{
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	rates := ShippingRates{
-		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: pref1},
-		{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: pref2},
+		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 	}
 	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
 	tests := []struct {
@@ -354,17 +354,17 @@ func TestShipping_FillJSON(t *testing.T) {
 
 func TestShippings_CoordinatorIDs(t *testing.T) {
 	t.Parallel()
-	pref1 := []int64{
+	pref1 := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 	}
-	pref2 := []int64{
+	pref2 := []int32{
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	rates := ShippingRates{
-		{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: pref1},
-		{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: pref2},
+		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 	}
 	tests := []struct {
 		name      string
@@ -409,7 +409,7 @@ func TestShippingRate(t *testing.T) {
 		num   int64
 		name  string
 		price int64
-		prefs []int64
+		prefs []int32
 	}
 	tests := []struct {
 		name   string
@@ -422,7 +422,7 @@ func TestShippingRate(t *testing.T) {
 				num:   1,
 				name:  "四国",
 				price: 2000,
-				prefs: []int64{
+				prefs: []int32{
 					codes.PrefectureValues["tokushima"],
 					codes.PrefectureValues["kagawa"],
 					codes.PrefectureValues["ehime"],
@@ -433,7 +433,7 @@ func TestShippingRate(t *testing.T) {
 				Number: 1,
 				Name:   "四国",
 				Price:  2000,
-				Prefectures: []int64{
+				PrefectureCodes: []int32{
 					codes.PrefectureValues["tokushima"],
 					codes.PrefectureValues["kagawa"],
 					codes.PrefectureValues["ehime"],
@@ -454,14 +454,14 @@ func TestShippingRate(t *testing.T) {
 
 func TestShippingRates(t *testing.T) {
 	t.Parallel()
-	shikoku := []int64{
+	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(shikoku...)
-	others := make([]int64, 0, 47-len(shikoku))
+	others := make([]int32, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
 			continue
@@ -476,47 +476,47 @@ func TestShippingRates(t *testing.T) {
 		{
 			name: "success",
 			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: shikoku},
-				{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: others},
+				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
+				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: others},
 			},
 			hasErr: false,
 		},
 		{
 			name: "number is checked min",
 			rates: ShippingRates{
-				{Number: 0, Name: "四国(東部)", Price: 250, Prefectures: shikoku},
-				{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: others},
+				{Number: 0, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
+				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: others},
 			},
 			hasErr: true,
 		},
 		{
 			name: "price is checked min",
 			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: -1, Prefectures: shikoku},
-				{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: others},
+				{Number: 1, Name: "四国(東部)", Price: -1, PrefectureCodes: shikoku},
+				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: others},
 			},
 			hasErr: true,
 		},
 		{
 			name: "number is not unique",
 			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: shikoku},
-				{Number: 1, Name: "四国(西部)", Price: 500, Prefectures: others},
+				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
+				{Number: 1, Name: "四国(西部)", Price: 500, PrefectureCodes: others},
 			},
 			hasErr: true,
 		},
 		{
 			name: "not exists prefecture values",
 			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: shikoku},
-				{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: []int64{0}},
+				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
+				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: []int32{0}},
 			},
 			hasErr: true,
 		},
 		{
 			name: "prefectures is umnatch length",
 			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: shikoku},
+				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
 			},
 			hasErr: true,
 		},
@@ -533,11 +533,11 @@ func TestShippingRates(t *testing.T) {
 
 func TestShippingRates_Marshal(t *testing.T) {
 	t.Parallel()
-	pref1 := []int64{
+	pref1 := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 	}
-	pref2 := []int64{
+	pref2 := []int32{
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
@@ -550,8 +550,8 @@ func TestShippingRates_Marshal(t *testing.T) {
 		{
 			name: "success",
 			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, Prefectures: pref1},
-				{Number: 2, Name: "四国(西部)", Price: 500, Prefectures: pref2},
+				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 			},
 			expect: []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`),
 			hasErr: false,

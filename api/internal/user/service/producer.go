@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -99,12 +100,15 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 		InstagramID:       in.InstagramID,
 		FacebookID:        in.FacebookID,
 		PostalCode:        in.PostalCode,
-		Prefecture:        in.Prefecture,
+		PrefectureCode:    in.PrefectureCode,
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
 	}
-	producer := entity.NewProducer(params)
+	producer, err := entity.NewProducer(params)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to new producer: %w: %s", exception.ErrInvalidArgument, err.Error())
+	}
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
 	if err := s.db.Producer.Create(ctx, producer, auth); err != nil {
 		return nil, internalError(err)
@@ -129,6 +133,9 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
+	if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
+		return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
+	}
 	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
 	if err != nil {
 		return internalError(err)
@@ -148,7 +155,7 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 		FacebookID:        in.FacebookID,
 		PhoneNumber:       in.PhoneNumber,
 		PostalCode:        in.PostalCode,
-		Prefecture:        in.Prefecture,
+		PrefectureCode:    in.PrefectureCode,
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,

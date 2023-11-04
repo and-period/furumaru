@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
@@ -18,32 +17,20 @@ type ShippingRate struct {
 
 type ShippingRates []*ShippingRate
 
-func NewShipping(shipping *entity.Shipping) (*Shipping, error) {
-	box60Rates, err := NewShippingRates(shipping.Box60Rates)
-	if err != nil {
-		return nil, err
-	}
-	box80Rates, err := NewShippingRates(shipping.Box80Rates)
-	if err != nil {
-		return nil, err
-	}
-	box100Rates, err := NewShippingRates(shipping.Box100Rates)
-	if err != nil {
-		return nil, err
-	}
+func NewShipping(shipping *entity.Shipping) *Shipping {
 	return &Shipping{
 		Shipping: response.Shipping{
 			ID:                 shipping.ID,
 			CoordinatorID:      shipping.CoordinatorID,
 			Name:               shipping.Name,
 			IsDefault:          shipping.IsDefault,
-			Box60Rates:         box60Rates.Response(),
+			Box60Rates:         NewShippingRates(shipping.Box60Rates).Response(),
 			Box60Refrigerated:  shipping.Box60Refrigerated,
 			Box60Frozen:        shipping.Box60Frozen,
-			Box80Rates:         box80Rates.Response(),
+			Box80Rates:         NewShippingRates(shipping.Box80Rates).Response(),
 			Box80Refrigerated:  shipping.Box80Refrigerated,
 			Box80Frozen:        shipping.Box80Frozen,
-			Box100Rates:        box100Rates.Response(),
+			Box100Rates:        NewShippingRates(shipping.Box100Rates).Response(),
 			Box100Refrigerated: shipping.Box100Refrigerated,
 			Box100Frozen:       shipping.Box100Frozen,
 			HasFreeShipping:    shipping.HasFreeShipping,
@@ -51,23 +38,19 @@ func NewShipping(shipping *entity.Shipping) (*Shipping, error) {
 			CreatedAt:          shipping.CreatedAt.Unix(),
 			UpdatedAt:          shipping.CreatedAt.Unix(),
 		},
-	}, nil
+	}
 }
 
 func (s *Shipping) Response() *response.Shipping {
 	return &s.Shipping
 }
 
-func NewShippings(shippings entity.Shippings) (Shippings, error) {
+func NewShippings(shippings entity.Shippings) Shippings {
 	res := make(Shippings, len(shippings))
 	for i := range shippings {
-		shipping, err := NewShipping(shippings[i])
-		if err != nil {
-			return nil, err
-		}
-		res[i] = shipping
+		res[i] = NewShipping(shippings[i])
 	}
-	return res, nil
+	return res
 }
 
 func (ss Shippings) Response() []*response.Shipping {
@@ -78,19 +61,15 @@ func (ss Shippings) Response() []*response.Shipping {
 	return res
 }
 
-func NewShippingRate(rate *entity.ShippingRate) (*ShippingRate, error) {
-	prefectures, err := codes.ToPrefectureNames(rate.Prefectures...)
-	if err != nil {
-		return nil, err
-	}
+func NewShippingRate(rate *entity.ShippingRate) *ShippingRate {
 	return &ShippingRate{
 		ShippingRate: response.ShippingRate{
-			Number:      rate.Number,
-			Name:        rate.Name,
-			Price:       rate.Price,
-			Prefectures: prefectures,
+			Number:          rate.Number,
+			Name:            rate.Name,
+			Price:           rate.Price,
+			PrefectureCodes: rate.PrefectureCodes,
 		},
-	}, nil
+	}
 }
 
 func (r *ShippingRate) Response() *response.ShippingRate {
@@ -105,16 +84,12 @@ func (ss Shippings) Map() map[string]*Shipping {
 	return res
 }
 
-func NewShippingRates(rates entity.ShippingRates) (ShippingRates, error) {
+func NewShippingRates(rates entity.ShippingRates) ShippingRates {
 	res := make(ShippingRates, len(rates))
 	for i := range rates {
-		rate, err := NewShippingRate(rates[i])
-		if err != nil {
-			return nil, err
-		}
-		res[i] = rate
+		res[i] = NewShippingRate(rates[i])
 	}
-	return res, nil
+	return res
 }
 
 func (rs ShippingRates) Response() []*response.ShippingRate {

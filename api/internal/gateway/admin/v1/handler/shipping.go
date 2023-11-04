@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -76,14 +75,8 @@ func (h *handler) ListShippings(ctx *gin.Context) {
 		return
 	}
 
-	sshippings, err := service.NewShippings(shippings)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
 	res := &response.ShippingsResponse{
-		Shippings:    sshippings.Response(),
+		Shippings:    service.NewShippings(shippings).Response(),
 		Coordinators: coordinators.Response(),
 		Total:        total,
 	}
@@ -137,33 +130,17 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 		}
 	}
 
-	box60Rates, err := h.newShippingRatesForCreate(req.Box60Rates)
-	if err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-	box80Rates, err := h.newShippingRatesForCreate(req.Box80Rates)
-	if err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-	box100Rates, err := h.newShippingRatesForCreate(req.Box100Rates)
-	if err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-
 	in := &store.CreateShippingInput{
 		CoordinatorID:      req.CoordinatorID,
 		Name:               req.Name,
 		IsDefault:          req.IsDefault,
-		Box60Rates:         box60Rates,
+		Box60Rates:         h.newShippingRatesForCreate(req.Box60Rates),
 		Box60Refrigerated:  req.Box60Refrigerated,
 		Box60Frozen:        req.Box60Frozen,
-		Box80Rates:         box80Rates,
+		Box80Rates:         h.newShippingRatesForCreate(req.Box80Rates),
 		Box80Refrigerated:  req.Box80Refrigerated,
 		Box80Frozen:        req.Box80Frozen,
-		Box100Rates:        box100Rates,
+		Box100Rates:        h.newShippingRatesForCreate(req.Box100Rates),
 		Box100Refrigerated: req.Box100Refrigerated,
 		Box100Frozen:       req.Box100Frozen,
 		HasFreeShipping:    req.HasFreeShipping,
@@ -180,32 +157,23 @@ func (h *handler) CreateShipping(ctx *gin.Context) {
 		return
 	}
 
-	shipping, err := service.NewShipping(sshipping)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
 	res := &response.ShippingResponse{
-		Shipping:    shipping.Response(),
+		Shipping:    service.NewShipping(sshipping).Response(),
 		Coordinator: coordinator.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) ([]*store.CreateShippingRate, error) {
+func (h *handler) newShippingRatesForCreate(in []*request.CreateShippingRate) []*store.CreateShippingRate {
 	res := make([]*store.CreateShippingRate, len(in))
 	for i := range in {
-		prefectures, err := codes.ToPrefectureValues(in[i].Prefectures...)
-		if err != nil {
-			return nil, err
-		}
 		res[i] = &store.CreateShippingRate{
-			Name:        in[i].Name,
-			Price:       in[i].Price,
-			Prefectures: prefectures,
+			Name:            in[i].Name,
+			Price:           in[i].Price,
+			PrefectureCodes: in[i].PrefectureCodes,
 		}
 	}
-	return res, nil
+	return res
 }
 
 func (h *handler) UpdateShipping(ctx *gin.Context) {
@@ -214,33 +182,18 @@ func (h *handler) UpdateShipping(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	box60Rates, err := h.newShippingRatesForUpdate(req.Box60Rates)
-	if err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-	box80Rates, err := h.newShippingRatesForUpdate(req.Box80Rates)
-	if err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-	box100Rates, err := h.newShippingRatesForUpdate(req.Box100Rates)
-	if err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
 
 	in := &store.UpdateShippingInput{
 		ShippingID:         util.GetParam(ctx, "shippingId"),
 		Name:               req.Name,
 		IsDefault:          req.IsDefault,
-		Box60Rates:         box60Rates,
+		Box60Rates:         h.newShippingRatesForUpdate(req.Box60Rates),
 		Box60Refrigerated:  req.Box60Refrigerated,
 		Box60Frozen:        req.Box60Frozen,
-		Box80Rates:         box80Rates,
+		Box80Rates:         h.newShippingRatesForUpdate(req.Box80Rates),
 		Box80Refrigerated:  req.Box80Refrigerated,
 		Box80Frozen:        req.Box80Frozen,
-		Box100Rates:        box100Rates,
+		Box100Rates:        h.newShippingRatesForUpdate(req.Box100Rates),
 		Box100Refrigerated: req.Box100Refrigerated,
 		Box100Frozen:       req.Box100Frozen,
 		HasFreeShipping:    req.HasFreeShipping,
@@ -254,20 +207,16 @@ func (h *handler) UpdateShipping(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *handler) newShippingRatesForUpdate(in []*request.UpdateShippingRate) ([]*store.UpdateShippingRate, error) {
+func (h *handler) newShippingRatesForUpdate(in []*request.UpdateShippingRate) []*store.UpdateShippingRate {
 	res := make([]*store.UpdateShippingRate, len(in))
 	for i := range in {
-		prefectures, err := codes.ToPrefectureValues(in[i].Prefectures...)
-		if err != nil {
-			return nil, err
-		}
 		res[i] = &store.UpdateShippingRate{
-			Name:        in[i].Name,
-			Price:       in[i].Price,
-			Prefectures: prefectures,
+			Name:            in[i].Name,
+			Price:           in[i].Price,
+			PrefectureCodes: in[i].PrefectureCodes,
 		}
 	}
-	return res, nil
+	return res
 }
 
 func (h *handler) DeleteShipping(ctx *gin.Context) {
@@ -290,5 +239,5 @@ func (h *handler) getShipping(ctx context.Context, shippingID string) (*service.
 	if err != nil {
 		return nil, err
 	}
-	return service.NewShipping(shipping)
+	return service.NewShipping(shipping), nil
 }

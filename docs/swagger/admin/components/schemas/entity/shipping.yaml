@@ -13,7 +13,7 @@ shippingRate:
       type: integer
       format: int64
       description: 配送料金
-    prefectures:
+    prefectureCodes:
       type: array
       description: 対象都道府県コード一覧
       items:
@@ -22,7 +22,7 @@ shippingRate:
   - number
   - name
   - price
-  - prefectures
+  - prefectureCodes
 shipping:
   type: object
   description: 配送設定情報
@@ -120,33 +120,33 @@ shipping:
     - number: 1
       name: '離島'
       price: 2000
-      prefectures: ['hokkaido', 'okinawa']
+      prefectureCodes: [1, 47]
     - number: 2
       name: 'その他'
       price: 1200
-      prefectures: ['aomori', 'iwate', 'akita', '...']
+      prefectureCodes: [2, 3, 4]
     box60Refrigerated: 300
     box60Frozen: 500
     box80Rates:
     - number: 1
       name: '離島'
       price: 2000
-      prefectures: ['hokkaido', 'okinawa']
+      prefectureCodes: [1, 47]
     - number: 2
       name: 'その他'
       price: 1200
-      prefectures: ['aomori', 'iwate', 'akita', '...']
+      prefectureCodes: [2, 3, 4]
     box80Refrigerated: 300
     box80Frozen: 500
     box100Rates:
     - number: 1
       name: '離島'
       price: 2000
-      prefectures: ['hokkaido', 'okinawa']
+      prefectureCodes: [1, 47]
     - number: 2
       name: 'その他'
       price: 1200
-      prefectures: ['aomori', 'iwate', 'akita', '...']
+      prefectureCodes: [2, 3, 4]
     box100Refrigerated: 300
     box100Frozen: 500
     hasFreeShipping: true

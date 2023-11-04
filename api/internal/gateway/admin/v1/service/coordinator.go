@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
@@ -13,7 +12,6 @@ type Coordinator struct {
 type Coordinators []*Coordinator
 
 func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
-	prefecture, _ := codes.ToPrefectureName(coordinator.Prefecture)
 	return &Coordinator{
 		Coordinator: response.Coordinator{
 			ID:                coordinator.ID,
@@ -37,7 +35,7 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 			Email:             coordinator.Email,
 			PhoneNumber:       coordinator.PhoneNumber,
 			PostalCode:        coordinator.PostalCode,
-			Prefecture:        prefecture,
+			PrefectureCode:    coordinator.PrefectureCode,
 			City:              coordinator.City,
 			AddressLine1:      coordinator.AddressLine1,
 			AddressLine2:      coordinator.AddressLine2,

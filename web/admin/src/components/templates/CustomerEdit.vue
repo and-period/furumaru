@@ -2,8 +2,7 @@
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { PrefecturesListItem, prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
-import { UserResponse } from '~/types/api'
-import { Customer } from '~/types/props/customer'
+import { User } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -11,7 +10,7 @@ const props = defineProps({
     default: false
   },
   customer: {
-    type: Object as PropType<UserResponse>,
+    type: Object as PropType<User>,
     default: () => ({})
   }
 })
@@ -124,7 +123,7 @@ const getPhoneNumber = (): string => {
 }
 const getAddressArea = (): string => {
   const prefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
-    return prefecture.value === props.customer.prefecture
+    return prefecture.value === props.customer.prefectureCode
   })
   return prefecture ? `${prefecture.text} ${props.customer.city}` : props.customer.city
 }

@@ -144,7 +144,7 @@ type CreateCoordinatorInput struct {
 	Email             string         `validate:"required,max=256,email"`
 	PhoneNumber       string         `validate:"min=12,max=18,phone_number"`
 	PostalCode        string         `validate:"omitempty,max=16,numeric"`
-	Prefecture        int64          `validate:"omitempty,min=0"`
+	PrefectureCode    int32          `validate:"required"`
 	City              string         `validate:"omitempty,max=32"`
 	AddressLine1      string         `validate:"omitempty,max=64"`
 	AddressLine2      string         `validate:"omitempty,max=64"`
@@ -169,7 +169,7 @@ type UpdateCoordinatorInput struct {
 	FacebookID        string         `validate:"omitempty,max=50"`
 	PhoneNumber       string         `validate:"min=12,max=18,phone_number"`
 	PostalCode        string         `validate:"omitempty,max=16,numeric"`
-	Prefecture        int64          `validate:"omitempty,min=0"`
+	PrefectureCode    int32          `validate:"required"`
 	City              string         `validate:"omitempty,max=32"`
 	AddressLine1      string         `validate:"omitempty,max=64"`
 	AddressLine2      string         `validate:"omitempty,max=64"`
@@ -236,7 +236,7 @@ type CreateProducerInput struct {
 	Email             string `validate:"required,max=256,email"`
 	PhoneNumber       string `validate:"min=12,max=18,phone_number"`
 	PostalCode        string `validate:"omitempty,max=16,numeric"`
-	Prefecture        int64  `validate:"omitempty,min=0"`
+	PrefectureCode    int32  `validate:"required"`
 	City              string `validate:"omitempty,max=32"`
 	AddressLine1      string `validate:"omitempty,max=64"`
 	AddressLine2      string `validate:"omitempty,max=64"`
@@ -258,7 +258,7 @@ type UpdateProducerInput struct {
 	FacebookID        string `validate:"omitempty,max=50"`
 	PhoneNumber       string `validate:"min=12,max=18,phone_number"`
 	PostalCode        string `validate:"omitempty,max=16,numeric"`
-	Prefecture        int64  `validate:"omitempty,min=0"`
+	PrefectureCode    int32  `validate:"required"`
 	City              string `validate:"omitempty,max=32"`
 	AddressLine1      string `validate:"omitempty,max=64"`
 	AddressLine2      string `validate:"omitempty,max=64"`
@@ -404,7 +404,7 @@ type CreateAddressInput struct {
 	Lastname       string `validate:"required,max=32"`
 	Firstname      string `validate:"required,max=32"`
 	PostalCode     string `validate:"required,max=16,numeric"`
-	PrefectureCode int64  `validate:"required"`
+	PrefectureCode int32  `validate:"required"`
 	City           string `validate:"required,max=32"`
 	AddressLine1   string `validate:"required,max=64"`
 	AddressLine2   string `validate:"omitempty,max=64"`
@@ -418,7 +418,7 @@ type UpdateAddressInput struct {
 	Lastname       string `validate:"required,max=32"`
 	Firstname      string `validate:"required,max=32"`
 	PostalCode     string `validate:"required,max=16,numeric"`
-	PrefectureCode int64  `validate:"required"`
+	PrefectureCode int32  `validate:"required"`
 	City           string `validate:"required,max=32"`
 	AddressLine1   string `validate:"required,max=64"`
 	AddressLine2   string `validate:"omitempty,max=64"`

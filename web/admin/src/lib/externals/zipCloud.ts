@@ -18,7 +18,7 @@ export interface ZipCloudApiResponse {
 }
 
 export interface SearchAddressResponse {
-  prefecture: string
+  prefecture: number
   city: string
   addressLine1: string
 }
@@ -46,7 +46,7 @@ export async function searchAddressByPostalCode (
     }
 
     const result: SearchAddressResponse = {
-      prefecture: res.data.results[0].address1,
+      prefecture: Number(res.data.results[0].prefcode),
       city: res.data.results[0].address2,
       addressLine1: res.data.results[0].address3
     }

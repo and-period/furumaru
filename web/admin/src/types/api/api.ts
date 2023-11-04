@@ -860,7 +860,7 @@ export interface Coordinator {
      * @type {Prefecture}
      * @memberof Coordinator
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -1228,7 +1228,7 @@ export interface CreateCoordinatorRequest {
      * @type {Prefecture}
      * @memberof CreateCoordinatorRequest
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -1457,7 +1457,7 @@ export interface CreateProducerRequest {
      * @type {Prefecture}
      * @memberof CreateProducerRequest
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -1670,7 +1670,7 @@ export interface CreateProductRequest {
      * @type {Prefecture}
      * @memberof CreateProductRequest
      */
-    'originPrefecture': Prefecture;
+    'originPrefectureCode': Prefecture;
     /**
      * 原産地(市区町村)(32文字まで)
      * @type {string}
@@ -1884,7 +1884,7 @@ export interface CreateShippingRate {
      * @type {Array<Prefecture>}
      * @memberof CreateShippingRate
      */
-    'prefectures': Array<Prefecture>;
+    'prefectureCodes': Array<Prefecture>;
 }
 /**
  * 
@@ -2785,7 +2785,7 @@ export interface OrderResponseFulfillment {
      * @type {Prefecture}
      * @memberof OrderResponseFulfillment
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 配送先情報 市区町村
      * @type {string}
@@ -2945,7 +2945,7 @@ export interface OrderResponsePayment {
      * @type {Prefecture}
      * @memberof OrderResponsePayment
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 請求先情報 市区町村
      * @type {string}
@@ -3138,195 +3138,195 @@ export const Prefecture = {
     /**
     * 不明
     */
-    UNKNOWN: '',
+    UNKNOWN: 0,
     /**
     * 北海道
     */
-    HOKKAIDO: 'hokkaido',
+    HOKKAIDO: 1,
     /**
     * 青森県
     */
-    AOMORI: 'aomori',
+    AOMORI: 2,
     /**
     * 岩手県
     */
-    IWATE: 'iwate',
+    IWATE: 3,
     /**
     * 宮城県
     */
-    MIYAGI: 'miyagi',
+    MIYAGI: 4,
     /**
     * 秋田県
     */
-    AKITA: 'akita',
+    AKITA: 5,
     /**
     * 山形県
     */
-    YAMAGATA: 'yamagata',
+    YAMAGATA: 6,
     /**
     * 福島県
     */
-    FUKUSHIMA: 'fukushima',
+    FUKUSHIMA: 7,
     /**
     * 茨城県
     */
-    IBARAKI: 'ibaraki',
+    IBARAKI: 8,
     /**
     * 栃木県
     */
-    TOCHIGI: 'tochigi',
+    TOCHIGI: 9,
     /**
     * 群馬県
     */
-    GUNMA: 'gunma',
+    GUNMA: 10,
     /**
     * 埼玉県
     */
-    SAITAMA: 'saitama',
+    SAITAMA: 11,
     /**
     * 千葉県
     */
-    CHIBA: 'chiba',
+    CHIBA: 12,
     /**
     * 東京都
     */
-    TOKYO: 'tokyo',
+    TOKYO: 13,
     /**
     * 神奈川県
     */
-    KANAGAWA: 'kanagawa',
+    KANAGAWA: 14,
     /**
     * 新潟県
     */
-    NIIGATA: 'niigata',
+    NIIGATA: 15,
     /**
     * 富山県
     */
-    TOYAMA: 'toyama',
+    TOYAMA: 16,
     /**
     * 石川県
     */
-    ISHIKAWA: 'ishikawa',
+    ISHIKAWA: 17,
     /**
     * 福井県
     */
-    FUKUI: 'fukui',
+    FUKUI: 18,
     /**
     * 山梨県
     */
-    YAMANASHI: 'yamanashi',
+    YAMANASHI: 19,
     /**
     * 長野県
     */
-    NAGANO: 'nagano',
+    NAGANO: 20,
     /**
     * 岐阜県
     */
-    GIFU: 'gifu',
+    GIFU: 21,
     /**
     * 静岡県
     */
-    SHIZUOKA: 'shizuoka',
+    SHIZUOKA: 22,
     /**
     * 愛知県
     */
-    AICHI: 'aichi',
+    AICHI: 23,
     /**
     * 三重県
     */
-    MIE: 'mie',
+    MIE: 24,
     /**
     * 滋賀県
     */
-    SHIGA: 'shiga',
+    SHIGA: 25,
     /**
     * 京都府
     */
-    KYOTO: 'kyoto',
+    KYOTO: 26,
     /**
     * 大坂府
     */
-    OSAKA: 'osaka',
+    OSAKA: 27,
     /**
     * 兵庫県
     */
-    HYOGO: 'hyogo',
+    HYOGO: 28,
     /**
     * 奈良県
     */
-    NARA: 'nara',
+    NARA: 29,
     /**
     * 和歌山県
     */
-    WAKAYAMA: 'wakayama',
+    WAKAYAMA: 30,
     /**
     * 鳥取県
     */
-    TOTTORI: 'tottori',
+    TOTTORI: 31,
     /**
     * 島根県
     */
-    SHIMANE: 'shimane',
+    SHIMANE: 32,
     /**
     * 岡山県
     */
-    OKAYAMA: 'okayama',
+    OKAYAMA: 33,
     /**
     * 広島県
     */
-    HIROSHIMA: 'hiroshima',
+    HIROSHIMA: 34,
     /**
     * 山口県
     */
-    YAMAGUCHI: 'yamaguchi',
+    YAMAGUCHI: 35,
     /**
     * 徳島県
     */
-    TOKUSHIMA: 'tokushima',
+    TOKUSHIMA: 36,
     /**
     * 香川県
     */
-    KAGAWA: 'kagawa',
+    KAGAWA: 37,
     /**
     * 愛媛県
     */
-    EHIME: 'ehime',
+    EHIME: 38,
     /**
     * 高知県
     */
-    KOCHI: 'kochi',
+    KOCHI: 39,
     /**
     * 福岡県
     */
-    FUKUOKA: 'fukuoka',
+    FUKUOKA: 40,
     /**
     * 佐賀県
     */
-    SAGA: 'saga',
+    SAGA: 41,
     /**
     * 長崎県
     */
-    NAGASAKI: 'nagasaki',
+    NAGASAKI: 42,
     /**
     * 熊本県
     */
-    KUMAMOTO: 'kumamoto',
+    KUMAMOTO: 43,
     /**
     * 大分県
     */
-    OITA: 'oita',
+    OITA: 44,
     /**
     * 宮崎県
     */
-    MIYAZAKI: 'miyazaki',
+    MIYAZAKI: 45,
     /**
     * 鹿児島県
     */
-    KAGOSHIMA: 'kagoshima',
+    KAGOSHIMA: 46,
     /**
     * 沖縄県
     */
-    OKINAWA: 'okinawa'
+    OKINAWA: 47
 } as const;
 
 export type Prefecture = typeof Prefecture[keyof typeof Prefecture];
@@ -3409,7 +3409,7 @@ export interface Producer {
      * @type {Prefecture}
      * @memberof Producer
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 市区町村
      * @type {string}
@@ -3708,7 +3708,7 @@ export interface Product {
      * @type {Prefecture}
      * @memberof Product
      */
-    'originPrefecture': Prefecture;
+    'originPrefectureCode': Prefecture;
     /**
      * 原産地(市区町村)
      * @type {string}
@@ -4589,7 +4589,7 @@ export interface ShippingRate {
      * @type {Array<Prefecture>}
      * @memberof ShippingRate
      */
-    'prefectures': Array<Prefecture>;
+    'prefectureCodes': Array<Prefecture>;
 }
 /**
  * 
@@ -5048,7 +5048,7 @@ export interface UpdateCoordinatorRequest {
      * @type {Prefecture}
      * @memberof UpdateCoordinatorRequest
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -5258,7 +5258,7 @@ export interface UpdateProducerRequest {
      * @type {Prefecture}
      * @memberof UpdateProducerRequest
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -5459,7 +5459,7 @@ export interface UpdateProductRequest {
      * @type {Prefecture}
      * @memberof UpdateProductRequest
      */
-    'originPrefecture': Prefecture;
+    'originPrefectureCode': Prefecture;
     /**
      * 原産地(市区町村)(32文字まで)
      * @type {string}
@@ -5648,7 +5648,7 @@ export interface UpdateShippingRate {
      * @type {Array<Prefecture>}
      * @memberof UpdateShippingRate
      */
-    'prefectures': Array<Prefecture>;
+    'prefectureCodes': Array<Prefecture>;
 }
 /**
  * 
@@ -5853,7 +5853,7 @@ export interface User {
      * @type {Prefecture}
      * @memberof User
      */
-    'prefecture': Prefecture;
+    'prefectureCode': Prefecture;
     /**
      * 市区町村
      * @type {string}

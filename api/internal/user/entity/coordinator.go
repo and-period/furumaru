@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"gorm.io/datatypes"
@@ -31,7 +32,8 @@ type Coordinator struct {
 	InstagramID        string         `gorm:""`                                     // SNS(Instagram)アカウント名
 	FacebookID         string         `gorm:""`                                     // SNS(Facebook)アカウント名
 	PostalCode         string         `gorm:""`                                     // 郵便番号
-	Prefecture         int64          `gorm:""`                                     // 都道府県
+	Prefecture         string         `gorm:"-"`                                    // 都道府県
+	PrefectureCode     int32          `gorm:"column:prefecture"`                    // 都道府県コード
 	City               string         `gorm:""`                                     // 市区町村
 	AddressLine1       string         `gorm:""`                                     // 町名・番地
 	AddressLine2       string         `gorm:""`                                     // ビル名・号室など
@@ -58,14 +60,18 @@ type NewCoordinatorParams struct {
 	InstagramID       string
 	FacebookID        string
 	PostalCode        string
-	Prefecture        int64
+	PrefectureCode    int32
 	City              string
 	AddressLine1      string
 	AddressLine2      string
 	BusinessDays      []time.Weekday
 }
 
-func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
+func NewCoordinator(params *NewCoordinatorParams) (*Coordinator, error) {
+	prefecture, err := codes.ToPrefectureJapanese(params.PrefectureCode)
+	if err != nil {
+		return nil, err
+	}
 	return &Coordinator{
 		AdminID:           params.Admin.ID,
 		PhoneNumber:       params.PhoneNumber,
@@ -80,13 +86,14 @@ func NewCoordinator(params *NewCoordinatorParams) *Coordinator {
 		InstagramID:       params.InstagramID,
 		FacebookID:        params.FacebookID,
 		PostalCode:        params.PostalCode,
-		Prefecture:        params.Prefecture,
+		Prefecture:        prefecture,
+		PrefectureCode:    params.PrefectureCode,
 		City:              params.City,
 		AddressLine1:      params.AddressLine1,
 		AddressLine2:      params.AddressLine2,
 		BusinessDays:      params.BusinessDays,
 		Admin:             *params.Admin,
-	}
+	}, nil
 }
 
 func (c *Coordinator) Fill(admin *Admin) (err error) {
@@ -107,6 +114,7 @@ func (c *Coordinator) Fill(admin *Admin) (err error) {
 		return err
 	}
 	c.Admin = *admin
+	c.Prefecture, _ = codes.ToPrefectureJapanese(c.PrefectureCode)
 	return nil
 }
 

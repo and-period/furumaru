@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -84,7 +83,7 @@ func TestTopCommonLive(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: codes.PrefectureValues["shiga"],
+					OriginPrefecture: "滋賀県",
 					OriginCity:       "彦根市",
 					StartAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					EndAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -298,7 +297,7 @@ func TestTopCommonLives(t *testing.T) {
 					Box60Rate:        50,
 					Box80Rate:        40,
 					Box100Rate:       30,
-					OriginPrefecture: codes.PrefectureValues["shiga"],
+					OriginPrefecture: "滋賀県",
 					OriginCity:       "彦根市",
 					StartAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					EndAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),

@@ -533,14 +533,14 @@ func TestShipping_Delete(t *testing.T) {
 }
 
 func testShipping(shippingID, coordinatorID string, now time.Time) *entity.Shipping {
-	shikoku := []int64{
+	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
 	set := set.New(shikoku...)
-	others := make([]int64, 0, 47-len(shikoku))
+	others := make([]int32, 0, 47-len(shikoku))
 	for _, val := range codes.PrefectureValues {
 		if set.Contains(val) {
 			continue
@@ -548,8 +548,8 @@ func testShipping(shippingID, coordinatorID string, now time.Time) *entity.Shipp
 		others = append(others, val)
 	}
 	rates := entity.ShippingRates{
-		{Number: 1, Name: "四国", Price: 250, Prefectures: shikoku},
-		{Number: 2, Name: "その他", Price: 500, Prefectures: others},
+		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 	}
 	shipping := &entity.Shipping{
 		ID:                 shippingID,

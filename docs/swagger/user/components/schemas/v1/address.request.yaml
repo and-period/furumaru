@@ -41,7 +41,7 @@ createAddressRequest:
     lastname: '&.'
     firstname: '利用者'
     postalCode: '1000014'
-    prefecture: 'tokyo'
+    prefectureCode: 13
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
@@ -90,7 +90,7 @@ updateAddressRequest:
     lastname: '&.'
     firstname: '利用者'
     postalCode: '1000014'
-    prefecture: 'tokyo'
+    prefectureCode: 13
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''

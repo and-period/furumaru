@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -107,13 +108,16 @@ func (s *service) CreateCoordinator(
 		FacebookID:        in.FacebookID,
 		PhoneNumber:       in.PhoneNumber,
 		PostalCode:        in.PostalCode,
-		Prefecture:        in.Prefecture,
+		PrefectureCode:    in.PrefectureCode,
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,
 		BusinessDays:      in.BusinessDays,
 	}
-	coordinator := entity.NewCoordinator(params)
+	coordinator, err := entity.NewCoordinator(params)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to new coordinator: %w: %s", exception.ErrInvalidArgument, err.Error())
+	}
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
 	if err := s.db.Coordinator.Create(ctx, coordinator, auth); err != nil {
 		return nil, internalError(err)
@@ -137,6 +141,9 @@ func (s *service) CreateCoordinator(
 func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordinatorInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
+	}
+	if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
+		return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
 	if err != nil {
@@ -166,7 +173,7 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 		FacebookID:        in.FacebookID,
 		PhoneNumber:       in.PhoneNumber,
 		PostalCode:        in.PostalCode,
-		Prefecture:        in.Prefecture,
+		PrefectureCode:    in.PrefectureCode,
 		City:              in.City,
 		AddressLine1:      in.AddressLine1,
 		AddressLine2:      in.AddressLine2,

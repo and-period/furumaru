@@ -15,10 +15,10 @@ export function getSelectablePrefecturesList (
   items: CreateShippingRate[],
   index: number
 ): PrefecturesListSelectItems[] {
-  const unselectedPrefecturesList: string[] = [
+  const unselectedPrefecturesList: number[] = [
     ...items
       .filter((_, i) => i !== index)
-      .map(item => item.prefectures)
+      .map(item => item.prefectureCodes)
       .flat()
   ]
   return prefecturesList.map((item) => {

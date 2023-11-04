@@ -33,7 +33,7 @@ const props = defineProps({
         {
           name: '',
           price: 0,
-          prefectures: []
+          prefectureCodes: []
         }
       ],
       box60Refrigerated: 0,
@@ -42,7 +42,7 @@ const props = defineProps({
         {
           name: '',
           price: 0,
-          prefectures: []
+          prefectureCodes: []
         }
       ],
       box80Refrigerated: 0,
@@ -51,7 +51,7 @@ const props = defineProps({
         {
           name: '',
           price: 0,
-          prefectures: []
+          prefectureCodes: []
         }
       ],
       box100Refrigerated: 0,
@@ -98,7 +98,7 @@ const addBox60RateItem = (): void => {
   formDataValue.value.box60Rates.push({
     name: '',
     price: 0,
-    prefectures: []
+    prefectureCodes: []
   })
 }
 
@@ -106,7 +106,7 @@ const addBox80RateItem = (): void => {
   formDataValue.value.box80Rates.push({
     name: '',
     price: 0,
-    prefectures: []
+    prefectureCodes: []
   })
 }
 
@@ -114,7 +114,7 @@ const addBox100RateItem = (): void => {
   formDataValue.value.box100Rates.push({
     name: '',
     price: 0,
-    prefectures: []
+    prefectureCodes: []
   })
 }
 
@@ -133,19 +133,19 @@ const getSelectableBox100RatePrefecturesList = (i: number): PrefecturesListSelec
 const onClickSelectAll = (rate: '60' | '80' | '100', i: number): void => {
   switch (rate) {
     case '60':
-      formDataValue.value.box60Rates[i].prefectures =
+      formDataValue.value.box60Rates[i].prefectureCodes =
         getSelectableBox60RatePrefecturesList(i)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
     case '80':
-      formDataValue.value.box80Rates[i].prefectures =
+      formDataValue.value.box80Rates[i].prefectureCodes =
         getSelectableBox80RatePrefecturesList(i)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
     case '100':
-      formDataValue.value.box100Rates[i].prefectures =
+      formDataValue.value.box100Rates[i].prefectureCodes =
         getSelectableBox100RatePrefecturesList(i)
           .filter(item => !item.disabled)
           .map(item => item.value)

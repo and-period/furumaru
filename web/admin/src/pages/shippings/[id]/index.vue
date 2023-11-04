@@ -17,11 +17,12 @@ const { shipping } = storeToRefs(shippingStore)
 const loading = ref<boolean>(false)
 const formData = ref<UpdateShippingRequest>({
   name: '',
+  isDefault: false,
   box60Rates: [
     {
       name: '',
       price: 0,
-      prefectures: []
+      prefectureCodes: []
     }
   ],
   box60Refrigerated: 0,
@@ -30,7 +31,7 @@ const formData = ref<UpdateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: []
+      prefectureCodes: []
     }
   ],
   box80Refrigerated: 0,
@@ -39,7 +40,7 @@ const formData = ref<UpdateShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectures: []
+      prefectureCodes: []
     }
   ],
   box100Refrigerated: 0,

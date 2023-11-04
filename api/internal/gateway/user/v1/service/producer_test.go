@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -46,12 +45,13 @@ func TestProducer(t *testing.T) {
 					{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
 					{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
 				},
-				PhoneNumber: "+819012345678",
-				PostalCode:  "1000014",
-				Prefecture:  codes.PrefectureValues["tokyo"],
-				City:        "千代田区",
-				CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				PhoneNumber:    "+819012345678",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Producer{
 				Producer: response.Producer{
@@ -175,12 +175,13 @@ func TestProducers(t *testing.T) {
 						{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
 						{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
 					},
-					PhoneNumber: "+819012345678",
-					PostalCode:  "1000014",
-					Prefecture:  codes.PrefectureValues["tokyo"],
-					City:        "千代田区",
-					CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					PhoneNumber:    "+819012345678",
+					PostalCode:     "1000014",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				{
 					Admin: entity.Admin{
@@ -193,17 +194,18 @@ func TestProducers(t *testing.T) {
 						FirstnameKana: "かんりしゃ",
 						Email:         "test-producer02@and-period.jp",
 					},
-					AdminID:       "producer-id02",
-					CoordinatorID: "coordinator-id",
-					Username:      "&.農園",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					HeaderURL:     "https://and-period.jp/header.png",
-					PhoneNumber:   "+819012345678",
-					PostalCode:    "1000014",
-					Prefecture:    codes.PrefectureValues["tokyo"],
-					City:          "千代田区",
-					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					AdminID:        "producer-id02",
+					CoordinatorID:  "coordinator-id",
+					Username:       "&.農園",
+					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
+					HeaderURL:      "https://and-period.jp/header.png",
+					PhoneNumber:    "+819012345678",
+					PostalCode:     "1000014",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
 			expect: Producers{

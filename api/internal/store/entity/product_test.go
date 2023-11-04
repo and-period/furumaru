@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
@@ -17,6 +16,7 @@ func TestProduct(t *testing.T) {
 		name   string
 		params *NewProductParams
 		expect *Product
+		hasErr bool
 	}{
 		{
 			name: "success",
@@ -38,19 +38,19 @@ func TestProduct(t *testing.T) {
 					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 				},
-				Price:             400,
-				Cost:              300,
-				ExpirationDate:    7,
-				RecommendedPoints: []string{"おすすめポイント"},
-				StorageMethodType: StorageMethodTypeNormal,
-				DeliveryType:      DeliveryTypeNormal,
-				Box60Rate:         50,
-				Box80Rate:         40,
-				Box100Rate:        30,
-				OriginPrefecture:  codes.PrefectureValues["shiga"],
-				OriginCity:        "彦根市",
-				StartAt:           now,
-				EndAt:             now.AddDate(1, 0, 0),
+				Price:                400,
+				Cost:                 300,
+				ExpirationDate:       7,
+				RecommendedPoints:    []string{"おすすめポイント"},
+				StorageMethodType:    StorageMethodTypeNormal,
+				DeliveryType:         DeliveryTypeNormal,
+				Box60Rate:            50,
+				Box80Rate:            40,
+				Box100Rate:           30,
+				OriginPrefectureCode: 25,
+				OriginCity:           "彦根市",
+				StartAt:              now,
+				EndAt:                now.AddDate(1, 0, 0),
 			},
 			expect: &Product{
 				ID:              "", // ignore
@@ -72,27 +72,71 @@ func TestProduct(t *testing.T) {
 					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 				},
-				Price:             400,
-				Cost:              300,
-				ExpirationDate:    7,
-				RecommendedPoints: []string{"おすすめポイント"},
-				StorageMethodType: StorageMethodTypeNormal,
-				DeliveryType:      DeliveryTypeNormal,
-				Box60Rate:         50,
-				Box80Rate:         40,
-				Box100Rate:        30,
-				OriginPrefecture:  codes.PrefectureValues["shiga"],
-				OriginCity:        "彦根市",
-				StartAt:           now,
-				EndAt:             now.AddDate(1, 0, 0),
+				Price:                400,
+				Cost:                 300,
+				ExpirationDate:       7,
+				RecommendedPoints:    []string{"おすすめポイント"},
+				StorageMethodType:    StorageMethodTypeNormal,
+				DeliveryType:         DeliveryTypeNormal,
+				Box60Rate:            50,
+				Box80Rate:            40,
+				Box100Rate:           30,
+				OriginPrefecture:     "滋賀県",
+				OriginPrefectureCode: 25,
+				OriginCity:           "彦根市",
+				StartAt:              now,
+				EndAt:                now.AddDate(1, 0, 0),
 			},
+			hasErr: false,
+		},
+		{
+			name: "invalid prefecture",
+			params: &NewProductParams{
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				TypeID:          "type-id",
+				TagIDs:          []string{"tag-id"},
+				Name:            "新鮮なじゃがいも",
+				Description:     "新鮮なじゃがいもをお届けします。",
+				Public:          true,
+				Inventory:       100,
+				Weight:          100,
+				WeightUnit:      WeightUnitGram,
+				Item:            1,
+				ItemUnit:        "袋",
+				ItemDescription: "1袋あたり100gのじゃがいも",
+				Media: MultiProductMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				Price:                400,
+				Cost:                 300,
+				ExpirationDate:       7,
+				RecommendedPoints:    []string{"おすすめポイント"},
+				StorageMethodType:    StorageMethodTypeNormal,
+				DeliveryType:         DeliveryTypeNormal,
+				Box60Rate:            50,
+				Box80Rate:            40,
+				Box100Rate:           30,
+				OriginPrefectureCode: -1,
+				OriginCity:           "彦根市",
+				StartAt:              now,
+				EndAt:                now.AddDate(1, 0, 0),
+			},
+			expect: nil,
+			hasErr: true,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewProduct(tt.params)
+			actual, err := NewProduct(tt.params)
+			if tt.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
@@ -166,6 +210,7 @@ func TestProduct_Fill(t *testing.T) {
 				TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 				MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+				OriginPrefectureCode:  25,
 				Public:                true,
 				StartAt:               now.AddDate(0, -1, 0),
 				EndAt:                 now.AddDate(0, 1, 0),
@@ -197,6 +242,8 @@ func TestProduct_Fill(t *testing.T) {
 					"ポイント2",
 				},
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+				OriginPrefecture:      "滋賀県",
+				OriginPrefectureCode:  25,
 				Public:                true,
 				StartAt:               now.AddDate(0, -1, 0),
 				EndAt:                 now.AddDate(0, 1, 0),
@@ -406,6 +453,7 @@ func TestProducts_Fill(t *testing.T) {
 					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					OriginPrefectureCode:  25,
 				},
 			},
 			expect: Products{
@@ -437,6 +485,8 @@ func TestProducts_Fill(t *testing.T) {
 						"ポイント2",
 					},
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					OriginPrefecture:      "滋賀県",
+					OriginPrefectureCode:  25,
 				},
 			},
 			hasErr: false,
@@ -681,7 +731,7 @@ func TestProducts_CoordinatorIDs(t *testing.T) {
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
-					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
@@ -739,7 +789,7 @@ func TestProducts_ProducerIDs(t *testing.T) {
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
-					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
@@ -797,7 +847,7 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
-					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
@@ -855,7 +905,7 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
-					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
@@ -913,7 +963,7 @@ func TestProducts_Map(t *testing.T) {
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
-					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
@@ -949,7 +999,7 @@ func TestProducts_Map(t *testing.T) {
 					Box60Rate:         50,
 					Box80Rate:         40,
 					Box100Rate:        30,
-					OriginPrefecture:  codes.PrefectureValues["shiga"],
+					OriginPrefecture:  "滋賀県",
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),

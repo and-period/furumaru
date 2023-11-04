@@ -54,10 +54,10 @@ type Shippings []*Shipping
 
 // ShippingRate - 配送料金情報
 type ShippingRate struct {
-	Number      int64   `json:"number"`      // No.
-	Name        string  `json:"name"`        // 配送料金設定名
-	Price       int64   `json:"price"`       // 配送料金
-	Prefectures []int64 `json:"prefectures"` // 対象都道府県一覧
+	Number          int64   `json:"number"`      // No.
+	Name            string  `json:"name"`        // 配送料金設定名
+	Price           int64   `json:"price"`       // 配送料金
+	PrefectureCodes []int32 `json:"prefectures"` // 対象都道府県一覧
 }
 
 type ShippingRates []*ShippingRate
@@ -158,12 +158,12 @@ func (ss Shippings) CoordinatorIDs() []string {
 	})
 }
 
-func NewShippingRate(num int64, name string, price int64, prefs []int64) *ShippingRate {
+func NewShippingRate(num int64, name string, price int64, prefs []int32) *ShippingRate {
 	return &ShippingRate{
-		Number:      num,
-		Name:        name,
-		Price:       price,
-		Prefectures: prefs,
+		Number:          num,
+		Name:            name,
+		Price:           price,
+		PrefectureCodes: prefs,
 	}
 }
 
@@ -180,10 +180,10 @@ func (rs ShippingRates) Validate() error {
 		if _, exists := set.FindOrAdd(rs[i].Number); exists { // No.の重複チェック
 			return errNotUniqueShippingRateNumber
 		}
-		if err := codes.ValidatePrefectureValues(rs[i].Prefectures...); err != nil { // 都道府県の存在性チェック
+		if err := codes.ValidatePrefectureValues(rs[i].PrefectureCodes...); err != nil { // 都道府県の存在性チェック
 			return err
 		}
-		total += len(rs[i].Prefectures)
+		total += len(rs[i].PrefectureCodes)
 	}
 	if total != len(codes.PrefectureValues) { // 都道府県が全て指定されているかのチェック(重複チェック含め)
 		return errInvalidShippingRatePrefLength

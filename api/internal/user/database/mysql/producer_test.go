@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -519,18 +518,18 @@ func TestProducer_Update(t *testing.T) {
 			args: args{
 				producerID: "admin-id",
 				params: &database.UpdateProducerParams{
-					Lastname:      "&.",
-					Firstname:     "スタッフ",
-					LastnameKana:  "あんどぴりおど",
-					FirstnameKana: "すたっふ",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					HeaderURL:     "https://and-period.jp/header.png",
-					PhoneNumber:   "+819012345678",
-					PostalCode:    "1000014",
-					Prefecture:    codes.PrefectureValues["tokyo"],
-					City:          "千代田区",
-					AddressLine1:  "永田町1-7-1",
-					AddressLine2:  "",
+					Lastname:       "&.",
+					Firstname:      "スタッフ",
+					LastnameKana:   "あんどぴりおど",
+					FirstnameKana:  "すたっふ",
+					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
+					HeaderURL:      "https://and-period.jp/header.png",
+					PhoneNumber:    "+819012345678",
+					PostalCode:     "1000014",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
 				},
 			},
 			want: want{
@@ -1115,7 +1114,8 @@ func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
 		FacebookID:        "facebook-id",
 		PhoneNumber:       "+819012345678",
 		PostalCode:        "1000014",
-		Prefecture:        codes.PrefectureValues["tokyo"],
+		Prefecture:        "東京都",
+		PrefectureCode:    13,
 		City:              "千代田区",
 		AddressLine1:      "永田町1-7-1",
 		AddressLine2:      "",

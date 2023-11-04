@@ -128,31 +128,31 @@ type ListProductsOrder struct {
 }
 
 type UpdateProductParams struct {
-	TypeID            string
-	TagIDs            []string
-	Name              string
-	Description       string
-	Public            bool
-	Inventory         int64
-	Weight            int64
-	WeightUnit        entity.WeightUnit
-	Item              int64
-	ItemUnit          string
-	ItemDescription   string
-	Media             entity.MultiProductMedia
-	Price             int64
-	Cost              int64
-	ExpirationDate    int64
-	RecommendedPoints []string
-	StorageMethodType entity.StorageMethodType
-	DeliveryType      entity.DeliveryType
-	Box60Rate         int64
-	Box80Rate         int64
-	Box100Rate        int64
-	OriginPrefecture  int64
-	OriginCity        string
-	StartAt           time.Time
-	EndAt             time.Time
+	TypeID               string
+	TagIDs               []string
+	Name                 string
+	Description          string
+	Public               bool
+	Inventory            int64
+	Weight               int64
+	WeightUnit           entity.WeightUnit
+	Item                 int64
+	ItemUnit             string
+	ItemDescription      string
+	Media                entity.MultiProductMedia
+	Price                int64
+	Cost                 int64
+	ExpirationDate       int64
+	RecommendedPoints    []string
+	StorageMethodType    entity.StorageMethodType
+	DeliveryType         entity.DeliveryType
+	Box60Rate            int64
+	Box80Rate            int64
+	Box100Rate           int64
+	OriginPrefectureCode int32
+	OriginCity           string
+	StartAt              time.Time
+	EndAt                time.Time
 }
 
 type ProductTag interface {

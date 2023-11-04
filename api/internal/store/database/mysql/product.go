@@ -156,7 +156,7 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			"box60_rate":          params.Box60Rate,
 			"box80_rate":          params.Box80Rate,
 			"box100_rate":         params.Box100Rate,
-			"origin_prefecture":   params.OriginPrefecture,
+			"origin_prefecture":   params.OriginPrefectureCode,
 			"origin_city":         params.OriginCity,
 			"start_at":            params.StartAt,
 			"end_at":              params.EndAt,

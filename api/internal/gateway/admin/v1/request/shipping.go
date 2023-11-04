@@ -18,9 +18,9 @@ type CreateShippingRequest struct {
 }
 
 type CreateShippingRate struct {
-	Name        string   `json:"name,omitempty"`        // 配送料金設定名
-	Price       int64    `json:"price,omitempty"`       // 配送料金
-	Prefectures []string `json:"prefectures,omitempty"` // 対象都道府県一覧
+	Name            string  `json:"name,omitempty"`            // 配送料金設定名
+	Price           int64   `json:"price,omitempty"`           // 配送料金
+	PrefectureCodes []int32 `json:"prefectureCodes,omitempty"` // 対象都道府県一覧
 }
 
 type UpdateShippingRequest struct {
@@ -40,7 +40,7 @@ type UpdateShippingRequest struct {
 }
 
 type UpdateShippingRate struct {
-	Name        string   `json:"name,omitempty"`        // 配送料金設定名
-	Price       int64    `json:"price,omitempty"`       // 配送料金
-	Prefectures []string `json:"prefectures,omitempty"` // 対象都道府県一覧
+	Name            string  `json:"name,omitempty"`            // 配送料金設定名
+	Price           int64   `json:"price,omitempty"`           // 配送料金
+	PrefectureCodes []int32 `json:"prefectureCodes,omitempty"` // 対象都道府県一覧
 }

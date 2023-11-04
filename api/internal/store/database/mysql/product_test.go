@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -502,17 +501,17 @@ func TestProduct_Update(t *testing.T) {
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 					},
-					Price:             400,
-					Cost:              300,
-					StorageMethodType: entity.StorageMethodTypeNormal,
-					DeliveryType:      entity.DeliveryTypeNormal,
-					Box60Rate:         50,
-					Box80Rate:         40,
-					Box100Rate:        30,
-					OriginPrefecture:  codes.PrefectureValues["shiga"],
-					OriginCity:        "彦根市",
-					StartAt:           now().AddDate(0, -1, 0),
-					EndAt:             now().AddDate(0, 1, 0),
+					Price:                400,
+					Cost:                 300,
+					StorageMethodType:    entity.StorageMethodTypeNormal,
+					DeliveryType:         entity.DeliveryTypeNormal,
+					Box60Rate:            50,
+					Box80Rate:            40,
+					Box100Rate:           30,
+					OriginPrefectureCode: 25,
+					OriginCity:           "彦根市",
+					StartAt:              now().AddDate(0, -1, 0),
+					EndAt:                now().AddDate(0, 1, 0),
 				},
 			},
 			want: want{
@@ -744,20 +743,21 @@ func testProduct(productID, typeID, categoryID, coordinatorID, producerID string
 			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 		},
-		Price:             400,
-		Cost:              300,
-		ExpirationDate:    7,
-		StorageMethodType: entity.StorageMethodTypeNormal,
-		DeliveryType:      entity.DeliveryTypeNormal,
-		Box60Rate:         50,
-		Box80Rate:         40,
-		Box100Rate:        30,
-		OriginPrefecture:  codes.PrefectureValues["shiga"],
-		OriginCity:        "彦根市",
-		StartAt:           now.AddDate(0, -1, 0),
-		EndAt:             now.AddDate(0, 1, 0),
-		CreatedAt:         now,
-		UpdatedAt:         now,
+		Price:                400,
+		Cost:                 300,
+		ExpirationDate:       7,
+		StorageMethodType:    entity.StorageMethodTypeNormal,
+		DeliveryType:         entity.DeliveryTypeNormal,
+		Box60Rate:            50,
+		Box80Rate:            40,
+		Box100Rate:           30,
+		OriginPrefecture:     "滋賀県",
+		OriginPrefectureCode: 25,
+		OriginCity:           "彦根市",
+		StartAt:              now.AddDate(0, -1, 0),
+		EndAt:                now.AddDate(0, 1, 0),
+		CreatedAt:            now,
+		UpdatedAt:            now,
 	}
 	_ = p.FillJSON()
 	return p

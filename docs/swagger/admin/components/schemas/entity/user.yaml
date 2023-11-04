@@ -29,7 +29,7 @@ user:
     postalCode:
       type: string
       description: 郵便番号
-    prefecture:
+    prefectureCode:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     city:
       type: string
@@ -58,7 +58,7 @@ user:
   - email
   - phoneNumber
   - postalCode
-  - prefecture
+  - prefectureCode
   - city
   - addressLine1
   - addressLine2
@@ -74,7 +74,7 @@ user:
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
-    prefecture: 'tokyo'
+    prefectureCode: 13
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''

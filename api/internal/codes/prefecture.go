@@ -8,7 +8,7 @@ import (
 
 var ErrUnknownPrefecture = errors.New("entity: unknown prefecture")
 
-var PrefectureNames = map[int64]string{
+var PrefectureNames = map[int32]string{
 	1:  "hokkaido",
 	2:  "aomori",
 	3:  "iwate",
@@ -58,7 +58,7 @@ var PrefectureNames = map[int64]string{
 	47: "okinawa",
 }
 
-var PrefectureJapanese = map[int64]string{
+var PrefectureJapanese = map[int32]string{
 	1:  "北海道",
 	2:  "青森県",
 	3:  "岩手県",
@@ -108,7 +108,7 @@ var PrefectureJapanese = map[int64]string{
 	47: "沖縄県",
 }
 
-var PrefectureValues = map[string]int64{
+var PrefectureValues = map[string]int32{
 	"hokkaido":  1,
 	"aomori":    2,
 	"iwate":     3,
@@ -158,7 +158,7 @@ var PrefectureValues = map[string]int64{
 	"okinawa":   47,
 }
 
-func ToPrefectureName(value int64) (string, error) {
+func ToPrefectureName(value int32) (string, error) {
 	name, ok := PrefectureNames[value]
 	if !ok {
 		return "", ErrUnknownPrefecture
@@ -166,11 +166,11 @@ func ToPrefectureName(value int64) (string, error) {
 	return name, nil
 }
 
-func ToPrefectureNames(values ...int64) ([]string, error) {
+func ToPrefectureNames(values ...int32) ([]string, error) {
 	return set.UniqWithErr(values, ToPrefectureName)
 }
 
-func ToPrefectureJapanese(value int64) (string, error) {
+func ToPrefectureJapanese(value int32) (string, error) {
 	name, ok := PrefectureJapanese[value]
 	if !ok {
 		return "", ErrUnknownPrefecture
@@ -178,7 +178,7 @@ func ToPrefectureJapanese(value int64) (string, error) {
 	return name, nil
 }
 
-func ToPrefectureValue(name string) (int64, error) {
+func ToPrefectureValue(name string) (int32, error) {
 	value, ok := PrefectureValues[name]
 	if !ok {
 		return 0, ErrUnknownPrefecture
@@ -186,7 +186,7 @@ func ToPrefectureValue(name string) (int64, error) {
 	return value, nil
 }
 
-func ToPrefectureValues(names ...string) ([]int64, error) {
+func ToPrefectureValues(names ...string) ([]int32, error) {
 	return set.UniqWithErr(names, ToPrefectureValue)
 }
 
@@ -199,7 +199,7 @@ func ValidatePrefectureNames(names ...string) error {
 	return nil
 }
 
-func ValidatePrefectureValues(values ...int64) error {
+func ValidatePrefectureValues(values ...int32) error {
 	for _, value := range values {
 		if _, ok := PrefectureNames[value]; !ok {
 			return ErrUnknownPrefecture

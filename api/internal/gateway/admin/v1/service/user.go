@@ -3,7 +3,6 @@ package service
 import (
 	"strings"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -22,24 +21,23 @@ type UserSummary struct {
 type UserSummaries []*UserSummary
 
 func NewUser(user *uentity.User) *User {
-	prefecture, _ := codes.ToPrefectureName(user.Prefecture)
 	return &User{
 		User: response.User{
-			ID:            user.ID,
-			Lastname:      user.Customer.Lastname,
-			Firstname:     user.Customer.Firstname,
-			LastnameKana:  user.Customer.LastnameKana,
-			FirstnameKana: user.Customer.FirstnameKana,
-			Registered:    user.Registered,
-			Email:         user.Email(),
-			PhoneNumber:   user.PhoneNumber(),
-			PostalCode:    user.Customer.PostalCode,
-			Prefecture:    prefecture,
-			City:          user.Customer.City,
-			AddressLine1:  user.Customer.AddressLine1,
-			AddressLine2:  user.Customer.AddressLine2,
-			CreatedAt:     user.CreatedAt.Unix(),
-			UpdatedAt:     user.UpdatedAt.Unix(),
+			ID:             user.ID,
+			Lastname:       user.Customer.Lastname,
+			Firstname:      user.Customer.Firstname,
+			LastnameKana:   user.Customer.LastnameKana,
+			FirstnameKana:  user.Customer.FirstnameKana,
+			Registered:     user.Registered,
+			Email:          user.Email(),
+			PhoneNumber:    user.PhoneNumber(),
+			PostalCode:     user.Customer.PostalCode,
+			PrefectureCode: user.PrefectureCode,
+			City:           user.Customer.City,
+			AddressLine1:   user.Customer.AddressLine1,
+			AddressLine2:   user.Customer.AddressLine2,
+			CreatedAt:      user.CreatedAt.Unix(),
+			UpdatedAt:      user.UpdatedAt.Unix(),
 		},
 	}
 }
@@ -90,14 +88,14 @@ func NewUserSummary(user *User, order *sentity.AggregatedOrder) *UserSummary {
 	}
 	return &UserSummary{
 		UserSummary: response.UserSummary{
-			ID:          user.ID,
-			Lastname:    user.Lastname,
-			Firstname:   user.Firstname,
-			Registered:  user.Registered,
-			Prefecture:  user.Prefecture,
-			City:        user.City,
-			TotalOrder:  order.OrderCount,
-			TotalAmount: order.Subtotal,
+			ID:             user.ID,
+			Lastname:       user.Lastname,
+			Firstname:      user.Firstname,
+			Registered:     user.Registered,
+			PrefectureCode: user.PrefectureCode,
+			City:           user.City,
+			TotalOrder:     order.OrderCount,
+			TotalAmount:    order.Subtotal,
 		},
 	}
 }

@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -54,7 +53,8 @@ func TestCoordinator(t *testing.T) {
 				FacebookID:        "facebook-id",
 				PhoneNumber:       "+819012345678",
 				PostalCode:        "1000014",
-				Prefecture:        codes.PrefectureValues["tokyo"],
+				Prefecture:        "東京都",
+				PrefectureCode:    13,
 				City:              "千代田区",
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -204,7 +204,8 @@ func TestCoordinators(t *testing.T) {
 					FacebookID:        "facebook-id",
 					PhoneNumber:       "+819012345678",
 					PostalCode:        "1000014",
-					Prefecture:        codes.PrefectureValues["tokyo"],
+					Prefecture:        "東京都",
+					PrefectureCode:    13,
 					City:              "千代田区",
 					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -233,7 +234,8 @@ func TestCoordinators(t *testing.T) {
 					FacebookID:        "facebook-id",
 					PhoneNumber:       "+819012345678",
 					PostalCode:        "1000014",
-					Prefecture:        codes.PrefectureValues["tokyo"],
+					Prefecture:        "東京都",
+					PrefectureCode:    13,
 					City:              "千代田区",
 					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
