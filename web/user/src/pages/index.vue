@@ -81,6 +81,10 @@ const liveItems = computed(() => {
     return MOCK_LIVE_ITEMS.slice(0, 6)
   }
 })
+
+useSeoMeta({
+  title: 'トップページ',
+})
 </script>
 
 <template>

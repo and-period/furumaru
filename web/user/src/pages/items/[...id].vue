@@ -43,6 +43,12 @@ const handleClickAddCartButton = () => {
     quantity: quantity.value,
   })
 }
+
+const title = computed<string>(() => product.value.name)
+
+useSeoMeta({
+  title,
+})
 </script>
 
 <template>
