@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store'
-import { SettingMenu } from '~/types/props'
+import type { SettingMenu } from '~/types/props'
 
 const router = useRouter()
 const authStore = useAuthStore()

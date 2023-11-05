@@ -224,28 +224,28 @@ const onClickDelete = (): void => {
         no-data-text="登録されている生産者がいません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, { item }: any) => onClickRow(item.raw.id)"
+        @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
           <v-avatar>
             <v-img
-              v-if="item.raw.thumbnailUrl !== ''"
+              v-if="item.thumbnailUrl !== ''"
               cover
-              :src="item.raw.thumbnailUrl"
-              :srcset="getImages(item.raw)"
+              :src="item.thumbnailUrl"
+              :srcset="getImages(item)"
             />
             <v-icon v-else :icon="mdiAccount" />
           </v-avatar>
         </template>
         <template #[`item.coordinatorName`]="{ item }">
-          {{ getCoordinatorName(item.raw.coordinatorId) }}
+          {{ getCoordinatorName(item.coordinatorId) }}
         </template>
         <template #[`item.phoneNumber`]="{ item }">
-          {{ convertI18nToJapanesePhoneNumber(item.raw.phoneNumber) }}
+          {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.raw.status)">
-            {{ getStatus(item.raw.status) }}
+          <v-chip size="small" :color="getStatusColor(item.status)">
+            {{ getStatus(item.status) }}
           </v-chip>
         </template>
         <template #[`item.actions`]="{ item }">
@@ -253,7 +253,7 @@ const onClickDelete = (): void => {
             color="primary"
             size="small"
             variant="outlined"
-            @click.stop="onClickOpenDeleteDialog(item.raw)"
+            @click.stop="onClickOpenDeleteDialog(item)"
           >
             <v-icon size="small" :icon="mdiDelete" />削除
           </v-btn>

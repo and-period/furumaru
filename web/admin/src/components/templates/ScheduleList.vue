@@ -237,28 +237,28 @@ const onClickApproval = (scheduleId: string): void => {
         no-data-text="登録されているスケジュールがありません。"
         @update:page="onUpdatePage"
         @update:items-per-page="onUpdateItemsPerPage"
-        @click:row="(_: any, { item }:any) => onClickRow(item.raw.id)"
+        @click:row="(_: any, { item }:any) => onClickRow(item.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
-          <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.raw)" :srcset="getResizedThumbnails(item.raw)" />
+          <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item)" :srcset="getResizedThumbnails(item)" />
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip :color="getStatusColor(item.raw.status)">
-            {{ getStatus(item.raw.status) }}
+          <v-chip :color="getStatusColor(item.status)">
+            {{ getStatus(item.status) }}
           </v-chip>
         </template>
         <template #[`item.coordinatorName`]="{ item }">
-          {{ getCoordinatorName(item.raw.coordinatorId) }}
+          {{ getCoordinatorName(item.coordinatorId) }}
         </template>
         <template #[`item.term`]="{ item }">
-          {{ getTerm(item.raw) }}
+          {{ getTerm(item) }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" class="mr-2" color="primary" size="small" @click.stop="onClickApproval(item.raw.id)">
+          <v-btn variant="outlined" class="mr-2" color="primary" size="small" @click.stop="onClickApproval(item.id)">
             <v-icon size="small" :icon="mdiPencil" />
-            {{ getApproval(item.raw) }}
+            {{ getApproval(item) }}
           </v-btn>
-          <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickOpenDeleteDialog(item.raw)">
+          <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickOpenDeleteDialog(item)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>
