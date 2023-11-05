@@ -219,17 +219,17 @@ const thumbnailIndex = computed<number>({
       return
     }
     formDataValue.value.media = formDataValue.value.media
-      .map(item => ({
-        ...item,
-        isThumbnail: false
-      }))
       .map((item, i) => {
-        if (i !== index) {
-          return item
-        }
-        return {
-          ...item,
-          isThumbnail: true
+        if (i === index) {
+          return {
+            ...item,
+            isThumbnail: true
+          }
+        } else {
+          return {
+            ...item,
+            isThumbnail: false
+          }
         }
       })
   }
