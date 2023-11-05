@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
-import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, ProductTag, ProductType, StorageMethodType, type UpdateProductRequest, Weekday } from '~/types/api'
+import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, type ProductTag, type ProductType, StorageMethodType, type UpdateProductRequest, Weekday } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -13,7 +13,7 @@ import {
   maxValue,
   maxLengthArray
 } from '~/lib/validations'
-import { prefecturesList, cityList, PrefecturesListItem, CityListItem } from '~/constants'
+import { prefecturesList, cityList, type PrefecturesListItem, type CityListItem } from '~/constants'
 import type { ProductTime } from '~/types/props'
 
 const props = defineProps({
