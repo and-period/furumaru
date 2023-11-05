@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
-import { type CreateCoordinatorRequest, Prefecture, ProductType } from '~/types/api'
+import { type CreateCoordinatorRequest, Prefecture, type ProductType } from '~/types/api'
 import { email, kana, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
 import type { ImageUploadStatus } from '~/types/props'
 
@@ -201,8 +201,8 @@ const onClickSearchAddress = (): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="item.raw.iconUrl"
-              :text="item.raw.name"
+              :prepend-avatar="item.iconUrl"
+              :text="item.name"
               rounded
               class="px-4"
               variant="outlined"
@@ -211,8 +211,8 @@ const onClickSearchAddress = (): void => {
           <template #item="{ props: val, item }">
             <v-list-item
               v-bind="val"
-              :prepend-avatar="item?.raw?.iconUrl"
-              :title="item?.raw?.name"
+              :prepend-avatar="item?.iconUrl"
+              :title="item?.name"
             />
           </template>
         </v-autocomplete>
