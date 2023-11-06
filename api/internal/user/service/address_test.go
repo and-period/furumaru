@@ -24,21 +24,23 @@ func TestListAddresses(t *testing.T) {
 	}
 	addresses := entity.Addresses{
 		{
-			ID:             "address-id",
-			UserID:         "user-id",
-			Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-			IsDefault:      true,
-			Lastname:       "&.",
-			Firstname:      "購入者",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			PrefectureCode: 13,
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			PhoneNumber:    "+819012345678",
-			CreatedAt:      now,
-			UpdatedAt:      now,
+			ID:        "address-id",
+			UserID:    "user-id",
+			IsDefault: true,
+			AddressRevision: entity.AddressRevision{
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "購入者",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 
@@ -121,21 +123,23 @@ func TestMultiGetAddresses(t *testing.T) {
 	now := jst.Date(2022, 12, 6, 18, 30, 0, 0)
 	addresses := entity.Addresses{
 		{
-			ID:             "address-id",
-			UserID:         "user-id",
-			Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-			IsDefault:      true,
-			Lastname:       "&.",
-			Firstname:      "購入者",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			PrefectureCode: 13,
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			PhoneNumber:    "+819012345678",
-			CreatedAt:      now,
-			UpdatedAt:      now,
+			ID:        "address-id",
+			UserID:    "user-id",
+			IsDefault: true,
+			AddressRevision: entity.AddressRevision{
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "購入者",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 
@@ -195,21 +199,23 @@ func TestGetAddress(t *testing.T) {
 	now := jst.Date(2022, 12, 6, 18, 30, 0, 0)
 	address := func(userID string) *entity.Address {
 		return &entity.Address{
-			ID:             "address-id",
-			UserID:         userID,
-			Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-			IsDefault:      true,
-			Lastname:       "&.",
-			Firstname:      "購入者",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			PrefectureCode: 13,
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			PhoneNumber:    "+819012345678",
-			CreatedAt:      now,
-			UpdatedAt:      now,
+			ID:        "address-id",
+			UserID:    userID,
+			IsDefault: true,
+			AddressRevision: entity.AddressRevision{
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "購入者",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		}
 	}
 
@@ -280,19 +286,21 @@ func TestCreateAddress(t *testing.T) {
 
 	address := func(addressID string) *entity.Address {
 		return &entity.Address{
-			ID:             addressID,
-			UserID:         "user-id",
-			Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-			IsDefault:      true,
-			Lastname:       "&.",
-			Firstname:      "購入者",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			PrefectureCode: 13,
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			PhoneNumber:    "+819012345678",
+			ID:        addressID,
+			UserID:    "user-id",
+			IsDefault: true,
+			AddressRevision: entity.AddressRevision{
+				AddressID:      addressID,
+				Lastname:       "&.",
+				Firstname:      "購入者",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
 		}
 	}
 
@@ -386,21 +394,23 @@ func TestUpdateAddress(t *testing.T) {
 	now := jst.Date(2022, 12, 6, 18, 30, 0, 0)
 	address := func(userID string) *entity.Address {
 		return &entity.Address{
-			ID:             "address-id",
-			UserID:         userID,
-			Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-			IsDefault:      true,
-			Lastname:       "&.",
-			Firstname:      "購入者",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			PrefectureCode: 13,
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			PhoneNumber:    "+819012345678",
-			CreatedAt:      now,
-			UpdatedAt:      now,
+			ID:        "address-id",
+			UserID:    userID,
+			IsDefault: true,
+			AddressRevision: entity.AddressRevision{
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "購入者",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		}
 	}
 	params := &database.UpdateAddressParams{
@@ -446,6 +456,24 @@ func TestUpdateAddress(t *testing.T) {
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.UpdateAddressInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "invalid prefecture code",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.UpdateAddressInput{
+				AddressID:      "address-id",
+				UserID:         "user-id",
+				Lastname:       "&.",
+				Firstname:      "購入者",
+				PostalCode:     "1000014",
+				PrefectureCode: -1,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+				IsDefault:      true,
+			},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
@@ -523,27 +551,6 @@ func TestUpdateAddress(t *testing.T) {
 func TestDeleteAddress(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 12, 6, 18, 30, 0, 0)
-	address := func(userID string) *entity.Address {
-		return &entity.Address{
-			ID:             "address-id",
-			UserID:         userID,
-			Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-			IsDefault:      true,
-			Lastname:       "&.",
-			Firstname:      "購入者",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			PrefectureCode: 13,
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			PhoneNumber:    "+819012345678",
-			CreatedAt:      now,
-			UpdatedAt:      now,
-		}
-	}
-
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -553,8 +560,7 @@ func TestDeleteAddress(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id", "user_id").Return(address("user-id"), nil)
-				mocks.db.Address.EXPECT().Delete(ctx, "address-id").Return(nil)
+				mocks.db.Address.EXPECT().Delete(ctx, "address-id", "user-id").Return(nil)
 			},
 			input: &user.DeleteAddressInput{
 				AddressID: "address-id",
@@ -571,30 +577,7 @@ func TestDeleteAddress(t *testing.T) {
 		{
 			name: "failed to get address",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id", "user_id").Return(nil, assert.AnError)
-			},
-			input: &user.DeleteAddressInput{
-				AddressID: "address-id",
-				UserID:    "user-id",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to get address",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id", "user_id").Return(address("other-id"), nil)
-			},
-			input: &user.DeleteAddressInput{
-				AddressID: "address-id",
-				UserID:    "user-id",
-			},
-			expectErr: exception.ErrForbidden,
-		},
-		{
-			name: "failed to get address",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id", "user_id").Return(address("user-id"), nil)
-				mocks.db.Address.EXPECT().Delete(ctx, "address-id").Return(assert.AnError)
+				mocks.db.Address.EXPECT().Delete(ctx, "address-id", "user-id").Return(assert.AnError)
 			},
 			input: &user.DeleteAddressInput{
 				AddressID: "address-id",

@@ -38,7 +38,7 @@ watch(sortBy, (): void => {
 
 const fetchProductTags = async (): Promise<void> => {
   try {
-    const orders: string[] = sortBy.value.map((item) => {
+    const orders: string[] = sortBy.value.map((item: any) => {
       switch (item.order) {
         case 'asc':
           return item.key

@@ -5,7 +5,7 @@ import { type PrefecturesListItem, prefecturesList } from '~/constants'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import type { Product, ProductMediaInner, Prefecture, ProductStatus, Category, ProductTag, ProductType, Producer, AdminRole } from '~/types/api'
+import { type Product, type ProductMediaInner, Prefecture, ProductStatus, type Category, type ProductTag, type ProductType, type Producer, AdminRole } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -281,35 +281,35 @@ const onClickDelete = (): void => {
         no-data-text="登録されている商品がありません。"
         @update:page="onUpdatePage"
         @update:items-per-page="onUpdateItemsPerPage"
-        @click:row="(_: any, { item }:any) => onClickShow(item.raw.id)"
+        @click:row="(_: any, { item }:any) => onClickShow(item.id)"
       >
         <template #[`item.media`]="{ item }">
-          <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.raw.media)" :srcset="getResizedThumbnails(item.raw.media)" />
+          <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.media)" :srcset="getResizedThumbnails(item.media)" />
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip :color="getStatusColor(item.raw.status)">
-            {{ getStatus(item.raw.status) }}
+          <v-chip :color="getStatusColor(item.status)">
+            {{ getStatus(item.status) }}
           </v-chip>
         </template>
         <template #[`item.inventory`]="{ item }">
-          <div :class="getInventoryColor(item.raw.inventory)">
-            {{ item.raw.inventory }}
+          <div :class="getInventoryColor(item.inventory)">
+            {{ item.inventory }}
           </div>
         </template>
         <template #[`item.categoryName`]="{ item }">
-          {{ getCategoryName(item.raw.categoryId) }}
+          {{ getCategoryName(item.categoryId) }}
         </template>
         <template #[`item.productTypeName`]="{ item }">
-          {{ getProductTypeName(item.raw.productTypeId) }}
+          {{ getProductTypeName(item.productTypeId) }}
         </template>
         <template #[`item.producerName`]="{ item }">
-          {{ getProducerName(item.raw.producerId) }}
+          {{ getProducerName(item.producerId) }}
         </template>
         <template #[`item.originPrefectureCode`]="{ item }">
-          {{ getPrefecture(item.raw.originPrefectureCode) }}
+          {{ getPrefecture(item.originPrefectureCode) }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item.raw)">
+          <v-btn variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>

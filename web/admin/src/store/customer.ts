@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-import { User, UsersResponse } from '~/types/api'
+import { User } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
 
 export const useCustomerStore = defineStore('customer', {

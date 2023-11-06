@@ -67,17 +67,17 @@ func (mr *MockAddressMockRecorder) Create(ctx, address interface{}) *gomock.Call
 }
 
 // Delete mocks base method.
-func (m *MockAddress) Delete(ctx context.Context, addressID string) error {
+func (m *MockAddress) Delete(ctx context.Context, addressID, userID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", ctx, addressID)
+	ret := m.ctrl.Call(m, "Delete", ctx, addressID, userID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete.
-func (mr *MockAddressMockRecorder) Delete(ctx, addressID interface{}) *gomock.Call {
+func (mr *MockAddressMockRecorder) Delete(ctx, addressID, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockAddress)(nil).Delete), ctx, addressID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockAddress)(nil).Delete), ctx, addressID, userID)
 }
 
 // Get mocks base method.

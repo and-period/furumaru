@@ -99,7 +99,7 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
   },
   {
     text: ft('inquiryLinkText'),
-    to: '',
+    to: '/contact',
   },
 ])
 

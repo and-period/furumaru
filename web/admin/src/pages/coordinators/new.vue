@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
+
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCoordinatorStore, useProductTypeStore } from '~/store'
-import type { CreateCoordinatorRequest, Prefecture } from '~/types/api'
-import type { ImageUploadStatus } from '~/types/props'
+import { type CreateCoordinatorRequest, Prefecture } from '~/types/api'
+import { type ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
 const coordinatorStore = useCoordinatorStore()

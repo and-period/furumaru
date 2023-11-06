@@ -237,7 +237,7 @@ func (h *handler) getSessionID(ctx *gin.Context) string {
 	// セッションIDが取得できない場合、新規IDを生成してCookieへ保存する
 	sessionID = h.generateID()
 	ctx.SetSameSite(http.SameSiteNoneMode)
-	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", "", false, true)
+	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", "", true, true)
 	return sessionID
 }
 

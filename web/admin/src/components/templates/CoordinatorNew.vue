@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
-import type { CreateCoordinatorRequest, Prefecture, ProductType } from '~/types/api'
+import { type CreateCoordinatorRequest, Prefecture, type ProductType, Weekday } from '~/types/api'
 import { email, kana, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
 import type { ImageUploadStatus } from '~/types/props'
 
@@ -91,6 +91,16 @@ const props = defineProps({
     default: false
   }
 })
+
+const weekdays = [
+  { title: '日曜日', value: Weekday.SUNDAY },
+  { title: '月曜日', value: Weekday.MONDAY },
+  { title: '火曜日', value: Weekday.TUESDAY },
+  { title: '水曜日', value: Weekday.WEDNESDAY },
+  { title: '木曜日', value: Weekday.THURSDAY },
+  { title: '金曜日', value: Weekday.FRIDAY },
+  { title: '土曜日', value: Weekday.SATURDAY }
+]
 
 const emit = defineEmits<{
   (e: 'update:form-data', formData: CreateCoordinatorRequest): void
@@ -201,8 +211,8 @@ const onClickSearchAddress = (): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="item.raw.iconUrl"
-              :text="item.raw.name"
+              :prepend-avatar="item.iconUrl"
+              :text="item.name"
               rounded
               class="px-4"
               variant="outlined"
@@ -211,15 +221,15 @@ const onClickSearchAddress = (): void => {
           <template #item="{ props: val, item }">
             <v-list-item
               v-bind="val"
-              :prepend-avatar="item?.raw?.iconUrl"
-              :title="item?.raw?.name"
+              :prepend-avatar="item?.iconUrl"
+              :title="item?.name"
             />
           </template>
         </v-autocomplete>
         <v-select
-          v-model="formDataValidate.businessDays.$model"
+          v-model="validate.businessDays.$model"
           label="営業日(発送可能日)"
-          :error-messages="getErrorMessage(formDataValidate.businessDays.$errors)"
+          :error-messages="getErrorMessage(validate.businessDays.$errors)"
           :items="weekdays"
           item-title="title"
           item-value="value"

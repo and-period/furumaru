@@ -139,13 +139,13 @@ const onClickDelete = (): void => {
         no-data-text="登録されている管理者がいません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
+        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
       >
         <template #[`item.name`]="{ item }">
-          {{ getName(item.raw) }}
+          {{ getName(item) }}
         </template>
         <template #[`item.phoneNumber`]="{ item }">
-          {{ convertI18nToJapanesePhoneNumber(item.raw.phoneNumber) }}
+          {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
@@ -153,7 +153,7 @@ const onClickDelete = (): void => {
             size="small"
             variant="outlined"
             :prepend-icon="mdiDelete"
-            @click.stop="onClickOpenDeleteDialog(item.raw)"
+            @click.stop="onClickOpenDeleteDialog(item)"
           >
             削除
           </v-btn>

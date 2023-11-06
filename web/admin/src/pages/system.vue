@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/store'
 import { AdminRole } from '~/types/api'
-import { SettingMenu } from '~/types/props'
+import type { SettingMenu } from '~/types/props'
 
 const router = useRouter()
 const authStore = useAuthStore()

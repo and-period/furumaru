@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store'
-import { SettingMenu } from '~/types/props'
+import type { SettingMenu } from '~/types/props'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -8,11 +8,13 @@ const authStore = useAuthStore()
 const menus: SettingMenu[] = [
   {
     text: 'メールアドレス変更',
-    action: () => router.push('/accounts/email')
+    action: () => router.push('/accounts/email'),
+    roles: []
   },
   {
     text: 'パスワード変更',
-    action: () => router.push('/accounts/password')
+    action: () => router.push('/accounts/password'),
+    roles: []
   },
   {
     text: 'サインアウト',
@@ -20,7 +22,8 @@ const menus: SettingMenu[] = [
     action: () => {
       authStore.logout()
       router.push('/')
-    }
+    },
+    roles: []
   }
 ]
 

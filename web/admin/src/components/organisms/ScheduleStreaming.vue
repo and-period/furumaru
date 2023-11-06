@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Hls from 'hls.js'
-import { Broadcast, BroadcastStatus } from '~/types/api'
+import { type Broadcast, BroadcastStatus } from '~/types/api'
 
 const props = defineProps({
   selectedTabItem: {

@@ -4,7 +4,7 @@ import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage, maxLength, required } from '~/lib/validations'
-import type { CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, Promotion } from '~/types/api'
+import { type CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, type Promotion } from '~/types/api'
 import type { NotificationTime } from '~/types/props'
 
 const props = defineProps({

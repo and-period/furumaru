@@ -4,7 +4,7 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
-import type { DeliveryType, FulfillmentStatus, OrdersResponse, PaymentStatus } from '~/types/api'
+import { DeliveryType, FulfillmentStatus, type OrdersResponse, PaymentStatus } from '~/types/api'
 import type { Order } from '~/types/props'
 
 // TODO: API設計が決まり次第型定義の厳格化

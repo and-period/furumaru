@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
-import { useAlert } from '~/lib/hooks'
 
+import { useAlert } from '~/lib/hooks'
 import { useAdminStore, useNotificationStore, usePromotionStore } from '~/store'
 import { type CreateNotificationRequest, NotificationType } from '~/types/api'
 

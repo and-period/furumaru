@@ -10,16 +10,16 @@ import {
   required
 } from '~/lib/validations'
 import {
-  CreateLiveRequest,
-  Live,
-  Producer,
-  Product,
-  ProductMediaInner,
-  Schedule,
+  type CreateLiveRequest,
+  type Live,
+  type Producer,
+  type Product,
+  type ProductMediaInner,
+  type Schedule,
   ScheduleStatus,
-  UpdateLiveRequest
+  type UpdateLiveRequest
 } from '~/types/api'
-import { LiveTime } from '~/types/props'
+import type { LiveTime } from '~/types/props'
 
 const props = defineProps({
   loading: {
@@ -58,7 +58,6 @@ const props = defineProps({
     default: (): Schedule => ({
       id: '',
       coordinatorId: '',
-      shippingId: '',
       title: '',
       description: '',
       status: ScheduleStatus.UNKNOWN,
@@ -455,8 +454,8 @@ const onSubmitDelete = (): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item.raw)"
-              :text="item.raw.name"
+              :prepend-avatar="getProductThumbnailUrl(item)"
+              :text="item.name"
               rounded
               class="px-4"
               variant="outlined"
@@ -465,8 +464,8 @@ const onSubmitDelete = (): void => {
           <template #item="{ props: val, item }">
             <v-list-item
               v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item.raw)"
-              :title="item.raw.name"
+              :prepend-avatar="getProductThumbnailUrl(item)"
+              :title="item.name"
             />
           </template>
         </v-autocomplete>
@@ -585,8 +584,8 @@ const onSubmitDelete = (): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item.raw)"
-              :text="item.raw.name"
+              :prepend-avatar="getProductThumbnailUrl(item)"
+              :text="item.name"
               rounded
               class="px-4"
               variant="outlined"
@@ -595,8 +594,8 @@ const onSubmitDelete = (): void => {
           <template #item="{ props: val, item }">
             <v-list-item
               v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item.raw)"
-              :title="item.raw.name"
+              :prepend-avatar="getProductThumbnailUrl(item)"
+              :title="item.name"
             />
           </template>
         </v-autocomplete>

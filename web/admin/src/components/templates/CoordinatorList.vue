@@ -5,7 +5,7 @@ import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import type { AdminStatus, Coordinator, ProductType } from '~/types/api'
+import { AdminStatus, type Coordinator, type ProductType } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -215,25 +215,25 @@ const onClickDelete = (): void => {
         no-data-text="登録されているコーディネータがいません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_:any, {item}: any) => onClickRow(item.raw.id)"
+        @click:row="(_:any, {item}: any) => onClickRow(item.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
           <v-avatar>
             <v-img
-              v-if="item.raw.thumbnailUrl !== ''"
+              v-if="item.thumbnailUrl !== ''"
               cover
-              :src="item.raw.thumbnailUrl"
-              :srcset="getImages(item.raw)"
+              :src="item.thumbnailUrl"
+              :srcset="getImages(item)"
             />
             <v-icon v-else :icon="mdiAccount" />
           </v-avatar>
         </template>
         <template #[`item.phoneNumber`]="{ item }">
-          {{ convertI18nToJapanesePhoneNumber(item.raw.phoneNumber) }}
+          {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.raw.status)">
-            {{ getStatus(item.raw.status) }}
+          <v-chip size="small" :color="getStatusColor(item.status)">
+            {{ getStatus(item.status) }}
           </v-chip>
         </template>
         <template #[`item.actions`]="{ item }">
@@ -241,7 +241,7 @@ const onClickDelete = (): void => {
             variant="outlined"
             color="primary"
             size="small"
-            @click.stop="onClickOpen(item.raw)"
+            @click.stop="onClickOpen(item)"
           >
             <v-icon size="small" :icon="mdiDelete" />
             削除
