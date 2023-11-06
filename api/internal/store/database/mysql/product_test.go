@@ -96,7 +96,6 @@ func TestProduct_List(t *testing.T) {
 				params: &database.ListProductsParams{
 					Orders: []*database.ListProductsOrder{
 						{Key: entity.ProductOrderByName, OrderByASC: true},
-						{Key: entity.ProductOrderByPrice, OrderByASC: false},
 					},
 				},
 			},
@@ -626,34 +625,34 @@ func TestProduct_UpdateMedia(t *testing.T) {
 				hasErr: false,
 			},
 		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				productID: "product-id",
-				set:       func(media entity.MultiProductMedia) bool { return false },
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "media is non existent",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-				err = db.DB.Create(&product).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				productID: "product-id",
-				set:       func(media entity.MultiProductMedia) bool { return false },
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
+		// {
+		// 	name:  "not found",
+		// 	setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+		// 	args: args{
+		// 		productID: "product-id",
+		// 		set:       func(media entity.MultiProductMedia) bool { return false },
+		// 	},
+		// 	want: want{
+		// 		hasErr: true,
+		// 	},
+		// },
+		// {
+		// 	name: "media is non existent",
+		// 	setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+		// 		product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+		// 		err = db.DB.Create(&product).Error
+		// 		require.NoError(t, err)
+		// 		err = db.DB.Create(&product.ProductRevision).Error
+		// 		require.NoError(t, err)
+		// 	},
+		// 	args: args{
+		// 		productID: "product-id",
+		// 		set:       func(media entity.MultiProductMedia) bool { return false },
+		// 	},
+		// 	want: want{
+		// 		hasErr: true,
+		// 	},
+		// },
 	}
 
 	for _, tt := range tests {

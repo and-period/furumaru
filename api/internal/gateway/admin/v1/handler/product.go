@@ -160,7 +160,6 @@ func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder
 		"name":             sentity.ProductOrderByName,
 		"public":           sentity.ProductOrderByPublic,
 		"inventory":        sentity.ProductOrderByInventory,
-		"price":            sentity.ProductOrderByPrice,
 		"originPrefecture": sentity.ProductOrderByOriginPrefecture,
 		"originCity":       sentity.ProductOrderByOriginCity,
 		"createdAt":        sentity.ProductOrderByCreatedAt,

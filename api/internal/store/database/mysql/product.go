@@ -200,7 +200,7 @@ func (p *product) UpdateMedia(
 	ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool,
 ) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		product, err := p.get(ctx, tx, productID, "media")
+		product, err := p.get(ctx, tx, productID, "id", "media")
 		if err != nil {
 			return err
 		}

@@ -61,7 +61,6 @@ const (
 	ProductOrderByName             ProductOrderBy = "name"
 	ProductOrderByPublic           ProductOrderBy = "public"
 	ProductOrderByInventory        ProductOrderBy = "inventory"
-	ProductOrderByPrice            ProductOrderBy = "price"
 	ProductOrderByOriginPrefecture ProductOrderBy = "origin_prefecture"
 	ProductOrderByOriginCity       ProductOrderBy = "origin_city"
 	ProductOrderByCreatedAt        ProductOrderBy = "created_at"
