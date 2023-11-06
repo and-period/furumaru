@@ -35,6 +35,10 @@ func TestAddress_List(t *testing.T) {
 	addresses[1] = testAddress("address-id02", "user-id", 2, now())
 	err = db.DB.Create(&addresses).Error
 	require.NoError(t, err)
+	for i := range addresses {
+		err := db.DB.Create(&addresses[i].AddressRevision).Error
+		require.NoError(t, err)
+	}
 
 	type args struct {
 		params *database.ListAddressesParams
@@ -105,6 +109,10 @@ func TestAddress_Count(t *testing.T) {
 	addresses[1] = testAddress("address-id02", "user-id", 2, now())
 	err = db.DB.Create(&addresses).Error
 	require.NoError(t, err)
+	for i := range addresses {
+		err := db.DB.Create(&addresses[i].AddressRevision).Error
+		require.NoError(t, err)
+	}
 
 	type args struct {
 		params *database.ListAddressesParams
@@ -175,6 +183,10 @@ func TestAddress_MultiGet(t *testing.T) {
 	addresses[1] = testAddress("address-id02", "user-id", 2, now())
 	err = db.DB.Create(&addresses).Error
 	require.NoError(t, err)
+	for i := range addresses {
+		err := db.DB.Create(&addresses[i].AddressRevision).Error
+		require.NoError(t, err)
+	}
 
 	type args struct {
 		addressIDs []string
@@ -238,6 +250,8 @@ func TestAddress_Get(t *testing.T) {
 
 	a := testAddress("address-id", "user-id", 1, now())
 	err = db.DB.Create(&a).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&a.AddressRevision).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -331,6 +345,8 @@ func TestAddress_Create(t *testing.T) {
 				address.PhoneNumber = "+818012345678"
 				err := db.DB.Create(&address).Error
 				require.NoError(t, err)
+				err = db.DB.Create(&address.AddressRevision).Error
+				require.NoError(t, err)
 			},
 			args: args{
 				address: func() *entity.Address {
@@ -358,6 +374,8 @@ func TestAddress_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				address := testAddress("address-id", "user-id", 1, now())
 				err := db.DB.Create(&address).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&address.AddressRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
@@ -404,8 +422,6 @@ func TestAddress_Update(t *testing.T) {
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
 	err = db.DB.Create(&user).Error
 
-	a := testAddress("address-id", "user-id", 1, now())
-
 	type args struct {
 		addressID string
 		userID    string
@@ -423,26 +439,32 @@ func TestAddress_Update(t *testing.T) {
 		{
 			name: "success when is_default is true",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				err = db.DB.Create(&a).Error
-				require.NoError(t, err)
-				address := testAddress("other-id", "user-id", 1, now())
-				address.IsDefault = true
-				address.PhoneNumber = "+818012345678"
+				address := testAddress("address-id", "user-id", 1, now())
 				err := db.DB.Create(&address).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&address.AddressRevision).Error
+				require.NoError(t, err)
+
+				other := testAddress("other-id", "user-id", 2, now())
+				other.IsDefault = true
+				other.PhoneNumber = "+818012345678"
+				err = db.DB.Create(&other).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&other.AddressRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				addressID: "address-id",
 				userID:    "user-id",
 				params: &database.UpdateAddressParams{
-					Lastname:       a.Lastname,
-					Firstname:      a.Firstname,
-					PostalCode:     a.PostalCode,
-					PrefectureCode: a.PrefectureCode,
-					City:           a.City,
-					AddressLine1:   a.AddressLine1,
-					AddressLine2:   a.AddressLine2,
-					PhoneNumber:    a.PhoneNumber,
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					PostalCode:     "1000014",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "+819012345678",
 					IsDefault:      true,
 				},
 			},
@@ -453,26 +475,80 @@ func TestAddress_Update(t *testing.T) {
 		{
 			name: "success when is_default is false",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				err = db.DB.Create(&a).Error
+				address := testAddress("address-id", "user-id", 1, now())
+				err := db.DB.Create(&address).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&address.AddressRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				addressID: "address-id",
 				userID:    "user-id",
 				params: &database.UpdateAddressParams{
-					Lastname:       a.Lastname,
-					Firstname:      a.Firstname,
-					PostalCode:     a.PostalCode,
-					PrefectureCode: a.PrefectureCode,
-					City:           a.City,
-					AddressLine1:   a.AddressLine1,
-					AddressLine2:   a.AddressLine2,
-					PhoneNumber:    a.PhoneNumber,
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					PostalCode:     "1000014",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "+819012345678",
 					IsDefault:      true,
 				},
 			},
 			want: want{
 				err: nil,
+			},
+		},
+		{
+			name: "success when unchange default setting",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				address := testAddress("address-id", "user-id", 1, now())
+				address.IsDefault = true
+				err := db.DB.Create(&address).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&address.AddressRevision).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				addressID: "address-id",
+				userID:    "user-id",
+				params: &database.UpdateAddressParams{
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					PostalCode:     "1000014",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "+819012345678",
+					IsDefault:      false,
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name:  "invalid prefecture code",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				addressID: "address-id",
+				userID:    "user-id",
+				params: &database.UpdateAddressParams{
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					PostalCode:     "1000014",
+					PrefectureCode: 0,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "+819012345678",
+					IsDefault:      false,
+				},
+			},
+			want: want{
+				err: database.ErrInvalidArgument,
 			},
 		},
 	}
@@ -537,6 +613,8 @@ func TestAddress_Delete(t *testing.T) {
 				address.PhoneNumber = "+818012345678"
 				err := db.DB.Create(&address).Error
 				require.NoError(t, err)
+				err = db.DB.Create(&address.AddressRevision).Error
+				require.NoError(t, err)
 			},
 			args: args{
 				addressID: "address-id",
@@ -550,6 +628,8 @@ func TestAddress_Delete(t *testing.T) {
 			name: "success when is_default is false",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				err = db.DB.Create(&a).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&a.AddressRevision).Error
 				require.NoError(t, err)
 			},
 			args: args{

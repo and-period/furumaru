@@ -164,7 +164,7 @@ func (a *address) Update(ctx context.Context, addressID, userID string, params *
 			}
 			stmt = tx.WithContext(ctx).
 				Table(addressTable).
-				Where("address_id = ?", addressID).
+				Where("id = ?", addressID).
 				Where("user_id = ?", userID)
 			if err := stmt.Updates(updates).Error; err != nil {
 				return err
@@ -188,7 +188,7 @@ func (a *address) Delete(ctx context.Context, addressID, userID string) error {
 	}
 	stmt := a.db.DB.WithContext(ctx).
 		Table(addressTable).
-		Where("address_id = ?", addressID).
+		Where("id = ?", addressID).
 		Where("user_id = ?", userID)
 
 	err := stmt.Updates(updates).Error
@@ -222,7 +222,7 @@ func (a *address) fill(ctx context.Context, tx *gorm.DB, addresses ...*entity.Ad
 		Select("MAX(id)").
 		Where("address_id IN (?)", ids).
 		Group("address_id")
-	stmt := a.db.Statement(ctx, tx, addressTable).Where("id IN (?)", sub)
+	stmt := a.db.Statement(ctx, tx, addressRevisionTable).Where("id IN (?)", sub).Debug()
 
 	if err := stmt.Find(&revisions).Error; err != nil {
 		return err
@@ -230,7 +230,6 @@ func (a *address) fill(ctx context.Context, tx *gorm.DB, addresses ...*entity.Ad
 	if len(revisions) == 0 {
 		return nil
 	}
-
 	revisions.Fill()
 	entity.Addresses(addresses).Fill(revisions.Map())
 	return nil
