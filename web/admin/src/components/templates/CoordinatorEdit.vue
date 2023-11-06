@@ -243,8 +243,8 @@ const onClickSearchAddress = (): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="item.raw.iconUrl"
-              :text="item.raw.name"
+              :prepend-avatar="item.raw?.iconUrl"
+              :text="item.raw?.name"
               rounded
               class="px-4"
               variant="outlined"

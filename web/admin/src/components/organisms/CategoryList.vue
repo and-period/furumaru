@@ -277,12 +277,12 @@ const onSubmitDelete = (): void => {
             variant="outlined"
             color="primary"
             size="small"
-            @click="onClickEdit(item.raw.id)"
+            @click="onClickEdit(item.id)"
           >
             <v-icon size="small" :icon="mdiPencil" />
             編集
           </v-btn>
-          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item.raw.id)">
+          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item.id)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>

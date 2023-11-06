@@ -382,16 +382,16 @@ const onSubmitDelete = (): void => {
         <template #[`item.icon`]="{ item }">
           <v-avatar>
             <v-img
-              v-if="item.raw.iconUrl !== ''"
+              v-if="item.iconUrl !== ''"
               cover
-              :src="item.raw.iconUrl"
-              :srcset="getIcons(item.raw)"
+              :src="item.iconUrl"
+              :srcset="getIcons(item)"
             />
             <v-icon v-else :icon="mdiAccount" />
           </v-avatar>
         </template>
         <template #[`item.category`]="{ item }">
-          {{ getCategoryName(item.raw.categoryId) }}
+          {{ getCategoryName(item.categoryId) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
@@ -400,12 +400,12 @@ const onSubmitDelete = (): void => {
             variant="outlined"
             color="primary"
             size="small"
-            @click="onClickEdit(item.raw.id)"
+            @click="onClickEdit(item.id)"
           >
             <v-icon size="small" :icon="mdiPencil" />
             編集
           </v-btn>
-          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item.raw.id)">
+          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item.id)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>

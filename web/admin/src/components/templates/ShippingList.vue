@@ -179,25 +179,25 @@ const onSubmitDelete = (): void => {
         no-data-text="登録されている配送設定がありません"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
+        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
       >
         <template #[`item.coordinatorId`]="{ item }">
-          {{ getCoordinatorName(item.raw.coordinatorId) }}
+          {{ getCoordinatorName(item.coordinatorId) }}
         </template>
         <template #[`item.isDefault`]="{ item }">
-          <v-chip size="small" :color="getIsDefaultColor(item.raw.isDefault)">
-            {{ getIsDefault(item.raw.isDefault) }}
+          <v-chip size="small" :color="getIsDefaultColor(item.isDefault)">
+            {{ getIsDefault(item.isDefault) }}
           </v-chip>
         </template>
         <template #[`item.updatedAt`]="{ item }">
-          {{ dateTimeFormatter(item.raw.updatedAt) }}
+          {{ dateTimeFormatter(item.updatedAt) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
             color="primary"
             size="small"
             variant="outlined"
-            @click.stop="onClickDelete(item.raw)"
+            @click.stop="onClickDelete(item)"
           >
             <v-icon size="small" :icon="mdiDelete" />削除
           </v-btn>

@@ -324,23 +324,23 @@ const onSubmitExport = (): void => {
         no-data-text="表示する注文がありません"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
+        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
       >
         <template #[`item.payment.status`]="{ item }">
-          <v-chip size="small" :color="getPaymentStatusColor(item.raw.payment.status)">
-            {{ getPaymentStatus(item.raw.payment.status) }}
+          <v-chip size="small" :color="getPaymentStatusColor(item.payment.status)">
+            {{ getPaymentStatus(item.payment.status) }}
           </v-chip>
         </template>
         <template #[`item.fulfillment.status`]="{ item }">
-          <v-chip size="small" :color="getFulfillmentStatusColor(item.raw.fulfillment.status)">
-            {{ getFulfillmentStatus(item.raw.fulfillment.status) }}
+          <v-chip size="small" :color="getFulfillmentStatusColor(item.fulfillment.status)">
+            {{ getFulfillmentStatus(item.fulfillment.status) }}
           </v-chip>
         </template>
         <template #[`item.fulfillment.shippingMethod`]="{ item }">
-          {{ getShippingMethod(item.raw.fulfillment.shippingMethod) }}
+          {{ getShippingMethod(item.fulfillment.shippingMethod) }}
         </template>
         <template #[`item.orderedAt`]="{ item }">
-          {{ getOrderdAt(item.raw.orderedAt) }}
+          {{ getOrderdAt(item.orderedAt) }}
         </template>
       </v-data-table-server>
     </v-card-text>

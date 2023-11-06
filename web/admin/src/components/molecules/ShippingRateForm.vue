@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import useVuelidate from '@vuelidate/core'
-import { PrefecturesListSelectItems } from '~/lib/prefectures'
+import { type PrefecturesListSelectItems } from '~/lib/prefectures'
 import { required, getErrorMessage, minValue, minLengthArray } from '~/lib/validations'
 import { type CreateShippingRate } from '~/types/api'
 

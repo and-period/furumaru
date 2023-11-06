@@ -297,12 +297,12 @@ const submitDelete = (): void => {
             variant="outlined"
             color="primary"
             size="small"
-            @click="onClickEdit(item.raw)"
+            @click="onClickEdit(item)"
           >
             <v-icon size="small" :icon="mdiPencil" />
             編集
           </v-btn>
-          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item.raw)">
+          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>
