@@ -32,7 +32,17 @@ const handleClickBuyButton = () => {
 <template>
   <the-dropdown-with-icon ref="area">
     <template #icon>
-      <the-cart-icon id="header-cart-icon" fill="#604C3F" />
+      <div class="relative">
+        <span
+          v-if="!cartIsEmpty"
+          class="absolute right-[2px] top-[-2px] inline-flex h-[8px] w-[8px] animate-ping rounded-full bg-orange opacity-75"
+        />
+        <span
+          v-if="!cartIsEmpty"
+          class="absolute right-[2px] top-[-2px] inline-flex h-[8px] w-[8px] rounded-full bg-orange"
+        />
+        <the-cart-icon id="header-cart-icon" fill="#604C3F" />
+      </div>
     </template>
     <template #content>
       <div
@@ -70,9 +80,9 @@ const handleClickBuyButton = () => {
           v-for="(item, i) in cartItems"
           :key="i"
           :cart-number="i + 1"
-          :marche-name="item.marche"
-          :box-type="item.boxType"
-          :box-size="item.boxSize"
+          :marche-name="item.coordinator.marcheName"
+          :box-type="item.type"
+          :box-size="item.size"
           :items="item.items"
           @click:buy-button="handleClickBuyButton"
         />

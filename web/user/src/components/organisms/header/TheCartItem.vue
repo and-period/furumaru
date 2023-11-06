@@ -93,9 +93,10 @@ const handleClick = () => {
 
       <div v-for="item in items" :key="item.id">
         <the-cart-product-item
-          :name="item.name"
-          :price="item.price"
-          :img-src="item.imgSrc"
+          v-if="item"
+          :name="item.product?.name"
+          :price="item.product?.price"
+          :img-src="item.product?.thumbnail?.url"
         />
         <hr class="my-2 border-dashed border-main" />
       </div>
