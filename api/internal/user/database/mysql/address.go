@@ -222,7 +222,8 @@ func (a *address) fill(ctx context.Context, tx *gorm.DB, addresses ...*entity.Ad
 		Select("MAX(id)").
 		Where("address_id IN (?)", ids).
 		Group("address_id")
-	stmt := a.db.Statement(ctx, tx, addressRevisionTable).Where("id IN (?)", sub).Debug()
+	stmt := a.db.Statement(ctx, tx, addressRevisionTable).
+		Where("id IN (?)", sub)
 
 	if err := stmt.Find(&revisions).Error; err != nil {
 		return err

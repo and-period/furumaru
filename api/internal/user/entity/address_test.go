@@ -134,6 +134,34 @@ func TestAddress_Fill(t *testing.T) {
 	}
 }
 
+func TestAddresses_IDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		addresses Addresses
+		expect    []string
+	}{
+		{
+			name: "success",
+			addresses: Addresses{
+				{
+					ID:        "address-id",
+					UserID:    "user-id",
+					IsDefault: true,
+				},
+			},
+			expect: []string{"address-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.addresses.IDs())
+		})
+	}
+}
+
 func TestAddresses_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

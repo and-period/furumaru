@@ -70,6 +70,7 @@ const (
 
 // Product - 商品情報
 type Product struct {
+	ProductRevision       `gorm:"-"`
 	ID                    string            `gorm:"primaryKey;<-:create"`                   // 商品ID
 	CoordinatorID         string            `gorm:""`                                       // コーディネータID
 	ProducerID            string            `gorm:""`                                       // 生産者ID
@@ -88,8 +89,6 @@ type Product struct {
 	ItemDescription       string            `gorm:""`                                       // 数量単位説明
 	Media                 MultiProductMedia `gorm:"-"`                                      // メディア一覧
 	MediaJSON             datatypes.JSON    `gorm:"default:null;column:media"`              // メディア一覧(JSON)
-	Price                 int64             `gorm:""`                                       // 販売価格
-	Cost                  int64             `gorm:""`                                       // 商品原価
 	ExpirationDate        int64             `gorm:""`                                       // 賞味期限(単位:日)
 	RecommendedPoints     []string          `gorm:"-"`                                      // おすすめポイント一覧
 	RecommendedPointsJSON datatypes.JSON    `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
@@ -150,12 +149,19 @@ type NewProductParams struct {
 }
 
 func NewProduct(params *NewProductParams) (*Product, error) {
+	productID := uuid.Base58Encode(uuid.New())
 	prefecture, err := codes.ToPrefectureJapanese(params.OriginPrefectureCode)
 	if err != nil {
 		return nil, err
 	}
+	rparams := &NewProductRevisionParams{
+		ProductID: productID,
+		Price:     params.Price,
+		Cost:      params.Cost,
+	}
+	revision := NewProductRevision(rparams)
 	return &Product{
-		ID:                   uuid.Base58Encode(uuid.New()),
+		ID:                   productID,
 		CoordinatorID:        params.CoordinatorID,
 		ProducerID:           params.ProducerID,
 		TypeID:               params.TypeID,
@@ -170,8 +176,6 @@ func NewProduct(params *NewProductParams) (*Product, error) {
 		ItemUnit:             params.ItemUnit,
 		ItemDescription:      params.ItemDescription,
 		Media:                params.Media,
-		Price:                params.Price,
-		Cost:                 params.Cost,
 		ExpirationDate:       params.ExpirationDate,
 		RecommendedPoints:    params.RecommendedPoints,
 		StorageMethodType:    params.StorageMethodType,
@@ -184,6 +188,7 @@ func NewProduct(params *NewProductParams) (*Product, error) {
 		OriginCity:           params.OriginCity,
 		StartAt:              params.StartAt,
 		EndAt:                params.EndAt,
+		ProductRevision:      *revision,
 	}, nil
 }
 
@@ -194,7 +199,7 @@ func (p *Product) Validate() error {
 	return p.Media.Validate()
 }
 
-func (p *Product) Fill(now time.Time) (err error) {
+func (p *Product) Fill(revision *ProductRevision, now time.Time) (err error) {
 	p.TagIDs, err = p.unmarshalTagIDs()
 	if err != nil {
 		return
@@ -208,6 +213,7 @@ func (p *Product) Fill(now time.Time) (err error) {
 		return
 	}
 	p.SetStatus(now)
+	p.ProductRevision = *revision
 	p.OriginPrefecture, _ = codes.ToPrefectureJapanese(p.OriginPrefectureCode)
 	return
 }
@@ -289,9 +295,13 @@ func ProductMarshalBusinessDays(days []time.Weekday) ([]byte, error) {
 	return json.Marshal(days)
 }
 
-func (ps Products) Fill(now time.Time) error {
-	for i := range ps {
-		if err := ps[i].Fill(now); err != nil {
+func (ps Products) Fill(revisions map[string]*ProductRevision, now time.Time) error {
+	for _, p := range ps {
+		revision, ok := revisions[p.ID]
+		if !ok {
+			continue
+		}
+		if err := p.Fill(revision, now); err != nil {
 			return err
 		}
 	}
@@ -320,6 +330,12 @@ func (ps Products) WeightGram() int64 {
 		weight += ps[i].WeightGram()
 	}
 	return weight
+}
+
+func (ps Products) IDs() []string {
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.ID
+	})
 }
 
 func (ps Products) CoordinatorIDs() []string {

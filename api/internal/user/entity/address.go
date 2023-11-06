@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
@@ -63,11 +64,9 @@ func (a *Address) Fill(revision *AddressRevision) {
 }
 
 func (as Addresses) IDs() []string {
-	res := make([]string, len(as))
-	for i := range as {
-		res[i] = as[i].ID
-	}
-	return res
+	return set.UniqBy(as, func(a *Address) string {
+		return a.ID
+	})
 }
 
 func (as Addresses) Fill(revisions map[string]*AddressRevision) {

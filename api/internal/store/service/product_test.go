@@ -52,8 +52,6 @@ func TestListProducts(t *testing.T) {
 				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 			},
-			Price:             400,
-			Cost:              300,
 			ExpirationDate:    7,
 			StorageMethodType: entity.StorageMethodTypeNormal,
 			DeliveryType:      entity.DeliveryTypeNormal,
@@ -62,8 +60,16 @@ func TestListProducts(t *testing.T) {
 			Box100Rate:        30,
 			OriginPrefecture:  "滋賀県",
 			OriginCity:        "彦根市",
-			CreatedAt:         now,
-			UpdatedAt:         now,
+			ProductRevision: entity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     400,
+				Cost:      300,
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 
@@ -183,8 +189,6 @@ func TestMultiGetProducts(t *testing.T) {
 				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 			},
-			Price:             400,
-			Cost:              300,
 			ExpirationDate:    7,
 			StorageMethodType: entity.StorageMethodTypeNormal,
 			DeliveryType:      entity.DeliveryTypeNormal,
@@ -193,8 +197,16 @@ func TestMultiGetProducts(t *testing.T) {
 			Box100Rate:        30,
 			OriginPrefecture:  "滋賀県",
 			OriginCity:        "彦根市",
-			CreatedAt:         now,
-			UpdatedAt:         now,
+			ProductRevision: entity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     400,
+				Cost:      300,
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 
@@ -271,8 +283,6 @@ func TestGetProduct(t *testing.T) {
 			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 		},
-		Price:             400,
-		Cost:              300,
 		ExpirationDate:    7,
 		StorageMethodType: entity.StorageMethodTypeNormal,
 		DeliveryType:      entity.DeliveryTypeNormal,
@@ -281,8 +291,16 @@ func TestGetProduct(t *testing.T) {
 		Box100Rate:        30,
 		OriginPrefecture:  "滋賀県",
 		OriginCity:        "彦根市",
-		CreatedAt:         now,
-		UpdatedAt:         now,
+		ProductRevision: entity.ProductRevision{
+			ID:        1,
+			ProductID: "product-id",
+			Price:     400,
+			Cost:      300,
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 
 	tests := []struct {
@@ -389,8 +407,6 @@ func TestCreateProduct(t *testing.T) {
 								{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 								{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 							},
-							Price:                400,
-							Cost:                 300,
 							ExpirationDate:       7,
 							StorageMethodType:    entity.StorageMethodTypeNormal,
 							DeliveryType:         entity.DeliveryTypeNormal,
@@ -402,6 +418,11 @@ func TestCreateProduct(t *testing.T) {
 							OriginCity:           "彦根市",
 							StartAt:              now.AddDate(0, -1, 0),
 							EndAt:                now.AddDate(0, 1, 0),
+							ProductRevision: entity.ProductRevision{
+								ProductID: product.ID,
+								Price:     400,
+								Cost:      300,
+							},
 						}
 						assert.Equal(t, expect, product)
 						return nil
@@ -719,8 +740,6 @@ func TestUpdateProduct(t *testing.T) {
 			{URL: "https://and-period.jp/thumbnail00.png", IsThumbnail: true},
 			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: false},
 		},
-		Price:             400,
-		Cost:              300,
 		ExpirationDate:    7,
 		StorageMethodType: entity.StorageMethodTypeNormal,
 		DeliveryType:      entity.DeliveryTypeNormal,
@@ -731,8 +750,16 @@ func TestUpdateProduct(t *testing.T) {
 		OriginCity:        "彦根市",
 		StartAt:           now.AddDate(0, -1, 0),
 		EndAt:             now.AddDate(0, 1, 0),
-		CreatedAt:         now,
-		UpdatedAt:         now,
+		ProductRevision: entity.ProductRevision{
+			ID:        1,
+			ProductID: "product-id",
+			Price:     400,
+			Cost:      300,
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 	resizeIn := &media.ResizeFileInput{
 		TargetID: "product-id",
