@@ -88,21 +88,21 @@ const handleEdit = (item: Producer) => {
       <template #[`item.thumbnailUrl`]="{ item }">
         <v-avatar>
           <img
-            v-if="item.raw.thumbnailUrl !== ''"
-            :src="item.raw.thumbnailUrl"
-            :alt="`${item.raw.storeName}-profile`"
+            v-if="item.thumbnailUrl !== ''"
+            :src="item.thumbnailUrl"
+            :alt="`${item.storeName}-profile`"
           >
           <v-icon v-else :icon="mdiAccount" />
         </v-avatar>
       </template>
       <template #[`item.name`]="{ item }">
-        {{ `${item.raw.lastname} ${item.raw.firstname}` }}
+        {{ `${item.lastname} ${item.firstname}` }}
       </template>
       <template #[`item.phoneNumber`]="{ item }">
-        {{ convertPhone(item.raw.phoneNumber) }}
+        {{ convertPhone(item.phoneNumber) }}
       </template>
       <template #[`item.actions`]="{ item }">
-        <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item.raw)">
+        <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
           <v-icon size="small" :icon="mdiPencil" />
           編集
         </v-btn>

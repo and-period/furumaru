@@ -4,7 +4,7 @@ import useVuelidate from '@vuelidate/core'
 import type { AlertType } from '~/lib/hooks'
 import type { Shipping, UpdateShippingRequest } from '~/types/api'
 import { required, getErrorMessage, minValue } from '~/lib/validations'
-import { PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
+import { type PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
 
 const props = defineProps({
   loading: {

@@ -554,7 +554,7 @@ const getBoxSize = (size: ShippingSize): string => {
             >
               <template #[`item.media`]="{ item }">
                 <v-avatar>
-                  <img :src="getThumbnail(item.raw.media)">
+                  <img :src="getThumbnail(item.media)">
                 </v-avatar>
               </template>
             </v-data-table-server>

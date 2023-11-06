@@ -218,24 +218,24 @@ const onClickDelete = (): void => {
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
         @update:sort-desc="onClickUpdateSortBy"
-        @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
+        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
       >
         <template #[`item.title`]="{ item }">
-          {{ item.raw.title }}
+          {{ item.title }}
         </template>
         <template #[`item.public`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.raw.public)">
-            {{ getStatus(item.raw.public) }}
+          <v-chip size="small" :color="getStatusColor(item.public)">
+            {{ getStatus(item.public) }}
           </v-chip>
         </template>
         <template #[`item.code`]="{ item }">
-          {{ item.raw.code }}
+          {{ item.code }}
         </template>
         <template #[`item.discount`]="{ item }">
-          {{ getDiscount(item.raw.discountType, item.raw.discountRate) }}
+          {{ getDiscount(item.discountType, item.discountRate) }}
         </template>
         <template #[`item.term`]="{ item }">
-          {{ getTerm(item.raw) }}
+          {{ getTerm(item) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
@@ -243,7 +243,7 @@ const onClickDelete = (): void => {
             color="primary"
             size="small"
             variant="outlined"
-            @click.stop="onClickOpenDeleteDialog(item.raw)"
+            @click.stop="onClickOpenDeleteDialog(item)"
           >
             <v-icon size="small" :icon="mdiDelete" />
             削除
