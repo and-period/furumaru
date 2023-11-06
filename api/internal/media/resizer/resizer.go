@@ -152,6 +152,8 @@ func (r *resizer) run(ctx context.Context, payload *entity.ResizerPayload) error
 		return r.productMedia(ctx, payload)
 	case entity.FileTypeProductTypeIcon:
 		return r.productTypeIcon(ctx, payload)
+	case entity.FileTypeScheduleThumbnail:
+		return r.scheduleThumbnail(ctx, payload)
 	default:
 		return fmt.Errorf("resizer: unknown file type. type=%d: %w", payload.FileType, errUnknownFileType)
 	}
