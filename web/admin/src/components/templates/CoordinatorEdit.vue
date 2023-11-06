@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
-import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture } from '~/types/api'
+import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture, Weekday } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage, kana, maxLength, required, tel } from '~/lib/validations'
 
@@ -123,6 +123,16 @@ const props = defineProps({
     default: false
   }
 })
+
+const weekdays = [
+  { title: '日曜日', value: Weekday.SUNDAY },
+  { title: '月曜日', value: Weekday.MONDAY },
+  { title: '火曜日', value: Weekday.TUESDAY },
+  { title: '水曜日', value: Weekday.WEDNESDAY },
+  { title: '木曜日', value: Weekday.THURSDAY },
+  { title: '金曜日', value: Weekday.FRIDAY },
+  { title: '土曜日', value: Weekday.SATURDAY }
+]
 
 const emit = defineEmits<{
   (e: 'update:form-data', formData: UpdateCoordinatorRequest): void
@@ -249,9 +259,9 @@ const onClickSearchAddress = (): void => {
           </template>
         </v-autocomplete>
         <v-select
-          v-model="formDataValidate.businessDays.$model"
+          v-model="validate.businessDays.$model"
           label="営業日(発送可能日)"
-          :error-messages="getErrorMessage(formDataValidate.businessDays.$errors)"
+          :error-messages="getErrorMessage(validate.businessDays.$errors)"
           :items="weekdays"
           item-title="title"
           item-value="value"
