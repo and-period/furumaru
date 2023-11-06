@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -91,6 +92,9 @@ func (s *service) UpdateAddress(ctx context.Context, in *user.UpdateAddressInput
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
+	if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
+		return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
+	}
 	address, err := s.db.Address.Get(ctx, in.AddressID, "user_id")
 	if err != nil {
 		return internalError(err)
@@ -117,13 +121,6 @@ func (s *service) DeleteAddress(ctx context.Context, in *user.DeleteAddressInput
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	address, err := s.db.Address.Get(ctx, in.AddressID, "user_id")
-	if err != nil {
-		return internalError(err)
-	}
-	if in.UserID != address.UserID {
-		return fmt.Errorf("service: this address belongs to another user: %w", exception.ErrForbidden)
-	}
-	err = s.db.Address.Delete(ctx, in.AddressID)
+	err := s.db.Address.Delete(ctx, in.AddressID, in.UserID)
 	return internalError(err)
 }

@@ -42,7 +42,7 @@ type Address interface {
 	Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error)
 	Create(ctx context.Context, address *entity.Address) error
 	Update(ctx context.Context, addressID, userID string, params *UpdateAddressParams) error
-	Delete(ctx context.Context, addressID string) error
+	Delete(ctx context.Context, addressID, userID string) error
 }
 
 type ListAddressesParams struct {

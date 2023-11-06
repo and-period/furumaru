@@ -29,18 +29,19 @@ func TestAddress(t *testing.T) {
 				PhoneNumber:    "+819012345678",
 			},
 			expect: &Address{
-				UserID:         "user-id",
-				Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-				IsDefault:      true,
-				Lastname:       "&.",
-				Firstname:      "購入者",
-				PostalCode:     "1000014",
-				Prefecture:     "東京都",
-				PrefectureCode: 13,
-				City:           "千代田区",
-				AddressLine1:   "永田町1-7-1",
-				AddressLine2:   "",
-				PhoneNumber:    "+819012345678",
+				UserID:    "user-id",
+				IsDefault: true,
+				AddressRevision: AddressRevision{
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					PostalCode:     "1000014",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "+819012345678",
+				},
 			},
 			hasErr: false,
 		},
@@ -69,84 +70,47 @@ func TestAddress(t *testing.T) {
 			actual, err := NewAddress(tt.params)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			if actual != nil {
-				actual.ID = "" // ignore
+				actual.ID = ""                        // ignore
+				actual.AddressRevision.AddressID = "" // ignore
 			}
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }
 
-func TestAddressHash(t *testing.T) {
+func TestAddress_Fill(t *testing.T) {
 	t.Parallel()
-	type args struct {
-		userID       string
-		postalCode   string
-		addressLine1 string
-		addressLine2 string
-	}
 	tests := []struct {
-		name   string
-		params *NewAddressParams
-		expect string
+		name     string
+		address  *Address
+		revision *AddressRevision
+		expect   *Address
 	}{
 		{
 			name: "success",
-			params: &NewAddressParams{
-				UserID:         "user-id",
-				IsDefault:      true,
+			address: &Address{
+				ID:        "address-id",
+				UserID:    "user-id",
+				IsDefault: true,
+			},
+			revision: &AddressRevision{
+				AddressID:      "address-id",
 				Lastname:       "&.",
 				Firstname:      "購入者",
 				PostalCode:     "1000014",
-				PrefectureCode: 0,
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
 				PhoneNumber:    "+819012345678",
 			},
-			expect: "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			actual := NewAddressHash(tt.params)
-			assert.Equal(t, tt.expect, actual)
-		})
-	}
-}
-
-func TestAddresses_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name      string
-		addresses Addresses
-		expect    Addresses
-		hasErr    bool
-	}{
-		{
-			name: "success",
-			addresses: Addresses{
-				{
-					UserID:         "user-id",
-					Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-					IsDefault:      true,
-					Lastname:       "&.",
-					Firstname:      "購入者",
-					PostalCode:     "1000014",
-					Prefecture:     "",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "+819012345678",
-				},
-			},
-			expect: Addresses{
-				{
-					UserID:         "user-id",
-					Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-					IsDefault:      true,
+			expect: &Address{
+				ID:        "address-id",
+				UserID:    "user-id",
+				IsDefault: true,
+				AddressRevision: AddressRevision{
+					AddressID:      "address-id",
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					PostalCode:     "1000014",
@@ -159,18 +123,47 @@ func TestAddresses_Fill(t *testing.T) {
 				},
 			},
 		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.address.Fill(tt.revision)
+			assert.Equal(t, tt.expect, tt.address)
+		})
+	}
+}
+
+func TestAddresses_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		addresses Addresses
+		revisions map[string]*AddressRevision
+		expect    Addresses
+	}{
 		{
-			name: "invalid prefecture",
+			name: "success",
 			addresses: Addresses{
 				{
-					UserID:         "user-id",
-					Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-					IsDefault:      true,
+					ID:        "address-id01",
+					UserID:    "user-id",
+					IsDefault: true,
+				},
+				{
+					ID:        "address-id02",
+					UserID:    "user-id",
+					IsDefault: false,
+				},
+			},
+			revisions: map[string]*AddressRevision{
+				"address-id01": {
+					AddressID:      "address-id01",
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					PostalCode:     "1000014",
-					Prefecture:     "",
-					PrefectureCode: 0,
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
 					City:           "千代田区",
 					AddressLine1:   "永田町1-7-1",
 					AddressLine2:   "",
@@ -179,18 +172,26 @@ func TestAddresses_Fill(t *testing.T) {
 			},
 			expect: Addresses{
 				{
-					UserID:         "user-id",
-					Hash:           "c1f66591133a1a70cc6b29f21ede4389efe6864bb7ade2e17f734471352df1a9",
-					IsDefault:      true,
-					Lastname:       "&.",
-					Firstname:      "購入者",
-					PostalCode:     "1000014",
-					Prefecture:     "",
-					PrefectureCode: 0,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "+819012345678",
+					ID:        "address-id01",
+					UserID:    "user-id",
+					IsDefault: true,
+					AddressRevision: AddressRevision{
+						AddressID:      "address-id01",
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						Prefecture:     "東京都",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+				},
+				{
+					ID:        "address-id02",
+					UserID:    "user-id",
+					IsDefault: false,
 				},
 			},
 		},
@@ -199,7 +200,7 @@ func TestAddresses_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.addresses.Fill()
+			tt.addresses.Fill(tt.revisions)
 			assert.Equal(t, tt.expect, tt.addresses)
 		})
 	}
