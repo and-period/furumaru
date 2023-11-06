@@ -57,6 +57,7 @@ func deleteAll(ctx context.Context) error {
 		liveProductTable,
 		liveTable,
 		scheduleTable,
+		productRevisionTable,
 		productTable,
 		productTagTable,
 		productTypeTable,

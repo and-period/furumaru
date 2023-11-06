@@ -443,7 +443,7 @@ func TestProduct_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, productTable)
+			err := delete(ctx, productRevisionTable, productTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -544,7 +544,7 @@ func TestProduct_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, productTable)
+			err := delete(ctx, productRevisionTable, productTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -662,7 +662,7 @@ func TestProduct_UpdateMedia(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, productTable)
+			err := delete(ctx, productRevisionTable, productTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -734,7 +734,7 @@ func TestProduct_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, productTable)
+			err := delete(ctx, productRevisionTable, productTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
