@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `stores`.`product_revisions` (
   `updated_at`    DATETIME    NOT NULL,                -- 更新日時
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_product_revisions_product_id`
-    FOREIGN KEY (`product_id`) REFERENCES `users`.`products` (`id`)
+    FOREIGN KEY (`product_id`) REFERENCES `stores`.`products` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 );
 
