@@ -17,18 +17,40 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
 
   getters: {
     shoppingCart(state) {
-      return {
-        carts: state._shoppingCart.carts.map((cart) => {
-          return {
-            ...cart,
-            // コーディネーターのマッピング
-            coordinator: state._shoppingCart.coordinators.find(
-              (coordinator) => coordinator.id === cart.coordinatorId,
-            ),
-          }
-        }),
+      if (state._shoppingCart && state._shoppingCart.carts) {
+        return {
+          carts: state._shoppingCart.carts?.map((cart) => {
+            return {
+              ...cart,
+              // コーディネーターのマッピング
+              coordinator: state._shoppingCart.coordinators.find(
+                (coordinator) => coordinator.id === cart.coordinatorId,
+              ),
+              // カート内の商品のマッピング
+              items: cart.items.map((item) => {
+                // マッピング用の商品オブジェクトを事前計算
+                const product = state._shoppingCart.products.find(
+                  (product) => product.id === item.productId,
+                )
+                return {
+                  ...item,
+                  product: {
+                    ...product,
+                    // サムネイル画像のマッピング
+                    thumbnail: product?.media.find((m) => m.isThumbnail),
+                  },
+                }
+              }),
+            }
+          }),
+        }
+      } else {
+        return {
+          carts: [],
+        }
       }
     },
+
     cartIsEmpty: (state) => {
       if (state._shoppingCart && state._shoppingCart.carts) {
         return state._shoppingCart.carts.length === 0
