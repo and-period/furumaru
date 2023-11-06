@@ -13,7 +13,10 @@ import (
 	"gorm.io/gorm"
 )
 
-const productTable = "products"
+const (
+	productTable         = "products"
+	productRevisionTable = "product_revisions"
+)
 
 type product struct {
 	db  *mysql.Client
@@ -79,7 +82,7 @@ func (p *product) List(ctx context.Context, params *database.ListProductsParams,
 	if err := stmt.Find(&products).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := products.Fill(p.now()); err != nil {
+	if err := p.fill(ctx, p.db.DB, products...); err != nil {
 		return nil, dbError(err)
 	}
 	return products, nil
@@ -101,7 +104,7 @@ func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...s
 	if err := stmt.Find(&products).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := products.Fill(p.now()); err != nil {
+	if err := p.fill(ctx, p.db.DB, products...); err != nil {
 		return nil, dbError(err)
 	}
 	return products, nil
@@ -113,18 +116,32 @@ func (p *product) Get(ctx context.Context, productID string, fields ...string) (
 }
 
 func (p *product) Create(ctx context.Context, product *entity.Product) error {
-	if err := product.FillJSON(); err != nil {
-		return err
-	}
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if err := product.FillJSON(); err != nil {
+			return err
+		}
 
-	now := p.now()
-	product.CreatedAt, product.UpdatedAt = now, now
+		now := p.now()
 
-	err := p.db.DB.WithContext(ctx).Table(productTable).Create(&product).Error
+		product.CreatedAt, product.UpdatedAt = now, now
+		product.ProductRevision.CreatedAt, product.ProductRevision.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(productTable).Create(&product).Error; err != nil {
+			return err
+		}
+		return tx.WithContext(ctx).Table(productRevisionTable).Create(&product.ProductRevision).Error
+	})
 	return dbError(err)
 }
 
 func (p *product) Update(ctx context.Context, productID string, params *database.UpdateProductParams) error {
+	now := p.now()
+	rparams := &entity.NewProductRevisionParams{
+		ProductID: productID,
+		Price:     params.Price,
+		Cost:      params.Cost,
+	}
+	revision := entity.NewProductRevision(rparams)
+
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		tagIDs, err := entity.ProductMarshalTagIDs(params.TagIDs)
 		if err != nil {
@@ -148,8 +165,6 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			"item":                params.Item,
 			"item_unit":           params.ItemUnit,
 			"item_description":    params.ItemDescription,
-			"price":               params.Price,
-			"cost":                params.Cost,
 			"expiration_date":     params.ExpirationDate,
 			"storage_method_type": params.StorageMethodType,
 			"delivery_type":       params.DeliveryType,
@@ -170,11 +185,13 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			updates["media"] = media
 		}
 
-		err = tx.WithContext(ctx).
-			Table(productTable).
-			Where("id = ?", productID).
-			Updates(updates).Error
-		return err
+		stmt := tx.WithContext(ctx).Table(productTable).Where("id = ?", productID)
+		if err := stmt.Updates(updates).Error; err != nil {
+			return err
+		}
+
+		revision.CreatedAt, revision.UpdatedAt = now, now
+		return tx.WithContext(ctx).Table(productRevisionTable).Create(&revision).Error
 	})
 	return dbError(err)
 }
@@ -183,7 +200,7 @@ func (p *product) UpdateMedia(
 	ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool,
 ) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		product, err := p.get(ctx, tx, productID, "media")
+		product, err := p.get(ctx, tx, productID, "id", "media")
 		if err != nil {
 			return err
 		}
@@ -224,14 +241,38 @@ func (p *product) Delete(ctx context.Context, productID string) error {
 func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields ...string) (*entity.Product, error) {
 	var product *entity.Product
 
-	err := p.db.Statement(ctx, tx, productTable, fields...).
-		Where("id = ?", productID).
-		First(&product).Error
-	if err != nil {
+	stmt := p.db.Statement(ctx, tx, productTable, fields...).
+		Where("id = ?", productID)
+
+	if err := stmt.First(&product).Error; err != nil {
 		return nil, err
 	}
-	if err := product.Fill(p.now()); err != nil {
+	if err := p.fill(ctx, tx, product); err != nil {
 		return nil, err
 	}
 	return product, nil
+}
+
+func (p *product) fill(ctx context.Context, tx *gorm.DB, products ...*entity.Product) error {
+	var revisions entity.ProductRevisions
+
+	ids := entity.Products(products).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	sub := tx.Table(productRevisionTable).
+		Select("MAX(id)").
+		Where("product_id IN (?)", ids).
+		Group("product_id")
+	stmt := p.db.Statement(ctx, tx, productRevisionTable).
+		Where("id IN (?)", sub)
+
+	if err := stmt.Find(&revisions).Error; err != nil {
+		return nil
+	}
+	if len(revisions) == 0 {
+		return nil
+	}
+	return entity.Products(products).Fill(revisions.Map(), p.now())
 }
