@@ -243,8 +243,8 @@ const onClickSearchAddress = (): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="item.iconUrl"
-              :text="item.name"
+              :prepend-avatar="item.raw?.iconUrl"
+              :text="item.raw?.name"
               rounded
               class="px-4"
               variant="outlined"
@@ -253,8 +253,8 @@ const onClickSearchAddress = (): void => {
           <template #item="{ props: val, item }">
             <v-list-item
               v-bind="val"
-              :prepend-avatar="item?..iconUrl"
-              :title="item?..name"
+              :prepend-avatar="item?.raw?.iconUrl"
+              :title="item?.raw?.name"
             />
           </template>
         </v-autocomplete>
