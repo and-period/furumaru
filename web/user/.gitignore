@@ -1,3 +1,7 @@
+# Certificate
+localhost-key.pem
+localhost.pem
+
 # locale
 **/locales/*.js
 
