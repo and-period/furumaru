@@ -11988,7 +11988,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [producerId] 生産者ID
          * @param {string} [name] 商品名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -12220,7 +12220,7 @@ export const ProductApiFp = function(configuration?: Configuration) {
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [producerId] 生産者ID
          * @param {string} [name] 商品名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -12309,7 +12309,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [producerId] 生産者ID
          * @param {string} [name] 商品名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -12400,7 +12400,7 @@ export class ProductApi extends BaseAPI {
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [producerId] 生産者ID
      * @param {string} [name] 商品名(あいまい検索)(64文字以内)
-     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt 
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductApi
