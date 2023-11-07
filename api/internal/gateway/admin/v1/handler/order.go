@@ -2,15 +2,12 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -59,69 +56,68 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	os, err := h.newOrderOrders(ctx)
-	if err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
 
 	in := &store.ListOrdersInput{
 		Limit:  limit,
 		Offset: offset,
-		Orders: os,
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
 	}
-	sorders, total, err := h.store.ListOrders(ctx, in)
+	orders, total, err := h.store.ListOrders(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	orders := service.NewOrders(sorders)
 	if len(orders) == 0 {
 		res := &response.OrdersResponse{
-			Orders: orders.Response(),
+			Orders: []*response.Order{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
 	}
-	if err := h.getOrderDetails(ctx, orders...); err != nil {
+
+	var (
+		users        service.Users
+		coordinators service.Coordinators
+		addresses    service.Addresses
+		products     service.Products
+		promotions   service.Promotions
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		users, err = h.multiGetUsers(ectx, orders.UserIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		coordinators, err = h.multiGetCoordinators(ectx, orders.CoordinatorIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		products, err = h.multiGetProductsByRevision(ectx, orders.ProductRevisionIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		addresses, err = h.multiGetAddressesByRevision(ectx, orders.AddressRevisionIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		promotions, err = h.multiGetPromotions(ectx, orders.PromotionIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.OrdersResponse{
-		Orders: orders.Response(),
-		Total:  total,
+		Orders:       service.NewOrders(orders, addresses.MapByRevision(), products.MapByRevision()).Response(),
+		Users:        users.Response(),
+		Coordinators: coordinators.Response(),
+		Promotions:   promotions.Response(),
+		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
-}
-
-func (h *handler) newOrderOrders(ctx *gin.Context) ([]*store.ListOrdersOrder, error) {
-	orders := map[string]sentity.OrderOrderBy{
-		"paymentStatus":     sentity.OrderOrderByPaymentStatus,
-		"fulfillmentStatus": sentity.OrderOrderByFulfillmentStatus,
-		"orderedAt":         sentity.OrderOrderByOrderedAt,
-		"paidAt":            sentity.OrderOrderByConfirmedAt,
-		"deliveredAt":       sentity.OrderOrderByDeliveredAt,
-		"canceledAt":        sentity.OrderOrderByCanceledAt,
-		"createdAt":         sentity.OrderOrderByCreatedAt,
-		"updatedAt":         sentity.OrderOrderByUpdatedAt,
-	}
-	params := util.GetOrders(ctx)
-	res := make([]*store.ListOrdersOrder, len(params))
-	for i, p := range params {
-		key, ok := orders[p.Key]
-		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
-		}
-		res[i] = &store.ListOrdersOrder{
-			Key:        key,
-			OrderByASC: p.Direction == util.OrderByASC,
-		}
-	}
-	return res, nil
 }
 
 func (h *handler) GetOrder(ctx *gin.Context) {
@@ -130,9 +126,42 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-
+	var (
+		user        *service.User
+		coordinator *service.Coordinator
+		promotion   *service.Promotion
+		products    service.Products
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		user, err = h.getUser(ectx, order.UserID)
+		return
+	})
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, order.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
+		if order.PromotionID == "" {
+			return nil
+		}
+		promotion, err = h.getPromotion(ctx, order.PromotionID)
+		return
+	})
+	eg.Go(func() (err error) {
+		products, err = h.multiGetProducts(ectx, order.ProductIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	res := &response.OrderResponse{
-		Order: order.Response(),
+		Order:       order.Response(),
+		User:        user.Response(),
+		Coordinator: coordinator.Response(),
+		Promotion:   promotion.Response(),
+		Products:    products.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -141,64 +170,25 @@ func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order,
 	in := &store.GetOrderInput{
 		OrderID: orderID,
 	}
-	sorder, err := h.store.GetOrder(ctx, in)
+	order, err := h.store.GetOrder(ctx, in)
 	if err != nil {
 		return nil, err
 	}
-	order := service.NewOrder(sorder)
-	if err := h.getOrderDetails(ctx, order); err != nil {
-		return nil, err
-	}
-	return order, nil
-}
-
-func (h *handler) getOrderDetails(ctx context.Context, orders ...*service.Order) error {
-	os := service.Orders(orders)
-	if len(os) == 0 {
-		return nil
-	}
 	var (
-		users     service.Users
-		products  service.Products
 		addresses service.Addresses
+		products  service.Products
 	)
 	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		in := &user.MultiGetUsersInput{
-			UserIDs: os.UserIDs(),
-		}
-		uusers, err := h.user.MultiGetUsers(ectx, in)
-		if err != nil {
-			return err
-		}
-		users = service.NewUsers(uusers)
-		return nil
+	eg.Go(func() (err error) {
+		addresses, err = h.multiGetAddressesByRevision(ectx, order.AddressRevisionIDs())
+		return
 	})
-	eg.Go(func() error {
-		in := &store.MultiGetProductsInput{
-			ProductIDs: os.ProductIDs(),
-		}
-		sproducts, err := h.store.MultiGetProducts(ectx, in)
-		if err != nil {
-			return err
-		}
-		products = service.NewProducts(sproducts)
-		return nil
-	})
-	eg.Go(func() error {
-		in := &user.MultiGetAddressesInput{
-			AddressIDs: os.AddressIDs(),
-		}
-		saddresses, err := h.user.MultiGetAddresses(ectx, in)
-		if err != nil {
-			return err
-		}
-		addresses = service.NewAddresses(saddresses)
-		return nil
+	eg.Go(func() (err error) {
+		products, err = h.multiGetProductsByRevision(ectx, order.ProductRevisionIDs())
+		return
 	})
 	if err := eg.Wait(); err != nil {
-		return err
+		return nil, err
 	}
-	os.Fill(users.Map(), products.Map(), addresses.Map())
-	return nil
+	return service.NewOrder(order, addresses.MapByRevision(), products.MapByRevision()), nil
 }

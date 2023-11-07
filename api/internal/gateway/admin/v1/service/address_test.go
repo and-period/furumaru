@@ -22,6 +22,7 @@ func TestAddress(t *testing.T) {
 				UserID:    "user-id",
 				IsDefault: true,
 				AddressRevision: entity.AddressRevision{
+					ID:             1,
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					PostalCode:     "1000014",
@@ -44,7 +45,7 @@ func TestAddress(t *testing.T) {
 					AddressLine2:   "",
 					PhoneNumber:    "+819012345678",
 				},
-				id: "address-id",
+				revisionID: 1,
 			},
 		},
 	}
@@ -78,7 +79,7 @@ func TestAddress_Response(t *testing.T) {
 					AddressLine2:   "",
 					PhoneNumber:    "+819012345678",
 				},
-				id: "address-id",
+				revisionID: 1,
 			},
 			expect: &response.Address{
 				Lastname:       "&.",
@@ -90,6 +91,11 @@ func TestAddress_Response(t *testing.T) {
 				AddressLine2:   "",
 				PhoneNumber:    "+819012345678",
 			},
+		},
+		{
+			name:    "empty",
+			address: nil,
+			expect:  nil,
 		},
 	}
 	for _, tt := range tests {
@@ -116,6 +122,7 @@ func TestAddresses(t *testing.T) {
 					UserID:    "user-id",
 					IsDefault: true,
 					AddressRevision: entity.AddressRevision{
+						ID:             1,
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						PostalCode:     "1000014",
@@ -140,7 +147,7 @@ func TestAddresses(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "+819012345678",
 					},
-					id: "address-id",
+					revisionID: 1,
 				},
 			},
 		},
@@ -155,12 +162,12 @@ func TestAddresses(t *testing.T) {
 	}
 }
 
-func TestAddresses_Map(t *testing.T) {
+func TestAddresses_MapRevision(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name      string
 		addresses Addresses
-		expect    map[string]*Address
+		expect    map[int64]*Address
 	}{
 		{
 			name: "success",
@@ -176,11 +183,11 @@ func TestAddresses_Map(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "+819012345678",
 					},
-					id: "address-id",
+					revisionID: 1,
 				},
 			},
-			expect: map[string]*Address{
-				"address-id": {
+			expect: map[int64]*Address{
+				1: {
 					Address: response.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
@@ -191,7 +198,7 @@ func TestAddresses_Map(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "+819012345678",
 					},
-					id: "address-id",
+					revisionID: 1,
 				},
 			},
 		},
@@ -200,7 +207,7 @@ func TestAddresses_Map(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.addresses.Map())
+			assert.Equal(t, tt.expect, tt.addresses.MapByRevision())
 		})
 	}
 }
@@ -226,7 +233,7 @@ func TestAddresses_Response(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "+819012345678",
 					},
-					id: "address-id",
+					revisionID: 1,
 				},
 			},
 			expect: []*response.Address{

@@ -206,6 +206,10 @@ type MultiGetProductsInput struct {
 	ProductIDs []string `validate:"omitempty,dive,required"`
 }
 
+type MultiGetProductsByRevisionInput struct {
+	ProductRevisionIDs []int64 `validate:"omitempty,dive,required"`
+}
+
 type GetProductInput struct {
 	ProductID string `validate:"required"`
 }
@@ -429,15 +433,9 @@ type DeleteLiveInput struct {
 }
 
 type ListOrdersInput struct {
-	CoordinatorID string             `validate:"omitempty"`
-	Limit         int64              `validate:"required,max=200"`
-	Offset        int64              `validate:"min=0"`
-	Orders        []*ListOrdersOrder `validate:"omitempty,dive,required"`
-}
-
-type ListOrdersOrder struct {
-	Key        entity.OrderOrderBy `validate:"required"`
-	OrderByASC bool                `validate:""`
+	CoordinatorID string `validate:"omitempty"`
+	Limit         int64  `validate:"required,max=200"`
+	Offset        int64  `validate:"min=0"`
 }
 
 type GetOrderInput struct {

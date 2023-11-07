@@ -37,9 +37,12 @@ type Database struct {
  */
 type Address interface {
 	List(ctx context.Context, params *ListAddressesParams, fields ...string) (entity.Addresses, error)
+	ListDefault(ctx context.Context, userIDs []string, fields ...string) (entity.Addresses, error)
 	Count(ctx context.Context, params *ListAddressesParams) (int64, error)
 	MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error)
+	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Addresses, error)
 	Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error)
+	GetDefault(ctx context.Context, userID string, fields ...string) (*entity.Address, error)
 	Create(ctx context.Context, address *entity.Address) error
 	Update(ctx context.Context, addressID, userID string, params *UpdateAddressParams) error
 	Delete(ctx context.Context, addressID, userID string) error

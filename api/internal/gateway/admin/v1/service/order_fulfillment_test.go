@@ -180,70 +180,30 @@ func TestOrderFulfillment(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name        string
-		fulfillment *entity.Fulfillment
-		status      entity.FulfillmentStatus
-		expect      *OrderFulfillment
-	}{
-		{
-			name: "success",
-			fulfillment: &entity.Fulfillment{
-				OrderID:         "order-id",
-				AddressID:       "address-id",
-				TrackingNumber:  "",
-				ShippingCarrier: entity.ShippingCarrierUnknown,
-				ShippingMethod:  entity.DeliveryTypeNormal,
-				BoxSize:         entity.ShippingSize60,
-				CreatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			},
-			status: entity.FulfillmentStatusUnfulfilled,
-			expect: &OrderFulfillment{
-				OrderFulfillment: response.OrderFulfillment{
-					TrackingNumber:  "",
-					Status:          FulfillmentStatusUnfulfilled.Response(),
-					ShippingCarrier: ShippingCarrierUnknown.Response(),
-					ShippingMethod:  DeliveryTypeNormal.Response(),
-					BoxSize:         ShippingSize60.Response(),
-					AddressID:       "address-id",
-				},
-				orderID: "order-id",
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, NewOrderFulfillment(tt.fulfillment, tt.status))
-		})
-	}
-}
-
-func TestOrderFulfillment_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name        string
-		fulfillment *OrderFulfillment
+		fulfillment *entity.OrderFulfillment
 		address     *Address
 		expect      *OrderFulfillment
 	}{
 		{
 			name: "success",
-			fulfillment: &OrderFulfillment{
-				OrderFulfillment: response.OrderFulfillment{
-					TrackingNumber:  "",
-					Status:          FulfillmentStatusFulfilled.Response(),
-					ShippingCarrier: ShippingCarrierUnknown.Response(),
-					ShippingMethod:  DeliveryTypeNormal.Response(),
-					BoxSize:         ShippingSize60.Response(),
-					AddressID:       "address-id",
-				},
-				orderID: "order-id",
+			fulfillment: &entity.OrderFulfillment{
+				ID:                "fulfillment-id",
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				TrackingNumber:    "",
+				Status:            entity.FulfillmentStatusFulfilled,
+				ShippingCarrier:   entity.ShippingCarrierUnknown,
+				ShippingMethod:    entity.DeliveryTypeNormal,
+				BoxNumber:         1,
+				BoxSize:           entity.ShippingSize60,
+				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				ShippedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			address: &Address{
 				Address: response.Address{
 					Lastname:       "&.",
-					Firstname:      "スタッフ",
+					Firstname:      "購入者",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -251,19 +211,21 @@ func TestOrderFulfillment_Fill(t *testing.T) {
 					AddressLine2:   "",
 					PhoneNumber:    "+819012345678",
 				},
-				id: "address-id",
+				revisionID: 1,
 			},
 			expect: &OrderFulfillment{
 				OrderFulfillment: response.OrderFulfillment{
+					FulfillmentID:   "fulfillment-id",
 					TrackingNumber:  "",
 					Status:          FulfillmentStatusFulfilled.Response(),
 					ShippingCarrier: ShippingCarrierUnknown.Response(),
 					ShippingMethod:  DeliveryTypeNormal.Response(),
+					BoxNumber:       1,
 					BoxSize:         ShippingSize60.Response(),
-					AddressID:       "address-id",
+					ShippedAt:       1640962800,
 					Address: &response.Address{
 						Lastname:       "&.",
-						Firstname:      "スタッフ",
+						Firstname:      "購入者",
 						PostalCode:     "1000014",
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -280,8 +242,7 @@ func TestOrderFulfillment_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.fulfillment.Fill(tt.address)
-			assert.Equal(t, tt.expect, tt.fulfillment)
+			assert.Equal(t, tt.expect, NewOrderFulfillment(tt.fulfillment, tt.address))
 		})
 	}
 }
@@ -297,15 +258,17 @@ func TestOrderFulfillment_Response(t *testing.T) {
 			name: "success",
 			fulfillment: &OrderFulfillment{
 				OrderFulfillment: response.OrderFulfillment{
+					FulfillmentID:   "fulfillment-id",
 					TrackingNumber:  "",
 					Status:          FulfillmentStatusFulfilled.Response(),
 					ShippingCarrier: ShippingCarrierUnknown.Response(),
 					ShippingMethod:  DeliveryTypeNormal.Response(),
+					BoxNumber:       1,
 					BoxSize:         ShippingSize60.Response(),
-					AddressID:       "address-id",
+					ShippedAt:       1640962800,
 					Address: &response.Address{
 						Lastname:       "&.",
-						Firstname:      "スタッフ",
+						Firstname:      "購入者",
 						PostalCode:     "1000014",
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -317,15 +280,17 @@ func TestOrderFulfillment_Response(t *testing.T) {
 				orderID: "order-id",
 			},
 			expect: &response.OrderFulfillment{
+				FulfillmentID:   "fulfillment-id",
 				TrackingNumber:  "",
 				Status:          FulfillmentStatusFulfilled.Response(),
 				ShippingCarrier: ShippingCarrierUnknown.Response(),
 				ShippingMethod:  DeliveryTypeNormal.Response(),
+				BoxNumber:       1,
 				BoxSize:         ShippingSize60.Response(),
-				AddressID:       "address-id",
+				ShippedAt:       1640962800,
 				Address: &response.Address{
 					Lastname:       "&.",
-					Firstname:      "スタッフ",
+					Firstname:      "購入者",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -341,6 +306,150 @@ func TestOrderFulfillment_Response(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.fulfillment.Response())
+		})
+	}
+}
+
+func TestOrderFulfillments(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		fulfillments entity.OrderFulfillments
+		addresses    map[int64]*Address
+		expect       OrderFulfillments
+	}{
+		{
+			name: "success",
+			fulfillments: entity.OrderFulfillments{
+				{
+					ID:                "fulfillment-id",
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					TrackingNumber:    "",
+					Status:            entity.FulfillmentStatusFulfilled,
+					ShippingCarrier:   entity.ShippingCarrierUnknown,
+					ShippingMethod:    entity.DeliveryTypeNormal,
+					BoxNumber:         1,
+					BoxSize:           entity.ShippingSize60,
+					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					ShippedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+			},
+			addresses: map[int64]*Address{
+				1: {
+					Address: response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+					revisionID: 1,
+				},
+			},
+			expect: OrderFulfillments{
+				{
+					OrderFulfillment: response.OrderFulfillment{
+						FulfillmentID:   "fulfillment-id",
+						TrackingNumber:  "",
+						Status:          FulfillmentStatusFulfilled.Response(),
+						ShippingCarrier: ShippingCarrierUnknown.Response(),
+						ShippingMethod:  DeliveryTypeNormal.Response(),
+						BoxNumber:       1,
+						BoxSize:         ShippingSize60.Response(),
+						ShippedAt:       1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
+					},
+					orderID: "order-id",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewOrderFulfillments(tt.fulfillments, tt.addresses))
+		})
+	}
+}
+
+func TestOrderFulfillments_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		fulfillments OrderFulfillments
+		expect       []*response.OrderFulfillment
+	}{
+		{
+			name: "success",
+			fulfillments: OrderFulfillments{
+				{
+					OrderFulfillment: response.OrderFulfillment{
+						FulfillmentID:   "fulfillment-id",
+						TrackingNumber:  "",
+						Status:          FulfillmentStatusFulfilled.Response(),
+						ShippingCarrier: ShippingCarrierUnknown.Response(),
+						ShippingMethod:  DeliveryTypeNormal.Response(),
+						BoxNumber:       1,
+						BoxSize:         ShippingSize60.Response(),
+						ShippedAt:       1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
+					},
+					orderID: "order-id",
+				},
+			},
+			expect: []*response.OrderFulfillment{
+				{
+					FulfillmentID:   "fulfillment-id",
+					TrackingNumber:  "",
+					Status:          FulfillmentStatusFulfilled.Response(),
+					ShippingCarrier: ShippingCarrierUnknown.Response(),
+					ShippingMethod:  DeliveryTypeNormal.Response(),
+					BoxNumber:       1,
+					BoxSize:         ShippingSize60.Response(),
+					ShippedAt:       1640962800,
+					Address: &response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.fulfillments.Response())
 		})
 	}
 }

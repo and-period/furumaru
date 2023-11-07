@@ -162,6 +162,50 @@ func TestAddresses_IDs(t *testing.T) {
 	}
 }
 
+func TestAddresses_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		addresses Addresses
+		expect    map[string]*Address
+	}{
+		{
+			name: "success",
+			addresses: Addresses{
+				{
+					ID:        "address-id01",
+					UserID:    "user-id",
+					IsDefault: true,
+				},
+				{
+					ID:        "address-id02",
+					UserID:    "user-id",
+					IsDefault: false,
+				},
+			},
+			expect: map[string]*Address{
+				"address-id01": {
+					ID:        "address-id01",
+					UserID:    "user-id",
+					IsDefault: true,
+				},
+				"address-id02": {
+					ID:        "address-id02",
+					UserID:    "user-id",
+					IsDefault: false,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.addresses.Map())
+		})
+	}
+}
+
 func TestAddresses_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

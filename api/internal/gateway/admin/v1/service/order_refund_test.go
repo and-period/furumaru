@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -9,83 +10,88 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestRefundType(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		typ    entity.RefundType
+		expect RefundType
+	}{
+		{
+			name:   "none",
+			typ:    entity.RefundTypeNone,
+			expect: RefundTypeNone,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewRefundType(tt.typ))
+		})
+	}
+}
+
+func TestRefundType_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		typ    RefundType
+		expect int32
+	}{
+		{
+			name:   "none",
+			typ:    RefundTypeNone,
+			expect: 0,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.typ.Response())
+		})
+	}
+}
+
 func TestOrderRefund(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		order  *entity.Order
+		order  *entity.OrderPayment
 		expect *OrderRefund
 	}{
 		{
 			name: "success",
-			order: &entity.Order{
-				ID:                "order-id",
-				UserID:            "user-id",
-				CoordinatorID:     "coordinator-id",
-				ScheduleID:        "schedule-id",
-				PromotionID:       "",
-				PaymentStatus:     entity.PaymentStatusPending,
-				FulfillmentStatus: entity.FulfillmentStatusUnfulfilled,
+			order: &entity.OrderPayment{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				TransactionID:     "transaction-id",
+				Status:            entity.PaymentStatusCaptured,
+				MethodType:        entity.PaymentMethodTypeCreditCard,
+				Subtotal:          1980,
+				Discount:          0,
+				ShippingFee:       550,
+				Tax:               253,
+				Total:             2783,
+				RefundTotal:       0,
+				RefundType:        entity.RefundTypeNone,
 				RefundReason:      "",
+				OrderedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				PaidAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				RefundedAt:        time.Time{},
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				OrderItems: []*entity.OrderItem{
-					{
-						OrderID:   "order-id",
-						ProductID: "product-id01",
-						Price:     100,
-						Quantity:  1,
-						CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-						UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					},
-					{
-						OrderID:   "order-id",
-						ProductID: "product-id02",
-						Price:     500,
-						Quantity:  2,
-						CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-						UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					},
-				},
-				Payment: entity.Payment{
-					OrderID:       "order-id",
-					AddressID:     "address-id",
-					TransactionID: "transaction-id",
-					MethodType:    entity.PaymentMethodTypeCreditCard,
-					Subtotal:      1100,
-					Discount:      0,
-					ShippingFee:   500,
-					Tax:           160,
-					Total:         1760,
-					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				},
-				Fulfillment: entity.Fulfillment{
-					OrderID:         "order-id",
-					AddressID:       "address-id",
-					TrackingNumber:  "",
-					ShippingCarrier: entity.ShippingCarrierUnknown,
-					ShippingMethod:  entity.DeliveryTypeNormal,
-					BoxSize:         entity.ShippingSize60,
-					CreatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:       jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				},
-				Activities: []*entity.Activity{
-					{
-						ID:        "event-id",
-						OrderID:   "order-id",
-						UserID:    "user-id",
-						EventType: entity.OrderEventTypeUnknown,
-						Detail:    "支払いが完了しました。",
-					},
-				},
 			},
 			expect: &OrderRefund{
 				OrderRefund: response.OrderRefund{
-					Canceled: false,
-					Reason:   "",
-					Total:    0,
+					Total:      0,
+					Type:       RefundTypeNone.Response(),
+					Reason:     "",
+					Canceled:   false,
+					CanceledAt: 0,
 				},
+				orderID: "order-id",
 			},
 		},
 	}
@@ -109,16 +115,25 @@ func TestOrderRefund_Response(t *testing.T) {
 			name: "success",
 			refund: &OrderRefund{
 				OrderRefund: response.OrderRefund{
-					Canceled: false,
-					Reason:   "",
-					Total:    0,
+					Total:      0,
+					Type:       RefundTypeNone.Response(),
+					Reason:     "",
+					Canceled:   false,
+					CanceledAt: 0,
 				},
 			},
 			expect: &response.OrderRefund{
-				Canceled: false,
-				Reason:   "",
-				Total:    0,
+				Total:      0,
+				Type:       RefundTypeNone.Response(),
+				Reason:     "",
+				Canceled:   false,
+				CanceledAt: 0,
 			},
+		},
+		{
+			name:   "empty",
+			refund: nil,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
@@ -126,6 +141,60 @@ func TestOrderRefund_Response(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.refund.Response())
+		})
+	}
+}
+
+func TestOrderRefunds(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		orders entity.OrderPayments
+		expect OrderRefunds
+	}{
+		{
+			name: "success",
+			orders: entity.OrderPayments{
+				{
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					TransactionID:     "transaction-id",
+					Status:            entity.PaymentStatusCaptured,
+					MethodType:        entity.PaymentMethodTypeCreditCard,
+					Subtotal:          1980,
+					Discount:          0,
+					ShippingFee:       550,
+					Tax:               253,
+					Total:             2783,
+					RefundTotal:       0,
+					RefundType:        entity.RefundTypeNone,
+					RefundReason:      "",
+					OrderedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					PaidAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					RefundedAt:        time.Time{},
+					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+			},
+			expect: OrderRefunds{
+				{
+					OrderRefund: response.OrderRefund{
+						Total:      0,
+						Type:       RefundTypeNone.Response(),
+						Reason:     "",
+						Canceled:   false,
+						CanceledAt: 0,
+					},
+					orderID: "order-id",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewOrderRefunds(tt.orders))
 		})
 	}
 }

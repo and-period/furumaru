@@ -39,13 +39,14 @@ type Service interface {
 	UpdateShipping(ctx context.Context, in *UpdateShippingInput) error                           // 更新
 	DeleteShipping(ctx context.Context, in *DeleteShippingInput) error                           // 削除
 	// 商品
-	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, int64, error)  // 一覧取得
-	MultiGetProducts(ctx context.Context, in *MultiGetProductsInput) (entity.Products, error) // 一覧取得(ID指定)
-	GetProduct(ctx context.Context, in *GetProductInput) (*entity.Product, error)             // １件取得
-	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)       // 登録
-	UpdateProduct(ctx context.Context, in *UpdateProductInput) error                          // 更新
-	UpdateProductMedia(ctx context.Context, in *UpdateProductMediaInput) error                // 画像(リサイズ済み)更新
-	DeleteProduct(ctx context.Context, in *DeleteProductInput) error                          // 削除
+	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, int64, error)                      // 一覧取得
+	MultiGetProducts(ctx context.Context, in *MultiGetProductsInput) (entity.Products, error)                     // 一覧取得(ID指定)
+	MultiGetProductsByRevision(ctx context.Context, in *MultiGetProductsByRevisionInput) (entity.Products, error) // 一覧取得(変更履歴ID指定)
+	GetProduct(ctx context.Context, in *GetProductInput) (*entity.Product, error)                                 // １件取得
+	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)                           // 登録
+	UpdateProduct(ctx context.Context, in *UpdateProductInput) error                                              // 更新
+	UpdateProductMedia(ctx context.Context, in *UpdateProductMediaInput) error                                    // 画像(リサイズ済み)更新
+	DeleteProduct(ctx context.Context, in *DeleteProductInput) error                                              // 削除
 	// プロモーション
 	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)  // 一覧取得
 	MultiGetPromotions(ctx context.Context, in *MultiGetPromotionsInput) (entity.Promotions, error) // 一覧取得(ID指定)
