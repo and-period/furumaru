@@ -168,6 +168,7 @@ func TestUser(t *testing.T) {
 		})
 	}
 }
+
 func TestUser_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

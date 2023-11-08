@@ -59,12 +59,12 @@ CREATE TABLE IF NOT EXISTS `stores`.`order_fulfillments` (
   `created_at`          DATETIME    NOT NULL,          -- 登録日時
   `updated_at`          DATETIME    NOT NULL,          -- 更新日時
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_order_payments_order_id`
+  CONSTRAINT `fk_order_fulfillments_order_id`
     FOREIGN KEY (`order_id`) REFERENCES `stores`.`orders` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS `stores`.`order_fulfillments` (
+CREATE TABLE IF NOT EXISTS `stores`.`order_items` (
   `fulfillment_id`      VARCHAR(22) NOT NULL, -- 注文配送ID
   `product_revision_id` BIGINT      NOT NULL, -- 商品ID
   `order_id`            VARCHAR(22) NOT NULL, -- 注文履歴ID
@@ -72,13 +72,13 @@ CREATE TABLE IF NOT EXISTS `stores`.`order_fulfillments` (
   `created_at`          DATETIME    NOT NULL, -- 登録日時
   `updated_at`          DATETIME    NOT NULL, -- 更新日時
   PRIMARY KEY (`fulfillment_id`, `product_revision_id`),
-  CONSTRAINT `fk_order_fulfillments_order_id`
+  CONSTRAINT `fk_order_items_order_id`
     FOREIGN KEY (`order_id`) REFERENCES `stores`.`orders` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_order_fulfillments_fulfillment_id`
+  CONSTRAINT `fk_order_items_fulfillment_id`
     FOREIGN KEY (`fulfillment_id`) REFERENCES `stores`.`order_fulfillments` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_order_fulfillments_product_revision_id`
+  CONSTRAINT `fk_order_items_product_revision_id`
     FOREIGN KEY (`product_revision_id`) REFERENCES `stores`.`product_revisions` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 );
