@@ -119,6 +119,7 @@ func TestProduct_List(t *testing.T) {
 			db := &product{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreProductsField(actual, now())
 			assert.Equal(t, tt.want.products, actual)
 		})
 	}
@@ -291,6 +292,7 @@ func TestProduct_MultiGet(t *testing.T) {
 			db := &product{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.productIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreProductsField(actual, now())
 			assert.ElementsMatch(t, tt.want.products, actual)
 		})
 	}
@@ -375,7 +377,8 @@ func TestProduct_MultiGetByRevision(t *testing.T) {
 			db := &product{db: db, now: now}
 			actual, err := db.MultiGetByRevision(ctx, tt.args.revisionIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			assert.ElementsMatch(t, tt.want.products, actual)
+			fillIgnoreProductsField(actual, now())
+			assert.Equal(t, tt.want.products, actual)
 		})
 	}
 }
@@ -448,6 +451,7 @@ func TestProduct_Get(t *testing.T) {
 			db := &product{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.productID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreProductField(actual, now())
 			assert.Equal(t, tt.want.product, actual)
 		})
 	}
@@ -706,34 +710,34 @@ func TestProduct_UpdateMedia(t *testing.T) {
 				hasErr: false,
 			},
 		},
-		// {
-		// 	name:  "not found",
-		// 	setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-		// 	args: args{
-		// 		productID: "product-id",
-		// 		set:       func(media entity.MultiProductMedia) bool { return false },
-		// 	},
-		// 	want: want{
-		// 		hasErr: true,
-		// 	},
-		// },
-		// {
-		// 	name: "media is non existent",
-		// 	setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-		// 		product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-		// 		err = db.DB.Create(&product).Error
-		// 		require.NoError(t, err)
-		// 		err = db.DB.Create(&product.ProductRevision).Error
-		// 		require.NoError(t, err)
-		// 	},
-		// 	args: args{
-		// 		productID: "product-id",
-		// 		set:       func(media entity.MultiProductMedia) bool { return false },
-		// 	},
-		// 	want: want{
-		// 		hasErr: true,
-		// 	},
-		// },
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				productID: "product-id",
+				set:       func(media entity.MultiProductMedia) bool { return false },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "media is non existent",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
+				err = db.DB.Create(&product).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&product.ProductRevision).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				productID: "product-id",
+				set:       func(media entity.MultiProductMedia) bool { return false },
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -874,5 +878,18 @@ func testProductRevision(revisionID int64, productID string, now time.Time) *ent
 		Cost:      300,
 		CreatedAt: now,
 		UpdatedAt: now,
+	}
+}
+
+func fillIgnoreProductField(p *entity.Product, now time.Time) {
+	if p == nil {
+		return
+	}
+	_ = p.FillJSON()
+}
+
+func fillIgnoreProductsField(ps entity.Products, now time.Time) {
+	for i := range ps {
+		fillIgnoreProductField(ps[i], now)
 	}
 }

@@ -126,11 +126,9 @@ func (p *product) MultiGetByRevision(ctx context.Context, revisionIDs []int64, f
 		return entity.Products{}, nil
 	}
 
-	stmt = p.db.Statement(ctx, p.db.DB, productTable, fields...).
-		Where("id IN (?)", revisions.ProductIDs())
-
-	if err := stmt.Find(&products).Error; err != nil {
-		return nil, dbError(err)
+	products, err := p.MultiGet(ctx, revisions.ProductIDs())
+	if err != nil {
+		return nil, err
 	}
 	if len(products) == 0 {
 		return entity.Products{}, nil

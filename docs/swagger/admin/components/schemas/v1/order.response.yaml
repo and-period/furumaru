@@ -1,612 +1,32 @@
 orderResponse:
   type: object
   properties:
-    id:
-      type: string
-      description: 注文ID
-    scheduleId:
-      type: string
-      description: 開催スケジュールID
-    promotionId:
-      type: string
-      description: プロモーションID
-    userId:
-      type: string
-      description: ユーザーID
-    userName:
-      type: string
-      description: 注文者名
-    payment:
-      type: object
-      description: 支払い情報
-      properties:
-        transactionId:
-          type: string
-          description: 取引ID
-        methodId:
-          type: string
-          description: 決済手段ID
-        methodType:
-          $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
-        status:
-          $ref: './../../../openapi.yaml#/components/schemas/paymentStatus'
-        subtotal:
-          type: integer
-          format: int64
-          description: 購入金額
-        discount:
-          type: integer
-          format: int64
-          description: 割引金額
-        shippingFee:
-          type: integer
-          format: int64
-          description: 配送料金
-        tax:
-          type: integer
-          format: int64
-          description: 消費税
-        total:
-          type: integer
-          format: int64
-          description: 支払い合計金額
-        addressId:
-          type: string
-          description: 請求先情報ID
-        lastname:
-          type: string
-          description: 請求先情報 姓
-        firstname:
-          type: string
-          description: 請求先情報 名
-        postalCode:
-          type: string
-          description: 請求先情報 郵便番号
-        prefectureCode:
-          $ref: './../../../openapi.yaml#/components/schemas/prefecture'
-          description: 請求先情報 都道府県
-        city:
-          type: string
-          description: 請求先情報 市区町村
-        addressLine1:
-          type: string
-          description: 請求先情報 町名・番地
-        addressLine2:
-          type: string
-          description: 請求先情報 ビル名・号室など
-        phoneNumber:
-          type: string
-          description: 請求先情報 電話番号
-      required:
-      - transactionId
-      - methodId
-      - methodType
-      - status
-      - subtotal
-      - discount
-      - shippingFee
-      - tax
-      - total
-      - addressId
-      - lastname
-      - firstname
-      - postalCode
-      - prefectureCode
-      - city
-      - addressLine1
-      - addressLine2
-      - phoneNumber
-    fulfillment:
-      type: object
-      description: 配送情報
-      properties:
-        trackingNumber:
-          type: string
-          description: 伝票番号
-        status:
-          $ref: './../../../openapi.yaml#/components/schemas/fulfillmentStatus'
-        shippingCarrier:
-          $ref: './../../../openapi.yaml#/components/schemas/shippingCarrier'
-        shippingMethod:
-          $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
-        boxSize:
-          $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
-        addressId:
-          type: string
-          description: 配送先情報ID
-        lastname:
-          type: string
-          description: 配送先情報 姓
-        firstname:
-          type: string
-          description: 配送先情報 名
-        postalCode:
-          type: string
-          description: 配送先情報 郵便番号
-        prefectureCode:
-          $ref: './../../../openapi.yaml#/components/schemas/prefecture'
-          description: 配送先情報 都道府県
-        city:
-          type: string
-          description: 配送先情報 市区町村
-        addressLine1:
-          type: string
-          description: 配送先情報 町名・番地
-        addressLine2:
-          type: string
-          description: 配送先情報 ビル名・号室など
-        phoneNumber:
-          type: string
-          description: 配送先情報 電話番号
-      required:
-      - trackingNumber
-      - status
-      - shippingCarrier
-      - shippingMethod
-      - boxSize
-      - addressId
-      - lastname
-      - firstname
-      - postalCode
-      - prefectureCode
-      - city
-      - addressLine1
-      - addressLine2
-      - phoneNumber
-    refund:
-      type: object
-      description: 注文キャンセル情報
-      properties:
-        canceled:
-          type: boolean
-          description: 注文キャンセルフラグ
-        type:
-          $ref: './../../../openapi.yaml#/components/schemas/orderRefundType'
-        reason:
-          type: string
-          description: 注文キャンセル理由詳細
-        total:
-          type: integer
-          format: int64
-          description: 返金金額
-      required:
-      - canceled
-      - type
-      - reason
-      - total
-    items:
+    order:
+      $ref: './../../../openapi.yaml#/components/schemas/order'
+    user:
+      $ref: './../../../openapi.yaml#/components/schemas/user'
+    coordinator:
+      $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    promotion:
+      $ref: './../../../openapi.yaml#/components/schemas/promotion'
+    products:
       type: array
-      description: 注文商品一覧
       items:
-        type: object
-        properties:
-          productId:
-            type: string
-            description: 商品ID
-          name:
-            type: string
-            description: 商品名
-          price:
-            type: integer
-            format: int64
-            description: 購入価格
-          quantity:
-            type: integer
-            format: int64
-            description: 購入数量
-          weight:
-            type: number
-            format: double
-            description: 重量(kg,少数第一位まで)
-          media:
-            type: array
-            items:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: メディアURL
-                isThumbnail:
-                  type: boolean
-                  description: サムネイルとして使用(1つまで)
-              required:
-              - url
-              - isThumbnail
-        required:
-        - productId
-        - name
-        - price
-        - quantity
-        - weight
-        - media
-    orderedAt:
-      type: integer
-      format: int64
-      description: 注文日時 (unixtime)
-    paidAt:
-      type: integer
-      format: int64
-      description: 支払日時 (unixtime)
-    deliveredAt:
-      type: integer
-      format: int64
-      description: 配送日時 (unixtime)
-    canceledAt:
-      type: integer
-      format: int64
-      description: 注文キャンセル日時 (unixtime)
-    createdAt:
-      type: integer
-      format: int64
-      description: 登録日時 (unixtime)
-    updatedAt:
-      type: integer
-      format: int64
-      description: 更新日時 (unixtime)
+        $ref: './../../../openapi.yaml#/components/schemas/product'
   required:
-  - id
-  - scheduleId
-  - promotionId
-  - userId
-  - userName
-  - payment
-  - fulfillment
-  - refund
-  - items
-  - orderedAt
-  - paidAt
-  - deliveredAt
-  - canceledAt
-  - createdAt
-  - updatedAt
+  - order
+  - user
+  - coordinator
+  - promotion
+  - products
   example:
-    id: 'kSByoE6FetnPs5Byk3a9Zx'
-    scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
-    promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
-    userId: 'kSByoE6FetnPs5Byk3a9Zx'
-    userName: '&. 購入者'
-    payment:
-      transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
-      methodId: 'kSByoE6FetnPs5Byk3a9Zx'
-      methodType: 2
-      status: 4
-      subtotal: 1000
-      discount: 200
-      shippingFee: 500
-      tax: 130
-      total: 1430
-      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
-      lastname: '&.'
-      firstname: '購入者'
-      postalCode: '1000014'
-      prefectureCode: 13
-      city: '千代田区'
-      addressLine1: '永田町1-7-1'
-      addressLine2: ''
-      phoneNumber: '+819012345678'
-    fulfillment:
-      trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
-      status: 1
-      shippingCarrier: 1
-      shippingMethod: 1
-      boxSize: 2
-      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
-      lastname: '&.'
-      firstname: '購入者'
-      postalCode: '1000014'
-      prefectureCode: 13
-      city: '千代田区'
-      addressLine1: '永田町1-7-1'
-      addressLine2: ''
-      phoneNumber: '+819012345678'
-    refund:
-      canceled: false
-      type: 0
-      reason: ''
-      total: 0
-    items:
-    - productId: 'kSByoE6FetnPs5Byk3a9Zx'
-      name: '新鮮なじゃがいも'
-      price: 500
-      quantity: 2
-      weight: 1.0
-      media:
-      - url: 'https://and-period.jp/thumbnail01.png'
-        images: []
-        isThumbnail: true
-      - url: 'https://and-period.jp/thumbnail02.png'
-        images: []
-        isThumbnail: false
-    orderedAt: 1640962800
-    paidAt: 1640962800
-    deliveredAt: 0
-    canceledAt: 0
-    createdAt: 1640962800
-    updatedAt: 1640962800
-ordersResponse:
-  type: object
-  properties:
-    orders:
-      type: array
-      description: 注文一覧
-      items:
-        type: object
-        priperties:
-          id:
-            type: string
-            description: 注文ID
-          scheduleId:
-            type: string
-            description: 開催スケジュールID
-          promotionId:
-            type: string
-            description: プロモーションID
-          userId:
-            type: string
-            description: ユーザーID
-          userName:
-            type: string
-            description: 注文者名
-          payment:
-            type: object
-            description: 支払い情報
-            properties:
-              transactionId:
-                type: string
-                description: 取引ID
-              methodId:
-                type: string
-                description: 決済手段ID
-              methodType:
-                $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
-              status:
-                $ref: './../../../openapi.yaml#/components/schemas/paymentStatus'
-              subtotal:
-                type: integer
-                format: int64
-                description: 購入金額
-              discount:
-                type: integer
-                format: int64
-                description: 割引金額
-              shippingFee:
-                type: integer
-                format: int64
-                description: 配送料金
-              tax:
-                type: integer
-                format: int64
-                description: 消費税
-              total:
-                type: integer
-                format: int64
-                description: 支払い合計金額
-              addressId:
-                type: string
-                description: 請求先情報ID
-              lastname:
-                type: string
-                description: 請求先情報 姓
-              firstname:
-                type: string
-                description: 請求先情報 名
-              postalCode:
-                type: string
-                description: 請求先情報 郵便番号
-              prefectureCode:
-                $ref: './../../../openapi.yaml#/components/schemas/prefecture'
-                description: 請求先情報 都道府県
-              city:
-                type: string
-                description: 請求先情報 市区町村
-              addressLine1:
-                type: string
-                description: 請求先情報 町名・番地
-              addressLine2:
-                type: string
-                description: 請求先情報 ビル名・号室など
-              phoneNumber:
-                type: string
-                description: 請求先情報 電話番号
-            required:
-            - transactionId
-            - methodId
-            - methodType
-            - status
-            - subtotal
-            - discount
-            - shippingFee
-            - tax
-            - total
-            - addressId
-            - lastname
-            - firstname
-            - postalCode
-            - prefectureCode
-            - city
-            - addressLine1
-            - addressLine2
-            - phoneNumber
-          fulfillment:
-            type: object
-            description: 配送情報
-            properties:
-              trackingNumber:
-                type: string
-                description: 伝票番号
-              status:
-                $ref: './../../../openapi.yaml#/components/schemas/fulfillmentStatus'
-              shippingCarrier:
-                $ref: './../../../openapi.yaml#/components/schemas/shippingCarrier'
-              shippingMethod:
-                $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
-              boxSize:
-                $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
-              addressId:
-                type: string
-                description: 配送先情報ID
-              lastname:
-                type: string
-                description: 配送先情報 姓
-              firstname:
-                type: string
-                description: 配送先情報 名
-              postalCode:
-                type: string
-                description: 配送先情報 郵便番号
-              prefectureCode:
-                $ref: './../../../openapi.yaml#/components/schemas/prefecture'
-                description: 配送先情報 都道府県
-              city:
-                type: string
-                description: 配送先情報 市区町村
-              addressLine1:
-                type: string
-                description: 配送先情報 町名・番地
-              addressLine2:
-                type: string
-                description: 配送先情報 ビル名・号室など
-              phoneNumber:
-                type: string
-                description: 配送先情報 電話番号
-            required:
-            - trackingNumber
-            - status
-            - shippingCarrier
-            - shippingMethod
-            - boxSize
-            - addressId
-            - lastname
-            - firstname
-            - postalCode
-            - prefectureCode
-            - city
-            - addressLine1
-            - addressLine2
-            - phoneNumber
-          refund:
-            type: object
-            description: 注文キャンセル情報
-            properties:
-              canceled:
-                type: boolean
-                description: 注文キャンセルフラグ
-              type:
-                $ref: './../../../openapi.yaml#/components/schemas/orderRefundType'
-              reason:
-                type: string
-                description: 注文キャンセル理由詳細
-              total:
-                type: integer
-                format: int64
-                description: 返金金額
-            required:
-            - canceled
-            - type
-            - reason
-            - total
-          items:
-            type: array
-            description: 注文商品一覧
-            items:
-              type: object
-              properties:
-                productId:
-                  type: string
-                  description: 商品ID
-                name:
-                  type: string
-                  description: 商品名
-                price:
-                  type: integer
-                  format: int64
-                  description: 購入価格
-                quantity:
-                  type: integer
-                  format: int64
-                  description: 購入数量
-                weight:
-                  type: number
-                  format: double
-                  description: 重量(kg,少数第一位まで)
-                media:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      url:
-                        type: string
-                        description: メディアURL
-                      isThumbnail:
-                        type: boolean
-                        description: サムネイルとして使用(1つまで)
-                    required:
-                    - url
-                    - isThumbnail
-              required:
-              - productId
-              - name
-              - price
-              - quantity
-              - weight
-              - media
-          orderedAt:
-            type: integer
-            format: int64
-            description: 注文日時 (unixtime)
-          paidAt:
-            type: integer
-            format: int64
-            description: 支払日時 (unixtime)
-          deliveredAt:
-            type: integer
-            format: int64
-            description: 配送日時 (unixtime)
-          canceledAt:
-            type: integer
-            format: int64
-            description: 注文キャンセル日時 (unixtime)
-          createdAt:
-            type: integer
-            format: int64
-            description: 登録日時 (unixtime)
-          updatedAt:
-            type: integer
-            format: int64
-            description: 更新日時 (unixtime)
-        required:
-        - id
-        - scheduleId
-        - promotionId
-        - userId
-        - userName
-        - payment
-        - fulfillment
-        - refund
-        - items
-        - orderedAt
-        - paidAt
-        - deliveredAt
-        - canceledAt
-        - createdAt
-        - updatedAt
-    total:
-      type: integer
-      format: int64
-      description: 合計数
-  required:
-  - orders
-  - total
-  example:
-    orders:
-    - id: 'kSByoE6FetnPs5Byk3a9Zx'
-      scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
-      promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+    order:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
       userId: 'kSByoE6FetnPs5Byk3a9Zx'
-      userName: '&. 購入者'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
       payment:
         transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
-        methodId: 'kSByoE6FetnPs5Byk3a9Zx'
         methodType: 2
         status: 4
         subtotal: 1000
@@ -614,21 +34,8 @@ ordersResponse:
         shippingFee: 500
         tax: 130
         total: 1430
-        addressId: 'kSByoE6FetnPs5Byk3a9Zx'
-        lastname: '&.'
-        firstname: '購入者'
-        postalCode: '1000014'
-        prefectureCode: 13
-        city: '千代田区'
-        addressLine1: '永田町1-7-1'
-        addressLine2: ''
-        phoneNumber: '+819012345678'
-      fulfillment:
-        trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
-        status: 1
-        shippingCarrier: 1
-        shippingMethod: 1
-        boxSize: 2
+        orderedAt: 1640962800
+        paidAt: 1640962800
         addressId: 'kSByoE6FetnPs5Byk3a9Zx'
         lastname: '&.'
         firstname: '購入者'
@@ -639,25 +46,298 @@ ordersResponse:
         addressLine2: ''
         phoneNumber: '+819012345678'
       refund:
-        canceled: false
-        type: 0
-        reason: ''
         total: 0
+        type: 2
+        reason: ''
+        canceled: false
+        canceledAt: 0
+      fulfillments:
+      - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+        trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
+        status: 1
+        shippingCarrier: 1
+        shippingMethod: 1
+        boxNumber: 1
+        boxSize: 2
+        shippedAt: 0
+        addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+        lastname: '&.'
+        firstname: '購入者'
+        postalCode: '1000014'
+        prefectureCode: 13
+        city: '千代田区'
+        addressLine1: '永田町1-7-1'
+        addressLine2: ''
+        phoneNumber: '+819012345678'
       items:
-      - productId: 'kSByoE6FetnPs5Byk3a9Zx'
-        name: '新鮮なじゃがいも'
+      - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+        productId: 'kSByoE6FetnPs5Byk3a9Zx'
         price: 500
         quantity: 2
-        weight: 1.0
-        media:
-        - url: 'https://and-period.jp/thumbnail01.png'
-          isThumbnail: true
-        - url: 'https://and-period.jp/thumbnail02.png'
-          isThumbnail: false
-      orderedAt: 1640962800
-      paidAt: 1640962800
-      deliveredAt: 0
-      canceledAt: 0
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    user:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '購入者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'こうにゅうしゃ'
+      registered: true
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    coordinator:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      storeName: '&.農園'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    promotion:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'プロモーションタイトル'
+      description: 'セール情報をお届けします。'
+      public: true
+      discountType: 1
+      discountRate: 300
+      code: 'code1234'
+      startAt: 1640962800
+      endAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    products:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '新鮮なじゃがいも'
+      description: '新鮮なじゃがいもをお届けします。'
+      public: true
+      status: 2
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      media:
+      - url: 'https://and-period.jp/thumbnail01.png'
+        isThumbnail: true
+        images:
+        - url: 'https://and-period.jp/thumbnail_240.png'
+          size: 1
+        - url: 'https://and-period.jp/thumbnail_675.png'
+          size: 2
+        - url: 'https://and-period.jp/thumbnail_900.png'
+          size: 3
+      - url: 'https://and-period.jp/thumbnail02.png'
+        isThumbnail: false
+        images: []
+      price: 2500
+      cost: 200
+      inventory: 30
+      weight: 2.5
+      itemUnit: '袋'
+      itemDescription: '1袋あたり2.5kgのじゃがいも'
+      deliveryType: 1
+      recommendedPoint1: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint2: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint3: 'シャリシャリほろ苦がクセになる！'
+      expirationDate: 7
+      storageMethodType: 1
+      box60Rate: 80
+      box80Rate: 50
+      box100Rate: 40
+      originprefectureCode: 13
+      originCity: '彦根市'
+      startAt: 1640962800
+      endAt: 1640962800
+      createdAt: 1640962800
+      updatedAt: 1640962800
+ordersResponse:
+  type: object
+  properties:
+    orders:
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/order'
+    users:
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/user'
+    coordinators:
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    promotions:
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/promotion'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - orders
+  - users
+  - coordinators
+  - promotions
+  - total
+  example:
+    orders:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      payment:
+        transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
+        methodType: 2
+        status: 4
+        subtotal: 1000
+        discount: 200
+        shippingFee: 500
+        tax: 130
+        total: 1430
+        orderedAt: 1640962800
+        paidAt: 1640962800
+        addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+        lastname: '&.'
+        firstname: '購入者'
+        postalCode: '1000014'
+        prefectureCode: 13
+        city: '千代田区'
+        addressLine1: '永田町1-7-1'
+        addressLine2: ''
+        phoneNumber: '+819012345678'
+      refund:
+        total: 0
+        type: 2
+        reason: ''
+        canceled: false
+        canceledAt: 0
+      fulfillments:
+      - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+        trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
+        status: 1
+        shippingCarrier: 1
+        shippingMethod: 1
+        boxNumber: 1
+        boxSize: 2
+        shippedAt: 0
+        addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+        lastname: '&.'
+        firstname: '購入者'
+        postalCode: '1000014'
+        prefectureCode: 13
+        city: '千代田区'
+        addressLine1: '永田町1-7-1'
+        addressLine2: ''
+        phoneNumber: '+819012345678'
+      items:
+      - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+        productId: 'kSByoE6FetnPs5Byk3a9Zx'
+        price: 500
+        quantity: 2
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    users:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '購入者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'こうにゅうしゃ'
+      registered: true
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
+      lastname: '&.'
+      firstname: '管理者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'かんりしゃ'
+      storeName: '&.農園'
+      email: 'test-user@and-period.jp'
+      phoneNumber: '+819012345678'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      createdAt: 1640962800
+      updatedAt: 1640962800
+    promotions:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'プロモーションタイトル'
+      description: 'セール情報をお届けします。'
+      public: true
+      discountType: 1
+      discountRate: 300
+      code: 'code1234'
+      startAt: 1640962800
+      endAt: 1640962800
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 1
