@@ -17,17 +17,17 @@ order:
     payment:
       $ref: './../../../openapi.yaml#/components/schemas/orderPayment'
     refund:
-      $ref: './../../../openapi.yaml#/components/schemas/orderPayment'
+      $ref: './../../../openapi.yaml#/components/schemas/orderRefund'
     fulfillments:
       type: array
       description: 注文配送一覧
       items:
-        $ref: './../../../openapi.yaml#/components/schemas/orderRefund'
+        $ref: './../../../openapi.yaml#/components/schemas/orderFulfillment'
     items:
       type: array
       description: 注文商品一覧
       items:
-        $ref: './../../../openapi.yaml#/components/schemas/orderRefund'
+        $ref: './../../../openapi.yaml#/components/schemas/orderItem'
     createdAt:
       type: integer
       format: int64

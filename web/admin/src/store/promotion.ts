@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
-import {
+import { apiClient } from '~/plugins/api-client'
+import type {
   CreatePromotionRequest,
   PromotionResponse,
   Promotion,
   UpdatePromotionRequest
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const usePromotionStore = defineStore('promotion', {
   state: () => ({

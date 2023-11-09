@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
-import { Administrator, CreateAdministratorRequest, UpdateAdministratorRequest } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
+import type { Administrator, CreateAdministratorRequest, UpdateAdministratorRequest } from '~/types/api'
 
 export const useAdministratorStore = defineStore('administrator', {
   state: () => ({

@@ -2645,22 +2645,22 @@ export interface Order {
     'payment': OrderPayment;
     /**
      * 
-     * @type {OrderPayment}
+     * @type {OrderRefund}
      * @memberof Order
      */
-    'refund': OrderPayment;
+    'refund': OrderRefund;
     /**
      * 注文配送一覧
-     * @type {Array<OrderRefund>}
+     * @type {Array<OrderFulfillment>}
      * @memberof Order
      */
-    'fulfillments': Array<OrderRefund>;
+    'fulfillments': Array<OrderFulfillment>;
     /**
      * 注文商品一覧
-     * @type {Array<OrderRefund>}
+     * @type {Array<OrderItem>}
      * @memberof Order
      */
-    'items': Array<OrderRefund>;
+    'items': Array<OrderItem>;
     /**
      * 登録日時 (unixtime)
      * @type {number}

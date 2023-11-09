@@ -2,12 +2,12 @@ import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
 import { useAdminStore } from './admin'
-import {
+import { apiClient } from '~/plugins/api-client'
+import type {
   CreateNotificationRequest,
   Notification,
   UpdateNotificationRequest
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({

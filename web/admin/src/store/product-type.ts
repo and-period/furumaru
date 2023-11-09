@@ -2,13 +2,13 @@ import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
 import { useCategoryStore } from './category'
-import {
+import { apiClient } from '~/plugins/api-client'
+import type {
   CreateProductTypeRequest,
   ProductType,
   UpdateProductTypeRequest,
   UploadImageResponse
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const useProductTypeStore = defineStore('productType', {
   state: () => ({
