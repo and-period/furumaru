@@ -126,7 +126,7 @@ func (p *product) MultiGetByRevision(ctx context.Context, revisionIDs []int64, f
 		return entity.Products{}, nil
 	}
 
-	products, err := p.MultiGet(ctx, revisions.ProductIDs())
+	products, err := p.MultiGet(ctx, revisions.ProductIDs(), fields...)
 	if err != nil {
 		return nil, err
 	}
