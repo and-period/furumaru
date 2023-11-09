@@ -2608,6 +2608,377 @@ export interface NotificationsResponse {
     'total': number;
 }
 /**
+ * 注文履歴情報
+ * @export
+ * @interface Order
+ */
+export interface Order {
+    /**
+     * 注文履歴ID
+     * @type {string}
+     * @memberof Order
+     */
+    'id': string;
+    /**
+     * 購入者ID
+     * @type {string}
+     * @memberof Order
+     */
+    'userId': string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Order
+     */
+    'coordinatorId': string;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof Order
+     */
+    'promotionId': string;
+    /**
+     * 
+     * @type {OrderPayment}
+     * @memberof Order
+     */
+    'payment': OrderPayment;
+    /**
+     * 
+     * @type {OrderRefund}
+     * @memberof Order
+     */
+    'refund': OrderRefund;
+    /**
+     * 注文配送一覧
+     * @type {Array<OrderFulfillment>}
+     * @memberof Order
+     */
+    'fulfillments': Array<OrderFulfillment>;
+    /**
+     * 注文商品一覧
+     * @type {Array<OrderItem>}
+     * @memberof Order
+     */
+    'items': Array<OrderItem>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Order
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Order
+     */
+    'updatedAt': number;
+}
+/**
+ * 注文配送情報
+ * @export
+ * @interface OrderFulfillment
+ */
+export interface OrderFulfillment {
+    /**
+     * 注文配送ID
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'fulfillmentId': string;
+    /**
+     * 伝票番号
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'trackingNumber': string;
+    /**
+     * 
+     * @type {FulfillmentStatus}
+     * @memberof OrderFulfillment
+     */
+    'status': FulfillmentStatus;
+    /**
+     * 
+     * @type {ShippingCarrier}
+     * @memberof OrderFulfillment
+     */
+    'shippingCarrier': ShippingCarrier;
+    /**
+     * 
+     * @type {DeliveryType}
+     * @memberof OrderFulfillment
+     */
+    'shippingMethod': DeliveryType;
+    /**
+     * 箱の通番
+     * @type {number}
+     * @memberof OrderFulfillment
+     */
+    'boxNumber': number;
+    /**
+     * 
+     * @type {ShippingSize}
+     * @memberof OrderFulfillment
+     */
+    'boxSize': ShippingSize;
+    /**
+     * 配送日時（unixtime）
+     * @type {number}
+     * @memberof OrderFulfillment
+     */
+    'shippedAt': number;
+    /**
+     * 配送先 住所ID
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'addressId': string;
+    /**
+     * 配送先 氏名（姓）
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'lastname': string;
+    /**
+     * 配送先 氏名（名）
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'firstname': string;
+    /**
+     * 配送先 郵便番号
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'postalCode': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof OrderFulfillment
+     */
+    'prefectureCode': Prefecture;
+    /**
+     * 配送先 市区町村
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'city': string;
+    /**
+     * 配送先 町名・番地
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'addressLine1': string;
+    /**
+     * 配送先 ビル名・号室など
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'addressLine2': string;
+    /**
+     * 配送先 電話番号
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'phoneNumber': string;
+}
+
+
+/**
+ * 注文商品情報
+ * @export
+ * @interface OrderItem
+ */
+export interface OrderItem {
+    /**
+     * 注文配送ID
+     * @type {string}
+     * @memberof OrderItem
+     */
+    'fulfillmentId': string;
+    /**
+     * 商品ID
+     * @type {string}
+     * @memberof OrderItem
+     */
+    'productId': string;
+    /**
+     * 購入価格
+     * @type {number}
+     * @memberof OrderItem
+     */
+    'price': number;
+    /**
+     * 購入数量
+     * @type {number}
+     * @memberof OrderItem
+     */
+    'quantity': number;
+}
+/**
+ * 注文決済情報
+ * @export
+ * @interface OrderPayment
+ */
+export interface OrderPayment {
+    /**
+     * 取引ID
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'transactionId': string;
+    /**
+     * 
+     * @type {PaymentMethodType}
+     * @memberof OrderPayment
+     */
+    'methodType': PaymentMethodType;
+    /**
+     * 
+     * @type {PaymentStatus}
+     * @memberof OrderPayment
+     */
+    'status': PaymentStatus;
+    /**
+     * 購入金額
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'subtotal': number;
+    /**
+     * 割引金額
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'discount': number;
+    /**
+     * 配送手数料
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'shippingFee': number;
+    /**
+     * 消費税
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'tax': number;
+    /**
+     * 合計金額
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'total': number;
+    /**
+     * 注文日時（unixtime）
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'orderedAt': number;
+    /**
+     * 支払日時（unixtime）
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'paidAt': number;
+    /**
+     * 請求先 住所ID
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'addressId': string;
+    /**
+     * 請求先 氏名（姓）
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'lastname': string;
+    /**
+     * 請求先 氏名（名）
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'firstname': string;
+    /**
+     * 請求先 郵便番号
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'postalCode': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof OrderPayment
+     */
+    'prefectureCode': Prefecture;
+    /**
+     * 請求先 市区町村
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'city': string;
+    /**
+     * 請求先 町名・番地
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'addressLine1': string;
+    /**
+     * 請求先 ビル名・号室など
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'addressLine2': string;
+    /**
+     * 請求先 電話番号
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'phoneNumber': string;
+}
+
+
+/**
+ * 注文キャンセル情報
+ * @export
+ * @interface OrderRefund
+ */
+export interface OrderRefund {
+    /**
+     * 返金金額
+     * @type {number}
+     * @memberof OrderRefund
+     */
+    'total': number;
+    /**
+     * 
+     * @type {OrderRefundType}
+     * @memberof OrderRefund
+     */
+    'type': OrderRefundType;
+    /**
+     * 注文キャンセル理由
+     * @type {string}
+     * @memberof OrderRefund
+     */
+    'reason': string;
+    /**
+     * 注文キャンセルフラグ
+     * @type {boolean}
+     * @memberof OrderRefund
+     */
+    'canceled': boolean;
+    /**
+     * 注文キャンセル日時（unixtime）
+     * @type {number}
+     * @memberof OrderRefund
+     */
+    'canceledAt': number;
+}
+
+
+/**
  * 注文キャンセル理由
  * @export
  * @enum {string}
@@ -2615,9 +2986,9 @@ export interface NotificationsResponse {
 
 export const OrderRefundType = {
     /**
-    * 不明
+    * 未キャンセル
     */
-    UNKNOWN: 0
+    NONE: 0
 } as const;
 
 export type OrderRefundType = typeof OrderRefundType[keyof typeof OrderRefundType];
@@ -2630,382 +3001,36 @@ export type OrderRefundType = typeof OrderRefundType[keyof typeof OrderRefundTyp
  */
 export interface OrderResponse {
     /**
-     * 注文ID
-     * @type {string}
+     * 
+     * @type {Order}
      * @memberof OrderResponse
      */
-    'id': string;
-    /**
-     * 開催スケジュールID
-     * @type {string}
-     * @memberof OrderResponse
-     */
-    'scheduleId': string;
-    /**
-     * プロモーションID
-     * @type {string}
-     * @memberof OrderResponse
-     */
-    'promotionId': string;
-    /**
-     * ユーザーID
-     * @type {string}
-     * @memberof OrderResponse
-     */
-    'userId': string;
-    /**
-     * 注文者名
-     * @type {string}
-     * @memberof OrderResponse
-     */
-    'userName': string;
+    'order': Order;
     /**
      * 
-     * @type {OrderResponsePayment}
+     * @type {User}
      * @memberof OrderResponse
      */
-    'payment': OrderResponsePayment;
+    'user': User;
     /**
      * 
-     * @type {OrderResponseFulfillment}
+     * @type {Coordinator}
      * @memberof OrderResponse
      */
-    'fulfillment': OrderResponseFulfillment;
+    'coordinator': Coordinator;
     /**
      * 
-     * @type {OrderResponseRefund}
+     * @type {Promotion}
      * @memberof OrderResponse
      */
-    'refund': OrderResponseRefund;
+    'promotion': Promotion;
     /**
-     * 注文商品一覧
-     * @type {Array<OrderResponseItemsInner>}
+     * 
+     * @type {Array<Product>}
      * @memberof OrderResponse
      */
-    'items': Array<OrderResponseItemsInner>;
-    /**
-     * 注文日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'orderedAt': number;
-    /**
-     * 支払日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'paidAt': number;
-    /**
-     * 配送日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'deliveredAt': number;
-    /**
-     * 注文キャンセル日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'canceledAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'updatedAt': number;
+    'products': Array<Product>;
 }
-/**
- * 配送情報
- * @export
- * @interface OrderResponseFulfillment
- */
-export interface OrderResponseFulfillment {
-    /**
-     * 伝票番号
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'trackingNumber': string;
-    /**
-     * 
-     * @type {FulfillmentStatus}
-     * @memberof OrderResponseFulfillment
-     */
-    'status': FulfillmentStatus;
-    /**
-     * 
-     * @type {ShippingCarrier}
-     * @memberof OrderResponseFulfillment
-     */
-    'shippingCarrier': ShippingCarrier;
-    /**
-     * 
-     * @type {DeliveryType}
-     * @memberof OrderResponseFulfillment
-     */
-    'shippingMethod': DeliveryType;
-    /**
-     * 
-     * @type {ShippingSize}
-     * @memberof OrderResponseFulfillment
-     */
-    'boxSize': ShippingSize;
-    /**
-     * 配送先情報ID
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'addressId': string;
-    /**
-     * 配送先情報 姓
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'lastname': string;
-    /**
-     * 配送先情報 名
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'firstname': string;
-    /**
-     * 配送先情報 郵便番号
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'postalCode': string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof OrderResponseFulfillment
-     */
-    'prefectureCode': Prefecture;
-    /**
-     * 配送先情報 市区町村
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'city': string;
-    /**
-     * 配送先情報 町名・番地
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'addressLine1': string;
-    /**
-     * 配送先情報 ビル名・号室など
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'addressLine2': string;
-    /**
-     * 配送先情報 電話番号
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'phoneNumber': string;
-}
-
-
-/**
- * 
- * @export
- * @interface OrderResponseItemsInner
- */
-export interface OrderResponseItemsInner {
-    /**
-     * 商品ID
-     * @type {string}
-     * @memberof OrderResponseItemsInner
-     */
-    'productId': string;
-    /**
-     * 商品名
-     * @type {string}
-     * @memberof OrderResponseItemsInner
-     */
-    'name': string;
-    /**
-     * 購入価格
-     * @type {number}
-     * @memberof OrderResponseItemsInner
-     */
-    'price': number;
-    /**
-     * 購入数量
-     * @type {number}
-     * @memberof OrderResponseItemsInner
-     */
-    'quantity': number;
-    /**
-     * 重量(kg,少数第一位まで)
-     * @type {number}
-     * @memberof OrderResponseItemsInner
-     */
-    'weight': number;
-    /**
-     * 
-     * @type {Array<CreateProductRequestMediaInner>}
-     * @memberof OrderResponseItemsInner
-     */
-    'media': Array<CreateProductRequestMediaInner>;
-}
-/**
- * 支払い情報
- * @export
- * @interface OrderResponsePayment
- */
-export interface OrderResponsePayment {
-    /**
-     * 取引ID
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'transactionId': string;
-    /**
-     * 決済手段ID
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'methodId': string;
-    /**
-     * 
-     * @type {PaymentMethodType}
-     * @memberof OrderResponsePayment
-     */
-    'methodType': PaymentMethodType;
-    /**
-     * 
-     * @type {PaymentStatus}
-     * @memberof OrderResponsePayment
-     */
-    'status': PaymentStatus;
-    /**
-     * 購入金額
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'subtotal': number;
-    /**
-     * 割引金額
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'discount': number;
-    /**
-     * 配送料金
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'shippingFee': number;
-    /**
-     * 消費税
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'tax': number;
-    /**
-     * 支払い合計金額
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'total': number;
-    /**
-     * 請求先情報ID
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'addressId': string;
-    /**
-     * 請求先情報 姓
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'lastname': string;
-    /**
-     * 請求先情報 名
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'firstname': string;
-    /**
-     * 請求先情報 郵便番号
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'postalCode': string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof OrderResponsePayment
-     */
-    'prefectureCode': Prefecture;
-    /**
-     * 請求先情報 市区町村
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'city': string;
-    /**
-     * 請求先情報 町名・番地
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'addressLine1': string;
-    /**
-     * 請求先情報 ビル名・号室など
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'addressLine2': string;
-    /**
-     * 請求先情報 電話番号
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'phoneNumber': string;
-}
-
-
-/**
- * 注文キャンセル情報
- * @export
- * @interface OrderResponseRefund
- */
-export interface OrderResponseRefund {
-    /**
-     * 注文キャンセルフラグ
-     * @type {boolean}
-     * @memberof OrderResponseRefund
-     */
-    'canceled': boolean;
-    /**
-     * 
-     * @type {OrderRefundType}
-     * @memberof OrderResponseRefund
-     */
-    'type': OrderRefundType;
-    /**
-     * 注文キャンセル理由詳細
-     * @type {string}
-     * @memberof OrderResponseRefund
-     */
-    'reason': string;
-    /**
-     * 返金金額
-     * @type {number}
-     * @memberof OrderResponseRefund
-     */
-    'total': number;
-}
-
-
 /**
  * 
  * @export
@@ -3013,11 +3038,29 @@ export interface OrderResponseRefund {
  */
 export interface OrdersResponse {
     /**
-     * 注文一覧
-     * @type {Array<object>}
+     * 
+     * @type {Array<Order>}
      * @memberof OrdersResponse
      */
-    'orders': Array<object>;
+    'orders': Array<Order>;
+    /**
+     * 
+     * @type {Array<User>}
+     * @memberof OrdersResponse
+     */
+    'users': Array<User>;
+    /**
+     * 
+     * @type {Array<Coordinator>}
+     * @memberof OrdersResponse
+     */
+    'coordinators': Array<Coordinator>;
+    /**
+     * 
+     * @type {Array<Promotion>}
+     * @memberof OrdersResponse
+     */
+    'promotions': Array<Promotion>;
     /**
      * 合計数
      * @type {number}

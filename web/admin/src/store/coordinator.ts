@@ -2,22 +2,22 @@ import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
 import { useProductTypeStore } from './product-type'
-import {
+import { apiClient } from '~/plugins/api-client'
+import type {
   Coordinator,
   CreateCoordinatorRequest,
-  ProducersResponse,
+  Producer,
   RelateProducersRequest,
   UpdateCoordinatorRequest,
   UploadImageResponse,
   UploadVideoResponse
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
     coordinator: {} as Coordinator,
     coordinators: [] as Coordinator[],
-    producers: [] as ProducersResponse['producers'],
+    producers: [] as Producer[],
     totalItems: 0,
     producerTotalItems: 0
   }),

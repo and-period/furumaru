@@ -6,6 +6,6 @@ orderRefundType:
   enum:
   - 0
   x-enum-varnames:
-  - UNKNOWN
+  - NONE
   x-enum-descriptions:
-  - 不明
+  - 未キャンセル

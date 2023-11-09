@@ -390,13 +390,25 @@ type ListAddressesInput struct {
 	Offset int64  `validate:"min=0"`
 }
 
+type ListDefaultAddressesInput struct {
+	UserIDs []string `validate:"omitempty,dive,required"`
+}
+
 type MultiGetAddressesInput struct {
 	AddressIDs []string `validate:"omitempty,dive,required"`
+}
+
+type MultiGetAddressesByRevisionInput struct {
+	AddressRevisionIDs []int64 `validate:"omitempty,dive,required"`
 }
 
 type GetAddressInput struct {
 	AddressID string `validate:"required"`
 	UserID    string `validate:"required"`
+}
+
+type GetDefaultAddressInput struct {
+	UserID string `validate:"required"`
 }
 
 type CreateAddressInput struct {

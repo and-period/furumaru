@@ -2,8 +2,9 @@ package response
 
 // Address - 請求・配送先情報
 type Address struct {
-	Lastname       string `json:"lastname"`       // 姓
-	Firstname      string `json:"firstname"`      // 名
+	AddressID      string `json:"addressId"`      // 住所ID
+	Lastname       string `json:"lastname"`       // 氏名（姓）
+	Firstname      string `json:"firstname"`      // 氏名（名）
 	PostalCode     string `json:"postalCode"`     // 郵便番号
 	PrefectureCode int32  `json:"prefectureCode"` // 都道府県
 	City           string `json:"city"`           // 市区町村

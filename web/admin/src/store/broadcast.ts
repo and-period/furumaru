@@ -1,5 +1,7 @@
+import { defineStore } from 'pinia'
+
 import { apiClient } from '~/plugins/api-client'
-import { Broadcast } from '~/types/api'
+import type { Broadcast } from '~/types/api'
 
 export const useBroadcastStore = defineStore('broadcast', {
   state: () => ({

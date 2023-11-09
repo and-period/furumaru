@@ -110,6 +110,37 @@ func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...s
 	return products, nil
 }
 
+func (p *product) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Products, error) {
+	var (
+		products  entity.Products
+		revisions entity.ProductRevisions
+	)
+
+	stmt := p.db.Statement(ctx, p.db.DB, productRevisionTable).
+		Where("id IN (?)", revisionIDs)
+
+	if err := stmt.Find(&revisions).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if len(revisions) == 0 {
+		return entity.Products{}, nil
+	}
+
+	products, err := p.MultiGet(ctx, revisions.ProductIDs(), fields...)
+	if err != nil {
+		return nil, err
+	}
+	if len(products) == 0 {
+		return entity.Products{}, nil
+	}
+
+	res, err := revisions.Merge(products.Map())
+	if err != nil {
+		return nil, dbError(err)
+	}
+	return res, nil
+}
+
 func (p *product) Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error) {
 	product, err := p.get(ctx, p.db.DB, productID, fields...)
 	return product, dbError(err)

@@ -41,6 +41,7 @@ const (
 
 type Product struct {
 	response.Product
+	revisionID int64
 }
 
 type Products []*Product
@@ -251,6 +252,14 @@ func (ps Products) Map() map[string]*Product {
 	res := make(map[string]*Product, len(ps))
 	for _, p := range ps {
 		res[p.ID] = p
+	}
+	return res
+}
+
+func (ps Products) MapByRevision() map[int64]*Product {
+	res := make(map[int64]*Product, len(ps))
+	for _, p := range ps {
+		res[p.revisionID] = p
 	}
 	return res
 }

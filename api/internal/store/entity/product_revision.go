@@ -1,6 +1,11 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/jinzhu/copier"
+)
 
 // ProductRevision - 商品変更履歴情報
 type ProductRevision struct {
@@ -28,10 +33,33 @@ func NewProductRevision(params *NewProductRevisionParams) *ProductRevision {
 	}
 }
 
-func (ps ProductRevisions) Map() map[string]*ProductRevision {
-	res := make(map[string]*ProductRevision, len(ps))
-	for _, p := range ps {
-		res[p.ProductID] = p
+func (rs ProductRevisions) ProductIDs() []string {
+	return set.UniqBy(rs, func(r *ProductRevision) string {
+		return r.ProductID
+	})
+}
+
+func (rs ProductRevisions) Map() map[string]*ProductRevision {
+	res := make(map[string]*ProductRevision, len(rs))
+	for _, r := range rs {
+		res[r.ProductID] = r
 	}
 	return res
+}
+
+func (rs ProductRevisions) Merge(products map[string]*Product) (Products, error) {
+	res := make(Products, 0, len(rs))
+	for _, r := range rs {
+		product := &Product{ProductRevision: *r}
+		base, ok := products[r.ProductID]
+		if !ok {
+			continue
+		}
+		opt := copier.Option{IgnoreEmpty: true, DeepCopy: true}
+		if err := copier.CopyWithOption(&product, &base, opt); err != nil {
+			return nil, err
+		}
+		res = append(res, product)
+	}
+	return res, nil
 }

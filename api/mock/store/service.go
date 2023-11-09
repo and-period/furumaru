@@ -651,6 +651,21 @@ func (mr *MockServiceMockRecorder) MultiGetProducts(ctx, in interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetProducts", reflect.TypeOf((*MockService)(nil).MultiGetProducts), ctx, in)
 }
 
+// MultiGetProductsByRevision mocks base method.
+func (m *MockService) MultiGetProductsByRevision(ctx context.Context, in *store.MultiGetProductsByRevisionInput) (entity.Products, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetProductsByRevision", ctx, in)
+	ret0, _ := ret[0].(entity.Products)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetProductsByRevision indicates an expected call of MultiGetProductsByRevision.
+func (mr *MockServiceMockRecorder) MultiGetProductsByRevision(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetProductsByRevision", reflect.TypeOf((*MockService)(nil).MultiGetProductsByRevision), ctx, in)
+}
+
 // MultiGetPromotions mocks base method.
 func (m *MockService) MultiGetPromotions(ctx context.Context, in *store.MultiGetPromotionsInput) (entity.Promotions, error) {
 	m.ctrl.T.Helper()

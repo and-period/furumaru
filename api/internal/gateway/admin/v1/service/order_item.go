@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type OrderItem struct {
@@ -13,22 +12,23 @@ type OrderItem struct {
 
 type OrderItems []*OrderItem
 
-func NewOrderItem(item *entity.OrderItem) *OrderItem {
+func NewOrderItem(item *entity.OrderItem, product *Product) *OrderItem {
+	var (
+		productID string
+		price     int64
+	)
+	if product != nil {
+		productID = product.ID
+		price = product.Price
+	}
 	return &OrderItem{
 		OrderItem: response.OrderItem{
-			ProductID: item.ProductID,
-			Price:     item.Price,
-			Quantity:  item.Quantity,
+			FulfillmentID: item.FulfillmentID,
+			ProductID:     productID,
+			Price:         price,
+			Quantity:      item.Quantity,
 		},
 		orderID: item.OrderID,
-	}
-}
-
-func (i *OrderItem) Fill(product *Product) {
-	if product != nil {
-		i.Name = product.Name
-		i.Weight = product.Weight
-		i.Media = product.Media
 	}
 }
 
@@ -36,24 +36,12 @@ func (i *OrderItem) Response() *response.OrderItem {
 	return &i.OrderItem
 }
 
-func NewOrderItems(items entity.OrderItems) OrderItems {
+func NewOrderItems(items entity.OrderItems, products map[int64]*Product) OrderItems {
 	res := make(OrderItems, len(items))
-	for i := range items {
-		res[i] = NewOrderItem(items[i])
+	for i, v := range items {
+		res[i] = NewOrderItem(v, products[v.ProductRevisionID])
 	}
 	return res
-}
-
-func (is OrderItems) Fill(products map[string]*Product) {
-	for i := range is {
-		is[i].Fill(products[is[i].ProductID])
-	}
-}
-
-func (is OrderItems) ProductIDs() []string {
-	return set.UniqBy(is, func(i *OrderItem) string {
-		return i.ProductID
-	})
 }
 
 func (is OrderItems) Response() []*response.OrderItem {

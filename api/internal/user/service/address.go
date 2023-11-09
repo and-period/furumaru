@@ -40,11 +40,27 @@ func (s *service) ListAddresses(ctx context.Context, in *user.ListAddressesInput
 	return addresses, total, nil
 }
 
+func (s *service) ListDefaultAddresses(ctx context.Context, in *user.ListDefaultAddressesInput) (entity.Addresses, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	addresses, err := s.db.Address.ListDefault(ctx, in.UserIDs)
+	return addresses, internalError(err)
+}
+
 func (s *service) MultiGetAddresses(ctx context.Context, in *user.MultiGetAddressesInput) (entity.Addresses, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
 	addresses, err := s.db.Address.MultiGet(ctx, in.AddressIDs)
+	return addresses, internalError(err)
+}
+
+func (s *service) MultiGetAddressesByRevision(ctx context.Context, in *user.MultiGetAddressesByRevisionInput) (entity.Addresses, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	addresses, err := s.db.Address.MultiGetByRevision(ctx, in.AddressRevisionIDs)
 	return addresses, internalError(err)
 }
 
@@ -60,6 +76,14 @@ func (s *service) GetAddress(ctx context.Context, in *user.GetAddressInput) (*en
 		return nil, fmt.Errorf("service: this address belongs to another user: %w", exception.ErrForbidden)
 	}
 	return address, nil
+}
+
+func (s *service) GetDefaultAddress(ctx context.Context, in *user.GetDefaultAddressInput) (*entity.Address, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	address, err := s.db.Address.GetDefault(ctx, in.UserID)
+	return address, internalError(err)
 }
 
 func (s *service) CreateAddress(ctx context.Context, in *user.CreateAddressInput) (*entity.Address, error) {

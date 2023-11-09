@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { apiClient } from '~/plugins/api-client'
-import { Message, MessagesResponse } from '~/types/api'
+import type { Message, MessagesResponse } from '~/types/api'
 
 export const useMessageStore = defineStore('message', {
   state: () => ({

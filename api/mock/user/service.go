@@ -314,6 +314,21 @@ func (mr *MockServiceMockRecorder) GetCoordinator(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCoordinator", reflect.TypeOf((*MockService)(nil).GetCoordinator), ctx, in)
 }
 
+// GetDefaultAddress mocks base method.
+func (m *MockService) GetDefaultAddress(ctx context.Context, in *user.GetDefaultAddressInput) (*entity.Address, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDefaultAddress", ctx, in)
+	ret0, _ := ret[0].(*entity.Address)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDefaultAddress indicates an expected call of GetDefaultAddress.
+func (mr *MockServiceMockRecorder) GetDefaultAddress(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDefaultAddress", reflect.TypeOf((*MockService)(nil).GetDefaultAddress), ctx, in)
+}
+
 // GetProducer mocks base method.
 func (m *MockService) GetProducer(ctx context.Context, in *user.GetProducerInput) (*entity.Producer, error) {
 	m.ctrl.T.Helper()
@@ -421,6 +436,21 @@ func (mr *MockServiceMockRecorder) ListCoordinators(ctx, in interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCoordinators", reflect.TypeOf((*MockService)(nil).ListCoordinators), ctx, in)
 }
 
+// ListDefaultAddresses mocks base method.
+func (m *MockService) ListDefaultAddresses(ctx context.Context, in *user.ListDefaultAddressesInput) (entity.Addresses, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListDefaultAddresses", ctx, in)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListDefaultAddresses indicates an expected call of ListDefaultAddresses.
+func (mr *MockServiceMockRecorder) ListDefaultAddresses(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDefaultAddresses", reflect.TypeOf((*MockService)(nil).ListDefaultAddresses), ctx, in)
+}
+
 // ListProducers mocks base method.
 func (m *MockService) ListProducers(ctx context.Context, in *user.ListProducersInput) (entity.Producers, int64, error) {
 	m.ctrl.T.Helper()
@@ -466,6 +496,21 @@ func (m *MockService) MultiGetAddresses(ctx context.Context, in *user.MultiGetAd
 func (mr *MockServiceMockRecorder) MultiGetAddresses(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAddresses", reflect.TypeOf((*MockService)(nil).MultiGetAddresses), ctx, in)
+}
+
+// MultiGetAddressesByRevision mocks base method.
+func (m *MockService) MultiGetAddressesByRevision(ctx context.Context, in *user.MultiGetAddressesByRevisionInput) (entity.Addresses, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetAddressesByRevision", ctx, in)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetAddressesByRevision indicates an expected call of MultiGetAddressesByRevision.
+func (mr *MockServiceMockRecorder) MultiGetAddressesByRevision(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetAddressesByRevision", reflect.TypeOf((*MockService)(nil).MultiGetAddressesByRevision), ctx, in)
 }
 
 // MultiGetAdminDevices mocks base method.

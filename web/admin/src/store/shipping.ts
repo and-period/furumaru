@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
-import {
+import type {
   CreateShippingRequest,
   ShippingResponse,
   Shipping,

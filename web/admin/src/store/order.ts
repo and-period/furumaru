@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia'
 
+import { useCoordinatorStore } from './coordinator'
+import { useCustomerStore } from './customer'
+import { usePromotionStore } from './promotion'
+import { useProductStore } from './product'
 import { apiClient } from '~/plugins/api-client'
-import { OrderResponse, OrdersResponse } from '~/types/api'
+import type { Order } from '~/types/api'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
-    order: {} as OrderResponse,
-    orders: [] as OrdersResponse['orders'],
+    order: {} as Order,
+    orders: [] as Order[],
     totalItems: 0
   }),
 
@@ -19,12 +23,16 @@ export const useOrderStore = defineStore('order', {
      */
     async fetchOrders (limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.orderApi().v1ListOrders(
-          limit,
-          offset
-        )
+        const res = await apiClient.orderApi().v1ListOrders(limit, offset)
+
+        const coordinatorStore = useCoordinatorStore()
+        const customerStore = useCustomerStore()
+        const promotionStore = usePromotionStore()
         this.orders = res.data.orders
         this.totalItems = res.data.total
+        coordinatorStore.coordinators = res.data.coordinators
+        customerStore.customers = res.data.users
+        promotionStore.promotions = res.data.promotions
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -32,14 +40,22 @@ export const useOrderStore = defineStore('order', {
 
     /**
      * 注文IDから注文情報を取得する非同期関数
-     * @param id 注文ID
+     * @param orderId 注文ID
      * @returns 注文情報
      */
-    async getOrder (id: string): Promise<OrderResponse> {
+    async getOrder (orderId: string): Promise<void> {
       try {
-        const res = await apiClient.orderApi().v1GetOrder(id)
-        this.order = res.data
-        return res.data
+        const res = await apiClient.orderApi().v1GetOrder(orderId)
+
+        const coordinatorStore = useCoordinatorStore()
+        const customerStore = useCustomerStore()
+        const promotionStore = usePromotionStore()
+        const productStore = useProductStore()
+        this.order = res.data.order
+        coordinatorStore.coordinators.push(res.data.coordinator)
+        customerStore.customers.push(res.data.user)
+        promotionStore.promotions.push(res.data.promotion)
+        productStore.products = res.data.products
       } catch (err) {
         return this.errorHandler(err)
       }

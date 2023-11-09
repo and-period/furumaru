@@ -68,6 +68,16 @@ func (s *service) MultiGetProducts(
 	return products, internalError(err)
 }
 
+func (s *service) MultiGetProductsByRevision(
+	ctx context.Context, in *store.MultiGetProductsByRevisionInput,
+) (entity.Products, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	products, err := s.db.Product.MultiGetByRevision(ctx, in.ProductRevisionIDs)
+	return products, internalError(err)
+}
+
 func (s *service) GetProduct(ctx context.Context, in *store.GetProductInput) (*entity.Product, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)

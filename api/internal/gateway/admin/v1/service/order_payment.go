@@ -2,7 +2,8 @@ package service
 
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
-	"github.com/and-period/furumaru/api/internal/store/entity"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 // PaymentMethodType - 決済手段
@@ -39,25 +40,27 @@ type OrderPayment struct {
 	orderID string
 }
 
-func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
+type OrderPayments []*OrderPayment
+
+func NewPaymentMethodType(typ sentity.PaymentMethodType) PaymentMethodType {
 	switch typ {
-	case entity.PaymentMethodTypeCash:
+	case sentity.PaymentMethodTypeCash:
 		return PaymentMethodTypeCash
-	case entity.PaymentMethodTypeCreditCard:
+	case sentity.PaymentMethodTypeCreditCard:
 		return PaymentMethodTypeCreditCard
-	case entity.PaymentMethodTypeKonbini:
+	case sentity.PaymentMethodTypeKonbini:
 		return PaymentMethodTypeKonbini
-	case entity.PaymentMethodTypeBankTranser:
+	case sentity.PaymentMethodTypeBankTranser:
 		return PaymentMethodTypeBankTranser
-	case entity.PaymentMethodTypePayPay:
+	case sentity.PaymentMethodTypePayPay:
 		return PaymentMethodTypePayPay
-	case entity.PaymentMethodTypeLinePay:
+	case sentity.PaymentMethodTypeLinePay:
 		return PaymentMethodTypeLinePay
-	case entity.PaymentMethodTypeMerpay:
+	case sentity.PaymentMethodTypeMerpay:
 		return PaymentMethodTypeMerpay
-	case entity.PaymentMethodTypeRakutenPay:
+	case sentity.PaymentMethodTypeRakutenPay:
 		return PaymentMethodTypeRakutenPay
-	case entity.PaymentMethodTypeAUPay:
+	case sentity.PaymentMethodTypeAUPay:
 		return PaymentMethodTypeAUPay
 	default:
 		return PaymentMethodTypeUnknown
@@ -68,17 +71,17 @@ func (t PaymentMethodType) Response() int32 {
 	return int32(t)
 }
 
-func NewPaymentStatus(status entity.PaymentStatus) PaymentStatus {
+func NewPaymentStatus(status sentity.PaymentStatus) PaymentStatus {
 	switch status {
-	case entity.PaymentStatusPending:
+	case sentity.PaymentStatusPending:
 		return PaymentStatusPending
-	case entity.PaymentStatusAuthorized:
+	case sentity.PaymentStatusAuthorized:
 		return PaymentStatusAuthorized
-	case entity.PaymentStatusCaptured:
+	case sentity.PaymentStatusCaptured:
 		return PaymentStatusPaid
-	case entity.PaymentStatusRefunded:
+	case sentity.PaymentStatusRefunded:
 		return PaymentStatusRefunded
-	case entity.PaymentStatusFailed:
+	case sentity.PaymentStatusFailed:
 		return PaymentStatusExpired
 	default:
 		return PaymentStatusUnknown
@@ -89,27 +92,36 @@ func (s PaymentStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrderPayment(payment *entity.Payment, status entity.PaymentStatus) *OrderPayment {
+func NewOrderPayment(payment *sentity.OrderPayment, address *Address) *OrderPayment {
 	return &OrderPayment{
 		OrderPayment: response.OrderPayment{
 			TransactionID: payment.TransactionID,
 			MethodType:    NewPaymentMethodType(payment.MethodType).Response(),
-			Status:        NewPaymentStatus(status).Response(),
+			Status:        NewPaymentStatus(payment.Status).Response(),
 			Subtotal:      payment.Subtotal,
 			Discount:      payment.Discount,
 			ShippingFee:   payment.ShippingFee,
 			Tax:           payment.Tax,
 			Total:         payment.Total,
-			AddressID:     payment.AddressID,
+			OrderedAt:     jst.Unix(payment.OrderedAt),
+			PaidAt:        jst.Unix(payment.PaidAt),
+			Address:       address.Response(),
 		},
 		orderID: payment.OrderID,
 	}
 }
 
-func (p *OrderPayment) Fill(address *Address) {
-	p.Address = address.Response()
+func (p *OrderPayment) Response() *response.OrderPayment {
+	if p == nil {
+		return nil
+	}
+	return &p.OrderPayment
 }
 
-func (p *OrderPayment) Response() *response.OrderPayment {
-	return &p.OrderPayment
+func NewOrderPayments(payments sentity.OrderPayments, addresses map[int64]*Address) OrderPayments {
+	res := make(OrderPayments, len(payments))
+	for i, p := range payments {
+		res[i] = NewOrderPayment(p, addresses[p.AddressRevisionID])
+	}
+	return res
 }

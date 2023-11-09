@@ -7,7 +7,7 @@ import (
 
 type Address struct {
 	response.Address
-	id string
+	revisionID int64
 }
 
 type Addresses []*Address
@@ -15,6 +15,7 @@ type Addresses []*Address
 func NewAddress(address *entity.Address) *Address {
 	return &Address{
 		Address: response.Address{
+			AddressID:      address.AddressID,
 			Lastname:       address.Lastname,
 			Firstname:      address.Firstname,
 			PostalCode:     address.PostalCode,
@@ -24,11 +25,14 @@ func NewAddress(address *entity.Address) *Address {
 			AddressLine2:   address.AddressLine2,
 			PhoneNumber:    address.PhoneNumber,
 		},
-		id: address.ID,
+		revisionID: address.AddressRevision.ID,
 	}
 }
 
 func (a *Address) Response() *response.Address {
+	if a == nil {
+		return nil
+	}
 	return &a.Address
 }
 
@@ -40,10 +44,10 @@ func NewAddresses(addresses entity.Addresses) Addresses {
 	return res
 }
 
-func (as Addresses) Map() map[string]*Address {
-	res := make(map[string]*Address, len(as))
+func (as Addresses) MapByRevision() map[int64]*Address {
+	res := make(map[int64]*Address, len(as))
 	for _, a := range as {
-		res[a.id] = a
+		res[a.revisionID] = a
 	}
 	return res
 }

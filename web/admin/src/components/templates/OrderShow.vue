@@ -1,10 +1,27 @@
 <script lang="ts" setup>
 import { unix } from 'dayjs'
+import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+
 import { prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { DeliveryType, FulfillmentStatus, OrderRefundType, type OrderResponse, PaymentMethodType, PaymentStatus, Prefecture, ShippingCarrier, ShippingSize } from '~/types/api'
-import type { Order, OrderItems } from '~/types/props'
+import {
+  DeliveryType,
+  FulfillmentStatus,
+  OrderRefundType,
+  PaymentMethodType,
+  PaymentStatus,
+  Prefecture,
+  ShippingCarrier,
+  ShippingSize,
+  type Coordinator,
+  type Order,
+  type OrderItem,
+  type Product,
+  type ProductMediaInner,
+  type Promotion,
+  type User
+} from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -24,16 +41,14 @@ const props = defineProps({
     default: ''
   },
   order: {
-    type: Object as PropType<OrderResponse>,
-    default: () => ({
+    type: Object as PropType<Order>,
+    default: (): Order => ({
       id: '',
-      scheduleId: '',
+      coordinatorId: '',
       promotionId: '',
       userId: '',
-      userName: '',
       payment: {
         transactionId: '',
-        methodId: '',
         methodType: 0,
         status: 0,
         subtotal: 0,
@@ -49,64 +64,62 @@ const props = defineProps({
         city: '',
         addressLine1: '',
         addressLine2: '',
-        phoneNumber: ''
+        phoneNumber: '',
+        orderedAt: 0,
+        paidAt: 0
       },
-      fulfillment: {
-        trackingNumber: '',
-        status: 0,
-        shippingCarrier: 0,
-        shippingMethod: 0,
-        boxSize: 0,
-        addressId: '',
-        lastname: '',
-        firstname: '',
-        postalCode: '',
-        prefectureCode: Prefecture.UNKNOWN,
-        city: '',
-        addressLine1: '',
-        addressLine2: '',
-        phoneNumber: ''
-      },
+      fulfillments: [],
       refund: {
-        canceled: false,
-        type: 0,
+        total: 0,
+        type: OrderRefundType.NONE,
         reason: '',
-        total: 0
+        canceled: false,
+        canceledAt: 0
       },
-      items: [
-        {
-          productId: '',
-          name: '',
-          price: 0,
-          quantity: 0,
-          weight: 0,
-          media: [
-            {
-              url: '',
-              isThumbnail: false
-            }
-          ]
-        }
-      ],
-      orderedAt: -1,
-      paidAt: -1,
-      deliveredAt: -1,
-      canceledAt: -1,
-      createdAt: -1,
-      updatedAt: -1
+      items: [],
+      createdAt: 0,
+      updatedAt: 0
     })
+  },
+  coordinators: {
+    type: Array<Coordinator>,
+    default: () => []
+  },
+  customer: {
+    type: Object as PropType<User>,
+    default: () => ({})
+  },
+  products: {
+    type: Array<Product>,
+    default: () => []
+  },
+  promotions: {
+    type: Array<Promotion>,
+    default: () => []
   }
 })
 
-const items: Order[] = [
-  { name: '支払い情報', value: 'shippingInformation' },
-  { name: '配送情報', value: 'orderInformation' }
+const items = [
+  { title: '支払い情報', value: 'shippingInformation' },
+  { title: '配送情報', value: 'orderInformation' }
+]
+
+const headers: VDataTable['headers'] = [
+  {
+    title: '',
+    key: 'media',
+    width: 80,
+    sortable: false
+  }
 ]
 
 const selector = ref<string>('shippingInformation')
 
-const orderValue = computed((): OrderResponse => {
+const orderValue = computed((): Order => {
   return props.order
+})
+const customerNameValue = computed((): string => {
+  return `${props.customer.lastname} ${props.customer.firstname}`
 })
 const paymentPhoneNumber = computed((): string => {
   return convertI18nToJapanesePhoneNumber(props.order.payment.phoneNumber)
@@ -117,29 +130,14 @@ const paymentMethodType = computed((): string => {
 const refundType = computed((): string => {
   return getRefundType(props.order.refund.type)
 })
-const fulfillmentPhoneNumber = computed((): string => {
-  return convertI18nToJapanesePhoneNumber(props.order.fulfillment.phoneNumber)
-})
-const fulfillmentShippingCarrier = computed((): string => {
-  return getShippingCarrier(props.order.fulfillment.shippingCarrier)
-})
-const fulfillmentShippingMethod = computed((): string => {
-  return getShippingMethod(props.order.fulfillment.shippingMethod)
-})
-const fulfillmentShippingSize = computed((): string => {
-  return getBoxSize(props.order.fulfillment.boxSize)
-})
 const paidAt = computed((): string => {
-  return getDay(props.order.paidAt)
+  return getDay(props.order.payment.paidAt)
 })
 const canceledAt = computed((): string => {
-  return getDay(props.order.canceledAt)
+  return getDay(props.order.refund.canceledAt)
 })
 const orderedAt = computed((): string => {
-  return getDay(props.order.orderedAt)
-})
-const deliveredAt = computed((): string => {
-  return getDay(props.order.deliveredAt)
+  return getDay(props.order.payment.orderedAt)
 })
 
 const getDay = (unixTime: number): string => {
@@ -243,9 +241,24 @@ const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
 }
 
 // isThumnailがtrueのものを引っ掛けて商品でサムネイルに設定されているURLを探す
-const getThumbnail = (medias: OrderItems[]): string => {
-  const orderItem: OrderItems[] = medias.filter(item => item.isThumbnail)
-  return orderItem[0].url
+const getThumbnail = (productId: string): string => {
+  const product = props.products.find((product: Product): boolean => {
+    return product.id === productId
+  })
+  if (!product) {
+    return ''
+  }
+  const thumbnail = product.media.find((media: ProductMediaInner): boolean => {
+    return media.isThumbnail
+  })
+  return thumbnail?.url || ''
+}
+
+const getOrderItems = (fulfillmentId: string): OrderItem[] => {
+  const items = props.order.items.filter((item: OrderItem): boolean => {
+    return item.fulfillmentId === fulfillmentId
+  })
+  return items
 }
 
 const getShippingCarrier = (carrier: ShippingCarrier): string => {
@@ -292,7 +305,7 @@ const getBoxSize = (size: ShippingSize): string => {
   <v-card>
     <v-tabs v-model="selector" grow color="dark">
       <v-tab v-for="item in items" :key="item.value" :value="item.value">
-        {{ item.name }}
+        {{ item.title }}
       </v-tab>
     </v-tabs>
 
@@ -301,9 +314,15 @@ const getBoxSize = (size: ShippingSize): string => {
         <v-card elevation="0">
           <v-card-text>
             <v-text-field
-              v-model="orderValue.userName"
+              v-model="customerNameValue"
               name="userName"
               label="注文者名"
+              readonly
+            />
+            <v-text-field
+              v-model="orderValue.id"
+              name="id"
+              label="注文ID"
               readonly
             />
             <v-text-field
@@ -312,22 +331,25 @@ const getBoxSize = (size: ShippingSize): string => {
               label="決済手段"
               readonly
             />
+            <v-text-field
+              v-model="orderValue.createdAt"
+              name="createdAt"
+              label="注文日時"
+              readonly
+            />
             <v-container>
               <p class="text-h6">
                 購入情報
               </p>
               <v-row class="mt-4">
                 <span class="mx-4">支払い状況:</span>
-                <v-chip
-                  size="small"
-                  :color="getPaymentStatusColor(props.order.payment.status)"
-                >
-                  {{ getPaymentStatus(props.order.payment.status) }}
+                <v-chip size="small" :color="getPaymentStatusColor(order.payment.status)">
+                  {{ getPaymentStatus(order.payment.status) }}
                 </v-chip>
               </v-row>
             </v-container>
             <v-text-field
-              v-if="getPaymentStatus(props.order.payment.status) == '支払い済み'"
+              v-if="getPaymentStatus(order.payment.status) == '支払い済み'"
               v-model="paidAt"
               class="mt-4"
               name="deliveredAt"
@@ -454,15 +476,12 @@ const getBoxSize = (size: ShippingSize): string => {
             </p>
             <v-row class="mt-4">
               <span class="mx-4">注文キャンセル状況:</span>
-              <v-chip
-                size="small"
-                :color="getRefundStatusColor(props.order.refund.canceled)"
-              >
-                {{ getRefundStatus(props.order.refund.canceled) }}
+              <v-chip size="small" :color="getRefundStatusColor(order.refund.canceled)">
+                {{ getRefundStatus(order.refund.canceled) }}
               </v-chip>
             </v-row>
             <v-container
-              v-if="getRefundStatus(props.order.refund.canceled) == 'キャンセル'"
+              v-if="getRefundStatus(order.refund.canceled) == 'キャンセル'"
             >
               <v-text-field
                 v-model="canceledAt"
@@ -495,61 +514,52 @@ const getBoxSize = (size: ShippingSize): string => {
       </v-window-item>
 
       <v-window-item value="orderInformation">
-        <v-card elevation="0">
+        <v-card v-for="fulfillment in order.fulfillments" :key="fulfillment.fulfillmentId" elevation="0">
           <v-card-text>
-            <v-text-field
-              v-model="orderValue.id"
-              name="id"
-              label="注文ID"
-              readonly
-            />
-            <v-text-field
-              v-model="orderedAt"
-              name="orderedAt"
-              label="注文日時"
-              readonly
-            />
             <v-row class="my-4">
               <span class="mx-4">配送状況:</span>
-              <v-chip
-                size="small"
-                :color="getFulfillmentStatusColor(props.order.fulfillment.status)"
-              >
-                {{ getFulfillmentStatus(props.order.fulfillment.status) }}
+              <v-chip size="small" :color="getFulfillmentStatusColor(fulfillment.status)">
+                {{ getFulfillmentStatus(fulfillment.status) }}
               </v-chip>
             </v-row>
             <div class="d-flex align-center">
               <v-text-field
-                v-model="fulfillmentShippingCarrier"
+                v-model="fulfillment.shippingCarrier"
                 class="mr-4"
                 name="shippingCarrier"
                 label="配送会社"
                 readonly
               />
               <v-text-field
-                v-model="fulfillmentShippingMethod"
+                v-model="fulfillment.shippingMethod"
                 class="mr-4"
                 name="shippingmethod"
                 label="配送方法"
                 readonly
               />
               <v-text-field
-                v-model="fulfillmentShippingSize"
+                v-model="fulfillment.boxNumber"
+                name="boxSize"
+                label="配送時の箱の通番"
+                readonly
+              />
+              <v-text-field
+                v-model="fulfillment.boxSize"
                 name="boxSize"
                 label="配送時の箱の大きさ"
                 readonly
               />
             </div>
             <v-text-field
-              v-if="getFulfillmentStatus(props.order.fulfillment.status) == '配送済み'"
-              v-model="deliveredAt"
+              v-if="getFulfillmentStatus(fulfillment.status) == '配送済み'"
+              v-model="fulfillment.shippedAt"
               name="deliveredAt"
               label="配送日時"
               readonly
             />
             <v-data-table-server
               :headers="items"
-              :items="props.order.items"
+              :items="getOrderItems(fulfillment.fulfillmentId)"
               no-data-text="表示する注文がありません"
             >
               <template #[`item.media`]="{ item }">
@@ -559,41 +569,41 @@ const getBoxSize = (size: ShippingSize): string => {
               </template>
             </v-data-table-server>
             <v-text-field
-              v-model="orderValue.fulfillment.trackingNumber"
+              v-model="fulfillment.trackingNumber"
               name="trackingNumber"
               label="伝票番号"
               readonly
             />
             <div>
               <v-text-field
-                v-model="orderValue.fulfillment.lastname"
+                v-model="fulfillment.lastname"
                 class="mr-4"
                 name="lastname"
                 label="姓"
                 readonly
               />
               <v-text-field
-                v-model="orderValue.fulfillment.firstname"
+                v-model="fulfillment.firstname"
                 name="firstname"
                 label="名"
                 readonly
               />
             </div>
             <v-text-field
-              v-model="fulfillmentPhoneNumber"
+              v-model="fulfillment.phoneNumber"
               name="phoneNumber"
               label="電話番号"
               readonly
             />
             <v-text-field
-              v-model="orderValue.fulfillment.postalCode"
+              v-model="fulfillment.postalCode"
               name="postalCode"
               label="郵便番号"
               readonly
             />
             <div class="d-flex align-center">
               <v-text-field
-                v-model="orderValue.fulfillment.prefectureCode"
+                v-model="fulfillment.prefectureCode"
                 :items="prefecturesList"
                 item-title="text"
                 item-value="value"
@@ -603,19 +613,19 @@ const getBoxSize = (size: ShippingSize): string => {
                 readonly
               />
               <v-text-field
-                v-model="orderValue.fulfillment.city"
+                v-model="fulfillment.city"
                 name="city"
                 label="市区町村"
                 readonly
               />
             </div>
             <v-text-field
-              v-model="orderValue.fulfillment.addressLine1"
+              v-model="fulfillment.addressLine1"
               name="addressLine1"
               label="町名・番地"
             />
             <v-text-field
-              v-model="orderValue.fulfillment.addressLine2"
+              v-model="fulfillment.addressLine2"
               name="addressLine2"
               label="ビル名・号室など"
             />

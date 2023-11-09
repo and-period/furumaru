@@ -69,6 +69,22 @@ func (as Addresses) IDs() []string {
 	})
 }
 
+func (as Addresses) Map() map[string]*Address {
+	res := make(map[string]*Address, len(as))
+	for _, a := range as {
+		res[a.ID] = a
+	}
+	return res
+}
+
+func (as Addresses) MapByUserID() map[string]*Address {
+	res := make(map[string]*Address, len(as))
+	for _, a := range as {
+		res[a.UserID] = a
+	}
+	return res
+}
+
 func (as Addresses) Fill(revisions map[string]*AddressRevision) {
 	for _, a := range as {
 		revision, ok := revisions[a.ID]

@@ -1,14 +1,20 @@
 package handler
 
 import (
+	"context"
+	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) userRoutes(rg *gin.RouterGroup) {
@@ -35,16 +41,15 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 
-	usersIn := &user.ListUsersInput{
+	in := &user.ListUsersInput{
 		Limit:  limit,
 		Offset: offset,
 	}
-	uusers, total, err := h.user.ListUsers(ctx, usersIn)
+	users, total, err := h.user.ListUsers(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	users := service.NewUsers(uusers)
 	if len(users) == 0 {
 		res := &response.UsersResponse{
 			Users: []*response.UserSummary{},
@@ -53,34 +58,94 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 
-	ordersIn := &store.AggregateOrdersInput{
-		UserIDs: uusers.IDs(),
-	}
-	sorders, err := h.store.AggregateOrders(ctx, ordersIn)
-	if err != nil {
+	var (
+		orders    sentity.AggregatedOrders
+		addresses uentity.Addresses
+	)
+	userIDs := users.IDs()
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &store.AggregateOrdersInput{
+			UserIDs: userIDs,
+		}
+		orders, err = h.store.AggregateOrders(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &user.ListDefaultAddressesInput{
+			UserIDs: userIDs,
+		}
+		addresses, err = h.user.ListDefaultAddresses(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
+	susers := service.NewUsers(users, addresses.MapByUserID())
 	res := &response.UsersResponse{
-		Users: service.NewUserSummaries(users, sorders.Map()).Response(),
+		Users: service.NewUserSummaries(susers, orders.Map()).Response(),
 		Total: total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) GetUser(ctx *gin.Context) {
-	in := &user.GetUserInput{
-		UserID: util.GetParam(ctx, "userId"),
-	}
-	uuser, err := h.user.GetUser(ctx, in)
+	user, err := h.getUser(ctx, util.GetParam(ctx, "userId"))
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-
 	res := &response.UserResponse{
-		User: service.NewUser(uuser).Response(),
+		User: user.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) multiGetUsers(ctx context.Context, userIDs []string) (service.Users, error) {
+	if len(userIDs) == 0 {
+		return service.Users{}, nil
+	}
+	var (
+		users     uentity.Users
+		addresses uentity.Addresses
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &user.MultiGetUsersInput{
+			UserIDs: userIDs,
+		}
+		users, err = h.user.MultiGetUsers(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &user.ListDefaultAddressesInput{
+			UserIDs: userIDs,
+		}
+		addresses, err = h.user.ListDefaultAddresses(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+	return service.NewUsers(users, addresses.MapByUserID()), nil
+}
+
+func (h *handler) getUser(ctx context.Context, userID string) (*service.User, error) {
+	userIn := &user.GetUserInput{
+		UserID: userID,
+	}
+	u, err := h.user.GetUser(ctx, userIn)
+	if err != nil {
+		return nil, err
+	}
+	addressIn := &user.GetDefaultAddressInput{
+		UserID: userID,
+	}
+	address, err := h.user.GetDefaultAddress(ctx, addressIn)
+	if err != nil && !errors.Is(err, exception.ErrNotFound) {
+		return nil, err
+	}
+	return service.NewUser(u, address), nil
 }

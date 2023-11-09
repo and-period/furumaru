@@ -1,22 +1,22 @@
+import dayjs, { Dayjs } from 'dayjs'
 import { getToken, isSupported } from 'firebase/messaging'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
 
-import dayjs, { Dayjs } from 'dayjs'
 import { useCommonStore } from './common'
 import { messaging } from '~/plugins/firebase'
+import { apiClient } from '~/plugins/api-client'
 import {
   AdminRole,
-  AuthResponse,
-  AuthUserResponse,
-  ForgotAuthPasswordRequest,
-  ResetAuthPasswordRequest,
-  SignInRequest,
-  UpdateAuthEmailRequest,
-  UpdateAuthPasswordRequest,
-  VerifyAuthEmailRequest
+  type AuthResponse,
+  type AuthUserResponse,
+  type ForgotAuthPasswordRequest,
+  type ResetAuthPasswordRequest,
+  type SignInRequest,
+  type UpdateAuthEmailRequest,
+  type UpdateAuthPasswordRequest,
+  type VerifyAuthEmailRequest
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({

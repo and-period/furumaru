@@ -1,18 +1,39 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/and-period/furumaru/api/pkg/set"
+)
 
 // OrderItem - 注文商品情報
 type OrderItem struct {
-	OrderID   string    `gorm:"primaryKey;<-:create"` // 注文履歴ID
-	ProductID string    `gorm:"primaryKey;<-:create"` // 商品ID
-	Price     int64     `gorm:""`                     // 購入価格
-	Quantity  int64     `gorm:""`                     // 購入数量
-	CreatedAt time.Time `gorm:"<-:create"`            // 登録日時
-	UpdatedAt time.Time `gorm:""`                     // 更新日時
+	FulfillmentID     string    `gorm:"primaryKey;<-:create"` // 注文配送ID
+	ProductRevisionID int64     `gorm:"primaryKey;<-:create"` // 商品ID
+	OrderID           string    `gorm:""`                     // 注文履歴ID
+	Quantity          int64     `gorm:""`                     // 購入数量
+	CreatedAt         time.Time `gorm:"<-:create"`            // 登録日時
+	UpdatedAt         time.Time `gorm:""`                     // 更新日時
 }
 
 type OrderItems []*OrderItem
+
+func (is OrderItems) ProductRevisionIDs() []int64 {
+	return set.UniqBy(is, func(i *OrderItem) int64 {
+		return i.ProductRevisionID
+	})
+}
+
+func (is OrderItems) GroupByFulfillmentID() map[string]OrderItems {
+	res := make(map[string]OrderItems, len(is))
+	for _, i := range is {
+		if _, ok := res[i.FulfillmentID]; !ok {
+			res[i.FulfillmentID] = make(OrderItems, 0, len(is))
+		}
+		res[i.FulfillmentID] = append(res[i.FulfillmentID], i)
+	}
+	return res
+}
 
 func (is OrderItems) GroupByOrderID() map[string]OrderItems {
 	res := make(map[string]OrderItems, len(is))

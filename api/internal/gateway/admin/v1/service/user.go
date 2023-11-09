@@ -1,8 +1,6 @@
 package service
 
 import (
-	"strings"
-
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -20,48 +18,30 @@ type UserSummary struct {
 
 type UserSummaries []*UserSummary
 
-func NewUser(user *uentity.User) *User {
+func NewUser(user *uentity.User, address *uentity.Address) *User {
+	if address == nil {
+		address = &uentity.Address{}
+	}
 	return &User{
 		User: response.User{
-			ID:             user.ID,
-			Lastname:       user.Customer.Lastname,
-			Firstname:      user.Customer.Firstname,
-			LastnameKana:   user.Customer.LastnameKana,
-			FirstnameKana:  user.Customer.FirstnameKana,
-			Registered:     user.Registered,
-			Email:          user.Email(),
-			PhoneNumber:    user.PhoneNumber(),
-			PostalCode:     user.Customer.PostalCode,
-			PrefectureCode: user.PrefectureCode,
-			City:           user.Customer.City,
-			AddressLine1:   user.Customer.AddressLine1,
-			AddressLine2:   user.Customer.AddressLine2,
-			CreatedAt:      user.CreatedAt.Unix(),
-			UpdatedAt:      user.UpdatedAt.Unix(),
+			ID:         user.ID,
+			Registered: user.Registered,
+			Email:      user.Email(),
+			Address:    NewAddress(address).Response(),
+			CreatedAt:  user.CreatedAt.Unix(),
+			UpdatedAt:  user.UpdatedAt.Unix(),
 		},
 	}
-}
-
-func (u *User) Name() string {
-	return strings.TrimSpace(strings.Join([]string{u.Lastname, u.Firstname}, " "))
 }
 
 func (u *User) Response() *response.User {
 	return &u.User
 }
 
-func NewUsers(users uentity.Users) Users {
+func NewUsers(users uentity.Users, addresses map[string]*uentity.Address) Users {
 	res := make(Users, len(users))
-	for i := range users {
-		res[i] = NewUser(users[i])
-	}
-	return res
-}
-
-func (us Users) IDs() []string {
-	res := make([]string, len(us))
-	for i := range us {
-		res[i] = us[i].ID
+	for i, u := range users {
+		res[i] = NewUser(u, addresses[u.ID])
 	}
 	return res
 }

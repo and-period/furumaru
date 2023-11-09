@@ -293,6 +293,16 @@ components:
       $ref: './components/schemas/entity/message.yaml#/message'
     notification:
       $ref: './components/schemas/entity/notification.yaml#/notification'
+    order:
+      $ref: './components/schemas/entity/order.yaml#/order'
+    orderPayment:
+      $ref: './components/schemas/entity/order.yaml#/orderPayment'
+    orderRefund:
+      $ref: './components/schemas/entity/order.yaml#/orderRefund'
+    orderFulfillment:
+      $ref: './components/schemas/entity/order.yaml#/orderFulfillment'
+    orderItem:
+      $ref: './components/schemas/entity/order.yaml#/orderItem'
     producer:
       $ref: './components/schemas/entity/producer.yaml#/producer'
     productTag:

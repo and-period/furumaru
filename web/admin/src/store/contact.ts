@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
-import {
+import { apiClient } from '~/plugins/api-client'
+import type {
   Contact,
   ContactResponse,
   UpdateContactRequest
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const useContactStore = defineStore('contact', {
   state: () => ({
