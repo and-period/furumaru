@@ -2,22 +2,16 @@
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useCommonStore, useShippingStore } from '~/store'
-import type { UpdateShippingRequest } from '~/types/api'
+import type { UpdateDefaultShippingRequest } from '~/types/api'
 
-const route = useRoute()
-const router = useRouter()
 const commonStore = useCommonStore()
 const shippingStore = useShippingStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const shippingId = route.params.id as string
-
 const { shipping } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
-const formData = ref<UpdateShippingRequest>({
-  name: '',
-  isDefault: false,
+const formData = ref<UpdateDefaultShippingRequest>({
   box60Rates: [
     {
       name: '',
@@ -51,7 +45,7 @@ const formData = ref<UpdateShippingRequest>({
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    await shippingStore.getShipping(shippingId)
+    await shippingStore.fetchDefaultShipping()
     formData.value = { ...shipping.value }
   } catch (err) {
     if (err instanceof Error) {
@@ -68,12 +62,11 @@ const isLoading = (): boolean => {
 const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
-    await shippingStore.updateShipping(shippingId, formData.value)
+    await shippingStore.updateDefaultShipping(formData.value)
     commonStore.addSnackbar({
       color: 'info',
-      message: `${formData.value.name}を更新しました。`
+      message: 'デフォルト配送設定を更新しました。'
     })
-    router.push('/shippings')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)

@@ -3,24 +3,28 @@ import { storeToRefs } from 'pinia'
 
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
-import { useCoordinatorStore, useProductTypeStore } from '~/store'
-import { Prefecture, type UpdateCoordinatorRequest } from '~/types/api'
+import { useCommonStore, useCoordinatorStore, useProductTypeStore, useShippingStore } from '~/store'
+import { Prefecture, type UpsertShippingRequest, type UpdateCoordinatorRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
-const router = useRouter()
+const commonStore = useCommonStore()
 const coordinatorStore = useCoordinatorStore()
 const productTypeStore = useProductTypeStore()
 const searchAddress = useSearchAddress()
+const shippingStore = useShippingStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const coordinatorId = route.params.id as string
 
 const { coordinator } = storeToRefs(coordinatorStore)
 const { productTypes } = storeToRefs(productTypeStore)
+const { shipping } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
-const formData = ref<UpdateCoordinatorRequest>({
+const selector = ref<string>('coordinator')
+
+const coordinatorFormData = ref<UpdateCoordinatorRequest>({
   lastname: '',
   lastnameKana: '',
   firstname: '',
@@ -43,6 +47,37 @@ const formData = ref<UpdateCoordinatorRequest>({
   facebookId: '',
   businessDays: []
 })
+const shippingFormData = ref<UpsertShippingRequest>({
+  box60Rates: [
+    {
+      name: '',
+      price: 0,
+      prefectureCodes: []
+    }
+  ],
+  box60Refrigerated: 0,
+  box60Frozen: 0,
+  box80Rates: [
+    {
+      name: '',
+      price: 0,
+      prefectureCodes: []
+    }
+  ],
+  box80Refrigerated: 0,
+  box80Frozen: 0,
+  box100Rates: [
+    {
+      name: '',
+      price: 0,
+      prefectureCodes: []
+    }
+  ],
+  box100Refrigerated: 0,
+  box100Frozen: 0,
+  hasFreeShipping: false,
+  freeShippingRates: 0
+})
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
@@ -62,11 +97,15 @@ const bonusVideoUploadStatus = ref<ImageUploadStatus>({
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
-    await coordinatorStore.getCoordinator(coordinatorId)
-    formData.value = {
+    await Promise.all([
+      coordinatorStore.getCoordinator(coordinatorId),
+      shippingStore.fetchShipping(coordinatorId)
+    ])
+    coordinatorFormData.value = {
       ...coordinator.value,
       phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber)
     }
+    shippingFormData.value = { ...shipping.value }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -79,15 +118,40 @@ const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
 }
 
-const handleSubmit = async (): Promise<void> => {
+const handleSubmitCoordinator = async (): Promise<void> => {
   try {
     loading.value = true
     const req: UpdateCoordinatorRequest = {
-      ...formData.value,
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+      ...coordinatorFormData.value,
+      phoneNumber: convertJapaneseToI18nPhoneNumber(coordinatorFormData.value.phoneNumber)
     }
     await coordinatorStore.updateCoordinator(coordinatorId, req)
-    router.push('/coordinators')
+    commonStore.addSnackbar({
+      color: 'info',
+      message: 'コーディネータ情報を更新しました。'
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitShipping = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await shippingStore.upsertShipping(coordinatorId, shippingFormData.value)
+    commonStore.addSnackbar({
+      color: 'info',
+      message: '配送設定を更新しました。'
+    })
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -110,7 +174,7 @@ const handleUpdateThumbnail = (files: FileList): void => {
   loading.value = true
   coordinatorStore.uploadCoordinatorThumbnail(files[0])
     .then((res) => {
-      formData.value.thumbnailUrl = res.url
+      coordinatorFormData.value.thumbnailUrl = res.url
     })
     .catch(() => {
       thumbnailUploadStatus.value.error = true
@@ -129,7 +193,7 @@ const handleUpdateHeader = (files: FileList): void => {
   loading.value = true
   coordinatorStore.uploadCoordinatorHeader(files[0])
     .then((res) => {
-      formData.value.headerUrl = res.url
+      coordinatorFormData.value.headerUrl = res.url
     })
     .catch(() => {
       headerUploadStatus.value.error = true
@@ -148,7 +212,7 @@ const handleUpdatePromotionVideo = (files: FileList): void => {
   loading.value = true
   coordinatorStore.uploadCoordinatorPromotionVideo(files[0])
     .then((res) => {
-      formData.value.promotionVideoUrl = res.url
+      coordinatorFormData.value.promotionVideoUrl = res.url
     })
     .catch(() => {
       promotionVideoUploadStatus.value.error = true
@@ -167,7 +231,7 @@ const handleUpdateBonusVideo = (files: FileList): void => {
   loading.value = true
   coordinatorStore.uploadCoordinatorBonusVideo(files[0])
     .then((res) => {
-      formData.value.bonusVideoUrl = res.url
+      coordinatorFormData.value.bonusVideoUrl = res.url
     })
     .catch(() => {
       bonusVideoUploadStatus.value.error = true
@@ -180,9 +244,9 @@ const handleUpdateBonusVideo = (files: FileList): void => {
 
 const handleSearchAddress = async () => {
   try {
-    const res = await searchAddress.searchAddressByPostalCode(formData.value.postalCode)
-    formData.value = {
-      ...formData.value,
+    const res = await searchAddress.searchAddressByPostalCode(coordinatorFormData.value.postalCode)
+    coordinatorFormData.value = {
+      ...coordinatorFormData.value,
       prefectureCode: res.prefecture,
       city: res.city,
       addressLine1: res.town
@@ -206,7 +270,9 @@ try {
 
 <template>
   <templates-coordinator-edit
-    v-model:form-data="formData"
+    v-model:selected-tab-item="selector"
+    v-model:coordinator-form-data="coordinatorFormData"
+    v-model:shipping-form-data="shippingFormData"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -219,11 +285,13 @@ try {
     :search-error-message="searchAddress.errorMessage.value"
     :coordinator="coordinator"
     :product-types="productTypes"
+    :shipping="shipping"
     @click:search-address="handleSearchAddress"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @update:promotion-video="handleUpdatePromotionVideo"
     @update:bonus-video="handleUpdateBonusVideo"
-    @submit="handleSubmit"
+    @submit:coordinator="handleSubmitCoordinator"
+    @submit:shipping="handleSubmitShipping"
   />
 </template>
