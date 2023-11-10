@@ -71,6 +71,9 @@ func (s *shipping) MultiGetByRevision(ctx context.Context, revisionIDs []int64, 
 	if len(revisions) == 0 {
 		return entity.Shippings{}, nil
 	}
+	if err := revisions.Fill(); err != nil {
+		return nil, dbError(err)
+	}
 
 	shippings, err := s.MultiGet(ctx, revisions.ShippingIDs(), fields...)
 	if err != nil {
@@ -182,6 +185,10 @@ func (s *shipping) fill(ctx context.Context, tx *gorm.DB, shippings ...*entity.S
 	if len(revisions) == 0 {
 		return nil
 	}
+	if err := revisions.Fill(); err != nil {
+		return err
+	}
+
 	entity.Shippings(shippings).Fill(revisions.MapByShippingID())
 	return nil
 }

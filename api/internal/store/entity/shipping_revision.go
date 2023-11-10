@@ -130,6 +130,15 @@ func (rs ShippingRevisions) MapByShippingID() map[string]*ShippingRevision {
 	return res
 }
 
+func (rs ShippingRevisions) Fill() error {
+	for i := range rs {
+		if err := rs[i].Fill(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (rs ShippingRevisions) Merge(shippings map[string]*Shipping) (Shippings, error) {
 	res := make(Shippings, 0, len(rs))
 	for _, r := range rs {

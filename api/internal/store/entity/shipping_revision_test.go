@@ -480,6 +480,84 @@ func TestShippingRevisions_MapByShippingID(t *testing.T) {
 	}
 }
 
+func TestShippingRevisions_Fill(t *testing.T) {
+	t.Parallel()
+	pref1 := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+	}
+	pref2 := []int32{
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	rates := ShippingRates{
+		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
+	}
+	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
+	tests := []struct {
+		name      string
+		revisions ShippingRevisions
+		expect    ShippingRevisions
+		hasErr    bool
+	}{
+		{
+			name: "success",
+			revisions: ShippingRevisions{
+				{
+					ID:                 1,
+					ShippingID:         "shipping-id",
+					Box60RatesJSON:     buf,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80RatesJSON:     buf,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100RatesJSON:    buf,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+					CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+					UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				},
+			},
+			expect: ShippingRevisions{
+				{
+					ID:                 1,
+					ShippingID:         "shipping-id",
+					Box60Rates:         rates,
+					Box60RatesJSON:     buf,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80RatesJSON:     buf,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100RatesJSON:    buf,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+					CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+					UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				},
+			},
+			hasErr: false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.revisions.Fill()
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, tt.revisions)
+		})
+	}
+}
+
 func TestShippingRevisions_Merge(t *testing.T) {
 	t.Parallel()
 	shikoku := []int32{
