@@ -25,4 +25,6 @@ ALTER TABLE `stores`.`product_revisions` MODIFY COLUMN `updated_at` DATETIME(3) 
 ALTER TABLE `stores`.`shipping_revisions` MODIFY COLUMN `created_at` DATETIME(3) NOT NULL;
 ALTER TABLE `stores`.`shipping_revisions` MODIFY COLUMN `updated_at` DATETIME(3) NOT NULL;
 
+ALTER TABLE `stores`.`payment_cards` DROP FOREIGN KEY `fk_payment_cards_stripe_user_id`;
+DROP TABLE IF EXISTS `stores`.`payment_cards`;
 DROP TABLE IF EXISTS `stores`.`stripe_users`;
