@@ -126,10 +126,10 @@ paths:
   /v1/product-tags/{productTagId}:
     $ref: './paths/v1/product-tags/_productTagId/index.yaml'
   # Shipping
-  /v1/shippings:
-    $ref: './paths/v1/shippings/index.yaml'
-  /v1/shippings/{shippingId}:
-    $ref: './paths/v1/shippings/_shippingId/index.yaml'
+  /v1/shippings/default:
+    $ref: './paths/v1/shippings/default.yaml'
+  /v1/coordinators/{coordinatorId}/shippings:
+    $ref: './paths/v1/coordinators/_coordinatorId/shippings/index.yaml'
   # Promotion
   /v1/promotions:
     $ref: './paths/v1/promotions/index.yaml'
@@ -295,14 +295,6 @@ components:
       $ref: './components/schemas/entity/notification.yaml#/notification'
     order:
       $ref: './components/schemas/entity/order.yaml#/order'
-    orderPayment:
-      $ref: './components/schemas/entity/order.yaml#/orderPayment'
-    orderRefund:
-      $ref: './components/schemas/entity/order.yaml#/orderRefund'
-    orderFulfillment:
-      $ref: './components/schemas/entity/order.yaml#/orderFulfillment'
-    orderItem:
-      $ref: './components/schemas/entity/order.yaml#/orderItem'
     producer:
       $ref: './components/schemas/entity/producer.yaml#/producer'
     productTag:
@@ -374,10 +366,10 @@ components:
       $ref: './components/schemas/v1/product.request.yaml#/createProductRequest'
     v1UpdateProductRequest:
       $ref: './components/schemas/v1/product.request.yaml#/updateProductRequest'
-    v1CreateShippingRequest:
-      $ref: './components/schemas/v1/shipping.request.yaml#/createShippingRequest'
-    v1UpdateShippingRequest:
-      $ref: './components/schemas/v1/shipping.request.yaml#/updateShippingRequest'
+    v1UpsertShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/upsertShippingRequest'
+    v1UpdateDefaultShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/updateDefaultShippingRequest'
     v1CreatePromotionRequest:
       $ref: './components/schemas/v1/promotion.request.yaml#/createPromotionRequest'
     v1UpdatePromotionRequest:
@@ -467,8 +459,6 @@ components:
       $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
     v1ShippingResponse:
       $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
-    v1ShippingsResponse:
-      $ref: './components/schemas/v1/shipping.response.yaml#/shippingsResponse'
     v1PromotionResponse:
       $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
     v1PromotionsResponse:

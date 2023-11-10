@@ -1,0 +1,55 @@
+get:
+  summary: 配送設定取得
+  operationId: v1GetShipping
+  tags:
+  - Shipping
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネータID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1ShippingResponse'
+patch:
+  summary: 配送設定更新
+  operationId: v1UpsertShipping
+  tags:
+  - Shipping
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネータID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1UpsertShippingRequest'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema: {}
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

@@ -30,12 +30,6 @@ shipping:
     id:
       type: string
       description: 配送設定ID
-    coordinatorId:
-      type: string
-      description: コーディネータID
-    name:
-      type: string
-      description: 配送設定名
     isDefault:
       type: boolean
       description: デフォルト設定
@@ -95,8 +89,6 @@ shipping:
       description: 更新日時 (unixtime)
   required:
   - id
-  - coordinatorId
-  - name
   - isDefault
   - box60Rates
   - box60Refrigerated
@@ -113,8 +105,6 @@ shipping:
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
-    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
-    name: 'デフォルト配送設定'
     isDefault: false
     box60Rates:
     - number: 1

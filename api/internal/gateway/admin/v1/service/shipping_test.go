@@ -19,37 +19,49 @@ func TestShipping(t *testing.T) {
 		{
 			name: "success",
 			shipping: &entity.Shipping{
-				ID:   "shipping-id",
-				Name: "デフォルト配送設定",
-				Box60Rates: entity.ShippingRates{
-					{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+				ID:            "shipping-id",
+				CoordinatorID: "coordinator-id",
+				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				ShippingRevision: entity.ShippingRevision{
+					ID:         1,
+					ShippingID: "shipping-id",
+					Box60Rates: entity.ShippingRates{
+						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+					},
+					Box60Refrigerated: 500,
+					Box60Frozen:       800,
+					Box80Rates: entity.ShippingRates{
+						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+					},
+					Box80Refrigerated: 500,
+					Box80Frozen:       800,
+					Box100Rates: entity.ShippingRates{
+						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+					},
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
 				},
-				Box60Refrigerated:  500,
-				Box60Frozen:        800,
-				Box80Rates:         entity.ShippingRates{},
-				Box80Refrigerated:  500,
-				Box80Frozen:        800,
-				Box100Rates:        entity.ShippingRates{},
-				Box100Refrigerated: 500,
-				Box100Frozen:       800,
-				HasFreeShipping:    true,
-				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Shipping{
-				response.Shipping{
-					ID:   "shipping-id",
-					Name: "デフォルト配送設定",
+				Shipping: response.Shipping{
+					ID:        "shipping-id",
+					IsDefault: false,
 					Box60Rates: []*response.ShippingRate{
 						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
 					},
-					Box60Refrigerated:  500,
-					Box60Frozen:        800,
-					Box80Rates:         []*response.ShippingRate{},
-					Box80Refrigerated:  500,
-					Box80Frozen:        800,
-					Box100Rates:        []*response.ShippingRate{},
+					Box60Refrigerated: 500,
+					Box60Frozen:       800,
+					Box80Rates: []*response.ShippingRate{
+						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+					},
+					Box80Refrigerated: 500,
+					Box80Frozen:       800,
+					Box100Rates: []*response.ShippingRate{
+						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+					},
 					Box100Refrigerated: 500,
 					Box100Frozen:       800,
 					HasFreeShipping:    true,
@@ -57,6 +69,7 @@ func TestShipping(t *testing.T) {
 					CreatedAt:          1640962800,
 					UpdatedAt:          1640962800,
 				},
+				coordinatorID: "coordinator-id",
 			},
 		},
 	}
@@ -90,7 +103,7 @@ func TestShipping_Response(t *testing.T) {
 			shipping: &Shipping{
 				Shipping: response.Shipping{
 					ID:                 "shipping-id",
-					Name:               "デフォルト配送設定",
+					IsDefault:          false,
 					Box60Rates:         rates,
 					Box60Refrigerated:  500,
 					Box60Frozen:        800,
@@ -105,10 +118,11 @@ func TestShipping_Response(t *testing.T) {
 					CreatedAt:          1640962800,
 					UpdatedAt:          1640962800,
 				},
+				coordinatorID: "coordinator-id",
 			},
 			expect: &response.Shipping{
 				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
+				IsDefault:          false,
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
@@ -134,48 +148,6 @@ func TestShipping_Response(t *testing.T) {
 	}
 }
 
-func TestShippings_Map(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name      string
-		shippings Shippings
-		expect    map[string]*Shipping
-	}{
-		{
-			name: "success",
-			shippings: Shippings{
-				{
-					Shipping: response.Shipping{
-						ID:        "shipping-id",
-						Name:      "デフォルト配送設定",
-						CreatedAt: 1640962800,
-						UpdatedAt: 1640962800,
-					},
-				},
-			},
-			expect: map[string]*Shipping{
-				"shipping-id": {
-					Shipping: response.Shipping{
-						ID:        "shipping-id",
-						Name:      "デフォルト配送設定",
-						CreatedAt: 1640962800,
-						UpdatedAt: 1640962800,
-					},
-				},
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.shippings.Map())
-		})
-	}
-}
-
 func TestShippings(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -187,39 +159,51 @@ func TestShippings(t *testing.T) {
 			name: "success",
 			shippings: entity.Shippings{
 				{
-					ID:   "shipping-id",
-					Name: "デフォルト配送設定",
-					Box60Rates: entity.ShippingRates{
-						{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+					ID:            "shipping-id",
+					CoordinatorID: "coordinator-id",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					ShippingRevision: entity.ShippingRevision{
+						ID:         1,
+						ShippingID: "shipping-id",
+						Box60Rates: entity.ShippingRates{
+							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+						},
+						Box60Refrigerated: 500,
+						Box60Frozen:       800,
+						Box80Rates: entity.ShippingRates{
+							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+						},
+						Box80Refrigerated: 500,
+						Box80Frozen:       800,
+						Box100Rates: entity.ShippingRates{
+							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+						},
+						Box100Refrigerated: 500,
+						Box100Frozen:       800,
+						HasFreeShipping:    true,
+						FreeShippingRates:  3000,
 					},
-					Box60Refrigerated:  500,
-					Box60Frozen:        800,
-					Box80Rates:         entity.ShippingRates{},
-					Box80Refrigerated:  500,
-					Box80Frozen:        800,
-					Box100Rates:        entity.ShippingRates{},
-					Box100Refrigerated: 500,
-					Box100Frozen:       800,
-					HasFreeShipping:    true,
-					FreeShippingRates:  3000,
-					CreatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:          jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
 			expect: Shippings{
 				{
-					response.Shipping{
-						ID:   "shipping-id",
-						Name: "デフォルト配送設定",
+					Shipping: response.Shipping{
+						ID:        "shipping-id",
+						IsDefault: false,
 						Box60Rates: []*response.ShippingRate{
 							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
 						},
-						Box60Refrigerated:  500,
-						Box60Frozen:        800,
-						Box80Rates:         []*response.ShippingRate{},
-						Box80Refrigerated:  500,
-						Box80Frozen:        800,
-						Box100Rates:        []*response.ShippingRate{},
+						Box60Refrigerated: 500,
+						Box60Frozen:       800,
+						Box80Rates: []*response.ShippingRate{
+							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+						},
+						Box80Refrigerated: 500,
+						Box80Frozen:       800,
+						Box100Rates: []*response.ShippingRate{
+							{Number: 1, Name: "東京都", Price: 0, PrefectureCodes: []int32{13}},
+						},
 						Box100Refrigerated: 500,
 						Box100Frozen:       800,
 						HasFreeShipping:    true,
@@ -227,6 +211,7 @@ func TestShippings(t *testing.T) {
 						CreatedAt:          1640962800,
 						UpdatedAt:          1640962800,
 					},
+					coordinatorID: "coordinator-id",
 				},
 			},
 		},
@@ -262,7 +247,7 @@ func TestShippings_Response(t *testing.T) {
 				{
 					Shipping: response.Shipping{
 						ID:                 "shipping-id",
-						Name:               "デフォルト配送設定",
+						IsDefault:          false,
 						Box60Rates:         rates,
 						Box60Refrigerated:  500,
 						Box60Frozen:        800,
@@ -277,12 +262,13 @@ func TestShippings_Response(t *testing.T) {
 						CreatedAt:          1640962800,
 						UpdatedAt:          1640962800,
 					},
+					coordinatorID: "coordinator-id",
 				},
 			},
 			expect: []*response.Shipping{
 				{
 					ID:                 "shipping-id",
-					Name:               "デフォルト配送設定",
+					IsDefault:          false,
 					Box60Rates:         rates,
 					Box60Refrigerated:  500,
 					Box60Frozen:        800,

@@ -1,4 +1,4 @@
-createShippingRate:
+upsertShippingRate:
   type: object
   properties:
     name:
@@ -17,23 +17,14 @@ createShippingRate:
   - name
   - price
   - prefectureCodes
-createShippingRequest:
+upsertShippingRequest:
   type: object
   properties:
-    name:
-      type: string
-      description: 配送設定名(64文字まで)
-    coordinatorId:
-      type: string
-      description: コーディネータID(必須)
-    isDefault:
-      type: boolean
-      description: デフォルト設定
     box60Rates:
       type: array
       description: 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
       items:
-        $ref: '#/createShippingRate'
+        $ref: '#/upsertShippingRate'
     box60Refrigerated:
       type: integer
       format: int64
@@ -46,7 +37,7 @@ createShippingRequest:
       type: array
       description: 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
       items:
-        $ref: '#/createShippingRate'
+        $ref: '#/upsertShippingRate'
     box80Refrigerated:
       type: integer
       format: int64
@@ -59,7 +50,7 @@ createShippingRequest:
       type: array
       description: 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
       items:
-        $ref: '#/createShippingRate'
+        $ref: '#/upsertShippingRate'
     box100Refrigerated:
       type: integer
       format: int64
@@ -76,9 +67,6 @@ createShippingRequest:
       format: int64
       description: 送料無料になる金額(100万未満)
   required:
-  - name
-  - coordinatorId
-  - isDefault
   - box60Rates
   - box60Refrigerated
   - box60Frozen
@@ -91,9 +79,6 @@ createShippingRequest:
   - hasFreeShipping
   - freeShippingRates
   example:
-    name: 'デフォルト配送設定'
-    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
-    isDefault: false
     box60Rates:
     - number: 1
       name: '離島'
@@ -129,7 +114,7 @@ createShippingRequest:
     box100Frozen: 500
     hasFreeShipping: true
     freeShippingRates: 3000
-updateShippingRate:
+updateDefaultShippingRate:
   type: object
   properties:
     name:
@@ -148,20 +133,14 @@ updateShippingRate:
   - name
   - price
   - prefectureCodes
-updateShippingRequest:
+updateDefaultShippingRequest:
   type: object
   properties:
-    name:
-      type: string
-      description: 配送設定名(64文字まで)
-    isDefault:
-      type: boolean
-      description: デフォルト設定
     box60Rates:
       type: array
       description: 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
       items:
-        $ref: '#/updateShippingRate'
+        $ref: '#/updateDefaultShippingRate'
     box60Refrigerated:
       type: integer
       format: int64
@@ -174,7 +153,7 @@ updateShippingRequest:
       type: array
       description: 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
       items:
-        $ref: '#/updateShippingRate'
+        $ref: '#/updateDefaultShippingRate'
     box80Refrigerated:
       type: integer
       format: int64
@@ -187,7 +166,7 @@ updateShippingRequest:
       type: array
       description: 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
       items:
-        $ref: '#/updateShippingRate'
+        $ref: '#/updateDefaultShippingRate'
     box100Refrigerated:
       type: integer
       format: int64
@@ -204,8 +183,6 @@ updateShippingRequest:
       format: int64
       description: 送料無料になる金額(100万未満)
   required:
-  - name
-  - isDefault
   - box60Rates
   - box60Refrigerated
   - box60Frozen
@@ -218,8 +195,6 @@ updateShippingRequest:
   - hasFreeShipping
   - freeShippingRates
   example:
-    name: 'デフォルト配送設定'
-    isDefault: false
     box60Rates:
     - number: 1
       name: '離島'

@@ -68,7 +68,7 @@ func (rs AddressRevisions) AddressIDs() []string {
 	})
 }
 
-func (rs AddressRevisions) Map() map[string]*AddressRevision {
+func (rs AddressRevisions) MapByAddressID() map[string]*AddressRevision {
 	res := make(map[string]*AddressRevision, len(rs))
 	for _, r := range rs {
 		res[r.AddressID] = r

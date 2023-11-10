@@ -111,10 +111,7 @@ func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...s
 }
 
 func (p *product) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Products, error) {
-	var (
-		products  entity.Products
-		revisions entity.ProductRevisions
-	)
+	var revisions entity.ProductRevisions
 
 	stmt := p.db.Statement(ctx, p.db.DB, productRevisionTable).
 		Where("id IN (?)", revisionIDs)
@@ -305,5 +302,5 @@ func (p *product) fill(ctx context.Context, tx *gorm.DB, products ...*entity.Pro
 	if len(revisions) == 0 {
 		return nil
 	}
-	return entity.Products(products).Fill(revisions.Map(), p.now())
+	return entity.Products(products).Fill(revisions.MapByProductID(), p.now())
 }

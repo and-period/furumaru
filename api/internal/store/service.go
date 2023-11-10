@@ -32,12 +32,12 @@ type Service interface {
 	UpdateProductTag(ctx context.Context, in *UpdateProductTagInput) error                             // 更新
 	DeleteProductTag(ctx context.Context, in *DeleteProductTagInput) error                             // 削除
 	// 配送設定
-	ListShippings(ctx context.Context, in *ListShippingsInput) (entity.Shippings, int64, error)  // 一覧取得
-	MultiGetShippings(ctx context.Context, in *MultiGetShippingsInput) (entity.Shippings, error) // 一覧取得(ID指定)
-	GetShipping(ctx context.Context, in *GetShippingInput) (*entity.Shipping, error)             // １件取得
-	CreateShipping(ctx context.Context, in *CreateShippingInput) (*entity.Shipping, error)       // 登録
-	UpdateShipping(ctx context.Context, in *UpdateShippingInput) error                           // 更新
-	DeleteShipping(ctx context.Context, in *DeleteShippingInput) error                           // 削除
+	ListShippingsByCoordinatorIDs(ctx context.Context, in *ListShippingsByCoordinatorIDsInput) (entity.Shippings, error) // 一覧取得(コーディネータID指定)
+	MultiGetShippingsByRevision(ctx context.Context, in *MultiGetShippingsByRevisionInput) (entity.Shippings, error)     // 一覧取得(変更履歴指定)
+	GetDefaultShipping(ctx context.Context, in *GetDefaultShippingInput) (*entity.Shipping, error)                       // １件取得(デフォルト設定)
+	GetShippingByCoordinatorID(ctx context.Context, in *GetShippingByCoordinatorIDInput) (*entity.Shipping, error)       // １件取得(コーディネータID設定)
+	UpdateDefaultShipping(ctx context.Context, in *UpdateDefaultShippingInput) error                                     // 登録または更新(デフォルト設定)
+	UpsertShipping(ctx context.Context, in *UpsertShippingInput) error                                                   // 登録または更新(コーディネータごとの設定)
 	// 商品
 	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, int64, error)                      // 一覧取得
 	MultiGetProducts(ctx context.Context, in *MultiGetProductsInput) (entity.Products, error)                     // 一覧取得(ID指定)
