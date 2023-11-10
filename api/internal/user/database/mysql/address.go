@@ -107,10 +107,7 @@ func (a *address) MultiGet(ctx context.Context, addressIDs []string, fields ...s
 }
 
 func (a *address) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Addresses, error) {
-	var (
-		addresses entity.Addresses
-		revisions entity.AddressRevisions
-	)
+	var revisions entity.AddressRevisions
 
 	stmt := a.db.Statement(ctx, a.db.DB, addressRevisionTable).
 		Where("id IN (?)", revisionIDs)
@@ -123,11 +120,9 @@ func (a *address) MultiGetByRevision(ctx context.Context, revisionIDs []int64, f
 	}
 	revisions.Fill()
 
-	stmt = a.db.Statement(ctx, a.db.DB, addressTable, fields...).
-		Where("id IN (?)", revisions.AddressIDs())
-
-	if err := stmt.Find(&addresses).Error; err != nil {
-		return nil, dbError(err)
+	addresses, err := a.MultiGet(ctx, revisions.AddressIDs(), fields...)
+	if err != nil {
+		return nil, err
 	}
 	if len(addresses) == 0 {
 		return entity.Addresses{}, nil
@@ -298,6 +293,6 @@ func (a *address) fill(ctx context.Context, tx *gorm.DB, addresses ...*entity.Ad
 		return nil
 	}
 	revisions.Fill()
-	entity.Addresses(addresses).Fill(revisions.Map())
+	entity.Addresses(addresses).Fill(revisions.MapByAddressID())
 	return nil
 }

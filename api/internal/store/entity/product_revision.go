@@ -39,7 +39,7 @@ func (rs ProductRevisions) ProductIDs() []string {
 	})
 }
 
-func (rs ProductRevisions) Map() map[string]*ProductRevision {
+func (rs ProductRevisions) MapByProductID() map[string]*ProductRevision {
 	res := make(map[string]*ProductRevision, len(rs))
 	for _, r := range rs {
 		res[r.ProductID] = r

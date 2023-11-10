@@ -38,8 +38,6 @@ func TestShipping(t *testing.T) {
 			name: "success",
 			params: &NewShippingParams{
 				CoordinatorID:      "coordinator-id",
-				Name:               "デフォルト配送設定",
-				IsDefault:          true,
 				Box60Rates:         rates,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
@@ -53,20 +51,22 @@ func TestShipping(t *testing.T) {
 				FreeShippingRates:  3000,
 			},
 			expect: &Shipping{
-				CoordinatorID:      "coordinator-id",
-				Name:               "デフォルト配送設定",
-				IsDefault:          true,
-				Box60Rates:         rates,
-				Box60Refrigerated:  500,
-				Box60Frozen:        800,
-				Box80Rates:         rates,
-				Box80Refrigerated:  500,
-				Box80Frozen:        800,
-				Box100Rates:        rates,
-				Box100Refrigerated: 500,
-				Box100Frozen:       800,
-				HasFreeShipping:    true,
-				FreeShippingRates:  3000,
+				ID:            "coordinator-id",
+				CoordinatorID: "coordinator-id",
+				ShippingRevision: ShippingRevision{
+					ShippingID:         "coordinator-id",
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
 			},
 		},
 	}
@@ -75,8 +75,40 @@ func TestShipping(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual := NewShipping(tt.params)
-			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestShipping_IsDefault(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		shipping *Shipping
+		expect   bool
+	}{
+		{
+			name: "default",
+			shipping: &Shipping{
+				ID:            "default",
+				CoordinatorID: "",
+			},
+			expect: true,
+		},
+		{
+			name: "not default",
+			shipping: &Shipping{
+				ID:            "shipping-id",
+				CoordinatorID: "coordinator-id",
+			},
+			expect: false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.shipping.IsDefault())
 		})
 	}
 }
@@ -95,174 +127,170 @@ func TestShipping_Fill(t *testing.T) {
 		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
 		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 	}
-	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
 	tests := []struct {
 		name     string
 		shipping *Shipping
+		revision *ShippingRevision
 		expect   *Shipping
 		hasErr   bool
 	}{
 		{
 			name: "success",
 			shipping: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
-				Box60RatesJSON:     buf,
-				Box60Refrigerated:  500,
-				Box60Frozen:        800,
-				Box80RatesJSON:     buf,
-				Box80Refrigerated:  500,
-				Box80Frozen:        800,
-				Box100RatesJSON:    buf,
-				Box100Refrigerated: 500,
-				Box100Frozen:       800,
-				HasFreeShipping:    true,
-				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
 			},
-			expect: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
+			revision: &ShippingRevision{
 				Box60Rates:         rates,
-				Box60RatesJSON:     buf,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
 				Box80Rates:         rates,
-				Box80RatesJSON:     buf,
 				Box80Refrigerated:  500,
 				Box80Frozen:        800,
 				Box100Rates:        rates,
-				Box100RatesJSON:    buf,
 				Box100Refrigerated: 500,
 				Box100Frozen:       800,
 				HasFreeShipping:    true,
 				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+			},
+			expect: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
 			},
 			hasErr: false,
 		},
 		{
 			name: "success Box60Rates is nil",
 			shipping: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
-				Box60RatesJSON:     nil,
-				Box60Refrigerated:  500,
-				Box60Frozen:        800,
-				Box80RatesJSON:     buf,
-				Box80Refrigerated:  500,
-				Box80Frozen:        800,
-				Box100RatesJSON:    buf,
-				Box100Refrigerated: 500,
-				Box100Frozen:       800,
-				HasFreeShipping:    true,
-				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
 			},
-			expect: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
-				Box60Rates:         ShippingRates{},
-				Box60RatesJSON:     nil,
+			revision: &ShippingRevision{
+				Box60Rates:         nil,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
 				Box80Rates:         rates,
-				Box80RatesJSON:     buf,
 				Box80Refrigerated:  500,
 				Box80Frozen:        800,
 				Box100Rates:        rates,
-				Box100RatesJSON:    buf,
 				Box100Refrigerated: 500,
 				Box100Frozen:       800,
 				HasFreeShipping:    true,
 				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+			},
+			expect: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         nil,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
 			},
 			hasErr: false,
 		},
 		{
 			name: "success Box80Rates is nil",
 			shipping: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
-				Box60RatesJSON:     buf,
-				Box60Refrigerated:  500,
-				Box60Frozen:        800,
-				Box80RatesJSON:     nil,
-				Box80Refrigerated:  500,
-				Box80Frozen:        800,
-				Box100RatesJSON:    buf,
-				Box100Refrigerated: 500,
-				Box100Frozen:       800,
-				HasFreeShipping:    true,
-				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
 			},
-			expect: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
+			revision: &ShippingRevision{
 				Box60Rates:         rates,
-				Box60RatesJSON:     buf,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
-				Box80Rates:         ShippingRates{},
-				Box80RatesJSON:     nil,
+				Box80Rates:         nil,
 				Box80Refrigerated:  500,
 				Box80Frozen:        800,
 				Box100Rates:        rates,
-				Box100RatesJSON:    buf,
 				Box100Refrigerated: 500,
 				Box100Frozen:       800,
 				HasFreeShipping:    true,
 				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+			},
+			expect: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         nil,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
 			},
 			hasErr: false,
 		},
 		{
 			name: "success Box100Rates is nil",
 			shipping: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
-				Box60RatesJSON:     buf,
-				Box60Refrigerated:  500,
-				Box60Frozen:        800,
-				Box80RatesJSON:     buf,
-				Box80Refrigerated:  500,
-				Box80Frozen:        800,
-				Box100RatesJSON:    nil,
-				Box100Refrigerated: 500,
-				Box100Frozen:       800,
-				HasFreeShipping:    true,
-				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
 			},
-			expect: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
+			revision: &ShippingRevision{
 				Box60Rates:         rates,
-				Box60RatesJSON:     buf,
 				Box60Refrigerated:  500,
 				Box60Frozen:        800,
 				Box80Rates:         rates,
-				Box80RatesJSON:     buf,
 				Box80Refrigerated:  500,
 				Box80Frozen:        800,
-				Box100Rates:        ShippingRates{},
-				Box100RatesJSON:    nil,
+				Box100Rates:        nil,
 				Box100Refrigerated: 500,
 				Box100Frozen:       800,
 				HasFreeShipping:    true,
 				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+			},
+			expect: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        nil,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
 			},
 			hasErr: false,
 		},
@@ -271,14 +299,13 @@ func TestShipping_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.shipping.Fill()
-			assert.Equal(t, tt.hasErr, err != nil, err)
+			tt.shipping.Fill(tt.revision)
 			assert.Equal(t, tt.expect, tt.shipping)
 		})
 	}
 }
 
-func TestShipping_FillJSON(t *testing.T) {
+func TestShippings_IDs(t *testing.T) {
 	t.Parallel()
 	pref1 := []int32{
 		codes.PrefectureValues["tokushima"],
@@ -292,62 +319,40 @@ func TestShipping_FillJSON(t *testing.T) {
 		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
 		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
 	}
-	buf := []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`)
 	tests := []struct {
-		name     string
-		shipping *Shipping
-		expect   *Shipping
-		hasErr   bool
+		name      string
+		shippings Shippings
+		expect    []string
 	}{
 		{
 			name: "success",
-			shipping: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
-				Box60Rates:         rates,
-				Box60Refrigerated:  500,
-				Box60Frozen:        800,
-				Box80Rates:         rates,
-				Box80Refrigerated:  500,
-				Box80Frozen:        800,
-				Box100Rates:        rates,
-				Box100Refrigerated: 500,
-				Box100Frozen:       800,
-				HasFreeShipping:    true,
-				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
+			shippings: Shippings{
+				{
+					ID:            "shipping-id",
+					CoordinatorID: "coordinator-id",
+					ShippingRevision: ShippingRevision{
+						Box60Rates:         rates,
+						Box60Refrigerated:  500,
+						Box60Frozen:        800,
+						Box80Rates:         rates,
+						Box80Refrigerated:  500,
+						Box80Frozen:        800,
+						Box100Rates:        rates,
+						Box100Refrigerated: 500,
+						Box100Frozen:       800,
+						HasFreeShipping:    true,
+						FreeShippingRates:  3000,
+					},
+				},
 			},
-			expect: &Shipping{
-				ID:                 "shipping-id",
-				Name:               "デフォルト配送設定",
-				Box60Rates:         rates,
-				Box60RatesJSON:     buf,
-				Box60Refrigerated:  500,
-				Box60Frozen:        800,
-				Box80Rates:         rates,
-				Box80RatesJSON:     buf,
-				Box80Refrigerated:  500,
-				Box80Frozen:        800,
-				Box100Rates:        rates,
-				Box100RatesJSON:    buf,
-				Box100Refrigerated: 500,
-				Box100Frozen:       800,
-				HasFreeShipping:    true,
-				FreeShippingRates:  3000,
-				CreatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-				UpdatedAt:          jst.Date(2022, 7, 3, 18, 30, 0, 0),
-			},
-			hasErr: false,
+			expect: []string{"shipping-id"},
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.shipping.FillJSON()
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, tt.shipping)
+			assert.Equal(t, tt.expect, tt.shippings.IDs())
 		})
 	}
 }
@@ -375,20 +380,21 @@ func TestShippings_CoordinatorIDs(t *testing.T) {
 			name: "success",
 			shippings: Shippings{
 				{
-					CoordinatorID:      "coordinator-id",
-					Name:               "デフォルト配送設定",
-					IsDefault:          true,
-					Box60Rates:         rates,
-					Box60Refrigerated:  500,
-					Box60Frozen:        800,
-					Box80Rates:         rates,
-					Box80Refrigerated:  500,
-					Box80Frozen:        800,
-					Box100Rates:        rates,
-					Box100Refrigerated: 500,
-					Box100Frozen:       800,
-					HasFreeShipping:    true,
-					FreeShippingRates:  3000,
+					ID:            "shipping-id",
+					CoordinatorID: "coordinator-id",
+					ShippingRevision: ShippingRevision{
+						Box60Rates:         rates,
+						Box60Refrigerated:  500,
+						Box60Frozen:        800,
+						Box80Rates:         rates,
+						Box80Refrigerated:  500,
+						Box80Frozen:        800,
+						Box100Rates:        rates,
+						Box100Refrigerated: 500,
+						Box100Frozen:       800,
+						HasFreeShipping:    true,
+						FreeShippingRates:  3000,
+					},
 				},
 			},
 			expect: []string{"coordinator-id"},
@@ -403,135 +409,7 @@ func TestShippings_CoordinatorIDs(t *testing.T) {
 	}
 }
 
-func TestShippingRate(t *testing.T) {
-	t.Parallel()
-	type input struct {
-		num   int64
-		name  string
-		price int64
-		prefs []int32
-	}
-	tests := []struct {
-		name   string
-		input  input
-		expect *ShippingRate
-	}{
-		{
-			name: "success",
-			input: input{
-				num:   1,
-				name:  "四国",
-				price: 2000,
-				prefs: []int32{
-					codes.PrefectureValues["tokushima"],
-					codes.PrefectureValues["kagawa"],
-					codes.PrefectureValues["ehime"],
-					codes.PrefectureValues["kochi"],
-				},
-			},
-			expect: &ShippingRate{
-				Number: 1,
-				Name:   "四国",
-				Price:  2000,
-				PrefectureCodes: []int32{
-					codes.PrefectureValues["tokushima"],
-					codes.PrefectureValues["kagawa"],
-					codes.PrefectureValues["ehime"],
-					codes.PrefectureValues["kochi"],
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			actual := NewShippingRate(tt.input.num, tt.input.name, tt.input.price, tt.input.prefs)
-			assert.Equal(t, tt.expect, actual)
-		})
-	}
-}
-
-func TestShippingRates(t *testing.T) {
-	t.Parallel()
-	shikoku := []int32{
-		codes.PrefectureValues["tokushima"],
-		codes.PrefectureValues["kagawa"],
-		codes.PrefectureValues["ehime"],
-		codes.PrefectureValues["kochi"],
-	}
-	set := set.New(shikoku...)
-	others := make([]int32, 0, 47-len(shikoku))
-	for _, val := range codes.PrefectureValues {
-		if set.Contains(val) {
-			continue
-		}
-		others = append(others, val)
-	}
-	tests := []struct {
-		name   string
-		rates  ShippingRates
-		hasErr bool
-	}{
-		{
-			name: "success",
-			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
-				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: others},
-			},
-			hasErr: false,
-		},
-		{
-			name: "number is checked min",
-			rates: ShippingRates{
-				{Number: 0, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
-				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: others},
-			},
-			hasErr: true,
-		},
-		{
-			name: "price is checked min",
-			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: -1, PrefectureCodes: shikoku},
-				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: others},
-			},
-			hasErr: true,
-		},
-		{
-			name: "number is not unique",
-			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
-				{Number: 1, Name: "四国(西部)", Price: 500, PrefectureCodes: others},
-			},
-			hasErr: true,
-		},
-		{
-			name: "not exists prefecture values",
-			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
-				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: []int32{0}},
-			},
-			hasErr: true,
-		},
-		{
-			name: "prefectures is umnatch length",
-			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: shikoku},
-			},
-			hasErr: true,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			err := tt.rates.Validate()
-			assert.Equal(t, tt.hasErr, tt.rates.Validate() != nil, err)
-		})
-	}
-}
-
-func TestShippingRates_Marshal(t *testing.T) {
+func TestShippings_Map(t *testing.T) {
 	t.Parallel()
 	pref1 := []int32{
 		codes.PrefectureValues["tokushima"],
@@ -541,35 +419,152 @@ func TestShippingRates_Marshal(t *testing.T) {
 		codes.PrefectureValues["ehime"],
 		codes.PrefectureValues["kochi"],
 	}
+	rates := ShippingRates{
+		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
+	}
 	tests := []struct {
-		name   string
-		rates  ShippingRates
-		expect []byte
-		hasErr bool
+		name      string
+		shippings Shippings
+		expect    map[string]*Shipping
 	}{
 		{
 			name: "success",
-			rates: ShippingRates{
-				{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
-				{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
+			shippings: Shippings{
+				{
+					ID:            "shipping-id",
+					CoordinatorID: "coordinator-id",
+					ShippingRevision: ShippingRevision{
+						Box60Rates:         rates,
+						Box60Refrigerated:  500,
+						Box60Frozen:        800,
+						Box80Rates:         rates,
+						Box80Refrigerated:  500,
+						Box80Frozen:        800,
+						Box100Rates:        rates,
+						Box100Refrigerated: 500,
+						Box100Frozen:       800,
+						HasFreeShipping:    true,
+						FreeShippingRates:  3000,
+					},
+				},
 			},
-			expect: []byte(`[{"number":1,"name":"四国(東部)","price":250,"prefectures":[36,37]},{"number":2,"name":"四国(西部)","price":500,"prefectures":[38,39]}]`),
-			hasErr: false,
-		},
-		{
-			name:   "shipping rate is empty",
-			rates:  nil,
-			expect: []byte{},
-			hasErr: false,
+			expect: map[string]*Shipping{
+				"shipping-id": {
+					ID:            "shipping-id",
+					CoordinatorID: "coordinator-id",
+					ShippingRevision: ShippingRevision{
+						Box60Rates:         rates,
+						Box60Refrigerated:  500,
+						Box60Frozen:        800,
+						Box80Rates:         rates,
+						Box80Refrigerated:  500,
+						Box80Frozen:        800,
+						Box100Rates:        rates,
+						Box100Refrigerated: 500,
+						Box100Frozen:       800,
+						HasFreeShipping:    true,
+						FreeShippingRates:  3000,
+					},
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual, err := tt.rates.Marshal()
-			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expect, tt.shippings.Map())
+		})
+	}
+}
+
+func TestShippings_Fill(t *testing.T) {
+	t.Parallel()
+	pref1 := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+	}
+	pref2 := []int32{
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	rates := ShippingRates{
+		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
+	}
+	tests := []struct {
+		name      string
+		shippings Shippings
+		revisions map[string]*ShippingRevision
+		expect    Shippings
+	}{
+		{
+			name: "success",
+			shippings: Shippings{
+				{
+					ID:        "shipping-id01",
+					CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+					UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				},
+				{
+					ID:        "shipping-id02",
+					CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+					UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				},
+			},
+			revisions: map[string]*ShippingRevision{
+				"shipping-id01": {
+					ID:                 1,
+					ShippingID:         "shipping-id01",
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			expect: Shippings{
+				{
+					ID:        "shipping-id01",
+					CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+					UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+					ShippingRevision: ShippingRevision{
+						ID:                 1,
+						ShippingID:         "shipping-id01",
+						Box60Rates:         rates,
+						Box60Refrigerated:  500,
+						Box60Frozen:        800,
+						Box80Rates:         rates,
+						Box80Refrigerated:  500,
+						Box80Frozen:        800,
+						Box100Rates:        rates,
+						Box100Refrigerated: 500,
+						Box100Frozen:       800,
+						HasFreeShipping:    true,
+						FreeShippingRates:  3000,
+					},
+				},
+				{
+					ID:        "shipping-id02",
+					CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+					UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.shippings.Fill(tt.revisions)
+			assert.Equal(t, tt.expect, tt.shippings)
 		})
 	}
 }

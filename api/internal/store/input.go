@@ -115,75 +115,59 @@ type DeleteProductTagInput struct {
 	ProductTagID string `validate:"required"`
 }
 
-type ListShippingsInput struct {
-	Name          string                `validate:"omitempty,max=64"`
-	CoordinatorID string                `validate:"omitempty"`
-	Limit         int64                 `validate:"required,max=200"`
-	Offset        int64                 `validate:"min=0"`
-	Orders        []*ListShippingsOrder `validate:"omitempty,dive,required"`
+type ListShippingsByCoordinatorIDsInput struct {
+	CoordinatorIDs []string `validate:"omitempty,dive,required"`
 }
 
-type ListShippingsOrder struct {
-	Key        entity.ShippingOrderBy `validate:"required"`
-	OrderByASC bool                   `validate:""`
+type MultiGetShippingsByRevisionInput struct {
+	ShippingRevisionIDs []int64 `validate:"omitempty,dive,required"`
 }
 
-type MultiGetShippingsInput struct {
-	ShippingIDs []string `validate:"omitempty,dive,required"`
+type GetDefaultShippingInput struct{}
+
+type GetShippingByCoordinatorIDInput struct {
+	CoordinatorID string `validate:"required"`
 }
 
-type GetShippingInput struct {
-	ShippingID string `validate:"required"`
-}
-
-type CreateShippingInput struct {
+type UpsertShippingInput struct {
 	CoordinatorID      string                `validate:"required"`
-	Name               string                `validate:"required,max=64"`
-	IsDefault          bool                  `validate:""`
-	Box60Rates         []*CreateShippingRate `validate:"required,dive,required"`
+	Box60Rates         []*UpsertShippingRate `validate:"required,dive,required"`
 	Box60Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
 	Box60Frozen        int64                 `validate:"min=0,lt=10000000000"`
-	Box80Rates         []*CreateShippingRate `validate:"required,dive,required"`
+	Box80Rates         []*UpsertShippingRate `validate:"required,dive,required"`
 	Box80Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
 	Box80Frozen        int64                 `validate:"min=0,lt=10000000000"`
-	Box100Rates        []*CreateShippingRate `validate:"required,dive,required"`
+	Box100Rates        []*UpsertShippingRate `validate:"required,dive,required"`
 	Box100Refrigerated int64                 `validate:"min=0,lt=10000000000"`
 	Box100Frozen       int64                 `validate:"min=0,lt=10000000000"`
 	HasFreeShipping    bool                  `validate:""`
 	FreeShippingRates  int64                 `validate:"min=0,lt=10000000000"`
 }
 
-type CreateShippingRate struct {
+type UpsertShippingRate struct {
 	Name            string  `validate:"required"`
 	Price           int64   `validate:"required,lt=10000000000"`
 	PrefectureCodes []int32 `validate:"required"`
 }
 
-type UpdateShippingInput struct {
-	ShippingID         string                `validate:"required"`
-	Name               string                `validate:"required,max=64"`
-	IsDefault          bool                  `validate:""`
-	Box60Rates         []*UpdateShippingRate `validate:"required,dive,required"`
-	Box60Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
-	Box60Frozen        int64                 `validate:"min=0,lt=10000000000"`
-	Box80Rates         []*UpdateShippingRate `validate:"required,dive,required"`
-	Box80Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
-	Box80Frozen        int64                 `validate:"min=0,lt=10000000000"`
-	Box100Rates        []*UpdateShippingRate `validate:"required,dive,required"`
-	Box100Refrigerated int64                 `validate:"min=0,lt=10000000000"`
-	Box100Frozen       int64                 `validate:"min=0,lt=10000000000"`
-	HasFreeShipping    bool                  `validate:""`
-	FreeShippingRates  int64                 `validate:"min=0,lt=10000000000"`
+type UpdateDefaultShippingInput struct {
+	Box60Rates         []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box60Refrigerated  int64                        `validate:"min=0,lt=10000000000"`
+	Box60Frozen        int64                        `validate:"min=0,lt=10000000000"`
+	Box80Rates         []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box80Refrigerated  int64                        `validate:"min=0,lt=10000000000"`
+	Box80Frozen        int64                        `validate:"min=0,lt=10000000000"`
+	Box100Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box100Refrigerated int64                        `validate:"min=0,lt=10000000000"`
+	Box100Frozen       int64                        `validate:"min=0,lt=10000000000"`
+	HasFreeShipping    bool                         `validate:""`
+	FreeShippingRates  int64                        `validate:"min=0,lt=10000000000"`
 }
 
-type UpdateShippingRate struct {
+type UpdateDefaultShippingRate struct {
 	Name            string  `validate:"required"`
 	Price           int64   `validate:"required,lt=10000000000"`
 	PrefectureCodes []int32 `validate:"required"`
-}
-
-type DeleteShippingInput struct {
-	ShippingID string `validate:"required"`
 }
 
 type ListProductsInput struct {

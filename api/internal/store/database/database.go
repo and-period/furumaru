@@ -269,31 +269,15 @@ type ApproveScheduleParams struct {
 }
 
 type Shipping interface {
-	List(ctx context.Context, params *ListShippingsParams, fields ...string) (entity.Shippings, error)
-	Count(ctx context.Context, params *ListShippingsParams) (int64, error)
-	Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error)
-	MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error)
+	ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error)
+	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error)
+	GetDefault(ctx context.Context, fields ...string) (*entity.Shipping, error)
+	GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error)
 	Create(ctx context.Context, shipping *entity.Shipping) error
 	Update(ctx context.Context, shippingID string, params *UpdateShippingParams) error
-	Delete(ctx context.Context, shippingID string) error
-}
-
-type ListShippingsParams struct {
-	CoordinatorID string
-	Name          string
-	Limit         int
-	Offset        int
-	Orders        []*ListShippingsOrder
-}
-
-type ListShippingsOrder struct {
-	Key        entity.ShippingOrderBy
-	OrderByASC bool
 }
 
 type UpdateShippingParams struct {
-	Name               string
-	IsDefault          bool
 	Box60Rates         entity.ShippingRates
 	Box60Refrigerated  int64
 	Box60Frozen        int64

@@ -19,7 +19,7 @@ func TestShipping(t *testing.T) {
 	assert.NotNil(t, newShipping(nil))
 }
 
-func TestShipping_List(t *testing.T) {
+func TestShipping_ListByCoordinatorIDs(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -33,15 +33,18 @@ func TestShipping_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	shippings := make(entity.Shippings, 3)
-	shippings[0] = testShipping("shipping-id01", "coordinator-id", now())
-	shippings[1] = testShipping("shipping-id02", "coordinator-id", now())
-	shippings[2] = testShipping("shipping-id03", "coordinator-id", now())
+	shippings := make(entity.Shippings, 2)
+	shippings[0] = testShipping("shipping-id01", "coordinator-id01", 1, now())
+	shippings[1] = testShipping("shipping-id02", "coordinator-id02", 2, now())
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
+	for i := range shippings {
+		err := db.DB.Create(&shippings[i].ShippingRevision).Error
+		require.NoError(t, err)
+	}
 
 	type args struct {
-		params *database.ListShippingsParams
+		coordinatorIDs []string
 	}
 	type want struct {
 		shippings entity.Shippings
@@ -57,28 +60,7 @@ func TestShipping_List(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &database.ListShippingsParams{
-					Name:          "配送設定",
-					CoordinatorID: "coordinator-id",
-					Limit:         20,
-					Offset:        1,
-				},
-			},
-			want: want{
-				shippings: shippings[1:],
-				hasErr:    false,
-			},
-		},
-		{
-			name:  "success with sort",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				params: &database.ListShippingsParams{
-					Orders: []*database.ListShippingsOrder{
-						{Key: entity.ShippingOrderByCreatedAt, OrderByASC: true},
-						{Key: entity.ShippingOrderByUpdatedAt, OrderByASC: false},
-					},
-				},
+				coordinatorIDs: []string{"coordinator-id01", "coordinator-id02"},
 			},
 			want: want{
 				shippings: shippings,
@@ -98,79 +80,10 @@ func TestShipping_List(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &shipping{db: db, now: now}
-			actual, err := db.List(ctx, tt.args.params)
+			actual, err := db.ListByCoordinatorIDs(ctx, tt.args.coordinatorIDs)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreShippingsField(actual, now())
 			assert.Equal(t, tt.want.shippings, actual)
-		})
-	}
-}
-
-func TestShipping_Count(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	shippings := make(entity.Shippings, 3)
-	shippings[0] = testShipping("shipping-id01", "coordinator-id", now())
-	shippings[1] = testShipping("shipping-id02", "coordinator-id", now())
-	shippings[2] = testShipping("shipping-id03", "coordinator-id", now())
-	err = db.DB.Create(&shippings).Error
-	require.NoError(t, err)
-
-	type args struct {
-		params *database.ListShippingsParams
-	}
-	type want struct {
-		total  int64
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name:  "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				params: &database.ListShippingsParams{
-					Name:   "配送設定",
-					Limit:  20,
-					Offset: 1,
-				},
-			},
-			want: want{
-				total:  3,
-				hasErr: false,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			tt.setup(ctx, t, db)
-
-			db := &shipping{db: db, now: now}
-			actual, err := db.Count(ctx, tt.args.params)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			assert.Equal(t, tt.want.total, actual)
 		})
 	}
 }
@@ -190,10 +103,14 @@ func TestShipping_MultiGet(t *testing.T) {
 	require.NoError(t, err)
 
 	shippings := make(entity.Shippings, 2)
-	shippings[0] = testShipping("shipping-id01", "coordinator-id", now())
-	shippings[1] = testShipping("shipping-id02", "coordinator-id", now())
+	shippings[0] = testShipping("shipping-id01", "coordinator-id01", 1, now())
+	shippings[1] = testShipping("shipping-id02", "coordinator-id02", 2, now())
 	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
+	for i := range shippings {
+		err := db.DB.Create(&shippings[i].ShippingRevision).Error
+		require.NoError(t, err)
+	}
 
 	type args struct {
 		shippingIDs []string
@@ -215,7 +132,7 @@ func TestShipping_MultiGet(t *testing.T) {
 				shippingIDs: []string{"shipping-id01", "shipping-id02", "shipping-id03"},
 			},
 			want: want{
-				shippings: shippings[:2],
+				shippings: shippings,
 				hasErr:    false,
 			},
 		},
@@ -240,7 +157,7 @@ func TestShipping_MultiGet(t *testing.T) {
 	}
 }
 
-func TestShipping_Get(t *testing.T) {
+func TestShipping_MultiGetByRevision(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -254,16 +171,22 @@ func TestShipping_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", "coordinator-id", now())
-	err = db.DB.Create(&s).Error
+	shippings := make(entity.Shippings, 2)
+	shippings[0] = testShipping("shipping-id01", "coordinator-id01", 1, now())
+	shippings[1] = testShipping("shipping-id02", "coordinator-id02", 2, now())
+	err = db.DB.Create(&shippings).Error
 	require.NoError(t, err)
+	for i := range shippings {
+		err := db.DB.Create(&shippings[i].ShippingRevision).Error
+		require.NoError(t, err)
+	}
 
 	type args struct {
-		shippingID string
+		revisionIDs []int64
 	}
 	type want struct {
-		shipping *entity.Shipping
-		hasErr   bool
+		shippings entity.Shippings
+		hasErr    bool
 	}
 	tests := []struct {
 		name  string
@@ -275,22 +198,11 @@ func TestShipping_Get(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				shippingID: "shipping-id",
+				revisionIDs: []int64{1, 2, 3},
 			},
 			want: want{
-				shipping: s,
-				hasErr:   false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				shippingID: "other-id",
-			},
-			want: want{
-				shipping: nil,
-				hasErr:   true,
+				shippings: shippings,
+				hasErr:    false,
 			},
 		},
 	}
@@ -306,7 +218,68 @@ func TestShipping_Get(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &shipping{db: db, now: now}
-			actual, err := db.Get(ctx, tt.args.shippingID)
+			actual, err := db.MultiGetByRevision(ctx, tt.args.revisionIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreShippingsField(actual, now())
+			assert.Equal(t, tt.want.shippings, actual)
+		})
+	}
+}
+
+func TestShipping_GetDefault(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	s := testShipping(entity.DefaultShippingID, "", 1, now())
+	err = db.DB.Create(&s).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&s.ShippingRevision).Error
+	require.NoError(t, err)
+
+	type args struct{}
+	type want struct {
+		shipping *entity.Shipping
+		hasErr   bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args:  args{},
+			want: want{
+				shipping: s,
+				hasErr:   false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
+			actual, err := db.GetDefault(ctx)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			fillIgnoreShippingField(actual, now())
 			assert.Equal(t, tt.want.shipping, actual)
@@ -328,7 +301,7 @@ func TestShipping_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", "coordinator-id", now())
+	s := testShipping("shipping-id", "coordinator-id", 1, now())
 
 	type args struct {
 		shipping *entity.Shipping
@@ -357,6 +330,8 @@ func TestShipping_Create(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
+				err = db.DB.Create(&s.ShippingRevision).Error
+				require.NoError(t, err)
 			},
 			args: args{
 				shipping: s,
@@ -373,7 +348,7 @@ func TestShipping_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, shippingTable)
+			err := delete(ctx, shippingRevisionTable, shippingTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, db)
 
@@ -398,7 +373,7 @@ func TestShipping_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	s := testShipping("shipping-id", "coordinator-id", now())
+	s := testShipping("shipping-id", "coordinator-id", 1, now())
 
 	type args struct {
 		shippingID string
@@ -418,11 +393,12 @@ func TestShipping_Update(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				err := db.DB.Create(&s).Error
 				require.NoError(t, err)
+				err = db.DB.Create(&s.ShippingRevision).Error
+				require.NoError(t, err)
 			},
 			args: args{
 				shippingID: "shipping-id",
 				params: &database.UpdateShippingParams{
-					Name:               "デフォルト配送設定",
 					Box60Rates:         s.Box60Rates,
 					Box60Refrigerated:  500,
 					Box60Frozen:        800,
@@ -459,7 +435,7 @@ func TestShipping_Update(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, shippingTable)
+			err := delete(ctx, shippingRevisionTable, shippingTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -471,68 +447,17 @@ func TestShipping_Update(t *testing.T) {
 	}
 }
 
-func TestShipping_Delete(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	s := testShipping("shipping-id", "coordinator-id", now())
-
-	type args struct {
-		shippingID string
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				err := db.DB.Create(&s).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				shippingID: "shipping-id",
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, shippingTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &shipping{db: db, now: now}
-			err = db.Delete(ctx, tt.args.shippingID)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
+func testShipping(shippingID, coordinatorID string, revisionID int64, now time.Time) *entity.Shipping {
+	return &entity.Shipping{
+		ID:               shippingID,
+		CoordinatorID:    coordinatorID,
+		ShippingRevision: *testShippingRevision(revisionID, shippingID, now),
+		CreatedAt:        now,
+		UpdatedAt:        now,
 	}
 }
 
-func testShipping(shippingID, coordinatorID string, now time.Time) *entity.Shipping {
+func testShippingRevision(revisionID int64, shippingID string, now time.Time) *entity.ShippingRevision {
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
@@ -551,11 +476,9 @@ func testShipping(shippingID, coordinatorID string, now time.Time) *entity.Shipp
 		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
 		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
 	}
-	shipping := &entity.Shipping{
-		ID:                 shippingID,
-		CoordinatorID:      coordinatorID,
-		Name:               "デフォルト配送設定",
-		IsDefault:          false,
+	revision := &entity.ShippingRevision{
+		ID:                 revisionID,
+		ShippingID:         shippingID,
 		Box60Rates:         rates,
 		Box60Refrigerated:  500,
 		Box60Frozen:        800,
@@ -570,8 +493,8 @@ func testShipping(shippingID, coordinatorID string, now time.Time) *entity.Shipp
 		CreatedAt:          now,
 		UpdatedAt:          now,
 	}
-	_ = shipping.FillJSON()
-	return shipping
+	_ = revision.FillJSON()
+	return revision
 }
 
 func fillIgnoreShippingField(s *entity.Shipping, now time.Time) {

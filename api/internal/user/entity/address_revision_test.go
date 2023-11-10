@@ -173,7 +173,7 @@ func TestAddressRevisions_AddressIDs(t *testing.T) {
 	}
 }
 
-func TestAddressRevisions_Map(t *testing.T) {
+func TestAddressRevisions_MapByAddressID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name      string
@@ -217,7 +217,7 @@ func TestAddressRevisions_Map(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.revisions.Map())
+			assert.Equal(t, tt.expect, tt.revisions.MapByAddressID())
 		})
 	}
 }

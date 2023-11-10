@@ -70,7 +70,7 @@ func TestProductRevisions_ProductIDs(t *testing.T) {
 	}
 }
 
-func TestProductRevisions_Map(t *testing.T) {
+func TestProductRevisions_MapByProductID(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
@@ -106,7 +106,7 @@ func TestProductRevisions_Map(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.revisions.Map())
+			assert.Equal(t, tt.expect, tt.revisions.MapByProductID())
 		})
 	}
 }

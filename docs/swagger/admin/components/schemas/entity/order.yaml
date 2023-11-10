@@ -15,19 +15,19 @@ order:
       type: string
       description: プロモーションID
     payment:
-      $ref: './../../../openapi.yaml#/components/schemas/orderPayment'
+      $ref: '#/orderPayment'
     refund:
-      $ref: './../../../openapi.yaml#/components/schemas/orderRefund'
+      $ref: '#/orderRefund'
     fulfillments:
       type: array
       description: 注文配送一覧
       items:
-        $ref: './../../../openapi.yaml#/components/schemas/orderFulfillment'
+        $ref: '#/orderFulfillment'
     items:
       type: array
       description: 注文商品一覧
       items:
-        $ref: './../../../openapi.yaml#/components/schemas/orderItem'
+        $ref: '#/orderItem'
     createdAt:
       type: integer
       format: int64
