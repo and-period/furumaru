@@ -317,19 +317,11 @@ func TestPersonalizations(t *testing.T) {
 							Username: "username",
 							Email:    "test-user@and-period.jp",
 						},
-						Customer: uentity.Customer{
-							Lastname:  "&.",
-							Firstname: "スタッフ",
-						},
 					},
 					{
 						Member: uentity.Member{
 							Username: "username",
 							Email:    "",
-						},
-						Customer: uentity.Customer{
-							Lastname:  "&.",
-							Firstname: "スタッフ",
 						},
 					},
 				}
@@ -346,12 +338,12 @@ func TestPersonalizations(t *testing.T) {
 			},
 			expect: []*mailer.Personalization{
 				{
-					Name:    "&. スタッフ",
+					Name:    "username",
 					Address: "test-user@and-period.jp",
 					Type:    mailer.AddressTypeTo,
 					Substitutions: map[string]interface{}{
 						"key": "value",
-						"氏名":  "&. スタッフ",
+						"氏名":  "username",
 					},
 				},
 			},
@@ -717,10 +709,6 @@ func TestFetchUsers(t *testing.T) {
 				UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
 				VerifiedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
 			},
-			Customer: uentity.Customer{
-				Lastname:  "&.",
-				Firstname: "スタッフ",
-			},
 		},
 	}
 
@@ -739,7 +727,7 @@ func TestFetchUsers(t *testing.T) {
 			userIDs: []string{"user-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				execute := func(name, email string) {
-					assert.Equal(t, "&. スタッフ", name)
+					assert.Equal(t, "テストユーザー", name)
 					assert.Equal(t, "test-user@and-period.jp", email)
 				}
 				return execute

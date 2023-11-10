@@ -143,7 +143,7 @@ func (w *worker) fetchUsers(ctx context.Context, userIDs []string, execute func(
 		return err
 	}
 	for i := range users {
-		execute(users[i].Name(), users[i].Member.Email)
+		execute(users[i].Username, users[i].Member.Email)
 	}
 	return nil
 }

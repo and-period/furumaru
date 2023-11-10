@@ -37,7 +37,6 @@ func TestUser_List(t *testing.T) {
 	err = db.DB.Create(&users).Error
 	for i := range users {
 		err = db.DB.Create(&users[i].Member).Error
-		err = db.DB.Create(&users[i].Customer).Error
 	}
 	require.NoError(t, err)
 
@@ -107,7 +106,6 @@ func TestUser_Count(t *testing.T) {
 	err = db.DB.Create(&users).Error
 	for i := range users {
 		err = db.DB.Create(&users[i].Member).Error
-		err = db.DB.Create(&users[i].Customer).Error
 	}
 	require.NoError(t, err)
 
@@ -177,7 +175,6 @@ func TestUser_MultiGet(t *testing.T) {
 	err = db.DB.Create(&users).Error
 	for i := range users {
 		err = db.DB.Create(&users[i].Member).Error
-		err = db.DB.Create(&users[i].Customer).Error
 	}
 	require.NoError(t, err)
 
@@ -243,8 +240,6 @@ func TestUser_Get(t *testing.T) {
 	require.NoError(t, err)
 	err = db.DB.Create(&u.Member).Error
 	require.NoError(t, err)
-	err = db.DB.Create(&u.Customer).Error
-	require.NoError(t, err)
 
 	type args struct {
 		userID string
@@ -305,7 +300,6 @@ func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 		ID:         id,
 		Registered: true,
 		Member:     *testMember(id, email, phoneNumber, now),
-		Customer:   *testCustomer(id, now),
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}

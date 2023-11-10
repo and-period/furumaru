@@ -100,11 +100,6 @@ func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) err
 		return nil
 	}
 
-	customers, err := u.fetchCustomers(ctx, tx, ids)
-	if err != nil {
-		return err
-	}
-
 	usersMap := entity.Users(users).GroupByRegistered()
 
 	var (
@@ -123,15 +118,10 @@ func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) err
 		}
 	}
 
-	customerMap := customers.Map()
 	memberMap := members.Map()
 	guestMap := guests.Map()
 
 	for _, u := range users {
-		customer, ok := customerMap[u.ID]
-		if !ok {
-			customer = &entity.Customer{}
-		}
 		member, ok := memberMap[u.ID]
 		if !ok {
 			member = &entity.Member{}
@@ -141,22 +131,9 @@ func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) err
 			guest = &entity.Guest{}
 		}
 
-		u.Fill(customer, member, guest)
+		u.Fill(member, guest)
 	}
 	return nil
-}
-
-func (u *user) fetchCustomers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Customers, error) {
-	var customers entity.Customers
-
-	stmt := u.db.Statement(ctx, tx, customerTable).
-		Where("user_id IN (?)", userIDs)
-
-	if err := stmt.Find(&customers).Error; err != nil {
-		return nil, err
-	}
-	customers.Fill()
-	return customers, nil
 }
 
 func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Members, error) {

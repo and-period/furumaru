@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -12,7 +11,6 @@ import (
 type User struct {
 	Member     `gorm:"-"`     // 会員情報
 	Guest      `gorm:"-"`     // ゲスト情報
-	Customer   `gorm:"-"`     // 購入者情報
 	ID         string         `gorm:"primaryKey;<-:create"` // ユーザーID
 	Registered bool           `gorm:""`                     // 会員登録フラグ
 	Device     string         `gorm:""`                     // デバイストークン(Push通知用)
@@ -53,14 +51,7 @@ func NewUser(params *NewUserParams) *User {
 		Registered: params.Registered,
 		Member:     member,
 		Guest:      guest,
-		Customer: Customer{
-			UserID: userID,
-		},
 	}
-}
-
-func (u *User) Name() string {
-	return strings.TrimSpace(strings.Join([]string{u.Lastname, u.Firstname}, " "))
 }
 
 func (u *User) Email() string {
@@ -77,8 +68,7 @@ func (u *User) PhoneNumber() string {
 	return u.Guest.PhoneNumber
 }
 
-func (u *User) Fill(customer *Customer, member *Member, guest *Guest) {
-	u.Customer = *customer
+func (u *User) Fill(member *Member, guest *Guest) {
 	u.Member = *member
 	u.Guest = *guest
 }
