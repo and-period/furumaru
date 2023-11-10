@@ -1,5 +1,5 @@
-import { prefecturesList, PrefecturesListItem } from '~/constants'
-import type { CreateShippingRate } from '~/types/api'
+import { prefecturesList, type PrefecturesListItem } from '~/constants'
+import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api'
 
 export interface PrefecturesListSelectItems extends PrefecturesListItem {
   disabled: boolean
@@ -12,7 +12,7 @@ export interface PrefecturesListSelectItems extends PrefecturesListItem {
  * @returns
  */
 export function getSelectablePrefecturesList (
-  items: CreateShippingRate[],
+  items: UpdateDefaultShippingRate[] | UpsertShippingRate[],
   index: number
 ): PrefecturesListSelectItems[] {
   const unselectedPrefecturesList: number[] = [

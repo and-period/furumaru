@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
-import type { AlertType } from '~/lib/hooks'
-import type { Shipping, UpdateDefaultShippingRequest, UpsertShippingRequest } from '~/types/api'
+
+import type { Shipping, UpsertShippingRequest } from '~/types/api'
 import { required, getErrorMessage, minValue } from '~/lib/validations'
 import { type PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
 
@@ -11,21 +11,9 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  isAlert: {
-    type: Boolean,
-    default: false
-  },
-  alertType: {
-    type: String as PropType<AlertType>,
-    default: undefined
-  },
-  alertText: {
-    type: String,
-    default: ''
-  },
   formData: {
-    type: Object as PropType<UpdateDefaultShippingRequest | UpsertShippingRequest>,
-    default: (): UpdateDefaultShippingRequest | UpsertShippingRequest => ({
+    type: Object as PropType<UpsertShippingRequest>,
+    default: (): UpsertShippingRequest => ({
       box60Rates: [
         {
           name: '',
@@ -80,7 +68,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:form-data', v: UpdateDefaultShippingRequest | UpsertShippingRequest): void
+  (e: 'update:form-data', v: UpsertShippingRequest): void
   (e: 'submit'): void
 }>()
 
@@ -94,8 +82,8 @@ const rules = computed(() => ({
   box100Frozen: { required, minValue: minValue(0) }
 }))
 const formDataValue = computed({
-  get: (): UpdateDefaultShippingRequest | UpsertShippingRequest => props.formData,
-  set: (formData: UpdateDefaultShippingRequest | UpsertShippingRequest): void => emit('update:form-data', formData)
+  get: (): UpsertShippingRequest => props.formData,
+  set: (formData: UpsertShippingRequest): void => emit('update:form-data', formData)
 })
 const box60RateItemsSize = computed(() => {
   return [...Array(formDataValue.value.box60Rates.length).keys()]
@@ -193,9 +181,9 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
-
-  <v-card-title>配送情報詳細</v-card-title>
+  <v-card-title v-show="shipping.isDefault" class="text-red">
+    ※デフォルト設定を使用しています。以下配送設定を行ってください。
+  </v-card-title>
   <v-card class="mb-4 py-2">
     <v-card-title>配送オプション：サイズ60</v-card-title>
     <v-card-text>
@@ -359,6 +347,6 @@ const onSubmit = async (): Promise<void> => {
   </v-card>
 
   <v-btn :loading="loading" block variant="outlined" @click="onSubmit">
-    更新
+    保存する
   </v-btn>
 </template>

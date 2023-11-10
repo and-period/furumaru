@@ -20,7 +20,7 @@ func (h *handler) shippingRoutes(rg *gin.RouterGroup) {
 
 	cr := rg.Group("/coordinators/:coordinatorId/shippings", h.authentication, h.filterAccessShipping)
 	cr.GET("", h.GetShipping)
-	cr.PATCH("", h.GetShipping)
+	cr.PATCH("", h.UpsertShipping)
 }
 
 func (h *handler) filterAccessShipping(ctx *gin.Context) {
@@ -114,8 +114,13 @@ func (h *handler) UpsertShipping(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	coordinatorID := util.GetParam(ctx, "coordinatorId")
+	if getRole(ctx).IsCoordinator() && getAdminID(ctx) != coordinatorID {
+		h.forbidden(ctx, errors.New("handler: not authorized this coordinator"))
+		return
+	}
 	in := &store.UpsertShippingInput{
-		CoordinatorID:      util.GetParam(ctx, "coordinatorId"),
+		CoordinatorID:      coordinatorID,
 		Box60Rates:         h.newShippingRatesForUpsert(req.Box60Rates),
 		Box60Refrigerated:  req.Box60Refrigerated,
 		Box60Frozen:        req.Box60Frozen,

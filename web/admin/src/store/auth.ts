@@ -28,6 +28,9 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
+    adminId (state): string {
+      return state.auth?.adminId || ''
+    },
     accessToken (state): string | undefined {
       return state.auth?.accessToken
     },
@@ -251,6 +254,11 @@ export const useAuthStore = defineStore('auth', {
         this.$reset()
       } catch (error) {
         console.log('APIでエラーが発生しました。', error)
+      } finally {
+        this.isAuthenticated = false
+        this.auth = undefined
+        this.user = undefined
+        this.expiredAt = undefined
       }
     }
   }
