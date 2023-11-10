@@ -1,6 +1,6 @@
 ALTER TABLE `stores`.`live_products` MODIFY COLUMN `deleted_at` DATETIME(3) NULL DEFAULT NULL;
 
-ALTER TABLE `stores`.`order_fulfillments` MODIFY COLUMN `shipped_at` DATETIME(3) NOT NULL;
+ALTER TABLE `stores`.`order_fulfillments` MODIFY COLUMN `shipped_at` DATETIME(3) NULL DEFAULT NULL;
 ALTER TABLE `stores`.`order_fulfillments` MODIFY COLUMN `created_at` DATETIME(3) NOT NULL;
 ALTER TABLE `stores`.`order_fulfillments` MODIFY COLUMN `updated_at` DATETIME(3) NOT NULL;
 

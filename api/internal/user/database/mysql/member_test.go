@@ -250,7 +250,6 @@ func TestMember_Create(t *testing.T) {
 
 	user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 	user.Member = *testMember("user-id", "test-user@and-period.jp", "+810000000000", now())
-	user.Customer = entity.Customer{UserID: "user-id"}
 
 	type args struct {
 		user *entity.User
@@ -316,8 +315,6 @@ func TestMember_Create(t *testing.T) {
 				require.NoError(t, err)
 				err = db.DB.Create(&u.Member).Error
 				require.NoError(t, err)
-				err = db.DB.Create(&u.Customer).Error
-				require.NoError(t, err)
 			},
 			args: args{
 				user: testUser("user-id", "test-user@and-period.jp", "+810000000000", now()),
@@ -346,7 +343,7 @@ func TestMember_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, customerTable, memberTable, userTable)
+			err := delete(ctx, memberTable, userTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -620,7 +617,7 @@ func TestUser_UpdateEmail(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, customerTable, memberTable, userTable)
+			err := delete(ctx, memberTable, userTable)
 			require.NoError(t, err)
 			tt.setup(ctx, t, db)
 
