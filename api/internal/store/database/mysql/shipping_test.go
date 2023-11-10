@@ -338,8 +338,8 @@ func TestShipping_GetByCoordinatorID(t *testing.T) {
 				coordinatorID: "",
 			},
 			want: want{
-				shipping: s,
-				hasErr:   false,
+				shipping: nil,
+				hasErr:   true,
 			},
 		},
 	}
