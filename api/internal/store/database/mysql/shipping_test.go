@@ -287,6 +287,82 @@ func TestShipping_GetDefault(t *testing.T) {
 	}
 }
 
+func TestShipping_GetByCoordinatorID(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	s := testShipping("shipping-id", "coordinator-id", 1, now())
+	err = db.DB.Create(&s).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&s.ShippingRevision).Error
+	require.NoError(t, err)
+
+	type args struct {
+		coordinatorID string
+	}
+	type want struct {
+		shipping *entity.Shipping
+		hasErr   bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				coordinatorID: "coordinator-id",
+			},
+			want: want{
+				shipping: s,
+				hasErr:   false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				coordinatorID: "",
+			},
+			want: want{
+				shipping: s,
+				hasErr:   false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &shipping{db: db, now: now}
+			actual, err := db.GetByCoordinatorID(ctx, tt.args.coordinatorID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			fillIgnoreShippingField(actual, now())
+			assert.Equal(t, tt.want.shipping, actual)
+		})
+	}
+}
+
 func TestShipping_Create(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
