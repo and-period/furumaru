@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { AddCartItemRequest, CartResponse } from '~/types/api'
-import { ProductItem } from '~/types/store'
+import { ProductItem, ShoppingCart } from '~/types/store'
 
 /**
  * 買い物かごを管理するグローバルステート
@@ -54,7 +54,11 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     },
 
     totalPrice() {
-      const totalPrice = this.shoppingCart.carts
+      const carts = this.shoppingCart.carts as ShoppingCart[]
+      if (carts.length === 0) {
+        return 0
+      }
+      const totalPrice = carts
         .map((cart) =>
           cart.items
             .map((item) => item.product.price)
