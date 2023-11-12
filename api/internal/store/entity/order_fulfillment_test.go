@@ -37,7 +37,7 @@ func TestOrderFulfillment(t *testing.T) {
 				},
 				Basket: &CartBasket{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: []*CartItem{
 						{
@@ -58,7 +58,7 @@ func TestOrderFulfillment(t *testing.T) {
 				Status:            FulfillmentStatusUnfulfilled,
 				TrackingNumber:    "",
 				ShippingCarrier:   ShippingCarrierUnknown,
-				ShippingMethod:    DeliveryTypeNormal,
+				ShippingType:      ShippingTypeNormal,
 				BoxNumber:         1,
 				BoxSize:           ShippingSize60,
 			},
@@ -108,7 +108,7 @@ func TestOrderFulfillments(t *testing.T) {
 				Baskets: CartBaskets{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -151,7 +151,7 @@ func TestOrderFulfillments(t *testing.T) {
 					Status:            FulfillmentStatusUnfulfilled,
 					TrackingNumber:    "",
 					ShippingCarrier:   ShippingCarrierUnknown,
-					ShippingMethod:    DeliveryTypeNormal,
+					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize60,
 				},
@@ -194,7 +194,7 @@ func TestOrderFulfillments(t *testing.T) {
 				Baskets: CartBaskets{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -250,7 +250,7 @@ func TestFulfillments_AddressRevisionIDs(t *testing.T) {
 					AddressRevisionID: 1,
 					Status:            FulfillmentStatusUnfulfilled,
 					ShippingCarrier:   ShippingCarrierYamato,
-					ShippingMethod:    DeliveryTypeNormal,
+					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize100,
 				},
@@ -260,7 +260,7 @@ func TestFulfillments_AddressRevisionIDs(t *testing.T) {
 					AddressRevisionID: 1,
 					Status:            FulfillmentStatusUnfulfilled,
 					ShippingCarrier:   ShippingCarrierYamato,
-					ShippingMethod:    DeliveryTypeNormal,
+					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         2,
 					BoxSize:           ShippingSize80,
 				},
@@ -270,7 +270,7 @@ func TestFulfillments_AddressRevisionIDs(t *testing.T) {
 					AddressRevisionID: 1,
 					Status:            FulfillmentStatusUnfulfilled,
 					ShippingCarrier:   ShippingCarrierYamato,
-					ShippingMethod:    DeliveryTypeFrozen,
+					ShippingType:      ShippingTypeFrozen,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize80,
 				},
@@ -303,7 +303,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 					AddressRevisionID: 1,
 					Status:            FulfillmentStatusUnfulfilled,
 					ShippingCarrier:   ShippingCarrierYamato,
-					ShippingMethod:    DeliveryTypeNormal,
+					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize100,
 				},
@@ -313,7 +313,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 					AddressRevisionID: 1,
 					Status:            FulfillmentStatusUnfulfilled,
 					ShippingCarrier:   ShippingCarrierYamato,
-					ShippingMethod:    DeliveryTypeNormal,
+					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         2,
 					BoxSize:           ShippingSize80,
 				},
@@ -323,7 +323,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 					AddressRevisionID: 1,
 					Status:            FulfillmentStatusUnfulfilled,
 					ShippingCarrier:   ShippingCarrierYamato,
-					ShippingMethod:    DeliveryTypeFrozen,
+					ShippingType:      ShippingTypeFrozen,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize80,
 				},
@@ -336,7 +336,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 						AddressRevisionID: 1,
 						Status:            FulfillmentStatusUnfulfilled,
 						ShippingCarrier:   ShippingCarrierYamato,
-						ShippingMethod:    DeliveryTypeNormal,
+						ShippingType:      ShippingTypeNormal,
 						BoxNumber:         1,
 						BoxSize:           ShippingSize100,
 					},
@@ -346,7 +346,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 						AddressRevisionID: 1,
 						Status:            FulfillmentStatusUnfulfilled,
 						ShippingCarrier:   ShippingCarrierYamato,
-						ShippingMethod:    DeliveryTypeNormal,
+						ShippingType:      ShippingTypeNormal,
 						BoxNumber:         2,
 						BoxSize:           ShippingSize80,
 					},
@@ -358,7 +358,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 						AddressRevisionID: 1,
 						Status:            FulfillmentStatusUnfulfilled,
 						ShippingCarrier:   ShippingCarrierYamato,
-						ShippingMethod:    DeliveryTypeFrozen,
+						ShippingType:      ShippingTypeFrozen,
 						BoxNumber:         1,
 						BoxSize:           ShippingSize80,
 					},

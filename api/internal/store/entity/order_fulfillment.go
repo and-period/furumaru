@@ -44,7 +44,7 @@ type OrderFulfillment struct {
 	Status            FulfillmentStatus `gorm:""`                     // 配送ステータス
 	TrackingNumber    string            `gorm:"default:null"`         // 配送伝票番号
 	ShippingCarrier   ShippingCarrier   `gorm:""`                     // 配送会社
-	ShippingMethod    DeliveryType      `gorm:""`                     // 配送方法
+	ShippingType      ShippingType      `gorm:""`                     // 配送方法
 	BoxNumber         int64             `gorm:""`                     // 箱の通番
 	BoxSize           ShippingSize      `gorm:""`                     // 箱の大きさ
 	ShippedAt         time.Time         `gorm:"default:null"`         // 配送日時
@@ -75,7 +75,7 @@ func NewOrderFulfillment(params *NewOrderFulfillmentParams) *OrderFulfillment {
 		Status:            FulfillmentStatusUnfulfilled,
 		TrackingNumber:    "",
 		ShippingCarrier:   ShippingCarrierUnknown,
-		ShippingMethod:    params.Basket.BoxType,
+		ShippingType:      params.Basket.BoxType,
 		BoxNumber:         params.Basket.BoxNumber,
 		BoxSize:           params.Basket.BoxSize,
 	}

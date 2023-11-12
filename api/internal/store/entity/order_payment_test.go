@@ -130,7 +130,7 @@ func TestOrderPayment(t *testing.T) {
 				Baskets: CartBaskets{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -169,18 +169,15 @@ func TestOrderPayment(t *testing.T) {
 					ID:            "coordinator-id",
 					CoordinatorID: "coordinator-id",
 					ShippingRevision: ShippingRevision{
-						ShippingID:         "coordinator-id",
-						Box60Rates:         rates,
-						Box60Refrigerated:  500,
-						Box60Frozen:        800,
-						Box80Rates:         rates,
-						Box80Refrigerated:  500,
-						Box80Frozen:        800,
-						Box100Rates:        rates,
-						Box100Refrigerated: 500,
-						Box100Frozen:       800,
-						HasFreeShipping:    true,
-						FreeShippingRates:  3000,
+						ShippingID:        "coordinator-id",
+						Box60Rates:        rates,
+						Box60Frozen:       800,
+						Box80Rates:        rates,
+						Box80Frozen:       800,
+						Box100Rates:       rates,
+						Box100Frozen:      800,
+						HasFreeShipping:   true,
+						FreeShippingRates: 3000,
 					},
 				},
 				Promotion: nil,
@@ -223,7 +220,7 @@ func TestOrderPayment(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -262,17 +259,14 @@ func TestOrderPayment(t *testing.T) {
 					ID:            "coordinator-id",
 					CoordinatorID: "coordinator-id",
 					ShippingRevision: ShippingRevision{
-						ShippingID:         "coordinator-id",
-						Box60Rates:         rates,
-						Box60Refrigerated:  500,
-						Box60Frozen:        800,
-						Box80Rates:         rates,
-						Box80Refrigerated:  500,
-						Box80Frozen:        800,
-						Box100Rates:        rates,
-						Box100Refrigerated: 500,
-						Box100Frozen:       800,
-						HasFreeShipping:    false,
+						ShippingID:      "coordinator-id",
+						Box60Rates:      rates,
+						Box60Frozen:     800,
+						Box80Rates:      rates,
+						Box80Frozen:     800,
+						Box100Rates:     rates,
+						Box100Frozen:    800,
+						HasFreeShipping: false,
 					},
 				},
 				Promotion: &Promotion{
@@ -326,7 +320,7 @@ func TestOrderPayment(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -372,7 +366,7 @@ func TestOrderPayment(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{

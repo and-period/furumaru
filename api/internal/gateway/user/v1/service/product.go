@@ -32,7 +32,7 @@ type DeliveryType int32
 
 const (
 	DeliveryTypeUnknown      DeliveryType = 0
-	DeliveryTypeNormal       DeliveryType = 1 // 通常便
+	DeliveryTypeNormal       DeliveryType = 1 // 常温便
 	DeliveryTypeRefrigerated DeliveryType = 2 // 冷蔵便
 	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
 )

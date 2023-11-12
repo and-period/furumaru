@@ -83,7 +83,7 @@ order:
       trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 1
       shippingCarrier: 1
-      shippingMethod: 1
+      shippingType: 1
       boxNumber: 1
       boxSize: 2
       shippedAt: 0
@@ -255,8 +255,8 @@ orderFulfillment:
       $ref: './../../../openapi.yaml#/components/schemas/fulfillmentStatus'
     shippingCarrier:
       $ref: './../../../openapi.yaml#/components/schemas/shippingCarrier'
-    shippingMethod:
-      $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
+    shippingType:
+      $ref: './../../../openapi.yaml#/components/schemas/shippingType'
     boxNumber:
       type: integer
       format: int64
@@ -299,7 +299,7 @@ orderFulfillment:
   - trackingNumber
   - status
   - shippingCarrier
-  - shippingMethod
+  - shippingType
   - boxNumber
   - boxSize
   - shippedAt
@@ -317,7 +317,7 @@ orderFulfillment:
     trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
     status: 1
     shippingCarrier: 1
-    shippingMethod: 1
+    shippingType: 1
     boxNumber: 1
     boxSize: 2
     shippedAt: 0

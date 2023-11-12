@@ -44,7 +44,7 @@ type OrderFulfillment struct {
 	TrackingNumber  string `json:"trackingNumber"`  // 伝票番号
 	Status          int32  `json:"status"`          // 配送状況
 	ShippingCarrier int32  `json:"shippingCarrier"` // 配送会社
-	ShippingMethod  int32  `json:"shippingMethod"`  // 配送方法
+	ShippingType    int32  `json:"shippingType"`    // 配送方法
 	BoxNumber       int64  `json:"boxNumber"`       // 箱の通番
 	BoxSize         int32  `json:"boxSize"`         // 箱の大きさ
 	ShippedAt       int64  `json:"shippedAt"`       // 配送日時

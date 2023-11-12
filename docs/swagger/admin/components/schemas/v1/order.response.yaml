@@ -56,7 +56,7 @@ orderResponse:
         trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
         status: 1
         shippingCarrier: 1
-        shippingMethod: 1
+        shippingType: 1
         boxNumber: 1
         boxSize: 2
         shippedAt: 0
@@ -253,7 +253,7 @@ ordersResponse:
         trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
         status: 1
         shippingCarrier: 1
-        shippingMethod: 1
+        shippingType: 1
         boxNumber: 1
         boxSize: 2
         shippedAt: 0

@@ -254,6 +254,8 @@ components:
       $ref: './components/schemas/codes/order_fulfillment.yaml#/shippingCarrier'
     shippingSize:
       $ref: './components/schemas/codes/order_fulfillment.yaml#/shippingSize'
+    shippingType:
+      $ref: './components/schemas/codes/order_fulfillment.yaml#/shippingType'
     paymentMethodType:
       $ref: './components/schemas/codes/order_payment.yaml#/paymentMethodType'
     paymentStatus:

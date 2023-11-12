@@ -58,7 +58,7 @@ func TestCart_Refresh(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -113,7 +113,7 @@ func TestCart_AddItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -132,7 +132,7 @@ func TestCart_AddItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -141,7 +141,7 @@ func TestCart_AddItem(t *testing.T) {
 					},
 					{
 						BoxNumber: 0,
-						BoxType:   DeliveryTypeUnknown,
+						BoxType:   ShippingTypeUnknown,
 						BoxSize:   ShippingSizeUnknown,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -163,7 +163,7 @@ func TestCart_AddItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 0,
-						BoxType:   DeliveryTypeUnknown,
+						BoxType:   ShippingTypeUnknown,
 						BoxSize:   ShippingSizeUnknown,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -200,7 +200,7 @@ func TestCart_RemoveBaskets(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -249,7 +249,7 @@ func TestCart_RemoveItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -258,7 +258,7 @@ func TestCart_RemoveItem(t *testing.T) {
 					},
 					{
 						BoxNumber: 2,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -277,7 +277,7 @@ func TestCart_RemoveItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -286,7 +286,7 @@ func TestCart_RemoveItem(t *testing.T) {
 					},
 					{
 						BoxNumber:     2,
-						BoxType:       DeliveryTypeNormal,
+						BoxType:       ShippingTypeNormal,
 						BoxSize:       ShippingSize60,
 						Items:         CartItems{},
 						CoordinatorID: "",
@@ -304,7 +304,7 @@ func TestCart_RemoveItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -313,7 +313,7 @@ func TestCart_RemoveItem(t *testing.T) {
 					},
 					{
 						BoxNumber: 2,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -331,14 +331,14 @@ func TestCart_RemoveItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber:     1,
-						BoxType:       DeliveryTypeNormal,
+						BoxType:       ShippingTypeNormal,
 						BoxSize:       ShippingSize60,
 						Items:         CartItems{},
 						CoordinatorID: "",
 					},
 					{
 						BoxNumber:     2,
-						BoxType:       DeliveryTypeNormal,
+						BoxType:       ShippingTypeNormal,
 						BoxSize:       ShippingSize60,
 						Items:         CartItems{},
 						CoordinatorID: "",
@@ -356,7 +356,7 @@ func TestCart_RemoveItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -374,7 +374,7 @@ func TestCart_RemoveItem(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -429,7 +429,7 @@ func TestCartBaskets_MergeByProductID(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -439,7 +439,7 @@ func TestCartBaskets_MergeByProductID(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -476,7 +476,7 @@ func TestCartBaskets_AdjustItems(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -486,7 +486,7 @@ func TestCartBaskets_AdjustItems(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -533,7 +533,7 @@ func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -543,7 +543,7 @@ func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -555,7 +555,7 @@ func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -565,7 +565,7 @@ func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -579,7 +579,7 @@ func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -589,7 +589,7 @@ func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -601,7 +601,7 @@ func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -635,7 +635,7 @@ func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -645,7 +645,7 @@ func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -657,7 +657,7 @@ func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -667,7 +667,7 @@ func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -681,7 +681,7 @@ func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -691,7 +691,7 @@ func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -703,7 +703,7 @@ func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -738,7 +738,7 @@ func TestCartBaskets_VerifyQuantity(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -758,7 +758,7 @@ func TestCartBaskets_VerifyQuantity(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items:     CartItems{},
 				},
@@ -775,7 +775,7 @@ func TestCartBaskets_VerifyQuantity(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -815,7 +815,7 @@ func TestCartBaskets_TotalPrice(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -824,7 +824,7 @@ func TestCartBaskets_TotalPrice(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 3},
@@ -859,7 +859,7 @@ func TestCartBaskets_TotalPrice(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -868,7 +868,7 @@ func TestCartBaskets_TotalPrice(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 3},
@@ -905,7 +905,7 @@ func TestCartBaskets_KomojuProducts(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -914,7 +914,7 @@ func TestCartBaskets_KomojuProducts(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 3},
@@ -962,7 +962,7 @@ func TestCartBaskets_KomojuProducts(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -971,7 +971,7 @@ func TestCartBaskets_KomojuProducts(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 3},
@@ -1006,7 +1006,7 @@ func TestCartBaskets_ProductIDs(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -1015,7 +1015,7 @@ func TestCartBaskets_ProductIDs(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 3},
@@ -1049,7 +1049,7 @@ func TestCartBaskets_CoordinatorIDs(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -1059,7 +1059,7 @@ func TestCartBaskets_CoordinatorIDs(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 3},
@@ -1075,6 +1075,48 @@ func TestCartBaskets_CoordinatorIDs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ElementsMatch(t, tt.expect, tt.baskets.CoordinatorID())
+		})
+	}
+}
+
+func TestCartBaskets_BoxNumbers(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		baskets CartBaskets
+		expect  []int64
+	}{
+		{
+			name: "success",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   ShippingTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   ShippingTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 3},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+			},
+			expect: []int64{1, 2},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.baskets.BoxNumbers())
 		})
 	}
 }
@@ -1260,13 +1302,13 @@ func TestGenerateBascketKey(t *testing.T) {
 	tests := []struct {
 		name          string
 		coordinatorID string
-		deliveryType  DeliveryType
+		shippingType  ShippingType
 		expect        string
 	}{
 		{
 			name:          "success",
 			coordinatorID: "coordinator-id",
-			deliveryType:  DeliveryTypeNormal,
+			shippingType:  ShippingTypeNormal,
 			expect:        "coordinator-id:1",
 		},
 	}
@@ -1274,7 +1316,7 @@ func TestGenerateBascketKey(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := generateCartBasketKey(tt.coordinatorID, tt.deliveryType)
+			actual := generateCartBasketKey(tt.coordinatorID, tt.shippingType)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -1286,28 +1328,28 @@ func TestParseBascketKey(t *testing.T) {
 		name                string
 		key                 string
 		expectCoordinatorID string
-		expectDeliveryType  DeliveryType
+		expectShippingType  ShippingType
 		hasErr              bool
 	}{
 		{
 			name:                "success",
 			key:                 "coordinator-id:1",
 			expectCoordinatorID: "coordinator-id",
-			expectDeliveryType:  DeliveryTypeNormal,
+			expectShippingType:  ShippingTypeNormal,
 			hasErr:              false,
 		},
 		{
 			name:                "invalid format",
 			key:                 "",
 			expectCoordinatorID: "",
-			expectDeliveryType:  DeliveryTypeUnknown,
+			expectShippingType:  ShippingTypeUnknown,
 			hasErr:              true,
 		},
 		{
 			name:                "unknotn delivery type",
 			key:                 "coordinator-id:delivery-type",
 			expectCoordinatorID: "",
-			expectDeliveryType:  DeliveryTypeUnknown,
+			expectShippingType:  ShippingTypeUnknown,
 			hasErr:              true,
 		},
 	}
@@ -1315,10 +1357,10 @@ func TestParseBascketKey(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			coordinatorID, deliveryType, err := parseCartBasketKey(tt.key)
+			coordinatorID, shippingType, err := parseCartBasketKey(tt.key)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.Equal(t, tt.expectCoordinatorID, coordinatorID)
-			assert.Equal(t, tt.expectDeliveryType, deliveryType)
+			assert.Equal(t, tt.expectShippingType, shippingType)
 		})
 	}
 }
@@ -1337,7 +1379,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 1},
@@ -1354,7 +1396,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 1},
@@ -1383,7 +1425,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 1},
@@ -1407,7 +1449,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{
@@ -1425,7 +1467,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 2},
@@ -1449,7 +1491,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
 					Items: CartItems{
 						{
@@ -1467,7 +1509,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 3},
@@ -1491,7 +1533,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{
@@ -1509,7 +1551,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 4},
@@ -1533,7 +1575,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{
@@ -1545,7 +1587,7 @@ func TestRefreshCart(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{
@@ -1563,7 +1605,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 1},
@@ -1599,7 +1641,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
 					Items: CartItems{
 						{
@@ -1621,7 +1663,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 3},
@@ -1669,7 +1711,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{
@@ -1681,7 +1723,7 @@ func TestRefreshCart(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{
@@ -1693,7 +1735,7 @@ func TestRefreshCart(t *testing.T) {
 				},
 				{
 					BoxNumber: 3,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{
@@ -1709,7 +1751,7 @@ func TestRefreshCart(t *testing.T) {
 				},
 				{
 					BoxNumber: 4,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{
@@ -1727,7 +1769,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 4},
@@ -1751,7 +1793,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{
@@ -1769,7 +1811,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 2},
@@ -1793,7 +1835,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
 					Items: CartItems{
 						{
@@ -1811,7 +1853,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 4},
@@ -1835,7 +1877,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{
@@ -1853,7 +1895,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id", Quantity: 5},
@@ -1877,7 +1919,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{
@@ -1889,7 +1931,7 @@ func TestRefreshCart(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
 					Items: CartItems{
 						{
@@ -1907,7 +1949,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 2},
@@ -1943,7 +1985,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
 					Items: CartItems{
 						{
@@ -1955,7 +1997,7 @@ func TestRefreshCart(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{
@@ -1973,7 +2015,7 @@ func TestRefreshCart(t *testing.T) {
 			baskets: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
 					Items: CartItems{
 						{ProductID: "product-id01", Quantity: 2},
@@ -2009,7 +2051,7 @@ func TestRefreshCart(t *testing.T) {
 			expect: CartBaskets{
 				{
 					BoxNumber: 1,
-					BoxType:   DeliveryTypeNormal,
+					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
 					Items: CartItems{
 						{
@@ -2021,7 +2063,7 @@ func TestRefreshCart(t *testing.T) {
 				},
 				{
 					BoxNumber: 2,
-					BoxType:   DeliveryTypeFrozen,
+					BoxType:   ShippingTypeFrozen,
 					BoxSize:   ShippingSize60,
 					Items: CartItems{
 						{

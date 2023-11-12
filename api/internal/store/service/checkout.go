@@ -108,6 +108,8 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 	// プロモーションの有効性検証
 	if params.payload.PromotionID != "" && !promotion.IsEnabled(s.now()) {
+		s.logger.Warn("Failed to user disable promotion",
+			zap.String("userId", params.payload.UserID), zap.String("promotionId", params.payload.PromotionID))
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
 	}
 	// 購入する買い物かごのみ取得
@@ -122,6 +124,9 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 	// 在庫の過不足確認
 	if err := baskets.VerifyQuantities(products.Map()); err != nil {
+		s.logger.Warn("Failed to verify quantities in baskets",
+			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
+			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber))
 		return "", fmt.Errorf("service: insufficient stock: %w: %s", exception.ErrFailedPrecondition, err.Error())
 	}
 	// 注文インスタンスの生成
@@ -142,6 +147,10 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 	// チェックサム
 	if params.payload.Total != order.OrderPayment.Total {
+		s.logger.Warn("Failed to checksum before checkout",
+			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
+			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber),
+			zap.Int64("payload.total", params.payload.Total), zap.Any("payment", order.OrderPayment))
 		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
 	}
 	// 決済トランザクションの発行
