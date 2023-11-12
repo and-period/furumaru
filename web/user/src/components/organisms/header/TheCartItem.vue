@@ -6,6 +6,7 @@ interface Props {
   marcheName: string
   boxType: string
   boxSize: number
+  useRate: number
   shoppingCart: ShoppingCart
 }
 
@@ -27,19 +28,6 @@ const boxSizeIs80 = computed<boolean>(() => {
 
 const boxSizeIs100 = computed<boolean>(() => {
   return props.boxSize === 100
-})
-
-const useRate = computed<number>(() => {
-  switch (props.boxSize) {
-    case 60:
-      return 30
-    case 80:
-      return 70
-    case 100:
-      return 95
-    default:
-      return 0
-  }
 })
 
 const handleClick = () => {

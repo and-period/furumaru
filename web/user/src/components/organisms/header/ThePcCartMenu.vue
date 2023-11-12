@@ -83,8 +83,9 @@ const handleClickBuyButton = () => {
           :key="i"
           :cart-number="i + 1"
           :marche-name="item.coordinator.marcheName"
-          :box-type="item.type"
-          :box-size="item.size"
+          :box-type="item.boxType"
+          :box-size="item.boxSize"
+          :use-rate="item.useRate"
           :shopping-cart="item"
           @click:buy-button="handleClickBuyButton"
         />
