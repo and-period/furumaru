@@ -154,16 +154,21 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
 	}
 	// 決済トランザクションの発行
-	kproducts, err := cart.Baskets.KomojuProducts(products.Map())
-	if err != nil {
-		return "", internalError(err)
-	}
+	// kproducts, err := cart.Baskets.KomojuProducts(products.Map())
+	// if err != nil {
+	// 	return "", internalError(err)
+	// }
+	// kproducts = append(kproducts,
+	// 	&komoju.CreateSessionProduct{Amount: order.ShippingFee, Description: "配送手数料", Quantity: 1},
+	// 	&komoju.CreateSessionProduct{Amount: order.Tax, Description: "消費税", Quantity: 1},
+	// )
 	sparams := &komoju.CreateSessionParams{
 		OrderID:      order.ID,
 		Amount:       order.OrderPayment.Total,
 		CallbackURL:  params.payload.CallbackURL,
 		PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
-		Products:     kproducts,
+		// Products:     kproducts,
+		Products: []*komoju.CreateSessionProduct{},
 		Customer: &komoju.CreateSessionCustomer{
 			ID:    customer.ID,
 			Name:  billingAddress.Name(),

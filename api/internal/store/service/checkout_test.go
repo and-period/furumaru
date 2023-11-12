@@ -147,12 +147,22 @@ func checkoutmocks(m *mocks, t *testing.T, now time.Time, methodType entity.Paym
 		Amount:       1540,
 		CallbackURL:  "http://example.com/callback",
 		PaymentTypes: entity.NewKomojuPaymentTypes(methodType),
-		Products: []*komoju.CreateSessionProduct{
-			{
-				Amount:      500,
-				Description: "じゃがいも",
-				Quantity:    2,
-			},
+		Products:     []*komoju.CreateSessionProduct{
+			// {
+			// 	Amount:      500,
+			// 	Description: "じゃがいも",
+			// 	Quantity:    2,
+			// },
+			// {
+			// 	Amount:      500,
+			// 	Description: "配送手数料",
+			// 	Quantity:    1,
+			// },
+			// {
+			// 	Amount:      140,
+			// 	Description: "消費税",
+			// 	Quantity:    1,
+			// },
 		},
 		Customer: &komoju.CreateSessionCustomer{
 			ID:    "user-id",
@@ -474,12 +484,12 @@ func TestCheckout(t *testing.T) {
 			Amount:       1540,
 			CallbackURL:  "http://example.com/callback",
 			PaymentTypes: []komoju.PaymentType{komoju.PaymentTypeCreditCard},
-			Products: []*komoju.CreateSessionProduct{
-				{
-					Amount:      500,
-					Description: "じゃがいも",
-					Quantity:    2,
-				},
+			Products:     []*komoju.CreateSessionProduct{
+				// {
+				// 	Amount:      500,
+				// 	Description: "じゃがいも",
+				// 	Quantity:    2,
+				// },
 			},
 			Customer: &komoju.CreateSessionCustomer{
 				ID:    "user-id",
