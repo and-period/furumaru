@@ -327,6 +327,20 @@ func (mr *MockOrderMockRecorder) Count(ctx, params interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockOrder)(nil).Count), ctx, params)
 }
 
+// Create mocks base method.
+func (m *MockOrder) Create(ctx context.Context, order *entity.Order) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, order)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockOrderMockRecorder) Create(ctx, order interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOrder)(nil).Create), ctx, order)
+}
+
 // Get mocks base method.
 func (m *MockOrder) Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error) {
 	m.ctrl.T.Helper()
@@ -1164,26 +1178,6 @@ func (m *MockShipping) Create(ctx context.Context, shipping *entity.Shipping) er
 func (mr *MockShippingMockRecorder) Create(ctx, shipping interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockShipping)(nil).Create), ctx, shipping)
-}
-
-// Get mocks base method.
-func (m *MockShipping) Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, shoppingID}
-	for _, a := range fields {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Get", varargs...)
-	ret0, _ := ret[0].(*entity.Shipping)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockShippingMockRecorder) Get(ctx, shoppingID interface{}, fields ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, shoppingID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockShipping)(nil).Get), varargs...)
 }
 
 // GetByCoordinatorID mocks base method.

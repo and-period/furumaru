@@ -446,6 +446,26 @@ type RemoveCartItemInput struct {
 	ProductID string `validate:"required"`
 }
 
+type CheckoutCreditCardInput struct {
+	CheckoutDetail
+	Number            string `validate:"required,numeric"`
+	Month             int64  `validate:"min=1,max=12"`
+	Year              int64  `validate:"min=2000,max=2100"`
+	VerificationValue string `validate:"required,numeric,max=4"`
+}
+
+type CheckoutDetail struct {
+	UserID            string `validate:"required"`
+	SessionID         string `validate:"required"`
+	CoordinatorID     string `validate:"required"`
+	BoxNumber         int64  `validate:"omitempty,min=0"`
+	PromotionID       string `validate:"omitempty"`
+	BillingAddressID  string `validate:"required"`
+	ShippingAddressID string `validate:"required"`
+	CallbackURL       string `validate:"required,http_url"`
+	Total             int64  `validate:"required"`
+}
+
 type SearchPostalCodeInput struct {
 	PostlCode string `validate:"required,numeric,len=7"`
 }

@@ -3,7 +3,9 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
 // 配送ステータス
@@ -51,6 +53,59 @@ type OrderFulfillment struct {
 }
 
 type OrderFulfillments []*OrderFulfillment
+
+type NewOrderFulfillmentParams struct {
+	OrderID string
+	Address *entity.Address
+	Basket  *CartBasket
+}
+
+type NewOrderFulfillmentsParams struct {
+	OrderID  string
+	Address  *entity.Address
+	Baskets  CartBaskets
+	Products map[string]*Product
+}
+
+func NewOrderFulfillment(params *NewOrderFulfillmentParams) *OrderFulfillment {
+	return &OrderFulfillment{
+		ID:                uuid.Base58Encode(uuid.New()),
+		OrderID:           params.OrderID,
+		AddressRevisionID: params.Address.AddressRevision.ID,
+		Status:            FulfillmentStatusUnfulfilled,
+		TrackingNumber:    "",
+		ShippingCarrier:   ShippingCarrierUnknown,
+		ShippingMethod:    params.Basket.BoxType,
+		BoxNumber:         params.Basket.BoxNumber,
+		BoxSize:           params.Basket.BoxSize,
+	}
+}
+
+func NewOrderFulfillments(params *NewOrderFulfillmentsParams) (OrderFulfillments, OrderItems, error) {
+	fulfillments := make(OrderFulfillments, len(params.Baskets))
+	items := make(OrderItems, 0, len(params.Baskets))
+	for i, basket := range params.Baskets {
+		fparams := &NewOrderFulfillmentParams{
+			OrderID: params.OrderID,
+			Address: params.Address,
+			Basket:  basket,
+		}
+		f := NewOrderFulfillment(fparams)
+		iparams := &NewOrderItemsParams{
+			OrderID:     params.OrderID,
+			Fulfillment: f,
+			Items:       basket.Items,
+			Products:    params.Products,
+		}
+		is, err := NewOrderItems(iparams)
+		if err != nil {
+			return nil, nil, err
+		}
+		fulfillments[i] = f
+		items = append(items, is...)
+	}
+	return fulfillments, items, nil
+}
 
 func (fs OrderFulfillments) AddressRevisionIDs() []int64 {
 	return set.UniqBy(fs, func(f *OrderFulfillment) int64 {

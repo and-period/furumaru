@@ -18,6 +18,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	govalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
@@ -45,6 +46,7 @@ type Params struct {
 
 type service struct {
 	now                 func() time.Time
+	generateID          func() string
 	logger              *zap.Logger
 	waitGroup           *sync.WaitGroup
 	sharedGroup         *singleflight.Group
@@ -97,7 +99,10 @@ func NewService(params *Params, opts ...Option) store.Service {
 		opts[i](dopts)
 	}
 	return &service{
-		now:                 jst.Now,
+		now: jst.Now,
+		generateID: func() string {
+			return uuid.Base58Encode(uuid.New())
+		},
 		logger:              dopts.logger,
 		waitGroup:           params.WaitGroup,
 		sharedGroup:         &singleflight.Group{},

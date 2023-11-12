@@ -13,6 +13,7 @@ var (
 	errInvalidShippingRateFormat     = errors.New("entity: invalid shipping rate format")
 	errInvalidShippingRatePrefLength = errors.New("entity: unmatch shipping rate prefecture length")
 	errNotUniqueShippingRateNumber   = errors.New("entity: shipping rate number must be unique")
+	errUnknownShippingSize           = errors.New("entity: unknown shipping size")
 )
 
 // Shipping - 配送設定情報
@@ -66,6 +67,57 @@ func NewShipping(params *NewShippingParams) *Shipping {
 
 func (s *Shipping) IsDefault() bool {
 	return s.ID == DefaultShippingID
+}
+
+func (s *Shipping) CalcShippingFee(
+	shippingSize ShippingSize, deliveryType DeliveryType, total int64, prefectureCode int32,
+) (int64, error) {
+	if s.HasFreeShipping && total >= s.FreeShippingRates {
+		return 0, nil // 送料設定による無料配送
+	}
+	var (
+		rate       *ShippingRate
+		additional int64
+		err        error
+	)
+	switch shippingSize {
+	case ShippingSize60:
+		switch deliveryType {
+		case DeliveryTypeNormal:
+			// 追加料金なし
+		case DeliveryTypeFrozen:
+			additional = s.Box60Frozen
+		case DeliveryTypeRefrigerated:
+			additional = s.Box60Refrigerated
+		}
+		rate, err = s.Box60Rates.Find(prefectureCode)
+	case ShippingSize80:
+		switch deliveryType {
+		case DeliveryTypeNormal:
+			// 追加料金なし
+		case DeliveryTypeFrozen:
+			additional = s.Box80Frozen
+		case DeliveryTypeRefrigerated:
+			additional = s.Box80Refrigerated
+		}
+		rate, err = s.Box80Rates.Find(prefectureCode)
+	case ShippingSize100:
+		switch deliveryType {
+		case DeliveryTypeNormal:
+			// 追加料金なし
+		case DeliveryTypeFrozen:
+			additional = s.Box100Frozen
+		case DeliveryTypeRefrigerated:
+			additional = s.Box100Refrigerated
+		}
+		rate, err = s.Box100Rates.Find(prefectureCode)
+	default:
+		return 0, errUnknownShippingSize
+	}
+	if err != nil {
+		return 0, err
+	}
+	return rate.Price + additional, nil
 }
 
 func (s *Shipping) Fill(revision *ShippingRevision) {

@@ -348,6 +348,109 @@ func TestOrder_Get(t *testing.T) {
 	}
 }
 
+func TestOrder_Create(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	err = db.DB.Create(&products).Error
+	require.NoError(t, err)
+	for i := range products {
+		err = db.DB.Create(&products[i].ProductRevision).Error
+		require.NoError(t, err)
+	}
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	fulfillments := make(entity.OrderFulfillments, 1)
+	fulfillments[0] = testOrderFulfillment("fulfillment-id", "order-id", 1, 1, now())
+	items := make(entity.OrderItems, 2)
+	items[0] = testOrderItem("fulfillment-id", 1, "order-id", now())
+	items[1] = testOrderItem("fulfillment-id", 2, "order-id", now())
+
+	o := testOrder("order-id", "user-id", "", "coordinator-id", now())
+	o.OrderPayment = *testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
+	o.OrderFulfillments = fulfillments
+	o.OrderItems = items
+
+	type args struct {
+		order *entity.Order
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				order: o,
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name: "already exists",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				err := db.DB.Create(&o).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				order: o,
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &order{db: db, now: now}
+			err = db.Create(ctx, tt.args.order)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestOrder_Aggregate(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

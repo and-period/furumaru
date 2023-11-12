@@ -113,6 +113,339 @@ func TestShipping_IsDefault(t *testing.T) {
 	}
 }
 
+func TestShipping_CalcShippingFee(t *testing.T) {
+	t.Parallel()
+	pref1 := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+	}
+	pref2 := []int32{
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	rates := ShippingRates{
+		{Number: 1, Name: "四国(東部)", Price: 250, PrefectureCodes: pref1},
+		{Number: 2, Name: "四国(西部)", Price: 500, PrefectureCodes: pref2},
+	}
+	tests := []struct {
+		name           string
+		shipping       *Shipping
+		shippingSize   ShippingSize
+		deliveryType   DeliveryType
+		total          int64
+		prefectureCode int32
+		expect         int64
+		expectErr      error
+	}{
+		{
+			name: "success free shipping",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize60,
+			deliveryType:   DeliveryTypeNormal,
+			total:          3000,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         0,
+			expectErr:      nil,
+		},
+		{
+			name: "success normal box 60",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize60,
+			deliveryType:   DeliveryTypeNormal,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         500,
+			expectErr:      nil,
+		},
+		{
+			name: "success refrigerated box 60",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize60,
+			deliveryType:   DeliveryTypeRefrigerated,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         1000,
+			expectErr:      nil,
+		},
+		{
+			name: "success frozen box 60",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize60,
+			deliveryType:   DeliveryTypeFrozen,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         1300,
+			expectErr:      nil,
+		},
+		{
+			name: "success normal box 80",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize80,
+			deliveryType:   DeliveryTypeNormal,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         500,
+			expectErr:      nil,
+		},
+		{
+			name: "success refrigerated box 80",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize80,
+			deliveryType:   DeliveryTypeRefrigerated,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         1000,
+			expectErr:      nil,
+		},
+		{
+			name: "success frozen box 80",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize80,
+			deliveryType:   DeliveryTypeFrozen,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         1300,
+			expectErr:      nil,
+		},
+		{
+			name: "success normal box 100",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize100,
+			deliveryType:   DeliveryTypeNormal,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         500,
+			expectErr:      nil,
+		},
+		{
+			name: "success refrigerated box 100",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize100,
+			deliveryType:   DeliveryTypeRefrigerated,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         1000,
+			expectErr:      nil,
+		},
+		{
+			name: "success frozen box 100",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSize100,
+			deliveryType:   DeliveryTypeFrozen,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         1300,
+			expectErr:      nil,
+		},
+		{
+			name: "unknown shipping size",
+			shipping: &Shipping{
+				ID:        "shipping-id",
+				CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+				ShippingRevision: ShippingRevision{
+					Box60Rates:         rates,
+					Box60Refrigerated:  500,
+					Box60Frozen:        800,
+					Box80Rates:         rates,
+					Box80Refrigerated:  500,
+					Box80Frozen:        800,
+					Box100Rates:        rates,
+					Box100Refrigerated: 500,
+					Box100Frozen:       800,
+					HasFreeShipping:    true,
+					FreeShippingRates:  3000,
+				},
+			},
+			shippingSize:   ShippingSizeUnknown,
+			deliveryType:   DeliveryTypeUnknown,
+			total:          2980,
+			prefectureCode: codes.PrefectureValues["kochi"],
+			expect:         0,
+			expectErr:      errUnknownShippingSize,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := tt.shipping.CalcShippingFee(tt.shippingSize, tt.deliveryType, tt.total, tt.prefectureCode)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestShipping_Fill(t *testing.T) {
 	t.Parallel()
 	pref1 := []int32{

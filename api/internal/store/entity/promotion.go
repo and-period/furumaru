@@ -4,7 +4,9 @@ import (
 	"errors"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+	"github.com/shopspring/decimal"
 )
 
 var errInvalidDiscount = errors.New("entity: invalid discount value")
@@ -86,6 +88,37 @@ func NewPromotion(params *NewPromotionParams) *Promotion {
 		StartAt:      params.StartAt,
 		EndAt:        params.EndAt,
 	}
+}
+
+func (p *Promotion) CalcDiscount(total int64, shippingFee int64) int64 {
+	if p == nil {
+		return 0
+	}
+	switch p.DiscountType {
+	case DiscountTypeAmount:
+		if total < p.DiscountRate {
+			return total
+		}
+		return p.DiscountRate
+	case DiscountTypeRate:
+		if p.DiscountRate == 0 {
+			return 0
+		}
+		dtotal := decimal.NewFromInt(total)
+		rate := decimal.NewFromInt(p.DiscountRate).Div(decimal.NewFromInt(100))
+		return dtotal.Mul(rate).IntPart()
+	case DiscountTypeFreeShipping:
+		return shippingFee
+	default:
+		return 0
+	}
+}
+
+func (p *Promotion) IsEnabled(now time.Time) bool {
+	if p == nil {
+		return false
+	}
+	return p.Public && jst.WithInPeriod(now, p.StartAt, p.EndAt)
 }
 
 func (p *Promotion) Validate() error {

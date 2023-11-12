@@ -76,6 +76,8 @@ type Service interface {
 	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error) // 取得
 	AddCartItem(ctx context.Context, in *AddCartItemInput) error         // 商品を追加
 	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error   // 商品を削除
+	// 購入処理
+	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error)
 	// 郵便番号
 	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error) // 検索
 }

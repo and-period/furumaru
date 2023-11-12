@@ -79,6 +79,21 @@ func (mr *MockServiceMockRecorder) ApproveSchedule(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApproveSchedule", reflect.TypeOf((*MockService)(nil).ApproveSchedule), ctx, in)
 }
 
+// CheckoutCreditCard mocks base method.
+func (m *MockService) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCreditCardInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckoutCreditCard", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckoutCreditCard indicates an expected call of CheckoutCreditCard.
+func (mr *MockServiceMockRecorder) CheckoutCreditCard(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckoutCreditCard", reflect.TypeOf((*MockService)(nil).CheckoutCreditCard), ctx, in)
+}
+
 // CreateCategory mocks base method.
 func (m *MockService) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	m.ctrl.T.Helper()

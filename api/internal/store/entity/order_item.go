@@ -18,6 +18,47 @@ type OrderItem struct {
 
 type OrderItems []*OrderItem
 
+type NewOrderItemParams struct {
+	OrderID       string
+	FulfillmentID string
+	Item          *CartItem
+	Product       *Product
+}
+
+type NewOrderItemsParams struct {
+	OrderID     string
+	Fulfillment *OrderFulfillment
+	Items       CartItems
+	Products    map[string]*Product
+}
+
+func NewOrderItem(params *NewOrderItemParams) *OrderItem {
+	return &OrderItem{
+		FulfillmentID:     params.FulfillmentID,
+		ProductRevisionID: params.Product.ProductRevision.ID,
+		OrderID:           params.OrderID,
+		Quantity:          params.Item.Quantity,
+	}
+}
+
+func NewOrderItems(params *NewOrderItemsParams) (OrderItems, error) {
+	res := make(OrderItems, len(params.Items))
+	for i, item := range params.Items {
+		product, ok := params.Products[item.ProductID]
+		if !ok {
+			return nil, errNotFoundProduct
+		}
+		iparams := &NewOrderItemParams{
+			OrderID:       params.OrderID,
+			FulfillmentID: params.Fulfillment.ID,
+			Item:          item,
+			Product:       product,
+		}
+		res[i] = NewOrderItem(iparams)
+	}
+	return res, nil
+}
+
 func (is OrderItems) ProductRevisionIDs() []int64 {
 	return set.UniqBy(is, func(i *OrderItem) int64 {
 		return i.ProductRevisionID

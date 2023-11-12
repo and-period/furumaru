@@ -96,18 +96,8 @@ func (p *product) Count(ctx context.Context, params *database.ListProductsParams
 }
 
 func (p *product) MultiGet(ctx context.Context, productIDs []string, fields ...string) (entity.Products, error) {
-	var products entity.Products
-
-	stmt := p.db.Statement(ctx, p.db.DB, productTable, fields...).
-		Where("id IN (?)", productIDs)
-
-	if err := stmt.Find(&products).Error; err != nil {
-		return nil, dbError(err)
-	}
-	if err := p.fill(ctx, p.db.DB, products...); err != nil {
-		return nil, dbError(err)
-	}
-	return products, nil
+	products, err := p.multiGet(ctx, p.db.DB, productIDs, fields...)
+	return products, dbError(err)
 }
 
 func (p *product) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Products, error) {
@@ -123,7 +113,7 @@ func (p *product) MultiGetByRevision(ctx context.Context, revisionIDs []int64, f
 		return entity.Products{}, nil
 	}
 
-	products, err := p.MultiGet(ctx, revisions.ProductIDs(), fields...)
+	products, err := p.multiGet(ctx, p.db.DB, revisions.ProductIDs(), fields...)
 	if err != nil {
 		return nil, err
 	}
@@ -264,6 +254,21 @@ func (p *product) Delete(ctx context.Context, productID string) error {
 
 	err := stmt.Updates(params).Error
 	return dbError(err)
+}
+
+func (p *product) multiGet(ctx context.Context, tx *gorm.DB, productIDs []string, fields ...string) (entity.Products, error) {
+	var products entity.Products
+
+	stmt := p.db.Statement(ctx, tx, productTable, fields...).
+		Where("id IN (?)", productIDs)
+
+	if err := stmt.Find(&products).Error; err != nil {
+		return nil, err
+	}
+	if err := p.fill(ctx, tx, products...); err != nil {
+		return nil, err
+	}
+	return products, nil
 }
 
 func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields ...string) (*entity.Product, error) {

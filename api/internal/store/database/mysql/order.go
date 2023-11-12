@@ -86,6 +86,32 @@ func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*ent
 	return order, nil
 }
 
+func (o *order) Create(ctx context.Context, order *entity.Order) error {
+	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := o.now()
+		order.CreatedAt, order.UpdatedAt = now, now
+		order.OrderPayment.CreatedAt, order.OrderPayment.UpdatedAt = now, now
+		for _, f := range order.OrderFulfillments {
+			f.CreatedAt, f.UpdatedAt = now, now
+		}
+		for _, i := range order.OrderItems {
+			i.CreatedAt, i.UpdatedAt = now, now
+		}
+
+		if err := tx.WithContext(ctx).Table(orderTable).Create(&order).Error; err != nil {
+			return err
+		}
+		if err := tx.WithContext(ctx).Table(orderPaymentTable).Create(&order.OrderPayment).Error; err != nil {
+			return err
+		}
+		if err := tx.WithContext(ctx).Table(orderFulfillmentTable).Create(&order.OrderFulfillments).Error; err != nil {
+			return err
+		}
+		return tx.WithContext(ctx).Table(orderItemTable).Create(&order.OrderItems).Error
+	})
+	return dbError(err)
+}
+
 func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error) {
 	var orders entity.AggregatedOrders
 
