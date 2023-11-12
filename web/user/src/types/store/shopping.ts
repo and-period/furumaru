@@ -26,6 +26,9 @@ export interface CartItem extends CartItemsInner {
 }
 
 export interface ShoppingCart extends Cart {
+  boxType: string
+  boxSize: number
+  useRate: number
   coordinator: Coordinator
   items: CartItem[]
 }

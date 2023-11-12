@@ -42,7 +42,7 @@ const handleBuyButton = () => {
       </div>
 
       <div class="my-9">
-        <div>カゴの数：{{}}</div>
+        <div>カゴの数：{{ cart.items.length }}</div>
         <div>発送地：{{ coordinator.username }}</div>
         <div>発送元：{{}}</div>
       </div>
@@ -107,26 +107,26 @@ const handleBuyButton = () => {
         </div>
 
         <div class="mt-12 flex gap-20">
-          <the-cardboard :box-size="cart.size" :use-rate="0" />
+          <the-cardboard :box-size="cart.size" :use-rate="cart.useRate" />
 
           <div class="flex flex-col gap-4">
             <div class="flex flex-col gap-2 text-center">
               <div class="rounded-3xl bg-base py-[3px] text-[12px]">
                 箱タイプ
               </div>
-              <div class="text-[14px]">{{ cart.type }}</div>
+              <div class="text-[14px]">{{ cart.boxType }}</div>
             </div>
 
             <div class="flex flex-col gap-2 text-center">
               <div class="rounded-3xl bg-base py-[3px] text-[12px]">
                 箱サイズ
               </div>
-              <div class="text-[14px]">{{ cart.size }}</div>
+              <div class="text-[14px]">{{ cart.boxSize }}</div>
             </div>
 
             <div class="flex flex-col gap-2 text-center">
               <div class="rounded-3xl bg-base py-[3px] text-[12px]">占有率</div>
-              <div class="text-[14px]">{{}}</div>
+              <div class="text-[14px]">{{ cart.useRate }}</div>
             </div>
           </div>
 
