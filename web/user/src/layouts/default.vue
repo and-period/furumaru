@@ -19,7 +19,7 @@ const { isAuthenticated } = storeToRefs(authStore)
 
 const shoppingStore = useShoppingCartStore()
 const { getCart } = shoppingStore
-const { cartIsEmpty, shoppingCart } = storeToRefs(shoppingStore)
+const { cartIsEmpty, shoppingCart, totalPrice } = storeToRefs(shoppingStore)
 
 getCart()
 
@@ -138,6 +138,7 @@ const handleClickBuyButton = () => {
       :notification-title="ht('notificationTitle')"
       :no-notification-item-text="ht('noNotificationItemText')"
       :notification-items="notifications"
+      :total-price="totalPrice"
       :cart-is-empty="cartIsEmpty"
       :cart-items="shoppingCart.carts"
       :cart-menu-message="cartMenuMessage"

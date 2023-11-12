@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 import { useShoppingCartStore } from '~/store/shopping'
 const router = useRouter()
-
-const cartItems = MOCK_PURCHASE_ITEMS
 
 const shoppingCartStore = useShoppingCartStore()
 const { shoppingCart } = storeToRefs(shoppingCartStore)
@@ -25,7 +22,7 @@ useSeoMeta({
     </div>
 
     <div class="my-10 border border-orange bg-white px-6 py-7 text-orange">
-      <div>現在のカゴの数：{{ cartItems.length }}</div>
+      <div>現在のカゴの数：{{ shoppingCart.carts.length }}</div>
 
       <ul class="list-disc px-6">
         <li>マルシェごとのご注文手続き・お届けとなります。</li>

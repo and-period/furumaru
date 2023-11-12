@@ -52,6 +52,18 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     cartIsEmpty: (state) => {
       return state._shoppingCart.carts.length === 0
     },
+
+    totalPrice() {
+      const totalPrice = this.shoppingCart.carts
+        .map((cart) =>
+          cart.items
+            .map((item) => item.product.price)
+            .filter((price) => typeof price === 'number')
+            .reduce((sum, price) => sum + price),
+        )
+        .reduce((sum, price) => sum + price)
+      return totalPrice
+    },
   },
 
   actions: {

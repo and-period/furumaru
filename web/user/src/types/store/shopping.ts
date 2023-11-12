@@ -1,4 +1,10 @@
-import { CartItemsInner, Product, ProductMediaInner } from '../api'
+import {
+  Cart,
+  CartItemsInner,
+  Coordinator,
+  Product,
+  ProductMediaInner,
+} from '../api'
 
 export interface ImageItem {
   url: string
@@ -19,4 +25,7 @@ export interface CartItem extends CartItemsInner {
   product: ProductItem
 }
 
-export interface ShoppingCart {}
+export interface ShoppingCart extends Cart {
+  coordinator: Coordinator
+  items: CartItem[]
+}

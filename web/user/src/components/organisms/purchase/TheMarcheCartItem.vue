@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Cart, Coordinator } from '~/types/api'
-import { CartItem } from '~/types/store'
+import { Coordinator } from '~/types/api'
+import { CartItem, ShoppingCart } from '~/types/store'
 
 interface Props {
   cartNumber: number
   coordinator: Coordinator
-  cart: Cart
+  cart: ShoppingCart
   items: CartItem[]
 }
 
@@ -13,8 +13,14 @@ interface Emits {
   (e: 'click:buyButton'): void
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
+
+const totalPrice = computed<number>(() => {
+  return props.items
+    .map((item) => item.product.price * item.quantity)
+    .reduce((sum, price) => sum + price)
+})
 
 const priceStringFormatter = (price: number): string => {
   return new Intl.NumberFormat('ja-JP', {
@@ -43,7 +49,7 @@ const handleBuyButton = () => {
 
       <div class="flex items-center justify-between font-bold">
         <div class="text-[14px]">商品合計（税込み）</div>
-        <div class="text-[20px]">{{ priceStringFormatter(0) }}</div>
+        <div class="text-[20px]">{{ priceStringFormatter(totalPrice) }}</div>
       </div>
 
       <hr class="my-5 border-main" />
@@ -89,14 +95,14 @@ const handleBuyButton = () => {
                 {{ item.product.name }}
               </div>
             </div>
-            <div>{{ priceStringFormatter(0) }}</div>
+            <div>{{ priceStringFormatter(item.product.price) }}</div>
             <div class="inline-flex text-[14px]">
-              <select class="h-full border-[1px] border-main px-2">
-                <option value="0">1</option>
-              </select>
+              {{ item.quantity }}
               <button class="ml-2 text-[12px] underline">削除</button>
             </div>
-            <div>{{ priceStringFormatter(0) }}</div>
+            <div>
+              {{ priceStringFormatter(item.product.price * item.quantity) }}
+            </div>
           </div>
         </div>
 
@@ -129,7 +135,7 @@ const handleBuyButton = () => {
               <div class="flex items-center justify-between">
                 <div class="text-[14px]">小計（税込み）</div>
                 <div class="text-[20px]">
-                  {{ priceStringFormatter(0) }}
+                  {{ priceStringFormatter(totalPrice) }}
                 </div>
               </div>
               <hr class="mt-4 border-main" />

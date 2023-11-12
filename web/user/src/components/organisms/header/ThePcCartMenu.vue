@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { ShoppingCart } from '~/types/store'
+
 interface Props {
   isAuthenticated: boolean
   cartIsEmpty: boolean
   cartMenuMessage: string
-  cartItems: any[]
+  totalPrice: number
+  cartItems: ShoppingCart[]
 }
 
 defineProps<Props>()
@@ -16,13 +19,12 @@ const emits = defineEmits<Emits>()
 
 const area = ref<{ close: () => void }>({ close: () => {} })
 
-const totalPrice = computed(() => {
+const priceStringFormatter = (price: number): string => {
   return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
     currency: 'JPY',
-  }).format(18000)
-})
-
+  }).format(price)
+}
 const handleClickBuyButton = () => {
   emits('click:buyButton')
   area.value.close()
@@ -55,7 +57,7 @@ const handleClickBuyButton = () => {
           <p
             class="font-bold after:ml-2 after:text-[16px] after:content-['(税込)']"
           >
-            {{ totalPrice }}
+            {{ priceStringFormatter(totalPrice) }}
           </p>
         </div>
         <button
@@ -83,7 +85,7 @@ const handleClickBuyButton = () => {
           :marche-name="item.coordinator.marcheName"
           :box-type="item.type"
           :box-size="item.size"
-          :items="item.items"
+          :shopping-cart="item"
           @click:buy-button="handleClickBuyButton"
         />
       </div>
