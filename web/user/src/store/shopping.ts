@@ -23,12 +23,41 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     shoppingCart(state) {
       return {
         carts: state._shoppingCart.carts.map((cart) => {
+          const boxType = (type: number) => {
+            switch (type) {
+              case 1:
+                return '通常便'
+              case 2:
+                return '冷蔵便'
+              case 3:
+                return '冷凍便'
+              default:
+                return ''
+            }
+          }
+          const boxSize = (size: number) => {
+            switch (size) {
+              case 1:
+                return 60
+              case 2:
+                return 80
+              case 3:
+                return 100
+              default:
+                return 0
+            }
+          }
+
           return {
             ...cart,
             // コーディネーターのマッピング
             coordinator: state._shoppingCart.coordinators.find(
               (coordinator) => coordinator.id === cart.coordinatorId,
             ),
+            // 箱タイプ
+            boxType: boxType(cart.type),
+            // 箱サイズ
+            boxSize: boxSize(cart.size),
             // カート内の商品のマッピング
             items: cart.items.map((item) => {
               // マッピング用の商品オブジェクトを事前計算
@@ -44,6 +73,31 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
                 },
               }
             }),
+            // 占有率
+            useRate: cart.items
+              .map((item) => {
+                const product = state._shoppingCart.products.find(
+                  (product) => product.id === item.productId,
+                )
+                return product
+              })
+              .map((product) => {
+                if (product) {
+                  switch (cart.size) {
+                    case 1:
+                      return product.box60Rate
+                    case 2:
+                      return product.box80Rate
+                    case 3:
+                      return product.box100Rate
+                    default:
+                      return 0
+                  }
+                } else {
+                  return 0
+                }
+              })
+              .reduce((sum, rate) => sum + rate),
           }
         }),
       }
