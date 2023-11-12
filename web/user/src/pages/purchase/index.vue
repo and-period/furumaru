@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
+import { storeToRefs } from 'pinia'
+import { useShoppingCartStore } from '~/store/shopping'
 const router = useRouter()
 
-const cartItems = MOCK_PURCHASE_ITEMS
+const shoppingCartStore = useShoppingCartStore()
+const { shoppingCart } = storeToRefs(shoppingCartStore)
 
 const handleClickBuyButton = () => {
   router.push('/v1/purchase/address')
 }
+
+useSeoMeta({
+  title: '買い物カゴ',
+})
 </script>
 
 <template>
@@ -16,7 +22,7 @@ const handleClickBuyButton = () => {
     </div>
 
     <div class="my-10 border border-orange bg-white px-6 py-7 text-orange">
-      <div>現在のカゴの数：{{ cartItems.length }}</div>
+      <div>現在のカゴの数：{{ shoppingCart.carts.length }}</div>
 
       <ul class="list-disc px-6">
         <li>マルシェごとのご注文手続き・お届けとなります。</li>
@@ -28,12 +34,12 @@ const handleClickBuyButton = () => {
 
     <div class="mt-10 flex flex-col gap-y-10">
       <the-marche-cart-item
-        v-for="(cartItem, i) in cartItems"
+        v-for="(cartItem, i) in shoppingCart.carts"
         :key="i"
-        :marche="cartItem.marche"
-        :address="cartItem.address"
-        :sender="cartItem.sender"
-        :cart-items="cartItem.cartItems"
+        :cart="cartItem"
+        :cart-number="cartItem.number"
+        :coordinator="cartItem.coordinator"
+        :items="cartItem.items"
         @click:buy-button="handleClickBuyButton"
       />
     </div>

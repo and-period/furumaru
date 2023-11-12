@@ -3,6 +3,7 @@ interface Props {
   name: string
   price: number
   imgSrc: string
+  quantity: number
 }
 
 const props = defineProps<Props>()
@@ -30,10 +31,10 @@ const priceString = computed<string>(() => {
       <div class="flex flex-col">
         <div class="flex grow items-start">
           <div class="inline-flex">
-            <label class="mr-2 block whitespace-nowrap">数量</label>
-            <select class="h-full border-[1px] border-main px-2">
-              <option value="0">0</option>
-            </select>
+            <div class="mr-2 block whitespace-nowrap">
+              数量
+              {{ quantity }}
+            </div>
           </div>
         </div>
         <div class="text-right">

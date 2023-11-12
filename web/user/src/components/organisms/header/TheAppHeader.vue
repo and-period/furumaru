@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
+import { ShoppingCart } from '~/types/store'
 
 interface Props {
   homePath: string
@@ -13,7 +14,8 @@ interface Props {
   notificationItems: any[]
   cartIsEmpty: boolean
   cartMenuMessage: string
-  cartItems: any[]
+  totalPrice: number
+  cartItems: ShoppingCart[]
   spMenuItems: LinkItem[]
   footerMenuItems: FooterMenuItem[]
 }
@@ -91,6 +93,7 @@ const handleClickBuyButton = () => {
           :cart-is-empty="cartIsEmpty"
           :cart-menu-message="cartMenuMessage"
           :cart-items="cartItems"
+          :total-price="totalPrice"
           @click:buy-button="handleClickBuyButton"
         />
 

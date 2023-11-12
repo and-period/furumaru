@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { ShoppingCart } from '~/types/store'
+
 interface Props {
   isAuthenticated: boolean
   cartIsEmpty: boolean
   cartMenuMessage: string
-  cartItems: any[]
+  totalPrice: number
+  cartItems: ShoppingCart[]
 }
 
 defineProps<Props>()
@@ -16,13 +19,12 @@ const emits = defineEmits<Emits>()
 
 const area = ref<{ close: () => void }>({ close: () => {} })
 
-const totalPrice = computed(() => {
+const priceStringFormatter = (price: number): string => {
   return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
     currency: 'JPY',
-  }).format(18000)
-})
-
+  }).format(price)
+}
 const handleClickBuyButton = () => {
   emits('click:buyButton')
   area.value.close()
@@ -32,7 +34,17 @@ const handleClickBuyButton = () => {
 <template>
   <the-dropdown-with-icon ref="area">
     <template #icon>
-      <the-cart-icon id="header-cart-icon" fill="#604C3F" />
+      <div class="relative">
+        <span
+          v-if="!cartIsEmpty"
+          class="absolute right-[2px] top-[-2px] inline-flex h-[8px] w-[8px] animate-ping rounded-full bg-orange opacity-75"
+        />
+        <span
+          v-if="!cartIsEmpty"
+          class="absolute right-[2px] top-[-2px] inline-flex h-[8px] w-[8px] rounded-full bg-orange"
+        />
+        <the-cart-icon id="header-cart-icon" fill="#604C3F" />
+      </div>
     </template>
     <template #content>
       <div
@@ -45,7 +57,7 @@ const handleClickBuyButton = () => {
           <p
             class="font-bold after:ml-2 after:text-[16px] after:content-['(税込)']"
           >
-            {{ totalPrice }}
+            {{ priceStringFormatter(totalPrice) }}
           </p>
         </div>
         <button
@@ -70,10 +82,10 @@ const handleClickBuyButton = () => {
           v-for="(item, i) in cartItems"
           :key="i"
           :cart-number="i + 1"
-          :marche-name="item.marche"
-          :box-type="item.boxType"
-          :box-size="item.boxSize"
-          :items="item.items"
+          :marche-name="item.coordinator.marcheName"
+          :box-type="item.type"
+          :box-size="item.size"
+          :shopping-cart="item"
           @click:buy-button="handleClickBuyButton"
         />
       </div>

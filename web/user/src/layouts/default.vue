@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { MOCK_CART_ITEMS } from '~/constants/mock'
 import { useAuthStore } from '~/store/auth'
 import { useNotificationStore } from '~/store/notification'
 import { useShoppingCartStore } from '~/store/shopping'
@@ -20,8 +19,7 @@ const { isAuthenticated } = storeToRefs(authStore)
 
 const shoppingStore = useShoppingCartStore()
 const { getCart } = shoppingStore
-const { cartIsEmpty } = storeToRefs(shoppingStore)
-const cartItems = MOCK_CART_ITEMS
+const { cartIsEmpty, shoppingCart, totalPrice } = storeToRefs(shoppingStore)
 
 getCart()
 
@@ -34,7 +32,9 @@ const ft = (str: keyof I18n['layout']['footer']) => {
 }
 
 const cartMenuMessage = computed<string>(() => {
-  return i18n.t('layout.header.cartMenuMessage', { count: cartItems.length })
+  return i18n.t('layout.header.cartMenuMessage', {
+    count: shoppingCart.value.carts?.length ?? 0,
+  })
 })
 
 const navbarMenuList = computed<HeaderMenuItem[]>(() => [
@@ -138,8 +138,9 @@ const handleClickBuyButton = () => {
       :notification-title="ht('notificationTitle')"
       :no-notification-item-text="ht('noNotificationItemText')"
       :notification-items="notifications"
+      :total-price="totalPrice"
       :cart-is-empty="cartIsEmpty"
-      :cart-items="cartItems"
+      :cart-items="shoppingCart.carts"
       :cart-menu-message="cartMenuMessage"
       :sp-menu-items="spModeMenuItems"
       :footer-menu-items="footerMenuList"

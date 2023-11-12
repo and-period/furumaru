@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { ShoppingCart } from '~/types/store'
+
 interface Props {
   cartNumber: number
   marcheName: string
   boxType: string
   boxSize: number
-  items: any[]
+  shoppingCart: ShoppingCart
 }
 
 const props = defineProps<Props>()
@@ -91,11 +93,13 @@ const handleClick = () => {
 
       <hr class="my-2 border-dashed border-main" />
 
-      <div v-for="item in items" :key="item.id">
+      <div v-for="item in shoppingCart.items" :key="item.productId">
         <the-cart-product-item
-          :name="item.name"
-          :price="item.price"
-          :img-src="item.imgSrc"
+          v-if="item"
+          :name="item.product.name"
+          :price="item.product.price"
+          :img-src="item.product.thumbnail.url"
+          :quantity="item.quantity"
         />
         <hr class="my-2 border-dashed border-main" />
       </div>
