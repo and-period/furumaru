@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -57,6 +58,10 @@ func NewAddress(params *NewAddressParams) (*Address, error) {
 		IsDefault:       params.IsDefault,
 		AddressRevision: *revision,
 	}, nil
+}
+
+func (a *Address) Name() string {
+	return strings.Join([]string{a.Lastname, a.Firstname}, " ")
 }
 
 func (a *Address) Fill(revision *AddressRevision) {

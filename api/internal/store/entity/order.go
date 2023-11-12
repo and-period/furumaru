@@ -3,7 +3,9 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
 
@@ -32,6 +34,58 @@ type AggregatedOrder struct {
 }
 
 type AggregatedOrders []*AggregatedOrder
+
+type NewOrderParams struct {
+	CoordinatorID     string
+	Customer          *entity.User
+	BillingAddress    *entity.Address
+	ShippingAddress   *entity.Address
+	Shipping          *Shipping
+	Baskets           CartBaskets
+	Products          Products
+	PaymentMethodType PaymentMethodType
+	Promotion         *Promotion
+}
+
+func NewOrder(params *NewOrderParams) (*Order, error) {
+	var promotionID string
+	if params.Promotion != nil {
+		promotionID = params.Promotion.ID
+	}
+	orderID := uuid.Base58Encode(uuid.New())
+	pparams := &NewOrderPaymentParams{
+		OrderID:    orderID,
+		Address:    params.BillingAddress,
+		MethodType: params.PaymentMethodType,
+		Baskets:    params.Baskets,
+		Products:   params.Products,
+		Shipping:   params.Shipping,
+		Promotion:  params.Promotion,
+	}
+	payment, err := NewOrderPayment(pparams)
+	if err != nil {
+		return nil, err
+	}
+	fparams := &NewOrderFulfillmentsParams{
+		OrderID:  orderID,
+		Address:  params.ShippingAddress,
+		Baskets:  params.Baskets,
+		Products: params.Products.Map(),
+	}
+	fulfillments, items, err := NewOrderFulfillments(fparams)
+	if err != nil {
+		return nil, err
+	}
+	return &Order{
+		OrderPayment:      *payment,
+		OrderFulfillments: fulfillments,
+		OrderItems:        items,
+		ID:                orderID,
+		UserID:            params.Customer.ID,
+		CoordinatorID:     params.CoordinatorID,
+		PromotionID:       promotionID,
+	}, nil
+}
 
 func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, items OrderItems) {
 	o.OrderPayment = *payment

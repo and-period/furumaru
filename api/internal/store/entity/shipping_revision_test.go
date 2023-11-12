@@ -694,7 +694,64 @@ func TestShippingRate(t *testing.T) {
 	}
 }
 
-func TestShippingRates(t *testing.T) {
+func TestShippingRates_Find(t *testing.T) {
+	t.Parallel()
+	shikoku := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	set := set.New(shikoku...)
+	others := make([]int32, 0, 47-len(shikoku))
+	for _, val := range codes.PrefectureValues {
+		if set.Contains(val) {
+			continue
+		}
+		others = append(others, val)
+	}
+	tests := []struct {
+		name           string
+		rates          ShippingRates
+		prefectureCode int32
+		expect         *ShippingRate
+		expectErr      error
+	}{
+		{
+			name: "success",
+			rates: ShippingRates{
+				{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+				{Number: 2, Name: "四国(以外)", Price: 500, PrefectureCodes: others},
+			},
+			prefectureCode: codes.PrefectureValues["kagawa"],
+			expect: &ShippingRate{
+				Number:          1,
+				Name:            "四国",
+				Price:           250,
+				PrefectureCodes: shikoku,
+			},
+			expectErr: nil,
+		},
+		{
+			name:           "not found",
+			rates:          nil,
+			prefectureCode: codes.PrefectureValues["kagawa"],
+			expect:         nil,
+			expectErr:      errNotFoundShippingRate,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := tt.rates.Find(tt.prefectureCode)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestShippingRates_Validate(t *testing.T) {
 	t.Parallel()
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],

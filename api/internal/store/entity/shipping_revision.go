@@ -2,6 +2,7 @@ package entity
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
@@ -9,6 +10,8 @@ import (
 	"github.com/jinzhu/copier"
 	"gorm.io/datatypes"
 )
+
+var errNotFoundShippingRate = errors.New("entity: not found shipping rate")
 
 // ShippingRevision - 配送設定変更履歴情報
 type ShippingRevision struct {
@@ -163,6 +166,16 @@ func NewShippingRate(num int64, name string, price int64, prefs []int32) *Shippi
 		Price:           price,
 		PrefectureCodes: prefs,
 	}
+}
+
+func (rs ShippingRates) Find(prefectureCode int32) (*ShippingRate, error) {
+	for _, rate := range rs {
+		set := set.New(rate.PrefectureCodes...)
+		if set.Contains(prefectureCode) {
+			return rate, nil
+		}
+	}
+	return nil, errNotFoundShippingRate
 }
 
 func (rs ShippingRates) Validate() error {

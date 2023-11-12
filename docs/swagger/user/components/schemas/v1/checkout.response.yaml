@@ -1,0 +1,10 @@
+checkoutResponse:
+  type: object
+  properties:
+    url:
+      type: string
+      description: 支払いページへのリダイレクトURL
+  required:
+  - url
+  example:
+    url: 'http://example.com/redirect-url'

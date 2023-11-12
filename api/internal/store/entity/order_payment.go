@@ -3,8 +3,13 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/shopspring/decimal"
 )
+
+var taxRate = decimal.NewFromFloat(0.10) // 税率（10%)
 
 // 支払いステータス
 type PaymentStatus int32
@@ -67,8 +72,85 @@ type OrderPayment struct {
 
 type OrderPayments []*OrderPayment
 
+type NewOrderPaymentParams struct {
+	OrderID    string
+	Address    *entity.Address
+	MethodType PaymentMethodType
+	Baskets    CartBaskets
+	Products   Products
+	Shipping   *Shipping
+	Promotion  *Promotion
+}
+
+func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
+	switch methodType {
+	case PaymentMethodTypeCash:
+		// 未対応
+		return []komoju.PaymentType{}
+	case PaymentMethodTypeCreditCard:
+		return []komoju.PaymentType{komoju.PaymentTypeCreditCard}
+	case PaymentMethodTypeKonbini:
+		return []komoju.PaymentType{komoju.PaymentTypeKonbini}
+	case PaymentMethodTypeBankTranser:
+		return []komoju.PaymentType{komoju.PaymentTypeBankTransfer}
+	case PaymentMethodTypePayPay:
+		return []komoju.PaymentType{komoju.PaymentTypePayPay}
+	case PaymentMethodTypeLinePay:
+		return []komoju.PaymentType{komoju.PaymentTypeLinePay}
+	case PaymentMethodTypeMerpay:
+		return []komoju.PaymentType{komoju.PaymentTypeMerpay}
+	case PaymentMethodTypeRakutenPay:
+		return []komoju.PaymentType{komoju.PaymentTypeRakutenPay}
+	case PaymentMethodTypeAUPay:
+		return []komoju.PaymentType{komoju.PaymentTypeAUPay}
+	default:
+		return []komoju.PaymentType{}
+	}
+}
+
+func NewOrderPayment(params *NewOrderPaymentParams) (*OrderPayment, error) {
+	var shippingFee int64
+	// 商品購入価格の算出
+	subtotal, err := params.Baskets.TotalPrice(params.Products.Map())
+	if err != nil {
+		return nil, err
+	}
+	// 商品配送料金の算出
+	for _, basket := range params.Baskets {
+		fee, err := params.Shipping.CalcShippingFee(basket.BoxSize, basket.BoxType, subtotal, params.Address.PrefectureCode)
+		if err != nil {
+			return nil, err
+		}
+		shippingFee += fee
+	}
+	// 割引金額の算出
+	discount := params.Promotion.CalcDiscount(subtotal, shippingFee)
+	// 支払い金額の算出
+	dsubtotal := decimal.NewFromInt(subtotal).Add(decimal.NewFromInt(shippingFee))
+	ddiscount := decimal.NewFromInt(discount)
+	dtax := dsubtotal.Sub(ddiscount).Mul(taxRate)
+	dtotal := dsubtotal.Sub(ddiscount).Add(dtax)
+	return &OrderPayment{
+		OrderID:           params.OrderID,
+		AddressRevisionID: params.Address.AddressRevision.ID,
+		Status:            PaymentStatusPending,
+		TransactionID:     "",
+		MethodType:        params.MethodType,
+		Subtotal:          subtotal,
+		Discount:          discount,
+		ShippingFee:       shippingFee,
+		Tax:               dtax.IntPart(),
+		Total:             dtotal.IntPart(),
+	}, nil
+}
+
 func (p *OrderPayment) IsCanceled() bool {
 	return p.Status == PaymentStatusRefunded
+}
+
+func (p *OrderPayment) SetTransactionID(transactionID string, now time.Time) {
+	p.TransactionID = transactionID
+	p.OrderedAt = now
 }
 
 func (ps OrderPayments) AddressRevisionIDs() []int64 {

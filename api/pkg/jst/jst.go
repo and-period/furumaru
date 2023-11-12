@@ -41,6 +41,11 @@ func EndOfMonth(year, month int) time.Time {
 	return Date(year, time.Month(month), 1, 0, 0, 0, 0).AddDate(0, 1, 0).Add(-time.Nanosecond)
 }
 
+// WithInPeriod 期間内かの検証
+func WithInPeriod(t, startAt, endAt time.Time) bool {
+	return !startAt.After(t) && !endAt.Before(t)
+}
+
 // Unix エポック形式の時間を返す
 func Unix(t time.Time) int64 {
 	if t.IsZero() {
