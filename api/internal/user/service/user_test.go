@@ -428,6 +428,14 @@ func TestCreateUser(t *testing.T) {
 func TestVerifyUser(t *testing.T) {
 	t.Parallel()
 
+	u := &entity.User{
+		ID: "user-id",
+		Member: entity.Member{
+			UserID:    "user-id",
+			CognitoID: "cognito-id",
+		},
+		Registered: true,
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -437,7 +445,8 @@ func TestVerifyUser(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(nil)
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(nil)
 				mocks.db.Member.EXPECT().UpdateVerified(ctx, "user-id").Return(nil)
 			},
 			input: &user.VerifyUserInput{
@@ -453,9 +462,21 @@ func TestVerifyUser(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get user",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(nil, assert.AnError)
+			},
+			input: &user.VerifyUserInput{
+				UserID:     "user-id",
+				VerifyCode: "123456",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to confirm sign up",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(assert.AnError)
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(assert.AnError)
 			},
 			input: &user.VerifyUserInput{
 				UserID:     "user-id",
@@ -466,7 +487,8 @@ func TestVerifyUser(t *testing.T) {
 		{
 			name: "failed to update verified",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "user-id", "123456").Return(nil)
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(nil)
 				mocks.db.Member.EXPECT().UpdateVerified(ctx, "user-id").Return(assert.AnError)
 			},
 			input: &user.VerifyUserInput{
