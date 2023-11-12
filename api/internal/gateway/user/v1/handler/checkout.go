@@ -15,7 +15,7 @@ import (
 )
 
 func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/checkouts")
+	r := rg.Group("/checkouts", h.authentication)
 
 	r.POST("", h.Checkout)
 	r.GET("/:sessionId")
