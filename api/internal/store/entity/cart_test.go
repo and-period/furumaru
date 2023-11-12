@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -178,6 +179,54 @@ func TestCart_AddItem(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.cart.AddItem(tt.productID, tt.quantity)
+			assert.Equal(t, tt.expect, tt.cart)
+		})
+	}
+}
+
+func TestCart_RemoveBaskets(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name       string
+		cart       *Cart
+		boxNumbers []int64
+		expect     *Cart
+	}{
+		{
+			name: "success",
+			cart: &Cart{
+				SessionID: "session-id",
+				Baskets: []*CartBasket{
+					{
+						BoxNumber: 1,
+						BoxType:   DeliveryTypeNormal,
+						BoxSize:   ShippingSize60,
+						Items: CartItems{
+							{ProductID: "product-id", Quantity: 1},
+						},
+						CoordinatorID: "",
+					},
+				},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			boxNumbers: []int64{1},
+			expect: &Cart{
+				SessionID: "session-id",
+				Baskets:   []*CartBasket{},
+				ExpiredAt: now.AddDate(0, 0, 7),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.cart.RemoveBaskets(tt.boxNumbers...)
 			assert.Equal(t, tt.expect, tt.cart)
 		})
 	}
@@ -368,6 +417,313 @@ func TestCart_RemoveItem(t *testing.T) {
 	}
 }
 
+func TestCartBaskets_MergeByProductID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		baskets CartBaskets
+		expect  CartItems
+	}{
+		{
+			name: "success",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+					},
+					CoordinatorID: "",
+				},
+			},
+			expect: CartItems{
+				{ProductID: "product-id01", Quantity: 2},
+				{ProductID: "product-id02", Quantity: 2},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.baskets.MergeByProductID()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestCartBaskets_AdjustItems(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		baskets  CartBaskets
+		products map[string]*Product
+		expect   CartItems
+	}{
+		{
+			name: "success",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+					},
+					CoordinatorID: "",
+				},
+			},
+			products: map[string]*Product{
+				"product-id01": {
+					ID:        "product-id01",
+					Inventory: 2,
+				},
+				"product-id02": {
+					ID:        "product-id02",
+					Inventory: 1,
+				},
+			},
+			expect: CartItems{
+				{ProductID: "product-id01", Quantity: 2},
+				{ProductID: "product-id02", Quantity: 1},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.baskets.AdjustItems(tt.products)
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestCartBaskets_FilterByCoordinatorID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name           string
+		baskets        CartBaskets
+		coordinatorIDs []string
+		expect         CartBaskets
+	}{
+		{
+			name: "success all match",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+			},
+			coordinatorIDs: []string{"coordinator-id"},
+			expect: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+					},
+					CoordinatorID: "coordinator-id",
+				},
+			},
+		},
+		{
+			name: "success partial match",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "coordinator-id01",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+					},
+					CoordinatorID: "coordinator-id02",
+				},
+			},
+			coordinatorIDs: []string{"coordinator-id01"},
+			expect: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "coordinator-id01",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.baskets.FilterByCoordinatorID(tt.coordinatorIDs...)
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestCartBaskets_FilterByBoxNumber(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		baskets    CartBaskets
+		boxNumbers []int64
+		expect     CartBaskets
+	}{
+		{
+			name: "success with 0",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+					},
+					CoordinatorID: "",
+				},
+			},
+			boxNumbers: []int64{0},
+			expect: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+					},
+					CoordinatorID: "",
+				},
+			},
+		},
+		{
+			name: "success without 0",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "",
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+					},
+					CoordinatorID: "",
+				},
+			},
+			boxNumbers: []int64{1},
+			expect: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize60,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+					CoordinatorID: "",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.baskets.FilterByBoxNumber(tt.boxNumbers...)
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestCartBaskets_VerifyQuantity(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -441,6 +797,199 @@ func TestCartBaskets_VerifyQuantity(t *testing.T) {
 			t.Parallel()
 			err := tt.baskets.VerifyQuantity(tt.additional, tt.product)
 			assert.Equal(t, tt.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestCartBaskets_TotalPrice(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		baskets   CartBaskets
+		products  map[string]*Product
+		expect    int64
+		expectErr error
+	}{
+		{
+			name: "success",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 3},
+					},
+				},
+			},
+			products: map[string]*Product{
+				"product-id01": {
+					ID: "product-id01",
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id01",
+						Price:     500,
+						Cost:      200,
+					},
+				},
+				"product-id02": {
+					ID: "product-id02",
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id02",
+						Price:     1980,
+						Cost:      500,
+					},
+				},
+			},
+			expect:    5960,
+			expectErr: nil,
+		},
+		{
+			name: "not found product",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 3},
+					},
+				},
+			},
+			products:  map[string]*Product{},
+			expect:    0,
+			expectErr: errNotFoundProduct,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := tt.baskets.TotalPrice(tt.products)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestCartBaskets_KomojuProducts(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		baskets   CartBaskets
+		products  map[string]*Product
+		expect    []*komoju.CreateSessionProduct
+		expectErr error
+	}{
+		{
+			name: "success",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 3},
+					},
+				},
+			},
+			products: map[string]*Product{
+				"product-id01": {
+					ID:   "product-id01",
+					Name: "じゃがいも",
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id01",
+						Price:     500,
+						Cost:      200,
+					},
+				},
+				"product-id02": {
+					ID:   "product-id02",
+					Name: "人参",
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id02",
+						Price:     1980,
+						Cost:      500,
+					},
+				},
+			},
+			expect: []*komoju.CreateSessionProduct{
+				{
+					Amount:      500,
+					Description: "じゃがいも",
+					Quantity:    4,
+				},
+				{
+					Amount:      1980,
+					Description: "人参",
+					Quantity:    2,
+				},
+			},
+			expectErr: nil,
+		},
+		{
+			name: "not found product",
+			baskets: CartBaskets{
+				{
+					BoxNumber: 1,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 1},
+						{ProductID: "product-id02", Quantity: 2},
+					},
+				},
+				{
+					BoxNumber: 2,
+					BoxType:   DeliveryTypeNormal,
+					BoxSize:   ShippingSize100,
+					Items: CartItems{
+						{ProductID: "product-id01", Quantity: 3},
+					},
+				},
+			},
+			products:  map[string]*Product{},
+			expect:    nil,
+			expectErr: errNotFoundProduct,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := tt.baskets.KomojuProducts(tt.products)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
 		})
 	}
 }

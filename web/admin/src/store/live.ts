@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
+
 import { useProducerStore } from './producer'
 import { useProductStore } from './product'
 import { apiClient } from '~/plugins/api-client'
-import { CreateLiveRequest, Live, UpdateLiveRequest } from '~/types/api'
+import type { CreateLiveRequest, Live, UpdateLiveRequest } from '~/types/api'
 
 export const useLiveStore = defineStore('live', {
   state: () => ({

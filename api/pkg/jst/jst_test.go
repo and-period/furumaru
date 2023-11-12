@@ -50,6 +50,61 @@ func TestToTime(t *testing.T) {
 	}
 }
 
+func TestWithInPeriod(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name    string
+		target  time.Time
+		startAt time.Time
+		endAt   time.Time
+		expect  bool
+	}{
+		{
+			name:    "before start at",
+			target:  now.Add(-time.Hour),
+			startAt: now,
+			endAt:   now.Add(time.Hour),
+			expect:  false,
+		},
+		{
+			name:    "equal start at",
+			target:  now,
+			startAt: now,
+			endAt:   now.Add(time.Hour),
+			expect:  true,
+		},
+		{
+			name:    "with in the period",
+			target:  now,
+			startAt: now.Add(-time.Hour),
+			endAt:   now.Add(time.Hour),
+			expect:  true,
+		},
+		{
+			name:    "equal end at",
+			target:  now,
+			startAt: now.Add(-time.Hour),
+			endAt:   now,
+			expect:  true,
+		},
+		{
+			name:    "after end at",
+			target:  now.Add(time.Hour),
+			startAt: now.Add(-time.Hour),
+			endAt:   now,
+			expect:  false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, WithInPeriod(tt.target, tt.startAt, tt.endAt))
+		})
+	}
+}
+
 func TestToString(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

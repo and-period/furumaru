@@ -1864,122 +1864,6 @@ export interface CreateScheduleRequest {
 /**
  * 
  * @export
- * @interface CreateShippingRate
- */
-export interface CreateShippingRate {
-    /**
-     * 配送料金設定名
-     * @type {string}
-     * @memberof CreateShippingRate
-     */
-    'name': string;
-    /**
-     * 配送料金(100万未満)
-     * @type {number}
-     * @memberof CreateShippingRate
-     */
-    'price': number;
-    /**
-     * 対象都道府県コード一覧
-     * @type {Array<Prefecture>}
-     * @memberof CreateShippingRate
-     */
-    'prefectureCodes': Array<Prefecture>;
-}
-/**
- * 
- * @export
- * @interface CreateShippingRequest
- */
-export interface CreateShippingRequest {
-    /**
-     * 配送設定名(64文字まで)
-     * @type {string}
-     * @memberof CreateShippingRequest
-     */
-    'name': string;
-    /**
-     * コーディネータID(必須)
-     * @type {string}
-     * @memberof CreateShippingRequest
-     */
-    'coordinatorId': string;
-    /**
-     * デフォルト設定
-     * @type {boolean}
-     * @memberof CreateShippingRequest
-     */
-    'isDefault': boolean;
-    /**
-     * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
-     * @memberof CreateShippingRequest
-     */
-    'box60Rates': Array<CreateShippingRate>;
-    /**
-     * 箱サイズ60の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof CreateShippingRequest
-     */
-    'box60Refrigerated': number;
-    /**
-     * 箱サイズ60の冷凍便追加配送料(100万未満)
-     * @type {number}
-     * @memberof CreateShippingRequest
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
-     * @memberof CreateShippingRequest
-     */
-    'box80Rates': Array<CreateShippingRate>;
-    /**
-     * 箱サイズ80の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof CreateShippingRequest
-     */
-    'box80Refrigerated': number;
-    /**
-     * 箱サイズ80の冷凍便追加配送料(100万未満)
-     * @type {number}
-     * @memberof CreateShippingRequest
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<CreateShippingRate>}
-     * @memberof CreateShippingRequest
-     */
-    'box100Rates': Array<CreateShippingRate>;
-    /**
-     * 箱サイズ100の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof CreateShippingRequest
-     */
-    'box100Refrigerated': number;
-    /**
-     * 箱サイズ100の冷凍便追加配送料(100万未満)
-     * @type {number}
-     * @memberof CreateShippingRequest
-     */
-    'box100Frozen': number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof CreateShippingRequest
-     */
-    'hasFreeShipping': boolean;
-    /**
-     * 送料無料になる金額(100万未満)
-     * @type {number}
-     * @memberof CreateShippingRequest
-     */
-    'freeShippingRates': number;
-}
-/**
- * 
- * @export
  * @interface CreateThreadRequest
  */
 export interface CreateThreadRequest {
@@ -2608,6 +2492,377 @@ export interface NotificationsResponse {
     'total': number;
 }
 /**
+ * 注文履歴情報
+ * @export
+ * @interface Order
+ */
+export interface Order {
+    /**
+     * 注文履歴ID
+     * @type {string}
+     * @memberof Order
+     */
+    'id': string;
+    /**
+     * 購入者ID
+     * @type {string}
+     * @memberof Order
+     */
+    'userId': string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Order
+     */
+    'coordinatorId': string;
+    /**
+     * プロモーションID
+     * @type {string}
+     * @memberof Order
+     */
+    'promotionId': string;
+    /**
+     * 
+     * @type {OrderPayment}
+     * @memberof Order
+     */
+    'payment': OrderPayment;
+    /**
+     * 
+     * @type {OrderRefund}
+     * @memberof Order
+     */
+    'refund': OrderRefund;
+    /**
+     * 注文配送一覧
+     * @type {Array<OrderFulfillment>}
+     * @memberof Order
+     */
+    'fulfillments': Array<OrderFulfillment>;
+    /**
+     * 注文商品一覧
+     * @type {Array<OrderItem>}
+     * @memberof Order
+     */
+    'items': Array<OrderItem>;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Order
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Order
+     */
+    'updatedAt': number;
+}
+/**
+ * 注文配送情報
+ * @export
+ * @interface OrderFulfillment
+ */
+export interface OrderFulfillment {
+    /**
+     * 注文配送ID
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'fulfillmentId': string;
+    /**
+     * 伝票番号
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'trackingNumber': string;
+    /**
+     * 
+     * @type {FulfillmentStatus}
+     * @memberof OrderFulfillment
+     */
+    'status': FulfillmentStatus;
+    /**
+     * 
+     * @type {ShippingCarrier}
+     * @memberof OrderFulfillment
+     */
+    'shippingCarrier': ShippingCarrier;
+    /**
+     * 
+     * @type {DeliveryType}
+     * @memberof OrderFulfillment
+     */
+    'shippingMethod': DeliveryType;
+    /**
+     * 箱の通番
+     * @type {number}
+     * @memberof OrderFulfillment
+     */
+    'boxNumber': number;
+    /**
+     * 
+     * @type {ShippingSize}
+     * @memberof OrderFulfillment
+     */
+    'boxSize': ShippingSize;
+    /**
+     * 配送日時（unixtime）
+     * @type {number}
+     * @memberof OrderFulfillment
+     */
+    'shippedAt': number;
+    /**
+     * 配送先 住所ID
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'addressId': string;
+    /**
+     * 配送先 氏名（姓）
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'lastname': string;
+    /**
+     * 配送先 氏名（名）
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'firstname': string;
+    /**
+     * 配送先 郵便番号
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'postalCode': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof OrderFulfillment
+     */
+    'prefectureCode': Prefecture;
+    /**
+     * 配送先 市区町村
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'city': string;
+    /**
+     * 配送先 町名・番地
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'addressLine1': string;
+    /**
+     * 配送先 ビル名・号室など
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'addressLine2': string;
+    /**
+     * 配送先 電話番号
+     * @type {string}
+     * @memberof OrderFulfillment
+     */
+    'phoneNumber': string;
+}
+
+
+/**
+ * 注文商品情報
+ * @export
+ * @interface OrderItem
+ */
+export interface OrderItem {
+    /**
+     * 注文配送ID
+     * @type {string}
+     * @memberof OrderItem
+     */
+    'fulfillmentId': string;
+    /**
+     * 商品ID
+     * @type {string}
+     * @memberof OrderItem
+     */
+    'productId': string;
+    /**
+     * 購入価格
+     * @type {number}
+     * @memberof OrderItem
+     */
+    'price': number;
+    /**
+     * 購入数量
+     * @type {number}
+     * @memberof OrderItem
+     */
+    'quantity': number;
+}
+/**
+ * 注文決済情報
+ * @export
+ * @interface OrderPayment
+ */
+export interface OrderPayment {
+    /**
+     * 取引ID
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'transactionId': string;
+    /**
+     * 
+     * @type {PaymentMethodType}
+     * @memberof OrderPayment
+     */
+    'methodType': PaymentMethodType;
+    /**
+     * 
+     * @type {PaymentStatus}
+     * @memberof OrderPayment
+     */
+    'status': PaymentStatus;
+    /**
+     * 購入金額
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'subtotal': number;
+    /**
+     * 割引金額
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'discount': number;
+    /**
+     * 配送手数料
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'shippingFee': number;
+    /**
+     * 消費税
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'tax': number;
+    /**
+     * 合計金額
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'total': number;
+    /**
+     * 注文日時（unixtime）
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'orderedAt': number;
+    /**
+     * 支払日時（unixtime）
+     * @type {number}
+     * @memberof OrderPayment
+     */
+    'paidAt': number;
+    /**
+     * 請求先 住所ID
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'addressId': string;
+    /**
+     * 請求先 氏名（姓）
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'lastname': string;
+    /**
+     * 請求先 氏名（名）
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'firstname': string;
+    /**
+     * 請求先 郵便番号
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'postalCode': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof OrderPayment
+     */
+    'prefectureCode': Prefecture;
+    /**
+     * 請求先 市区町村
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'city': string;
+    /**
+     * 請求先 町名・番地
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'addressLine1': string;
+    /**
+     * 請求先 ビル名・号室など
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'addressLine2': string;
+    /**
+     * 請求先 電話番号
+     * @type {string}
+     * @memberof OrderPayment
+     */
+    'phoneNumber': string;
+}
+
+
+/**
+ * 注文キャンセル情報
+ * @export
+ * @interface OrderRefund
+ */
+export interface OrderRefund {
+    /**
+     * 返金金額
+     * @type {number}
+     * @memberof OrderRefund
+     */
+    'total': number;
+    /**
+     * 
+     * @type {OrderRefundType}
+     * @memberof OrderRefund
+     */
+    'type': OrderRefundType;
+    /**
+     * 注文キャンセル理由
+     * @type {string}
+     * @memberof OrderRefund
+     */
+    'reason': string;
+    /**
+     * 注文キャンセルフラグ
+     * @type {boolean}
+     * @memberof OrderRefund
+     */
+    'canceled': boolean;
+    /**
+     * 注文キャンセル日時（unixtime）
+     * @type {number}
+     * @memberof OrderRefund
+     */
+    'canceledAt': number;
+}
+
+
+/**
  * 注文キャンセル理由
  * @export
  * @enum {string}
@@ -2615,9 +2870,9 @@ export interface NotificationsResponse {
 
 export const OrderRefundType = {
     /**
-    * 不明
+    * 未キャンセル
     */
-    UNKNOWN: 0
+    NONE: 0
 } as const;
 
 export type OrderRefundType = typeof OrderRefundType[keyof typeof OrderRefundType];
@@ -2630,382 +2885,36 @@ export type OrderRefundType = typeof OrderRefundType[keyof typeof OrderRefundTyp
  */
 export interface OrderResponse {
     /**
-     * 注文ID
-     * @type {string}
+     * 
+     * @type {Order}
      * @memberof OrderResponse
      */
-    'id': string;
-    /**
-     * 開催スケジュールID
-     * @type {string}
-     * @memberof OrderResponse
-     */
-    'scheduleId': string;
-    /**
-     * プロモーションID
-     * @type {string}
-     * @memberof OrderResponse
-     */
-    'promotionId': string;
-    /**
-     * ユーザーID
-     * @type {string}
-     * @memberof OrderResponse
-     */
-    'userId': string;
-    /**
-     * 注文者名
-     * @type {string}
-     * @memberof OrderResponse
-     */
-    'userName': string;
+    'order': Order;
     /**
      * 
-     * @type {OrderResponsePayment}
+     * @type {User}
      * @memberof OrderResponse
      */
-    'payment': OrderResponsePayment;
+    'user': User;
     /**
      * 
-     * @type {OrderResponseFulfillment}
+     * @type {Coordinator}
      * @memberof OrderResponse
      */
-    'fulfillment': OrderResponseFulfillment;
+    'coordinator': Coordinator;
     /**
      * 
-     * @type {OrderResponseRefund}
+     * @type {Promotion}
      * @memberof OrderResponse
      */
-    'refund': OrderResponseRefund;
+    'promotion': Promotion;
     /**
-     * 注文商品一覧
-     * @type {Array<OrderResponseItemsInner>}
+     * 
+     * @type {Array<Product>}
      * @memberof OrderResponse
      */
-    'items': Array<OrderResponseItemsInner>;
-    /**
-     * 注文日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'orderedAt': number;
-    /**
-     * 支払日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'paidAt': number;
-    /**
-     * 配送日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'deliveredAt': number;
-    /**
-     * 注文キャンセル日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'canceledAt': number;
-    /**
-     * 登録日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'createdAt': number;
-    /**
-     * 更新日時 (unixtime)
-     * @type {number}
-     * @memberof OrderResponse
-     */
-    'updatedAt': number;
+    'products': Array<Product>;
 }
-/**
- * 配送情報
- * @export
- * @interface OrderResponseFulfillment
- */
-export interface OrderResponseFulfillment {
-    /**
-     * 伝票番号
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'trackingNumber': string;
-    /**
-     * 
-     * @type {FulfillmentStatus}
-     * @memberof OrderResponseFulfillment
-     */
-    'status': FulfillmentStatus;
-    /**
-     * 
-     * @type {ShippingCarrier}
-     * @memberof OrderResponseFulfillment
-     */
-    'shippingCarrier': ShippingCarrier;
-    /**
-     * 
-     * @type {DeliveryType}
-     * @memberof OrderResponseFulfillment
-     */
-    'shippingMethod': DeliveryType;
-    /**
-     * 
-     * @type {ShippingSize}
-     * @memberof OrderResponseFulfillment
-     */
-    'boxSize': ShippingSize;
-    /**
-     * 配送先情報ID
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'addressId': string;
-    /**
-     * 配送先情報 姓
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'lastname': string;
-    /**
-     * 配送先情報 名
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'firstname': string;
-    /**
-     * 配送先情報 郵便番号
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'postalCode': string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof OrderResponseFulfillment
-     */
-    'prefectureCode': Prefecture;
-    /**
-     * 配送先情報 市区町村
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'city': string;
-    /**
-     * 配送先情報 町名・番地
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'addressLine1': string;
-    /**
-     * 配送先情報 ビル名・号室など
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'addressLine2': string;
-    /**
-     * 配送先情報 電話番号
-     * @type {string}
-     * @memberof OrderResponseFulfillment
-     */
-    'phoneNumber': string;
-}
-
-
-/**
- * 
- * @export
- * @interface OrderResponseItemsInner
- */
-export interface OrderResponseItemsInner {
-    /**
-     * 商品ID
-     * @type {string}
-     * @memberof OrderResponseItemsInner
-     */
-    'productId': string;
-    /**
-     * 商品名
-     * @type {string}
-     * @memberof OrderResponseItemsInner
-     */
-    'name': string;
-    /**
-     * 購入価格
-     * @type {number}
-     * @memberof OrderResponseItemsInner
-     */
-    'price': number;
-    /**
-     * 購入数量
-     * @type {number}
-     * @memberof OrderResponseItemsInner
-     */
-    'quantity': number;
-    /**
-     * 重量(kg,少数第一位まで)
-     * @type {number}
-     * @memberof OrderResponseItemsInner
-     */
-    'weight': number;
-    /**
-     * 
-     * @type {Array<CreateProductRequestMediaInner>}
-     * @memberof OrderResponseItemsInner
-     */
-    'media': Array<CreateProductRequestMediaInner>;
-}
-/**
- * 支払い情報
- * @export
- * @interface OrderResponsePayment
- */
-export interface OrderResponsePayment {
-    /**
-     * 取引ID
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'transactionId': string;
-    /**
-     * 決済手段ID
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'methodId': string;
-    /**
-     * 
-     * @type {PaymentMethodType}
-     * @memberof OrderResponsePayment
-     */
-    'methodType': PaymentMethodType;
-    /**
-     * 
-     * @type {PaymentStatus}
-     * @memberof OrderResponsePayment
-     */
-    'status': PaymentStatus;
-    /**
-     * 購入金額
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'subtotal': number;
-    /**
-     * 割引金額
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'discount': number;
-    /**
-     * 配送料金
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'shippingFee': number;
-    /**
-     * 消費税
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'tax': number;
-    /**
-     * 支払い合計金額
-     * @type {number}
-     * @memberof OrderResponsePayment
-     */
-    'total': number;
-    /**
-     * 請求先情報ID
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'addressId': string;
-    /**
-     * 請求先情報 姓
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'lastname': string;
-    /**
-     * 請求先情報 名
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'firstname': string;
-    /**
-     * 請求先情報 郵便番号
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'postalCode': string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof OrderResponsePayment
-     */
-    'prefectureCode': Prefecture;
-    /**
-     * 請求先情報 市区町村
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'city': string;
-    /**
-     * 請求先情報 町名・番地
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'addressLine1': string;
-    /**
-     * 請求先情報 ビル名・号室など
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'addressLine2': string;
-    /**
-     * 請求先情報 電話番号
-     * @type {string}
-     * @memberof OrderResponsePayment
-     */
-    'phoneNumber': string;
-}
-
-
-/**
- * 注文キャンセル情報
- * @export
- * @interface OrderResponseRefund
- */
-export interface OrderResponseRefund {
-    /**
-     * 注文キャンセルフラグ
-     * @type {boolean}
-     * @memberof OrderResponseRefund
-     */
-    'canceled': boolean;
-    /**
-     * 
-     * @type {OrderRefundType}
-     * @memberof OrderResponseRefund
-     */
-    'type': OrderRefundType;
-    /**
-     * 注文キャンセル理由詳細
-     * @type {string}
-     * @memberof OrderResponseRefund
-     */
-    'reason': string;
-    /**
-     * 返金金額
-     * @type {number}
-     * @memberof OrderResponseRefund
-     */
-    'total': number;
-}
-
-
 /**
  * 
  * @export
@@ -3013,11 +2922,29 @@ export interface OrderResponseRefund {
  */
 export interface OrdersResponse {
     /**
-     * 注文一覧
-     * @type {Array<object>}
+     * 
+     * @type {Array<Order>}
      * @memberof OrdersResponse
      */
-    'orders': Array<object>;
+    'orders': Array<Order>;
+    /**
+     * 
+     * @type {Array<User>}
+     * @memberof OrdersResponse
+     */
+    'users': Array<User>;
+    /**
+     * 
+     * @type {Array<Coordinator>}
+     * @memberof OrdersResponse
+     */
+    'coordinators': Array<Coordinator>;
+    /**
+     * 
+     * @type {Array<Promotion>}
+     * @memberof OrdersResponse
+     */
+    'promotions': Array<Promotion>;
     /**
      * 合計数
      * @type {number}
@@ -4440,18 +4367,6 @@ export interface Shipping {
      */
     'id': string;
     /**
-     * コーディネータID
-     * @type {string}
-     * @memberof Shipping
-     */
-    'coordinatorId': string;
-    /**
-     * 配送設定名
-     * @type {string}
-     * @memberof Shipping
-     */
-    'name': string;
-    /**
      * デフォルト設定
      * @type {boolean}
      * @memberof Shipping
@@ -4603,12 +4518,6 @@ export interface ShippingResponse {
      * @memberof ShippingResponse
      */
     'shipping': Shipping;
-    /**
-     * 
-     * @type {Coordinator}
-     * @memberof ShippingResponse
-     */
-    'coordinator': Coordinator;
 }
 /**
  * 配送時の箱の大きさ
@@ -4638,31 +4547,6 @@ export const ShippingSize = {
 export type ShippingSize = typeof ShippingSize[keyof typeof ShippingSize];
 
 
-/**
- * 
- * @export
- * @interface ShippingsResponse
- */
-export interface ShippingsResponse {
-    /**
-     * 配送設定一覧
-     * @type {Array<Shipping>}
-     * @memberof ShippingsResponse
-     */
-    'shippings': Array<Shipping>;
-    /**
-     * コーディネータ一覧
-     * @type {Array<Coordinator>}
-     * @memberof ShippingsResponse
-     */
-    'coordinators': Array<Coordinator>;
-    /**
-     * 合計数
-     * @type {number}
-     * @memberof ShippingsResponse
-     */
-    'total': number;
-}
 /**
  * 
  * @export
@@ -5124,6 +5008,104 @@ export interface UpdateCoordinatorRequest {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface UpdateDefaultShippingRate
+ */
+export interface UpdateDefaultShippingRate {
+    /**
+     * 配送料金設定名
+     * @type {string}
+     * @memberof UpdateDefaultShippingRate
+     */
+    'name': string;
+    /**
+     * 配送料金(100万未満)
+     * @type {number}
+     * @memberof UpdateDefaultShippingRate
+     */
+    'price': number;
+    /**
+     * 対象都道府県コード一覧
+     * @type {Array<Prefecture>}
+     * @memberof UpdateDefaultShippingRate
+     */
+    'prefectureCodes': Array<Prefecture>;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateDefaultShippingRequest
+ */
+export interface UpdateDefaultShippingRequest {
+    /**
+     * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
+     * @type {Array<UpdateDefaultShippingRate>}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box60Rates': Array<UpdateDefaultShippingRate>;
+    /**
+     * 箱サイズ60の冷蔵便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box60Refrigerated': number;
+    /**
+     * 箱サイズ60の冷凍便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box60Frozen': number;
+    /**
+     * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
+     * @type {Array<UpdateDefaultShippingRate>}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box80Rates': Array<UpdateDefaultShippingRate>;
+    /**
+     * 箱サイズ80の冷蔵便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box80Refrigerated': number;
+    /**
+     * 箱サイズ80の冷凍便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box80Frozen': number;
+    /**
+     * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
+     * @type {Array<UpdateDefaultShippingRate>}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box100Rates': Array<UpdateDefaultShippingRate>;
+    /**
+     * 箱サイズ100の冷蔵便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box100Refrigerated': number;
+    /**
+     * 箱サイズ100の冷凍便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'box100Frozen': number;
+    /**
+     * 送料無料オプションの有無
+     * @type {boolean}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'hasFreeShipping': boolean;
+    /**
+     * 送料無料になる金額(100万未満)
+     * @type {number}
+     * @memberof UpdateDefaultShippingRequest
+     */
+    'freeShippingRates': number;
+}
 /**
  * 
  * @export
@@ -5628,116 +5610,6 @@ export interface UpdateScheduleRequest {
 /**
  * 
  * @export
- * @interface UpdateShippingRate
- */
-export interface UpdateShippingRate {
-    /**
-     * 配送料金設定名
-     * @type {string}
-     * @memberof UpdateShippingRate
-     */
-    'name': string;
-    /**
-     * 配送料金(100万未満)
-     * @type {number}
-     * @memberof UpdateShippingRate
-     */
-    'price': number;
-    /**
-     * 対象都道府県コード一覧
-     * @type {Array<Prefecture>}
-     * @memberof UpdateShippingRate
-     */
-    'prefectureCodes': Array<Prefecture>;
-}
-/**
- * 
- * @export
- * @interface UpdateShippingRequest
- */
-export interface UpdateShippingRequest {
-    /**
-     * 配送設定名(64文字まで)
-     * @type {string}
-     * @memberof UpdateShippingRequest
-     */
-    'name': string;
-    /**
-     * デフォルト設定
-     * @type {boolean}
-     * @memberof UpdateShippingRequest
-     */
-    'isDefault': boolean;
-    /**
-     * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<UpdateShippingRate>}
-     * @memberof UpdateShippingRequest
-     */
-    'box60Rates': Array<UpdateShippingRate>;
-    /**
-     * 箱サイズ60の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateShippingRequest
-     */
-    'box60Refrigerated': number;
-    /**
-     * 箱サイズ60の冷凍便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateShippingRequest
-     */
-    'box60Frozen': number;
-    /**
-     * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<UpdateShippingRate>}
-     * @memberof UpdateShippingRequest
-     */
-    'box80Rates': Array<UpdateShippingRate>;
-    /**
-     * 箱サイズ80の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateShippingRequest
-     */
-    'box80Refrigerated': number;
-    /**
-     * 箱サイズ80の冷凍便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateShippingRequest
-     */
-    'box80Frozen': number;
-    /**
-     * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
-     * @type {Array<UpdateShippingRate>}
-     * @memberof UpdateShippingRequest
-     */
-    'box100Rates': Array<UpdateShippingRate>;
-    /**
-     * 箱サイズ100の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateShippingRequest
-     */
-    'box100Refrigerated': number;
-    /**
-     * 箱サイズ100の冷凍便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateShippingRequest
-     */
-    'box100Frozen': number;
-    /**
-     * 送料無料オプションの有無
-     * @type {boolean}
-     * @memberof UpdateShippingRequest
-     */
-    'hasFreeShipping': boolean;
-    /**
-     * 送料無料になる金額(100万未満)
-     * @type {number}
-     * @memberof UpdateShippingRequest
-     */
-    'freeShippingRates': number;
-}
-/**
- * 
- * @export
  * @interface UpdateThreadRequest
  */
 export interface UpdateThreadRequest {
@@ -5787,6 +5659,104 @@ export interface UploadVideoResponse {
      * @memberof UploadVideoResponse
      */
     'url': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpsertShippingRate
+ */
+export interface UpsertShippingRate {
+    /**
+     * 配送料金設定名
+     * @type {string}
+     * @memberof UpsertShippingRate
+     */
+    'name': string;
+    /**
+     * 配送料金(100万未満)
+     * @type {number}
+     * @memberof UpsertShippingRate
+     */
+    'price': number;
+    /**
+     * 対象都道府県コード一覧
+     * @type {Array<Prefecture>}
+     * @memberof UpsertShippingRate
+     */
+    'prefectureCodes': Array<Prefecture>;
+}
+/**
+ * 
+ * @export
+ * @interface UpsertShippingRequest
+ */
+export interface UpsertShippingRequest {
+    /**
+     * 箱サイズ60の通常配送料一覧(すべての都道府県の設定が必須)
+     * @type {Array<UpsertShippingRate>}
+     * @memberof UpsertShippingRequest
+     */
+    'box60Rates': Array<UpsertShippingRate>;
+    /**
+     * 箱サイズ60の冷蔵便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpsertShippingRequest
+     */
+    'box60Refrigerated': number;
+    /**
+     * 箱サイズ60の冷凍便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpsertShippingRequest
+     */
+    'box60Frozen': number;
+    /**
+     * 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
+     * @type {Array<UpsertShippingRate>}
+     * @memberof UpsertShippingRequest
+     */
+    'box80Rates': Array<UpsertShippingRate>;
+    /**
+     * 箱サイズ80の冷蔵便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpsertShippingRequest
+     */
+    'box80Refrigerated': number;
+    /**
+     * 箱サイズ80の冷凍便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpsertShippingRequest
+     */
+    'box80Frozen': number;
+    /**
+     * 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
+     * @type {Array<UpsertShippingRate>}
+     * @memberof UpsertShippingRequest
+     */
+    'box100Rates': Array<UpsertShippingRate>;
+    /**
+     * 箱サイズ100の冷蔵便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpsertShippingRequest
+     */
+    'box100Refrigerated': number;
+    /**
+     * 箱サイズ100の冷凍便追加配送料(100万未満)
+     * @type {number}
+     * @memberof UpsertShippingRequest
+     */
+    'box100Frozen': number;
+    /**
+     * 送料無料オプションの有無
+     * @type {boolean}
+     * @memberof UpsertShippingRequest
+     */
+    'hasFreeShipping': boolean;
+    /**
+     * 送料無料になる金額(100万未満)
+     * @type {number}
+     * @memberof UpsertShippingRequest
+     */
+    'freeShippingRates': number;
 }
 /**
  * 購入者情報
@@ -11988,7 +11958,7 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [producerId] 生産者ID
          * @param {string} [name] 商品名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -12220,7 +12190,7 @@ export const ProductApiFp = function(configuration?: Configuration) {
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [producerId] 生産者ID
          * @param {string} [name] 商品名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -12309,7 +12279,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [producerId] 生産者ID
          * @param {string} [name] 商品名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt 
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -12400,7 +12370,7 @@ export class ProductApi extends BaseAPI {
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [producerId] 生産者ID
      * @param {string} [name] 商品名(あいまい検索)(64文字以内)
-     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt 
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProductApi
@@ -14456,15 +14426,12 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
     return {
         /**
          * 
-         * @summary 配送設定登録
-         * @param {CreateShippingRequest} body 
+         * @summary デフォルト配送設定取得
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateShipping: async (body: CreateShippingRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1CreateShipping', 'body', body)
-            const localVarPath = `/v1/shippings`;
+        v1GetDefaultShipping: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/shippings/default`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -14472,7 +14439,82 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 配送設定取得
+         * @param {string} coordinatorId コーディネータID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetShipping: async (coordinatorId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1GetShipping', 'coordinatorId', coordinatorId)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/shippings`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary デフォルト配送設定更新
+         * @param {UpdateDefaultShippingRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateDefaultShipping: async (body: UpdateDefaultShippingRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateDefaultShipping', 'body', body)
+            const localVarPath = `/v1/shippings/default`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -14496,149 +14538,19 @@ export const ShippingApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 配送設定削除
-         * @param {string} shippingId 配送設定ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1DeleteShipping: async (shippingId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'shippingId' is not null or undefined
-            assertParamExists('v1DeleteShipping', 'shippingId', shippingId)
-            const localVarPath = `/v1/shippings/{shippingId}`
-                .replace(`{${"shippingId"}}`, encodeURIComponent(String(shippingId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 配送設定取得
-         * @param {string} shippingId 配送設定ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1GetShipping: async (shippingId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'shippingId' is not null or undefined
-            assertParamExists('v1GetShipping', 'shippingId', shippingId)
-            const localVarPath = `/v1/shippings/{shippingId}`
-                .replace(`{${"shippingId"}}`, encodeURIComponent(String(shippingId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 配送設定一覧取得
-         * @param {number} [limit] 取得上限数(max:200)
-         * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [title] 配送設定名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1ListShippings: async (limit?: number, offset?: number, title?: string, orders?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/shippings`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (limit !== undefined) {
-                localVarQueryParameter['limit'] = limit;
-            }
-
-            if (offset !== undefined) {
-                localVarQueryParameter['offset'] = offset;
-            }
-
-            if (title !== undefined) {
-                localVarQueryParameter['title'] = title;
-            }
-
-            if (orders !== undefined) {
-                localVarQueryParameter['orders'] = orders;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary 配送設定更新
-         * @param {string} shippingId 配送設定ID
-         * @param {UpdateShippingRequest} body 
+         * @param {string} coordinatorId コーディネータID
+         * @param {UpsertShippingRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateShipping: async (shippingId: string, body: UpdateShippingRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'shippingId' is not null or undefined
-            assertParamExists('v1UpdateShipping', 'shippingId', shippingId)
+        v1UpsertShipping: async (coordinatorId: string, body: UpsertShippingRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'coordinatorId' is not null or undefined
+            assertParamExists('v1UpsertShipping', 'coordinatorId', coordinatorId)
             // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1UpdateShipping', 'body', body)
-            const localVarPath = `/v1/shippings/{shippingId}`
-                .replace(`{${"shippingId"}}`, encodeURIComponent(String(shippingId)));
+            assertParamExists('v1UpsertShipping', 'body', body)
+            const localVarPath = `/v1/coordinators/{coordinatorId}/shippings`
+                .replace(`{${"coordinatorId"}}`, encodeURIComponent(String(coordinatorId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -14680,61 +14592,46 @@ export const ShippingApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary 配送設定登録
-         * @param {CreateShippingRequest} body 
+         * @summary デフォルト配送設定取得
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CreateShipping(body: CreateShippingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateShipping(body, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @summary 配送設定削除
-         * @param {string} shippingId 配送設定ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1DeleteShipping(shippingId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteShipping(shippingId, options);
+        async v1GetDefaultShipping(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetDefaultShipping(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary 配送設定取得
-         * @param {string} shippingId 配送設定ID
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetShipping(shippingId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetShipping(shippingId, options);
+        async v1GetShipping(coordinatorId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetShipping(coordinatorId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 配送設定一覧取得
-         * @param {number} [limit] 取得上限数(max:200)
-         * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [title] 配送設定名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt 
+         * @summary デフォルト配送設定更新
+         * @param {UpdateDefaultShippingRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListShippings(limit?: number, offset?: number, title?: string, orders?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListShippings(limit, offset, title, orders, options);
+        async v1UpdateDefaultShipping(body: UpdateDefaultShippingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateDefaultShipping(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary 配送設定更新
-         * @param {string} shippingId 配送設定ID
-         * @param {UpdateShippingRequest} body 
+         * @param {string} coordinatorId コーディネータID
+         * @param {UpsertShippingRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UpdateShipping(shippingId: string, body: UpdateShippingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateShipping(shippingId, body, options);
+        async v1UpsertShipping(coordinatorId: string, body: UpsertShippingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpsertShipping(coordinatorId, body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -14749,57 +14646,43 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
     return {
         /**
          * 
-         * @summary 配送設定登録
-         * @param {CreateShippingRequest} body 
+         * @summary デフォルト配送設定取得
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateShipping(body: CreateShippingRequest, options?: any): AxiosPromise<ShippingResponse> {
-            return localVarFp.v1CreateShipping(body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 配送設定削除
-         * @param {string} shippingId 配送設定ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1DeleteShipping(shippingId: string, options?: any): AxiosPromise<object> {
-            return localVarFp.v1DeleteShipping(shippingId, options).then((request) => request(axios, basePath));
+        v1GetDefaultShipping(options?: any): AxiosPromise<ShippingResponse> {
+            return localVarFp.v1GetDefaultShipping(options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary 配送設定取得
-         * @param {string} shippingId 配送設定ID
+         * @param {string} coordinatorId コーディネータID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetShipping(shippingId: string, options?: any): AxiosPromise<ShippingResponse> {
-            return localVarFp.v1GetShipping(shippingId, options).then((request) => request(axios, basePath));
+        v1GetShipping(coordinatorId: string, options?: any): AxiosPromise<ShippingResponse> {
+            return localVarFp.v1GetShipping(coordinatorId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 配送設定一覧取得
-         * @param {number} [limit] 取得上限数(max:200)
-         * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [title] 配送設定名(あいまい検索)(64文字以内)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt 
+         * @summary デフォルト配送設定更新
+         * @param {UpdateDefaultShippingRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListShippings(limit?: number, offset?: number, title?: string, orders?: string, options?: any): AxiosPromise<ShippingsResponse> {
-            return localVarFp.v1ListShippings(limit, offset, title, orders, options).then((request) => request(axios, basePath));
+        v1UpdateDefaultShipping(body: UpdateDefaultShippingRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateDefaultShipping(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary 配送設定更新
-         * @param {string} shippingId 配送設定ID
-         * @param {UpdateShippingRequest} body 
+         * @param {string} coordinatorId コーディネータID
+         * @param {UpsertShippingRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateShipping(shippingId: string, body: UpdateShippingRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1UpdateShipping(shippingId, body, options).then((request) => request(axios, basePath));
+        v1UpsertShipping(coordinatorId: string, body: UpsertShippingRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpsertShipping(coordinatorId, body, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -14813,66 +14696,50 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
 export class ShippingApi extends BaseAPI {
     /**
      * 
-     * @summary 配送設定登録
-     * @param {CreateShippingRequest} body 
+     * @summary デフォルト配送設定取得
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1CreateShipping(body: CreateShippingRequest, options?: AxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1CreateShipping(body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 配送設定削除
-     * @param {string} shippingId 配送設定ID
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ShippingApi
-     */
-    public v1DeleteShipping(shippingId: string, options?: AxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1DeleteShipping(shippingId, options).then((request) => request(this.axios, this.basePath));
+    public v1GetDefaultShipping(options?: AxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1GetDefaultShipping(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary 配送設定取得
-     * @param {string} shippingId 配送設定ID
+     * @param {string} coordinatorId コーディネータID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1GetShipping(shippingId: string, options?: AxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1GetShipping(shippingId, options).then((request) => request(this.axios, this.basePath));
+    public v1GetShipping(coordinatorId: string, options?: AxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1GetShipping(coordinatorId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary 配送設定一覧取得
-     * @param {number} [limit] 取得上限数(max:200)
-     * @param {number} [offset] 取得開始位置(min:0)
-     * @param {string} [title] 配送設定名(あいまい検索)(64文字以内)
-     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:name,hasFreeShipping,createdAt,updatedAt 
+     * @summary デフォルト配送設定更新
+     * @param {UpdateDefaultShippingRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1ListShippings(limit?: number, offset?: number, title?: string, orders?: string, options?: AxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1ListShippings(limit, offset, title, orders, options).then((request) => request(this.axios, this.basePath));
+    public v1UpdateDefaultShipping(body: UpdateDefaultShippingRequest, options?: AxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1UpdateDefaultShipping(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary 配送設定更新
-     * @param {string} shippingId 配送設定ID
-     * @param {UpdateShippingRequest} body 
+     * @param {string} coordinatorId コーディネータID
+     * @param {UpsertShippingRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ShippingApi
      */
-    public v1UpdateShipping(shippingId: string, body: UpdateShippingRequest, options?: AxiosRequestConfig) {
-        return ShippingApiFp(this.configuration).v1UpdateShipping(shippingId, body, options).then((request) => request(this.axios, this.basePath));
+    public v1UpsertShipping(coordinatorId: string, body: UpsertShippingRequest, options?: AxiosRequestConfig) {
+        return ShippingApiFp(this.configuration).v1UpsertShipping(coordinatorId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

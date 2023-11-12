@@ -327,6 +327,20 @@ func (mr *MockOrderMockRecorder) Count(ctx, params interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockOrder)(nil).Count), ctx, params)
 }
 
+// Create mocks base method.
+func (m *MockOrder) Create(ctx context.Context, order *entity.Order) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, order)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockOrderMockRecorder) Create(ctx, order interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOrder)(nil).Create), ctx, order)
+}
+
 // Get mocks base method.
 func (m *MockOrder) Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error) {
 	m.ctrl.T.Helper()
@@ -491,6 +505,26 @@ func (mr *MockProductMockRecorder) MultiGet(ctx, productIDs interface{}, fields 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, productIDs}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockProduct)(nil).MultiGet), varargs...)
+}
+
+// MultiGetByRevision mocks base method.
+func (m *MockProduct) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Products, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, revisionIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGetByRevision", varargs...)
+	ret0, _ := ret[0].(entity.Products)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetByRevision indicates an expected call of MultiGetByRevision.
+func (mr *MockProductMockRecorder) MultiGetByRevision(ctx, revisionIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, revisionIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetByRevision", reflect.TypeOf((*MockProduct)(nil).MultiGetByRevision), varargs...)
 }
 
 // Update mocks base method.
@@ -1132,21 +1166,6 @@ func (m *MockShipping) EXPECT() *MockShippingMockRecorder {
 	return m.recorder
 }
 
-// Count mocks base method.
-func (m *MockShipping) Count(ctx context.Context, params *database.ListShippingsParams) (int64, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Count", ctx, params)
-	ret0, _ := ret[0].(int64)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Count indicates an expected call of Count.
-func (mr *MockShippingMockRecorder) Count(ctx, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockShipping)(nil).Count), ctx, params)
-}
-
 // Create mocks base method.
 func (m *MockShipping) Create(ctx context.Context, shipping *entity.Shipping) error {
 	m.ctrl.T.Helper()
@@ -1161,78 +1180,84 @@ func (mr *MockShippingMockRecorder) Create(ctx, shipping interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockShipping)(nil).Create), ctx, shipping)
 }
 
-// Delete mocks base method.
-func (m *MockShipping) Delete(ctx context.Context, shippingID string) error {
+// GetByCoordinatorID mocks base method.
+func (m *MockShipping) GetByCoordinatorID(ctx context.Context, coordinatorID string, fields ...string) (*entity.Shipping, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", ctx, shippingID)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Delete indicates an expected call of Delete.
-func (mr *MockShippingMockRecorder) Delete(ctx, shippingID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockShipping)(nil).Delete), ctx, shippingID)
-}
-
-// Get mocks base method.
-func (m *MockShipping) Get(ctx context.Context, shoppingID string, fields ...string) (*entity.Shipping, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, shoppingID}
+	varargs := []interface{}{ctx, coordinatorID}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret := m.ctrl.Call(m, "GetByCoordinatorID", varargs...)
 	ret0, _ := ret[0].(*entity.Shipping)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Get indicates an expected call of Get.
-func (mr *MockShippingMockRecorder) Get(ctx, shoppingID interface{}, fields ...interface{}) *gomock.Call {
+// GetByCoordinatorID indicates an expected call of GetByCoordinatorID.
+func (mr *MockShippingMockRecorder) GetByCoordinatorID(ctx, coordinatorID interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, shoppingID}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockShipping)(nil).Get), varargs...)
+	varargs := append([]interface{}{ctx, coordinatorID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCoordinatorID", reflect.TypeOf((*MockShipping)(nil).GetByCoordinatorID), varargs...)
 }
 
-// List mocks base method.
-func (m *MockShipping) List(ctx context.Context, params *database.ListShippingsParams, fields ...string) (entity.Shippings, error) {
+// GetDefault mocks base method.
+func (m *MockShipping) GetDefault(ctx context.Context, fields ...string) (*entity.Shipping, error) {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, params}
+	varargs := []interface{}{ctx}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "List", varargs...)
+	ret := m.ctrl.Call(m, "GetDefault", varargs...)
+	ret0, _ := ret[0].(*entity.Shipping)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDefault indicates an expected call of GetDefault.
+func (mr *MockShippingMockRecorder) GetDefault(ctx interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDefault", reflect.TypeOf((*MockShipping)(nil).GetDefault), varargs...)
+}
+
+// ListByCoordinatorIDs mocks base method.
+func (m *MockShipping) ListByCoordinatorIDs(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Shippings, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, coordinatorIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListByCoordinatorIDs", varargs...)
 	ret0, _ := ret[0].(entity.Shippings)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// List indicates an expected call of List.
-func (mr *MockShippingMockRecorder) List(ctx, params interface{}, fields ...interface{}) *gomock.Call {
+// ListByCoordinatorIDs indicates an expected call of ListByCoordinatorIDs.
+func (mr *MockShippingMockRecorder) ListByCoordinatorIDs(ctx, coordinatorIDs interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, params}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockShipping)(nil).List), varargs...)
+	varargs := append([]interface{}{ctx, coordinatorIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByCoordinatorIDs", reflect.TypeOf((*MockShipping)(nil).ListByCoordinatorIDs), varargs...)
 }
 
-// MultiGet mocks base method.
-func (m *MockShipping) MultiGet(ctx context.Context, shippingIDs []string, fields ...string) (entity.Shippings, error) {
+// MultiGetByRevision mocks base method.
+func (m *MockShipping) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Shippings, error) {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, shippingIDs}
+	varargs := []interface{}{ctx, revisionIDs}
 	for _, a := range fields {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret := m.ctrl.Call(m, "MultiGetByRevision", varargs...)
 	ret0, _ := ret[0].(entity.Shippings)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// MultiGet indicates an expected call of MultiGet.
-func (mr *MockShippingMockRecorder) MultiGet(ctx, shippingIDs interface{}, fields ...interface{}) *gomock.Call {
+// MultiGetByRevision indicates an expected call of MultiGetByRevision.
+func (mr *MockShippingMockRecorder) MultiGetByRevision(ctx, revisionIDs interface{}, fields ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, shippingIDs}, fields...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockShipping)(nil).MultiGet), varargs...)
+	varargs := append([]interface{}{ctx, revisionIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetByRevision", reflect.TypeOf((*MockShipping)(nil).MultiGetByRevision), varargs...)
 }
 
 // Update mocks base method.

@@ -126,11 +126,11 @@ const onClickRow = (contactId: string): void => {
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
-        @click:row="(_:any, {item}: any) => onClickRow(item.raw.id)"
+        @click:row="(_:any, {item}: any) => onClickRow(item.id)"
       >
         <template #[`item.status`]="{ item }">
-          <v-chip :color="getStatusColor(item.raw.status)" size="small">
-            {{ getStatus(item.raw.status) }}
+          <v-chip :color="getStatusColor(item.status)" size="small">
+            {{ getStatus(item.status) }}
           </v-chip>
         </template>
       </v-data-table-server>

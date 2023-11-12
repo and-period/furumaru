@@ -32,20 +32,21 @@ type Service interface {
 	UpdateProductTag(ctx context.Context, in *UpdateProductTagInput) error                             // 更新
 	DeleteProductTag(ctx context.Context, in *DeleteProductTagInput) error                             // 削除
 	// 配送設定
-	ListShippings(ctx context.Context, in *ListShippingsInput) (entity.Shippings, int64, error)  // 一覧取得
-	MultiGetShippings(ctx context.Context, in *MultiGetShippingsInput) (entity.Shippings, error) // 一覧取得(ID指定)
-	GetShipping(ctx context.Context, in *GetShippingInput) (*entity.Shipping, error)             // １件取得
-	CreateShipping(ctx context.Context, in *CreateShippingInput) (*entity.Shipping, error)       // 登録
-	UpdateShipping(ctx context.Context, in *UpdateShippingInput) error                           // 更新
-	DeleteShipping(ctx context.Context, in *DeleteShippingInput) error                           // 削除
+	ListShippingsByCoordinatorIDs(ctx context.Context, in *ListShippingsByCoordinatorIDsInput) (entity.Shippings, error) // 一覧取得(コーディネータID指定)
+	MultiGetShippingsByRevision(ctx context.Context, in *MultiGetShippingsByRevisionInput) (entity.Shippings, error)     // 一覧取得(変更履歴指定)
+	GetDefaultShipping(ctx context.Context, in *GetDefaultShippingInput) (*entity.Shipping, error)                       // １件取得(デフォルト設定)
+	GetShippingByCoordinatorID(ctx context.Context, in *GetShippingByCoordinatorIDInput) (*entity.Shipping, error)       // １件取得(コーディネータID設定)
+	UpdateDefaultShipping(ctx context.Context, in *UpdateDefaultShippingInput) error                                     // 登録または更新(デフォルト設定)
+	UpsertShipping(ctx context.Context, in *UpsertShippingInput) error                                                   // 登録または更新(コーディネータごとの設定)
 	// 商品
-	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, int64, error)  // 一覧取得
-	MultiGetProducts(ctx context.Context, in *MultiGetProductsInput) (entity.Products, error) // 一覧取得(ID指定)
-	GetProduct(ctx context.Context, in *GetProductInput) (*entity.Product, error)             // １件取得
-	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)       // 登録
-	UpdateProduct(ctx context.Context, in *UpdateProductInput) error                          // 更新
-	UpdateProductMedia(ctx context.Context, in *UpdateProductMediaInput) error                // 画像(リサイズ済み)更新
-	DeleteProduct(ctx context.Context, in *DeleteProductInput) error                          // 削除
+	ListProducts(ctx context.Context, in *ListProductsInput) (entity.Products, int64, error)                      // 一覧取得
+	MultiGetProducts(ctx context.Context, in *MultiGetProductsInput) (entity.Products, error)                     // 一覧取得(ID指定)
+	MultiGetProductsByRevision(ctx context.Context, in *MultiGetProductsByRevisionInput) (entity.Products, error) // 一覧取得(変更履歴ID指定)
+	GetProduct(ctx context.Context, in *GetProductInput) (*entity.Product, error)                                 // １件取得
+	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)                           // 登録
+	UpdateProduct(ctx context.Context, in *UpdateProductInput) error                                              // 更新
+	UpdateProductMedia(ctx context.Context, in *UpdateProductMediaInput) error                                    // 画像(リサイズ済み)更新
+	DeleteProduct(ctx context.Context, in *DeleteProductInput) error                                              // 削除
 	// プロモーション
 	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)  // 一覧取得
 	MultiGetPromotions(ctx context.Context, in *MultiGetPromotionsInput) (entity.Promotions, error) // 一覧取得(ID指定)
@@ -75,6 +76,8 @@ type Service interface {
 	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error) // 取得
 	AddCartItem(ctx context.Context, in *AddCartItemInput) error         // 商品を追加
 	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error   // 商品を削除
+	// 購入処理
+	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error)
 	// 郵便番号
 	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error) // 検索
 }

@@ -8,10 +8,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/shopspring/decimal"
 )
 
-var ErrInsufficientProductStock = errors.New("entity: insufficient product stock")
+var (
+	ErrInsufficientProductStock = errors.New("entity: insufficient product stock")
+	errNotFoundProduct          = errors.New("entity: not found product")
+)
 
 var bascketWeightLimits = map[ShippingSize]int64{
 	ShippingSize60:  2e3,  //  2kg =  2,000g
@@ -101,6 +106,18 @@ func (c *Cart) AddItem(productID string, quantity int64) {
 	c.Baskets = append(c.Baskets, basket)
 }
 
+func (c *Cart) RemoveBaskets(boxNumbers ...int64) {
+	set := set.New(boxNumbers...)
+	baskets := make(CartBaskets, 0, len(c.Baskets))
+	for _, b := range c.Baskets {
+		if set.Contains(b.BoxNumber) {
+			continue
+		}
+		baskets = append(baskets, b)
+	}
+	c.Baskets = baskets
+}
+
 // RemoveItem - カート内から商品を削除（箱の通番が未指定の場合、すべての買い物かごから削除する）
 func (c *Cart) RemoveItem(productID string, boxNumber int64) {
 	for _, basket := range c.Baskets {
@@ -147,6 +164,34 @@ func (bs CartBaskets) AdjustItems(products map[string]*Product) CartItems {
 	return res
 }
 
+func (bs CartBaskets) FilterByCoordinatorID(coordinatorIDs ...string) CartBaskets {
+	set := set.New(coordinatorIDs...)
+	res := make(CartBaskets, 0, len(bs))
+	for _, b := range bs {
+		if !set.Contains(b.CoordinatorID) {
+			continue
+		}
+		res = append(res, b)
+	}
+	return res
+}
+
+func (bs CartBaskets) FilterByBoxNumber(targets ...int64) CartBaskets {
+	set := set.New(targets...)
+	if set.Contains(0) {
+		// 0を含む場合、すべての買い物かごを対象とする
+		return bs
+	}
+	res := make(CartBaskets, 0, len(bs))
+	for _, b := range bs {
+		if !set.Contains(b.BoxNumber) {
+			continue
+		}
+		res = append(res, b)
+	}
+	return res
+}
+
 func (bs CartBaskets) VerifyQuantity(additional int64, product *Product) error {
 	items := bs.getQuantityByProductID()
 	quantity := additional + items[product.ID]
@@ -154,6 +199,53 @@ func (bs CartBaskets) VerifyQuantity(additional int64, product *Product) error {
 		return ErrInsufficientProductStock
 	}
 	return nil
+}
+
+func (bs CartBaskets) VerifyQuantities(products map[string]*Product) error {
+	items := bs.getQuantityByProductID()
+	for productID, quantity := range items {
+		product, ok := products[productID]
+		if !ok {
+			// 商品が存在しない場合も在庫不足とみなす
+			return ErrInsufficientProductStock
+		}
+		if quantity > product.Inventory {
+			return ErrInsufficientProductStock
+		}
+	}
+	return nil
+}
+
+func (bs CartBaskets) TotalPrice(products map[string]*Product) (int64, error) {
+	total := decimal.NewFromInt(0)
+	items := bs.getQuantityByProductID()
+	for productID, quantity := range items {
+		product, ok := products[productID]
+		if !ok {
+			return 0, errNotFoundProduct
+		}
+		price := decimal.NewFromInt(product.Price).Mul(decimal.NewFromInt(quantity))
+		total = total.Add(price)
+	}
+	return total.IntPart(), nil
+}
+
+func (bs CartBaskets) KomojuProducts(products map[string]*Product) ([]*komoju.CreateSessionProduct, error) {
+	items := bs.getQuantityByProductID()
+	res := make([]*komoju.CreateSessionProduct, 0, len(items))
+	for productID, quantity := range items {
+		product, ok := products[productID]
+		if !ok {
+			return nil, errNotFoundProduct
+		}
+		i := &komoju.CreateSessionProduct{
+			Amount:      product.ProductRevision.Price,
+			Description: product.Name,
+			Quantity:    quantity,
+		}
+		res = append(res, i)
+	}
+	return res, nil
 }
 
 func (bs CartBaskets) ProductIDs() []string {
@@ -170,6 +262,14 @@ func (bs CartBaskets) CoordinatorID() []string {
 		set.Add(bs[i].CoordinatorID)
 	}
 	return set.Slice()
+}
+
+func (bs CartBaskets) BoxNumbers() []int64 {
+	res := make([]int64, len(bs))
+	for i := range bs {
+		res[i] = bs[i].BoxNumber
+	}
+	return res
 }
 
 // getQuantityByProductID - 商品IDごとに買い物かご内の数量をまとめる

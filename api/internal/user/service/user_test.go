@@ -372,7 +372,6 @@ func TestCreateUser(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, u *entity.User, auth func(ctx context.Context) error) error {
 						expectUser.ID = u.ID
 						expectUser.Member.UserID, expectUser.Member.CognitoID = u.ID, u.CognitoID
-						expectUser.Customer.UserID = u.ID
 						assert.Equal(t, expectUser, u)
 						return auth(ctx)
 					})
@@ -520,7 +519,6 @@ func TestCreateUserWithOAuth(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, u *entity.User, auth func(ctx context.Context) error) error {
 						expectUser.ID = u.ID
 						expectUser.Member.UserID, expectUser.Member.CognitoID = u.ID, u.CognitoID
-						expectUser.Customer.UserID = u.ID
 						assert.Equal(t, expectUser, u)
 						return auth(ctx)
 					})

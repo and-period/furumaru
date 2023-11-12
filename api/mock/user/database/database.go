@@ -100,6 +100,26 @@ func (mr *MockAddressMockRecorder) Get(ctx, addressID interface{}, fields ...int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAddress)(nil).Get), varargs...)
 }
 
+// GetDefault mocks base method.
+func (m *MockAddress) GetDefault(ctx context.Context, userID string, fields ...string) (*entity.Address, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, userID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetDefault", varargs...)
+	ret0, _ := ret[0].(*entity.Address)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDefault indicates an expected call of GetDefault.
+func (mr *MockAddressMockRecorder) GetDefault(ctx, userID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, userID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDefault", reflect.TypeOf((*MockAddress)(nil).GetDefault), varargs...)
+}
+
 // List mocks base method.
 func (m *MockAddress) List(ctx context.Context, params *database.ListAddressesParams, fields ...string) (entity.Addresses, error) {
 	m.ctrl.T.Helper()
@@ -120,6 +140,26 @@ func (mr *MockAddressMockRecorder) List(ctx, params interface{}, fields ...inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAddress)(nil).List), varargs...)
 }
 
+// ListDefault mocks base method.
+func (m *MockAddress) ListDefault(ctx context.Context, userIDs []string, fields ...string) (entity.Addresses, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, userIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListDefault", varargs...)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListDefault indicates an expected call of ListDefault.
+func (mr *MockAddressMockRecorder) ListDefault(ctx, userIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, userIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDefault", reflect.TypeOf((*MockAddress)(nil).ListDefault), varargs...)
+}
+
 // MultiGet mocks base method.
 func (m *MockAddress) MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error) {
 	m.ctrl.T.Helper()
@@ -138,6 +178,26 @@ func (mr *MockAddressMockRecorder) MultiGet(ctx, addressIDs interface{}, fields 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, addressIDs}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockAddress)(nil).MultiGet), varargs...)
+}
+
+// MultiGetByRevision mocks base method.
+func (m *MockAddress) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Addresses, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, revisionIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGetByRevision", varargs...)
+	ret0, _ := ret[0].(entity.Addresses)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetByRevision indicates an expected call of MultiGetByRevision.
+func (mr *MockAddressMockRecorder) MultiGetByRevision(ctx, revisionIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, revisionIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetByRevision", reflect.TypeOf((*MockAddress)(nil).MultiGetByRevision), varargs...)
 }
 
 // Update mocks base method.

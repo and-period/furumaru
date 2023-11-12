@@ -72,8 +72,6 @@ func TestProduct(t *testing.T) {
 					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 				},
-				Price:                400,
-				Cost:                 300,
 				ExpirationDate:       7,
 				RecommendedPoints:    []string{"おすすめポイント"},
 				StorageMethodType:    StorageMethodTypeNormal,
@@ -86,6 +84,10 @@ func TestProduct(t *testing.T) {
 				OriginCity:           "彦根市",
 				StartAt:              now,
 				EndAt:                now.AddDate(1, 0, 0),
+				ProductRevision: ProductRevision{
+					Price: 400,
+					Cost:  300,
+				},
 			},
 			hasErr: false,
 		},
@@ -137,7 +139,8 @@ func TestProduct(t *testing.T) {
 				return
 			}
 			assert.NoError(t, err)
-			actual.ID = "" // ignore
+			actual.ID = ""                        // ignore
+			actual.ProductRevision.ProductID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -197,10 +200,11 @@ func TestProduct_Fill(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
-		name    string
-		product *Product
-		expect  *Product
-		hasErr  bool
+		name     string
+		product  *Product
+		revision *ProductRevision
+		expect   *Product
+		hasErr   bool
 	}{
 		{
 			name: "success",
@@ -214,6 +218,12 @@ func TestProduct_Fill(t *testing.T) {
 				Public:                true,
 				StartAt:               now.AddDate(0, -1, 0),
 				EndAt:                 now.AddDate(0, 1, 0),
+			},
+			revision: &ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     1980,
+				Cost:      880,
 			},
 			expect: &Product{
 				ID:     "product-id",
@@ -247,6 +257,12 @@ func TestProduct_Fill(t *testing.T) {
 				Public:                true,
 				StartAt:               now.AddDate(0, -1, 0),
 				EndAt:                 now.AddDate(0, 1, 0),
+				ProductRevision: ProductRevision{
+					ID:        1,
+					ProductID: "product-id",
+					Price:     1980,
+					Cost:      880,
+				},
 			},
 			hasErr: false,
 		},
@@ -256,7 +272,7 @@ func TestProduct_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.product.Fill(now)
+			err := tt.product.Fill(tt.revision, now)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.Equal(t, tt.expect, tt.product)
 		})
@@ -438,10 +454,11 @@ func TestProducts_Fill(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
-		name     string
-		products Products
-		expect   Products
-		hasErr   bool
+		name      string
+		products  Products
+		revisions map[string]*ProductRevision
+		expect    Products
+		hasErr    bool
 	}{
 		{
 			name: "success",
@@ -454,6 +471,14 @@ func TestProducts_Fill(t *testing.T) {
 					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
 					OriginPrefectureCode:  25,
+				},
+			},
+			revisions: map[string]*ProductRevision{
+				"product-id": {
+					ID:        1,
+					ProductID: "product-id",
+					Price:     1980,
+					Cost:      880,
 				},
 			},
 			expect: Products{
@@ -487,12 +512,18 @@ func TestProducts_Fill(t *testing.T) {
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
 					OriginPrefecture:      "滋賀県",
 					OriginPrefectureCode:  25,
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     1980,
+						Cost:      880,
+					},
 				},
 			},
 			hasErr: false,
 		},
 		{
-			name: "success is empty",
+			name: "success is empty json values",
 			products: Products{
 				{
 					ID:                    "product-id",
@@ -500,6 +531,14 @@ func TestProducts_Fill(t *testing.T) {
 					TagIDsJSON:            datatypes.JSON(nil),
 					MediaJSON:             datatypes.JSON(nil),
 					RecommendedPointsJSON: datatypes.JSON(nil),
+				},
+			},
+			revisions: map[string]*ProductRevision{
+				"product-id": {
+					ID:        1,
+					ProductID: "product-id",
+					Price:     1980,
+					Cost:      880,
 				},
 			},
 			expect: Products{
@@ -513,6 +552,36 @@ func TestProducts_Fill(t *testing.T) {
 					MediaJSON:             datatypes.JSON(nil),
 					RecommendedPoints:     []string{},
 					RecommendedPointsJSON: datatypes.JSON(nil),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     1980,
+						Cost:      880,
+					},
+				},
+			},
+			hasErr: false,
+		},
+		{
+			name: "success is empty revision",
+			products: Products{
+				{
+					ID:                    "product-id",
+					Name:                  "&.農園のみかん",
+					TagIDsJSON:            datatypes.JSON(nil),
+					MediaJSON:             datatypes.JSON(nil),
+					RecommendedPointsJSON: datatypes.JSON(nil),
+				},
+			},
+			revisions: map[string]*ProductRevision{},
+			expect: Products{
+				{
+					ID:                    "product-id",
+					Name:                  "&.農園のみかん",
+					Status:                ProductStatusUnknown,
+					TagIDsJSON:            datatypes.JSON(nil),
+					MediaJSON:             datatypes.JSON(nil),
+					RecommendedPointsJSON: datatypes.JSON(nil),
 				},
 			},
 			hasErr: false,
@@ -523,7 +592,7 @@ func TestProducts_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			err := tt.products.Fill(now)
+			err := tt.products.Fill(tt.revisions, now)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 			assert.ElementsMatch(t, tt.expect, tt.products)
 		})
@@ -691,7 +760,7 @@ func TestProducts_WeightGram(t *testing.T) {
 	}
 }
 
-func TestProducts_CoordinatorIDs(t *testing.T) {
+func TestProducts_IDs(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
@@ -703,7 +772,7 @@ func TestProducts_CoordinatorIDs(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					ID:              "", // ignore
+					ID:              "product-id",
 					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
@@ -722,8 +791,6 @@ func TestProducts_CoordinatorIDs(t *testing.T) {
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 					},
-					Price:             400,
-					Cost:              300,
 					ExpirationDate:    7,
 					RecommendedPoints: []string{"おすすめポイント"},
 					StorageMethodType: StorageMethodTypeNormal,
@@ -735,6 +802,74 @@ func TestProducts_CoordinatorIDs(t *testing.T) {
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
+				},
+			},
+			expect: []string{"product-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.products.IDs())
+		})
+	}
+}
+
+func TestProducts_CoordinatorIDs(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name     string
+		products Products
+		expect   []string
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:              "product-id",
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  "滋賀県",
+					OriginCity:        "彦根市",
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
 				},
 			},
 			expect: []string{"coordinator-id"},
@@ -761,7 +896,7 @@ func TestProducts_ProducerIDs(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					ID:              "", // ignore
+					ID:              "product-id",
 					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
@@ -780,8 +915,6 @@ func TestProducts_ProducerIDs(t *testing.T) {
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 					},
-					Price:             400,
-					Cost:              300,
 					ExpirationDate:    7,
 					RecommendedPoints: []string{"おすすめポイント"},
 					StorageMethodType: StorageMethodTypeNormal,
@@ -793,6 +926,12 @@ func TestProducts_ProducerIDs(t *testing.T) {
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
 				},
 			},
 			expect: []string{"producer-id"},
@@ -819,7 +958,7 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					ID:              "", // ignore
+					ID:              "product-id",
 					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
@@ -838,8 +977,6 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 					},
-					Price:             400,
-					Cost:              300,
 					ExpirationDate:    7,
 					RecommendedPoints: []string{"おすすめポイント"},
 					StorageMethodType: StorageMethodTypeNormal,
@@ -851,6 +988,12 @@ func TestProducts_ProductTypeIDs(t *testing.T) {
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
 				},
 			},
 			expect: []string{"type-id"},
@@ -877,7 +1020,7 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					ID:              "", // ignore
+					ID:              "product-id",
 					CoordinatorID:   "coordinator-id",
 					ProducerID:      "producer-id",
 					TypeID:          "type-id",
@@ -896,8 +1039,6 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 					},
-					Price:             400,
-					Cost:              300,
 					ExpirationDate:    7,
 					RecommendedPoints: []string{"おすすめポイント"},
 					StorageMethodType: StorageMethodTypeNormal,
@@ -909,6 +1050,12 @@ func TestProducts_ProductTagIDs(t *testing.T) {
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
 				},
 			},
 			expect: []string{"tag-id"},
@@ -954,8 +1101,6 @@ func TestProducts_Map(t *testing.T) {
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 					},
-					Price:             400,
-					Cost:              300,
 					ExpirationDate:    7,
 					RecommendedPoints: []string{"おすすめポイント"},
 					StorageMethodType: StorageMethodTypeNormal,
@@ -967,6 +1112,12 @@ func TestProducts_Map(t *testing.T) {
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
 				},
 			},
 			expect: map[string]*Product{
@@ -990,8 +1141,6 @@ func TestProducts_Map(t *testing.T) {
 						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 					},
-					Price:             400,
-					Cost:              300,
 					ExpirationDate:    7,
 					RecommendedPoints: []string{"おすすめポイント"},
 					StorageMethodType: StorageMethodTypeNormal,
@@ -1003,6 +1152,12 @@ func TestProducts_Map(t *testing.T) {
 					OriginCity:        "彦根市",
 					StartAt:           now,
 					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
 				},
 			},
 		},

@@ -44,7 +44,7 @@ get:
       ソート
       ・複数指定時は`,`区切り
       ・降順の場合はprefixに`-`をつける
-      ・指定可能フィールド:name,public,inventory,price,originPrefecture,originCity,createdAt,updatedAt
+      ・指定可能フィールド:name,public,inventory,originPrefecture,originCity,createdAt,updatedAt
     required: false
     example: 'name,-inventory'
   responses:

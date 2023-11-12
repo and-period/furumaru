@@ -136,20 +136,20 @@ const onClickRow = (item: User): void => {
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
         @update:sort-desc="onClickUpdateSortBy"
-        @click:row="(_: any, { item }: any) => onClickRow(item.raw)"
+        @click:row="(_: any, { item }: any) => onClickRow(item)"
       >
         <template #[`item.name`]="{ item }">
-          {{ `${item.raw.lastname} ${item.raw.firstname}` }}
+          {{ `${item.lastname} ${item.firstname}` }}
         </template>
         <template #[`item.address`]="{ item }">
-          {{ getAddress(item.raw) }}
+          {{ getAddress(item) }}
         </template>
         <template #[`item.totalAmount`]="{ item }">
-          &yen; {{ `${item.raw.totalAmount}` }}
+          &yen; {{ `${item.totalAmount}` }}
         </template>
         <template #[`item.registered`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.raw.registered)">
-            {{ getStatus(item.raw.registered) }}
+          <v-chip size="small" :color="getStatusColor(item.registered)">
+            {{ getStatus(item.registered) }}
           </v-chip>
         </template>
         <template #[`item.action`]="{ item }">
@@ -158,7 +158,7 @@ const onClickRow = (item: User): void => {
             color="primary"
             size="small"
             :append-icon="mdiDelete"
-            @click.stop="onClickDelete(item.raw.id)"
+            @click.stop="onClickDelete(item.id)"
           >
             削除
           </v-btn>

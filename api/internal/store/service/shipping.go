@@ -2,139 +2,70 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"golang.org/x/sync/errgroup"
 )
 
-func (s *service) ListShippings(ctx context.Context, in *store.ListShippingsInput) (entity.Shippings, int64, error) {
-	if err := s.validator.Struct(in); err != nil {
-		return nil, 0, internalError(err)
-	}
-	orders := make([]*database.ListShippingsOrder, len(in.Orders))
-	for i := range in.Orders {
-		orders[i] = &database.ListShippingsOrder{
-			Key:        in.Orders[i].Key,
-			OrderByASC: in.Orders[i].OrderByASC,
-		}
-	}
-	params := &database.ListShippingsParams{
-		CoordinatorID: in.CoordinatorID,
-		Name:          in.Name,
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
-		Orders:        orders,
-	}
-	var (
-		shippings entity.Shippings
-		total     int64
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		shippings, err = s.db.Shipping.List(ectx, params)
-		return
-	})
-	eg.Go(func() (err error) {
-		total, err = s.db.Shipping.Count(ectx, params)
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		return nil, 0, internalError(err)
-	}
-	return shippings, total, nil
-}
-
-func (s *service) MultiGetShippings(
-	ctx context.Context, in *store.MultiGetShippingsInput,
+func (s *service) ListShippingsByCoordinatorIDs(
+	ctx context.Context, in *store.ListShippingsByCoordinatorIDsInput,
 ) (entity.Shippings, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	shippings, err := s.db.Shipping.MultiGet(ctx, in.ShippingIDs)
+	shippings, err := s.db.Shipping.ListByCoordinatorIDs(ctx, in.CoordinatorIDs)
 	return shippings, internalError(err)
 }
 
-func (s *service) GetShipping(ctx context.Context, in *store.GetShippingInput) (*entity.Shipping, error) {
+func (s *service) MultiGetShippingsByRevision(
+	ctx context.Context, in *store.MultiGetShippingsByRevisionInput,
+) (entity.Shippings, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	shipping, err := s.db.Shipping.Get(ctx, in.ShippingID)
+	shippings, err := s.db.Shipping.MultiGetByRevision(ctx, in.ShippingRevisionIDs)
+	return shippings, internalError(err)
+}
+
+func (s *service) GetDefaultShipping(ctx context.Context, in *store.GetDefaultShippingInput) (*entity.Shipping, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	shipping, err := s.db.Shipping.GetDefault(ctx)
 	return shipping, internalError(err)
 }
 
-func (s *service) CreateShipping(ctx context.Context, in *store.CreateShippingInput) (*entity.Shipping, error) {
+func (s *service) GetShippingByCoordinatorID(
+	ctx context.Context, in *store.GetShippingByCoordinatorIDInput,
+) (*entity.Shipping, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	box60Rates, err := s.newShippingRatesFromCreate(in.Box60Rates)
-	if err != nil {
-		return nil, fmt.Errorf("api: invalid box 60 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	box80Rates, err := s.newShippingRatesFromCreate(in.Box80Rates)
-	if err != nil {
-		return nil, fmt.Errorf("api: invalid box 80 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	box100Rates, err := s.newShippingRatesFromCreate(in.Box100Rates)
-	if err != nil {
-		return nil, fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	params := &entity.NewShippingParams{
-		CoordinatorID:      in.CoordinatorID,
-		Name:               in.Name,
-		IsDefault:          in.IsDefault,
-		Box60Rates:         box60Rates,
-		Box60Refrigerated:  in.Box60Refrigerated,
-		Box60Frozen:        in.Box60Frozen,
-		Box80Rates:         box80Rates,
-		Box80Refrigerated:  in.Box80Refrigerated,
-		Box80Frozen:        in.Box80Frozen,
-		Box100Rates:        box100Rates,
-		Box100Refrigerated: in.Box100Refrigerated,
-		Box100Frozen:       in.Box100Frozen,
-		HasFreeShipping:    in.HasFreeShipping,
-		FreeShippingRates:  in.FreeShippingRates,
-	}
-	shipping := entity.NewShipping(params)
-	if err := s.db.Shipping.Create(ctx, shipping); err != nil {
-		return nil, internalError(err)
-	}
-	return shipping, nil
+	shipping, err := s.db.Shipping.GetByCoordinatorID(ctx, in.CoordinatorID)
+	return shipping, internalError(err)
 }
 
-func (s *service) newShippingRatesFromCreate(in []*store.CreateShippingRate) (entity.ShippingRates, error) {
-	rates := make(entity.ShippingRates, len(in))
-	for i := range in {
-		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].PrefectureCodes)
-	}
-	if err := rates.Validate(); err != nil {
-		return nil, err
-	}
-	return rates, nil
-}
-
-func (s *service) UpdateShipping(ctx context.Context, in *store.UpdateShippingInput) error {
+func (s *service) UpdateDefaultShipping(ctx context.Context, in *store.UpdateDefaultShippingInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	box60Rates, err := s.newShippingRatesFromUpdate(in.Box60Rates)
+	box60Rates, err := s.newShippingRatesFromUpdateDefault(in.Box60Rates)
 	if err != nil {
 		return fmt.Errorf("api: invalid box 60 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	box80Rates, err := s.newShippingRatesFromUpdate(in.Box80Rates)
+	box80Rates, err := s.newShippingRatesFromUpdateDefault(in.Box80Rates)
 	if err != nil {
 		return fmt.Errorf("api: invalid box 80 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	box100Rates, err := s.newShippingRatesFromUpdate(in.Box100Rates)
+	box100Rates, err := s.newShippingRatesFromUpdateDefault(in.Box100Rates)
 	if err != nil {
 		return fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateShippingParams{
-		Name:               in.Name,
-		IsDefault:          in.IsDefault,
 		Box60Rates:         box60Rates,
 		Box60Refrigerated:  in.Box60Refrigerated,
 		Box60Frozen:        in.Box60Frozen,
@@ -147,11 +78,69 @@ func (s *service) UpdateShipping(ctx context.Context, in *store.UpdateShippingIn
 		HasFreeShipping:    in.HasFreeShipping,
 		FreeShippingRates:  in.FreeShippingRates,
 	}
-	err = s.db.Shipping.Update(ctx, in.ShippingID, params)
+	err = s.db.Shipping.Update(ctx, entity.DefaultShippingID, params)
 	return internalError(err)
 }
 
-func (s *service) newShippingRatesFromUpdate(in []*store.UpdateShippingRate) (entity.ShippingRates, error) {
+func (s *service) UpsertShipping(ctx context.Context, in *store.UpsertShippingInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	box60Rates, err := s.newShippingRatesFromUpsert(in.Box60Rates)
+	if err != nil {
+		return fmt.Errorf("api: invalid box 60 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	box80Rates, err := s.newShippingRatesFromUpsert(in.Box80Rates)
+	if err != nil {
+		return fmt.Errorf("api: invalid box 80 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	box100Rates, err := s.newShippingRatesFromUpsert(in.Box100Rates)
+	if err != nil {
+		return fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	shipping, err := s.db.Shipping.GetByCoordinatorID(ctx, in.CoordinatorID)
+	if err != nil && !errors.Is(err, database.ErrNotFound) {
+		return internalError(err)
+	}
+	if errors.Is(err, database.ErrNotFound) {
+		// create
+		params := &entity.NewShippingParams{
+			CoordinatorID:      in.CoordinatorID,
+			Box60Rates:         box60Rates,
+			Box60Refrigerated:  in.Box60Refrigerated,
+			Box60Frozen:        in.Box60Frozen,
+			Box80Rates:         box80Rates,
+			Box80Refrigerated:  in.Box80Refrigerated,
+			Box80Frozen:        in.Box80Frozen,
+			Box100Rates:        box100Rates,
+			Box100Refrigerated: in.Box100Refrigerated,
+			Box100Frozen:       in.Box100Frozen,
+			HasFreeShipping:    in.HasFreeShipping,
+			FreeShippingRates:  in.FreeShippingRates,
+		}
+		shipping = entity.NewShipping(params)
+		err = s.db.Shipping.Create(ctx, shipping)
+	} else {
+		// update
+		params := &database.UpdateShippingParams{
+			Box60Rates:         box60Rates,
+			Box60Refrigerated:  in.Box60Refrigerated,
+			Box60Frozen:        in.Box60Frozen,
+			Box80Rates:         box80Rates,
+			Box80Refrigerated:  in.Box80Refrigerated,
+			Box80Frozen:        in.Box80Frozen,
+			Box100Rates:        box100Rates,
+			Box100Refrigerated: in.Box100Refrigerated,
+			Box100Frozen:       in.Box100Frozen,
+			HasFreeShipping:    in.HasFreeShipping,
+			FreeShippingRates:  in.FreeShippingRates,
+		}
+		err = s.db.Shipping.Update(ctx, shipping.ID, params)
+	}
+	return internalError(err)
+}
+
+func (s *service) newShippingRatesFromUpdateDefault(in []*store.UpdateDefaultShippingRate) (entity.ShippingRates, error) {
 	rates := make(entity.ShippingRates, len(in))
 	for i := range in {
 		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].PrefectureCodes)
@@ -162,10 +151,13 @@ func (s *service) newShippingRatesFromUpdate(in []*store.UpdateShippingRate) (en
 	return rates, nil
 }
 
-func (s *service) DeleteShipping(ctx context.Context, in *store.DeleteShippingInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
+func (s *service) newShippingRatesFromUpsert(in []*store.UpsertShippingRate) (entity.ShippingRates, error) {
+	rates := make(entity.ShippingRates, len(in))
+	for i := range in {
+		rates[i] = entity.NewShippingRate(int64(i+1), in[i].Name, in[i].Price, in[i].PrefectureCodes)
 	}
-	err := s.db.Shipping.Delete(ctx, in.ShippingID)
-	return internalError(err)
+	if err := rates.Validate(); err != nil {
+		return nil, err
+	}
+	return rates, nil
 }

@@ -7,6 +7,7 @@ import (
 
 type Shipping struct {
 	response.Shipping
+	coordinatorID string
 }
 
 type Shippings []*Shipping
@@ -21,9 +22,7 @@ func NewShipping(shipping *entity.Shipping) *Shipping {
 	return &Shipping{
 		Shipping: response.Shipping{
 			ID:                 shipping.ID,
-			CoordinatorID:      shipping.CoordinatorID,
-			Name:               shipping.Name,
-			IsDefault:          shipping.IsDefault,
+			IsDefault:          shipping.IsDefault(),
 			Box60Rates:         NewShippingRates(shipping.Box60Rates).Response(),
 			Box60Refrigerated:  shipping.Box60Refrigerated,
 			Box60Frozen:        shipping.Box60Frozen,
@@ -38,6 +37,7 @@ func NewShipping(shipping *entity.Shipping) *Shipping {
 			CreatedAt:          shipping.CreatedAt.Unix(),
 			UpdatedAt:          shipping.CreatedAt.Unix(),
 		},
+		coordinatorID: shipping.CoordinatorID,
 	}
 }
 
@@ -74,14 +74,6 @@ func NewShippingRate(rate *entity.ShippingRate) *ShippingRate {
 
 func (r *ShippingRate) Response() *response.ShippingRate {
 	return &r.ShippingRate
-}
-
-func (ss Shippings) Map() map[string]*Shipping {
-	res := make(map[string]*Shipping, len(ss))
-	for _, s := range ss {
-		res[s.ID] = s
-	}
-	return res
 }
 
 func NewShippingRates(rates entity.ShippingRates) ShippingRates {

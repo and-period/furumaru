@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import useVuelidate from '@vuelidate/core'
-import { mdiFacebook, mdiInstagram } from '@mdi/js'
+import type { VTabs } from 'vuetify/lib/components/index.mjs'
+
 import type { AlertType } from '~/lib/hooks'
-import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture, Weekday } from '~/types/api'
+import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture, Weekday, type UpsertShippingRequest, type Shipping } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
-import { getErrorMessage, kana, maxLength, required, tel } from '~/lib/validations'
 
 const props = defineProps({
   loading: {
@@ -23,7 +22,7 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  formData: {
+  coordinatorFormData: {
     type: Object as PropType<UpdateCoordinatorRequest>,
     default: (): UpdateCoordinatorRequest => ({
       lastname: '',
@@ -47,6 +46,40 @@ const props = defineProps({
       instagramId: '',
       facebookId: '',
       businessDays: []
+    })
+  },
+  shippingFormData: {
+    type: Object as PropType<UpsertShippingRequest>,
+    default: (): UpsertShippingRequest => ({
+      box60Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectureCodes: []
+        }
+      ],
+      box60Refrigerated: 0,
+      box60Frozen: 0,
+      box80Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectureCodes: []
+        }
+      ],
+      box80Refrigerated: 0,
+      box80Frozen: 0,
+      box100Rates: [
+        {
+          name: '',
+          price: 0,
+          prefectureCodes: []
+        }
+      ],
+      box100Refrigerated: 0,
+      box100Frozen: 0,
+      hasFreeShipping: false,
+      freeShippingRates: 0
     })
   },
   coordinator: {
@@ -80,6 +113,26 @@ const props = defineProps({
       createdAt: 0,
       updatedAt: 0,
       businessDays: []
+    })
+  },
+  shipping: {
+    type: Object as PropType<Shipping>,
+    default: (): Shipping => ({
+      id: '',
+      isDefault: false,
+      box60Rates: [],
+      box60Refrigerated: 0,
+      box60Frozen: 0,
+      box80Rates: [],
+      box80Refrigerated: 0,
+      box80Frozen: 0,
+      box100Rates: [],
+      box100Refrigerated: 0,
+      box100Frozen: 0,
+      hasFreeShipping: false,
+      freeShippingRates: 0,
+      createdAt: 0,
+      updatedAt: 0
     })
   },
   productTypes: {
@@ -121,6 +174,10 @@ const props = defineProps({
   searchLoading: {
     type: Boolean,
     default: false
+  },
+  selectedTabItem: {
+    type: String,
+    default: 'coordinator'
   }
 })
 
@@ -135,35 +192,35 @@ const weekdays = [
 ]
 
 const emit = defineEmits<{
-  (e: 'update:form-data', formData: UpdateCoordinatorRequest): void
+  (e: 'update:selected-tab-item', item: string): void
+  (e: 'update:coordinator-form-data', formData: UpdateCoordinatorRequest): void
+  (e: 'update:shipping-form-data', formData: UpsertShippingRequest): void
   (e: 'update:thumbnail-file', files: FileList): void
   (e: 'update:header-file', files: FileList): void
   (e: 'update:promotion-video', files: FileList): void
   (e: 'update:bonus-video', files: FileList): void
   (e: 'click:search-address'): void
-  (e: 'submit'): void
+  (e: 'submit:coordinator'): void
+  (e: 'submit:shipping'): void
 }>()
 
-const rules = computed(() => ({
-  lastname: { required, maxLength: maxLength(16) },
-  firstname: { required, maxLength: maxLength(16) },
-  lastnameKana: { required, kana, maxLength: maxLength(32) },
-  firstnameKana: { required, kana, maxLength: maxLength(32) },
-  marcheName: { required, maxLength: maxLength(64) },
-  username: { required, maxLength: maxLength(64) },
-  phoneNumber: { required, tel },
-  profile: { maxLength: maxLength(2000) },
-  instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) },
-  businessDays: {}
-}))
-const formDataValue = computed({
-  get: (): UpdateCoordinatorRequest => props.formData,
-  set: (val: UpdateCoordinatorRequest): void => emit('update:form-data', val)
-})
-const coordinatorValue = computed(() => props.coordinator)
+const tabs: VTabs[] = [
+  { title: '基本情報', value: 'coordinator' },
+  { title: '配送設定', value: 'shipping' }
+]
 
-const validate = useVuelidate(rules, formDataValue)
+const selectedTabItemValue = computed({
+  get: (): string => props.selectedTabItem,
+  set: (item: string): void => emit('update:selected-tab-item', item)
+})
+const coordinatorFormDataValue = computed({
+  get: (): UpdateCoordinatorRequest => props.coordinatorFormData,
+  set: (val: UpdateCoordinatorRequest): void => emit('update:coordinator-form-data', val)
+})
+const shippingFormDataValue = computed({
+  get: (): UpsertShippingRequest => props.shippingFormData,
+  set: (val: UpsertShippingRequest): void => emit('update:shipping-form-data', val)
+})
 
 const onChangeThumbnailFile = (files?: FileList) => {
   if (!files) {
@@ -193,13 +250,12 @@ const onChangeBonusVideo = (files?: FileList) => {
   emit('update:bonus-video', files)
 }
 
-const onSubmit = async (): Promise<void> => {
-  const valid = await validate.value.$validate()
-  if (!valid) {
-    return
-  }
+const onSubmitCoordinator = (): void => {
+  emit('submit:coordinator')
+}
 
-  emit('submit')
+const onSubmitShipping = (): void => {
+  emit('submit:shipping')
 }
 
 const onClickSearchAddress = (): void => {
@@ -210,178 +266,47 @@ const onClickSearchAddress = (): void => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card>
-    <v-card-title>コーディネーター詳細</v-card-title>
+  <v-card class="mb-4">
+    <v-card-title>コーディネータ詳細</v-card-title>
 
-    <v-form @submit.prevent="onSubmit">
-      <v-card-text>
-        <div class="mb-2 d-flex">
-          <v-text-field
-            v-model="validate.marcheName.$model"
-            :error-messages="getErrorMessage(validate.marcheName.$errors)"
-            class="mr-4"
-            label="マルシェ名"
-          />
-          <v-text-field
-            v-model="validate.username.$model"
-            :error-messages="getErrorMessage(validate.username.$errors)"
-            class="mr-4"
-            label="コーディネータ名"
-          />
-        </div>
-        <v-autocomplete
-          v-model="formDataValue.productTypeIds"
-          label="取り扱い品目"
-          :items="productTypes"
-          item-title="name"
-          item-value="id"
-          chips
-          closable-chips
-          multiple
-          density="comfortable"
-        >
-          <template #chip="{ props: val, item }">
-            <v-chip
-              v-bind="val"
-              :prepend-avatar="item.raw.iconUrl"
-              :text="item.raw.name"
-              rounded
-              class="px-4"
-              variant="outlined"
-            />
-          </template>
-          <template #item="{ props: val, item }">
-            <v-list-item
-              v-bind="val"
-              :prepend-avatar="item?.raw?.iconUrl"
-              :title="item?.raw?.name"
-            />
-          </template>
-        </v-autocomplete>
-        <v-select
-          v-model="validate.businessDays.$model"
-          label="営業日(発送可能日)"
-          :error-messages="getErrorMessage(validate.businessDays.$errors)"
-          :items="weekdays"
-          item-title="title"
-          item-value="value"
-          chips
-          closable-chips
-          multiple
-        />
-        <v-row>
-          <v-col cols="12" ms="12" lg="6">
-            <molecules-video-select-form
-              label="紹介動画"
-              :video-url="formDataValue.promotionVideoUrl"
-              :error="props.promotionVideoUploadStatus.error"
-              :message="props.promotionVideoUploadStatus.message"
-              @update:file="onChangePromotionVideo"
-            />
-          </v-col>
-          <v-col cols="12" sm="12" lg="6">
-            <molecules-video-select-form
-              label="サンキュー動画"
-              :video-url="formDataValue.bonusVideoUrl"
-              :error="props.bonusVideoUploadStatus.error"
-              :message="props.bonusVideoUploadStatus.message"
-              @update:file="onChangeBonusVideo"
-            />
-          </v-col>
-        </v-row>
-        <v-textarea
-          v-model="validate.profile.$model"
-          :error-messages="getErrorMessage(validate.profile.$errors)"
-          label="プロフィール"
-          maxlength="2000"
-        />
-        <div class="d-flex">
-          <v-text-field
-            v-model="validate.lastname.$model"
-            :error-messages="getErrorMessage(validate.lastname.$errors)"
-            class="mr-4"
-            label="コーディネータ:姓"
-          />
-          <v-text-field
-            v-model="validate.firstname.$model"
-            :error-messages="getErrorMessage(validate.firstname.$errors)"
-            label="コーディネータ:名"
-          />
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="validate.lastnameKana.$model"
-            :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
-            class="mr-4"
-            label="コーディネータ:姓（ふりがな）"
-          />
-          <v-text-field
-            v-model="validate.firstnameKana.$model"
-            :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
-            label="コーディネータ:名（ふりがな）"
-          />
-        </div>
-        <v-text-field
-          v-model="coordinatorValue.email"
-          label="連絡先（Email）"
-          readonly
-        />
-        <v-text-field
-          v-model="validate.phoneNumber.$model"
-          :error-messages="getErrorMessage(validate.phoneNumber.$errors)"
-          type="tel"
-          label="連絡先（電話番号）"
-        />
-        <v-row>
-          <v-col cols="12" sm="6" md="6">
-            <molecules-icon-select-form
-              label="アイコン画像"
-              :img-url="formDataValue.thumbnailUrl"
-              :error="props.thumbnailUploadStatus.error"
-              :message="props.thumbnailUploadStatus.message"
-              @update:file="onChangeThumbnailFile"
-            />
-          </v-col>
-          <v-col cols="12" sm="6" md="6">
-            <molecules-image-select-form
-              label="ヘッダー画像"
-              :img-url="formDataValue.headerUrl"
-              :error="props.headerUploadStatus.error"
-              :message="props.headerUploadStatus.message"
-              @update:file="onChangeHeaderFile"
-            />
-          </v-col>
-        </v-row>
-        <molecules-address-form
-          v-model:postal-code="formDataValue.postalCode"
-          v-model:prefecture="formDataValue.prefectureCode"
-          v-model:city="formDataValue.city"
-          v-model:address-line1="formDataValue.addressLine1"
-          v-model:address-line2="formDataValue.addressLine2"
-          :error-message="props.searchErrorMessage"
-          :loading="props.searchLoading"
-          @click:search="onClickSearchAddress"
-        />
-        <p>SNS連携</p>
-        <v-text-field
-          v-model="validate.instagramId.$model"
-          :error-messages="getErrorMessage(validate.instagramId.$errors)"
-          :prepend-icon="mdiInstagram"
-          prefix="https://www.instagram.com/"
-        />
-        <v-text-field
-          v-model="validate.facebookId.$model"
-          :error-messages="getErrorMessage(validate.facebookId.$errors)"
-          :prepend-icon="mdiFacebook"
-          prefix="https://www.facebook.com/"
-        />
-      </v-card-text>
-
-      <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
-          更新
-        </v-btn>
-      </v-card-actions>
-    </v-form>
+    <v-card-text>
+      <v-tabs v-model="selectedTabItemValue" grow color="dark">
+        <v-tab v-for="item in tabs" :key="item.value" :value="item.value">
+          {{ item.title }}
+        </v-tab>
+      </v-tabs>
+    </v-card-text>
   </v-card>
+
+  <v-window v-model="selectedTabItemValue">
+    <v-window-item value="coordinator">
+      <organisms-coordinator-show
+        v-model:form-data="coordinatorFormDataValue"
+        :loading="loading"
+        :coordinator="coordinator"
+        :product-types="productTypes"
+        :thumbnail-upload-status="thumbnailUploadStatus"
+        :header-upload-status="headerUploadStatus"
+        :promotion-video-upload-status="promotionVideoUploadStatus"
+        :bonus-video-upload-status="bonusVideoUploadStatus"
+        :search-error-message="searchErrorMessage"
+        :search-loading="searchLoading"
+        @update:thumbnail-file="onChangeThumbnailFile"
+        @update:header-file="onChangeHeaderFile"
+        @update:promotion-video="onChangePromotionVideo"
+        @update:bonus-video="onChangeBonusVideo"
+        @click:search-address="onClickSearchAddress"
+        @submit="onSubmitCoordinator"
+      />
+    </v-window-item>
+
+    <v-window-item value="shipping">
+      <organisms-coordinator-shipping
+        v-model:form-data="shippingFormDataValue"
+        :loading="loading"
+        :shipping="shipping"
+        @submit="onSubmitShipping"
+      />
+    </v-window-item>
+  </v-window>
 </template>

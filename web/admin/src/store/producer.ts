@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 
 import { useCommonStore } from './common'
 import { useCoordinatorStore } from './coordinator'
-import {
+import { apiClient } from '~/plugins/api-client'
+import type {
   CreateProducerRequest,
   ProducerResponse,
   Producer,
@@ -10,7 +11,6 @@ import {
   UploadImageResponse,
   UploadVideoResponse
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const useProducerStore = defineStore('producer', {
   state: () => ({

@@ -205,11 +205,8 @@ func TestWorker_Run(t *testing.T) {
 	}
 	users := uentity.Users{{
 		Member: uentity.Member{
-			Email: "test-user@and-period.jp",
-		},
-		Customer: uentity.Customer{
-			Lastname:  "&.",
-			Firstname: "スタッフ",
+			Username: "username",
+			Email:    "test-user@and-period.jp",
 		},
 	}}
 	devicesIn := &user.MultiGetAdminDevicesInput{
@@ -218,12 +215,12 @@ func TestWorker_Run(t *testing.T) {
 	devices := []string{"instance-id"}
 	personalizations := []*mailer.Personalization{
 		{
-			Name:    "&. スタッフ",
+			Name:    "username",
 			Address: "test-user@and-period.jp",
 			Type:    mailer.AddressTypeTo,
 			Substitutions: map[string]interface{}{
 				"key": "value",
-				"氏名":  "&. スタッフ",
+				"氏名":  "username",
 			},
 		},
 	}
@@ -284,8 +281,11 @@ func TestWorker_Run(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					EmailID: entity.EmailIDAdminRegister,
+					Substitutions: map[string]string{
+						"key": "value",
+						"氏名":  "username",
+					},
 				},
 			},
 			expectErr: nil,

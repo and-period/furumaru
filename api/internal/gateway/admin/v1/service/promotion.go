@@ -71,6 +71,9 @@ func NewPromotion(promotion *entity.Promotion) *Promotion {
 }
 
 func (p *Promotion) Response() *response.Promotion {
+	if p == nil {
+		return nil
+	}
 	return &p.Promotion
 }
 

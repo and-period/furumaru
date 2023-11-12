@@ -5,14 +5,14 @@ import { useCoordinatorStore } from './coordinator'
 import { useProductTypeStore } from './product-type'
 import { useProductTagStore } from './product-tag'
 import { useProducerStore } from './producer'
-import {
+import { apiClient } from '~/plugins/api-client'
+import type {
   CreateProductRequest,
   ProductResponse,
   Product,
   UpdateProductRequest,
   UploadImageResponse
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const useProductStore = defineStore('product', {
   state: () => ({

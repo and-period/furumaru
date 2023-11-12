@@ -6,6 +6,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
@@ -13,36 +14,22 @@ import (
 func TestUser(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		user   *entity.User
-		expect *User
+		name    string
+		user    *uentity.User
+		address *uentity.Address
+		expect  *User
 	}{
 		{
 			name: "success member",
 			user: &entity.User{
 				ID:         "user-id",
 				Registered: true,
-				Customer: entity.Customer{
-					UserID:         "user-id",
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					PostalCode:     "1000014",
-					Prefecture:     "東京都",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				},
-				Member: entity.Member{
+				Member: uentity.Member{
 					UserID:       "user-id",
 					AccountID:    "account-id",
 					CognitoID:    "cognito-id",
 					Username:     "username",
-					ProviderType: entity.ProviderTypeEmail,
+					ProviderType: uentity.ProviderTypeEmail,
 					Email:        "test-user@and-period.jp",
 					PhoneNumber:  "+819012345678",
 					ThumbnailURL: "https://and-period.jp/thumbnail.png",
@@ -53,23 +40,40 @@ func TestUser(t *testing.T) {
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
-			expect: &User{
-				User: response.User{
-					ID:             "user-id",
+			address: &entity.Address{
+				ID:        "address-id",
+				UserID:    "user-id",
+				IsDefault: true,
+				AddressRevision: uentity.AddressRevision{
+					ID:             1,
 					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					Registered:     true,
-					Email:          "test-user@and-period.jp",
-					PhoneNumber:    "+819012345678",
+					Firstname:      "購入者",
 					PostalCode:     "1000014",
+					Prefecture:     "東京都",
 					PrefectureCode: 13,
 					City:           "千代田区",
 					AddressLine1:   "永田町1-7-1",
 					AddressLine2:   "",
-					CreatedAt:      1640962800,
-					UpdatedAt:      1640962800,
+					PhoneNumber:    "+819012345678",
+				},
+			},
+			expect: &User{
+				User: response.User{
+					ID:         "user-id",
+					Registered: true,
+					Email:      "test-user@and-period.jp",
+					CreatedAt:  1640962800,
+					UpdatedAt:  1640962800,
+					Address: &response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
 				},
 			},
 		},
@@ -78,22 +82,7 @@ func TestUser(t *testing.T) {
 			user: &entity.User{
 				ID:         "user-id",
 				Registered: false,
-				Customer: entity.Customer{
-					UserID:         "user-id",
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					PostalCode:     "1000014",
-					Prefecture:     "東京都",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				},
-				Guest: entity.Guest{
+				Guest: uentity.Guest{
 					UserID:      "user-id",
 					Email:       "test-user@and-period.jp",
 					PhoneNumber: "+819012345678",
@@ -103,23 +92,40 @@ func TestUser(t *testing.T) {
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
+			address: &entity.Address{
+				ID:        "address-id",
+				UserID:    "user-id",
+				IsDefault: true,
+				AddressRevision: uentity.AddressRevision{
+					ID:             1,
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					PostalCode:     "1000014",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "+819012345678",
+				},
+			},
 			expect: &User{
 				User: response.User{
-					ID:             "user-id",
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					Registered:     false,
-					Email:          "test-user@and-period.jp",
-					PhoneNumber:    "+819012345678",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					CreatedAt:      1640962800,
-					UpdatedAt:      1640962800,
+					ID:         "user-id",
+					Registered: false,
+					Email:      "test-user@and-period.jp",
+					CreatedAt:  1640962800,
+					UpdatedAt:  1640962800,
+					Address: &response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
 				},
 			},
 		},
@@ -128,47 +134,7 @@ func TestUser(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewUser(tt.user))
-		})
-	}
-}
-
-func TestUser_Name(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		user   *User
-		expect string
-	}{
-		{
-			name: "success",
-			user: &User{
-				User: response.User{
-					ID:             "user-id",
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					Registered:     true,
-					Email:          "test-user@and-period.jp",
-					PhoneNumber:    "+819012345678",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					CreatedAt:      1640962800,
-					UpdatedAt:      1640962800,
-				},
-			},
-			expect: "&. スタッフ",
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.user.Name())
+			assert.Equal(t, tt.expect, NewUser(tt.user, tt.address))
 		})
 	}
 }
@@ -184,39 +150,39 @@ func TestUser_Response(t *testing.T) {
 			name: "success",
 			user: &User{
 				User: response.User{
-					ID:             "user-id",
+					ID:         "user-id",
+					Registered: true,
+					Email:      "test-user@and-period.jp",
+					CreatedAt:  1640962800,
+					UpdatedAt:  1640962800,
+					Address: &response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+				},
+			},
+			expect: &response.User{
+				ID:         "user-id",
+				Registered: true,
+				Email:      "test-user@and-period.jp",
+				CreatedAt:  1640962800,
+				UpdatedAt:  1640962800,
+				Address: &response.Address{
 					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					Registered:     true,
-					Email:          "test-user@and-period.jp",
-					PhoneNumber:    "+819012345678",
+					Firstname:      "購入者",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
 					AddressLine1:   "永田町1-7-1",
 					AddressLine2:   "",
-					CreatedAt:      1640962800,
-					UpdatedAt:      1640962800,
+					PhoneNumber:    "+819012345678",
 				},
-			},
-			expect: &response.User{
-				ID:             "user-id",
-				Lastname:       "&.",
-				Firstname:      "スタッフ",
-				LastnameKana:   "あんどどっと",
-				FirstnameKana:  "すたっふ",
-				Registered:     true,
-				Email:          "test-user@and-period.jp",
-				PhoneNumber:    "+819012345678",
-				PostalCode:     "1000014",
-				PrefectureCode: 13,
-				City:           "千代田区",
-				AddressLine1:   "永田町1-7-1",
-				AddressLine2:   "",
-				CreatedAt:      1640962800,
-				UpdatedAt:      1640962800,
 			},
 		},
 	}
@@ -232,37 +198,23 @@ func TestUser_Response(t *testing.T) {
 func TestUsers(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		users  entity.Users
-		expect Users
+		name      string
+		users     uentity.Users
+		addresses map[string]*uentity.Address
+		expect    Users
 	}{
 		{
 			name: "success",
-			users: entity.Users{
+			users: uentity.Users{
 				{
 					ID:         "user-id",
 					Registered: true,
-					Customer: entity.Customer{
-						UserID:         "user-id",
-						Lastname:       "&.",
-						Firstname:      "スタッフ",
-						LastnameKana:   "あんどどっと",
-						FirstnameKana:  "すたっふ",
-						PostalCode:     "1000014",
-						Prefecture:     "東京都",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						CreatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-						UpdatedAt:      jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					},
-					Member: entity.Member{
+					Member: uentity.Member{
 						UserID:       "user-id",
 						AccountID:    "account-id",
 						CognitoID:    "cognito-id",
 						Username:     "username",
-						ProviderType: entity.ProviderTypeEmail,
+						ProviderType: uentity.ProviderTypeEmail,
 						Email:        "test-user@and-period.jp",
 						PhoneNumber:  "+819012345678",
 						ThumbnailURL: "https://and-period.jp/thumbnail.png",
@@ -274,24 +226,43 @@ func TestUsers(t *testing.T) {
 					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
+			addresses: map[string]*uentity.Address{
+				"user-id": {
+					ID:        "address-id",
+					UserID:    "user-id",
+					IsDefault: true,
+					AddressRevision: uentity.AddressRevision{
+						ID:             1,
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						Prefecture:     "東京都",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+				},
+			},
 			expect: Users{
 				{
 					User: response.User{
-						ID:             "user-id",
-						Lastname:       "&.",
-						Firstname:      "スタッフ",
-						LastnameKana:   "あんどどっと",
-						FirstnameKana:  "すたっふ",
-						Registered:     true,
-						Email:          "test-user@and-period.jp",
-						PhoneNumber:    "+819012345678",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						CreatedAt:      1640962800,
-						UpdatedAt:      1640962800,
+						ID:         "user-id",
+						Registered: true,
+						Email:      "test-user@and-period.jp",
+						CreatedAt:  1640962800,
+						UpdatedAt:  1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
 					},
 				},
 			},
@@ -301,49 +272,7 @@ func TestUsers(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewUsers(tt.users))
-		})
-	}
-}
-
-func TestUsers_IDs(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		users  Users
-		expect []string
-	}{
-		{
-			name: "success",
-			users: Users{
-				{
-					User: response.User{
-						ID:             "user-id",
-						Lastname:       "&.",
-						Firstname:      "スタッフ",
-						LastnameKana:   "あんどどっと",
-						FirstnameKana:  "すたっふ",
-						Registered:     true,
-						Email:          "test-user@and-period.jp",
-						PhoneNumber:    "+819012345678",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						CreatedAt:      1640962800,
-						UpdatedAt:      1640962800,
-					},
-				},
-			},
-			expect: []string{"user-id"},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.users.IDs())
+			assert.Equal(t, tt.expect, NewUsers(tt.users, tt.addresses))
 		})
 	}
 }
@@ -360,42 +289,42 @@ func TestUsers_Map(t *testing.T) {
 			users: Users{
 				{
 					User: response.User{
-						ID:             "user-id",
-						Lastname:       "&.",
-						Firstname:      "スタッフ",
-						LastnameKana:   "あんどどっと",
-						FirstnameKana:  "すたっふ",
-						Registered:     true,
-						Email:          "test-user@and-period.jp",
-						PhoneNumber:    "+819012345678",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						CreatedAt:      1640962800,
-						UpdatedAt:      1640962800,
+						ID:         "user-id",
+						Registered: false,
+						Email:      "test-user@and-period.jp",
+						CreatedAt:  1640962800,
+						UpdatedAt:  1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
 					},
 				},
 			},
 			expect: map[string]*User{
 				"user-id": {
 					User: response.User{
-						ID:             "user-id",
-						Lastname:       "&.",
-						Firstname:      "スタッフ",
-						LastnameKana:   "あんどどっと",
-						FirstnameKana:  "すたっふ",
-						Registered:     true,
-						Email:          "test-user@and-period.jp",
-						PhoneNumber:    "+819012345678",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						CreatedAt:      1640962800,
-						UpdatedAt:      1640962800,
+						ID:         "user-id",
+						Registered: false,
+						Email:      "test-user@and-period.jp",
+						CreatedAt:  1640962800,
+						UpdatedAt:  1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
 					},
 				},
 			},
@@ -422,41 +351,41 @@ func TestUsers_Response(t *testing.T) {
 			users: Users{
 				{
 					User: response.User{
-						ID:             "user-id",
-						Lastname:       "&.",
-						Firstname:      "スタッフ",
-						LastnameKana:   "あんどどっと",
-						FirstnameKana:  "すたっふ",
-						Registered:     true,
-						Email:          "test-user@and-period.jp",
-						PhoneNumber:    "+819012345678",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						CreatedAt:      1640962800,
-						UpdatedAt:      1640962800,
+						ID:         "user-id",
+						Registered: false,
+						Email:      "test-user@and-period.jp",
+						CreatedAt:  1640962800,
+						UpdatedAt:  1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
 					},
 				},
 			},
 			expect: []*response.User{
 				{
-					ID:             "user-id",
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					Registered:     true,
-					Email:          "test-user@and-period.jp",
-					PhoneNumber:    "+819012345678",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					CreatedAt:      1640962800,
-					UpdatedAt:      1640962800,
+					ID:         "user-id",
+					Registered: false,
+					Email:      "test-user@and-period.jp",
+					CreatedAt:  1640962800,
+					UpdatedAt:  1640962800,
+					Address: &response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
 				},
 			},
 		},
@@ -482,21 +411,21 @@ func TestUserSummary(t *testing.T) {
 			name: "success",
 			user: &User{
 				User: response.User{
-					ID:             "user-id",
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					Registered:     true,
-					Email:          "test-user@and-period.jp",
-					PhoneNumber:    "+819012345678",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					CreatedAt:      1640962800,
-					UpdatedAt:      1640962800,
+					ID:         "user-id",
+					Registered: true,
+					Email:      "test-user@and-period.jp",
+					CreatedAt:  1640962800,
+					UpdatedAt:  1640962800,
+					Address: &response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
 				},
 			},
 			order: &sentity.AggregatedOrder{
@@ -509,7 +438,7 @@ func TestUserSummary(t *testing.T) {
 				UserSummary: response.UserSummary{
 					ID:             "user-id",
 					Lastname:       "&.",
-					Firstname:      "スタッフ",
+					Firstname:      "購入者",
 					Registered:     true,
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -522,21 +451,21 @@ func TestUserSummary(t *testing.T) {
 			name: "success without order",
 			user: &User{
 				User: response.User{
-					ID:             "user-id",
-					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					LastnameKana:   "あんどどっと",
-					FirstnameKana:  "すたっふ",
-					Registered:     true,
-					Email:          "test-user@and-period.jp",
-					PhoneNumber:    "+819012345678",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					CreatedAt:      1640962800,
-					UpdatedAt:      1640962800,
+					ID:         "user-id",
+					Registered: false,
+					Email:      "test-user@and-period.jp",
+					CreatedAt:  1640962800,
+					UpdatedAt:  1640962800,
+					Address: &response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
 				},
 			},
 			order: nil,
@@ -544,8 +473,8 @@ func TestUserSummary(t *testing.T) {
 				UserSummary: response.UserSummary{
 					ID:             "user-id",
 					Lastname:       "&.",
-					Firstname:      "スタッフ",
-					Registered:     true,
+					Firstname:      "購入者",
+					Registered:     false,
 					PrefectureCode: 13,
 					City:           "千代田区",
 					TotalOrder:     0,
@@ -576,7 +505,7 @@ func TestUserSummary_Response(t *testing.T) {
 				UserSummary: response.UserSummary{
 					ID:             "user-id",
 					Lastname:       "&.",
-					Firstname:      "スタッフ",
+					Firstname:      "購入者",
 					Registered:     true,
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -587,7 +516,7 @@ func TestUserSummary_Response(t *testing.T) {
 			expect: &response.UserSummary{
 				ID:             "user-id",
 				Lastname:       "&.",
-				Firstname:      "スタッフ",
+				Firstname:      "購入者",
 				Registered:     true,
 				PrefectureCode: 13,
 				City:           "千代田区",
@@ -618,21 +547,21 @@ func TestUserSummaries(t *testing.T) {
 			users: Users{
 				{
 					User: response.User{
-						ID:             "user-id",
-						Lastname:       "&.",
-						Firstname:      "スタッフ",
-						LastnameKana:   "あんどどっと",
-						FirstnameKana:  "すたっふ",
-						Registered:     true,
-						Email:          "test-user@and-period.jp",
-						PhoneNumber:    "+819012345678",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						CreatedAt:      1640962800,
-						UpdatedAt:      1640962800,
+						ID:         "user-id",
+						Registered: false,
+						Email:      "test-user@and-period.jp",
+						CreatedAt:  1640962800,
+						UpdatedAt:  1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
 					},
 				},
 			},
@@ -649,8 +578,8 @@ func TestUserSummaries(t *testing.T) {
 					UserSummary: response.UserSummary{
 						ID:             "user-id",
 						Lastname:       "&.",
-						Firstname:      "スタッフ",
-						Registered:     true,
+						Firstname:      "購入者",
+						Registered:     false,
 						PrefectureCode: 13,
 						City:           "千代田区",
 						TotalOrder:     2,
@@ -683,7 +612,7 @@ func TestUserSummaries_Response(t *testing.T) {
 					UserSummary: response.UserSummary{
 						ID:             "user-id",
 						Lastname:       "&.",
-						Firstname:      "スタッフ",
+						Firstname:      "購入者",
 						Registered:     true,
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -696,7 +625,7 @@ func TestUserSummaries_Response(t *testing.T) {
 				{
 					ID:             "user-id",
 					Lastname:       "&.",
-					Firstname:      "スタッフ",
+					Firstname:      "購入者",
 					Registered:     true,
 					PrefectureCode: 13,
 					City:           "千代田区",

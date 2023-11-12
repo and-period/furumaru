@@ -53,6 +53,81 @@ func TestPromotion(t *testing.T) {
 	}
 }
 
+func TestPromotion_CalcDiscount(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name        string
+		promotion   *Promotion
+		total       int64
+		shippingFee int64
+		expect      int64
+	}{
+		{
+			name:      "empty",
+			promotion: nil,
+			expect:    0,
+		},
+		{
+			name: "金額固定割引 割引金額未満の支払い",
+			promotion: &Promotion{
+				DiscountType: DiscountTypeAmount,
+				DiscountRate: 500,
+			},
+			total:       300,
+			shippingFee: 500,
+			expect:      300,
+		},
+		{
+			name: "金額固定割引 割引金額以上の支払い",
+			promotion: &Promotion{
+				DiscountType: DiscountTypeAmount,
+				DiscountRate: 500,
+			},
+			total:       1980,
+			shippingFee: 500,
+			expect:      500,
+		},
+		{
+			name: "料率指定での割引",
+			promotion: &Promotion{
+				DiscountType: DiscountTypeRate,
+				DiscountRate: 10,
+			},
+			total:       1980,
+			shippingFee: 500,
+			expect:      198,
+		},
+		{
+			name: "料率指定での割引 割引率が0%",
+			promotion: &Promotion{
+				DiscountType: DiscountTypeRate,
+				DiscountRate: 0,
+			},
+			total:       1980,
+			shippingFee: 500,
+			expect:      0,
+		},
+		{
+			name: "送料無料",
+			promotion: &Promotion{
+				DiscountType: DiscountTypeFreeShipping,
+				DiscountRate: 0,
+			},
+			total:       1980,
+			shippingFee: 500,
+			expect:      500,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.promotion.CalcDiscount(tt.total, tt.shippingFee)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestPromotion_Validate(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

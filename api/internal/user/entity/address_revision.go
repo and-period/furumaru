@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
+	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/jinzhu/copier"
 )
 
 // AddressRevision - 住所変更履歴情報
@@ -56,20 +58,43 @@ func NewAddressRevision(params *NewAddressRevisionParams) (*AddressRevision, err
 	}, nil
 }
 
-func (a *AddressRevision) Fill() {
-	a.Prefecture, _ = codes.ToPrefectureJapanese(a.PrefectureCode)
+func (r *AddressRevision) Fill() {
+	r.Prefecture, _ = codes.ToPrefectureJapanese(r.PrefectureCode)
 }
 
-func (as AddressRevisions) Map() map[string]*AddressRevision {
-	res := make(map[string]*AddressRevision, len(as))
-	for _, a := range as {
-		res[a.AddressID] = a
+func (rs AddressRevisions) AddressIDs() []string {
+	return set.UniqBy(rs, func(r *AddressRevision) string {
+		return r.AddressID
+	})
+}
+
+func (rs AddressRevisions) MapByAddressID() map[string]*AddressRevision {
+	res := make(map[string]*AddressRevision, len(rs))
+	for _, r := range rs {
+		res[r.AddressID] = r
 	}
 	return res
 }
 
-func (as AddressRevisions) Fill() {
-	for i := range as {
-		as[i].Fill()
+func (rs AddressRevisions) Fill() {
+	for i := range rs {
+		rs[i].Fill()
 	}
+}
+
+func (rs AddressRevisions) Merge(addresses map[string]*Address) (Addresses, error) {
+	res := make(Addresses, 0, len(rs))
+	for _, r := range rs {
+		address := &Address{AddressRevision: *r}
+		base, ok := addresses[r.AddressID]
+		if !ok {
+			continue
+		}
+		opt := copier.Option{IgnoreEmpty: true, DeepCopy: true}
+		if err := copier.CopyWithOption(&address, &base, opt); err != nil {
+			return nil, err
+		}
+		res = append(res, address)
+	}
+	return res, nil
 }

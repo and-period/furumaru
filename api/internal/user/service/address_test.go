@@ -117,6 +117,82 @@ func TestListAddresses(t *testing.T) {
 	}
 }
 
+func TestListDefaultAddresses(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 12, 6, 18, 30, 0, 0)
+	addresses := entity.Addresses{
+		{
+			ID:        "address-id",
+			UserID:    "user-id",
+			IsDefault: true,
+			AddressRevision: entity.AddressRevision{
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "購入者",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.ListDefaultAddressesInput
+		expect    entity.Addresses
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Address.EXPECT().ListDefault(gomock.Any(), []string{"user-id"}).Return(addresses, nil)
+			},
+			input: &user.ListDefaultAddressesInput{
+				UserIDs: []string{"user-id"},
+			},
+			expect:    addresses,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.ListDefaultAddressesInput{
+				UserIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list addresses",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Address.EXPECT().ListDefault(gomock.Any(), []string{"user-id"}).Return(nil, assert.AnError)
+			},
+			input: &user.ListDefaultAddressesInput{
+				UserIDs: []string{"user-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.ListDefaultAddresses(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestMultiGetAddresses(t *testing.T) {
 	t.Parallel()
 
@@ -193,16 +269,17 @@ func TestMultiGetAddresses(t *testing.T) {
 	}
 }
 
-func TestGetAddress(t *testing.T) {
+func TestMultiGetAddressesByRevision(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 12, 6, 18, 30, 0, 0)
-	address := func(userID string) *entity.Address {
-		return &entity.Address{
+	addresses := entity.Addresses{
+		{
 			ID:        "address-id",
-			UserID:    userID,
+			UserID:    "user-id",
 			IsDefault: true,
 			AddressRevision: entity.AddressRevision{
+				ID:             1,
 				AddressID:      "address-id",
 				Lastname:       "&.",
 				Firstname:      "購入者",
@@ -216,65 +293,125 @@ func TestGetAddress(t *testing.T) {
 			},
 			CreatedAt: now,
 			UpdatedAt: now,
-		}
+		},
 	}
 
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.GetAddressInput
-		expect    *entity.Address
+		input     *user.MultiGetAddressesByRevisionInput
+		expect    entity.Addresses
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id").Return(address("user-id"), nil)
+				mocks.db.Address.EXPECT().MultiGetByRevision(ctx, []int64{1}).Return(addresses, nil)
 			},
-			input: &user.GetAddressInput{
-				AddressID: "address-id",
-				UserID:    "user-id",
+			input: &user.MultiGetAddressesByRevisionInput{
+				AddressRevisionIDs: []int64{1},
 			},
-			expect:    address("user-id"),
+			expect:    addresses,
 			expectErr: nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.GetAddressInput{},
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetAddressesByRevisionInput{
+				AddressRevisionIDs: []int64{0},
+			},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get address",
+			name: "failed to get addresses",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id").Return(nil, assert.AnError)
+				mocks.db.Address.EXPECT().MultiGetByRevision(ctx, []int64{1}).Return(nil, assert.AnError)
 			},
-			input: &user.GetAddressInput{
-				AddressID: "address-id",
-				UserID:    "user-id",
+			input: &user.MultiGetAddressesByRevisionInput{
+				AddressRevisionIDs: []int64{1},
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "belongs to another user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Address.EXPECT().Get(ctx, "address-id").Return(address("other-id"), nil)
-			},
-			input: &user.GetAddressInput{
-				AddressID: "address-id",
-				UserID:    "user-id",
-			},
-			expect:    nil,
-			expectErr: exception.ErrForbidden,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetAddress(ctx, tt.input)
+			actual, err := service.MultiGetAddressesByRevision(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestGetDefaultAddress(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 12, 6, 18, 30, 0, 0)
+	address := &entity.Address{
+		ID:        "address-id",
+		UserID:    "user-id",
+		IsDefault: true,
+		AddressRevision: entity.AddressRevision{
+			AddressID:      "address-id",
+			Lastname:       "&.",
+			Firstname:      "購入者",
+			PostalCode:     "1000014",
+			Prefecture:     "東京都",
+			PrefectureCode: 13,
+			City:           "千代田区",
+			AddressLine1:   "永田町1-7-1",
+			AddressLine2:   "",
+			PhoneNumber:    "+819012345678",
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.GetDefaultAddressInput
+		expect    *entity.Address
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Address.EXPECT().GetDefault(ctx, "user-id").Return(address, nil)
+			},
+			input: &user.GetDefaultAddressInput{
+				UserID: "user-id",
+			},
+			expect:    address,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.GetDefaultAddressInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get address",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Address.EXPECT().GetDefault(ctx, "user-id").Return(nil, assert.AnError)
+			},
+			input: &user.GetDefaultAddressInput{
+				UserID: "user-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetDefaultAddress(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))

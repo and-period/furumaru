@@ -3,74 +3,24 @@ package entity
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
-)
-
-// 支払いステータス
-type PaymentStatus int32
-
-const (
-	PaymentStatusUnknown    PaymentStatus = 0
-	PaymentStatusPending    PaymentStatus = 1 // 保留中
-	PaymentStatusAuthorized PaymentStatus = 2 // 仮売上・オーソリ
-	PaymentStatusCaptured   PaymentStatus = 3 // 実売上・キャプチャ
-	PaymentStatusRefunded   PaymentStatus = 4 // 返金
-	PaymentStatusFailed     PaymentStatus = 5 // 失敗/期限切れ
-)
-
-// 配送ステータス
-type FulfillmentStatus int32
-
-const (
-	FulfillmentStatusUnknown     FulfillmentStatus = 0
-	FulfillmentStatusUnfulfilled FulfillmentStatus = 1 // 未発送
-	FulfillmentStatusFulfilled   FulfillmentStatus = 2 // 発送済み
-)
-
-// 注文キャンセル種別
-type CancelType int32
-
-const (
-	CancelTypeUnknown CancelType = 0
-)
-
-type OrderOrderBy string
-
-const (
-	OrderOrderByPaymentStatus     OrderOrderBy = "payment_status"
-	OrderOrderByFulfillmentStatus OrderOrderBy = "fulfillment_status"
-	OrderOrderByCanceledAt        OrderOrderBy = "canceled_at"
-	OrderOrderByOrderedAt         OrderOrderBy = "ordered_at"
-	OrderOrderByConfirmedAt       OrderOrderBy = "confirmed_at"
-	OrderOrderByCapturedAt        OrderOrderBy = "captured_at"
-	OrderOrderByDeliveredAt       OrderOrderBy = "delivered_at"
-	OrderOrderByCreatedAt         OrderOrderBy = "created_at"
-	OrderOrderByUpdatedAt         OrderOrderBy = "updated_at"
 )
 
 // Order - 注文履歴情報
 type Order struct {
-	Payment           `gorm:"-"`
-	Fulfillment       `gorm:"-"`
-	Activities        `gorm:"-"`
+	OrderPayment      `gorm:"-"`
+	OrderFulfillments `gorm:"-"`
 	OrderItems        `gorm:"-"`
-	ID                string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
-	UserID            string            `gorm:""`                     // ユーザーID
-	CoordinatorID     string            `gorm:""`                     // 注文受付担当者ID
-	ScheduleID        string            `gorm:"default:null"`         // マルシェ開催スケジュールID
-	PromotionID       string            `gorm:"default:null"`         // プロモーションID
-	PaymentStatus     PaymentStatus     `gorm:""`                     // 支払いステータス
-	FulfillmentStatus FulfillmentStatus `gorm:""`                     // 配送ステータス
-	RefundReason      string            `gorm:""`                     // 注文キャンセル理由
-	CreatedAt         time.Time         `gorm:"<-:create"`            // 登録日時
-	UpdatedAt         time.Time         `gorm:""`                     // 更新日時
-	OrderedAt         time.Time         `gorm:"default:null"`         // 決済要求日時
-	PaidAt            time.Time         `gorm:"default:null"`         // 決済承認日時(仮売上)
-	CapturedAt        time.Time         `gorm:"default:null"`         // 決済確定日時(実売上)
-	FailedAt          time.Time         `gorm:"default:null"`         // 決済失敗日時
-	RefundedAt        time.Time         `gorm:"default:null"`         // キャンセル日時(返金)
-	ShippedAt         time.Time         `gorm:"default:null"`         // 配送日時
-	DeletedAt         gorm.DeletedAt    `gorm:"default:null"`         // 削除日時
+	ID                string         `gorm:"primaryKey;<-:create"` // 注文履歴ID
+	UserID            string         `gorm:""`                     // ユーザーID
+	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
+	PromotionID       string         `gorm:"default:null"`         // プロモーションID
+	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt         time.Time      `gorm:""`                     // 更新日時
+	DeletedAt         gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Orders []*Order
@@ -85,15 +35,62 @@ type AggregatedOrder struct {
 
 type AggregatedOrders []*AggregatedOrder
 
-func (o *Order) Fill(payment *Payment, fulfillment *Fulfillment, activities Activities, items OrderItems) {
-	o.Payment = *payment
-	o.Fulfillment = *fulfillment
-	o.Activities = activities
-	o.OrderItems = items
+type NewOrderParams struct {
+	CoordinatorID     string
+	Customer          *entity.User
+	BillingAddress    *entity.Address
+	ShippingAddress   *entity.Address
+	Shipping          *Shipping
+	Baskets           CartBaskets
+	Products          Products
+	PaymentMethodType PaymentMethodType
+	Promotion         *Promotion
 }
 
-func (o *Order) IsCanceled() bool {
-	return o.PaymentStatus == PaymentStatusRefunded
+func NewOrder(params *NewOrderParams) (*Order, error) {
+	var promotionID string
+	if params.Promotion != nil {
+		promotionID = params.Promotion.ID
+	}
+	orderID := uuid.Base58Encode(uuid.New())
+	pparams := &NewOrderPaymentParams{
+		OrderID:    orderID,
+		Address:    params.BillingAddress,
+		MethodType: params.PaymentMethodType,
+		Baskets:    params.Baskets,
+		Products:   params.Products,
+		Shipping:   params.Shipping,
+		Promotion:  params.Promotion,
+	}
+	payment, err := NewOrderPayment(pparams)
+	if err != nil {
+		return nil, err
+	}
+	fparams := &NewOrderFulfillmentsParams{
+		OrderID:  orderID,
+		Address:  params.ShippingAddress,
+		Baskets:  params.Baskets,
+		Products: params.Products.Map(),
+	}
+	fulfillments, items, err := NewOrderFulfillments(fparams)
+	if err != nil {
+		return nil, err
+	}
+	return &Order{
+		OrderPayment:      *payment,
+		OrderFulfillments: fulfillments,
+		OrderItems:        items,
+		ID:                orderID,
+		UserID:            params.Customer.ID,
+		CoordinatorID:     params.CoordinatorID,
+		PromotionID:       promotionID,
+	}, nil
+}
+
+func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, items OrderItems) {
+	o.OrderPayment = *payment
+	o.OrderFulfillments = fulfillments
+	o.OrderItems = items
 }
 
 func (os Orders) IDs() []string {
@@ -102,6 +99,56 @@ func (os Orders) IDs() []string {
 		res[i] = os[i].ID
 	}
 	return res
+}
+
+func (os Orders) UserIDs() []string {
+	return set.UniqBy(os, func(o *Order) string {
+		return o.UserID
+	})
+}
+
+func (os Orders) CoordinatorIDs() []string {
+	return set.UniqBy(os, func(o *Order) string {
+		return o.CoordinatorID
+	})
+}
+
+func (os Orders) PromotionIDs() []string {
+	res := set.NewEmpty[string](len(os))
+	for i := range os {
+		if os[i].PromotionID == "" {
+			continue
+		}
+		res.Add(os[i].PromotionID)
+	}
+	return res.Slice()
+}
+
+func (os Orders) AddressRevisionIDs() []int64 {
+	res := set.NewEmpty[int64](len(os) * 2) // payment + fulfillment
+	for i := range os {
+		res.Add(os[i].OrderPayment.AddressRevisionID)
+		res.Add(os[i].OrderFulfillments.AddressRevisionIDs()...)
+	}
+	return res.Slice()
+}
+
+func (os Orders) ProductRevisionIDs() []int64 {
+	res := set.NewEmpty[int64](len(os))
+	for i := range os {
+		res.Add(os[i].ProductRevisionIDs()...)
+	}
+	return res.Slice()
+}
+
+func (os Orders) Fill(payments map[string]*OrderPayment, fulfillments map[string]OrderFulfillments, items map[string]OrderItems) {
+	for _, o := range os {
+		payment, ok := payments[o.ID]
+		if !ok {
+			payment = &OrderPayment{}
+		}
+		o.Fill(payment, fulfillments[o.ID], items[o.ID])
+	}
 }
 
 func (os AggregatedOrders) Map() map[string]*AggregatedOrder {

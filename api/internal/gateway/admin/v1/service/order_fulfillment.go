@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 // FulfillmentStatus - 配送状況
@@ -37,6 +38,8 @@ type OrderFulfillment struct {
 	response.OrderFulfillment
 	orderID string
 }
+
+type OrderFulfillments []*OrderFulfillment
 
 func NewFulfillmentStatus(status entity.FulfillmentStatus) FulfillmentStatus {
 	switch status {
@@ -85,24 +88,39 @@ func (s ShippingSize) Response() int32 {
 	return int32(s)
 }
 
-func NewOrderFulfillment(fulfillment *entity.Fulfillment, status entity.FulfillmentStatus) *OrderFulfillment {
+func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, address *Address) *OrderFulfillment {
 	return &OrderFulfillment{
 		OrderFulfillment: response.OrderFulfillment{
+			FulfillmentID:   fulfillment.ID,
 			TrackingNumber:  fulfillment.TrackingNumber,
-			Status:          NewFulfillmentStatus(status).Response(),
+			Status:          NewFulfillmentStatus(fulfillment.Status).Response(),
 			ShippingCarrier: NewShippingCarrier(fulfillment.ShippingCarrier).Response(),
 			ShippingMethod:  NewDeliveryType(fulfillment.ShippingMethod).Response(),
+			BoxNumber:       fulfillment.BoxNumber,
 			BoxSize:         NewShippingSize(fulfillment.BoxSize).Response(),
-			AddressID:       fulfillment.AddressID,
+			ShippedAt:       jst.Unix(fulfillment.ShippedAt),
+			Address:         address.Response(),
 		},
 		orderID: fulfillment.OrderID,
 	}
 }
 
-func (f *OrderFulfillment) Fill(address *Address) {
-	f.Address = address.Response()
-}
-
 func (f *OrderFulfillment) Response() *response.OrderFulfillment {
 	return &f.OrderFulfillment
+}
+
+func NewOrderFulfillments(fulfillments entity.OrderFulfillments, addresses map[int64]*Address) OrderFulfillments {
+	res := make(OrderFulfillments, len(fulfillments))
+	for i, f := range fulfillments {
+		res[i] = NewOrderFulfillment(f, addresses[f.AddressRevisionID])
+	}
+	return res
+}
+
+func (fs OrderFulfillments) Response() []*response.OrderFulfillment {
+	res := make([]*response.OrderFulfillment, len(fs))
+	for i := range fs {
+		res[i] = fs[i].Response()
+	}
+	return res
 }

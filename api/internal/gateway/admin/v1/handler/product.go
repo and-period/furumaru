@@ -160,7 +160,6 @@ func (h *handler) newProductOrders(ctx *gin.Context) ([]*store.ListProductsOrder
 		"name":             sentity.ProductOrderByName,
 		"public":           sentity.ProductOrderByPublic,
 		"inventory":        sentity.ProductOrderByInventory,
-		"price":            sentity.ProductOrderByPrice,
 		"originPrefecture": sentity.ProductOrderByOriginPrefecture,
 		"originCity":       sentity.ProductOrderByOriginCity,
 		"createdAt":        sentity.ProductOrderByCreatedAt,
@@ -500,20 +499,34 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 	in := &store.MultiGetProductsInput{
 		ProductIDs: productIDs,
 	}
-	sproducts, err := h.store.MultiGetProducts(ctx, in)
+	products, err := h.store.MultiGetProducts(ctx, in)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducts(sproducts), nil
+	return service.NewProducts(products), nil
+}
+
+func (h *handler) multiGetProductsByRevision(ctx context.Context, revisionIDs []int64) (service.Products, error) {
+	if len(revisionIDs) == 0 {
+		return service.Products{}, nil
+	}
+	in := &store.MultiGetProductsByRevisionInput{
+		ProductRevisionIDs: revisionIDs,
+	}
+	products, err := h.store.MultiGetProductsByRevision(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducts(products), nil
 }
 
 func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
 	in := &store.GetProductInput{
 		ProductID: productID,
 	}
-	sproduct, err := h.store.GetProduct(ctx, in)
+	product, err := h.store.GetProduct(ctx, in)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProduct(sproduct), nil
+	return service.NewProduct(product), nil
 }

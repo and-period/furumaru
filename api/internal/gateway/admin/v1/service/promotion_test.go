@@ -197,6 +197,11 @@ func TestPromotion_Response(t *testing.T) {
 				UpdatedAt:    1640962800,
 			},
 		},
+		{
+			name:      "empty",
+			promotion: nil,
+			expect:    nil,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt

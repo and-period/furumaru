@@ -87,6 +87,78 @@ func TestAddress_List(t *testing.T) {
 	}
 }
 
+func TestAddress_ListDefault(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
+	err = db.DB.Create(&user).Error
+
+	addresses := make(entity.Addresses, 2)
+	addresses[0] = testAddress("address-id01", "user-id", 1, now())
+	addresses[0].IsDefault = true
+	addresses[1] = testAddress("address-id02", "user-id", 2, now())
+	addresses[1].IsDefault = false
+	err = db.DB.Create(&addresses).Error
+	require.NoError(t, err)
+	for i := range addresses {
+		err := db.DB.Create(&addresses[i].AddressRevision).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		userIDs []string
+	}
+	type want struct {
+		addresses entity.Addresses
+		err       error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				userIDs: []string{"user-id"},
+			},
+			want: want{
+				addresses: addresses[:1],
+				err:       nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &address{db: db, now: now}
+			actual, err := db.ListDefault(ctx, tt.args.userIDs)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.ElementsMatch(t, tt.want.addresses, actual)
+		})
+	}
+}
+
 func TestAddress_Count(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -231,6 +303,76 @@ func TestAddress_MultiGet(t *testing.T) {
 	}
 }
 
+func TestAddress_MultiGetByRevision(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
+	err = db.DB.Create(&user).Error
+
+	addresses := make(entity.Addresses, 2)
+	addresses[0] = testAddress("address-id01", "user-id", 1, now())
+	addresses[1] = testAddress("address-id02", "user-id", 2, now())
+	err = db.DB.Create(&addresses).Error
+	require.NoError(t, err)
+	for i := range addresses {
+		err := db.DB.Create(&addresses[i].AddressRevision).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		revisionIDs []int64
+	}
+	type want struct {
+		addresses entity.Addresses
+		err       error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				revisionIDs: []int64{1, 2},
+			},
+			want: want{
+				addresses: addresses,
+				err:       nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &address{db: db, now: now}
+			actual, err := db.MultiGetByRevision(ctx, tt.args.revisionIDs)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.ElementsMatch(t, tt.want.addresses, actual)
+		})
+	}
+}
+
 func TestAddress_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -302,6 +444,89 @@ func TestAddress_Get(t *testing.T) {
 
 			db := &address{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.addressID)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.address, actual)
+		})
+	}
+}
+
+func TestAddress_GetDefault(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	user := testUser("user-id", "test-user@and-period.jp", "+810000000001", now())
+	err = db.DB.Create(&user).Error
+
+	addresses := make(entity.Addresses, 2)
+	addresses[0] = testAddress("address-id01", "user-id", 1, now())
+	addresses[0].IsDefault = true
+	addresses[1] = testAddress("address-id02", "user-id", 2, now())
+	addresses[1].IsDefault = false
+	err = db.DB.Create(&addresses).Error
+	require.NoError(t, err)
+	for i := range addresses {
+		err := db.DB.Create(&addresses[i].AddressRevision).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		userID string
+	}
+	type want struct {
+		address *entity.Address
+		err     error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				userID: "user-id",
+			},
+			want: want{
+				address: addresses[0],
+				err:     nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				userID: "other-id",
+			},
+			want: want{
+				address: nil,
+				err:     database.ErrNotFound,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &address{db: db, now: now}
+			actual, err := db.GetDefault(ctx, tt.args.userID)
 			assert.ErrorIs(t, err, tt.want.err)
 			assert.Equal(t, tt.want.address, actual)
 		})

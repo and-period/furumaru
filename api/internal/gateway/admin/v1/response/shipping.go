@@ -3,8 +3,6 @@ package response
 // Shipping - 配送設定情報
 type Shipping struct {
 	ID                 string          `json:"id"`                 // 配送設定ID
-	CoordinatorID      string          `json:"coordinatorId"`      // コーディネータID
-	Name               string          `json:"name"`               // 配送設定名
 	IsDefault          bool            `json:"isDefault"`          // デフォルト設定フラグ
 	Box60Rates         []*ShippingRate `json:"box60Rates"`         // 箱サイズ60の通常便配送料一覧
 	Box60Refrigerated  int64           `json:"box60Refrigerated"`  // 箱サイズ60の冷蔵便追加配送料
@@ -29,12 +27,5 @@ type ShippingRate struct {
 }
 
 type ShippingResponse struct {
-	Shipping    *Shipping    `json:"shipping"`    // 配送設定情報
-	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
-}
-
-type ShippingsResponse struct {
-	Shippings    []*Shipping    `json:"shippings"`    // 配送設定一覧
-	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
-	Total        int64          `json:"total"`        // 合計数
+	Shipping *Shipping `json:"shipping"` // 配送設定情報
 }

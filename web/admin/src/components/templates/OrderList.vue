@@ -4,8 +4,15 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { DeliveryType, FulfillmentStatus, type OrdersResponse, PaymentStatus } from '~/types/api'
-import type { Order } from '~/types/props'
+import {
+  DeliveryType,
+  FulfillmentStatus,
+  PaymentStatus,
+  type Coordinator,
+  type Order,
+  type Promotion,
+  type User
+} from '~/types/api'
 
 // TODO: API設計が決まり次第型定義の厳格化
 interface ImportFormData {
@@ -41,7 +48,19 @@ const props = defineProps({
     default: ''
   },
   orders: {
-    type: Array as PropType<OrdersResponse['orders']>,
+    type: Array<Order>,
+    default: () => []
+  },
+  coordinators: {
+    type: Array<Coordinator>,
+    default: () => []
+  },
+  customers: {
+    type: Array<User>,
+    default: () => []
+  },
+  promotions: {
+    type: Array<Promotion>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -82,23 +101,19 @@ const emit = defineEmits<{
 const headers: VDataTable['headers'] = [
   {
     title: '注文者',
-    key: 'userName'
+    key: 'userId'
   },
   {
     title: '支払いステータス',
     key: 'payment.status'
   },
   {
-    title: '購入金額',
-    key: 'payment.total'
-  },
-  {
-    title: '購入日時',
-    key: 'orderedAt'
-  },
-  {
     title: '配送ステータス',
     key: 'fulfillment.status'
+  },
+  {
+    title: '購入金額',
+    key: 'payment.total'
   },
   {
     title: '配送方法',
@@ -106,12 +121,16 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: '伝票番号',
-    key: 'payment.paymentId'
+    key: 'fulfillment.trackingNumber'
+  },
+  {
+    title: '購入日時',
+    key: 'createdAt'
   }
 ]
-const fulfillmentCompanies: Order[] = [
-  { name: '佐川急便', value: '佐川急便' },
-  { name: 'ヤマト運輸', value: 'ヤマト運輸' }
+const fulfillmentCompanies = [
+  { title: '佐川急便', value: '佐川急便' },
+  { title: 'ヤマト運輸', value: 'ヤマト運輸' }
 ]
 
 const importDialogValue = computed({
@@ -130,6 +149,13 @@ const exportFormDataValue = computed({
   get: (): ExportFormData => props.importFormData as ExportFormData,
   set: (v: ExportFormData): void => emit('update:export-form-data', v)
 })
+
+const getCustomerName = (userId: string): string => {
+  const customer = props.customers.find((customer: User): boolean => {
+    return customer.id === userId
+  })
+  return customer ? `${customer.lastname} ${customer.firstname}` : ''
+}
 
 const getPaymentStatus = (status: PaymentStatus): string => {
   switch (status) {
@@ -206,8 +232,8 @@ const getShippingMethod = (shippingMethod: DeliveryType): string => {
   }
 }
 
-const getOrderdAt = (orderdAt: number): string => {
-  return unix(orderdAt).format('YYYY/MM/DD HH:mm')
+const getCreatedAt = (createdAt: number): string => {
+  return unix(createdAt).format('YYYY/MM/DD HH:mm')
 }
 
 const toggleImportDialog = (): void => {
@@ -254,7 +280,7 @@ const onSubmitExport = (): void => {
           label="配送会社"
           class="mr-2 ml-2"
           :items="fulfillmentCompanies"
-          item-title="name"
+          item-title="title"
           item-value="value"
         />
         <v-file-input class="mr-2" label="CSVを選択" />
@@ -283,7 +309,7 @@ const onSubmitExport = (): void => {
           label="配送会社"
           class="mr-2 ml-2"
           :items="fulfillmentCompanies"
-          item-title="deliveryCompany"
+          item-title="title"
           item-value="value"
         />
         <v-file-input class="mr-2" label="CSVを選択" />
@@ -324,23 +350,26 @@ const onSubmitExport = (): void => {
         no-data-text="表示する注文がありません"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, {item}: any) => onClickRow(item.raw.id)"
+        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
       >
+        <template #[`item.userId`]="{ item }">
+          {{ getCustomerName(item.userId) }}
+        </template>
         <template #[`item.payment.status`]="{ item }">
-          <v-chip size="small" :color="getPaymentStatusColor(item.raw.payment.status)">
-            {{ getPaymentStatus(item.raw.payment.status) }}
+          <v-chip size="small" :color="getPaymentStatusColor(item.payment.status)">
+            {{ getPaymentStatus(item.payment.status) }}
           </v-chip>
         </template>
         <template #[`item.fulfillment.status`]="{ item }">
-          <v-chip size="small" :color="getFulfillmentStatusColor(item.raw.fulfillment.status)">
-            {{ getFulfillmentStatus(item.raw.fulfillment.status) }}
+          <v-chip size="small" :color="getFulfillmentStatusColor(item.fulfillment.status)">
+            {{ getFulfillmentStatus(item.fulfillment.status) }}
           </v-chip>
         </template>
         <template #[`item.fulfillment.shippingMethod`]="{ item }">
-          {{ getShippingMethod(item.raw.fulfillment.shippingMethod) }}
+          {{ getShippingMethod(item.fulfillment.shippingMethod) }}
         </template>
-        <template #[`item.orderedAt`]="{ item }">
-          {{ getOrderdAt(item.raw.orderedAt) }}
+        <template #[`item.createdAt`]="{ item }">
+          {{ getCreatedAt(item.createdAt) }}
         </template>
       </v-data-table-server>
     </v-card-text>

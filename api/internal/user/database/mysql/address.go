@@ -68,6 +68,22 @@ func (a *address) List(ctx context.Context, params *database.ListAddressesParams
 	return addresses, nil
 }
 
+func (a *address) ListDefault(ctx context.Context, userIDs []string, fields ...string) (entity.Addresses, error) {
+	var addresses entity.Addresses
+
+	stmt := a.db.Statement(ctx, a.db.DB, addressTable, fields...).
+		Where("user_id IN (?)", userIDs).
+		Where("is_default = ?", true)
+
+	if err := stmt.Find(&addresses).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := a.fill(ctx, a.db.DB, addresses...); err != nil {
+		return nil, dbError(err)
+	}
+	return addresses, nil
+}
+
 func (a *address) Count(ctx context.Context, params *database.ListAddressesParams) (int64, error) {
 	p := listAddressesParams(*params)
 
@@ -90,9 +106,54 @@ func (a *address) MultiGet(ctx context.Context, addressIDs []string, fields ...s
 	return addresses, nil
 }
 
+func (a *address) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Addresses, error) {
+	var revisions entity.AddressRevisions
+
+	stmt := a.db.Statement(ctx, a.db.DB, addressRevisionTable).
+		Where("id IN (?)", revisionIDs)
+
+	if err := stmt.Find(&revisions).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if len(revisions) == 0 {
+		return entity.Addresses{}, nil
+	}
+	revisions.Fill()
+
+	addresses, err := a.MultiGet(ctx, revisions.AddressIDs(), fields...)
+	if err != nil {
+		return nil, err
+	}
+	if len(addresses) == 0 {
+		return entity.Addresses{}, nil
+	}
+
+	res, err := revisions.Merge(addresses.Map())
+	if err != nil {
+		return nil, dbError(err)
+	}
+	return res, nil
+}
+
 func (a *address) Get(ctx context.Context, addressID string, fields ...string) (*entity.Address, error) {
 	address, err := a.get(ctx, a.db.DB, addressID, fields...)
 	return address, dbError(err)
+}
+
+func (a *address) GetDefault(ctx context.Context, userID string, fields ...string) (*entity.Address, error) {
+	var address *entity.Address
+
+	stmt := a.db.Statement(ctx, a.db.DB, addressTable, fields...).
+		Where("user_id = ?", userID).
+		Where("is_default = ?", true)
+
+	if err := stmt.First(&address).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := a.fill(ctx, a.db.DB, address); err != nil {
+		return nil, dbError(err)
+	}
+	return address, nil
 }
 
 func (a *address) Create(ctx context.Context, address *entity.Address) error {
@@ -222,7 +283,8 @@ func (a *address) fill(ctx context.Context, tx *gorm.DB, addresses ...*entity.Ad
 		Select("MAX(id)").
 		Where("address_id IN (?)", ids).
 		Group("address_id")
-	stmt := a.db.Statement(ctx, tx, addressRevisionTable).Where("id IN (?)", sub).Debug()
+	stmt := a.db.Statement(ctx, tx, addressRevisionTable).
+		Where("id IN (?)", sub)
 
 	if err := stmt.Find(&revisions).Error; err != nil {
 		return err
@@ -231,6 +293,6 @@ func (a *address) fill(ctx context.Context, tx *gorm.DB, addresses ...*entity.Ad
 		return nil
 	}
 	revisions.Fill()
-	entity.Addresses(addresses).Fill(revisions.Map())
+	entity.Addresses(addresses).Fill(revisions.MapByAddressID())
 	return nil
 }

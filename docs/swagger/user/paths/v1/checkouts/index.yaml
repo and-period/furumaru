@@ -1,0 +1,32 @@
+get:
+  summary: 商品購入
+  operationId: v1Checkout
+  tags:
+  - Checkout
+  security:
+  - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1CheckoutRequest'
+  responses:
+    204:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1CheckoutResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: 前提条件エラー(商品在庫が不足、無効なプロモーションなど...)
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'

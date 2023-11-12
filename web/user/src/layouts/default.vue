@@ -91,7 +91,7 @@ const footerMenuList = computed<FooterMenuItem[]>(() => [
   },
   {
     text: ft('privacyPolicyLinkText'),
-    to: '',
+    to: '/privacy',
   },
   {
     text: ft('lawLinkText'),

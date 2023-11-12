@@ -52,8 +52,6 @@ func TestListProducts(t *testing.T) {
 				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 			},
-			Price:             400,
-			Cost:              300,
 			ExpirationDate:    7,
 			StorageMethodType: entity.StorageMethodTypeNormal,
 			DeliveryType:      entity.DeliveryTypeNormal,
@@ -62,8 +60,16 @@ func TestListProducts(t *testing.T) {
 			Box100Rate:        30,
 			OriginPrefecture:  "滋賀県",
 			OriginCity:        "彦根市",
-			CreatedAt:         now,
-			UpdatedAt:         now,
+			ProductRevision: entity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     400,
+				Cost:      300,
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 
@@ -183,8 +189,6 @@ func TestMultiGetProducts(t *testing.T) {
 				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 			},
-			Price:             400,
-			Cost:              300,
 			ExpirationDate:    7,
 			StorageMethodType: entity.StorageMethodTypeNormal,
 			DeliveryType:      entity.DeliveryTypeNormal,
@@ -193,8 +197,16 @@ func TestMultiGetProducts(t *testing.T) {
 			Box100Rate:        30,
 			OriginPrefecture:  "滋賀県",
 			OriginCity:        "彦根市",
-			CreatedAt:         now,
-			UpdatedAt:         now,
+			ProductRevision: entity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     400,
+				Cost:      300,
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 
@@ -248,6 +260,101 @@ func TestMultiGetProducts(t *testing.T) {
 	}
 }
 
+func TestMultiGetProductsByRevision(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
+	products := entity.Products{
+		{
+			ID:              "product-id",
+			TypeID:          "type-id",
+			TagIDs:          []string{"tag-id"},
+			CoordinatorID:   "coordinator-id",
+			ProducerID:      "producer-id",
+			Name:            "新鮮なじゃがいも",
+			Description:     "新鮮なじゃがいもをお届けします。",
+			Public:          true,
+			Inventory:       100,
+			Weight:          100,
+			WeightUnit:      entity.WeightUnitGram,
+			Item:            1,
+			ItemUnit:        "袋",
+			ItemDescription: "1袋あたり100gのじゃがいも",
+			Media: entity.MultiProductMedia{
+				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+			},
+			ExpirationDate:    7,
+			StorageMethodType: entity.StorageMethodTypeNormal,
+			DeliveryType:      entity.DeliveryTypeNormal,
+			Box60Rate:         50,
+			Box80Rate:         40,
+			Box100Rate:        30,
+			OriginPrefecture:  "滋賀県",
+			OriginCity:        "彦根市",
+			ProductRevision: entity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     400,
+				Cost:      300,
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.MultiGetProductsByRevisionInput
+		expect    entity.Products
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().MultiGetByRevision(ctx, []int64{1}).Return(products, nil)
+			},
+			input: &store.MultiGetProductsByRevisionInput{
+				ProductRevisionIDs: []int64{1},
+			},
+			expect:    products,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.MultiGetProductsByRevisionInput{
+				ProductRevisionIDs: []int64{0},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().MultiGetByRevision(ctx, []int64{1}).Return(nil, assert.AnError)
+			},
+			input: &store.MultiGetProductsByRevisionInput{
+				ProductRevisionIDs: []int64{1},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetProductsByRevision(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.ElementsMatch(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetProduct(t *testing.T) {
 	t.Parallel()
 
@@ -271,8 +378,6 @@ func TestGetProduct(t *testing.T) {
 			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 		},
-		Price:             400,
-		Cost:              300,
 		ExpirationDate:    7,
 		StorageMethodType: entity.StorageMethodTypeNormal,
 		DeliveryType:      entity.DeliveryTypeNormal,
@@ -281,8 +386,16 @@ func TestGetProduct(t *testing.T) {
 		Box100Rate:        30,
 		OriginPrefecture:  "滋賀県",
 		OriginCity:        "彦根市",
-		CreatedAt:         now,
-		UpdatedAt:         now,
+		ProductRevision: entity.ProductRevision{
+			ID:        1,
+			ProductID: "product-id",
+			Price:     400,
+			Cost:      300,
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 
 	tests := []struct {
@@ -389,8 +502,6 @@ func TestCreateProduct(t *testing.T) {
 								{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 								{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
 							},
-							Price:                400,
-							Cost:                 300,
 							ExpirationDate:       7,
 							StorageMethodType:    entity.StorageMethodTypeNormal,
 							DeliveryType:         entity.DeliveryTypeNormal,
@@ -402,6 +513,11 @@ func TestCreateProduct(t *testing.T) {
 							OriginCity:           "彦根市",
 							StartAt:              now.AddDate(0, -1, 0),
 							EndAt:                now.AddDate(0, 1, 0),
+							ProductRevision: entity.ProductRevision{
+								ProductID: product.ID,
+								Price:     400,
+								Cost:      300,
+							},
 						}
 						assert.Equal(t, expect, product)
 						return nil
@@ -719,8 +835,6 @@ func TestUpdateProduct(t *testing.T) {
 			{URL: "https://and-period.jp/thumbnail00.png", IsThumbnail: true},
 			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: false},
 		},
-		Price:             400,
-		Cost:              300,
 		ExpirationDate:    7,
 		StorageMethodType: entity.StorageMethodTypeNormal,
 		DeliveryType:      entity.DeliveryTypeNormal,
@@ -731,8 +845,16 @@ func TestUpdateProduct(t *testing.T) {
 		OriginCity:        "彦根市",
 		StartAt:           now.AddDate(0, -1, 0),
 		EndAt:             now.AddDate(0, 1, 0),
-		CreatedAt:         now,
-		UpdatedAt:         now,
+		ProductRevision: entity.ProductRevision{
+			ID:        1,
+			ProductID: "product-id",
+			Price:     400,
+			Cost:      300,
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 	resizeIn := &media.ResizeFileInput{
 		TargetID: "product-id",

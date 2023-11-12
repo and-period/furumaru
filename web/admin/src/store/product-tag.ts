@@ -1,6 +1,8 @@
+import { defineStore } from 'pinia'
+
 import { useCommonStore } from './common'
-import { CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
 import { apiClient } from '~/plugins/api-client'
+import type { CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
 
 export const useProductTagStore = defineStore('productTag', {
   state: () => ({

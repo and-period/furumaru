@@ -2,9 +2,9 @@
 import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import type { AlertType } from '~/lib/hooks'
-import type { Shipping, UpdateShippingRequest } from '~/types/api'
+import type { Shipping, UpdateDefaultShippingRequest, UpsertShippingRequest } from '~/types/api'
 import { required, getErrorMessage, minValue } from '~/lib/validations'
-import { PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
+import { type PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
 
 const props = defineProps({
   loading: {
@@ -24,10 +24,8 @@ const props = defineProps({
     default: ''
   },
   formData: {
-    type: Object as PropType<UpdateShippingRequest>,
-    default: (): UpdateShippingRequest => ({
-      name: '',
-      isDefault: false,
+    type: Object as PropType<UpdateDefaultShippingRequest | UpsertShippingRequest>,
+    default: (): UpdateDefaultShippingRequest | UpsertShippingRequest => ({
       box60Rates: [
         {
           name: '',
@@ -63,8 +61,6 @@ const props = defineProps({
     type: Object as PropType<Shipping>,
     default: (): Shipping => ({
       id: '',
-      coordinatorId: '',
-      name: '',
       isDefault: false,
       box60Rates: [],
       box60Refrigerated: 0,
@@ -84,13 +80,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:form-data', v: UpdateShippingRequest): void
+  (e: 'update:form-data', v: UpdateDefaultShippingRequest | UpsertShippingRequest): void
   (e: 'submit'): void
 }>()
 
 const rules = computed(() => ({
-  name: { required },
-  isDefault: { required },
   hasFreeShipping: { required },
   box60Refrigerated: { required, minValue: minValue(0) },
   box60Frozen: { required, minValue: minValue(0) },
@@ -100,8 +94,8 @@ const rules = computed(() => ({
   box100Frozen: { required, minValue: minValue(0) }
 }))
 const formDataValue = computed({
-  get: (): UpdateShippingRequest => props.formData,
-  set: (formData: UpdateShippingRequest): void => emit('update:form-data', formData)
+  get: (): UpdateDefaultShippingRequest | UpsertShippingRequest => props.formData,
+  set: (formData: UpdateDefaultShippingRequest | UpsertShippingRequest): void => emit('update:form-data', formData)
 })
 const box60RateItemsSize = computed(() => {
   return [...Array(formDataValue.value.box60Rates.length).keys()]
@@ -202,18 +196,6 @@ const onSubmit = async (): Promise<void> => {
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
   <v-card-title>配送情報詳細</v-card-title>
-  <v-card class="mb-4 py-2">
-    <v-card-title>基本情報</v-card-title>
-    <v-card-text>
-      <v-text-field v-model="validate.name.$model" label="名前" :error-messages="getErrorMessage(validate.name.$errors)" />
-      <v-switch
-        v-model="validate.isDefault.$model"
-        label="デフォルト設定"
-        color="primary"
-      />
-    </v-card-text>
-  </v-card>
-
   <v-card class="mb-4 py-2">
     <v-card-title>配送オプション：サイズ60</v-card-title>
     <v-card-text>

@@ -1,22 +1,22 @@
+import dayjs, { Dayjs } from 'dayjs'
 import { getToken, isSupported } from 'firebase/messaging'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
 
-import dayjs, { Dayjs } from 'dayjs'
 import { useCommonStore } from './common'
 import { messaging } from '~/plugins/firebase'
+import { apiClient } from '~/plugins/api-client'
 import {
   AdminRole,
-  AuthResponse,
-  AuthUserResponse,
-  ForgotAuthPasswordRequest,
-  ResetAuthPasswordRequest,
-  SignInRequest,
-  UpdateAuthEmailRequest,
-  UpdateAuthPasswordRequest,
-  VerifyAuthEmailRequest
+  type AuthResponse,
+  type AuthUserResponse,
+  type ForgotAuthPasswordRequest,
+  type ResetAuthPasswordRequest,
+  type SignInRequest,
+  type UpdateAuthEmailRequest,
+  type UpdateAuthPasswordRequest,
+  type VerifyAuthEmailRequest
 } from '~/types/api'
-import { apiClient } from '~/plugins/api-client'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -28,6 +28,9 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
+    adminId (state): string {
+      return state.auth?.adminId || ''
+    },
     accessToken (state): string | undefined {
       return state.auth?.accessToken
     },
@@ -251,6 +254,11 @@ export const useAuthStore = defineStore('auth', {
         this.$reset()
       } catch (error) {
         console.log('APIでエラーが発生しました。', error)
+      } finally {
+        this.isAuthenticated = false
+        this.auth = undefined
+        this.user = undefined
+        this.expiredAt = undefined
       }
     }
   }

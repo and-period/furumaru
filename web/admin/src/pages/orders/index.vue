@@ -2,14 +2,20 @@
 import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useOrderStore } from '~/store'
+import { useCoordinatorStore, useCustomerStore, useOrderStore, usePromotionStore } from '~/store'
 
 const router = useRouter()
 const orderStore = useOrderStore()
+const coordinatorStore = useCoordinatorStore()
+const customerStore = useCustomerStore()
+const promotionStore = usePromotionStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { orders, totalItems } = storeToRefs(orderStore)
+const { coordinators } = storeToRefs(coordinatorStore)
+const { customers } = storeToRefs(customerStore)
+const { promotions } = storeToRefs(promotionStore)
 
 const loading = ref<boolean>(false)
 const importDialog = ref<boolean>(false)
@@ -85,8 +91,11 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :orders="orders"
-    :table-items-length="totalItems"
+    :coordinators="coordinators"
+    :customers="customers"
+    :promotions="promotions"
     :table-items-per-page="pagination.itemsPerPage.value"
+    :table-items-length="totalItems"
     @click:row="handleClickRow"
     @click:update-page="handleUpdateTablePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"

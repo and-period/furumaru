@@ -110,7 +110,7 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: '原産地',
-    key: 'originPrefecture',
+    key: 'originPrefectureCode',
     sortable: false
   },
   {

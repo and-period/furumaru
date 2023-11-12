@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -13,7 +12,12 @@ import (
 	"gorm.io/gorm"
 )
 
-const orderTable = "orders"
+const (
+	orderTable            = "orders"
+	orderFulfillmentTable = "order_fulfillments"
+	orderItemTable        = "order_items"
+	orderPaymentTable     = "order_payments"
+)
 
 type order struct {
 	db  *mysql.Client
@@ -32,15 +36,6 @@ type listOrdersParams database.ListOrdersParams
 func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
-	}
-	for i := range p.Orders {
-		var value string
-		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
 	}
 	return stmt
 }
@@ -91,18 +86,44 @@ func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*ent
 	return order, nil
 }
 
+func (o *order) Create(ctx context.Context, order *entity.Order) error {
+	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := o.now()
+		order.CreatedAt, order.UpdatedAt = now, now
+		order.OrderPayment.CreatedAt, order.OrderPayment.UpdatedAt = now, now
+		for _, f := range order.OrderFulfillments {
+			f.CreatedAt, f.UpdatedAt = now, now
+		}
+		for _, i := range order.OrderItems {
+			i.CreatedAt, i.UpdatedAt = now, now
+		}
+
+		if err := tx.WithContext(ctx).Table(orderTable).Create(&order).Error; err != nil {
+			return err
+		}
+		if err := tx.WithContext(ctx).Table(orderPaymentTable).Create(&order.OrderPayment).Error; err != nil {
+			return err
+		}
+		if err := tx.WithContext(ctx).Table(orderFulfillmentTable).Create(&order.OrderFulfillments).Error; err != nil {
+			return err
+		}
+		return tx.WithContext(ctx).Table(orderItemTable).Create(&order.OrderItems).Error
+	})
+	return dbError(err)
+}
+
 func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error) {
 	var orders entity.AggregatedOrders
 
 	fields := []string{
 		"orders.user_id AS user_id",
 		"COUNT(DISTINCT(orders.id)) AS order_count",
-		"SUM(payments.subtotal) AS subtotal",
-		"SUM(payments.discount) AS discount",
+		"SUM(order_payments.subtotal) AS subtotal",
+		"SUM(order_payments.discount) AS discount",
 	}
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
-		Joins("INNER JOIN payments ON payments.order_id = orders.id").
+		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
 		Where("orders.user_id IN (?)", userIDs).
 		Group("orders.user_id")
 
@@ -121,9 +142,8 @@ func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...
 
 func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) error {
 	var (
-		payments     entity.Payments
-		fulfillments entity.Fulfillments
-		activities   entity.Activities
+		payments     entity.OrderPayments
+		fulfillments entity.OrderFulfillments
 		items        entity.OrderItems
 	)
 
@@ -134,16 +154,12 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, paymentTable).Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, orderPaymentTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&payments).Error
 	})
 	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, fulfillmentTable).Where("order_id IN (?)", ids)
+		stmt := o.db.Statement(ectx, tx, orderFulfillmentTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&fulfillments).Error
-	})
-	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, activityTable).Where("order_id IN (?)", ids)
-		return stmt.Find(&activities).Error
 	})
 	eg.Go(func() error {
 		stmt := o.db.Statement(ectx, tx, orderItemTable).Where("order_id IN (?)", ids)
@@ -153,21 +169,6 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 		return err
 	}
 
-	paymentMap := payments.MapByOrderID()
-	fulfillmentMap := fulfillments.MapByOrderID()
-	activitiesMap := activities.GroupByOrderID()
-	itemsMap := items.GroupByOrderID()
-
-	for i, o := range orders {
-		payment, ok := paymentMap[o.ID]
-		if !ok {
-			payment = &entity.Payment{}
-		}
-		fulfillment, ok := fulfillmentMap[o.ID]
-		if !ok {
-			fulfillment = &entity.Fulfillment{}
-		}
-		orders[i].Fill(payment, fulfillment, activitiesMap[o.ID], itemsMap[o.ID])
-	}
+	entity.Orders(orders).Fill(payments.MapByOrderID(), fulfillments.GroupByOrderID(), items.GroupByOrderID())
 	return nil
 }

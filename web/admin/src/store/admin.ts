@@ -1,4 +1,6 @@
-import { Admin } from '~/types/api'
+import { defineStore } from 'pinia'
+
+import type { Admin } from '~/types/api'
 
 export const useAdminStore = defineStore('admin', {
   state: () => ({

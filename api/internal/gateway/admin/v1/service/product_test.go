@@ -306,8 +306,6 @@ func TestProduct(t *testing.T) {
 						IsThumbnail: false,
 					},
 				},
-				Price:                400,
-				Cost:                 300,
 				RecommendedPoints:    []string{"ポイント1", "ポイント2", "ポイント3"},
 				StorageMethodType:    entity.StorageMethodTypeNormal,
 				DeliveryType:         entity.DeliveryTypeNormal,
@@ -319,8 +317,16 @@ func TestProduct(t *testing.T) {
 				OriginCity:           "彦根市",
 				StartAt:              jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				EndAt:                jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				CreatedAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				ProductRevision: entity.ProductRevision{
+					ID:        1,
+					ProductID: "product-id",
+					Price:     400,
+					Cost:      300,
+					CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &Product{
 				Product: response.Product{
@@ -522,7 +528,6 @@ func TestProducts(t *testing.T) {
 							},
 						},
 					},
-					Price:                400,
 					DeliveryType:         entity.DeliveryTypeNormal,
 					Box60Rate:            50,
 					Box80Rate:            40,
@@ -532,8 +537,16 @@ func TestProducts(t *testing.T) {
 					OriginCity:           "彦根市",
 					StartAt:              jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					EndAt:                jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					CreatedAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					ProductRevision: entity.ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+						CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					},
+					CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
 			expect: Products{
@@ -573,6 +586,7 @@ func TestProducts(t *testing.T) {
 							},
 						},
 						Price:                400,
+						Cost:                 300,
 						DeliveryType:         int32(DeliveryTypeNormal),
 						Box60Rate:            50,
 						Box80Rate:            40,
@@ -831,6 +845,90 @@ func TestProducts_Map(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.products.Map())
+		})
+	}
+}
+
+func TestProducts_MapByRevision(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   map[int64]*Product
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					Product: response.Product{
+						ID:              "product-id",
+						ProductTypeID:   "product-type-id",
+						CategoryID:      "category-id",
+						CoordinatorID:   "coordinator-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Public:          true,
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						},
+						Price:                400,
+						DeliveryType:         int32(DeliveryTypeNormal),
+						Box60Rate:            50,
+						Box80Rate:            40,
+						Box100Rate:           30,
+						OriginPrefectureCode: 25,
+						OriginCity:           "彦根市",
+						CreatedAt:            1640962800,
+						UpdatedAt:            1640962800,
+					},
+					revisionID: 1,
+				},
+			},
+			expect: map[int64]*Product{
+				1: {
+					Product: response.Product{
+						ID:              "product-id",
+						ProductTypeID:   "product-type-id",
+						CategoryID:      "category-id",
+						CoordinatorID:   "coordinator-id",
+						ProducerID:      "producer-id",
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Public:          true,
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+							{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+						},
+						Price:                400,
+						DeliveryType:         int32(DeliveryTypeNormal),
+						Box60Rate:            50,
+						Box80Rate:            40,
+						Box100Rate:           30,
+						OriginPrefectureCode: 25,
+						OriginCity:           "彦根市",
+						CreatedAt:            1640962800,
+						UpdatedAt:            1640962800,
+					},
+					revisionID: 1,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.MapByRevision())
 		})
 	}
 }

@@ -264,6 +264,21 @@ func TestResizer_Run(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "received schedume thumbnail event",
+			setup: func(ctx context.Context, mocks *mocks) {
+				file := testImageFile(t)
+				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.store.EXPECT().UpdateScheduleThumbnails(ctx, gomock.Any()).Return(nil)
+			},
+			payload: &entity.ResizerPayload{
+				TargetID: "target-id",
+				FileType: entity.FileTypeScheduleThumbnail,
+				URLs:     []string{"http://example.com/media/image.png"},
+			},
+			expectErr: nil,
+		},
+		{
 			name:  "failed to empty urls",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			payload: &entity.ResizerPayload{

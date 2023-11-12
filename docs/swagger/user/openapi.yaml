@@ -23,6 +23,8 @@ tags:
   description: トップページ関連
 - name: Cart
   description: 買い物かご関連
+- name: Checkout
+  description: 購入関連
 - name: Other
   description: その他（外部APIなど）
 paths:
@@ -75,6 +77,9 @@ paths:
     $ref: './paths/v1/carts/-/items/index.yaml'
   /v1/carts/{number}/items/{productId}:
     $ref: './paths/v1/carts/_number/items/_productId/index.yaml'
+  # Checkout
+  /v1/checkouts:
+    $ref: './paths/v1/checkouts/index.yaml'
   # Address
   /v1/postal-codes/{postalCode}:
     $ref: './paths/v1/postal-codes/_postalCode.yaml'
@@ -95,6 +100,8 @@ components:
       $ref: './components/schemas/codes/image.yaml#/imageSize'
     shippingSize:
       $ref: './components/schemas/codes/order.yaml#/shippingSize'
+    paymentMethodType:
+      $ref: './components/schemas/codes/order.yaml#/paymentMethodType'
     productStatus:
       $ref: './components/schemas/codes/product.yaml#/productStatus'
     deliveryType:
@@ -157,6 +164,8 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/resetAuthPasswordRequest'
     v1AddCartItemRequest:
       $ref: './components/schemas/v1/cart.request.yaml#/addCartItemRequest'
+    v1CheckoutRequest:
+      $ref: './components/schemas/v1/checkout.request.yaml#/checkoutRequest'
     v1CreateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
     # Response
@@ -170,6 +179,8 @@ components:
       $ref: './components/schemas/v1/address.response.yaml#/addressesResponse'
     v1CartResponse:
       $ref: './components/schemas/v1/cart.response.yaml#/cartResponse'
+    v1CheckoutResponse:
+      $ref: './components/schemas/v1/checkout.response.yaml#/checkoutResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
     v1ProductResponse:

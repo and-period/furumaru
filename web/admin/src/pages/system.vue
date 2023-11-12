@@ -33,7 +33,12 @@ const menus: SettingMenu[] = [
   {
     text: '配送設定管理',
     action: () => router.push('/shippings'),
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.COORDINATOR]
+  },
+  {
+    text: 'デフォルト配送設定管理',
+    action: () => router.push('/shippings/default'),
+    roles: [AdminRole.ADMINISTRATOR]
   }
 ]
 

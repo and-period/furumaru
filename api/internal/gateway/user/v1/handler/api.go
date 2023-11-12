@@ -139,6 +139,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	// 要認証エンドポイント
 	h.addressRoutes(v1)
 	h.cartRoutes(v1)
+	h.checkoutRoutes(v1)
 }
 
 /**

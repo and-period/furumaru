@@ -1,18 +1,18 @@
 <script setup lang='ts'>
 import useVuelidate from '@vuelidate/core'
-import { PrefecturesListSelectItems } from '~/lib/prefectures'
+import { type PrefecturesListSelectItems } from '~/lib/prefectures'
 import { required, getErrorMessage, minValue, minLengthArray } from '~/lib/validations'
-import { type CreateShippingRate } from '~/types/api'
+import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api'
 
 interface Props {
-  modelValue: CreateShippingRate
+  modelValue: UpdateDefaultShippingRate | UpsertShippingRate
   selectablePrefectureList: PrefecturesListSelectItems[]
 }
 
 const props = defineProps<Props>()
 
 interface Emits {
-  (e: 'update:modelValue', val: CreateShippingRate): void
+  (e: 'update:modelValue', val: UpdateDefaultShippingRate | UpsertShippingRate): void
   (e: 'click:selectAll'): void
 }
 
@@ -20,18 +20,16 @@ const emits = defineEmits<Emits>()
 
 const formDataValue = computed({
   get: () => props.modelValue,
-  set: (val: CreateShippingRate) => emits('update:modelValue', val)
+  set: (val: UpdateDefaultShippingRate | UpsertShippingRate) => emits('update:modelValue', val)
 })
 
-const rules = computed(() => {
-  return {
-    name: { required },
-    price: { required, minValue: minValue(1) },
-    prefectures: { minLengthArray: minLengthArray(1) }
-  }
-})
+const rules = computed(() => ({
+  name: { required },
+  price: { required, minValue: minValue(1) },
+  prefectureCodes: { minLengthArray: minLengthArray(1) }
+}))
 
-const v$ = useVuelidate<CreateShippingRate>(rules, formDataValue)
+const v$ = useVuelidate<UpdateDefaultShippingRate | UpsertShippingRate>(rules, formDataValue)
 
 const handleClickSelectAll = () => {
   emits('click:selectAll')
@@ -52,8 +50,8 @@ const handleClickSelectAll = () => {
     suffix="円"
   />
   <v-select
-    v-model="v$.prefectures.$model"
-    :error-messages="getErrorMessage(v$.prefectures.$errors)"
+    v-model="v$.prefectureCodes.$model"
+    :error-messages="getErrorMessage(v$.prefectureCodes.$errors)"
     label="都道府県"
     chips
     multiple

@@ -1,87 +1,84 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, useCommonStore, useCoordinatorStore, useShippingStore } from '~/store'
-import type { Shipping } from '~/types/api'
+import { useAlert } from '~/lib/hooks'
+import { useAuthStore, useCommonStore, useShippingStore } from '~/store'
+import type { UpsertShippingRequest } from '~/types/api'
 
-const router = useRouter()
 const authStore = useAuthStore()
 const commonStore = useCommonStore()
-const coordinatorStore = useCoordinatorStore()
 const shippingStore = useShippingStore()
-const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { role } = storeToRefs(authStore)
-const { coordinators } = storeToRefs(coordinatorStore)
-const { shippings, totalItems } = storeToRefs(shippingStore)
+const { adminId } = storeToRefs(authStore)
+const { shipping } = storeToRefs(shippingStore)
 
 const loading = ref<boolean>(false)
-const deleteDialog = ref<boolean>(false)
-const selectedItem = ref<Shipping>()
+const formData = ref<UpsertShippingRequest>({
+  box60Rates: [
+    {
+      name: '',
+      price: 0,
+      prefectureCodes: []
+    }
+  ],
+  box60Refrigerated: 0,
+  box60Frozen: 0,
+  box80Rates: [
+    {
+      name: '',
+      price: 0,
+      prefectureCodes: []
+    }
+  ],
+  box80Refrigerated: 0,
+  box80Frozen: 0,
+  box100Rates: [
+    {
+      name: '',
+      price: 0,
+      prefectureCodes: []
+    }
+  ],
+  box100Refrigerated: 0,
+  box100Frozen: 0,
+  hasFreeShipping: false,
+  freeShippingRates: 0
+})
 
 const fetchState = useAsyncData(async (): Promise<void> => {
-  await fetchShippings()
-})
-
-watch(pagination.itemsPerPage, (): void => {
-  fetchState.refresh()
-})
-
-const fetchShippings = async (): Promise<void> => {
   try {
-    await shippingStore.fetchShippings(pagination.itemsPerPage.value, pagination.offset.value)
+    await shippingStore.fetchShipping(adminId.value)
+    formData.value = { ...shipping.value }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
   }
-}
+})
 
 const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
 }
 
-const handleUpdatePage = async (page: number): Promise<void> => {
-  pagination.updateCurrentPage(page)
-  await fetchShippings()
-}
-
-const handleClickAdd = (): void => {
-  router.push('/shippings/new')
-}
-
-const handleClickRow = (shippingId: string): void => {
-  router.push(`/shippings/${shippingId}`)
-}
-
-const handleClickDelete = (shippingId: string): void => {
-  const shipping = shippings.value.find((shipping: Shipping): boolean => {
-    return shipping.id === shippingId
-  })
-  if (!shipping) {
-    return
-  }
-  selectedItem.value = shipping
-  deleteDialog.value = true
-}
-
-const handleSubmitDelete = async (): Promise<void> => {
+const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
-    await shippingStore.deleteShipping(selectedItem.value?.id || '')
+    await shippingStore.upsertShipping(adminId.value, formData.value)
     commonStore.addSnackbar({
       color: 'info',
-      message: '配送設定を削除しました。'
+      message: '配送設定を更新しました。'
     })
-    fetchState.refresh()
-    deleteDialog.value = false
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   } finally {
     loading.value = false
   }
@@ -95,22 +92,13 @@ try {
 </script>
 
 <template>
-  <templates-shipping-list
-    v-model:delete-dialog="deleteDialog"
+  <templates-shipping-edit
+    v-model:form-data="formData"
     :loading="isLoading()"
-    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :shippings="shippings"
-    :coordinators="coordinators"
-    :table-items-per-page="pagination.itemsPerPage.value"
-    :table-items-total="totalItems"
-    @click:row="handleClickRow"
-    @click:add="handleClickAdd"
-    @click:delete="handleClickDelete"
-    @update:page="handleUpdatePage"
-    @update:items-per-page="pagination.handleUpdateItemsPerPage"
-    @submit:delete="handleSubmitDelete"
+    :shipping="shipping"
+    @submit="handleSubmit"
   />
 </template>

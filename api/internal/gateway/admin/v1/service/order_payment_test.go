@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -136,74 +137,31 @@ func TestOrderPayment(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		payment *entity.Payment
-		status  entity.PaymentStatus
-		expect  *OrderPayment
-	}{
-		{
-			name: "success",
-			payment: &entity.Payment{
-				OrderID:       "order-id",
-				AddressID:     "address-id",
-				TransactionID: "transaction-id",
-				MethodType:    entity.PaymentMethodTypeCreditCard,
-				Subtotal:      1100,
-				Discount:      0,
-				ShippingFee:   500,
-				Tax:           160,
-				Total:         1760,
-				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-			},
-			status: entity.PaymentStatusCaptured,
-			expect: &OrderPayment{
-				OrderPayment: response.OrderPayment{
-					TransactionID: "transaction-id",
-					MethodType:    PaymentMethodTypeCreditCard.Response(),
-					Status:        PaymentStatusPaid.Response(),
-					Subtotal:      1100,
-					Discount:      0,
-					ShippingFee:   500,
-					Tax:           160,
-					Total:         1760,
-					AddressID:     "address-id",
-				},
-				orderID: "order-id",
-			},
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, NewOrderPayment(tt.payment, tt.status))
-		})
-	}
-}
-
-func TestOrderPayment_Fill(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name    string
-		payment *OrderPayment
+		payment *entity.OrderPayment
 		address *Address
 		expect  *OrderPayment
 	}{
 		{
 			name: "success",
-			payment: &OrderPayment{
-				OrderPayment: response.OrderPayment{
-					TransactionID: "transaction-id",
-					MethodType:    PaymentMethodTypeCreditCard.Response(),
-					Status:        PaymentStatusPaid.Response(),
-					Subtotal:      100,
-					Discount:      0,
-					ShippingFee:   500,
-					Tax:           60,
-					Total:         660,
-					AddressID:     "address-id",
-				},
-				orderID: "order-id",
+			payment: &entity.OrderPayment{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				TransactionID:     "transaction-id",
+				Status:            entity.PaymentStatusCaptured,
+				MethodType:        entity.PaymentMethodTypeCreditCard,
+				Subtotal:          1980,
+				Discount:          0,
+				ShippingFee:       550,
+				Tax:               253,
+				Total:             2783,
+				RefundTotal:       0,
+				RefundType:        entity.RefundTypeNone,
+				RefundReason:      "",
+				OrderedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				PaidAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				RefundedAt:        time.Time{},
+				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			address: &Address{
 				Address: response.Address{
@@ -216,19 +174,20 @@ func TestOrderPayment_Fill(t *testing.T) {
 					AddressLine2:   "",
 					PhoneNumber:    "+819012345678",
 				},
-				id: "address-id",
+				revisionID: 1,
 			},
 			expect: &OrderPayment{
 				OrderPayment: response.OrderPayment{
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
-					Subtotal:      100,
+					Subtotal:      1980,
 					Discount:      0,
-					ShippingFee:   500,
-					Tax:           60,
-					Total:         660,
-					AddressID:     "address-id",
+					ShippingFee:   550,
+					Tax:           253,
+					Total:         2783,
+					OrderedAt:     1640962800,
+					PaidAt:        1640962800,
 					Address: &response.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
@@ -248,8 +207,7 @@ func TestOrderPayment_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.payment.Fill(tt.address)
-			assert.Equal(t, tt.expect, tt.payment)
+			assert.Equal(t, tt.expect, NewOrderPayment(tt.payment, tt.address))
 		})
 	}
 }
@@ -268,12 +226,13 @@ func TestOrderPayment_Response(t *testing.T) {
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
 					Status:        PaymentStatusPaid.Response(),
-					Subtotal:      100,
+					Subtotal:      1100,
 					Discount:      0,
 					ShippingFee:   500,
-					Tax:           60,
-					Total:         660,
-					AddressID:     "address-id",
+					Tax:           160,
+					Total:         1760,
+					OrderedAt:     1640962800,
+					PaidAt:        1640962800,
 					Address: &response.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
@@ -291,12 +250,13 @@ func TestOrderPayment_Response(t *testing.T) {
 				TransactionID: "transaction-id",
 				MethodType:    PaymentMethodTypeCreditCard.Response(),
 				Status:        PaymentStatusPaid.Response(),
-				Subtotal:      100,
+				Subtotal:      1100,
 				Discount:      0,
 				ShippingFee:   500,
-				Tax:           60,
-				Total:         660,
-				AddressID:     "address-id",
+				Tax:           160,
+				Total:         1760,
+				OrderedAt:     1640962800,
+				PaidAt:        1640962800,
 				Address: &response.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",

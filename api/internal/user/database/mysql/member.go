@@ -67,10 +67,6 @@ func (m *member) Create(ctx context.Context, user *entity.User, auth func(ctx co
 		if err := tx.WithContext(ctx).Table(memberTable).Create(&user.Member).Error; err != nil {
 			return err
 		}
-		user.Customer.CreatedAt, user.Customer.UpdatedAt = now, now
-		if err := tx.WithContext(ctx).Table(customerTable).Create(&user.Customer).Error; err != nil {
-			return err
-		}
 		return auth(ctx)
 	})
 	return dbError(err)

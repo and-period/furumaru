@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
-import { PrefecturesListItem, prefecturesList } from '~/constants'
+import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
-import { User } from '~/types/api'
+import type { User } from '~/types/api'
 
 const props = defineProps({
   loading: {

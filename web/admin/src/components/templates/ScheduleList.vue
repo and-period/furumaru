@@ -171,6 +171,14 @@ const getApproval = (schedule: Schedule): string => {
   return schedule.approved ? '取り消し' : '承認する'
 }
 
+const onClickUpdatePage = (page: number): void => {
+  emit('click:update-page', page)
+}
+
+const onClickUpdateItemsPerPage = (page: number): void => {
+  emit('click:update-items-per-page', page)
+}
+
 const onClickRow = (scheduleId: string): void => {
   emit('click:row', scheduleId)
 }
@@ -235,8 +243,8 @@ const onClickApproval = (scheduleId: string): void => {
         :items-length="props.tableItemsTotal"
         hover
         no-data-text="登録されているスケジュールがありません。"
-        @update:page="onUpdatePage"
-        @update:items-per-page="onUpdateItemsPerPage"
+        @update:page="onClickUpdatePage"
+        @update:items-per-page="onClickUpdateItemsPerPage"
         @click:row="(_: any, { item }:any) => onClickRow(item.id)"
       >
         <template #[`item.thumbnail`]="{ item }">

@@ -1,8 +1,10 @@
 package entity
 
 import (
+	"strings"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
@@ -58,14 +60,32 @@ func NewAddress(params *NewAddressParams) (*Address, error) {
 	}, nil
 }
 
+func (a *Address) Name() string {
+	return strings.Join([]string{a.Lastname, a.Firstname}, " ")
+}
+
 func (a *Address) Fill(revision *AddressRevision) {
 	a.AddressRevision = *revision
 }
 
 func (as Addresses) IDs() []string {
-	res := make([]string, len(as))
-	for i := range as {
-		res[i] = as[i].ID
+	return set.UniqBy(as, func(a *Address) string {
+		return a.ID
+	})
+}
+
+func (as Addresses) Map() map[string]*Address {
+	res := make(map[string]*Address, len(as))
+	for _, a := range as {
+		res[a.ID] = a
+	}
+	return res
+}
+
+func (as Addresses) MapByUserID() map[string]*Address {
+	res := make(map[string]*Address, len(as))
+	for _, a := range as {
+		res[a.UserID] = a
 	}
 	return res
 }
