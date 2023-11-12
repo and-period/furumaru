@@ -7,7 +7,7 @@ cart:
       format: int64
       description: 箱の通番
     type:
-      $ref: './../../../openapi.yaml#/components/schemas/deliveryType'
+      $ref: './../../../openapi.yaml#/components/schemas/shippingType'
     size:
       $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
     items:

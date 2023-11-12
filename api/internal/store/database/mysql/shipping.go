@@ -140,18 +140,15 @@ func (s *shipping) Create(ctx context.Context, shipping *entity.Shipping) error 
 
 func (s *shipping) Update(ctx context.Context, shippingID string, params *database.UpdateShippingParams) error {
 	rparams := &entity.NewShippingRevisionParams{
-		ShippingID:         shippingID,
-		Box60Rates:         params.Box60Rates,
-		Box60Refrigerated:  params.Box60Refrigerated,
-		Box60Frozen:        params.Box60Frozen,
-		Box80Rates:         params.Box80Rates,
-		Box80Refrigerated:  params.Box80Refrigerated,
-		Box80Frozen:        params.Box80Frozen,
-		Box100Rates:        params.Box100Rates,
-		Box100Refrigerated: params.Box100Refrigerated,
-		Box100Frozen:       params.Box100Frozen,
-		HasFreeShipping:    params.HasFreeShipping,
-		FreeShippingRates:  params.FreeShippingRates,
+		ShippingID:        shippingID,
+		Box60Rates:        params.Box60Rates,
+		Box60Frozen:       params.Box60Frozen,
+		Box80Rates:        params.Box80Rates,
+		Box80Frozen:       params.Box80Frozen,
+		Box100Rates:       params.Box100Rates,
+		Box100Frozen:      params.Box100Frozen,
+		HasFreeShipping:   params.HasFreeShipping,
+		FreeShippingRates: params.FreeShippingRates,
 	}
 	revision := entity.NewShippingRevision(rparams)
 	if err := revision.FillJSON(); err != nil {

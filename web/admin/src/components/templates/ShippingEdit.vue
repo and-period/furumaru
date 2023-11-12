@@ -33,7 +33,6 @@ const props = defineProps({
           prefectureCodes: []
         }
       ],
-      box60Refrigerated: 0,
       box60Frozen: 0,
       box80Rates: [
         {
@@ -42,7 +41,6 @@ const props = defineProps({
           prefectureCodes: []
         }
       ],
-      box80Refrigerated: 0,
       box80Frozen: 0,
       box100Rates: [
         {
@@ -51,7 +49,6 @@ const props = defineProps({
           prefectureCodes: []
         }
       ],
-      box100Refrigerated: 0,
       box100Frozen: 0,
       hasFreeShipping: false,
       freeShippingRates: 0
@@ -63,13 +60,10 @@ const props = defineProps({
       id: '',
       isDefault: false,
       box60Rates: [],
-      box60Refrigerated: 0,
       box60Frozen: 0,
       box80Rates: [],
-      box80Refrigerated: 0,
       box80Frozen: 0,
       box100Rates: [],
-      box100Refrigerated: 0,
       box100Frozen: 0,
       hasFreeShipping: false,
       freeShippingRates: 0,
@@ -86,11 +80,8 @@ const emit = defineEmits<{
 
 const rules = computed(() => ({
   hasFreeShipping: { required },
-  box60Refrigerated: { required, minValue: minValue(0) },
   box60Frozen: { required, minValue: minValue(0) },
-  box80Refrigerated: { required, minValue: minValue(0) },
   box80Frozen: { required, minValue: minValue(0) },
-  box100Refrigerated: { required, minValue: minValue(0) },
   box100Frozen: { required, minValue: minValue(0) }
 }))
 const formDataValue = computed({
@@ -201,16 +192,6 @@ const onSubmit = async (): Promise<void> => {
     <v-card-text>
       <div class="d-flex flex-column flex-md-row justify-center">
         <v-text-field
-          v-model.number="validate.box60Refrigerated.$model"
-          :error-messages="getErrorMessage(validate.box60Refrigerated.$errors)"
-          label="冷蔵配送価格"
-          type="number"
-          prefix="通常配送料＋"
-          suffix="円"
-          min="0"
-          class="mr-md-2"
-        />
-        <v-text-field
           v-model.number="validate.box60Frozen.$model"
           :error-messages="getErrorMessage(validate.box60Frozen.$errors)"
           label="冷凍配送価格"
@@ -255,16 +236,6 @@ const onSubmit = async (): Promise<void> => {
     <v-card-text>
       <div class="d-flex flex-column flex-md-row justify-center">
         <v-text-field
-          v-model.number="validate.box80Refrigerated.$model"
-          :error-messages="getErrorMessage(validate.box80Refrigerated.$errors)"
-          label="冷蔵配送価格"
-          type="number"
-          prefix="通常配送料＋"
-          suffix="円"
-          min="0"
-          class="mr-md-2"
-        />
-        <v-text-field
           v-model.number="validate.box80Frozen.$model"
           :error-messages="getErrorMessage(validate.box80Frozen.$errors)"
           label="冷凍配送価格"
@@ -308,16 +279,6 @@ const onSubmit = async (): Promise<void> => {
     <v-card-title>配送オプション：サイズ100</v-card-title>
     <v-card-text>
       <div class="d-flex flex-column flex-md-row justify-center">
-        <v-text-field
-          v-model.number="validate.box100Refrigerated.$model"
-          :error-messages="getErrorMessage(validate.box100Refrigerated.$errors)"
-          label="冷蔵配送価格"
-          type="number"
-          prefix="通常配送料＋"
-          suffix="円"
-          min="0"
-          class="mr-md-2"
-        />
         <v-text-field
           v-model.number="validate.box100Frozen.$model"
           :error-messages="getErrorMessage(validate.box100Frozen.$errors)"

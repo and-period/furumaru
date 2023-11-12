@@ -57,17 +57,14 @@ func (h *handler) UpdateDefaultShipping(ctx *gin.Context) {
 		return
 	}
 	in := &store.UpdateDefaultShippingInput{
-		Box60Rates:         h.newShippingRatesForUpdateDefault(req.Box60Rates),
-		Box60Refrigerated:  req.Box60Refrigerated,
-		Box60Frozen:        req.Box60Frozen,
-		Box80Rates:         h.newShippingRatesForUpdateDefault(req.Box80Rates),
-		Box80Refrigerated:  req.Box80Refrigerated,
-		Box80Frozen:        req.Box80Frozen,
-		Box100Rates:        h.newShippingRatesForUpdateDefault(req.Box100Rates),
-		Box100Refrigerated: req.Box100Refrigerated,
-		Box100Frozen:       req.Box100Frozen,
-		HasFreeShipping:    req.HasFreeShipping,
-		FreeShippingRates:  req.FreeShippingRates,
+		Box60Rates:        h.newShippingRatesForUpdateDefault(req.Box60Rates),
+		Box60Frozen:       req.Box60Frozen,
+		Box80Rates:        h.newShippingRatesForUpdateDefault(req.Box80Rates),
+		Box80Frozen:       req.Box80Frozen,
+		Box100Rates:       h.newShippingRatesForUpdateDefault(req.Box100Rates),
+		Box100Frozen:      req.Box100Frozen,
+		HasFreeShipping:   req.HasFreeShipping,
+		FreeShippingRates: req.FreeShippingRates,
 	}
 	if err := h.store.UpdateDefaultShipping(ctx, in); err != nil {
 		h.httpError(ctx, err)
@@ -120,18 +117,15 @@ func (h *handler) UpsertShipping(ctx *gin.Context) {
 		return
 	}
 	in := &store.UpsertShippingInput{
-		CoordinatorID:      coordinatorID,
-		Box60Rates:         h.newShippingRatesForUpsert(req.Box60Rates),
-		Box60Refrigerated:  req.Box60Refrigerated,
-		Box60Frozen:        req.Box60Frozen,
-		Box80Rates:         h.newShippingRatesForUpsert(req.Box80Rates),
-		Box80Refrigerated:  req.Box80Refrigerated,
-		Box80Frozen:        req.Box80Frozen,
-		Box100Rates:        h.newShippingRatesForUpsert(req.Box100Rates),
-		Box100Refrigerated: req.Box100Refrigerated,
-		Box100Frozen:       req.Box100Frozen,
-		HasFreeShipping:    req.HasFreeShipping,
-		FreeShippingRates:  req.FreeShippingRates,
+		CoordinatorID:     coordinatorID,
+		Box60Rates:        h.newShippingRatesForUpsert(req.Box60Rates),
+		Box60Frozen:       req.Box60Frozen,
+		Box80Rates:        h.newShippingRatesForUpsert(req.Box80Rates),
+		Box80Frozen:       req.Box80Frozen,
+		Box100Rates:       h.newShippingRatesForUpsert(req.Box100Rates),
+		Box100Frozen:      req.Box100Frozen,
+		HasFreeShipping:   req.HasFreeShipping,
+		FreeShippingRates: req.FreeShippingRates,
 	}
 	if err := h.store.UpsertShipping(ctx, in); err != nil {
 		h.httpError(ctx, err)

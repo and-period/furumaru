@@ -1906,7 +1906,7 @@ export const DeliveryType = {
     */
     UNKNOWN: 0,
     /**
-    * 通常便
+    * 常温便
     */
     NORMAL: 1,
     /**
@@ -2590,10 +2590,10 @@ export interface OrderFulfillment {
     'shippingCarrier': ShippingCarrier;
     /**
      * 
-     * @type {DeliveryType}
+     * @type {ShippingType}
      * @memberof OrderFulfillment
      */
-    'shippingMethod': DeliveryType;
+    'shippingType': ShippingType;
     /**
      * 箱の通番
      * @type {number}
@@ -4379,12 +4379,6 @@ export interface Shipping {
      */
     'box60Rates': Array<ShippingRate>;
     /**
-     * 箱サイズ60の冷蔵便追加配送料
-     * @type {number}
-     * @memberof Shipping
-     */
-    'box60Refrigerated': number;
-    /**
      * 箱サイズ60の冷凍便追加配送料
      * @type {number}
      * @memberof Shipping
@@ -4397,12 +4391,6 @@ export interface Shipping {
      */
     'box80Rates': Array<ShippingRate>;
     /**
-     * 箱サイズ80の冷蔵便追加配送料
-     * @type {number}
-     * @memberof Shipping
-     */
-    'box80Refrigerated': number;
-    /**
      * 箱サイズ80の冷凍便追加配送料
      * @type {number}
      * @memberof Shipping
@@ -4414,12 +4402,6 @@ export interface Shipping {
      * @memberof Shipping
      */
     'box100Rates': Array<ShippingRate>;
-    /**
-     * 箱サイズ100の冷蔵便追加配送料
-     * @type {number}
-     * @memberof Shipping
-     */
-    'box100Refrigerated': number;
     /**
      * 箱サイズ100の冷凍便追加配送料
      * @type {number}
@@ -4545,6 +4527,30 @@ export const ShippingSize = {
 } as const;
 
 export type ShippingSize = typeof ShippingSize[keyof typeof ShippingSize];
+
+
+/**
+ * 配送方法
+ * @export
+ * @enum {string}
+ */
+
+export const ShippingType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 常温・冷蔵便
+    */
+    NORMAL: 1,
+    /**
+    * 冷凍便
+    */
+    FROZEN: 2
+} as const;
+
+export type ShippingType = typeof ShippingType[keyof typeof ShippingType];
 
 
 /**
@@ -5046,12 +5052,6 @@ export interface UpdateDefaultShippingRequest {
      */
     'box60Rates': Array<UpdateDefaultShippingRate>;
     /**
-     * 箱サイズ60の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateDefaultShippingRequest
-     */
-    'box60Refrigerated': number;
-    /**
      * 箱サイズ60の冷凍便追加配送料(100万未満)
      * @type {number}
      * @memberof UpdateDefaultShippingRequest
@@ -5064,12 +5064,6 @@ export interface UpdateDefaultShippingRequest {
      */
     'box80Rates': Array<UpdateDefaultShippingRate>;
     /**
-     * 箱サイズ80の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateDefaultShippingRequest
-     */
-    'box80Refrigerated': number;
-    /**
      * 箱サイズ80の冷凍便追加配送料(100万未満)
      * @type {number}
      * @memberof UpdateDefaultShippingRequest
@@ -5081,12 +5075,6 @@ export interface UpdateDefaultShippingRequest {
      * @memberof UpdateDefaultShippingRequest
      */
     'box100Rates': Array<UpdateDefaultShippingRate>;
-    /**
-     * 箱サイズ100の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpdateDefaultShippingRequest
-     */
-    'box100Refrigerated': number;
     /**
      * 箱サイズ100の冷凍便追加配送料(100万未満)
      * @type {number}
@@ -5698,12 +5686,6 @@ export interface UpsertShippingRequest {
      */
     'box60Rates': Array<UpsertShippingRate>;
     /**
-     * 箱サイズ60の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpsertShippingRequest
-     */
-    'box60Refrigerated': number;
-    /**
      * 箱サイズ60の冷凍便追加配送料(100万未満)
      * @type {number}
      * @memberof UpsertShippingRequest
@@ -5716,12 +5698,6 @@ export interface UpsertShippingRequest {
      */
     'box80Rates': Array<UpsertShippingRate>;
     /**
-     * 箱サイズ80の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpsertShippingRequest
-     */
-    'box80Refrigerated': number;
-    /**
      * 箱サイズ80の冷凍便追加配送料(100万未満)
      * @type {number}
      * @memberof UpsertShippingRequest
@@ -5733,12 +5709,6 @@ export interface UpsertShippingRequest {
      * @memberof UpsertShippingRequest
      */
     'box100Rates': Array<UpsertShippingRate>;
-    /**
-     * 箱サイズ100の冷蔵便追加配送料(100万未満)
-     * @type {number}
-     * @memberof UpsertShippingRequest
-     */
-    'box100Refrigerated': number;
     /**
      * 箱サイズ100の冷凍便追加配送料(100万未満)
      * @type {number}

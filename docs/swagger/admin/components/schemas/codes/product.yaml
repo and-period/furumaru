@@ -38,7 +38,7 @@ deliveryType:
   - FROZEN
   x-enum-descriptions:
   - 不明
-  - 通常便
+  - 常温便
   - 冷蔵便
   - 冷凍便
 storageMethodType:

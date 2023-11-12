@@ -38,10 +38,6 @@ shipping:
       description: 箱サイズ60の通常配送料一覧
       items:
         $ref: '#/shippingRate'
-    box60Refrigerated:
-      type: integer
-      format: int64
-      description: 箱サイズ60の冷蔵便追加配送料
     box60Frozen:
       type: integer
       format: int64
@@ -51,10 +47,6 @@ shipping:
       description: 箱サイズ80の通常配送料一覧
       items:
         $ref: '#/shippingRate'
-    box80Refrigerated:
-      type: integer
-      format: int64
-      description: 箱サイズ80の冷蔵便追加配送料
     box80Frozen:
       type: integer
       format: int64
@@ -64,10 +56,6 @@ shipping:
       description: 箱サイズ100の通常配送料一覧
       items:
         $ref: '#/shippingRate'
-    box100Refrigerated:
-      type: integer
-      format: int64
-      description: 箱サイズ100の冷蔵便追加配送料
     box100Frozen:
       type: integer
       format: int64
@@ -91,13 +79,10 @@ shipping:
   - id
   - isDefault
   - box60Rates
-  - box60Refrigerated
   - box60Frozen
   - box80Rates
-  - box80Refrigerated
   - box80Frozen
   - box100Rates
-  - box100Refrigerated
   - box100Frozen
   - hasFreeShipping
   - freeShippingRates
@@ -115,7 +100,6 @@ shipping:
       name: 'その他'
       price: 1200
       prefectureCodes: [2, 3, 4]
-    box60Refrigerated: 300
     box60Frozen: 500
     box80Rates:
     - number: 1
@@ -126,7 +110,6 @@ shipping:
       name: 'その他'
       price: 1200
       prefectureCodes: [2, 3, 4]
-    box80Refrigerated: 300
     box80Frozen: 500
     box100Rates:
     - number: 1
@@ -137,7 +120,6 @@ shipping:
       name: 'その他'
       price: 1200
       prefectureCodes: [2, 3, 4]
-    box100Refrigerated: 300
     box100Frozen: 500
     hasFreeShipping: true
     freeShippingRates: 3000

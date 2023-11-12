@@ -100,6 +100,8 @@ components:
       $ref: './components/schemas/codes/image.yaml#/imageSize'
     shippingSize:
       $ref: './components/schemas/codes/order.yaml#/shippingSize'
+    shippingType:
+      $ref: './components/schemas/codes/order.yaml#/shippingType'
     paymentMethodType:
       $ref: './components/schemas/codes/order.yaml#/paymentMethodType'
     productStatus:

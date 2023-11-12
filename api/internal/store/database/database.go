@@ -279,17 +279,14 @@ type Shipping interface {
 }
 
 type UpdateShippingParams struct {
-	Box60Rates         entity.ShippingRates
-	Box60Refrigerated  int64
-	Box60Frozen        int64
-	Box80Rates         entity.ShippingRates
-	Box80Refrigerated  int64
-	Box80Frozen        int64
-	Box100Rates        entity.ShippingRates
-	Box100Refrigerated int64
-	Box100Frozen       int64
-	HasFreeShipping    bool
-	FreeShippingRates  int64
+	Box60Rates        entity.ShippingRates
+	Box60Frozen       int64
+	Box80Rates        entity.ShippingRates
+	Box80Frozen       int64
+	Box100Rates       entity.ShippingRates
+	Box100Frozen      int64
+	HasFreeShipping   bool
+	FreeShippingRates int64
 }
 
 type Error struct {

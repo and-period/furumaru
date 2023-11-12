@@ -16,7 +16,7 @@ type PaymentStatus int32
 
 const (
 	PaymentStatusUnknown    PaymentStatus = 0
-	PaymentStatusPending    PaymentStatus = 1 // 保留中
+	PaymentStatusPending    PaymentStatus = 1 // 保留中・未支払い
 	PaymentStatusAuthorized PaymentStatus = 2 // 仮売上・オーソリ
 	PaymentStatusCaptured   PaymentStatus = 3 // 実売上・キャプチャ
 	PaymentStatusRefunded   PaymentStatus = 4 // 返金

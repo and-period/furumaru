@@ -70,7 +70,7 @@ func TestGetCart(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, cart *entity.Cart) error {
 						cart.Baskets = []*entity.CartBasket{{
 							BoxNumber: 1,
-							BoxType:   entity.DeliveryTypeNormal,
+							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize80,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 2},
@@ -89,7 +89,7 @@ func TestGetCart(t *testing.T) {
 					Baskets: []*entity.CartBasket{
 						{
 							BoxNumber: 1,
-							BoxType:   entity.DeliveryTypeNormal,
+							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize60,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 1},
@@ -111,7 +111,7 @@ func TestGetCart(t *testing.T) {
 				Baskets: []*entity.CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   entity.DeliveryTypeNormal,
+						BoxType:   entity.ShippingTypeNormal,
 						BoxSize:   entity.ShippingSize60,
 						Items: entity.CartItems{
 							{ProductID: "product-id", Quantity: 1},
@@ -133,7 +133,7 @@ func TestGetCart(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, cart *entity.Cart) error {
 						cart.Baskets = []*entity.CartBasket{{
 							BoxNumber: 1,
-							BoxType:   entity.DeliveryTypeNormal,
+							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize80,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 2},
@@ -154,7 +154,7 @@ func TestGetCart(t *testing.T) {
 				Baskets: []*entity.CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   entity.DeliveryTypeNormal,
+						BoxType:   entity.ShippingTypeNormal,
 						BoxSize:   entity.ShippingSize80,
 						Items: entity.CartItems{
 							{ProductID: "product-id", Quantity: 2},
@@ -233,7 +233,7 @@ func TestGetCart(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, cart *entity.Cart) error {
 						cart.Baskets = []*entity.CartBasket{{
 							BoxNumber: 1,
-							BoxType:   entity.DeliveryTypeNormal,
+							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize80,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 2},
@@ -317,7 +317,7 @@ func TestAddCartItem(t *testing.T) {
 					Baskets: entity.CartBaskets{
 						{
 							BoxNumber: 1,
-							BoxType:   entity.DeliveryTypeNormal,
+							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize60,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 1},
@@ -449,7 +449,7 @@ func TestAddCartItem(t *testing.T) {
 					Baskets: entity.CartBaskets{
 						{
 							BoxNumber: 1,
-							BoxType:   entity.DeliveryTypeNormal,
+							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize60,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 1},
@@ -514,7 +514,7 @@ func TestRemoveCartItem(t *testing.T) {
 						cart.Baskets = entity.CartBaskets{
 							{
 								BoxNumber: 1,
-								BoxType:   entity.DeliveryTypeNormal,
+								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
@@ -553,7 +553,7 @@ func TestRemoveCartItem(t *testing.T) {
 						cart.Baskets = entity.CartBaskets{
 							{
 								BoxNumber: 1,
-								BoxType:   entity.DeliveryTypeNormal,
+								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
@@ -562,7 +562,7 @@ func TestRemoveCartItem(t *testing.T) {
 							},
 							{
 								BoxNumber: 2,
-								BoxType:   entity.DeliveryTypeNormal,
+								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
@@ -582,7 +582,7 @@ func TestRemoveCartItem(t *testing.T) {
 					Baskets: entity.CartBaskets{
 						{
 							BoxNumber: 1,
-							BoxType:   entity.DeliveryTypeNormal,
+							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize60,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 1},
@@ -659,7 +659,7 @@ func TestRemoveCartItem(t *testing.T) {
 						cart.Baskets = entity.CartBaskets{
 							{
 								BoxNumber: 1,
-								BoxType:   entity.DeliveryTypeNormal,
+								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
@@ -690,7 +690,7 @@ func TestRemoveCartItem(t *testing.T) {
 						cart.Baskets = entity.CartBaskets{
 							{
 								BoxNumber: 1,
-								BoxType:   entity.DeliveryTypeNormal,
+								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},

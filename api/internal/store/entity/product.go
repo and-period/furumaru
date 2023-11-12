@@ -35,6 +35,7 @@ const (
 	WeightUnitKilogram WeightUnit = 2 // kg(キログラム)
 )
 
+// StorageMethodType - 保存方法
 type StorageMethodType int32
 
 const (
@@ -50,7 +51,7 @@ type DeliveryType int32
 
 const (
 	DeliveryTypeUnknown      DeliveryType = 0
-	DeliveryTypeNormal       DeliveryType = 1 // 通常便
+	DeliveryTypeNormal       DeliveryType = 1 // 常温便
 	DeliveryTypeRefrigerated DeliveryType = 2 // 冷蔵便
 	DeliveryTypeFrozen       DeliveryType = 3 // 冷凍便
 )
@@ -189,6 +190,17 @@ func NewProduct(params *NewProductParams) (*Product, error) {
 		EndAt:                params.EndAt,
 		ProductRevision:      *revision,
 	}, nil
+}
+
+func (p *Product) ShippingType() ShippingType {
+	switch p.DeliveryType {
+	case DeliveryTypeNormal, DeliveryTypeRefrigerated:
+		return ShippingTypeNormal
+	case DeliveryTypeFrozen:
+		return ShippingTypeFrozen
+	default:
+		return ShippingTypeUnknown
+	}
 }
 
 func (p *Product) Validate() error {

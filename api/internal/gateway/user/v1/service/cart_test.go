@@ -20,7 +20,7 @@ func TestCart(t *testing.T) {
 			name: "success",
 			basket: &entity.CartBasket{
 				BoxNumber: 1,
-				BoxType:   entity.DeliveryTypeNormal,
+				BoxType:   entity.ShippingTypeNormal,
 				BoxSize:   entity.ShippingSize60,
 				Items: []*entity.CartItem{
 					{
@@ -33,7 +33,7 @@ func TestCart(t *testing.T) {
 			expect: &Cart{
 				Cart: response.Cart{
 					Number: 1,
-					Type:   DeliveryTypeNormal.Response(),
+					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
 					Items: []*response.CartItem{
 						{
@@ -68,7 +68,7 @@ func TestCart_Response(t *testing.T) {
 			cart: &Cart{
 				Cart: response.Cart{
 					Number: 1,
-					Type:   DeliveryTypeNormal.Response(),
+					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
 					Items: []*response.CartItem{
 						{
@@ -81,7 +81,7 @@ func TestCart_Response(t *testing.T) {
 			},
 			expect: &response.Cart{
 				Number: 1,
-				Type:   DeliveryTypeNormal.Response(),
+				Type:   ShippingTypeNormal.Response(),
 				Size:   ShippingSize60.Response(),
 				Items: []*response.CartItem{
 					{
@@ -117,7 +117,7 @@ func TestCarts(t *testing.T) {
 				Baskets: entity.CartBaskets{
 					{
 						BoxNumber: 1,
-						BoxType:   entity.DeliveryTypeNormal,
+						BoxType:   entity.ShippingTypeNormal,
 						BoxSize:   entity.ShippingSize60,
 						Items: []*entity.CartItem{
 							{
@@ -136,7 +136,7 @@ func TestCarts(t *testing.T) {
 				{
 					Cart: response.Cart{
 						Number: 1,
-						Type:   DeliveryTypeNormal.Response(),
+						Type:   ShippingTypeNormal.Response(),
 						Size:   ShippingSize60.Response(),
 						Items: []*response.CartItem{
 							{
@@ -178,7 +178,7 @@ func TestCarts_Response(t *testing.T) {
 				{
 					Cart: response.Cart{
 						Number: 1,
-						Type:   DeliveryTypeNormal.Response(),
+						Type:   ShippingTypeNormal.Response(),
 						Size:   ShippingSize60.Response(),
 						Items: []*response.CartItem{
 							{
@@ -193,7 +193,7 @@ func TestCarts_Response(t *testing.T) {
 			expect: []*response.Cart{
 				{
 					Number: 1,
-					Type:   DeliveryTypeNormal.Response(),
+					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
 					Items: []*response.CartItem{
 						{

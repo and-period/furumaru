@@ -66,17 +66,14 @@ func (s *service) UpdateDefaultShipping(ctx context.Context, in *store.UpdateDef
 		return fmt.Errorf("api: invalid box 100 rates format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	params := &database.UpdateShippingParams{
-		Box60Rates:         box60Rates,
-		Box60Refrigerated:  in.Box60Refrigerated,
-		Box60Frozen:        in.Box60Frozen,
-		Box80Rates:         box80Rates,
-		Box80Refrigerated:  in.Box80Refrigerated,
-		Box80Frozen:        in.Box80Frozen,
-		Box100Rates:        box100Rates,
-		Box100Refrigerated: in.Box100Refrigerated,
-		Box100Frozen:       in.Box100Frozen,
-		HasFreeShipping:    in.HasFreeShipping,
-		FreeShippingRates:  in.FreeShippingRates,
+		Box60Rates:        box60Rates,
+		Box60Frozen:       in.Box60Frozen,
+		Box80Rates:        box80Rates,
+		Box80Frozen:       in.Box80Frozen,
+		Box100Rates:       box100Rates,
+		Box100Frozen:      in.Box100Frozen,
+		HasFreeShipping:   in.HasFreeShipping,
+		FreeShippingRates: in.FreeShippingRates,
 	}
 	err = s.db.Shipping.Update(ctx, entity.DefaultShippingID, params)
 	return internalError(err)
@@ -105,35 +102,29 @@ func (s *service) UpsertShipping(ctx context.Context, in *store.UpsertShippingIn
 	if errors.Is(err, database.ErrNotFound) {
 		// create
 		params := &entity.NewShippingParams{
-			CoordinatorID:      in.CoordinatorID,
-			Box60Rates:         box60Rates,
-			Box60Refrigerated:  in.Box60Refrigerated,
-			Box60Frozen:        in.Box60Frozen,
-			Box80Rates:         box80Rates,
-			Box80Refrigerated:  in.Box80Refrigerated,
-			Box80Frozen:        in.Box80Frozen,
-			Box100Rates:        box100Rates,
-			Box100Refrigerated: in.Box100Refrigerated,
-			Box100Frozen:       in.Box100Frozen,
-			HasFreeShipping:    in.HasFreeShipping,
-			FreeShippingRates:  in.FreeShippingRates,
+			CoordinatorID:     in.CoordinatorID,
+			Box60Rates:        box60Rates,
+			Box60Frozen:       in.Box60Frozen,
+			Box80Rates:        box80Rates,
+			Box80Frozen:       in.Box80Frozen,
+			Box100Rates:       box100Rates,
+			Box100Frozen:      in.Box100Frozen,
+			HasFreeShipping:   in.HasFreeShipping,
+			FreeShippingRates: in.FreeShippingRates,
 		}
 		shipping = entity.NewShipping(params)
 		err = s.db.Shipping.Create(ctx, shipping)
 	} else {
 		// update
 		params := &database.UpdateShippingParams{
-			Box60Rates:         box60Rates,
-			Box60Refrigerated:  in.Box60Refrigerated,
-			Box60Frozen:        in.Box60Frozen,
-			Box80Rates:         box80Rates,
-			Box80Refrigerated:  in.Box80Refrigerated,
-			Box80Frozen:        in.Box80Frozen,
-			Box100Rates:        box100Rates,
-			Box100Refrigerated: in.Box100Refrigerated,
-			Box100Frozen:       in.Box100Frozen,
-			HasFreeShipping:    in.HasFreeShipping,
-			FreeShippingRates:  in.FreeShippingRates,
+			Box60Rates:        box60Rates,
+			Box60Frozen:       in.Box60Frozen,
+			Box80Rates:        box80Rates,
+			Box80Frozen:       in.Box80Frozen,
+			Box100Rates:       box100Rates,
+			Box100Frozen:      in.Box100Frozen,
+			HasFreeShipping:   in.HasFreeShipping,
+			FreeShippingRates: in.FreeShippingRates,
 		}
 		err = s.db.Shipping.Update(ctx, shipping.ID, params)
 	}
