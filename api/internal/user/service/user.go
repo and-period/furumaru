@@ -96,10 +96,14 @@ func (s *service) VerifyUser(ctx context.Context, in *user.VerifyUserInput) erro
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	if err := s.userAuth.ConfirmSignUp(ctx, in.UserID, in.VerifyCode); err != nil {
+	u, err := s.db.User.Get(ctx, in.UserID)
+	if err != nil {
 		return internalError(err)
 	}
-	err := s.db.Member.UpdateVerified(ctx, in.UserID)
+	if err := s.userAuth.ConfirmSignUp(ctx, u.Member.CognitoID, in.VerifyCode); err != nil {
+		return internalError(err)
+	}
+	err = s.db.Member.UpdateVerified(ctx, in.UserID)
 	return internalError(err)
 }
 
