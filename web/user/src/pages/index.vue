@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useShoppingCartStore } from '~/store/shopping'
 import {
   MOCK_LIVE_ITEMS,
   MOCK_ARCHIVES_ITEMS,
@@ -9,12 +8,10 @@ import { useTopPageStore } from '~/store/home'
 
 const router = useRouter()
 
-const shoppingCartStore = useShoppingCartStore()
 const topPageStore = useTopPageStore()
 
 const { getHomeContent } = topPageStore
 
-shoppingCartStore.setupDummyData()
 getHomeContent()
 
 const archiveRef = ref<HTMLDivElement | null>(null)
