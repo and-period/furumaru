@@ -42,13 +42,14 @@ useSeoMeta({
 </script>
 
 <template>
+  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+    <the-snackbar
+      v-model:is-show="snackbarItem.isShow"
+      :text="snackbarItem.text"
+    />
+  </template>
+
   <div class="flex flex-col bg-white px-[36px] py-[48px] text-main">
-    <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
-      <the-snackbar
-        v-model:is-show="snackbarItem.isShow"
-        :text="snackbarItem.text"
-      />
-    </template>
     <div class="w-full">
       <p class="text-center text-[20px] font-bold tracking-[2px]">
         すべての商品
