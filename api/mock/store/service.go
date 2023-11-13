@@ -726,6 +726,20 @@ func (mr *MockServiceMockRecorder) MultiGetShippingsByRevision(ctx, in interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetShippingsByRevision", reflect.TypeOf((*MockService)(nil).MultiGetShippingsByRevision), ctx, in)
 }
 
+// NotifyPaymentCompleted mocks base method.
+func (m *MockService) NotifyPaymentCompleted(ctx context.Context, in *store.NotifyPaymentCompletedInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotifyPaymentCompleted", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// NotifyPaymentCompleted indicates an expected call of NotifyPaymentCompleted.
+func (mr *MockServiceMockRecorder) NotifyPaymentCompleted(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyPaymentCompleted", reflect.TypeOf((*MockService)(nil).NotifyPaymentCompleted), ctx, in)
+}
+
 // RemoveCartItem mocks base method.
 func (m *MockService) RemoveCartItem(ctx context.Context, in *store.RemoveCartItemInput) error {
 	m.ctrl.T.Helper()

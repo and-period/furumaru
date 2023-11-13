@@ -251,6 +251,7 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	khandlerParams := &khandler.Params{
 		WaitGroup: params.waitGroup,
+		Store:     storeService,
 	}
 	a.v1 = v1.NewHandler(v1Params,
 		v1.WithEnvironment(a.Environment),

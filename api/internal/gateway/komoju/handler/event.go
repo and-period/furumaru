@@ -12,7 +12,8 @@ import (
 type EventType string
 
 const (
-	EventTypePing EventType = "ping"
+	EventTypePing              EventType = "ping"
+	EventTypePaymentAuthorized EventType = "payment.authorized"
 )
 
 func (h *handler) Event(ctx *gin.Context) {
@@ -20,6 +21,8 @@ func (h *handler) Event(ctx *gin.Context) {
 	switch EventType(event) {
 	case EventTypePing:
 		h.ping(ctx)
+	case EventTypePaymentAuthorized:
+		h.paymentAuthorized(ctx)
 	default:
 		h.unexpected(ctx, event)
 	}

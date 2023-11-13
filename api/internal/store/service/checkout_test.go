@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -413,6 +414,75 @@ func checkoutmocks(
 		})
 	m.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil).AnyTimes()
 	m.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError).AnyTimes()
+}
+
+func TestNotifyPaymentCompleted(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	params := &database.UpdateOrderPaymentParams{
+		Status:    entity.PaymentStatusAuthorized,
+		PaymentID: "payment-id",
+		IssuedAt:  now,
+	}
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *store.NotifyPaymentCompletedInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(nil)
+			},
+			input: &store.NotifyPaymentCompletedInput{
+				OrderID:   "order-id",
+				PaymentID: "payment-id",
+				Status:    string(komoju.PaymentStatusAuthorized),
+				IssuedAt:  now,
+			},
+			expect: nil,
+		},
+		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &store.NotifyPaymentCompletedInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "not updatable",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+			},
+			input: &store.NotifyPaymentCompletedInput{
+				OrderID:   "order-id",
+				PaymentID: "payment-id",
+				Status:    string(komoju.PaymentStatusAuthorized),
+				IssuedAt:  now,
+			},
+			expect: nil,
+		},
+		{
+			name: "failed to update payment status",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(assert.AnError)
+			},
+			input: &store.NotifyPaymentCompletedInput{
+				OrderID:   "order-id",
+				PaymentID: "payment-id",
+				Status:    string(komoju.PaymentStatusAuthorized),
+				IssuedAt:  now,
+			},
+			expect: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.NotifyPaymentCompleted(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
 }
 
 func TestCheckout(t *testing.T) {
