@@ -14,7 +14,7 @@ interface Props {
 
 interface Emits {
   (e: 'click:item', id: string): void
-  (e: 'click:addCart', id: string, quantity: number): void
+  (e: 'click:addCart', name: string, id: string, quantity: number): void
 }
 
 const props = defineProps<Props>()
@@ -35,7 +35,7 @@ const handleClickItem = () => {
 }
 
 const handleClickAddCartButton = () => {
-  emits('click:addCart', props.id, quantity.value)
+  emits('click:addCart', props.name, props.id, quantity.value)
 }
 </script>
 

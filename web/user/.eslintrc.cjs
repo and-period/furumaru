@@ -20,7 +20,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['src/pages/**', 'src/layouts/**'],
+      files: ['src/pages/**', 'src/layouts/**', 'src/app.vue'],
       rules: {
         'vue/no-multiple-template-root': 'off',
         'vue/multi-word-component-names': 'off',
