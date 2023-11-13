@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
+import { Snackbar } from '~/types/props'
 
 const router = useRouter()
 
@@ -16,10 +17,20 @@ const handleClick = (id: string) => {
   router.push(`/items/${id}`)
 }
 
-const handleClickAddCartButton = async (id: string, quantity: number) => {
+const snackbarItems = ref<Snackbar[]>([])
+
+const handleClickAddCartButton = async (
+  name: string,
+  id: string,
+  quantity: number,
+) => {
   await addCart({
     productId: id,
     quantity,
+  })
+  snackbarItems.value.push({
+    text: `買い物カゴに「${name}」を追加しました`,
+    isShow: true,
   })
 }
 
@@ -31,6 +42,13 @@ useSeoMeta({
 </script>
 
 <template>
+  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+    <the-snackbar
+      v-model:is-show="snackbarItem.isShow"
+      :text="snackbarItem.text"
+    />
+  </template>
+
   <div class="flex flex-col bg-white px-[36px] py-[48px] text-main">
     <div class="w-full">
       <p class="text-center text-[20px] font-bold tracking-[2px]">

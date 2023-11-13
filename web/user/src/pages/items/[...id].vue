@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
+import { Snackbar } from '~/types/props'
 
 const route = useRoute()
 
@@ -24,6 +25,8 @@ const id = computed<string>(() => {
 
 fetchProduct(id.value)
 
+const snackbarItems = ref<Snackbar[]>([])
+
 const quantity = ref<number>(1)
 
 const priceString = computed<string>(() => {
@@ -42,6 +45,10 @@ const handleClickAddCartButton = () => {
     productId: id.value,
     quantity: quantity.value,
   })
+  snackbarItems.value.push({
+    text: `買い物カゴに「${product.value.name}」を追加しました`,
+    isShow: true,
+  })
 }
 
 const title = computed<string>(() => product.value.name)
@@ -52,6 +59,13 @@ useSeoMeta({
 </script>
 
 <template>
+  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+    <the-snackbar
+      v-model:is-show="snackbarItem.isShow"
+      :text="snackbarItem.text"
+    />
+  </template>
+
   <template v-if="productFetchState.isLoading">
     <div
       class="grid animate-pulse grid-cols-2 bg-white px-[112px] pb-6 pt-[40px] text-main"
@@ -82,7 +96,7 @@ useSeoMeta({
 
       <div class="flex w-full flex-col gap-4">
         <div class="break-words text-[24px] tracking-[2.4px]">
-          {{ selectItem?.name }}
+          {{ product.name }}
         </div>
 
         <div v-if="product.producer" class="mt-4 flex flex-col leading-[32px]">
