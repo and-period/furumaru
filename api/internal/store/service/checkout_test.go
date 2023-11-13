@@ -189,7 +189,12 @@ func TestCheckoutPayPay(t *testing.T) {
 	}
 }
 
-func checkoutmocks(m *mocks, t *testing.T, now time.Time, methodType entity.PaymentMethodType) {
+func checkoutmocks(
+	m *mocks,
+	t *testing.T,
+	now time.Time,
+	methodType entity.PaymentMethodType,
+) {
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
 		codes.PrefectureValues["kagawa"],
@@ -225,22 +230,27 @@ func checkoutmocks(m *mocks, t *testing.T, now time.Time, methodType entity.Paym
 		Amount:       1540,
 		CallbackURL:  "http://example.com/callback",
 		PaymentTypes: entity.NewKomojuPaymentTypes(methodType),
-		Products:     []*komoju.CreateSessionProduct{
-			// {
-			// 	Amount:      500,
-			// 	Description: "じゃがいも",
-			// 	Quantity:    2,
-			// },
-			// {
-			// 	Amount:      500,
-			// 	Description: "配送手数料",
-			// 	Quantity:    1,
-			// },
-			// {
-			// 	Amount:      140,
-			// 	Description: "消費税",
-			// 	Quantity:    1,
-			// },
+		Products: []*komoju.CreateSessionProduct{
+			{
+				Amount:      1000,
+				Description: "購入金額",
+				Quantity:    1,
+			},
+			{
+				Amount:      500,
+				Description: "配送手数料",
+				Quantity:    1,
+			},
+			{
+				Amount:      -100,
+				Description: "割引金額",
+				Quantity:    1,
+			},
+			{
+				Amount:      140,
+				Description: "消費税",
+				Quantity:    1,
+			},
 		},
 		Customer: &komoju.CreateSessionCustomer{
 			ID:    "user-id",
@@ -562,12 +572,27 @@ func TestCheckout(t *testing.T) {
 			Amount:       1540,
 			CallbackURL:  "http://example.com/callback",
 			PaymentTypes: []komoju.PaymentType{komoju.PaymentTypeCreditCard},
-			Products:     []*komoju.CreateSessionProduct{
-				// {
-				// 	Amount:      500,
-				// 	Description: "じゃがいも",
-				// 	Quantity:    2,
-				// },
+			Products: []*komoju.CreateSessionProduct{
+				{
+					Amount:      1000,
+					Description: "購入金額",
+					Quantity:    1,
+				},
+				{
+					Amount:      500,
+					Description: "配送手数料",
+					Quantity:    1,
+				},
+				{
+					Amount:      -100,
+					Description: "割引金額",
+					Quantity:    1,
+				},
+				{
+					Amount:      140,
+					Description: "消費税",
+					Quantity:    1,
+				},
 			},
 			Customer: &komoju.CreateSessionCustomer{
 				ID:    "user-id",
@@ -688,8 +713,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1540,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -717,8 +745,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -746,8 +777,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -775,8 +809,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -804,8 +841,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -834,8 +874,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -863,8 +906,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -893,8 +939,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -923,8 +972,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -953,8 +1005,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -984,8 +1039,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1540,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -1016,8 +1074,11 @@ func TestCheckout(t *testing.T) {
 					Total:             1540,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "http://example.com/redirect", nil
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
 				},
 			},
 			expect:    "",
@@ -1048,8 +1109,8 @@ func TestCheckout(t *testing.T) {
 					Total:             1540,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(context.Context, string, *entity.NewOrderParams) (string, error) {
-					return "", assert.AnError
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					return nil, assert.AnError
 				},
 			},
 			expect:    "",
