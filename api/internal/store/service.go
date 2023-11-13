@@ -78,6 +78,7 @@ type Service interface {
 	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error   // 商品を削除
 	// 購入処理
 	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error)
+	CheckoutPayPay(ctx context.Context, in *CheckoutPayPayInput) (string, error)
 	// 郵便番号
 	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error) // 検索
 }

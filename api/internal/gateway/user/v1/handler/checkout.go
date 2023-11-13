@@ -56,6 +56,11 @@ func (h *handler) Checkout(ctx *gin.Context) {
 			VerificationValue: req.CreditCard.VerificationValue,
 		}
 		redirectURL, err = h.store.CheckoutCreditCard(ctx, in)
+	case service.PaymentMethodTypePayPay:
+		in := &store.CheckoutPayPayInput{
+			CheckoutDetail: *detail,
+		}
+		redirectURL, err = h.store.CheckoutPayPay(ctx, in)
 	default:
 		err := errors.New("handler: not implemented payment method")
 		h.httpError(ctx, status.Error(codes.Unimplemented, err.Error()))

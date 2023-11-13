@@ -44,6 +44,28 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	return s.checkout(ctx, params)
 }
 
+func (s *service) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayPayInput) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (string, error) {
+		in := &komoju.OrderPayPayParams{
+			SessionID: sessionID,
+		}
+		session, err := s.komoju.Session.OrderPayPay(ctx, in)
+		if err != nil {
+			return "", err
+		}
+		return session.RedirectURL, nil
+	}
+	params := &checkoutParams{
+		payload:           &in.CheckoutDetail,
+		paymentMethodType: entity.PaymentMethodTypePayPay,
+		payFn:             payFn,
+	}
+	return s.checkout(ctx, params)
+}
+
 type checkoutParams struct {
 	payload           *store.CheckoutDetail
 	paymentMethodType entity.PaymentMethodType
