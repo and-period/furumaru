@@ -448,6 +448,10 @@ type CheckoutCreditCardInput struct {
 	VerificationValue string `validate:"required,numeric,max=4"`
 }
 
+type CheckoutPayPayInput struct {
+	CheckoutDetail
+}
+
 type CheckoutDetail struct {
 	UserID            string `validate:"required"`
 	SessionID         string `validate:"required"`
