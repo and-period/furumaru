@@ -34,6 +34,15 @@ const (
 	ShippingSize100     ShippingSize = 3 // 箱のサイズ:100
 )
 
+// ShippingType - 配送方法
+type ShippingType int32
+
+const (
+	ShippingTypeUnknown ShippingType = 0
+	ShippingTypeNormal  ShippingType = 1 // 常温・冷蔵便
+	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
+)
+
 type OrderFulfillment struct {
 	response.OrderFulfillment
 	orderID string
@@ -88,6 +97,21 @@ func (s ShippingSize) Response() int32 {
 	return int32(s)
 }
 
+func NewShippingType(typ entity.ShippingType) ShippingType {
+	switch typ {
+	case entity.ShippingTypeNormal:
+		return ShippingTypeNormal
+	case entity.ShippingTypeFrozen:
+		return ShippingTypeFrozen
+	default:
+		return ShippingTypeUnknown
+	}
+}
+
+func (t ShippingType) Response() int32 {
+	return int32(t)
+}
+
 func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, address *Address) *OrderFulfillment {
 	return &OrderFulfillment{
 		OrderFulfillment: response.OrderFulfillment{
@@ -95,7 +119,7 @@ func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, address *Address)
 			TrackingNumber:  fulfillment.TrackingNumber,
 			Status:          NewFulfillmentStatus(fulfillment.Status).Response(),
 			ShippingCarrier: NewShippingCarrier(fulfillment.ShippingCarrier).Response(),
-			ShippingMethod:  NewDeliveryType(fulfillment.ShippingMethod).Response(),
+			ShippingType:    NewShippingType(fulfillment.ShippingType).Response(),
 			BoxNumber:       fulfillment.BoxNumber,
 			BoxSize:         NewShippingSize(fulfillment.BoxSize).Response(),
 			ShippedAt:       jst.Unix(fulfillment.ShippedAt),

@@ -130,18 +130,15 @@ type GetShippingByCoordinatorIDInput struct {
 }
 
 type UpsertShippingInput struct {
-	CoordinatorID      string                `validate:"required"`
-	Box60Rates         []*UpsertShippingRate `validate:"required,dive,required"`
-	Box60Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
-	Box60Frozen        int64                 `validate:"min=0,lt=10000000000"`
-	Box80Rates         []*UpsertShippingRate `validate:"required,dive,required"`
-	Box80Refrigerated  int64                 `validate:"min=0,lt=10000000000"`
-	Box80Frozen        int64                 `validate:"min=0,lt=10000000000"`
-	Box100Rates        []*UpsertShippingRate `validate:"required,dive,required"`
-	Box100Refrigerated int64                 `validate:"min=0,lt=10000000000"`
-	Box100Frozen       int64                 `validate:"min=0,lt=10000000000"`
-	HasFreeShipping    bool                  `validate:""`
-	FreeShippingRates  int64                 `validate:"min=0,lt=10000000000"`
+	CoordinatorID     string                `validate:"required"`
+	Box60Rates        []*UpsertShippingRate `validate:"required,dive,required"`
+	Box60Frozen       int64                 `validate:"min=0,lt=10000000000"`
+	Box80Rates        []*UpsertShippingRate `validate:"required,dive,required"`
+	Box80Frozen       int64                 `validate:"min=0,lt=10000000000"`
+	Box100Rates       []*UpsertShippingRate `validate:"required,dive,required"`
+	Box100Frozen      int64                 `validate:"min=0,lt=10000000000"`
+	HasFreeShipping   bool                  `validate:""`
+	FreeShippingRates int64                 `validate:"min=0,lt=10000000000"`
 }
 
 type UpsertShippingRate struct {
@@ -151,17 +148,14 @@ type UpsertShippingRate struct {
 }
 
 type UpdateDefaultShippingInput struct {
-	Box60Rates         []*UpdateDefaultShippingRate `validate:"required,dive,required"`
-	Box60Refrigerated  int64                        `validate:"min=0,lt=10000000000"`
-	Box60Frozen        int64                        `validate:"min=0,lt=10000000000"`
-	Box80Rates         []*UpdateDefaultShippingRate `validate:"required,dive,required"`
-	Box80Refrigerated  int64                        `validate:"min=0,lt=10000000000"`
-	Box80Frozen        int64                        `validate:"min=0,lt=10000000000"`
-	Box100Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
-	Box100Refrigerated int64                        `validate:"min=0,lt=10000000000"`
-	Box100Frozen       int64                        `validate:"min=0,lt=10000000000"`
-	HasFreeShipping    bool                         `validate:""`
-	FreeShippingRates  int64                        `validate:"min=0,lt=10000000000"`
+	Box60Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box60Frozen       int64                        `validate:"min=0,lt=10000000000"`
+	Box80Rates        []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box80Frozen       int64                        `validate:"min=0,lt=10000000000"`
+	Box100Rates       []*UpdateDefaultShippingRate `validate:"required,dive,required"`
+	Box100Frozen      int64                        `validate:"min=0,lt=10000000000"`
+	HasFreeShipping   bool                         `validate:""`
+	FreeShippingRates int64                        `validate:"min=0,lt=10000000000"`
 }
 
 type UpdateDefaultShippingRate struct {
@@ -452,6 +446,10 @@ type CheckoutCreditCardInput struct {
 	Month             int64  `validate:"min=1,max=12"`
 	Year              int64  `validate:"min=2000,max=2100"`
 	VerificationValue string `validate:"required,numeric,max=4"`
+}
+
+type CheckoutPayPayInput struct {
+	CheckoutDetail
 }
 
 type CheckoutDetail struct {

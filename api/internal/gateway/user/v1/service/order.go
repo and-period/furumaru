@@ -12,6 +12,15 @@ const (
 	ShippingSize100     ShippingSize = 3 // 箱のサイズ:100
 )
 
+// ShippingType - 配送方法
+type ShippingType int32
+
+const (
+	ShippingTypeUnknown ShippingType = 0
+	ShippingTypeNormal  ShippingType = 1 // 常温・冷蔵便
+	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
+)
+
 // PaymentMethodType - 決済手段
 type PaymentMethodType int32
 
@@ -43,4 +52,19 @@ func NewShippingSize(size entity.ShippingSize) ShippingSize {
 
 func (s ShippingSize) Response() int32 {
 	return int32(s)
+}
+
+func NewShippingType(typ entity.ShippingType) ShippingType {
+	switch typ {
+	case entity.ShippingTypeNormal:
+		return ShippingTypeNormal
+	case entity.ShippingTypeFrozen:
+		return ShippingTypeFrozen
+	default:
+		return ShippingTypeUnknown
+	}
+}
+
+func (t ShippingType) Response() int32 {
+	return int32(t)
 }

@@ -16,7 +16,7 @@ type PaymentStatus int32
 
 const (
 	PaymentStatusUnknown    PaymentStatus = 0
-	PaymentStatusPending    PaymentStatus = 1 // 保留中
+	PaymentStatusPending    PaymentStatus = 1 // 保留中・未支払い
 	PaymentStatusAuthorized PaymentStatus = 2 // 仮売上・オーソリ
 	PaymentStatusCaptured   PaymentStatus = 3 // 実売上・キャプチャ
 	PaymentStatusRefunded   PaymentStatus = 4 // 返金
@@ -151,6 +151,18 @@ func (p *OrderPayment) IsCanceled() bool {
 func (p *OrderPayment) SetTransactionID(transactionID string, now time.Time) {
 	p.TransactionID = transactionID
 	p.OrderedAt = now
+}
+
+func (p *OrderPayment) KomojuProducts() []*komoju.CreateSessionProduct {
+	if p == nil {
+		return []*komoju.CreateSessionProduct{}
+	}
+	return []*komoju.CreateSessionProduct{
+		{Amount: p.Subtotal, Description: "購入金額", Quantity: 1},
+		{Amount: p.ShippingFee, Description: "配送手数料", Quantity: 1},
+		{Amount: p.Discount * -1, Description: "割引金額", Quantity: 1},
+		{Amount: p.Tax, Description: "消費税", Quantity: 1},
+	}
 }
 
 func (ps OrderPayments) AddressRevisionIDs() []int64 {

@@ -15,24 +15,21 @@ var errNotFoundShippingRate = errors.New("entity: not found shipping rate")
 
 // ShippingRevision - 配送設定変更履歴情報
 type ShippingRevision struct {
-	ID                 int64          `gorm:"primarykey;<-:create"`             // 変更履歴ID
-	ShippingID         string         `gorm:""`                                 // 配送設定ID
-	Box60Rates         ShippingRates  `gorm:"-"`                                // 箱サイズ60の通常便配送料一覧
-	Box60RatesJSON     datatypes.JSON `gorm:"default:null;column:box60_rates"`  // 箱サイズ60の通常便配送料一覧(JSON)
-	Box60Refrigerated  int64          `gorm:""`                                 // 箱サイズ60の冷蔵便追加配送料
-	Box60Frozen        int64          `gorm:""`                                 // 箱サイズ60の冷凍便追加配送料
-	Box80Rates         ShippingRates  `gorm:"-"`                                // 箱サイズ80の通常便配送料一覧
-	Box80RatesJSON     datatypes.JSON `gorm:"default:null;column:box80_rates"`  // 箱サイズ80の通常便配送料一覧(JSON)
-	Box80Refrigerated  int64          `gorm:""`                                 // 箱サイズ80の冷蔵便追加配送料
-	Box80Frozen        int64          `gorm:""`                                 // 箱サイズ80の冷凍便追加配送料
-	Box100Rates        ShippingRates  `gorm:"-"`                                // 箱サイズ100の通常便配送料一覧
-	Box100RatesJSON    datatypes.JSON `gorm:"default:null;column:box100_rates"` // 箱サイズ100の通常便配送料一覧(JSON)
-	Box100Refrigerated int64          `gorm:""`                                 // 箱サイズ100の冷蔵便追加配送料
-	Box100Frozen       int64          `gorm:""`                                 // 箱サイズ100の冷凍便追加配送料
-	HasFreeShipping    bool           `gorm:""`                                 // 送料無料オプションの有無
-	FreeShippingRates  int64          `gorm:""`                                 // 送料無料になる金額
-	CreatedAt          time.Time      `gorm:"<-:create"`                        // 登録日時
-	UpdatedAt          time.Time      `gorm:""`                                 // 更新日時
+	ID                int64          `gorm:"primarykey;<-:create"`             // 変更履歴ID
+	ShippingID        string         `gorm:""`                                 // 配送設定ID
+	Box60Rates        ShippingRates  `gorm:"-"`                                // 箱サイズ60の通常便配送料一覧
+	Box60RatesJSON    datatypes.JSON `gorm:"default:null;column:box60_rates"`  // 箱サイズ60の通常便配送料一覧(JSON)
+	Box60Frozen       int64          `gorm:""`                                 // 箱サイズ60の冷凍便追加配送料
+	Box80Rates        ShippingRates  `gorm:"-"`                                // 箱サイズ80の通常便配送料一覧
+	Box80RatesJSON    datatypes.JSON `gorm:"default:null;column:box80_rates"`  // 箱サイズ80の通常便配送料一覧(JSON)
+	Box80Frozen       int64          `gorm:""`                                 // 箱サイズ80の冷凍便追加配送料
+	Box100Rates       ShippingRates  `gorm:"-"`                                // 箱サイズ100の通常便配送料一覧
+	Box100RatesJSON   datatypes.JSON `gorm:"default:null;column:box100_rates"` // 箱サイズ100の通常便配送料一覧(JSON)
+	Box100Frozen      int64          `gorm:""`                                 // 箱サイズ100の冷凍便追加配送料
+	HasFreeShipping   bool           `gorm:""`                                 // 送料無料オプションの有無
+	FreeShippingRates int64          `gorm:""`                                 // 送料無料になる金額
+	CreatedAt         time.Time      `gorm:"<-:create"`                        // 登録日時
+	UpdatedAt         time.Time      `gorm:""`                                 // 更新日時
 }
 
 type ShippingRevisions []*ShippingRevision
@@ -48,34 +45,28 @@ type ShippingRate struct {
 type ShippingRates []*ShippingRate
 
 type NewShippingRevisionParams struct {
-	ShippingID         string
-	Box60Rates         ShippingRates
-	Box60Refrigerated  int64
-	Box60Frozen        int64
-	Box80Rates         ShippingRates
-	Box80Refrigerated  int64
-	Box80Frozen        int64
-	Box100Rates        ShippingRates
-	Box100Refrigerated int64
-	Box100Frozen       int64
-	HasFreeShipping    bool
-	FreeShippingRates  int64
+	ShippingID        string
+	Box60Rates        ShippingRates
+	Box60Frozen       int64
+	Box80Rates        ShippingRates
+	Box80Frozen       int64
+	Box100Rates       ShippingRates
+	Box100Frozen      int64
+	HasFreeShipping   bool
+	FreeShippingRates int64
 }
 
 func NewShippingRevision(params *NewShippingRevisionParams) *ShippingRevision {
 	return &ShippingRevision{
-		ShippingID:         params.ShippingID,
-		Box60Rates:         params.Box60Rates,
-		Box60Refrigerated:  params.Box60Refrigerated,
-		Box60Frozen:        params.Box60Frozen,
-		Box80Rates:         params.Box80Rates,
-		Box80Refrigerated:  params.Box80Refrigerated,
-		Box80Frozen:        params.Box80Frozen,
-		Box100Rates:        params.Box100Rates,
-		Box100Refrigerated: params.Box100Refrigerated,
-		Box100Frozen:       params.Box100Frozen,
-		HasFreeShipping:    params.HasFreeShipping,
-		FreeShippingRates:  params.FreeShippingRates,
+		ShippingID:        params.ShippingID,
+		Box60Rates:        params.Box60Rates,
+		Box60Frozen:       params.Box60Frozen,
+		Box80Rates:        params.Box80Rates,
+		Box80Frozen:       params.Box80Frozen,
+		Box100Rates:       params.Box100Rates,
+		Box100Frozen:      params.Box100Frozen,
+		HasFreeShipping:   params.HasFreeShipping,
+		FreeShippingRates: params.FreeShippingRates,
 	}
 }
 

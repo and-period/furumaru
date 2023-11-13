@@ -18,7 +18,6 @@ shippingResponse:
         name: 'その他'
         price: 1200
         prefectureCodes: [2, 3, 4]
-      box60Refrigerated: 300
       box60Frozen: 500
       box80Rates:
       - number: 1
@@ -29,7 +28,6 @@ shippingResponse:
         name: 'その他'
         price: 1200
         prefectureCodes: [2, 3, 4]
-      box80Refrigerated: 300
       box80Frozen: 500
       box100Rates:
       - number: 1
@@ -40,7 +38,6 @@ shippingResponse:
         name: 'その他'
         price: 1200
         prefectureCodes: [2, 3, 4]
-      box100Refrigerated: 300
       box100Frozen: 500
       hasFreeShipping: true
       freeShippingRates: 3000

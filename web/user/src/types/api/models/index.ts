@@ -45,6 +45,7 @@ export * from './ScheduleResponse';
 export * from './ScheduleStatus';
 export * from './ScheduleThumbnailsInner';
 export * from './ShippingSize';
+export * from './ShippingType';
 export * from './SignInRequest';
 export * from './StorageMethodType';
 export * from './TopArchive';

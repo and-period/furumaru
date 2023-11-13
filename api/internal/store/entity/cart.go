@@ -36,7 +36,7 @@ type Cart struct {
 // CartBasket - 買い物かご情報
 type CartBasket struct {
 	BoxNumber     int64        `dynamodbav:"box_number"`     // 箱の通番
-	BoxType       DeliveryType `dynamodbav:"box_type"`       // 箱の種別
+	BoxType       ShippingType `dynamodbav:"box_type"`       // 箱の種別
 	BoxSize       ShippingSize `dynamodbav:"box_size"`       // 箱のサイズ
 	Items         CartItems    `dynamodbav:"items"`          // 商品一覧
 	CoordinatorID string       `dynamodbav:"coordinator_id"` // コーディネータID
@@ -56,7 +56,7 @@ type CartItems []*CartItem
 type cartGroup struct {
 	key           string
 	coordinatorID string
-	boxType       DeliveryType
+	boxType       ShippingType
 	products      Products
 }
 
@@ -359,7 +359,7 @@ func (is CartItems) groupByCartBasketKey(products map[string]*Product) map[strin
 		if !ok {
 			continue
 		}
-		key := generateCartBasketKey(product.CoordinatorID, product.DeliveryType)
+		key := generateCartBasketKey(product.CoordinatorID, product.ShippingType())
 		if _, ok := res[key]; !ok {
 			res[key] = make(Products, 0, item.Quantity)
 		}
@@ -370,20 +370,20 @@ func (is CartItems) groupByCartBasketKey(products map[string]*Product) map[strin
 	return res
 }
 
-func generateCartBasketKey(coordinatorID string, typ DeliveryType) string {
+func generateCartBasketKey(coordinatorID string, typ ShippingType) string {
 	return fmt.Sprintf("%s:%d", coordinatorID, typ)
 }
 
-func parseCartBasketKey(key string) (string, DeliveryType, error) {
+func parseCartBasketKey(key string) (string, ShippingType, error) {
 	strs := strings.Split(key, ":")
 	if len(strs) != 2 {
-		return "", DeliveryTypeUnknown, errors.New("invalid cart basket key format")
+		return "", ShippingTypeUnknown, errors.New("invalid cart basket key format")
 	}
 	typ, err := strconv.ParseInt(strs[1], 10, 64)
 	if err != nil {
-		return "", DeliveryTypeUnknown, err
+		return "", ShippingTypeUnknown, err
 	}
-	return strs[0], DeliveryType(typ), nil
+	return strs[0], ShippingType(typ), nil
 }
 
 func refreshCart(baskets CartBaskets, products map[string]*Product) (CartBaskets, error) {

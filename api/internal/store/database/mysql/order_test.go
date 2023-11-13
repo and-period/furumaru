@@ -604,7 +604,7 @@ func testOrderFulfillment(fulfillmentID, orderID string, addressID, boxNumber in
 		Status:            entity.FulfillmentStatusFulfilled,
 		TrackingNumber:    "",
 		ShippingCarrier:   entity.ShippingCarrierUnknown,
-		ShippingMethod:    entity.DeliveryTypeNormal,
+		ShippingType:      entity.ShippingTypeNormal,
 		BoxNumber:         boxNumber,
 		BoxSize:           entity.ShippingSize60,
 		CreatedAt:         now,

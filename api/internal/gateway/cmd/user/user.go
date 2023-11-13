@@ -55,9 +55,9 @@ type app struct {
 	SQSQueueURL          string `envconfig:"SQS_QUEUE_URL" default:""`
 	SQSMockEnabled       bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
 	KomojuHost           string `envconfig:"KOMOJU_HOST" default:""`
-	KomojuClientID       string `encvonfig:"KOMOJU_CLIENT_ID" default:""`
-	KomojuClientPassword string `encvonfig:"KOMOJU_CLIENT_PASSWORD" default:""`
-	KomojuSecretName     string `encvonfig:"KOMOJU_SECRET_NAME" default:""`
+	KomojuClientID       string `envconfig:"KOMOJU_CLIENT_ID" default:""`
+	KomojuClientPassword string `envconfig:"KOMOJU_CLIENT_PASSWORD" default:""`
+	KomojuSecretName     string `envconfig:"KOMOJU_SECRET_NAME" default:""`
 	SlackAPIToken        string `envconfig:"SLACK_API_TOKEN" default:""`
 	SlackChannelID       string `envconfig:"SLACK_CHANNEL_ID" default:""`
 	SlackSecretName      string `envconfig:"SLACK_SECRET_NAME" default:""`

@@ -130,7 +130,7 @@ func TestOrderPayment(t *testing.T) {
 				Baskets: CartBaskets{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -169,18 +169,15 @@ func TestOrderPayment(t *testing.T) {
 					ID:            "coordinator-id",
 					CoordinatorID: "coordinator-id",
 					ShippingRevision: ShippingRevision{
-						ShippingID:         "coordinator-id",
-						Box60Rates:         rates,
-						Box60Refrigerated:  500,
-						Box60Frozen:        800,
-						Box80Rates:         rates,
-						Box80Refrigerated:  500,
-						Box80Frozen:        800,
-						Box100Rates:        rates,
-						Box100Refrigerated: 500,
-						Box100Frozen:       800,
-						HasFreeShipping:    true,
-						FreeShippingRates:  3000,
+						ShippingID:        "coordinator-id",
+						Box60Rates:        rates,
+						Box60Frozen:       800,
+						Box80Rates:        rates,
+						Box80Frozen:       800,
+						Box100Rates:       rates,
+						Box100Frozen:      800,
+						HasFreeShipping:   true,
+						FreeShippingRates: 3000,
 					},
 				},
 				Promotion: nil,
@@ -223,7 +220,7 @@ func TestOrderPayment(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -262,17 +259,14 @@ func TestOrderPayment(t *testing.T) {
 					ID:            "coordinator-id",
 					CoordinatorID: "coordinator-id",
 					ShippingRevision: ShippingRevision{
-						ShippingID:         "coordinator-id",
-						Box60Rates:         rates,
-						Box60Refrigerated:  500,
-						Box60Frozen:        800,
-						Box80Rates:         rates,
-						Box80Refrigerated:  500,
-						Box80Frozen:        800,
-						Box100Rates:        rates,
-						Box100Refrigerated: 500,
-						Box100Frozen:       800,
-						HasFreeShipping:    false,
+						ShippingID:      "coordinator-id",
+						Box60Rates:      rates,
+						Box60Frozen:     800,
+						Box80Rates:      rates,
+						Box80Frozen:     800,
+						Box100Rates:     rates,
+						Box100Frozen:    800,
+						HasFreeShipping: false,
 					},
 				},
 				Promotion: &Promotion{
@@ -326,7 +320,7 @@ func TestOrderPayment(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -372,7 +366,7 @@ func TestOrderPayment(t *testing.T) {
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
-						BoxType:   DeliveryTypeNormal,
+						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
 						Items: []*CartItem{
 							{
@@ -490,6 +484,49 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 			t.Parallel()
 			tt.payment.SetTransactionID(tt.transactionID, tt.now)
 			assert.Equal(t, tt.expect, tt.expect)
+		})
+	}
+}
+
+func TestOrderPayment_KomojuProducts(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		payment *OrderPayment
+		expect  []*komoju.CreateSessionProduct
+	}{
+		{
+			name: "success",
+			payment: &OrderPayment{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				TransactionID:     "transaction-id",
+				Status:            PaymentStatusCaptured,
+				MethodType:        PaymentMethodTypeCreditCard,
+				Subtotal:          1980,
+				Discount:          200,
+				ShippingFee:       550,
+				Tax:               233,
+				Total:             2563,
+			},
+			expect: []*komoju.CreateSessionProduct{
+				{Amount: 1980, Description: "購入金額", Quantity: 1},
+				{Amount: 550, Description: "配送手数料", Quantity: 1},
+				{Amount: -200, Description: "割引金額", Quantity: 1},
+				{Amount: 233, Description: "消費税", Quantity: 1},
+			},
+		},
+		{
+			name:    "empty",
+			payment: nil,
+			expect:  []*komoju.CreateSessionProduct{},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.payment.KomojuProducts())
 		})
 	}
 }

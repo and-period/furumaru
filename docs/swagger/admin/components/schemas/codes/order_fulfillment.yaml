@@ -52,3 +52,20 @@ shippingSize:
   - '箱のサイズ:60'
   - '箱のサイズ:80'
   - '箱のサイズ:100'
+shippingType:
+  type: integer
+  format: int32
+  description: 配送方法
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  x-enum-varnames:
+  - UNKNOWN
+  - NORMAL
+  - FROZEN
+  x-enum-descriptions:
+  - 不明
+  - 常温・冷蔵便
+  - 冷凍便

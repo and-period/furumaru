@@ -19,7 +19,6 @@ const formData = ref<UpdateDefaultShippingRequest>({
       prefectureCodes: []
     }
   ],
-  box60Refrigerated: 0,
   box60Frozen: 0,
   box80Rates: [
     {
@@ -28,7 +27,6 @@ const formData = ref<UpdateDefaultShippingRequest>({
       prefectureCodes: []
     }
   ],
-  box80Refrigerated: 0,
   box80Frozen: 0,
   box100Rates: [
     {
@@ -37,7 +35,6 @@ const formData = ref<UpdateDefaultShippingRequest>({
       prefectureCodes: []
     }
   ],
-  box100Refrigerated: 0,
   box100Frozen: 0,
   hasFreeShipping: false,
   freeShippingRates: 0

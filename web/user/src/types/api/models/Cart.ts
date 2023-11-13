@@ -19,18 +19,18 @@ import {
     CartItemsInnerFromJSONTyped,
     CartItemsInnerToJSON,
 } from './CartItemsInner';
-import type { DeliveryType } from './DeliveryType';
-import {
-    DeliveryTypeFromJSON,
-    DeliveryTypeFromJSONTyped,
-    DeliveryTypeToJSON,
-} from './DeliveryType';
 import type { ShippingSize } from './ShippingSize';
 import {
     ShippingSizeFromJSON,
     ShippingSizeFromJSONTyped,
     ShippingSizeToJSON,
 } from './ShippingSize';
+import type { ShippingType } from './ShippingType';
+import {
+    ShippingTypeFromJSON,
+    ShippingTypeFromJSONTyped,
+    ShippingTypeToJSON,
+} from './ShippingType';
 
 /**
  * カート情報
@@ -46,10 +46,10 @@ export interface Cart {
     number: number;
     /**
      * 
-     * @type {DeliveryType}
+     * @type {ShippingType}
      * @memberof Cart
      */
-    type: DeliveryType;
+    type: ShippingType;
     /**
      * 
      * @type {ShippingSize}
@@ -95,7 +95,7 @@ export function CartFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cart
     return {
         
         'number': json['number'],
-        'type': DeliveryTypeFromJSON(json['type']),
+        'type': ShippingTypeFromJSON(json['type']),
         'size': ShippingSizeFromJSON(json['size']),
         'items': ((json['items'] as Array<any>).map(CartItemsInnerFromJSON)),
         'coordinatorId': json['coordinatorId'],
@@ -112,7 +112,7 @@ export function CartToJSON(value?: Cart | null): any {
     return {
         
         'number': value.number,
-        'type': DeliveryTypeToJSON(value.type),
+        'type': ShippingTypeToJSON(value.type),
         'size': ShippingSizeToJSON(value.size),
         'items': ((value.items as Array<any>).map(CartItemsInnerToJSON)),
         'coordinatorId': value.coordinatorId,

@@ -16,6 +16,15 @@ var (
 	errUnknownShippingSize           = errors.New("entity: unknown shipping size")
 )
 
+// ShippingSize - 配送種別
+type ShippingType int32
+
+const (
+	ShippingTypeUnknown ShippingType = 0
+	ShippingTypeNormal  ShippingType = 1 // 常温・冷蔵便
+	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
+)
+
 // Shipping - 配送設定情報
 type Shipping struct {
 	ShippingRevision `gorm:"-"`
@@ -28,34 +37,28 @@ type Shipping struct {
 type Shippings []*Shipping
 
 type NewShippingParams struct {
-	CoordinatorID      string
-	Box60Rates         ShippingRates
-	Box60Refrigerated  int64
-	Box60Frozen        int64
-	Box80Rates         ShippingRates
-	Box80Refrigerated  int64
-	Box80Frozen        int64
-	Box100Rates        ShippingRates
-	Box100Refrigerated int64
-	Box100Frozen       int64
-	HasFreeShipping    bool
-	FreeShippingRates  int64
+	CoordinatorID     string
+	Box60Rates        ShippingRates
+	Box60Frozen       int64
+	Box80Rates        ShippingRates
+	Box80Frozen       int64
+	Box100Rates       ShippingRates
+	Box100Frozen      int64
+	HasFreeShipping   bool
+	FreeShippingRates int64
 }
 
 func NewShipping(params *NewShippingParams) *Shipping {
 	rparams := &NewShippingRevisionParams{
-		ShippingID:         params.CoordinatorID,
-		Box60Rates:         params.Box60Rates,
-		Box60Refrigerated:  params.Box60Refrigerated,
-		Box60Frozen:        params.Box60Frozen,
-		Box80Rates:         params.Box80Rates,
-		Box80Refrigerated:  params.Box80Refrigerated,
-		Box80Frozen:        params.Box80Frozen,
-		Box100Rates:        params.Box100Rates,
-		Box100Refrigerated: params.Box100Refrigerated,
-		Box100Frozen:       params.Box100Frozen,
-		HasFreeShipping:    params.HasFreeShipping,
-		FreeShippingRates:  params.FreeShippingRates,
+		ShippingID:        params.CoordinatorID,
+		Box60Rates:        params.Box60Rates,
+		Box60Frozen:       params.Box60Frozen,
+		Box80Rates:        params.Box80Rates,
+		Box80Frozen:       params.Box80Frozen,
+		Box100Rates:       params.Box100Rates,
+		Box100Frozen:      params.Box100Frozen,
+		HasFreeShipping:   params.HasFreeShipping,
+		FreeShippingRates: params.FreeShippingRates,
 	}
 	revision := NewShippingRevision(rparams)
 	return &Shipping{
@@ -70,7 +73,7 @@ func (s *Shipping) IsDefault() bool {
 }
 
 func (s *Shipping) CalcShippingFee(
-	shippingSize ShippingSize, deliveryType DeliveryType, total int64, prefectureCode int32,
+	shippingSize ShippingSize, shippingType ShippingType, total int64, prefectureCode int32,
 ) (int64, error) {
 	if s.HasFreeShipping && total >= s.FreeShippingRates {
 		return 0, nil // 送料設定による無料配送
@@ -82,33 +85,18 @@ func (s *Shipping) CalcShippingFee(
 	)
 	switch shippingSize {
 	case ShippingSize60:
-		switch deliveryType {
-		case DeliveryTypeNormal:
-			// 追加料金なし
-		case DeliveryTypeFrozen:
+		if shippingType == ShippingTypeFrozen {
 			additional = s.Box60Frozen
-		case DeliveryTypeRefrigerated:
-			additional = s.Box60Refrigerated
 		}
 		rate, err = s.Box60Rates.Find(prefectureCode)
 	case ShippingSize80:
-		switch deliveryType {
-		case DeliveryTypeNormal:
-			// 追加料金なし
-		case DeliveryTypeFrozen:
+		if shippingType == ShippingTypeFrozen {
 			additional = s.Box80Frozen
-		case DeliveryTypeRefrigerated:
-			additional = s.Box80Refrigerated
 		}
 		rate, err = s.Box80Rates.Find(prefectureCode)
 	case ShippingSize100:
-		switch deliveryType {
-		case DeliveryTypeNormal:
-			// 追加料金なし
-		case DeliveryTypeFrozen:
+		if shippingType == ShippingTypeFrozen {
 			additional = s.Box100Frozen
-		case DeliveryTypeRefrigerated:
-			additional = s.Box100Refrigerated
 		}
 		rate, err = s.Box100Rates.Find(prefectureCode)
 	default:
