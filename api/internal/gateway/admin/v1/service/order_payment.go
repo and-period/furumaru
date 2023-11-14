@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
@@ -42,25 +41,25 @@ type OrderPayment struct {
 
 type OrderPayments []*OrderPayment
 
-func NewPaymentMethodType(typ sentity.PaymentMethodType) PaymentMethodType {
+func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
 	switch typ {
-	case sentity.PaymentMethodTypeCash:
+	case entity.PaymentMethodTypeCash:
 		return PaymentMethodTypeCash
-	case sentity.PaymentMethodTypeCreditCard:
+	case entity.PaymentMethodTypeCreditCard:
 		return PaymentMethodTypeCreditCard
-	case sentity.PaymentMethodTypeKonbini:
+	case entity.PaymentMethodTypeKonbini:
 		return PaymentMethodTypeKonbini
-	case sentity.PaymentMethodTypeBankTranser:
+	case entity.PaymentMethodTypeBankTranser:
 		return PaymentMethodTypeBankTranser
-	case sentity.PaymentMethodTypePayPay:
+	case entity.PaymentMethodTypePayPay:
 		return PaymentMethodTypePayPay
-	case sentity.PaymentMethodTypeLinePay:
+	case entity.PaymentMethodTypeLinePay:
 		return PaymentMethodTypeLinePay
-	case sentity.PaymentMethodTypeMerpay:
+	case entity.PaymentMethodTypeMerpay:
 		return PaymentMethodTypeMerpay
-	case sentity.PaymentMethodTypeRakutenPay:
+	case entity.PaymentMethodTypeRakutenPay:
 		return PaymentMethodTypeRakutenPay
-	case sentity.PaymentMethodTypeAUPay:
+	case entity.PaymentMethodTypeAUPay:
 		return PaymentMethodTypeAUPay
 	default:
 		return PaymentMethodTypeUnknown
@@ -96,17 +95,17 @@ func (t PaymentMethodType) Response() int32 {
 	return int32(t)
 }
 
-func NewPaymentStatus(status sentity.PaymentStatus) PaymentStatus {
+func NewPaymentStatus(status entity.PaymentStatus) PaymentStatus {
 	switch status {
-	case sentity.PaymentStatusPending:
+	case entity.PaymentStatusPending:
 		return PaymentStatusUnpaid
-	case sentity.PaymentStatusAuthorized:
+	case entity.PaymentStatusAuthorized:
 		return PaymentStatusAuthorized
-	case sentity.PaymentStatusCaptured:
+	case entity.PaymentStatusCaptured:
 		return PaymentStatusPaid
-	case sentity.PaymentStatusCanceled, sentity.PaymentStatusRefunded:
+	case entity.PaymentStatusCanceled, entity.PaymentStatusRefunded:
 		return PaymentStatusCanceled
-	case sentity.PaymentStatusFailed:
+	case entity.PaymentStatusFailed:
 		return PaymentStatusFailed
 	default:
 		return PaymentStatusUnknown
@@ -117,7 +116,7 @@ func (s PaymentStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrderPayment(payment *sentity.OrderPayment, address *Address) *OrderPayment {
+func NewOrderPayment(payment *entity.OrderPayment, address *Address) *OrderPayment {
 	return &OrderPayment{
 		OrderPayment: response.OrderPayment{
 			TransactionID: payment.TransactionID,
@@ -143,7 +142,7 @@ func (p *OrderPayment) Response() *response.OrderPayment {
 	return &p.OrderPayment
 }
 
-func NewOrderPayments(payments sentity.OrderPayments, addresses map[int64]*Address) OrderPayments {
+func NewOrderPayments(payments entity.OrderPayments, addresses map[int64]*Address) OrderPayments {
 	res := make(OrderPayments, len(payments))
 	for i, p := range payments {
 		res[i] = NewOrderPayment(p, addresses[p.AddressRevisionID])
