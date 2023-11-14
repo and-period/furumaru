@@ -79,6 +79,10 @@ type Service interface {
 	// 購入処理
 	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error) // 支払い申請（クレジットカード）
 	CheckoutPayPay(ctx context.Context, in *CheckoutPayPayInput) (string, error)         // 支払い申請（PayPay）
+	CheckoutLinePay(ctx context.Context, in *CheckoutLinePayInput) (string, error)       // 支払い申請（LINE Pay）
+	CheckoutMerpay(ctx context.Context, in *CheckoutMerpayInput) (string, error)         // 支払い申請（メルペイ）
+	CheckoutRakutenPay(ctx context.Context, in *CheckoutRakutenPayInput) (string, error) // 支払い申請（楽天ペイ）
+	CheckoutAUPay(ctx context.Context, in *CheckoutAUPayInput) (string, error)           // 支払い申請（au PAY）
 	NotifyPaymentCompleted(ctx context.Context, in *NotifyPaymentCompletedInput) error   // 支払い通知
 	// 決済システム
 	MultiGetPaymentSystems(ctx context.Context, in *MultiGetPaymentSystemsInput) (entity.PaymentSystems, error) // 一覧取得(種別指定)

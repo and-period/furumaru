@@ -79,6 +79,21 @@ func (mr *MockServiceMockRecorder) ApproveSchedule(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApproveSchedule", reflect.TypeOf((*MockService)(nil).ApproveSchedule), ctx, in)
 }
 
+// CheckoutAUPay mocks base method.
+func (m *MockService) CheckoutAUPay(ctx context.Context, in *store.CheckoutAUPayInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckoutAUPay", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckoutAUPay indicates an expected call of CheckoutAUPay.
+func (mr *MockServiceMockRecorder) CheckoutAUPay(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckoutAUPay", reflect.TypeOf((*MockService)(nil).CheckoutAUPay), ctx, in)
+}
+
 // CheckoutCreditCard mocks base method.
 func (m *MockService) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCreditCardInput) (string, error) {
 	m.ctrl.T.Helper()
@@ -94,6 +109,36 @@ func (mr *MockServiceMockRecorder) CheckoutCreditCard(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckoutCreditCard", reflect.TypeOf((*MockService)(nil).CheckoutCreditCard), ctx, in)
 }
 
+// CheckoutLinePay mocks base method.
+func (m *MockService) CheckoutLinePay(ctx context.Context, in *store.CheckoutLinePayInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckoutLinePay", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckoutLinePay indicates an expected call of CheckoutLinePay.
+func (mr *MockServiceMockRecorder) CheckoutLinePay(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckoutLinePay", reflect.TypeOf((*MockService)(nil).CheckoutLinePay), ctx, in)
+}
+
+// CheckoutMerpay mocks base method.
+func (m *MockService) CheckoutMerpay(ctx context.Context, in *store.CheckoutMerpayInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckoutMerpay", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckoutMerpay indicates an expected call of CheckoutMerpay.
+func (mr *MockServiceMockRecorder) CheckoutMerpay(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckoutMerpay", reflect.TypeOf((*MockService)(nil).CheckoutMerpay), ctx, in)
+}
+
 // CheckoutPayPay mocks base method.
 func (m *MockService) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayPayInput) (string, error) {
 	m.ctrl.T.Helper()
@@ -107,6 +152,21 @@ func (m *MockService) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayP
 func (mr *MockServiceMockRecorder) CheckoutPayPay(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckoutPayPay", reflect.TypeOf((*MockService)(nil).CheckoutPayPay), ctx, in)
+}
+
+// CheckoutRakutenPay mocks base method.
+func (m *MockService) CheckoutRakutenPay(ctx context.Context, in *store.CheckoutRakutenPayInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckoutRakutenPay", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckoutRakutenPay indicates an expected call of CheckoutRakutenPay.
+func (mr *MockServiceMockRecorder) CheckoutRakutenPay(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckoutRakutenPay", reflect.TypeOf((*MockService)(nil).CheckoutRakutenPay), ctx, in)
 }
 
 // CreateCategory mocks base method.
