@@ -381,12 +381,20 @@ func (mr *MockOrderMockRecorder) List(ctx, params interface{}, fields ...interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockOrder)(nil).List), varargs...)
 }
 
-<<<<<<< Updated upstream
 // UpdatePaymentStatus mocks base method.
 func (m *MockOrder) UpdatePaymentStatus(ctx context.Context, orderID string, params *database.UpdateOrderPaymentParams) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdatePaymentStatus", ctx, orderID, params)
-=======
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdatePaymentStatus indicates an expected call of UpdatePaymentStatus.
+func (mr *MockOrderMockRecorder) UpdatePaymentStatus(ctx, orderID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePaymentStatus", reflect.TypeOf((*MockOrder)(nil).UpdatePaymentStatus), ctx, orderID, params)
+}
+
 // MockPaymentSystem is a mock of PaymentSystem interface.
 type MockPaymentSystem struct {
 	ctrl     *gomock.Controller
@@ -454,22 +462,14 @@ func (mr *MockPaymentSystemMockRecorder) MultiGet(ctx, methodTypes interface{}, 
 func (m *MockPaymentSystem) Update(ctx context.Context, methodType entity.PaymentMethodType, status entity.PaymentSystemStatus) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", ctx, methodType, status)
->>>>>>> Stashed changes
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-<<<<<<< Updated upstream
-// UpdatePaymentStatus indicates an expected call of UpdatePaymentStatus.
-func (mr *MockOrderMockRecorder) UpdatePaymentStatus(ctx, orderID, params interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePaymentStatus", reflect.TypeOf((*MockOrder)(nil).UpdatePaymentStatus), ctx, orderID, params)
-=======
 // Update indicates an expected call of Update.
 func (mr *MockPaymentSystemMockRecorder) Update(ctx, methodType, status interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockPaymentSystem)(nil).Update), ctx, methodType, status)
->>>>>>> Stashed changes
 }
 
 // MockProduct is a mock of Product interface.

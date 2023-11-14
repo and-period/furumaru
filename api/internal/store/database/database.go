@@ -97,17 +97,16 @@ type ListOrdersParams struct {
 	Offset        int
 }
 
-<<<<<<< Updated upstream
 type UpdateOrderPaymentParams struct {
 	Status    entity.PaymentStatus
 	PaymentID string
 	IssuedAt  time.Time
-=======
+}
+
 type PaymentSystem interface {
 	MultiGet(ctx context.Context, methodTypes []entity.PaymentMethodType, fields ...string) (entity.PaymentSystems, error)
 	Get(ctx context.Context, methodType entity.PaymentMethodType, fields ...string) (*entity.PaymentSystem, error)
 	Update(ctx context.Context, methodType entity.PaymentMethodType, status entity.PaymentSystemStatus) error
->>>>>>> Stashed changes
 }
 
 type Product interface {

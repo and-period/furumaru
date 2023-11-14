@@ -77,18 +77,13 @@ type Service interface {
 	AddCartItem(ctx context.Context, in *AddCartItemInput) error         // 商品を追加
 	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error   // 商品を削除
 	// 購入処理
-<<<<<<< Updated upstream
 	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error) // 支払い申請（クレジットカード）
 	CheckoutPayPay(ctx context.Context, in *CheckoutPayPayInput) (string, error)         // 支払い申請（PayPay）
 	NotifyPaymentCompleted(ctx context.Context, in *NotifyPaymentCompletedInput) error   // 支払い通知
-=======
-	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error)
-	CheckoutPayPay(ctx context.Context, in *CheckoutPayPayInput) (string, error)
 	// 決済システム
 	MultiGetPaymentSystems(ctx context.Context, in *MultiGetPaymentSystemsInput) (entity.PaymentSystems, error) // 一覧取得(種別指定)
 	GetPaymentSystem(ctx context.Context, in *GetPaymentSystemInput) (*entity.PaymentSystem, error)             // １件取得
 	UpdatePaymentSystem(ctx context.Context, in *UpdatePaymentStatusInput) error                                // 更新
->>>>>>> Stashed changes
 	// 郵便番号
 	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error) // 検索
 }
