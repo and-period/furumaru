@@ -490,23 +490,23 @@ func TestOrder_UpdatePaymentStatus(t *testing.T) {
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
 		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
-		order.OrderPayment = *testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
-		order.OrderPayment.Status = status
+		err := db.DB.Create(&order).Error
+		require.NoError(t, err)
+
+		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
+		payment.Status = status
+		err = db.DB.Create(&payment).Error
+		require.NoError(t, err)
+
 		fulfillments := make(entity.OrderFulfillments, 1)
 		fulfillments[0] = testOrderFulfillment("fulfillment-id", orderID, 1, 1, now)
-		order.OrderFulfillments = fulfillments
+		err = db.DB.Create(&fulfillments).Error
+		require.NoError(t, err)
+
 		items := make(entity.OrderItems, 2)
 		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
 		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
-		order.OrderItems = items
-
-		err := db.DB.Create(&order).Error
-		require.NoError(t, err)
-		err = db.DB.Create(&order.OrderPayment).Error
-		require.NoError(t, err)
-		err = db.DB.Create(&order.OrderFulfillments).Error
-		require.NoError(t, err)
-		err = db.DB.Create(&order.OrderItems).Error
+		err = db.DB.Create(&items).Error
 		require.NoError(t, err)
 	}
 

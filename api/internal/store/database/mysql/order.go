@@ -78,13 +78,7 @@ func (o *order) Count(ctx context.Context, params *database.ListOrdersParams) (i
 
 func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error) {
 	order, err := o.get(ctx, o.db.DB, orderID, fields...)
-	if err != nil {
-		return nil, dbError(err)
-	}
-	if err := o.fill(ctx, o.db.DB, order); err != nil {
-		return nil, dbError(err)
-	}
-	return order, nil
+	return order, dbError(err)
 }
 
 func (o *order) Create(ctx context.Context, order *entity.Order) error {
@@ -173,10 +167,16 @@ func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.Aggrega
 func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...string) (*entity.Order, error) {
 	var order *entity.Order
 
-	err := o.db.Statement(ctx, tx, orderTable, fields...).
-		Where("id = ?", orderID).
-		First(&order).Error
-	return order, err
+	stmt := o.db.Statement(ctx, tx, orderTable, fields...).
+		Where("id = ?", orderID)
+
+	if err := stmt.First(&order).Error; err != nil {
+		return nil, err
+	}
+	if err := o.fill(ctx, o.db.DB, order); err != nil {
+		return nil, err
+	}
+	return order, nil
 }
 
 func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) error {
