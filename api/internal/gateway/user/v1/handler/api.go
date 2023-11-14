@@ -136,6 +136,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.topRoutes(v1)
 	h.postalCodeRoutes(v1)
 	h.productRoutes(v1)
+	h.statusRoutes(v1)
 	// 要認証エンドポイント
 	h.addressRoutes(v1)
 	h.cartRoutes(v1)
@@ -161,6 +162,10 @@ func (h *handler) badRequest(ctx *gin.Context, err error) {
 
 func (h *handler) unauthorized(ctx *gin.Context, err error) {
 	h.httpError(ctx, status.Error(codes.Unauthenticated, err.Error()))
+}
+
+func (h *handler) forbidden(ctx *gin.Context, err error) {
+	h.httpError(ctx, status.Error(codes.PermissionDenied, err.Error()))
 }
 
 func (h *handler) notFound(ctx *gin.Context, err error) {

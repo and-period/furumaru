@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
@@ -63,6 +64,31 @@ func NewPaymentMethodType(typ sentity.PaymentMethodType) PaymentMethodType {
 		return PaymentMethodTypeAUPay
 	default:
 		return PaymentMethodTypeUnknown
+	}
+}
+
+func (t PaymentMethodType) StoreEntity() entity.PaymentMethodType {
+	switch t {
+	case PaymentMethodTypeCash:
+		return entity.PaymentMethodTypeCash
+	case PaymentMethodTypeCreditCard:
+		return entity.PaymentMethodTypeCreditCard
+	case PaymentMethodTypeKonbini:
+		return entity.PaymentMethodTypeKonbini
+	case PaymentMethodTypeBankTranser:
+		return entity.PaymentMethodTypeBankTranser
+	case PaymentMethodTypePayPay:
+		return entity.PaymentMethodTypePayPay
+	case PaymentMethodTypeLinePay:
+		return entity.PaymentMethodTypeLinePay
+	case PaymentMethodTypeMerpay:
+		return entity.PaymentMethodTypeMerpay
+	case PaymentMethodTypeRakutenPay:
+		return entity.PaymentMethodTypeRakutenPay
+	case PaymentMethodTypeAUPay:
+		return entity.PaymentMethodTypeAUPay
+	default:
+		return entity.PaymentMethodTypeUnknown
 	}
 }
 

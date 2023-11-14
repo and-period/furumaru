@@ -8,4 +8,5 @@ export * from './ContactApi';
 export * from './OtherApi';
 export * from './ProductApi';
 export * from './ScheduleApi';
+export * from './StatusApi';
 export * from './TopApi';

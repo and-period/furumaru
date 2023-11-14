@@ -68,3 +68,57 @@ func NewShippingType(typ entity.ShippingType) ShippingType {
 func (t ShippingType) Response() int32 {
 	return int32(t)
 }
+
+func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
+	switch typ {
+	case entity.PaymentMethodTypeCash:
+		return PaymentMethodTypeCash
+	case entity.PaymentMethodTypeCreditCard:
+		return PaymentMethodTypeCreditCard
+	case entity.PaymentMethodTypeKonbini:
+		return PaymentMethodTypeKonbini
+	case entity.PaymentMethodTypeBankTranser:
+		return PaymentMethodTypeBankTranser
+	case entity.PaymentMethodTypePayPay:
+		return PaymentMethodTypePayPay
+	case entity.PaymentMethodTypeLinePay:
+		return PaymentMethodTypeLinePay
+	case entity.PaymentMethodTypeMerpay:
+		return PaymentMethodTypeMerpay
+	case entity.PaymentMethodTypeRakutenPay:
+		return PaymentMethodTypeRakutenPay
+	case entity.PaymentMethodTypeAUPay:
+		return PaymentMethodTypeAUPay
+	default:
+		return PaymentMethodTypeUnknown
+	}
+}
+
+func (t PaymentMethodType) StoreEntity() entity.PaymentMethodType {
+	switch t {
+	case PaymentMethodTypeCash:
+		return entity.PaymentMethodTypeCash
+	case PaymentMethodTypeCreditCard:
+		return entity.PaymentMethodTypeCreditCard
+	case PaymentMethodTypeKonbini:
+		return entity.PaymentMethodTypeKonbini
+	case PaymentMethodTypeBankTranser:
+		return entity.PaymentMethodTypeBankTranser
+	case PaymentMethodTypePayPay:
+		return entity.PaymentMethodTypePayPay
+	case PaymentMethodTypeLinePay:
+		return entity.PaymentMethodTypeLinePay
+	case PaymentMethodTypeMerpay:
+		return entity.PaymentMethodTypeMerpay
+	case PaymentMethodTypeRakutenPay:
+		return entity.PaymentMethodTypeRakutenPay
+	case PaymentMethodTypeAUPay:
+		return entity.PaymentMethodTypeAUPay
+	default:
+		return entity.PaymentMethodTypeUnknown
+	}
+}
+
+func (t PaymentMethodType) Response() int32 {
+	return int32(t)
+}

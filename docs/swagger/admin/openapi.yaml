@@ -51,6 +51,8 @@ tags:
   description: お知らせ関連
 - name: Message
   description: メッセージ関連
+- name: PaymentSystem
+  description: 決済システム関連
 - name: Other
   description: その他（外部APIなど）
 paths:
@@ -185,7 +187,12 @@ paths:
     $ref: './paths/v1/users/index.yaml'
   /v1/users/{userId}:
     $ref: './paths/v1/users/_userId/index.yaml'
-  # Address
+  # PaymentSystem
+  /v1/payment-systems:
+    $ref: './paths/v1/payment-systems/index.yaml'
+  /v1/payment-systems/{methodType}:
+    $ref: './paths/v1/payment-systems/_methodType/index.yaml'
+  # Other
   /v1/postal-codes/{postalCode}:
     $ref: './paths/v1/postal-codes/_postalCode.yaml'
   # Upload
@@ -249,19 +256,21 @@ components:
     notificationTarget:
       $ref: './components/schemas/codes/notification.yaml#/notificationTarget'
     fulfillmentStatus:
-      $ref: './components/schemas/codes/order_fulfillment.yaml#/fulfillmentStatus'
+      $ref: './components/schemas/codes/order-fulfillment.yaml#/fulfillmentStatus'
     shippingCarrier:
-      $ref: './components/schemas/codes/order_fulfillment.yaml#/shippingCarrier'
+      $ref: './components/schemas/codes/order-fulfillment.yaml#/shippingCarrier'
     shippingSize:
-      $ref: './components/schemas/codes/order_fulfillment.yaml#/shippingSize'
+      $ref: './components/schemas/codes/order-fulfillment.yaml#/shippingSize'
     shippingType:
-      $ref: './components/schemas/codes/order_fulfillment.yaml#/shippingType'
+      $ref: './components/schemas/codes/order-fulfillment.yaml#/shippingType'
     paymentMethodType:
-      $ref: './components/schemas/codes/order_payment.yaml#/paymentMethodType'
+      $ref: './components/schemas/codes/order-payment.yaml#/paymentMethodType'
     paymentStatus:
-      $ref: './components/schemas/codes/order_payment.yaml#/paymentStatus'
+      $ref: './components/schemas/codes/order-payment.yaml#/paymentStatus'
     orderRefundType:
-      $ref: './components/schemas/codes/order_refund.yaml#/orderRefundType'
+      $ref: './components/schemas/codes/order-refund.yaml#/orderRefundType'
+    paymentSystemStatus:
+      $ref: './components/schemas/codes/payment-system.yaml#/paymentSystemStatus'
     productStatus:
       $ref: './components/schemas/codes/product.yaml#/productStatus'
     deliveryType:
@@ -297,6 +306,8 @@ components:
       $ref: './components/schemas/entity/notification.yaml#/notification'
     order:
       $ref: './components/schemas/entity/order.yaml#/order'
+    paymentSystem:
+      $ref: './components/schemas/entity/payment-system.yaml#/paymentSystem'
     producer:
       $ref: './components/schemas/entity/producer.yaml#/producer'
     productTag:
@@ -344,6 +355,8 @@ components:
       $ref: './components/schemas/v1/coordinator.request.yaml#/updateCoordinatorRequest'
     v1UpdateCoordinatorEmailRequest:
       $ref: './components/schemas/v1/coordinator.request.yaml#/updateCoordinatorEmailRequest'
+    v1UpdatePaymentSystemRequest:
+      $ref: './components/schemas/v1/payment-system.request.yaml#/updatePaymentSystemRequest'
     v1CreateProducerRequest:
       $ref: './components/schemas/v1/producer.request.yaml#/createProducerRequest'
     v1UpdateProducerRequest:
@@ -439,6 +452,8 @@ components:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
     v1CoordinatorsResponse:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
+    v1PaymentSystemsResponse:
+      $ref: './components/schemas/v1/payment-system.response.yaml#/paymentSystemsResponse'
     v1ProducerResponse:
       $ref: './components/schemas/v1/producer.response.yaml#/producerResponse'
     v1ProducersResponse:

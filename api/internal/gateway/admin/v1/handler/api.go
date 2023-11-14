@@ -142,6 +142,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.messageRoutes(v1)
 	h.notificationRoutes(v1)
 	h.orderRoutes(v1)
+	h.paymentSystemRoutes(v1)
 	h.postalCodeRoutes(v1)
 	h.producerRoutes(v1)
 	h.productRoutes(v1)
