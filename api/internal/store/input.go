@@ -452,6 +452,22 @@ type CheckoutPayPayInput struct {
 	CheckoutDetail
 }
 
+type CheckoutLinePayInput struct {
+	CheckoutDetail
+}
+
+type CheckoutMerpayInput struct {
+	CheckoutDetail
+}
+
+type CheckoutRakutenPayInput struct {
+	CheckoutDetail
+}
+
+type CheckoutAUPayInput struct {
+	CheckoutDetail
+}
+
 type CheckoutDetail struct {
 	UserID            string `validate:"required"`
 	SessionID         string `validate:"required"`
