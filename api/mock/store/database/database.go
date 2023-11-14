@@ -395,6 +395,83 @@ func (mr *MockOrderMockRecorder) UpdatePaymentStatus(ctx, orderID, params interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePaymentStatus", reflect.TypeOf((*MockOrder)(nil).UpdatePaymentStatus), ctx, orderID, params)
 }
 
+// MockPaymentSystem is a mock of PaymentSystem interface.
+type MockPaymentSystem struct {
+	ctrl     *gomock.Controller
+	recorder *MockPaymentSystemMockRecorder
+}
+
+// MockPaymentSystemMockRecorder is the mock recorder for MockPaymentSystem.
+type MockPaymentSystemMockRecorder struct {
+	mock *MockPaymentSystem
+}
+
+// NewMockPaymentSystem creates a new mock instance.
+func NewMockPaymentSystem(ctrl *gomock.Controller) *MockPaymentSystem {
+	mock := &MockPaymentSystem{ctrl: ctrl}
+	mock.recorder = &MockPaymentSystemMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockPaymentSystem) EXPECT() *MockPaymentSystemMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockPaymentSystem) Get(ctx context.Context, methodType entity.PaymentMethodType, fields ...string) (*entity.PaymentSystem, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, methodType}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.PaymentSystem)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockPaymentSystemMockRecorder) Get(ctx, methodType interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, methodType}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockPaymentSystem)(nil).Get), varargs...)
+}
+
+// MultiGet mocks base method.
+func (m *MockPaymentSystem) MultiGet(ctx context.Context, methodTypes []entity.PaymentMethodType, fields ...string) (entity.PaymentSystems, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, methodTypes}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGet", varargs...)
+	ret0, _ := ret[0].(entity.PaymentSystems)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGet indicates an expected call of MultiGet.
+func (mr *MockPaymentSystemMockRecorder) MultiGet(ctx, methodTypes interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, methodTypes}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockPaymentSystem)(nil).MultiGet), varargs...)
+}
+
+// Update mocks base method.
+func (m *MockPaymentSystem) Update(ctx context.Context, methodType entity.PaymentMethodType, status entity.PaymentSystemStatus) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, methodType, status)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockPaymentSystemMockRecorder) Update(ctx, methodType, status interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockPaymentSystem)(nil).Update), ctx, methodType, status)
+}
+
 // MockProduct is a mock of Product interface.
 type MockProduct struct {
 	ctrl     *gomock.Controller

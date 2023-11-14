@@ -80,6 +80,10 @@ type Service interface {
 	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error) // 支払い申請（クレジットカード）
 	CheckoutPayPay(ctx context.Context, in *CheckoutPayPayInput) (string, error)         // 支払い申請（PayPay）
 	NotifyPaymentCompleted(ctx context.Context, in *NotifyPaymentCompletedInput) error   // 支払い通知
+	// 決済システム
+	MultiGetPaymentSystems(ctx context.Context, in *MultiGetPaymentSystemsInput) (entity.PaymentSystems, error) // 一覧取得(種別指定)
+	GetPaymentSystem(ctx context.Context, in *GetPaymentSystemInput) (*entity.PaymentSystem, error)             // １件取得
+	UpdatePaymentSystem(ctx context.Context, in *UpdatePaymentStatusInput) error                                // 更新
 	// 郵便番号
 	SearchPostalCode(ctx context.Context, in *SearchPostalCodeInput) (*entity.PostalCode, error) // 検索
 }
