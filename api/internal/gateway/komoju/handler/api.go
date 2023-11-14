@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/sentry"
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ type Handler interface {
 
 type Params struct {
 	WaitGroup *sync.WaitGroup
+	Store     store.Service
 }
 
 type handler struct {
@@ -30,6 +32,7 @@ type handler struct {
 	logger    *zap.Logger
 	sentry    sentry.Client
 	waitGroup *sync.WaitGroup
+	store     store.Service
 }
 
 type options struct {
@@ -82,6 +85,7 @@ func NewHandler(params *Params, opts ...Option) Handler {
 		logger:    dopts.logger,
 		sentry:    dopts.sentry,
 		waitGroup: params.WaitGroup,
+		store:     params.Store,
 	}
 }
 

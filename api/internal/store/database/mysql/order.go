@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -77,13 +78,7 @@ func (o *order) Count(ctx context.Context, params *database.ListOrdersParams) (i
 
 func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error) {
 	order, err := o.get(ctx, o.db.DB, orderID, fields...)
-	if err != nil {
-		return nil, dbError(err)
-	}
-	if err := o.fill(ctx, o.db.DB, order); err != nil {
-		return nil, dbError(err)
-	}
-	return order, nil
+	return order, dbError(err)
 }
 
 func (o *order) Create(ctx context.Context, order *entity.Order) error {
@@ -112,6 +107,44 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 	return dbError(err)
 }
 
+func (o *order) UpdatePaymentStatus(ctx context.Context, orderID string, params *database.UpdateOrderPaymentParams) error {
+	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
+		order, err := o.get(ctx, tx, orderID)
+		if err != nil {
+			return err
+		}
+		if order.IsCompleted() {
+			return fmt.Errorf("mysql: this order is already completed: %w", database.ErrFailedPrecondition)
+		}
+		if order.OrderPayment.UpdatedAt.After(params.IssuedAt) {
+			return fmt.Errorf("mysql: this event is older than the latest data: %w", database.ErrFailedPrecondition)
+		}
+
+		updates := map[string]interface{}{
+			"status":     params.Status,
+			"updated_at": o.now(),
+		}
+		switch params.Status {
+		case entity.PaymentStatusAuthorized:
+			updates["paid_at"] = params.IssuedAt
+		case entity.PaymentStatusCaptured:
+			updates["captured_at"] = params.IssuedAt
+		case entity.PaymentStatusFailed:
+			updates["failed_at"] = params.IssuedAt
+		}
+		if params.PaymentID != "" {
+			updates["payment_id"] = params.PaymentID
+		}
+
+		stmt := o.db.DB.WithContext(ctx).
+			Table(orderPaymentTable).
+			Where("order_id = ?", orderID)
+
+		return stmt.Updates(updates).Error
+	})
+	return dbError(err)
+}
+
 func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error) {
 	var orders entity.AggregatedOrders
 
@@ -134,10 +167,16 @@ func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.Aggrega
 func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...string) (*entity.Order, error) {
 	var order *entity.Order
 
-	err := o.db.Statement(ctx, tx, orderTable, fields...).
-		Where("id = ?", orderID).
-		First(&order).Error
-	return order, err
+	stmt := o.db.Statement(ctx, tx, orderTable, fields...).
+		Where("id = ?", orderID)
+
+	if err := stmt.First(&order).Error; err != nil {
+		return nil, err
+	}
+	if err := o.fill(ctx, o.db.DB, order); err != nil {
+		return nil, err
+	}
+	return order, nil
 }
 
 func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) error {

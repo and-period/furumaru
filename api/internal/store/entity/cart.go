@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/shopspring/decimal"
 )
@@ -228,24 +227,6 @@ func (bs CartBaskets) TotalPrice(products map[string]*Product) (int64, error) {
 		total = total.Add(price)
 	}
 	return total.IntPart(), nil
-}
-
-func (bs CartBaskets) KomojuProducts(products map[string]*Product) ([]*komoju.CreateSessionProduct, error) {
-	items := bs.getQuantityByProductID()
-	res := make([]*komoju.CreateSessionProduct, 0, len(items))
-	for productID, quantity := range items {
-		product, ok := products[productID]
-		if !ok {
-			return nil, errNotFoundProduct
-		}
-		i := &komoju.CreateSessionProduct{
-			Amount:      product.ProductRevision.Price,
-			Description: product.Name,
-			Quantity:    quantity,
-		}
-		res = append(res, i)
-	}
-	return res, nil
 }
 
 func (bs CartBaskets) ProductIDs() []string {

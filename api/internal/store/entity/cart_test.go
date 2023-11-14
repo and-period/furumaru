@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -887,109 +886,6 @@ func TestCartBaskets_TotalPrice(t *testing.T) {
 			actual, err := tt.baskets.TotalPrice(tt.products)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
-		})
-	}
-}
-
-func TestCartBaskets_KomojuProducts(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name      string
-		baskets   CartBaskets
-		products  map[string]*Product
-		expect    []*komoju.CreateSessionProduct
-		expectErr error
-	}{
-		{
-			name: "success",
-			baskets: CartBaskets{
-				{
-					BoxNumber: 1,
-					BoxType:   ShippingTypeNormal,
-					BoxSize:   ShippingSize100,
-					Items: CartItems{
-						{ProductID: "product-id01", Quantity: 1},
-						{ProductID: "product-id02", Quantity: 2},
-					},
-				},
-				{
-					BoxNumber: 2,
-					BoxType:   ShippingTypeNormal,
-					BoxSize:   ShippingSize100,
-					Items: CartItems{
-						{ProductID: "product-id01", Quantity: 3},
-					},
-				},
-			},
-			products: map[string]*Product{
-				"product-id01": {
-					ID:   "product-id01",
-					Name: "じゃがいも",
-					ProductRevision: ProductRevision{
-						ID:        1,
-						ProductID: "product-id01",
-						Price:     500,
-						Cost:      200,
-					},
-				},
-				"product-id02": {
-					ID:   "product-id02",
-					Name: "人参",
-					ProductRevision: ProductRevision{
-						ID:        1,
-						ProductID: "product-id02",
-						Price:     1980,
-						Cost:      500,
-					},
-				},
-			},
-			expect: []*komoju.CreateSessionProduct{
-				{
-					Amount:      500,
-					Description: "じゃがいも",
-					Quantity:    4,
-				},
-				{
-					Amount:      1980,
-					Description: "人参",
-					Quantity:    2,
-				},
-			},
-			expectErr: nil,
-		},
-		{
-			name: "not found product",
-			baskets: CartBaskets{
-				{
-					BoxNumber: 1,
-					BoxType:   ShippingTypeNormal,
-					BoxSize:   ShippingSize100,
-					Items: CartItems{
-						{ProductID: "product-id01", Quantity: 1},
-						{ProductID: "product-id02", Quantity: 2},
-					},
-				},
-				{
-					BoxNumber: 2,
-					BoxType:   ShippingTypeNormal,
-					BoxSize:   ShippingSize100,
-					Items: CartItems{
-						{ProductID: "product-id01", Quantity: 3},
-					},
-				},
-			},
-			products:  map[string]*Product{},
-			expect:    nil,
-			expectErr: errNotFoundProduct,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			actual, err := tt.baskets.KomojuProducts(tt.products)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.ElementsMatch(t, tt.expect, actual)
 		})
 	}
 }

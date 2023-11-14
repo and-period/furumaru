@@ -381,6 +381,20 @@ func (mr *MockOrderMockRecorder) List(ctx, params interface{}, fields ...interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockOrder)(nil).List), varargs...)
 }
 
+// UpdatePaymentStatus mocks base method.
+func (m *MockOrder) UpdatePaymentStatus(ctx context.Context, orderID string, params *database.UpdateOrderPaymentParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePaymentStatus", ctx, orderID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdatePaymentStatus indicates an expected call of UpdatePaymentStatus.
+func (mr *MockOrderMockRecorder) UpdatePaymentStatus(ctx, orderID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePaymentStatus", reflect.TypeOf((*MockOrder)(nil).UpdatePaymentStatus), ctx, orderID, params)
+}
+
 // MockProduct is a mock of Product interface.
 type MockProduct struct {
 	ctrl     *gomock.Controller

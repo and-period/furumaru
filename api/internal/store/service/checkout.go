@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -56,6 +57,24 @@ func (s *service) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayPayIn
 		payFn:             payFn,
 	}
 	return s.checkout(ctx, params)
+}
+
+func (s *service) NotifyPaymentCompleted(ctx context.Context, in *store.NotifyPaymentCompletedInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	params := &database.UpdateOrderPaymentParams{
+		Status:    entity.NewPaymentStatus(komoju.PaymentStatus(in.Status)),
+		PaymentID: in.PaymentID,
+		IssuedAt:  in.IssuedAt,
+	}
+	err := s.db.Order.UpdatePaymentStatus(ctx, in.OrderID, params)
+	if errors.Is(err, database.ErrFailedPrecondition) {
+		s.logger.Warn("Order is not updatable",
+			zap.String("orderId", in.OrderID), zap.String("status", in.Status), zap.Time("issuedAt", in.IssuedAt))
+		return nil
+	}
+	return internalError(err)
 }
 
 type checkoutParams struct {

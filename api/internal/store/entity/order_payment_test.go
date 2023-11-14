@@ -12,6 +12,58 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestPaymentStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status komoju.PaymentStatus
+		expect PaymentStatus
+	}{
+		{
+			name:   "pending",
+			status: komoju.PaymentStatusPending,
+			expect: PaymentStatusPending,
+		},
+		{
+			name:   "authorized",
+			status: komoju.PaymentStatusAuthorized,
+			expect: PaymentStatusAuthorized,
+		},
+		{
+			name:   "captured",
+			status: komoju.PaymentStatusCaptured,
+			expect: PaymentStatusCaptured,
+		},
+		{
+			name:   "refunded",
+			status: komoju.PaymentStatusRefunded,
+			expect: PaymentStatusRefunded,
+		},
+		{
+			name:   "cancelled",
+			status: komoju.PaymentStatusCancelled,
+			expect: PaymentStatusFailed,
+		},
+		{
+			name:   "expired",
+			status: komoju.PaymentStatusExpired,
+			expect: PaymentStatusFailed,
+		},
+		{
+			name:   "unknown",
+			status: "",
+			expect: PaymentStatusUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewPaymentStatus(tt.status))
+		})
+	}
+}
+
 func TestKomojuPaymentTypes(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -426,25 +478,41 @@ func TestOrderPayment(t *testing.T) {
 	}
 }
 
-func TestOrderPayment_IsCanceled(t *testing.T) {
+func TestOrderPayment_IsCompleted(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name    string
-		payment *OrderPayment
-		expect  bool
+		name   string
+		status PaymentStatus
+		expect bool
 	}{
 		{
-			name: "true",
-			payment: &OrderPayment{
-				Status: PaymentStatusRefunded,
-			},
+			name:   "pending",
+			status: PaymentStatusPending,
+			expect: false,
+		},
+		{
+			name:   "authorized",
+			status: PaymentStatusAuthorized,
+			expect: false,
+		},
+		{
+			name:   "captured",
+			status: PaymentStatusCaptured,
 			expect: true,
 		},
 		{
-			name: "false",
-			payment: &OrderPayment{
-				Status: PaymentStatusPending,
-			},
+			name:   "refunded",
+			status: PaymentStatusRefunded,
+			expect: true,
+		},
+		{
+			name:   "failed",
+			status: PaymentStatusFailed,
+			expect: true,
+		},
+		{
+			name:   "unknown",
+			status: PaymentStatusUnknown,
 			expect: false,
 		},
 	}
@@ -452,7 +520,56 @@ func TestOrderPayment_IsCanceled(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.payment.IsCanceled())
+			payment := &OrderPayment{Status: tt.status}
+			assert.Equal(t, tt.expect, payment.IsCompleted())
+		})
+	}
+}
+
+func TestOrderPayment_IsCanceled(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status PaymentStatus
+		expect bool
+	}{
+		{
+			name:   "pending",
+			status: PaymentStatusPending,
+			expect: false,
+		},
+		{
+			name:   "authorized",
+			status: PaymentStatusAuthorized,
+			expect: false,
+		},
+		{
+			name:   "captured",
+			status: PaymentStatusCaptured,
+			expect: false,
+		},
+		{
+			name:   "refunded",
+			status: PaymentStatusRefunded,
+			expect: true,
+		},
+		{
+			name:   "failed",
+			status: PaymentStatusFailed,
+			expect: false,
+		},
+		{
+			name:   "unknown",
+			status: PaymentStatusUnknown,
+			expect: false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			payment := &OrderPayment{Status: tt.status}
+			assert.Equal(t, tt.expect, payment.IsCanceled())
 		})
 	}
 }
