@@ -464,6 +464,19 @@ type CheckoutDetail struct {
 	Total             int64  `validate:"required"`
 }
 
+type MultiGetPaymentSystemsInput struct {
+	MethodTypes []entity.PaymentMethodType `validate:"omitempty,dive,required"`
+}
+
+type GetPaymentSystemInput struct {
+	MethodType entity.PaymentMethodType `validate:"required"`
+}
+
+type UpdatePaymentStatusInput struct {
+	MethodType entity.PaymentMethodType   `validate:"required"`
+	Status     entity.PaymentSystemStatus `validate:"required"`
+}
+
 type SearchPostalCodeInput struct {
 	PostlCode string `validate:"required,numeric,len=7"`
 }

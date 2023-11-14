@@ -373,6 +373,21 @@ func (mr *MockServiceMockRecorder) GetOrder(ctx, in interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrder", reflect.TypeOf((*MockService)(nil).GetOrder), ctx, in)
 }
 
+// GetPaymentSystem mocks base method.
+func (m *MockService) GetPaymentSystem(ctx context.Context, in *store.GetPaymentSystemInput) (*entity.PaymentSystem, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPaymentSystem", ctx, in)
+	ret0, _ := ret[0].(*entity.PaymentSystem)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetPaymentSystem indicates an expected call of GetPaymentSystem.
+func (mr *MockServiceMockRecorder) GetPaymentSystem(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPaymentSystem", reflect.TypeOf((*MockService)(nil).GetPaymentSystem), ctx, in)
+}
+
 // GetProduct mocks base method.
 func (m *MockService) GetProduct(ctx context.Context, in *store.GetProductInput) (*entity.Product, error) {
 	m.ctrl.T.Helper()
@@ -621,6 +636,21 @@ func (mr *MockServiceMockRecorder) MultiGetCategories(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetCategories", reflect.TypeOf((*MockService)(nil).MultiGetCategories), ctx, in)
 }
 
+// MultiGetPaymentSystems mocks base method.
+func (m *MockService) MultiGetPaymentSystems(ctx context.Context, in *store.MultiGetPaymentSystemsInput) (entity.PaymentSystems, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MultiGetPaymentSystems", ctx, in)
+	ret0, _ := ret[0].(entity.PaymentSystems)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetPaymentSystems indicates an expected call of MultiGetPaymentSystems.
+func (mr *MockServiceMockRecorder) MultiGetPaymentSystems(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetPaymentSystems", reflect.TypeOf((*MockService)(nil).MultiGetPaymentSystems), ctx, in)
+}
+
 // MultiGetProductTags mocks base method.
 func (m *MockService) MultiGetProductTags(ctx context.Context, in *store.MultiGetProductTagsInput) (entity.ProductTags, error) {
 	m.ctrl.T.Helper()
@@ -809,6 +839,20 @@ func (m *MockService) UpdateLive(ctx context.Context, in *store.UpdateLiveInput)
 func (mr *MockServiceMockRecorder) UpdateLive(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLive", reflect.TypeOf((*MockService)(nil).UpdateLive), ctx, in)
+}
+
+// UpdatePaymentSystem mocks base method.
+func (m *MockService) UpdatePaymentSystem(ctx context.Context, in *store.UpdatePaymentStatusInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePaymentSystem", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdatePaymentSystem indicates an expected call of UpdatePaymentSystem.
+func (mr *MockServiceMockRecorder) UpdatePaymentSystem(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePaymentSystem", reflect.TypeOf((*MockService)(nil).UpdatePaymentSystem), ctx, in)
 }
 
 // UpdateProduct mocks base method.
