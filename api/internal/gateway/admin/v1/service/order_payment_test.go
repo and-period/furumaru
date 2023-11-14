@@ -23,9 +23,44 @@ func TestPaymentMethodType(t *testing.T) {
 			expect:            PaymentMethodTypeCash,
 		},
 		{
-			name:              "card",
+			name:              "credit card",
 			PaymentMethodType: entity.PaymentMethodTypeCreditCard,
 			expect:            PaymentMethodTypeCreditCard,
+		},
+		{
+			name:              "konbini",
+			PaymentMethodType: entity.PaymentMethodTypeKonbini,
+			expect:            PaymentMethodTypeKonbini,
+		},
+		{
+			name:              "bank transfer",
+			PaymentMethodType: entity.PaymentMethodTypeBankTranser,
+			expect:            PaymentMethodTypeBankTranser,
+		},
+		{
+			name:              "paypay",
+			PaymentMethodType: entity.PaymentMethodTypePayPay,
+			expect:            PaymentMethodTypePayPay,
+		},
+		{
+			name:              "line pay",
+			PaymentMethodType: entity.PaymentMethodTypeLinePay,
+			expect:            PaymentMethodTypeLinePay,
+		},
+		{
+			name:              "merpay",
+			PaymentMethodType: entity.PaymentMethodTypeMerpay,
+			expect:            PaymentMethodTypeMerpay,
+		},
+		{
+			name:              "rakuten pay",
+			PaymentMethodType: entity.PaymentMethodTypeRakutenPay,
+			expect:            PaymentMethodTypeRakutenPay,
+		},
+		{
+			name:              "au pay",
+			PaymentMethodType: entity.PaymentMethodTypeAUPay,
+			expect:            PaymentMethodTypeAUPay,
 		},
 		{
 			name:              "unknown",
@@ -126,7 +161,7 @@ func TestPaymentStatus_Response(t *testing.T) {
 		{
 			name:   "success",
 			status: PaymentStatusPaid,
-			expect: 4,
+			expect: 3,
 		},
 	}
 	for _, tt := range tests {

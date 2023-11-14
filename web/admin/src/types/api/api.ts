@@ -2872,7 +2872,15 @@ export const OrderRefundType = {
     /**
     * 未キャンセル
     */
-    NONE: 0
+    NONE: 0,
+    /**
+    * キャンセル済み
+    */
+    CANCELED: 1,
+    /**
+    * 返金済み
+    */
+    REFUNDED: 2
 } as const;
 
 export type OrderRefundType = typeof OrderRefundType[keyof typeof OrderRefundType];
@@ -2992,25 +3000,21 @@ export const PaymentStatus = {
     */
     UNPAID: 1,
     /**
-    * 保留中
-    */
-    PENDING: 2,
-    /**
     * オーソリ済み
     */
-    AUTHORIZED: 3,
+    AUTHORIZED: 2,
     /**
     * 支払い済み
     */
-    PAID: 4,
+    PAID: 3,
     /**
-    * 返金済み
+    * キャンセル済み
     */
-    REFUNDED: 5,
+    CANCELED: 4,
     /**
-    * 期限切れ
+    * 失敗
     */
-    EXPIRED: 6
+    FAILED: 5
 } as const;
 
 export type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
