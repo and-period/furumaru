@@ -2,7 +2,10 @@ paymentSystemsResponse:
   type: object
   properties:
     systems:
-      $ref: './../../../openapi.yaml#/components/schemas/paymentSystem'
+      type: array
+      description: 決済システム状態一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/paymentSystem'
   required:
   - systems
   example:

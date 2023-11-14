@@ -9,10 +9,11 @@ patch:
   - in: path
     name: methodType
     schema:
-      type: string
+      type: integer
+      format: int32
     description: 決済種別
     required: true
-    example: '1'
+    example: 1
   requestBody:
     required: true
     content:

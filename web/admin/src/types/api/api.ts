@@ -3084,11 +3084,11 @@ export type PaymentSystemStatus = typeof PaymentSystemStatus[keyof typeof Paymen
  */
 export interface PaymentSystemsResponse {
     /**
-     * 
-     * @type {PaymentSystem}
+     * 決済システム状態一覧
+     * @type {Array<PaymentSystem>}
      * @memberof PaymentSystemsResponse
      */
-    'systems': PaymentSystem;
+    'systems': Array<PaymentSystem>;
 }
 /**
  * 
@@ -11039,12 +11039,12 @@ export const PaymentSystemApiAxiosParamCreator = function (configuration?: Confi
         /**
          * 
          * @summary 決済システム状態更新
-         * @param {string} methodType 決済種別
+         * @param {number} methodType 決済種別
          * @param {UpdatePaymentSystemRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdatePaymentSystem: async (methodType: string, body: UpdatePaymentSystemRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UpdatePaymentSystem: async (methodType: number, body: UpdatePaymentSystemRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'methodType' is not null or undefined
             assertParamExists('v1UpdatePaymentSystem', 'methodType', methodType)
             // verify required parameter 'body' is not null or undefined
@@ -11103,12 +11103,12 @@ export const PaymentSystemApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary 決済システム状態更新
-         * @param {string} methodType 決済種別
+         * @param {number} methodType 決済種別
          * @param {UpdatePaymentSystemRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UpdatePaymentSystem(methodType: string, body: UpdatePaymentSystemRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaymentSystemsResponse>> {
+        async v1UpdatePaymentSystem(methodType: number, body: UpdatePaymentSystemRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaymentSystemsResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdatePaymentSystem(methodType, body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -11134,12 +11134,12 @@ export const PaymentSystemApiFactory = function (configuration?: Configuration, 
         /**
          * 
          * @summary 決済システム状態更新
-         * @param {string} methodType 決済種別
+         * @param {number} methodType 決済種別
          * @param {UpdatePaymentSystemRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdatePaymentSystem(methodType: string, body: UpdatePaymentSystemRequest, options?: any): AxiosPromise<PaymentSystemsResponse> {
+        v1UpdatePaymentSystem(methodType: number, body: UpdatePaymentSystemRequest, options?: any): AxiosPromise<PaymentSystemsResponse> {
             return localVarFp.v1UpdatePaymentSystem(methodType, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -11166,13 +11166,13 @@ export class PaymentSystemApi extends BaseAPI {
     /**
      * 
      * @summary 決済システム状態更新
-     * @param {string} methodType 決済種別
+     * @param {number} methodType 決済種別
      * @param {UpdatePaymentSystemRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PaymentSystemApi
      */
-    public v1UpdatePaymentSystem(methodType: string, body: UpdatePaymentSystemRequest, options?: AxiosRequestConfig) {
+    public v1UpdatePaymentSystem(methodType: number, body: UpdatePaymentSystemRequest, options?: AxiosRequestConfig) {
         return PaymentSystemApiFp(this.configuration).v1UpdatePaymentSystem(methodType, body, options).then((request) => request(this.axios, this.basePath));
     }
 }

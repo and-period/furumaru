@@ -27,11 +27,11 @@ import {
  */
 export interface PaymentSystemsResponse {
     /**
-     * 
-     * @type {PaymentSystem}
+     * 決済システム状態一覧
+     * @type {Array<PaymentSystem>}
      * @memberof PaymentSystemsResponse
      */
-    systems: PaymentSystem;
+    systems: Array<PaymentSystem>;
 }
 
 /**
@@ -54,7 +54,7 @@ export function PaymentSystemsResponseFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'systems': PaymentSystemFromJSON(json['systems']),
+        'systems': ((json['systems'] as Array<any>).map(PaymentSystemFromJSON)),
     };
 }
 
@@ -67,7 +67,7 @@ export function PaymentSystemsResponseToJSON(value?: PaymentSystemsResponse | nu
     }
     return {
         
-        'systems': PaymentSystemToJSON(value.systems),
+        'systems': ((value.systems as Array<any>).map(PaymentSystemToJSON)),
     };
 }
 
