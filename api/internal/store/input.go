@@ -482,8 +482,8 @@ type SearchPostalCodeInput struct {
 }
 
 type NotifyPaymentCompletedInput struct {
-	OrderID   string    `validate:"required"`
-	PaymentID string    `validate:"required"`
-	Status    string    `validate:"required"`
-	IssuedAt  time.Time `validate:"required"`
+	OrderID   string               `validate:"required"`
+	PaymentID string               `validate:"required"`
+	Status    entity.PaymentStatus `validate:"required"`
+	IssuedAt  time.Time            `validate:"required"`
 }

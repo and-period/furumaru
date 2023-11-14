@@ -27,12 +27,11 @@ type PaymentStatus int32
 
 const (
 	PaymentStatusUnknown    PaymentStatus = 0
-	PaymentStatusUnpaid     PaymentStatus = 1 // 未払い
-	PaymentStatusPending    PaymentStatus = 2 // 保留中
-	PaymentStatusAuthorized PaymentStatus = 3 // オーソリ済み
-	PaymentStatusPaid       PaymentStatus = 4 // 支払い済み
-	PaymentStatusRefunded   PaymentStatus = 5 // 返金済み
-	PaymentStatusExpired    PaymentStatus = 6 // 期限切れ
+	PaymentStatusUnpaid     PaymentStatus = 1 // 未支払い
+	PaymentStatusAuthorized PaymentStatus = 2 // オーソリ済み
+	PaymentStatusPaid       PaymentStatus = 3 // 支払い済み
+	PaymentStatusCanceled   PaymentStatus = 4 // キャンセル済み
+	PaymentStatusFailed     PaymentStatus = 5 // 失敗
 )
 
 type OrderPayment struct {
@@ -74,15 +73,15 @@ func (t PaymentMethodType) Response() int32 {
 func NewPaymentStatus(status sentity.PaymentStatus) PaymentStatus {
 	switch status {
 	case sentity.PaymentStatusPending:
-		return PaymentStatusPending
+		return PaymentStatusUnpaid
 	case sentity.PaymentStatusAuthorized:
 		return PaymentStatusAuthorized
 	case sentity.PaymentStatusCaptured:
 		return PaymentStatusPaid
-	case sentity.PaymentStatusRefunded:
-		return PaymentStatusRefunded
+	case sentity.PaymentStatusCanceled, sentity.PaymentStatusRefunded:
+		return PaymentStatusCanceled
 	case sentity.PaymentStatusFailed:
-		return PaymentStatusExpired
+		return PaymentStatusFailed
 	default:
 		return PaymentStatusUnknown
 	}

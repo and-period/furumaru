@@ -438,7 +438,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
 				PaymentID: "payment-id",
-				Status:    string(komoju.PaymentStatusAuthorized),
+				Status:    entity.PaymentStatusAuthorized,
 				IssuedAt:  now,
 			},
 			expect: nil,
@@ -457,7 +457,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
 				PaymentID: "payment-id",
-				Status:    string(komoju.PaymentStatusAuthorized),
+				Status:    entity.PaymentStatusAuthorized,
 				IssuedAt:  now,
 			},
 			expect: nil,
@@ -470,7 +470,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
 				PaymentID: "payment-id",
-				Status:    string(komoju.PaymentStatusAuthorized),
+				Status:    entity.PaymentStatusAuthorized,
 				IssuedAt:  now,
 			},
 			expect: exception.ErrInternal,

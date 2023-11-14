@@ -10,6 +10,7 @@ const (
 	PaymentStatusRefunded   PaymentStatus = "refunded"   // 返金済み
 	PaymentStatusCancelled  PaymentStatus = "cancelled"  // キャンセル済み
 	PaymentStatusExpired    PaymentStatus = "expired"    // 期限切れ
+	PaymentStatusFailed     PaymentStatus = "failed"     // 失敗
 )
 
 // SessionStatus 決済トランザクションステータス

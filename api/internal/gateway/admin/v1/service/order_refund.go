@@ -10,7 +10,9 @@ import (
 type RefundType int32
 
 const (
-	RefundTypeNone RefundType = 0 // キャンセルなし
+	RefundTypeNone     RefundType = 0 // キャンセルなし
+	RefundTypeCanceled RefundType = 1 // キャンセル
+	RefundTypeRefunded RefundType = 2 // 返金
 )
 
 type OrderRefund struct {
@@ -20,8 +22,15 @@ type OrderRefund struct {
 
 type OrderRefunds []*OrderRefund
 
-func NewRefundType(_ entity.RefundType) RefundType {
-	return RefundTypeNone
+func NewRefundType(typ entity.RefundType) RefundType {
+	switch typ {
+	case entity.RefundTypeCanceled:
+		return RefundTypeCanceled
+	case entity.RefundTypeRefunded:
+		return RefundTypeRefunded
+	default:
+		return RefundTypeNone
+	}
 }
 
 func (t RefundType) Response() int32 {
@@ -35,9 +44,20 @@ func NewOrderRefund(payment *entity.OrderPayment) *OrderRefund {
 			Type:       NewRefundType(payment.RefundType).Response(),
 			Reason:     payment.RefundReason,
 			Canceled:   payment.IsCanceled(),
-			CanceledAt: jst.Unix(payment.RefundedAt),
+			CanceledAt: newOrderCanceledAt(payment),
 		},
 		orderID: payment.OrderID,
+	}
+}
+
+func newOrderCanceledAt(payment *entity.OrderPayment) int64 {
+	switch payment.RefundType {
+	case entity.RefundTypeCanceled:
+		return jst.Unix(payment.CanceledAt)
+	case entity.RefundTypeRefunded:
+		return jst.Unix(payment.RefundedAt)
+	default:
+		return 0
 	}
 }
 

@@ -558,6 +558,23 @@ func TestOrder_UpdatePaymentStatus(t *testing.T) {
 			},
 		},
 		{
+			name: "success canceled",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.UpdateOrderPaymentParams{
+					Status:    entity.PaymentStatusCanceled,
+					PaymentID: "payment-id",
+					IssuedAt:  now(),
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
 			name: "success failed",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))

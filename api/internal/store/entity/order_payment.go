@@ -19,8 +19,9 @@ const (
 	PaymentStatusPending    PaymentStatus = 1 // 保留中・未支払い
 	PaymentStatusAuthorized PaymentStatus = 2 // 仮売上・オーソリ
 	PaymentStatusCaptured   PaymentStatus = 3 // 実売上・キャプチャ
-	PaymentStatusRefunded   PaymentStatus = 4 // 返金
-	PaymentStatusFailed     PaymentStatus = 5 // 失敗/期限切れ
+	PaymentStatusCanceled   PaymentStatus = 4 // キャンセル
+	PaymentStatusRefunded   PaymentStatus = 5 // 返金
+	PaymentStatusFailed     PaymentStatus = 6 // 失敗/期限切れ
 )
 
 // PaymentMethodType - 決済手段
@@ -43,7 +44,9 @@ const (
 type RefundType int32
 
 const (
-	RefundTypeNone RefundType = 0 // キャンセルなし
+	RefundTypeNone     RefundType = 0 // キャンセルなし
+	RefundTypeCanceled RefundType = 1 // キャンセル
+	RefundTypeRefunded RefundType = 2 // 返金
 )
 
 // OrderPayment - 注文支払い情報
@@ -65,7 +68,8 @@ type OrderPayment struct {
 	PaidAt            time.Time         `gorm:"default:null"`         // 決済承認日時(仮売上)
 	CapturedAt        time.Time         `gorm:"default:null"`         // 決済確定日時(実売上)
 	FailedAt          time.Time         `gorm:"default:null"`         // 決済失敗日時
-	RefundedAt        time.Time         `gorm:"default:null"`         // 注文キャンセル日時(返金)
+	CanceledAt        time.Time         `gorm:"default:null"`         // 注文キャンセル日時（実売上前）
+	RefundedAt        time.Time         `gorm:"default:null"`         // 注文キャンセル日時（実売上後）
 	CreatedAt         time.Time         `gorm:"<-:create"`            // 登録日時
 	UpdatedAt         time.Time         `gorm:""`                     // 更新日時
 }
@@ -80,23 +84,6 @@ type NewOrderPaymentParams struct {
 	Products   Products
 	Shipping   *Shipping
 	Promotion  *Promotion
-}
-
-func NewPaymentStatus(status komoju.PaymentStatus) PaymentStatus {
-	switch status {
-	case komoju.PaymentStatusPending:
-		return PaymentStatusPending
-	case komoju.PaymentStatusAuthorized:
-		return PaymentStatusAuthorized
-	case komoju.PaymentStatusCaptured:
-		return PaymentStatusCaptured
-	case komoju.PaymentStatusRefunded:
-		return PaymentStatusRefunded
-	case komoju.PaymentStatusCancelled, komoju.PaymentStatusExpired:
-		return PaymentStatusFailed
-	default:
-		return PaymentStatusUnknown
-	}
 }
 
 func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
@@ -163,12 +150,13 @@ func NewOrderPayment(params *NewOrderPaymentParams) (*OrderPayment, error) {
 
 func (p *OrderPayment) IsCompleted() bool {
 	return p.Status == PaymentStatusCaptured ||
+		p.Status == PaymentStatusCanceled ||
 		p.Status == PaymentStatusRefunded ||
 		p.Status == PaymentStatusFailed
 }
 
 func (p *OrderPayment) IsCanceled() bool {
-	return p.Status == PaymentStatusRefunded
+	return p.Status == PaymentStatusCanceled || p.Status == PaymentStatusRefunded
 }
 
 func (p *OrderPayment) SetTransactionID(transactionID string, now time.Time) {

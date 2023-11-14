@@ -129,6 +129,9 @@ func (o *order) UpdatePaymentStatus(ctx context.Context, orderID string, params 
 			updates["paid_at"] = params.IssuedAt
 		case entity.PaymentStatusCaptured:
 			updates["captured_at"] = params.IssuedAt
+		case entity.PaymentStatusCanceled:
+			updates["canceled_at"] = params.IssuedAt
+			updates["refund_type"] = entity.RefundTypeCanceled
 		case entity.PaymentStatusFailed:
 			updates["failed_at"] = params.IssuedAt
 		}

@@ -14,6 +14,10 @@ type EventType string
 const (
 	EventTypePing              EventType = "ping"
 	EventTypePaymentAuthorized EventType = "payment.authorized"
+	EventTypePaymentCaptured   EventType = "payment.captured"
+	EventTypePaymentCancelled  EventType = "payment.cancelled"
+	EventTypePaymentFailed     EventType = "payment.failed"
+	EventTypePaymentExpired    EventType = "payment.expired"
 )
 
 func (h *handler) Event(ctx *gin.Context) {
@@ -23,6 +27,14 @@ func (h *handler) Event(ctx *gin.Context) {
 		h.ping(ctx)
 	case EventTypePaymentAuthorized:
 		h.paymentAuthorized(ctx)
+	case EventTypePaymentCaptured:
+		h.paymentCaptured(ctx)
+	case EventTypePaymentCancelled:
+		h.paymentCancelled(ctx)
+	case EventTypePaymentFailed:
+		h.paymentFailed(ctx)
+	case EventTypePaymentExpired:
+		h.paymentExpired(ctx)
 	default:
 		h.unexpected(ctx, event)
 	}

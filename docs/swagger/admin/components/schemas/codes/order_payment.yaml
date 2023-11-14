@@ -27,20 +27,17 @@ paymentStatus:
   - 3
   - 4
   - 5
-  - 6
   x-enum-varnames:
   - UNKNOWN
   - UNPAID
-  - PENDING
   - AUTHORIZED
   - PAID
-  - REFUNDED
-  - EXPIRED
+  - CANCELED
+  - FAILED
   x-enum-descriptions:
   - 不明
   - 未払い
-  - 保留中
   - オーソリ済み
   - 支払い済み
-  - 返金済み
-  - 期限切れ
+  - キャンセル済み
+  - 失敗
