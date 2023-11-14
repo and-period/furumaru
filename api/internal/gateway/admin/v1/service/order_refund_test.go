@@ -18,6 +18,16 @@ func TestRefundType(t *testing.T) {
 		expect RefundType
 	}{
 		{
+			name:   "canceled",
+			typ:    entity.RefundTypeCanceled,
+			expect: RefundTypeCanceled,
+		},
+		{
+			name:   "refunded",
+			typ:    entity.RefundTypeRefunded,
+			expect: RefundTypeRefunded,
+		},
+		{
 			name:   "none",
 			typ:    entity.RefundTypeNone,
 			expect: RefundTypeNone,

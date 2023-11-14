@@ -64,14 +64,14 @@ func (s *service) NotifyPaymentCompleted(ctx context.Context, in *store.NotifyPa
 		return internalError(err)
 	}
 	params := &database.UpdateOrderPaymentParams{
-		Status:    entity.NewPaymentStatus(komoju.PaymentStatus(in.Status)),
+		Status:    in.Status,
 		PaymentID: in.PaymentID,
 		IssuedAt:  in.IssuedAt,
 	}
 	err := s.db.Order.UpdatePaymentStatus(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
 		s.logger.Warn("Order is not updatable",
-			zap.String("orderId", in.OrderID), zap.String("status", in.Status), zap.Time("issuedAt", in.IssuedAt))
+			zap.String("orderId", in.OrderID), zap.Int32("status", int32(in.Status)), zap.Time("issuedAt", in.IssuedAt))
 		return nil
 	}
 	return internalError(err)

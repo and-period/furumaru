@@ -74,7 +74,7 @@ func TestPaymentStatus(t *testing.T) {
 		{
 			name:   "pending",
 			status: entity.PaymentStatusPending,
-			expect: PaymentStatusPending,
+			expect: PaymentStatusUnpaid,
 		},
 		{
 			name:   "authorized",
@@ -87,14 +87,19 @@ func TestPaymentStatus(t *testing.T) {
 			expect: PaymentStatusPaid,
 		},
 		{
+			name:   "canceled",
+			status: entity.PaymentStatusCanceled,
+			expect: PaymentStatusCanceled,
+		},
+		{
 			name:   "refunded",
 			status: entity.PaymentStatusRefunded,
-			expect: PaymentStatusRefunded,
+			expect: PaymentStatusCanceled,
 		},
 		{
 			name:   "expired",
 			status: entity.PaymentStatusFailed,
-			expect: PaymentStatusExpired,
+			expect: PaymentStatusFailed,
 		},
 		{
 			name:   "unknown",
