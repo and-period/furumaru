@@ -130,14 +130,13 @@ type Session interface {
 }
 
 type CreateSessionParams struct {
-	OrderID         string                  // 支払いID（ふるマル）
-	Amount          int64                   // 支払い金額
-	CallbackURL     string                  // 支払い後リダイレクトURL
-	PaymentTypes    []PaymentType           // 決済種別一覧
-	Products        []*CreateSessionProduct // 商品情報
-	Customer        *CreateSessionCustomer  // 顧客情報
-	BillingAddress  *CreateSessionAddress   // 請求先住所
-	ShippingAddress *CreateSessionAddress   // 配送先住所
+	OrderID         string                 // 支払いID（ふるマル）
+	Amount          int64                  // 支払い金額
+	CallbackURL     string                 // 支払い後リダイレクトURL
+	PaymentTypes    []PaymentType          // 決済種別一覧
+	Customer        *CreateSessionCustomer // 顧客情報
+	BillingAddress  *CreateSessionAddress  // 請求先住所
+	ShippingAddress *CreateSessionAddress  // 配送先住所
 }
 
 type CreateSessionProduct struct {

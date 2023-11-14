@@ -294,13 +294,6 @@ func TestSession_Create(t *testing.T) {
 			ExternalCustomerID: "customer-id",
 			PaymentTypes:       []string{"paypay"},
 			DefaultLocale:      "ja",
-			LineItems: []*createSessionLineItem{
-				{
-					Description: "芽が出たじゃがいも",
-					Amount:      500,
-					Quantity:    2,
-				},
-			},
 			PaymentData: &createSessionPaymentData{
 				Amount:              1000,
 				Currency:            "JPY",
@@ -411,13 +404,6 @@ func TestSession_Create(t *testing.T) {
 				PaymentTypes: []komoju.PaymentType{
 					komoju.PaymentTypePayPay,
 				},
-				Products: []*komoju.CreateSessionProduct{
-					{
-						Description: "芽が出たじゃがいも",
-						Amount:      500,
-						Quantity:    2,
-					},
-				},
 				Customer: &komoju.CreateSessionCustomer{
 					ID:       "customer-id",
 					Name:     "&. 利用者",
@@ -524,13 +510,6 @@ func TestSession_Create(t *testing.T) {
 				CallbackURL: "http://example.com/callback",
 				PaymentTypes: []komoju.PaymentType{
 					komoju.PaymentTypePayPay,
-				},
-				Products: []*komoju.CreateSessionProduct{
-					{
-						Description: "芽が出たじゃがいも",
-						Amount:      500,
-						Quantity:    2,
-					},
 				},
 				Customer: &komoju.CreateSessionCustomer{
 					ID:       "customer-id",

@@ -173,7 +173,6 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		Amount:       order.OrderPayment.Total,
 		CallbackURL:  params.payload.CallbackURL,
 		PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
-		Products:     order.OrderPayment.KomojuProducts(),
 		Customer: &komoju.CreateSessionCustomer{
 			ID:    customer.ID,
 			Name:  billingAddress.Name(),

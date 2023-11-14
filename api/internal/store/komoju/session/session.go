@@ -66,15 +66,7 @@ type createSessionRequest struct {
 	Metadata           string                    `json:"string,omitempty"`               // メタデータ
 	PaymentTypes       []string                  `json:"payment_types,omitempty"`        // 支払い可能種別一覧
 	DefaultLocale      string                    `json:"default_locale,omitempty"`       // ロケーション
-	LineItems          []*createSessionLineItem  `json:"line_items,omitempty"`           // 購入商品一覧
 	PaymentData        *createSessionPaymentData `json:"payment_data,omitempty"`         // 購入詳細情報
-}
-
-type createSessionLineItem struct {
-	Amount      int64  `json:"amount,omitempty"`      // 商品単価
-	Description string `json:"description,omitempty"` // 商品詳細情報
-	Quantity    int64  `json:"quantity,omitempty"`    // 商品購入数
-	Image       string `json:"image,omitempty"`       // 商品画像
 }
 
 type createSessionPaymentData struct {
@@ -103,14 +95,6 @@ func (c *client) Create(ctx context.Context, params *komoju.CreateSessionParams)
 	for i := range params.PaymentTypes {
 		types[i] = string(params.PaymentTypes[i])
 	}
-	items := make([]*createSessionLineItem, len(params.Products))
-	for i := range params.Products {
-		items[i] = &createSessionLineItem{
-			Amount:      params.Products[i].Amount,
-			Description: params.Products[i].Description,
-			Quantity:    params.Products[i].Quantity,
-		}
-	}
 	body := &createSessionRequest{
 		ReturnURL:          params.CallbackURL,
 		Mode:               sessionMode,
@@ -121,7 +105,6 @@ func (c *client) Create(ctx context.Context, params *komoju.CreateSessionParams)
 		ExternalCustomerID: params.Customer.ID,
 		PaymentTypes:       types,
 		DefaultLocale:      defaultLocale,
-		LineItems:          items,
 		PaymentData: &createSessionPaymentData{
 			Amount:              params.Amount,
 			Currency:            defaultCurrency,
