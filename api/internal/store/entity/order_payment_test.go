@@ -546,7 +546,7 @@ func TestOrderPayment_IsCanceled(t *testing.T) {
 		{
 			name:   "captured",
 			status: PaymentStatusCaptured,
-			expect: true,
+			expect: false,
 		},
 		{
 			name:   "refunded",
