@@ -27,6 +27,16 @@ func (h *handler) Checkout(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	methodType := service.PaymentMethodType(req.PaymentMethod)
+	system, err := h.getPaymentSystem(ctx, methodType)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if !system.InService() {
+		h.forbidden(ctx, errors.New("handler: out of service"))
+		return
+	}
 	detail := &store.CheckoutDetail{
 		UserID:            getUserID(ctx),
 		SessionID:         h.getSessionID(ctx),
@@ -38,11 +48,8 @@ func (h *handler) Checkout(ctx *gin.Context) {
 		CallbackURL:       req.CallbackURL,
 		Total:             req.Total,
 	}
-	var (
-		redirectURL string
-		err         error
-	)
-	switch service.PaymentMethodType(req.PaymentMethod) {
+	var redirectURL string
+	switch methodType {
 	case service.PaymentMethodTypeCreditCard:
 		if req.CreditCard == nil {
 			h.badRequest(ctx, errors.New("handler: credit card is required"))

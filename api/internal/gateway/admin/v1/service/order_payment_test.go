@@ -13,66 +13,133 @@ import (
 func TestPaymentMethodType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name              string
-		PaymentMethodType entity.PaymentMethodType
-		expect            PaymentMethodType
+		name       string
+		methodType entity.PaymentMethodType
+		expect     PaymentMethodType
 	}{
 		{
-			name:              "cash",
-			PaymentMethodType: entity.PaymentMethodTypeCash,
-			expect:            PaymentMethodTypeCash,
+			name:       "cash",
+			methodType: entity.PaymentMethodTypeCash,
+			expect:     PaymentMethodTypeCash,
 		},
 		{
-			name:              "credit card",
-			PaymentMethodType: entity.PaymentMethodTypeCreditCard,
-			expect:            PaymentMethodTypeCreditCard,
+			name:       "credit card",
+			methodType: entity.PaymentMethodTypeCreditCard,
+			expect:     PaymentMethodTypeCreditCard,
 		},
 		{
-			name:              "konbini",
-			PaymentMethodType: entity.PaymentMethodTypeKonbini,
-			expect:            PaymentMethodTypeKonbini,
+			name:       "konbini",
+			methodType: entity.PaymentMethodTypeKonbini,
+			expect:     PaymentMethodTypeKonbini,
 		},
 		{
-			name:              "bank transfer",
-			PaymentMethodType: entity.PaymentMethodTypeBankTranser,
-			expect:            PaymentMethodTypeBankTranser,
+			name:       "bank transfer",
+			methodType: entity.PaymentMethodTypeBankTranser,
+			expect:     PaymentMethodTypeBankTranser,
 		},
 		{
-			name:              "paypay",
-			PaymentMethodType: entity.PaymentMethodTypePayPay,
-			expect:            PaymentMethodTypePayPay,
+			name:       "paypay",
+			methodType: entity.PaymentMethodTypePayPay,
+			expect:     PaymentMethodTypePayPay,
 		},
 		{
-			name:              "line pay",
-			PaymentMethodType: entity.PaymentMethodTypeLinePay,
-			expect:            PaymentMethodTypeLinePay,
+			name:       "line pay",
+			methodType: entity.PaymentMethodTypeLinePay,
+			expect:     PaymentMethodTypeLinePay,
 		},
 		{
-			name:              "merpay",
-			PaymentMethodType: entity.PaymentMethodTypeMerpay,
-			expect:            PaymentMethodTypeMerpay,
+			name:       "merpay",
+			methodType: entity.PaymentMethodTypeMerpay,
+			expect:     PaymentMethodTypeMerpay,
 		},
 		{
-			name:              "rakuten pay",
-			PaymentMethodType: entity.PaymentMethodTypeRakutenPay,
-			expect:            PaymentMethodTypeRakutenPay,
+			name:       "rakuten pay",
+			methodType: entity.PaymentMethodTypeRakutenPay,
+			expect:     PaymentMethodTypeRakutenPay,
 		},
 		{
-			name:              "au pay",
-			PaymentMethodType: entity.PaymentMethodTypeAUPay,
-			expect:            PaymentMethodTypeAUPay,
+			name:       "au pay",
+			methodType: entity.PaymentMethodTypeAUPay,
+			expect:     PaymentMethodTypeAUPay,
 		},
 		{
-			name:              "unknown",
-			PaymentMethodType: entity.PaymentMethodTypeUnknown,
-			expect:            PaymentMethodTypeUnknown,
+			name:       "unknown",
+			methodType: entity.PaymentMethodTypeUnknown,
+			expect:     PaymentMethodTypeUnknown,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewPaymentMethodType(tt.PaymentMethodType))
+			assert.Equal(t, tt.expect, NewPaymentMethodType(tt.methodType))
+		})
+	}
+}
+
+func TestPaymentMethodType_StoreEntity(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		methodType PaymentMethodType
+		expect     entity.PaymentMethodType
+	}{
+		{
+			name:       "cash",
+			methodType: PaymentMethodTypeCash,
+			expect:     entity.PaymentMethodTypeCash,
+		},
+		{
+			name:       "credit card",
+			methodType: PaymentMethodTypeCreditCard,
+			expect:     entity.PaymentMethodTypeCreditCard,
+		},
+		{
+			name:       "konbini",
+			methodType: PaymentMethodTypeKonbini,
+			expect:     entity.PaymentMethodTypeKonbini,
+		},
+		{
+			name:       "bank transfer",
+			methodType: PaymentMethodTypeBankTranser,
+			expect:     entity.PaymentMethodTypeBankTranser,
+		},
+		{
+			name:       "paypay",
+			methodType: PaymentMethodTypePayPay,
+			expect:     entity.PaymentMethodTypePayPay,
+		},
+		{
+			name:       "line pay",
+			methodType: PaymentMethodTypeLinePay,
+			expect:     entity.PaymentMethodTypeLinePay,
+		},
+		{
+			name:       "merpay",
+			methodType: PaymentMethodTypeMerpay,
+			expect:     entity.PaymentMethodTypeMerpay,
+		},
+		{
+			name:       "rakuten pay",
+			methodType: PaymentMethodTypeRakutenPay,
+			expect:     entity.PaymentMethodTypeRakutenPay,
+		},
+		{
+			name:       "au pay",
+			methodType: PaymentMethodTypeAUPay,
+			expect:     entity.PaymentMethodTypeAUPay,
+		},
+		{
+			name:       "unknown",
+			methodType: PaymentMethodTypeUnknown,
+			expect:     entity.PaymentMethodTypeUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.methodType.StoreEntity())
 		})
 	}
 }

@@ -3021,6 +3021,76 @@ export type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
 
 
 /**
+ * 決済システム情報
+ * @export
+ * @interface PaymentSystem
+ */
+export interface PaymentSystem {
+    /**
+     * 
+     * @type {PaymentMethodType}
+     * @memberof PaymentSystem
+     */
+    'methodType': PaymentMethodType;
+    /**
+     * 
+     * @type {PaymentSystemStatus}
+     * @memberof PaymentSystem
+     */
+    'status': PaymentSystemStatus;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof PaymentSystem
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof PaymentSystem
+     */
+    'updatedAt': number;
+}
+
+
+/**
+ * 決済システム状態
+ * @export
+ * @enum {string}
+ */
+
+export const PaymentSystemStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 利用可能
+    */
+    IN_USE: 1,
+    /**
+    * 停止中
+    */
+    OUTAGE: 2
+} as const;
+
+export type PaymentSystemStatus = typeof PaymentSystemStatus[keyof typeof PaymentSystemStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface PaymentSystemsResponse
+ */
+export interface PaymentSystemsResponse {
+    /**
+     * 
+     * @type {PaymentSystem}
+     * @memberof PaymentSystemsResponse
+     */
+    'systems': PaymentSystem;
+}
+/**
  * 
  * @export
  * @interface PostalCodeResponse
@@ -5166,6 +5236,21 @@ export interface UpdateNotificationRequest {
      */
     'publishedAt': number;
 }
+/**
+ * 
+ * @export
+ * @interface UpdatePaymentSystemRequest
+ */
+export interface UpdatePaymentSystemRequest {
+    /**
+     * 
+     * @type {PaymentSystemStatus}
+     * @memberof UpdatePaymentSystemRequest
+     */
+    'status': PaymentSystemStatus;
+}
+
+
 /**
  * 
  * @export
@@ -10906,6 +10991,189 @@ export class OtherApi extends BaseAPI {
      */
     public v1SearchPostalCode(postalCode: string, options?: AxiosRequestConfig) {
         return OtherApiFp(this.configuration).v1SearchPostalCode(postalCode, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * PaymentSystemApi - axios parameter creator
+ * @export
+ */
+export const PaymentSystemApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 決済システム状態一覧取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListPaymentSystems: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/payment-systems`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 決済システム状態更新
+         * @param {string} methodType 決済種別
+         * @param {UpdatePaymentSystemRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdatePaymentSystem: async (methodType: string, body: UpdatePaymentSystemRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'methodType' is not null or undefined
+            assertParamExists('v1UpdatePaymentSystem', 'methodType', methodType)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdatePaymentSystem', 'body', body)
+            const localVarPath = `/v1/payment-systems/{methodType}`
+                .replace(`{${"methodType"}}`, encodeURIComponent(String(methodType)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * PaymentSystemApi - functional programming interface
+ * @export
+ */
+export const PaymentSystemApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PaymentSystemApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 決済システム状態一覧取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListPaymentSystems(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaymentSystemsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListPaymentSystems(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 決済システム状態更新
+         * @param {string} methodType 決済種別
+         * @param {UpdatePaymentSystemRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdatePaymentSystem(methodType: string, body: UpdatePaymentSystemRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaymentSystemsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdatePaymentSystem(methodType, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * PaymentSystemApi - factory interface
+ * @export
+ */
+export const PaymentSystemApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PaymentSystemApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 決済システム状態一覧取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListPaymentSystems(options?: any): AxiosPromise<PaymentSystemsResponse> {
+            return localVarFp.v1ListPaymentSystems(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 決済システム状態更新
+         * @param {string} methodType 決済種別
+         * @param {UpdatePaymentSystemRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdatePaymentSystem(methodType: string, body: UpdatePaymentSystemRequest, options?: any): AxiosPromise<PaymentSystemsResponse> {
+            return localVarFp.v1UpdatePaymentSystem(methodType, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * PaymentSystemApi - object-oriented interface
+ * @export
+ * @class PaymentSystemApi
+ * @extends {BaseAPI}
+ */
+export class PaymentSystemApi extends BaseAPI {
+    /**
+     * 
+     * @summary 決済システム状態一覧取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PaymentSystemApi
+     */
+    public v1ListPaymentSystems(options?: AxiosRequestConfig) {
+        return PaymentSystemApiFp(this.configuration).v1ListPaymentSystems(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 決済システム状態更新
+     * @param {string} methodType 決済種別
+     * @param {UpdatePaymentSystemRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PaymentSystemApi
+     */
+    public v1UpdatePaymentSystem(methodType: string, body: UpdatePaymentSystemRequest, options?: AxiosRequestConfig) {
+        return PaymentSystemApiFp(this.configuration).v1UpdatePaymentSystem(methodType, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

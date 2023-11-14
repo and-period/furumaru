@@ -24,6 +24,12 @@ get:
         application/json:
           schema:
             $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: 決済システムがメンテナンス中
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
     412:
       description: 前提条件エラー(商品在庫が不足、無効なプロモーションなど...)
       content:

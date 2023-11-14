@@ -25,6 +25,8 @@ tags:
   description: 買い物かご関連
 - name: Checkout
   description: 購入関連
+- name: Status
+  description: システム状態関連
 - name: Other
   description: その他（外部APIなど）
 paths:
@@ -80,7 +82,10 @@ paths:
   # Checkout
   /v1/checkouts:
     $ref: './paths/v1/checkouts/index.yaml'
-  # Address
+  # Status
+  /v1/statuses/payments:
+    $ref: './paths/v1/statuses/payments.yaml'
+  # Other
   /v1/postal-codes/{postalCode}:
     $ref: './paths/v1/postal-codes/_postalCode.yaml'
 components:
@@ -112,6 +117,8 @@ components:
       $ref: './components/schemas/codes/product.yaml#/storageMethodType'
     scheduleStatus:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
+    paymentSystemStatus:
+      $ref: './components/schemas/codes/status.yaml#/paymentSystemStatus'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity
@@ -135,6 +142,8 @@ components:
       $ref: './components/schemas/entity/product.yaml#/product'
     schedule:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
+    paymentSystem:
+      $ref: './components/schemas/entity/status.yaml#/paymentSystem'
     topArchive:
       $ref: './components/schemas/entity/top.yaml#/topArchive'
     topLive:
@@ -189,6 +198,8 @@ components:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
+    v1PaymentSystemsResponse:
+      $ref: './components/schemas/v1/status.response.yaml#/paymentSystemsResponse'
     v1TopCommonResponse:
       $ref: './components/schemas/v1/top.response.yaml#/topCommonResponse'
     v1PostalCodeResponse:
