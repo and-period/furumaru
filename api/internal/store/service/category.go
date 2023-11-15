@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -88,6 +90,16 @@ func (s *service) DeleteCategory(ctx context.Context, in *store.DeleteCategoryIn
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	err := s.db.Category.Delete(ctx, in.CategoryID)
+	params := &database.ListProductTypesParams{
+		CategoryID: in.CategoryID,
+	}
+	total, err := s.db.ProductType.Count(ctx, params)
+	if err != nil {
+		return internalError(err)
+	}
+	if total > 0 {
+		return fmt.Errorf("service: associated with product type: %w", exception.ErrFailedPrecondition)
+	}
+	err = s.db.Category.Delete(ctx, in.CategoryID)
 	return internalError(err)
 }
