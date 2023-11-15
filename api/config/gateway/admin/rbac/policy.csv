@@ -39,6 +39,7 @@ p, notification_update, /v1/notifications/*, PATCH, allow
 p, notification_delete, /v1/notifications/*, DELETE, allow
 p, order_list, /v1/orders, GET, allow
 p, order_get, /v1/orders/*, GET, allow
+p, order_update, /v1/orders/*, POST, allow
 p, payment_system_list, /v1/payment-systems, GET, allow
 p, payment_system_update, /v1/payment-systems/*, PATCH, allow
 p, producer_list, /v1/producers, GET, allow
@@ -128,6 +129,7 @@ g, administrator, notification_update
 g, administrator, notification_delete
 g, administrator, order_list
 g, administrator, order_get
+g, administrator, order_update
 g, administrator, payment_system_list
 g, administrator, payment_system_update
 g, administrator, producer_list
@@ -213,6 +215,7 @@ g, coordinator, related_producer_create
 g, coordinator, related_producer_delete
 g, coordinator, order_list
 g, coordinator, order_get
+g, coordinator, order_update
 g, coordinator, postal_code_search
 g, coordinator, product_list
 g, coordinator, product_get
