@@ -50,6 +50,21 @@ func (c *client) Capture(ctx context.Context, paymentID string) (*komoju.Payment
 	return res, nil
 }
 
+func (c *client) Cancel(ctx context.Context, paymentID string) (*komoju.PaymentResponse, error) {
+	const path = "/api/v1/payments/%s/cancel"
+	req := &komoju.APIParams{
+		Host:   c.host,
+		Method: http.MethodPost,
+		Path:   path,
+		Params: []interface{}{paymentID},
+	}
+	res := &komoju.PaymentResponse{}
+	if err := c.client.Do(ctx, req, res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 type refundRequest struct {
 	Amount      int64  `json:"amount,omitempty"`
 	Description string `json:"description,omitempty"`

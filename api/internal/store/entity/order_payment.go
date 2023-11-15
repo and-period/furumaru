@@ -54,7 +54,8 @@ type OrderPayment struct {
 	OrderID           string            `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	AddressRevisionID int64             `gorm:""`                     // 請求先情報ID
 	Status            PaymentStatus     `gorm:""`                     // 決済状況
-	TransactionID     string            `gorm:""`                     // 決済ID(決済代行システム用)
+	TransactionID     string            `gorm:""`                     // 決済ID(決済代行システム)
+	PaymentID         string            `gorm:""`                     // 決済ID(決済代行システム)
 	MethodType        PaymentMethodType `gorm:""`                     // 決済手段種別
 	Subtotal          int64             `gorm:""`                     // 購入金額
 	Discount          int64             `gorm:""`                     // 割引金額
@@ -146,6 +147,14 @@ func NewOrderPayment(params *NewOrderPaymentParams) (*OrderPayment, error) {
 		Tax:               dtax.IntPart(),
 		Total:             dtotal.IntPart(),
 	}, nil
+}
+
+func (p *OrderPayment) Capturable() bool {
+	return p.Status == PaymentStatusAuthorized
+}
+
+func (p *OrderPayment) Cancelable() bool {
+	return p.Status == PaymentStatusPending || p.Status == PaymentStatusAuthorized
 }
 
 func (p *OrderPayment) IsCompleted() bool {

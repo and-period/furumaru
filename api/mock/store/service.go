@@ -79,6 +79,34 @@ func (mr *MockServiceMockRecorder) ApproveSchedule(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApproveSchedule", reflect.TypeOf((*MockService)(nil).ApproveSchedule), ctx, in)
 }
 
+// CancelOrder mocks base method.
+func (m *MockService) CancelOrder(ctx context.Context, in *store.CancelOrderInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelOrder", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CancelOrder indicates an expected call of CancelOrder.
+func (mr *MockServiceMockRecorder) CancelOrder(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelOrder", reflect.TypeOf((*MockService)(nil).CancelOrder), ctx, in)
+}
+
+// CaptureOrder mocks base method.
+func (m *MockService) CaptureOrder(ctx context.Context, in *store.CaptureOrderInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CaptureOrder", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CaptureOrder indicates an expected call of CaptureOrder.
+func (mr *MockServiceMockRecorder) CaptureOrder(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CaptureOrder", reflect.TypeOf((*MockService)(nil).CaptureOrder), ctx, in)
+}
+
 // CheckoutAUPay mocks base method.
 func (m *MockService) CheckoutAUPay(ctx context.Context, in *store.CheckoutAUPayInput) (string, error) {
 	m.ctrl.T.Helper()

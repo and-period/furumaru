@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -43,6 +45,36 @@ func (s *service) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entit
 	}
 	order, err := s.db.Order.Get(ctx, in.OrderID)
 	return order, internalError(err)
+}
+
+func (s *service) CaptureOrder(ctx context.Context, in *store.CaptureOrderInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	order, err := s.db.Order.Get(ctx, in.OrderID)
+	if err != nil {
+		return internalError(err)
+	}
+	if !order.Capturable() {
+		return fmt.Errorf("service: this order cannot be captured: %w", exception.ErrFailedPrecondition)
+	}
+	_, err = s.komoju.Payment.Capture(ctx, order.OrderPayment.PaymentID)
+	return internalError(err)
+}
+
+func (s *service) CancelOrder(ctx context.Context, in *store.CancelOrderInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	order, err := s.db.Order.Get(ctx, in.OrderID)
+	if err != nil {
+		return internalError(err)
+	}
+	if !order.Cancelable() {
+		return fmt.Errorf("service: this order cannot be canceled: %w", exception.ErrFailedPrecondition)
+	}
+	_, err = s.komoju.Payment.Cancel(ctx, order.OrderPayment.PaymentID)
+	return internalError(err)
 }
 
 func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrdersInput) (entity.AggregatedOrders, error) {

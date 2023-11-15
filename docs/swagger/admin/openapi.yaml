@@ -182,6 +182,10 @@ paths:
     $ref: './paths/v1/orders/index.yaml'
   /v1/orders/{orderId}:
     $ref: './paths/v1/orders/_orderId/index.yaml'
+  /v1/orders/{orderId}/capture:
+    $ref: './paths/v1/orders/_orderId/capture.yaml'
+  /v1/orders/{orderId}/cancel:
+    $ref: './paths/v1/orders/_orderId/cancel.yaml'
   # User
   /v1/users:
     $ref: './paths/v1/users/index.yaml'

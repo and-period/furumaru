@@ -35,6 +35,21 @@ func (m *MockPayment) EXPECT() *MockPaymentMockRecorder {
 	return m.recorder
 }
 
+// Cancel mocks base method.
+func (m *MockPayment) Cancel(ctx context.Context, paymentID string) (*komoju.PaymentResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Cancel", ctx, paymentID)
+	ret0, _ := ret[0].(*komoju.PaymentResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Cancel indicates an expected call of Cancel.
+func (mr *MockPaymentMockRecorder) Cancel(ctx, paymentID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Cancel", reflect.TypeOf((*MockPayment)(nil).Cancel), ctx, paymentID)
+}
+
 // Capture mocks base method.
 func (m *MockPayment) Capture(ctx context.Context, paymentID string) (*komoju.PaymentResponse, error) {
 	m.ctrl.T.Helper()
