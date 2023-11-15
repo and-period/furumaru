@@ -45,6 +45,11 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 		Host:   payload.CloudFrontURL,
 		Path:   fmt.Sprintf("%s.m3u8", payload.MediaLiveRtmpStreamName),
 	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, payload.ScheduleID)
+	if err != nil {
+		s.logger.Error("Not found broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
+		return nil
+	}
 	params := &database.UpdateBroadcastParams{
 		Status: entity.BroadcastStatusIdle,
 		InitializeBroadcastParams: &database.InitializeBroadcastParams{
@@ -60,7 +65,7 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 			MediaStoreContainerArn:    payload.MediaStoreContainerARN,
 		},
 	}
-	if err := s.db.Broadcast.Update(ctx, payload.ScheduleID, params); err != nil {
+	if err := s.db.Broadcast.Update(ctx, broadcast.ScheduleID, params); err != nil {
 		s.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
 		return err
 	}
