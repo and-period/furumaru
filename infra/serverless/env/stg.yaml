@@ -3,7 +3,8 @@ accountId: 386661535629
 
 vpc:
   securityGroups:
-    - sg-01cfea94a0afdf30c
+    - sg-0fe503978ce66fd32
   subnetIds:
-    - subnet-09b8bfdc572de7830
-    - subnet-05312c36321ff8221
+    - subnet-07b6a4ffae11d776e
+    - subnet-0da4d3c74a6f0dcc8
+    - subnet-0ed4ad2c7c78df133
