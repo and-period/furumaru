@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+import { mdiPencil } from '@mdi/js'
+import type { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import { paymentsList, type PaymentListItem } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
-import { PaymentMethodType, type PaymentSystem } from '~/types/api'
+import { PaymentMethodType, PaymentSystemStatus, type PaymentSystem } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -28,6 +31,68 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'submit', methodType: PaymentMethodType): void
 }>()
+
+const headers: VDataTable['headers'] = [
+  {
+    title: '決済システム',
+    key: 'methodType',
+    sortable: false
+  },
+  {
+    title: '状態',
+    key: 'status',
+    sortable: false
+  },
+  {
+    title: '',
+    key: 'actions',
+    sortable: false
+  }
+]
+
+const getPaymentSystemName = (methodType: PaymentMethodType): string => {
+  const payment = paymentsList.find((paymentItem: PaymentListItem): boolean => {
+    return paymentItem.value === methodType
+  })
+  return payment?.name || ''
+}
+
+const getPaymentSystemStatus = (status: PaymentSystemStatus): string => {
+  switch (status) {
+    case PaymentSystemStatus.IN_USE:
+      return '利用可能'
+    case PaymentSystemStatus.OUTAGE:
+      return '停止中'
+    default:
+      return '不明'
+  }
+}
+
+const getUpdateButtonLabel = (status: PaymentSystemStatus): string => {
+  switch (status) {
+    case PaymentSystemStatus.IN_USE:
+      return '停止する'
+    case PaymentSystemStatus.OUTAGE:
+      return '利用開始'
+    default:
+      return ''
+  }
+}
+
+const getUpdateButtonColor = (status: PaymentSystemStatus): string => {
+  switch (status) {
+    case PaymentSystemStatus.IN_USE:
+      return 'error'
+    case PaymentSystemStatus.OUTAGE:
+      return 'primary'
+    default:
+      return ''
+  }
+}
+
+const onSubmit = (methodType: PaymentMethodType): void => {
+  emit('submit', methodType)
+}
 </script>
 
 <template>
@@ -37,8 +102,25 @@ const emit = defineEmits<{
     <v-card-title>決済システム状態管理</v-card-title>
 
     <v-card-text>
-      <div>TODO: ここにもろもろの実装をする</div>
-      <div>systems: {{ systems }}</div>
+      <v-data-table-server
+        :headers="headers"
+        :items="systems"
+        :items-length="systems.length"
+        no-data-text="登録されている決済システムがありません。"
+      >
+        <template #[`item.methodType`]="{ item }">
+          {{ getPaymentSystemName(item.methodType) }}
+        </template>
+        <template #[`item.status`]="{ item }">
+          {{ getPaymentSystemStatus(item.status) }}
+        </template>
+        <template #[`item.actions`]="{ item }">
+          <v-btn variant="outlined" :color="getUpdateButtonColor(item.status)" @click.stop="onSubmit(item.methodType)">
+            <v-icon size="small" :icon="mdiPencil" />
+            {{ getUpdateButtonLabel(item.status) }}
+          </v-btn>
+        </template>
+      </v-data-table-server>
     </v-card-text>
   </v-card>
 </template>

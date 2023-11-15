@@ -62,6 +62,7 @@ const handleUpdateStatus = async (methodType: PaymentMethodType): Promise<void> 
     })
   } finally {
     loading.value = false
+    fetchState.refresh()
   }
 }
 

@@ -2972,13 +2972,41 @@ export const PaymentMethodType = {
     */
     UNKNOWN: 0,
     /**
-    * 代引き支払い
+    * 代引支払い
     */
     CASH: 1,
     /**
-    * クレジットカード払い
+    * クレジットカード決済
     */
-    CARD: 2
+    CREDIT_CARD: 2,
+    /**
+    * コンビニ決済
+    */
+    KONBINI: 3,
+    /**
+    * 銀行振込決済
+    */
+    BANK_TRANSFER: 4,
+    /**
+    * QR決済（PayPay）
+    */
+    PAYPAY: 5,
+    /**
+    * QR決済（Line Pay）
+    */
+    LINE_PAY: 6,
+    /**
+    * QR決済（メルペイ）
+    */
+    MERPAY: 7,
+    /**
+    * QR決済（楽天ペイ）
+    */
+    RAKUTEN_PAY: 8,
+    /**
+    * QR決済（au PAY）
+    */
+    AU_PAY: 9
 } as const;
 
 export type PaymentMethodType = typeof PaymentMethodType[keyof typeof PaymentMethodType];
