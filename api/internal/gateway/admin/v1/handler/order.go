@@ -17,6 +17,8 @@ func (h *handler) orderRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListOrders)
 	r.GET("/:orderId", h.filterAccessOrder, h.GetOrder)
+	r.POST("/:orderId/capture", h.filterAccessOrder, h.CaptureOrder)
+	r.POST("/:orderId/cancel", h.filterAccessOrder, h.CancelOrder)
 }
 
 func (h *handler) filterAccessOrder(ctx *gin.Context) {
@@ -164,6 +166,28 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		Products:    products.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CaptureOrder(ctx *gin.Context) {
+	in := &store.CaptureOrderInput{
+		OrderID: util.GetParam(ctx, "orderId"),
+	}
+	if err := h.store.CaptureOrder(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) CancelOrder(ctx *gin.Context) {
+	in := &store.CancelOrderInput{
+		OrderID: util.GetParam(ctx, "orderId"),
+	}
+	if err := h.store.CancelOrder(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order, error) {

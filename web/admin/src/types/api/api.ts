@@ -10724,6 +10724,82 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
+         * @summary 注文キャンセル
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CancelOrder: async (orderId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('v1CancelOrder', 'orderId', orderId)
+            const localVarPath = `/v1/orders/{orderId}/cancel`
+                .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 注文確定
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CaptureOrder: async (orderId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('v1CaptureOrder', 'orderId', orderId)
+            const localVarPath = `/v1/orders/{orderId}/capture`
+                .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -10821,6 +10897,28 @@ export const OrderApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary 注文キャンセル
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CancelOrder(orderId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CancelOrder(orderId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 注文確定
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CaptureOrder(orderId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CaptureOrder(orderId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -10855,6 +10953,26 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
+         * @summary 注文キャンセル
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CancelOrder(orderId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1CancelOrder(orderId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 注文確定
+         * @param {string} orderId 注文ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CaptureOrder(orderId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1CaptureOrder(orderId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -10885,6 +11003,30 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class OrderApi extends BaseAPI {
+    /**
+     * 
+     * @summary 注文キャンセル
+     * @param {string} orderId 注文ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1CancelOrder(orderId: string, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1CancelOrder(orderId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 注文確定
+     * @param {string} orderId 注文ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1CaptureOrder(orderId: string, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1CaptureOrder(orderId, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 注文取得

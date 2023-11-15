@@ -420,6 +420,14 @@ type GetOrderInput struct {
 	OrderID string `validate:"required"`
 }
 
+type CaptureOrderInput struct {
+	OrderID string `validate:"required"`
+}
+
+type CancelOrderInput struct {
+	OrderID string `validate:"required"`
+}
+
 type AggregateOrdersInput struct {
 	UserIDs []string `validate:"omitempty,dive,required"`
 }

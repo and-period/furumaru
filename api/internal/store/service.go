@@ -71,6 +71,8 @@ type Service interface {
 	// 注文履歴
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)              // 一覧取得
 	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)                         // １件取得
+	CaptureOrder(ctx context.Context, in *CaptureOrderInput) error                                  // 注文確定
+	CancelOrder(ctx context.Context, in *CancelOrderInput) error                                    // 注文キャンセル
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error) // 集計結果一覧取得
 	// 買い物かご
 	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error) // 取得
