@@ -62,7 +62,7 @@ func (a *app) inject(ctx context.Context) error {
 	params.logger = logger
 
 	// Databaseの設定
-	dbClient, err := a.newDatabase("stores", params)
+	dbClient, err := a.newDatabase("media", params)
 	if err != nil {
 		return err
 	}
