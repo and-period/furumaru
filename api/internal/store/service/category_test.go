@@ -344,7 +344,9 @@ func TestUpdateCategory(t *testing.T) {
 
 func TestDeleteCategory(t *testing.T) {
 	t.Parallel()
-
+	params := &database.ListProductTypesParams{
+		CategoryID: "category-id",
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -354,6 +356,7 @@ func TestDeleteCategory(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().Count(ctx, params).Return(int64(0), nil)
 				mocks.db.Category.EXPECT().Delete(ctx, "category-id").Return(nil)
 			},
 			input: &store.DeleteCategoryInput{
@@ -368,8 +371,29 @@ func TestDeleteCategory(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to count",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().Count(ctx, params).Return(int64(0), assert.AnError)
+			},
+			input: &store.DeleteCategoryInput{
+				CategoryID: "category-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "associated with product type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().Count(ctx, params).Return(int64(1), nil)
+			},
+			input: &store.DeleteCategoryInput{
+				CategoryID: "category-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ProductType.EXPECT().Count(ctx, params).Return(int64(0), nil)
 				mocks.db.Category.EXPECT().Delete(ctx, "category-id").Return(assert.AnError)
 			},
 			input: &store.DeleteCategoryInput{
