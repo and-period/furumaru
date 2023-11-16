@@ -246,9 +246,9 @@ export const useAuthStore = defineStore('auth', {
       this.expiredAt = dayjs().add(auth.expiresIn, 'second')
     },
 
-    logout () {
+    async logout () {
       try {
-        apiClient.authApi().v1SignOut()
+        await apiClient.authApi().v1SignOut()
         const cookies = new Cookies()
         cookies.remove('refreshToken')
         this.$reset()

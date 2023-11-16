@@ -108,6 +108,7 @@ func (h *handler) SignOut(ctx *gin.Context) {
 	token, err := util.GetAuthToken(ctx)
 	if err != nil {
 		h.unauthorized(ctx, err)
+		return
 	}
 
 	in := &user.SignOutAdminInput{
