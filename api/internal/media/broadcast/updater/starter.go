@@ -65,7 +65,7 @@ func (s *starter) Lambda(ctx context.Context, payload CreatePayload) error {
 			MediaStoreContainerArn:    payload.MediaStoreContainerARN,
 		},
 	}
-	if err := s.db.Broadcast.Update(ctx, broadcast.ScheduleID, params); err != nil {
+	if err := s.db.Broadcast.Update(ctx, broadcast.ID, params); err != nil {
 		s.logger.Error("Failed to update broadcast", zap.Error(err), zap.String("scheduleId", payload.ScheduleID))
 		return err
 	}
