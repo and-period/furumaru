@@ -8,6 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
+	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -18,6 +20,52 @@ import (
 
 func TestNotifyOrderAuthorized(t *testing.T) {
 	t.Parallel()
+	orderIn := &store.GetOrderInput{
+		OrderID: "order-id",
+	}
+	order := &sentity.Order{
+		OrderPayment: sentity.OrderPayment{
+			OrderID:           "order-id",
+			AddressRevisionID: 1,
+			Status:            sentity.PaymentStatusPending,
+			TransactionID:     "transaction-id",
+			PaymentID:         "payment-id",
+			MethodType:        sentity.PaymentMethodTypeCreditCard,
+			Subtotal:          4460,
+			Discount:          446,
+			ShippingFee:       0,
+			Tax:               401,
+			Total:             4415,
+		},
+		OrderFulfillments: sentity.OrderFulfillments{
+			{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				Status:            sentity.FulfillmentStatusUnfulfilled,
+				TrackingNumber:    "",
+				ShippingCarrier:   sentity.ShippingCarrierUnknown,
+				ShippingType:      sentity.ShippingTypeNormal,
+				BoxNumber:         1,
+				BoxSize:           sentity.ShippingSize60,
+			},
+		},
+		OrderItems: sentity.OrderItems{
+			{
+				ProductRevisionID: 1,
+				OrderID:           "order-id",
+				Quantity:          1,
+			},
+			{
+				ProductRevisionID: 2,
+				OrderID:           "order-id",
+				Quantity:          2,
+			},
+		},
+		ID:            "order-id",
+		UserID:        "user-id",
+		CoordinatorID: "coordinator-id",
+		PromotionID:   "",
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -25,8 +73,49 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
+						expect := &entity.ReceivedQueue{
+							ID:        queue.ID, // ignore
+							EventType: entity.EventTypeOrderAuthorized,
+							UserType:  entity.UserTypeUser,
+							UserIDs:   []string{"user-id"},
+							Done:      false,
+						}
+						assert.Equal(t, expect, queue)
+						return nil
+					})
+				mocks.producer.EXPECT().
+					SendMessage(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
+						payload := &entity.WorkerPayload{}
+						err := json.Unmarshal(b, payload)
+						require.NoError(t, err)
+						expect := &entity.WorkerPayload{
+							QueueID:   payload.QueueID, // ignore
+							EventType: entity.EventTypeOrderAuthorized,
+							UserType:  entity.UserTypeUser,
+							UserIDs:   []string{"user-id"},
+							Email: &entity.MailConfig{
+								EmailID: entity.EmailIDUserOrderAuthorized,
+								Substitutions: map[string]string{
+									"決済方法":  "クレジットカード決済",
+									"商品金額":  "4460",
+									"配送手数料": "0",
+									"割引金額":  "446",
+									"消費税":   "401",
+									"合計金額":  "4415",
+								},
+							},
+						}
+						assert.Equal(t, expect, payload)
+						return "message-id", nil
+					})
+			},
 			input: &messenger.NotifyOrderAuthorizedInput{
 				OrderID: "order-id",
 			},
@@ -37,6 +126,27 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &messenger.NotifyOrderAuthorizedInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get order",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderAuthorizedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to send messag",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &messenger.NotifyOrderAuthorizedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
