@@ -13,7 +13,7 @@ import (
 )
 
 // NotifyOrderAuthorized - 支払い完了
-func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.NotifyOrderAuthorizedInput) error {
+func (s *service) NotifyOrderAuthorized(_ context.Context, in *messenger.NotifyOrderAuthorizedInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
