@@ -122,14 +122,15 @@ type Product interface {
 }
 
 type ListProductsParams struct {
-	Name          string
-	CoordinatorID string
-	ProducerID    string
-	ProducerIDs   []string
-	OnlyPublished bool
-	Limit         int
-	Offset        int
-	Orders        []*ListProductsOrder
+	Name           string
+	CoordinatorID  string
+	ProducerID     string
+	ProducerIDs    []string
+	ProductTypeIDs []string
+	OnlyPublished  bool
+	Limit          int
+	Offset         int
+	Orders         []*ListProductsOrder
 }
 
 type ListProductsOrder struct {

@@ -268,6 +268,16 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 	return dbError(err)
 }
 
+func (c *coordinator) RemoveProductTypeID(ctx context.Context, productTypeID string) error {
+	update := fmt.Sprintf("JSON_REMOVE(product_type_ids, JSON_UNQUOTE(JSON_SEARCH(product_type_ids, 'one', '%s')))", productTypeID)
+
+	err := c.db.DB.WithContext(ctx).
+		Table(coordinatorTable).
+		Where("JSON_SEARCH(product_type_ids, 'one', '%s%) IS NOT NULL", productTypeID).
+		UpdateColumn("product_type_ids", update).Error
+	return dbError(err)
+}
+
 func (c *coordinator) get(
 	ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {

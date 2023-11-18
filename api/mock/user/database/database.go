@@ -625,6 +625,20 @@ func (mr *MockCoordinatorMockRecorder) MultiGet(ctx, coordinatorIDs interface{},
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockCoordinator)(nil).MultiGet), varargs...)
 }
 
+// RemoveProductTypeID mocks base method.
+func (m *MockCoordinator) RemoveProductTypeID(ctx context.Context, productTypeID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveProductTypeID", ctx, productTypeID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveProductTypeID indicates an expected call of RemoveProductTypeID.
+func (mr *MockCoordinatorMockRecorder) RemoveProductTypeID(ctx, productTypeID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveProductTypeID", reflect.TypeOf((*MockCoordinator)(nil).RemoveProductTypeID), ctx, productTypeID)
+}
+
 // Update mocks base method.
 func (m *MockCoordinator) Update(ctx context.Context, coordinatorID string, params *database.UpdateCoordinatorParams) error {
 	m.ctrl.T.Helper()

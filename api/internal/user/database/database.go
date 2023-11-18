@@ -111,6 +111,7 @@ type Coordinator interface {
 	UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error
 	UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error
 	Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error
+	RemoveProductTypeID(ctx context.Context, productTypeID string) error
 }
 
 type ListCoordinatorsParams struct {

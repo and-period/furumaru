@@ -2,11 +2,14 @@ package service
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -121,8 +124,31 @@ func (s *service) DeleteProductType(ctx context.Context, in *store.DeleteProduct
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	err := s.db.ProductType.Delete(ctx, in.ProductTypeID)
-	return internalError(err)
+	params := &database.ListProductsParams{
+		ProductTypeIDs: []string{in.ProductTypeID},
+	}
+	total, err := s.db.Product.Count(ctx, params)
+	if err != nil {
+		return internalError(err)
+	}
+	if total > 0 {
+		return fmt.Errorf("service: associated with product: %w", exception.ErrFailedPrecondition)
+	}
+	if err := s.db.ProductType.Delete(ctx, in.ProductTypeID); err != nil {
+		return internalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func(productTypeID string) {
+		defer s.waitGroup.Done()
+		in := &user.RemoveCoordinatorProductTypeInput{
+			ProductTypeID: productTypeID,
+		}
+		if err := s.user.RemoveCoordinatorProductType(context.Background(), in); err != nil {
+			s.logger.Error("Failed to remove product type in coordinators",
+				zap.String("productTypeId", productTypeID), zap.Error(err))
+		}
+	}(in.ProductTypeID)
+	return nil
 }
 
 func (s *service) resizeProductType(ctx context.Context, productTypeID, iconURL string) {

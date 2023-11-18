@@ -676,6 +676,20 @@ func (mr *MockServiceMockRecorder) RelateProducers(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RelateProducers", reflect.TypeOf((*MockService)(nil).RelateProducers), ctx, in)
 }
 
+// RemoveCoordinatorProductType mocks base method.
+func (m *MockService) RemoveCoordinatorProductType(ctx context.Context, in *user.RemoveCoordinatorProductTypeInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveCoordinatorProductType", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveCoordinatorProductType indicates an expected call of RemoveCoordinatorProductType.
+func (mr *MockServiceMockRecorder) RemoveCoordinatorProductType(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveCoordinatorProductType", reflect.TypeOf((*MockService)(nil).RemoveCoordinatorProductType), ctx, in)
+}
+
 // ResetAdministratorPassword mocks base method.
 func (m *MockService) ResetAdministratorPassword(ctx context.Context, in *user.ResetAdministratorPasswordInput) error {
 	m.ctrl.T.Helper()
