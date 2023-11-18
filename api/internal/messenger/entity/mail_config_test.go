@@ -51,7 +51,7 @@ func TestTemplateBuilder(t *testing.T) {
 	assert.Equal(t, "http://example.com", data["サイトURL"])
 	assert.Equal(t, "件名", data["件名"])
 	assert.Equal(t, "本文", data["本文"])
-	assert.Equal(t, "クレジットカード決済", data["支払い:決済方法"])
+	assert.Equal(t, "クレジットカード決済", data["決済方法"])
 	assert.Equal(t, "2000", data["商品金額"])
 	assert.Equal(t, "500", data["割引金額"])
 	assert.Equal(t, "500", data["配送手数料"])
