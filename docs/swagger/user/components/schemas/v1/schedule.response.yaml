@@ -68,6 +68,8 @@ scheduleResponse:
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
     lives:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -100,6 +102,8 @@ scheduleResponse:
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
     products:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '新鮮なじゃがいも'

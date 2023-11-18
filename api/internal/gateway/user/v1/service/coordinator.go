@@ -26,6 +26,8 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 			PromotionVideoURL: coordinator.PromotionVideoURL,
 			InstagramID:       coordinator.InstagramID,
 			FacebookID:        coordinator.FacebookID,
+			Prefecture:        coordinator.Prefecture,
+			City:              coordinator.City,
 		},
 	}
 }

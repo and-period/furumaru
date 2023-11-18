@@ -13,4 +13,6 @@ type Producer struct {
 	PromotionVideoURL string   `json:"promotionVideoUrl"` // 紹介映像URL
 	InstagramID       string   `json:"instagramId"`       // Instagramアカウント
 	FacebookID        string   `json:"facebookId"`        // Facebookアカウント
+	Prefecture        string   `json:"prefecture"`        // 都道府県
+	City              string   `json:"city"`              // 市区町村
 }

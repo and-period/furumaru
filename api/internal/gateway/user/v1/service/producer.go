@@ -25,6 +25,8 @@ func NewProducer(producer *entity.Producer) *Producer {
 			PromotionVideoURL: producer.PromotionVideoURL,
 			InstagramID:       producer.InstagramID,
 			FacebookID:        producer.FacebookID,
+			Prefecture:        producer.Prefecture,
+			City:              producer.City,
 		},
 	}
 }
