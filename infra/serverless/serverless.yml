@@ -257,8 +257,9 @@ stepFunctions:
                         GlobalConfiguration:
                           InputEndAction: NONE
                           InputLossBehavior:
+                            BlackFrameMsec: 1000
                             InputLossImageType: SLATE
-                            InputLossImageColor: "000000"
+                            InputLossImageColor: "3a3a3a"
                             InputLossImageSlate:
                               Uri.$: $[0].ChannelInput.InputLossImageSlateUri
                         TimecodeConfig:
