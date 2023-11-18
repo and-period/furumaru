@@ -27,6 +27,8 @@ type NewAddressParams struct {
 	IsDefault      bool
 	Lastname       string
 	Firstname      string
+	LastnameKana   string
+	FirstnameKana  string
 	PostalCode     string
 	PrefectureCode int32
 	City           string
@@ -41,6 +43,8 @@ func NewAddress(params *NewAddressParams) (*Address, error) {
 		AddressID:      addressID,
 		Lastname:       params.Lastname,
 		Firstname:      params.Firstname,
+		LastnameKana:   params.LastnameKana,
+		FirstnameKana:  params.FirstnameKana,
 		PostalCode:     params.PostalCode,
 		PrefectureCode: params.PrefectureCode,
 		City:           params.City,

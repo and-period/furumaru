@@ -57,6 +57,8 @@ type ListAddressesParams struct {
 type UpdateAddressParams struct {
 	Lastname       string
 	Firstname      string
+	LastnameKana   string
+	FirstnameKana  string
 	PostalCode     string
 	PrefectureCode int32
 	City           string

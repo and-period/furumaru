@@ -415,6 +415,8 @@ type CreateAddressInput struct {
 	UserID         string `validate:"required"`
 	Lastname       string `validate:"required,max=32"`
 	Firstname      string `validate:"required,max=32"`
+	LastnameKana   string `validate:"required,max=32,hiragana"`
+	FirstnameKana  string `validate:"required,max=32,hiragana"`
 	PostalCode     string `validate:"required,max=16,numeric"`
 	PrefectureCode int32  `validate:"required"`
 	City           string `validate:"required,max=32"`
@@ -429,6 +431,8 @@ type UpdateAddressInput struct {
 	UserID         string `validate:"required"`
 	Lastname       string `validate:"required,max=32"`
 	Firstname      string `validate:"required,max=32"`
+	LastnameKana   string `validate:"required,max=32,hiragana"`
+	FirstnameKana  string `validate:"required,max=32,hiragana"`
 	PostalCode     string `validate:"required,max=16,numeric"`
 	PrefectureCode int32  `validate:"required"`
 	City           string `validate:"required,max=32"`

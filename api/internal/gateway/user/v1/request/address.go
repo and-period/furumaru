@@ -3,6 +3,8 @@ package request
 type CreateAddressRequest struct {
 	Lastname       string `json:"lastname,omitempty"`       // 姓
 	Firstname      string `json:"firstname,omitempty"`      // 名
+	LastnameKana   string `json:"lastnameKana,omitempty"`   // 姓（かな）
+	FirstnameKana  string `json:"firstnameKana,omitempty"`  // 名（かな）
 	PostalCode     string `json:"postalCode,omitempty"`     // 郵便番号
 	PrefectureCode int32  `json:"prefectureCode,omitempty"` // 都道府県
 	City           string `json:"city,omitempty"`           // 市区町村
@@ -15,6 +17,8 @@ type CreateAddressRequest struct {
 type UpdateAddressRequest struct {
 	Lastname       string `json:"lastname,omitempty"`       // 姓
 	Firstname      string `json:"firstname,omitempty"`      // 名
+	LastnameKana   string `json:"lastnameKana,omitempty"`   // 姓（かな）
+	FirstnameKana  string `json:"firstnameKana,omitempty"`  // 名（かな）
 	PostalCode     string `json:"postalCode,omitempty"`     // 郵便番号
 	PrefectureCode int32  `json:"prefectureCode,omitempty"` // 都道府県
 	City           string `json:"city,omitempty"`           // 市区町村

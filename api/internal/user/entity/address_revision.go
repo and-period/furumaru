@@ -14,6 +14,8 @@ type AddressRevision struct {
 	AddressID      string    `gorm:""`                     // 住所ID
 	Lastname       string    `gorm:""`                     // 姓
 	Firstname      string    `gorm:""`                     // 名
+	LastnameKana   string    `gorm:""`                     // 姓（かな）
+	FirstnameKana  string    `gorm:""`                     // 名（かな）
 	PostalCode     string    `gorm:""`                     // 郵便番号
 	Prefecture     string    `gorm:"-"`                    // 都道府県
 	PrefectureCode int32     `gorm:"column:prefecture"`    // 都道府県コード
@@ -31,6 +33,8 @@ type NewAddressRevisionParams struct {
 	AddressID      string
 	Lastname       string
 	Firstname      string
+	LastnameKana   string
+	FirstnameKana  string
 	PostalCode     string
 	PrefectureCode int32
 	City           string
@@ -48,6 +52,8 @@ func NewAddressRevision(params *NewAddressRevisionParams) (*AddressRevision, err
 		AddressID:      params.AddressID,
 		Lastname:       params.Lastname,
 		Firstname:      params.Firstname,
+		LastnameKana:   params.LastnameKana,
+		FirstnameKana:  params.FirstnameKana,
 		PostalCode:     params.PostalCode,
 		Prefecture:     prefecture,
 		PrefectureCode: params.PrefectureCode,

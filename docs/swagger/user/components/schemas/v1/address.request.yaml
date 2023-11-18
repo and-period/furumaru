@@ -7,6 +7,12 @@ createAddressRequest:
     firstname:
       type: string
       description: 名(32文字まで)
+    lastnameKana:
+      type: string
+      description: 姓(かな)(ひらがな,32文字まで)
+    firstnameKana:
+      type: string
+      description: 名(かな)(ひらがな,32文字まで)
     postalCode:
       type: string
       description: 郵便番号(ハイフンなし)
@@ -30,6 +36,8 @@ createAddressRequest:
   required:
   - lastname
   - firstname
+  - lastnameKana
+  - firstnameKana
   - postalCode
   - prefecture
   - city
@@ -40,6 +48,8 @@ createAddressRequest:
   example:
     lastname: '&.'
     firstname: '利用者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'りようしゃ'
     postalCode: '1000014'
     prefectureCode: 13
     city: '千代田区'
@@ -56,6 +66,12 @@ updateAddressRequest:
     firstname:
       type: string
       description: 名(32文字まで)
+    lastnameKana:
+      type: string
+      description: 姓(かな)(ひらがな,32文字まで)
+    firstnameKana:
+      type: string
+      description: 名(かな)(ひらがな,32文字まで)
     postalCode:
       type: string
       description: 郵便番号(ハイフンなし)
@@ -79,6 +95,8 @@ updateAddressRequest:
   required:
   - lastname
   - firstname
+  - lastnameKana
+  - firstnameKana
   - postalCode
   - prefecture
   - city
@@ -89,6 +107,8 @@ updateAddressRequest:
   example:
     lastname: '&.'
     firstname: '利用者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'りようしゃ'
     postalCode: '1000014'
     prefectureCode: 13
     city: '千代田区'
