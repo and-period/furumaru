@@ -88,6 +88,8 @@ productResponse:
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
     producer:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -112,6 +114,8 @@ productResponse:
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
     category:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '野菜'
@@ -243,6 +247,8 @@ productsResponse:
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
     producers:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -267,6 +273,8 @@ productsResponse:
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
     categories:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: '野菜'

@@ -63,6 +63,12 @@ coordinator:
     facebookId:
       type: string
       description: Facebookアカウント
+    prefecture:
+      type: string
+      description: 都道府県
+    city:
+      type: string
+      description: 市区町村
   required:
   - id
   - marcheName
@@ -76,6 +82,8 @@ coordinator:
   - headers
   - instagramId
   - facebookId
+  - prefecture
+  - city
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     storeName: '&.農園'
@@ -100,3 +108,5 @@ coordinator:
     promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
     instagramId: 'instagram-id'
     facebookId: 'facebook-id'
+    prefecture: '東京都'
+    city: '千代田区'

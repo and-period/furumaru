@@ -98,6 +98,18 @@ export interface Producer {
      * @memberof Producer
      */
     facebookId: string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof Producer
+     */
+    prefecture: string;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof Producer
+     */
+    city: string;
 }
 
 /**
@@ -116,6 +128,8 @@ export function instanceOfProducer(value: object): boolean {
     isInstance = isInstance && "promotionVideoUrl" in value;
     isInstance = isInstance && "instagramId" in value;
     isInstance = isInstance && "facebookId" in value;
+    isInstance = isInstance && "prefecture" in value;
+    isInstance = isInstance && "city" in value;
 
     return isInstance;
 }
@@ -141,6 +155,8 @@ export function ProducerFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'promotionVideoUrl': json['promotionVideoUrl'],
         'instagramId': json['instagramId'],
         'facebookId': json['facebookId'],
+        'prefecture': json['prefecture'],
+        'city': json['city'],
     };
 }
 
@@ -164,6 +180,8 @@ export function ProducerToJSON(value?: Producer | null): any {
         'promotionVideoUrl': value.promotionVideoUrl,
         'instagramId': value.instagramId,
         'facebookId': value.facebookId,
+        'prefecture': value.prefecture,
+        'city': value.city,
     };
 }
 
