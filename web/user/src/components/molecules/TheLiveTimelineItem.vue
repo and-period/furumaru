@@ -30,8 +30,10 @@ const priceFormatter = (price: number) => {
       {{ time }}
     </time>
 
-    <div class="mt-2 grid grid-cols-4 gap-x-12 pl-6 pt-[24px]">
-      <div class="col-span-1 flex flex-col items-center gap-4">
+    <div
+      class="mt-2 flex flex-col gap-x-12 gap-y-4 pl-6 pt-[24px] md:grid md:grid-cols-4"
+    >
+      <div class="col-span-1 flex items-center gap-4 md:flex-col">
         <div class="flex w-full flex-col items-center">
           <img :src="cnImgSrc" class="mb-2 h-[66px] w-[66px] rounded-full" />
           <p class="text-center text-[14px] font-medium tracking-[1.4px]">
@@ -43,7 +45,9 @@ const priceFormatter = (price: number) => {
         </div>
       </div>
 
-      <div class="col-span-3 grid grid-cols-2 gap-8">
+      <div
+        class="flex flex-col gap-4 md:col-span-3 md:grid md:grid-cols-2 md:gap-8"
+      >
         <div v-for="item in items" :key="item.id" class="flex gap-[10px]">
           <img :src="item.imgSrc" class="h-20 w-20" />
           <div class="flex flex-col justify-between">

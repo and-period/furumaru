@@ -2,13 +2,17 @@
 import { MOCK_LIVE_VIDEO } from '~/constants/mock'
 
 const live = MOCK_LIVE_VIDEO
+
+useSeoMeta({
+  title: 'ライブ配信',
+})
 </script>
 
 <template>
   <div
     class="mx-auto grid max-w-[1440px] grid-flow-col auto-rows-max grid-cols-3 gap-8 text-main xl:px-14"
   >
-    <div class="col-span-2">
+    <div class="col-span-3 lg:col-span-2">
       <the-live-video-player
         :video-src="live.videoSrc"
         :title="live.title"
@@ -23,7 +27,8 @@ const live = MOCK_LIVE_VIDEO
       <the-live-timeline class="mt-4" />
     </div>
 
-    <div class="col-span-1">
+    <!-- PC画面のみ表示する右サイドバー -->
+    <div class="col-span-1 hidden lg:block">
       <div class="flex h-[450px] flex-col bg-white p-4">
         <div class="grow overflow-scroll"></div>
         <div class="relative text-[12px] text-main">

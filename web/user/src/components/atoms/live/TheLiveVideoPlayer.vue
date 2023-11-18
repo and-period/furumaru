@@ -50,7 +50,7 @@ const handleClickShowDetailButton = () => {
 <template>
   <div>
     <video ref="videoRef" class="aspect-video w-full" controls />
-    <div class="mt-2">
+    <div class="mt-2 px-4 lg:px-0">
       <div class="flex items-center gap-2">
         <div
           :class="{
@@ -74,12 +74,17 @@ const handleClickShowDetailButton = () => {
         {{ title }}
       </p>
       <div class="mt-4 flex items-center gap-2">
-        <img :src="cnImgSrc" class="h-[10] w-[10] rounded-full" />
+        <img
+          :src="cnImgSrc"
+          class="h-[10] w-[10] rounded-full"
+          :alt="`${cnName}のプロフィール画像`"
+        />
         <div class="text-[12px] tracking-[1.2px]">
           <p class="mb-1">{{ marcheName }}/{{ address }}</p>
           <p>コーディネーター：{{ cnName }}</p>
         </div>
       </div>
+
       <div>
         <p
           v-show="showDetail"
