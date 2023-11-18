@@ -13,12 +13,31 @@ import (
 )
 
 // NotifyOrderAuthorized - 支払い完了
-func (s *service) NotifyOrderAuthorized(_ context.Context, in *messenger.NotifyOrderAuthorizedInput) error {
+func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.NotifyOrderAuthorizedInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	// TODO: 詳細の実装
-	return nil
+	orderIn := &store.GetOrderInput{
+		OrderID: in.OrderID,
+	}
+	order, err := s.store.GetOrder(ctx, orderIn)
+	if err != nil {
+		return internalError(err)
+	}
+	builder := entity.NewTemplateDataBuilder().Order(order)
+	mail := &entity.MailConfig{
+		EmailID:       entity.EmailIDUserOrderAuthorized,
+		Substitutions: builder.Build(),
+	}
+	payload := &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeOrderAuthorized,
+		UserType:  entity.UserTypeUser,
+		UserIDs:   []string{order.UserID},
+		Email:     mail,
+	}
+	err = s.sendMessage(ctx, payload)
+	return internalError(err)
 }
 
 // NotifyRegisterAdmin - 管理者登録

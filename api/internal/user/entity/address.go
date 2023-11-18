@@ -65,7 +65,13 @@ func NewAddress(params *NewAddressParams) (*Address, error) {
 }
 
 func (a *Address) Name() string {
-	return strings.Join([]string{a.Lastname, a.Firstname}, " ")
+	str := strings.Join([]string{a.Lastname, a.Firstname}, " ")
+	return strings.TrimSpace(str)
+}
+
+func (a *Address) String() string {
+	str := strings.Join([]string{a.Prefecture, a.City, a.AddressLine1, a.AddressLine2}, " ")
+	return strings.TrimSpace(str)
 }
 
 func (a *Address) Fill(revision *AddressRevision) {
