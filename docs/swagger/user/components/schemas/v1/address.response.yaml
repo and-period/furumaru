@@ -11,6 +11,8 @@ addressResponse:
       isDefault: true
       lastname: '&.'
       firstname: '利用者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'りようしゃ'
       postalCode: '1000014'
       prefecture: '東京都'
       city: '千代田区'
@@ -38,6 +40,8 @@ addressesResponse:
       isDefault: true
       lastname: '&.'
       firstname: '利用者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'りようしゃ'
       postalCode: '1000014'
       prefecture: '東京都'
       city: '千代田区'

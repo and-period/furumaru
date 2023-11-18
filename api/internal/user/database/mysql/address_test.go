@@ -684,6 +684,8 @@ func TestAddress_Update(t *testing.T) {
 				params: &database.UpdateAddressParams{
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -712,6 +714,8 @@ func TestAddress_Update(t *testing.T) {
 				params: &database.UpdateAddressParams{
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -741,6 +745,8 @@ func TestAddress_Update(t *testing.T) {
 				params: &database.UpdateAddressParams{
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -763,6 +769,8 @@ func TestAddress_Update(t *testing.T) {
 				params: &database.UpdateAddressParams{
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
 					PostalCode:     "1000014",
 					PrefectureCode: 0,
 					City:           "千代田区",
@@ -913,6 +921,8 @@ func testAddressRevision(revisionID int64, addressID string, now time.Time) *ent
 		AddressID:      addressID,
 		Lastname:       "&.",
 		Firstname:      "購入者",
+		LastnameKana:   "あんどどっと",
+		FirstnameKana:  "こうにゅうしゃ",
 		PostalCode:     "1000014",
 		Prefecture:     "東京都",
 		PrefectureCode: 13,

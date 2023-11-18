@@ -39,6 +39,18 @@ export interface CreateAddressRequest {
      */
     firstname: string;
     /**
+     * 姓(かな)(ひらがな,32文字まで)
+     * @type {string}
+     * @memberof CreateAddressRequest
+     */
+    lastnameKana: string;
+    /**
+     * 名(かな)(ひらがな,32文字まで)
+     * @type {string}
+     * @memberof CreateAddressRequest
+     */
+    firstnameKana: string;
+    /**
      * 郵便番号(ハイフンなし)
      * @type {string}
      * @memberof CreateAddressRequest
@@ -89,6 +101,8 @@ export function instanceOfCreateAddressRequest(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "lastname" in value;
     isInstance = isInstance && "firstname" in value;
+    isInstance = isInstance && "lastnameKana" in value;
+    isInstance = isInstance && "firstnameKana" in value;
     isInstance = isInstance && "postalCode" in value;
     isInstance = isInstance && "prefecture" in value;
     isInstance = isInstance && "city" in value;
@@ -112,6 +126,8 @@ export function CreateAddressRequestFromJSONTyped(json: any, ignoreDiscriminator
         
         'lastname': json['lastname'],
         'firstname': json['firstname'],
+        'lastnameKana': json['lastnameKana'],
+        'firstnameKana': json['firstnameKana'],
         'postalCode': json['postalCode'],
         'prefecture': PrefectureFromJSON(json['prefecture']),
         'city': json['city'],
@@ -133,6 +149,8 @@ export function CreateAddressRequestToJSON(value?: CreateAddressRequest | null):
         
         'lastname': value.lastname,
         'firstname': value.firstname,
+        'lastnameKana': value.lastnameKana,
+        'firstnameKana': value.firstnameKana,
         'postalCode': value.postalCode,
         'prefecture': PrefectureToJSON(value.prefecture),
         'city': value.city,

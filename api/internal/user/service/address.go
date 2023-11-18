@@ -95,6 +95,8 @@ func (s *service) CreateAddress(ctx context.Context, in *user.CreateAddressInput
 		IsDefault:      in.IsDefault,
 		Lastname:       in.Lastname,
 		Firstname:      in.Firstname,
+		LastnameKana:   in.LastnameKana,
+		FirstnameKana:  in.FirstnameKana,
 		PostalCode:     in.PostalCode,
 		PrefectureCode: in.PrefectureCode,
 		City:           in.City,
@@ -129,6 +131,8 @@ func (s *service) UpdateAddress(ctx context.Context, in *user.UpdateAddressInput
 	params := &database.UpdateAddressParams{
 		Lastname:       in.Lastname,
 		Firstname:      in.Firstname,
+		LastnameKana:   in.LastnameKana,
+		FirstnameKana:  in.FirstnameKana,
 		PostalCode:     in.PostalCode,
 		PrefectureCode: in.PrefectureCode,
 		City:           in.City,

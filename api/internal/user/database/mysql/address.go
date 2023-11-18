@@ -191,6 +191,8 @@ func (a *address) Update(ctx context.Context, addressID, userID string, params *
 		AddressID:      addressID,
 		Lastname:       params.Lastname,
 		Firstname:      params.Firstname,
+		LastnameKana:   params.LastnameKana,
+		FirstnameKana:  params.FirstnameKana,
 		PostalCode:     params.PostalCode,
 		PrefectureCode: params.PrefectureCode,
 		City:           params.City,
