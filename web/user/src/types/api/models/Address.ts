@@ -44,6 +44,18 @@ export interface Address {
      */
     firstname: string;
     /**
+     * 姓（かな）
+     * @type {string}
+     * @memberof Address
+     */
+    lastnameKana: string;
+    /**
+     * 名（かな）
+     * @type {string}
+     * @memberof Address
+     */
+    firstnameKana: string;
+    /**
      * 郵便番号
      * @type {string}
      * @memberof Address
@@ -90,6 +102,8 @@ export function instanceOfAddress(value: object): boolean {
     isInstance = isInstance && "isDefault" in value;
     isInstance = isInstance && "lastname" in value;
     isInstance = isInstance && "firstname" in value;
+    isInstance = isInstance && "lastnameKana" in value;
+    isInstance = isInstance && "firstnameKana" in value;
     isInstance = isInstance && "postalCode" in value;
     isInstance = isInstance && "prefecture" in value;
     isInstance = isInstance && "city" in value;
@@ -114,6 +128,8 @@ export function AddressFromJSONTyped(json: any, ignoreDiscriminator: boolean): A
         'isDefault': json['isDefault'],
         'lastname': json['lastname'],
         'firstname': json['firstname'],
+        'lastnameKana': json['lastnameKana'],
+        'firstnameKana': json['firstnameKana'],
         'postalCode': json['postalCode'],
         'prefecture': json['prefecture'],
         'city': json['city'],
@@ -136,6 +152,8 @@ export function AddressToJSON(value?: Address | null): any {
         'isDefault': value.isDefault,
         'lastname': value.lastname,
         'firstname': value.firstname,
+        'lastnameKana': value.lastnameKana,
+        'firstnameKana': value.firstnameKana,
         'postalCode': value.postalCode,
         'prefecture': value.prefecture,
         'city': value.city,
