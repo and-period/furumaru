@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
@@ -56,6 +57,7 @@ func TestCoordinator(t *testing.T) {
 				Prefecture:        "東京都",
 				PrefectureCode:    13,
 				City:              "千代田区",
+				BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
@@ -66,6 +68,7 @@ func TestCoordinator(t *testing.T) {
 					Username:       "&.農園",
 					Profile:        "紹介文です。",
 					ProductTypeIDs: []string{"product-type-ids"},
+					BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -112,6 +115,7 @@ func TestCoordinator_Response(t *testing.T) {
 					Username:       "&.農園",
 					Profile:        "紹介文です。",
 					ProductTypeIDs: []string{"product-type-ids"},
+					BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -137,6 +141,7 @@ func TestCoordinator_Response(t *testing.T) {
 				Username:       "&.農園",
 				Profile:        "紹介文です。",
 				ProductTypeIDs: []string{"product-type-ids"},
+				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 				Thumbnails: []*response.Image{
 					{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -192,6 +197,7 @@ func TestCoordinators(t *testing.T) {
 					Username:       "&.農園",
 					Profile:        "紹介文です。",
 					ProductTypeIDs: []string{"product-type-ids"},
+					BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 					Thumbnails: common.Images{
 						{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
@@ -232,6 +238,7 @@ func TestCoordinators(t *testing.T) {
 					Username:          "&.農園",
 					Profile:           "紹介文です。",
 					ProductTypeIDs:    []string{"product-type-ids"},
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 					HeaderURL:         "https://and-period.jp/header.png",
 					PromotionVideoURL: "https://and-period.jp/promotion.mp4",
@@ -255,6 +262,7 @@ func TestCoordinators(t *testing.T) {
 						Username:       "&.農園",
 						Profile:        "紹介文です。",
 						ProductTypeIDs: []string{"product-type-ids"},
+						BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 						ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -281,6 +289,7 @@ func TestCoordinators(t *testing.T) {
 						Username:          "&.農園",
 						Profile:           "紹介文です。",
 						ProductTypeIDs:    []string{"product-type-ids"},
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 						ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 						Thumbnails:        []*response.Image{},
 						HeaderURL:         "https://and-period.jp/header.png",
@@ -321,6 +330,7 @@ func TestCoordinators_Response(t *testing.T) {
 						Username:       "&.農園",
 						Profile:        "紹介文です。",
 						ProductTypeIDs: []string{"product-type-ids"},
+						BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 						ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -347,6 +357,7 @@ func TestCoordinators_Response(t *testing.T) {
 						Username:          "&.農園",
 						Profile:           "紹介文です。",
 						ProductTypeIDs:    []string{"product-type-ids"},
+						BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 						ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 						Thumbnails:        []*response.Image{},
 						HeaderURL:         "https://and-period.jp/header.png",
@@ -366,6 +377,7 @@ func TestCoordinators_Response(t *testing.T) {
 					Username:       "&.農園",
 					Profile:        "紹介文です。",
 					ProductTypeIDs: []string{"product-type-ids"},
+					BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -390,6 +402,7 @@ func TestCoordinators_Response(t *testing.T) {
 					Username:          "&.農園",
 					Profile:           "紹介文です。",
 					ProductTypeIDs:    []string{"product-type-ids"},
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					ThumbnailURL:      "https://and-period.jp/thumbnail.png",
 					Thumbnails:        []*response.Image{},
 					HeaderURL:         "https://and-period.jp/header.png",

@@ -63,6 +63,12 @@ export interface Coordinator {
      */
     productTypeIds: Array<string>;
     /**
+     * 営業曜日
+     * @type {Array<object>}
+     * @memberof Coordinator
+     */
+    businessDays: Array<object>;
+    /**
      * サムネイルURL
      * @type {string}
      * @memberof Coordinator
@@ -128,6 +134,7 @@ export function instanceOfCoordinator(value: object): boolean {
     isInstance = isInstance && "username" in value;
     isInstance = isInstance && "profile" in value;
     isInstance = isInstance && "productTypeIds" in value;
+    isInstance = isInstance && "businessDays" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
     isInstance = isInstance && "thumbnails" in value;
     isInstance = isInstance && "headerUrl" in value;
@@ -156,6 +163,7 @@ export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'username': json['username'],
         'profile': json['profile'],
         'productTypeIds': json['productTypeIds'],
+        'businessDays': json['businessDays'],
         'thumbnailUrl': json['thumbnailUrl'],
         'thumbnails': ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
         'headerUrl': json['headerUrl'],
@@ -182,6 +190,7 @@ export function CoordinatorToJSON(value?: Coordinator | null): any {
         'username': value.username,
         'profile': value.profile,
         'productTypeIds': value.productTypeIds,
+        'businessDays': value.businessDays,
         'thumbnailUrl': value.thumbnailUrl,
         'thumbnails': ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
         'headerUrl': value.headerUrl,

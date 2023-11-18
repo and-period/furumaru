@@ -20,6 +20,11 @@ coordinator:
       items:
         type: string
         description: 品目ID
+    businessDays:
+      type: array
+      description: 営業曜日
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/weekday'
     thumbnailUrl:
       type: string
       description: サムネイルURL
@@ -75,6 +80,7 @@ coordinator:
   - username
   - profile
   - productTypeIds
+  - businessDays
   - promotionVideoUrl
   - thumbnailUrl
   - thumbnails
@@ -89,6 +95,7 @@ coordinator:
     storeName: '&.農園'
     profile: '紹介文です。'
     productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+    businessDays: [1,2,3,4,5]
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     thumbnails:
     - url: 'https://and-period.jp/thumbnail_240.png'

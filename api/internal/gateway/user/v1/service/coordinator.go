@@ -19,6 +19,7 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 			Username:          coordinator.Username,
 			Profile:           coordinator.Profile,
 			ProductTypeIDs:    coordinator.ProductTypeIDs,
+			BusinessDays:      coordinator.BusinessDays,
 			ThumbnailURL:      coordinator.ThumbnailURL,
 			Thumbnails:        NewImages(coordinator.Thumbnails).Response(),
 			HeaderURL:         coordinator.HeaderURL,
