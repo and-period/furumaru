@@ -12,6 +12,15 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// NotifyOrderAuthorized - 支払い完了
+func (s *service) NotifyOrderAuthorized(_ context.Context, in *messenger.NotifyOrderAuthorizedInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	// TODO: 詳細の実装
+	return nil
+}
+
 // NotifyRegisterAdmin - 管理者登録
 func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
 	if err := s.validator.Struct(in); err != nil {
@@ -111,9 +120,21 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 	return s.sendMessage(ctx, payload)
 }
 
-func (s *service) notifyUserNotification(_ context.Context, _ *entity.Notification) error {
-	// TODO: 後ほどユーザー側への通知も実装する
-	return nil
+func (s *service) notifyUserNotification(ctx context.Context, notification *entity.Notification) error {
+	if !notification.HasUserTarget() {
+		return nil
+	}
+	message := &entity.MessageConfig{
+		MessageID:   entity.MessageIDNotification,
+		MessageType: entity.MessageTypeNotification,
+		Title:       notification.Title,
+		ReceivedAt:  s.now(),
+	}
+	payload := &entity.WorkerPayload{
+		EventType: entity.EventTypeNotification,
+		Message:   message,
+	}
+	return s.sendAllUsers(ctx, payload)
 }
 
 func (s *service) notifyAdminNotification(ctx context.Context, notification *entity.Notification) error {
@@ -247,98 +268,96 @@ func (s *service) sendMessage(ctx context.Context, payload *entity.WorkerPayload
 	return nil
 }
 
-func (s *service) sendAllAdministrators(ctx context.Context, payload *entity.WorkerPayload) error {
+func (s *service) sendAll(
+	ctx context.Context,
+	payload *entity.WorkerPayload,
+	userType entity.UserType,
+	listFn func(limit, offset int64) ([]string, int64, error),
+) error {
 	const unit = 200
 
 	var next int64
 	for {
-		in := &user.ListAdministratorsInput{
-			Limit:  unit,
-			Offset: next,
-		}
-		administrators, total, err := s.user.ListAdministrators(ctx, in)
+		userIDs, total, err := listFn(unit, next)
 		if err != nil {
 			return err
 		}
-		if len(administrators) == 0 {
+		if len(userIDs) == 0 {
 			return nil
 		}
 
 		payload := *payload // copy
 		payload.QueueID = uuid.Base58Encode(uuid.New())
-		payload.UserType = entity.UserTypeAdministrator
-		payload.UserIDs = administrators.IDs()
+		payload.UserType = userType
+		payload.UserIDs = userIDs
 		if err := s.sendMessage(ctx, &payload); err != nil {
 			return err
 		}
 
-		next += int64(len(administrators))
+		next += int64(len(userIDs))
 		if next >= total {
 			return nil
 		}
 	}
+}
+
+func (s *service) sendAllUsers(ctx context.Context, payload *entity.WorkerPayload) error {
+	listFn := func(limit, offset int64) ([]string, int64, error) {
+		in := &user.ListUsersInput{
+			Limit:          limit,
+			Offset:         offset,
+			OnlyRegistered: true,
+		}
+		users, total, err := s.user.ListUsers(ctx, in)
+		if err != nil || len(users) == 0 {
+			return nil, 0, err
+		}
+		return users.IDs(), total, nil
+	}
+	return s.sendAll(ctx, payload, entity.UserTypeUser, listFn)
+}
+
+func (s *service) sendAllAdministrators(ctx context.Context, payload *entity.WorkerPayload) error {
+	listFn := func(limit, offset int64) ([]string, int64, error) {
+		in := &user.ListAdministratorsInput{
+			Limit:  limit,
+			Offset: offset,
+		}
+		administrators, total, err := s.user.ListAdministrators(ctx, in)
+		if err != nil || len(administrators) == 0 {
+			return nil, 0, err
+		}
+		return administrators.IDs(), total, nil
+	}
+	return s.sendAll(ctx, payload, entity.UserTypeAdministrator, listFn)
 }
 
 func (s *service) sendAllCoordinators(ctx context.Context, payload *entity.WorkerPayload) error {
-	const unit = 200
-
-	var next int64
-	for {
+	listFn := func(limit, offset int64) ([]string, int64, error) {
 		in := &user.ListCoordinatorsInput{
-			Limit:  unit,
-			Offset: next,
+			Limit:  limit,
+			Offset: offset,
 		}
 		coordinators, total, err := s.user.ListCoordinators(ctx, in)
-		if err != nil {
-			return err
+		if err != nil || len(coordinators) == 0 {
+			return nil, 0, err
 		}
-		if len(coordinators) == 0 {
-			return nil
-		}
-
-		payload := *payload // copy
-		payload.QueueID = uuid.Base58Encode(uuid.New())
-		payload.UserType = entity.UserTypeCoordinator
-		payload.UserIDs = coordinators.IDs()
-		if err := s.sendMessage(ctx, &payload); err != nil {
-			return err
-		}
-
-		next += int64(len(coordinators))
-		if next >= total {
-			return nil
-		}
+		return coordinators.IDs(), total, nil
 	}
+	return s.sendAll(ctx, payload, entity.UserTypeCoordinator, listFn)
 }
 
 func (s *service) sendAllProducers(ctx context.Context, payload *entity.WorkerPayload) error {
-	const unit = 200
-
-	var next int64
-	for {
+	listFn := func(limit, offset int64) ([]string, int64, error) {
 		in := &user.ListProducersInput{
-			Limit:  unit,
-			Offset: next,
+			Limit:  limit,
+			Offset: offset,
 		}
 		producers, total, err := s.user.ListProducers(ctx, in)
-		if err != nil {
-			return err
+		if err != nil || len(producers) == 0 {
+			return nil, 0, err
 		}
-		if len(producers) == 0 {
-			return nil
-		}
-
-		payload := *payload // copy
-		payload.QueueID = uuid.Base58Encode(uuid.New())
-		payload.UserType = entity.UserTypeProducer
-		payload.UserIDs = producers.IDs()
-		if err := s.sendMessage(ctx, &payload); err != nil {
-			return err
-		}
-
-		next += int64(len(producers))
-		if next >= total {
-			return nil
-		}
+		return producers.IDs(), total, nil
 	}
+	return s.sendAll(ctx, payload, entity.UserTypeProducer, listFn)
 }

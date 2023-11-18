@@ -25,16 +25,33 @@ func newUser(db *mysql.Client) database.User {
 	}
 }
 
+type listUsersParams database.ListUsersParams
+
+func (p listUsersParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.OnlyRegistered {
+		stmt = stmt.Where("registered = ?", true)
+	}
+	return stmt
+}
+
+func (p listUsersParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
 func (u *user) List(ctx context.Context, params *database.ListUsersParams, fields ...string) (entity.Users, error) {
 	var users entity.Users
 
+	p := listUsersParams(*params)
+
 	stmt := u.db.Statement(ctx, u.db.DB, userTable, fields...)
-	if params.Limit > 0 {
-		stmt = stmt.Limit(params.Limit)
-	}
-	if params.Offset > 0 {
-		stmt = stmt.Offset(params.Offset)
-	}
+	stmt = p.stmt(stmt)
+	stmt = p.pagination(stmt)
 
 	if err := stmt.Find(&users).Error; err != nil {
 		return nil, dbError(err)
@@ -45,8 +62,10 @@ func (u *user) List(ctx context.Context, params *database.ListUsersParams, field
 	return users, nil
 }
 
-func (u *user) Count(ctx context.Context, _ *database.ListUsersParams) (int64, error) {
-	total, err := u.db.Count(ctx, u.db.DB, &entity.User{}, nil)
+func (u *user) Count(ctx context.Context, params *database.ListUsersParams) (int64, error) {
+	p := listUsersParams(*params)
+
+	total, err := u.db.Count(ctx, u.db.DB, &entity.User{}, p.stmt)
 	return total, dbError(err)
 }
 

@@ -104,9 +104,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Store:    mocks.store,
 	}
 	service := NewService(params).(*service)
-	service.now = func() time.Time {
-		return dopts.now()
-	}
+	service.now = dopts.now
 	return service
 }
 

@@ -203,8 +203,9 @@ type User interface {
 }
 
 type ListUsersParams struct {
-	Limit  int
-	Offset int
+	Limit          int
+	Offset         int
+	OnlyRegistered bool
 }
 
 type Error struct {

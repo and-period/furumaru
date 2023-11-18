@@ -18,8 +18,9 @@ func (s *service) ListUsers(ctx context.Context, in *user.ListUsersInput) (entit
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListUsersParams{
-		Limit:  int(in.Limit),
-		Offset: int(in.Offset),
+		Limit:          int(in.Limit),
+		Offset:         int(in.Offset),
+		OnlyRegistered: in.OnlyRegistered,
 	}
 	var (
 		users entity.Users
