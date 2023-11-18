@@ -43,6 +43,7 @@ updates:
   allow:
   - dependency-name: '*'
   ignore:
+  - dependency-name: '@nuxtjs/i18n'
   - dependency-name: '*'
     update-types: ['version-update:semver-major']
   labels:
