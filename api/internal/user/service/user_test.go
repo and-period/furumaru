@@ -19,8 +19,9 @@ func TestListUsers(t *testing.T) {
 
 	now := jst.Now()
 	params := &database.ListUsersParams{
-		Limit:  20,
-		Offset: 0,
+		Limit:          20,
+		Offset:         0,
+		OnlyRegistered: true,
 	}
 	users := entity.Users{
 		{
@@ -58,8 +59,9 @@ func TestListUsers(t *testing.T) {
 				mocks.db.User.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListUsersInput{
-				Limit:  20,
-				Offset: 0,
+				Limit:          20,
+				Offset:         0,
+				OnlyRegistered: true,
 			},
 			expect:      users,
 			expectTotal: 1,
@@ -80,8 +82,9 @@ func TestListUsers(t *testing.T) {
 				mocks.db.User.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &user.ListUsersInput{
-				Limit:  20,
-				Offset: 0,
+				Limit:          20,
+				Offset:         0,
+				OnlyRegistered: true,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -94,8 +97,9 @@ func TestListUsers(t *testing.T) {
 				mocks.db.User.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &user.ListUsersInput{
-				Limit:  20,
-				Offset: 0,
+				Limit:          20,
+				Offset:         0,
+				OnlyRegistered: true,
 			},
 			expect:      nil,
 			expectTotal: 0,

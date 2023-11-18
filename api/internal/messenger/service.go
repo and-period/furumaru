@@ -38,6 +38,8 @@ type Service interface {
 	CreateContactRead(ctx context.Context, in *CreateContactReadInput) (*entity.ContactRead, error) // 登録
 	// 通知関連(共通)
 	NotifyNotification(ctx context.Context, in *NotifyNotificationInput) error // お知らせ通知
+	// 通知関連(利用者宛)
+	NotifyOrderAuthorized(ctx context.Context, in *NotifyOrderAuthorizedInput) error // 支払い完了通知
 	// 通知関連(管理者宛)
 	NotifyRegisterAdmin(ctx context.Context, in *NotifyRegisterAdminInput) error           // 登録通知
 	NotifyResetAdminPassword(ctx context.Context, in *NotifyResetAdminPasswordInput) error // パスワードリセット通知

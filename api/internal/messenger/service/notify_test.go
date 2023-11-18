@@ -16,6 +16,38 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestNotifyOrderAuthorized(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *messenger.NotifyOrderAuthorizedInput
+		expectErr error
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &messenger.NotifyOrderAuthorizedInput{
+				OrderID: "order-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &messenger.NotifyOrderAuthorizedInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.NotifyOrderAuthorized(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
 func TestNotifyRegisterAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -197,6 +229,7 @@ func TestNotifyNotification(t *testing.T) {
 		},
 		PublishedAt: now,
 	}
+	users := uentity.Users{{ID: "user-id"}}
 	coordinators := uentity.Coordinators{{AdminID: "admin-id"}}
 	producers := uentity.Producers{}
 
@@ -210,80 +243,87 @@ func TestNotifyNotification(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(users, int64(1), nil)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(coordinators, int64(1), nil)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(producers, int64(0), nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					Create(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
-						expect := &entity.ReceivedQueue{
-							ID:        queue.ID, // ignore
-							EventType: entity.EventTypeNotification,
-							UserType:  entity.UserTypeCoordinator,
-							UserIDs:   []string{"admin-id"},
-							Done:      false,
+						expect := map[entity.UserType]*entity.ReceivedQueue{
+							entity.UserTypeUser: {
+								ID:        queue.ID, // ignore
+								EventType: entity.EventTypeNotification,
+								UserType:  entity.UserTypeUser,
+								UserIDs:   []string{"user-id"},
+								Done:      false,
+							},
+							entity.UserTypeCoordinator: {
+								ID:        queue.ID, // ignore
+								EventType: entity.EventTypeNotification,
+								UserType:  entity.UserTypeCoordinator,
+								UserIDs:   []string{"admin-id"},
+								Done:      false,
+							},
+							entity.UserTypeNone: {
+								ID:        queue.ID, // ignore
+								EventType: entity.EventTypeNotification,
+								UserType:  entity.UserTypeNone,
+								UserIDs:   nil,
+								Done:      false,
+							},
 						}
-						assert.Equal(t, expect, queue)
+						assert.Equal(t, expect[queue.UserType], queue)
 						return nil
-					})
+					}).Times(3)
 				mocks.producer.EXPECT().
 					SendMessage(gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
 						payload := &entity.WorkerPayload{}
 						err := json.Unmarshal(b, payload)
 						require.NoError(t, err)
-						require.True(t, now.Equal(payload.Message.ReceivedAt))
-						expect := &entity.WorkerPayload{
-							QueueID:   payload.QueueID, // ignore
-							EventType: entity.EventTypeNotification,
-							UserType:  entity.UserTypeCoordinator,
-							UserIDs:   []string{"admin-id"},
-							Message: &entity.MessageConfig{
-								MessageID:   entity.MessageIDNotification,
-								MessageType: entity.MessageTypeNotification,
-								Title:       "お知らせ件名",
-								Link:        "htts://admin.and-period.jp/notifications/notification-id",
-								ReceivedAt:  payload.Message.ReceivedAt, // ignore
+						expect := map[entity.UserType]*entity.WorkerPayload{
+							entity.UserTypeUser: {
+								QueueID:   payload.QueueID, // ignore
+								EventType: entity.EventTypeNotification,
+								UserType:  entity.UserTypeUser,
+								UserIDs:   []string{"user-id"},
+								Message: &entity.MessageConfig{
+									MessageID:   entity.MessageIDNotification,
+									MessageType: entity.MessageTypeNotification,
+									Title:       "お知らせ件名",
+									ReceivedAt:  now.Local(),
+								},
+							},
+							entity.UserTypeCoordinator: {
+								QueueID:   payload.QueueID, // ignore
+								EventType: entity.EventTypeNotification,
+								UserType:  entity.UserTypeCoordinator,
+								UserIDs:   []string{"admin-id"},
+								Message: &entity.MessageConfig{
+									MessageID:   entity.MessageIDNotification,
+									MessageType: entity.MessageTypeNotification,
+									Title:       "お知らせ件名",
+									Link:        "htts://admin.and-period.jp/notifications/notification-id",
+									ReceivedAt:  now.Local(),
+								},
+							},
+							entity.UserTypeNone: {
+								QueueID:   payload.QueueID, // ignore
+								EventType: entity.EventTypeNotification,
+								UserType:  entity.UserTypeNone,
+								UserIDs:   nil,
+								Report: &entity.ReportConfig{
+									ReportID:    entity.ReportIDNotification,
+									Overview:    "お知らせ件名",
+									Detail:      "お知らせ内容",
+									Link:        "htts://admin.and-period.jp/notifications/notification-id",
+									PublishedAt: now.Local(),
+								},
 							},
 						}
-						assert.Equal(t, expect, payload)
+						assert.Equal(t, expect[payload.UserType], payload)
 						return "message-id", nil
-					})
-				mocks.db.ReceivedQueue.EXPECT().
-					Create(gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
-						expect := &entity.ReceivedQueue{
-							ID:        queue.ID, // ignore
-							EventType: entity.EventTypeNotification,
-							UserType:  entity.UserTypeNone,
-							UserIDs:   nil,
-							Done:      false,
-						}
-						assert.Equal(t, expect, queue)
-						return nil
-					})
-				mocks.producer.EXPECT().
-					SendMessage(gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
-						payload := &entity.WorkerPayload{}
-						err := json.Unmarshal(b, payload)
-						require.NoError(t, err)
-						require.True(t, now.Equal(payload.Report.PublishedAt))
-						expect := &entity.WorkerPayload{
-							QueueID:   payload.QueueID, // ignore
-							EventType: entity.EventTypeNotification,
-							UserType:  entity.UserTypeNone,
-							UserIDs:   nil,
-							Report: &entity.ReportConfig{
-								ReportID:    entity.ReportIDNotification,
-								Overview:    "お知らせ件名",
-								Detail:      "お知らせ内容",
-								Link:        "htts://admin.and-period.jp/notifications/notification-id",
-								PublishedAt: payload.Report.PublishedAt, // ignore
-							},
-						}
-						assert.Equal(t, expect, payload)
-						return "message-id", nil
-					})
+					}).Times(3)
 			},
 			input: &messenger.NotifyNotificationInput{
 				NotificationID: "notification-id",
@@ -320,9 +360,23 @@ func TestNotifyNotification(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
+			name: "failed to notify user notification",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
+				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(uentity.Coordinators{}, int64(0), nil)
+				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(uentity.Producers{}, int64(0), nil)
+			},
+			input: &messenger.NotifyNotificationInput{
+				NotificationID: "notification-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to notify admin notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(uentity.Users{}, int64(0), nil)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 			},

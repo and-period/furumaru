@@ -321,6 +321,20 @@ func (mr *MockServiceMockRecorder) NotifyNotification(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyNotification", reflect.TypeOf((*MockService)(nil).NotifyNotification), ctx, in)
 }
 
+// NotifyOrderAuthorized mocks base method.
+func (m *MockService) NotifyOrderAuthorized(ctx context.Context, in *messenger.NotifyOrderAuthorizedInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotifyOrderAuthorized", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// NotifyOrderAuthorized indicates an expected call of NotifyOrderAuthorized.
+func (mr *MockServiceMockRecorder) NotifyOrderAuthorized(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyOrderAuthorized", reflect.TypeOf((*MockService)(nil).NotifyOrderAuthorized), ctx, in)
+}
+
 // NotifyRegisterAdmin mocks base method.
 func (m *MockService) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
 	m.ctrl.T.Helper()
