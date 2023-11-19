@@ -51,6 +51,34 @@ const handleClickAddCartButton = () => {
   })
 }
 
+const getDeliveryType = (type: number) => {
+  switch (type) {
+    case 1:
+      return '通常便'
+    case 2:
+      return '冷蔵便'
+    case 3:
+      return '冷凍便'
+    default:
+      return ''
+  }
+}
+
+const getStorageMethodType = (type: number) => {
+  switch (type) {
+    case 0:
+      return '不明'
+    case 1:
+      return '常温保存'
+    case 2:
+      return '冷暗所保存'
+    case 3:
+      return '冷蔵保存'
+    case 4:
+      return '冷凍保存'
+  }
+}
+
 const title = computed<string>(() => product.value.name)
 
 useSeoMeta({
@@ -68,7 +96,7 @@ useSeoMeta({
 
   <template v-if="productFetchState.isLoading">
     <div
-      class="grid animate-pulse grid-cols-2 bg-white px-[112px] pb-6 pt-[40px] text-main"
+      class="md:grid animate-pulse md:grid-cols-2 bg-white px-[112px] pb-6 pt-[40px] text-main"
     >
       <div class="w-full">
         <div
@@ -83,9 +111,9 @@ useSeoMeta({
   </template>
 
   <template v-if="!productFetchState.isLoading && product.thumbnail">
-    <div class="grid grid-cols-2 bg-white px-[112px] pb-6 pt-[40px] text-main">
+    <div class="md:grid md:grid-cols-2 bg-white px-4 md:px-[112px] pb-6 pt-[40px] text-main">
       <div class="w-full">
-        <div class="mx-auto aspect-square h-[500px] w-[500px]">
+        <div class="mx-auto aspect-square md:h-[500px] md:w-[500px] w-full">
           <img
             class="w-full"
             :src="product.thumbnail.url"
@@ -176,11 +204,67 @@ useSeoMeta({
         </div>
       </div>
 
-      <div class="col-span-2">
+      <div class="col-span-2 pb-16">
         <article class="leading-[32px]" v-html="product.description" />
+      </div>
+
+      <div class="flex flex-col border-main divide-main divide-y divide-dashed border-y border-dashed col-span-2">
+        <div class="grid grid-cols-5 py-4">
+          <p>・賞味期限</p>
+          <p class="col-span-4">発送日より{{ product.expirationDate }}日</p>
+        </div>
+        <div class="grid grid-cols-5 py-4">
+          <p>・内容量</p>
+          <p class="col-span-4">{{ product.weight }}kg</p>
+        </div>
+        <div class="grid grid-cols-5 py-4">
+          <p>・配送方法</p>
+          <p class="col-span-4">{{ getDeliveryType(product.deliveryType) }}</p>
+        </div>
+        <div class="grid grid-cols-5 py-4">
+          <p>・保存方法</p>
+          <p class="col-span-4">{{ getStorageMethodType(product.storageMethodType) }}</p>
+        </div>
       </div>
     </div>
   </template>
+
+  <div class="mx-auto mt-[80px] w-[1216px] bg-white rounded-3xl">
+    <div class="pt-10">
+      <p class="bg-base text-main mx-auto w-[1088px] rounded-full py-2 text-center text-[16px] font-bold">この商品の生産者</p>
+    </div>
+    <div class="grid grid-cols-8 pt-16 w-[1088px] mx-auto" v-if="product.producer">
+      <img
+        :src="product.producer.thumbnailUrl"
+        :alt="`${product.producer.username}`"
+        class="aspect-square w-[120px] rounded-full"
+      />
+      <div class="text-main col-span-2 ml-4">
+        <div class="flex gap-4 test-sm pt-4">
+          <p class="text-sm font-[500] tracking-[1.4px]">{{ product.originPrefecture }}</p>
+          <p class="text-sm font-[500] tracking-[1.4px]">{{ product.originCity }}</p>
+        </div>
+        <div class="flex items-end pt-4 text-sm">
+          <p class="font-[500] tracking-[1.4px]">生産者</p>
+          <p class="pl-6 text-2xl">{{ product.producer.username }}</p>
+        </div>
+      </div>
+      <div class="col-span-5 break-words">
+        {{ product.producer.profile }}
+      </div>
+    </div>
+    <div class="mx-auto flex w-[1088px] flex-row-reverse pt-[45px] pb-12">
+      <button class="text-main flex items-center">
+        詳しく見る
+        <div class="pl-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1 11.3125L0.0302535 10.3428L4.71736 5.65565L0.0302528 0.968538L0.999999 -0.00120831L6.65685 5.65565L1 11.3125Z" fill="#604C3F"/>
+          </svg>
+        </div>
+      </button>
+    </div>
+  </div>
+
 </template>
 
 <style scoped>

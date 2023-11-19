@@ -100,6 +100,8 @@ export const useProductStore = defineStore('product', {
         ),
         // 生産者情報をマッピング
         producer: state.productResponse.producer,
+        // コーディネーター情報をマッピング
+        coordinator: state.productResponse.coordinator,
         // 商品タグをマッピング
         productTags: state.productResponse.product?.productTagIds.map((id) =>
           state.productResponse.productTags.find(
