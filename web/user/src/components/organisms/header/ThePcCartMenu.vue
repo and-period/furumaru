@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ShoppingCart } from '~/types/store'
+import { ShoppingCart } from '~/types/store/shopping'
 
 interface Props {
   isAuthenticated: boolean
@@ -13,6 +13,7 @@ defineProps<Props>()
 
 interface Emits {
   (e: 'click:buyButton'): void
+  (e: 'click:removeItemFromCart', cartNumber: number, id: string): void
 }
 
 const emits = defineEmits<Emits>()
@@ -25,9 +26,14 @@ const priceStringFormatter = (price: number): string => {
     currency: 'JPY',
   }).format(price)
 }
+
 const handleClickBuyButton = () => {
   emits('click:buyButton')
   area.value.close()
+}
+
+const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
+  emits('click:removeItemFromCart', cartNumber, id)
 }
 </script>
 
@@ -88,6 +94,7 @@ const handleClickBuyButton = () => {
           :use-rate="item.useRate"
           :shopping-cart="item"
           @click:buy-button="handleClickBuyButton"
+          @click:remove-item-button="handleClickRemoveItemButton"
         />
       </div>
     </template>

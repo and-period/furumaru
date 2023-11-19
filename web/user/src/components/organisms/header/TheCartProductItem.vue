@@ -1,5 +1,6 @@
 <script setup lang="ts">
 interface Props {
+  id: string
   name: string
   price: number
   imgSrc: string
@@ -8,12 +9,22 @@ interface Props {
 
 const props = defineProps<Props>()
 
+interface Emits {
+  (e: 'click:removeButton', id: string): void
+}
+
+const emits = defineEmits<Emits>()
+
 const priceString = computed<string>(() => {
   return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
     currency: 'JPY',
   }).format(props.price)
 })
+
+const handleRemoveButton = () => {
+  emits('click:removeButton', props.id)
+}
 </script>
 
 <template>
@@ -28,7 +39,7 @@ const priceString = computed<string>(() => {
 
     <div class="flex gap-x-3 text-sm">
       <img :src="imgSrc" :alt="name" class="aspect-square h-[72px] w-[72px]" />
-      <div class="flex flex-col">
+      <div class="flex grow flex-col">
         <div class="flex grow items-start">
           <div class="inline-flex">
             <div class="mr-2 block whitespace-nowrap">
@@ -38,7 +49,9 @@ const priceString = computed<string>(() => {
           </div>
         </div>
         <div class="text-right">
-          <a href="#" class="underline">削除</a>
+          <button type="button" class="underline" @click="handleRemoveButton">
+            削除
+          </button>
         </div>
       </div>
     </div>

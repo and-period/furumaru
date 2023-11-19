@@ -24,6 +24,7 @@ defineProps<Props>()
 
 interface Emits {
   (e: 'click:buyButton'): void
+  (e: 'click:removeItemFromCart', cartNumber: number, id: string): void
 }
 
 const emits = defineEmits<Emits>()
@@ -45,6 +46,10 @@ const handleClickMenuItem = (item: HeaderMenuItem | FooterMenuItem) => {
 const handleClickBuyButton = () => {
   emits('click:buyButton')
   closeSpMenu()
+}
+
+const handleClickRemoveItemFromCartButton = (cartNumber, id) => {
+  emits('click:removeItemFromCart', cartNumber, id)
 }
 </script>
 
@@ -95,6 +100,7 @@ const handleClickBuyButton = () => {
           :cart-items="cartItems"
           :total-price="totalPrice"
           @click:buy-button="handleClickBuyButton"
+          @click:remove-item-from-cart="handleClickRemoveItemFromCartButton"
         />
 
         <the-icon-button

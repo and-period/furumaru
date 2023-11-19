@@ -134,5 +134,13 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       await this.cartApiClient().v1AddCartItem({ body: payload })
       this.getCart()
     },
+
+    async removeProductFromCart(cartNumber: number, productId: string) {
+      await this.cartApiClient().v1RemoveCartItem({
+        number: cartNumber,
+        productId,
+      })
+      this.getCart()
+    },
   },
 })

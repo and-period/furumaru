@@ -14,6 +14,7 @@ const props = defineProps<Props>()
 
 interface Emits {
   (e: 'click:buyButton'): void
+  (e: 'click:removeItemButton', cartNumber: number, id: string): void
 }
 
 const emits = defineEmits<Emits>()
@@ -32,6 +33,10 @@ const boxSizeIs100 = computed<boolean>(() => {
 
 const handleClick = () => {
   emits('click:buyButton')
+}
+
+const handleClickRemoveButton = (id: string) => {
+  emits('click:removeItemButton', props.cartNumber, id)
 }
 </script>
 
@@ -84,10 +89,12 @@ const handleClick = () => {
       <div v-for="item in shoppingCart.items" :key="item.productId">
         <the-cart-product-item
           v-if="item"
+          :id="item.productId"
           :name="item.product.name"
           :price="item.product.price"
           :img-src="item.product.thumbnail.url"
           :quantity="item.quantity"
+          @click:remove-button="handleClickRemoveButton"
         />
         <hr class="my-2 border-dashed border-main" />
       </div>
