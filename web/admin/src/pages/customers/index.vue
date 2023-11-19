@@ -10,7 +10,7 @@ const customerStore = useCustomerStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
-const { customers, totalItems } = storeToRefs(customerStore)
+const { customersToList, totalItems } = storeToRefs(customerStore)
 
 const loading = ref<boolean>(false)
 const sortBy = ref<VDataTable['sortBy']>([])
@@ -64,7 +64,7 @@ try {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
-    :customers="customers"
+    :customers="customersToList"
     :table-items-total="totalItems"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-sort-by="sortBy"

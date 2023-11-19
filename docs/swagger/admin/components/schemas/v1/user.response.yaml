@@ -29,7 +29,7 @@ usersResponse:
       type: array
       description: 購入者一覧
       items:
-        $ref: './../../../openapi.yaml#/components/schemas/user'
+        $ref: './../../../openapi.yaml#/components/schemas/userToList'
     total:
       type: integer
       format: int64

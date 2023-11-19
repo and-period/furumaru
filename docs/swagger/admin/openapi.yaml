@@ -330,6 +330,8 @@ components:
       $ref: './components/schemas/entity/thread.yaml#/thread'
     user:
       $ref: './components/schemas/entity/user.yaml#/user'
+    userToList:
+      $ref: './components/schemas/entity/user.yaml#/userToList'
     # Request
     v1SignInRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'

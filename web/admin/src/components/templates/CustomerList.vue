@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
-import { PrefecturesListItem, prefecturesList } from '~/constants'
+import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
-import type { User } from '~/types/api'
+import type { UserToList } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -23,7 +23,7 @@ const props = defineProps({
     default: ''
   },
   customers: {
-    type: Array<User>,
+    type: Array<UserToList>,
     default: () => []
   },
   tableItemsPerPage: {
@@ -89,7 +89,7 @@ const getStatusColor = (account: boolean): string => {
   return account ? 'primary' : 'red'
 }
 
-const getAddress = (customer: User): string => {
+const getAddress = (customer: UserToList): string => {
   const prefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
     return prefecture.value === customer.prefectureCode
   })
@@ -112,7 +112,7 @@ const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
   emit('update:sort-by', sortBy)
 }
 
-const onClickRow = (item: User): void => {
+const onClickRow = (item: UserToList): void => {
   emit('click:row', item.id || '')
 }
 </script>

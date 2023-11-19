@@ -10,8 +10,8 @@ type User struct {
 	*Address          // デフォルト設定の住所情報
 }
 
-// UserSummary - 購入者一覧情報
-type UserSummary struct {
+// UserToList - 購入者一覧情報
+type UserToList struct {
 	ID             string `json:"id"`             // 購入者ID
 	Lastname       string `json:"lastname"`       // 姓
 	Firstname      string `json:"firstname"`      // 名
@@ -27,6 +27,6 @@ type UserResponse struct {
 }
 
 type UsersResponse struct {
-	Users []*UserSummary `json:"users"` // 購入者一覧
-	Total int64          `json:"total"` // 購入者合計数
+	Users []*UserToList `json:"users"` // 購入者一覧
+	Total int64         `json:"total"` // 購入者合計数
 }

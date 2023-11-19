@@ -52,7 +52,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	}
 	if len(users) == 0 {
 		res := &response.UsersResponse{
-			Users: []*response.UserSummary{},
+			Users: []*response.UserToList{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -85,7 +85,7 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 
 	susers := service.NewUsers(users, addresses.MapByUserID())
 	res := &response.UsersResponse{
-		Users: service.NewUserSummaries(susers, orders.Map()).Response(),
+		Users: service.NewUsersToList(susers, orders.Map()).Response(),
 		Total: total,
 	}
 	ctx.JSON(http.StatusOK, res)
