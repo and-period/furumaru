@@ -12,6 +12,7 @@ import (
 	gmysql "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -43,7 +44,8 @@ func newTestDBClient() (*mysql.Client, error) {
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 	}
-	return mysql.NewClient(params)
+	logger, _ := zap.NewDevelopment()
+	return mysql.NewClient(params, mysql.WithLogger(logger))
 }
 
 func deleteAll(ctx context.Context) error {
