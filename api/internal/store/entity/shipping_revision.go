@@ -139,7 +139,7 @@ func (rs ShippingRevisions) Merge(shippings map[string]*Shipping) (Shippings, er
 		shipping := &Shipping{ShippingRevision: *r}
 		base, ok := shippings[r.ShippingID]
 		if !ok {
-			continue
+			base = &Shipping{ID: r.ShippingID}
 		}
 		opt := copier.Option{IgnoreEmpty: true, DeepCopy: true}
 		if err := copier.CopyWithOption(&shipping, &base, opt); err != nil {

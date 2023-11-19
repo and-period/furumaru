@@ -291,9 +291,6 @@ func (a *address) fill(ctx context.Context, tx *gorm.DB, addresses ...*entity.Ad
 	if err := stmt.Find(&revisions).Error; err != nil {
 		return err
 	}
-	if len(revisions) == 0 {
-		return nil
-	}
 	revisions.Fill()
 	entity.Addresses(addresses).Fill(revisions.MapByAddressID())
 	return nil

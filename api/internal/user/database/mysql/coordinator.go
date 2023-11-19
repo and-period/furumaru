@@ -302,19 +302,5 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}
-
-	adminMap := admins.Map()
-
-	for i, c := range coordinators {
-		admin, ok := adminMap[c.AdminID]
-		if !ok {
-			admin = &entity.Admin{}
-		}
-		admin.Fill()
-
-		if err := coordinators[i].Fill(admin); err != nil {
-			return err
-		}
-	}
-	return nil
+	return entity.Coordinators(coordinators).Fill(admins.Map())
 }

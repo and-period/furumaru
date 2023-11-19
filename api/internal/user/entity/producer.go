@@ -115,17 +115,6 @@ func (ps Producers) CoordinatorIDs() []string {
 	})
 }
 
-func (ps Producers) Related() Producers {
-	res := make(Producers, 0, len(ps))
-	for _, p := range ps {
-		if p.CoordinatorID == "" {
-			continue
-		}
-		res = append(res, p)
-	}
-	return res
-}
-
 func (ps Producers) Unrelated() Producers {
 	res := make(Producers, 0, len(ps))
 	for _, p := range ps {
@@ -135,4 +124,17 @@ func (ps Producers) Unrelated() Producers {
 		res = append(res, p)
 	}
 	return res
+}
+
+func (ps Producers) Fill(admins map[string]*Admin) error {
+	for _, p := range ps {
+		admin, ok := admins[p.AdminID]
+		if !ok {
+			admin = &Admin{ID: p.AdminID, Role: AdminRoleProducer}
+		}
+		if err := p.Fill(admin); err != nil {
+			return err
+		}
+	}
+	return nil
 }

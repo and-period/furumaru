@@ -117,3 +117,57 @@ func TestAdministrators_IDs(t *testing.T) {
 		})
 	}
 }
+
+func TestAdministrators_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name           string
+		administrators Administrators
+		admins         map[string]*Admin
+		expect         Administrators
+	}{
+		{
+			name: "success",
+			administrators: Administrators{
+				{
+					AdminID: "admin-id01",
+				},
+				{
+					AdminID: "admin-id02",
+				},
+			},
+			admins: map[string]*Admin{
+				"admin-id01": {
+					ID:        "admin-id01",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleAdministrator,
+				},
+			},
+			expect: Administrators{
+				{
+					AdminID: "admin-id01",
+					Admin: Admin{
+						ID:        "admin-id01",
+						CognitoID: "cognito-id",
+						Role:      AdminRoleAdministrator,
+					},
+				},
+				{
+					AdminID: "admin-id02",
+					Admin: Admin{
+						ID:   "admin-id02",
+						Role: AdminRoleAdministrator,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.administrators.Fill(tt.admins)
+			assert.Equal(t, tt.expect, tt.administrators)
+		})
+	}
+}

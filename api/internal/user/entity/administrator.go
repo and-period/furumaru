@@ -42,3 +42,13 @@ func (as Administrators) IDs() []string {
 	}
 	return res
 }
+
+func (as Administrators) Fill(admins map[string]*Admin) {
+	for _, a := range as {
+		admin, ok := admins[a.AdminID]
+		if !ok {
+			admin = &Admin{ID: a.AdminID, Role: AdminRoleAdministrator}
+		}
+		a.Fill(admin)
+	}
+}

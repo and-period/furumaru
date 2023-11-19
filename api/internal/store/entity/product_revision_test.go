@@ -169,6 +169,17 @@ func TestProductRevisions_Merge(t *testing.T) {
 					},
 				},
 				{
+					ID: "product-id02",
+					ProductRevision: ProductRevision{
+						ID:        2,
+						ProductID: "product-id02",
+						Price:     1500,
+						Cost:      200,
+						CreatedAt: now,
+						UpdatedAt: now,
+					},
+				},
+				{
 					ID:   "product-id01",
 					Name: "芽が出たじゃがいも",
 					ProductRevision: ProductRevision{

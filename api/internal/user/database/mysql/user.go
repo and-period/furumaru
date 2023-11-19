@@ -136,22 +136,7 @@ func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) err
 			return err
 		}
 	}
-
-	memberMap := members.Map()
-	guestMap := guests.Map()
-
-	for _, u := range users {
-		member, ok := memberMap[u.ID]
-		if !ok {
-			member = &entity.Member{}
-		}
-		guest, ok := guestMap[u.ID]
-		if !ok {
-			guest = &entity.Guest{}
-		}
-
-		u.Fill(member, guest)
-	}
+	entity.Users(users).Fill(members.Map(), guests.Map())
 	return nil
 }
 

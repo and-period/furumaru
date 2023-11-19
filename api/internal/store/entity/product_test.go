@@ -501,7 +501,16 @@ func TestProducts_Fill(t *testing.T) {
 			name: "success",
 			products: Products{
 				{
-					ID:                    "product-id",
+					ID:                    "product-id01",
+					Name:                  "&.農園のみかん",
+					Public:                false,
+					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
+					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					OriginPrefectureCode:  25,
+				},
+				{
+					ID:                    "product-id02",
 					Name:                  "&.農園のみかん",
 					Public:                false,
 					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
@@ -511,16 +520,16 @@ func TestProducts_Fill(t *testing.T) {
 				},
 			},
 			revisions: map[string]*ProductRevision{
-				"product-id": {
+				"product-id01": {
 					ID:        1,
-					ProductID: "product-id",
+					ProductID: "product-id01",
 					Price:     1980,
 					Cost:      880,
 				},
 			},
 			expect: Products{
 				{
-					ID:     "product-id",
+					ID:     "product-id01",
 					Name:   "&.農園のみかん",
 					Public: false,
 					Status: ProductStatusPrivate,
@@ -551,74 +560,42 @@ func TestProducts_Fill(t *testing.T) {
 					OriginPrefectureCode:  25,
 					ProductRevision: ProductRevision{
 						ID:        1,
-						ProductID: "product-id",
+						ProductID: "product-id01",
 						Price:     1980,
 						Cost:      880,
 					},
 				},
-			},
-			hasErr: false,
-		},
-		{
-			name: "success is empty json values",
-			products: Products{
 				{
-					ID:                    "product-id",
-					Name:                  "&.農園のみかん",
-					TagIDsJSON:            datatypes.JSON(nil),
-					MediaJSON:             datatypes.JSON(nil),
-					RecommendedPointsJSON: datatypes.JSON(nil),
-				},
-			},
-			revisions: map[string]*ProductRevision{
-				"product-id": {
-					ID:        1,
-					ProductID: "product-id",
-					Price:     1980,
-					Cost:      880,
-				},
-			},
-			expect: Products{
-				{
-					ID:                    "product-id",
-					Name:                  "&.農園のみかん",
-					Status:                ProductStatusPrivate,
-					TagIDs:                []string{},
-					TagIDsJSON:            datatypes.JSON(nil),
-					Media:                 MultiProductMedia{},
-					MediaJSON:             datatypes.JSON(nil),
-					RecommendedPoints:     []string{},
-					RecommendedPointsJSON: datatypes.JSON(nil),
-					ProductRevision: ProductRevision{
-						ID:        1,
-						ProductID: "product-id",
-						Price:     1980,
-						Cost:      880,
+					ID:     "product-id02",
+					Name:   "&.農園のみかん",
+					Public: false,
+					Status: ProductStatusPrivate,
+					TagIDs: []string{
+						"tag-id01",
+						"tag-id02",
 					},
-				},
-			},
-			hasErr: false,
-		},
-		{
-			name: "success is empty revision",
-			products: Products{
-				{
-					ID:                    "product-id",
-					Name:                  "&.農園のみかん",
-					TagIDsJSON:            datatypes.JSON(nil),
-					MediaJSON:             datatypes.JSON(nil),
-					RecommendedPointsJSON: datatypes.JSON(nil),
-				},
-			},
-			revisions: map[string]*ProductRevision{},
-			expect: Products{
-				{
-					ID:                    "product-id",
-					Name:                  "&.農園のみかん",
-					Status:                ProductStatusUnknown,
-					TagIDsJSON:            datatypes.JSON(nil),
-					MediaJSON:             datatypes.JSON(nil),
-					RecommendedPointsJSON: datatypes.JSON(nil),
+					TagIDsJSON: datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
+					Media: MultiProductMedia{
+						{
+							URL:         "https://and-period.jp/thumbnail.png",
+							IsThumbnail: true,
+							Images: common.Images{
+								{
+									URL:  "https://and-period.jp/thumbnail_240.png",
+									Size: common.ImageSizeSmall,
+								},
+							},
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					OriginPrefecture:      "滋賀県",
+					OriginPrefectureCode:  25,
+					ProductRevision:       ProductRevision{ProductID: "product-id02"},
 				},
 			},
 			hasErr: false,
