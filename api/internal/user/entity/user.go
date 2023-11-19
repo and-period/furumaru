@@ -96,11 +96,11 @@ func (us Users) Fill(members map[string]*Member, guests map[string]*Guest) {
 	for _, u := range us {
 		member, ok := members[u.ID]
 		if !ok {
-			member = &Member{UserID: u.ID}
+			member = &Member{}
 		}
 		guest, ok := guests[u.ID]
 		if !ok {
-			guest = &Guest{UserID: u.ID}
+			guest = &Guest{}
 		}
 		u.Fill(member, guest)
 	}

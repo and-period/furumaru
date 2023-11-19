@@ -335,8 +335,8 @@ func TestUsers_Fill(t *testing.T) {
 				},
 				{
 					ID:     "user-id02",
-					Member: Member{UserID: "user-id02"},
-					Guest:  Guest{UserID: "user-id02"},
+					Member: Member{},
+					Guest:  Guest{},
 				},
 			},
 		},
