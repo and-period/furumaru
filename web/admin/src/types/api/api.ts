@@ -12888,7 +12888,7 @@ export const ProductTagApiAxiosParamCreator = function (configuration?: Configur
             // verify required parameter 'productTagId' is not null or undefined
             assertParamExists('v1DeleteProductTag', 'productTagId', productTagId)
             const localVarPath = `/v1/product-tags/{productTagId}`
-                .replace(`{${"ProductTagId"}}`, encodeURIComponent(String(productTagId)));
+                .replace(`{${"productTagId"}}`, encodeURIComponent(String(productTagId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
