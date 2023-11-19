@@ -88,7 +88,7 @@ type Order interface {
 	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
 	Create(ctx context.Context, order *entity.Order) error
 	UpdatePaymentStatus(ctx context.Context, orderID string, params *UpdateOrderPaymentParams) error
-	Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error)
+	Aggregate(ctx context.Context, params *AggregateOrdersParams) (entity.AggregatedOrders, error)
 }
 
 type ListOrdersParams struct {
@@ -102,6 +102,11 @@ type UpdateOrderPaymentParams struct {
 	Status    entity.PaymentStatus
 	PaymentID string
 	IssuedAt  time.Time
+}
+
+type AggregateOrdersParams struct {
+	CoordinatorID string
+	UserIDs       []string
 }
 
 type PaymentSystem interface {

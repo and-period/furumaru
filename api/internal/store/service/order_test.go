@@ -520,6 +520,10 @@ func TestCancelOrder(t *testing.T) {
 func TestAggregateOrders(t *testing.T) {
 	t.Parallel()
 
+	params := &database.AggregateOrdersParams{
+		CoordinatorID: "coordinator-id",
+		UserIDs:       []string{"user-id"},
+	}
 	orders := entity.AggregatedOrders{
 		{
 			UserID:     "user-id",
@@ -539,10 +543,11 @@ func TestAggregateOrders(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Aggregate(ctx, []string{"user-id"}).Return(orders, nil)
+				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(orders, nil)
 			},
 			input: &store.AggregateOrdersInput{
-				UserIDs: []string{"user-id"},
+				CoordinatorID: "coordinator-id",
+				UserIDs:       []string{"user-id"},
 			},
 			expect:    orders,
 			expectErr: nil,
@@ -559,10 +564,11 @@ func TestAggregateOrders(t *testing.T) {
 		{
 			name: "failed to aggregate",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Aggregate(ctx, []string{"user-id"}).Return(nil, assert.AnError)
+				mocks.db.Order.EXPECT().Aggregate(ctx, params).Return(nil, assert.AnError)
 			},
 			input: &store.AggregateOrdersInput{
-				UserIDs: []string{"user-id"},
+				CoordinatorID: "coordinator-id",
+				UserIDs:       []string{"user-id"},
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
