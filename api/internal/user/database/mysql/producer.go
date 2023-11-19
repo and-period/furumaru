@@ -340,19 +340,6 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}
-
-	adminMap := admins.Map()
-
-	for i, p := range producers {
-		admin, ok := adminMap[p.AdminID]
-		if !ok {
-			admin = &entity.Admin{}
-		}
-		admin.Fill()
-
-		if err := producers[i].Fill(admin); err != nil {
-			return err
-		}
-	}
-	return nil
+	admins.Fill()
+	return entity.Producers(producers).Fill(admins.Map())
 }

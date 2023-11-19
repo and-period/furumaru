@@ -539,7 +539,19 @@ func TestShippingRevisions_Merge(t *testing.T) {
 			revisions: ShippingRevisions{
 				{
 					ID:                1,
-					ShippingID:        "shipping-id",
+					ShippingID:        "shipping-id01",
+					Box60Rates:        rates,
+					Box60Frozen:       800,
+					Box80Rates:        rates,
+					Box80Frozen:       800,
+					Box100Rates:       rates,
+					Box100Frozen:      800,
+					HasFreeShipping:   true,
+					FreeShippingRates: 3000,
+				},
+				{
+					ID:                2,
+					ShippingID:        "shipping-id02",
 					Box60Rates:        rates,
 					Box60Frozen:       800,
 					Box80Rates:        rates,
@@ -551,18 +563,33 @@ func TestShippingRevisions_Merge(t *testing.T) {
 				},
 			},
 			shippings: map[string]*Shipping{
-				"shipping-id": {
-					ID:            "shipping-id",
+				"shipping-id01": {
+					ID:            "shipping-id01",
 					CoordinatorID: "coordinator-id",
 				},
 			},
 			expect: Shippings{
 				{
-					ID:            "shipping-id",
+					ID:            "shipping-id01",
 					CoordinatorID: "coordinator-id",
 					ShippingRevision: ShippingRevision{
 						ID:                1,
-						ShippingID:        "shipping-id",
+						ShippingID:        "shipping-id01",
+						Box60Rates:        rates,
+						Box60Frozen:       800,
+						Box80Rates:        rates,
+						Box80Frozen:       800,
+						Box100Rates:       rates,
+						Box100Frozen:      800,
+						HasFreeShipping:   true,
+						FreeShippingRates: 3000,
+					},
+				},
+				{
+					ID: "shipping-id02",
+					ShippingRevision: ShippingRevision{
+						ID:                2,
+						ShippingID:        "shipping-id02",
 						Box60Rates:        rates,
 						Box60Frozen:       800,
 						Box80Rates:        rates,

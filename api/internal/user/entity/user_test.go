@@ -301,3 +301,52 @@ func TestUsers_GroupByRegistered(t *testing.T) {
 		})
 	}
 }
+
+func TestUsers_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		users   Users
+		members map[string]*Member
+		guests  map[string]*Guest
+		expect  Users
+	}{
+		{
+			name: "success",
+			users: Users{
+				{ID: "user-id01"},
+				{ID: "user-id02"},
+			},
+			members: map[string]*Member{
+				"user-id01": {
+					UserID: "user-id01",
+				},
+			},
+			guests: map[string]*Guest{
+				"user-id01": {
+					UserID: "user-id01",
+				},
+			},
+			expect: Users{
+				{
+					ID:     "user-id01",
+					Member: Member{UserID: "user-id01"},
+					Guest:  Guest{UserID: "user-id01"},
+				},
+				{
+					ID:     "user-id02",
+					Member: Member{},
+					Guest:  Guest{},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.users.Fill(tt.members, tt.guests)
+			assert.Equal(t, tt.expect, tt.users)
+		})
+	}
+}

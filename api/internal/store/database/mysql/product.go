@@ -45,6 +45,9 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.ProducerIDs) > 0 {
 		stmt = stmt.Where("producer_id IN (?)", p.ProducerIDs)
 	}
+	if len(p.ProductTypeIDs) > 0 {
+		stmt = stmt.Where("product_type_id IN (?)", p.ProductTypeIDs)
+	}
 	if p.OnlyPublished {
 		stmt = stmt.Where("public = ?", true)
 	}

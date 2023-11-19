@@ -116,7 +116,7 @@ func (ss Shippings) Fill(revisions map[string]*ShippingRevision) {
 	for _, s := range ss {
 		revision, ok := revisions[s.ID]
 		if !ok {
-			continue
+			revision = &ShippingRevision{ShippingID: s.ID}
 		}
 		s.Fill(revision)
 	}

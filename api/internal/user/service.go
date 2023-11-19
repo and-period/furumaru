@@ -42,6 +42,7 @@ type Service interface {
 	UpdateCoordinatorThumbnails(ctx context.Context, in *UpdateCoordinatorThumbnailsInput) error                   // サムネイル(リサイズ済み)更新
 	UpdateCoordinatorHeaders(ctx context.Context, in *UpdateCoordinatorHeadersInput) error                         // ヘッダー画像(リサイズ済み)更新
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error                         // パスワードリセット
+	RemoveCoordinatorProductType(ctx context.Context, in *RemoveCoordinatorProductTypeInput) error                 // 品目削除によるデータ変更
 	AggregateRealatedProducers(ctx context.Context, in *AggregateRealatedProducersInput) (map[string]int64, error) // 担当生産者数の取得
 	DeleteCoordinator(ctx context.Context, in *DeleteCoordinatorInput) error                                       // 退会
 	// 生産者

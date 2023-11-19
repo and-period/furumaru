@@ -188,17 +188,7 @@ func (a *administrator) fill(ctx context.Context, tx *gorm.DB, administrators ..
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}
-
-	adminMap := admins.Map()
-
-	for i, a := range administrators {
-		admin, ok := adminMap[a.AdminID]
-		if !ok {
-			admin = &entity.Admin{}
-		}
-		admin.Fill()
-
-		administrators[i].Fill(admin)
-	}
+	admins.Fill()
+	entity.Administrators(administrators).Fill(admins.Map())
 	return nil
 }

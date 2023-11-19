@@ -104,7 +104,7 @@ func (as Addresses) Fill(revisions map[string]*AddressRevision) {
 	for _, a := range as {
 		revision, ok := revisions[a.ID]
 		if !ok {
-			continue
+			revision = &AddressRevision{AddressID: a.ID}
 		}
 		a.Fill(revision)
 	}

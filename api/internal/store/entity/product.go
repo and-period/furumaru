@@ -310,7 +310,7 @@ func (ps Products) Fill(revisions map[string]*ProductRevision, now time.Time) er
 	for _, p := range ps {
 		revision, ok := revisions[p.ID]
 		if !ok {
-			continue
+			revision = &ProductRevision{ProductID: p.ID}
 		}
 		if err := p.Fill(revision, now); err != nil {
 			return err

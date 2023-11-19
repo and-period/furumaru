@@ -195,6 +195,10 @@ type ResetCoordinatorPasswordInput struct {
 	CoordinatorID string `validate:"required"`
 }
 
+type RemoveCoordinatorProductTypeInput struct {
+	ProductTypeID string `validate:"required"`
+}
+
 type DeleteCoordinatorInput struct {
 	CoordinatorID string `validate:"required"`
 }

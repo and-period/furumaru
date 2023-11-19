@@ -91,3 +91,17 @@ func (us Users) GroupByRegistered() map[bool]Users {
 	}
 	return res
 }
+
+func (us Users) Fill(members map[string]*Member, guests map[string]*Guest) {
+	for _, u := range us {
+		member, ok := members[u.ID]
+		if !ok {
+			member = &Member{}
+		}
+		guest, ok := guests[u.ID]
+		if !ok {
+			guest = &Guest{}
+		}
+		u.Fill(member, guest)
+	}
+}

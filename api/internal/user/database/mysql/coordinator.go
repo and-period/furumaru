@@ -268,6 +268,16 @@ func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth fun
 	return dbError(err)
 }
 
+func (c *coordinator) RemoveProductTypeID(ctx context.Context, productTypeID string) error {
+	sub := gorm.Expr("JSON_REMOVE(product_type_ids, JSON_UNQUOTE(JSON_SEARCH(product_type_ids, 'one', ?)))", productTypeID)
+
+	err := c.db.DB.WithContext(ctx).
+		Table(coordinatorTable).
+		Where("JSON_SEARCH(product_type_ids, 'one', ?) IS NOT NULL", productTypeID).
+		Update("product_type_ids", sub).Error
+	return dbError(err)
+}
+
 func (c *coordinator) get(
 	ctx context.Context, tx *gorm.DB, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
@@ -292,19 +302,6 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}
-
-	adminMap := admins.Map()
-
-	for i, c := range coordinators {
-		admin, ok := adminMap[c.AdminID]
-		if !ok {
-			admin = &entity.Admin{}
-		}
-		admin.Fill()
-
-		if err := coordinators[i].Fill(admin); err != nil {
-			return err
-		}
-	}
-	return nil
+	admins.Fill()
+	return entity.Coordinators(coordinators).Fill(admins.Map())
 }

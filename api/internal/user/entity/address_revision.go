@@ -94,7 +94,7 @@ func (rs AddressRevisions) Merge(addresses map[string]*Address) (Addresses, erro
 		address := &Address{AddressRevision: *r}
 		base, ok := addresses[r.AddressID]
 		if !ok {
-			continue
+			base = &Address{ID: r.AddressID}
 		}
 		opt := copier.Option{IgnoreEmpty: true, DeepCopy: true}
 		if err := copier.CopyWithOption(&address, &base, opt); err != nil {

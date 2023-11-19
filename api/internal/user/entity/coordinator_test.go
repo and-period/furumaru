@@ -278,3 +278,102 @@ func TestCoordinators_ProductTypeIDs(t *testing.T) {
 		})
 	}
 }
+
+func TestCoordinators_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		coordinators Coordinators
+		admins       map[string]*Admin
+		expect       Coordinators
+		hasErr       bool
+	}{
+		{
+			name: "success",
+			coordinators: Coordinators{
+				{
+					AdminID:            "admin-id01",
+					PrefectureCode:     13,
+					ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
+					ThumbnailsJSON:     datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
+					HeadersJSON:        datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
+					BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
+				},
+				{
+					AdminID:            "admin-id02",
+					PrefectureCode:     13,
+					ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
+					ThumbnailsJSON:     datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
+					HeadersJSON:        datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
+					BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
+				},
+			},
+			admins: map[string]*Admin{
+				"admin-id01": {
+					ID:        "admin-id01",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleCoordinator,
+				},
+			},
+			expect: Coordinators{
+				{
+					AdminID:            "admin-id01",
+					Prefecture:         "東京都",
+					PrefectureCode:     13,
+					ProductTypeIDsJSON: []byte(`["product-type-id"]`),
+					ProductTypeIDs: []string{
+						"product-type-id",
+					},
+					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					Thumbnails: common.Images{
+						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+					},
+					HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					Headers: common.Images{
+						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+					},
+					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
+					Admin: Admin{
+						ID:        "admin-id01",
+						CognitoID: "cognito-id",
+						Role:      AdminRoleCoordinator,
+					},
+				},
+				{
+					AdminID:            "admin-id02",
+					Prefecture:         "東京都",
+					PrefectureCode:     13,
+					ProductTypeIDsJSON: []byte(`["product-type-id"]`),
+					ProductTypeIDs: []string{
+						"product-type-id",
+					},
+					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					Thumbnails: common.Images{
+						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+					},
+					HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					Headers: common.Images{
+						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+					},
+					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
+					Admin: Admin{
+						ID:   "admin-id02",
+						Role: AdminRoleCoordinator,
+					},
+				},
+			},
+			hasErr: false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.coordinators.Fill(tt.admins)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, tt.coordinators)
+		})
+	}
+}

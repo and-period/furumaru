@@ -53,7 +53,7 @@ func (rs ProductRevisions) Merge(products map[string]*Product) (Products, error)
 		product := &Product{ProductRevision: *r}
 		base, ok := products[r.ProductID]
 		if !ok {
-			continue
+			base = &Product{ID: r.ProductID}
 		}
 		opt := copier.Option{IgnoreEmpty: true, DeepCopy: true}
 		if err := copier.CopyWithOption(&product, &base, opt); err != nil {

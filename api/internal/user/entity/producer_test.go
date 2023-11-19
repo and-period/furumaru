@@ -217,3 +217,122 @@ func TestProducers_CoordinatorIDs(t *testing.T) {
 		})
 	}
 }
+
+func TestProducers_Unrelated(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		producers Producers
+		expect    Producers
+	}{
+		{
+			name: "success",
+			producers: Producers{
+				{
+					AdminID:       "admin-id01",
+					CoordinatorID: "coordinator-id",
+				},
+				{
+					AdminID:       "admin-id02",
+					CoordinatorID: "",
+				},
+			},
+			expect: Producers{
+				{
+					AdminID:       "admin-id02",
+					CoordinatorID: "",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.producers.Unrelated())
+		})
+	}
+}
+
+func TestProducers_Fill(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		producers Producers
+		admins    map[string]*Admin
+		expect    Producers
+		hasErr    bool
+	}{
+		{
+			name: "success",
+			producers: Producers{
+				{
+					AdminID:        "admin-id01",
+					PrefectureCode: 13,
+					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				},
+				{
+					AdminID:        "admin-id02",
+					PrefectureCode: 13,
+					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+				},
+			},
+			admins: map[string]*Admin{
+				"admin-id01": {
+					ID:        "admin-id01",
+					CognitoID: "cognito-id",
+					Role:      AdminRoleProducer,
+				},
+			},
+			expect: Producers{
+				{
+					AdminID:        "admin-id01",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					Thumbnails: common.Images{
+						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+					},
+					HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					Headers: common.Images{
+						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+					},
+					Admin: Admin{
+						ID:        "admin-id01",
+						CognitoID: "cognito-id",
+						Role:      AdminRoleProducer,
+					},
+				},
+				{
+					AdminID:        "admin-id02",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					Thumbnails: common.Images{
+						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+					},
+					HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
+					Headers: common.Images{
+						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
+					},
+					Admin: Admin{
+						ID:   "admin-id02",
+						Role: AdminRoleProducer,
+					},
+				},
+			},
+			hasErr: false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.producers.Fill(tt.admins)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, tt.producers)
+		})
+	}
+}

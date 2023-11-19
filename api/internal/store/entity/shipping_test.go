@@ -735,6 +735,9 @@ func TestShippings_Fill(t *testing.T) {
 					ID:        "shipping-id02",
 					CreatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
 					UpdatedAt: jst.Date(2022, 7, 3, 18, 30, 0, 0),
+					ShippingRevision: ShippingRevision{
+						ShippingID: "shipping-id02",
+					},
 				},
 			},
 		},
