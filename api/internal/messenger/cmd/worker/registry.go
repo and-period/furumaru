@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"sync"
 	"time"
@@ -60,13 +61,13 @@ func (a *app) inject(ctx context.Context) error {
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to load aws config: %w", err)
 	}
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
 	if err := a.getSecret(ctx, params); err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
 
 	// Loggerの設定
@@ -77,26 +78,26 @@ func (a *app) inject(ctx context.Context) error {
 		log.WithSentryLevel("error"),
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
 	}
 	params.logger = logger
 
 	// Databaseの設定
 	dbClient, err := a.newDatabase("messengers", params)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create database client: %w", err)
 	}
 
 	// メールテンプレートの設定
 	f, err := os.Open(a.SendGridTemplatePath)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to open sendgrid template file: %w", err)
 	}
 	defer f.Close()
 	var templateMap map[string]string
 	d := yaml.NewDecoder(f)
 	if err := d.Decode(&templateMap); err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to decode sendgrid template yaml: %w", err)
 	}
 
 	// Mailerの設定
@@ -116,40 +117,40 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	linebot, err := line.NewClient(lineParams, line.WithLogger(params.logger))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create line client: %w", err)
 	}
 	params.line = linebot
 
 	// Firebaseの設定（管理者用）
 	afbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.adminFirebaseCredentials))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create firebase client for admin: %w", err)
 	}
 
 	// Firebase Cloud Messagingの設定（管理者用）
 	amessaging, err := messaging.NewClient(ctx, afbapp, messaging.WithLogger(params.logger))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create firebase messaging client for admin: %w", err)
 	}
 	params.adminMessaging = amessaging
 
 	// Firebaseの設定（利用者用）
 	ufbapp, err := firebase.NewApp(ctx, nil, option.WithCredentialsJSON(params.userFirebaseCredentials))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create firebase client for user: %w", err)
 	}
 
 	// Firebase Cloud Messagingの設定（利用者用）
 	umessaging, err := messaging.NewClient(ctx, ufbapp, messaging.WithLogger(params.logger))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create firebase messaging client for user: %w", err)
 	}
 	params.userMessaging = umessaging
 
 	// Serviceの設定
 	userService, err := a.newUserService(params)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create user service: %w", err)
 	}
 
 	// Workerの設定

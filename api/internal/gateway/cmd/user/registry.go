@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
 	"sync"
@@ -85,14 +86,14 @@ func (a *app) inject(ctx context.Context) error {
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to load aws config: %w", err)
 	}
 	params.aws = awscfg
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
 	if err := a.getSecret(ctx, params); err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
 
 	// Loggerの設定
@@ -103,7 +104,7 @@ func (a *app) inject(ctx context.Context) error {
 		log.WithSentryLevel("error"),
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
 	}
 	params.logger = logger
 
@@ -145,7 +146,7 @@ func (a *app) inject(ctx context.Context) error {
 			newrelic.ConfigAppLogForwardingEnabled(true),
 		)
 		if err != nil {
-			return err
+			return fmt.Errorf("cmd: failed to create newrelic client: %w", err)
 		}
 		params.newRelic = newrelicApp
 	}
@@ -160,7 +161,7 @@ func (a *app) inject(ctx context.Context) error {
 			sentry.WithBind(true),
 		)
 		if err != nil {
-			return err
+			return fmt.Errorf("cmd: failed to create sentry client: %w", err)
 		}
 		params.sentry = sentryApp
 	}
@@ -201,31 +202,31 @@ func (a *app) inject(ctx context.Context) error {
 	// WebURLの設定
 	adminWebURL, err := url.Parse(a.AminWebURL)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to parse admin web url: %w", err)
 	}
 	params.adminWebURL = adminWebURL
 	userWebURL, err := url.Parse(a.UserWebURL)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to parse user web url: %w", err)
 	}
 	params.userWebURL = userWebURL
 
 	// Serviceの設定
 	mediaService, err := a.newMediaService(params)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create media service: %w", err)
 	}
 	messengerService, err := a.newMessengerService(params)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create messenger service: %w", err)
 	}
 	userService, err := a.newUserService(params, mediaService, messengerService)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create user service: %w", err)
 	}
 	storeService, err := a.newStoreService(params, userService, mediaService, messengerService)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create store service: %w", err)
 	}
 
 	// Handlerの設定

@@ -89,14 +89,14 @@ func (a *app) inject(ctx context.Context) error {
 	// Casbinの設定
 	enforcer, err := rbac.NewEnforcer(a.RBACModelPath, a.RBACPolicyPath)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to load rbac: %w", err)
 	}
 	params.enforcer = enforcer
 
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to load aws config: %w", err)
 	}
 	params.aws = awscfg
 
