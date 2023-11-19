@@ -253,7 +253,7 @@ useSeoMeta({
         {{ product.producer.profile }}
       </div>
     </div>
-    <div class="mx-auto flex w-[1088px] flex-row-reverse pt-[45px] pb-12">
+    <div class="mx-auto flex px-[64px] flex-row-reverse pt-[45px] pb-12">
       <button class="text-main flex items-center">
         詳しく見る
         <div class="pl-4">
