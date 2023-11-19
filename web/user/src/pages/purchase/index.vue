@@ -4,10 +4,18 @@ import { useShoppingCartStore } from '~/store/shopping'
 const router = useRouter()
 
 const shoppingCartStore = useShoppingCartStore()
+const { removeProductFromCart } = shoppingCartStore
 const { shoppingCart } = storeToRefs(shoppingCartStore)
 
 const handleClickBuyButton = () => {
   router.push('/v1/purchase/address')
+}
+
+const handelClickRemoveItemFromCartButton = (
+  cartNumber: number,
+  id: string,
+) => {
+  removeProductFromCart(cartNumber, id)
 }
 
 useSeoMeta({
@@ -16,7 +24,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="container mx-auto">
+  <div class="container mx-auto px-4 xl:px-0">
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
       買い物カゴ
     </div>
@@ -41,6 +49,7 @@ useSeoMeta({
         :coordinator="cartItem.coordinator"
         :items="cartItem.items"
         @click:buy-button="handleClickBuyButton"
+        @click:remove-item-from-cart="handelClickRemoveItemFromCartButton"
       />
     </div>
   </div>
