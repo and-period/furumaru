@@ -1,5 +1,5 @@
 <template>
-      <div class="text-main my-24 flex flex-col items-center px-4">
+      <div class="my-24 flex flex-col items-center px-4 text-main">
       <div>
         <h1 class="text-4xl">お問い合わせ</h1>
       </div>

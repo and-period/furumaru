@@ -292,16 +292,16 @@ useSeoMeta({
               {{ product.originCity }}
             </p>
           </div>
-          <div class="flex items-end pt-4 justify-center">
+          <div class="flex items-end justify-center pt-4">
             <p class="text-[14px] font-[500] tracking-[1.4px]">生産者</p>
-            <p class="pl-6 text-[16px] md:text-[24px] tracking-[1.4px]">{{ product.producer.username }}</p>
+            <p class="pl-6 text-[16px] tracking-[1.4px] md:text-[24px]">{{ product.producer.username }}</p>
           </div>
         </div>
         <div class="break-words pt-[24px] tracking-[1.4px] md:col-span-5 md:pt-0 md:tracking-[1.6px]">
           {{ product.producer.profile }}
         </div>
       </div>
-      <div class="flex md:justify-end justify-center md:px-[64px] px-[16px] pb-12 md:pt-[45px] pt-[24px]">
+      <div class="flex justify-center px-[16px] pb-12 pt-[24px] md:justify-end md:px-[64px] md:pt-[45px]">
         <button class="flex items-center text-main">
           詳しく見る
           <div class="pl-4">
