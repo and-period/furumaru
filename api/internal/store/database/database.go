@@ -127,6 +127,7 @@ type ListProductsParams struct {
 	ProducerID     string
 	ProducerIDs    []string
 	ProductTypeIDs []string
+	ProductTagID   string
 	OnlyPublished  bool
 	Limit          int
 	Offset         int

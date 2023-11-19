@@ -40,13 +40,13 @@ func (a *app) inject(ctx context.Context) error {
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to load aws config: %w", err)
 	}
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
 	if err := a.getSecret(ctx, params); err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to get secret: %w", err)
 	}
 
 	// Loggerの設定
@@ -57,14 +57,14 @@ func (a *app) inject(ctx context.Context) error {
 		log.WithSentryLevel("error"),
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create sentry logger: %w", err)
 	}
 	params.logger = logger
 
 	// Databaseの設定
 	dbClient, err := a.newDatabase("media", params)
 	if err != nil {
-		return err
+		return fmt.Errorf("cmd: failed to create database client: %w", err)
 	}
 
 	// Jobの設定

@@ -48,6 +48,9 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.ProductTypeIDs) > 0 {
 		stmt = stmt.Where("product_type_id IN (?)", p.ProductTypeIDs)
 	}
+	if p.ProductTagID != "" {
+		stmt = stmt.Where("JSON_SEARCH(product_tag_ids, 'all', ?) IS NOT NULL", p.ProductTagID)
+	}
 	if p.OnlyPublished {
 		stmt = stmt.Where("public = ?", true)
 	}
