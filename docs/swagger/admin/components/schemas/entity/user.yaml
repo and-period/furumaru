@@ -127,3 +127,36 @@ userToList:
     city: '千代田区'
     totalOrder: 2
     totalAmount: 1980
+userOrder:
+  type: object
+  description: 購入者の注文情報
+  properties:
+    orderId:
+      type: string
+      description: 注文履歴ID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/paymentStatus'
+    total:
+      type: integer
+      format: int64
+      description: 支払い合計金額
+    orderedAt:
+      type: integer
+      format: int64
+      description: 注文日時
+    paidAt:
+      type: integer
+      format: int64
+      description: 支払日時
+  required:
+  - orderId
+  - status
+  - total
+  - orderedAt
+  - paidAt
+  example:
+    orderId: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 2
+    total: 1980
+    orderedAt: 1640962800
+    paidAt: 1640962800

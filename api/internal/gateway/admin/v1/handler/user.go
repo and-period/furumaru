@@ -22,6 +22,7 @@ func (h *handler) userRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListUsers)
 	r.GET("/:userId", h.GetUser)
+	r.GET("/:userId/orders", h.ListUserOrders)
 }
 
 func (h *handler) ListUsers(ctx *gin.Context) {
@@ -99,6 +100,48 @@ func (h *handler) GetUser(ctx *gin.Context) {
 	}
 	res := &response.UserResponse{
 		User: user.Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) ListUserOrders(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	userID := util.GetParam(ctx, "userId")
+	if userID == "" {
+		h.badRequest(ctx, errors.New("handler: userId is required"))
+		return
+	}
+
+	in := &store.ListOrdersInput{
+		UserID: userID,
+		Limit:  limit,
+		Offset: offset,
+	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
+	}
+	orders, total, err := h.store.ListOrders(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.UserOrdersResponse{
+		Orders: service.NewUserOrders(orders).Response(),
+		Total:  total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

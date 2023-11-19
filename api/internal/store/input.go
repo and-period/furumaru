@@ -412,6 +412,7 @@ type DeleteLiveInput struct {
 
 type ListOrdersInput struct {
 	CoordinatorID string `validate:"omitempty"`
+	UserID        string `validate:"omitempty"`
 	Limit         int64  `validate:"required,max=200"`
 	Offset        int64  `validate:"min=0"`
 }

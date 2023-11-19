@@ -5945,6 +5945,64 @@ export interface User {
 
 
 /**
+ * 購入者の注文情報
+ * @export
+ * @interface UserOrder
+ */
+export interface UserOrder {
+    /**
+     * 注文履歴ID
+     * @type {string}
+     * @memberof UserOrder
+     */
+    'orderId': string;
+    /**
+     * 
+     * @type {PaymentStatus}
+     * @memberof UserOrder
+     */
+    'status': PaymentStatus;
+    /**
+     * 支払い合計金額
+     * @type {number}
+     * @memberof UserOrder
+     */
+    'total': number;
+    /**
+     * 注文日時
+     * @type {number}
+     * @memberof UserOrder
+     */
+    'orderedAt': number;
+    /**
+     * 支払日時
+     * @type {number}
+     * @memberof UserOrder
+     */
+    'paidAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface UserOrdersResponse
+ */
+export interface UserOrdersResponse {
+    /**
+     * 注文履歴一覧
+     * @type {Array<UserOrder>}
+     * @memberof UserOrdersResponse
+     */
+    'orders': Array<UserOrder>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof UserOrdersResponse
+     */
+    'total': number;
+}
+/**
  * 
  * @export
  * @interface UserResponse
@@ -15643,7 +15701,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
-         * @summary 購入者一覧
+         * @summary 購入者詳細
          * @param {string} userId 購入者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15652,6 +15710,44 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('v1GetUser', 'userId', userId)
             const localVarPath = `/v1/users/{userId}`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 購入者の注文履歴一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListUserOrders: async (userId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('v1ListUserOrders', 'userId', userId)
+            const localVarPath = `/v1/users/{userId}/orders`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -15735,13 +15831,24 @@ export const UserApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary 購入者一覧
+         * @summary 購入者詳細
          * @param {string} userId 購入者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async v1GetUser(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetUser(userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 購入者の注文履歴一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListUserOrders(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserOrdersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListUserOrders(userId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -15768,13 +15875,23 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
-         * @summary 購入者一覧
+         * @summary 購入者詳細
          * @param {string} userId 購入者ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         v1GetUser(userId: string, options?: any): AxiosPromise<UserResponse> {
             return localVarFp.v1GetUser(userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 購入者の注文履歴一覧
+         * @param {string} userId 購入者ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListUserOrders(userId: string, options?: any): AxiosPromise<UserOrdersResponse> {
+            return localVarFp.v1ListUserOrders(userId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -15799,7 +15916,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
 export class UserApi extends BaseAPI {
     /**
      * 
-     * @summary 購入者一覧
+     * @summary 購入者詳細
      * @param {string} userId 購入者ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -15807,6 +15924,18 @@ export class UserApi extends BaseAPI {
      */
     public v1GetUser(userId: string, options?: AxiosRequestConfig) {
         return UserApiFp(this.configuration).v1GetUser(userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 購入者の注文履歴一覧
+     * @param {string} userId 購入者ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public v1ListUserOrders(userId: string, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).v1ListUserOrders(userId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

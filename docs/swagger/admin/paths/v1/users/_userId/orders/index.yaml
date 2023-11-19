@@ -1,0 +1,22 @@
+get:
+  summary: 購入者の注文履歴一覧
+  operationId: v1ListUserOrders
+  tags:
+  - User
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: userId
+    schema:
+      type: string
+    description: 購入者ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1UserOrdersResponse'

@@ -22,6 +22,15 @@ type UserToList struct {
 	TotalAmount    int64  `json:"totalAmount"`    // 購入金額
 }
 
+// UserOrder - 購入者注文情報
+type UserOrder struct {
+	OrderID   string `json:"orderId"`   // 注文情報ID
+	Status    int32  `json:"status"`    // 支払い状況
+	Total     int64  `json:"total"`     // 支払い合計金額
+	OrderedAt int64  `json:"orderedAt"` // 注文日時
+	PaidAt    int64  `json:"paidAt"`    // 支払日時
+}
+
 type UserResponse struct {
 	User *User `json:"user"` // 購入者情報
 }
@@ -29,4 +38,9 @@ type UserResponse struct {
 type UsersResponse struct {
 	Users []*UserToList `json:"users"` // 購入者一覧
 	Total int64         `json:"total"` // 購入者合計数
+}
+
+type UserOrdersResponse struct {
+	Orders []*UserOrder `json:"orders"` // 注文履歴一覧
+	Total  int64        `json:"total"`  // 注文履歴合計数
 }
