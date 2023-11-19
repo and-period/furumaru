@@ -81,6 +81,10 @@ func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrders
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	orders, err := s.db.Order.Aggregate(ctx, in.UserIDs)
+	params := &database.AggregateOrdersParams{
+		CoordinatorID: in.CoordinatorID,
+		UserIDs:       in.UserIDs,
+	}
+	orders, err := s.db.Order.Aggregate(ctx, params)
 	return orders, internalError(err)
 }

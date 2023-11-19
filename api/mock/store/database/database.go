@@ -298,18 +298,18 @@ func (m *MockOrder) EXPECT() *MockOrderMockRecorder {
 }
 
 // Aggregate mocks base method.
-func (m *MockOrder) Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error) {
+func (m *MockOrder) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (entity.AggregatedOrders, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Aggregate", ctx, userIDs)
+	ret := m.ctrl.Call(m, "Aggregate", ctx, params)
 	ret0, _ := ret[0].(entity.AggregatedOrders)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Aggregate indicates an expected call of Aggregate.
-func (mr *MockOrderMockRecorder) Aggregate(ctx, userIDs interface{}) *gomock.Call {
+func (mr *MockOrderMockRecorder) Aggregate(ctx, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Aggregate", reflect.TypeOf((*MockOrder)(nil).Aggregate), ctx, userIDs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Aggregate", reflect.TypeOf((*MockOrder)(nil).Aggregate), ctx, params)
 }
 
 // Count mocks base method.

@@ -429,7 +429,8 @@ type CancelOrderInput struct {
 }
 
 type AggregateOrdersInput struct {
-	UserIDs []string `validate:"omitempty,dive,required"`
+	CoordinatorID string   `validate:"omitempty"`
+	UserIDs       []string `validate:"omitempty,dive,required"`
 }
 
 type GetCartInput struct {

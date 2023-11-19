@@ -149,7 +149,7 @@ func (o *order) UpdatePaymentStatus(ctx context.Context, orderID string, params 
 	return dbError(err)
 }
 
-func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.AggregatedOrders, error) {
+func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (entity.AggregatedOrders, error) {
 	var orders entity.AggregatedOrders
 
 	fields := []string{
@@ -161,8 +161,11 @@ func (o *order) Aggregate(ctx context.Context, userIDs []string) (entity.Aggrega
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
 		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
-		Where("orders.user_id IN (?)", userIDs).
-		Group("orders.user_id")
+		Where("orders.user_id IN (?)", params.UserIDs)
+	if params.CoordinatorID != "" {
+		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
+	}
+	stmt = stmt.Group("orders.user_id")
 
 	err := stmt.Scan(&orders).Error
 	return orders, dbError(err)

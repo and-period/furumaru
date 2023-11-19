@@ -68,6 +68,9 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		in := &store.AggregateOrdersInput{
 			UserIDs: userIDs,
 		}
+		if getRole(ctx) == service.AdminRoleCoordinator {
+			in.CoordinatorID = getAdminID(ctx)
+		}
 		orders, err = h.store.AggregateOrders(ectx, in)
 		return
 	})
