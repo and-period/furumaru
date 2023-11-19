@@ -52,7 +52,7 @@ delete:
   - bearerAuth: []
   parameters:
   - in: path
-    name: ProductTagId
+    name: productTagId
     schema:
       type: string
     description: 商品タグID
