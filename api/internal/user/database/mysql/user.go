@@ -31,6 +31,7 @@ func (p listUsersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.OnlyRegistered {
 		stmt = stmt.Where("registered = ?", true)
 	}
+	stmt = stmt.Order("updated_at DESC")
 	return stmt
 }
 
