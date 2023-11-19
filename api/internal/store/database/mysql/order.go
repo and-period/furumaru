@@ -38,6 +38,7 @@ func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
+	stmt = stmt.Order("updated_at DESC")
 	return stmt
 }
 
