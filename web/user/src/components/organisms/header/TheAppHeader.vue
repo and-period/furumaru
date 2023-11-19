@@ -48,7 +48,10 @@ const handleClickBuyButton = () => {
   closeSpMenu()
 }
 
-const handleClickRemoveItemFromCartButton = (cartNumber, id) => {
+const handleClickRemoveItemFromCartButton = (
+  cartNumber: number,
+  id: string,
+) => {
   emits('click:removeItemFromCart', cartNumber, id)
 }
 </script>
