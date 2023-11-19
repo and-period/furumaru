@@ -11,6 +11,7 @@ interface Props {
 
 interface Emits {
   (e: 'click:buyButton'): void
+  (e: 'click:removeItemFromCart', cartNumber: Number, id: string): void
 }
 
 const props = defineProps<Props>()
@@ -31,6 +32,10 @@ const priceStringFormatter = (price: number): string => {
 
 const handleBuyButton = () => {
   emits('click:buyButton')
+}
+
+const handelClickRemoveItemButton = (id: string) => {
+  emits('click:removeItemFromCart', props.cartNumber, id)
 }
 </script>
 
@@ -98,7 +103,13 @@ const handleBuyButton = () => {
             <div>{{ priceStringFormatter(item.product.price) }}</div>
             <div class="inline-flex text-[14px]">
               {{ item.quantity }}
-              <button class="ml-2 text-[12px] underline">削除</button>
+              <button
+                class="ml-2 text-[12px] underline"
+                type="button"
+                @click="handelClickRemoveItemButton(item.product.id)"
+              >
+                削除
+              </button>
             </div>
             <div>
               {{ priceStringFormatter(item.product.price * item.quantity) }}
