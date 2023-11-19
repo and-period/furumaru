@@ -14,7 +14,7 @@ useSeoMeta({
   >
     <div class="col-span-3 lg:col-span-2">
       <the-live-video-player
-        :video-src="live.videoSrc"
+        :video-src="'https://furumaru-dev.s3.ap-northeast-1.amazonaws.com/promotion/promotion.mp4'"
         :title="live.title"
         :start-at="live.startAt"
         :is-archive="live.published"
