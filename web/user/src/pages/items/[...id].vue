@@ -230,10 +230,10 @@ useSeoMeta({
   </template>
 
   <div class="mx-auto mt-[80px] w-[1216px] bg-white rounded-3xl">
-    <div class="pt-10">
-      <p class="bg-base text-main mx-auto w-[1088px] rounded-full py-2 text-center text-[16px] font-bold">この商品の生産者</p>
+    <div class="pt-10 px-[64px]">
+      <p class="bg-base text-main mx-auto rounded-full py-2 text-center text-[16px] font-bold">この商品の生産者</p>
     </div>
-    <div class="grid grid-cols-8 pt-16 w-[1088px] mx-auto" v-if="product.producer">
+    <div class="grid grid-cols-8 pt-16 px-[64px] mx-auto" v-if="product.producer">
       <img
         :src="product.producer.thumbnailUrl"
         :alt="`${product.producer.username}`"
