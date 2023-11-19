@@ -345,6 +345,10 @@ func TestUpdateProductTag(t *testing.T) {
 func TestDeleteProductTag(t *testing.T) {
 	t.Parallel()
 
+	params := &database.ListProductsParams{
+		ProductTagID: "product-tag-id",
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -354,6 +358,7 @@ func TestDeleteProductTag(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
 				mocks.db.ProductTag.EXPECT().Delete(ctx, "product-tag-id").Return(nil)
 			},
 			input: &store.DeleteProductTagInput{
@@ -368,8 +373,29 @@ func TestDeleteProductTag(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to count",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), assert.AnError)
+			},
+			input: &store.DeleteProductTagInput{
+				ProductTagID: "product-tag-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "associated with product",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(1), nil)
+			},
+			input: &store.DeleteProductTagInput{
+				ProductTagID: "product-tag-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
 			name: "failed to delete",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Product.EXPECT().Count(ctx, params).Return(int64(0), nil)
 				mocks.db.ProductTag.EXPECT().Delete(ctx, "product-tag-id").Return(assert.AnError)
 			},
 			input: &store.DeleteProductTagInput{
