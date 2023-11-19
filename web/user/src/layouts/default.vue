@@ -18,7 +18,7 @@ const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
 const shoppingStore = useShoppingCartStore()
-const { getCart } = shoppingStore
+const { getCart, removeProductFromCart } = shoppingStore
 const { cartIsEmpty, shoppingCart, totalPrice } = storeToRefs(shoppingStore)
 
 getCart()
@@ -124,6 +124,13 @@ onUnmounted(() => {
 const handleClickBuyButton = () => {
   router.push('/purchase')
 }
+
+const handleClickRemoveItemFromCartButton = (
+  cartNumber: number,
+  id: string,
+) => {
+  removeProductFromCart(cartNumber, id)
+}
 </script>
 
 <template>
@@ -145,6 +152,7 @@ const handleClickBuyButton = () => {
       :sp-menu-items="spModeMenuItems"
       :footer-menu-items="footerMenuList"
       @click:buy-button="handleClickBuyButton"
+      @click:remove-item-from-cart="handleClickRemoveItemFromCartButton"
     />
   </div>
   <div class="flex min-h-screen flex-col bg-base">
