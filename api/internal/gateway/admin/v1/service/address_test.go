@@ -25,6 +25,8 @@ func TestAddress(t *testing.T) {
 					ID:             1,
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
 					PostalCode:     "1000014",
 					Prefecture:     "東京都",
 					PrefectureCode: 13,
@@ -38,6 +40,8 @@ func TestAddress(t *testing.T) {
 				Address: response.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -72,6 +76,8 @@ func TestAddress_Response(t *testing.T) {
 				Address: response.Address{
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -84,6 +90,8 @@ func TestAddress_Response(t *testing.T) {
 			expect: &response.Address{
 				Lastname:       "&.",
 				Firstname:      "購入者",
+				LastnameKana:   "あんどどっと",
+				FirstnameKana:  "こうにゅうしゃ",
 				PostalCode:     "1000014",
 				PrefectureCode: 13,
 				City:           "千代田区",
@@ -125,6 +133,8 @@ func TestAddresses(t *testing.T) {
 						ID:             1,
 						Lastname:       "&.",
 						Firstname:      "購入者",
+						LastnameKana:   "あんどどっと",
+						FirstnameKana:  "こうにゅうしゃ",
 						PostalCode:     "1000014",
 						Prefecture:     "東京都",
 						PrefectureCode: 13,
@@ -140,6 +150,8 @@ func TestAddresses(t *testing.T) {
 					Address: response.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
+						LastnameKana:   "あんどどっと",
+						FirstnameKana:  "こうにゅうしゃ",
 						PostalCode:     "1000014",
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -176,6 +188,8 @@ func TestAddresses_MapRevision(t *testing.T) {
 					Address: response.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
+						LastnameKana:   "あんどどっと",
+						FirstnameKana:  "こうにゅうしゃ",
 						PostalCode:     "1000014",
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -191,6 +205,8 @@ func TestAddresses_MapRevision(t *testing.T) {
 					Address: response.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
+						LastnameKana:   "あんどどっと",
+						FirstnameKana:  "こうにゅうしゃ",
 						PostalCode:     "1000014",
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -226,6 +242,8 @@ func TestAddresses_Response(t *testing.T) {
 					Address: response.Address{
 						Lastname:       "&.",
 						Firstname:      "購入者",
+						LastnameKana:   "あんどどっと",
+						FirstnameKana:  "こうにゅうしゃ",
 						PostalCode:     "1000014",
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -240,6 +258,8 @@ func TestAddresses_Response(t *testing.T) {
 				{
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
 					City:           "千代田区",
