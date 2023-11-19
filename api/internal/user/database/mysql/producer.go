@@ -340,5 +340,6 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}
+	admins.Fill()
 	return entity.Producers(producers).Fill(admins.Map())
 }

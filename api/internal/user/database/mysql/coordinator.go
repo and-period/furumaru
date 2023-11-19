@@ -302,5 +302,6 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}
+	admins.Fill()
 	return entity.Coordinators(coordinators).Fill(admins.Map())
 }
