@@ -5,6 +5,8 @@ type Address struct {
 	AddressID      string `json:"addressId"`      // 住所ID
 	Lastname       string `json:"lastname"`       // 氏名（姓）
 	Firstname      string `json:"firstname"`      // 氏名（名）
+	LastnameKana   string `json:"lastnameKana"`   // 氏名(姓:かな)
+	FirstnameKana  string `json:"firstnameKana"`  // 氏名(名:かな)
 	PostalCode     string `json:"postalCode"`     // 郵便番号
 	PrefectureCode int32  `json:"prefectureCode"` // 都道府県
 	City           string `json:"city"`           // 市区町村

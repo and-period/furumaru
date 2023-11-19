@@ -18,6 +18,8 @@ func NewAddress(address *entity.Address) *Address {
 			AddressID:      address.AddressID,
 			Lastname:       address.Lastname,
 			Firstname:      address.Firstname,
+			LastnameKana:   address.LastnameKana,
+			FirstnameKana:  address.FirstnameKana,
 			PostalCode:     address.PostalCode,
 			PrefectureCode: address.PrefectureCode,
 			City:           address.City,
