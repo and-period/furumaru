@@ -191,6 +191,8 @@ paths:
     $ref: './paths/v1/users/index.yaml'
   /v1/users/{userId}:
     $ref: './paths/v1/users/_userId/index.yaml'
+  /v1/users/{userId}/orders:
+    $ref: './paths/v1/users/_userId/orders/index.yaml'
   # PaymentSystem
   /v1/payment-systems:
     $ref: './paths/v1/payment-systems/index.yaml'
@@ -332,6 +334,8 @@ components:
       $ref: './components/schemas/entity/user.yaml#/user'
     userToList:
       $ref: './components/schemas/entity/user.yaml#/userToList'
+    userOrder:
+      $ref: './components/schemas/entity/user.yaml#/userOrder'
     # Request
     v1SignInRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
@@ -524,6 +528,8 @@ components:
       $ref: './components/schemas/v1/user.response.yaml#/userResponse'
     v1UsersResponse:
       $ref: './components/schemas/v1/user.response.yaml#/usersResponse'
+    v1UserOrdersResponse:
+      $ref: './components/schemas/v1/user.response.yaml#/userOrdersResponse'
     v1PostalCodeResponse:
       $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
     v1UploadImageResponse:

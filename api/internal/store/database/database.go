@@ -93,6 +93,7 @@ type Order interface {
 
 type ListOrdersParams struct {
 	CoordinatorID string
+	UserID        string
 	Limit         int
 	Offset        int
 }

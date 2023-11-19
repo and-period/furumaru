@@ -48,3 +48,26 @@ usersResponse:
       totalOrder: 2
       totalAmount: 5000
     total: 1
+userOrdersResponse:
+  type: object
+  properties:
+    orders:
+      type: array
+      description: 注文履歴一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/userOrder'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - orders
+  - total
+  example:
+    orders:
+    - orderId: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
+      total: 1980
+      orderedAt: 1640962800
+      paidAt: 1640962800
+    total: 1

@@ -1,5 +1,5 @@
 get:
-  summary: 購入者一覧
+  summary: 購入者詳細
   operationId: v1GetUser
   tags:
   - User
