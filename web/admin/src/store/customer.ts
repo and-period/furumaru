@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 
 import { apiClient } from '~/plugins/api-client'
-import type { User } from '~/types/api'
+import type { User, UserToList } from '~/types/api'
 
 export const useCustomerStore = defineStore('customer', {
   state: () => ({
     customer: {} as User,
     customers: [] as User[],
+    customersToList: [] as UserToList[],
     totalItems: 0
   }),
 
@@ -19,7 +20,7 @@ export const useCustomerStore = defineStore('customer', {
     async fetchCustomers (limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.userApi().v1ListUsers(limit, offset)
-        this.customers = res.data.users
+        this.customersToList = res.data.users
         this.totalItems = res.data.total
       } catch (err) {
         return this.errorHandler(err)

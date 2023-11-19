@@ -80,3 +80,50 @@ user:
     addressLine2: ''
     createdAt: 1640962800
     updatedAt: 1640962800
+userToList:
+  type: object
+  description: 購入者一覧用情報
+  properties:
+    id:
+      type: string
+      description: 購入者ID
+    lastname:
+      type: string
+      description: 姓
+    firstname:
+      type: string
+      description: 名
+    registered:
+      type: boolean
+      description: 会員登録フラグ
+    prefectureCode:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+    city:
+      type: string
+      description: 市区町村
+    totalOrder:
+      type: integer
+      format: int64
+      description: 購入回数
+    totalAmount:
+      type: integer
+      format: itn64
+      description: 購入金額
+  required:
+  - id
+  - lastname
+  - firstname
+  - registered
+  - prefectureCode
+  - city
+  - totalOrder
+  - totalAmount
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    lastname: '&.'
+    firstname: '購入者'
+    registered: true
+    prefectureCode: 13
+    city: '千代田区'
+    totalOrder: 2
+    totalAmount: 1980

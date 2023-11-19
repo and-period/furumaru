@@ -5958,6 +5958,63 @@ export interface UserResponse {
     'user': User;
 }
 /**
+ * 購入者一覧用情報
+ * @export
+ * @interface UserToList
+ */
+export interface UserToList {
+    /**
+     * 購入者ID
+     * @type {string}
+     * @memberof UserToList
+     */
+    'id': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof UserToList
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof UserToList
+     */
+    'firstname': string;
+    /**
+     * 会員登録フラグ
+     * @type {boolean}
+     * @memberof UserToList
+     */
+    'registered': boolean;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof UserToList
+     */
+    'prefectureCode': Prefecture;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof UserToList
+     */
+    'city': string;
+    /**
+     * 購入回数
+     * @type {number}
+     * @memberof UserToList
+     */
+    'totalOrder': number;
+    /**
+     * 購入金額
+     * @type {number}
+     * @memberof UserToList
+     */
+    'totalAmount': number;
+}
+
+
+/**
  * 
  * @export
  * @interface UsersResponse
@@ -5965,10 +6022,10 @@ export interface UserResponse {
 export interface UsersResponse {
     /**
      * 購入者一覧
-     * @type {Array<User>}
+     * @type {Array<UserToList>}
      * @memberof UsersResponse
      */
-    'users': Array<User>;
+    'users': Array<UserToList>;
     /**
      * 合計数
      * @type {number}
