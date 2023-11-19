@@ -22,6 +22,7 @@ func (h *handler) userRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListUsers)
 	r.GET("/:userId", h.GetUser)
+	r.GET("/:userId/orders", h.ListUserOrders)
 }
 
 func (h *handler) ListUsers(ctx *gin.Context) {
