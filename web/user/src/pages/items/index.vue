@@ -51,14 +51,14 @@ useSeoMeta({
 
   <div class="flex flex-col bg-white px-[36px] py-[48px] text-main">
     <div class="w-full">
-      <p class="text-center text-[20px] font-bold tracking-[2px]">
+      <p class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]">
         すべての商品
       </p>
-      <div class="mt-[38px] w-full">
+      <div class="mt-[24px] w-full md:mt-[38px]">
         <div class="relative mx-auto md:w-[648px]">
           <the-search-icon class="absolute left-[24px] top-[12px]" />
           <input
-            class="block w-full rounded-[28px] border border-typography py-3 pl-[56px] placeholder:text-center focus:border-2 focus:border-main focus:outline-none"
+            class="block w-full rounded-[28px] border border-typography py-3 pl-[56px] text-[12px] placeholder:text-center focus:border-2 focus:border-main focus:outline-none md:text-[16px]"
             type="text"
             placeholder="すべての商品からさがす"
           />
@@ -68,12 +68,12 @@ useSeoMeta({
     <hr class="mt-[40px]" />
     <div class="mt-[24px] w-full">
       <div class="text-right">
-        <div class="inline-flex text-[13px] tracking-[1.3px] text-typography">
+        <div class="inline-flex text-[12px] tracking-[1.3px] text-typography md:text-[13px]">
           <div class="mr-[16px]">並び替え：</div>
           <div class="inline-flex gap-[22px]">
-            <button class="border-b border-main pb-4 text-main">新着順</button>
-            <button class="pb-4">値段の安い順</button>
-            <button class="pb-4">値段の高い順</button>
+            <button class="border-b border-main pb-2 text-main">新着順</button>
+            <button class="pb-2">値段の安い順</button>
+            <button class="pb-2">値段の高い順</button>
           </div>
         </div>
       </div>

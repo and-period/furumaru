@@ -100,23 +100,26 @@ const handleClickAddCartButton = () => {
       </button>
     </div>
     <div v-if="coordinator" class="mt-4 flex items-center gap-x-4 text-xs">
-      <div class="grow">
-        <span
-          class="inline-block whitespace-pre-wrap"
-          v-text="`${coordinator.marcheName}\n${originCity}`"
-        >
-        </span>
-        <hr class="my-2 border-dashed border-main" />
-        <span class="before:content-['CN：']">
-          {{ coordinator.username }}
-        </span>
-      </div>
       <div class="h-14 w-14">
         <img
           :src="coordinator.thumbnailUrl"
           :alt="`${coordinator.username}のサムネイル画像`"
           class="aspect-square rounded-full"
         />
+      </div>
+      <div>
+        <p
+          class="inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+        >
+          {{ coordinator.marcheName }}
+        </p>
+        <p class="gap-2 pt-2 text-[11px]">
+          {{ coordinator.prefecture }} {{ coordinator.city }}
+        </p>
+        <div class="mt-[5px] gap-2 md:flex">
+          <p>取扱元: </p>
+          <p class="text-[14px] underline">{{ coordinator.username }}</p>
+        </div>
       </div>
     </div>
   </div>
