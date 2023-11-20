@@ -60,9 +60,14 @@ userOrdersResponse:
       type: integer
       format: int64
       description: 合計数
+    totalAmount:
+      type: integer
+      format: int64
+      description: 購入合計金額
   required:
   - orders
   - total
+  - totalAmount
   example:
     orders:
     - orderId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -71,3 +76,4 @@ userOrdersResponse:
       orderedAt: 1640962800
       paidAt: 1640962800
     total: 1
+    totalAmount: 1980

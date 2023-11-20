@@ -6001,6 +6001,12 @@ export interface UserOrdersResponse {
      * @memberof UserOrdersResponse
      */
     'total': number;
+    /**
+     * 購入合計金額
+     * @type {number}
+     * @memberof UserOrdersResponse
+     */
+    'totalAmount': number;
 }
 /**
  * 
