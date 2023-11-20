@@ -49,7 +49,7 @@ const handleClickShowDetailButton = () => {
 
 <template>
   <div>
-    <video :src="videoSrc" class="aspect-video w-full" controls />
+    <video :src="videoSrc" class="aspect-video w-full" controls playsinline />
     <div class="mt-2 px-4 lg:px-0">
       <div class="flex items-center gap-2">
         <div
