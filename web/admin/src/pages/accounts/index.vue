@@ -21,7 +21,7 @@ const menus: SettingMenu[] = [
     color: 'error',
     action: () => {
       authStore.logout()
-      router.push('/')
+      router.push('/signin')
     },
     roles: []
   }
