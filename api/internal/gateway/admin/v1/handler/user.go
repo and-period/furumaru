@@ -129,22 +129,51 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 		return
 	}
 
-	in := &store.ListOrdersInput{
-		UserID: userID,
-		Limit:  limit,
-		Offset: offset,
-	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
-		in.CoordinatorID = getAdminID(ctx)
-	}
-	orders, total, err := h.store.ListOrders(ctx, in)
-	if err != nil {
+	var (
+		orders      sentity.Orders
+		totalOrder  int64
+		totalAmount int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &store.ListOrdersInput{
+			UserID: userID,
+			Limit:  limit,
+			Offset: offset,
+		}
+		if getRole(ctx) == service.AdminRoleCoordinator {
+			in.CoordinatorID = getAdminID(ctx)
+		}
+		orders, totalOrder, err = h.store.ListOrders(ectx, in)
+		return
+	})
+	eg.Go(func() error {
+		in := &store.AggregateOrdersInput{
+			UserIDs: []string{userID},
+		}
+		if getRole(ctx) == service.AdminRoleCoordinator {
+			in.CoordinatorID = getAdminID(ctx)
+		}
+		aggregate, err := h.store.AggregateOrders(ectx, in)
+		if err != nil {
+			return err
+		}
+		order, ok := aggregate.Map()[userID]
+		if !ok {
+			return nil
+		}
+		totalAmount = order.Subtotal
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
+
 	res := &response.UserOrdersResponse{
-		Orders: service.NewUserOrders(orders).Response(),
-		Total:  total,
+		Orders:      service.NewUserOrders(orders).Response(),
+		Total:       totalOrder,
+		TotalAmount: totalAmount,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

@@ -41,6 +41,7 @@ type UsersResponse struct {
 }
 
 type UserOrdersResponse struct {
-	Orders []*UserOrder `json:"orders"` // 注文履歴一覧
-	Total  int64        `json:"total"`  // 注文履歴合計数
+	Orders      []*UserOrder `json:"orders"`      // 注文履歴一覧
+	Total       int64        `json:"total"`       // 注文履歴合計数
+	TotalAmount int64        `json:"totalAmount"` // 購入金額
 }

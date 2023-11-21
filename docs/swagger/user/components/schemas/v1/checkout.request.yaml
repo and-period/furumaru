@@ -25,7 +25,7 @@ checkoutRequest:
     total:
       type: integer
       format: int64
-      description: 白井合計金額（誤り検出用）
+      description: 支払い合計金額（誤り検出用）
     creditCard:
       $ref: '#/checkoutCreditCard'
   required:

@@ -75,7 +75,7 @@ export interface CheckoutRequest {
      */
     callbackUrl: string;
     /**
-     * 白井合計金額（誤り検出用）
+     * 支払い合計金額（誤り検出用）
      * @type {number}
      * @memberof CheckoutRequest
      */
