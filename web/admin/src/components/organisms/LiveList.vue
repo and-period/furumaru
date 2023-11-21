@@ -454,8 +454,8 @@ const onSubmitDelete = (): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item)"
-              :text="item.name"
+              :prepend-avatar="getProductThumbnailUrl(item.raw)"
+              :text="item.raw.name"
               rounded
               class="px-4"
               variant="outlined"
@@ -464,8 +464,8 @@ const onSubmitDelete = (): void => {
           <template #item="{ props: val, item }">
             <v-list-item
               v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item)"
-              :title="item.name"
+              :prepend-avatar="getProductThumbnailUrl(item.raw)"
+              :title="item.raw.name"
             />
           </template>
         </v-autocomplete>
@@ -584,8 +584,8 @@ const onSubmitDelete = (): void => {
           <template #chip="{ props: val, item }">
             <v-chip
               v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item)"
-              :text="item.name"
+              :prepend-avatar="getProductThumbnailUrl(item.raw)"
+              :text="item.raw.name"
               rounded
               class="px-4"
               variant="outlined"
@@ -594,8 +594,8 @@ const onSubmitDelete = (): void => {
           <template #item="{ props: val, item }">
             <v-list-item
               v-bind="val"
-              :prepend-avatar="getProductThumbnailUrl(item)"
-              :title="item.name"
+              :prepend-avatar="getProductThumbnailUrl(item.raw)"
+              :title="item.raw.name"
             />
           </template>
         </v-autocomplete>

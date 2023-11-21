@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import type { AlertType } from '~/lib/hooks'
-import { type Broadcast, BroadcastStatus, type Coordinator, type CreateLiveRequest, type Live, type Product, type Schedule, ScheduleStatus, type UpdateLiveRequest, type UpdateScheduleRequest } from '~/types/api'
+import { type Broadcast, BroadcastStatus, type Coordinator, type CreateLiveRequest, type Live, type Product, type Schedule, ScheduleStatus, type UpdateLiveRequest, type UpdateScheduleRequest, type Producer } from '~/types/api'
 import type{ ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -109,7 +109,7 @@ const props = defineProps({
     default: () => []
   },
   producers: {
-    type: Array<Product>,
+    type: Array<Producer>,
     default: () => []
   },
   products: {
