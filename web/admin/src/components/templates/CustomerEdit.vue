@@ -1,93 +1,95 @@
 <script lang="ts" setup>
+import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
-import type { User } from '~/types/api'
+import type { AlertType } from '~/lib/hooks'
+import { type UserOrder, type User, Prefecture, PaymentStatus } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
   },
+  isAlert: {
+    type: Boolean,
+    default: false
+  },
+  alertType: {
+    type: String as PropType<AlertType>,
+    default: undefined
+  },
+  alertText: {
+    type: String,
+    default: ''
+  },
   customer: {
     type: Object as PropType<User>,
-    default: () => ({})
+    default: (): User => ({
+      id: '',
+      lastname: '',
+      firstname: '',
+      lastnameKana: '',
+      firstnameKana: '',
+      registered: false,
+      email: '',
+      phoneNumber: '',
+      postalCode: '',
+      prefectureCode: Prefecture.UNKNOWN,
+      city: '',
+      addressLine1: '',
+      addressLine2: '',
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
+  orders: {
+    type: Array<UserOrder>,
+    default: () => []
+  },
+  orderTotal: {
+    type: Number,
+    default: 0
+  },
+  orderAmount: {
+    type: Number,
+    default: 0
+  },
+  tableItemsPerPage: {
+    type: Number,
+    default: 20
   }
 })
 
+const emit = defineEmits<{
+  (e: 'click:update-page', page: number): void
+  (e: 'click:update-items-per-page', page: number): void
+  (e: 'click:row', orderId: string): void
+}>()
+
 const headers: VDataTable['headers'] = [
   {
-    title: 'No.',
-    key: 'id',
+    title: '注文日時',
+    key: 'orderedAt',
     sortable: false
   },
   {
-    title: '関連マルシェ',
-    key: 'marche',
+    title: '支払い日時',
+    key: 'paidAt',
     sortable: false
   },
   {
-    title: '開催日時',
-    key: 'date',
+    title: '支払い状況',
+    key: 'status',
     sortable: false
   },
   {
-    title: '購入金額',
-    key: 'price',
+    title: '支払い合計金額',
+    key: 'total',
     sortable: false
   }
 ]
-// dummy data
-const orders = [
-  {
-    id: '0000000001',
-    marche: '大崎上島マルシェ',
-    date: '2023/04/01 14:34',
-    price: 1000
-  },
-  {
-    id: '0000000002',
-    marche: '福岡マルシェ',
-    date: '2023/04/02 14:34',
-    price: 2000
-  },
-  {
-    id: '0000000003',
-    marche: '大崎上島マルシェ',
-    date: '2023/04/01 14:34',
-    price: 1000
-  },
-  {
-    id: '0000000004',
-    marche: '福岡マルシェ',
-    date: '2023/04/02 14:34',
-    price: 2000
-  },
-  {
-    id: '0000000005',
-    marche: '大崎上島マルシェ',
-    date: '2023/04/01 14:34',
-    price: 1000
-  },
-  {
-    id: '0000000006',
-    marche: '福岡マルシェ',
-    date: '2023/04/02 14:34',
-    price: 2000
-  },
-  {
-    id: '0000000007',
-    marche: '大崎上島マルシェ',
-    date: '2023/04/01 14:34',
-    price: 1000
-  },
-  {
-    id: '0000000008',
-    marche: '福岡マルシェ',
-    date: '2023/04/02 14:34',
-    price: 2000
-  }
-]
+
 const activities = [
   {
     eventType: 'notification',
@@ -115,28 +117,89 @@ const activities = [
 const getUsername = (): string => {
   return `${props.customer.lastname} ${props.customer.firstname}`
 }
+
 const getUsernameKana = (): string => {
   return `${props.customer.lastnameKana} ${props.customer.firstnameKana}`
 }
+
 const getPhoneNumber = (): string => {
   return convertI18nToJapanesePhoneNumber(props.customer.phoneNumber)
 }
+
 const getAddressArea = (): string => {
   const prefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
     return prefecture.value === props.customer.prefectureCode
   })
   return prefecture ? `${prefecture.text} ${props.customer.city}` : props.customer.city
 }
-const getStatus = (): string => {
+
+const getCustomerStatus = (): string => {
   return props.customer.registered ? '登録済み' : '未登録'
 }
-const getStatusColor = (): string => {
+
+const getCustomerStatusColor = (): string => {
   return props.customer.registered ? 'primary' : 'red'
+}
+
+const getPaymentStatus = (status: PaymentStatus): string => {
+  switch (status) {
+    case PaymentStatus.UNPAID:
+      return '未払い'
+    case PaymentStatus.AUTHORIZED:
+      return 'オーソリ済み'
+    case PaymentStatus.PAID:
+      return '支払い済み'
+    case PaymentStatus.CANCELED:
+      return 'キャンセル済み'
+    case PaymentStatus.FAILED:
+      return '失敗'
+    default:
+      return '不明'
+  }
+}
+
+const getPaymentStatusColor = (status:PaymentStatus): string => {
+  switch (status) {
+    case PaymentStatus.UNPAID:
+      return 'secondary'
+    case PaymentStatus.AUTHORIZED:
+      return 'info'
+    case PaymentStatus.PAID:
+      return 'primary'
+    case PaymentStatus.CANCELED:
+      return 'warning'
+    case PaymentStatus.FAILED:
+      return 'error'
+    default:
+      return 'unkown'
+  }
+}
+
+const getOrderedAt = (orderedAt: number): string => {
+  return unix(orderedAt).format('YYYY/MM/DD HH:mm')
+}
+
+const getPaidAt = (paidAt: number): string => {
+  return unix(paidAt).format('YYYY/MM/DD HH:mm')
+}
+
+const onClickUpdatePage = (page: number): void => {
+  emit('click:update-page', page)
+}
+
+const onClickUpdateItemsPerPage = (page: number): void => {
+  emit('click:update-items-per-page', page)
+}
+
+const onClickRow = (item: UserOrder): void => {
+  emit('click:row', item.orderId || '')
 }
 </script>
 
 <template>
-  <v-row :loading="loading">
+  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
+  <v-row>
     <v-col sm="12" md="12" lg="4" order-lg="2">
       <v-card elevation="0">
         <v-card-text>
@@ -152,8 +215,8 @@ const getStatusColor = (): string => {
               <v-list-item-subtitle class="mb-2">
                 登録状況
               </v-list-item-subtitle>
-              <v-chip size="small" :color="getStatusColor()">
-                {{ getStatus() }}
+              <v-chip size="small" :color="getCustomerStatusColor()">
+                {{ getCustomerStatus() }}
               </v-chip>
             </v-list-item>
             <v-list-item class="mb-4">
@@ -186,7 +249,7 @@ const getStatusColor = (): string => {
                 支払い金額
               </v-card-subtitle>
               <div class="px-4">
-                &yen; 0
+                &yen; {{ props.orderAmount.toLocaleString() }}
               </div>
             </v-col>
             <v-col>
@@ -194,7 +257,7 @@ const getStatusColor = (): string => {
                 注文数
               </v-card-subtitle>
               <div class="px-4">
-                0
+                {{ props.orderTotal.toLocaleString() }} 件
               </div>
             </v-col>
           </v-row>
@@ -205,7 +268,34 @@ const getStatusColor = (): string => {
           <v-card-title class="pb-4">
             購入情報
           </v-card-title>
-          <v-data-table :headers="headers" :items="orders" />
+
+          <v-data-table-server
+            :headers="headers"
+            :items="props.orders"
+            :items-per-page="props.tableItemsPerPage"
+            :items-length="props.orderTotal"
+            :loading="props.loading"
+            no-data-text="注文履歴がありません"
+            hover
+            @update:page="onClickUpdatePage"
+            @update:items-per-page="onClickUpdateItemsPerPage"
+            @click:row="(_: any, { item }: any) => onClickRow(item)"
+          >
+            <template #[`item.status`]="{ item }">
+              <v-chip :color="getPaymentStatusColor(item.status)">
+                {{ getPaymentStatus(item.status) }}
+              </v-chip>
+            </template>
+            <template #[`item.total`]="{ item }">
+              &yen; {{ item.total.toLocaleString() }}
+            </template>
+            <template #[`item.orderedAt`]="{ item }">
+              {{ getOrderedAt(item.orderedAt) }}
+            </template>
+            <template #[`item.paidAt`]="{ item }">
+              {{ getPaidAt(item.paidAt) }}
+            </template>
+          </v-data-table-server>
         </v-card-text>
       </v-card>
 

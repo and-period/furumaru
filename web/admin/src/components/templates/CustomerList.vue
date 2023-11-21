@@ -44,7 +44,6 @@ const emit = defineEmits<{
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
   (e: 'click:row', customerId: string): void
-  (e: 'click:delete', customerId: string): void
   (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
 }>()
 
@@ -73,11 +72,6 @@ const headers: VDataTable['headers'] = [
     title: 'アカウントの有無',
     key: 'registered',
     sortable: false
-  },
-  {
-    title: '',
-    key: 'action',
-    sortable: false
   }
 ]
 
@@ -102,10 +96,6 @@ const onClickUpdatePage = (page: number): void => {
 
 const onClickUpdateItemsPerPage = (page: number): void => {
   emit('click:update-items-per-page', page)
-}
-
-const onClickDelete = (customerId: string): void => {
-  emit('click:delete', customerId)
 }
 
 const onClickUpdateSortBy = (sortBy: VDataTable['sortBy']): void => {
@@ -145,23 +135,12 @@ const onClickRow = (item: UserToList): void => {
           {{ getAddress(item) }}
         </template>
         <template #[`item.totalAmount`]="{ item }">
-          &yen; {{ `${item.totalAmount}` }}
+          &yen; {{ `${item.totalAmount.toLocaleString()}` }}
         </template>
         <template #[`item.registered`]="{ item }">
           <v-chip size="small" :color="getStatusColor(item.registered)">
             {{ getStatus(item.registered) }}
           </v-chip>
-        </template>
-        <template #[`item.action`]="{ item }">
-          <v-btn
-            variant="outlined"
-            color="primary"
-            size="small"
-            :append-icon="mdiDelete"
-            @click.stop="onClickDelete(item.id)"
-          >
-            削除
-          </v-btn>
         </template>
       </v-data-table-server>
     </v-card-text>

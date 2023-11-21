@@ -47,10 +47,6 @@ const handleClickEdit = (customerId: string): void => {
   router.push(`/customers/${customerId}`)
 }
 
-const handleClickDelete = (customerId: string) => {
-  console.log('削除ボタンクリック', customerId)
-}
-
 try {
   await fetchState.execute()
 } catch (err) {
@@ -69,7 +65,6 @@ try {
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-sort-by="sortBy"
     @click:row="handleClickEdit"
-    @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
     @update:sort-by="fetchState.refresh"
