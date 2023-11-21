@@ -61,7 +61,9 @@ const handleClickAddCartButton = () => {
       </picture>
     </div>
 
-    <p class="mt-2 text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]">
+    <p
+      class="mt-2 text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
+    >
       {{ name }}
     </p>
 
@@ -73,7 +75,10 @@ const handleClickAddCartButton = () => {
 
     <div class="flex h-8 items-center gap-2 text-sm">
       <div class="inline-flex items-center">
-        <label class="mr-2 whitespace-nowrap text-center block text-[10px] md:text-[14px]">数量</label>
+        <label
+          class="mr-2 block whitespace-nowrap text-center text-[10px] md:text-[14px]"
+          >数量</label
+        >
         <select
           v-model="quantity"
           class="h-full w-[32px] border-[1px] border-main md:w-[56px] md:px-2"
@@ -99,26 +104,44 @@ const handleClickAddCartButton = () => {
         カゴに入れる
       </button>
     </div>
-    <div v-if="coordinator" class="mt-4 flex items-center gap-x-4 text-xs">
-      <div class="h-14 w-14">
-        <img
-          :src="coordinator.thumbnailUrl"
-          :alt="`${coordinator.username}のサムネイル画像`"
-          class="aspect-square rounded-full"
-        />
-      </div>
-      <div>
+    <div
+      v-if="coordinator"
+      class="mt-4 flex flex-col gap-4 text-xs md:flex-row md:items-center"
+    >
+      <div class="md:hidden">
         <p
-          class="inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+          class="mb-2 w-full whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
         >
           {{ coordinator.marcheName }}
         </p>
-        <p class="gap-2 pt-2 text-[11px]">
+        <p class="text-[11px]">
           {{ coordinator.prefecture }} {{ coordinator.city }}
         </p>
-        <div class="mt-[5px] flex gap-2">
-          <p class="whitespace-nowrap">取扱元: </p>
-          <p class="text-[12px] underline md:text-[14px]">{{ coordinator.username }}</p>
+      </div>
+
+      <div class="flex items-center gap-x-4">
+        <img
+          :src="coordinator.thumbnailUrl"
+          :alt="`${coordinator.username}のサムネイル画像`"
+          class="block aspect-square h-14 w-14 rounded-full"
+        />
+        <div>
+          <div class="hidden md:block">
+            <p
+              class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+            >
+              {{ coordinator.marcheName }}
+            </p>
+            <p class="text-[11px]">
+              {{ coordinator.prefecture }} {{ coordinator.city }}
+            </p>
+          </div>
+          <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
+            <p class="whitespace-nowrap">取扱元:</p>
+            <p class="text-[12px] underline md:text-[14px]">
+              {{ coordinator.username }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
