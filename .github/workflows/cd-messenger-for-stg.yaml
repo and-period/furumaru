@@ -16,7 +16,6 @@ env:
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_MESSENGER }}
-  ECR_IMAGE_TAG: ${{ github.sha }}
   LAMBDA_FUNCTION_SCHEDULER: ${{ secrets.STG_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
   LAMBDA_FUNCTION_WORKER: ${{ secrets.STG_LAMBDA_FUNCTION_MESSENGER_WORKER }}
   IMAGE_PATH: ./infra/docker/api/Dockerfile
@@ -59,7 +58,6 @@ jobs:
       id: build-image
       run: |
         docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
-        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker push -a ${ECR_REPOSITORY_URL}
 
@@ -92,7 +90,7 @@ jobs:
       run: |
         aws lambda update-function-code \
           --function-name="${LAMBDA_FUNCTION_SCHEDULER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
         | jq '. | del(.Environment)'
 
   deploy_worker:
@@ -124,5 +122,5 @@ jobs:
       run: |
         aws lambda update-function-code \
           --function-name="${LAMBDA_FUNCTION_WORKER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
         | jq '. | del(.Environment)'

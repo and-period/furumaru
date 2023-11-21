@@ -16,7 +16,6 @@ env:
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_GATEWAY }}
-  ECR_IMAGE_TAG: ${{ github.sha }}
   ECS_CLUSTER: ${{ secrets.STG_ECS_CLUSTER }}
   ECS_SERVICE_ADMIN: admin
   ECS_SERVICE_USER: user
@@ -64,7 +63,6 @@ jobs:
       id: build-image
       run: |
         docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
-        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker push -a ${ECR_REPOSITORY_URL}
 
@@ -105,7 +103,7 @@ jobs:
       with:
         task-definition: ./admin-task-definition.json
         container-name: ${{ env.ECS_CONTAINER_ADMIN }}
-        image: ${{ env.ECR_REPOSITORY_URL }}:${{ env.ECR_IMAGE_TAG }}
+        image: ${{ env.ECR_REPOSITORY_URL }}:latest
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -152,7 +150,7 @@ jobs:
       with:
         task-definition: ./user-task-definition.json
         container-name: ${{ env.ECS_CONTAINER_USER }}
-        image: ${{ env.ECR_REPOSITORY_URL }}:${{ env.ECR_IMAGE_TAG }}
+        image: ${{ env.ECR_REPOSITORY_URL }}:latest
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1

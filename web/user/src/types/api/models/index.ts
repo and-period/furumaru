@@ -60,3 +60,4 @@ export * from './UpdateAuthEmailRequest';
 export * from './UpdateAuthPasswordRequest';
 export * from './VerifyAuthEmailRequest';
 export * from './VerifyAuthRequest';
+export * from './Weekday';

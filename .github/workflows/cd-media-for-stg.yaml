@@ -16,7 +16,6 @@ env:
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_MEDIA }}
-  ECR_IMAGE_TAG: ${{ github.sha }}
   LAMBDA_FUNCTION_RESIZER: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_RESIZER }}
   LAMBDA_FUNCTION_START_SCHEDULER: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
   LAMBDA_FUNCTION_CLOSE_SCHEDULER: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
@@ -94,7 +93,7 @@ jobs:
       run: |
         aws lambda update-function-code \
           --function-name="${LAMBDA_FUNCTION_RESIZER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
         | jq '. | del(.Environment)'
 
   deploy_start_scheduler:
@@ -126,7 +125,7 @@ jobs:
       run: |
         aws lambda update-function-code \
           --function-name="${LAMBDA_FUNCTION_START_SCHEDULER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
         | jq '. | del(.Environment)'
 
   deploy_close_scheduler:
@@ -158,7 +157,7 @@ jobs:
       run: |
         aws lambda update-function-code \
           --function-name="${LAMBDA_FUNCTION_CLOSE_SCHEDULER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
         | jq '. | del(.Environment)'
 
   deploy_start_updater:
@@ -190,5 +189,5 @@ jobs:
       run: |
         aws lambda update-function-code \
           --function-name="${LAMBDA_FUNCTION_START_UPDATER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
         | jq '. | del(.Environment)'
