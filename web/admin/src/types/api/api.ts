@@ -15747,10 +15747,12 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * 
          * @summary 購入者の注文履歴一覧
          * @param {string} userId 購入者ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListUserOrders: async (userId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListUserOrders: async (userId: string, limit?: number, offset?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('v1ListUserOrders', 'userId', userId)
             const localVarPath = `/v1/users/{userId}/orders`
@@ -15769,6 +15771,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
 
 
     
@@ -15850,11 +15860,13 @@ export const UserApiFp = function(configuration?: Configuration) {
          * 
          * @summary 購入者の注文履歴一覧
          * @param {string} userId 購入者ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListUserOrders(userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserOrdersResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListUserOrders(userId, options);
+        async v1ListUserOrders(userId: string, limit?: number, offset?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserOrdersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListUserOrders(userId, limit, offset, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -15893,11 +15905,13 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * 
          * @summary 購入者の注文履歴一覧
          * @param {string} userId 購入者ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListUserOrders(userId: string, options?: any): AxiosPromise<UserOrdersResponse> {
-            return localVarFp.v1ListUserOrders(userId, options).then((request) => request(axios, basePath));
+        v1ListUserOrders(userId: string, limit?: number, offset?: number, options?: any): AxiosPromise<UserOrdersResponse> {
+            return localVarFp.v1ListUserOrders(userId, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -15936,12 +15950,14 @@ export class UserApi extends BaseAPI {
      * 
      * @summary 購入者の注文履歴一覧
      * @param {string} userId 購入者ID
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public v1ListUserOrders(userId: string, options?: AxiosRequestConfig) {
-        return UserApiFp(this.configuration).v1ListUserOrders(userId, options).then((request) => request(this.axios, this.basePath));
+    public v1ListUserOrders(userId: string, limit?: number, offset?: number, options?: AxiosRequestConfig) {
+        return UserApiFp(this.configuration).v1ListUserOrders(userId, limit, offset, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
