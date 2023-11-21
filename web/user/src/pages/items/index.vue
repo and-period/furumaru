@@ -49,7 +49,7 @@ useSeoMeta({
     />
   </template>
 
-  <div class="flex flex-col bg-white px-[36px] py-[48px] text-main">
+  <div class="flex flex-col bg-white px-[15px] py-[48px] text-main md:px-[36px]">
     <div class="w-full">
       <p class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]">
         すべての商品
@@ -79,7 +79,7 @@ useSeoMeta({
       </div>
 
       <div
-        class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5"
       >
         <template v-if="productsFetchState.isLoading">
           <div
