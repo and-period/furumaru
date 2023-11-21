@@ -61,22 +61,22 @@ const handleClickAddCartButton = () => {
       </picture>
     </div>
 
-    <p class="mt-2">
+    <p class="mt-2 text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]">
       {{ name }}
     </p>
 
     <p
-      class="my-4 text-xl after:ml-2 after:text-[16px] after:content-['(税込)']"
+      class="my-4 text-[16px] tracking-[1.6px] after:ml-2 after:text-[16px] after:content-['(税込)'] md:text-[20px] md:tracking-[2.0px]"
     >
       {{ priceString }}
     </p>
 
     <div class="flex h-8 items-center gap-2 text-sm">
       <div class="inline-flex items-center">
-        <label class="mr-2 block text-[10px] xl:text-[14px]">数量</label>
+        <label class="mr-2 whitespace-nowrap text-center block text-[10px] md:text-[14px]">数量</label>
         <select
           v-model="quantity"
-          class="h-full border-[1px] border-main px-2"
+          class="h-full w-[32px] border-[1px] border-main md:w-[56px] md:px-2"
           :disabled="!hasStock"
         >
           <option
@@ -116,9 +116,9 @@ const handleClickAddCartButton = () => {
         <p class="gap-2 pt-2 text-[11px]">
           {{ coordinator.prefecture }} {{ coordinator.city }}
         </p>
-        <div class="mt-[5px] gap-2 md:flex">
-          <p>取扱元: </p>
-          <p class="text-[14px] underline">{{ coordinator.username }}</p>
+        <div class="mt-[5px] flex gap-2">
+          <p class="whitespace-nowrap">取扱元: </p>
+          <p class="text-[12px] underline md:text-[14px]">{{ coordinator.username }}</p>
         </div>
       </div>
     </div>

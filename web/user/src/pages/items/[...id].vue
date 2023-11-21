@@ -269,21 +269,21 @@ useSeoMeta({
     <div class="w-full rounded-3xl bg-white">
       <div class="px-[16px] pt-10 md:px-[64px]">
         <p
-          class="mx-auto rounded-full bg-base py-2 text-center text-[14px] md:text-[16px] font-bold text-main"
+          class="mx-auto rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
         >
           この商品の生産者
         </p>
       </div>
       <div
-        class="mx-auto px-[16px] pt-16 md:grid md:grid-cols-8 md:px-[64px]"
         v-if="product.producer"
+        class="mx-auto px-[16px] pt-16 md:grid md:grid-cols-8 md:px-[64px]"
       >
         <img
           :src="product.producer.thumbnailUrl"
           :alt="`${product.producer.username}`"
-          class="aspect-square w-[120px] rounded-full mx-auto"
+          class="mx-auto aspect-square w-[120px] rounded-full"
         />
-        <div class="md:col-span-2 md:ml-4 text-main">
+        <div class="text-main md:col-span-2 md:ml-4">
           <div class="test-sm flex justify-center gap-3 pt-4 md:gap-4">
             <p class="text-sm font-[500] tracking-[1.4px]">
               {{ product.originPrefecture }}
