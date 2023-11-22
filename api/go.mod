@@ -21,7 +21,7 @@ require (
 	github.com/dlclark/regexp2 v1.10.0
 	github.com/getsentry/sentry-go v0.25.0
 	github.com/gin-contrib/gzip v0.0.6
-	github.com/gin-contrib/zap v0.1.0
+	github.com/gin-contrib/zap v0.2.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator/v10 v10.15.3
 	github.com/go-sql-driver/mysql v1.7.1
@@ -130,8 +130,6 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/otel v1.20.0 // indirect
-	go.opentelemetry.io/otel/trace v1.20.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.5.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
