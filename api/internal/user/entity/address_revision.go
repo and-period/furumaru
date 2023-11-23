@@ -91,7 +91,7 @@ func (rs AddressRevisions) Fill() {
 func (rs AddressRevisions) Merge(addresses map[string]*Address) (Addresses, error) {
 	res := make(Addresses, 0, len(rs))
 	for _, r := range rs {
-		address := &Address{AddressRevision: *r}
+		address := &Address{}
 		base, ok := addresses[r.AddressID]
 		if !ok {
 			base = &Address{ID: r.AddressID}
@@ -100,6 +100,7 @@ func (rs AddressRevisions) Merge(addresses map[string]*Address) (Addresses, erro
 		if err := copier.CopyWithOption(&address, &base, opt); err != nil {
 			return nil, err
 		}
+		address.AddressRevision = *r
 		res = append(res, address)
 	}
 	return res, nil

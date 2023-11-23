@@ -136,7 +136,7 @@ func (rs ShippingRevisions) Fill() error {
 func (rs ShippingRevisions) Merge(shippings map[string]*Shipping) (Shippings, error) {
 	res := make(Shippings, 0, len(rs))
 	for _, r := range rs {
-		shipping := &Shipping{ShippingRevision: *r}
+		shipping := &Shipping{}
 		base, ok := shippings[r.ShippingID]
 		if !ok {
 			base = &Shipping{ID: r.ShippingID}
@@ -145,6 +145,7 @@ func (rs ShippingRevisions) Merge(shippings map[string]*Shipping) (Shippings, er
 		if err := copier.CopyWithOption(&shipping, &base, opt); err != nil {
 			return nil, err
 		}
+		shipping.ShippingRevision = *r
 		res = append(res, shipping)
 	}
 	return res, nil

@@ -209,6 +209,7 @@ func NewProduct(product *entity.Product) *Product {
 			CreatedAt:            product.CreatedAt.Unix(),
 			UpdatedAt:            product.CreatedAt.Unix(),
 		},
+		revisionID: product.ProductRevision.ID,
 	}
 }
 

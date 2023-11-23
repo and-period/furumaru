@@ -15,8 +15,8 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 const orderId = route.params.id as string
 
 const { order } = storeToRefs(orderStore)
-const { coordinators } = storeToRefs(coordinatorStore)
-const { customers } = storeToRefs(customerStore)
+const { coordinator } = storeToRefs(coordinatorStore)
+const { customer } = storeToRefs(customerStore)
 const { promotions } = storeToRefs(promotionStore)
 const { products } = storeToRefs(productStore)
 
@@ -55,8 +55,8 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :order="order"
-    :coordinators="coordinators"
-    :customers="customers"
+    :coordinator="coordinator"
+    :customer="customer"
     :promotions="promotions"
     :products="products"
   />
