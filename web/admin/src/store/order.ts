@@ -52,8 +52,8 @@ export const useOrderStore = defineStore('order', {
         const promotionStore = usePromotionStore()
         const productStore = useProductStore()
         this.order = res.data.order
-        coordinatorStore.coordinators.push(res.data.coordinator)
-        customerStore.customers.push(res.data.user)
+        coordinatorStore.coordinator = res.data.coordinator
+        customerStore.customer = res.data.user
         promotionStore.promotions.push(res.data.promotion)
         productStore.products = res.data.products
       } catch (err) {

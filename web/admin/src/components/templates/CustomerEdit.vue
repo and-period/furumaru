@@ -176,10 +176,16 @@ const getPaymentStatusColor = (status:PaymentStatus): string => {
 }
 
 const getOrderedAt = (orderedAt: number): string => {
+  if (orderedAt === 0) {
+    return '-'
+  }
   return unix(orderedAt).format('YYYY/MM/DD HH:mm')
 }
 
 const getPaidAt = (paidAt: number): string => {
+  if (paidAt === 0) {
+    return '-'
+  }
   return unix(paidAt).format('YYYY/MM/DD HH:mm')
 }
 
@@ -264,11 +270,11 @@ const onClickRow = (item: UserOrder): void => {
         </v-card-text>
       </v-card>
       <v-card elevation="0" class="mb-4">
-        <v-card-text>
-          <v-card-title class="pb-4">
-            購入情報
-          </v-card-title>
+        <v-card-title class="mx-4 mt-2">
+          購入情報
+        </v-card-title>
 
+        <v-card-text>
           <v-data-table-server
             :headers="headers"
             :items="props.orders"

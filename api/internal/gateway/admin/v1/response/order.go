@@ -8,7 +8,7 @@ type Order struct {
 	PromotionID   string              `json:"promotionId"`   // プロモーションID
 	Payment       *OrderPayment       `json:"payment"`       // 支払い情報
 	Refund        *OrderRefund        `json:"refund"`        // 注文キャンセル情報
-	Fulfillments  []*OrderFulfillment `json:"fulfillment"`   // 配送情報一覧
+	Fulfillments  []*OrderFulfillment `json:"fulfillments"`  // 配送情報一覧
 	Items         []*OrderItem        `json:"items"`         // 注文商品一覧
 	CreatedAt     int64               `json:"createdAt"`     // 登録日時
 	UpdatedAt     int64               `json:"updatedAt"`     // 更新日時

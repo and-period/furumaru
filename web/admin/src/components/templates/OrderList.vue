@@ -5,13 +5,14 @@ import { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import {
-  DeliveryType,
   FulfillmentStatus,
   PaymentStatus,
+  ShippingType,
   type Coordinator,
   type Order,
   type Promotion,
-  type User
+  type User,
+  type OrderFulfillment
 } from '~/types/api'
 
 // TODO: API設計が決まり次第型定義の厳格化
@@ -101,31 +102,33 @@ const emit = defineEmits<{
 const headers: VDataTable['headers'] = [
   {
     title: '注文者',
-    key: 'userId'
+    key: 'userId',
+    sortable: false
   },
   {
-    title: '支払いステータス',
-    key: 'payment.status'
-  },
-  {
-    title: '配送ステータス',
-    key: 'fulfillment.status'
-  },
-  {
-    title: '購入金額',
-    key: 'payment.total'
-  },
-  {
-    title: '配送方法',
-    key: 'fulfillment.shippingMethod'
-  },
-  {
-    title: '伝票番号',
-    key: 'fulfillment.trackingNumber'
+    title: 'ステータス',
+    key: 'payment.status',
+    sortable: false
   },
   {
     title: '購入日時',
-    key: 'createdAt'
+    key: 'payment.orderedAt',
+    sortable: false
+  },
+  {
+    title: '購入金額',
+    key: 'payment.total',
+    sortable: false
+  },
+  {
+    title: '配送方法',
+    key: 'shippingTypes',
+    sortable: false
+  },
+  {
+    title: '伝票番号',
+    key: 'trackingNumbers',
+    sortable: false
   }
 ]
 const fulfillmentCompanies = [
@@ -157,83 +160,80 @@ const getCustomerName = (userId: string): string => {
   return customer ? `${customer.lastname} ${customer.firstname}` : ''
 }
 
-const getPaymentStatus = (status: PaymentStatus): string => {
-  switch (status) {
-    case PaymentStatus.UNKNOWN:
-      return '不明'
+const isFulfilled = (fulfillments: OrderFulfillment[]): boolean => {
+  let fulfilled: boolean = true
+  fulfillments.forEach((fulfillment): void => {
+    if (fulfillment.status !== FulfillmentStatus.FULFILLED) {
+      fulfilled = false
+    }
+  })
+  return fulfilled
+}
+
+const getStatus = (order: Order): string => {
+  switch (order.payment.status) {
     case PaymentStatus.UNPAID:
-      return '未払い'
-    case PaymentStatus.PENDING:
-      return '保留中'
+      return '受注前'
     case PaymentStatus.AUTHORIZED:
-      return 'オーソリ済み'
+      return '発送準備中'
     case PaymentStatus.PAID:
-      return '支払い済み'
-    case PaymentStatus.REFUNDED:
-      return '返金済み'
-    case PaymentStatus.EXPIRED:
-      return '期限切れ'
+      return isFulfilled(order.fulfillments) ? '発送中' : '発送準備中'
+    case PaymentStatus.CANCELED:
+      return 'キャンセル'
+    case PaymentStatus.FAILED:
+      return '失敗'
     default:
       return '不明'
   }
 }
 
-const getPaymentStatusColor = (status: PaymentStatus): string => {
-  switch (status) {
+const getStatusColor = (order: Order): string => {
+  switch (order.payment.status) {
     case PaymentStatus.UNPAID:
-      return 'secondary'
-    case PaymentStatus.PENDING:
       return 'secondary'
     case PaymentStatus.AUTHORIZED:
       return 'info'
     case PaymentStatus.PAID:
-      return 'primary'
-    case PaymentStatus.REFUNDED:
-      return 'primary'
-    case PaymentStatus.EXPIRED:
+      return isFulfilled(order.fulfillments) ? 'primary' : 'info'
+    case PaymentStatus.CANCELED:
+      return 'warning'
+    case PaymentStatus.FAILED:
       return 'error'
-    default:
-      return 'unkown'
-  }
-}
-
-const getFulfillmentStatus = (status: FulfillmentStatus): string => {
-  switch (status) {
-    case FulfillmentStatus.FULFILLED:
-      return '発送済み'
-    case FulfillmentStatus.UNFULFILLED:
-      return '未発送'
-    default:
-      return '不明'
-  }
-}
-
-const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
-  switch (status) {
-    case FulfillmentStatus.FULFILLED:
-      return 'primary'
-    case FulfillmentStatus.UNFULFILLED:
-      return 'secondary'
     default:
       return 'unknown'
   }
 }
 
-const getShippingMethod = (shippingMethod: DeliveryType): string => {
-  switch (shippingMethod) {
-    case DeliveryType.NORMAL:
-      return '通常便'
-    case DeliveryType.REFRIGERATED:
-      return '冷蔵便'
-    case DeliveryType.FROZEN:
+const getShippingType = (shippingType: ShippingType): string => {
+  switch (shippingType) {
+    case ShippingType.NORMAL:
+      return '常温・冷蔵便'
+    case ShippingType.FROZEN:
       return '冷凍便'
     default:
       return '不明'
   }
 }
 
-const getCreatedAt = (createdAt: number): string => {
-  return unix(createdAt).format('YYYY/MM/DD HH:mm')
+const getShippingTypes = (fulfillments: OrderFulfillment[]): string => {
+  let types: ShippingType[] = []
+  fulfillments.forEach((fulfillment: OrderFulfillment): void => {
+    if (!types.includes(fulfillment.shippingType)) {
+      types.push(fulfillment.shippingType)
+    }
+  })
+  types = types.sort((a, b) => a - b)
+  const res: string[] = types.map((type: ShippingType): string => {
+    return getShippingType(type)
+  })
+  return res.join('\n')
+}
+
+const getOrderedAt = (orderedAt: number): string => {
+  if (orderedAt === 0) {
+    return '-'
+  }
+  return unix(orderedAt).format('YYYY/MM/DD HH:mm')
 }
 
 const toggleImportDialog = (): void => {
@@ -356,20 +356,18 @@ const onSubmitExport = (): void => {
           {{ getCustomerName(item.userId) }}
         </template>
         <template #[`item.payment.status`]="{ item }">
-          <v-chip size="small" :color="getPaymentStatusColor(item.payment.status)">
-            {{ getPaymentStatus(item.payment.status) }}
+          <v-chip size="small" :color="getStatusColor(item)">
+            {{ getStatus(item) }}
           </v-chip>
         </template>
-        <template #[`item.fulfillment.status`]="{ item }">
-          <v-chip size="small" :color="getFulfillmentStatusColor(item.fulfillment.status)">
-            {{ getFulfillmentStatus(item.fulfillment.status) }}
-          </v-chip>
+        <template #[`item.payment.orderedAt`]="{ item }">
+          {{ getOrderedAt(item.payment.orderedAt) }}
         </template>
-        <template #[`item.fulfillment.shippingMethod`]="{ item }">
-          {{ getShippingMethod(item.fulfillment.shippingMethod) }}
+        <template #[`item.payment.total`]="{ item }">
+          &yen; {{ item.payment.total.toLocaleString() }}
         </template>
-        <template #[`item.createdAt`]="{ item }">
-          {{ getCreatedAt(item.createdAt) }}
+        <template #[`item.shippingTypes`]="{ item }">
+          {{ getShippingTypes(item.fulfillments) }}
         </template>
       </v-data-table-server>
     </v-card-text>

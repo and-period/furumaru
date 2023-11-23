@@ -373,6 +373,7 @@ func TestProduct(t *testing.T) {
 					CreatedAt:            1640962800,
 					UpdatedAt:            1640962800,
 				},
+				revisionID: 1,
 			},
 		},
 	}
@@ -598,6 +599,7 @@ func TestProducts(t *testing.T) {
 						CreatedAt:            1640962800,
 						UpdatedAt:            1640962800,
 					},
+					revisionID: 1,
 				},
 			},
 		},

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
+import { mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
-import { prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
+import { findPrefecture, getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
 import {
-  DeliveryType,
   FulfillmentStatus,
   OrderRefundType,
   PaymentMethodType,
@@ -14,9 +14,11 @@ import {
   Prefecture,
   ShippingCarrier,
   ShippingSize,
+  ShippingType,
   type Coordinator,
   type Order,
   type OrderItem,
+  type OrderFulfillment,
   type Product,
   type ProductMediaInner,
   type Promotion,
@@ -81,9 +83,9 @@ const props = defineProps({
       updatedAt: 0
     })
   },
-  coordinators: {
-    type: Array<Coordinator>,
-    default: () => []
+  coordinator: {
+    type: Object as PropType<Coordinator>,
+    default: () => ({})
   },
   customer: {
     type: Object as PropType<User>,
@@ -99,125 +101,241 @@ const props = defineProps({
   }
 })
 
-const items = [
-  { title: '支払い情報', value: 'shippingInformation' },
-  { title: '配送情報', value: 'orderInformation' }
-]
-
-const headers: VDataTable['headers'] = [
+const productHeaders: VDataTable['headers'] = [
   {
     title: '',
     key: 'media',
     width: 80,
     sortable: false
+  },
+  {
+    title: '商品名',
+    key: 'name',
+    sortable: false
+  },
+  {
+    title: '価格',
+    key: 'price',
+    sortable: false
+  },
+  {
+    title: '数量',
+    key: 'quantity',
+    sortable: false
+  },
+  {
+    title: '小計',
+    key: 'total',
+    sortable: false
   }
 ]
 
-const selector = ref<string>('shippingInformation')
+const shippingCarriers = [
+  { title: '未選択', value: ShippingCarrier.UNKNOWN },
+  { title: 'ヤマト運輸', value: ShippingCarrier.YAMATO },
+  { title: '佐川急便', value: ShippingCarrier.SAGAWA }
+]
 
-const orderValue = computed((): Order => {
-  return props.order
-})
-const customerNameValue = computed((): string => {
-  return `${props.customer.lastname} ${props.customer.firstname}`
-})
-const paymentPhoneNumber = computed((): string => {
-  return convertI18nToJapanesePhoneNumber(props.order.payment.phoneNumber)
-})
-const paymentMethodType = computed((): string => {
-  return getPaymentMethodType(props.order.payment.methodType)
-})
-const refundType = computed((): string => {
-  return getRefundType(props.order.refund.type)
-})
-const paidAt = computed((): string => {
-  return getDay(props.order.payment.paidAt)
-})
-const canceledAt = computed((): string => {
-  return getDay(props.order.refund.canceledAt)
-})
-const orderedAt = computed((): string => {
-  return getDay(props.order.payment.orderedAt)
-})
+const messageForm = ref<string>('')
 
-const getDay = (unixTime: number): string => {
-  return unix(unixTime).format('YYYY/MM/DD HH:mm')
+/**
+ * 共通
+ */
+const getDatetime = (unixtime?: number): string => {
+  if (!unixtime || unixtime === 0) {
+    return '-'
+  }
+  return unix(unixtime).format('YYYY/MM/DD HH:mm:ss')
 }
 
-const getPaymentMethodType = (status: PaymentMethodType): string => {
-  switch (status) {
-    case PaymentMethodType.CASH:
-      return '代引き支払い'
-    case PaymentMethodType.CARD:
-      return 'クレジットカード払い'
+const getUserName = (lastname?: string, firstname?: string): string => {
+  if (!lastname || lastname === '') {
+    return ''
+  }
+  if (!firstname || firstname === '') {
+    return lastname
+  }
+  return `${lastname} ${firstname}`
+}
+
+/**
+ * 基本情報
+ */
+const getCoordinatorName = (): string => {
+  return getUserName(props.coordinator?.lastname, props.coordinator?.firstname)
+}
+
+const isFulfilled = (fulfillments: OrderFulfillment[]): boolean => {
+  let fulfilled: boolean = true
+  fulfillments.forEach((fulfillment): void => {
+    if (fulfillment.status !== FulfillmentStatus.FULFILLED) {
+      fulfilled = false
+    }
+  })
+  return fulfilled
+}
+
+const getStatus = (): string => {
+  switch (props.order?.payment.status) {
+    case PaymentStatus.UNPAID:
+      return '受注前'
+    case PaymentStatus.AUTHORIZED:
+      return '発送準備中'
+    case PaymentStatus.PAID:
+      return isFulfilled(props.order.fulfillments) ? '発送中' : '発送準備中'
+    case PaymentStatus.CANCELED:
+      return 'キャンセル'
+    case PaymentStatus.FAILED:
+      return '失敗'
     default:
       return '不明'
   }
+}
+
+const getStatusColor = (): string => {
+  switch (props.order?.payment.status) {
+    case PaymentStatus.UNPAID:
+      return 'secondary'
+    case PaymentStatus.AUTHORIZED:
+      return 'info'
+    case PaymentStatus.PAID:
+      return isFulfilled(props.order.fulfillments) ? 'primary' : 'info'
+    case PaymentStatus.CANCELED:
+      return 'warning'
+    case PaymentStatus.FAILED:
+      return 'error'
+    default:
+      return 'unknown'
+  }
+}
+
+const getOrderedAt = (): string => {
+  return getDatetime(props.order.payment.orderedAt)
+}
+
+/**
+ * 支払い情報
+ */
+const getAllItems = (): OrderItem[] => {
+  const items: OrderItem[] = []
+  if (!props.order) {
+    return items
+  }
+  props.order.items.forEach((item: OrderItem): void => {
+    const index = items.findIndex((v: OrderItem): boolean => {
+      return v.productId === item.productId
+    })
+    if (index < 0) {
+      items.push(item)
+    } else {
+      items[index].quantity += item.quantity
+    }
+  })
+  return items
 }
 
 const getPaymentStatus = (status: PaymentStatus): string => {
   switch (status) {
-    case PaymentStatus.UNKNOWN:
-      return '不明'
     case PaymentStatus.UNPAID:
       return '未払い'
-    case PaymentStatus.PENDING:
-      return '保留中'
     case PaymentStatus.AUTHORIZED:
       return 'オーソリ済み'
     case PaymentStatus.PAID:
       return '支払い済み'
-    case PaymentStatus.REFUNDED:
-      return '返金済み'
-    case PaymentStatus.EXPIRED:
-      return '期限切れ'
+    case PaymentStatus.CANCELED:
+      return 'キャンセル済み'
+    case PaymentStatus.FAILED:
+      return '失敗'
     default:
       return '不明'
   }
 }
 
-const getRefundType = (status: OrderRefundType): string => {
-  switch (status) {
-    default:
-      return '不明'
-  }
-}
-
-const getPaymentStatusColor = (status: PaymentStatus): string => {
+const getPaymentStatusColor = (status:PaymentStatus): string => {
   switch (status) {
     case PaymentStatus.UNPAID:
-      return 'secondary'
-    case PaymentStatus.PENDING:
       return 'secondary'
     case PaymentStatus.AUTHORIZED:
       return 'info'
     case PaymentStatus.PAID:
       return 'primary'
-    case PaymentStatus.REFUNDED:
-      return 'primary'
-    case PaymentStatus.EXPIRED:
+    case PaymentStatus.CANCELED:
+      return 'warning'
+    case PaymentStatus.FAILED:
       return 'error'
     default:
       return 'unkown'
   }
 }
 
-const getRefundStatus = (status: boolean): string => {
-  if (status) {
-    return 'キャンセル'
-  } else {
-    return '注文受付済み'
+const getPaymentMethodType = (): string => {
+  switch (props.order?.payment.methodType) {
+    case PaymentMethodType.CASH:
+      return '代引支払い'
+    case PaymentMethodType.CREDIT_CARD:
+      return 'クレジットカード決済'
+    case PaymentMethodType.KONBINI:
+      return 'コンビニ決済'
+    case PaymentMethodType.BANK_TRANSFER:
+      return '銀行振込決済'
+    case PaymentMethodType.PAYPAY:
+      return 'QR決済（PayPay）'
+    case PaymentMethodType.LINE_PAY:
+      return 'QR決済（LINE Pay）'
+    case PaymentMethodType.MERPAY:
+      return 'QR決済（メルペイ）'
+    case PaymentMethodType.RAKUTEN_PAY:
+      return 'QR決済（楽天ペイ）'
+    case PaymentMethodType.AU_PAY:
+      return 'QR決済（au PAY）'
+    default:
+      return '不明'
   }
 }
 
-const getRefundStatusColor = (status: boolean): string => {
-  if (status) {
-    return 'error'
-  } else {
-    return 'primary'
-  }
+const getPaidAt = (): string => {
+  return getDatetime(props.order.payment.paidAt)
 }
 
+const getSubtotal = (item: OrderItem): number => {
+  return item.price * item.quantity
+}
+
+/**
+ * 注文情報
+ */
+const getProduct = (productId: string): Product | undefined => {
+  return props.products.find((product: Product): boolean => {
+    return product.id === productId
+  })
+}
+const getProductName = (productId: string): string => {
+  const product = getProduct(productId)
+  return product?.name || ''
+}
+
+const getThumbnail = (productId: string): string => {
+  const product = getProduct(productId)
+  const thumbnail = product?.media.find((media: ProductMediaInner): boolean => {
+    return media.isThumbnail
+  })
+  return thumbnail?.url || ''
+}
+
+const getResizedThumbnails = (productId: string): string => {
+  const product = getProduct(productId)
+  const thumbnail = product?.media.find((media: ProductMediaInner) => {
+    return media.isThumbnail
+  })
+  if (!thumbnail) {
+    return ''
+  }
+  return getResizedImages(thumbnail.images)
+}
+
+/**
+ * 配送情報
+ */
 const getFulfillmentStatus = (status: FulfillmentStatus): string => {
   switch (status) {
     case FulfillmentStatus.UNFULFILLED:
@@ -240,45 +358,11 @@ const getFulfillmentStatusColor = (status: FulfillmentStatus): string => {
   }
 }
 
-// isThumnailがtrueのものを引っ掛けて商品でサムネイルに設定されているURLを探す
-const getThumbnail = (productId: string): string => {
-  const product = props.products.find((product: Product): boolean => {
-    return product.id === productId
-  })
-  if (!product) {
-    return ''
-  }
-  const thumbnail = product.media.find((media: ProductMediaInner): boolean => {
-    return media.isThumbnail
-  })
-  return thumbnail?.url || ''
-}
-
-const getOrderItems = (fulfillmentId: string): OrderItem[] => {
-  const items = props.order.items.filter((item: OrderItem): boolean => {
-    return item.fulfillmentId === fulfillmentId
-  })
-  return items
-}
-
-const getShippingCarrier = (carrier: ShippingCarrier): string => {
-  switch (carrier) {
-    case ShippingCarrier.YAMATO:
-      return 'ヤマト運輸'
-    case ShippingCarrier.SAGAWA:
-      return '佐川急便'
-    default:
-      return '不明'
-  }
-}
-
-const getShippingMethod = (method: DeliveryType): string => {
-  switch (method) {
-    case DeliveryType.NORMAL:
-      return '通常便'
-    case DeliveryType.REFRIGERATED:
-      return '冷蔵便'
-    case DeliveryType.FROZEN:
+const getShippingType = (shippingType: ShippingType): string => {
+  switch (shippingType) {
+    case ShippingType.NORMAL:
+      return '常温・冷蔵便'
+    case ShippingType.FROZEN:
       return '冷凍便'
     default:
       return '不明'
@@ -297,341 +381,383 @@ const getBoxSize = (size: ShippingSize): string => {
       return '不明'
   }
 }
+
+/**
+ * 顧客情報
+ * ※配送先情報は現状すべて同じ情報が返されるため、先頭の値を取得して表示する
+ */
+const getCustomerName = (): string => {
+  return getUserName(props.customer?.lastname, props.customer?.firstname)
+}
+
+const getCustomerNameKana = (): string => {
+  return getUserName(props.customer?.lastnameKana, props.customer?.firstnameKana)
+}
+
+const getShippingAddressName = (): string => {
+  return getUserName(props.order?.payment.lastname, props.order?.payment.firstname)
+}
+
+const getShippingAddressPhoneNumber = (): string => {
+  return props.order ? convertI18nToJapanesePhoneNumber(props.order.payment.phoneNumber) : ''
+}
+
+const getShippingAddressPrefecture = (): string => {
+  const prefecture = findPrefecture(props.order?.payment.prefectureCode)
+  return prefecture ? prefecture.text : ''
+}
+
+const getFulfillmentAddressName = (): string => {
+  if (!props.order || props.order.fulfillments.length === 0) {
+    return ''
+  }
+  return getUserName(props.order.fulfillments[0].lastname, props.order.fulfillments[0].firstname)
+}
+
+const getFulfillmentAddressPhoneNumber = (): string => {
+  if (!props.order || props.order.fulfillments.length === 0) {
+    return ''
+  }
+  return convertI18nToJapanesePhoneNumber(props.order.fulfillments[0].phoneNumber)
+}
+
+const getFulfillmentAddressPrefecture = (): string => {
+  if (!props.order || props.order.fulfillments.length === 0) {
+    return ''
+  }
+  const prefecture = findPrefecture(props.order?.fulfillments[0].prefectureCode)
+  return prefecture ? prefecture.text : ''
+}
+
+const getRequestDaliveryDay = (fulfillment: OrderFulfillment): string => {
+  // TODO: API側の実装ができ次第実装する
+  return '未指定'
+}
+
+const getOrderItems = (fulfillmentId: string): OrderItem[] => {
+  const items = props.order.items.filter((item: OrderItem): boolean => {
+    return item.fulfillmentId === fulfillmentId
+  })
+  return items
+}
+
+const onSubmitUpdate = (fulfillmentId: string): void => {
+  console.log('click:submit update', fulfillmentId)
+}
+
+const onSubmitFulfilled = (): void => {
+  console.log('click:submit fulfilled')
+}
 </script>
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card>
-    <v-tabs v-model="selector" grow color="dark">
-      <v-tab v-for="item in items" :key="item.value" :value="item.value">
-        {{ item.title }}
-      </v-tab>
-    </v-tabs>
-
-    <v-window v-model="selector">
-      <v-window-item value="shippingInformation">
-        <v-card elevation="0">
-          <v-card-text>
-            <v-text-field
-              v-model="customerNameValue"
-              name="userName"
-              label="注文者名"
-              readonly
-            />
-            <v-text-field
-              v-model="orderValue.id"
-              name="id"
-              label="注文ID"
-              readonly
-            />
-            <v-text-field
-              v-model="paymentMethodType"
-              name="paymentMethodType"
-              label="決済手段"
-              readonly
-            />
-            <v-text-field
-              v-model="orderValue.createdAt"
-              name="createdAt"
-              label="注文日時"
-              readonly
-            />
-            <v-container>
-              <p class="text-h6">
-                購入情報
-              </p>
-              <v-row class="mt-4">
-                <span class="mx-4">支払い状況:</span>
-                <v-chip size="small" :color="getPaymentStatusColor(order.payment.status)">
-                  {{ getPaymentStatus(order.payment.status) }}
-                </v-chip>
-              </v-row>
-            </v-container>
-            <v-text-field
-              v-if="getPaymentStatus(order.payment.status) == '支払い済み'"
-              v-model="paidAt"
-              class="mt-4"
-              name="deliveredAt"
-              label="支払日時"
-              readonly
-            />
-            <v-text-field
-              v-value="orderValue.payment.total"
-              class="mt-4"
-              name="total"
-              label="支払い合計金額"
-              readonly
-            >
-              <template #append>
-                円
-              </template>
-            </v-text-field>
-            <div class="d-flex align-center">
-              <v-text-field
-                v-model="orderValue.payment.subtotal"
-                class="mr-4"
-                name="subTotal"
-                label="購入金額"
-                readonly
-              >
-                <template #append>
-                  円
-                </template>
-              </v-text-field>
-              <v-text-field
-                v-model="orderValue.payment.discount"
-                name="discount"
-                label="割引金額"
-                readonly
-              >
-                <template #append>
-                  円
-                </template>
-              </v-text-field>
-            </div>
-            <div class="d-flex align-center mt-4">
-              <v-text-field
-                v-model="orderValue.payment.shippingFee"
-                class="mr-4"
-                name="shippingFee"
-                label="配送料金"
-                readonly
-              >
-                <template #append>
-                  円
-                </template>
-              </v-text-field>
-              <v-text-field
-                v-model="orderValue.payment.tax"
-                name="tax"
-                label="消費税"
-                readonly
-              >
-                <template #append>
-                  円
-                </template>
-              </v-text-field>
-            </div>
-            <p class="text-h6">
-              請求先情報
-            </p>
-            <div class="d-flex align-center">
-              <v-text-field
-                v-model="orderValue.payment.lastname"
-                class="mr-4"
-                name="lastname"
-                label="姓"
-                readonly
-              />
-              <v-text-field
-                v-model="orderValue.payment.firstname"
-                name="firstname"
-                label="名"
-                readonly
-              />
-            </div>
-            <v-text-field
-              v-model="paymentPhoneNumber"
-              name="phoneNumber"
-              label="電話番号"
-              readonly
-            />
-            <v-text-field
-              v-model="orderValue.payment.postalCode"
-              name="postalCode"
-              label="郵便番号"
-              readonly
-            />
-            <div class="d-flex align-center">
-              <v-text-field
-                v-model="orderValue.payment.prefectureCode"
-                :items="prefecturesList"
-                item-title="text"
-                item-value="value"
-                class="mr-4"
-                name="prefecture"
-                label="都道府県"
-                readonly
-              />
-              <v-text-field
-                v-model="orderValue.payment.city"
-                name="city"
-                label="市区町村"
-                readonly
-              />
-            </div>
-            <v-text-field
-              v-model="orderValue.payment.addressLine1"
-              name="addressLine1"
-              label="町名・番地"
-            />
-            <v-text-field
-              v-model="orderValue.payment.addressLine2"
-              name="addressLine2"
-              label="ビル名・号室など"
-            />
-            <p class="text-h6">
-              キャンセル情報
-            </p>
-            <v-row class="mt-4">
-              <span class="mx-4">注文キャンセル状況:</span>
-              <v-chip size="small" :color="getRefundStatusColor(order.refund.canceled)">
-                {{ getRefundStatus(order.refund.canceled) }}
+  <v-row>
+    <v-col sm="12" md="12" lg="8">
+      <v-card elevation="0" class="mb-4">
+        <v-card-title class="pb-4">
+          基本情報
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="3">
+              注文番号
+            </v-col>
+            <v-col cols="9">
+              {{ order.id }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              マルシェ名
+            </v-col>
+            <v-col cols="9">
+              {{ coordinator.marcheName }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              コーディネータ名
+            </v-col>
+            <v-col cols="9">
+              {{ getCoordinatorName() }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              ステータス
+            </v-col>
+            <v-col cols="9">
+              <v-chip size="small" :color="getStatusColor()">
+                {{ getStatus() }}
               </v-chip>
-            </v-row>
-            <v-container
-              v-if="getRefundStatus(order.refund.canceled) == 'キャンセル'"
-            >
-              <v-text-field
-                v-model="canceledAt"
-                class="mt-8"
-                name="canceledAt"
-                label="注文キャンセル日時"
-                readonly
-              />
-              <v-text-field
-                v-model="refundType"
-                name="type"
-                label="注文キャンセル理由"
-                readonly
-              />
-              <v-textarea
-                v-model="orderValue.refund.reason"
-                name="reason"
-                label="注文キャンセル理由詳細"
-                readonly
-              />
-              <v-text-field
-                v-model="orderValue.refund.total"
-                name="refundTotal"
-                label="返済金額"
-                readonly
-              />
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-window-item>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              購入日時
+            </v-col>
+            <v-col cols="9">
+              {{ getOrderedAt() }}
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card elevation="0" class="mb-4">
+        <v-card-title class="pb-4">
+          支払い情報
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="3">
+              ステータス
+            </v-col>
+            <v-col cols="9">
+              <v-chip size="small" :color="getPaymentStatusColor(order.payment.status)">
+                {{ getPaymentStatus(order.payment.status) }}
+              </v-chip>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              支払い方法
+            </v-col>
+            <v-col cols="9">
+              {{ getPaymentMethodType() }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              支払い日時
+            </v-col>
+            <v-col cols="9">
+              {{ getPaidAt() }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-table>
+                <tbody class="text-grey">
+                  <tr>
+                    <td>小計</td>
+                    <td>{{ getAllItems().length }}つのアイテム</td>
+                    <td>&yen; {{ order.payment.subtotal.toLocaleString() }}</td>
+                  </tr>
+                  <tr>
+                    <td>配送手数料</td>
+                    <td>{{ order.fulfillments.length }}つの箱</td>
+                    <td>&yen; {{ order.payment.shippingFee.toLocaleString() }}</td>
+                  </tr>
+                  <tr>
+                    <td>割引金額</td>
+                    <td />
+                    <td>&yen; {{ order.payment.discount.toLocaleString() }}</td>
+                  </tr>
+                  <tr>
+                    <td>消費税</td>
+                    <td />
+                    <td>&yen; {{ order.payment.tax.toLocaleString() }}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>支払い合計</td>
+                    <td />
+                    <td>&yen; {{ order.payment.total.toLocaleString() }}</td>
+                  </tr>
+                </tfoot>
+              </v-table>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card elevation="0" class="mb-4">
+        <v-card-title class="pb-4">
+          注文情報
+        </v-card-title>
+        <v-card-text>
+          <v-data-table :headers="productHeaders" :items="getAllItems()">
+            <template #[`item.media`]="{ item }">
+              <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.productId)" :srcset="getResizedThumbnails(item.media)" />
+            </template>
+            <template #[`item.name`]="{ item }">
+              {{ getProductName(item.productId) }}
+            </template>
+            <template #[`item.price`]="{ item }">
+              &yen; {{ item.price.toLocaleString() }}
+            </template>
+            <template #[`item.quantity`]="{ item }">
+              {{ item.quantity.toLocaleString() }}
+            </template>
+            <template #[`item.total`]="{ item }">
+              &yen; {{ getSubtotal(item).toLocaleString() }}
+            </template>
+          </v-data-table>
+        </v-card-text>
+      </v-card>
+    </v-col>
 
-      <v-window-item value="orderInformation">
-        <v-card v-for="fulfillment in order.fulfillments" :key="fulfillment.fulfillmentId" elevation="0">
-          <v-card-text>
-            <v-row class="my-4">
-              <span class="mx-4">配送状況:</span>
+    <v-col sm="12" md="12" lg="4">
+      <v-card elevation="0" class="mb-4">
+        <v-card-text>
+          <v-list>
+            <v-list-item class="mb-4">
+              <v-list-item-subtitle class="mb-2">
+                顧客情報
+              </v-list-item-subtitle>
+              <div>{{ getCustomerName() }}</div>
+              <div>{{ getCustomerNameKana() }}</div>
+              <div class="mt-1">
+                &Mu; {{ props.customer.email }}
+              </div>
+              <div>&phone; {{ props.customer.phoneNumber }}</div>
+            </v-list-item>
+            <v-list-item class="mb-4">
+              <v-list-item-subtitle class="pb-2">
+                請求先情報
+              </v-list-item-subtitle>
+              <div>{{ getShippingAddressName() }}</div>
+              <div class="mt-1">
+                &phone; {{ getShippingAddressPhoneNumber() }}
+              </div>
+              <div class="mt-1">
+                &#12306; {{ props.order.payment.postalCode }}
+              </div>
+              <div>{{ `${getShippingAddressPrefecture()} ${props.order.payment.city}` }}</div>
+              <div>{{ props.order.payment.addressLine1 }}</div>
+              <div>{{ props.order.payment.addressLine2 }}</div>
+            </v-list-item>
+            <v-list-item v-if="props.order.fulfillments.length > 0">
+              <v-list-item-subtitle class="pb-2">
+                請求先情報
+              </v-list-item-subtitle>
+              <div>{{ getFulfillmentAddressName() }}</div>
+              <div class="mt-1">
+                &phone; {{ getFulfillmentAddressPhoneNumber() }}
+              </div>
+              <div class="mt-1">
+                &#12306; {{ props.order.fulfillments[0].postalCode }}
+              </div>
+              <div>{{ `${getFulfillmentAddressPrefecture()} ${props.order.fulfillments[0].city}` }}</div>
+              <div>{{ props.order.fulfillments[0].addressLine1 }}</div>
+              <div>{{ props.order.fulfillments[0].addressLine2 }}</div>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+
+  <v-row v-for="(fulfillment, index) in props.order.fulfillments" :key="fulfillment.fulfillmentId">
+    <v-col sm="12" md="12" lg="8">
+      <v-card elevation="0" class="mb-4">
+        <v-card-title class="pb-4">
+          配送詳細 {{ index + 1 }}
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="3">
+              ステータス
+            </v-col>
+            <v-col cols="9">
               <v-chip size="small" :color="getFulfillmentStatusColor(fulfillment.status)">
                 {{ getFulfillmentStatus(fulfillment.status) }}
               </v-chip>
-            </v-row>
-            <div class="d-flex align-center">
-              <v-text-field
-                v-model="fulfillment.shippingCarrier"
-                class="mr-4"
-                name="shippingCarrier"
-                label="配送会社"
-                readonly
-              />
-              <v-text-field
-                v-model="fulfillment.shippingMethod"
-                class="mr-4"
-                name="shippingmethod"
-                label="配送方法"
-                readonly
-              />
-              <v-text-field
-                v-model="fulfillment.boxNumber"
-                name="boxSize"
-                label="配送時の箱の通番"
-                readonly
-              />
-              <v-text-field
-                v-model="fulfillment.boxSize"
-                name="boxSize"
-                label="配送時の箱の大きさ"
-                readonly
-              />
-            </div>
-            <v-text-field
-              v-if="getFulfillmentStatus(fulfillment.status) == '配送済み'"
-              v-model="fulfillment.shippedAt"
-              name="deliveredAt"
-              label="配送日時"
-              readonly
-            />
-            <v-data-table-server
-              :headers="items"
-              :items="getOrderItems(fulfillment.fulfillmentId)"
-              no-data-text="表示する注文がありません"
-            >
-              <template #[`item.media`]="{ item }">
-                <v-avatar>
-                  <img :src="getThumbnail(item.media)">
-                </v-avatar>
-              </template>
-            </v-data-table-server>
-            <v-text-field
-              v-model="fulfillment.trackingNumber"
-              name="trackingNumber"
-              label="伝票番号"
-              readonly
-            />
-            <div>
-              <v-text-field
-                v-model="fulfillment.lastname"
-                class="mr-4"
-                name="lastname"
-                label="姓"
-                readonly
-              />
-              <v-text-field
-                v-model="fulfillment.firstname"
-                name="firstname"
-                label="名"
-                readonly
-              />
-            </div>
-            <v-text-field
-              v-model="fulfillment.phoneNumber"
-              name="phoneNumber"
-              label="電話番号"
-              readonly
-            />
-            <v-text-field
-              v-model="fulfillment.postalCode"
-              name="postalCode"
-              label="郵便番号"
-              readonly
-            />
-            <div class="d-flex align-center">
-              <v-text-field
-                v-model="fulfillment.prefectureCode"
-                :items="prefecturesList"
-                item-title="text"
-                item-value="value"
-                class="mr-4"
-                name="prefecture"
-                label="都道府県"
-                readonly
-              />
-              <v-text-field
-                v-model="fulfillment.city"
-                name="city"
-                label="市区町村"
-                readonly
-              />
-            </div>
-            <v-text-field
-              v-model="fulfillment.addressLine1"
-              name="addressLine1"
-              label="町名・番地"
-            />
-            <v-text-field
-              v-model="fulfillment.addressLine2"
-              name="addressLine2"
-              label="ビル名・号室など"
-            />
-          </v-card-text>
-        </v-card>
-      </v-window-item>
-    </v-window>
-  </v-card>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              箱のタイプ
+            </v-col>
+            <v-col cols="9">
+              {{ getShippingType(fulfillment.shippingType) }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              箱のサイズ
+            </v-col>
+            <v-col cols="9">
+              {{ getBoxSize(fulfillment.boxSize) }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              配送希望日
+            </v-col>
+            <v-col cols="9">
+              {{ getRequestDaliveryDay(fulfillment) }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-data-table :headers="productHeaders" :items="getOrderItems(fulfillment.fulfillmentId)">
+                <template #[`item.media`]="{ item }">
+                  <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.productId)" :srcset="getResizedThumbnails(item.media)" />
+                </template>
+                <template #[`item.name`]="{ item }">
+                  {{ getProductName(item.productId) }}
+                </template>
+                <template #[`item.price`]="{ item }">
+                  &yen; {{ item.price.toLocaleString() }}
+                </template>
+                <template #[`item.quantity`]="{ item }">
+                  {{ item.quantity.toLocaleString() }}
+                </template>
+                <template #[`item.total`]="{ item }">
+                  &yen; {{ getSubtotal(item).toLocaleString() }}
+                </template>
+              </v-data-table>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col sm="12" md="12" lg="4">
+      <v-card elevation="0" class="mb-4">
+        <v-card-text>
+          <v-select
+            v-model="fulfillment.shippingCarrier"
+            label="配送業者"
+            :items="shippingCarriers"
+          />
+          <v-text-field
+            v-model="fulfillment.trackingNumber"
+            label="伝票番号"
+          />
+          <v-btn class="mt-2" variant="outlined" @click="onSubmitUpdate(fulfillment.fulfillmentId)">
+            <v-icon start :icon="mdiPlus" />
+            更新
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col sm="12" md="12" lg="8">
+      <v-card>
+        <v-card-title class="pb-4">
+          発送連絡
+        </v-card-title>
+        <v-card-text>
+          <v-textarea
+            v-model="messageForm"
+            label="お客様へのメッセージ"
+            placeholder="例：ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。"
+          />
+        </v-card-text>
+        <v-card-actions class="pb-4">
+          <v-btn variant="outlined" color="info" @click="onSubmitFulfilled()">
+            <v-icon start :icon="mdiPlus" />
+            下書きを保存
+          </v-btn>
+          <v-btn variant="outlined" color="primary" @click="onSubmitFulfilled()">
+            <v-icon start :icon="mdiPlus" />
+            発送完了を通知
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>

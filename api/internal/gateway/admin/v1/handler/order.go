@@ -147,7 +147,7 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		if order.PromotionID == "" {
 			return nil
 		}
-		promotion, err = h.getPromotion(ctx, order.PromotionID)
+		promotion, err = h.getPromotion(ectx, order.PromotionID)
 		return
 	})
 	eg.Go(func() (err error) {

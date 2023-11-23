@@ -50,7 +50,7 @@ func (rs ProductRevisions) MapByProductID() map[string]*ProductRevision {
 func (rs ProductRevisions) Merge(products map[string]*Product) (Products, error) {
 	res := make(Products, 0, len(rs))
 	for _, r := range rs {
-		product := &Product{ProductRevision: *r}
+		product := &Product{}
 		base, ok := products[r.ProductID]
 		if !ok {
 			base = &Product{ID: r.ProductID}
@@ -59,6 +59,7 @@ func (rs ProductRevisions) Merge(products map[string]*Product) (Products, error)
 		if err := copier.CopyWithOption(&product, &base, opt); err != nil {
 			return nil, err
 		}
+		product.ProductRevision = *r
 		res = append(res, product)
 	}
 	return res, nil
