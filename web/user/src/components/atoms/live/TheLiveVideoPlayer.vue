@@ -76,7 +76,7 @@ const handleClickShowDetailButton = () => {
       <div class="mt-4 flex items-center gap-2">
         <img
           :src="cnImgSrc"
-          class="h-[10] w-[10] rounded-full"
+          class="h-10 w-10 rounded-full"
           :alt="`${cnName}のプロフィール画像`"
         />
         <div class="text-[12px] tracking-[1.2px]">
@@ -96,7 +96,7 @@ const handleClickShowDetailButton = () => {
           @click="handleClickShowDetailButton"
         >
           <div>
-            {{ showDetail ? 'マルシュの詳細を隠す' : 'マルシュの詳細を見る' }}
+            {{ showDetail ? 'マルシェの詳細を隠す' : 'マルシェの詳細を見る' }}
           </div>
           <div>
             <the-up-arrow-icon v-if="showDetail" />
