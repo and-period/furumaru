@@ -18,11 +18,11 @@ export interface LiveTimelineMock {
 export const MOCK_LIVE_TIMELINES: LiveTimelineMock[] = [
   {
     id: '1',
-    time: '19:00',
-    cnImgSrc: '/img/recommend/cn.png',
-    marchName: '大崎上島農園',
+    time: '13:00',
+    cnImgSrc: '/img/recommend/demo.jpeg',
+    marchName: '三つ豆\nファーム ',
     description:
-      '広島県の離島で柑橘を育てています。防腐剤やワックスを使わず、安心の美味しさをお届けできるよう心がけています。',
+      '千葉県の山武市で有機農業を20年営んでいます。\n育てる野菜は年間70品目以上！',
     items: [
       {
         id: '2',
@@ -67,7 +67,7 @@ export const MOCK_LIVE_TIMELINES: LiveTimelineMock[] = [
     cnImgSrc: '/img/recommend/cn.png',
     marchName: '大崎上島農園',
     description:
-      '広島県の離島で柑橘を育てています。防腐剤やワックスを使わず、安心の美味しさをお届けできるよう心がけています。',
+      '千葉県の山武市で有機農業を20年営んでいます。\n育てる野菜は年間70品目以上！',
     items: [
       {
         id: '2',

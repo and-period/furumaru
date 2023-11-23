@@ -101,7 +101,7 @@ const handleClick = () => {
             <img
               :src="cnImgSrc"
               :alt="`${cnName}のーアバター画像`"
-              class="h-[10] w-[10] rounded-full"
+              class="h-10 w-10 rounded-full"
             />
           </div>
         </div>

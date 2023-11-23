@@ -61,31 +61,31 @@ const SP_MENU_ITEMS = [
     text: 'マイページ',
     to: '/',
   },
-  {
-    icon: 'ring',
-    text: 'お知らせ',
-    to: '/',
-  },
+  // {
+  //   icon: 'ring',
+  //   text: 'お知らせ',
+  //   to: '/',
+  // },
   {
     icon: 'cart',
     text: '買い物カゴを見る',
     to: '/purchase',
   },
-  {
-    icon: 'search',
-    text: '商品をさがす',
-    to: '/',
-  },
+  // {
+  //   icon: 'search',
+  //   text: '商品をさがす',
+  //   to: '/',
+  // },
   {
     icon: 'fruits',
     text: 'すべての商品',
     to: '/items',
   },
-  {
-    icon: 'flag',
-    text: 'すべてのマルシェ',
-    to: '',
-  },
+  // {
+  //   icon: 'flag',
+  //   text: 'すべてのマルシェ',
+  //   to: '',
+  // },
   {
     icon: 'furumaru',
     text: 'ふるマルについて',

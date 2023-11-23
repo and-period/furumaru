@@ -7,8 +7,8 @@ export interface ArchiveMock {
 export const MOCK_ARCHIVES_ITEMS: ArchiveMock[] = [
   {
     id: '1',
-    title: '［大崎上島マルシェ］瀬戸内海の島の美味しいものを紹介します！',
-    imgSrc: '/img/archive/1.png'
+    title: '［秋の大収穫マルシェ］有機農家が厳選した野菜セット',
+    imgSrc: '/img/archive/demo.jpg'
   },
   {
     id: '2',

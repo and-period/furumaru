@@ -43,11 +43,11 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
     to: localePath('/'),
     active: route.path === localePath('/'),
   },
-  {
-    text: ht('searchItemLinkText'),
-    to: localePath('/search'),
-    active: route.path === localePath('/search'),
-  },
+  // {
+  //   text: ht('searchItemLinkText'),
+  //   to: localePath('/search'),
+  //   active: route.path === localePath('/search'),
+  // },
   {
     text: ht('allItemLinkText'),
     to: localePath('/items'),
