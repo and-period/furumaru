@@ -19,7 +19,7 @@ export const MOCK_LIVE_TIMELINES: LiveTimelineMock[] = [
   {
     id: '1',
     time: '13:00',
-    cnImgSrc: '/img/recommend/demo.png',
+    cnImgSrc: '/img/recommend/demo2.png',
     marchName: '三つ豆\nファーム ',
     description:
       '千葉県の山武市で有機農業を20年営んでいます。\n育てる野菜は年間70品目以上！',
