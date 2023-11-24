@@ -19,24 +19,24 @@ export const MOCK_LIVE_TIMELINES: LiveTimelineMock[] = [
   {
     id: '1',
     time: '13:00',
-    cnImgSrc: '/img/recommend/demo.jpeg',
+    cnImgSrc: '/img/recommend/demo.png',
     marchName: '三つ豆\nファーム ',
     description:
       '千葉県の山武市で有機農業を20年営んでいます。\n育てる野菜は年間70品目以上！',
     items: [
       {
         id: '2',
-        name: '無農薬レモン 500g',
+        name: 'かぶと里芋 500g',
         inventory: 10,
         price: 3000,
-        imgSrc: '/img/recommend/4.png',
+        imgSrc: '/img/recommend/8.png',
       },
       {
         id: '2',
-        name: 'レモン 500g',
+        name: 'トマト 500g',
         inventory: 10,
-        price: 3000,
-        imgSrc: '/img/recommend/6.png',
+        price: 1500,
+        imgSrc: '/img/recommend/7.png',
       },
       {
         id: '3',
