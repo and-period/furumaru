@@ -38,7 +38,7 @@ export const MOCK_LIVE_ITEMS: LiveItemMock[] = [
     marcheName: 'ふるさと掘り起こし隊',
     address: '千葉県 山武市',
     cnName: 'ふるマル太郎',
-    cnImgSrc: '/img/recommend/demo.jpeg',
+    cnImgSrc: '/img/recommend/demo.png',
   },
   {
     id: '2',
@@ -128,5 +128,5 @@ export const MOCK_LIVE_VIDEO: LiveVideoMock = {
   marcheName: 'ふるさと掘り起こし隊',
   address: '千葉県 山武市',
   cnName: 'ふるマル太郎',
-  cnImgSrc: '/img/recommend/demo.jpeg',
+  cnImgSrc: '/img/recommend/demo.png',
 }
