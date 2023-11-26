@@ -1,5 +1,5 @@
 import 'pinia'
-import { AuthApi, CartApi, ProductApi, TopApi } from '../api'
+import { AddressApi, AuthApi, CartApi, ProductApi, TopApi } from '../api'
 import { CustomErrorMessage } from '~/plugins/api-error-handler'
 import VueI18n from 'vue-i18n'
 
@@ -19,6 +19,7 @@ declare module 'pinia' {
     topPageApiClient: (token?: string | undefined) => TopApi
     productApiClient: (token?: string | undefined) => ProductApi
     cartApiClient: (token?: string) => CartApi
+    addressApiClient: (token?: string) => AddressApi
     i18n: VueI18
   }
 }
