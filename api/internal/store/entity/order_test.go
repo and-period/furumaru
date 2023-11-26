@@ -107,6 +107,7 @@ func TestOrder(t *testing.T) {
 						BoxNumber: 1,
 						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
+						BoxRate:   80,
 						Items: []*CartItem{
 							{
 								ProductID: "product-id01",
@@ -177,6 +178,7 @@ func TestOrder(t *testing.T) {
 						ShippingType:      ShippingTypeNormal,
 						BoxNumber:         1,
 						BoxSize:           ShippingSize60,
+						BoxRate:           80,
 					},
 				},
 				OrderItems: OrderItems{
