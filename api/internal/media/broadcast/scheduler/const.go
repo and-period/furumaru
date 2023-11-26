@@ -3,6 +3,7 @@ package scheduler
 const (
 	streamName        = "/live/a"
 	archivePathPrefix = "/schedules/archives"
+	archiveFilename   = "original.mp4"
 	playlistFilename  = "live.m3u8"
 )
 

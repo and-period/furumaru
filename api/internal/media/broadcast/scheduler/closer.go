@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
+	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/mediaconvert/types"
 	"go.uber.org/zap"
@@ -26,6 +27,7 @@ type closer struct {
 	waitGroup   *sync.WaitGroup
 	semaphore   *semaphore.Weighted
 	db          *database.Database
+	storage     storage.Bucket
 	store       store.Service
 	media       medialive.MediaLive
 	convert     mediaconvert.MediaConvert
@@ -47,6 +49,7 @@ func NewCloser(params *Params, opts ...Option) Scheduler {
 		waitGroup:   params.WaitGroup,
 		semaphore:   semaphore.NewWeighted(dopts.concurrency),
 		db:          params.Database,
+		storage:     params.Storage,
 		store:       params.Store,
 		media:       params.MediaLive,
 		convert:     params.MediaConvert,
@@ -167,7 +170,6 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 			if broadcast.Status != entity.BroadcastStatusIdle {
 				return nil // 停止中の場合のみ、削除処理を進める
 			}
-
 			c.logger.Warn("Not implemented to remove channel", zap.String("schedule", schedule.ID))
 
 			c.logger.Info("Calling to create convert job", zap.String("scheduleId", schedule.ID))
@@ -177,8 +179,16 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 			}
 			c.logger.Info("Succeeded to create convert job", zap.String("scheduleId", schedule.ID))
 
+			archiveURL, err := c.storage.GenerateObjectURL(filepath.Join(newArchiveMP4Path(broadcast.ScheduleID), archiveFilename))
+			if err != nil {
+				c.logger.Error("Failed to generate archive url", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				return err
+			}
 			params := &database.UpdateBroadcastParams{
 				Status: entity.BroadcastStatusDisabled,
+				UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
+					ArchiveURL: archiveURL,
+				},
 			}
 			return c.db.Broadcast.Update(ctx, broadcast.ID, params)
 		})
@@ -187,8 +197,8 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 }
 
 func (c *closer) newMediaConvertJobSettings(broadcast *entity.Broadcast) *types.JobSettings {
-	src := fmt.Sprintf("s3://%s", filepath.Join(c.bucketName, newArchiveHLSPath(broadcast.ScheduleID), playlistFilename))
-	dst := fmt.Sprintf("s3://%s", filepath.Join(c.bucketName, newArchiveMP4Path(broadcast.ScheduleID)))
+	src := c.storage.GenerateS3URI(filepath.Join(newArchiveHLSPath(broadcast.ScheduleID), playlistFilename))
+	dst := c.storage.GenerateS3URI(newArchiveMP4Path(broadcast.ScheduleID))
 
 	return &types.JobSettings{
 		Inputs: []types.Input{{

@@ -81,6 +81,20 @@ func (mr *MockBucketMockRecorder) GenerateObjectURL(path interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateObjectURL", reflect.TypeOf((*MockBucket)(nil).GenerateObjectURL), path)
 }
 
+// GenerateS3URI mocks base method.
+func (m *MockBucket) GenerateS3URI(path string) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateS3URI", path)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GenerateS3URI indicates an expected call of GenerateS3URI.
+func (mr *MockBucketMockRecorder) GenerateS3URI(path interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateS3URI", reflect.TypeOf((*MockBucket)(nil).GenerateS3URI), path)
+}
+
 // GetFQDN mocks base method.
 func (m *MockBucket) GetFQDN() string {
 	m.ctrl.T.Helper()
