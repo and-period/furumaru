@@ -48,6 +48,7 @@ type ListBroadcastsOrder struct {
 type UpdateBroadcastParams struct {
 	Status entity.BroadcastStatus
 	*InitializeBroadcastParams
+	*UploadBroadcastArchiveParams
 }
 
 type InitializeBroadcastParams struct {
@@ -61,6 +62,10 @@ type InitializeBroadcastParams struct {
 	MediaLiveMP4InputArn      string
 	MediaLiveMP4InputName     string
 	MediaStoreContainerArn    string
+}
+
+type UploadBroadcastArchiveParams struct {
+	ArchiveURL string
 }
 
 type Error struct {

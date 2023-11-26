@@ -18,6 +18,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/secret"
 	"github.com/and-period/furumaru/api/pkg/sfn"
+	"github.com/and-period/furumaru/api/pkg/storage"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -82,6 +83,12 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	mediaConvertClient := mediaconvert.NewMediaConvert(awscfg, &mediaConvertParams, mediaconvert.WithLogger(params.logger))
 
+	// Amazon S3の設定
+	storageParams := &storage.Params{
+		Bucket: a.ArchiveBucketName,
+	}
+	storageClient := storage.NewBucket(awscfg, storageParams)
+
 	// Databaseの設定
 	dbClient, err := a.newDatabase("media", params)
 	if err != nil {
@@ -98,6 +105,7 @@ func (a *app) inject(ctx context.Context) error {
 	jobParams := &scheduler.Params{
 		WaitGroup:          params.waitGroup,
 		Database:           mediadb.NewDatabase(dbClient),
+		Storage:            storageClient,
 		Store:              storeService,
 		StepFunction:       sfnClient,
 		MediaLive:          mediaLiveClient,
