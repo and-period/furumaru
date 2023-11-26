@@ -1347,6 +1347,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
+					BoxRate:   80,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1389,6 +1390,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
+					BoxRate:   100,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1431,6 +1433,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
+					BoxRate:   90,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1473,6 +1476,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
+					BoxRate:   90,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1485,6 +1489,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 2,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
+					BoxRate:   80,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1539,6 +1544,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
+					BoxRate:   100,
 					Items: CartItems{
 						{
 							ProductID: "product-id01",
@@ -1609,6 +1615,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
+					BoxRate:   100,
 					Items: CartItems{
 						{
 							ProductID: "product-id02",
@@ -1621,6 +1628,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 2,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
+					BoxRate:   100,
 					Items: CartItems{
 						{
 							ProductID: "product-id02",
@@ -1633,6 +1641,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 3,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
+					BoxRate:   100,
 					Items: CartItems{
 						{
 							ProductID: "product-id01",
@@ -1649,6 +1658,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 4,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
+					BoxRate:   30,
 					Items: CartItems{
 						{
 							ProductID: "product-id03",
@@ -1691,6 +1701,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
+					BoxRate:   80,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1733,6 +1744,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
+					BoxRate:   20,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1775,6 +1787,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
+					BoxRate:   20,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1817,6 +1830,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize100,
+					BoxRate:   20,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1829,6 +1843,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 2,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
+					BoxRate:   10,
 					Items: CartItems{
 						{
 							ProductID: "product-id",
@@ -1883,6 +1898,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
+					BoxRate:   100,
 					Items: CartItems{
 						{
 							ProductID: "product-id01",
@@ -1895,6 +1911,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 2,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
+					BoxRate:   60,
 					Items: CartItems{
 						{
 							ProductID: "product-id02",
@@ -1949,6 +1966,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize80,
+					BoxRate:   100,
 					Items: CartItems{
 						{
 							ProductID: "product-id01",
@@ -1961,6 +1979,7 @@ func TestRefreshCart(t *testing.T) {
 					BoxNumber: 2,
 					BoxType:   ShippingTypeFrozen,
 					BoxSize:   ShippingSize60,
+					BoxRate:   60,
 					Items: CartItems{
 						{
 							ProductID: "product-id02",

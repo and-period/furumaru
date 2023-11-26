@@ -39,6 +39,7 @@ func TestOrderFulfillment(t *testing.T) {
 					BoxNumber: 1,
 					BoxType:   ShippingTypeNormal,
 					BoxSize:   ShippingSize60,
+					BoxRate:   80,
 					Items: []*CartItem{
 						{
 							ProductID: "product-id01",
@@ -61,6 +62,7 @@ func TestOrderFulfillment(t *testing.T) {
 				ShippingType:      ShippingTypeNormal,
 				BoxNumber:         1,
 				BoxSize:           ShippingSize60,
+				BoxRate:           80,
 			},
 		},
 	}
@@ -110,6 +112,7 @@ func TestOrderFulfillments(t *testing.T) {
 						BoxNumber: 1,
 						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
+						BoxRate:   80,
 						Items: []*CartItem{
 							{
 								ProductID: "product-id01",
@@ -154,6 +157,7 @@ func TestOrderFulfillments(t *testing.T) {
 					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize60,
+					BoxRate:           80,
 				},
 			},
 			expectItems: OrderItems{
@@ -196,6 +200,7 @@ func TestOrderFulfillments(t *testing.T) {
 						BoxNumber: 1,
 						BoxType:   ShippingTypeNormal,
 						BoxSize:   ShippingSize60,
+						BoxRate:   80,
 						Items: []*CartItem{
 							{
 								ProductID: "product-id01",
@@ -253,6 +258,7 @@ func TestFulfillments_AddressRevisionIDs(t *testing.T) {
 					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize100,
+					BoxRate:           80,
 				},
 				{
 					ID:                "fulfillment-id02",
@@ -263,6 +269,7 @@ func TestFulfillments_AddressRevisionIDs(t *testing.T) {
 					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         2,
 					BoxSize:           ShippingSize80,
+					BoxRate:           80,
 				},
 				{
 					ID:                "fulfillment-id03",
@@ -273,6 +280,7 @@ func TestFulfillments_AddressRevisionIDs(t *testing.T) {
 					ShippingType:      ShippingTypeFrozen,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize80,
+					BoxRate:           80,
 				},
 			},
 			expect: []int64{1},
@@ -306,6 +314,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize100,
+					BoxRate:           80,
 				},
 				{
 					ID:                "fulfillment-id02",
@@ -316,6 +325,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 					ShippingType:      ShippingTypeNormal,
 					BoxNumber:         2,
 					BoxSize:           ShippingSize80,
+					BoxRate:           80,
 				},
 				{
 					ID:                "fulfillment-id03",
@@ -326,6 +336,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 					ShippingType:      ShippingTypeFrozen,
 					BoxNumber:         1,
 					BoxSize:           ShippingSize80,
+					BoxRate:           80,
 				},
 			},
 			expect: map[string]OrderFulfillments{
@@ -339,6 +350,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 						ShippingType:      ShippingTypeNormal,
 						BoxNumber:         1,
 						BoxSize:           ShippingSize100,
+						BoxRate:           80,
 					},
 					{
 						ID:                "fulfillment-id02",
@@ -349,6 +361,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 						ShippingType:      ShippingTypeNormal,
 						BoxNumber:         2,
 						BoxSize:           ShippingSize80,
+						BoxRate:           80,
 					},
 				},
 				"order-id02": {
@@ -361,6 +374,7 @@ func TestFulfillments_GroupByOrderID(t *testing.T) {
 						ShippingType:      ShippingTypeFrozen,
 						BoxNumber:         1,
 						BoxSize:           ShippingSize80,
+						BoxRate:           80,
 					},
 				},
 			},

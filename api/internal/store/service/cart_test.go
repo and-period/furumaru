@@ -72,6 +72,7 @@ func TestGetCart(t *testing.T) {
 							BoxNumber: 1,
 							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize80,
+							BoxRate:   100,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 2},
 							},
@@ -91,6 +92,7 @@ func TestGetCart(t *testing.T) {
 							BoxNumber: 1,
 							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize60,
+							BoxRate:   80,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 1},
 							},
@@ -113,6 +115,7 @@ func TestGetCart(t *testing.T) {
 						BoxNumber: 1,
 						BoxType:   entity.ShippingTypeNormal,
 						BoxSize:   entity.ShippingSize60,
+						BoxRate:   80,
 						Items: entity.CartItems{
 							{ProductID: "product-id", Quantity: 1},
 						},
@@ -135,6 +138,7 @@ func TestGetCart(t *testing.T) {
 							BoxNumber: 1,
 							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize80,
+							BoxRate:   100,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 2},
 							},
@@ -156,6 +160,7 @@ func TestGetCart(t *testing.T) {
 						BoxNumber: 1,
 						BoxType:   entity.ShippingTypeNormal,
 						BoxSize:   entity.ShippingSize80,
+						BoxRate:   100,
 						Items: entity.CartItems{
 							{ProductID: "product-id", Quantity: 2},
 						},
@@ -235,6 +240,7 @@ func TestGetCart(t *testing.T) {
 							BoxNumber: 1,
 							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize80,
+							BoxRate:   100,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 2},
 							},
@@ -319,6 +325,7 @@ func TestAddCartItem(t *testing.T) {
 							BoxNumber: 1,
 							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize60,
+							BoxRate:   80,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 1},
 							},
@@ -451,6 +458,7 @@ func TestAddCartItem(t *testing.T) {
 							BoxNumber: 1,
 							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize60,
+							BoxRate:   80,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 1},
 							},
@@ -516,6 +524,7 @@ func TestRemoveCartItem(t *testing.T) {
 								BoxNumber: 1,
 								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
+								BoxRate:   80,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
 								},
@@ -555,6 +564,7 @@ func TestRemoveCartItem(t *testing.T) {
 								BoxNumber: 1,
 								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
+								BoxRate:   80,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
 								},
@@ -564,6 +574,7 @@ func TestRemoveCartItem(t *testing.T) {
 								BoxNumber: 2,
 								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
+								BoxRate:   80,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
 								},
@@ -584,6 +595,7 @@ func TestRemoveCartItem(t *testing.T) {
 							BoxNumber: 1,
 							BoxType:   entity.ShippingTypeNormal,
 							BoxSize:   entity.ShippingSize60,
+							BoxRate:   80,
 							Items: entity.CartItems{
 								{ProductID: "product-id", Quantity: 1},
 							},
@@ -661,6 +673,7 @@ func TestRemoveCartItem(t *testing.T) {
 								BoxNumber: 1,
 								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
+								BoxRate:   80,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
 								},
@@ -692,6 +705,7 @@ func TestRemoveCartItem(t *testing.T) {
 								BoxNumber: 1,
 								BoxType:   entity.ShippingTypeNormal,
 								BoxSize:   entity.ShippingSize60,
+								BoxRate:   80,
 								Items: entity.CartItems{
 									{ProductID: "product-id", Quantity: 1},
 								},

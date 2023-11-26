@@ -335,6 +335,14 @@ func (ps Products) Box80Rate() int64 {
 	return rate
 }
 
+func (ps Products) Box100Rate() int64 {
+	var rate int64
+	for i := range ps {
+		rate += ps[i].Box100Rate
+	}
+	return rate
+}
+
 func (ps Products) WeightGram() int64 {
 	var weight int64
 	for i := range ps {
