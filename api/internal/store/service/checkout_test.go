@@ -532,6 +532,7 @@ func checkoutmocks(
 			BoxNumber:     1,
 			BoxType:       entity.ShippingTypeNormal,
 			BoxSize:       entity.ShippingSize80,
+			BoxRate:       80,
 			Items:         entity.CartItems{{ProductID: "product-id", Quantity: 2}},
 			CoordinatorID: "coordinator-id",
 		}},
@@ -585,6 +586,7 @@ func checkoutmocks(
 				ShippingType:      entity.ShippingTypeNormal,
 				BoxNumber:         1,
 				BoxSize:           entity.ShippingSize80,
+				BoxRate:           80,
 			},
 		},
 		OrderItems: entity.OrderItems{
@@ -910,6 +912,7 @@ func TestCheckout(t *testing.T) {
 			BoxNumber:     1,
 			BoxType:       entity.ShippingTypeNormal,
 			BoxSize:       entity.ShippingSize80,
+			BoxRate:       80,
 			Items:         entity.CartItems{{ProductID: "product-id", Quantity: 2}},
 			CoordinatorID: "coordinator-id",
 		}},
@@ -985,6 +988,7 @@ func TestCheckout(t *testing.T) {
 					ShippingType:      entity.ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           entity.ShippingSize80,
+					BoxRate:           80,
 				},
 			},
 			OrderItems: entity.OrderItems{

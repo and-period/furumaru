@@ -47,6 +47,7 @@ type OrderFulfillment struct {
 	ShippingType      ShippingType      `gorm:""`                     // 配送方法
 	BoxNumber         int64             `gorm:""`                     // 箱の通番
 	BoxSize           ShippingSize      `gorm:""`                     // 箱の大きさ
+	BoxRate           int64             `gorm:""`                     // 箱の占有率
 	ShippedAt         time.Time         `gorm:"default:null"`         // 配送日時
 	CreatedAt         time.Time         `gorm:"<-:create"`            // 登録日時
 	UpdatedAt         time.Time         `gorm:""`                     // 更新日時
@@ -78,6 +79,7 @@ func NewOrderFulfillment(params *NewOrderFulfillmentParams) *OrderFulfillment {
 		ShippingType:      params.Basket.BoxType,
 		BoxNumber:         params.Basket.BoxNumber,
 		BoxSize:           params.Basket.BoxSize,
+		BoxRate:           params.Basket.BoxRate,
 	}
 }
 

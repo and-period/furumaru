@@ -37,6 +37,7 @@ type CartBasket struct {
 	BoxNumber     int64        `dynamodbav:"box_number"`     // 箱の通番
 	BoxType       ShippingType `dynamodbav:"box_type"`       // 箱の種別
 	BoxSize       ShippingSize `dynamodbav:"box_size"`       // 箱のサイズ
+	BoxRate       int64        `dynamodbav:"box_rate"`       // 箱の占有率
 	Items         CartItems    `dynamodbav:"items"`          // 商品一覧
 	CoordinatorID string       `dynamodbav:"coordinator_id"` // コーディネータID
 }
@@ -399,10 +400,12 @@ func refreshCart(baskets CartBaskets, products map[string]*Product) (CartBaskets
 			picked, rest := pickCartBasket(stacks)
 
 			// 箱の作成
+			boxSize, boxRate := calcShippingSize(picked)
 			basket := &CartBasket{
 				BoxNumber:     boxNumber,
 				BoxType:       group.boxType,
-				BoxSize:       calcShippingSize(picked),
+				BoxSize:       boxSize,
+				BoxRate:       boxRate,
 				Items:         NewCartItemsWithProducts(picked),
 				CoordinatorID: group.coordinatorID,
 			}
@@ -444,13 +447,17 @@ func pickCartBasket(products Products) (Products, Products) {
 }
 
 // calcShippingSize - 買い物かごの占有率を見て、かごの大きさを決定
-func calcShippingSize(products Products) ShippingSize {
+func calcShippingSize(products Products) (ShippingSize, int64) {
 	weight := products.WeightGram()
-	if products.Box60Rate() <= 100 && weight <= bascketWeightLimits[ShippingSize60] {
-		return ShippingSize60
+	if weight <= bascketWeightLimits[ShippingSize60] {
+		if rate := products.Box60Rate(); rate <= 100 {
+			return ShippingSize60, rate
+		}
 	}
-	if products.Box80Rate() <= 100 && weight <= bascketWeightLimits[ShippingSize80] {
-		return ShippingSize80
+	if weight <= bascketWeightLimits[ShippingSize80] {
+		if rate := products.Box80Rate(); rate <= 100 {
+			return ShippingSize80, rate
+		}
 	}
-	return ShippingSize100
+	return ShippingSize100, products.Box100Rate()
 }

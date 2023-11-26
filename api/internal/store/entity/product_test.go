@@ -691,6 +691,45 @@ func TestProducts_Box80Rate(t *testing.T) {
 	}
 }
 
+func TestProducts_Box100Rate(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   int64
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:         "product-id01",
+					Weight:     100,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  40,
+					Box100Rate: 30,
+				},
+				{
+					ID:         "product-id02",
+					Weight:     200,
+					WeightUnit: WeightUnitGram,
+					Box60Rate:  50,
+					Box80Rate:  45,
+					Box100Rate: 40,
+				},
+			},
+			expect: 70,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.Box100Rate())
+		})
+	}
+}
+
 func TestProducts_WeightGram(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
