@@ -403,6 +403,26 @@ func TestBroadcast_Update(t *testing.T) {
 			},
 		},
 		{
+			name: "success archive",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				broadcast := testBroadcast("broadcast-id", "schedule-id", now())
+				err = db.DB.Create(&broadcast).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				broadcastID: "broadcast-id",
+				params: &database.UpdateBroadcastParams{
+					Status: entity.BroadcastStatusDisabled,
+					UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
+						ArchiveURL: "http://example.com/master.mp4",
+					},
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
 			name: "success other",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				broadcast := testBroadcast("broadcast-id", "schedule-id", now())

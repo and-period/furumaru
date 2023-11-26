@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sfn"
+	"github.com/and-period/furumaru/api/pkg/storage"
 	"go.uber.org/zap"
 )
 
@@ -25,6 +26,7 @@ type Params struct {
 	MediaConvert       mediaconvert.MediaConvert
 	WaitGroup          *sync.WaitGroup
 	Database           *database.Database
+	Storage            storage.Bucket
 	Store              store.Service
 	Environment        string
 	ArchiveBucketName  string

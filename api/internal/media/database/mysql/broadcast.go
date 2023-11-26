@@ -97,6 +97,7 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *data
 	if params.InitializeBroadcastParams != nil {
 		updates["input_url"] = params.InputURL
 		updates["output_url"] = params.OutputURL
+		updates["archive_url"] = ""
 		updates["cloud_front_distribution_arn"] = params.CloudFrontDistributionArn
 		updates["media_live_channel_arn"] = params.MediaLiveChannelArn
 		updates["media_live_channel_id"] = params.MediaLiveChannelID
@@ -105,6 +106,9 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *data
 		updates["media_live_mp4_input_arn"] = params.MediaLiveMP4InputArn
 		updates["media_live_mp4_input_name"] = params.MediaLiveMP4InputName
 		updates["media_store_container_arn"] = params.MediaStoreContainerArn
+	}
+	if params.UploadBroadcastArchiveParams != nil {
+		updates["archive_url"] = params.ArchiveURL
 	}
 	if params.Status == entity.BroadcastStatusDisabled {
 		updates["input_url"] = ""

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -31,6 +32,8 @@ const (
 type Bucket interface {
 	// オブジェクトURLの生成
 	GenerateObjectURL(path string) (string, error)
+	// S3 URIの生成
+	GenerateS3URI(path string) string
 	// S3 Bucketの接続先情報を取得
 	GetHost() (*url.URL, error)
 	// S3 BucketのFQDNを取得
@@ -108,6 +111,11 @@ func (b *bucket) GenerateObjectURL(path string) (string, error) {
 	}
 	u.Path = path
 	return u.String(), nil
+}
+
+func (b *bucket) GenerateS3URI(path string) string {
+	fpath := filepath.Join(aws.ToString(b.name), path)
+	return fmt.Sprintf("s3://%s", fpath)
 }
 
 func (b *bucket) GetHost() (*url.URL, error) {
