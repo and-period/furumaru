@@ -59,6 +59,7 @@ orderResponse:
         shippingType: 1
         boxNumber: 1
         boxSize: 2
+        boxRate: 80
         shippedAt: 0
         addressId: 'kSByoE6FetnPs5Byk3a9Zx'
         lastname: '&.'
@@ -256,6 +257,7 @@ ordersResponse:
         shippingType: 1
         boxNumber: 1
         boxSize: 2
+        boxRate: 80
         shippedAt: 0
         addressId: 'kSByoE6FetnPs5Byk3a9Zx'
         lastname: '&.'

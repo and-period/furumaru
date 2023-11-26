@@ -25,6 +25,7 @@ cartResponse:
     - number: 1
       type: 1
       size: 1
+      rate: 80
       items:
       - productId: 'kSByoE6FetnPs5Byk3a9Zx'
         quantity: 1

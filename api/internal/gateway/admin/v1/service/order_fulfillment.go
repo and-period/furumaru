@@ -122,6 +122,7 @@ func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, address *Address)
 			ShippingType:    NewShippingType(fulfillment.ShippingType).Response(),
 			BoxNumber:       fulfillment.BoxNumber,
 			BoxSize:         NewShippingSize(fulfillment.BoxSize).Response(),
+			BoxRate:         fulfillment.BoxRate,
 			ShippedAt:       jst.Unix(fulfillment.ShippedAt),
 			Address:         address.Response(),
 		},
