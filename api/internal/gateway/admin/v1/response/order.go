@@ -47,6 +47,7 @@ type OrderFulfillment struct {
 	ShippingType    int32  `json:"shippingType"`    // 配送方法
 	BoxNumber       int64  `json:"boxNumber"`       // 箱の通番
 	BoxSize         int32  `json:"boxSize"`         // 箱の大きさ
+	BoxRate         int64  `json:"boxRate"`         // 箱の占有率
 	ShippedAt       int64  `json:"shippedAt"`       // 配送日時
 	*Address               // 配送先情報
 }

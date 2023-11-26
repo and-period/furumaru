@@ -22,6 +22,7 @@ func TestCart(t *testing.T) {
 				BoxNumber: 1,
 				BoxType:   entity.ShippingTypeNormal,
 				BoxSize:   entity.ShippingSize60,
+				BoxRate:   80,
 				Items: []*entity.CartItem{
 					{
 						ProductID: "product-id",
@@ -35,6 +36,7 @@ func TestCart(t *testing.T) {
 					Number: 1,
 					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
+					Rate:   80,
 					Items: []*response.CartItem{
 						{
 							ProductID: "product-id",
@@ -70,6 +72,7 @@ func TestCart_Response(t *testing.T) {
 					Number: 1,
 					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
+					Rate:   80,
 					Items: []*response.CartItem{
 						{
 							ProductID: "product-id",
@@ -83,6 +86,7 @@ func TestCart_Response(t *testing.T) {
 				Number: 1,
 				Type:   ShippingTypeNormal.Response(),
 				Size:   ShippingSize60.Response(),
+				Rate:   80,
 				Items: []*response.CartItem{
 					{
 						ProductID: "product-id",
@@ -119,6 +123,7 @@ func TestCarts(t *testing.T) {
 						BoxNumber: 1,
 						BoxType:   entity.ShippingTypeNormal,
 						BoxSize:   entity.ShippingSize60,
+						BoxRate:   80,
 						Items: []*entity.CartItem{
 							{
 								ProductID: "product-id",
@@ -138,6 +143,7 @@ func TestCarts(t *testing.T) {
 						Number: 1,
 						Type:   ShippingTypeNormal.Response(),
 						Size:   ShippingSize60.Response(),
+						Rate:   80,
 						Items: []*response.CartItem{
 							{
 								ProductID: "product-id",
@@ -180,6 +186,7 @@ func TestCarts_Response(t *testing.T) {
 						Number: 1,
 						Type:   ShippingTypeNormal.Response(),
 						Size:   ShippingSize60.Response(),
+						Rate:   80,
 						Items: []*response.CartItem{
 							{
 								ProductID: "product-id",
@@ -195,6 +202,7 @@ func TestCarts_Response(t *testing.T) {
 					Number: 1,
 					Type:   ShippingTypeNormal.Response(),
 					Size:   ShippingSize60.Response(),
+					Rate:   80,
 					Items: []*response.CartItem{
 						{
 							ProductID: "product-id",

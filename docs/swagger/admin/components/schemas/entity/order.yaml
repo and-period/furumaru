@@ -86,6 +86,7 @@ order:
       shippingType: 1
       boxNumber: 1
       boxSize: 2
+      boxRate: 80
       shippedAt: 0
       addressId: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
@@ -263,6 +264,10 @@ orderFulfillment:
       description: 箱の通番
     boxSize:
       $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
+    boxRate:
+      type: integer
+      format: int64
+      description: 箱の占有率
     shippedAt:
       type: integer
       format: int64
@@ -302,6 +307,7 @@ orderFulfillment:
   - shippingType
   - boxNumber
   - boxSize
+  - boxRate
   - shippedAt
   - addressId
   - lastname
@@ -320,6 +326,7 @@ orderFulfillment:
     shippingType: 1
     boxNumber: 1
     boxSize: 2
+    boxRate: 80
     shippedAt: 0
     addressId: 'kSByoE6FetnPs5Byk3a9Zx'
     lastname: '&.'

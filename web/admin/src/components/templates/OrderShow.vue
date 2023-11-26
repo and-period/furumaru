@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiPlus } from '@mdi/js'
+import { mdiDelete, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
@@ -445,8 +445,24 @@ const onSubmitUpdate = (fulfillmentId: string): void => {
   console.log('click:submit update', fulfillmentId)
 }
 
+const onSubmitSaveDraft = (): void => {
+  console.log('click:submit save draft')
+}
+
+const onSubmitCaptured = (): void => {
+  console.log('click:submit captured')
+}
+
 const onSubmitFulfilled = (): void => {
   console.log('click:submit fulfilled')
+}
+
+const onSubmitCancel = (): void => {
+  console.log('click:submit cancel')
+}
+
+const onSubmitRefund = (): void => {
+  console.log('click:submit refund')
 }
 </script>
 
@@ -630,7 +646,7 @@ const onSubmitFulfilled = (): void => {
             </v-list-item>
             <v-list-item v-if="props.order.fulfillments.length > 0">
               <v-list-item-subtitle class="pb-2">
-                請求先情報
+                配送先情報
               </v-list-item-subtitle>
               <div>{{ getFulfillmentAddressName() }}</div>
               <div class="mt-1">
@@ -680,6 +696,14 @@ const onSubmitFulfilled = (): void => {
             </v-col>
             <v-col cols="9">
               {{ getBoxSize(fulfillment.boxSize) }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              箱の占有率
+            </v-col>
+            <v-col cols="9">
+              {{ fulfillment.boxRate }}
             </v-col>
           </v-row>
           <v-row>
@@ -747,17 +771,29 @@ const onSubmitFulfilled = (): void => {
             placeholder="例：ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。"
           />
         </v-card-text>
-        <v-card-actions class="pb-4">
-          <v-btn variant="outlined" color="info" @click="onSubmitFulfilled()">
-            <v-icon start :icon="mdiPlus" />
-            下書きを保存
-          </v-btn>
-          <v-btn variant="outlined" color="primary" @click="onSubmitFulfilled()">
-            <v-icon start :icon="mdiPlus" />
-            発送完了を通知
-          </v-btn>
-        </v-card-actions>
       </v-card>
+    </v-col>
+    <v-col sm="12" md="12" lg="8">
+      <v-btn variant="outlined" color="info" @click="onSubmitSaveDraft()">
+        <v-icon start :icon="mdiPlus" />
+        下書きを保存
+      </v-btn>
+      <v-btn variant="outlined" color="primary" @click="onSubmitCaptured()">
+        <v-icon start :icon="mdiPlus" />
+        注文を確定
+      </v-btn>
+      <v-btn variant="outlined" color="primary" @click="onSubmitFulfilled()">
+        <v-icon start :icon="mdiPlus" />
+        発送完了を通知
+      </v-btn>
+      <v-btn variant="outlined" color="error" @click="onSubmitCancel()">
+        <v-icon start :icon="mdiDelete" />
+        注文をキャンセル
+      </v-btn>
+      <v-btn variant="outlined" color="error" @click="onSubmitRefund()">
+        <v-icon start :icon="mdiDelete" />
+        返金
+      </v-btn>
     </v-col>
   </v-row>
 </template>

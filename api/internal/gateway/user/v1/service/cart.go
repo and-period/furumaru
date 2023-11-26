@@ -23,6 +23,7 @@ func NewCart(basket *entity.CartBasket) *Cart {
 			Number:        basket.BoxNumber,
 			Type:          NewShippingType(basket.BoxType).Response(),
 			Size:          NewShippingSize(basket.BoxSize).Response(),
+			Rate:          basket.BoxRate,
 			Items:         NewCartItems(basket.Items).Response(),
 			CoordinatorID: basket.CoordinatorID,
 		},
