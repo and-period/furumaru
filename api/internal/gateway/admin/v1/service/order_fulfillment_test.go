@@ -250,6 +250,7 @@ func TestOrderFulfillment(t *testing.T) {
 				ShippingType:      entity.ShippingTypeNormal,
 				BoxNumber:         1,
 				BoxSize:           entity.ShippingSize60,
+				BoxRate:           80,
 				CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				ShippedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -276,6 +277,7 @@ func TestOrderFulfillment(t *testing.T) {
 					ShippingType:    ShippingTypeNormal.Response(),
 					BoxNumber:       1,
 					BoxSize:         ShippingSize60.Response(),
+					BoxRate:         80,
 					ShippedAt:       1640962800,
 					Address: &response.Address{
 						Lastname:       "&.",
@@ -319,6 +321,7 @@ func TestOrderFulfillment_Response(t *testing.T) {
 					ShippingType:    ShippingTypeNormal.Response(),
 					BoxNumber:       1,
 					BoxSize:         ShippingSize60.Response(),
+					BoxRate:         80,
 					ShippedAt:       1640962800,
 					Address: &response.Address{
 						Lastname:       "&.",
@@ -341,6 +344,7 @@ func TestOrderFulfillment_Response(t *testing.T) {
 				ShippingType:    ShippingTypeNormal.Response(),
 				BoxNumber:       1,
 				BoxSize:         ShippingSize60.Response(),
+				BoxRate:         80,
 				ShippedAt:       1640962800,
 				Address: &response.Address{
 					Lastname:       "&.",
@@ -385,6 +389,7 @@ func TestOrderFulfillments(t *testing.T) {
 					ShippingType:      entity.ShippingTypeNormal,
 					BoxNumber:         1,
 					BoxSize:           entity.ShippingSize60,
+					BoxRate:           80,
 					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					ShippedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -415,6 +420,7 @@ func TestOrderFulfillments(t *testing.T) {
 						ShippingType:    ShippingTypeNormal.Response(),
 						BoxNumber:       1,
 						BoxSize:         ShippingSize60.Response(),
+						BoxRate:         80,
 						ShippedAt:       1640962800,
 						Address: &response.Address{
 							Lastname:       "&.",
@@ -460,6 +466,7 @@ func TestOrderFulfillments_Response(t *testing.T) {
 						ShippingType:    ShippingTypeNormal.Response(),
 						BoxNumber:       1,
 						BoxSize:         ShippingSize60.Response(),
+						BoxRate:         80,
 						ShippedAt:       1640962800,
 						Address: &response.Address{
 							Lastname:       "&.",
@@ -484,6 +491,7 @@ func TestOrderFulfillments_Response(t *testing.T) {
 					ShippingType:    ShippingTypeNormal.Response(),
 					BoxNumber:       1,
 					BoxSize:         ShippingSize60.Response(),
+					BoxRate:         80,
 					ShippedAt:       1640962800,
 					Address: &response.Address{
 						Lastname:       "&.",

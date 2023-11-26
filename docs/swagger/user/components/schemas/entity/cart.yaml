@@ -10,6 +10,10 @@ cart:
       $ref: './../../../openapi.yaml#/components/schemas/shippingType'
     size:
       $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
+    rate:
+      type: integer
+      format: int64
+      description: 箱の占有率
     items:
       type: array
       items:
@@ -32,12 +36,14 @@ cart:
   - number
   - type
   - size
+  - rate
   - items
   - coordinatorId
   example:
     number: 1
     type: 1
     size: 1
+    rate: 80
     items:
     - productId: 'kSByoE6FetnPs5Byk3a9Zx'
       quantity: 1
