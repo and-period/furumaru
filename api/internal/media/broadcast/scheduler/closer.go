@@ -88,8 +88,8 @@ func (c *closer) run(ctx context.Context, target time.Time) error {
 func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 	c.logger.Debug("Stopping channel...", zap.Time("target", target))
 	in := &store.ListSchedulesInput{
-		EndAtGte: target.AddDate(0, 0, -1),   // マルシェ開催終了1日経過〜
-		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間経過
+		EndAtGte: target.AddDate(0, 0, -7),   // 〜マルシェ開催終了7日経過
+		EndAtLt:  target.Add(-1 * time.Hour), // マルシェ開催終了1時間経過〜
 		NoLimit:  true,
 	}
 	schedules, total, err := c.store.ListSchedules(ctx, in)
@@ -141,8 +141,8 @@ func (c *closer) stopChannel(ctx context.Context, target time.Time) error {
 // removeChannel - ライブ配信を削除 (1時間後&&停止中)
 func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 	in := &store.ListSchedulesInput{
-		EndAtGte: target.AddDate(0, 0, -1),   // マルシェ開催終了1日後〜
-		EndAtLt:  target.Add(-1 * time.Hour), // 〜マルシェ開催終了1時間後
+		EndAtGte: target.AddDate(0, 0, -7),   // 〜マルシェ開催終了7日経過
+		EndAtLt:  target.Add(-1 * time.Hour), // マルシェ開催終了1時間経過〜
 		NoLimit:  true,
 	}
 	schedules, total, err := c.store.ListSchedules(ctx, in)
