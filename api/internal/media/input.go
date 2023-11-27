@@ -41,3 +41,9 @@ type GetBroadcastByScheduleIDInput struct {
 type CreateBroadcastInput struct {
 	ScheduleID string `validate:"required"`
 }
+
+type UpdateBroadcastArchiveInput struct {
+	ScheduleID string                `validate:"required"`
+	File       io.Reader             `validate:"required"`
+	Header     *multipart.FileHeader `validate:"required"`
+}

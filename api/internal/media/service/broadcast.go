@@ -1,8 +1,12 @@
 package service
 
 import (
+	"bytes"
 	"context"
+	"fmt"
+	"io"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
@@ -66,4 +70,33 @@ func (s *service) CreateBroadcast(ctx context.Context, in *media.CreateBroadcast
 		return nil, internalError(err)
 	}
 	return broadcast, nil
+}
+
+func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBroadcastArchiveInput) error {
+	var buf bytes.Buffer
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID, "status")
+	if err != nil {
+		return internalError(err)
+	}
+	if broadcast.Status != entity.BroadcastStatusDisabled {
+		return fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
+	}
+	reg := entity.BroadcastArchiveRegulation
+	teeReader := io.TeeReader(in.File, &buf)
+	if err := reg.Validate(teeReader, in.Header); err != nil {
+		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
+	}
+	path := reg.GenerateFilePath(in.Header)
+	archiveURL, err := s.storage.Upload(ctx, path, &buf)
+	if err != nil {
+		return internalError(err)
+	}
+	params := &database.UpdateBroadcastParams{UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
+		ArchiveURL: archiveURL,
+	}}
+	err = s.db.Broadcast.Update(ctx, in.ScheduleID, params)
+	return internalError(err)
 }

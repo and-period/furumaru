@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/database"
+	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
@@ -56,12 +57,12 @@ func newArchiveHLSPath(scheduleID string) string {
 	if scheduleID == "" {
 		return ""
 	}
-	return fmt.Sprintf("%s/%s/hls", archivePathPrefix, scheduleID)
+	return fmt.Sprintf("/%s/%s/hls", entity.BroadcastArchivePath, scheduleID)
 }
 
 func newArchiveMP4Path(scheduleID string) string {
 	if scheduleID == "" {
 		return ""
 	}
-	return fmt.Sprintf("%s/%s/mp4", archivePathPrefix, scheduleID)
+	return fmt.Sprintf("/%s/%s/mp4", entity.BroadcastArchivePath, scheduleID)
 }

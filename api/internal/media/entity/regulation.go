@@ -19,6 +19,7 @@ var (
 )
 
 const (
+	BroadcastArchivePath          = "schedules/archive"            // ライブ配信アーカイブ動画
 	CoordinatorThumbnailPath      = "coordinators/thumbnail"       // コーディネータサムネイル画像
 	CoordinatorHeaderPath         = "coordinators/header"          // コーディネータヘッダー画像
 	CoordinatorPromotionVideoPath = "coordinators/promotion-video" // コーディネータ紹介映像
@@ -44,6 +45,11 @@ type Regulation struct {
 }
 
 var (
+	BroadcastArchiveRegulation = &Regulation{
+		MaxSize: 200 << 20, // 200MB
+		Formats: set.New("video/mp4"),
+		dir:     BroadcastArchivePath,
+	}
 	CoordinatorThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),

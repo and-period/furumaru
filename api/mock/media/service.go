@@ -390,6 +390,20 @@ func (mr *MockServiceMockRecorder) ResizeScheduleThumbnail(ctx, in interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeScheduleThumbnail", reflect.TypeOf((*MockService)(nil).ResizeScheduleThumbnail), ctx, in)
 }
 
+// UpdateBroadcastArchive mocks base method.
+func (m *MockService) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBroadcastArchiveInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateBroadcastArchive", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateBroadcastArchive indicates an expected call of UpdateBroadcastArchive.
+func (mr *MockServiceMockRecorder) UpdateBroadcastArchive(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBroadcastArchive", reflect.TypeOf((*MockService)(nil).UpdateBroadcastArchive), ctx, in)
+}
+
 // UploadCoordinatorBonusVideo mocks base method.
 func (m *MockService) UploadCoordinatorBonusVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	m.ctrl.T.Helper()
