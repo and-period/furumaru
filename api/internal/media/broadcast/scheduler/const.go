@@ -1,7 +1,7 @@
 package scheduler
 
 const (
-	streamName       = "/live/a"
+	streamName       = "live/a"
 	archiveFilename  = "original.mp4"
 	playlistFilename = "live.m3u8"
 )

@@ -5,6 +5,7 @@ type Cart struct {
 	Number        int64       `json:"number"`        // 箱の通番
 	Type          int32       `json:"type"`          // 箱の種別
 	Size          int32       `json:"size"`          // 箱のサイズ
+	Rate          int64       `json:"rate"`          // 箱の占有率
 	Items         []*CartItem `json:"items"`         // 箱の商品一覧
 	CoordinatorID string      `json:"coordinatorId"` // コーディネータID
 }

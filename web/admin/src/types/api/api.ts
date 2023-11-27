@@ -2607,6 +2607,12 @@ export interface OrderFulfillment {
      */
     'boxSize': ShippingSize;
     /**
+     * 箱の占有率
+     * @type {number}
+     * @memberof OrderFulfillment
+     */
+    'boxRate': number;
+    /**
      * 配送日時（unixtime）
      * @type {number}
      * @memberof OrderFulfillment
