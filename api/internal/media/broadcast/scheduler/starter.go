@@ -163,26 +163,25 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 	case s.now().After(schedule.StartAt.Add(-6 * time.Minute)): // ライブ配信開始まで6分を切っている
 		return []*medialive.ScheduleSetting{
 			{
+				Name:       fmt.Sprintf("immediate-input-mp4 %s", jst.Format(s.now(), time.DateTime)),
+				ActionType: medialive.ScheduleActionTypeInputSwitch,
+				StartType:  medialive.ScheduleStartTypeImmediate,
+				Reference:  broadcast.MediaLiveMP4InputName,
+			},
+			{
 				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
 				StartType:  medialive.ScheduleStartTypeFixed,
 				ExecutedAt: schedule.StartAt,
 				Reference:  broadcast.MediaLiveRTMPInputName,
 			},
-			{
-				Name:       fmt.Sprintf("immediate-input-mp4 %s", jst.Format(s.now(), time.DateTime)),
-				ActionType: medialive.ScheduleActionTypeInputSwitch,
-				StartType:  medialive.ScheduleStartTypeImmediate,
-				Reference:  broadcast.MediaLiveMP4InputName,
-			},
 		}
 	default: // ライブ配信開始まで6分以上時間あり
 		return []*medialive.ScheduleSetting{
 			{
-				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
+				Name:       fmt.Sprintf("immediate-input-rtmp %s", jst.Format(s.now(), time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
-				StartType:  medialive.ScheduleStartTypeFixed,
-				ExecutedAt: schedule.StartAt,
+				StartType:  medialive.ScheduleStartTypeImmediate,
 				Reference:  broadcast.MediaLiveRTMPInputName,
 			},
 			{
@@ -193,9 +192,10 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 				Reference:  broadcast.MediaLiveMP4InputName,
 			},
 			{
-				Name:       fmt.Sprintf("immediate-input-rtmp %s", jst.Format(s.now(), time.DateTime)),
+				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
-				StartType:  medialive.ScheduleStartTypeImmediate,
+				StartType:  medialive.ScheduleStartTypeFixed,
+				ExecutedAt: schedule.StartAt,
 				Reference:  broadcast.MediaLiveRTMPInputName,
 			},
 		}
