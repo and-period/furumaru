@@ -1,10 +1,9 @@
 package scheduler
 
 const (
-	streamName        = "live/a"
-	archivePathPrefix = "/schedules/archives"
-	archiveFilename   = "original.mp4"
-	playlistFilename  = "live.m3u8"
+	streamName       = "live/a"
+	archiveFilename  = "original.mp4"
+	playlistFilename = "live.m3u8"
 )
 
 // CreatePayload - 配信リソース作成リクエスト
