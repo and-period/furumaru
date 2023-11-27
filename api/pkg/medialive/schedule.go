@@ -66,7 +66,7 @@ func (c *client) newScheduleActions(params []*ScheduleSetting) []types.ScheduleA
 			actions[i].ScheduleActionStartSettings.ImmediateModeScheduleActionStartSettings = &types.ImmediateModeScheduleActionStartSettings{}
 		case ScheduleStartTypeFixed:
 			actions[i].ScheduleActionStartSettings.FixedModeScheduleActionStartSettings = &types.FixedModeScheduleActionStartSettings{
-				Time: aws.String(p.ExecutedAt.Format(time.RFC3339)),
+				Time: aws.String(p.ExecutedAt.UTC().Format(time.RFC3339)),
 			}
 		case ScheduleStartTypeFollow:
 			c.logger.Warn("Not implemented start type", zap.Any("setting", p))
