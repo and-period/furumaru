@@ -24,6 +24,42 @@ func TestRegulation_Validate(t *testing.T) {
 		input      func(t *testing.T) (io.Reader, *multipart.FileHeader)
 		expect     error
 	}{
+		// BroadcastArchive
+		{
+			name:       "success broadcast archive",
+			regulation: BroadcastArchiveRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for broadcast archive",
+			regulation: BroadcastArchiveRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testVideoFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for broadcast archive",
+			regulation: BroadcastArchiveRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testVideoFile(t)
+				header.Size = 200<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for broadcast archive",
+			regulation: BroadcastArchiveRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
 		// CoordinatorThumbnail
 		{
 			name:       "success coordinator thumbnail",

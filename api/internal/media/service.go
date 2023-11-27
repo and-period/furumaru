@@ -13,6 +13,7 @@ type Service interface {
 	ListBroadcasts(ctx context.Context, in *ListBroadcastsInput) (entity.Broadcasts, int64, error)              // 一覧取得
 	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) // 一覧取得(マルシェ開催スケジュールID指定)
 	CreateBroadcast(ctx context.Context, in *CreateBroadcastInput) (*entity.Broadcast, error)                   // 登録
+	UpdateBroadcastArchive(ctx context.Context, in *UpdateBroadcastArchiveInput) error                          // アーカイブ動画の更新
 	// コーディネータ
 	GenerateCoordinatorThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)      // サムネイル画像を生成
 	UploadCoordinatorThumbnail(ctx context.Context, in *UploadFileInput) (string, error)          // サムネイル画像アップロード

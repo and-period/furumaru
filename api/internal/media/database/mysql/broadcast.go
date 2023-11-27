@@ -91,8 +91,10 @@ func (b *broadcast) Create(ctx context.Context, broadcast *entity.Broadcast) err
 
 func (b *broadcast) Update(ctx context.Context, broadcastID string, params *database.UpdateBroadcastParams) error {
 	updates := map[string]interface{}{
-		"status":     params.Status,
 		"updated_at": b.now(),
+	}
+	if params.Status != entity.BroadcastStatusUnknown {
+		updates["status"] = params.Status
 	}
 	if params.InitializeBroadcastParams != nil {
 		updates["input_url"] = params.InputURL
