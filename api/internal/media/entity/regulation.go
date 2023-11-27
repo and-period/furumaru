@@ -19,7 +19,7 @@ var (
 )
 
 const (
-	BroadcastArchivePath          = "schedules/archive"            // ライブ配信アーカイブ動画
+	BroadcastArchivePath          = "schedules/archives"           // ライブ配信アーカイブ動画
 	CoordinatorThumbnailPath      = "coordinators/thumbnail"       // コーディネータサムネイル画像
 	CoordinatorHeaderPath         = "coordinators/header"          // コーディネータヘッダー画像
 	CoordinatorPromotionVideoPath = "coordinators/promotion-video" // コーディネータ紹介映像
