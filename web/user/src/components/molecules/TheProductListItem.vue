@@ -73,15 +73,15 @@ const handleClickAddCartButton = () => {
       {{ priceString }}
     </p>
 
-    <div class="flex h-8 items-center gap-2 text-sm">
-      <div class="inline-flex items-center">
+    <div class="flex h-6 items-center gap-2 text-[10px]">
+      <div class="inline-flex h-full items-center">
         <label
           class="mr-2 block whitespace-nowrap text-center text-[10px] md:text-[14px]"
           >数量</label
         >
         <select
           v-model="quantity"
-          class="h-full w-[32px] border-[1px] border-main md:w-[56px] md:px-2"
+          class="h-full border-[1px] border-main px-2"
           :disabled="!hasStock"
         >
           <option
