@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
+	"github.com/and-period/furumaru/api/internal/store"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -98,5 +99,42 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 		ArchiveURL: archiveURL,
 	}}
 	err = s.db.Broadcast.Update(ctx, in.ScheduleID, params)
+	return internalError(err)
+}
+
+func (s *service) ActivateBroadcastStaticImage(ctx context.Context, in *media.ActivateBroadcastStaticImageInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return internalError(err)
+	}
+	if broadcast.Status != entity.BroadcastStatusActive {
+		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+	}
+	scheduleIn := &store.GetScheduleInput{
+		ScheduleID: in.ScheduleID,
+	}
+	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
+	if err != nil {
+		return internalError(err)
+	}
+	err = s.media.ActivateStaticImage(ctx, broadcast.MediaLiveChannelID, schedule.ImageURL)
+	return internalError(err)
+}
+
+func (s *service) DeactivateBroadcastStaticImage(ctx context.Context, in *media.DeactivateBroadcastStaticImageInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return internalError(err)
+	}
+	if broadcast.Status != entity.BroadcastStatusActive {
+		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+	}
+	err = s.media.DeactivateStaticImage(ctx, broadcast.MediaLiveChannelID)
 	return internalError(err)
 }

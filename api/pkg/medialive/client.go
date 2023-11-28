@@ -15,11 +15,14 @@ type MediaLive interface {
 	StartChannel(ctx context.Context, channelID string) error
 	StopChannel(ctx context.Context, channelID string) error
 	CreateSchedule(ctx context.Context, params *CreateScheduleParams) error
+	ActivateStaticImage(ctx context.Context, channelID, imageURL string) error
+	DeactivateStaticImage(ctx context.Context, channelID string) error
 }
 
 type client struct {
 	media  *medialive.Client
 	logger *zap.Logger
+	now    func() time.Time
 }
 
 type options struct {
@@ -66,5 +69,6 @@ func NewMediaLive(cfg aws.Config, opts ...Option) MediaLive {
 	return &client{
 		media:  cli,
 		logger: dopts.logger,
+		now:    time.Now,
 	}
 }

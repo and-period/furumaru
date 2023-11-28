@@ -47,3 +47,11 @@ type UpdateBroadcastArchiveInput struct {
 	File       io.Reader             `validate:"required"`
 	Header     *multipart.FileHeader `validate:"required"`
 }
+
+type ActivateBroadcastStaticImageInput struct {
+	ScheduleID string `validate:"required"`
+}
+
+type DeactivateBroadcastStaticImageInput struct {
+	ScheduleID string `validate:"required"`
+}

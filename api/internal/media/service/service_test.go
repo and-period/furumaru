@@ -17,8 +17,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	mock_database "github.com/and-period/furumaru/api/mock/media/database"
+	mock_medialive "github.com/and-period/furumaru/api/mock/pkg/medialive"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
+	mock_store "github.com/and-period/furumaru/api/mock/store"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
@@ -35,9 +37,11 @@ var (
 
 type mocks struct {
 	db       *dbMocks
+	store    *mock_store.MockService
 	tmp      *mock_storage.MockBucket
 	storage  *mock_storage.MockBucket
 	producer *mock_sqs.MockProducer
+	media    *mock_medialive.MockMediaLive
 }
 
 type dbMocks struct {
@@ -49,9 +53,11 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		db:       newDBMocks(ctrl),
+		store:    mock_store.NewMockService(ctrl),
 		tmp:      mock_storage.NewMockBucket(ctrl),
 		storage:  mock_storage.NewMockBucket(ctrl),
 		producer: mock_sqs.NewMockProducer(ctrl),
+		media:    mock_medialive.NewMockMediaLive(ctrl),
 	}
 }
 
@@ -67,9 +73,11 @@ func newService(mocks *mocks) *service {
 		Database: &database.Database{
 			Broadcast: mocks.db.Broadcast,
 		},
-		Tmp:      mocks.tmp,
-		Storage:  mocks.storage,
-		Producer: mocks.producer,
+		Store:     mocks.store,
+		Tmp:       mocks.tmp,
+		Storage:   mocks.storage,
+		Producer:  mocks.producer,
+		MediaLive: mocks.media,
 	}
 	tmpHost, _ := url.Parse(tmpURL)
 	storageHost, _ := url.Parse(storageURL)
