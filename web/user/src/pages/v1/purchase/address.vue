@@ -35,15 +35,17 @@ const handleClickNextStepButton = () => {
 
 <template>
   <div class="container mx-auto">
-    <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
+    <div
+      class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
+    >
       ご購入手続き
     </div>
-    <div class="my-10 bg-white px-6 pb-10">
-      <div class="grid grid-cols-2 gap-[80px]">
-        <div class="pl-10">
+    <div class="mx-[15px] my-10 bg-white px-6 pb-10 md:mx-0">
+      <div class="gap-[80px] md:grid md:grid-cols-2">
+        <div class="md:pl-10">
           <div>
             <div
-              class="pt-[80px] text-left text-[16px] font-bold tracking-[1.6px] text-main"
+              class="pt-[24px] text-left text-[16px] font-bold tracking-[1.6px] text-main md:pt-[80px]"
             >
               お客様情報
             </div>
@@ -63,13 +65,13 @@ const handleClickNextStepButton = () => {
             </div>
             <div class="mt-4 grid grid-cols-2 gap-4">
               <the-text-input
-                placeholder="セイ"
+                placeholder="フリガナ(セイ)"
                 :with-label="false"
                 type="text"
                 required
               />
               <the-text-input
-                placeholder="メイ"
+                placeholder="フリガナ(メイ)"
                 :with-label="false"
                 type="text"
                 required
@@ -96,7 +98,7 @@ const handleClickNextStepButton = () => {
               class="pt-4"
               required
             />
-            <div class="mt-4 grid grid-cols-2 gap-4">
+            <div class="mt-4 md:grid md:grid-cols-2 md:gap-4">
               <the-text-input
                 placeholder="郵便番号（ハイフンなし）"
                 :with-label="false"
@@ -138,34 +140,38 @@ const handleClickNextStepButton = () => {
                 type="radio"
                 checked
               />
-              <label class="pl-2 text-main"> 上記の住所にお届け </label>
+              <label class="pl-2 text-main text-[14px] md:text-[16px]"> 上記の住所にお届け </label>
             </div>
 
-            <div class="mt-12 grid grid-cols-2">
-              <button
-                class="inline-flex items-center"
-                @click="handleClickPreviousStepButton"
-              >
-                <the-left-arrow-icon class="h-4 w-4" />
-                <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
-                  前のページへ戻る
-                </p>
-              </button>
+            <div class="hidden md:block">
+              <div class="mt-12 md:grid md:grid-cols-2">
+                <div class="flex items-center">
+                  <button
+                    class="inline-flex"
+                    @click="handleClickPreviousStepButton"
+                  >
+                    <the-left-arrow-icon class="h-4 w-4" />
+                    <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
+                      前のページへ戻る
+                    </p>
+                  </button>
+                </div>
 
-              <button
-                class="w-[240px] justify-self-end bg-main p-[14px] text-[16px] text-white"
-                @click="handleClickNextStepButton"
-              >
-                お支払方法の選択へ
-              </button>
+                <button
+                  class="w-full bg-main p-[14px] text-[16px] text-white md:w-[240px] md:justify-self-end"
+                  @click="handleClickNextStepButton"
+                >
+                  お支払方法の選択へ
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="mr-10 mt-10">
-          <div class="w-full bg-base p-10 text-main">
-            <div class="text-[16px] font-bold tracking-[1.6px]">注文内容</div>
-            <div class="my-6 text-[12px] tracking-[1.2px]">
+        <div class="mt-[24px] md:mr-10 md:mt-10">
+          <div class="w-full bg-base px-[16px] py-[24px] text-main md:p-10">
+            <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">注文内容</div>
+            <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
               <p>
                 {{ cartItem.marche }}
               </p>
@@ -239,6 +245,27 @@ const handleClickNextStepButton = () => {
                 <div class="text-right">
                   {{ priceFormatter(totalPrice) }}
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="block md:hidden">
+            <div class="mt-12">
+              <button
+                class="w-full bg-main p-[14px] text-[14px] tracking-[1.4px] text-white md:w-[240px] md:justify-self-end md:text-[16px] md:tracking-[1.6px]"
+                @click="handleClickNextStepButton"
+              >
+                お支払方法の選択へ
+              </button>
+              <div class="mt-[40px] items-center">
+                <button
+                  class="inline-flex"
+                  @click="handleClickPreviousStepButton"
+                >
+                  <the-left-arrow-icon class="h-4 w-4" />
+                  <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
+                    前のページへ戻る
+                  </p>
+                </button>
               </div>
             </div>
           </div>
