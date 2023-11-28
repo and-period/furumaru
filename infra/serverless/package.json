@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1505.0",
     "serverless-step-functions": "^3.14.0"
   }
 }
