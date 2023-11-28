@@ -340,118 +340,118 @@ stepFunctions:
                                   - オーディオ
                                 CaptionDescriptionNames: []
                                 VideoDescriptionName: 動画
-                          - Name: S3
-                            OutputGroupSettings:
-                              ArchiveGroupSettings:
-                                Destination:
-                                  DestinationRefId: S3
-                                RolloverInterval: 300
-                            Outputs:
-                              - OutputName.$: States.UUID()
-                                OutputSettings:
-                                  ArchiveOutputSettings:
-                                    ContainerSettings:
-                                      M2tsSettings:
-                                        AbsentInputAudioBehavior: "ENCODE_SILENCE"
-                                        Arib: "DISABLED"
-                                        AribCaptionsPid: "507"
-                                        AribCaptionsPidControl: "AUTO"
-                                        AudioBufferModel: "ATSC"
-                                        AudioFramesPerPes: 2
-                                        AudioPids: "482-498"
-                                        AudioStreamType: "DVB"
-                                        BufferModel: "MULTIPLEX"
-                                        CcDescriptor: "DISABLED"
-                                        DvbSubPids: "460-479"
-                                        DvbTeletextPid: "499"
-                                        Ebif: "NONE"
-                                        EbpAudioInterval: "VIDEO_INTERVAL"
-                                        EbpPlacement: "VIDEO_AND_AUDIO_PIDS"
-                                        EsRateInPes: "EXCLUDE"
-                                        EtvPlatformPid: "504"
-                                        EtvSignalPid: "505"
-                                        Klv: "NONE"
-                                        KlvDataPids: "501"
-                                        NielsenId3Behavior: "NO_PASSTHROUGH"
-                                        PatInterval: 100
-                                        PcrControl: "PCR_EVERY_PES_PACKET"
-                                        PcrPeriod: 40
-                                        PmtInterval: 100
-                                        PmtPid: "480"
-                                        ProgramNum: 1
-                                        RateMode: "CBR"
-                                        Scte27Pids: "450-459"
-                                        Scte35Control: "NONE"
-                                        Scte35Pid: "500"
-                                        SegmentationMarkers: "NONE"
-                                        SegmentationStyle: "MAINTAIN_CADENCE"
-                                        TimedMetadataBehavior: "NO_PASSTHROUGH"
-                                        TimedMetadataPid: "502"
-                                        VideoPid: "481"
-                                    NameModifier: "_$rv$"
-                                AudioDescriptionNames:
-                                  - オーディオ
-                                CaptionDescriptionNames: []
-                                VideoDescriptionName: 動画
-                          # - OutputGroupSettings:
-                          #     HlsGroupSettings:
-                          #       AdMarkers: []
-                          #       CaptionLanguageMappings: []
-                          #       CaptionLanguageSetting: OMIT
-                          #       ClientCache: ENABLED
-                          #       CodecSpecification: RFC_4281
+                          # - Name: S3
+                          #   OutputGroupSettings:
+                          #     ArchiveGroupSettings:
                           #       Destination:
                           #         DestinationRefId: S3
-                          #       DirectoryStructure: SINGLE_DIRECTORY
-                          #       DiscontinuityTags: INSERT
-                          #       HlsId3SegmentTagging: DISABLED
-                          #       IFrameOnlyPlaylists: DISABLED
-                          #       IncompleteSegmentBehavior: AUTO
-                          #       IndexNSegments: 10
-                          #       InputLossAction: EMIT_OUTPUT
-                          #       IvInManifest: INCLUDE
-                          #       IvSource: FOLLOWS_SEGMENT_NUMBER
-                          #       KeepSegments: 21
-                          #       ManifestCompression: NONE
-                          #       ManifestDurationFormat: FLOATING_POINT
-                          #       Mode: LIVE
-                          #       OutputSelection: MANIFESTS_AND_SEGMENTS
-                          #       ProgramDateTime: EXCLUDE
-                          #       ProgramDateTimeClock: INITIALIZE_FROM_OUTPUT_TIMECODE
-                          #       ProgramDateTimePeriod: 600
-                          #       RedundantManifest: DISABLED
-                          #       SegmentLength: 10
-                          #       SegmentationMode: USE_SEGMENT_DURATION
-                          #       SegmentsPerSubdirectory: 10000
-                          #       StreamInfResolution: INCLUDE
-                          #       TimedMetadataId3Frame: PRIV
-                          #       TimedMetadataId3Period: 10
-                          #       TsFileMode: SEGMENTED_FILES
+                          #       RolloverInterval: 300
                           #   Outputs:
                           #     - OutputName.$: States.UUID()
                           #       OutputSettings:
-                          #         HlsOutputSettings:
-                          #           H265PackagingType: HVC1
-                          #           HlsSettings:
-                          #             StandardHlsSettings:
-                          #               AudioRenditionSets: program_audio
-                          #               M3u8Settings:
-                          #                 AudioFramesPerPes: 4
-                          #                 AudioPids: "492-498"
-                          #                 NielsenId3Behavior: NO_PASSTHROUGH
-                          #                 PcrControl: PCR_EVERY_PES_PACKET
-                          #                 PmtPid: "480"
-                          #                 ProgramNum: 1
-                          #                 Scte35Behavior: NO_PASSTHROUGH
-                          #                 Scte35Pid: "500"
-                          #                 TimedMetadataBehavior: NO_PASSTHROUGH
-                          #                 TimedMetadataPid: "502"
-                          #                 VideoPid: "481"
+                          #         ArchiveOutputSettings:
+                          #           ContainerSettings:
+                          #             M2tsSettings:
+                          #               AbsentInputAudioBehavior: "ENCODE_SILENCE"
+                          #               Arib: "DISABLED"
+                          #               AribCaptionsPid: "507"
+                          #               AribCaptionsPidControl: "AUTO"
+                          #               AudioBufferModel: "ATSC"
+                          #               AudioFramesPerPes: 2
+                          #               AudioPids: "482-498"
+                          #               AudioStreamType: "DVB"
+                          #               BufferModel: "MULTIPLEX"
+                          #               CcDescriptor: "DISABLED"
+                          #               DvbSubPids: "460-479"
+                          #               DvbTeletextPid: "499"
+                          #               Ebif: "NONE"
+                          #               EbpAudioInterval: "VIDEO_INTERVAL"
+                          #               EbpPlacement: "VIDEO_AND_AUDIO_PIDS"
+                          #               EsRateInPes: "EXCLUDE"
+                          #               EtvPlatformPid: "504"
+                          #               EtvSignalPid: "505"
+                          #               Klv: "NONE"
+                          #               KlvDataPids: "501"
+                          #               NielsenId3Behavior: "NO_PASSTHROUGH"
+                          #               PatInterval: 100
+                          #               PcrControl: "PCR_EVERY_PES_PACKET"
+                          #               PcrPeriod: 40
+                          #               PmtInterval: 100
+                          #               PmtPid: "480"
+                          #               ProgramNum: 1
+                          #               RateMode: "CBR"
+                          #               Scte27Pids: "450-459"
+                          #               Scte35Control: "NONE"
+                          #               Scte35Pid: "500"
+                          #               SegmentationMarkers: "NONE"
+                          #               SegmentationStyle: "MAINTAIN_CADENCE"
+                          #               TimedMetadataBehavior: "NO_PASSTHROUGH"
+                          #               TimedMetadataPid: "502"
+                          #               VideoPid: "481"
                           #           NameModifier: "_$rv$"
                           #       AudioDescriptionNames:
                           #         - オーディオ
                           #       CaptionDescriptionNames: []
                           #       VideoDescriptionName: 動画
+                          - OutputGroupSettings:
+                              HlsGroupSettings:
+                                AdMarkers: []
+                                CaptionLanguageMappings: []
+                                CaptionLanguageSetting: OMIT
+                                ClientCache: ENABLED
+                                CodecSpecification: RFC_4281
+                                Destination:
+                                  DestinationRefId: S3
+                                DirectoryStructure: SINGLE_DIRECTORY
+                                DiscontinuityTags: INSERT
+                                HlsId3SegmentTagging: DISABLED
+                                IFrameOnlyPlaylists: DISABLED
+                                IncompleteSegmentBehavior: AUTO
+                                IndexNSegments: 10
+                                InputLossAction: EMIT_OUTPUT
+                                IvInManifest: INCLUDE
+                                IvSource: FOLLOWS_SEGMENT_NUMBER
+                                KeepSegments: 21
+                                ManifestCompression: NONE
+                                ManifestDurationFormat: FLOATING_POINT
+                                Mode: VOD
+                                OutputSelection: MANIFESTS_AND_SEGMENTS
+                                ProgramDateTime: EXCLUDE
+                                ProgramDateTimeClock: INITIALIZE_FROM_OUTPUT_TIMECODE
+                                ProgramDateTimePeriod: 600
+                                RedundantManifest: DISABLED
+                                SegmentLength: 10
+                                SegmentationMode: USE_SEGMENT_DURATION
+                                SegmentsPerSubdirectory: 10000
+                                StreamInfResolution: INCLUDE
+                                TimedMetadataId3Frame: PRIV
+                                TimedMetadataId3Period: 10
+                                TsFileMode: SEGMENTED_FILES
+                            Outputs:
+                              - OutputName.$: States.UUID()
+                                OutputSettings:
+                                  HlsOutputSettings:
+                                    H265PackagingType: HVC1
+                                    HlsSettings:
+                                      StandardHlsSettings:
+                                        AudioRenditionSets: program_audio
+                                        M3u8Settings:
+                                          AudioFramesPerPes: 4
+                                          AudioPids: "492-498"
+                                          NielsenId3Behavior: NO_PASSTHROUGH
+                                          PcrControl: PCR_EVERY_PES_PACKET
+                                          PmtPid: "480"
+                                          ProgramNum: 1
+                                          Scte35Behavior: NO_PASSTHROUGH
+                                          Scte35Pid: "500"
+                                          TimedMetadataBehavior: NO_PASSTHROUGH
+                                          TimedMetadataPid: "502"
+                                          VideoPid: "481"
+                                    NameModifier: "_$rv$"
+                                AudioDescriptionNames:
+                                  - オーディオ
+                                CaptionDescriptionNames: []
+                                VideoDescriptionName: 動画
                     End: true
               - StartAt: CreateOriginAccessControl
                 States:
