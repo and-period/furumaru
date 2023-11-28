@@ -36,6 +36,20 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
+// ActivateBroadcastStaticImage mocks base method.
+func (m *MockService) ActivateBroadcastStaticImage(ctx context.Context, in *media.ActivateBroadcastStaticImageInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActivateBroadcastStaticImage", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ActivateBroadcastStaticImage indicates an expected call of ActivateBroadcastStaticImage.
+func (mr *MockServiceMockRecorder) ActivateBroadcastStaticImage(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateBroadcastStaticImage", reflect.TypeOf((*MockService)(nil).ActivateBroadcastStaticImage), ctx, in)
+}
+
 // CreateBroadcast mocks base method.
 func (m *MockService) CreateBroadcast(ctx context.Context, in *media.CreateBroadcastInput) (*entity.Broadcast, error) {
 	m.ctrl.T.Helper()
@@ -49,6 +63,20 @@ func (m *MockService) CreateBroadcast(ctx context.Context, in *media.CreateBroad
 func (mr *MockServiceMockRecorder) CreateBroadcast(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBroadcast", reflect.TypeOf((*MockService)(nil).CreateBroadcast), ctx, in)
+}
+
+// DeactivateBroadcastStaticImage mocks base method.
+func (m *MockService) DeactivateBroadcastStaticImage(ctx context.Context, in *media.DeactivateBroadcastStaticImageInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeactivateBroadcastStaticImage", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeactivateBroadcastStaticImage indicates an expected call of DeactivateBroadcastStaticImage.
+func (mr *MockServiceMockRecorder) DeactivateBroadcastStaticImage(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateBroadcastStaticImage", reflect.TypeOf((*MockService)(nil).DeactivateBroadcastStaticImage), ctx, in)
 }
 
 // GenerateCoordinatorBonusVideo mocks base method.

@@ -2,6 +2,7 @@ package medialive
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -52,6 +53,37 @@ func (c *client) CreateSchedule(ctx context.Context, params *CreateScheduleParam
 	return err
 }
 
+func (c *client) ActivateStaticImage(ctx context.Context, channelID, imageURL string) error {
+	name := fmt.Sprintf("%s static-image-active", c.now().Format(time.RFC3339))
+	settings := []*ScheduleSetting{{
+		Name:       name,
+		ActionType: ScheduleActionTypeStaticImageActivate,
+		StartType:  ScheduleStartTypeImmediate,
+		Reference:  imageURL,
+	}}
+	in := &medialive.BatchUpdateScheduleInput{
+		ChannelId: aws.String(channelID),
+		Creates:   &types.BatchScheduleActionCreateRequest{ScheduleActions: c.newScheduleActions(settings)},
+	}
+	_, err := c.media.BatchUpdateSchedule(ctx, in)
+	return err
+}
+
+func (c *client) DeactivateStaticImage(ctx context.Context, channelID string) error {
+	name := fmt.Sprintf("%s static-image-deactive", c.now().Format(time.RFC3339))
+	settings := []*ScheduleSetting{{
+		Name:       name,
+		ActionType: ScheduleActionTypeStaticImageDeactivate,
+		StartType:  ScheduleStartTypeImmediate,
+	}}
+	in := &medialive.BatchUpdateScheduleInput{
+		ChannelId: aws.String(channelID),
+		Creates:   &types.BatchScheduleActionCreateRequest{ScheduleActions: c.newScheduleActions(settings)},
+	}
+	_, err := c.media.BatchUpdateSchedule(ctx, in)
+	return err
+}
+
 func (c *client) newScheduleActions(params []*ScheduleSetting) []types.ScheduleAction {
 	actions := make([]types.ScheduleAction, len(params))
 	for i, p := range params {
@@ -78,9 +110,14 @@ func (c *client) newScheduleActions(params []*ScheduleSetting) []types.ScheduleA
 				InputAttachmentNameReference: aws.String(p.Reference),
 			}
 		case ScheduleActionTypeStaticImageActivate:
-			c.logger.Warn("Not implemented action type", zap.Any("setting", p))
+			actions[i].ScheduleActionSettings.StaticImageActivateSettings = &types.StaticImageActivateScheduleActionSettings{
+				Image:  &types.InputLocation{Uri: aws.String(p.Reference)},
+				FadeIn: 200, // 0.2sec
+			}
 		case ScheduleActionTypeStaticImageDeactivate:
-			c.logger.Warn("Not implemented action type", zap.Any("setting", p))
+			actions[i].ScheduleActionSettings.StaticImageDeactivateSettings = &types.StaticImageDeactivateScheduleActionSettings{
+				FadeOut: 200, // 0.2sec
+			}
 		}
 	}
 	return actions
