@@ -11,6 +11,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
+	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -391,6 +393,168 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateBroadcastArchive(ctx, tt.input())
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestActivateBroadcastStaticImage(t *testing.T) {
+	t.Parallel()
+	broadcast := &entity.Broadcast{
+		Status:             entity.BroadcastStatusActive,
+		MediaLiveChannelID: "12345678",
+	}
+	scheduleIn := &store.GetScheduleInput{
+		ScheduleID: "schedule-id",
+	}
+	schedule := &sentity.Schedule{
+		ID:       "schedule-id",
+		ImageURL: "http://example.com/image.png",
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.ActivateBroadcastStaticImageInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.media.EXPECT().ActivateStaticImage(ctx, "12345678", "http://example.com/image.png").Return(nil)
+			},
+			input: &media.ActivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.ActivateBroadcastStaticImageInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.ActivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.ActivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to get schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(nil, assert.AnError)
+			},
+			input: &media.ActivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to activate static image",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.media.EXPECT().ActivateStaticImage(ctx, "12345678", "http://example.com/image.png").Return(assert.AnError)
+			},
+			input: &media.ActivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ActivateBroadcastStaticImage(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestDeactivateBroadcastStaticImage(t *testing.T) {
+	t.Parallel()
+	broadcast := &entity.Broadcast{
+		Status:             entity.BroadcastStatusActive,
+		MediaLiveChannelID: "12345678",
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.DeactivateBroadcastStaticImageInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.media.EXPECT().DeactivateStaticImage(ctx, "12345678").Return(nil)
+			},
+			input: &media.DeactivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.DeactivateBroadcastStaticImageInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.DeactivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.DeactivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to deactivate static image",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.media.EXPECT().DeactivateStaticImage(ctx, "12345678").Return(assert.AnError)
+			},
+			input: &media.DeactivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.DeactivateBroadcastStaticImage(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

@@ -35,6 +35,20 @@ func (m *MockMediaLive) EXPECT() *MockMediaLiveMockRecorder {
 	return m.recorder
 }
 
+// ActivateStaticImage mocks base method.
+func (m *MockMediaLive) ActivateStaticImage(ctx context.Context, channelID, imageURL string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActivateStaticImage", ctx, channelID, imageURL)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ActivateStaticImage indicates an expected call of ActivateStaticImage.
+func (mr *MockMediaLiveMockRecorder) ActivateStaticImage(ctx, channelID, imageURL interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateStaticImage", reflect.TypeOf((*MockMediaLive)(nil).ActivateStaticImage), ctx, channelID, imageURL)
+}
+
 // CreateSchedule mocks base method.
 func (m *MockMediaLive) CreateSchedule(ctx context.Context, params *medialive.CreateScheduleParams) error {
 	m.ctrl.T.Helper()
@@ -47,6 +61,20 @@ func (m *MockMediaLive) CreateSchedule(ctx context.Context, params *medialive.Cr
 func (mr *MockMediaLiveMockRecorder) CreateSchedule(ctx, params interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSchedule", reflect.TypeOf((*MockMediaLive)(nil).CreateSchedule), ctx, params)
+}
+
+// DeactivateStaticImage mocks base method.
+func (m *MockMediaLive) DeactivateStaticImage(ctx context.Context, channelID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeactivateStaticImage", ctx, channelID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeactivateStaticImage indicates an expected call of DeactivateStaticImage.
+func (mr *MockMediaLiveMockRecorder) DeactivateStaticImage(ctx, channelID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateStaticImage", reflect.TypeOf((*MockMediaLive)(nil).DeactivateStaticImage), ctx, channelID)
 }
 
 // StartChannel mocks base method.
