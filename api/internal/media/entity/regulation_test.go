@@ -60,6 +60,42 @@ func TestRegulation_Validate(t *testing.T) {
 			},
 			expect: ErrInvalidFileFormat,
 		},
+		// BroadcastLiveMP4
+		{
+			name:       "success broadcast live mp4",
+			regulation: BroadcastLiveMP4Regulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testVideoFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for broadcast live mp4",
+			regulation: BroadcastLiveMP4Regulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testVideoFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for broadcast live mp4",
+			regulation: BroadcastLiveMP4Regulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testVideoFile(t)
+				header.Size = 200<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name:       "invalid format for broadcast live mp4",
+			regulation: BroadcastLiveMP4Regulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: ErrInvalidFileFormat,
+		},
 		// CoordinatorThumbnail
 		{
 			name:       "success coordinator thumbnail",

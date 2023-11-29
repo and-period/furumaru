@@ -48,6 +48,16 @@ type UpdateBroadcastArchiveInput struct {
 	Header     *multipart.FileHeader `validate:"required"`
 }
 
+type ActivateBroadcastRTMPInput struct {
+	ScheduleID string `validate:"required"`
+}
+
+type ActivateBroadcastMP4Input struct {
+	ScheduleID string                `validate:"required"`
+	File       io.Reader             `validate:"required"`
+	Header     *multipart.FileHeader `validate:"required"`
+}
+
 type ActivateBroadcastStaticImageInput struct {
 	ScheduleID string `validate:"required"`
 }

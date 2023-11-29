@@ -158,7 +158,7 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 	switch {
 	case s.now().After(schedule.StartAt.Add(-1 * time.Minute)): // ライブ配信開始まで1分を切っている
 		return []*medialive.ScheduleSetting{{
-			Name:       fmt.Sprintf("immediate-input-rtmp %s", jst.Format(s.now(), time.DateTime)),
+			Name:       fmt.Sprintf("%s immediate-input-rtmp", jst.Format(s.now(), time.DateTime)),
 			ActionType: medialive.ScheduleActionTypeInputSwitch,
 			StartType:  medialive.ScheduleStartTypeImmediate,
 			Reference:  broadcast.MediaLiveRTMPInputName,
@@ -167,14 +167,14 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 		sourceURL, _ := s.storage.ReplaceURLToS3URI(schedule.OpeningVideoURL)
 		return []*medialive.ScheduleSetting{
 			{
-				Name:       fmt.Sprintf("immediate-input-mp4 %s", jst.Format(s.now(), time.DateTime)),
+				Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(s.now(), time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
 				StartType:  medialive.ScheduleStartTypeImmediate,
 				Reference:  broadcast.MediaLiveMP4InputName,
 				Source:     sourceURL,
 			},
 			{
-				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
+				Name:       fmt.Sprintf("%s fixed-input-rtmp", jst.Format(schedule.StartAt, time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
 				StartType:  medialive.ScheduleStartTypeFixed,
 				ExecutedAt: schedule.StartAt,
@@ -185,13 +185,13 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 		sourceURL, _ := s.storage.ReplaceURLToS3URI(schedule.OpeningVideoURL)
 		return []*medialive.ScheduleSetting{
 			{
-				Name:       fmt.Sprintf("immediate-input-rtmp %s", jst.Format(s.now(), time.DateTime)),
+				Name:       fmt.Sprintf("%s immediate-input-rtmp", jst.Format(s.now(), time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
 				StartType:  medialive.ScheduleStartTypeImmediate,
 				Reference:  broadcast.MediaLiveRTMPInputName,
 			},
 			{
-				Name:       fmt.Sprintf("fixed-input-mp4 %s", jst.Format(schedule.StartAt.Add(-5*time.Minute), time.DateTime)),
+				Name:       fmt.Sprintf("%s fixed-input-mp4", jst.Format(schedule.StartAt.Add(-5*time.Minute), time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
 				StartType:  medialive.ScheduleStartTypeFixed,
 				ExecutedAt: schedule.StartAt.Add(-5 * time.Minute),
@@ -199,7 +199,7 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 				Source:     sourceURL,
 			},
 			{
-				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
+				Name:       fmt.Sprintf("%s fixed-input-rtmp", jst.Format(schedule.StartAt, time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
 				StartType:  medialive.ScheduleStartTypeFixed,
 				ExecutedAt: schedule.StartAt,

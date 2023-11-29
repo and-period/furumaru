@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"net/url"
 	"sync"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
@@ -46,6 +48,7 @@ type service struct {
 	producer   sqs.Producer
 	store      store.Service
 	media      medialive.MediaLive
+	now        func() time.Time
 }
 
 type options struct {
@@ -95,6 +98,7 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		storageURL: storageURL,
 		producer:   params.Producer,
 		store:      params.Store,
+		now:        jst.Now,
 	}, nil
 }
 

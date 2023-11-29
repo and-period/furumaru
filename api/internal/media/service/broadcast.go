@@ -5,12 +5,15 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/medialive"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -99,6 +102,65 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 		ArchiveURL: archiveURL,
 	}}
 	err = s.db.Broadcast.Update(ctx, in.ScheduleID, params)
+	return internalError(err)
+}
+
+func (s *service) ActivateBroadcastRTMP(ctx context.Context, in *media.ActivateBroadcastRTMPInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return internalError(err)
+	}
+	if broadcast.Status != entity.BroadcastStatusActive {
+		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+	}
+	settings := []*medialive.ScheduleSetting{{
+		Name:       fmt.Sprintf("%s immediate-input-rtmp", jst.Format(s.now(), time.DateTime)),
+		ActionType: medialive.ScheduleActionTypeInputSwitch,
+		StartType:  medialive.ScheduleStartTypeImmediate,
+		Reference:  broadcast.MediaLiveRTMPInputName,
+	}}
+	params := &medialive.CreateScheduleParams{
+		ChannelID: broadcast.MediaLiveChannelID,
+		Settings:  settings,
+	}
+	err = s.media.CreateSchedule(ctx, params)
+	return internalError(err)
+}
+
+func (s *service) ActivateBroadcastMP4(ctx context.Context, in *media.ActivateBroadcastMP4Input) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return internalError(err)
+	}
+	if broadcast.Status != entity.BroadcastStatusActive {
+		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+	}
+	fileIn := &media.GenerateFileInput{
+		File:   in.File,
+		Header: in.Header,
+	}
+	videoURL, err := s.generateFile(ctx, fileIn, entity.BroadcastLiveMP4Regulation)
+	if err != nil {
+		return err
+	}
+	settings := []*medialive.ScheduleSetting{{
+		Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(s.now(), time.DateTime)),
+		ActionType: medialive.ScheduleActionTypeInputSwitch,
+		StartType:  medialive.ScheduleStartTypeImmediate,
+		Reference:  broadcast.MediaLiveMP4InputName,
+		Source:     videoURL,
+	}}
+	params := &medialive.CreateScheduleParams{
+		ChannelID: broadcast.MediaLiveChannelID,
+		Settings:  settings,
+	}
+	err = s.media.CreateSchedule(ctx, params)
 	return internalError(err)
 }
 

@@ -20,6 +20,7 @@ var (
 
 const (
 	BroadcastArchivePath          = "schedules/archives"           // ライブ配信アーカイブ動画
+	BroadcastLiveMP4Path          = "schedules/lives"              // ライブ配信中に使用する動画
 	CoordinatorThumbnailPath      = "coordinators/thumbnail"       // コーディネータサムネイル画像
 	CoordinatorHeaderPath         = "coordinators/header"          // コーディネータヘッダー画像
 	CoordinatorPromotionVideoPath = "coordinators/promotion-video" // コーディネータ紹介映像
@@ -49,6 +50,11 @@ var (
 		MaxSize: 200 << 20, // 200MB
 		Formats: set.New("video/mp4"),
 		dir:     BroadcastArchivePath,
+	}
+	BroadcastLiveMP4Regulation = &Regulation{
+		MaxSize: 200 << 20, // 200MB
+		Formats: set.New("video/mp4"),
+		dir:     BroadcastLiveMP4Path,
 	}
 	CoordinatorThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB

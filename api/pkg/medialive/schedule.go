@@ -55,7 +55,7 @@ func (c *client) CreateSchedule(ctx context.Context, params *CreateScheduleParam
 }
 
 func (c *client) ActivateStaticImage(ctx context.Context, channelID, imageURL string) error {
-	name := fmt.Sprintf("%s static-image-active", c.now().Format(time.RFC3339))
+	name := fmt.Sprintf("%s immediate-static-image-active", c.now().Format(time.DateTime))
 	settings := []*ScheduleSetting{{
 		Name:       name,
 		ActionType: ScheduleActionTypeStaticImageActivate,
@@ -71,7 +71,7 @@ func (c *client) ActivateStaticImage(ctx context.Context, channelID, imageURL st
 }
 
 func (c *client) DeactivateStaticImage(ctx context.Context, channelID string) error {
-	name := fmt.Sprintf("%s static-image-deactive", c.now().Format(time.RFC3339))
+	name := fmt.Sprintf("%s immediate-static-image-deactive", c.now().Format(time.DateTime))
 	settings := []*ScheduleSetting{{
 		Name:       name,
 		ActionType: ScheduleActionTypeStaticImageDeactivate,

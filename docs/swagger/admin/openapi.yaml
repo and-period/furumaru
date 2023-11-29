@@ -177,6 +177,14 @@ paths:
   # Broadcast
   /v1/schedules/{scheduleId}/broadcasts:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/index.yaml'
+  /v1/schedules/{scheduleId}/broadcasts/archive-video:
+    $ref: './paths/v1/schedules/_scheduleId/broadcasts/archive-video.yaml'
+  /v1/schedules/{scheduleId}/broadcasts/static-image:
+    $ref: './paths/v1/schedules/_scheduleId/broadcasts/static-image.yaml'
+  /v1/schedules/{scheduleId}/broadcasts/rtmp:
+    $ref: './paths/v1/schedules/_scheduleId/broadcasts/rtmp.yaml'
+  /v1/schedules/{scheduleId}/broadcasts/mp4:
+    $ref: './paths/v1/schedules/_scheduleId/broadcasts/mp4.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
@@ -353,6 +361,10 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/forgotAuthPasswordRequest'
     v1ResetAuthPasswordRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/resetAuthPasswordRequest'
+    v1UpdateBroadcastArchiveRequest:
+      $ref: './components/schemas/v1/broadcast.request.yaml#/updateBroadcastArchiveRequest'
+    v1ActivateBroadcastMP4Request:
+      $ref: './components/schemas/v1/broadcast.request.yaml#/activateBroadcastMP4Request'
     v1CreateAdministratorRequest:
       $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
     v1UpdateAdministratorRequest:
