@@ -28,6 +28,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
+	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
 	"github.com/and-period/furumaru/api/pkg/rbac"
@@ -56,6 +57,7 @@ type params struct {
 	userAuth             cognito.Client
 	messengerQueue       sqs.Producer
 	mediaQueue           sqs.Producer
+	medialive            medialive.MediaLive
 	slack                slack.Client
 	newRelic             *newrelic.Application
 	sentry               sentry.Client
@@ -149,6 +151,9 @@ func (a *app) inject(ctx context.Context) error {
 		QueueURL: a.SQSMediaQueueURL,
 	}
 	params.mediaQueue = sqs.NewProducer(awscfg, mediaSQSParams, sqs.WithDryRun(a.SQSMockEnabled))
+
+	// AWS MediaLiveの設定
+	params.medialive = medialive.NewMediaLive(awscfg, medialive.WithLogger(params.logger))
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
@@ -386,12 +391,18 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	store, err := a.newStoreService(p, nil, nil, nil)
+	if err != nil {
+		return nil, err
+	}
 	params := &mediasrv.Params{
 		WaitGroup: p.waitGroup,
 		Database:  mediadb.NewDatabase(mysql),
+		MediaLive: p.medialive,
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
 		Producer:  p.mediaQueue,
+		Store:     store,
 	}
 	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
 }
