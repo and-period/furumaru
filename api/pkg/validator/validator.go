@@ -33,15 +33,12 @@ func WithPasswordValidation(params *PasswordParams) Option {
 }
 
 const (
-	hiraganaString    = "^[ぁ-ゔー]*$"
-	passwordString    = "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$"
-	phoneNumberString = "^\\+[0-9]{11,17}$"
+	hiraganaString = "^[ぁ-ゔー]*$"
+	passwordString = "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$"
 )
 
 var (
-	hiraganaRegex    = regexp.MustCompile(hiraganaString, 0)
-	phoneNumberRegex = regexp.MustCompile(phoneNumberString, 0)
-
+	hiraganaRegex = regexp.MustCompile(hiraganaString, 0)
 	passwordRegex *regexp.Regexp
 )
 
@@ -61,8 +58,6 @@ func NewValidator(opts ...Option) Validator {
 	v.RegisterValidation("hiragana", validateHiragana)
 	// password - 正規表現を利用してパスワードに使用不可な文字を含んでいないかの検証
 	v.RegisterValidation("password", validatePassword)
-	// phone_number - 電話番号のフォーマットが正しいかの検証
-	v.RegisterValidation("phone_number", validatePhoneNumber)
 
 	return v
 }
@@ -74,11 +69,6 @@ func validateHiragana(fl validator.FieldLevel) bool {
 
 func validatePassword(fl validator.FieldLevel) bool {
 	match, _ := passwordRegex.MatchString(fl.Field().String())
-	return match
-}
-
-func validatePhoneNumber(fl validator.FieldLevel) bool {
-	match, _ := phoneNumberRegex.MatchString(fl.Field().String())
 	return match
 }
 

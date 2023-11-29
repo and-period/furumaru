@@ -87,7 +87,7 @@ type CreateAdministratorInput struct {
 	LastnameKana  string `validate:"required,max=32,hiragana"`
 	FirstnameKana string `validate:"required,max=32,hiragana"`
 	Email         string `validate:"required,max=256,email"`
-	PhoneNumber   string `validate:"min=12,max=18,phone_number"`
+	PhoneNumber   string `validate:"required,e164"`
 }
 
 type UpdateAdministratorInput struct {
@@ -96,7 +96,7 @@ type UpdateAdministratorInput struct {
 	Firstname       string `validate:"required,max=16"`
 	LastnameKana    string `validate:"required,max=32,hiragana"`
 	FirstnameKana   string `validate:"required,max=32,hiragana"`
-	PhoneNumber     string `validate:"min=12,max=18,phone_number"`
+	PhoneNumber     string `validate:"required,e164"`
 }
 
 type UpdateAdministratorEmailInput struct {
@@ -142,7 +142,7 @@ type CreateCoordinatorInput struct {
 	InstagramID       string         `validate:"omitempty,max=30"`
 	FacebookID        string         `validate:"omitempty,max=50"`
 	Email             string         `validate:"required,max=256,email"`
-	PhoneNumber       string         `validate:"min=12,max=18,phone_number"`
+	PhoneNumber       string         `validate:"required,e164"`
 	PostalCode        string         `validate:"omitempty,max=16,numeric"`
 	PrefectureCode    int32          `validate:"required"`
 	City              string         `validate:"omitempty,max=32"`
@@ -167,7 +167,7 @@ type UpdateCoordinatorInput struct {
 	BonusVideoURL     string         `validate:"omitempty,url"`
 	InstagramID       string         `validate:"omitempty,max=30"`
 	FacebookID        string         `validate:"omitempty,max=50"`
-	PhoneNumber       string         `validate:"min=12,max=18,phone_number"`
+	PhoneNumber       string         `validate:"required,e164"`
 	PostalCode        string         `validate:"omitempty,max=16,numeric"`
 	PrefectureCode    int32          `validate:"required"`
 	City              string         `validate:"omitempty,max=32"`
@@ -238,7 +238,7 @@ type CreateProducerInput struct {
 	InstagramID       string `validate:"omitempty,max=30"`
 	FacebookID        string `validate:"omitempty,max=50"`
 	Email             string `validate:"required,max=256,email"`
-	PhoneNumber       string `validate:"min=12,max=18,phone_number"`
+	PhoneNumber       string `validate:"required,e164"`
 	PostalCode        string `validate:"omitempty,max=16,numeric"`
 	PrefectureCode    int32  `validate:"required"`
 	City              string `validate:"omitempty,max=32"`
@@ -260,7 +260,7 @@ type UpdateProducerInput struct {
 	BonusVideoURL     string `validate:"omitempty,url"`
 	InstagramID       string `validate:"omitempty,max=30"`
 	FacebookID        string `validate:"omitempty,max=50"`
-	PhoneNumber       string `validate:"min=12,max=18,phone_number"`
+	PhoneNumber       string `validate:"required,e164"`
 	PostalCode        string `validate:"omitempty,max=16,numeric"`
 	PrefectureCode    int32  `validate:"required"`
 	City              string `validate:"omitempty,max=32"`
@@ -337,7 +337,7 @@ type GetUserInput struct {
 
 type CreateUserInput struct {
 	Email                string `validate:"required,max=256,email"`
-	PhoneNumber          string `validate:"min=12,max=18,phone_number"`
+	PhoneNumber          string `validate:"required,e164"`
 	Password             string `validate:"min=8,max=32,password"`
 	PasswordConfirmation string `validate:"required,eqfield=Password"`
 }
@@ -427,7 +427,7 @@ type CreateAddressInput struct {
 	City           string `validate:"required,max=32"`
 	AddressLine1   string `validate:"required,max=64"`
 	AddressLine2   string `validate:"omitempty,max=64"`
-	PhoneNumber    string `validate:"min=12,max=18,phone_number"`
+	PhoneNumber    string `validate:"required,e164"`
 	IsDefault      bool   `validate:""`
 }
 
@@ -443,7 +443,7 @@ type UpdateAddressInput struct {
 	City           string `validate:"required,max=32"`
 	AddressLine1   string `validate:"required,max=64"`
 	AddressLine2   string `validate:"omitempty,max=64"`
-	PhoneNumber    string `validate:"min=12,max=18,phone_number"`
+	PhoneNumber    string `validate:"required,e164"`
 	IsDefault      bool   `validate:""`
 }
 

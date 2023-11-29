@@ -105,7 +105,7 @@ type CreateContactInput struct {
 	UserID      string `validate:""`
 	CategoryID  string `validate:"required,max=128"`
 	Email       string `validate:"required,max=256,email"`
-	PhoneNumber string `validate:"required,min=12,max=18,phone_number"`
+	PhoneNumber string `validate:"required,e164"`
 	ResponderID string `validate:""`
 	Note        string `validate:"max=2000"`
 }
@@ -118,7 +118,7 @@ type UpdateContactInput struct {
 	UserID      string               `validate:""`
 	CategoryID  string               `validate:"required,max=128"`
 	Email       string               `validate:"required,max=256,email"`
-	PhoneNumber string               `validate:"required,min=12,max=18,phone_number"`
+	PhoneNumber string               `validate:"required,e164"`
 	Status      entity.ContactStatus `validate:"required"`
 	ResponderID string               `validate:""`
 	Note        string               `validate:"max=2000"`
