@@ -1,6 +1,13 @@
 import { PiniaPluginContext } from 'pinia'
 import ApiClientFactory from './helpter/factory'
-import { AddressApi, AuthApi, CartApi, ProductApi, TopApi } from '~/types/api'
+import {
+  AddressApi,
+  AuthApi,
+  CartApi,
+  CheckoutApi,
+  ProductApi,
+  TopApi,
+} from '~/types/api'
 
 function apiClientInjector({ store }: PiniaPluginContext) {
   const apiClientFactory = new ApiClientFactory()
@@ -25,11 +32,16 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   const addressApiClient = (token?: string): AddressApi =>
     apiClientFactory.create<AddressApi>(AddressApi, token)
 
+  // チェックアウト用のAPIをStoreに定義
+  const checkoutApiClient = (token?: string): CheckoutApi =>
+    apiClientFactory.create(CheckoutApi, token)
+
   store.authApiClient = authApiClient
   store.topPageApiClient = topPageApiClient
   store.productApiClient = productApiClient
   store.cartApiClient = cartApiClient
   store.addressApiClient = addressApiClient
+  store.checkoutApiClient = checkoutApiClient
 }
 
 /**
