@@ -1,0 +1,7 @@
+updateBroadcastArchiveRequest:
+  type: object
+  properties:
+    video:
+      type: string
+      format: binary
+      description: オンデマンド配信用の映像(mp4形式,200MBまで)

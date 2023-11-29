@@ -14,6 +14,9 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/broadcasts", h.authentication, h.filterAccessSchedule)
 
 	r.GET("", h.GetBroadcast)
+	r.POST("/archive-video", h.UploadBroadcastArchive)
+	r.POST("/static-image", h.ActivateBroadcastStaticImage)
+	r.DELETE("/static-image", h.DeactivateBroadcastStaticImage)
 }
 
 func (h *handler) GetBroadcast(ctx *gin.Context) {
@@ -29,4 +32,44 @@ func (h *handler) GetBroadcast(ctx *gin.Context) {
 		Broadcast: service.NewBroadcast(broadcast).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UploadBroadcastArchive(ctx *gin.Context) {
+	file, header, err := h.parseFile(ctx, "video")
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	in := &media.UpdateBroadcastArchiveInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+		File:       file,
+		Header:     header,
+	}
+	if err := h.media.UpdateBroadcastArchive(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ActivateBroadcastStaticImage(ctx *gin.Context) {
+	in := &media.ActivateBroadcastStaticImageInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	}
+	if err := h.media.ActivateBroadcastStaticImage(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) DeactivateBroadcastStaticImage(ctx *gin.Context) {
+	in := &media.DeactivateBroadcastStaticImageInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	}
+	if err := h.media.DeactivateBroadcastStaticImage(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
