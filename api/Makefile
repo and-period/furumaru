@@ -2,7 +2,7 @@
 
 AIR_VERSION := 1.45.0
 GOFUMPT_VERSION := 0.5.0
-GOLANGCI_VERSION := 1.54.2
+GOLANGCI_VERSION := 1.55.2
 MOCKGEN_VERSION := 0.2.0
 
 LINT_PACKAGES := $(shell go list $(CURDIR)/... | grep -v -e "mock" -v -e "tmp")

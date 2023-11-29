@@ -66,6 +66,9 @@ resources:
                     - mediaStore:PutLifecyclePolicy
                     - cloudfront:CreateOriginAccessControl
                     - cloudFront:CreateDistribution
+                    - cloudFront:GetDistribution
+                    - cloudFront:GetDistributionConfig
+                    - cloudFront:DeleteDistribution
                     - iam:PassRole
                   Resource:
                     - '*'
@@ -104,6 +107,14 @@ resources:
                     - mediaStore:DescribeContainer
                   Resource:
                     - '*'
+                - Effect: Allow
+                  Action:
+                    - cloudFront:GetDistribution
+                    - cloudFront:GetDistributionConfig
+                    - cloudFront:UpdateDistribution
+                    - cloudFront:DeleteDistribution
+                  Resource:
+                    - '*'
 
 functions:
   extractMediaStoreDomain:
@@ -114,6 +125,11 @@ functions:
   calculateMP4StartTime:
     role: lambdaRole
     handler: functions/calculateMP4StartTime/handler.calculateMP4StartTime
+    memorySize: 128
+    timeout: 10
+  disableDistribution:
+    role: lambdaRole
+    handler: functions/disableDistribution/handler.disableDistribution
     memorySize: 128
     timeout: 10
 
@@ -161,7 +177,7 @@ stepFunctions:
                       Name.$: States.UUID()
                       Type: MP4_FILE
                       Sources:
-                        - Url.$: $.OpeningVideoUrl
+                        - Url.$: $.InputUrl
               - StartAt: CreateContainer
                 States:
                   CreateContainer:
@@ -653,6 +669,80 @@ stepFunctions:
                   Parameters:
                     InputId.$: $.InputId
                   End: true
+    deleteCloudFrontMachine:
+      name: deleteCloudFrontResoursesFunction-${self:provider.stage}
+      role:
+        Fn::GetAtt: [defaultRole, Arn]
+      definition:
+        StartAt: GetDistributionConfig
+        States:
+          GetDistributionConfig:
+            Type: Task
+            Comment: CloudFrontのディストリビューション設定を取得
+            InputPath: $
+            ResultPath: $.GetDistributionConfigResult
+            Resource: arn:aws:states:::aws-sdk:cloudfront:getDistributionConfig
+            Parameters:
+              Id.$: $.DistributionId
+            Catch:
+              - ErrorEquals:
+                  - CloudFront.NoSuchDistribution
+                Comment: ディストリビューションが存在しない場合は終了
+                Next: Finish
+            Next: DisableDistribution
+          DisableDistribution:
+            Type: Task
+            Comment: CloudFrontのディストリビューションを無効化
+            InputPath: $
+            ResultPath: $.DisableDistributionResult
+            Resource:
+              Fn::GetAtt: [disableDistribution, Arn]
+            Next: WaitDisabled
+          WaitDisabled:
+            Type: Wait
+            Seconds: 1
+            Next: GetDistributionStatus
+          GetDistributionStatus:
+            Type: Task
+            Comment: CloudFrontのディストリビューションを取得
+            InputPath: $
+            ResultPath: $.DistributionStatus
+            Resource: arn:aws:states:::aws-sdk:cloudfront:getDistribution
+            Parameters:
+              Id.$: $.DistributionId
+            Next: CheckDistributionDisabled
+          CheckDistributionDisabled:
+            Type: Choice
+            InputPath: $
+            Choices:
+              - Variable: $.DistributionStatus.Distribution.DistributionConfig.Enabled
+                BooleanEquals: false
+                Next: CheckDistributionDeployed
+            Default: WaitDisabled
+          WaitDeployed:
+            Type: Wait
+            Seconds: 60
+            Next: GetDistributionStatus
+          CheckDistributionDeployed:
+            Type: Choice
+            InputPath: $
+            Choices:
+              - Variable: $.DistributionStatus.Distribution.Status
+                StringEquals: "Deployed"
+                Next: DeleteDistribution
+            Default: WaitDeployed
+          DeleteDistribution:
+            Type: Task
+            Comment: CloudFrontのディストリビューションを削除
+            InputPath: $
+            Resource: arn:aws:states:::aws-sdk:cloudfront:deleteDistribution
+            Parameters:
+              Id.$: $.DistributionId
+              IfMatch.$: $.DistributionStatus.ETag
+            Next: Finish
+          Finish:
+            Type: Pass
+            End: true
 
 plugins:
   - serverless-step-functions

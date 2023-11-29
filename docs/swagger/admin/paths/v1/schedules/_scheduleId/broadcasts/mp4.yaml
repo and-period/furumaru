@@ -1,6 +1,6 @@
 post:
-  summary: オンデマンド配信用の映像をアップロード
-  operationId: v1UpdateBroadcastArchive
+  summary: ライブ配信中の入力をMP4へ切り替え
+  operationId: v1ActivateBroadcastMP4
   tags:
   - Broadcast
   security:
@@ -18,7 +18,7 @@ post:
     content:
       multipart/form-data:
         schema:
-          $ref: './../../../../../openapi.yaml#/components/schemas/v1UpdateBroadcastArchiveRequest'
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1ActivateBroadcastMP4Request'
         encoding:
           thumbnail:
             contentType: video/mp4
@@ -35,7 +35,7 @@ post:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
     412:
-      description: マルシェライブ配信が終了していない
+      description: マルシェライブ配信中でない
       content:
         application/json:
           schema:

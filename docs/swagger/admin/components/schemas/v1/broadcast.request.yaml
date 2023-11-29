@@ -5,3 +5,10 @@ updateBroadcastArchiveRequest:
       type: string
       format: binary
       description: オンデマンド配信用の映像(mp4形式,200MBまで)
+activateBroadcastMP4Request:
+  type: object
+  properties:
+    video:
+      type: string
+      format: binary
+      description: ライブ配信中に流す映像(mp4形式,200MBまで)

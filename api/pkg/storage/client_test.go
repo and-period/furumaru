@@ -102,6 +102,53 @@ func TestGenerateS3URI(t *testing.T) {
 	}
 }
 
+func TestReplaceURLToS3URI(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		bucket string
+		rawURL string
+		expect string
+		hasErr bool
+	}{
+		{
+			name:   "success",
+			bucket: "bucket",
+			rawURL: "https://bucket.s3.amazonaws.com/dir/path.png",
+			expect: "s3://bucket/dir/path.png",
+			hasErr: false,
+		},
+		{
+			name:   "empty url",
+			bucket: "bucket",
+			rawURL: "",
+			expect: "",
+			hasErr: false,
+		},
+		{
+			name:   "failed to parse url",
+			bucket: "bucket",
+			rawURL: "https:// ",
+			expect: "",
+			hasErr: true,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			client := &bucket{
+				s3:     &s3.Client{},
+				name:   aws.String(tt.bucket),
+				logger: &zap.Logger{},
+			}
+			actual, err := client.ReplaceURLToS3URI(tt.rawURL)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestGetHost(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

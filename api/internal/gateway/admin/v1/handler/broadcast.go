@@ -17,6 +17,8 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r.POST("/archive-video", h.UploadBroadcastArchive)
 	r.POST("/static-image", h.ActivateBroadcastStaticImage)
 	r.DELETE("/static-image", h.DeactivateBroadcastStaticImage)
+	r.POST("/rtmp", h.ActivateBroadcastRTMP)
+	r.POST("/mp4", h.ActivateBroadcastMP4)
 }
 
 func (h *handler) GetBroadcast(ctx *gin.Context) {
@@ -46,6 +48,35 @@ func (h *handler) UploadBroadcastArchive(ctx *gin.Context) {
 		Header:     header,
 	}
 	if err := h.media.UpdateBroadcastArchive(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ActivateBroadcastRTMP(ctx *gin.Context) {
+	in := &media.ActivateBroadcastRTMPInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	}
+	if err := h.media.ActivateBroadcastRTMP(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) ActivateBroadcastMP4(ctx *gin.Context) {
+	file, header, err := h.parseFile(ctx, "video")
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	in := &media.ActivateBroadcastMP4Input{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+		File:       file,
+		Header:     header,
+	}
+	if err := h.media.ActivateBroadcastMP4(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}

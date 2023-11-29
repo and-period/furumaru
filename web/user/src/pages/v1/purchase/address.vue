@@ -55,15 +55,17 @@ const handleClickNextStepButton = async () => {
 
 <template>
   <div class="container mx-auto">
-    <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
+    <div
+      class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
+    >
       ご購入手続き
     </div>
-    <div class="my-10 bg-white px-6 pb-10">
-      <div class="grid grid-cols-2 gap-[80px]">
-        <div class="pl-10">
+    <div class="mx-[15px] my-10 bg-white px-6 pb-10 md:mx-0">
+      <div class="gap-[80px] md:grid md:grid-cols-2">
+        <div class="md:pl-10">
           <div>
             <div
-              class="pt-[80px] text-left text-[16px] font-bold tracking-[1.6px] text-main"
+              class="pt-[24px] text-left text-[16px] font-bold tracking-[1.6px] text-main md:pt-[80px]"
             >
               お客様情報
             </div>
@@ -86,14 +88,14 @@ const handleClickNextStepButton = async () => {
             <div class="mt-4 grid grid-cols-2 gap-4">
               <the-text-input
                 v-model="formData.lastnameKana"
-                placeholder="セイ"
+                placeholder="フリガナ(セイ)"
                 :with-label="false"
                 type="text"
                 required
               />
               <the-text-input
                 v-model="formData.firstnameKana"
-                placeholder="メイ"
+                placeholder="フリガナ(メイ)"
                 :with-label="false"
                 type="text"
                 required
@@ -121,7 +123,9 @@ const handleClickNextStepButton = async () => {
               class="pt-4"
               required
             />
-            <div class="mt-4 grid grid-cols-2 gap-4">
+            <div
+              class="mt-4 flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4"
+            >
               <the-text-input
                 v-model="formData.postalCode"
                 placeholder="郵便番号（ハイフンなし）"
@@ -129,7 +133,6 @@ const handleClickNextStepButton = async () => {
                 type="text"
                 required
               />
-
               <the-text-input
                 v-model="formData.prefecture"
                 placeholder="都道府県"
@@ -169,34 +172,42 @@ const handleClickNextStepButton = async () => {
                 type="radio"
                 checked
               />
-              <label class="pl-2 text-main"> 上記の住所にお届け </label>
+              <label class="pl-2 text-[14px] text-main md:text-[16px]">
+                上記の住所にお届け
+              </label>
             </div>
 
-            <div class="mt-12 grid grid-cols-2">
-              <button
-                class="inline-flex items-center"
-                @click="handleClickPreviousStepButton"
-              >
-                <the-left-arrow-icon class="h-4 w-4" />
-                <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
-                  前のページへ戻る
-                </p>
-              </button>
+            <div class="hidden md:block">
+              <div class="mt-12 md:grid md:grid-cols-2">
+                <div class="flex items-center">
+                  <button
+                    class="inline-flex"
+                    @click="handleClickPreviousStepButton"
+                  >
+                    <the-left-arrow-icon class="h-4 w-4" />
+                    <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
+                      前のページへ戻る
+                    </p>
+                  </button>
+                </div>
 
-              <button
-                class="w-[240px] justify-self-end bg-main p-[14px] text-[16px] text-white"
-                @click="handleClickNextStepButton"
-              >
-                お支払方法の選択へ
-              </button>
+                <button
+                  class="w-full bg-main p-[14px] text-[16px] text-white md:w-[240px] md:justify-self-end"
+                  @click="handleClickNextStepButton"
+                >
+                  お支払方法の選択へ
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="mr-10 mt-10">
-          <div class="w-full bg-base p-10 text-main">
-            <div class="text-[16px] font-bold tracking-[1.6px]">注文内容</div>
-            <div class="my-6 text-[12px] tracking-[1.2px]">
+        <div class="mt-[24px] md:mr-10 md:mt-10">
+          <div class="w-full bg-base px-[16px] py-[24px] text-main md:p-10">
+            <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
+              注文内容
+            </div>
+            <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
               <p>
                 {{ cartItem.marche }}
               </p>
@@ -219,12 +230,15 @@ const handleClickNextStepButton = async () => {
                     :alt="`${item.name}の画像`"
                     class="block aspect-square h-[56px] w-[56px]"
                   />
-                  <div class="col-span-2">{{ item.name }}</div>
-                  <div
-                    class="flex w-full items-center justify-self-end text-right"
-                  >
-                    数量：{{ 1 }}
+                  <div class="col-span-3 pl-[24px] md:pl-0">
+                    <div>{{ item.name }}</div>
+                    <div
+                      class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                    >
+                      数量：{{ 1 }}
+                    </div>
                   </div>
+
                   <div class="flex items-center justify-self-end text-right">
                     {{ priceFormatter(item.price) }}
                   </div>
@@ -232,35 +246,37 @@ const handleClickNextStepButton = async () => {
               </div>
 
               <div class="items-center border-b" />
-              <div class="grid grid-cols-4 gap-2 py-6">
+              <div class="grid grid-cols-5 gap-2 py-6 md:grid-cols-4">
                 <div class="col-span-3">
                   <input
                     type="text"
-                    class="w-full border border-gray-300 bg-gray-50 p-2.5"
+                    class="w-full border border-gray-300 bg-gray-50 p-2.5 text-[14px] md:text-[16px]"
                     placeholder="クーポンコード"
                   />
                 </div>
 
                 <button
-                  class="w-full justify-self-end bg-main p-2 text-[16px] text-white"
+                  class="col-span-2 w-full justify-self-end bg-main p-2 text-[14px] text-white md:col-span-1 md:text-[16px]"
                 >
                   適用する
                 </button>
               </div>
 
               <div
-                class="grid grid-cols-2 gap-y-4 border-y border-main py-6 text-[14px] tracking-[1.4px]"
+                class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
               >
-                <div>商品合計（税込み）</div>
-                <div class="text-right">
+                <div class="col-span-2 md:col-span-1">商品合計（税込）</div>
+                <div class="col-span-3 text-right md:col-span-1">
                   {{ priceFormatter(itemsTotalPrice) }}
                 </div>
-                <div>クーポン利用</div>
-                <div class="text-right">
+                <div class="col-span-2 md:col-span-1">クーポン利用</div>
+                <div class="col-span-3 text-right md:col-span-1">
                   {{ priceFormatter(discount) }}
                 </div>
-                <div>送料（合計）</div>
-                <div class="text-right">次ページで計算されます</div>
+                <div class="col-span-2 md:col-span-1">送料（税込）</div>
+                <div class="col-span-3 text-right md:col-span-1">
+                  次ページで計算されます
+                </div>
               </div>
 
               <div
@@ -270,6 +286,27 @@ const handleClickNextStepButton = async () => {
                 <div class="text-right">
                   {{ priceFormatter(totalPrice) }}
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="block md:hidden">
+            <div class="mt-12">
+              <button
+                class="w-full bg-main p-[14px] text-[14px] tracking-[1.4px] text-white md:w-[240px] md:justify-self-end md:text-[16px] md:tracking-[1.6px]"
+                @click="handleClickNextStepButton"
+              >
+                お支払方法の選択へ
+              </button>
+              <div class="mt-[40px] items-center">
+                <button
+                  class="inline-flex"
+                  @click="handleClickPreviousStepButton"
+                >
+                  <the-left-arrow-icon class="h-4 w-4" />
+                  <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
+                    前のページへ戻る
+                  </p>
+                </button>
               </div>
             </div>
           </div>

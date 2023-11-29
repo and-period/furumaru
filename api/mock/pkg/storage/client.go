@@ -124,6 +124,21 @@ func (mr *MockBucketMockRecorder) GetHost() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHost", reflect.TypeOf((*MockBucket)(nil).GetHost))
 }
 
+// ReplaceURLToS3URI mocks base method.
+func (m *MockBucket) ReplaceURLToS3URI(rawURL string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReplaceURLToS3URI", rawURL)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReplaceURLToS3URI indicates an expected call of ReplaceURLToS3URI.
+func (mr *MockBucketMockRecorder) ReplaceURLToS3URI(rawURL interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReplaceURLToS3URI", reflect.TypeOf((*MockBucket)(nil).ReplaceURLToS3URI), rawURL)
+}
+
 // Upload mocks base method.
 func (m *MockBucket) Upload(ctx context.Context, path string, body io.Reader) (string, error) {
 	m.ctrl.T.Helper()

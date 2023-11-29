@@ -7,6 +7,7 @@ p, auth, /v1/auth, (GET)|(POST)|(DELETE), allow
 p, auth, /v1/auth/*, (GET)|(POST)|(PATCH), allow
 p, broadcast_get, /v1/schedules/*/broadcasts, GET, allow
 p, broadcast_update, /v1/schedules/*/broadcasts, PATCH, allow
+p, broadcast_action, /v1/schedules/*/broadcasts/*, (POST)|(DELETE), allow
 p, category_list, /v1/categories, GET, allow
 p, category_create, /v1/categories, POST, allow
 p, category_update, /v1/categories/*, PATCH, allow
@@ -97,6 +98,7 @@ g, administrator, administrator_delete
 g, administrator, auth
 g, administrator, broadcast_get
 g, administrator, broadcast_update
+g, administrator, broadcast_action
 g, administrator, category_list
 g, administrator, category_create
 g, administrator, category_update
@@ -180,8 +182,9 @@ g, administrator, user_list
 g, administrator, user_get
 
 g, coordinator, auth
-g, corodinator, broadcast_get
-g, corodinator, broadcast_update
+g, coordinator, broadcast_get
+g, coordinator, broadcast_update
+g, coordinator, broadcast_action
 g, coordinator, category_list
 g, coordinator, contact_list
 g, coordinator, contact_get

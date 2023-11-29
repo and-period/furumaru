@@ -36,6 +36,34 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
+// ActivateBroadcastMP4 mocks base method.
+func (m *MockService) ActivateBroadcastMP4(ctx context.Context, in *media.ActivateBroadcastMP4Input) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActivateBroadcastMP4", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ActivateBroadcastMP4 indicates an expected call of ActivateBroadcastMP4.
+func (mr *MockServiceMockRecorder) ActivateBroadcastMP4(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateBroadcastMP4", reflect.TypeOf((*MockService)(nil).ActivateBroadcastMP4), ctx, in)
+}
+
+// ActivateBroadcastRTMP mocks base method.
+func (m *MockService) ActivateBroadcastRTMP(ctx context.Context, in *media.ActivateBroadcastRTMPInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActivateBroadcastRTMP", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ActivateBroadcastRTMP indicates an expected call of ActivateBroadcastRTMP.
+func (mr *MockServiceMockRecorder) ActivateBroadcastRTMP(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateBroadcastRTMP", reflect.TypeOf((*MockService)(nil).ActivateBroadcastRTMP), ctx, in)
+}
+
 // ActivateBroadcastStaticImage mocks base method.
 func (m *MockService) ActivateBroadcastStaticImage(ctx context.Context, in *media.ActivateBroadcastStaticImageInput) error {
 	m.ctrl.T.Helper()

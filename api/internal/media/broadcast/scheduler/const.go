@@ -1,9 +1,10 @@
 package scheduler
 
 const (
-	streamName       = "live/a"
-	archiveFilename  = "original.mp4"
-	playlistFilename = "live.m3u8"
+	streamName         = "live/a"
+	archiveFilename    = "original.mp4"
+	playlistFilename   = "live.m3u8"
+	dynamicMP4InputURL = "s3://$urlPath$"
 )
 
 // CreatePayload - 配信リソース作成リクエスト
@@ -24,7 +25,7 @@ type CreateChannelPayload struct {
 
 // CreateMp4Payload - 配信リソース(MediaLive MP4インプット)
 type CreateMp4Payload struct {
-	OpeningVideoURL string `json:"OpeningVideoUrl"`
+	InputURL string `json:"InputUrl"`
 }
 
 // CreateRtmpPayload - 配信リソース(MediaLive プッシュRTMPインプット)
