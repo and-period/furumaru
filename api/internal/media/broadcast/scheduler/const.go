@@ -4,7 +4,7 @@ const (
 	streamName         = "live/a"
 	archiveFilename    = "original.mp4"
 	playlistFilename   = "live.m3u8"
-	dynamicMP4InputURL = "s3://$urlPath$"
+	dynamicMP4InputURL = "$urlPath$"
 )
 
 // CreatePayload - 配信リソース作成リクエスト

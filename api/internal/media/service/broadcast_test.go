@@ -520,7 +520,7 @@ func TestActivateBroadcastMP4(t *testing.T) {
 						require.NoError(t, err)
 						return u.String(), nil
 					})
-				mocks.storage.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("s3://example.mp4", nil)
+				mocks.tmp.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("s3://example.mp4", nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, actual *medialive.CreateScheduleParams) error {
 						assert.Equal(t, actual, params("s3://example.mp4"))
@@ -618,7 +618,7 @@ func TestActivateBroadcastMP4(t *testing.T) {
 						require.NoError(t, err)
 						return u.String(), nil
 					})
-				mocks.storage.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("", assert.AnError)
+				mocks.tmp.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("", assert.AnError)
 			},
 			input: func() *media.ActivateBroadcastMP4Input {
 				file, header := testVideoFile(t)
@@ -641,7 +641,7 @@ func TestActivateBroadcastMP4(t *testing.T) {
 						require.NoError(t, err)
 						return u.String(), nil
 					})
-				mocks.storage.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("s3://example.mp4", nil)
+				mocks.tmp.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("s3://example.mp4", nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, actual *medialive.CreateScheduleParams) error {
 						assert.Equal(t, actual, params("s3://example.mp4"))

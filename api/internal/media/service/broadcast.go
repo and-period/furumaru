@@ -149,7 +149,7 @@ func (s *service) ActivateBroadcastMP4(ctx context.Context, in *media.ActivateBr
 	if err != nil {
 		return err
 	}
-	videoURI, err := s.storage.ReplaceURLToS3URI(videoURL)
+	videoURI, err := s.tmp.ReplaceURLToS3URI(videoURL)
 	if err != nil {
 		return internalError(err)
 	}
