@@ -16,6 +16,9 @@ broadcast:
     outputUrl:
       type: string
       description: ライブ配信URL(出力側)
+    archiveUrl:
+      type: string
+      description: オンデマンド配信URL
     createdAt:
       type: integer
       format: int64
@@ -30,6 +33,7 @@ broadcast:
   - status
   - inputUrl
   - outputUrl
+  - archiveUrl
   - createdAt
   - updatedAt
   example:
@@ -38,5 +42,6 @@ broadcast:
     status: 4
     inputUrl: 'rtmp://127.0.0.1:1935/app/instance'
     outputUrl: 'http://example.com/index.m3u8'
+    archiveUrl: 'http://example.com/index.mp4'
     createdAt: 1640962800
     updatedAt: 1640962800

@@ -49,6 +49,7 @@ func NewBroadcast(broadcast *entity.Broadcast) *Broadcast {
 			Status:     NewBroadcastStatus(broadcast.Status).Response(),
 			InputURL:   broadcast.InputURL,
 			OutputURL:  broadcast.OutputURL,
+			ArchiveURL: broadcast.ArchiveURL,
 			CreatedAt:  broadcast.CreatedAt.Unix(),
 			UpdatedAt:  broadcast.CreatedAt.Unix(),
 		},

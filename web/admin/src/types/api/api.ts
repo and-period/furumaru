@@ -383,6 +383,12 @@ export interface Broadcast {
      */
     'outputUrl': string;
     /**
+     * オンデマンド配信URL
+     * @type {string}
+     * @memberof Broadcast
+     */
+    'archiveUrl': string;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof Broadcast
