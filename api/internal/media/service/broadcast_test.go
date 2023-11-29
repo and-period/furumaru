@@ -512,19 +512,18 @@ func TestActivateBroadcastMP4(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				var videoURL string
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
 						assert.True(t, strings.HasPrefix(path, entity.BroadcastLiveMP4Path), path)
 						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 						require.NoError(t, err)
-						videoURL = u.String()
-						return videoURL, nil
+						return u.String(), nil
 					})
+				mocks.storage.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("s3://example.mp4", nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, actual *medialive.CreateScheduleParams) error {
-						assert.Equal(t, actual, params(videoURL))
+						assert.Equal(t, actual, params("s3://example.mp4"))
 						return nil
 					})
 			},
@@ -609,21 +608,43 @@ func TestActivateBroadcastMP4(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "failed to create schedule",
+			name: "failed to replace s3 uri",
 			setup: func(ctx context.Context, mocks *mocks) {
-				var videoURL string
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
 						assert.True(t, strings.HasPrefix(path, entity.BroadcastLiveMP4Path), path)
 						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 						require.NoError(t, err)
-						videoURL = u.String()
-						return videoURL, nil
+						return u.String(), nil
 					})
+				mocks.storage.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("", assert.AnError)
+			},
+			input: func() *media.ActivateBroadcastMP4Input {
+				file, header := testVideoFile(t)
+				return &media.ActivateBroadcastMP4Input{
+					ScheduleID: "schedule-id",
+					File:       file,
+					Header:     header,
+				}
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to create schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
+						assert.True(t, strings.HasPrefix(path, entity.BroadcastLiveMP4Path), path)
+						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
+						require.NoError(t, err)
+						return u.String(), nil
+					})
+				mocks.storage.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("s3://example.mp4", nil)
 				mocks.media.EXPECT().CreateSchedule(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, actual *medialive.CreateScheduleParams) error {
-						assert.Equal(t, actual, params(videoURL))
+						assert.Equal(t, actual, params("s3://example.mp4"))
 						return assert.AnError
 					})
 			},
@@ -671,7 +692,8 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
-				mocks.media.EXPECT().ActivateStaticImage(ctx, "12345678", "http://example.com/image.png").Return(nil)
+				mocks.storage.EXPECT().ReplaceURLToS3URI("http://example.com/image.png").Return("s3://image.png", nil)
+				mocks.media.EXPECT().ActivateStaticImage(ctx, "12345678", "s3://image.png").Return(nil)
 			},
 			input: &media.ActivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",
@@ -717,11 +739,24 @@ func TestActivateBroadcastStaticImage(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
+			name: "failed to replace s3 uri",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.storage.EXPECT().ReplaceURLToS3URI("http://example.com/image.png").Return("", assert.AnError)
+			},
+			input: &media.ActivateBroadcastStaticImageInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to activate static image",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
-				mocks.media.EXPECT().ActivateStaticImage(ctx, "12345678", "http://example.com/image.png").Return(assert.AnError)
+				mocks.storage.EXPECT().ReplaceURLToS3URI("http://example.com/image.png").Return("s3://image.png", nil)
+				mocks.media.EXPECT().ActivateStaticImage(ctx, "12345678", "s3://image.png").Return(assert.AnError)
 			},
 			input: &media.ActivateBroadcastStaticImageInput{
 				ScheduleID: "schedule-id",

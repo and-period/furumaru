@@ -149,12 +149,16 @@ func (s *service) ActivateBroadcastMP4(ctx context.Context, in *media.ActivateBr
 	if err != nil {
 		return err
 	}
+	videoURI, err := s.storage.ReplaceURLToS3URI(videoURL)
+	if err != nil {
+		return internalError(err)
+	}
 	settings := []*medialive.ScheduleSetting{{
 		Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(s.now(), time.DateTime)),
 		ActionType: medialive.ScheduleActionTypeInputSwitch,
 		StartType:  medialive.ScheduleStartTypeImmediate,
 		Reference:  broadcast.MediaLiveMP4InputName,
-		Source:     videoURL,
+		Source:     videoURI,
 	}}
 	params := &medialive.CreateScheduleParams{
 		ChannelID: broadcast.MediaLiveChannelID,
@@ -182,7 +186,11 @@ func (s *service) ActivateBroadcastStaticImage(ctx context.Context, in *media.Ac
 	if err != nil {
 		return internalError(err)
 	}
-	err = s.media.ActivateStaticImage(ctx, broadcast.MediaLiveChannelID, schedule.ImageURL)
+	imageURI, err := s.storage.ReplaceURLToS3URI(schedule.ImageURL)
+	if err != nil {
+		return internalError(err)
+	}
+	err = s.media.ActivateStaticImage(ctx, broadcast.MediaLiveChannelID, imageURI)
 	return internalError(err)
 }
 
