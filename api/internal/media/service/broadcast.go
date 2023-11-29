@@ -81,7 +81,7 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID, "status")
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
 	if err != nil {
 		return internalError(err)
 	}
@@ -93,7 +93,7 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 	if err := reg.Validate(teeReader, in.Header); err != nil {
 		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
 	}
-	path := reg.GenerateFilePath(in.Header)
+	path := reg.GenerateFilePath(in.Header, broadcast.ScheduleID)
 	archiveURL, err := s.storage.Upload(ctx, path, &buf)
 	if err != nil {
 		return internalError(err)
@@ -101,7 +101,7 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 	params := &database.UpdateBroadcastParams{UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
 		ArchiveURL: archiveURL,
 	}}
-	err = s.db.Broadcast.Update(ctx, in.ScheduleID, params)
+	err = s.db.Broadcast.Update(ctx, broadcast.ID, params)
 	return internalError(err)
 }
 

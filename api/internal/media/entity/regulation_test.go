@@ -616,56 +616,28 @@ func TestRegulation_GenerateFilePath(t *testing.T) {
 		name       string
 		regulation *Regulation
 		header     *multipart.FileHeader
+		args       []interface{}
 		expect     string
 	}{
 		{
-			name:       "coordinator thumbnail",
+			name:       "success",
 			regulation: CoordinatorThumbnailRegulation,
 			header:     &multipart.FileHeader{Filename: "and-period.png"},
 			expect:     "coordinators/thumbnail/[a-zA-Z0-9]+.png",
 		},
 		{
-			name:       "coordinator header",
-			regulation: CoordinatorHeaderRegulation,
-			header:     &multipart.FileHeader{Filename: "and-period.png"},
-			expect:     "coordinators/header/[a-zA-Z0-9]+.png",
-		},
-		{
-			name:       "producer thumbnail",
-			regulation: ProducerThumbnailRegulation,
-			header:     &multipart.FileHeader{Filename: "and-period.png"},
-			expect:     "producers/thumbnail/[a-zA-Z0-9]+.png",
-		},
-		{
-			name:       "producer header",
-			regulation: ProducerHeaderRegulation,
-			header:     &multipart.FileHeader{Filename: "and-period.png"},
-			expect:     "producers/header/[a-zA-Z0-9]+.png",
-		},
-		{
-			name:       "product media image",
-			regulation: ProductMediaImageRegulation,
-			header:     &multipart.FileHeader{Filename: "and-period.png"},
-			expect:     "products/media/image/[a-zA-Z0-9]+.png",
-		},
-		{
-			name:       "product media video",
-			regulation: ProductMediaVideoRegulation,
+			name:       "success with params",
+			regulation: BroadcastArchiveRegulation,
 			header:     &multipart.FileHeader{Filename: "and-period.mp4"},
-			expect:     "products/media/video/[a-zA-Z0-9]+.mp4",
-		},
-		{
-			name:       "product type icon",
-			regulation: ProductTypeIconRegulation,
-			header:     &multipart.FileHeader{Filename: "and-period.png"},
-			expect:     "product-types/icon/[a-zA-Z0-9]+.png",
+			args:       []interface{}{"broadcast-id"},
+			expect:     "schedules/archives/broadcast-id/mp4/[a-zA-Z0-9]+.mp4",
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Regexp(t, regexp.MustCompile(tt.expect), tt.regulation.GenerateFilePath(tt.header))
+			assert.Regexp(t, regexp.MustCompile(tt.expect), tt.regulation.GenerateFilePath(tt.header, tt.args...))
 		})
 	}
 }

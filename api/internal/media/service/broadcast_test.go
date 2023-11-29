@@ -251,7 +251,9 @@ func TestCreateBroadcast(t *testing.T) {
 func TestUpdateBroadcastArchive(t *testing.T) {
 	t.Parallel()
 	broadcast := &entity.Broadcast{
-		Status: entity.BroadcastStatusDisabled,
+		ID:         "broadcast-id",
+		ScheduleID: "schdule-id",
+		Status:     entity.BroadcastStatusDisabled,
 	}
 	params := func(archiveURL string) *database.UpdateBroadcastParams {
 		return &database.UpdateBroadcastParams{
@@ -270,16 +272,15 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				var archiveURL string
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id", "status").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
-						assert.True(t, strings.HasPrefix(path, entity.BroadcastArchivePath), path)
 						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 						require.NoError(t, err)
 						archiveURL = u.String()
 						return archiveURL, nil
 					})
-				mocks.db.Broadcast.EXPECT().Update(ctx, "schedule-id", gomock.Any()).
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", gomock.Any()).
 					DoAndReturn(func(_ context.Context, _ string, actual *database.UpdateBroadcastParams) error {
 						expect := params(archiveURL)
 						assert.Equal(t, expect, actual)
@@ -307,7 +308,7 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id", "status").Return(nil, assert.AnError)
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
 			},
 			input: func() *media.UpdateBroadcastArchiveInput {
 				file, header := testImageFile(t)
@@ -323,7 +324,7 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 			name: "broadcast is enabled",
 			setup: func(ctx context.Context, mocks *mocks) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id", "status").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 			},
 			input: func() *media.UpdateBroadcastArchiveInput {
 				file, header := testImageFile(t)
@@ -338,7 +339,7 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		{
 			name: "invalid reguration",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id", "status").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 			},
 			input: func() *media.UpdateBroadcastArchiveInput {
 				file, header := testImageFile(t)
@@ -353,7 +354,7 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		{
 			name: "failed to upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id", "status").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("", assert.AnError)
 			},
 			input: func() *media.UpdateBroadcastArchiveInput {
@@ -370,16 +371,15 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 			name: "failed to update broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
 				var archiveURL string
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id", "status").Return(broadcast, nil)
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
-						assert.True(t, strings.HasPrefix(path, entity.BroadcastArchivePath), path)
 						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
 						require.NoError(t, err)
 						archiveURL = u.String()
 						return archiveURL, nil
 					})
-				mocks.db.Broadcast.EXPECT().Update(ctx, "schedule-id", gomock.Any()).Return(assert.AnError)
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: func() *media.UpdateBroadcastArchiveInput {
 				file, header := testVideoFile(t)

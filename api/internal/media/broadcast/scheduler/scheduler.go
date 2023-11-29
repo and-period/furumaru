@@ -57,12 +57,12 @@ func newArchiveHLSPath(scheduleID string) string {
 	if scheduleID == "" {
 		return ""
 	}
-	return fmt.Sprintf("/%s/%s/hls", entity.BroadcastArchivePath, scheduleID)
+	return "/" + fmt.Sprintf(entity.BroadcastArchiveHLSPath, scheduleID)
 }
 
 func newArchiveMP4Path(scheduleID string) string {
 	if scheduleID == "" {
 		return ""
 	}
-	return fmt.Sprintf("/%s/%s/mp4", entity.BroadcastArchivePath, scheduleID)
+	return "/" + fmt.Sprintf(entity.BroadcastArchiveMP4Path, scheduleID)
 }

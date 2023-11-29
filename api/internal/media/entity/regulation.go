@@ -19,8 +19,9 @@ var (
 )
 
 const (
-	BroadcastArchivePath          = "schedules/archives"           // ライブ配信アーカイブ動画
 	BroadcastLiveMP4Path          = "schedules/lives"              // ライブ配信中に使用する動画
+	BroadcastArchiveMP4Path       = "schedules/archives/%s/mp4"    // ライブ配信後のアーカイブ動画(mp4)
+	BroadcastArchiveHLSPath       = "schedules/archives/%s/hls"    // ライブ配信後のアーカイブ動画(hls)
 	CoordinatorThumbnailPath      = "coordinators/thumbnail"       // コーディネータサムネイル画像
 	CoordinatorHeaderPath         = "coordinators/header"          // コーディネータヘッダー画像
 	CoordinatorPromotionVideoPath = "coordinators/promotion-video" // コーディネータ紹介映像
@@ -49,7 +50,7 @@ var (
 	BroadcastArchiveRegulation = &Regulation{
 		MaxSize: 200 << 20, // 200MB
 		Formats: set.New("video/mp4"),
-		dir:     BroadcastArchivePath,
+		dir:     BroadcastArchiveMP4Path,
 	}
 	BroadcastLiveMP4Regulation = &Regulation{
 		MaxSize: 200 << 20, // 200MB
@@ -157,9 +158,10 @@ func (r *Regulation) validateFormat(file io.Reader) error {
 	return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
 }
 
-func (r *Regulation) GenerateFilePath(header *multipart.FileHeader) string {
+func (r *Regulation) GenerateFilePath(header *multipart.FileHeader, args ...interface{}) string {
 	key := uuid.Base58Encode(uuid.New())
 	extension := strings.ToLower(filepath.Ext(header.Filename))
+	dirname := fmt.Sprintf(r.dir, args...)
 	filename := strings.Join([]string{key, extension}, "")
-	return strings.Join([]string{r.dir, filename}, "/")
+	return strings.Join([]string{dirname, filename}, "/")
 }
