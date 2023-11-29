@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
@@ -14,6 +16,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -395,6 +398,252 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 			err := service.UpdateBroadcastArchive(ctx, tt.input())
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
+	}
+}
+
+func TestActivateBroadcastRTMP(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	broadcast := &entity.Broadcast{
+		Status:                 entity.BroadcastStatusActive,
+		MediaLiveChannelID:     "12345678",
+		MediaLiveRTMPInputName: "rtmp",
+	}
+	params := &medialive.CreateScheduleParams{
+		ChannelID: "12345678",
+		Settings: []*medialive.ScheduleSetting{{
+			Name:       fmt.Sprintf("%s immediate-input-rtmp", jst.Format(now, time.DateTime)),
+			ActionType: medialive.ScheduleActionTypeInputSwitch,
+			StartType:  medialive.ScheduleStartTypeImmediate,
+			Reference:  broadcast.MediaLiveRTMPInputName,
+		}},
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.ActivateBroadcastRTMPInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(nil)
+			},
+			input: &media.ActivateBroadcastRTMPInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.ActivateBroadcastRTMPInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.ActivateBroadcastRTMPInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.ActivateBroadcastRTMPInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to activate static image",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(assert.AnError)
+			},
+			input: &media.ActivateBroadcastRTMPInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ActivateBroadcastRTMP(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}, withNow(now)))
+	}
+}
+
+func TestActivateBroadcastMP4(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	broadcast := &entity.Broadcast{
+		Status:                entity.BroadcastStatusActive,
+		MediaLiveChannelID:    "12345678",
+		MediaLiveMP4InputName: "mp4",
+	}
+	params := func(videoURL string) *medialive.CreateScheduleParams {
+		return &medialive.CreateScheduleParams{
+			ChannelID: "12345678",
+			Settings: []*medialive.ScheduleSetting{{
+				Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(now, time.DateTime)),
+				ActionType: medialive.ScheduleActionTypeInputSwitch,
+				StartType:  medialive.ScheduleStartTypeImmediate,
+				Reference:  broadcast.MediaLiveMP4InputName,
+				Source:     videoURL,
+			}},
+		}
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     func() *media.ActivateBroadcastMP4Input
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				var videoURL string
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
+						assert.True(t, strings.HasPrefix(path, entity.BroadcastLiveMP4Path), path)
+						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
+						require.NoError(t, err)
+						videoURL = u.String()
+						return videoURL, nil
+					})
+				mocks.media.EXPECT().CreateSchedule(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, actual *medialive.CreateScheduleParams) error {
+						assert.Equal(t, actual, params(videoURL))
+						return nil
+					})
+			},
+			input: func() *media.ActivateBroadcastMP4Input {
+				file, header := testVideoFile(t)
+				return &media.ActivateBroadcastMP4Input{
+					ScheduleID: "schedule-id",
+					File:       file,
+					Header:     header,
+				}
+			},
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: func() *media.ActivateBroadcastMP4Input {
+				return &media.ActivateBroadcastMP4Input{}
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: func() *media.ActivateBroadcastMP4Input {
+				file, header := testImageFile(t)
+				return &media.ActivateBroadcastMP4Input{
+					ScheduleID: "schedule-id",
+					File:       file,
+					Header:     header,
+				}
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: func() *media.ActivateBroadcastMP4Input {
+				file, header := testImageFile(t)
+				return &media.ActivateBroadcastMP4Input{
+					ScheduleID: "schedule-id",
+					File:       file,
+					Header:     header,
+				}
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "invalid reguration",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: func() *media.ActivateBroadcastMP4Input {
+				file, header := testImageFile(t)
+				return &media.ActivateBroadcastMP4Input{
+					ScheduleID: "schedule-id",
+					File:       file,
+					Header:     header,
+				}
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to upload",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("", assert.AnError)
+			},
+			input: func() *media.ActivateBroadcastMP4Input {
+				file, header := testVideoFile(t)
+				return &media.ActivateBroadcastMP4Input{
+					ScheduleID: "schedule-id",
+					File:       file,
+					Header:     header,
+				}
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to create schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				var videoURL string
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
+						assert.True(t, strings.HasPrefix(path, entity.BroadcastLiveMP4Path), path)
+						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
+						require.NoError(t, err)
+						videoURL = u.String()
+						return videoURL, nil
+					})
+				mocks.media.EXPECT().CreateSchedule(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, actual *medialive.CreateScheduleParams) error {
+						assert.Equal(t, actual, params(videoURL))
+						return assert.AnError
+					})
+			},
+			input: func() *media.ActivateBroadcastMP4Input {
+				file, header := testVideoFile(t)
+				return &media.ActivateBroadcastMP4Input{
+					ScheduleID: "schedule-id",
+					File:       file,
+					Header:     header,
+				}
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ActivateBroadcastMP4(ctx, tt.input())
+			assert.ErrorIs(t, err, tt.expectErr)
+		}, withNow(now)))
 	}
 }
 

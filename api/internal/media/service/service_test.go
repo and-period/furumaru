@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/database"
@@ -21,6 +22,7 @@ import (
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
@@ -48,6 +50,20 @@ type dbMocks struct {
 	Broadcast *mock_database.MockBroadcast
 }
 
+type testOptions struct {
+	now func() time.Time
+}
+
+type testOption func(opts *testOptions)
+
+func withNow(now time.Time) testOption {
+	return func(opts *testOptions) {
+		opts.now = func() time.Time {
+			return now
+		}
+	}
+}
+
 type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
@@ -67,7 +83,13 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	}
 }
 
-func newService(mocks *mocks) *service {
+func newService(mocks *mocks, opts ...testOption) *service {
+	dopts := &testOptions{
+		now: jst.Now,
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
@@ -84,10 +106,18 @@ func newService(mocks *mocks) *service {
 	mocks.tmp.EXPECT().GetHost().Return(tmpHost, nil)
 	mocks.storage.EXPECT().GetHost().Return(storageHost, nil)
 	srv, _ := NewService(params)
-	return srv.(*service)
+	service := srv.(*service)
+	service.now = func() time.Time {
+		return dopts.now()
+	}
+	return service
 }
 
-func testService(setup func(ctx context.Context, mocks *mocks), testFunc testCaller) func(t *testing.T) {
+func testService(
+	setup func(ctx context.Context, mocks *mocks),
+	testFunc testCaller,
+	opts ...testOption,
+) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Parallel()
 		ctx, cancel := context.WithCancel(context.Background())
@@ -96,7 +126,7 @@ func testService(setup func(ctx context.Context, mocks *mocks), testFunc testCal
 		defer ctrl.Finish()
 		mocks := newMocks(ctrl)
 
-		srv := newService(mocks)
+		srv := newService(mocks, opts...)
 		setup(ctx, mocks)
 
 		testFunc(ctx, t, srv)

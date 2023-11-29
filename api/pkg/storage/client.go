@@ -34,6 +34,8 @@ type Bucket interface {
 	GenerateObjectURL(path string) (string, error)
 	// S3 URIの生成
 	GenerateS3URI(path string) string
+	// オブジェクトURLからS3 URIへの置換
+	ReplaceURLToS3URI(rawURL string) (string, error)
 	// S3 Bucketの接続先情報を取得
 	GetHost() (*url.URL, error)
 	// S3 BucketのFQDNを取得
@@ -116,6 +118,17 @@ func (b *bucket) GenerateObjectURL(path string) (string, error) {
 func (b *bucket) GenerateS3URI(path string) string {
 	fpath := filepath.Join(aws.ToString(b.name), path)
 	return fmt.Sprintf("s3://%s", fpath)
+}
+
+func (b *bucket) ReplaceURLToS3URI(rawURL string) (string, error) {
+	if rawURL == "" {
+		return "", nil
+	}
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return "", err
+	}
+	return b.GenerateS3URI(u.Path), nil
 }
 
 func (b *bucket) GetHost() (*url.URL, error) {

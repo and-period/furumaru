@@ -1,6 +1,6 @@
 post:
-  summary: オンデマンド配信用の映像をアップロード
-  operationId: v1UpdateBroadcastArchive
+  summary: ライブ配信中の入力をRTMPへ切り替え
+  operationId: v1ActivateBroadcastRTMP
   tags:
   - Broadcast
   security:
@@ -13,15 +13,6 @@ post:
     description: マルシェ開催スケジュールID
     required: true
     example: "schedule-id"
-  requestBody:
-    required: true
-    content:
-      multipart/form-data:
-        schema:
-          $ref: './../../../../../openapi.yaml#/components/schemas/v1UpdateBroadcastArchiveRequest'
-        encoding:
-          thumbnail:
-            contentType: video/mp4
   responses:
     204:
       description: 成功
@@ -35,7 +26,7 @@ post:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
     412:
-      description: マルシェライブ配信が終了していない
+      description: マルシェライブ配信中でない
       content:
         application/json:
           schema:
