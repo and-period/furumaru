@@ -42,6 +42,7 @@ type ScheduleSetting struct {
 	StartType  ScheduleStartType  // 開始タイプ
 	ExecutedAt time.Time          // 実行時間(開始タイプが固定の場合のみ指定)
 	Reference  string             // インプット名
+	Source     string             // 参照先情報
 }
 
 func (c *client) CreateSchedule(ctx context.Context, params *CreateScheduleParams) error {
@@ -59,7 +60,7 @@ func (c *client) ActivateStaticImage(ctx context.Context, channelID, imageURL st
 		Name:       name,
 		ActionType: ScheduleActionTypeStaticImageActivate,
 		StartType:  ScheduleStartTypeImmediate,
-		Reference:  imageURL,
+		Source:     imageURL,
 	}}
 	in := &medialive.BatchUpdateScheduleInput{
 		ChannelId: aws.String(channelID),
@@ -106,12 +107,17 @@ func (c *client) newScheduleActions(params []*ScheduleSetting) []types.ScheduleA
 		// アクションの設定
 		switch p.ActionType {
 		case ScheduleActionTypeInputSwitch:
+			urlPath := make([]string, 0, 1)
+			if p.Source != "" {
+				urlPath = append(urlPath, p.Source)
+			}
 			actions[i].ScheduleActionSettings.InputSwitchSettings = &types.InputSwitchScheduleActionSettings{
 				InputAttachmentNameReference: aws.String(p.Reference),
+				UrlPath:                      urlPath,
 			}
 		case ScheduleActionTypeStaticImageActivate:
 			actions[i].ScheduleActionSettings.StaticImageActivateSettings = &types.StaticImageActivateScheduleActionSettings{
-				Image:  &types.InputLocation{Uri: aws.String(p.Reference)},
+				Image:  &types.InputLocation{Uri: aws.String(p.Source)},
 				FadeIn: 200, // 0.2sec
 			}
 		case ScheduleActionTypeStaticImageDeactivate:

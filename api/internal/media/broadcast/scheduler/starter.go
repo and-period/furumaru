@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sfn"
+	"github.com/and-period/furumaru/api/pkg/storage"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -24,6 +25,7 @@ type starter struct {
 	waitGroup  *sync.WaitGroup
 	semaphore  *semaphore.Weighted
 	db         *database.Database
+	storage    storage.Bucket
 	store      store.Service
 	sfn        sfn.StepFunction
 	media      medialive.MediaLive
@@ -45,6 +47,7 @@ func NewStarter(params *Params, opts ...Option) Scheduler {
 		waitGroup:  params.WaitGroup,
 		semaphore:  semaphore.NewWeighted(dopts.concurrency),
 		db:         params.Database,
+		storage:    params.Storage,
 		store:      params.Store,
 		sfn:        params.StepFunction,
 		media:      params.MediaLive,
@@ -161,12 +164,14 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 			Reference:  broadcast.MediaLiveRTMPInputName,
 		}}
 	case s.now().After(schedule.StartAt.Add(-6 * time.Minute)): // ライブ配信開始まで6分を切っている
+		sourceURL, _ := s.storage.ReplaceURLToS3URI(schedule.OpeningVideoURL)
 		return []*medialive.ScheduleSetting{
 			{
 				Name:       fmt.Sprintf("immediate-input-mp4 %s", jst.Format(s.now(), time.DateTime)),
 				ActionType: medialive.ScheduleActionTypeInputSwitch,
 				StartType:  medialive.ScheduleStartTypeImmediate,
 				Reference:  broadcast.MediaLiveMP4InputName,
+				Source:     sourceURL,
 			},
 			{
 				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
@@ -177,6 +182,7 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 			},
 		}
 	default: // ライブ配信開始まで6分以上時間あり
+		sourceURL, _ := s.storage.ReplaceURLToS3URI(schedule.OpeningVideoURL)
 		return []*medialive.ScheduleSetting{
 			{
 				Name:       fmt.Sprintf("immediate-input-rtmp %s", jst.Format(s.now(), time.DateTime)),
@@ -190,6 +196,7 @@ func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast
 				StartType:  medialive.ScheduleStartTypeFixed,
 				ExecutedAt: schedule.StartAt.Add(-5 * time.Minute),
 				Reference:  broadcast.MediaLiveMP4InputName,
+				Source:     sourceURL,
 			},
 			{
 				Name:       fmt.Sprintf("fixed-input-rtmp %s", jst.Format(schedule.StartAt, time.DateTime)),
@@ -242,7 +249,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 					InputLossImageSlateURI: schedule.ImageURL,
 				},
 				MP4Input: &CreateMp4Payload{
-					OpeningVideoURL: schedule.OpeningVideoURL,
+					InputURL: dynamicMP4InputURL,
 				},
 				RtmpInput: &CreateRtmpPayload{
 					StreamName: streamName,

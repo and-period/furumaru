@@ -161,7 +161,7 @@ stepFunctions:
                       Name.$: States.UUID()
                       Type: MP4_FILE
                       Sources:
-                        - Url.$: $.OpeningVideoUrl
+                        - Url.$: $.InputUrl
               - StartAt: CreateContainer
                 States:
                   CreateContainer:
