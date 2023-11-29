@@ -98,14 +98,15 @@ const handleClickNextStepButton = () => {
               class="pt-4"
               required
             />
-            <div class="mt-4 md:grid md:grid-cols-2 md:gap-4">
+            <div
+              class="mt-4 flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4"
+            >
               <the-text-input
                 placeholder="郵便番号（ハイフンなし）"
                 :with-label="false"
                 type="text"
                 required
               />
-
               <the-text-input
                 placeholder="都道府県"
                 :with-label="false"
