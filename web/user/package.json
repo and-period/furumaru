@@ -21,7 +21,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "@types/markdown-it": "^13.0.2",
     "axios": "^1.2.2",
-    "dayjs": "^1.11.7",
+    "dayjs": "^1.11.10",
     "hls.js": "^1.4.10",
     "markdown-it": "^13.0.2",
     "nuxt": "^3.4.3",
