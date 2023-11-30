@@ -22,6 +22,22 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  createLiveDialog: {
+    type: Boolean,
+    default: false
+  },
+  updateLiveDialog: {
+    type: Boolean,
+    default: false
+  },
+  liveMp4Dialog: {
+    type: Boolean,
+    default: false
+  },
+  archiveMp4Dialog: {
+    type: Boolean,
+    default: false
+  },
   scheduleFormData: {
     type: Object as PropType<UpdateScheduleRequest>,
     default: (): UpdateScheduleRequest => ({
@@ -53,6 +69,10 @@ const props = defineProps({
       startAt: dayjs().unix(),
       endAt: dayjs().unix()
     })
+  },
+  mp4FormData: {
+    type: Object as PropType<File[] | undefined>,
+    default: (): File[] | undefined => undefined
   },
   schedule: {
     type: Object as PropType<Schedule>,
@@ -100,6 +120,7 @@ const props = defineProps({
       status: BroadcastStatus.UNKNOWN,
       inputUrl: '',
       outputUrl: '',
+      archiveUrl: '',
       createdAt: 0,
       updatedAt: 0
     })
@@ -123,14 +144,6 @@ const props = defineProps({
   selectedTabItem: {
     type: String,
     default: 'schedule'
-  },
-  createLiveDialog: {
-    type: Boolean,
-    default: false
-  },
-  updateLiveDialog: {
-    type: Boolean,
-    default: false
   },
   thumbnailUploadStatus: {
     type: Object,
@@ -158,12 +171,15 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'click:new-live'): void
   (e: 'click:edit-live', liveId: string): void
+  (e: 'update:live-mp4-dialog', v: boolean): void
+  (e: 'update:archive-mp4-dialog', v: boolean): void
   (e: 'update:selected-tab-item', item: string): void
   (e: 'update:schedule-form-data', formData: UpdateScheduleRequest): void
-  (e: 'update:create-live-dialog', val: boolean): void
-  (e: 'update:update-live-dialog', val: boolean): void
+  (e: 'update:create-live-dialog', v: boolean): void
+  (e: 'update:update-live-dialog', v: boolean): void
   (e: 'update:create-live-form-data', formData: CreateLiveRequest): void
   (e: 'update:update-live-form-data', formData: UpdateLiveRequest): void
+  (e: 'update:mp4-form-data', formData?: File[]): void
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
   (e: 'update:opening-video', files: FileList): void
@@ -173,6 +189,11 @@ const emit = defineEmits<{
   (e: 'submit:create-live'): void
   (e: 'submit:update-live'): void
   (e: 'submit:delete-live'): void
+  (e: 'submit:activate-static-image'): void
+  (e: 'submit:deactivate-static-image'): void
+  (e: 'submit:change-input-mp4'): void
+  (e: 'submit:change-input-rtmp'): void
+  (e: 'submit:upload-archive-mp4'): void
 }>()
 
 const tabs: VTabs[] = [
@@ -197,6 +218,14 @@ const updateLiveDialogValue = computed({
   get: (): boolean => props.updateLiveDialog,
   set: (val: boolean): void => emit('update:update-live-dialog', val)
 })
+const liveMp4DialogValue = computed({
+  get: (): boolean => props.liveMp4Dialog,
+  set: (val: boolean): void => emit('update:live-mp4-dialog', val)
+})
+const archiveMp4DialogValue = computed({
+  get: (): boolean => props.archiveMp4Dialog,
+  set: (val: boolean): void => emit('update:archive-mp4-dialog', val)
+})
 const createLiveFormDataValue = computed({
   get: (): CreateLiveRequest => props.createLiveFormData,
   set: (formData: CreateLiveRequest): void => emit('update:create-live-form-data', formData)
@@ -204,6 +233,10 @@ const createLiveFormDataValue = computed({
 const updateLiveFormDataValue = computed({
   get: (): UpdateLiveRequest => props.updateLiveFormData,
   set: (formData: UpdateLiveRequest): void => emit('update:update-live-form-data', formData)
+})
+const mp4FormDataValue = computed({
+  get: (): File[] | undefined => props.mp4FormData,
+  set: (formData?: File[]): void => emit('update:mp4-form-data', formData)
 })
 
 const onClickNewLive = (): void => {
@@ -248,6 +281,26 @@ const onSubmitUpdateLive = (): void => {
 
 const onSubmitDeleteLive = (): void => {
   emit('submit:delete-live')
+}
+
+const onSubmitActivateStaticImage = (): void => {
+  emit('submit:activate-static-image')
+}
+
+const onSubmitDeactivateStaticImage = (): void => {
+  emit('submit:deactivate-static-image')
+}
+
+const onSubmitChangeMp4Input = (): void => {
+  emit('submit:change-input-mp4')
+}
+
+const onSubmitChangeRtmpInput = (): void => {
+  emit('submit:change-input-rtmp')
+}
+
+const onSubmitUploadArchiveMp4 = (): void => {
+  emit('submit:upload-archive-mp4')
 }
 </script>
 
@@ -307,8 +360,17 @@ const onSubmitDeleteLive = (): void => {
 
     <v-window-item value="streaming">
       <organisms-schedule-streaming
+        v-model:live-mp4-dialog="liveMp4DialogValue"
+        v-model:archive-mp4-dialog="archiveMp4DialogValue"
+        v-model:mp4-form-data="mp4FormDataValue"
+        :loading="loading"
         :selected-tab-item="selectedTabItem"
         :broadcast="broadcast"
+        @click:activate-static-image="onSubmitActivateStaticImage"
+        @click:deactivate-static-image="onSubmitDeactivateStaticImage"
+        @submit:change-input-mp4="onSubmitChangeMp4Input"
+        @submit:change-input-rtmp="onSubmitChangeRtmpInput"
+        @submit:upload-archive-mp4="onSubmitUploadArchiveMp4"
       />
     </v-window-item>
   </v-window>

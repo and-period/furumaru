@@ -42,6 +42,8 @@ const selector = ref<string>(tab === 'lives' ? 'lives' : 'schedules')
 const selectedLive = ref<Live>({ ...initialLive })
 const createLiveDialog = ref<boolean>(false)
 const updateLiveDialog = ref<boolean>(false)
+const liveMp4Dialog = ref<boolean>(false)
+const archiveMp4Dialog = ref<boolean>(false)
 const scheduleFormData = ref<UpdateScheduleRequest>({
   title: '',
   description: '',
@@ -65,6 +67,7 @@ const updateLiveFormData = ref<UpdateLiveRequest>({
   startAt: dayjs().unix(),
   endAt: dayjs().unix()
 })
+const mp4FormData = ref<File[] | undefined>()
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
@@ -291,6 +294,85 @@ const handleSubmitDeleteLive = async (): Promise<void> => {
   }
 }
 
+const handleSubmitActivateStaticImage = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await broadcastStore.activateStaticImage(scheduleId)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitDeactivateStaticImage = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await broadcastStore.deactivateStaticImage(scheduleId)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitChangeMp4Input = async (): Promise<void> => {
+  if (!mp4FormData.value || mp4FormData.value.length === 0) {
+    return
+  }
+  try {
+    loading.value = true
+    await broadcastStore.activateMp4Input(scheduleId, mp4FormData.value[0])
+    liveMp4Dialog.value = false
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitChangeRtmpInput = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await broadcastStore.activateRtmpInput(scheduleId)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitUploadArchiveMp4 = async (): Promise<void> => {
+  if (!mp4FormData.value || mp4FormData.value.length === 0) {
+    return
+  }
+  try {
+    loading.value = true
+    await broadcastStore.uploadArchiveMp4(scheduleId, mp4FormData.value[0])
+    archiveMp4Dialog.value = false
+    fetchState.refresh()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
 try {
   await fetchState.execute()
 } catch (err) {
@@ -303,9 +385,12 @@ try {
     v-model:selected-tab-item="selector"
     v-model:create-live-dialog="createLiveDialog"
     v-model:update-live-dialog="updateLiveDialog"
+    v-model:live-mp4-dialog="liveMp4Dialog"
+    v-model:archive-mp4-dialog="archiveMp4Dialog"
     v-model:schedule-form-data="scheduleFormData"
     v-model:create-live-form-data="createLiveFormData"
     v-model:update-live-form-data="updateLiveFormData"
+    v-model:mp4-form-data="mp4FormData"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -331,5 +416,10 @@ try {
     @submit:create-live="handleSubmitCreateLive"
     @submit:update-live="handleSubmitUpdateLive"
     @submit:delete-live="handleSubmitDeleteLive"
+    @submit:activate-static-image="handleSubmitActivateStaticImage"
+    @submit:deactivate-static-image="handleSubmitDeactivateStaticImage"
+    @submit:change-input-mp4="handleSubmitChangeMp4Input"
+    @submit:change-input-rtmp="handleSubmitChangeRtmpInput"
+    @submit:upload-archive-mp4="handleSubmitUploadArchiveMp4"
   />
 </template>
