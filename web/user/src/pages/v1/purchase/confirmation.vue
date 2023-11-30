@@ -33,6 +33,10 @@ const handleClickPreviousStepButton = () => {
 const handleClickNextStepButton = () => {
   router.push('/v1/purchase/complete')
 }
+
+useSeoMeta({
+  title: 'ご購入手続き',
+})
 </script>
 
 <template>
