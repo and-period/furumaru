@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useAuthStore } from '~/store/auth'
 import { CreateAuthRequest } from '~/types/api'
 import { I18n } from '~/types/locales'
 
@@ -9,6 +10,8 @@ definePageMeta({
 const router = useRouter()
 const i18n = useI18n()
 const localePath = useLocalePath()
+
+const { signUp } = useAuthStore()
 
 const t = (str: keyof I18n['auth']['signUp']) => {
   return i18n.t(`auth.signUp.${str}`)
@@ -21,7 +24,8 @@ const formData = reactive<CreateAuthRequest>({
   passwordConfirmation: '',
 })
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
+  await signUp(formData)
   router.push('/verify')
 }
 </script>
