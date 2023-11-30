@@ -38,7 +38,7 @@ const initialLive: Live = {
 }
 
 const loading = ref<boolean>(false)
-const selector = ref<string>(tab === 'lives' ? 'lives' : 'schedules')
+const selector = ref<string>(tab ?? 'schedule')
 const selectedLive = ref<Live>({ ...initialLive })
 const createLiveDialog = ref<boolean>(false)
 const updateLiveDialog = ref<boolean>(false)
