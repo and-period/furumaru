@@ -47,8 +47,8 @@ const postalCodeValue = computed({
   set: (val: string) => emit('update:postalCode', val)
 })
 const prefectureValue = computed({
-  get: (): Prefecture => props.prefectureCode,
-  set: (val: Prefecture) => emit('update:prefecture', val)
+  get: (): number => props.prefectureCode,
+  set: (val: number) => emit('update:prefecture', val)
 })
 const cityValue = computed({
   get: (): string => props.city,
