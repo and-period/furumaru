@@ -2,6 +2,7 @@
 import { useAuthStore } from '~/store/auth'
 import { CreateAuthRequest } from '~/types/api'
 import { I18n } from '~/types/locales'
+import { convertJapaneseToI18nPhoneNumber } from '~/lib/phone-number'
 
 definePageMeta({
   layout: 'auth',
@@ -25,7 +26,10 @@ const formData = reactive<CreateAuthRequest>({
 })
 
 const handleSubmit = async () => {
-  await signUp(formData)
+  await signUp({
+    ...formData,
+    phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber),
+  })
   router.push('/verify')
 }
 </script>
