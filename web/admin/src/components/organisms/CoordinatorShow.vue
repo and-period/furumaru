@@ -2,9 +2,22 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 
-import { type UpdateCoordinatorRequest, type ProductType, type Coordinator, AdminStatus, Prefecture, Weekday } from '~/types/api'
+import {
+  type UpdateCoordinatorRequest,
+  type ProductType,
+  type Coordinator,
+  AdminStatus,
+  Prefecture,
+  Weekday
+} from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
-import { getErrorMessage, kana, maxLength, required, tel } from '~/lib/validations'
+import {
+  getErrorMessage,
+  kana,
+  maxLength,
+  required,
+  tel
+} from '~/lib/validations'
 
 const props = defineProps({
   loading: {
@@ -123,13 +136,13 @@ const weekdays = [
 ]
 
 const emit = defineEmits<{
-  (e: 'update:form-data', formData: UpdateCoordinatorRequest): void
-  (e: 'update:thumbnail-file', files: FileList): void
-  (e: 'update:header-file', files: FileList): void
-  (e: 'update:promotion-video', files: FileList): void
-  (e: 'update:bonus-video', files: FileList): void
-  (e: 'click:search-address'): void
-  (e: 'submit'): void
+  (e: 'update:form-data', formData: UpdateCoordinatorRequest): void;
+  (e: 'update:thumbnail-file', files: FileList): void;
+  (e: 'update:header-file', files: FileList): void;
+  (e: 'update:promotion-video', files: FileList): void;
+  (e: 'update:bonus-video', files: FileList): void;
+  (e: 'click:search-address'): void;
+  (e: 'submit'): void;
 }>()
 
 const rules = computed(() => ({
@@ -350,7 +363,7 @@ const onClickSearchAddress = (): void => {
         </v-row>
         <molecules-address-form
           v-model:postal-code="formDataValue.postalCode"
-          v-model:prefecture="formDataValue.prefectureCode"
+          v-model:prefecture-code="formDataValue.prefectureCode"
           v-model:city="formDataValue.city"
           v-model:address-line1="formDataValue.addressLine1"
           v-model:address-line2="formDataValue.addressLine2"
@@ -374,7 +387,13 @@ const onClickSearchAddress = (): void => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
+        <v-btn
+          block
+          :loading="loading"
+          variant="outlined"
+          color="primary"
+          type="submit"
+        >
           更新
         </v-btn>
       </v-card-actions>
