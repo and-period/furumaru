@@ -36,7 +36,7 @@ const handleClick = () => {
   <div
     :class="{
       ' text-main ': true,
-      'group cursor-pointer bg-base drop-shadow-sm duration-75 ease-in-out hover:z-10 hover:scale-[1.2] hover:bg-white':
+      'group cursor-pointer bg-base drop-shadow-sm duration-75 ease-in-out lg:hover:z-10 lg:hover:scale-[1.2] lg:hover:bg-white':
         published,
     }"
     @click="handleClick"
