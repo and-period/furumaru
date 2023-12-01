@@ -267,7 +267,7 @@ const onClickSearchAddress = (): void => {
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
   <v-card class="mb-4">
-    <v-card-title>コーディネータ詳細</v-card-title>
+    <v-card-title>コーディネーター詳細</v-card-title>
 
     <v-card-text>
       <v-tabs v-model="selectedTabItemValue" grow color="dark">

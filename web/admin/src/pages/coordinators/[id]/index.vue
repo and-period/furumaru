@@ -128,7 +128,7 @@ const handleSubmitCoordinator = async (): Promise<void> => {
     await coordinatorStore.updateCoordinator(coordinatorId, req)
     commonStore.addSnackbar({
       color: 'info',
-      message: 'コーディネータ情報を更新しました。'
+      message: 'コーディネーター情報を更新しました。'
     })
   } catch (err) {
     if (err instanceof Error) {
