@@ -363,7 +363,7 @@ const onClickSearchAddress = (): void => {
         </v-row>
         <molecules-address-form
           v-model:postal-code="formDataValue.postalCode"
-          v-model:prefecture-code="formDataValue.prefectureCode"
+          v-model:prefecture="formDataValue.prefectureCode"
           v-model:city="formDataValue.city"
           v-model:address-line1="formDataValue.addressLine1"
           v-model:address-line2="formDataValue.addressLine2"
