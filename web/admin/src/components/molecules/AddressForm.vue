@@ -3,7 +3,7 @@ import { prefecturesList } from '~/constants'
 
 interface Props {
   postalCode: string;
-  prefectureCode: number;
+  prefecture: number;
   city: string;
   addressLine1: string;
   addressLine2: string;
@@ -15,7 +15,7 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'update:postalCode', postalCode: string): void;
-  (e: 'update:prefectureCode', prefecture: number): void;
+  (e: 'update:prefecture', prefecture: number): void;
   (e: 'update:city', city: string): void;
   (e: 'update:addressLine1', address: string): void;
   (e: 'update:addressLine2', address: string): void;
@@ -27,8 +27,8 @@ const postalCodeValue = computed({
   set: (val: string) => emit('update:postalCode', val)
 })
 const prefectureValue = computed({
-  get: (): number => props.prefectureCode,
-  set: (val: number) => emit('update:prefectureCode', val)
+  get: (): number => props.prefecture,
+  set: (val: number) => emit('update:prefecture', val)
 })
 const cityValue = computed({
   get: (): string => props.city,
