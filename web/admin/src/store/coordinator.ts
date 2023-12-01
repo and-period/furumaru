@@ -106,11 +106,6 @@ export const useCoordinatorStore = defineStore('coordinator', {
     async updateCoordinator (coordinatorId: string, payload: UpdateCoordinatorRequest): Promise<void> {
       try {
         await apiClient.coordinatorApi().v1UpdateCoordinator(coordinatorId, payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'コーディネーター情報が更新されました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }
