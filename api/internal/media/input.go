@@ -26,7 +26,7 @@ type ListBroadcastsInput struct {
 	OnlyArchived bool                   `validate:""`
 	Limit        int64                  `validate:"required,max=200"`
 	Offset       int64                  `validate:"min=0"`
-	Orders       []*ListBroadcastsOrder `validate:"omitempty,dive,required"`
+	Orders       []*ListBroadcastsOrder `validate:"dive,required"`
 }
 
 type ListBroadcastsOrder struct {

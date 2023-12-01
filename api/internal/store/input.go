@@ -8,10 +8,10 @@ import (
 )
 
 type ListCategoriesInput struct {
-	Name   string                 `validate:"omitempty,max=32"`
+	Name   string                 `validate:"max=32"`
 	Limit  int64                  `validate:"required,max=200"`
 	Offset int64                  `validate:"min=0"`
-	Orders []*ListCategoriesOrder `validate:"omitempty,dive,required"`
+	Orders []*ListCategoriesOrder `validate:"dive,required"`
 }
 
 type ListCategoriesOrder struct {
@@ -20,7 +20,7 @@ type ListCategoriesOrder struct {
 }
 
 type MultiGetCategoriesInput struct {
-	CategoryIDs []string `validate:"omitempty,dive,required"`
+	CategoryIDs []string `validate:"dive,required"`
 }
 
 type GetCategoryInput struct {
@@ -41,11 +41,11 @@ type DeleteCategoryInput struct {
 }
 
 type ListProductTypesInput struct {
-	Name       string                   `validate:"omitempty,max=32"`
-	CategoryID string                   `validate:"omitempty"`
+	Name       string                   `validate:"max=32"`
+	CategoryID string                   `validate:""`
 	Limit      int64                    `validate:"required,max=200"`
 	Offset     int64                    `validate:"min=0"`
-	Orders     []*ListProductTypesOrder `validate:"omitempty,dive,required"`
+	Orders     []*ListProductTypesOrder `validate:"dive,required"`
 }
 
 type ListProductTypesOrder struct {
@@ -54,7 +54,7 @@ type ListProductTypesOrder struct {
 }
 
 type MultiGetProductTypesInput struct {
-	ProductTypeIDs []string `validate:"omitempty,dive,required"`
+	ProductTypeIDs []string `validate:"dive,required"`
 }
 
 type GetProductTypeInput struct {
@@ -83,10 +83,10 @@ type DeleteProductTypeInput struct {
 }
 
 type ListProductTagsInput struct {
-	Name   string                  `validate:"omitempty,max=32"`
+	Name   string                  `validate:"max=32"`
 	Limit  int64                   `validate:"required,max=200"`
 	Offset int64                   `validate:"min=0"`
-	Orders []*ListProductTagsOrder `validate:"omitempty,dive,required"`
+	Orders []*ListProductTagsOrder `validate:"dive,required"`
 }
 
 type ListProductTagsOrder struct {
@@ -95,7 +95,7 @@ type ListProductTagsOrder struct {
 }
 
 type MultiGetProductTagsInput struct {
-	ProductTagIDs []string `validate:"omitempty,dive,required"`
+	ProductTagIDs []string `validate:"dive,required"`
 }
 
 type GetProductTagInput struct {
@@ -116,11 +116,11 @@ type DeleteProductTagInput struct {
 }
 
 type ListShippingsByCoordinatorIDsInput struct {
-	CoordinatorIDs []string `validate:"omitempty,dive,required"`
+	CoordinatorIDs []string `validate:"dive,required"`
 }
 
 type MultiGetShippingsByRevisionInput struct {
-	ShippingRevisionIDs []int64 `validate:"omitempty,dive,required"`
+	ShippingRevisionIDs []int64 `validate:"dive,required"`
 }
 
 type GetDefaultShippingInput struct{}
@@ -165,14 +165,14 @@ type UpdateDefaultShippingRate struct {
 }
 
 type ListProductsInput struct {
-	Name          string               `validate:"omitempty,max=128"`
-	CoordinatorID string               `validate:"omitempty"`
-	ProducerID    string               `validate:"omitempty"`
+	Name          string               `validate:"max=128"`
+	CoordinatorID string               `validate:""`
+	ProducerID    string               `validate:""`
 	ProducerIDs   []string             `validate:"dive,required"`
 	OnlyPublished bool                 `validate:""`
 	Limit         int64                `validate:"required,max=200"`
 	Offset        int64                `validate:"min=0"`
-	Orders        []*ListProductsOrder `validate:"omitempty,dive,required"`
+	Orders        []*ListProductsOrder `validate:"dive,required"`
 }
 
 type ListProductsOrder struct {
@@ -181,11 +181,11 @@ type ListProductsOrder struct {
 }
 
 type MultiGetProductsInput struct {
-	ProductIDs []string `validate:"omitempty,dive,required"`
+	ProductIDs []string `validate:"dive,required"`
 }
 
 type MultiGetProductsByRevisionInput struct {
-	ProductRevisionIDs []int64 `validate:"omitempty,dive,required"`
+	ProductRevisionIDs []int64 `validate:"dive,required"`
 }
 
 type GetProductInput struct {
@@ -217,7 +217,7 @@ type CreateProductInput struct {
 	Box80Rate            int64                    `validate:"min=0,max=100"`
 	Box100Rate           int64                    `validate:"min=0,max=100"`
 	OriginPrefectureCode int32                    `validate:"required"`
-	OriginCity           string                   `validate:"omitempty,max=32"`
+	OriginCity           string                   `validate:"max=32"`
 	StartAt              time.Time                `validate:"required"`
 	EndAt                time.Time                `validate:"required,gtfield=StartAt"`
 }
@@ -251,7 +251,7 @@ type UpdateProductInput struct {
 	Box80Rate            int64                    `validate:"min=0,max=100"`
 	Box100Rate           int64                    `validate:"min=0,max=100"`
 	OriginPrefectureCode int32                    `validate:"required"`
-	OriginCity           string                   `validate:"omitempty,max=32"`
+	OriginCity           string                   `validate:"max=32"`
 	StartAt              time.Time                `validate:"required"`
 	EndAt                time.Time                `validate:"required,gtfield=StartAt"`
 }
@@ -263,7 +263,7 @@ type UpdateProductMedia struct {
 
 type UpdateProductMediaInput struct {
 	ProductID string                     `validate:"required"`
-	Images    []*UpdateProductMediaImage `validate:"omitempty,unique=OriginURL,dive,required"`
+	Images    []*UpdateProductMediaImage `validate:"unique=OriginURL,dive,required"`
 }
 
 type UpdateProductMediaImage struct {
@@ -276,10 +276,10 @@ type DeleteProductInput struct {
 }
 
 type ListPromotionsInput struct {
-	Title  string                 `validate:"omitempty,max=64"`
+	Title  string                 `validate:"max=64"`
 	Limit  int64                  `validate:"required,max=200"`
 	Offset int64                  `validate:"min=0"`
-	Orders []*ListPromotionsOrder `validate:"omitempty,dive,required"`
+	Orders []*ListPromotionsOrder `validate:"dive,required"`
 }
 
 type ListPromotionsOrder struct {
@@ -288,7 +288,7 @@ type ListPromotionsOrder struct {
 }
 
 type MultiGetPromotionsInput struct {
-	PromotionIDs []string `validate:"omitempty,dive,required"`
+	PromotionIDs []string `validate:"dive,required"`
 }
 
 type GetPromotionInput struct {
@@ -337,7 +337,7 @@ type ListSchedulesInput struct {
 }
 
 type MultiGetSchedulesInput struct {
-	ScheduleIDs []string `validate:"omitempty,dive,required"`
+	ScheduleIDs []string `validate:"dive,required"`
 }
 
 type GetScheduleInput struct {
@@ -348,9 +348,9 @@ type CreateScheduleInput struct {
 	CoordinatorID   string    `validate:"required"`
 	Title           string    `validate:"required,max=64"`
 	Description     string    `validate:"required,max=2000"`
-	ThumbnailURL    string    `validate:"omitempty,url"`
-	ImageURL        string    `validate:"omitempty,url"`
-	OpeningVideoURL string    `validate:"omitempty,url"`
+	ThumbnailURL    string    `validate:"url"`
+	ImageURL        string    `validate:"url"`
+	OpeningVideoURL string    `validate:"url"`
 	Public          bool      `validate:""`
 	StartAt         time.Time `validate:"required"`
 	EndAt           time.Time `validate:"required,gtfield=StartAt"`
@@ -360,9 +360,9 @@ type UpdateScheduleInput struct {
 	ScheduleID      string    `validate:"required"`
 	Title           string    `validate:"required,max=64"`
 	Description     string    `validate:"required,max=2000"`
-	ThumbnailURL    string    `validate:"omitempty,url"`
-	ImageURL        string    `validate:"omitempty,url"`
-	OpeningVideoURL string    `validate:"omitempty,url"`
+	ThumbnailURL    string    `validate:"url"`
+	ImageURL        string    `validate:"url"`
+	OpeningVideoURL string    `validate:"url"`
 	Public          bool      `validate:""`
 	StartAt         time.Time `validate:"required"`
 	EndAt           time.Time `validate:"required,gtfield=StartAt"`
@@ -412,8 +412,8 @@ type DeleteLiveInput struct {
 }
 
 type ListOrdersInput struct {
-	CoordinatorID string `validate:"omitempty"`
-	UserID        string `validate:"omitempty"`
+	CoordinatorID string `validate:""`
+	UserID        string `validate:""`
 	Limit         int64  `validate:"required,max=200"`
 	Offset        int64  `validate:"min=0"`
 }
@@ -431,8 +431,8 @@ type CancelOrderInput struct {
 }
 
 type AggregateOrdersInput struct {
-	CoordinatorID string   `validate:"omitempty"`
-	UserIDs       []string `validate:"omitempty,dive,required"`
+	CoordinatorID string   `validate:""`
+	UserIDs       []string `validate:"dive,required"`
 }
 
 type GetCartInput struct {
@@ -483,8 +483,8 @@ type CheckoutDetail struct {
 	UserID            string `validate:"required"`
 	SessionID         string `validate:"required"`
 	CoordinatorID     string `validate:"required"`
-	BoxNumber         int64  `validate:"omitempty,min=0"`
-	PromotionID       string `validate:"omitempty"`
+	BoxNumber         int64  `validate:"min=0"`
+	PromotionID       string `validate:""`
 	BillingAddressID  string `validate:"required"`
 	ShippingAddressID string `validate:"required"`
 	CallbackURL       string `validate:"required,http_url"`
@@ -492,7 +492,7 @@ type CheckoutDetail struct {
 }
 
 type MultiGetPaymentSystemsInput struct {
-	MethodTypes []entity.PaymentMethodType `validate:"omitempty,dive,required"`
+	MethodTypes []entity.PaymentMethodType `validate:"dive,required"`
 }
 
 type GetPaymentSystemInput struct {

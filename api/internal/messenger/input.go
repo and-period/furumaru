@@ -11,7 +11,7 @@ type ListNotificationsInput struct {
 	Offset int64                     `validate:"min=0"`
 	Since  time.Time                 `validate:""`
 	Until  time.Time                 `validate:""`
-	Orders []*ListNotificationsOrder `validate:"omitempty,dive,required"`
+	Orders []*ListNotificationsOrder `validate:"dive,required"`
 }
 
 type ListNotificationsOrder struct {
@@ -53,7 +53,7 @@ type ListMessagesInput struct {
 	UserID   string               `validate:"required"`
 	Limit    int64                `validate:"required,max=200"`
 	Offset   int64                `validate:"min=0"`
-	Orders   []*ListMessagesOrder `validate:"omitempty,dive,required"`
+	Orders   []*ListMessagesOrder `validate:"dive,required"`
 }
 
 type ListMessagesOrder struct {
@@ -64,7 +64,7 @@ type ListMessagesOrder struct {
 type GetMessageInput struct {
 	MessageID string          `validate:"required"`
 	UserType  entity.UserType `validate:"omitempty,oneof=1 2"`
-	UserID    string          `validate:"omitempty"`
+	UserID    string          `validate:""`
 }
 
 type NotifyRegisterAdminInput struct {

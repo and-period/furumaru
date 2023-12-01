@@ -57,11 +57,11 @@ type VerifyAdminPasswordInput struct {
 }
 
 type MultiGetAdminsInput struct {
-	AdminIDs []string `validate:"omitempty,dive,required"`
+	AdminIDs []string `validate:"dive,required"`
 }
 
 type MultiGetAdminDevicesInput struct {
-	AdminIDs []string `validate:"omitempty,dive,required"`
+	AdminIDs []string `validate:"dive,required"`
 }
 
 type GetAdminInput struct {
@@ -74,7 +74,7 @@ type ListAdministratorsInput struct {
 }
 
 type MultiGetAdministratorsInput struct {
-	AdministratorIDs []string `validate:"omitempty,dive,required"`
+	AdministratorIDs []string `validate:"dive,required"`
 }
 
 type GetAdministratorInput struct {
@@ -113,13 +113,13 @@ type DeleteAdministratorInput struct {
 }
 
 type ListCoordinatorsInput struct {
-	Username string `validate:"omitempty,max=64"`
+	Username string `validate:"max=64"`
 	Limit    int64  `validate:"required,max=200"`
 	Offset   int64  `validate:"min=0"`
 }
 
 type MultiGetCoordinatorsInput struct {
-	CoordinatorIDs []string `validate:"omitempty,dive,required"`
+	CoordinatorIDs []string `validate:"dive,required"`
 }
 
 type GetCoordinatorInput struct {
@@ -133,21 +133,21 @@ type CreateCoordinatorInput struct {
 	FirstnameKana     string         `validate:"required,max=32,hiragana"`
 	MarcheName        string         `validate:"required,max=64"`
 	Username          string         `validate:"required,max=64"`
-	Profile           string         `validate:"omitempty,max=2000"`
+	Profile           string         `validate:"max=2000"`
 	ProductTypeIDs    []string       `validate:"dive,required"`
 	ThumbnailURL      string         `validate:"omitempty,url"`
 	HeaderURL         string         `validate:"omitempty,url"`
 	PromotionVideoURL string         `validate:"omitempty,url"`
 	BonusVideoURL     string         `validate:"omitempty,url"`
-	InstagramID       string         `validate:"omitempty,max=30"`
-	FacebookID        string         `validate:"omitempty,max=50"`
+	InstagramID       string         `validate:"max=30"`
+	FacebookID        string         `validate:"max=50"`
 	Email             string         `validate:"required,max=256,email"`
 	PhoneNumber       string         `validate:"required,e164"`
-	PostalCode        string         `validate:"omitempty,max=16,numeric"`
+	PostalCode        string         `validate:"max=16,numeric"`
 	PrefectureCode    int32          `validate:"required"`
-	City              string         `validate:"omitempty,max=32"`
-	AddressLine1      string         `validate:"omitempty,max=64"`
-	AddressLine2      string         `validate:"omitempty,max=64"`
+	City              string         `validate:"max=32"`
+	AddressLine1      string         `validate:"max=64"`
+	AddressLine2      string         `validate:"max=64"`
 	BusinessDays      []time.Weekday `validate:"max=7,unique"`
 }
 
@@ -159,20 +159,20 @@ type UpdateCoordinatorInput struct {
 	FirstnameKana     string         `validate:"required,max=32,hiragana"`
 	MarcheName        string         `validate:"required,max=64"`
 	Username          string         `validate:"required,max=64"`
-	Profile           string         `validate:"omitempty,max=2000"`
+	Profile           string         `validate:"max=2000"`
 	ProductTypeIDs    []string       `validate:"dive,required"`
 	ThumbnailURL      string         `validate:"omitempty,url"`
 	HeaderURL         string         `validate:"omitempty,url"`
 	PromotionVideoURL string         `validate:"omitempty,url"`
 	BonusVideoURL     string         `validate:"omitempty,url"`
-	InstagramID       string         `validate:"omitempty,max=30"`
-	FacebookID        string         `validate:"omitempty,max=50"`
+	InstagramID       string         `validate:"max=30"`
+	FacebookID        string         `validate:"max=50"`
 	PhoneNumber       string         `validate:"required,e164"`
-	PostalCode        string         `validate:"omitempty,max=16,numeric"`
+	PostalCode        string         `validate:"max=16,numeric"`
 	PrefectureCode    int32          `validate:"required"`
-	City              string         `validate:"omitempty,max=32"`
-	AddressLine1      string         `validate:"omitempty,max=64"`
-	AddressLine2      string         `validate:"omitempty,max=64"`
+	City              string         `validate:"max=32"`
+	AddressLine1      string         `validate:"max=64"`
+	AddressLine2      string         `validate:"max=64"`
 	BusinessDays      []time.Weekday `validate:"max=7,unique"`
 }
 
@@ -204,19 +204,19 @@ type DeleteCoordinatorInput struct {
 }
 
 type AggregateRealatedProducersInput struct {
-	CoordinatorIDs []string `validate:"omitempty,dive,required"`
+	CoordinatorIDs []string `validate:"dive,required"`
 }
 
 type ListProducersInput struct {
-	CoordinatorID string `validate:"omitempty"`
-	Username      string `validate:"omitempty,max=64"`
+	CoordinatorID string `validate:""`
+	Username      string `validate:"max=64"`
 	Limit         int64  `validate:"required_without=CoordinatorID,max=200"`
 	Offset        int64  `validate:"min=0"`
 	OnlyUnrelated bool   `validate:""`
 }
 
 type MultiGetProducersInput struct {
-	ProducerIDs []string `validate:"omitempty,dive,required"`
+	ProducerIDs []string `validate:"dive,required"`
 }
 
 type GetProducerInput struct {
@@ -230,20 +230,20 @@ type CreateProducerInput struct {
 	LastnameKana      string `validate:"required,max=32,hiragana"`
 	FirstnameKana     string `validate:"required,max=32,hiragana"`
 	Username          string `validate:"required,max=64"`
-	Profile           string `validate:"omitempty,max=2000"`
+	Profile           string `validate:"max=2000"`
 	ThumbnailURL      string `validate:"omitempty,url"`
 	HeaderURL         string `validate:"omitempty,url"`
 	PromotionVideoURL string `validate:"omitempty,url"`
 	BonusVideoURL     string `validate:"omitempty,url"`
-	InstagramID       string `validate:"omitempty,max=30"`
-	FacebookID        string `validate:"omitempty,max=50"`
+	InstagramID       string `validate:"max=30"`
+	FacebookID        string `validate:"max=50"`
 	Email             string `validate:"required,max=256,email"`
 	PhoneNumber       string `validate:"required,e164"`
-	PostalCode        string `validate:"omitempty,max=16,numeric"`
+	PostalCode        string `validate:"max=16,numeric"`
 	PrefectureCode    int32  `validate:"required"`
-	City              string `validate:"omitempty,max=32"`
-	AddressLine1      string `validate:"omitempty,max=64"`
-	AddressLine2      string `validate:"omitempty,max=64"`
+	City              string `validate:"max=32"`
+	AddressLine1      string `validate:"max=64"`
+	AddressLine2      string `validate:"max=64"`
 }
 
 type UpdateProducerInput struct {
@@ -253,19 +253,19 @@ type UpdateProducerInput struct {
 	LastnameKana      string `validate:"required,max=32,hiragana"`
 	FirstnameKana     string `validate:"required,max=32,hiragana"`
 	Username          string `validate:"required,max=64"`
-	Profile           string `validate:"omitempty,max=2000"`
+	Profile           string `validate:"max=2000"`
 	ThumbnailURL      string `validate:"omitempty,url"`
 	HeaderURL         string `validate:"omitempty,url"`
 	PromotionVideoURL string `validate:"omitempty,url"`
 	BonusVideoURL     string `validate:"omitempty,url"`
-	InstagramID       string `validate:"omitempty,max=30"`
-	FacebookID        string `validate:"omitempty,max=50"`
+	InstagramID       string `validate:"max=30"`
+	FacebookID        string `validate:"max=50"`
 	PhoneNumber       string `validate:"required,e164"`
-	PostalCode        string `validate:"omitempty,max=16,numeric"`
+	PostalCode        string `validate:"max=16,numeric"`
 	PrefectureCode    int32  `validate:"required"`
-	City              string `validate:"omitempty,max=32"`
-	AddressLine1      string `validate:"omitempty,max=64"`
-	AddressLine2      string `validate:"omitempty,max=64"`
+	City              string `validate:"max=32"`
+	AddressLine1      string `validate:"max=64"`
+	AddressLine2      string `validate:"max=64"`
 }
 
 type UpdateProducerEmailInput struct {
@@ -324,11 +324,11 @@ type ListUsersInput struct {
 }
 
 type MultiGetUsersInput struct {
-	UserIDs []string `validate:"omitempty,dive,required"`
+	UserIDs []string `validate:"dive,required"`
 }
 
 type MultiGetUserDevicesInput struct {
-	UserIDs []string `validate:"omitempty,dive,required"`
+	UserIDs []string `validate:"dive,required"`
 }
 
 type GetUserInput struct {
@@ -396,15 +396,15 @@ type ListAddressesInput struct {
 }
 
 type ListDefaultAddressesInput struct {
-	UserIDs []string `validate:"omitempty,dive,required"`
+	UserIDs []string `validate:"dive,required"`
 }
 
 type MultiGetAddressesInput struct {
-	AddressIDs []string `validate:"omitempty,dive,required"`
+	AddressIDs []string `validate:"dive,required"`
 }
 
 type MultiGetAddressesByRevisionInput struct {
-	AddressRevisionIDs []int64 `validate:"omitempty,dive,required"`
+	AddressRevisionIDs []int64 `validate:"dive,required"`
 }
 
 type GetAddressInput struct {
@@ -426,7 +426,7 @@ type CreateAddressInput struct {
 	PrefectureCode int32  `validate:"required"`
 	City           string `validate:"required,max=32"`
 	AddressLine1   string `validate:"required,max=64"`
-	AddressLine2   string `validate:"omitempty,max=64"`
+	AddressLine2   string `validate:"max=64"`
 	PhoneNumber    string `validate:"required,e164"`
 	IsDefault      bool   `validate:""`
 }
@@ -442,7 +442,7 @@ type UpdateAddressInput struct {
 	PrefectureCode int32  `validate:"required"`
 	City           string `validate:"required,max=32"`
 	AddressLine1   string `validate:"required,max=64"`
-	AddressLine2   string `validate:"omitempty,max=64"`
+	AddressLine2   string `validate:"max=64"`
 	PhoneNumber    string `validate:"required,e164"`
 	IsDefault      bool   `validate:""`
 }
