@@ -48,7 +48,9 @@ export const useAuthStore = defineStore('auth', {
     async verifyAuth(payload: VerifyAuthRequest) {
       try {
         await this.authApiClient().v1VerifyAuth({ body: payload })
-      } catch (error) {}
+      } catch (error) {
+        return this.errorHandler(error)
+      }
     },
   },
 })

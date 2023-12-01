@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store/auth'
+import { ApiBaseError } from '~/types/exception'
 import { I18n } from '~/types/locales'
 
 definePageMeta({
@@ -27,18 +28,36 @@ const id = computed<string>(() => {
 })
 
 const code = ref<string>('')
+const errorMessage = ref<string>('')
 
 const handleSubmit = async () => {
-  await verifyAuth({
-    verifyCode: code.value,
-    id: '',
-  })
+  try {
+    await verifyAuth({
+      verifyCode: code.value,
+      id: id.value,
+    })
+  } catch (error) {
+    if (error instanceof ApiBaseError) {
+      errorMessage.value = error.message
+    }
+  }
 }
+
+onMounted(() => {
+  if (id.value === '') {
+    errorMessage.value = 'アカウント新規登録画面から操作を実施してください。'
+  }
+})
+
+useSeoMeta({
+  title: '認証コード入力',
+})
 </script>
 
 <template>
   <the-verify-code-page
     v-model:code="code"
+    :error-message="errorMessage"
     :page-name="t('pageName')"
     :button-text="t('btnText')"
     :message="t('message')"
