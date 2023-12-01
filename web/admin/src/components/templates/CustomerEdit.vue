@@ -104,7 +104,7 @@ const activities = [
   {
     eventType: 'comment',
     username: 'ふるマル管理者',
-    detail: '発送準備をコーディネータに依頼済み',
+    detail: '発送準備をコーディネーターに依頼済み',
     createdAt: '2023/04/06 12:00'
   },
   {

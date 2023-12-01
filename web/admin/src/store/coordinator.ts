@@ -24,7 +24,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
 
   actions: {
     /**
-     * コーディネータの一覧を取得する非同期関数
+     * コーディネーターの一覧を取得する非同期関数
      * @param limit 最大取得件数
      * @param offset 取得開始位置
      */
@@ -42,9 +42,9 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネータを検索する非同期関数
-     * @param name コーディネータ名(あいまい検索)
-     * @param coordinatorIds stateの更新時に残しておく必要があるコーディネータ情報
+     * コーディネーターを検索する非同期関数
+     * @param name コーディネーター名(あいまい検索)
+     * @param coordinatorIds stateの更新時に残しておく必要があるコーディネーター情報
      */
     async searchCoordinators (name = '', coordinatorIds: string[] = []): Promise<void> {
       try {
@@ -70,8 +70,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネータの詳細情報を取得する非同期関数
-     * @param coordinatorId 対象のコーディネータのID
+     * コーディネーターの詳細情報を取得する非同期関数
+     * @param coordinatorId 対象のコーディネーターのID
      */
     async getCoordinator (coordinatorId: string): Promise<void> {
       try {
@@ -86,7 +86,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネータを登録する非同期関数
+     * コーディネーターを登録する非同期関数
      * @param payload
      */
     async createCoordinator (payload: CreateCoordinatorRequest) {
@@ -99,16 +99,16 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネータの情報を更新する非同期関数
+     * コーディネーターの情報を更新する非同期関数
      * @param payload
-     * @param coordinatorId 更新するコーディネータのID
+     * @param coordinatorId 更新するコーディネーターのID
      */
     async updateCoordinator (coordinatorId: string, payload: UpdateCoordinatorRequest): Promise<void> {
       try {
         await apiClient.coordinatorApi().v1UpdateCoordinator(coordinatorId, payload)
         const commonStore = useCommonStore()
         commonStore.addSnackbar({
-          message: 'コーディネータ情報が更新されました。',
+          message: 'コーディネーター情報が更新されました。',
           color: 'info'
         })
       } catch (err) {
@@ -117,7 +117,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネータのサムネイル画像をアップロードする非同期関数
+     * コーディネーターのサムネイル画像をアップロードする非同期関数
      * @param payload サムネイル画像
      * @returns アップロードされた画像のURI
      */
@@ -138,7 +138,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネータのヘッダー画像をアップロードする非同期関数
+     * コーディネーターのヘッダー画像をアップロードする非同期関数
      * @param payload ヘッダー画像
      * @returns アップロードされた画像のURI
      */
@@ -159,7 +159,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネータの紹介画像をアップロードする非同期関数
+     * コーディネーターの紹介画像をアップロードする非同期関数
      * @param payload 紹介画像
      * @returns アップロードされた動画のURI
      */
@@ -180,7 +180,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネータのサンキュー画像をアップロードする非同期関数
+     * コーディネーターのサンキュー画像をアップロードする非同期関数
      * @param payload サンキュー画像
      * @returns アップロードされた動画のURI
      */
@@ -202,7 +202,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
 
     /**
      * コーディーネータを削除する非同期関数
-     * @param id 削除するコーディネータのID
+     * @param id 削除するコーディネーターのID
      * @returns
      */
     async deleteCoordinator (id: string) {
@@ -221,7 +221,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
 
     /**
      * コーディーネータに生産者を紐づける非同期関数
-     * @param coordinatorId 生産者を紐づけるコーディネータのID
+     * @param coordinatorId 生産者を紐づけるコーディネーターのID
      * @param payload コーディネーターに紐づく生産者
      * @returns
      */
@@ -240,7 +240,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
 
     /**
      * コーディーネータに紐づいている生産者を取得する非同期関数
-     * @param id コーディネータのID
+     * @param id コーディネーターのID
      * @returns
      */
     async fetchRelatedProducers (coordinatorId: string, limit = 20, offset = 0): Promise<void> {

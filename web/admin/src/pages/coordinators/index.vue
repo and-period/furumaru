@@ -59,7 +59,7 @@ const handleClickDelete = async (coordinatorId: string): Promise<void> => {
     await coordinatorStore.deleteCoordinator(coordinatorId)
     commonStore.addSnackbar({
       color: 'info',
-      message: 'コーディネータを削除しました。'
+      message: 'コーディネーターを削除しました。'
     })
     fetchState.refresh()
   } catch (err) {

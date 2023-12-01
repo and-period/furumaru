@@ -199,20 +199,24 @@ const onClickSearchAddress = (): void => {
   <v-card>
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
-        <div class="mb-2 d-flex">
-          <v-text-field
-            v-model="validate.marcheName.$model"
-            :error-messages="getErrorMessage(validate.marcheName.$errors)"
-            class="mr-4"
-            label="マルシェ名"
-          />
-          <v-text-field
-            v-model="validate.username.$model"
-            :error-messages="getErrorMessage(validate.username.$errors)"
-            class="mr-4"
-            label="コーディネータ名"
-          />
-        </div>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="validate.marcheName.$model"
+              :error-messages="getErrorMessage(validate.marcheName.$errors)"
+              class="mr-4"
+              label="マルシェ名"
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="validate.username.$model"
+              :error-messages="getErrorMessage(validate.username.$errors)"
+              class="mr-4"
+              label="コーディネーター名"
+            />
+          </v-col>
+        </v-row>
         <v-autocomplete
           v-model="formDataValue.productTypeIds"
           label="取り扱い品目"
@@ -279,32 +283,40 @@ const onClickSearchAddress = (): void => {
           label="プロフィール"
           maxlength="2000"
         />
-        <div class="d-flex">
-          <v-text-field
-            v-model="validate.lastname.$model"
-            :error-messages="getErrorMessage(validate.lastname.$errors)"
-            class="mr-4"
-            label="コーディネータ:姓"
-          />
-          <v-text-field
-            v-model="validate.firstname.$model"
-            :error-messages="getErrorMessage(validate.firstname.$errors)"
-            label="コーディネータ:名"
-          />
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="validate.lastnameKana.$model"
-            :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
-            class="mr-4"
-            label="コーディネータ:姓（ふりがな）"
-          />
-          <v-text-field
-            v-model="validate.firstnameKana.$model"
-            :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
-            label="コーディネータ:名（ふりがな）"
-          />
-        </div>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="validate.lastname.$model"
+              :error-messages="getErrorMessage(validate.lastname.$errors)"
+              class="mr-4"
+              label="コーディネーター:姓"
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="validate.firstname.$model"
+              :error-messages="getErrorMessage(validate.firstname.$errors)"
+              label="コーディネーター:名"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="validate.lastnameKana.$model"
+              :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
+              class="mr-4"
+              label="コーディネーター:姓（ふりがな）"
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="validate.firstnameKana.$model"
+              :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
+              label="コーディネーター:名（ふりがな）"
+            />
+          </v-col>
+        </v-row>
         <v-text-field
           v-model="coordinatorValue.email"
           label="連絡先（Email）"

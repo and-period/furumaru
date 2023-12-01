@@ -16,7 +16,7 @@ const menus: SettingMenu[] = [
     roles: [AdminRole.ADMINISTRATOR]
   },
   {
-    text: 'コーディネータ管理',
+    text: 'コーディネーター管理',
     action: () => router.push('/coordinators'),
     roles: [AdminRole.ADMINISTRATOR]
   },
