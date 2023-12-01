@@ -170,7 +170,7 @@ const getTargets = (targets: NotificationTarget[]): string => {
       case 2:
         return '生産者'
       case 3:
-        return 'コーディネータ'
+        return 'コーディネーター'
       case 4:
         return '管理者'
       default:

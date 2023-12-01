@@ -36,7 +36,7 @@ export const useShippingStore = defineStore('shipping', {
     },
 
     /**
-     * 指定したコーディネータの配送設定を取得する非同期関数
+     * 指定したコーディネーターの配送設定を取得する非同期関数
      * @param coordinatorId
      * @returns
      */
@@ -50,8 +50,8 @@ export const useShippingStore = defineStore('shipping', {
     },
 
     /**
-     * 指定したコーディネータの配送設定を変更する非同期関数
-     * @param coordinatorId コーディネータID
+     * 指定したコーディネーターの配送設定を変更する非同期関数
+     * @param coordinatorId コーディネーターID
      * @param payload
      * @returns
      */

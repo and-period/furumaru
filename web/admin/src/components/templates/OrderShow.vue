@@ -494,7 +494,7 @@ const onSubmitRefund = (): void => {
           </v-row>
           <v-row>
             <v-col cols="3">
-              コーディネータ名
+              コーディネーター名
             </v-col>
             <v-col cols="9">
               {{ getCoordinatorName() }}

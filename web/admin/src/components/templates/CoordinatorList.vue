@@ -67,7 +67,7 @@ const headers: VDataTable['headers'] = [
     sortable: false
   },
   {
-    title: 'コーディネータ名',
+    title: 'コーディネーター名',
     key: 'username',
     sortable: false
   },
@@ -197,11 +197,11 @@ const onClickDelete = (): void => {
 
   <v-card class="mt-4" flat :loading="loading">
     <v-card-title class="d-flex flex-row">
-      コーディネータ管理
+      コーディネーター管理
       <v-spacer />
       <v-btn variant="outlined" color="primary" @click="onClickAdd">
         <v-icon start :icon="mdiPlus" />
-        コーディネータ登録
+        コーディネーター登録
       </v-btn>
     </v-card-title>
 
@@ -212,7 +212,7 @@ const onClickDelete = (): void => {
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         hover
-        no-data-text="登録されているコーディネータがいません。"
+        no-data-text="登録されているコーディネーターがいません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @click:row="(_:any, {item}: any) => onClickRow(item.id)"

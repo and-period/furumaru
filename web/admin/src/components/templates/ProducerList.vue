@@ -70,7 +70,7 @@ const headers: VDataTable['headers'] = [
     sortable: false
   },
   {
-    title: '担当コーディネータ名',
+    title: '担当コーディネーター名',
     key: 'coordinatorName',
     sortable: false
   },

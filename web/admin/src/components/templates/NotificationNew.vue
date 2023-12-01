@@ -58,7 +58,7 @@ const typeList = [
 const targetList = [
   { title: 'ユーザー', value: NotificationTarget.USERS },
   { title: '生産者', value: NotificationTarget.PRODUCERS },
-  { title: 'コーディネータ', value: NotificationTarget.COORDINATORS },
+  { title: 'コーディネーター', value: NotificationTarget.COORDINATORS },
   { title: '管理者', value: NotificationTarget.ADMINISTRATORS }
 ]
 

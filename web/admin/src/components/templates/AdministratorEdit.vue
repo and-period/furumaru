@@ -89,32 +89,40 @@ const onSubmit = async (): Promise<void> => {
 
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
-        <div class="d-flex">
-          <v-text-field
-            v-model="validate.lastname.$model"
-            :error-messages="getErrorMessage(validate.lastname.$errors)"
-            class="mr-4"
-            label="管理者名:姓"
-          />
-          <v-text-field
-            v-model="validate.firstname.$model"
-            :error-messages="getErrorMessage(validate.firstname.$errors)"
-            label="管理者名:名"
-          />
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="validate.lastnameKana.$model"
-            :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
-            class="mr-4"
-            label="管理者名:姓（ふりがな）"
-          />
-          <v-text-field
-            v-model="validate.firstnameKana.$model"
-            :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
-            label="管理者名:名（ふりがな）"
-          />
-        </div>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="validate.lastname.$model"
+              :error-messages="getErrorMessage(validate.lastname.$errors)"
+              class="mr-4"
+              label="管理者名:姓"
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="validate.firstname.$model"
+              :error-messages="getErrorMessage(validate.firstname.$errors)"
+              label="管理者名:名"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="validate.lastnameKana.$model"
+              :error-messages="getErrorMessage(validate.lastnameKana.$errors)"
+              class="mr-4"
+              label="管理者名:姓（ふりがな）"
+            />
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="validate.firstnameKana.$model"
+              :error-messages="getErrorMessage(validate.firstnameKana.$errors)"
+              label="管理者名:名（ふりがな）"
+            />
+          </v-col>
+        </v-row>
         <v-text-field
           v-model="administratorValue.email"
           label="連絡先（メールアドレス）"

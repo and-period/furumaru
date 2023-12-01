@@ -1,45 +1,25 @@
 <script lang="ts" setup>
 import { prefecturesList } from '~/constants'
-import { Prefecture } from '~/types/api'
 
-const props = defineProps({
-  postalCode: {
-    type: String,
-    default: ''
-  },
-  prefectureCode: {
-    type: Number as PropType<Prefecture>,
-    default: Prefecture.UNKNOWN
-  },
-  city: {
-    type: String,
-    default: ''
-  },
-  addressLine1: {
-    type: String,
-    default: ''
-  },
-  addressLine2: {
-    type: String,
-    default: ''
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  errorMessage: {
-    type: String,
-    default: ''
-  }
-})
+interface Props {
+  postalCode: string;
+  prefectureCode: number;
+  city: string;
+  addressLine1: string;
+  addressLine2: string;
+  loading: boolean;
+  errorMessage: string;
+}
+
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  (e: 'update:postalCode', postalCode: any): void
-  (e: 'update:prefecture', prefecture: any): void
-  (e: 'update:city', city: any): void
-  (e: 'update:addressLine1', address: any): void
-  (e: 'update:addressLine2', address: any): void
-  (e: 'click:search'): void
+  (e: 'update:postalCode', postalCode: string): void;
+  (e: 'update:prefectureCode', prefecture: number): void;
+  (e: 'update:city', city: string): void;
+  (e: 'update:addressLine1', address: string): void;
+  (e: 'update:addressLine2', address: string): void;
+  (e: 'click:search'): void;
 }>()
 
 const postalCodeValue = computed({
@@ -47,8 +27,8 @@ const postalCodeValue = computed({
   set: (val: string) => emit('update:postalCode', val)
 })
 const prefectureValue = computed({
-  get: (): Prefecture => props.prefectureCode,
-  set: (val: Prefecture) => emit('update:prefecture', val)
+  get: (): number => props.prefectureCode,
+  set: (val: number) => emit('update:prefectureCode', val)
 })
 const cityValue = computed({
   get: (): string => props.city,
@@ -80,7 +60,12 @@ const handleSearch = () => {
         :error="props.errorMessage !== ''"
         @keydown.enter="handleSearch"
       />
-      <v-btn color="primary" variant="outlined" size="small" @click="handleSearch">
+      <v-btn
+        color="primary"
+        variant="outlined"
+        size="small"
+        @click="handleSearch"
+      >
         住所検索
       </v-btn>
       <v-spacer />

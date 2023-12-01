@@ -464,7 +464,7 @@ const onSubmit = async (): Promise<void> => {
               <thead>
                 <tr>
                   <th class="text-left">
-                    コーディネータ様への支払い金額
+                    コーディネーター様への支払い金額
                   </th>
                   <th class="text-left">
                     {{ getBenefits() }} 円
