@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
@@ -32,7 +33,8 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		in := &store.ListSchedulesInput{
-			EndAtGte:      h.now(),
+			// 終了予定時間を過ぎたあとも配信しているケースを救うため
+			EndAtGte:      h.now().Add(time.Hour),
 			OnlyPublished: true,
 			NoLimit:       true,
 		}

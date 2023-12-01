@@ -31,6 +31,9 @@ func newSchedule(db *mysql.Client) database.Schedule {
 type listSchedulesParams database.ListSchedulesParams
 
 func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.CoordinatorID != "" {
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
 	if !p.StartAtGte.IsZero() {
 		stmt = stmt.Where("start_at >= ?", p.StartAtGte)
 	}
@@ -176,31 +179,20 @@ func (s *schedule) UpdateThumbnails(ctx context.Context, scheduleID string, thum
 }
 
 func (s *schedule) Approve(ctx context.Context, scheduleID string, params *database.ApproveScheduleParams) error {
-	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
-		schedule, err := s.get(ctx, tx, scheduleID, "start_at")
-		if err != nil {
-			return err
-		}
-		if s.now().After(schedule.StartAt) {
-			return fmt.Errorf("database: this schedule has already started: %w", database.ErrFailedPrecondition)
-		}
+	var approvedAdminID *string
+	if params.Approved {
+		approvedAdminID = &params.ApprovedAdminID
+	}
+	update := map[string]interface{}{
+		"approved":          params.Approved,
+		"approved_admin_id": approvedAdminID,
+		"updated_at":        s.now(),
+	}
 
-		var approvedAdminID *string
-		if params.Approved {
-			approvedAdminID = &params.ApprovedAdminID
-		}
-		update := map[string]interface{}{
-			"approved":          params.Approved,
-			"approved_admin_id": approvedAdminID,
-			"updated_at":        s.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(scheduleTable).
-			Where("id = ?", scheduleID).
-			Updates(update).Error
-		return err
-	})
+	err := s.db.DB.WithContext(ctx).
+		Table(scheduleTable).
+		Where("id = ?", scheduleID).
+		Updates(update).Error
 	return dbError(err)
 }
 

@@ -325,6 +325,7 @@ type DeletePromotionInput struct {
 }
 
 type ListSchedulesInput struct {
+	CoordinatorID string    `validate:""`
 	StartAtGte    time.Time `validate:""`
 	StartAtLt     time.Time `validate:""`
 	EndAtGte      time.Time `validate:""`

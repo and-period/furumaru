@@ -21,6 +21,7 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListSchedulesParams{
+		CoordinatorID: in.CoordinatorID,
 		StartAtGte:    in.StartAtGte,
 		StartAtLt:     in.StartAtLt,
 		EndAtGte:      in.EndAtGte,
@@ -100,7 +101,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	}()
 	go func() {
 		defer s.waitGroup.Done()
-		const maxRetries = 3
+		const maxRetries = 5
 		ctx := context.Background()
 		createFn := func() error {
 			in := &media.CreateBroadcastInput{

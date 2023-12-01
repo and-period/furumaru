@@ -640,38 +640,6 @@ func TestSchedule_Approve(t *testing.T) {
 				hasErr: false,
 			},
 		},
-		{
-			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				scheduleID: "schedule-id",
-				params: &database.ApproveScheduleParams{
-					Approved:        true,
-					ApprovedAdminID: "admin-id",
-				},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed to update",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				schedule := testSchedule("schedule-id", "coordinator-id", now())
-				err = db.DB.Create(&schedule).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				scheduleID: "schedule-id",
-				params: &database.ApproveScheduleParams{
-					Approved:        true,
-					ApprovedAdminID: "admin-id",
-				},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
 	}
 
 	for _, tt := range tests {

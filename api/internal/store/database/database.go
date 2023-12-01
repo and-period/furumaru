@@ -266,6 +266,7 @@ type Schedule interface {
 }
 
 type ListSchedulesParams struct {
+	CoordinatorID string
 	StartAtGte    time.Time
 	StartAtLt     time.Time
 	EndAtGte      time.Time

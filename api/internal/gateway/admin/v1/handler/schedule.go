@@ -65,6 +65,9 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 		Limit:  limit,
 		Offset: offset,
 	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
+	}
 	schedules, total, err := h.store.ListSchedules(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)

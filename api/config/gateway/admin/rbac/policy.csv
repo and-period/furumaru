@@ -242,6 +242,8 @@ g, coordinator, thread_get
 g, coordinator, thread_create
 g, coordinator, thread_update
 g, coordinator, thread_delete
+g, coordinator, user_list
+g, coordinator, user_get
 
 g, producer, auth
 g, producer, broadcast_get
