@@ -203,11 +203,6 @@ export const useCoordinatorStore = defineStore('coordinator', {
     async deleteCoordinator (id: string) {
       try {
         await apiClient.coordinatorApi().v1DeleteCoordinator(id)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'コーディネーターの削除が完了しました',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }
