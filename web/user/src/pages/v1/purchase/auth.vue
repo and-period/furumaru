@@ -21,6 +21,10 @@ const formData = ref<SignInRequest>({
 const handleClickNewAccountButton = () => {
   router.push('/signup')
 }
+
+useSeoMeta({
+  title: 'ログイン',
+})
 </script>
 
 <template>
@@ -33,7 +37,7 @@ const handleClickNewAccountButton = () => {
   </div>
 
   <div
-    class="mt-[40px] flex flex-col gap-10 px-4 md:grid md:grid-cols-2 md:gap-0 md:px-0"
+    class="container mx-auto mt-[40px] flex flex-col gap-10 px-4 md:grid md:grid-cols-2 md:gap-0 md:px-0"
   >
     <div
       class="w-full bg-white px-4 py-[40px] tracking-[1.6px] text-main md:mx-auto md:w-[360px] md:px-[40px] lg:w-[480px] xl:w-[560px] xl:px-[80px]"
