@@ -21,6 +21,8 @@ export const useAuthStore = defineStore('auth', {
   state: () => {
     return {
       isAuthenticated: false,
+      accessToken: '',
+      refreshToken: '',
     }
   },
 
@@ -32,8 +34,10 @@ export const useAuthStore = defineStore('auth', {
      */
     async signIn(payload: SignInRequest) {
       try {
-        await this.authApiClient().v1SignIn({ body: payload })
+        const res = await this.authApiClient().v1SignIn({ body: payload })
         this.isAuthenticated = true
+        this.accessToken = res.accessToken
+        this.refreshToken = res.refreshToken
       } catch (error) {
         return this.errorHandler(error, {
           401: this.i18n.t('auth.signIn.authErrorMessage'),
