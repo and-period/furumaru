@@ -11,6 +11,13 @@ import {
  * 認証情報を管理するグローバルステート
  */
 export const useAuthStore = defineStore('auth', {
+  // 永続化の設定
+  persist: {
+    storage: persistedState.cookiesWithOptions({
+      sameSite: 'strict',
+    }),
+  },
+
   state: () => {
     return {
       isAuthenticated: false,
