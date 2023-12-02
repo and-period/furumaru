@@ -41,7 +41,7 @@ func TestGuest_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				u := testGuestUser("user-id", "test-user@and-period.jp", "+810000000000", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&u.Guest).Error
