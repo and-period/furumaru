@@ -62,7 +62,7 @@ func TestGuest_Delete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, memberTable, userTable)
+			err := delete(ctx, guestTable, userTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
