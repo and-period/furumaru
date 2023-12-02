@@ -728,6 +728,7 @@ func checkoutmocks(
 		})
 	m.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil).AnyTimes()
 	m.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError).AnyTimes()
+	m.db.Product.EXPECT().DecreaseInventory(gomock.Any(), int64(1), int64(2)).Return(nil).AnyTimes()
 }
 
 func TestNotifyPaymentCompleted(t *testing.T) {
@@ -1041,6 +1042,7 @@ func TestCheckout(t *testing.T) {
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil)
 				mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.db.Product.EXPECT().DecreaseInventory(gomock.Any(), int64(1), int64(2)).Return(nil).AnyTimes()
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{

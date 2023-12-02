@@ -124,6 +124,7 @@ type Product interface {
 	Create(ctx context.Context, product *entity.Product) error
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
 	UpdateMedia(ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool) error
+	DecreaseInventory(ctx context.Context, revisionID, quantity int64) error
 	Delete(ctx context.Context, productID string) error
 }
 

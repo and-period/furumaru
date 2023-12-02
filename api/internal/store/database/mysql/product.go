@@ -250,6 +250,38 @@ func (p *product) UpdateMedia(
 	return dbError(err)
 }
 
+func (p *product) DecreaseInventory(ctx context.Context, revisionID, quantity int64) error {
+	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
+		var product *entity.Product
+
+		stmt := p.db.Statement(ctx, tx, productTable).
+			Joins("INNER JOIN product_revisions ON products.id = product_revisions.product_id").
+			Where("product_revisions.id = ?", revisionID)
+		if err := stmt.First(&product).Error; err != nil {
+			return err
+		}
+		if product.Inventory == 0 {
+			return nil
+		}
+
+		inventory := product.Inventory - quantity
+		if inventory < 0 {
+			inventory = 0
+		}
+		params := map[string]interface{}{
+			"inventory":  inventory,
+			"updated_at": p.now(),
+		}
+
+		err := tx.WithContext(ctx).
+			Table(productTable).
+			Where("id = ?", product.ID).
+			Updates(params).Error
+		return err
+	})
+	return dbError(err)
+}
+
 func (p *product) Delete(ctx context.Context, productID string) error {
 	params := map[string]interface{}{
 		"deleted_at": p.now(),
