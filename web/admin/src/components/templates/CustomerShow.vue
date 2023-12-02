@@ -261,11 +261,13 @@ const onSubmitDelete = (): void => {
           顧客情報
           <v-spacer />
           <v-menu>
-            <template #activator="{ props }">
-              <v-btn variant="plain" size="small" :icon="mdiDotsVertical" v-bind="props" />
+            <template #activator="{ props: item }">
+              <v-btn variant="plain" size="small" :icon="mdiDotsVertical" v-bind="item" />
             </template>
             <v-list>
-              <v-list-item @click="onClickOpenDeleteDialog">削除する</v-list-item>
+              <v-list-item @click="onClickOpenDeleteDialog">
+                削除する
+              </v-list-item>
             </v-list>
           </v-menu>
         </v-card-title>
