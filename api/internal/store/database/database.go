@@ -264,6 +264,7 @@ type Schedule interface {
 	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
 	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
 	Approve(ctx context.Context, scheduleID string, params *ApproveScheduleParams) error
+	Publish(ctx context.Context, scheduleID string, public bool) error
 }
 
 type ListSchedulesParams struct {
@@ -283,7 +284,6 @@ type UpdateScheduleParams struct {
 	ThumbnailURL    string
 	ImageURL        string
 	OpeningVideoURL string
-	Public          bool
 	StartAt         time.Time
 	EndAt           time.Time
 }

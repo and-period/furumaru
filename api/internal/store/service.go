@@ -62,6 +62,7 @@ type Service interface {
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleInput) error                           // 更新
 	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error       // サムネイル画像(リサイズ済み)更新
 	ApproveSchedule(ctx context.Context, in *ApproveScheduleInput) error                         // 承認
+	PublishSchedule(ctx context.Context, in *PublishScheduleInput) error                         // 公開
 	// マルシェタイムテーブル
 	ListLives(ctx context.Context, in *ListLivesInput) (entity.Lives, int64, error) // 一覧取得
 	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)            // 取得

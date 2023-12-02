@@ -135,7 +135,6 @@ func (s *schedule) Update(ctx context.Context, scheduleID string, params *databa
 			"thumbnail_url":     params.ThumbnailURL,
 			"image_url":         params.ImageURL,
 			"opening_video_url": params.OpeningVideoURL,
-			"public":            params.Public,
 			"start_at":          params.StartAt,
 			"end_at":            params.EndAt,
 			"updated_at":        s.now(),
@@ -189,6 +188,18 @@ func (s *schedule) Approve(ctx context.Context, scheduleID string, params *datab
 		"updated_at":        s.now(),
 	}
 
+	err := s.db.DB.WithContext(ctx).
+		Table(scheduleTable).
+		Where("id = ?", scheduleID).
+		Updates(update).Error
+	return dbError(err)
+}
+
+func (s *schedule) Publish(ctx context.Context, scheduleID string, public bool) error {
+	update := map[string]interface{}{
+		"public":     public,
+		"updated_at": s.now(),
+	}
 	err := s.db.DB.WithContext(ctx).
 		Table(scheduleTable).
 		Where("id = ?", scheduleID).

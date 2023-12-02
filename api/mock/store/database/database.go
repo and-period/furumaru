@@ -1220,6 +1220,20 @@ func (mr *MockScheduleMockRecorder) MultiGet(ctx, scheduleIDs interface{}, field
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockSchedule)(nil).MultiGet), varargs...)
 }
 
+// Publish mocks base method.
+func (m *MockSchedule) Publish(ctx context.Context, scheduleID string, public bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Publish", ctx, scheduleID, public)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Publish indicates an expected call of Publish.
+func (mr *MockScheduleMockRecorder) Publish(ctx, scheduleID, public interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Publish", reflect.TypeOf((*MockSchedule)(nil).Publish), ctx, scheduleID, public)
+}
+
 // Update mocks base method.
 func (m *MockSchedule) Update(ctx context.Context, scheduleID string, params *database.UpdateScheduleParams) error {
 	m.ctrl.T.Helper()

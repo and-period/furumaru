@@ -363,7 +363,6 @@ type UpdateScheduleInput struct {
 	ThumbnailURL    string    `validate:"url"`
 	ImageURL        string    `validate:"url"`
 	OpeningVideoURL string    `validate:"url"`
-	Public          bool      `validate:""`
 	StartAt         time.Time `validate:"required"`
 	EndAt           time.Time `validate:"required,gtfield=StartAt"`
 }
@@ -377,6 +376,11 @@ type ApproveScheduleInput struct {
 	ScheduleID string `validate:"required"`
 	AdminID    string `validate:"required"`
 	Approved   bool   `validate:""`
+}
+
+type PublishScheduleInput struct {
+	ScheduleID string `validate:"required"`
+	Public     bool   `validate:""`
 }
 
 type GetLiveInput struct {

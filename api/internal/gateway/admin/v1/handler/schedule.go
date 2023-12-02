@@ -25,6 +25,7 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r.GET("/:scheduleId", h.filterAccessSchedule, h.GetSchedule)
 	r.PATCH("/:scheduleId", h.filterAccessSchedule, h.UpdateSchedule)
 	r.PATCH("/:scheduleId/approval", h.filterAccessSchedule, h.ApproveSchedule)
+	r.PATCH("/:scheduleId/publish", h.filterAccessSchedule, h.PublishSchedule)
 }
 
 func (h *handler) filterAccessSchedule(ctx *gin.Context) {
@@ -252,7 +253,6 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 		ThumbnailURL:    thumbnailURL,
 		ImageURL:        imageURL,
 		OpeningVideoURL: openingVideoURL,
-		Public:          req.Public,
 		StartAt:         jst.ParseFromUnix(req.StartAt),
 		EndAt:           jst.ParseFromUnix(req.EndAt),
 	}
@@ -276,6 +276,24 @@ func (h *handler) ApproveSchedule(ctx *gin.Context) {
 		Approved:   req.Approved,
 	}
 	if err := h.store.ApproveSchedule(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) PublishSchedule(ctx *gin.Context) {
+	req := &request.PublishScheduleRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	in := &store.PublishScheduleInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+		Public:     req.Public,
+	}
+	if err := h.store.PublishSchedule(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}

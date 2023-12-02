@@ -393,7 +393,6 @@ func TestSchedule_Update(t *testing.T) {
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					ImageURL:        "https://and-period.jp/image.png",
 					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-					Public:          true,
 					StartAt:         now().AddDate(0, 1, 0),
 					EndAt:           now().AddDate(0, 2, 0),
 				},
@@ -413,7 +412,6 @@ func TestSchedule_Update(t *testing.T) {
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					ImageURL:        "https://and-period.jp/image.png",
 					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-					Public:          true,
 					StartAt:         now().AddDate(0, 1, 0),
 					EndAt:           now().AddDate(0, 2, 0),
 				},
@@ -437,7 +435,6 @@ func TestSchedule_Update(t *testing.T) {
 					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					ImageURL:        "https://and-period.jp/image.png",
 					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-					Public:          true,
 					StartAt:         now().AddDate(0, 1, 0),
 					EndAt:           now().AddDate(0, 2, 0),
 				},
@@ -655,6 +652,69 @@ func TestSchedule_Approve(t *testing.T) {
 
 			db := &schedule{db: db, now: now}
 			err = db.Approve(ctx, tt.args.scheduleID, tt.args.params)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestSchedule_Publish(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleID string
+		public     bool
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
+				schedule.StartAt = now().AddDate(0, 1, 0)
+				err = db.DB.Create(&schedule).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				scheduleID: "schedule-id",
+				public:     true,
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, scheduleTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			err = db.Publish(ctx, tt.args.scheduleID, tt.args.public)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}
