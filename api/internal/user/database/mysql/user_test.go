@@ -299,6 +299,7 @@ func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 	return &entity.User{
 		ID:         id,
 		Registered: true,
+		Status:     entity.UserStatusActivated,
 		Member:     *testMember(id, email, phoneNumber, now),
 		CreatedAt:  now,
 		UpdatedAt:  now,
@@ -309,6 +310,7 @@ func testGuestUser(id, email, phoneNumber string, now time.Time) *entity.User {
 	return &entity.User{
 		ID:         id,
 		Registered: false,
+		Status:     entity.UserStatusGuest,
 		Guest:      *testGuest(id, email, phoneNumber, now),
 		CreatedAt:  now,
 		UpdatedAt:  now,
