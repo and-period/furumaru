@@ -35,8 +35,6 @@ export const useAdressStore = defineStore('address', {
       const authStore = useAuthStore()
 
       this.addressesFetchState.isLoading = true
-      const client = this.addressApiClient(authStore.accessToken)
-      console.log(client)
       const res: AddressesResponse = await this.addressApiClient(
         authStore.accessToken,
       ).v1ListAddresses({
