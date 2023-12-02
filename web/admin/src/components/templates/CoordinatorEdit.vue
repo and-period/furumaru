@@ -58,7 +58,6 @@ const props = defineProps({
           prefectureCodes: []
         }
       ],
-      box60Refrigerated: 0,
       box60Frozen: 0,
       box80Rates: [
         {
@@ -67,7 +66,6 @@ const props = defineProps({
           prefectureCodes: []
         }
       ],
-      box80Refrigerated: 0,
       box80Frozen: 0,
       box100Rates: [
         {
@@ -76,7 +74,6 @@ const props = defineProps({
           prefectureCodes: []
         }
       ],
-      box100Refrigerated: 0,
       box100Frozen: 0,
       hasFreeShipping: false,
       freeShippingRates: 0
@@ -121,13 +118,10 @@ const props = defineProps({
       id: '',
       isDefault: false,
       box60Rates: [],
-      box60Refrigerated: 0,
       box60Frozen: 0,
       box80Rates: [],
-      box80Refrigerated: 0,
       box80Frozen: 0,
       box100Rates: [],
-      box100Refrigerated: 0,
       box100Frozen: 0,
       hasFreeShipping: false,
       freeShippingRates: 0,
@@ -199,6 +193,7 @@ const emit = defineEmits<{
   (e: 'update:header-file', files: FileList): void
   (e: 'update:promotion-video', files: FileList): void
   (e: 'update:bonus-video', files: FileList): void
+  (e: 'update:search-product-type', name: string): void
   (e: 'click:search-address'): void
   (e: 'submit:coordinator'): void
   (e: 'submit:shipping'): void
@@ -258,6 +253,10 @@ const onSubmitShipping = (): void => {
   emit('submit:shipping')
 }
 
+const onChangeSearchProductType = (name: string): void => {
+  emit('update:search-product-type', name)
+}
+
 const onClickSearchAddress = (): void => {
   emit('click:search-address')
 }
@@ -295,6 +294,7 @@ const onClickSearchAddress = (): void => {
         @update:header-file="onChangeHeaderFile"
         @update:promotion-video="onChangePromotionVideo"
         @update:bonus-video="onChangeBonusVideo"
+        @update:search-product-type="onChangeSearchProductType"
         @click:search-address="onClickSearchAddress"
         @submit="onSubmitCoordinator"
       />

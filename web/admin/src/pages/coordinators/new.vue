@@ -164,6 +164,17 @@ const handleUpdateBonusVideo = (files: FileList): void => {
     })
 }
 
+const handleSearchProductType = async (name: string): Promise<void> => {
+  try {
+    await productTypeStore.searchProductTypes(name)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
 const handleSearchAddress = async (): Promise<void> => {
   try {
     searchAddress.loading.value = true
@@ -204,6 +215,7 @@ try {
     :search-error-message="searchAddress.errorMessage.value"
     :product-types="productTypes"
     @click:search-address="handleSearchAddress"
+    @update:search-product-type="handleSearchProductType"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @update:promotion-video="handleUpdatePromotionVideo"

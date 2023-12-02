@@ -108,6 +108,7 @@ const emit = defineEmits<{
   (e: 'update:header-file', files: FileList): void
   (e: 'update:promotion-video', files: FileList): void
   (e: 'update:bonus-video', files: FileList): void
+  (e: 'update:search-product-type', name: string): void
   (e: 'click:search-address'): void
   (e: 'submit'): void
 }>()
@@ -170,6 +171,10 @@ const onSubmit = async (): Promise<void> => {
   emit('submit')
 }
 
+const onChangeSearchProductType = (name: string): void => {
+  emit('update:search-product-type', name)
+}
+
 const onClickSearchAddress = (): void => {
   emit('click:search-address')
 }
@@ -211,6 +216,8 @@ const onClickSearchAddress = (): void => {
           closable-chips
           multiple
           density="comfortable"
+          clearable
+          @update:search="onChangeSearchProductType"
         >
           <template #chip="{ props: val, item }">
             <v-chip
