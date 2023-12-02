@@ -5,12 +5,16 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus } from '~/types/api'
+import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminRole } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   isAlert: {
     type: Boolean,
@@ -126,6 +130,10 @@ const deleteDialogValue = computed({
   get: () => props.deleteDialog,
   set: (val: boolean) => emit('update:delete-dialog', val)
 })
+
+const isEditable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
 
 const getName = (): string => {
   if (props.customer?.lastname || props.customer?.firstname) {
@@ -260,7 +268,7 @@ const onSubmitDelete = (): void => {
         <v-card-title class="d-flex flex-row align-center mx-4 mt-2">
           顧客情報
           <v-spacer />
-          <v-menu>
+          <v-menu v-show="isEditable()">
             <template #activator="{ props: item }">
               <v-btn variant="plain" size="small" :icon="mdiDotsVertical" v-bind="item" />
             </template>

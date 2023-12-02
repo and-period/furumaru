@@ -107,6 +107,10 @@ const isRegisterable = (): boolean => {
   return props.role === AdminRole.COORDINATOR
 }
 
+const isApprovable = (): boolean => {
+  return props.role === AdminRole.ADMINISTRATOR
+}
+
 const getCoordinatorName = (coordinatorId: string): string => {
   const coordinator = props.coordinators.find((coordinator: Coordinator): boolean => {
     return coordinator.id === coordinatorId
@@ -262,7 +266,14 @@ const onClickApproval = (scheduleId: string): void => {
           {{ getTerm(item) }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" class="mr-2" color="primary" size="small" @click.stop="onClickApproval(item.id)">
+          <v-btn
+            v-show="isApprovable()"
+            variant="outlined"
+            class="mr-2"
+            color="primary"
+            size="small"
+            @click.stop="onClickApproval(item.id)"
+          >
             <v-icon size="small" :icon="mdiPencil" />
             {{ getApproval(item) }}
           </v-btn>

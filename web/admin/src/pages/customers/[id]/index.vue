@@ -1,17 +1,19 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCommonStore, useCustomerStore } from '~/store'
+import { useAuthStore, useCommonStore, useCustomerStore } from '~/store'
 
 const route = useRoute()
 const router = useRouter()
 const commonStore = useCommonStore()
+const authStore = useAuthStore()
 const customerStore = useCustomerStore()
 const pagination = usePagination()
 const { isShow, alertText, alertType, show } = useAlert('error')
 
 const customerId = route.params.id as string
 
+const { role } = storeToRefs(authStore)
 const { customer, orders, totalOrders, totalAmount } = storeToRefs(customerStore)
 
 const loading = ref<boolean>(false)
@@ -80,6 +82,7 @@ try {
   <templates-customer-show
     v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
+    :role="role"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
