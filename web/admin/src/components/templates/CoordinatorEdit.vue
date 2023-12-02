@@ -193,7 +193,7 @@ const emit = defineEmits<{
   (e: 'update:header-file', files: FileList): void
   (e: 'update:promotion-video', files: FileList): void
   (e: 'update:bonus-video', files: FileList): void
-  (e: 'update:search-coordinator', name: string): void
+  (e: 'update:search-product-type', name: string): void
   (e: 'click:search-address'): void
   (e: 'submit:coordinator'): void
   (e: 'submit:shipping'): void
@@ -253,8 +253,8 @@ const onSubmitShipping = (): void => {
   emit('submit:shipping')
 }
 
-const onChangeSearchCoordinator = (name: string): void => {
-  emit('update:search-coordinator', name)
+const onChangeSearchProductType = (name: string): void => {
+  emit('update:search-product-type', name)
 }
 
 const onClickSearchAddress = (): void => {
@@ -294,7 +294,7 @@ const onClickSearchAddress = (): void => {
         @update:header-file="onChangeHeaderFile"
         @update:promotion-video="onChangePromotionVideo"
         @update:bonus-video="onChangeBonusVideo"
-        @update:search="onChangeSearchCoordinator"
+        @update:search-product-type="onChangeSearchProductType"
         @click:search-address="onClickSearchAddress"
         @submit="onSubmitCoordinator"
       />

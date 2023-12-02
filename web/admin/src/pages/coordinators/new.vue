@@ -164,9 +164,9 @@ const handleUpdateBonusVideo = (files: FileList): void => {
     })
 }
 
-const handleSearchCoordinator = async (name: string): Promise<void> => {
+const handleSearchProductType = async (name: string): Promise<void> => {
   try {
-    await coordinatorStore.searchCoordinators(name)
+    await productTypeStore.searchProductTypes(name)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -215,7 +215,7 @@ try {
     :search-error-message="searchAddress.errorMessage.value"
     :product-types="productTypes"
     @click:search-address="handleSearchAddress"
-    @update:search-coordinator="handleSearchCoordinator"
+    @update:search-product-type="handleSearchProductType"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @update:promotion-video="handleUpdatePromotionVideo"

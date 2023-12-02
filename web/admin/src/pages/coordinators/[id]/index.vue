@@ -103,6 +103,9 @@ const fetchState = useAsyncData(async (): Promise<void> => {
       phoneNumber: convertI18nToJapanesePhoneNumber(coordinator.value.phoneNumber)
     }
     shippingFormData.value = { ...shipping.value }
+    if (productTypes.value.length === 0) {
+      productTypeStore.fetchProductTypes(200)
+    }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -239,9 +242,9 @@ const handleUpdateBonusVideo = (files: FileList): void => {
     })
 }
 
-const handleSearchCoordinator = async (name: string): Promise<void> => {
+const handleSearchProductType = async (name: string): Promise<void> => {
   try {
-    await coordinatorStore.searchCoordinators(name)
+    await productTypeStore.searchProductTypes(name)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -295,7 +298,7 @@ try {
     :product-types="productTypes"
     :shipping="shipping"
     @click:search-address="handleSearchAddress"
-    @update:search-coordinator="handleSearchCoordinator"
+    @update:search-product-type="handleSearchProductType"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @update:promotion-video="handleUpdatePromotionVideo"
