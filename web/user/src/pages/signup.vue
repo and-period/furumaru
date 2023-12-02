@@ -9,11 +9,22 @@ definePageMeta({
   layout: 'auth',
 })
 
+const route = useRoute()
 const router = useRouter()
 const i18n = useI18n()
 const localePath = useLocalePath()
 
 const { signUp } = useAuthStore()
+
+// 買い物カゴ画面から認証に飛ばされたかのフラグ
+const redirectToPurchase = computed<boolean>(() => {
+  const redirectToPurchaseParam = route.query.redirect_to_purchase
+  if (redirectToPurchaseParam) {
+    return Boolean(redirectToPurchaseParam)
+  } else {
+    return false
+  }
+})
 
 const t = (str: keyof I18n['auth']['signUp']) => {
   return i18n.t(`auth.signUp.${str}`)
@@ -61,7 +72,13 @@ const handleSubmit = async () => {
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber),
     })
 
-    router.push(`/verify?id=${id}`)
+    let query = `?id=${id}`
+
+    if (redirectToPurchase.value) {
+      query = `${query}&redirect_to_purchase=true`
+    }
+
+    router.push(`/verify${query}`)
   } catch (error) {
     if (error instanceof ApiBaseError) {
       apiErrorMessage.value = error.message

@@ -11,6 +11,7 @@ const authStore = useAuthStore()
 const { verifyAuth } = authStore
 
 const route = useRoute()
+const router = useRouter()
 
 const i18n = useI18n()
 
@@ -18,12 +19,23 @@ const t = (str: keyof I18n['auth']['verify']) => {
   return i18n.t(`auth.verify.${str}`)
 }
 
+// 新規登録時に発行されたID
 const id = computed<string>(() => {
   const id = route.query.id
   if (id) {
     return id as string
   } else {
     return ''
+  }
+})
+
+// 買い物カゴ画面から認証に飛ばされたかのフラグ
+const redirectToPurchase = computed<boolean>(() => {
+  const redirectToPurchaseParam = route.query.redirect_to_purchase
+  if (redirectToPurchaseParam) {
+    return Boolean(redirectToPurchaseParam)
+  } else {
+    return false
   }
 })
 
@@ -36,6 +48,11 @@ const handleSubmit = async () => {
       verifyCode: code.value,
       id: id.value,
     })
+    if (redirectToPurchase.value) {
+      router.push('/v1/purchase/auth?from_new_accounet=true')
+    } else {
+      router.push('/')
+    }
   } catch (error) {
     if (error instanceof ApiBaseError) {
       errorMessage.value = error.message
