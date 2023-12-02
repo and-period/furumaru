@@ -12,8 +12,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/backoff"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
+	"golang.org/x/sync/semaphore"
 )
 
 func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCreditCardInput) (string, error) {
@@ -298,8 +300,8 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	if err != nil {
 		return "", internalError(err)
 	}
+	s.waitGroup.Add(2)
 	// 買い物かごの削除
-	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		cart.RemoveBaskets(baskets.BoxNumbers()...)
@@ -308,6 +310,11 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 				zap.Any("payload", params.payload), zap.Any("order", order),
 				zap.Int32("methodType", int32(params.paymentMethodType)), zap.Error(err))
 		}
+	}()
+	// 商品の在庫を減算
+	go func() {
+		defer s.waitGroup.Done()
+		s.decreaseProductInventories(context.Background(), order.OrderItems)
 	}()
 	return pay.RedirectURL, nil
 }
@@ -319,4 +326,34 @@ func (s *service) getShippingByCoordinatorID(ctx context.Context, coordinatorID 
 		return s.db.Shipping.GetDefault(ctx)
 	}
 	return shipping, err
+}
+
+func (s *service) decreaseProductInventories(ctx context.Context, items entity.OrderItems) {
+	sem := semaphore.NewWeighted(3)
+	for _, item := range items {
+		if err := sem.Acquire(ctx, 1); err != nil {
+			s.logger.Error("Failed to semaphore acuire", zap.Any("item", item), zap.Error(err))
+			return
+		}
+		s.waitGroup.Add(1)
+		go func(item *entity.OrderItem) {
+			defer func() {
+				sem.Release(1)
+				s.waitGroup.Done()
+			}()
+			err := s.decreaseProductInventory(ctx, item.ProductRevisionID, item.Quantity)
+			if err != nil {
+				s.logger.Error("Failed to decrease product inventory", zap.Any("item", item), zap.Error(err))
+			}
+		}(item)
+	}
+}
+
+func (s *service) decreaseProductInventory(ctx context.Context, revisionID, quantity int64) error {
+	exec := func() error {
+		return s.db.Product.DecreaseInventory(ctx, revisionID, quantity)
+	}
+	const maxRetries = 5
+	retry := backoff.NewExponentialBackoff(maxRetries)
+	return backoff.Retry(ctx, retry, exec, backoff.WithRetryablel(s.isRetryable))
 }
