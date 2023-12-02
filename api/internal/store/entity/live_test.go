@@ -237,7 +237,7 @@ func TestLives_Validate(t *testing.T) {
 			live: &Live{
 				ID:         "live-id",
 				ScheduleID: "schedule-id",
-				StartAt:    jst.Date(2023, 7, 15, 18, 00, 0, 0),
+				StartAt:    jst.Date(2023, 7, 15, 18, 0, 0, 0),
 				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			schedule: &Schedule{
