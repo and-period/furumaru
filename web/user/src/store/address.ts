@@ -1,3 +1,4 @@
+import { useAuthStore } from './auth'
 import {
   Address,
   AddressesResponse,
@@ -31,12 +32,17 @@ export const useAdressStore = defineStore('address', {
     },
 
     async fetchAddresses(limit: number = 20, offset: number = 0) {
+      const authStore = useAuthStore()
+
       this.addressesFetchState.isLoading = true
-      const res: AddressesResponse =
-        await this.addressApiClient().v1ListAddresses({
-          limit,
-          offset,
-        })
+      const client = this.addressApiClient(authStore.accessToken)
+      console.log(client)
+      const res: AddressesResponse = await this.addressApiClient(
+        authStore.accessToken,
+      ).v1ListAddresses({
+        limit,
+        offset,
+      })
       this.addresses = res.addresses
       this.total = res.total
       this.addressesFetchState.isLoading = false

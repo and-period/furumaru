@@ -10,7 +10,7 @@ const cartItem = MOCK_PURCHASE_ITEMS[0]
 const discount = 0
 
 const addressStore = useAdressStore()
-const { registerAddress } = addressStore
+const { registerAddress, fetchAddresses } = addressStore
 
 const formData = ref<CreateAddressRequest>({
   lastname: '',
@@ -51,6 +51,10 @@ const handleClickNextStepButton = async () => {
   await registerAddress(formData.value)
   router.push('/v1/purchase/confirmation')
 }
+
+onMounted(() => {
+  fetchAddresses()
+})
 
 useSeoMeta({
   title: 'ご購入手続き',
