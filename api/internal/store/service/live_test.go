@@ -184,11 +184,26 @@ func TestGetLive(t *testing.T) {
 func TestCreateLive(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2023, 7, 1, 18, 30, 0, 0)
 	products := entity.Products{
 		{
 			ID:   "product-id",
 			Name: "芽が出たじゃがいも",
+		},
+	}
+	schedule := &entity.Schedule{
+		ID:      "schedule-id",
+		StartAt: jst.Date(2023, 7, 15, 17, 0, 0, 0),
+		EndAt:   jst.Date(2023, 7, 15, 21, 0, 0, 0),
+	}
+	livesIn := &database.ListLivesParams{
+		ScheduleIDs: []string{"schedule-id"},
+	}
+	lives := entity.Lives{
+		{
+			ID:         "live-id",
+			ScheduleID: "schedule-id",
+			StartAt:    jst.Date(2023, 7, 15, 17, 0, 0, 0),
+			EndAt:      jst.Date(2023, 7, 15, 18, 30, 0, 0),
 		},
 	}
 	producerIn := &user.GetProducerInput{
@@ -208,7 +223,8 @@ func TestCreateLive(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 				mocks.db.Live.EXPECT().
@@ -220,8 +236,8 @@ func TestCreateLive(t *testing.T) {
 							ProducerID:   "producer-id",
 							ProductIDs:   []string{"product-id"},
 							Comment:      "よろしくお願いします。",
-							StartAt:      now.AddDate(0, -1, 0),
-							EndAt:        now.AddDate(0, 1, 0),
+							StartAt:      jst.Date(2023, 7, 15, 19, 30, 0, 0),
+							EndAt:        jst.Date(2023, 7, 15, 21, 0, 0, 0),
 							LiveProducts: live.LiveProducts,
 						}
 						assert.Equal(t, expect, live)
@@ -233,8 +249,8 @@ func TestCreateLive(t *testing.T) {
 				ProducerID: "producer-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: nil,
 		},
@@ -248,6 +264,7 @@ func TestCreateLive(t *testing.T) {
 			name: "failed to get schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 			},
@@ -256,15 +273,34 @@ func TestCreateLive(t *testing.T) {
 				ProducerID: "producer-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to list lives",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.CreateLiveInput{
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to get producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 			},
@@ -273,15 +309,16 @@ func TestCreateLive(t *testing.T) {
 				ProducerID: "producer-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to unmatch products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(entity.Products{}, nil)
 			},
@@ -290,15 +327,16 @@ func TestCreateLive(t *testing.T) {
 				ProducerID: "producer-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get products",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(nil, assert.AnError)
 			},
@@ -307,15 +345,34 @@ func TestCreateLive(t *testing.T) {
 				ProducerID: "producer-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInternal,
 		},
 		{
+			name: "invalid live schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.CreateLiveInput{
+				ScheduleID: "schedule-id",
+				ProducerID: "producer-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    jst.Date(2023, 7, 15, 18, 0, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 20, 0, 0, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
 			name: "failed to create live",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(&entity.Schedule{}, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 				mocks.db.Live.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
@@ -325,8 +382,8 @@ func TestCreateLive(t *testing.T) {
 				ProducerID: "producer-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -351,10 +408,33 @@ func TestUpdateLive(t *testing.T) {
 		ProducerID: "producer-id",
 		ProductIDs: []string{"product-id"},
 		Comment:    "よろしくお願いします",
-		StartAt:    now.AddDate(0, -1, 0),
-		EndAt:      now.AddDate(0, 1, 0),
+		StartAt:    jst.Date(2023, 7, 15, 17, 0, 0, 0),
+		EndAt:      jst.Date(2023, 7, 15, 18, 30, 0, 0),
 		CreatedAt:  now,
 		UpdatedAt:  now,
+	}
+	schedule := &entity.Schedule{
+		ID:      "schedule-id",
+		StartAt: jst.Date(2023, 7, 15, 17, 0, 0, 0),
+		EndAt:   jst.Date(2023, 7, 15, 21, 0, 0, 0),
+	}
+	livesIn := &database.ListLivesParams{
+		ScheduleIDs: []string{"schedule-id"},
+	}
+	lives := entity.Lives{
+		{
+			ID:         "live-id",
+			ScheduleID: "schedule-id",
+			StartAt:    jst.Date(2023, 7, 15, 17, 0, 0, 0),
+			EndAt:      jst.Date(2023, 7, 15, 18, 30, 0, 0),
+		},
+	}
+	producerIn := &user.GetProducerInput{
+		ProducerID: "producer-id",
+	}
+	producer := &uentity.Producer{
+		AdminID:  "producer-id",
+		Username: "&.農園",
 	}
 	products := entity.Products{
 		{
@@ -365,8 +445,8 @@ func TestUpdateLive(t *testing.T) {
 	params := &database.UpdateLiveParams{
 		ProductIDs: []string{"product-id"},
 		Comment:    "よろしくお願いします。",
-		StartAt:    now.AddDate(0, -1, 0),
-		EndAt:      now.AddDate(0, 1, 0),
+		StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+		EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 	}
 
 	tests := []struct {
@@ -379,15 +459,18 @@ func TestUpdateLive(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 				mocks.db.Live.EXPECT().Update(ctx, "live-id", params).Return(nil)
 			},
 			input: &store.UpdateLiveInput{
 				LiveID:     "live-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: nil,
 		},
@@ -406,8 +489,62 @@ func TestUpdateLive(t *testing.T) {
 				LiveID:     "live-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(nil, assert.AnError)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.UpdateLiveInput{
+				LiveID:     "live-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to list lives",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(nil, assert.AnError)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.UpdateLiveInput{
+				LiveID:     "live-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get producer",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.UpdateLiveInput{
+				LiveID:     "live-id",
+				ProductIDs: []string{"product-id"},
+				Comment:    "よろしくお願いします。",
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -415,14 +552,17 @@ func TestUpdateLive(t *testing.T) {
 			name: "failed to get products",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(nil, assert.AnError)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(nil, assert.AnError)
 			},
 			input: &store.UpdateLiveInput{
 				LiveID:     "live-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -430,14 +570,17 @@ func TestUpdateLive(t *testing.T) {
 			name: "failed to unmatch products",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(entity.Products{}, nil)
 			},
 			input: &store.UpdateLiveInput{
 				LiveID:     "live-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInvalidArgument,
 		},
@@ -445,15 +588,18 @@ func TestUpdateLive(t *testing.T) {
 			name: "failed to update live",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Live.EXPECT().Get(ctx, "live-id").Return(live, nil)
-				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
+				mocks.db.Schedule.EXPECT().Get(gomock.Any(), "schedule-id").Return(schedule, nil)
+				mocks.db.Live.EXPECT().List(gomock.Any(), livesIn).Return(lives, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{"product-id"}).Return(products, nil)
 				mocks.db.Live.EXPECT().Update(ctx, "live-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateLiveInput{
 				LiveID:     "live-id",
 				ProductIDs: []string{"product-id"},
 				Comment:    "よろしくお願いします。",
-				StartAt:    now.AddDate(0, -1, 0),
-				EndAt:      now.AddDate(0, 1, 0),
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
 			},
 			expectErr: exception.ErrInternal,
 		},

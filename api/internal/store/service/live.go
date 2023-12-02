@@ -53,35 +53,6 @@ func (s *service) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*e
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		_, err = s.db.Schedule.Get(ectx, in.ScheduleID)
-		return
-	})
-	eg.Go(func() (err error) {
-		in := &user.GetProducerInput{
-			ProducerID: in.ProducerID,
-		}
-		_, err = s.user.GetProducer(ectx, in)
-		return
-	})
-	eg.Go(func() error {
-		products, err := s.db.Product.MultiGet(ectx, in.ProductIDs)
-		if err != nil {
-			return err
-		}
-		if len(products) != len(in.ProductIDs) {
-			return errUnmatchProducts
-		}
-		return nil
-	})
-	err := eg.Wait()
-	if errors.Is(err, database.ErrNotFound) || errors.Is(err, exception.ErrNotFound) || errors.Is(err, errUnmatchProducts) {
-		return nil, fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	if err != nil {
-		return nil, internalError(err)
-	}
 	params := &entity.NewLiveParams{
 		ScheduleID: in.ScheduleID,
 		ProducerID: in.ProducerID,
@@ -91,6 +62,9 @@ func (s *service) CreateLive(ctx context.Context, in *store.CreateLiveInput) (*e
 		EndAt:      in.EndAt,
 	}
 	live := entity.NewLive(params)
+	if err := s.validateLive(ctx, live); err != nil {
+		return nil, err
+	}
 	if err := s.db.Live.Create(ctx, live); err != nil {
 		return nil, internalError(err)
 	}
@@ -101,15 +75,14 @@ func (s *service) UpdateLive(ctx context.Context, in *store.UpdateLiveInput) err
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	if _, err := s.db.Live.Get(ctx, in.LiveID); err != nil {
-		return internalError(err)
-	}
-	products, err := s.db.Product.MultiGet(ctx, in.ProductIDs)
+	live, err := s.db.Live.Get(ctx, in.LiveID)
 	if err != nil {
 		return internalError(err)
 	}
-	if len(products) != len(in.ProductIDs) {
-		return fmt.Errorf("api: umatch product: %w", exception.ErrInvalidArgument)
+	live.StartAt = in.StartAt
+	live.EndAt = in.EndAt
+	if err := s.validateLive(ctx, live); err != nil {
+		return err
 	}
 	params := &database.UpdateLiveParams{
 		ProductIDs: in.ProductIDs,
@@ -127,4 +100,51 @@ func (s *service) DeleteLive(ctx context.Context, in *store.DeleteLiveInput) err
 	}
 	err := s.db.Live.Delete(ctx, in.LiveID)
 	return internalError(err)
+}
+
+func (s *service) validateLive(ctx context.Context, live *entity.Live) error {
+	var (
+		schedule *entity.Schedule
+		lives    entity.Lives
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		schedule, err = s.db.Schedule.Get(ectx, live.ScheduleID)
+		return
+	})
+	eg.Go(func() (err error) {
+		params := &database.ListLivesParams{
+			ScheduleIDs: []string{live.ScheduleID},
+		}
+		lives, err = s.db.Live.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &user.GetProducerInput{
+			ProducerID: live.ProducerID,
+		}
+		_, err = s.user.GetProducer(ectx, in)
+		return
+	})
+	eg.Go(func() error {
+		products, err := s.db.Product.MultiGet(ectx, live.ProductIDs)
+		if err != nil {
+			return err
+		}
+		if len(products) != len(live.ProductIDs) {
+			return errUnmatchProducts
+		}
+		return nil
+	})
+	err := eg.Wait()
+	if errors.Is(err, database.ErrNotFound) || errors.Is(err, exception.ErrNotFound) || errors.Is(err, errUnmatchProducts) {
+		return fmt.Errorf("api: invalid request: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return internalError(err)
+	}
+	if err := live.Validate(schedule, lives); err != nil {
+		return fmt.Errorf("api: invalid live schedule: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	return nil
 }
