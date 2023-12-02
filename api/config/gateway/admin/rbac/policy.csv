@@ -88,6 +88,7 @@ p, thread_update, /v1/contacts/*/threads/*, PATCH, allow
 p, thread_delete, /v1/contacts/*/threads/*, DELETE, allow
 p, user_list, /v1/users, GET, allow
 p, user_get, /v1/users/*, GET, allow
+p, user_delete, /v1/users/*, DELETE, allow
 p, postal_code_search, /v1/postal-codes/*, GET, allow
 
 g, administrator, administrator_list
@@ -180,6 +181,7 @@ g, administrator, thread_update
 g, administrator, thread_delete
 g, administrator, user_list
 g, administrator, user_get
+g, administrator, user_delete
 
 g, coordinator, auth
 g, coordinator, broadcast_get

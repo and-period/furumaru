@@ -295,6 +295,8 @@ components:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     scheduleStatus:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
+    userStatus:
+      $ref: './components/schemas/codes/user.yaml#/userStatus'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity

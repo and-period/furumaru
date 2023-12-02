@@ -248,13 +248,17 @@ func (s *service) DeleteUser(ctx context.Context, in *user.DeleteUserInput) erro
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	m, err := s.db.Member.Get(ctx, in.UserID)
+	u, err := s.db.User.Get(ctx, in.UserID)
 	if err != nil {
 		return internalError(err)
 	}
-	auth := func(ctx context.Context) error {
-		return s.userAuth.DeleteUser(ctx, m.CognitoID)
+	if u.Registered {
+		auth := func(ctx context.Context) error {
+			return s.userAuth.DeleteUser(ctx, u.Member.CognitoID)
+		}
+		err = s.db.Member.Delete(ctx, u.ID, auth)
+	} else {
+		err = s.db.Guest.Delete(ctx, u.ID)
 	}
-	err = s.db.Member.Delete(ctx, m.UserID, auth)
 	return internalError(err)
 }

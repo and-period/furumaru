@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import { mdiDotsVertical } from '@mdi/js'
 import { unix } from 'dayjs'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { type UserOrder, type User, Prefecture, PaymentStatus } from '~/types/api'
+import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -23,6 +24,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  deleteDialog: {
+    type: Boolean,
+    default: false
+  },
   customer: {
     type: Object as PropType<User>,
     default: (): User => ({
@@ -32,6 +37,7 @@ const props = defineProps({
       lastnameKana: '',
       firstnameKana: '',
       registered: false,
+      status: UserStatus.UNKNOWN,
       email: '',
       phoneNumber: '',
       postalCode: '',
@@ -65,6 +71,8 @@ const emit = defineEmits<{
   (e: 'click:update-page', page: number): void
   (e: 'click:update-items-per-page', page: number): void
   (e: 'click:row', orderId: string): void
+  (e: 'update:delete-dialog', v: boolean): void
+  (e: 'submit:delete'): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -113,6 +121,18 @@ const activities = [
     createdAt: '2023/04/05 10:34'
   }
 ]
+
+const deleteDialogValue = computed({
+  get: () => props.deleteDialog,
+  set: (val: boolean) => emit('update:delete-dialog', val)
+})
+
+const getName = (): string => {
+  if (props.customer?.lastname || props.customer?.firstname) {
+    return `${props.customer.lastname} ${props.customer.firstname}`
+  }
+  return props.customer?.email || ''
+}
 
 const getUsername = (): string => {
   return `${props.customer.lastname} ${props.customer.firstname}`
@@ -189,6 +209,14 @@ const getPaidAt = (paidAt: number): string => {
   return unix(paidAt).format('YYYY/MM/DD HH:mm')
 }
 
+const onClickOpenDeleteDialog = (): void => {
+  emit('update:delete-dialog', true)
+}
+
+const onClickCloseDeleteDialog = (): void => {
+  emit('update:delete-dialog', false)
+}
+
 const onClickUpdatePage = (page: number): void => {
   emit('click:update-page', page)
 }
@@ -200,14 +228,47 @@ const onClickUpdateItemsPerPage = (page: number): void => {
 const onClickRow = (item: UserOrder): void => {
   emit('click:row', item.orderId || '')
 }
+
+const onSubmitDelete = (): void => {
+  emit('submit:delete')
+}
 </script>
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
+  <v-dialog v-model="deleteDialogValue" width="500">
+    <v-card>
+      <v-card-title>
+        {{ getName() }}を本当に削除しますか？
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+          キャンセル
+        </v-btn>
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitDelete">
+          削除
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <v-row>
     <v-col sm="12" md="12" lg="4" order-lg="2">
       <v-card elevation="0">
+        <v-card-title class="d-flex flex-row align-center mx-4 mt-2">
+          顧客情報
+          <v-spacer />
+          <v-menu>
+            <template #activator="{ props }">
+              <v-btn variant="plain" size="small" :icon="mdiDotsVertical" v-bind="props" />
+            </template>
+            <v-list>
+              <v-list-item @click="onClickOpenDeleteDialog">削除する</v-list-item>
+            </v-list>
+          </v-menu>
+        </v-card-title>
         <v-card-text>
           <v-list>
             <v-list-item class="mb-4">
@@ -248,6 +309,10 @@ const onClickRow = (item: UserOrder): void => {
 
     <v-col sm="12" md="12" lg="8" order-lg="1">
       <v-card elevation="0" class="mb-4">
+        <v-card-title class="mx-4 mt-2">
+          購入情報
+        </v-card-title>
+
         <v-card-text>
           <v-row>
             <v-col>
@@ -270,10 +335,6 @@ const onClickRow = (item: UserOrder): void => {
         </v-card-text>
       </v-card>
       <v-card elevation="0" class="mb-4">
-        <v-card-title class="mx-4 mt-2">
-          購入情報
-        </v-card-title>
-
         <v-card-text>
           <v-data-table-server
             :headers="headers"

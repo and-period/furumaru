@@ -681,6 +681,43 @@ func (mr *MockCoordinatorMockRecorder) UpdateThumbnails(ctx, coordinatorID, thum
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThumbnails", reflect.TypeOf((*MockCoordinator)(nil).UpdateThumbnails), ctx, coordinatorID, thumbnails)
 }
 
+// MockGuest is a mock of Guest interface.
+type MockGuest struct {
+	ctrl     *gomock.Controller
+	recorder *MockGuestMockRecorder
+}
+
+// MockGuestMockRecorder is the mock recorder for MockGuest.
+type MockGuestMockRecorder struct {
+	mock *MockGuest
+}
+
+// NewMockGuest creates a new mock instance.
+func NewMockGuest(ctrl *gomock.Controller) *MockGuest {
+	mock := &MockGuest{ctrl: ctrl}
+	mock.recorder = &MockGuestMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockGuest) EXPECT() *MockGuestMockRecorder {
+	return m.recorder
+}
+
+// Delete mocks base method.
+func (m *MockGuest) Delete(ctx context.Context, userID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockGuestMockRecorder) Delete(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockGuest)(nil).Delete), ctx, userID)
+}
+
 // MockMember is a mock of Member interface.
 type MockMember struct {
 	ctrl     *gomock.Controller

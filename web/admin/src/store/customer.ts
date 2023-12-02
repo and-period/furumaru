@@ -57,6 +57,17 @@ export const useCustomerStore = defineStore('customer', {
       } catch (err) {
         return this.errorHandler(err)
       }
+    },
+
+    /**
+     * 顧客を削除する非同期関数
+     */
+    async deleteCustomer (customerId: string): Promise<void> {
+      try {
+        await apiClient.userApi().v1DeleteUser(customerId)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
     }
   }
 })

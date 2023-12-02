@@ -1113,15 +1113,32 @@ func TestDeleteUser(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Now()
-	m := &entity.Member{
-		UserID:       "user-id",
-		CognitoID:    "cognito-id",
-		ProviderType: entity.ProviderTypeEmail,
-		Email:        "test-user@and-period.jp",
-		PhoneNumber:  "+810000000000",
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		VerifiedAt:   now,
+	m := &entity.User{
+		ID:         "user-id",
+		Registered: true,
+		Status:     entity.UserStatusActivated,
+		Member: entity.Member{
+			UserID:       "user-id",
+			CognitoID:    "cognito-id",
+			ProviderType: entity.ProviderTypeEmail,
+			Email:        "test-user@and-period.jp",
+			PhoneNumber:  "+810000000000",
+			CreatedAt:    now,
+			UpdatedAt:    now,
+			VerifiedAt:   now,
+		},
+	}
+	g := &entity.User{
+		ID:         "user-id",
+		Status:     entity.UserStatusGuest,
+		Registered: false,
+		Guest: entity.Guest{
+			UserID:      "user-id",
+			Email:       "test-user@and-period.jp",
+			PhoneNumber: "+810000000000",
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		},
 	}
 
 	tests := []struct {
@@ -1131,9 +1148,9 @@ func TestDeleteUser(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name: "success",
+			name: "success member",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, nil)
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(m, nil)
 				mocks.userAuth.EXPECT().DeleteUser(ctx, "cognito-id").Return(nil)
 				mocks.db.Member.EXPECT().
 					Delete(ctx, "user-id", gomock.Any()).
@@ -1147,15 +1164,26 @@ func TestDeleteUser(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success guest",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(g, nil)
+				mocks.db.Guest.EXPECT().Delete(ctx, "user-id").Return(nil)
+			},
+			input: &user.DeleteUserInput{
+				UserID: "user-id",
+			},
+			expectErr: nil,
+		},
+		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.DeleteUserInput{},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to delete cognito user",
+			name: "failed to get user",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, assert.AnError)
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(nil, assert.AnError)
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",
@@ -1163,10 +1191,21 @@ func TestDeleteUser(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "failed to delete user",
+			name: "failed to delete member",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().Get(ctx, "user-id").Return(m, nil)
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(m, nil)
 				mocks.db.Member.EXPECT().Delete(ctx, "user-id", gomock.Any()).Return(assert.AnError)
+			},
+			input: &user.DeleteUserInput{
+				UserID: "user-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to delete guest",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(g, nil)
+				mocks.db.Guest.EXPECT().Delete(ctx, "user-id").Return(assert.AnError)
 			},
 			input: &user.DeleteUserInput{
 				UserID: "user-id",

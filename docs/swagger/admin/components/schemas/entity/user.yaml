@@ -20,6 +20,8 @@ user:
     registered:
       type: boolean
       description: 会員登録フラグ
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/userStatus'
     email:
       type: string
       description: メールアドレス
@@ -55,6 +57,7 @@ user:
   - lastnameKana
   - firstnameKana
   - registered
+  - status
   - email
   - phoneNumber
   - postalCode
@@ -71,6 +74,7 @@ user:
     lastnameKana: 'あんどどっと'
     firstnameKana: 'こうにゅうしゃ'
     registered: true
+    status: 4
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
@@ -93,6 +97,9 @@ userToList:
     firstname:
       type: string
       description: 名
+    email:
+      type: string
+      description: メールアドレス
     registered:
       type: boolean
       description: 会員登録フラグ
@@ -113,6 +120,7 @@ userToList:
   - id
   - lastname
   - firstname
+  - email
   - registered
   - prefectureCode
   - city
@@ -122,6 +130,7 @@ userToList:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     lastname: '&.'
     firstname: '購入者'
+    email: 'test-user@and-period.jp'
     registered: true
     prefectureCode: 13
     city: '千代田区'

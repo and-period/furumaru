@@ -1,0 +1,23 @@
+userStatus:
+  type: integer
+  format: int32
+  description: 購入者の状態
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  x-enum-varnames:
+  - UNKNOWN
+  - GUEST
+  - PROVISIONAL
+  - VERIFIED
+  - ACTIVATED
+  x-enum-descriptions:
+  - 不明
+  - 未登録
+  - 仮登録
+  - 認証済み(初期設定前)
+  - 認証済み(初期設定後)

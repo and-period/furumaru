@@ -17,6 +17,7 @@ func NewDatabase(db *mysql.Client) *database.Database {
 		Admin:         newAdmin(db),
 		Administrator: newAdministrator(db),
 		Coordinator:   newCoordinator(db),
+		Guest:         newGuest(db),
 		Member:        newMember(db),
 		Producer:      newProducer(db),
 		User:          newUser(db),

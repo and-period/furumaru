@@ -304,3 +304,13 @@ func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 		UpdatedAt:  now,
 	}
 }
+
+func testGuestUser(id, email, phoneNumber string, now time.Time) *entity.User {
+	return &entity.User{
+		ID:         id,
+		Registered: false,
+		Guest:      *testGuest(id, email, phoneNumber, now),
+		CreatedAt:  now,
+		UpdatedAt:  now,
+	}
+}
