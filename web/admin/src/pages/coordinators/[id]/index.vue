@@ -55,7 +55,6 @@ const shippingFormData = ref<UpsertShippingRequest>({
       prefectureCodes: []
     }
   ],
-  box60Refrigerated: 0,
   box60Frozen: 0,
   box80Rates: [
     {
@@ -64,7 +63,6 @@ const shippingFormData = ref<UpsertShippingRequest>({
       prefectureCodes: []
     }
   ],
-  box80Refrigerated: 0,
   box80Frozen: 0,
   box100Rates: [
     {
@@ -73,7 +71,6 @@ const shippingFormData = ref<UpsertShippingRequest>({
       prefectureCodes: []
     }
   ],
-  box100Refrigerated: 0,
   box100Frozen: 0,
   hasFreeShipping: false,
   freeShippingRates: 0
@@ -242,6 +239,17 @@ const handleUpdateBonusVideo = (files: FileList): void => {
     })
 }
 
+const handleSearchCoordinator = async (name: string): Promise<void> => {
+  try {
+    await coordinatorStore.searchCoordinators(name)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
 const handleSearchAddress = async () => {
   try {
     const res = await searchAddress.searchAddressByPostalCode(coordinatorFormData.value.postalCode)
@@ -287,6 +295,7 @@ try {
     :product-types="productTypes"
     :shipping="shipping"
     @click:search-address="handleSearchAddress"
+    @update:search-coordinator="handleSearchCoordinator"
     @update:thumbnail-file="handleUpdateThumbnail"
     @update:header-file="handleUpdateHeader"
     @update:promotion-video="handleUpdatePromotionVideo"
