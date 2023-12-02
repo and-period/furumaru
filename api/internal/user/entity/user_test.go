@@ -2,6 +2,7 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -205,6 +206,7 @@ func TestUser_Fill(t *testing.T) {
 				Guest: Guest{
 					UserID: "user-id",
 				},
+				Status: UserStatusGuest,
 			},
 		},
 	}
@@ -213,6 +215,90 @@ func TestUser_Fill(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.user.Fill(tt.member, tt.guest)
+			assert.Equal(t, tt.expect, tt.user)
+		})
+	}
+}
+
+func TestUser_SetStatus(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name   string
+		user   *User
+		expect *User
+	}{
+		{
+			name: "guest",
+			user: &User{
+				Registered: false,
+			},
+			expect: &User{
+				Registered: false,
+				Status:     UserStatusGuest,
+			},
+		},
+		{
+			name: "provisional",
+			user: &User{
+				Member: Member{
+					VerifiedAt:    time.Time{},
+					InitializedAt: time.Time{},
+				},
+				Registered: true,
+			},
+			expect: &User{
+				Registered: true,
+				Status:     UserStatusProvisional,
+			},
+		},
+		{
+			name: "activated",
+			user: &User{
+				Member: Member{
+					VerifiedAt:    now,
+					InitializedAt: now,
+				},
+				Registered: true,
+			},
+			expect: &User{
+				Member: Member{
+					VerifiedAt:    now,
+					InitializedAt: now,
+				},
+				Registered: true,
+				Status:     UserStatusActivated,
+			},
+		},
+		{
+			name: "verified",
+			user: &User{
+				Member: Member{
+					VerifiedAt:    now,
+					InitializedAt: time.Time{},
+				},
+				Registered: true,
+			},
+			expect: &User{
+				Member: Member{
+					VerifiedAt:    now,
+					InitializedAt: time.Time{},
+				},
+				Registered: true,
+				Status:     UserStatusVerified,
+			},
+		},
+		{
+			name:   "empty",
+			user:   nil,
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.user.SetStatus()
 			assert.Equal(t, tt.expect, tt.user)
 		})
 	}
@@ -332,11 +418,13 @@ func TestUsers_Fill(t *testing.T) {
 					ID:     "user-id01",
 					Member: Member{UserID: "user-id01"},
 					Guest:  Guest{UserID: "user-id01"},
+					Status: UserStatusGuest,
 				},
 				{
 					ID:     "user-id02",
 					Member: Member{},
 					Guest:  Guest{},
+					Status: UserStatusGuest,
 				},
 			},
 		},

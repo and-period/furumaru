@@ -6,6 +6,17 @@ import (
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 )
 
+// UserStatus - 購入者の状態
+type UserStatus int32
+
+const (
+	UserStatusUnknown     UserStatus = 0
+	UserStatusGuest       UserStatus = 1 // 未登録
+	UserStatusProvisional UserStatus = 2 // 仮登録
+	UserStatusVerified    UserStatus = 3 // 認証済み(初期設定前)
+	UserStatusActivated   UserStatus = 4 // 認証済み(初期設定後)
+)
+
 type User struct {
 	response.User
 }
@@ -18,6 +29,25 @@ type UserToList struct {
 
 type UsersToList []*UserToList
 
+func NewUserStatus(status uentity.UserStatus) UserStatus {
+	switch status {
+	case uentity.UserStatusGuest:
+		return UserStatusGuest
+	case uentity.UserStatusProvisional:
+		return UserStatusProvisional
+	case uentity.UserStatusVerified:
+		return UserStatusVerified
+	case uentity.UserStatusActivated:
+		return UserStatusActivated
+	default:
+		return UserStatusUnknown
+	}
+}
+
+func (s UserStatus) Response() int32 {
+	return int32(s)
+}
+
 func NewUser(user *uentity.User, address *uentity.Address) *User {
 	if address == nil {
 		address = &uentity.Address{}
@@ -26,6 +56,7 @@ func NewUser(user *uentity.User, address *uentity.Address) *User {
 		User: response.User{
 			ID:         user.ID,
 			Registered: user.Registered,
+			Status:     NewUserStatus(user.Status).Response(),
 			Email:      user.Email(),
 			Address:    NewAddress(address).Response(),
 			CreatedAt:  user.CreatedAt.Unix(),
@@ -71,6 +102,7 @@ func NewUserToList(user *User, order *sentity.AggregatedOrder) *UserToList {
 			ID:             user.ID,
 			Lastname:       user.Lastname,
 			Firstname:      user.Firstname,
+			Email:          user.Email,
 			Registered:     user.Registered,
 			PrefectureCode: user.PrefectureCode,
 			City:           user.City,

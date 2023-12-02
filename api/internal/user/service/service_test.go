@@ -35,6 +35,7 @@ type dbMocks struct {
 	Admin         *mock_database.MockAdmin
 	Administrator *mock_database.MockAdministrator
 	Coordinator   *mock_database.MockCoordinator
+	Guest         *mock_database.MockGuest
 	Member        *mock_database.MockMember
 	Producer      *mock_database.MockProducer
 	User          *mock_database.MockUser
@@ -73,6 +74,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		Admin:         mock_database.NewMockAdmin(ctrl),
 		Administrator: mock_database.NewMockAdministrator(ctrl),
 		Coordinator:   mock_database.NewMockCoordinator(ctrl),
+		Guest:         mock_database.NewMockGuest(ctrl),
 		Member:        mock_database.NewMockMember(ctrl),
 		Producer:      mock_database.NewMockProducer(ctrl),
 		User:          mock_database.NewMockUser(ctrl),
@@ -93,6 +95,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Admin:         mocks.db.Admin,
 			Administrator: mocks.db.Administrator,
 			Coordinator:   mocks.db.Coordinator,
+			Guest:         mocks.db.Guest,
 			Member:        mocks.db.Member,
 			Producer:      mocks.db.Producer,
 			User:          mocks.db.User,

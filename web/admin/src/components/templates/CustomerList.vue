@@ -75,6 +75,13 @@ const headers: VDataTable['headers'] = [
   }
 ]
 
+const getName = (item: UserToList): string => {
+  if (item.lastname || item.firstname) {
+    return `${item.lastname} ${item.firstname}`
+  }
+  return item.email
+}
+
 const getStatus = (registered: boolean): string => {
   return registered ? '有' : '無'
 }
@@ -129,7 +136,7 @@ const onClickRow = (item: UserToList): void => {
         @click:row="(_: any, { item }: any) => onClickRow(item)"
       >
         <template #[`item.name`]="{ item }">
-          {{ `${item.lastname} ${item.firstname}` }}
+          {{ getName(item) }}
         </template>
         <template #[`item.address`]="{ item }">
           {{ getAddress(item) }}

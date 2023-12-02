@@ -27,6 +27,7 @@ type Database struct {
 	Admin         Admin
 	Administrator Administrator
 	Coordinator   Coordinator
+	Guest         Guest
 	Member        Member
 	Producer      Producer
 	User          User
@@ -142,6 +143,10 @@ type UpdateCoordinatorParams struct {
 	AddressLine1      string
 	AddressLine2      string
 	BusinessDays      []time.Weekday
+}
+
+type Guest interface {
+	Delete(ctx context.Context, userID string) error
 }
 
 type Member interface {

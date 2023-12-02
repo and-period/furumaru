@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useCustomerStore } from '~/store'
+import { useCommonStore, useCustomerStore } from '~/store'
 
 const route = useRoute()
 const router = useRouter()
+const commonStore = useCommonStore()
 const customerStore = useCustomerStore()
 const pagination = usePagination()
 const { isShow, alertText, alertType, show } = useAlert('error')
@@ -14,6 +15,7 @@ const customerId = route.params.id as string
 const { customer, orders, totalOrders, totalAmount } = storeToRefs(customerStore)
 
 const loading = ref<boolean>(false)
+const deleteDialog = ref<boolean>(false)
 
 const fetchState = useAsyncData(async () => {
   await fetchCustomerOrders()
@@ -43,6 +45,25 @@ const handleUpdatePage = async (page: number): Promise<void> => {
   await fetchState.refresh()
 }
 
+const handleDelete = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await customerStore.deleteCustomer(customerId)
+    commonStore.addSnackbar({
+      color: 'info',
+      message: '顧客の削除が完了しました。'
+    })
+    router.push('/customers')
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
 const handleClickRow = (orderId: string) => {
   router.push(`/orders/${orderId}`)
 }
@@ -56,7 +77,8 @@ try {
 </script>
 
 <template>
-  <templates-customer-edit
+  <templates-customer-show
+    v-model:delete-dialog="deleteDialog"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -68,5 +90,6 @@ try {
     @click:row="handleClickRow"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+    @submit:delete="handleDelete"
   />
 </template>
