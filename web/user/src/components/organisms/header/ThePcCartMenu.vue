@@ -70,7 +70,7 @@ const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
           class="w-full bg-main py-1 text-white"
           @click="handleClickBuyButton"
         >
-          ログインして購入
+          買い物カゴを見る
         </button>
 
         <div class="border border-orange p-3 text-sm text-orange">

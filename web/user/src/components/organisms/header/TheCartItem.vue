@@ -100,7 +100,7 @@ const handleClickRemoveButton = (id: string) => {
       </div>
 
       <button class="w-full bg-main py-1 text-white" @click="handleClick">
-        ログインして購入
+        買い物カゴを見る
       </button>
     </div>
   </div>

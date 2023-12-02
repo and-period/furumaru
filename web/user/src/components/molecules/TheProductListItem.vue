@@ -40,7 +40,7 @@ const handleClickAddCartButton = () => {
 </script>
 
 <template>
-  <div class="text-main">
+  <div class="flex flex-col text-main">
     <div class="relative">
       <div
         v-if="!hasStock"
@@ -62,7 +62,7 @@ const handleClickAddCartButton = () => {
     </div>
 
     <p
-      class="mt-2 text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
+      class="mt-2 grow text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
     >
       {{ name }}
     </p>
@@ -76,12 +76,13 @@ const handleClickAddCartButton = () => {
     <div class="flex h-6 items-center gap-2 text-[10px]">
       <div class="inline-flex h-full items-center">
         <label
-          class="mr-2 block whitespace-nowrap text-center text-[10px] md:text-[14px]"
-          >数量</label
+          class="mr-2 block whitespace-nowrap text-center text-[8px] md:text-[14px]"
         >
+          数量
+        </label>
         <select
           v-model="quantity"
-          class="h-full border-[1px] border-main px-2"
+          class="h-full border-[1px] border-main px-1"
           :disabled="!hasStock"
         >
           <option
@@ -100,7 +101,7 @@ const handleClickAddCartButton = () => {
         class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white lg:px-4 lg:text-[14px]"
         @click="handleClickAddCartButton"
       >
-        <the-cart-icon id="add-cart-icon" class="mr-1 h-3 w-3 lg:h-4 lg:w-4" />
+        <the-cart-icon id="add-cart-icon" class="mr-1 h-2 w-2 lg:h-4 lg:w-4" />
         カゴに入れる
       </button>
     </div>

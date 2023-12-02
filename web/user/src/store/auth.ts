@@ -1,6 +1,11 @@
 // docs: https://pinia.vuejs.org/core-concepts/#option-stores
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { CreateAuthRequest, SignInRequest } from '~/types/api'
+import {
+  AuthUserResponse,
+  CreateAuthRequest,
+  SignInRequest,
+  VerifyAuthRequest,
+} from '~/types/api'
 
 /**
  * 認証情報を管理するグローバルステート
@@ -29,8 +34,23 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async signUp(payload: CreateAuthRequest) {
-      await this.authApiClient().v1CreateAuth({ body: payload })
+    async signUp(payload: CreateAuthRequest): Promise<AuthUserResponse> {
+      try {
+        const res = await this.authApiClient().v1CreateAuth({ body: payload })
+        return res
+      } catch (error) {
+        return this.errorHandler(error, {
+          409: '指定したメールアドレスはご利用できません。',
+        })
+      }
+    },
+
+    async verifyAuth(payload: VerifyAuthRequest) {
+      try {
+        await this.authApiClient().v1VerifyAuth({ body: payload })
+      } catch (error) {
+        return this.errorHandler(error)
+      }
     },
   },
 })

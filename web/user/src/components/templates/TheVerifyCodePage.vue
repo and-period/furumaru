@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 interface Props {
   pageName: string
+  errorMessage: string
   code: string
   buttonText: string
   message: string
@@ -32,6 +33,10 @@ const handleSubmit = () => {
         {{ pageName }}
       </the-card-title>
       <the-card-content>
+        <the-alert v-show="errorMessage" class="mb-2">
+          {{ errorMessage }}
+        </the-alert>
+
         <the-stack>
           <p>{{ message }}</p>
           <the-verify-code-form

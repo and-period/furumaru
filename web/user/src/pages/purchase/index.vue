@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { useAuthStore } from '~/store/auth'
 import { useShoppingCartStore } from '~/store/shopping'
 const router = useRouter()
 
@@ -7,8 +8,15 @@ const shoppingCartStore = useShoppingCartStore()
 const { removeProductFromCart } = shoppingCartStore
 const { shoppingCart } = storeToRefs(shoppingCartStore)
 
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
+
 const handleClickBuyButton = () => {
-  router.push('/v1/purchase/address')
+  if (isAuthenticated.value) {
+    router.push('/v1/purchase/address')
+  } else {
+    router.push('/v1/purchase/auth?required=true')
+  }
 }
 
 const handelClickRemoveItemFromCartButton = (

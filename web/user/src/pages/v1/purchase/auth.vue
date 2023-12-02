@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { useAuthStore } from '~/store/auth'
 import { SignInRequest } from '~/types/api'
+
+const authStore = useAuthStore()
+const { signIn } = authStore
 
 const router = useRouter()
 const route = useRoute()
@@ -13,14 +17,32 @@ const loginRequired = computed<boolean>(() => {
   }
 })
 
+const fromNewAccounet = computed<boolean>(() => {
+  const fromNewAccounetParam = route.query.from_new_accounet
+  if (fromNewAccounetParam) {
+    return Boolean(fromNewAccounetParam)
+  } else {
+    return false
+  }
+})
+
 const formData = ref<SignInRequest>({
   username: '',
   password: '',
 })
 
 const handleClickNewAccountButton = () => {
-  router.push('/signup')
+  router.push('/signup?redirect_to_purchase=true')
 }
+
+const handleSubmitSignForm = async () => {
+  await signIn(formData.value)
+  router.push('/v1/purchase/address')
+}
+
+useSeoMeta({
+  title: 'ログイン',
+})
 </script>
 
 <template>
@@ -32,8 +54,16 @@ const handleClickNewAccountButton = () => {
     </the-alert>
   </div>
 
+  <div v-if="fromNewAccounet" class="px-4">
+    <the-alert
+      class="mx-auto my-4 w-full bg-white p-4 lg:w-[768px] xl:w-[1024px]"
+    >
+      作成したアカウントでログインをしましょう
+    </the-alert>
+  </div>
+
   <div
-    class="mt-[40px] flex flex-col gap-10 px-4 md:grid md:grid-cols-2 md:gap-0 md:px-0"
+    class="container mx-auto mt-[40px] flex flex-col gap-10 px-4 md:grid md:grid-cols-2 md:gap-0 md:px-0"
   >
     <div
       class="w-full bg-white px-4 py-[40px] tracking-[1.6px] text-main md:mx-auto md:w-[360px] md:px-[40px] lg:w-[480px] xl:w-[560px] xl:px-[80px]"
@@ -48,6 +78,7 @@ const handleClickNewAccountButton = () => {
         password-label="パスワード"
         password-placeholder="パスワード"
         username-placeholder="メールアドレス"
+        @submit="handleSubmitSignForm"
       />
       <div class="mt-[24px] text-center text-[14px] underline">
         パスワードをお忘れの方はこちら

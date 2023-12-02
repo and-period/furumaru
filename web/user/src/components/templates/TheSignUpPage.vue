@@ -4,6 +4,7 @@ import { LinkItem } from '~/types/props'
 
 interface Props {
   pageName: string
+  errorMessage: string
   buttonText: string
   modelValue: CreateAuthRequest
   telLabel: string
@@ -47,6 +48,10 @@ const handleSubmit = () => {
         {{ pageName }}
       </the-card-title>
       <the-card-content>
+        <the-alert v-show="errorMessage" class="mb-2">
+          {{ errorMessage }}
+        </the-alert>
+
         <the-stack>
           <the-sign-up-form
             v-model="formData"
