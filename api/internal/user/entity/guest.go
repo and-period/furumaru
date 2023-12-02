@@ -1,14 +1,19 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // Guest - ゲスト情報
 type Guest struct {
-	UserID      string    `gorm:"primaryKey;<-:create"` // ユーザーID
-	Email       string    `gorm:""`                     // メールアドレス
-	PhoneNumber string    `gorm:""`                     // 電話番号
-	CreatedAt   time.Time `gorm:"<-:create"`            // 登録日時
-	UpdatedAt   time.Time `gorm:""`                     // 更新日時
+	UserID      string         `gorm:"primaryKey;<-:create"` // ユーザーID
+	Email       string         `gorm:""`                     // メールアドレス
+	PhoneNumber string         `gorm:""`                     // 電話番号
+	CreatedAt   time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt   time.Time      `gorm:""`                     // 更新日時
+	DeletedAt   gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 
 type Guests []*Guest

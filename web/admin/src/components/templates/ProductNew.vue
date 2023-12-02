@@ -640,7 +640,7 @@ const onSubmit = async (): Promise<void> => {
             clearable
             @update:search="onChangeSearchProductType"
           />
-          <v-select
+          <v-autocomplete
             v-model="formDataValidate.originPrefectureCode.$model"
             :error-messages="getErrorMessage(formDataValidate.originPrefectureCode.$errors)"
             label="原産地（都道府県）"
@@ -648,7 +648,7 @@ const onSubmit = async (): Promise<void> => {
             item-title="text"
             item-value="value"
           />
-          <v-select
+          <v-autocomplete
             v-model="formDataValidate.originCity.$model"
             :error-messages="getErrorMessage(formDataValidate.originCity.$errors)"
             :items="cityListItems"

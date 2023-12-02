@@ -705,16 +705,17 @@ func TestMember_Delete(t *testing.T) {
 
 func testMember(id, email, phoneNumber string, now time.Time) *entity.Member {
 	return &entity.Member{
-		UserID:       id,
-		AccountID:    id,
-		CognitoID:    id,
-		Username:     id,
-		ProviderType: entity.ProviderTypeEmail,
-		Email:        email,
-		PhoneNumber:  phoneNumber,
-		ThumbnailURL: "https://and-period.jp/thumbnail.png",
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		VerifiedAt:   now,
+		UserID:        id,
+		AccountID:     id,
+		CognitoID:     id,
+		Username:      id,
+		ProviderType:  entity.ProviderTypeEmail,
+		Email:         email,
+		PhoneNumber:   phoneNumber,
+		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		CreatedAt:     now,
+		UpdatedAt:     now,
+		VerifiedAt:    now,
+		InitializedAt: now,
 	}
 }

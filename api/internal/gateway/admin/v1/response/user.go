@@ -5,6 +5,7 @@ type User struct {
 	ID         string `json:"id"`         // 購入者ID
 	Registered bool   `json:"registered"` // 会員登録フラグ
 	Email      string `json:"email"`      // メールアドレス
+	Status     int32  `json:"status"`     // 購入者ステータス
 	CreatedAt  int64  `json:"createdAt"`  // 登録日時
 	UpdatedAt  int64  `json:"updateAt"`   // 更新日時
 	*Address          // デフォルト設定の住所情報
@@ -15,6 +16,7 @@ type UserToList struct {
 	ID             string `json:"id"`             // 購入者ID
 	Lastname       string `json:"lastname"`       // 姓
 	Firstname      string `json:"firstname"`      // 名
+	Email          string `json:"email"`          // メールアドレス
 	Registered     bool   `json:"registered"`     // 会員登録フラグ
 	PrefectureCode int32  `json:"prefectureCode"` // 都道府県
 	City           string `json:"city"`           // 市区町村

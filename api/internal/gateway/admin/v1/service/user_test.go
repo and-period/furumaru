@@ -11,6 +11,56 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestUserStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		status   entity.UserStatus
+		expect   UserStatus
+		response int32
+	}{
+		{
+			name:     "guest",
+			status:   entity.UserStatusGuest,
+			expect:   UserStatusGuest,
+			response: 1,
+		},
+		{
+			name:     "provisional",
+			status:   entity.UserStatusProvisional,
+			expect:   UserStatusProvisional,
+			response: 2,
+		},
+		{
+			name:     "verified",
+			status:   entity.UserStatusVerified,
+			expect:   UserStatusVerified,
+			response: 3,
+		},
+		{
+			name:     "activated",
+			status:   entity.UserStatusActivated,
+			expect:   UserStatusActivated,
+			response: 4,
+		},
+		{
+			name:     "unknown",
+			status:   entity.UserStatusUnknown,
+			expect:   UserStatusUnknown,
+			response: 0,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewUserStatus(tt.status)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.response, actual.Response())
+		})
+	}
+}
+
 func TestUser(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -24,18 +74,20 @@ func TestUser(t *testing.T) {
 			user: &entity.User{
 				ID:         "user-id",
 				Registered: true,
+				Status:     entity.UserStatusActivated,
 				Member: uentity.Member{
-					UserID:       "user-id",
-					AccountID:    "account-id",
-					CognitoID:    "cognito-id",
-					Username:     "username",
-					ProviderType: uentity.ProviderTypeEmail,
-					Email:        "test-user@and-period.jp",
-					PhoneNumber:  "+819012345678",
-					ThumbnailURL: "https://and-period.jp/thumbnail.png",
-					CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UserID:        "user-id",
+					AccountID:     "account-id",
+					CognitoID:     "cognito-id",
+					Username:      "username",
+					ProviderType:  uentity.ProviderTypeEmail,
+					Email:         "test-user@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					VerifiedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					InitializedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -62,6 +114,7 @@ func TestUser(t *testing.T) {
 					ID:         "user-id",
 					Registered: true,
 					Email:      "test-user@and-period.jp",
+					Status:     int32(UserStatusActivated),
 					CreatedAt:  1640962800,
 					UpdatedAt:  1640962800,
 					Address: &response.Address{
@@ -82,6 +135,7 @@ func TestUser(t *testing.T) {
 			user: &entity.User{
 				ID:         "user-id",
 				Registered: false,
+				Status:     entity.UserStatusGuest,
 				Guest: uentity.Guest{
 					UserID:      "user-id",
 					Email:       "test-user@and-period.jp",
@@ -113,6 +167,7 @@ func TestUser(t *testing.T) {
 				User: response.User{
 					ID:         "user-id",
 					Registered: false,
+					Status:     int32(UserStatusGuest),
 					Email:      "test-user@and-period.jp",
 					CreatedAt:  1640962800,
 					UpdatedAt:  1640962800,
@@ -152,6 +207,7 @@ func TestUser_Response(t *testing.T) {
 				User: response.User{
 					ID:         "user-id",
 					Registered: true,
+					Status:     UserStatusActivated.Response(),
 					Email:      "test-user@and-period.jp",
 					CreatedAt:  1640962800,
 					UpdatedAt:  1640962800,
@@ -170,6 +226,7 @@ func TestUser_Response(t *testing.T) {
 			expect: &response.User{
 				ID:         "user-id",
 				Registered: true,
+				Status:     UserStatusActivated.Response(),
 				Email:      "test-user@and-period.jp",
 				CreatedAt:  1640962800,
 				UpdatedAt:  1640962800,
@@ -209,18 +266,20 @@ func TestUsers(t *testing.T) {
 				{
 					ID:         "user-id",
 					Registered: true,
+					Status:     entity.UserStatusActivated,
 					Member: uentity.Member{
-						UserID:       "user-id",
-						AccountID:    "account-id",
-						CognitoID:    "cognito-id",
-						Username:     "username",
-						ProviderType: uentity.ProviderTypeEmail,
-						Email:        "test-user@and-period.jp",
-						PhoneNumber:  "+819012345678",
-						ThumbnailURL: "https://and-period.jp/thumbnail.png",
-						CreatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-						UpdatedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
-						VerifiedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						UserID:        "user-id",
+						AccountID:     "account-id",
+						CognitoID:     "cognito-id",
+						Username:      "username",
+						ProviderType:  uentity.ProviderTypeEmail,
+						Email:         "test-user@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+						CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						VerifiedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						InitializedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					},
 					CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -250,6 +309,7 @@ func TestUsers(t *testing.T) {
 					User: response.User{
 						ID:         "user-id",
 						Registered: true,
+						Status:     int32(UserStatusActivated),
 						Email:      "test-user@and-period.jp",
 						CreatedAt:  1640962800,
 						UpdatedAt:  1640962800,
@@ -353,6 +413,7 @@ func TestUsers_Response(t *testing.T) {
 					User: response.User{
 						ID:         "user-id",
 						Registered: false,
+						Status:     int32(UserStatusGuest),
 						Email:      "test-user@and-period.jp",
 						CreatedAt:  1640962800,
 						UpdatedAt:  1640962800,
@@ -373,6 +434,7 @@ func TestUsers_Response(t *testing.T) {
 				{
 					ID:         "user-id",
 					Registered: false,
+					Status:     int32(UserStatusGuest),
 					Email:      "test-user@and-period.jp",
 					CreatedAt:  1640962800,
 					UpdatedAt:  1640962800,
@@ -439,6 +501,7 @@ func TestUserToList(t *testing.T) {
 					ID:             "user-id",
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					Email:          "test-user@and-period.jp",
 					Registered:     true,
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -474,6 +537,7 @@ func TestUserToList(t *testing.T) {
 					ID:             "user-id",
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					Email:          "test-user@and-period.jp",
 					Registered:     false,
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -506,6 +570,7 @@ func TestUserToList_Response(t *testing.T) {
 					ID:             "user-id",
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					Email:          "test-user@and-period.jp",
 					Registered:     true,
 					PrefectureCode: 13,
 					City:           "千代田区",
@@ -517,6 +582,7 @@ func TestUserToList_Response(t *testing.T) {
 				ID:             "user-id",
 				Lastname:       "&.",
 				Firstname:      "購入者",
+				Email:          "test-user@and-period.jp",
 				Registered:     true,
 				PrefectureCode: 13,
 				City:           "千代田区",
@@ -579,6 +645,7 @@ func TestUsersToList(t *testing.T) {
 						ID:             "user-id",
 						Lastname:       "&.",
 						Firstname:      "購入者",
+						Email:          "test-user@and-period.jp",
 						Registered:     false,
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -613,6 +680,7 @@ func TestUsersToList_Response(t *testing.T) {
 						ID:             "user-id",
 						Lastname:       "&.",
 						Firstname:      "購入者",
+						Email:          "test-user@and-period.jp",
 						Registered:     true,
 						PrefectureCode: 13,
 						City:           "千代田区",
@@ -626,6 +694,7 @@ func TestUsersToList_Response(t *testing.T) {
 					ID:             "user-id",
 					Lastname:       "&.",
 					Firstname:      "購入者",
+					Email:          "test-user@and-period.jp",
 					Registered:     true,
 					PrefectureCode: 13,
 					City:           "千代田区",

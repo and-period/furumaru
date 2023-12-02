@@ -22,6 +22,7 @@ func (h *handler) userRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListUsers)
 	r.GET("/:userId", h.GetUser)
+	r.DELETE("/:userId", h.DeleteUser)
 	r.GET("/:userId/orders", h.ListUserOrders)
 }
 
@@ -105,6 +106,17 @@ func (h *handler) GetUser(ctx *gin.Context) {
 		User: user.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) DeleteUser(ctx *gin.Context) {
+	in := &user.DeleteUserInput{
+		UserID: util.GetParam(ctx, "userId"),
+	}
+	if err := h.user.DeleteUser(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) ListUserOrders(ctx *gin.Context) {

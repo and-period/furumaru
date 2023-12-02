@@ -758,6 +758,126 @@ func TestProduct_UpdateMedia(t *testing.T) {
 	}
 }
 
+func TestProduct_DescreaseInventory(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	category := testCategory("category-id", "野菜", now())
+	err = db.DB.Create(&category).Error
+	require.NoError(t, err)
+	productType := testProductType("type-id", "category-id", "野菜", now())
+	err = db.DB.Create(&productType).Error
+	require.NoError(t, err)
+	productTag := testProductTag("tag-id", "贈答品", now())
+	err = db.DB.Create(&productTag).Error
+	require.NoError(t, err)
+
+	type args struct {
+		revisionID int64
+		quantity   int64
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"product-id"}, 1, now())
+				err = db.DB.Create(&product).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&product.ProductRevision).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				revisionID: 1,
+				quantity:   2,
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				revisionID: 1,
+				quantity:   2,
+			},
+			want: want{
+				err: database.ErrNotFound,
+			},
+		},
+		{
+			name: "already empty",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"product-id"}, 1, now())
+				err = db.DB.Create(&product).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&product.ProductRevision).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				revisionID: 1,
+				quantity:   2,
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name: "less then 0",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"product-id"}, 1, now())
+				product.Inventory = 1
+				err = db.DB.Create(&product).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&product.ProductRevision).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				revisionID: 1,
+				quantity:   2,
+			},
+			want: want{
+				err: nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, productRevisionTable, productTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &product{db: db, now: now}
+			err = db.DecreaseInventory(ctx, tt.args.revisionID, tt.args.quantity)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
 func TestProduct_Delete(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

@@ -524,6 +524,20 @@ func (mr *MockProductMockRecorder) Create(ctx, product interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockProduct)(nil).Create), ctx, product)
 }
 
+// DecreaseInventory mocks base method.
+func (m *MockProduct) DecreaseInventory(ctx context.Context, revisionID, quantity int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DecreaseInventory", ctx, revisionID, quantity)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DecreaseInventory indicates an expected call of DecreaseInventory.
+func (mr *MockProductMockRecorder) DecreaseInventory(ctx, revisionID, quantity interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DecreaseInventory", reflect.TypeOf((*MockProduct)(nil).DecreaseInventory), ctx, revisionID, quantity)
+}
+
 // Delete mocks base method.
 func (m *MockProduct) Delete(ctx context.Context, productID string) error {
 	m.ctrl.T.Helper()
