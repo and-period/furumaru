@@ -51,6 +51,10 @@ const handleClickNextStepButton = async () => {
   await registerAddress(formData.value)
   router.push('/v1/purchase/confirmation')
 }
+
+useSeoMeta({
+  title: 'ご購入手続き',
+})
 </script>
 
 <template>
