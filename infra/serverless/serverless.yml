@@ -64,6 +64,7 @@ resources:
                     - mediaStore:PutContainerPolicy
                     - mediaStore:PutCorsPolicy
                     - mediaStore:PutLifecyclePolicy
+                    - mediastore:DeleteContainer
                     - cloudfront:CreateOriginAccessControl
                     - cloudFront:CreateDistribution
                     - cloudFront:GetDistribution
@@ -813,7 +814,7 @@ stepFunctions:
             InputPath: $
             Resource: arn:aws:states:::aws-sdk:mediastore:deleteContainer
             Parameters:
-              ContainerName.$: $.ContainerName
+              ContainerName.$: $.ExtractContainerNameResult.ContainerName
             Next: Finish
           Finish:
             Type: Pass
