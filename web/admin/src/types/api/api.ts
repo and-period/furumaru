@@ -2601,6 +2601,12 @@ export interface Order {
      * @memberof Order
      */
     'updatedAt': number;
+    /**
+     * 完了日時 (unixtime)
+     * @type {number}
+     * @memberof Order
+     */
+    'completedAt': number;
 }
 
 
@@ -11728,7 +11734,7 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 

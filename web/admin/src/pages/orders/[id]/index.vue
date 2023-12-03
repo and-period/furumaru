@@ -3,6 +3,8 @@ import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
 import { useCoordinatorStore, useCustomerStore, useOrderStore, useProductStore, usePromotionStore } from '~/store'
+import type { DraftOrderRequest, CompleteOrderRequest, RefundOrderRequest, UpdateOrderFulfillmentRequest, OrderFulfillment } from '~/types/api'
+import type { FulfillmentInput } from '~/types/props'
 
 const route = useRoute()
 const orderStore = useOrderStore()
@@ -21,6 +23,14 @@ const { promotions } = storeToRefs(promotionStore)
 const { products } = storeToRefs(productStore)
 
 const loading = ref<boolean>(false)
+const refundDialog = ref<boolean>(false)
+const completeFormData = ref<CompleteOrderRequest>({
+  shippingMessage: ''
+})
+const refundFormData = ref<RefundOrderRequest>({
+  description: ''
+})
+const fulfillmentsFormData = ref<FulfillmentInput[]>([])
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   await fetchOrder()
@@ -29,6 +39,18 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 const fetchOrder = async (): Promise<void> => {
   try {
     await orderStore.getOrder(orderId)
+    const inputs = order.value.fulfillments.map((fulfillment: OrderFulfillment): FulfillmentInput => ({
+      fulfillmentId: fulfillment.fulfillmentId,
+      shippingCarrier: fulfillment.shippingCarrier,
+      trackingNumber: fulfillment.trackingNumber
+    }))
+    completeFormData.value = {
+      shippingMessage: order.value.shippingMessage
+    }
+    refundFormData.value = {
+      description: order.value.refund?.reason || ''
+    }
+    fulfillmentsFormData.value = inputs
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -41,6 +63,105 @@ const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
 }
 
+const handleSubmitCapture = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await orderStore.captureOrder(orderId)
+    fetchState.refresh()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitDraft = async (): Promise<void> => {
+  try {
+    loading.value = true
+    const req: DraftOrderRequest = { ...completeFormData.value }
+    await orderStore.draftOrder(orderId, req)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitComplete = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await orderStore.completeOrder(orderId, completeFormData.value)
+    fetchState.refresh()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitCancel = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await orderStore.cancelOrder(orderId)
+    fetchState.refresh()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitRefund = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await orderStore.refundOrder(orderId, refundFormData.value)
+    refundDialog.value = false
+    fetchState.refresh()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<void> => {
+  const payload = fulfillmentsFormData.value.find((formData: FulfillmentInput): boolean => {
+    return formData.fulfillmentId === fulfillmentId
+  })
+  if (!payload) {
+    return
+  }
+
+  try {
+    loading.value = true
+    const req: UpdateOrderFulfillmentRequest = { ...payload }
+    await orderStore.updateFulfillment(orderId, fulfillmentId, req)
+    fetchState.refresh()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
 try {
   await fetchState.execute()
 } catch (err) {
@@ -50,6 +171,10 @@ try {
 
 <template>
   <templates-order-show
+    v-model:complete-form-data="completeFormData"
+    v-model:refund-form-data="refundFormData"
+    v-model:fulfillments-form-data="fulfillmentsFormData"
+    v-model:refund-dialog="refundDialog"
     :loading="isLoading()"
     :is-alert="isShow"
     :alert-type="alertType"
@@ -59,5 +184,11 @@ try {
     :customer="customer"
     :promotions="promotions"
     :products="products"
+    @submit:capture="handleSubmitCapture"
+    @submit:draft="handleSubmitDraft"
+    @submit:complete="handleSubmitComplete"
+    @submit:update-fulfillment="handleSubmitUpdateFulfillment"
+    @submit:cancel="handleSubmitCancel"
+    @submit:refund="handleSubmitRefund"
   />
 </template>
