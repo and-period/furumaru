@@ -23,6 +23,7 @@ export const useAuthStore = defineStore('auth', {
       isAuthenticated: false,
       accessToken: '',
       refreshToken: '',
+      user: undefined as AuthUserResponse | undefined,
     }
   },
 
@@ -38,6 +39,7 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
         this.accessToken = res.accessToken
         this.refreshToken = res.refreshToken
+        await this.fetchUserInfo()
       } catch (error) {
         return this.errorHandler(error, {
           401: this.i18n.t('auth.signIn.authErrorMessage'),
@@ -62,6 +64,11 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         return this.errorHandler(error)
       }
+    },
+
+    async fetchUserInfo() {
+      const res = await this.authApiClient(this.accessToken).v1GetAuthUser()
+      this.user = res
     },
   },
 })

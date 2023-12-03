@@ -28,7 +28,11 @@ export const useAdressStore = defineStore('address', {
     },
 
     async registerAddress(payload: CreateAddressRequest) {
-      await this.addressApiClient().v1CreateAddress({ body: payload })
+      const authStore = useAuthStore()
+
+      await this.addressApiClient(authStore.accessToken).v1CreateAddress({
+        body: payload,
+      })
     },
 
     async fetchAddresses(limit: number = 20, offset: number = 0) {
