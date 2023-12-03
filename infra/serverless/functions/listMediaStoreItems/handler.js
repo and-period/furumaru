@@ -9,7 +9,6 @@ exports.listMediaStoreItems = async (event) => {
   });
   const input = {
     Path: '/',
-    MaxResults: Number(1),
   };
   const command = new ListItemsCommand(input);
   const response = await client.send(command);
