@@ -27,12 +27,16 @@ export const useAdressStore = defineStore('address', {
       return res
     },
 
-    async registerAddress(payload: CreateAddressRequest) {
+    async registerAddress(payload: CreateAddressRequest): Promise<Address> {
       const authStore = useAuthStore()
 
-      await this.addressApiClient(authStore.accessToken).v1CreateAddress({
+      const res = await this.addressApiClient(
+        authStore.accessToken,
+      ).v1CreateAddress({
         body: payload,
       })
+
+      return res.address
     },
 
     async fetchAddresses(limit: number = 20, offset: number = 0) {
@@ -48,6 +52,12 @@ export const useAdressStore = defineStore('address', {
       this.addresses = res.addresses
       this.total = res.total
       this.addressesFetchState.isLoading = false
+    },
+  },
+
+  getters: {
+    defaultAddress(): Address | undefined {
+      return this.addresses.find((address) => address.isDefault)
     },
   },
 })
