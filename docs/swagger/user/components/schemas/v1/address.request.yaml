@@ -16,7 +16,7 @@ createAddressRequest:
     postalCode:
       type: string
       description: 郵便番号(ハイフンなし)
-    prefecture:
+    prefectureCode:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     city:
       type: string
@@ -39,7 +39,7 @@ createAddressRequest:
   - lastnameKana
   - firstnameKana
   - postalCode
-  - prefecture
+  - prefectureCode
   - city
   - addressLine1
   - addressLine2
@@ -75,7 +75,7 @@ updateAddressRequest:
     postalCode:
       type: string
       description: 郵便番号(ハイフンなし)
-    prefecture:
+    prefectureCode:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
     city:
       type: string
@@ -98,7 +98,7 @@ updateAddressRequest:
   - lastnameKana
   - firstnameKana
   - postalCode
-  - prefecture
+  - prefectureCode
   - city
   - addressLine1
   - addressLine2
