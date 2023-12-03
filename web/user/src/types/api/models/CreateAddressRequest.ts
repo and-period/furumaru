@@ -61,7 +61,7 @@ export interface CreateAddressRequest {
      * @type {Prefecture}
      * @memberof CreateAddressRequest
      */
-    prefecture: Prefecture;
+    prefectureCode: Prefecture;
     /**
      * 市区町村(32文字まで)
      * @type {string}
@@ -104,7 +104,7 @@ export function instanceOfCreateAddressRequest(value: object): boolean {
     isInstance = isInstance && "lastnameKana" in value;
     isInstance = isInstance && "firstnameKana" in value;
     isInstance = isInstance && "postalCode" in value;
-    isInstance = isInstance && "prefecture" in value;
+    isInstance = isInstance && "prefectureCode" in value;
     isInstance = isInstance && "city" in value;
     isInstance = isInstance && "addressLine1" in value;
     isInstance = isInstance && "addressLine2" in value;
@@ -129,7 +129,7 @@ export function CreateAddressRequestFromJSONTyped(json: any, ignoreDiscriminator
         'lastnameKana': json['lastnameKana'],
         'firstnameKana': json['firstnameKana'],
         'postalCode': json['postalCode'],
-        'prefecture': PrefectureFromJSON(json['prefecture']),
+        'prefectureCode': PrefectureFromJSON(json['prefectureCode']),
         'city': json['city'],
         'addressLine1': json['addressLine1'],
         'addressLine2': json['addressLine2'],
@@ -152,7 +152,7 @@ export function CreateAddressRequestToJSON(value?: CreateAddressRequest | null):
         'lastnameKana': value.lastnameKana,
         'firstnameKana': value.firstnameKana,
         'postalCode': value.postalCode,
-        'prefecture': PrefectureToJSON(value.prefecture),
+        'prefectureCode': PrefectureToJSON(value.prefectureCode),
         'city': value.city,
         'addressLine1': value.addressLine1,
         'addressLine2': value.addressLine2,
