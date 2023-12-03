@@ -642,7 +642,7 @@ stepFunctions:
                     Parameters:
                       StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteCloudFrontResoursesFunction-${self:provider.stage}
                       Input:
-                        DistributionId.$: $.CloudFrontDistributionId
+                        DistributionId.$: $.CloudFrontDistributionArn
                         AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
                     End: true
               - StartAt: deleteMediaStoreResources
@@ -740,8 +740,15 @@ stepFunctions:
       role:
         Fn::GetAtt: [defaultRole, Arn]
       definition:
-        StartAt: GetDistributionConfig
+        StartAt: ExtractDistributionId
         States:
+          ExtractDistributionId:
+            Type: Pass
+            InputPath: $
+            ResultPath: $.DistributionId
+            Parameters:
+              DistributionId.$: States.ArrayGetItem(States.StringSplit($.CloudFrontDistributionArn, '/'), 1)
+            Next: GetDistributionConfig
           GetDistributionConfig:
             Type: Task
             Comment: CloudFrontのディストリビューション設定を取得
