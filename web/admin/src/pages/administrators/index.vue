@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAdministratorStore } from '~/store'
+import { useAdministratorStore, useCommonStore } from '~/store'
 
 const router = useRouter()
 const commonStore = useCommonStore()
