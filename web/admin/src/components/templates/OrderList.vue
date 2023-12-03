@@ -6,7 +6,7 @@ import { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import {
   FulfillmentStatus,
-  PaymentStatus,
+  OrderStatus,
   ShippingType,
   type Coordinator,
   type Order,
@@ -160,27 +160,23 @@ const getCustomerName = (userId: string): string => {
   return customer ? `${customer.lastname} ${customer.firstname}` : ''
 }
 
-const isFulfilled = (fulfillments: OrderFulfillment[]): boolean => {
-  let fulfilled: boolean = true
-  fulfillments.forEach((fulfillment): void => {
-    if (fulfillment.status !== FulfillmentStatus.FULFILLED) {
-      fulfilled = false
-    }
-  })
-  return fulfilled
-}
-
 const getStatus = (order: Order): string => {
-  switch (order.payment.status) {
-    case PaymentStatus.UNPAID:
-      return '受注前'
-    case PaymentStatus.AUTHORIZED:
+  switch (order.status) {
+    case OrderStatus.UNPAID:
+      return '支払い待ち'
+    case OrderStatus.WAITING:
+      return '受注待ち'
+    case OrderStatus.PREPARING:
       return '発送準備中'
-    case PaymentStatus.PAID:
-      return isFulfilled(order.fulfillments) ? '発送中' : '発送準備中'
-    case PaymentStatus.CANCELED:
+    case OrderStatus.SHIPPED:
+      return '発送完了'
+    case OrderStatus.COMPLETED:
+      return '完了'
+    case OrderStatus.CANCELED:
       return 'キャンセル'
-    case PaymentStatus.FAILED:
+    case OrderStatus.REFUNDED:
+      return '返金'
+    case OrderStatus.FAILED:
       return '失敗'
     default:
       return '不明'
@@ -188,16 +184,22 @@ const getStatus = (order: Order): string => {
 }
 
 const getStatusColor = (order: Order): string => {
-  switch (order.payment.status) {
-    case PaymentStatus.UNPAID:
+  switch (order.status) {
+    case OrderStatus.UNPAID:
       return 'secondary'
-    case PaymentStatus.AUTHORIZED:
+    case OrderStatus.WAITING:
+      return 'secondary'
+    case OrderStatus.PREPARING:
       return 'info'
-    case PaymentStatus.PAID:
-      return isFulfilled(order.fulfillments) ? 'primary' : 'info'
-    case PaymentStatus.CANCELED:
+    case OrderStatus.SHIPPED:
+      return 'info'
+    case OrderStatus.COMPLETED:
+      return 'primary'
+    case OrderStatus.CANCELED:
       return 'warning'
-    case PaymentStatus.FAILED:
+    case OrderStatus.REFUNDED:
+      return 'warning'
+    case OrderStatus.FAILED:
       return 'error'
     default:
       return 'unknown'
@@ -227,6 +229,16 @@ const getShippingTypes = (fulfillments: OrderFulfillment[]): string => {
     return getShippingType(type)
   })
   return res.join('\n')
+}
+
+const getTrackingNumbers = (fulfillments: OrderFulfillment[]): string => {
+  const numbers: string[] = []
+  fulfillments.forEach((fulfillment: OrderFulfillment): void => {
+    if (fulfillment.trackingNumber !== '') {
+      numbers.push(fulfillment.trackingNumber)
+    }
+  })
+  return numbers.join('\n')
 }
 
 const getOrderedAt = (orderedAt: number): string => {
@@ -368,6 +380,9 @@ const onSubmitExport = (): void => {
         </template>
         <template #[`item.shippingTypes`]="{ item }">
           {{ getShippingTypes(item.fulfillments) }}
+        </template>
+        <template #[`item.trackingNumbers`]="{ item }">
+          {{ getTrackingNumbers(item.fulfillments) }}
         </template>
       </v-data-table-server>
     </v-card-text>
