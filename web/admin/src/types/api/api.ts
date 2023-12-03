@@ -4354,6 +4354,19 @@ export interface RefreshAuthTokenRequest {
 /**
  * 
  * @export
+ * @interface RefundOrderRequest
+ */
+export interface RefundOrderRequest {
+    /**
+     * 返金理由詳細
+     * @type {string}
+     * @memberof RefundOrderRequest
+     */
+    'description': string;
+}
+/**
+ * 
+ * @export
  * @interface RegisterAuthDeviceRequest
  */
 export interface RegisterAuthDeviceRequest {
@@ -11649,12 +11662,15 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
          * 
          * @summary 注文の返金依頼
          * @param {string} orderId 注文ID
+         * @param {RefundOrderRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1RefundOrder: async (orderId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1RefundOrder: async (orderId: string, body: RefundOrderRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orderId' is not null or undefined
             assertParamExists('v1RefundOrder', 'orderId', orderId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1RefundOrder', 'body', body)
             const localVarPath = `/v1/orders/{orderId}/refund`
                 .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -11674,9 +11690,12 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
 
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -11815,11 +11834,12 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * 
          * @summary 注文の返金依頼
          * @param {string} orderId 注文ID
+         * @param {RefundOrderRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1RefundOrder(orderId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1RefundOrder(orderId, options);
+        async v1RefundOrder(orderId: string, body: RefundOrderRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1RefundOrder(orderId, body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -11913,11 +11933,12 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * 
          * @summary 注文の返金依頼
          * @param {string} orderId 注文ID
+         * @param {RefundOrderRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1RefundOrder(orderId: string, options?: any): AxiosPromise<object> {
-            return localVarFp.v1RefundOrder(orderId, options).then((request) => request(axios, basePath));
+        v1RefundOrder(orderId: string, body: RefundOrderRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1RefundOrder(orderId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -12021,12 +12042,13 @@ export class OrderApi extends BaseAPI {
      * 
      * @summary 注文の返金依頼
      * @param {string} orderId 注文ID
+     * @param {RefundOrderRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
      */
-    public v1RefundOrder(orderId: string, options?: AxiosRequestConfig) {
-        return OrderApiFp(this.configuration).v1RefundOrder(orderId, options).then((request) => request(this.axios, this.basePath));
+    public v1RefundOrder(orderId: string, body: RefundOrderRequest, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1RefundOrder(orderId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

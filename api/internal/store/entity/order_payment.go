@@ -149,14 +149,6 @@ func NewOrderPayment(params *NewOrderPaymentParams) (*OrderPayment, error) {
 	}, nil
 }
 
-func (p *OrderPayment) Capturable() bool {
-	return p.Status == PaymentStatusAuthorized
-}
-
-func (p *OrderPayment) Cancelable() bool {
-	return p.Status == PaymentStatusPending || p.Status == PaymentStatusAuthorized
-}
-
 func (p *OrderPayment) IsCompleted() bool {
 	return p.Status == PaymentStatusCaptured ||
 		p.Status == PaymentStatusCanceled ||

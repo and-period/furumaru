@@ -95,6 +95,56 @@ func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, item
 	o.OrderItems = items
 }
 
+func (o *Order) Completed() bool {
+	if o == nil {
+		return false
+	}
+	if !o.CompletedAt.IsZero() {
+		return true
+	}
+	return o.OrderPayment.Status == PaymentStatusCanceled ||
+		o.OrderPayment.Status == PaymentStatusRefunded ||
+		o.OrderPayment.Status == PaymentStatusFailed
+}
+
+func (o *Order) Capturable() bool {
+	if o == nil {
+		return false
+	}
+	return o.OrderPayment.Status == PaymentStatusAuthorized
+}
+
+func (o *Order) Preservable() bool {
+	if o == nil {
+		return false
+	}
+	return o.OrderPayment.Status == PaymentStatusCaptured && o.CompletedAt.IsZero()
+}
+
+func (o *Order) Completable() bool {
+	if o == nil {
+		return false
+	}
+	if !o.OrderFulfillments.Fulfilled() {
+		return false
+	}
+	return o.OrderPayment.Status == PaymentStatusCaptured && o.CompletedAt.IsZero()
+}
+
+func (o *Order) Cancelable() bool {
+	if o == nil {
+		return false
+	}
+	return o.OrderPayment.Status == PaymentStatusPending || o.OrderPayment.Status == PaymentStatusAuthorized
+}
+
+func (o *Order) Refundable() bool {
+	if o == nil {
+		return false
+	}
+	return o.OrderPayment.Status == PaymentStatusCaptured
+}
+
 func (os Orders) IDs() []string {
 	res := make([]string, len(os))
 	for i := range os {

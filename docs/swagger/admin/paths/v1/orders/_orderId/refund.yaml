@@ -13,6 +13,12 @@ post:
     description: 注文ID
     required: true
     example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../openapi.yaml#/components/schemas/v1RefundOrderRequest'
   responses:
     204:
       description: 成功

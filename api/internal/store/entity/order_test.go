@@ -272,7 +272,174 @@ func TestOrder_Fill(t *testing.T) {
 	}
 }
 
-func TestOrders_IsCanceled(t *testing.T) {
+func TestOrder_EnableAction(t *testing.T) {
+	t.Parallel()
+	type want struct {
+		capturable  bool
+		preservable bool
+		completable bool
+		cancelable  bool
+		refundable  bool
+	}
+	tests := []struct {
+		name  string
+		order *Order
+		want  want
+	}{
+		{
+			name: "payment pending",
+			order: &Order{
+				ID:                "order-id",
+				OrderPayment:      OrderPayment{Status: PaymentStatusPending},
+				OrderFulfillments: OrderFulfillments{{Status: FulfillmentStatusUnfulfilled}},
+				CompletedAt:       time.Time{},
+			},
+			want: want{
+				capturable:  false,
+				preservable: false,
+				completable: false,
+				cancelable:  true,
+				refundable:  false,
+			},
+		},
+		{
+			name: "payment authorized",
+			order: &Order{
+				ID:                "order-id",
+				OrderPayment:      OrderPayment{Status: PaymentStatusAuthorized},
+				OrderFulfillments: OrderFulfillments{{Status: FulfillmentStatusUnfulfilled}},
+				CompletedAt:       time.Time{},
+			},
+			want: want{
+				capturable:  true,
+				preservable: false,
+				completable: false,
+				cancelable:  true,
+				refundable:  false,
+			},
+		},
+		{
+			name: "payment captured and unfulfilled",
+			order: &Order{
+				ID:                "order-id",
+				OrderPayment:      OrderPayment{Status: PaymentStatusCaptured},
+				OrderFulfillments: OrderFulfillments{{Status: FulfillmentStatusUnfulfilled}},
+				CompletedAt:       time.Time{},
+			},
+			want: want{
+				capturable:  false,
+				preservable: true,
+				completable: false,
+				cancelable:  false,
+				refundable:  true,
+			},
+		},
+		{
+			name: "payment captured and fulfilled",
+			order: &Order{
+				ID:                "order-id",
+				OrderPayment:      OrderPayment{Status: PaymentStatusCaptured},
+				OrderFulfillments: OrderFulfillments{{Status: FulfillmentStatusFulfilled}},
+				CompletedAt:       time.Time{},
+			},
+			want: want{
+				capturable:  false,
+				preservable: true,
+				completable: true,
+				cancelable:  false,
+				refundable:  true,
+			},
+		},
+		{
+			name: "payment captured and already completed",
+			order: &Order{
+				ID:                "order-id",
+				OrderPayment:      OrderPayment{Status: PaymentStatusCaptured},
+				OrderFulfillments: OrderFulfillments{{Status: FulfillmentStatusFulfilled}},
+				CompletedAt:       time.Now(),
+			},
+			want: want{
+				capturable:  false,
+				preservable: false,
+				completable: false,
+				cancelable:  false,
+				refundable:  true,
+			},
+		},
+		{
+			name: "payment canceled",
+			order: &Order{
+				ID:                "order-id",
+				OrderPayment:      OrderPayment{Status: PaymentStatusCanceled},
+				OrderFulfillments: OrderFulfillments{{Status: FulfillmentStatusUnfulfilled}},
+				CompletedAt:       time.Time{},
+			},
+			want: want{
+				capturable:  false,
+				preservable: false,
+				completable: false,
+				cancelable:  false,
+				refundable:  false,
+			},
+		},
+		{
+			name: "payment refunded",
+			order: &Order{
+				ID:                "order-id",
+				OrderPayment:      OrderPayment{Status: PaymentStatusRefunded},
+				OrderFulfillments: OrderFulfillments{{Status: FulfillmentStatusFulfilled}},
+				CompletedAt:       time.Time{},
+			},
+			want: want{
+				capturable:  false,
+				preservable: false,
+				completable: false,
+				cancelable:  false,
+				refundable:  false,
+			},
+		},
+		{
+			name: "payment failed",
+			order: &Order{
+				ID:                "order-id",
+				OrderPayment:      OrderPayment{Status: PaymentStatusFailed},
+				OrderFulfillments: OrderFulfillments{{Status: FulfillmentStatusFulfilled}},
+				CompletedAt:       time.Time{},
+			},
+			want: want{
+				capturable:  false,
+				preservable: false,
+				completable: false,
+				cancelable:  false,
+				refundable:  false,
+			},
+		},
+		{
+			name:  "empty",
+			order: nil,
+			want: want{
+				capturable:  false,
+				preservable: false,
+				completable: false,
+				cancelable:  false,
+				refundable:  false,
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.want.capturable, tt.order.Capturable())
+			assert.Equal(t, tt.want.preservable, tt.order.Preservable())
+			assert.Equal(t, tt.want.completable, tt.order.Completable())
+			assert.Equal(t, tt.want.cancelable, tt.order.Cancelable())
+			assert.Equal(t, tt.want.refundable, tt.order.Refundable())
+		})
+	}
+}
+
+func TestOrder_IsCanceled(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
