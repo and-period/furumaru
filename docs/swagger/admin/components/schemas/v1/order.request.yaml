@@ -1,0 +1,34 @@
+draftOrderRequest:
+  type: object
+  properties:
+    shippingMessage:
+      type: string
+      description: 発送連絡時のメッセージ
+  required:
+  - shippingMessage
+  example:
+    shippingMessage: '購入ありがとうございます。'
+completeOrderRequest:
+  type: object
+  properties:
+    shippingMessage:
+      type: string
+      description: 発送連絡時のメッセージ
+  required:
+  - shippingMessage
+  example:
+    shippingMessage: '購入ありがとうございます。'
+updateOrderFulfillmentRequest:
+  type: object
+  properties:
+    shippingCarrier:
+      $ref: './../../../openapi.yaml#/components/schemas/shippingCarrier'
+    trackingNumber:
+      type: string
+      description: 伝票番号
+  required:
+  - shippingCarrier
+  - trackingNumber
+  example:
+    shippingCarrier: 1
+    trackingNumber: 'tracking-number'

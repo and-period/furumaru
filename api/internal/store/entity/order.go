@@ -18,8 +18,10 @@ type Order struct {
 	UserID            string         `gorm:""`                     // ユーザーID
 	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
 	PromotionID       string         `gorm:"default:null"`         // プロモーションID
+	ShippingMessage   string         `gorm:"default:null"`         // 発送時のメッセージ
 	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt         time.Time      `gorm:""`                     // 更新日時
+	CompletedAt       time.Time      `gorm:"default:null"`         // 対応完了日時
 	DeletedAt         gorm.DeletedAt `gorm:"default:null"`         // 削除日時
 }
 

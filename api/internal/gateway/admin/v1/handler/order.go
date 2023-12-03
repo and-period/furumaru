@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -17,8 +18,12 @@ func (h *handler) orderRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListOrders)
 	r.GET("/:orderId", h.filterAccessOrder, h.GetOrder)
+	r.POST("/:orderId/draft", h.filterAccessOrder, h.DraftOrder)
 	r.POST("/:orderId/capture", h.filterAccessOrder, h.CaptureOrder)
+	r.POST("/:orderId/complete", h.filterAccessOrder, h.CompleteOrder)
 	r.POST("/:orderId/cancel", h.filterAccessOrder, h.CancelOrder)
+	r.POST("/:orderId/refund", h.filterAccessOrder, h.RefundOrder)
+	r.PATCH("/:orderId/fulfillments/:fulfillmentId", h.filterAccessOrder, h.UpdateOrderFulfillment)
 }
 
 func (h *handler) filterAccessOrder(ctx *gin.Context) {
@@ -168,6 +173,16 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+func (h *handler) DraftOrder(ctx *gin.Context) {
+	req := &request.DraftOrderRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	// TODO: 詳細の実装
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
 func (h *handler) CaptureOrder(ctx *gin.Context) {
 	in := &store.CaptureOrderInput{
 		OrderID: util.GetParam(ctx, "orderId"),
@@ -179,6 +194,16 @@ func (h *handler) CaptureOrder(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
+func (h *handler) CompleteOrder(ctx *gin.Context) {
+	req := &request.CompleteOrderRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	// TODO: 詳細の実装
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
 func (h *handler) CancelOrder(ctx *gin.Context) {
 	in := &store.CancelOrderInput{
 		OrderID: util.GetParam(ctx, "orderId"),
@@ -187,6 +212,21 @@ func (h *handler) CancelOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) RefundOrder(ctx *gin.Context) {
+	// TODO: 詳細の実装
+	ctx.Status(http.StatusNotImplemented)
+}
+
+func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
+	req := &request.UpdateOrderFulfillmentRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	// TODO: 詳細の実装
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 

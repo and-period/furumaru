@@ -109,6 +109,15 @@ func NewOrderFulfillments(params *NewOrderFulfillmentsParams) (OrderFulfillments
 	return fulfillments, items, nil
 }
 
+func (fs OrderFulfillments) Fulfilled() bool {
+	for i := range fs {
+		if fs[i].Status != FulfillmentStatusFulfilled {
+			return false
+		}
+	}
+	return true
+}
+
 func (fs OrderFulfillments) AddressRevisionIDs() []int64 {
 	return set.UniqBy(fs, func(f *OrderFulfillment) int64 {
 		return f.AddressRevisionID

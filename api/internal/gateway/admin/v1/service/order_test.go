@@ -10,6 +10,128 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestOrderStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		order    *entity.Order
+		expect   OrderStatus
+		response int32
+	}{
+		{
+			name:     "empty",
+			order:    nil,
+			expect:   OrderStatusUnknown,
+			response: 0,
+		},
+		{
+			name: "unpaid",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusPending},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusUnpaid,
+			response: 1,
+		},
+		{
+			name: "waiting",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusAuthorized},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusWaiting,
+			response: 2,
+		},
+		{
+			name: "preparing",
+			order: &entity.Order{
+				OrderPayment: entity.OrderPayment{Status: entity.PaymentStatusCaptured},
+				OrderFulfillments: entity.OrderFulfillments{{
+					Status: entity.FulfillmentStatusUnfulfilled,
+				}},
+				CompletedAt: time.Time{},
+			},
+			expect:   OrderStatusPreparing,
+			response: 3,
+		},
+		{
+			name: "shipped",
+			order: &entity.Order{
+				OrderPayment: entity.OrderPayment{Status: entity.PaymentStatusCaptured},
+				OrderFulfillments: entity.OrderFulfillments{{
+					Status: entity.FulfillmentStatusFulfilled,
+				}},
+				CompletedAt: time.Time{},
+			},
+			expect:   OrderStatusShipped,
+			response: 4,
+		},
+		{
+			name: "completed",
+			order: &entity.Order{
+				OrderPayment: entity.OrderPayment{Status: entity.PaymentStatusCaptured},
+				OrderFulfillments: entity.OrderFulfillments{{
+					Status: entity.FulfillmentStatusFulfilled,
+				}},
+				CompletedAt: time.Now(),
+			},
+			expect:   OrderStatusCompleted,
+			response: 5,
+		},
+		{
+			name: "canceled",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusCanceled},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusCanceled,
+			response: 6,
+		},
+		{
+			name: "refunded",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusRefunded},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusRefunded,
+			response: 7,
+		},
+		{
+			name: "failed",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusFailed},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusFailed,
+			response: 8,
+		},
+		{
+			name: "unknown",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusUnknown},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusUnknown,
+			response: 0,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewOrderStatus(tt.order)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.response, actual.Response())
+		})
+	}
+}
+
 func TestOrder(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -141,12 +263,14 @@ func TestOrder(t *testing.T) {
 			},
 			expect: &Order{
 				Order: response.Order{
-					ID:            "order-id",
-					UserID:        "user-id",
-					CoordinatorID: "coordinator-id",
-					PromotionID:   "promotion-id",
-					CreatedAt:     1640962800,
-					UpdatedAt:     1640962800,
+					ID:              "order-id",
+					UserID:          "user-id",
+					CoordinatorID:   "coordinator-id",
+					PromotionID:     "promotion-id",
+					ShippingMessage: "",
+					Status:          int32(OrderStatusShipped),
+					CreatedAt:       1640962800,
+					UpdatedAt:       1640962800,
 					Payment: &response.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -229,12 +353,14 @@ func TestOrder_ProductIDs(t *testing.T) {
 			name: "success",
 			order: &Order{
 				Order: response.Order{
-					ID:            "order-id",
-					UserID:        "user-id",
-					CoordinatorID: "coordinator-id",
-					PromotionID:   "",
-					CreatedAt:     1640962800,
-					UpdatedAt:     1640962800,
+					ID:              "order-id",
+					UserID:          "user-id",
+					CoordinatorID:   "coordinator-id",
+					PromotionID:     "",
+					ShippingMessage: "",
+					Status:          int32(OrderStatusShipped),
+					CreatedAt:       1640962800,
+					UpdatedAt:       1640962800,
 					Payment: &response.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -318,12 +444,14 @@ func TestOrder_Response(t *testing.T) {
 			name: "success",
 			order: &Order{
 				Order: response.Order{
-					ID:            "order-id",
-					UserID:        "user-id",
-					CoordinatorID: "coordinator-id",
-					PromotionID:   "",
-					CreatedAt:     1640962800,
-					UpdatedAt:     1640962800,
+					ID:              "order-id",
+					UserID:          "user-id",
+					CoordinatorID:   "coordinator-id",
+					PromotionID:     "",
+					ShippingMessage: "",
+					Status:          int32(OrderStatusShipped),
+					CreatedAt:       1640962800,
+					UpdatedAt:       1640962800,
 					Payment: &response.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -386,12 +514,14 @@ func TestOrder_Response(t *testing.T) {
 				},
 			},
 			expect: &response.Order{
-				ID:            "order-id",
-				UserID:        "user-id",
-				CoordinatorID: "coordinator-id",
-				PromotionID:   "",
-				CreatedAt:     1640962800,
-				UpdatedAt:     1640962800,
+				ID:              "order-id",
+				UserID:          "user-id",
+				CoordinatorID:   "coordinator-id",
+				PromotionID:     "",
+				ShippingMessage: "",
+				Status:          int32(OrderStatusShipped),
+				CreatedAt:       1640962800,
+				UpdatedAt:       1640962800,
 				Payment: &response.OrderPayment{
 					TransactionID: "transaction-id",
 					MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -596,12 +726,14 @@ func TestOrders(t *testing.T) {
 			expect: Orders{
 				{
 					Order: response.Order{
-						ID:            "order-id",
-						UserID:        "user-id",
-						CoordinatorID: "coordinator-id",
-						PromotionID:   "promotion-id",
-						CreatedAt:     1640962800,
-						UpdatedAt:     1640962800,
+						ID:              "order-id",
+						UserID:          "user-id",
+						CoordinatorID:   "coordinator-id",
+						PromotionID:     "promotion-id",
+						ShippingMessage: "",
+						Status:          int32(OrderStatusShipped),
+						CreatedAt:       1640962800,
+						UpdatedAt:       1640962800,
 						Payment: &response.OrderPayment{
 							TransactionID: "transaction-id",
 							MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -686,12 +818,14 @@ func TestOrders_Response(t *testing.T) {
 			orders: Orders{
 				{
 					Order: response.Order{
-						ID:            "order-id",
-						UserID:        "user-id",
-						CoordinatorID: "coordinator-id",
-						PromotionID:   "",
-						CreatedAt:     1640962800,
-						UpdatedAt:     1640962800,
+						ID:              "order-id",
+						UserID:          "user-id",
+						CoordinatorID:   "coordinator-id",
+						PromotionID:     "",
+						ShippingMessage: "",
+						Status:          int32(OrderStatusShipped),
+						CreatedAt:       1640962800,
+						UpdatedAt:       1640962800,
 						Payment: &response.OrderPayment{
 							TransactionID: "transaction-id",
 							MethodType:    PaymentMethodTypeCreditCard.Response(),
@@ -756,12 +890,14 @@ func TestOrders_Response(t *testing.T) {
 			},
 			expect: []*response.Order{
 				{
-					ID:            "order-id",
-					UserID:        "user-id",
-					CoordinatorID: "coordinator-id",
-					PromotionID:   "",
-					CreatedAt:     1640962800,
-					UpdatedAt:     1640962800,
+					ID:              "order-id",
+					UserID:          "user-id",
+					CoordinatorID:   "coordinator-id",
+					PromotionID:     "",
+					ShippingMessage: "",
+					Status:          int32(OrderStatusShipped),
+					CreatedAt:       1640962800,
+					UpdatedAt:       1640962800,
 					Payment: &response.OrderPayment{
 						TransactionID: "transaction-id",
 						MethodType:    PaymentMethodTypeCreditCard.Response(),
