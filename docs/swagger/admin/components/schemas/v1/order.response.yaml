@@ -79,6 +79,7 @@ orderResponse:
         quantity: 2
       createdAt: 1640962800
       updatedAt: 1640962800
+      completedAt: 1640962800
     user:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'
@@ -279,6 +280,7 @@ ordersResponse:
         quantity: 2
       createdAt: 1640962800
       updatedAt: 1640962800
+      completedAt: 1640962800
     users:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       lastname: '&.'

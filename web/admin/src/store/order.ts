@@ -5,7 +5,7 @@ import { useCustomerStore } from './customer'
 import { usePromotionStore } from './promotion'
 import { useProductStore } from './product'
 import { apiClient } from '~/plugins/api-client'
-import type { Order } from '~/types/api'
+import type { CompleteOrderRequest, DraftOrderRequest, Order, RefundOrderRequest, UpdateOrderFulfillmentRequest } from '~/types/api'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
@@ -56,6 +56,89 @@ export const useOrderStore = defineStore('order', {
         customerStore.customer = res.data.user
         promotionStore.promotions.push(res.data.promotion)
         productStore.products = res.data.products
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 実売上状態にする非同期関数
+     * @param orderId 注文ID
+     * @returns
+     */
+    async captureOrder (orderId: string): Promise<void> {
+      try {
+        await apiClient.orderApi().v1CaptureOrder(orderId)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 下書き保存する非同期関数
+     * @param orderId 注文ID
+     * @param payload 下書き情報
+     * @returns
+     */
+    async draftOrder (orderId: string, payload: DraftOrderRequest): Promise<void> {
+      try {
+        await apiClient.orderApi().v1DraftOrder(orderId, payload)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 注文の対応を完了にする非同期関数
+     * @param orderId 注文ID
+     * @param payload 対応完了時に必要な情報
+     * @returns
+     */
+    async completeOrder (orderId: string, payload: CompleteOrderRequest): Promise<void> {
+      try {
+        await apiClient.orderApi().v1CompleteOrder(orderId, payload)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 実売上前の注文に対してキャンセル処理をする非同期関数
+     * @param orderId 注文ID
+     * @returns
+     */
+    async cancelOrder (orderId: string): Promise<void> {
+      try {
+        await apiClient.orderApi().v1CancelOrder(orderId)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 実売上語の注文に対して返金処理をする非同期関数
+     * @param orderId 注文ID
+     * @param payload 返金時に必要な情報
+     * @returns
+     */
+    async refundOrder (orderId: string, payload: RefundOrderRequest): Promise<void> {
+      try {
+        await apiClient.orderApi().v1RefundOrder(orderId, payload)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 配送情報を更新する非同期関数
+     * @param orderId 注文ID
+     * @param fulfillmentId 配送ID
+     * @param payload 配送情報
+     * @returns
+     */
+    async updateFulfillment (orderId: string, fulfillmentId: string, payload: UpdateOrderFulfillmentRequest): Promise<void> {
+      try {
+        await apiClient.orderApi().v1UpdateOrderFulfillment(orderId, fulfillmentId, payload)
       } catch (err) {
         return this.errorHandler(err)
       }

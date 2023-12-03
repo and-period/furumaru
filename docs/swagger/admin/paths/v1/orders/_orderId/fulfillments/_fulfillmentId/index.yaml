@@ -1,4 +1,4 @@
-post:
+patch:
   summary: 注文配送状況更新
   operationId: v1UpdateOrderFulfillment
   tags:
