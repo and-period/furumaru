@@ -192,10 +192,18 @@ paths:
     $ref: './paths/v1/orders/index.yaml'
   /v1/orders/{orderId}:
     $ref: './paths/v1/orders/_orderId/index.yaml'
+  /v1/orders/{orderId}/draft:
+    $ref: './paths/v1/orders/_orderId/draft.yaml'
   /v1/orders/{orderId}/capture:
     $ref: './paths/v1/orders/_orderId/capture.yaml'
+  /v1/orders/{orderId}/complete:
+    $ref: './paths/v1/orders/_orderId/complete.yaml'
   /v1/orders/{orderId}/cancel:
     $ref: './paths/v1/orders/_orderId/cancel.yaml'
+  /v1/orders/{orderId}/refund:
+    $ref: './paths/v1/orders/_orderId/refund.yaml'
+  /v1/orders/{orderId}/fulfillments/{fulfillmentId}:
+    $ref: './paths/v1/orders/_orderId/fulfillments/_fulfillmentId/index.yaml'
   # User
   /v1/users:
     $ref: './paths/v1/users/index.yaml'
@@ -271,6 +279,8 @@ components:
       $ref: './components/schemas/codes/notification.yaml#/notificationType'
     notificationTarget:
       $ref: './components/schemas/codes/notification.yaml#/notificationTarget'
+    orderStatus:
+      $ref: './components/schemas/codes/order.yaml#/orderStatus'
     fulfillmentStatus:
       $ref: './components/schemas/codes/order-fulfillment.yaml#/fulfillmentStatus'
     shippingCarrier:
@@ -439,6 +449,12 @@ components:
       $ref: './components/schemas/v1/live.request.yaml#/createLiveRequest'
     v1UpdateLiveRequest:
       $ref: './components/schemas/v1/live.request.yaml#/updateLiveRequest'
+    v1DraftOrderRequest:
+      $ref: './components/schemas/v1/order.request.yaml#/draftOrderRequest'
+    v1CompleteOrderRequest:
+      $ref: './components/schemas/v1/order.request.yaml#/completeOrderRequest'
+    v1UpdateOrderFulfillmentRequest:
+      $ref: './components/schemas/v1/order.request.yaml#/updateOrderFulfillmentRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:

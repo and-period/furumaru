@@ -25,6 +25,8 @@ orderResponse:
       userId: 'kSByoE6FetnPs5Byk3a9Zx'
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      shippingMessage: '購入ありがとうございます'
+      status: 5
       payment:
         transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
         methodType: 2
@@ -223,6 +225,8 @@ ordersResponse:
       userId: 'kSByoE6FetnPs5Byk3a9Zx'
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      shippingMessage: '購入ありがとうございます'
+      status: 5
       payment:
         transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
         methodType: 2

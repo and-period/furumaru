@@ -40,7 +40,7 @@ p, notification_update, /v1/notifications/*, PATCH, allow
 p, notification_delete, /v1/notifications/*, DELETE, allow
 p, order_list, /v1/orders, GET, allow
 p, order_get, /v1/orders/*, GET, allow
-p, order_update, /v1/orders/*, POST, allow
+p, order_update, /v1/orders/*, (POST)|(PATCH), allow
 p, payment_system_list, /v1/payment-systems, GET, allow
 p, payment_system_update, /v1/payment-systems/*, PATCH, allow
 p, producer_list, /v1/producers, GET, allow

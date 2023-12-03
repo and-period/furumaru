@@ -7,25 +7,75 @@ import (
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
+// OrderStatus - 注文ステータス
+type OrderStatus int32
+
+const (
+	OrderStatusUnknown   OrderStatus = 0
+	OrderStatusUnpaid    OrderStatus = 1 // 支払い待ち
+	OrderStatusWaiting   OrderStatus = 2 // 受注待ち
+	OrderStatusPreparing OrderStatus = 3 // 発送準備中
+	OrderStatusShipped   OrderStatus = 4 // 発送完了
+	OrderStatusCompleted OrderStatus = 5 // 完了
+	OrderStatusCanceled  OrderStatus = 6 // キャンセル
+	OrderStatusRefunded  OrderStatus = 7 // 返金
+	OrderStatusFailed    OrderStatus = 8 // 失敗
+)
+
 type Order struct {
 	response.Order
 }
 
 type Orders []*Order
 
+func NewOrderStatus(order *entity.Order) OrderStatus {
+	if order == nil {
+		return OrderStatusUnknown
+	}
+	switch order.OrderPayment.Status {
+	case entity.PaymentStatusPending:
+		return OrderStatusUnpaid
+	case entity.PaymentStatusAuthorized:
+		return OrderStatusWaiting
+	case entity.PaymentStatusCaptured:
+		if !order.OrderFulfillments.Fulfilled() {
+			return OrderStatusPreparing
+		}
+		if order.CompletedAt.IsZero() {
+			return OrderStatusShipped
+		}
+		return OrderStatusCompleted
+	case entity.PaymentStatusCanceled:
+		return OrderStatusCanceled
+	case entity.PaymentStatusRefunded:
+		return OrderStatusRefunded
+	case entity.PaymentStatusFailed:
+		return OrderStatusFailed
+	default:
+		return OrderStatusUnknown
+	}
+}
+
+func (s OrderStatus) Response() int32 {
+	return int32(s)
+}
+
 func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product) *Order {
 	return &Order{
 		Order: response.Order{
-			ID:            order.ID,
-			UserID:        order.UserID,
-			CoordinatorID: order.CoordinatorID,
-			PromotionID:   order.PromotionID,
-			Payment:       NewOrderPayment(&order.OrderPayment, addresses[order.OrderPayment.AddressRevisionID]).Response(),
-			Refund:        NewOrderRefund(&order.OrderPayment).Response(),
-			Fulfillments:  NewOrderFulfillments(order.OrderFulfillments, addresses).Response(),
-			Items:         NewOrderItems(order.OrderItems, products).Response(),
-			CreatedAt:     jst.Unix(order.CreatedAt),
-			UpdatedAt:     jst.Unix(order.UpdatedAt),
+			ID:              order.ID,
+			UserID:          order.UserID,
+			CoordinatorID:   order.CoordinatorID,
+			PromotionID:     order.PromotionID,
+			ShippingMessage: order.ShippingMessage,
+			Status:          NewOrderStatus(order).Response(),
+			Payment:         NewOrderPayment(&order.OrderPayment, addresses[order.OrderPayment.AddressRevisionID]).Response(),
+			Refund:          NewOrderRefund(&order.OrderPayment).Response(),
+			Fulfillments:    NewOrderFulfillments(order.OrderFulfillments, addresses).Response(),
+			Items:           NewOrderItems(order.OrderItems, products).Response(),
+			CreatedAt:       jst.Unix(order.CreatedAt),
+			UpdatedAt:       jst.Unix(order.UpdatedAt),
+			CompletedAt:     jst.Unix(order.CompletedAt),
 		},
 	}
 }

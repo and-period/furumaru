@@ -239,7 +239,58 @@ func TestOrderFulfillments(t *testing.T) {
 	}
 }
 
-func TestFulfillments_AddressRevisionIDs(t *testing.T) {
+func TestOrderFulfillments_Fulfilled(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		fulfillments OrderFulfillments
+		expect       bool
+	}{
+		{
+			name: "success fulfilled",
+			fulfillments: OrderFulfillments{
+				{
+					ID:                "fulfillment-id",
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					Status:            FulfillmentStatusFulfilled,
+					ShippingCarrier:   ShippingCarrierYamato,
+					ShippingType:      ShippingTypeNormal,
+					BoxNumber:         1,
+					BoxSize:           ShippingSize100,
+					BoxRate:           80,
+				},
+			},
+			expect: true,
+		},
+		{
+			name: "success unfulfilled",
+			fulfillments: OrderFulfillments{
+				{
+					ID:                "fulfillment-id",
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					Status:            FulfillmentStatusUnfulfilled,
+					ShippingCarrier:   ShippingCarrierYamato,
+					ShippingType:      ShippingTypeNormal,
+					BoxNumber:         1,
+					BoxSize:           ShippingSize100,
+					BoxRate:           80,
+				},
+			},
+			expect: false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.fulfillments.Fulfilled())
+		})
+	}
+}
+
+func TestOrderFulfillments_AddressRevisionIDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name         string
@@ -295,7 +346,7 @@ func TestFulfillments_AddressRevisionIDs(t *testing.T) {
 	}
 }
 
-func TestFulfillments_GroupByOrderID(t *testing.T) {
+func TestOrderFulfillments_GroupByOrderID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name         string

@@ -2,16 +2,19 @@ package response
 
 // Order - 注文履歴情報
 type Order struct {
-	ID            string              `json:"id"`            // 注文履歴ID
-	UserID        string              `json:"userId"`        // ユーザーID
-	CoordinatorID string              `json:"coordinatorId"` // コーディネータID
-	PromotionID   string              `json:"promotionId"`   // プロモーションID
-	Payment       *OrderPayment       `json:"payment"`       // 支払い情報
-	Refund        *OrderRefund        `json:"refund"`        // 注文キャンセル情報
-	Fulfillments  []*OrderFulfillment `json:"fulfillments"`  // 配送情報一覧
-	Items         []*OrderItem        `json:"items"`         // 注文商品一覧
-	CreatedAt     int64               `json:"createdAt"`     // 登録日時
-	UpdatedAt     int64               `json:"updatedAt"`     // 更新日時
+	ID              string              `json:"id"`              // 注文履歴ID
+	UserID          string              `json:"userId"`          // ユーザーID
+	CoordinatorID   string              `json:"coordinatorId"`   // コーディネータID
+	PromotionID     string              `json:"promotionId"`     // プロモーションID
+	ShippingMessage string              `json:"shippingMessage"` // 発送連絡時のメッセージ
+	Status          int32               `json:"status"`          // 注文ステータス
+	Payment         *OrderPayment       `json:"payment"`         // 支払い情報
+	Refund          *OrderRefund        `json:"refund"`          // 注文キャンセル情報
+	Fulfillments    []*OrderFulfillment `json:"fulfillments"`    // 配送情報一覧
+	Items           []*OrderItem        `json:"items"`           // 注文商品一覧
+	CreatedAt       int64               `json:"createdAt"`       // 登録日時
+	UpdatedAt       int64               `json:"updatedAt"`       // 更新日時
+	CompletedAt     int64               `json:"completedAt"`     // 対応完了日時
 }
 
 // OrderPayment - 支払い情報
