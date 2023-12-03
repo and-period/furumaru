@@ -105,6 +105,7 @@ resources:
                 - Effect: Allow
                   Action:
                     - mediaStore:DescribeContainer
+                    - mediaStore:ListItems
                   Resource:
                     - '*'
                 - Effect: Allow
@@ -130,6 +131,11 @@ functions:
   disableDistribution:
     role: lambdaRole
     handler: functions/disableDistribution/handler.disableDistribution
+    memorySize: 128
+    timeout: 10
+  listmediaStoreItems:
+    role: lambdaRole
+    handler: functions/listMediaStoreItems/handler.listMediaStoreItems
     memorySize: 128
     timeout: 10
 
@@ -739,6 +745,69 @@ stepFunctions:
             Parameters:
               Id.$: $.DistributionId
               IfMatch.$: $.DistributionStatus.ETag
+            Next: Finish
+          Finish:
+            Type: Pass
+            End: true
+    deleteMediaStoreMachine:
+      name: deleteMediaStoreResoursesFunction-${self:provider.stage}
+      role:
+        Fn::GetAtt: [defaultRole, Arn]
+      definition:
+        StartAt: ExtractContainerName
+        States:
+          ExtractContainerName:
+            Type: Pass
+            InputPath: $
+            ResultPath: $.ExtractContainerNameResult
+            Parameters:
+              ContainerName.$: States.ArrayGetItem(States.StringSplit($.MediaStoreContainerArn, '/'), 1)
+            Next: CheckContainerExists
+          CheckContainerExists:
+            Type: Task
+            Comment: MediaStoreのコンテナがあるか確認
+            InputPath: $
+            ResultPath: $.CheckContainerExistsResult
+            Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
+            Parameters:
+              ContainerName.$: $.ExtractContainerNameResult.ContainerName
+            Catch:
+              - ErrorEquals:
+                  - MediaStore.ContainerNotFoundException
+                Comment: コンテナが存在しない場合は終了
+                Next: Finish
+            Next: ListmediaStoreItems
+          ListmediaStoreItems:
+            Type: Task
+            Comment: MediaStoreのコンテナ内にオブジェクトがあるか確認
+            InputPath: $
+            ResultPath: $.ListObjectsResult
+            Resource:
+              Fn::GetAtt: [listmediaStoreItems, Arn]
+            Next: CheckObjectExists
+          CheckObjectExists:
+            Type: Choice
+            InputPath: $
+            Choices:
+              - Variable: $.ListObjectsResult
+                BooleanEquals: true
+                Next: Finish
+            Default: DeleteContainer
+          # DeleteObject:
+          #   Type: Task
+          #   Comment: MediaStoreのコンテナ内のオブジェクトを削除
+          #   InputPath: $
+          #   Resource: arn:aws:states:::aws-sdk:mediastore:deleteObject
+          #   Parameters:
+          #     Path.$: $.Path
+          #   Next: DeleteContainer
+          DeleteContainer:
+            Type: Task
+            Comment: MediaStoreのコンテナを削除
+            InputPath: $
+            Resource: arn:aws:states:::aws-sdk:mediastore:deleteContainer
+            Parameters:
+              ContainerName.$: $.ContainerName
             Next: Finish
           Finish:
             Type: Pass
