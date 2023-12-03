@@ -50,7 +50,6 @@ const scheduleFormData = ref<UpdateScheduleRequest>({
   thumbnailUrl: '',
   imageUrl: '',
   openingVideoUrl: '',
-  public: false,
   startAt: dayjs().unix(),
   endAt: dayjs().unix()
 })
@@ -223,6 +222,25 @@ const handleSubmitUpdateSchedule = async (): Promise<void> => {
     loading.value = true
     await scheduleStore.updateSchedule(scheduleId, scheduleFormData.value)
     schedule.value = { ...schedule.value, ...scheduleFormData.value }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitPublishSchedule = async (publish: boolean): Promise<void> => {
+  try {
+    loading.value = true
+    await scheduleStore.publishSchedule(scheduleId, publish)
+    schedule.value = { ...schedule.value, public: publish }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -410,6 +428,7 @@ try {
     @update:thumbnail="handleUploadThumbnail"
     @update:image="handleUploadImage"
     @update:opening-video="handleUploadOpeningVideo"
+    @update:public="handleSubmitPublishSchedule"
     @search:producer="handleSearchProducer"
     @search:product="handleSearchProduct"
     @submit:schedule="handleSubmitUpdateSchedule"
