@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { useCategoryStore } from './category'
 import { apiClient } from '~/plugins/api-client'
 import type {
@@ -99,17 +98,12 @@ export const useProductTypeStore = defineStore('productType', {
       categoryId: string,
       payload: CreateProductTypeRequest
     ): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         const res = await apiClient.productTypeApi().v1CreateProductType(
           categoryId,
           payload
         )
         this.productTypes.unshift(res.data.productType)
-        commonStore.addSnackbar({
-          message: '品目を追加しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'この品目はすでに登録されているため、登録できません。' })
       }
@@ -148,16 +142,11 @@ export const useProductTypeStore = defineStore('productType', {
       categoryId: string,
       productTypeId: string
     ): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         await apiClient.productTypeApi().v1DeleteProductType(
           categoryId,
           productTypeId
         )
-        commonStore.addSnackbar({
-          message: '品目削除が完了しました',
-          color: 'info'
-        })
         this.fetchProductTypes()
       } catch (err) {
         return this.errorHandler(err)

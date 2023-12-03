@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, useCategoryStore, useProductTypeStore } from '~/store'
+import { useAuthStore, useCategoryStore, useCommonStore, useProductTypeStore } from '~/store'
 import type { Category, CreateCategoryRequest, CreateProductTypeRequest, ProductType, UpdateCategoryRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const categoryStore = useCategoryStore()
 const productTypeStore = useProductTypeStore()
@@ -241,6 +242,10 @@ const handleSubmitCreateCategory = async (): Promise<void> => {
   try {
     loading.value = true
     await categoryStore.createCategory(createCategoryFormData.value)
+    commonStore.addSnackbar({
+      message: 'カテゴリーを追加しました。',
+      color: 'info'
+    })
     createCategoryDialog.value = false
   } catch (err) {
     if (err instanceof Error) {
@@ -256,6 +261,10 @@ const handleSubmitUpdateCategory = async (): Promise<void> => {
   try {
     loading.value = true
     await categoryStore.updateCategory(selectedCategory.value?.id || '', updateCategoryFormData.value)
+    commonStore.addSnackbar({
+      message: '変更しました。',
+      color: 'info'
+    })
     updateCategoryDialog.value = false
   } catch (err) {
     if (err instanceof Error) {
@@ -271,6 +280,10 @@ const handleSubmitDeleteCategory = async (): Promise<void> => {
   try {
     loading.value = true
     await categoryStore.deleteCategory(selectedCategory.value?.id || '')
+    commonStore.addSnackbar({
+      message: 'カテゴリー削除が完了しました',
+      color: 'info'
+    })
     deleteCategoryDialog.value = false
   } catch (err) {
     if (err instanceof Error) {
@@ -286,6 +299,10 @@ const handleSubmitCreateProductType = async (categoryId: string): Promise<void> 
   try {
     loading.value = true
     await productTypeStore.createProductType(categoryId, createProductTypeFormData.value)
+    commonStore.addSnackbar({
+      message: '品目を追加しました。',
+      color: 'info'
+    })
     createProductTypeDialog.value = false
   } catch (err) {
     if (err instanceof Error) {
@@ -305,6 +322,10 @@ const handleSubmitUpdateProductType = async (): Promise<void> => {
       selectedProductType.value.id,
       createProductTypeFormData.value
     )
+    commonStore.addSnackbar({
+      message: '品目の更新が完了しました',
+      color: 'info'
+    })
     updateProductTypeDialog.value = false
   } catch (err) {
     if (err instanceof Error) {
@@ -323,6 +344,10 @@ const handleSubmitDeleteProductType = async (): Promise<void> => {
       selectedProductType.value.categoryId,
       selectedProductType.value.id
     )
+    commonStore.addSnackbar({
+      message: '品目の削除が完了しました',
+      color: 'info'
+    })
     deleteProductTypeDialog.value = false
   } catch (err) {
     if (err instanceof Error) {

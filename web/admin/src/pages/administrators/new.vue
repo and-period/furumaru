@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert } from '~/lib/hooks'
-import { useAdministratorStore } from '~/store'
+import { useAdministratorStore, useCommonStore } from '~/store'
 import type { CreateAdministratorRequest } from '~/types/api'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const administratorStore = useAdministratorStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
@@ -26,6 +27,10 @@ const handleSubmit = async (): Promise<void> => {
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
     }
     await administratorStore.createAdministrator(req)
+    commonStore.addSnackbar({
+      message: `${formData.value.lastname} ${formData.value.firstname}を作成しました。`,
+      color: 'info'
+    })
     router.push('/administrators')
   } catch (err) {
     if (err instanceof Error) {

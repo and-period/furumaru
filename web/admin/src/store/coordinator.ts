@@ -1,13 +1,11 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { useProductTypeStore } from './product-type'
 import { apiClient } from '~/plugins/api-client'
 import type {
   Coordinator,
   CreateCoordinatorRequest,
   Producer,
-  RelateProducersRequest,
   UpdateCoordinatorRequest,
   UploadImageResponse,
   UploadVideoResponse
@@ -207,40 +205,6 @@ export const useCoordinatorStore = defineStore('coordinator', {
         return this.errorHandler(err)
       }
       this.fetchCoordinators()
-    },
-
-    /**
-     * コーディーネータに生産者を紐づける非同期関数
-     * @param coordinatorId 生産者を紐づけるコーディネーターのID
-     * @param payload コーディネーターに紐づく生産者
-     * @returns
-     */
-    async relateProducers (coordinatorId: string, payload: RelateProducersRequest): Promise<void> {
-      try {
-        await apiClient.coordinatorApi().v1RelateProducers(coordinatorId, payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'コーディネーターと生産者の紐付けが完了しました',
-          color: 'info'
-        })
-      } catch (err) {
-        return this.errorHandler(err)
-      }
-    },
-
-    /**
-     * コーディーネータに紐づいている生産者を取得する非同期関数
-     * @param id コーディネーターのID
-     * @returns
-     */
-    async fetchRelatedProducers (coordinatorId: string, limit = 20, offset = 0): Promise<void> {
-      try {
-        const res = await apiClient.coordinatorApi().v1ListRelatedProducers(coordinatorId, limit, offset)
-        this.producers = res.data.producers
-        this.totalItems = res.data.total
-      } catch (err) {
-        return this.errorHandler(err)
-      }
     }
   }
 })

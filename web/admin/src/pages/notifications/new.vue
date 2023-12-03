@@ -3,10 +3,11 @@ import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
-import { useAdminStore, useNotificationStore, usePromotionStore } from '~/store'
+import { useAdminStore, useCommonStore, useNotificationStore, usePromotionStore } from '~/store'
 import { type CreateNotificationRequest, NotificationType } from '~/types/api'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const adminStore = useAdminStore()
 const notificationStore = useNotificationStore()
 const promotionStore = usePromotionStore()
@@ -53,6 +54,10 @@ const handleSubmit = async () => {
   try {
     loading.value = true
     await notificationStore.createNotification(formData.value)
+    commonStore.addSnackbar({
+      message: `${formData.value.title}を作成しました。`,
+      color: 'info'
+    })
     router.push('/notifications')
   } catch (err) {
     if (err instanceof Error) {

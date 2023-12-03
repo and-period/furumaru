@@ -2,11 +2,12 @@
 import { storeToRefs } from 'pinia'
 
 import { useAlert } from '~/lib/hooks'
-import { useAdminStore, useAuthStore, useNotificationStore, usePromotionStore } from '~/store'
+import { useAdminStore, useAuthStore, useCommonStore, useNotificationStore, usePromotionStore } from '~/store'
 import { NotificationType, type UpdateNotificationRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const adminStore = useAdminStore()
 const notificationStore = useNotificationStore()
@@ -52,6 +53,10 @@ const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
     await notificationStore.updateNotification(notificationId, formData.value)
+    commonStore.addSnackbar({
+      message: 'お知らせ情報の編集が完了しました',
+      color: 'info'
+    })
     router.push('/notifications')
   } catch (err) {
     if (err instanceof Error) {

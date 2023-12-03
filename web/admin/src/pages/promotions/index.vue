@@ -2,9 +2,10 @@
 import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, usePromotionStore } from '~/store'
+import { useAuthStore, useCommonStore, usePromotionStore } from '~/store'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const promotionStore = usePromotionStore()
 const pagination = usePagination()
@@ -68,6 +69,10 @@ const handleClickDelete = async (promotionId: string): Promise<void> => {
   try {
     loading.value = true
     await promotionStore.deletePromotion(promotionId)
+    commonStore.addSnackbar({
+      message: 'セール情報の削除が完了しました',
+      color: 'info'
+    })
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)

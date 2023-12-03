@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useAuthStore } from '~/store'
+import { useAuthStore, useCommonStore } from '~/store'
 import type { ForgotAuthPasswordRequest, ResetAuthPasswordRequest } from '~/types/api'
 
 definePageMeta({
@@ -8,6 +8,7 @@ definePageMeta({
 })
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
@@ -31,6 +32,10 @@ const handleSendEmail = async (): Promise<void> => {
       email: formData.value.email
     }
     await authStore.forgotPassword(req)
+    commonStore.addSnackbar({
+      message: 'パスワードリセット用のメールをしました。',
+      color: 'info'
+    })
     sentEmail.value = true
   } catch (err) {
     if (err instanceof Error) {
@@ -46,6 +51,10 @@ const handleResetPassword = async (): Promise<void> => {
   try {
     loading.value = true
     await authStore.resetPassword(formData.value)
+    commonStore.addSnackbar({
+      message: 'パスワードをリセットしました。',
+      color: 'info'
+    })
     router.push('/signin')
   } catch (err) {
     if (err instanceof Error) {

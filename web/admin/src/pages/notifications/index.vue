@@ -3,9 +3,10 @@ import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/labs/components'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAdminStore, useAuthStore, useNotificationStore } from '~/store'
+import { useAdminStore, useAuthStore, useCommonStore, useNotificationStore } from '~/store'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const adminStore = useAdminStore()
 const notificationStore = useNotificationStore()
@@ -63,6 +64,10 @@ const handleClickDelete = async (notificationId: string): Promise<void> => {
   try {
     loading.value = true
     await notificationStore.deleteNotification(notificationId)
+    commonStore.addSnackbar({
+      message: 'お知らせの削除が完了しました',
+      color: 'info'
+    })
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)

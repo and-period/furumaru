@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
-import { useContactStore } from '~/store'
+import { useCommonStore, useContactStore } from '~/store'
 import type { ContactStatus, UpdateContactRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
+const commonStore = useCommonStore()
 const contactStore = useContactStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
@@ -39,6 +40,10 @@ const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
     await contactStore.updateContact(contactId, formData.value)
+    commonStore.addSnackbar({
+      message: 'お問い合わせ情報が更新されました。',
+      color: 'info'
+    })
     router.push('/contacts')
   } catch (err) {
     if (err instanceof Error) {

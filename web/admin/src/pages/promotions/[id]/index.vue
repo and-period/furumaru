@@ -3,11 +3,12 @@ import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 
-import { useAuthStore, usePromotionStore } from '~/store'
+import { useAuthStore, useCommonStore, usePromotionStore } from '~/store'
 import type { UpdatePromotionRequest } from '~/types/api'
 
 const router = useRouter()
 const route = useRoute()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -53,6 +54,10 @@ const handleSubmit = async (): Promise<void> => {
       discountRate: Number(formData.value.discountRate)
     }
     await promotionStore.updatePromotion(promotionId, req)
+    commonStore.addSnackbar({
+      message: 'セール情報の編集が完了しました',
+      color: 'info'
+    })
     router.push('/promotions')
   } catch (err) {
     if (err instanceof Error) {

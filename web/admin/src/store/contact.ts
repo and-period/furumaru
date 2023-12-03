@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { apiClient } from '~/plugins/api-client'
 import type {
   Contact,
@@ -49,11 +48,6 @@ export const useContactStore = defineStore('contact', {
     async updateContact (contactId: string, payload: UpdateContactRequest): Promise<void> {
       try {
         await apiClient.contactApi().v1UpdateContact(contactId, payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'お問い合わせ情報が更新されました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }

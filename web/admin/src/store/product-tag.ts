@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { apiClient } from '~/plugins/api-client'
 import type { CreateProductTagRequest, ProductTag, UpdateProductTagRequest } from '~/types/api'
 
@@ -61,14 +60,9 @@ export const useProductTagStore = defineStore('productTag', {
      * @param payload
      */
     async createProductTag (payload: CreateProductTagRequest): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         const res = await apiClient.productTagApi().v1CreateProductTag(payload)
         this.productTags.unshift(res.data.productTag)
-        commonStore.addSnackbar({
-          message: '商品タグを追加しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'この商品タグ名はすでに登録されています。' })
       }
@@ -80,13 +74,8 @@ export const useProductTagStore = defineStore('productTag', {
      * @param payload
      */
     async updateProductTag (productTagId: string, payload: UpdateProductTagRequest): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         await apiClient.productTagApi().v1UpdateProductTag(productTagId, payload)
-        commonStore.addSnackbar({
-          message: '商品タグを更新しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'この商品タグ名はすでに登録されています。' })
       }
@@ -97,13 +86,8 @@ export const useProductTagStore = defineStore('productTag', {
      * @param productTagId 商品タグID
      */
     async deleteProductTag (productTagId: string): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         await apiClient.productTagApi().v1DeleteProductTag(productTagId)
-        commonStore.addSnackbar({
-          message: '商品タグを削除しました。',
-          color: 'info'
-        })
       } catch (err) {
         this.errorHandler(err)
       }

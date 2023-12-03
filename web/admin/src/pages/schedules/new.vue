@@ -2,11 +2,12 @@
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
-import { useAuthStore, useScheduleStore } from '~/store'
+import { useAuthStore, useCommonStore, useScheduleStore } from '~/store'
 import type { CreateScheduleRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const scheduleStore = useScheduleStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
@@ -107,6 +108,10 @@ const handleSubmit = async (): Promise<void> => {
       coordinatorId: auth.value?.adminId || ''
     }
     const schedule = await scheduleStore.createSchedule(req)
+    commonStore.addSnackbar({
+      message: `${formData.value.title}を作成しました。`,
+      color: 'info'
+    })
     router.push(`/schedules/${schedule.id}?tab=lives`)
   } catch (err) {
     if (err instanceof Error) {
