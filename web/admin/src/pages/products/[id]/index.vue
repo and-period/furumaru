@@ -65,6 +65,12 @@ const fetchState = useAsyncData(async (): Promise<void> => {
     await productStore.getProduct(productId)
     selectedCategoryId.value = product.value.categoryId
     formData.value = { ...product.value }
+    if (categories.value.length === 0) {
+      categoryStore.fetchCategories(20)
+    }
+    if (productTags.value.length === 0) {
+      productTagStore.fetchProductTags(20)
+    }
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
