@@ -7,19 +7,26 @@ exports.deleteMediaStoreObjects = async (event) => {
     endpoint: event.CheckContainerExistsResult.Container.Endpoint,
   });
 
-  const listCommand = new ListItemsCommand({
-    Path: `/test`,
-  });
-  const listResponse = await client.send(listCommand);
-  console.log(listResponse);
+  const folders = event.ListMediaStoreItemsResult.Items
+    .filter(item => item.Type === 'FOLDER')
+    .map(item => item.Name);
+  console.log(folders);
 
-  for (const item of listResponse.Items) {
-    const deleteInput = {
-      Path: `/test/${item.Name}`,
-    };
-    console.log(deleteInput);
-    const deleteCommand = new DeleteObjectCommand(deleteInput);
-    await client.send(deleteCommand);
+  for (const folder of folders) {
+    const listCommand = new ListItemsCommand({
+      Path: `/${folder}`,
+    });
+    const listResponse = await client.send(listCommand);
+    console.log(listResponse);
+
+    for (const item of listResponse.Items) {
+      const deleteInput = {
+        Path: `/${folder}/${item.Name}`,
+      };
+      console.log(deleteInput);
+      const deleteCommand = new DeleteObjectCommand(deleteInput);
+      await client.send(deleteCommand);
+    }
   }
 
   return { message: 'All items deleted' };
