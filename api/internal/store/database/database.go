@@ -88,6 +88,9 @@ type Order interface {
 	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
 	Create(ctx context.Context, order *entity.Order) error
 	UpdatePaymentStatus(ctx context.Context, orderID string, params *UpdateOrderPaymentParams) error
+	UpdateFulfillment(ctx context.Context, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
+	Draft(ctx context.Context, orderID string, params *DraftOrderParams) error
+	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
 	Aggregate(ctx context.Context, params *AggregateOrdersParams) (entity.AggregatedOrders, error)
 }
 
@@ -102,6 +105,22 @@ type UpdateOrderPaymentParams struct {
 	Status    entity.PaymentStatus
 	PaymentID string
 	IssuedAt  time.Time
+}
+
+type DraftOrderParams struct {
+	ShippingMessage string
+}
+
+type CompleteOrderParams struct {
+	ShippingMessage string
+	CompletedAt     time.Time
+}
+
+type UpdateOrderFulfillmentParams struct {
+	Status          entity.FulfillmentStatus
+	ShippingCarrier entity.ShippingCarrier
+	TrackingNumber  string
+	ShippedAt       time.Time
 }
 
 type AggregateOrdersParams struct {

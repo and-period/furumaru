@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -57,9 +58,46 @@ func (s *service) CaptureOrder(ctx context.Context, in *store.CaptureOrderInput)
 		return internalError(err)
 	}
 	if !order.Capturable() {
-		return fmt.Errorf("service: this order cannot be captured: %w", exception.ErrFailedPrecondition)
+		return fmt.Errorf("service: this order cannot be capture: %w", exception.ErrFailedPrecondition)
 	}
 	_, err = s.komoju.Payment.Capture(ctx, order.OrderPayment.PaymentID)
+	return internalError(err)
+}
+
+func (s *service) DraftOrder(ctx context.Context, in *store.DraftOrderInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	order, err := s.db.Order.Get(ctx, in.OrderID)
+	if err != nil {
+		return internalError(err)
+	}
+	if !order.Preservable() {
+		return fmt.Errorf("service: this order cannot be save: %w", exception.ErrFailedPrecondition)
+	}
+	params := &database.DraftOrderParams{
+		ShippingMessage: in.ShippingMessage,
+	}
+	err = s.db.Order.Draft(ctx, in.OrderID, params)
+	return internalError(err)
+}
+
+func (s *service) CompleteOrder(ctx context.Context, in *store.CompleteOrderInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	order, err := s.db.Order.Get(ctx, in.OrderID)
+	if err != nil {
+		return internalError(err)
+	}
+	if !order.Completable() {
+		return fmt.Errorf("service: this order cannot be complete: %w", exception.ErrFailedPrecondition)
+	}
+	params := &database.CompleteOrderParams{
+		ShippingMessage: in.ShippingMessage,
+		CompletedAt:     s.now(),
+	}
+	err = s.db.Order.Complete(ctx, in.OrderID, params)
 	return internalError(err)
 }
 
@@ -75,6 +113,47 @@ func (s *service) CancelOrder(ctx context.Context, in *store.CancelOrderInput) e
 		return fmt.Errorf("service: this order cannot be canceled: %w", exception.ErrFailedPrecondition)
 	}
 	_, err = s.komoju.Payment.Cancel(ctx, order.OrderPayment.PaymentID)
+	return internalError(err)
+}
+
+func (s *service) RefundOrder(ctx context.Context, in *store.RefundOrderInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	order, err := s.db.Order.Get(ctx, in.OrderID)
+	if err != nil {
+		return internalError(err)
+	}
+	if !order.Refundable() {
+		return fmt.Errorf("service: this order cannot be refund: %w", exception.ErrFailedPrecondition)
+	}
+	params := &komoju.RefundParams{
+		PaymentID:   order.OrderPayment.PaymentID,
+		Amount:      order.OrderPayment.Total,
+		Description: in.Description,
+	}
+	_, err = s.komoju.Payment.Refund(ctx, params)
+	return internalError(err)
+}
+
+func (s *service) UpdateOrderFulfillment(ctx context.Context, in *store.UpdateOrderFulfillmentInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	order, err := s.db.Order.Get(ctx, in.OrderID)
+	if err != nil {
+		return internalError(err)
+	}
+	if order.Completed() {
+		return fmt.Errorf("service: this order is already completed: %w", exception.ErrFailedPrecondition)
+	}
+	params := &database.UpdateOrderFulfillmentParams{
+		Status:          entity.FulfillmentStatusFulfilled,
+		ShippingCarrier: in.ShippingCarrier,
+		TrackingNumber:  in.TrackingNumber,
+		ShippedAt:       s.now(),
+	}
+	err = s.db.Order.UpdateFulfillment(ctx, in.FulfillmentID, params)
 	return internalError(err)
 }
 

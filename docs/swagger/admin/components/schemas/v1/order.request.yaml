@@ -18,6 +18,16 @@ completeOrderRequest:
   - shippingMessage
   example:
     shippingMessage: '購入ありがとうございます。'
+refundOrderRequest:
+  type: object
+  properties:
+    description:
+      type: string
+      description: 返金理由詳細
+  required:
+  - description
+  example:
+    description: '在庫が不足しているため。'
 updateOrderFulfillmentRequest:
   type: object
   properties:

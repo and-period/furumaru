@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -179,7 +180,14 @@ func (h *handler) DraftOrder(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+	in := &store.DraftOrderInput{
+		OrderID:         util.GetParam(ctx, "orderId"),
+		ShippingMessage: req.ShippingMessage,
+	}
+	if err := h.store.DraftOrder(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
@@ -200,7 +208,14 @@ func (h *handler) CompleteOrder(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+	in := &store.CompleteOrderInput{
+		OrderID:         util.GetParam(ctx, "orderId"),
+		ShippingMessage: req.ShippingMessage,
+	}
+	if err := h.store.CompleteOrder(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
@@ -216,8 +231,20 @@ func (h *handler) CancelOrder(ctx *gin.Context) {
 }
 
 func (h *handler) RefundOrder(ctx *gin.Context) {
-	// TODO: 詳細の実装
-	ctx.Status(http.StatusNotImplemented)
+	req := &request.RefundOrderRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &store.RefundOrderInput{
+		OrderID:     util.GetParam(ctx, "orderId"),
+		Description: req.Description,
+	}
+	if err := h.store.RefundOrder(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
@@ -226,7 +253,16 @@ func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+	in := &store.UpdateOrderFulfillmentInput{
+		OrderID:         util.GetParam(ctx, "orderId"),
+		FulfillmentID:   util.GetParam(ctx, "fulfillmentId"),
+		ShippingCarrier: entity.ShippingCarrier(req.ShippingCarrier),
+		TrackingNumber:  req.TrackingNumber,
+	}
+	if err := h.store.UpdateOrderFulfillment(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 

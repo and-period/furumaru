@@ -453,6 +453,8 @@ components:
       $ref: './components/schemas/v1/order.request.yaml#/draftOrderRequest'
     v1CompleteOrderRequest:
       $ref: './components/schemas/v1/order.request.yaml#/completeOrderRequest'
+    v1RefundOrderRequest:
+      $ref: './components/schemas/v1/order.request.yaml#/refundOrderRequest'
     v1UpdateOrderFulfillmentRequest:
       $ref: './components/schemas/v1/order.request.yaml#/updateOrderFulfillmentRequest'
     v1UploadCoordinatorThumbnailRequest:

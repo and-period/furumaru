@@ -430,8 +430,30 @@ type CaptureOrderInput struct {
 	OrderID string `validate:"required"`
 }
 
+type DraftOrderInput struct {
+	OrderID         string `validate:"required"`
+	ShippingMessage string `validate:"max=2000"`
+}
+
+type CompleteOrderInput struct {
+	OrderID         string `validate:"required"`
+	ShippingMessage string `validate:"required,max=2000"`
+}
+
 type CancelOrderInput struct {
 	OrderID string `validate:"required"`
+}
+
+type RefundOrderInput struct {
+	OrderID     string `validate:"required"`
+	Description string `validate:"required"`
+}
+
+type UpdateOrderFulfillmentInput struct {
+	OrderID         string                 `validate:"required"`
+	FulfillmentID   string                 `validate:"required"`
+	ShippingCarrier entity.ShippingCarrier `validate:"required,oneof=1 2"`
+	TrackingNumber  string                 `validate:"required"`
 }
 
 type AggregateOrdersInput struct {
