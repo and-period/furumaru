@@ -132,7 +132,6 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 		ThumbnailURL:    in.ThumbnailURL,
 		ImageURL:        in.ImageURL,
 		OpeningVideoURL: in.OpeningVideoURL,
-		Public:          in.Public,
 		StartAt:         in.StartAt,
 		EndAt:           in.EndAt,
 	}
@@ -178,6 +177,14 @@ func (s *service) ApproveSchedule(ctx context.Context, in *store.ApproveSchedule
 		ApprovedAdminID: in.AdminID,
 	}
 	err = s.db.Schedule.Approve(ctx, in.ScheduleID, params)
+	return internalError(err)
+}
+
+func (s *service) PublishSchedule(ctx context.Context, in *store.PublishScheduleInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	err := s.db.Schedule.Publish(ctx, in.ScheduleID, in.Public)
 	return internalError(err)
 }
 

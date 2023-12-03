@@ -4240,6 +4240,19 @@ export interface PromotionsResponse {
 /**
  * 
  * @export
+ * @interface PublishScheduleRequest
+ */
+export interface PublishScheduleRequest {
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof PublishScheduleRequest
+     */
+    'public': boolean;
+}
+/**
+ * 
+ * @export
  * @interface RefreshAuthTokenRequest
  */
 export interface RefreshAuthTokenRequest {
@@ -5705,12 +5718,6 @@ export interface UpdateScheduleRequest {
      * @memberof UpdateScheduleRequest
      */
     'openingVideoUrl': string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof UpdateScheduleRequest
-     */
-    'public': boolean;
     /**
      * マルシェ開始日時
      * @type {number}
@@ -14909,6 +14916,50 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール公開
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {PublishScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1PublishSchedule: async (scheduleId: string, body: PublishScheduleRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1PublishSchedule', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1PublishSchedule', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}/publish`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {UpdateScheduleRequest} body 
@@ -15138,6 +15189,18 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール公開
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {PublishScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PublishSchedule(scheduleId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {UpdateScheduleRequest} body 
@@ -15232,6 +15295,17 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          */
         v1ListSchedules(limit?: number, offset?: number, options?: any): AxiosPromise<SchedulesResponse> {
             return localVarFp.v1ListSchedules(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary マルシェ開催スケジュール公開
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {PublishScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1PublishSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -15332,6 +15406,19 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1ListSchedules(limit?: number, offset?: number, options?: AxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1ListSchedules(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary マルシェ開催スケジュール公開
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {PublishScheduleRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1PublishSchedule(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

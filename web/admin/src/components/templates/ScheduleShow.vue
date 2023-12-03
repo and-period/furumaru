@@ -46,10 +46,13 @@ const props = defineProps({
       thumbnailUrl: '',
       imageUrl: '',
       openingVideoUrl: '',
-      public: false,
       startAt: dayjs().unix(),
       endAt: dayjs().unix()
     })
+  },
+  publicFormData: {
+    type: Boolean,
+    default: false
   },
   createLiveFormData: {
     type: Object as PropType<CreateLiveRequest>,
@@ -183,6 +186,7 @@ const emit = defineEmits<{
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
   (e: 'update:opening-video', files: FileList): void
+  (e: 'update:public', publish: boolean): void
   (e: 'search:producer', name: string): void
   (e: 'search:product', producerId: string, name: string): void
   (e: 'submit:schedule'): void
@@ -259,6 +263,10 @@ const onChangeOpeningVideo = (files: FileList): void => {
   emit('update:opening-video', files)
 }
 
+const onChangePublic = (publish: boolean): void => {
+  emit('update:public', publish)
+}
+
 const onSearchProducer = (name: string): void => {
   emit('search:producer', name)
 }
@@ -332,6 +340,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
         @update:thumbnail="onChangeThumbnailFile"
         @update:image="onChangeImageFile"
         @update:opening-video="onChangeOpeningVideo"
+        @update:public="onChangePublic"
         @submit="onSubmitSchedule"
       />
     </v-window-item>

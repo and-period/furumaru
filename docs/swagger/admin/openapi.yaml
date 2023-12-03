@@ -169,6 +169,8 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/index.yaml'
   /v1/schedules/{scheduleId}/approval:
     $ref: './paths/v1/schedules/_scheduleId/approval.yaml'
+  /v1/schedules/{scheduleId}/publish:
+    $ref: './paths/v1/schedules/_scheduleId/publish.yaml'
   # Live
   /v1/schedules/{scheduleId}/lives:
     $ref: './paths/v1/schedules/_scheduleId/lives/index.yaml'
@@ -431,6 +433,8 @@ components:
       $ref: './components/schemas/v1/schedule.request.yaml#/updateScheduleRequest'
     v1ApproveScheduleRequest:
       $ref: './components/schemas/v1/schedule.request.yaml#/approveScheduleRequest'
+    v1PublishScheduleRequest:
+      $ref: './components/schemas/v1/schedule.request.yaml#/publishScheduleRequest'
     v1CreateLiveRequest:
       $ref: './components/schemas/v1/live.request.yaml#/createLiveRequest'
     v1UpdateLiveRequest:

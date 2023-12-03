@@ -405,7 +405,6 @@ func TestUpdateSchedule(t *testing.T) {
 		ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 		ImageURL:        "https://and-period.jp/image.png",
 		OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-		Public:          true,
 		StartAt:         now.AddDate(0, -1, 0),
 		EndAt:           now.AddDate(0, 1, 0),
 	}
@@ -432,7 +431,6 @@ func TestUpdateSchedule(t *testing.T) {
 				ThumbnailURL:    "https://tmp.and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-				Public:          true,
 				StartAt:         now.AddDate(0, -1, 0),
 				EndAt:           now.AddDate(0, 1, 0),
 			},
@@ -456,7 +454,6 @@ func TestUpdateSchedule(t *testing.T) {
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-				Public:          true,
 				StartAt:         now.AddDate(0, -1, 0),
 				EndAt:           now.AddDate(0, 1, 0),
 			},
@@ -475,7 +472,6 @@ func TestUpdateSchedule(t *testing.T) {
 				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
-				Public:          true,
 				StartAt:         now.AddDate(0, -1, 0),
 				EndAt:           now.AddDate(0, 1, 0),
 			},
@@ -637,6 +633,54 @@ func TestApproveSchedule(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.ApproveSchedule(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestPublishSchedule(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *store.PublishScheduleInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Publish(ctx, "schedule-id", true).Return(nil)
+			},
+			input: &store.PublishScheduleInput{
+				ScheduleID: "schedule-id",
+				Public:     true,
+			},
+			expect: nil,
+		},
+		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &store.PublishScheduleInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to publish schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Publish(ctx, "schedule-id", true).Return(assert.AnError)
+			},
+			input: &store.PublishScheduleInput{
+				ScheduleID: "schedule-id",
+				Public:     true,
+			},
+			expect: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.PublishSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
