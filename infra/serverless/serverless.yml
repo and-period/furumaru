@@ -776,12 +776,12 @@ stepFunctions:
                   - MediaStore.ContainerNotFoundException
                 Comment: コンテナが存在しない場合は終了
                 Next: Finish
-            Next: ListmediaStoreItems
-          ListmediaStoreItems:
+            Next: ListMediaStoreItems
+          ListMediaStoreItems:
             Type: Task
             Comment: MediaStoreのコンテナ内にオブジェクトがあるか確認
             InputPath: $
-            ResultPath: $.ListObjectsResult
+            ResultPath: $.ListMediaStoreItemsResult
             Resource:
               Fn::GetAtt: [listmediaStoreItems, Arn]
             Next: CheckObjectExists
@@ -789,9 +789,9 @@ stepFunctions:
             Type: Choice
             InputPath: $
             Choices:
-              - Variable: $.ListObjectsResult
-                BooleanEquals: true
-                Next: Finish
+              - Variable: $.ListMediaStoreItemsResult.Items[0]
+                IsPresent: false
+                Next: DeleteContainer
             Default: DeleteContainer
           # DeleteObject:
           #   Type: Task
