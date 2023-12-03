@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreatePromotionRequest,
@@ -82,11 +81,6 @@ export const usePromotionStore = defineStore('promotion', {
     async createPromotion (payload: CreatePromotionRequest): Promise<void> {
       try {
         await apiClient.promotionApi().v1CreatePromotion(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: `${payload.title}を作成しました。`,
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'このクーポンコードはすでに登録されています。' })
       }
@@ -97,13 +91,8 @@ export const usePromotionStore = defineStore('promotion', {
      * @param promotionId お知らせID
      */
     async deletePromotion (promotionId: string): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         await apiClient.promotionApi().v1DeletePromotion(promotionId)
-        commonStore.addSnackbar({
-          message: 'セール情報の削除が完了しました',
-          color: 'info'
-        })
         this.fetchPromotions()
       } catch (err) {
         return this.errorHandler(err)
@@ -116,13 +105,8 @@ export const usePromotionStore = defineStore('promotion', {
      * @param payload
      */
     async updatePromotion (promotionId: string, payload: UpdatePromotionRequest): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         await apiClient.promotionApi().v1UpdatePromotion(promotionId, payload)
-        commonStore.addSnackbar({
-          message: 'セール情報の編集が完了しました',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'このクーポンコードはすでに登録されています。' })
       }

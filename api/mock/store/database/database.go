@@ -312,6 +312,20 @@ func (mr *MockOrderMockRecorder) Aggregate(ctx, params interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Aggregate", reflect.TypeOf((*MockOrder)(nil).Aggregate), ctx, params)
 }
 
+// Complete mocks base method.
+func (m *MockOrder) Complete(ctx context.Context, orderID string, params *database.CompleteOrderParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Complete", ctx, orderID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Complete indicates an expected call of Complete.
+func (mr *MockOrderMockRecorder) Complete(ctx, orderID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Complete", reflect.TypeOf((*MockOrder)(nil).Complete), ctx, orderID, params)
+}
+
 // Count mocks base method.
 func (m *MockOrder) Count(ctx context.Context, params *database.ListOrdersParams) (int64, error) {
 	m.ctrl.T.Helper()
@@ -339,6 +353,20 @@ func (m *MockOrder) Create(ctx context.Context, order *entity.Order) error {
 func (mr *MockOrderMockRecorder) Create(ctx, order interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockOrder)(nil).Create), ctx, order)
+}
+
+// Draft mocks base method.
+func (m *MockOrder) Draft(ctx context.Context, orderID string, params *database.DraftOrderParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Draft", ctx, orderID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Draft indicates an expected call of Draft.
+func (mr *MockOrderMockRecorder) Draft(ctx, orderID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Draft", reflect.TypeOf((*MockOrder)(nil).Draft), ctx, orderID, params)
 }
 
 // Get mocks base method.
@@ -379,6 +407,20 @@ func (mr *MockOrderMockRecorder) List(ctx, params interface{}, fields ...interfa
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, params}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockOrder)(nil).List), varargs...)
+}
+
+// UpdateFulfillment mocks base method.
+func (m *MockOrder) UpdateFulfillment(ctx context.Context, fulfillmentID string, params *database.UpdateOrderFulfillmentParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateFulfillment", ctx, fulfillmentID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateFulfillment indicates an expected call of UpdateFulfillment.
+func (mr *MockOrderMockRecorder) UpdateFulfillment(ctx, fulfillmentID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFulfillment", reflect.TypeOf((*MockOrder)(nil).UpdateFulfillment), ctx, fulfillmentID, params)
 }
 
 // UpdatePaymentStatus mocks base method.
@@ -1218,6 +1260,20 @@ func (mr *MockScheduleMockRecorder) MultiGet(ctx, scheduleIDs interface{}, field
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, scheduleIDs}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockSchedule)(nil).MultiGet), varargs...)
+}
+
+// Publish mocks base method.
+func (m *MockSchedule) Publish(ctx context.Context, scheduleID string, public bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Publish", ctx, scheduleID, public)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Publish indicates an expected call of Publish.
+func (mr *MockScheduleMockRecorder) Publish(ctx, scheduleID, public interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Publish", reflect.TypeOf((*MockSchedule)(nil).Publish), ctx, scheduleID, public)
 }
 
 // Update mocks base method.

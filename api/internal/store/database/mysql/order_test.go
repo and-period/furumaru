@@ -660,6 +660,349 @@ func TestOrder_UpdatePaymentStatus(t *testing.T) {
 	}
 }
 
+func TestOrder_UpdateFulfillment(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	err = db.DB.Create(&products).Error
+	require.NoError(t, err)
+	for i := range products {
+		err = db.DB.Create(&products[i].ProductRevision).Error
+		require.NoError(t, err)
+	}
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
+		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
+		err := db.DB.Create(&order).Error
+		require.NoError(t, err)
+
+		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
+		payment.Status = status
+		err = db.DB.Create(&payment).Error
+		require.NoError(t, err)
+
+		fulfillments := make(entity.OrderFulfillments, 1)
+		fulfillments[0] = testOrderFulfillment("fulfillment-id", orderID, 1, 1, now)
+		err = db.DB.Create(&fulfillments).Error
+		require.NoError(t, err)
+
+		items := make(entity.OrderItems, 2)
+		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
+		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
+		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		fulfillmentID string
+		params        *database.UpdateOrderFulfillmentParams
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success fulfilled",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				fulfillmentID: "fulfillment-id",
+				params: &database.UpdateOrderFulfillmentParams{
+					Status:          entity.FulfillmentStatusFulfilled,
+					ShippingCarrier: entity.ShippingCarrierYamato,
+					TrackingNumber:  "tracking-number",
+					ShippedAt:       now(),
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name: "success uunfulfilled",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusAuthorized, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				fulfillmentID: "fulfillment-id",
+				params: &database.UpdateOrderFulfillmentParams{
+					Status:          entity.FulfillmentStatusUnfulfilled,
+					ShippingCarrier: entity.ShippingCarrierYamato,
+					TrackingNumber:  "tracking-number",
+					ShippedAt:       now(),
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &order{db: db, now: now}
+			err = db.UpdateFulfillment(ctx, tt.args.fulfillmentID, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func TestOrder_Draft(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	err = db.DB.Create(&products).Error
+	require.NoError(t, err)
+	for i := range products {
+		err = db.DB.Create(&products[i].ProductRevision).Error
+		require.NoError(t, err)
+	}
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
+		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
+		err := db.DB.Create(&order).Error
+		require.NoError(t, err)
+
+		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
+		payment.Status = status
+		err = db.DB.Create(&payment).Error
+		require.NoError(t, err)
+
+		fulfillments := make(entity.OrderFulfillments, 1)
+		fulfillments[0] = testOrderFulfillment("fulfillment-id", orderID, 1, 1, now)
+		err = db.DB.Create(&fulfillments).Error
+		require.NoError(t, err)
+
+		items := make(entity.OrderItems, 2)
+		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
+		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
+		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		orderID string
+		params  *database.DraftOrderParams
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.DraftOrderParams{
+					ShippingMessage: "購入ありがとうございます。",
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &order{db: db, now: now}
+			err = db.Draft(ctx, tt.args.orderID, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
+func TestOrder_Complete(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	categories := make(entity.Categories, 2)
+	categories[0] = testCategory("category-id01", "野菜", now())
+	categories[1] = testCategory("category-id02", "果物", now())
+	err = db.DB.Create(&categories).Error
+	require.NoError(t, err)
+	productTypes := make(entity.ProductTypes, 2)
+	productTypes[0] = testProductType("type-id01", "category-id01", "野菜", now())
+	productTypes[1] = testProductType("type-id02", "category-id02", "果物", now())
+	err = db.DB.Create(&productTypes).Error
+	require.NoError(t, err)
+	products := make(entity.Products, 2)
+	products[0] = testProduct("product-id01", "type-id01", "category-id01", "coordinator-id", "producer-id", []string{}, 1, now())
+	products[1] = testProduct("product-id02", "type-id02", "category-id02", "coordinator-id", "producer-id", []string{}, 2, now())
+	err = db.DB.Create(&products).Error
+	require.NoError(t, err)
+	for i := range products {
+		err = db.DB.Create(&products[i].ProductRevision).Error
+		require.NoError(t, err)
+	}
+	schedule := testSchedule("schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&schedule).Error
+	require.NoError(t, err)
+
+	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
+		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
+		err := db.DB.Create(&order).Error
+		require.NoError(t, err)
+
+		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
+		payment.Status = status
+		err = db.DB.Create(&payment).Error
+		require.NoError(t, err)
+
+		fulfillments := make(entity.OrderFulfillments, 1)
+		fulfillments[0] = testOrderFulfillment("fulfillment-id", orderID, 1, 1, now)
+		err = db.DB.Create(&fulfillments).Error
+		require.NoError(t, err)
+
+		items := make(entity.OrderItems, 2)
+		items[0] = testOrderItem("fulfillment-id", 1, orderID, now)
+		items[1] = testOrderItem("fulfillment-id", 2, orderID, now)
+		err = db.DB.Create(&items).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		orderID string
+		params  *database.CompleteOrderParams
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				orderID: "order-id",
+				params: &database.CompleteOrderParams{
+					ShippingMessage: "購入ありがとうございます。",
+					CompletedAt:     now(),
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &order{db: db, now: now}
+			err = db.Complete(ctx, tt.args.orderID, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
 func TestOrder_Aggregate(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

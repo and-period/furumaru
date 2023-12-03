@@ -2,11 +2,12 @@
 import { storeToRefs } from 'pinia'
 import { convertI18nToJapanesePhoneNumber, convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert } from '~/lib/hooks'
-import { useAdministratorStore } from '~/store'
+import { useAdministratorStore, useCommonStore } from '~/store'
 import type { UpdateAdministratorRequest } from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
+const commonStore = useCommonStore()
 const administratorStore = useAdministratorStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
@@ -50,6 +51,10 @@ const handleSubmit = async (): Promise<void> => {
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
     }
     await administratorStore.updateAdministrator(administratorId, req)
+    commonStore.addSnackbar({
+      message: '管理者情報の更新が完了しました。',
+      color: 'info'
+    })
     router.push('/administrators')
   } catch (err) {
     if (err instanceof Error) {

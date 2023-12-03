@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
 import type {
@@ -91,11 +90,6 @@ export const useProducerStore = defineStore('producer', {
     async createProducer (payload: CreateProducerRequest): Promise<void> {
       try {
         await apiClient.producerApi().v1CreateProducer(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: `${payload.username}を作成しました。`,
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'このメールアドレスはすでに登録されているため、登録できません。' })
       }

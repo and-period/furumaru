@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, useCoordinatorStore, useScheduleStore } from '~/store'
+import { useAuthStore, useCommonStore, useCoordinatorStore, useScheduleStore } from '~/store'
 import type { Schedule } from '~/types/api'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const coordinatorStore = useCoordinatorStore()
 const scheduleStore = useScheduleStore()
@@ -63,6 +64,10 @@ const handleClickApproval = async (scheduleId: string): Promise<void> => {
       throw new Error(`failed to find schedule. scheduleId=${scheduleId}`)
     }
     await scheduleStore.approveSchedule(schedule)
+    commonStore.addSnackbar({
+      message: `${schedule.title}を更新しました。`,
+      color: 'info'
+    })
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)

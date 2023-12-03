@@ -21,7 +21,6 @@ const router = useRouter()
 const coordinatorStore = useCoordinatorStore()
 
 const relateProducers = computed(() => {
-  console.log(coordinatorStore.producers)
   return coordinatorStore.producers
 })
 

@@ -18,7 +18,6 @@ const props = defineProps({
       thumbnailUrl: '',
       imageUrl: '',
       openingVideoUrl: '',
-      public: false,
       startAt: dayjs().unix(),
       endAt: dayjs().unix()
     })
@@ -72,6 +71,7 @@ const emit = defineEmits<{
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
   (e: 'update:opening-video', files: FileList): void
+  (e: 'update:public', publish: boolean): void
   (e: 'submit'): void
 }>()
 
@@ -88,10 +88,13 @@ const scheduleValue = computed({
   get: (): Schedule => props.schedule,
   set: (schedule: Schedule): void => emit('update:schedule', schedule)
 })
+const publicValue = computed({
+  get: (): boolean => props.schedule.public,
+  set: (publish: boolean): void => emit('update:public', publish)
+})
 const formDataRules = computed(() => ({
   title: { required, maxLength: maxLength(200) },
-  description: { required, maxLength: maxLength(2000) },
-  public: {}
+  description: { required, maxLength: maxLength(2000) }
 }))
 const timeDataRules = computed(() => ({
   startDate: { required },
@@ -232,7 +235,7 @@ const onSubmit = async (): Promise<void> => {
             readonly
           />
           <v-switch
-            v-model="formDataValidate.public.$model"
+            v-model="publicValue"
             label="公開する"
             color="primary"
           />

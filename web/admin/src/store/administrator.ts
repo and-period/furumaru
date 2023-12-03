@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { apiClient } from '~/plugins/api-client'
 import type { Administrator, CreateAdministratorRequest, UpdateAdministratorRequest } from '~/types/api'
 
@@ -50,11 +49,6 @@ export const useAdministratorStore = defineStore('administrator', {
     async createAdministrator (payload: CreateAdministratorRequest): Promise<void> {
       try {
         await apiClient.administratorApi().v1CreateAdministrator(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: `${payload.lastname} ${payload.firstname}を作成しました。`,
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'このメールアドレスはすでに登録されているため、登録できません。' })
       }
@@ -68,11 +62,6 @@ export const useAdministratorStore = defineStore('administrator', {
     async updateAdministrator (administratorId: string, payload: UpdateAdministratorRequest): Promise<void> {
       try {
         await apiClient.administratorApi().v1UpdateAdministrator(administratorId, payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: '管理者情報の更新が完了しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'このメールアドレスはすでに登録されています。' })
       }
@@ -85,11 +74,6 @@ export const useAdministratorStore = defineStore('administrator', {
     async deleteAdministrator (administratorId: string): Promise<void> {
       try {
         await apiClient.administratorApi().v1DeleteAdministrator(administratorId)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: '管理者情報の削除が完了しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }

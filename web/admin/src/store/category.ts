@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CategoriesResponse,
@@ -81,14 +80,9 @@ export const useCategoryStore = defineStore('category', {
      * @param payload
      */
     async createCategory (payload: CreateCategoryRequest): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         const res = await apiClient.categoryApi().v1CreateCategory(payload)
         this.categories.unshift(res.data.category)
-        commonStore.addSnackbar({
-          message: 'カテゴリーを追加しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'このカテゴリー名はすでに登録されています。' })
       }
@@ -100,13 +94,8 @@ export const useCategoryStore = defineStore('category', {
      * @param payload
      */
     async updateCategory (categoryId: string, payload: UpdateCategoryRequest) {
-      const commonStore = useCommonStore()
       try {
         await apiClient.categoryApi().v1UpdateCategory(categoryId, payload)
-        commonStore.addSnackbar({
-          message: '変更しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'このカテゴリー名はすでに登録されています。' })
       }
@@ -118,13 +107,8 @@ export const useCategoryStore = defineStore('category', {
      * @param categoryId カテゴリID
      */
     async deleteCategory (categoryId: string): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         await apiClient.categoryApi().v1DeleteCategory(categoryId)
-        commonStore.addSnackbar({
-          message: 'カテゴリー削除が完了しました',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }

@@ -2,11 +2,12 @@
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
-import { useBroadcastStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore } from '~/store'
+import { useBroadcastStore, useCommonStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore } from '~/store'
 import type { CreateLiveRequest, Live, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
+const commonStore = useCommonStore()
 const scheduleStore = useScheduleStore()
 const liveStore = useLiveStore()
 const broadcastStore = useBroadcastStore()
@@ -50,7 +51,6 @@ const scheduleFormData = ref<UpdateScheduleRequest>({
   thumbnailUrl: '',
   imageUrl: '',
   openingVideoUrl: '',
-  public: false,
   startAt: dayjs().unix(),
   endAt: dayjs().unix()
 })
@@ -222,6 +222,10 @@ const handleSubmitUpdateSchedule = async (): Promise<void> => {
   try {
     loading.value = true
     await scheduleStore.updateSchedule(scheduleId, scheduleFormData.value)
+    commonStore.addSnackbar({
+      message: `${scheduleFormData.value.title}を更新しました。`,
+      color: 'info'
+    })
     schedule.value = { ...schedule.value, ...scheduleFormData.value }
   } catch (err) {
     if (err instanceof Error) {
@@ -231,6 +235,31 @@ const handleSubmitUpdateSchedule = async (): Promise<void> => {
       top: 0,
       behavior: 'smooth'
     })
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitPublishSchedule = async (publish: boolean): Promise<void> => {
+  try {
+    loading.value = true
+    await scheduleStore.publishSchedule(scheduleId, publish)
+    let message: string
+    if (publish) {
+      message = `${schedule.value.title}を公開しました。`
+    } else {
+      message = `${schedule.value.title}を非公開にしましました。`
+    }
+    commonStore.addSnackbar({
+      message,
+      color: 'info'
+    })
+    schedule.value = { ...schedule.value, public: publish }
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
     console.log(err)
   } finally {
     loading.value = false
@@ -410,6 +439,7 @@ try {
     @update:thumbnail="handleUploadThumbnail"
     @update:image="handleUploadImage"
     @update:opening-video="handleUploadOpeningVideo"
+    @update:public="handleSubmitPublishSchedule"
     @search:producer="handleSearchProducer"
     @search:product="handleSearchProduct"
     @submit:schedule="handleSubmitUpdateSchedule"

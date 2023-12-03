@@ -62,6 +62,7 @@ type Service interface {
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleInput) error                           // 更新
 	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error       // サムネイル画像(リサイズ済み)更新
 	ApproveSchedule(ctx context.Context, in *ApproveScheduleInput) error                         // 承認
+	PublishSchedule(ctx context.Context, in *PublishScheduleInput) error                         // 公開
 	// マルシェタイムテーブル
 	ListLives(ctx context.Context, in *ListLivesInput) (entity.Lives, int64, error) // 一覧取得
 	GetLive(ctx context.Context, in *GetLiveInput) (*entity.Live, error)            // 取得
@@ -72,7 +73,11 @@ type Service interface {
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)              // 一覧取得
 	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)                         // １件取得
 	CaptureOrder(ctx context.Context, in *CaptureOrderInput) error                                  // 注文確定
+	DraftOrder(ctx context.Context, in *DraftOrderInput) error                                      // 注文の下書き保存
+	CompleteOrder(ctx context.Context, in *CompleteOrderInput) error                                // 注文対応完了
 	CancelOrder(ctx context.Context, in *CancelOrderInput) error                                    // 注文キャンセル
+	RefundOrder(ctx context.Context, in *RefundOrderInput) error                                    // 注文返金依頼
+	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error              // 注文配送情報更新
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error) // 集計結果一覧取得
 	// 買い物かご
 	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error) // 取得

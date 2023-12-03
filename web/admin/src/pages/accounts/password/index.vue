@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useAuthStore } from '~/store'
+import { useAuthStore, useCommonStore } from '~/store'
 import type { UpdateAuthPasswordRequest } from '~/types/api'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
@@ -18,6 +19,10 @@ const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
     await authStore.updatePassword(formData.value)
+    commonStore.addSnackbar({
+      message: 'パスワードを更新しました。',
+      color: 'info'
+    })
     router.push('/')
   } catch (err) {
     if (err instanceof Error) {

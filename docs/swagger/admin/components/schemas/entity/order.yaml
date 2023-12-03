@@ -14,6 +14,11 @@ order:
     promotionId:
       type: string
       description: プロモーションID
+    shippingMessage:
+      type: string
+      description: 発送連絡時のメッセージ
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/orderStatus'
     payment:
       $ref: '#/orderPayment'
     refund:
@@ -41,6 +46,8 @@ order:
   - userId
   - coordinatorId
   - promotionId
+  - shippingMessage
+  - status
   - payment
   - refund
   - fulfillments
@@ -52,6 +59,8 @@ order:
     userId: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+    shippingMessage: '購入ありがとうございます'
+    status: 5
     payment:
       transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
       methodType: 2

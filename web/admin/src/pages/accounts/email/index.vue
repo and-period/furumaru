@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { useAlert } from '~/lib/hooks'
-import { useAuthStore } from '~/store'
+import { useAuthStore, useCommonStore } from '~/store'
 import type { UpdateAuthEmailRequest } from '~/types/api'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
@@ -16,6 +17,10 @@ const handleSubmit = async (): Promise<void> => {
   try {
     loading.value = true
     await authStore.updateEmail(formData.value)
+    commonStore.addSnackbar({
+      message: '認証コードを送信しました。',
+      color: 'info'
+    })
     router.push({
       name: 'accounts-email-verification',
       params: { email: formData.value.email }

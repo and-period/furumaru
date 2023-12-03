@@ -2,11 +2,12 @@
 import { storeToRefs } from 'pinia'
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
-import { useAuthStore, useProducerStore } from '~/store'
+import { useAuthStore, useCommonStore, useProducerStore } from '~/store'
 import { type CreateProducerRequest, Prefecture } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const producerStore = useProducerStore()
 const searchAddress = useSearchAddress()
@@ -67,6 +68,10 @@ const handleSubmit = async (): Promise<void> => {
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
     }
     await producerStore.createProducer(req)
+    commonStore.addSnackbar({
+      message: `${formData.value.username}を作成しました。`,
+      color: 'info'
+    })
     router.push('/producers')
   } catch (err) {
     if (err instanceof Error) {

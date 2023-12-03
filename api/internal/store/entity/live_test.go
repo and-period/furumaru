@@ -110,6 +110,162 @@ func TestLive_Fill(t *testing.T) {
 	}
 }
 
+func TestLives_Validate(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		live     *Live
+		schedule *Schedule
+		lives    Lives
+		expect   error
+	}{
+		{
+			name: "success empty",
+			live: &Live{
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			schedule: &Schedule{
+				ID:      "schedule-id",
+				StartAt: jst.Date(2023, 7, 15, 17, 0, 0, 0),
+				EndAt:   jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			lives:  Lives{},
+			expect: nil,
+		},
+		{
+			name: "success same live",
+			live: &Live{
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			schedule: &Schedule{
+				ID:      "schedule-id",
+				StartAt: jst.Date(2023, 7, 15, 17, 0, 0, 0),
+				EndAt:   jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			lives: Lives{
+				{
+					ID:         "live-id",
+					ScheduleID: "schedule-id",
+					StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+					EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+				},
+			},
+			expect: nil,
+		},
+		{
+			name: "success before",
+			live: &Live{
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				StartAt:    jst.Date(2023, 7, 15, 17, 0, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 18, 30, 0, 0),
+			},
+			schedule: &Schedule{
+				ID:      "schedule-id",
+				StartAt: jst.Date(2023, 7, 15, 17, 0, 0, 0),
+				EndAt:   jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			lives: Lives{
+				{
+					ID:         "other-id",
+					ScheduleID: "schedule-id",
+					StartAt:    jst.Date(2023, 7, 15, 18, 30, 0, 0),
+					EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+				},
+			},
+			expect: nil,
+		},
+		{
+			name: "success after",
+			live: &Live{
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				StartAt:    jst.Date(2023, 7, 15, 18, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			schedule: &Schedule{
+				ID:      "schedule-id",
+				StartAt: jst.Date(2023, 7, 15, 17, 0, 0, 0),
+				EndAt:   jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			lives: Lives{
+				{
+					ID:         "other-id",
+					ScheduleID: "schedule-id",
+					StartAt:    jst.Date(2023, 7, 15, 17, 0, 0, 0),
+					EndAt:      jst.Date(2023, 7, 15, 18, 30, 0, 0),
+				},
+			},
+			expect: nil,
+		},
+		{
+			name: "not found schedule",
+			live: &Live{
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				StartAt:    jst.Date(2023, 7, 15, 19, 30, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			schedule: nil,
+			lives:    Lives{},
+			expect:   errNotFoundSchedule,
+		},
+		{
+			name: "invalid schedule",
+			live: &Live{
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				StartAt:    jst.Date(2023, 7, 15, 12, 0, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 14, 30, 0, 0),
+			},
+			schedule: &Schedule{
+				ID:      "schedule-id",
+				StartAt: jst.Date(2023, 7, 15, 17, 0, 0, 0),
+				EndAt:   jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			lives:  Lives{},
+			expect: errInvalidLiveSchedule,
+		},
+		{
+			name: "invalid live schedule",
+			live: &Live{
+				ID:         "live-id",
+				ScheduleID: "schedule-id",
+				StartAt:    jst.Date(2023, 7, 15, 18, 0, 0, 0),
+				EndAt:      jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			schedule: &Schedule{
+				ID:      "schedule-id",
+				StartAt: jst.Date(2023, 7, 15, 17, 0, 0, 0),
+				EndAt:   jst.Date(2023, 7, 15, 21, 0, 0, 0),
+			},
+			lives: Lives{
+				{
+					ID:         "other-id",
+					ScheduleID: "schedule-id",
+					StartAt:    jst.Date(2023, 7, 15, 17, 0, 0, 0),
+					EndAt:      jst.Date(2023, 7, 15, 19, 0, 0, 0),
+				},
+			},
+			expect: errInvalidLiveSchedule,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.live.Validate(tt.schedule, tt.lives)
+			assert.ErrorIs(t, err, tt.expect)
+		})
+	}
+}
+
 func TestLives_IDs(t *testing.T) {
 	t.Parallel()
 

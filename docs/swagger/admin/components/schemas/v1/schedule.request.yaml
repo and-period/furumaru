@@ -68,9 +68,6 @@ updateScheduleRequest:
     openingVideoUrl:
       type: string
       description: オープニングURL
-    public:
-      type: boolean
-      description: 公開フラグ
     startAt:
       type: integer
       format: int64
@@ -85,7 +82,6 @@ updateScheduleRequest:
   - thumbnailUrl
   - imageUrl
   - openingVideoUrl
-  - public
   - startAt
   - endAt
   example:
@@ -94,7 +90,6 @@ updateScheduleRequest:
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     imageUrl: 'https://and-period.jp/image.png'
     openingVideoUrl: 'https://and-period.jp/opening-video.mp4'
-    public: true
     startAt: 1640962800
     endAt: 1640962800
 approveScheduleRequest:
@@ -107,3 +102,13 @@ approveScheduleRequest:
   - approve
   example:
     approved: true
+publishScheduleRequest:
+  type: object
+  properties:
+    public:
+      type: boolean
+      description: 公開フラグ
+  required:
+  - public
+  example:
+    public: true

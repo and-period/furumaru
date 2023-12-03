@@ -152,6 +152,54 @@ func (o *order) UpdatePaymentStatus(ctx context.Context, orderID string, params 
 	return dbError(err)
 }
 
+func (o *order) UpdateFulfillment(ctx context.Context, fulfillmentID string, params *database.UpdateOrderFulfillmentParams) error {
+	updates := map[string]interface{}{
+		"status":     params.Status,
+		"updated_at": o.now(),
+	}
+	switch params.Status {
+	case entity.FulfillmentStatusFulfilled:
+		updates["shipping_carrier"] = params.ShippingCarrier
+		updates["tracking_number"] = params.TrackingNumber
+		updates["shipped_at"] = params.ShippedAt
+	case entity.FulfillmentStatusUnfulfilled:
+		updates["shipping_carrier"] = entity.ShippingCarrierUnknown
+		updates["tracking_number"] = nil
+		updates["shipped_at"] = nil
+	}
+	err := o.db.DB.WithContext(ctx).
+		Table(orderFulfillmentTable).
+		Where("id = ?", fulfillmentID).
+		Updates(updates).Error
+	return dbError(err)
+}
+
+func (o *order) Draft(ctx context.Context, orderID string, params *database.DraftOrderParams) error {
+	updates := map[string]interface{}{
+		"shipping_message": params.ShippingMessage,
+		"updated_at":       o.now(),
+	}
+	err := o.db.DB.WithContext(ctx).
+		Table(orderTable).
+		Where("id = ?", orderID).
+		Updates(updates).Error
+	return dbError(err)
+}
+
+func (o *order) Complete(ctx context.Context, orderID string, params *database.CompleteOrderParams) error {
+	now := o.now()
+	updates := map[string]interface{}{
+		"shipping_message": params.ShippingMessage,
+		"completed_at":     now,
+		"updated_at":       now,
+	}
+	err := o.db.DB.WithContext(ctx).
+		Table(orderTable).
+		Where("id = ?", orderID).
+		Updates(updates).Error
+	return dbError(err)
+}
+
 func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (entity.AggregatedOrders, error) {
 	var orders entity.AggregatedOrders
 

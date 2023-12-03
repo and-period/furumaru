@@ -2,9 +2,10 @@
 import { storeToRefs } from 'pinia'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, useProductTagStore } from '~/store'
+import { useAuthStore, useCommonStore, useProductTagStore } from '~/store'
 import type { CreateProductTagRequest, UpdateProductTagRequest } from '~/types/api'
 
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const productTagStore = useProductTagStore()
 const pagination = usePagination()
@@ -71,6 +72,10 @@ const handleCreate = async (): Promise<void> => {
   try {
     loading.value = true
     await productTagStore.createProductTag(newFormData.value)
+    commonStore.addSnackbar({
+      message: '商品タグを追加しました。',
+      color: 'info'
+    })
     fetchState.refresh()
   } catch (err) {
     if (err instanceof Error) {
@@ -87,6 +92,10 @@ const handleUpdate = async (productTagId: string): Promise<void> => {
   try {
     loading.value = true
     await productTagStore.updateProductTag(productTagId, editFormData.value)
+    commonStore.addSnackbar({
+      message: '商品タグを更新しました。',
+      color: 'info'
+    })
     fetchState.refresh()
   } catch (err) {
     if (err instanceof Error) {
@@ -103,6 +112,10 @@ const handleDelete = async (productTagId: string): Promise<void> => {
   try {
     loading.value = true
     await productTagStore.deleteProductTag(productTagId)
+    commonStore.addSnackbar({
+      message: '商品タグを削除しました。',
+      color: 'info'
+    })
     fetchState.refresh()
   } catch (err) {
     if (err instanceof Error) {

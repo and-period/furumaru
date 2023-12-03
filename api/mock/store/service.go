@@ -197,6 +197,20 @@ func (mr *MockServiceMockRecorder) CheckoutRakutenPay(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckoutRakutenPay", reflect.TypeOf((*MockService)(nil).CheckoutRakutenPay), ctx, in)
 }
 
+// CompleteOrder mocks base method.
+func (m *MockService) CompleteOrder(ctx context.Context, in *store.CompleteOrderInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CompleteOrder", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CompleteOrder indicates an expected call of CompleteOrder.
+func (mr *MockServiceMockRecorder) CompleteOrder(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CompleteOrder", reflect.TypeOf((*MockService)(nil).CompleteOrder), ctx, in)
+}
+
 // CreateCategory mocks base method.
 func (m *MockService) CreateCategory(ctx context.Context, in *store.CreateCategoryInput) (*entity.Category, error) {
 	m.ctrl.T.Helper()
@@ -384,6 +398,20 @@ func (m *MockService) DeletePromotion(ctx context.Context, in *store.DeletePromo
 func (mr *MockServiceMockRecorder) DeletePromotion(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePromotion", reflect.TypeOf((*MockService)(nil).DeletePromotion), ctx, in)
+}
+
+// DraftOrder mocks base method.
+func (m *MockService) DraftOrder(ctx context.Context, in *store.DraftOrderInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DraftOrder", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DraftOrder indicates an expected call of DraftOrder.
+func (mr *MockServiceMockRecorder) DraftOrder(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DraftOrder", reflect.TypeOf((*MockService)(nil).DraftOrder), ctx, in)
 }
 
 // GetCart mocks base method.
@@ -858,6 +886,34 @@ func (mr *MockServiceMockRecorder) NotifyPaymentCompleted(ctx, in interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyPaymentCompleted", reflect.TypeOf((*MockService)(nil).NotifyPaymentCompleted), ctx, in)
 }
 
+// PublishSchedule mocks base method.
+func (m *MockService) PublishSchedule(ctx context.Context, in *store.PublishScheduleInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PublishSchedule", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PublishSchedule indicates an expected call of PublishSchedule.
+func (mr *MockServiceMockRecorder) PublishSchedule(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PublishSchedule", reflect.TypeOf((*MockService)(nil).PublishSchedule), ctx, in)
+}
+
+// RefundOrder mocks base method.
+func (m *MockService) RefundOrder(ctx context.Context, in *store.RefundOrderInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefundOrder", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RefundOrder indicates an expected call of RefundOrder.
+func (mr *MockServiceMockRecorder) RefundOrder(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefundOrder", reflect.TypeOf((*MockService)(nil).RefundOrder), ctx, in)
+}
+
 // RemoveCartItem mocks base method.
 func (m *MockService) RemoveCartItem(ctx context.Context, in *store.RemoveCartItemInput) error {
 	m.ctrl.T.Helper()
@@ -927,6 +983,20 @@ func (m *MockService) UpdateLive(ctx context.Context, in *store.UpdateLiveInput)
 func (mr *MockServiceMockRecorder) UpdateLive(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLive", reflect.TypeOf((*MockService)(nil).UpdateLive), ctx, in)
+}
+
+// UpdateOrderFulfillment mocks base method.
+func (m *MockService) UpdateOrderFulfillment(ctx context.Context, in *store.UpdateOrderFulfillmentInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateOrderFulfillment", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateOrderFulfillment indicates an expected call of UpdateOrderFulfillment.
+func (mr *MockServiceMockRecorder) UpdateOrderFulfillment(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOrderFulfillment", reflect.TypeOf((*MockService)(nil).UpdateOrderFulfillment), ctx, in)
 }
 
 // UpdatePaymentSystem mocks base method.

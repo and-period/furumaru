@@ -363,7 +363,6 @@ type UpdateScheduleInput struct {
 	ThumbnailURL    string    `validate:"url"`
 	ImageURL        string    `validate:"url"`
 	OpeningVideoURL string    `validate:"url"`
-	Public          bool      `validate:""`
 	StartAt         time.Time `validate:"required"`
 	EndAt           time.Time `validate:"required,gtfield=StartAt"`
 }
@@ -377,6 +376,11 @@ type ApproveScheduleInput struct {
 	ScheduleID string `validate:"required"`
 	AdminID    string `validate:"required"`
 	Approved   bool   `validate:""`
+}
+
+type PublishScheduleInput struct {
+	ScheduleID string `validate:"required"`
+	Public     bool   `validate:""`
 }
 
 type GetLiveInput struct {
@@ -426,8 +430,30 @@ type CaptureOrderInput struct {
 	OrderID string `validate:"required"`
 }
 
+type DraftOrderInput struct {
+	OrderID         string `validate:"required"`
+	ShippingMessage string `validate:"max=2000"`
+}
+
+type CompleteOrderInput struct {
+	OrderID         string `validate:"required"`
+	ShippingMessage string `validate:"required,max=2000"`
+}
+
 type CancelOrderInput struct {
 	OrderID string `validate:"required"`
+}
+
+type RefundOrderInput struct {
+	OrderID     string `validate:"required"`
+	Description string `validate:"required"`
+}
+
+type UpdateOrderFulfillmentInput struct {
+	OrderID         string                 `validate:"required"`
+	FulfillmentID   string                 `validate:"required"`
+	ShippingCarrier entity.ShippingCarrier `validate:"required,oneof=1 2"`
+	TrackingNumber  string                 `validate:"required"`
 }
 
 type AggregateOrdersInput struct {

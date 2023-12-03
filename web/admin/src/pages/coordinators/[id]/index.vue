@@ -104,7 +104,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
     }
     shippingFormData.value = { ...shipping.value }
     if (productTypes.value.length === 0) {
-      productTypeStore.fetchProductTypes(200)
+      productTypeStore.fetchProductTypes(20)
     }
   } catch (err) {
     if (err instanceof Error) {

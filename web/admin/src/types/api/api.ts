@@ -512,6 +512,19 @@ export interface CategoryResponse {
     'category': Category;
 }
 /**
+ * 
+ * @export
+ * @interface CompleteOrderRequest
+ */
+export interface CompleteOrderRequest {
+    /**
+     * 発送連絡時のメッセージ
+     * @type {string}
+     * @memberof CompleteOrderRequest
+     */
+    'shippingMessage': string;
+}
+/**
  * お問い合わせ情報
  * @export
  * @interface Contact
@@ -1959,6 +1972,19 @@ export type DiscountType = typeof DiscountType[keyof typeof DiscountType];
 /**
  * 
  * @export
+ * @interface DraftOrderRequest
+ */
+export interface DraftOrderRequest {
+    /**
+     * 発送連絡時のメッセージ
+     * @type {string}
+     * @memberof DraftOrderRequest
+     */
+    'shippingMessage': string;
+}
+/**
+ * 
+ * @export
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
@@ -2528,6 +2554,18 @@ export interface Order {
      */
     'promotionId': string;
     /**
+     * 発送連絡時のメッセージ
+     * @type {string}
+     * @memberof Order
+     */
+    'shippingMessage': string;
+    /**
+     * 
+     * @type {OrderStatus}
+     * @memberof Order
+     */
+    'status': OrderStatus;
+    /**
      * 
      * @type {OrderPayment}
      * @memberof Order
@@ -2564,6 +2602,8 @@ export interface Order {
      */
     'updatedAt': number;
 }
+
+
 /**
  * 注文配送情報
  * @export
@@ -2935,6 +2975,54 @@ export interface OrderResponse {
      */
     'products': Array<Product>;
 }
+/**
+ * 注文ステータス
+ * @export
+ * @enum {string}
+ */
+
+export const OrderStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 支払い待ち
+    */
+    UNPAID: 1,
+    /**
+    * 受注待ち
+    */
+    WAITING: 2,
+    /**
+    * 発送準備中
+    */
+    PREPARING: 3,
+    /**
+    * 発送完了
+    */
+    SHIPPED: 4,
+    /**
+    * 完了
+    */
+    COMPLETED: 5,
+    /**
+    * キャンセル
+    */
+    CANCELED: 6,
+    /**
+    * 返金
+    */
+    REFUNDED: 7,
+    /**
+    * 失敗
+    */
+    FAILED: 8
+} as const;
+
+export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+
 /**
  * 
  * @export
@@ -4240,6 +4328,19 @@ export interface PromotionsResponse {
 /**
  * 
  * @export
+ * @interface PublishScheduleRequest
+ */
+export interface PublishScheduleRequest {
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof PublishScheduleRequest
+     */
+    'public': boolean;
+}
+/**
+ * 
+ * @export
  * @interface RefreshAuthTokenRequest
  */
 export interface RefreshAuthTokenRequest {
@@ -4249,6 +4350,19 @@ export interface RefreshAuthTokenRequest {
      * @memberof RefreshAuthTokenRequest
      */
     'refreshToken': string;
+}
+/**
+ * 
+ * @export
+ * @interface RefundOrderRequest
+ */
+export interface RefundOrderRequest {
+    /**
+     * 返金理由詳細
+     * @type {string}
+     * @memberof RefundOrderRequest
+     */
+    'description': string;
 }
 /**
  * 
@@ -5279,6 +5393,27 @@ export interface UpdateNotificationRequest {
 /**
  * 
  * @export
+ * @interface UpdateOrderFulfillmentRequest
+ */
+export interface UpdateOrderFulfillmentRequest {
+    /**
+     * 
+     * @type {ShippingCarrier}
+     * @memberof UpdateOrderFulfillmentRequest
+     */
+    'shippingCarrier': ShippingCarrier;
+    /**
+     * 伝票番号
+     * @type {string}
+     * @memberof UpdateOrderFulfillmentRequest
+     */
+    'trackingNumber': string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface UpdatePaymentSystemRequest
  */
 export interface UpdatePaymentSystemRequest {
@@ -5705,12 +5840,6 @@ export interface UpdateScheduleRequest {
      * @memberof UpdateScheduleRequest
      */
     'openingVideoUrl': string;
-    /**
-     * 公開フラグ
-     * @type {boolean}
-     * @memberof UpdateScheduleRequest
-     */
-    'public': boolean;
     /**
      * マルシェ開始日時
      * @type {number}
@@ -11356,6 +11485,94 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary 注文対応完了
+         * @param {string} orderId 注文ID
+         * @param {CompleteOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CompleteOrder: async (orderId: string, body: CompleteOrderRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('v1CompleteOrder', 'orderId', orderId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CompleteOrder', 'body', body)
+            const localVarPath = `/v1/orders/{orderId}/complete`
+                .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 注文下書き保存
+         * @param {string} orderId 注文ID
+         * @param {DraftOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DraftOrder: async (orderId: string, body: DraftOrderRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('v1DraftOrder', 'orderId', orderId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1DraftOrder', 'body', body)
+            const localVarPath = `/v1/orders/{orderId}/draft`
+                .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -11441,6 +11658,98 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary 注文の返金依頼
+         * @param {string} orderId 注文ID
+         * @param {RefundOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1RefundOrder: async (orderId: string, body: RefundOrderRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('v1RefundOrder', 'orderId', orderId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1RefundOrder', 'body', body)
+            const localVarPath = `/v1/orders/{orderId}/refund`
+                .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 注文配送状況更新
+         * @param {string} orderId 注文ID
+         * @param {string} fulfillmentId 注文配送ID
+         * @param {UpdateOrderFulfillmentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateOrderFulfillment: async (orderId: string, fulfillmentId: string, body: UpdateOrderFulfillmentRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('v1UpdateOrderFulfillment', 'orderId', orderId)
+            // verify required parameter 'fulfillmentId' is not null or undefined
+            assertParamExists('v1UpdateOrderFulfillment', 'fulfillmentId', fulfillmentId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateOrderFulfillment', 'body', body)
+            const localVarPath = `/v1/orders/{orderId}/fulfillments/{fulfillmentId}`
+                .replace(`{${"orderId"}}`, encodeURIComponent(String(orderId)))
+                .replace(`{${"fulfillmentId"}}`, encodeURIComponent(String(fulfillmentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -11475,6 +11784,30 @@ export const OrderApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 注文対応完了
+         * @param {string} orderId 注文ID
+         * @param {CompleteOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CompleteOrder(orderId: string, body: CompleteOrderRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CompleteOrder(orderId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 注文下書き保存
+         * @param {string} orderId 注文ID
+         * @param {DraftOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DraftOrder(orderId: string, body: DraftOrderRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DraftOrder(orderId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -11495,6 +11828,31 @@ export const OrderApiFp = function(configuration?: Configuration) {
          */
         async v1ListOrders(limit?: number, offset?: number, orders?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrdersResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListOrders(limit, offset, orders, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 注文の返金依頼
+         * @param {string} orderId 注文ID
+         * @param {RefundOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1RefundOrder(orderId: string, body: RefundOrderRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1RefundOrder(orderId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 注文配送状況更新
+         * @param {string} orderId 注文ID
+         * @param {string} fulfillmentId 注文配送ID
+         * @param {UpdateOrderFulfillmentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateOrderFulfillment(orderId: string, fulfillmentId: string, body: UpdateOrderFulfillmentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateOrderFulfillment(orderId, fulfillmentId, body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -11529,6 +11887,28 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @summary 注文対応完了
+         * @param {string} orderId 注文ID
+         * @param {CompleteOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CompleteOrder(orderId: string, body: CompleteOrderRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1CompleteOrder(orderId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 注文下書き保存
+         * @param {string} orderId 注文ID
+         * @param {DraftOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DraftOrder(orderId: string, body: DraftOrderRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DraftOrder(orderId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -11548,6 +11928,29 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          */
         v1ListOrders(limit?: number, offset?: number, orders?: string, options?: any): AxiosPromise<OrdersResponse> {
             return localVarFp.v1ListOrders(limit, offset, orders, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 注文の返金依頼
+         * @param {string} orderId 注文ID
+         * @param {RefundOrderRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1RefundOrder(orderId: string, body: RefundOrderRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1RefundOrder(orderId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 注文配送状況更新
+         * @param {string} orderId 注文ID
+         * @param {string} fulfillmentId 注文配送ID
+         * @param {UpdateOrderFulfillmentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateOrderFulfillment(orderId: string, fulfillmentId: string, body: UpdateOrderFulfillmentRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateOrderFulfillment(orderId, fulfillmentId, body, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -11585,6 +11988,32 @@ export class OrderApi extends BaseAPI {
 
     /**
      * 
+     * @summary 注文対応完了
+     * @param {string} orderId 注文ID
+     * @param {CompleteOrderRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1CompleteOrder(orderId: string, body: CompleteOrderRequest, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1CompleteOrder(orderId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 注文下書き保存
+     * @param {string} orderId 注文ID
+     * @param {DraftOrderRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1DraftOrder(orderId: string, body: DraftOrderRequest, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1DraftOrder(orderId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary 注文取得
      * @param {string} orderId 注文ID
      * @param {*} [options] Override http request option.
@@ -11607,6 +12036,33 @@ export class OrderApi extends BaseAPI {
      */
     public v1ListOrders(limit?: number, offset?: number, orders?: string, options?: AxiosRequestConfig) {
         return OrderApiFp(this.configuration).v1ListOrders(limit, offset, orders, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 注文の返金依頼
+     * @param {string} orderId 注文ID
+     * @param {RefundOrderRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1RefundOrder(orderId: string, body: RefundOrderRequest, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1RefundOrder(orderId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 注文配送状況更新
+     * @param {string} orderId 注文ID
+     * @param {string} fulfillmentId 注文配送ID
+     * @param {UpdateOrderFulfillmentRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1UpdateOrderFulfillment(orderId: string, fulfillmentId: string, body: UpdateOrderFulfillmentRequest, options?: AxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1UpdateOrderFulfillment(orderId, fulfillmentId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -14909,6 +15365,50 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール公開
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {PublishScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1PublishSchedule: async (scheduleId: string, body: PublishScheduleRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1PublishSchedule', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1PublishSchedule', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}/publish`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {UpdateScheduleRequest} body 
@@ -15138,6 +15638,18 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール公開
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {PublishScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PublishSchedule(scheduleId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {UpdateScheduleRequest} body 
@@ -15232,6 +15744,17 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          */
         v1ListSchedules(limit?: number, offset?: number, options?: any): AxiosPromise<SchedulesResponse> {
             return localVarFp.v1ListSchedules(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary マルシェ開催スケジュール公開
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {PublishScheduleRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1PublishSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -15332,6 +15855,19 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1ListSchedules(limit?: number, offset?: number, options?: AxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1ListSchedules(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary マルシェ開催スケジュール公開
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {PublishScheduleRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: AxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1PublishSchedule(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

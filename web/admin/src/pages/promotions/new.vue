@@ -2,10 +2,11 @@
 import dayjs from 'dayjs'
 import { useAlert } from '~/lib/hooks'
 
-import { usePromotionStore } from '~/store'
+import { useCommonStore, usePromotionStore } from '~/store'
 import type { CreatePromotionRequest } from '~/types/api'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const promotionStore = usePromotionStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
@@ -29,6 +30,10 @@ const handleSubmit = async (): Promise<void> => {
       discountRate: Number(formData.value.discountRate)
     }
     await promotionStore.createPromotion(req)
+    commonStore.addSnackbar({
+      message: `${formData.value.title}を作成しました。`,
+      color: 'info'
+    })
     router.push('/promotions')
   } catch (err) {
     if (err instanceof Error) {

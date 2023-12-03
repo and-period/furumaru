@@ -1,10 +1,16 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+)
+
+var (
+	errNotFoundSchedule    = errors.New("entity: not found schedule")
+	errInvalidLiveSchedule = errors.New("entity: invalid live schedule")
 )
 
 // ライブ配信情報
@@ -49,6 +55,30 @@ func NewLive(params *NewLiveParams) *Live {
 func (l *Live) Fill(products LiveProducts) {
 	l.ProductIDs = products.ProductIDs()
 	l.LiveProducts = products
+}
+
+func (l *Live) Validate(schedule *Schedule, lives Lives) error {
+	if schedule == nil {
+		return errNotFoundSchedule
+	}
+	// マルシェ開催スケジュールとの整合性検証
+	if schedule.StartAt.After(l.StartAt) || schedule.EndAt.Before(l.EndAt) {
+		return errInvalidLiveSchedule
+	}
+	// 他のライブ配信スケジュールとの整合性検証
+	for _, live := range lives {
+		if l.ID == live.ID || l.ScheduleID != live.ScheduleID {
+			continue
+		}
+		if l.StartAt == live.EndAt || l.StartAt.After(live.EndAt) {
+			continue
+		}
+		if l.EndAt == live.StartAt || l.EndAt.Before(live.StartAt) {
+			continue
+		}
+		return errInvalidLiveSchedule
+	}
+	return nil
 }
 
 func (ls Lives) IDs() []string {

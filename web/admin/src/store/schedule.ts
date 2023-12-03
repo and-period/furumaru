@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
-import type { ApproveScheduleRequest, CreateScheduleRequest, Schedule, UpdateScheduleRequest, UploadImageResponse, UploadVideoResponse } from '~/types/api'
+import type { ApproveScheduleRequest, CreateScheduleRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest, UploadImageResponse, UploadVideoResponse } from '~/types/api'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
@@ -55,11 +54,6 @@ export const useScheduleStore = defineStore('schedule', {
     async createSchedule (payload: CreateScheduleRequest): Promise<Schedule> {
       try {
         const res = await apiClient.scheduleApi().v1CreateSchedule(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: `${payload.title}を作成しました。`,
-          color: 'info'
-        })
         return res.data.schedule
       } catch (err) {
         return this.errorHandler(err)
@@ -74,11 +68,6 @@ export const useScheduleStore = defineStore('schedule', {
     async updateSchedule (scheduleId: string, payload: UpdateScheduleRequest): Promise<void> {
       try {
         await apiClient.scheduleApi().v1UpdateSchedule(scheduleId, payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: `${payload.title}を更新しました。`,
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -93,11 +82,21 @@ export const useScheduleStore = defineStore('schedule', {
       try {
         const req: ApproveScheduleRequest = { approved: !schedule.approved }
         await apiClient.scheduleApi().v1ApproveSchedule(schedule.id, req)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: `${schedule.title}を更新しました。`,
-          color: 'info'
-        })
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * マルシェ開催スケジュールの公開/非公開をする非同期関数
+     * @param scheduleId スケジュールID
+     * @param public 公開フラグ
+     * @returns
+     */
+    async publishSchedule (scheduleId: string, published: boolean): Promise<void> {
+      try {
+        const req: PublishScheduleRequest = { public: published }
+        await apiClient.scheduleApi().v1PublishSchedule(scheduleId, req)
       } catch (err) {
         return this.errorHandler(err)
       }

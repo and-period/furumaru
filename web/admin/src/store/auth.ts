@@ -3,7 +3,6 @@ import { getToken, isSupported } from 'firebase/messaging'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
 
-import { useCommonStore } from './common'
 import { messaging } from '~/plugins/firebase'
 import { apiClient } from '~/plugins/api-client'
 import {
@@ -98,11 +97,6 @@ export const useAuthStore = defineStore('auth', {
     async updateEmail (payload: UpdateAuthEmailRequest): Promise<void> {
       try {
         await apiClient.authApi().v1UpdateAuthEmail(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: '認証コードを送信しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, {
           409: 'このメールアドレスはすでに登録されているため、変更できません。',
@@ -118,11 +112,6 @@ export const useAuthStore = defineStore('auth', {
     async verifyEmail (payload: VerifyAuthEmailRequest): Promise<void> {
       try {
         await apiClient.authApi().v1VerifyAuthEmail(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'メールアドレスが変更されました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err, { 409: 'このメールアドレスはすでに利用されているため使用できません。' })
       }
@@ -135,11 +124,6 @@ export const useAuthStore = defineStore('auth', {
     async updatePassword (payload: UpdateAuthPasswordRequest): Promise<void> {
       try {
         await apiClient.authApi().v1UpdateAuthPassword(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'パスワードを更新しました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -151,11 +135,6 @@ export const useAuthStore = defineStore('auth', {
     async forgotPassword (payload: ForgotAuthPasswordRequest): Promise<void> {
       try {
         await apiClient.authApi().v1ForgotAuthPassword(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'パスワードリセット用のメールをしました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -168,11 +147,6 @@ export const useAuthStore = defineStore('auth', {
     async resetPassword (payload: ResetAuthPasswordRequest): Promise<void> {
       try {
         await apiClient.authApi().v1ResetAuthPassword(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: 'パスワードをリセットしました。',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }

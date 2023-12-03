@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useCommonStore } from './common'
 import { useAdminStore } from './admin'
 import { apiClient } from '~/plugins/api-client'
 import type {
@@ -63,11 +62,6 @@ export const useNotificationStore = defineStore('notification', {
     ): Promise<void> {
       try {
         await apiClient.notificationApi().v1CreateNotification(payload)
-        const commonStore = useCommonStore()
-        commonStore.addSnackbar({
-          message: `${payload.title}を作成しました。`,
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -78,13 +72,8 @@ export const useNotificationStore = defineStore('notification', {
      * @param id お知らせID
      */
     async deleteNotification (id: string): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         await apiClient.notificationApi().v1DeleteNotification(id)
-        commonStore.addSnackbar({
-          message: '品物削除が完了しました',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -100,13 +89,8 @@ export const useNotificationStore = defineStore('notification', {
       id: string,
       payload: UpdateNotificationRequest
     ): Promise<void> {
-      const commonStore = useCommonStore()
       try {
         await apiClient.notificationApi().v1UpdateNotification(id, payload)
-        commonStore.addSnackbar({
-          message: 'お知らせ情報の編集が完了しました',
-          color: 'info'
-        })
       } catch (err) {
         return this.errorHandler(err)
       }
