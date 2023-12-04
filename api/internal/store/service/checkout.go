@@ -336,7 +336,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 
 func (s *service) getShippingByCoordinatorID(ctx context.Context, coordinatorID string) (*entity.Shipping, error) {
 	shipping, err := s.db.Shipping.GetByCoordinatorID(ctx, coordinatorID)
-	if errors.Is(err, exception.ErrNotFound) {
+	if errors.Is(err, database.ErrNotFound) {
 		// 配送設定が完了していないコーディネータの場合、デフォルト設定を使用
 		return s.db.Shipping.GetDefault(ctx)
 	}
