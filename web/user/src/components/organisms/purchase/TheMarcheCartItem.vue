@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Coordinator } from '~/types/api'
-import { CartItem, ShoppingCart } from '~/types/store'
+import type { Coordinator } from '~/types/api'
+import type { CartItem, ShoppingCart } from '~/types/store'
 
 interface Props {
   cartNumber: number

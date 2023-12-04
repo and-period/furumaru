@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { SignInRequest } from '~/types/api'
+import type { SignInRequest } from '~/types/api'
 
 interface Props {
   modelValue: SignInRequest

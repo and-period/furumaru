@@ -1,4 +1,4 @@
-import { PiniaPluginContext } from 'pinia'
+import type { PiniaPluginContext } from 'pinia'
 import { ResponseError } from '~/types/api'
 
 import {

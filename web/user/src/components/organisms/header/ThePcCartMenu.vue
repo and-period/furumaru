@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ShoppingCart } from '~/types/store/shopping'
+import type { ShoppingCart } from '~/types/store/shopping'
 
 interface Props {
   isAuthenticated: boolean

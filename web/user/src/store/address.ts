@@ -1,5 +1,5 @@
 import { useAuthStore } from './auth'
-import {
+import type {
   Address,
   AddressesResponse,
   CreateAddressRequest,

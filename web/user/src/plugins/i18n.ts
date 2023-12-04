@@ -1,4 +1,4 @@
-import { PiniaPluginContext } from 'pinia'
+import type { PiniaPluginContext } from 'pinia'
 
 function i18nInjector ({ app, store }: PiniaPluginContext) {
   // storeにi18nインスタンスを注入する

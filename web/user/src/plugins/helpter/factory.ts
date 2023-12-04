@@ -1,5 +1,5 @@
 import { Configuration } from '~/types/api'
-import { BaseAPI } from '~/types/api/runtime'
+import type { BaseAPI } from '~/types/api/runtime'
 
 /**
  * API クライアントのインスタンスを生成するファクトリ

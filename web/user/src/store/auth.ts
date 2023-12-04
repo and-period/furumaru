@@ -1,6 +1,6 @@
 // docs: https://pinia.vuejs.org/core-concepts/#option-stores
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import {
+import type {
   AuthUserResponse,
   CreateAuthRequest,
   SignInRequest,

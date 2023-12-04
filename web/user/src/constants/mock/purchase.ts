@@ -1,4 +1,4 @@
-import { CartItemMock } from './cart'
+import type { CartItemMock } from './cart'
 
 export interface PurchaseInnerItemMock {
   boxType: string

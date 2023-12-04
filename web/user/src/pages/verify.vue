@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store/auth'
 import { ApiBaseError } from '~/types/exception'
-import { I18n } from '~/types/locales'
+import type { I18n } from '~/types/locales'
 
 definePageMeta({
   layout: 'auth',

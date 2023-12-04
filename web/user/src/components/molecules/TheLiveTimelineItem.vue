@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LiveTimelineItemMock } from '~/constants/mock'
+import type { LiveTimelineItemMock } from '~/constants/mock'
 
 interface Props {
   time: string

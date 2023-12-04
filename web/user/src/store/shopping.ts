@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { AddCartItemRequest, CartResponse } from '~/types/api'
-import { ProductItem, ShoppingCart } from '~/types/store'
+import type { AddCartItemRequest, CartResponse } from '~/types/api'
+import type { ProductItem, ShoppingCart } from '~/types/store'
 
 /**
  * 買い物かごを管理するグローバルステート

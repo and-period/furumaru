@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
-import { CreateAddressRequest } from '~/types/api'
+import type { CreateAddressRequest } from '~/types/api'
 import { useAdressStore } from '~/store/address'
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/phone-number'
 
