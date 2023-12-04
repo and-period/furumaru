@@ -8,6 +8,7 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-unused-vars': 'off',
+    "@typescript-eslint/consistent-type-imports": "error",
     'no-unused-vars': [
       'error',
       {
