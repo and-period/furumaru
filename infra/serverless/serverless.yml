@@ -135,6 +135,11 @@ functions:
     handler: functions/calculateMP4StartTime/handler.calculateMP4StartTime
     memorySize: 128
     timeout: 10
+  getExistsChannelIndex:
+    role: lambdaRole
+    handler: functions/getExistsChannelIndex/handler.getExistsChannelIndex
+    memorySize: 128
+    timeout: 10
   disableDistribution:
     role: lambdaRole
     handler: functions/disableDistribution/handler.disableDistribution
@@ -293,7 +298,7 @@ stepFunctions:
                     Type: Pass
                     Comment: ライブ配信 - チャンネル名一覧を比較
                     InputPath: $
-                    ResultPath: $[0].CompareChannelNamesResult.ChannelExists
+                    ResultPath: $[0].CompareChannelNamesResult
                     Parameters:
                       ChannelExists.$: States.ArrayContains($[0].ExtractChannelNamesResult.ChannelNames, $[0].ChannelInput.Name)
                     Next: CheckSpecifyChannelExists
@@ -304,8 +309,27 @@ stepFunctions:
                     Choices:
                       - Variable: $[0].CompareChannelNamesResult.ChannelExists
                         BooleanEquals: true
-                        Next: SkipCreateChannel
+                        Next: GetExistsChannelIndex
                     Default: CreateChannel
+                  GetExistsChannelIndex:
+                    Type: Task
+                    Comment: ライブ配信 - チャンネル一覧から特定のNameを持つチャンネルのインデックスを取得
+                    InputPath: $
+                    ResultPath: $[0].GetExistsChannelIndexResult
+                    Resource:
+                      Fn::GetAtt: [getExistsChannelIndex, Arn]
+                    Parameters:
+                      ChannelNames.$: $[0].ExtractChannelNamesResult.ChannelNames
+                      ChannelName.$: $[0].ChannelInput.Name
+                    Next: PassChannelInfo
+                  PassChannelInfo:
+                    Type: Pass
+                    Comment: ライブ配信 - チャンネル一覧から特定のNameを持つチャンネルの情報を抽出してDB保存用に格納する
+                    InputPath: $
+                    ResultPath: $[0].ChannelResult
+                    Parameters:
+                      Channel.$: States.ArrayGetItem($[0].ListChannelsResult.Channels, $[0].GetExistsChannelIndexResult)
+                    Next: SkipCreateChannel
                   SkipCreateChannel:
                     Type: Succeed
                     Comment: チャンネルが存在する場合は終了
