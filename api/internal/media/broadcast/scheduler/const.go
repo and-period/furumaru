@@ -38,3 +38,10 @@ type CreateArchivePayload struct {
 	BucketName string `json:"BucketName"` // 保管先S3バケット名
 	Path       string `json:"Path"`       // 保管先S3バケットPath
 }
+
+// RemovePayload - 配信リソース削除リクエスト
+type RemovePayload struct {
+	CloudFrontDistributionARN string `json:"CloudFrontDistributionArn"`
+	MediaLiveChannelID        string `json:"MediaLiveChannelId"`
+	MediaStoreContainerARN    string `json:"MediaStoreContainerArn"`
+}
