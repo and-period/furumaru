@@ -11,7 +11,9 @@ export default class ApiClientFactory {
   ): T {
     const runtimeConfig = useRuntimeConfig()
     const config = new Configuration({
-      accessToken: token,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       basePath: runtimeConfig.public.API_BASE_URL,
       credentials: 'include',
     })

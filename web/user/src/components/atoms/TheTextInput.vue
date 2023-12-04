@@ -9,6 +9,8 @@ interface Props {
   message?: string
   error?: boolean
   errorMessage?: string
+  name?: string
+  id?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -57,9 +59,11 @@ const viewMessage = computed(() => {
 <template>
   <div class="mb-1">
     <div class="w-full">
-      <label v-if="withLabel" class="inline-block">{{ label }}</label>
+      <label v-if="withLabel" class="inline-block" :for="id">{{ label }}</label>
       <input
+        :id="id"
         v-model="value"
+        :name="name"
         :placeholder="placeholder"
         :required="required"
         :type="type"

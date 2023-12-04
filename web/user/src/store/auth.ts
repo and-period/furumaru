@@ -11,9 +11,19 @@ import {
  * 認証情報を管理するグローバルステート
  */
 export const useAuthStore = defineStore('auth', {
+  // 永続化の設定
+  persist: {
+    storage: persistedState.cookiesWithOptions({
+      sameSite: 'strict',
+    }),
+  },
+
   state: () => {
     return {
       isAuthenticated: false,
+      accessToken: '',
+      refreshToken: '',
+      user: undefined as AuthUserResponse | undefined,
     }
   },
 
@@ -25,8 +35,11 @@ export const useAuthStore = defineStore('auth', {
      */
     async signIn(payload: SignInRequest) {
       try {
-        await this.authApiClient().v1SignIn({ body: payload })
+        const res = await this.authApiClient().v1SignIn({ body: payload })
         this.isAuthenticated = true
+        this.accessToken = res.accessToken
+        this.refreshToken = res.refreshToken
+        await this.fetchUserInfo()
       } catch (error) {
         return this.errorHandler(error, {
           401: this.i18n.t('auth.signIn.authErrorMessage'),
@@ -51,6 +64,11 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         return this.errorHandler(error)
       }
+    },
+
+    async fetchUserInfo() {
+      const res = await this.authApiClient(this.accessToken).v1GetAuthUser()
+      this.user = res
     },
   },
 })

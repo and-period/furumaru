@@ -1,0 +1,149 @@
+<script setup lang="ts">
+import { CreateAddressRequest } from '~/types/api'
+import { prefecturesList } from '~/constants/prefectures'
+
+interface Props {
+  formData: CreateAddressRequest
+  formId: string
+}
+
+const props = defineProps<Props>()
+
+interface Emits {
+  (e: 'update:formData', val: CreateAddressRequest): void
+  (e: 'click:searchAddressButton', postalCode: string): void
+  (e: 'submit'): void
+}
+
+const emits = defineEmits<Emits>()
+
+const formDataValue = computed({
+  get: () => props.formData,
+  set: (val: CreateAddressRequest) => emits('update:formData', val),
+})
+
+const handleClickSearchAddressButton = () => {
+  emits('click:searchAddressButton', props.formData.postalCode)
+}
+
+const handleSubmit = () => {
+  emits('submit')
+}
+</script>
+
+<template>
+  <form
+    :id="formId"
+    class="flex w-full flex-col gap-4"
+    @submit.prevent="handleSubmit"
+  >
+    <div class="grid grid-cols-2 gap-4">
+      <the-text-input
+        v-model="formDataValue.lastname"
+        placeholder="性"
+        :with-label="false"
+        type="text"
+        name="lastname"
+        required
+      />
+      <the-text-input
+        v-model="formDataValue.firstname"
+        placeholder="名"
+        :with-label="false"
+        name="firstName"
+        type="text"
+        required
+      />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <the-text-input
+        v-model="formDataValue.lastnameKana"
+        placeholder="ふりがな(姓)"
+        :with-label="false"
+        type="text"
+        required
+      />
+      <the-text-input
+        v-model="formDataValue.firstnameKana"
+        placeholder="ふりがな(名)"
+        :with-label="false"
+        type="text"
+        required
+      />
+    </div>
+    <the-text-input
+      v-model="formDataValue.phoneNumber"
+      placeholder="電話番号"
+      :with-label="false"
+      type="tel"
+      required
+    />
+    <div class="flex items-center gap-4">
+      <the-text-input
+        v-model="formDataValue.postalCode"
+        placeholder="郵便番号（ハイフンなし）"
+        :with-label="false"
+        type="text"
+        name="postal-code"
+        required
+      />
+      <button
+        type="button"
+        class="bg-main px-4 py-1 text-white"
+        @click="handleClickSearchAddressButton"
+      >
+        検索
+      </button>
+    </div>
+    <select
+      v-model="formDataValue.prefectureCode"
+      :class="{
+        'mb-1 block w-full border-b border-main px-1 py-2 leading-10 text-inherit focus:outline-none': true,
+      }"
+      required
+    >
+      <option disabled value="0">都道府県</option>
+      <option
+        v-for="prefecture in prefecturesList"
+        :key="prefecture.id"
+        :value="prefecture.value"
+      >
+        {{ prefecture.text }}
+      </option>
+    </select>
+    <the-text-input
+      id="address-line1"
+      v-model="formDataValue.city"
+      placeholder="住所（市区町村)"
+      :with-label="false"
+      name="address-line1"
+      type="text"
+      required
+    />
+    <the-text-input
+      id="address-line2"
+      v-model="formDataValue.addressLine1"
+      placeholder="住所（それ以降）"
+      :with-label="false"
+      name="address-line2"
+      type="text"
+    />
+    <the-text-input
+      id="address-line3"
+      v-model="formDataValue.addressLine2"
+      placeholder="住所（マンション名、部屋番号）"
+      :with-label="false"
+      name="address-line3"
+      type="text"
+    />
+    <div class="flex items-center gap-2">
+      <input
+        id="isDefault"
+        v-model="formDataValue.isDefault"
+        type="checkbox"
+        class="h-4 w-4 rounded accent-main"
+      />
+      <label for="isDefault">この住所を配送先の既定値とする</label>
+    </div>
+  </form>
+</template>
