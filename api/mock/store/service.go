@@ -886,6 +886,20 @@ func (mr *MockServiceMockRecorder) NotifyPaymentCompleted(ctx, in interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyPaymentCompleted", reflect.TypeOf((*MockService)(nil).NotifyPaymentCompleted), ctx, in)
 }
 
+// NotifyPaymentRefunded mocks base method.
+func (m *MockService) NotifyPaymentRefunded(ctx context.Context, in *store.NotifyPaymentRefundedInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotifyPaymentRefunded", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// NotifyPaymentRefunded indicates an expected call of NotifyPaymentRefunded.
+func (mr *MockServiceMockRecorder) NotifyPaymentRefunded(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyPaymentRefunded", reflect.TypeOf((*MockService)(nil).NotifyPaymentRefunded), ctx, in)
+}
+
 // PublishSchedule mocks base method.
 func (m *MockService) PublishSchedule(ctx context.Context, in *store.PublishScheduleInput) error {
 	m.ctrl.T.Helper()

@@ -200,6 +200,27 @@ func (o *order) Complete(ctx context.Context, orderID string, params *database.C
 	return dbError(err)
 }
 
+func (o *order) Refund(ctx context.Context, orderID string, params *database.RefundOrderParams) error {
+	updates := map[string]interface{}{
+		"status":        params.Status,
+		"refund_type":   params.RefundType,
+		"refund_total":  params.RefundTotal,
+		"refund_reason": params.RefundReason,
+		"updated_at":    o.now(),
+	}
+	switch params.Status {
+	case entity.PaymentStatusCanceled:
+		updates["canceled_at"] = params.IssuedAt
+	case entity.PaymentStatusRefunded:
+		updates["refunded_at"] = params.IssuedAt
+	}
+	err := o.db.DB.WithContext(ctx).
+		Table(orderPaymentTable).
+		Where("order_id = ?", orderID).
+		Updates(updates).Error
+	return dbError(err)
+}
+
 func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersParams) (entity.AggregatedOrders, error) {
 	var orders entity.AggregatedOrders
 
