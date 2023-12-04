@@ -120,7 +120,8 @@ func (o *order) UpdatePaymentStatus(ctx context.Context, orderID string, params 
 		if order.IsCompleted() {
 			return fmt.Errorf("mysql: this order is already completed: %w", database.ErrFailedPrecondition)
 		}
-		if order.OrderPayment.UpdatedAt.After(params.IssuedAt) {
+		updatedAt := order.OrderPayment.UpdatedAt.Truncate(time.Second)
+		if updatedAt.After(params.IssuedAt) {
 			return fmt.Errorf("mysql: this event is older than the latest data: %w", database.ErrFailedPrecondition)
 		}
 
