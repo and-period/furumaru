@@ -16,6 +16,7 @@ const (
 	EventTypePaymentAuthorized EventType = "payment.authorized"
 	EventTypePaymentCaptured   EventType = "payment.captured"
 	EventTypePaymentCancelled  EventType = "payment.cancelled"
+	EventTypePaymentRefunded   EventType = "payment.refunded"
 	EventTypePaymentFailed     EventType = "payment.failed"
 	EventTypePaymentExpired    EventType = "payment.expired"
 )
@@ -31,6 +32,8 @@ func (h *handler) Event(ctx *gin.Context) {
 		h.paymentCaptured(ctx)
 	case EventTypePaymentCancelled:
 		h.paymentCancelled(ctx)
+	case EventTypePaymentRefunded:
+		h.paymentRefunded(ctx)
 	case EventTypePaymentFailed:
 		h.paymentFailed(ctx)
 	case EventTypePaymentExpired:

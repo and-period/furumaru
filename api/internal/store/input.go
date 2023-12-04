@@ -540,3 +540,12 @@ type NotifyPaymentCompletedInput struct {
 	Status    entity.PaymentStatus `validate:"required"`
 	IssuedAt  time.Time            `validate:"required"`
 }
+
+type NotifyPaymentRefundedInput struct {
+	OrderID  string               `validate:"required"`
+	Status   entity.PaymentStatus `validate:"required"`
+	Type     entity.RefundType    `validate:"required,oneof=1 2"`
+	Reason   string               `validate:"max=2000"`
+	Total    int64                `validate:"min=0"`
+	IssuedAt time.Time            `validate:"required"`
+}

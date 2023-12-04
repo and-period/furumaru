@@ -903,7 +903,7 @@ const onSubmitRefund = (): void => {
     </v-col>
   </v-row>
   <v-row>
-    <v-col v-show="isPreservable()" sm="12" md="12" lg="8">
+    <v-col sm="12" md="12" lg="8">
       <v-card>
         <v-card-title class="pb-4">
           発送連絡
@@ -913,6 +913,7 @@ const onSubmitRefund = (): void => {
             v-model="completeFormDataValue.shippingMessage"
             label="お客様へのメッセージ"
             placeholder="例：ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。"
+            :readonly="!isPreservable()"
           />
         </v-card-text>
       </v-card>
