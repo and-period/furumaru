@@ -64,12 +64,17 @@ resources:
                     - mediaStore:PutContainerPolicy
                     - mediaStore:PutCorsPolicy
                     - mediaStore:PutLifecyclePolicy
+                    - mediastore:DeleteContainer
                     - cloudfront:CreateOriginAccessControl
                     - cloudFront:CreateDistribution
                     - cloudFront:GetDistribution
                     - cloudFront:GetDistributionConfig
                     - cloudFront:DeleteDistribution
                     - iam:PassRole
+                    - states:StartExecution
+                    - states:DescribeExecution
+                    - states:ListExecutions
+                    - states:ListStateMachines
                   Resource:
                     - '*'
     lambdaRole:
@@ -105,6 +110,8 @@ resources:
                 - Effect: Allow
                   Action:
                     - mediaStore:DescribeContainer
+                    - mediaStore:ListItems
+                    - mediaStore:DeleteObject
                   Resource:
                     - '*'
                 - Effect: Allow
@@ -130,6 +137,16 @@ functions:
   disableDistribution:
     role: lambdaRole
     handler: functions/disableDistribution/handler.disableDistribution
+    memorySize: 128
+    timeout: 10
+  listMediaStoreItems:
+    role: lambdaRole
+    handler: functions/listMediaStoreItems/handler.listMediaStoreItems
+    memorySize: 128
+    timeout: 10
+  deleteMediaStoreObjects:
+    role: lambdaRole
+    handler: functions/deleteMediaStoreObjects/handler.deleteMediaStoreObjects
     memorySize: 128
     timeout: 10
 
@@ -593,6 +610,55 @@ stepFunctions:
             ResultPath: $.RegisterResoursesInfoResult
             Resource: arn:aws:lambda:ap-northeast-1:386661535629:function:furumaru-media-start-updater-stg
             End: True
+    deleteLiveResourcesMachine:
+      definition:
+        StartAt: deleteLiveResources
+        Comment: ライブ配信のリソースを削除
+        States:
+          deleteLiveResources:
+            Type: Parallel
+            End: true
+            Branches:
+              - StartAt: deleteMediaLiveResources
+                States:
+                  deleteMediaLiveResources:
+                    Type: Task
+                    Comment: MediaLiveのリソースを削除
+                    InputPath: $
+                    Resource: arn:aws:states:::states:startExecution.sync
+                    Parameters:
+                      StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteMediaLiveResoursesFunction-${self:provider.stage}
+                      Input:
+                        ChannelId.$: $.MediaLiveChannelId
+                        AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
+                    End: true
+              - StartAt: deleteCloudFrontResources
+                States:
+                  deleteCloudFrontResources:
+                    Type: Task
+                    Comment: CloudFrontのリソースを削除
+                    InputPath: $
+                    Resource: arn:aws:states:::states:startExecution.sync
+                    Parameters:
+                      StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteCloudFrontResoursesFunction-${self:provider.stage}
+                      Input:
+                        DistributionId.$: $.CloudFrontDistributionArn
+                        AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
+                    End: true
+              - StartAt: deleteMediaStoreResources
+                States:
+                  deleteMediaStoreResources:
+                    Type: Task
+                    Comment: MediaStoreのリソースを削除
+                    InputPath: $
+                    Resource: arn:aws:states:::states:startExecution.sync
+                    Parameters:
+                      StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteMediaStoreResoursesFunction-${self:provider.stage}
+                      Input:
+                        MediaStoreContainerArn.$: $.MediaStoreContainerArn
+                        AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
+                    End: true
+
     deleteMediaLiveMachine:
       name: deleteMediaLiveResoursesFunction-${self:provider.stage}
       role:
@@ -674,8 +740,15 @@ stepFunctions:
       role:
         Fn::GetAtt: [defaultRole, Arn]
       definition:
-        StartAt: GetDistributionConfig
+        StartAt: ExtractDistributionId
         States:
+          ExtractDistributionId:
+            Type: Pass
+            InputPath: $
+            ResultPath: $.DistributionId
+            Parameters:
+              DistributionId.$: States.ArrayGetItem(States.StringSplit($.CloudFrontDistributionArn, '/'), 1)
+            Next: GetDistributionConfig
           GetDistributionConfig:
             Type: Task
             Comment: CloudFrontのディストリビューション設定を取得
@@ -739,6 +812,69 @@ stepFunctions:
             Parameters:
               Id.$: $.DistributionId
               IfMatch.$: $.DistributionStatus.ETag
+            Next: Finish
+          Finish:
+            Type: Pass
+            End: true
+    deleteMediaStoreMachine:
+      name: deleteMediaStoreResoursesFunction-${self:provider.stage}
+      role:
+        Fn::GetAtt: [defaultRole, Arn]
+      definition:
+        StartAt: ExtractContainerName
+        States:
+          ExtractContainerName:
+            Type: Pass
+            InputPath: $
+            ResultPath: $.ExtractContainerNameResult
+            Parameters:
+              ContainerName.$: States.ArrayGetItem(States.StringSplit($.MediaStoreContainerArn, '/'), 1)
+            Next: CheckContainerExists
+          CheckContainerExists:
+            Type: Task
+            Comment: MediaStoreのコンテナがあるか確認
+            InputPath: $
+            ResultPath: $.CheckContainerExistsResult
+            Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
+            Parameters:
+              ContainerName.$: $.ExtractContainerNameResult.ContainerName
+            Catch:
+              - ErrorEquals:
+                  - MediaStore.ContainerNotFoundException
+                Comment: コンテナが存在しない場合は終了
+                Next: Finish
+            Next: ListMediaStoreItems
+          ListMediaStoreItems:
+            Type: Task
+            Comment: MediaStoreのコンテナ内にオブジェクトがあるか確認
+            InputPath: $
+            ResultPath: $.ListMediaStoreItemsResult
+            Resource:
+              Fn::GetAtt: [listMediaStoreItems, Arn]
+            Next: CheckObjectExists
+          CheckObjectExists:
+            Type: Choice
+            InputPath: $
+            Choices:
+              - Variable: $.ListMediaStoreItemsResult.Items[0]
+                IsPresent: false
+                Next: DeleteContainer
+            Default: DeleteObjects
+          DeleteObjects:
+            Type: Task
+            Comment: MediaStoreのコンテナ内のオブジェクトを削除
+            InputPath: $
+            ResultPath: $.DeleteObjectsResult
+            Resource:
+              Fn::GetAtt: [deleteMediaStoreObjects, Arn]
+            Next: DeleteContainer
+          DeleteContainer:
+            Type: Task
+            Comment: MediaStoreのコンテナを削除
+            InputPath: $
+            Resource: arn:aws:states:::aws-sdk:mediastore:deleteContainer
+            Parameters:
+              ContainerName.$: $.ExtractContainerNameResult.ContainerName
             Next: Finish
           Finish:
             Type: Pass

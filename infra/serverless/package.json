@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-mediastore-data": "^3.465.0",
+    "aws-cli-js": "^2.2.3",
     "aws-sdk": "^2.1505.0",
     "serverless-step-functions": "^3.14.0"
   }
