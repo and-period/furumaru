@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store/auth'
-import { CreateAuthRequest } from '~/types/api'
-import { I18n } from '~/types/locales'
+import type { CreateAuthRequest } from '~/types/api'
+import type { I18n } from '~/types/locales'
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/phone-number'
 import { ApiBaseError } from '~/types/exception'
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
-import { SignInRequest } from '~/types/api'
+import type { SignInRequest } from '~/types/api'
 
 const authStore = useAuthStore()
 const { signIn } = authStore

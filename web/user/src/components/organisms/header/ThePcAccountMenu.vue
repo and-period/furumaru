@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { LinkItem } from '~/types/props'
+import type { LinkItem } from '~/types/props'
 
 interface Props {
   isAuthenticated: boolean

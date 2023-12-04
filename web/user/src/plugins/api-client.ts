@@ -1,4 +1,4 @@
-import { PiniaPluginContext } from 'pinia'
+import type { PiniaPluginContext } from 'pinia'
 import ApiClientFactory from './helpter/factory'
 import {
   AddressApi,

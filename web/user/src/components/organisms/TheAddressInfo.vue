@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { convertI18nToJapanesePhoneNumber } from '~/lib/phone-number'
-import { Address } from '~/types/api'
+import type { Address } from '~/types/api'
 
 interface Props {
   address: Address

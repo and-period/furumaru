@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { LinkItem } from '~/types/props'
+import type { LinkItem } from '~/types/props'
 
-import { I18n } from '~/types/locales'
+import type { I18n } from '~/types/locales'
 
 interface CircleItem {
   title: string

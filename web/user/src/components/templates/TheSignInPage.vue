@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { SignInRequest } from '~/types/api'
-import { LinkItem } from '~/types/props'
+import type { SignInRequest } from '~/types/api'
+import type { LinkItem } from '~/types/props'
 
 interface Props {
   pageName: string

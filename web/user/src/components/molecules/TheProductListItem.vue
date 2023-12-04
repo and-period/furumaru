@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Coordinator, ProductMediaInner } from '~/types/api'
+import type { Coordinator, ProductMediaInner } from '~/types/api'
 
 interface Props {
   id: string

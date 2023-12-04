@@ -1,4 +1,4 @@
-import { CheckoutRequest } from '~/types/api'
+import type { CheckoutRequest } from '~/types/api'
 
 export const useCheckoutStore = defineStore('checkout', {
   state: () => {

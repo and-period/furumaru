@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { I18n } from '~/types/locales'
+import type { I18n } from '~/types/locales'
 definePageMeta({
   layout: 'auth',
 })

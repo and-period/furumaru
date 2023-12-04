@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ShoppingCart } from '~/types/store'
+import type { ShoppingCart } from '~/types/store'
 
 interface Props {
   cartNumber: number

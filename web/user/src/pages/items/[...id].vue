@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
-import { Snackbar } from '~/types/props'
+import type { Snackbar } from '~/types/props'
 
 const route = useRoute()
 

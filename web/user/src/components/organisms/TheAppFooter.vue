@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { FooterMenuItem } from '~/types/props'
+import type { FooterMenuItem } from '~/types/props'
 
 interface Props {
   menuItems: FooterMenuItem[]

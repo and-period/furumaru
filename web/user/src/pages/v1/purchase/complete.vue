@@ -42,7 +42,7 @@ const handleBackTopPageButton = () => {
           注文の詳細は、アカウントページの注文履歴からもご確認いただけます。
         </p>
       </div>
-      <div class="mb-4 mt-[40px] flex w-full justify-center md:mt-20 px-16 md:px-0">
+      <div class="mb-4 mt-[40px] flex w-full justify-center px-16 md:mt-20 md:px-0">
         <button
           class="w-[400px] bg-main py-2 tracking-[1.6px] text-white"
           @click="handleBackTopPageButton"

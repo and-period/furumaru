@@ -3,8 +3,8 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/store/auth'
 import { useNotificationStore } from '~/store/notification'
 import { useShoppingCartStore } from '~/store/shopping'
-import { I18n } from '~/types/locales'
-import { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
+import type { I18n } from '~/types/locales'
+import type { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
 
 const router = useRouter()
 const route = useRoute()

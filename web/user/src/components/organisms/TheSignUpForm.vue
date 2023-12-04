@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CreateAuthRequest } from '~/types/api'
+import type { CreateAuthRequest } from '~/types/api'
 
 interface Props {
   modelValue: CreateAuthRequest

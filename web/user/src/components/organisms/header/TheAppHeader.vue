@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
-import { ShoppingCart } from '~/types/store'
+import type { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
+import type { ShoppingCart } from '~/types/store'
 
 interface Props {
   homePath: string

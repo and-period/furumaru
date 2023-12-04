@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CreateAddressRequest } from '~/types/api'
+import type { CreateAddressRequest } from '~/types/api'
 import { prefecturesList } from '~/constants/prefectures'
 
 interface Props {
