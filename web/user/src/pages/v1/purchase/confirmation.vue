@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { MOCK_USER_INFOMATION, MOCK_PURCHASE_ITEMS } from '~/constants/mock'
+import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 import { useAdressStore } from '~/store/address'
 
 const addressStore = useAdressStore()
@@ -19,7 +19,6 @@ const addressId = computed<string>(() => {
   }
 })
 
-const userInformationItem = MOCK_USER_INFOMATION
 const cartItem = MOCK_PURCHASE_ITEMS[0]
 
 const discount = -500
