@@ -20,7 +20,7 @@ const displayAddress = computed<string>(() => {
 </script>
 
 <template>
-  <dl class="grid grid-cols-3 gap-2">
+  <dl class="grid grid-cols-3 gap-2 text-[14px] tracking-[1.4px]">
     <dt>氏名</dt>
     <dd class="col-span-2">{{ displayName }}</dd>
     <dt>電話番号</dt>
