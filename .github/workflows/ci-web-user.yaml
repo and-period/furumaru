@@ -9,7 +9,7 @@ on:
 env:
   SERVICE: user-web
   TZ: 'Asia/Tokyo'
-  NODE_VERSION: 16.19.0
+  NODE_VERSION: 18.15.0
 
 jobs:
   setup:
