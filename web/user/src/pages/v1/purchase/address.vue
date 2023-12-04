@@ -90,7 +90,7 @@ useSeoMeta({
     </div>
 
     <div
-      class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-2 md:px-[80px]"
+      class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"
     >
       <template v-if="addressesFetchState.isLoading">
         <div class="absolute h-2 w-full animate-pulse bg-main"></div>

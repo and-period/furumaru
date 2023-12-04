@@ -1,7 +1,23 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { MOCK_USER_INFOMATION, MOCK_PURCHASE_ITEMS } from '~/constants/mock'
+import { useAdressStore } from '~/store/address'
 
+const addressStore = useAdressStore()
+const { address, addressFetchState } = storeToRefs(addressStore)
+const { fetchAddress } = addressStore
+
+const route = useRoute()
 const router = useRouter()
+
+const addressId = computed<string>(() => {
+  const id = route.query.id
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
+})
 
 const userInformationItem = MOCK_USER_INFOMATION
 const cartItem = MOCK_PURCHASE_ITEMS[0]
@@ -34,6 +50,12 @@ const handleClickNextStepButton = () => {
   router.push('/v1/purchase/complete')
 }
 
+onMounted(async () => {
+  if (addressId.value) {
+    await fetchAddress(addressId.value)
+  }
+})
+
 useSeoMeta({
   title: 'ご購入手続き',
 })
@@ -44,44 +66,23 @@ useSeoMeta({
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
       ご購入手続き
     </div>
-    <div class="mx-[15px] my-10 bg-white px-6 pb-10 md:mx-0">
-      <div class="gap-[80px] md:grid md:grid-cols-2">
-        <div class="md:pl-10">
-          <div>
-            <div
-              class="pt-[24px] text-left text-[14px] font-bold tracking-[1.6px] text-main md:pt-[80px] md:text-[16px]"
-            >
-              お客様情報
-            </div>
-            <dl
-              class="mt-[28px] w-full text-[14px] leading-[24px] tracking-[1.4px]"
-            >
-              <div class="grid grid-cols-3">
-                <dt>氏名</dt>
-                <dd class="col-span-2">
-                  {{ userInformationItem.name }}
-                </dd>
-              </div>
-              <div class="grid grid-cols-3 pt-[16px]">
-                <dt>電話番号</dt>
-                <dd class="col-span-2">
-                  {{ userInformationItem.phoneNumber }}
-                </dd>
-              </div>
-              <div class="grid grid-cols-3 pt-[16px]">
-                <dt>メールアドレス</dt>
-                <dd class="col-span-2">
-                  {{ userInformationItem.email }}
-                </dd>
-              </div>
-              <div class="grid grid-cols-3 pt-[16px]">
-                <dt>住所</dt>
-                <dd class="col-span-2">
-                  {{ userInformationItem.address }}
-                </dd>
-              </div>
-            </dl>
+
+    <div
+      class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"
+    >
+      <template v-if="addressFetchState.isLoading">
+        <div class="absolute h-2 w-full animate-pulse bg-main"></div>
+      </template>
+
+      <template v-else>
+        <!-- 左側 -->
+        <div class="row-span-1 self-start py-[24px] md:w-full md:py-10">
+          <div
+            class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
+          >
+            お客様情報
           </div>
+          <the-address-info v-if="address" :address="address" />
           <div class="pt-4 text-right tracking-[1.4px]">
             <a href="#" class="underline">変更</a>
           </div>
@@ -243,123 +244,100 @@ useSeoMeta({
                 required
               />
             </div>
-
-            <div class="hidden md:block">
-              <div class="mt-12 grid grid-cols-2">
-                <button
-                  class="inline-flex items-center"
-                  @click="handleClickPreviousStepButton"
-                >
-                  <the-left-arrow-icon class="h-4 w-4" />
-                  <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
-                    前のページへ戻る
-                  </p>
-                </button>
-
-                <button
-                  class="w-[240px] justify-self-end bg-main p-[14px] text-[16px] text-white"
-                  @click="handleClickNextStepButton"
-                >
-                  注文確定
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 
-        <div class="mt-[24px] md:mr-10 md:mt-10">
-          <div class="w-full bg-base px-[16px] py-[24px] text-main md:p-10">
-            <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
-              注文内容
-            </div>
-            <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
-              <p>
-                {{ cartItem.marche }}
-              </p>
-              <p>発想地：{{ cartItem.address }}</p>
-              <p>
-                取扱元：
-                {{ cartItem.sender }}
-              </p>
-              <p>箱の数：2（常温・冷蔵 ✕ 2）</p>
-            </div>
+        <!-- 右側 -->
+        <div
+          class="row-span-2 self-start bg-base px-[16px] py-[24px] text-main md:w-full md:p-10"
+        >
+          <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
+            注文内容
+          </div>
+          <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
+            <p>
+              {{ cartItem.marche }}
+            </p>
+            <p>発想地：{{ cartItem.address }}</p>
+            <p>
+              取扱元：
+              {{ cartItem.sender }}
+            </p>
+            <p>箱の数：2（常温・冷蔵 ✕ 2）</p>
+          </div>
+          <div>
             <div>
-              <div>
-                <div
-                  v-for="(item, i) in cartItem.cartItems[0].items"
-                  :key="i"
-                  class="grid grid-cols-5 border-t py-2 text-[12px] tracking-[1.2px]"
-                >
-                  <img
-                    :src="item.imgSrc"
-                    :alt="`${item.name}の画像`"
-                    class="block aspect-square h-[56px] w-[56px]"
-                  />
-                  <div class="col-span-3 pl-[24px] md:pl-0">
-                    <div>{{ item.name }}</div>
-                    <div
-                      class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
-                    >
-                      数量：{{ 1 }}
-                    </div>
-                  </div>
-
-                  <div class="flex items-center justify-self-end text-right">
-                    {{ priceFormatter(item.price) }}
+              <div
+                v-for="(item, i) in cartItem.cartItems[0].items"
+                :key="i"
+                class="grid grid-cols-5 border-t py-2 text-[12px] tracking-[1.2px]"
+              >
+                <img
+                  :src="item.imgSrc"
+                  :alt="`${item.name}の画像`"
+                  class="block aspect-square h-[56px] w-[56px]"
+                />
+                <div class="col-span-3 pl-[24px] md:pl-0">
+                  <div>{{ item.name }}</div>
+                  <div
+                    class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                  >
+                    数量：{{ 1 }}
                   </div>
                 </div>
-              </div>
 
-              <div
-                class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
-              >
-                <div class="col-span-3 md:col-span-1">商品合計（税込み）</div>
-                <div class="col-span-2 text-right md:col-span-1">
-                  {{ priceFormatter(itemsTotalPrice) }}
-                </div>
-                <div class="col-span-3 md:col-span-1">クーポン利用</div>
-                <div class="col-span-2 text-right md:col-span-1">
-                  {{ priceFormatter(discount) }}
-                </div>
-                <div class="col-span-3 md:col-span-1">送料（合計）</div>
-                <div class="col-span-2 text-right md:col-span-1">
-                  {{ priceFormatter(shipping) }}
-                </div>
-              </div>
-
-              <div
-                class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
-              >
-                <div>合計（税込み）</div>
-                <div class="text-right">
-                  {{ priceFormatter(totalPrice) }}
+                <div class="flex items-center justify-self-end text-right">
+                  {{ priceFormatter(item.price) }}
                 </div>
               </div>
             </div>
-          </div>
-          <div class="block md:hidden">
-            <div class="mt-12">
-              <button
-                class="w-full bg-main p-[14px] text-[14px] tracking-[1.4px] text-white md:w-[240px] md:justify-self-end md:text-[16px] md:tracking-[1.6px]"
-                @click="handleClickNextStepButton"
-              >
-                お支払方法の選択へ
-              </button>
-              <div class="mt-[40px] items-center">
-                <button
-                  class="inline-flex"
-                  @click="handleClickPreviousStepButton"
-                >
-                  <the-left-arrow-icon class="h-4 w-4" />
-                  <p class="pl-2 text-[12px] tracking-[1.2px] text-main">
-                    前のページへ戻る
-                  </p>
-                </button>
+
+            <div
+              class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
+            >
+              <div class="col-span-3 md:col-span-1">商品合計（税込み）</div>
+              <div class="col-span-2 text-right md:col-span-1">
+                {{ priceFormatter(itemsTotalPrice) }}
+              </div>
+              <div class="col-span-3 md:col-span-1">クーポン利用</div>
+              <div class="col-span-2 text-right md:col-span-1">
+                {{ priceFormatter(discount) }}
+              </div>
+              <div class="col-span-3 md:col-span-1">送料（合計）</div>
+              <div class="col-span-2 text-right md:col-span-1">
+                {{ priceFormatter(shipping) }}
+              </div>
+            </div>
+
+            <div
+              class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
+            >
+              <div>合計（税込み）</div>
+              <div class="text-right">
+                {{ priceFormatter(totalPrice) }}
               </div>
             </div>
           </div>
         </div>
-      </div>
+
+        <div
+          class="mt-[24px] flex w-full flex-col items-center gap-4 self-start md:flex-row md:justify-between"
+        >
+          <button
+            class="order-2 inline-flex w-full gap-2 text-left text-[12px] tracking-[1.2px] text-main md:order-1 md:max-w-max"
+            @click="handleClickPreviousStepButton"
+          >
+            <the-left-arrow-icon class="h-4 w-4" />
+            前のページへ戻る
+          </button>
+          <button
+            class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
+            @click="handleClickNextStepButton"
+          >
+            お支払方法の選択へ
+          </button>
+        </div>
+      </template>
     </div>
   </div>
 </template>

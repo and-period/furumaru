@@ -10,6 +10,10 @@ export const useAdressStore = defineStore('address', {
   state: () => {
     return {
       total: 0,
+      address: undefined as Address | undefined,
+      addressFetchState: {
+        isLoading: false,
+      },
       addresses: [] as Address[],
       addressesFetchState: {
         isLoading: false,
@@ -52,6 +56,20 @@ export const useAdressStore = defineStore('address', {
       this.addresses = res.addresses
       this.total = res.total
       this.addressesFetchState.isLoading = false
+    },
+
+    async fetchAddress(id: string) {
+      const authStore = useAuthStore()
+
+      this.addressFetchState.isLoading = true
+
+      const res = await this.addressApiClient(
+        authStore.accessToken,
+      ).v1GetAddress({
+        addressId: id,
+      })
+      this.address = res.address
+      this.addressFetchState.isLoading = false
     },
   },
 
