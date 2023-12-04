@@ -409,6 +409,20 @@ func (mr *MockOrderMockRecorder) List(ctx, params interface{}, fields ...interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockOrder)(nil).List), varargs...)
 }
 
+// Refund mocks base method.
+func (m *MockOrder) Refund(ctx context.Context, orderID string, params *database.RefundOrderParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Refund", ctx, orderID, params)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Refund indicates an expected call of Refund.
+func (mr *MockOrderMockRecorder) Refund(ctx, orderID, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Refund", reflect.TypeOf((*MockOrder)(nil).Refund), ctx, orderID, params)
+}
+
 // UpdateFulfillment mocks base method.
 func (m *MockOrder) UpdateFulfillment(ctx context.Context, fulfillmentID string, params *database.UpdateOrderFulfillmentParams) error {
 	m.ctrl.T.Helper()

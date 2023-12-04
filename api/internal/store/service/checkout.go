@@ -144,10 +144,25 @@ func (s *service) NotifyPaymentCompleted(ctx context.Context, in *store.NotifyPa
 	}
 	err := s.db.Order.UpdatePaymentStatus(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order is not updatable",
+		s.logger.Warn("Order is already updated",
 			zap.String("orderId", in.OrderID), zap.Int32("status", int32(in.Status)), zap.Time("issuedAt", in.IssuedAt))
 		return nil
 	}
+	return internalError(err)
+}
+
+func (s *service) NotifyPaymentRefunded(ctx context.Context, in *store.NotifyPaymentRefundedInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	params := &database.RefundOrderParams{
+		Status:       in.Status,
+		RefundType:   in.Type,
+		RefundTotal:  in.Total,
+		RefundReason: in.Reason,
+		IssuedAt:     in.IssuedAt,
+	}
+	err := s.db.Order.Refund(ctx, in.OrderID, params)
 	return internalError(err)
 }
 
@@ -243,7 +258,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		BillingAddress:    billingAddress,
 		ShippingAddress:   shippingAddress,
 		Shipping:          shipping,
-		Baskets:           cart.Baskets,
+		Baskets:           baskets,
 		Products:          products,
 		PaymentMethodType: params.paymentMethodType,
 		Promotion:         promotion,
@@ -321,7 +336,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 
 func (s *service) getShippingByCoordinatorID(ctx context.Context, coordinatorID string) (*entity.Shipping, error) {
 	shipping, err := s.db.Shipping.GetByCoordinatorID(ctx, coordinatorID)
-	if errors.Is(err, exception.ErrNotFound) {
+	if errors.Is(err, database.ErrNotFound) {
 		// 配送設定が完了していないコーディネータの場合、デフォルト設定を使用
 		return s.db.Shipping.GetDefault(ctx)
 	}

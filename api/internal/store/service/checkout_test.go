@@ -765,19 +765,6 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			expect: exception.ErrInvalidArgument,
 		},
 		{
-			name: "not updatable",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
-			},
-			input: &store.NotifyPaymentCompletedInput{
-				OrderID:   "order-id",
-				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
-				IssuedAt:  now,
-			},
-			expect: nil,
-		},
-		{
 			name: "failed to update payment status",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(assert.AnError)
@@ -790,11 +777,86 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			},
 			expect: exception.ErrInternal,
 		},
+		{
+			name: "already updated",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+			},
+			input: &store.NotifyPaymentCompletedInput{
+				OrderID:   "order-id",
+				PaymentID: "payment-id",
+				Status:    entity.PaymentStatusAuthorized,
+				IssuedAt:  now,
+			},
+			expect: nil,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.NotifyPaymentCompleted(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestNotifyPaymentRefunded(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	params := &database.RefundOrderParams{
+		Status:       entity.PaymentStatusRefunded,
+		RefundType:   entity.RefundTypeRefunded,
+		RefundTotal:  1980,
+		RefundReason: "在庫不足のため。",
+		IssuedAt:     now,
+	}
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *store.NotifyPaymentRefundedInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Refund(ctx, "order-id", params).Return(nil)
+			},
+			input: &store.NotifyPaymentRefundedInput{
+				OrderID:  "order-id",
+				Status:   entity.PaymentStatusRefunded,
+				Type:     entity.RefundTypeRefunded,
+				Total:    1980,
+				Reason:   "在庫不足のため。",
+				IssuedAt: now,
+			},
+			expect: nil,
+		},
+		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &store.NotifyPaymentRefundedInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update payment status",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().Refund(ctx, "order-id", params).Return(assert.AnError)
+			},
+			input: &store.NotifyPaymentRefundedInput{
+				OrderID:  "order-id",
+				Status:   entity.PaymentStatusRefunded,
+				Type:     entity.RefundTypeRefunded,
+				Total:    1980,
+				Reason:   "在庫不足のため。",
+				IssuedAt: now,
+			},
+			expect: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.NotifyPaymentRefunded(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}

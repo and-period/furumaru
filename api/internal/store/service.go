@@ -91,6 +91,7 @@ type Service interface {
 	CheckoutRakutenPay(ctx context.Context, in *CheckoutRakutenPayInput) (string, error) // 支払い申請（楽天ペイ）
 	CheckoutAUPay(ctx context.Context, in *CheckoutAUPayInput) (string, error)           // 支払い申請（au PAY）
 	NotifyPaymentCompleted(ctx context.Context, in *NotifyPaymentCompletedInput) error   // 支払い通知
+	NotifyPaymentRefunded(ctx context.Context, in *NotifyPaymentRefundedInput) error     // 返金通知
 	// 決済システム
 	MultiGetPaymentSystems(ctx context.Context, in *MultiGetPaymentSystemsInput) (entity.PaymentSystems, error) // 一覧取得(種別指定)
 	GetPaymentSystem(ctx context.Context, in *GetPaymentSystemInput) (*entity.PaymentSystem, error)             // １件取得

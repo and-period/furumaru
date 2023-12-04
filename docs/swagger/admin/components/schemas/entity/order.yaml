@@ -41,6 +41,10 @@ order:
       type: integer
       format: int64
       description: 更新日時 (unixtime)
+    completedAt:
+      type: integer
+      format: int64
+      description: 完了日時 (unixtime)
   required:
   - id
   - userId
@@ -54,6 +58,7 @@ order:
   - items
   - createdAt
   - updatedAt
+  - completedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     userId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -113,6 +118,7 @@ order:
       quantity: 2
     createdAt: 1640962800
     updatedAt: 1640962800
+    completedAt: 1640962800
 orderPayment:
   type: object
   description: 注文決済情報

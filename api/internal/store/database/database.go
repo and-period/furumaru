@@ -91,6 +91,7 @@ type Order interface {
 	UpdateFulfillment(ctx context.Context, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
 	Draft(ctx context.Context, orderID string, params *DraftOrderParams) error
 	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
+	Refund(ctx context.Context, orderID string, params *RefundOrderParams) error
 	Aggregate(ctx context.Context, params *AggregateOrdersParams) (entity.AggregatedOrders, error)
 }
 
@@ -114,6 +115,14 @@ type DraftOrderParams struct {
 type CompleteOrderParams struct {
 	ShippingMessage string
 	CompletedAt     time.Time
+}
+
+type RefundOrderParams struct {
+	Status       entity.PaymentStatus
+	RefundType   entity.RefundType
+	RefundTotal  int64
+	RefundReason string
+	IssuedAt     time.Time
 }
 
 type UpdateOrderFulfillmentParams struct {

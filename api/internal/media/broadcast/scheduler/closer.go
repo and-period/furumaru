@@ -13,6 +13,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mediaconvert"
 	"github.com/and-period/furumaru/api/pkg/medialive"
+	"github.com/and-period/furumaru/api/pkg/sfn"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/mediaconvert/types"
@@ -29,6 +30,7 @@ type closer struct {
 	db          *database.Database
 	storage     storage.Bucket
 	store       store.Service
+	sfn         sfn.StepFunction
 	media       medialive.MediaLive
 	convert     mediaconvert.MediaConvert
 	bucketName  string
@@ -51,6 +53,7 @@ func NewCloser(params *Params, opts ...Option) Scheduler {
 		db:          params.Database,
 		storage:     params.Storage,
 		store:       params.Store,
+		sfn:         params.StepFunction,
 		media:       params.MediaLive,
 		convert:     params.MediaConvert,
 		bucketName:  params.ArchiveBucketName,
@@ -170,14 +173,25 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 			if broadcast.Status != entity.BroadcastStatusIdle {
 				return nil // 停止中の場合のみ、削除処理を進める
 			}
-			c.logger.Warn("Not implemented to remove channel", zap.String("schedule", schedule.ID))
 
 			c.logger.Info("Calling to create convert job", zap.String("scheduleId", schedule.ID))
-			if err := c.convert.CreateJob(ctx, c.jobTemplate, c.newMediaConvertJobSettings(broadcast)); err != nil {
+			if err := c.convert.CreateJob(ectx, c.jobTemplate, c.newMediaConvertJobSettings(broadcast)); err != nil {
 				c.logger.Error("Failed to create convert job", zap.String("scheduleId", schedule.ID), zap.Error(err))
 				return err
 			}
 			c.logger.Info("Succeeded to create convert job", zap.String("scheduleId", schedule.ID))
+
+			payload := &RemovePayload{
+				CloudFrontDistributionARN: broadcast.CloudFrontDistributionArn,
+				MediaLiveChannelID:        broadcast.MediaLiveChannelID,
+				MediaStoreContainerARN:    broadcast.MediaStoreContainerArn,
+			}
+			c.logger.Info("Calling step function", zap.String("scheduleId", schedule.ID))
+			if err := c.sfn.StartExecution(ectx, payload); err != nil {
+				c.logger.Error("Failed step function", zap.String("scheduleId", schedule.ID), zap.Error(err))
+				return err
+			}
+			c.logger.Info("Succeeded step function", zap.String("scheduleId", schedule.ID))
 
 			archiveURL, err := c.storage.GenerateObjectURL(filepath.Join(newArchiveMP4Path(broadcast.ScheduleID), archiveFilename))
 			if err != nil {
@@ -190,7 +204,7 @@ func (c *closer) removeChannel(ctx context.Context, target time.Time) error {
 					ArchiveURL: archiveURL,
 				},
 			}
-			return c.db.Broadcast.Update(ctx, broadcast.ID, params)
+			return c.db.Broadcast.Update(ectx, broadcast.ID, params)
 		})
 	}
 	return eg.Wait()
