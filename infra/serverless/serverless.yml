@@ -57,6 +57,7 @@ resources:
                     - mediaLive:DescribeInput
                     - mediaLive:DeleteInput
                     - mediaLive:DescribeChannel
+                    - mediaLive:ListChannels
                     - mediaLive:CreateChannel
                     - mediaLive:DeleteChannel
                     - mediaStore:CreateContainer
@@ -260,8 +261,54 @@ stepFunctions:
               MediaLiveChannelId.$: $[0][0].ChannelResult.Channel.Id
               MediaStoreContainerArn.$: $[0][2].ContainerResult.Container.Arn
             Branches:
-              - StartAt: CreateChannel
+              - StartAt: ListChannels
                 States:
+                  ListChannels:
+                    Type: Task
+                    Comment: ライブ配信 - チャンネル一覧を取得
+                    InputPath: $
+                    ResultPath: $[0].ListChannelsResult
+                    Resource: arn:aws:states:::aws-sdk:medialive:listChannels
+                    Parameters:
+                      MaxResults: 100
+                    Next: ExtractChannelNames
+                  ExtractChannelNames:
+                    Type: Pass
+                    Comment: ライブ配信 - チャンネル一覧からチャンネル名を抽出
+                    InputPath: $
+                    ResultPath: $[0].ExtractChannelNamesResult
+                    Parameters:
+                      ChannelNames.$: $[0].ListChannelsResult.Channels[*].Name
+                    Next: CheckAnyChannelExists
+                  CheckAnyChannelExists:
+                    Type: Choice
+                    Comment: チャンネル一覧に、チャンネルが一つでもあるか確認
+                    InputPath: $
+                    Choices:
+                      - Variable: $[0].ExtractChannelNamesResult.ChannelNames
+                        IsPresent: true
+                        Next: CompareChannelNames
+                    Default: CreateChannel
+                  CompareChannelNames:
+                    Type: Pass
+                    Comment: ライブ配信 - チャンネル名一覧を比較
+                    InputPath: $
+                    ResultPath: $[0].CompareChannelNamesResult.ChannelExists
+                    Parameters:
+                      ChannelExists.$: States.ArrayContains($[0].ExtractChannelNamesResult.ChannelNames, $[0].ChannelInput.Name)
+                    Next: CheckSpecifyChannelExists
+                  CheckSpecifyChannelExists:
+                    Type: Choice
+                    Comment: チャンネル一覧に、特定のNameを持つチャンネルがあるか確認
+                    InputPath: $
+                    Choices:
+                      - Variable: $[0].CompareChannelNamesResult.ChannelExists
+                        BooleanEquals: true
+                        Next: SkipCreateChannel
+                    Default: CreateChannel
+                  SkipCreateChannel:
+                    Type: Succeed
+                    Comment: チャンネルが存在する場合は終了
                   CreateChannel:
                     Type: Task
                     Comment: ライブ配信 - チャンネルを作成
