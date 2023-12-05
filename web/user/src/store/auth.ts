@@ -1,4 +1,6 @@
 // docs: https://pinia.vuejs.org/core-concepts/#option-stores
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import type {
   AuthUserResponse,
@@ -23,6 +25,7 @@ export const useAuthStore = defineStore('auth', {
       isAuthenticated: false,
       accessToken: '',
       refreshToken: '',
+      expiredAt: undefined as Dayjs | undefined,
       user: undefined as AuthUserResponse | undefined,
     }
   },
@@ -39,6 +42,7 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
         this.accessToken = res.accessToken
         this.refreshToken = res.refreshToken
+        this.setExpiredAt(res.expiresIn)
         await this.fetchUserInfo()
       } catch (error) {
         return this.errorHandler(error, {
@@ -80,6 +84,23 @@ export const useAuthStore = defineStore('auth', {
         // stateを初期状態にリセット
         this.$reset()
       }
+    },
+
+    async refreshAccsessToken(refreshToken: string) {
+      try {
+        const res = await this.authApiClient().v1RefreshAuthToken({
+          body: { refreshToken },
+        })
+        this.accessToken = res.accessToken
+        this.refreshToken = res.refreshToken
+        this.setExpiredAt(res.expiresIn)
+      } catch (error) {
+        this.errorHandler(error)
+      }
+    },
+
+    setExpiredAt(expiredAt: number) {
+      this.expiredAt = dayjs().add(expiredAt, 'second')
     },
   },
 })
