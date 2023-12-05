@@ -12,7 +12,7 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-    - uses: actions/labeler@v4
+    - uses: actions/labeler@master
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         configuration-path: .github/labeler.yaml
