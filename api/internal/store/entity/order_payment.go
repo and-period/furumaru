@@ -1,12 +1,16 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
 )
+
+var errNotFoundAddress = errors.New("entity: not found address")
 
 // 支払いステータス
 type PaymentStatus int32
@@ -111,12 +115,18 @@ func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
 }
 
 func NewOrderPayment(params *NewOrderPaymentParams) (*OrderPayment, error) {
+	if params.Address == nil {
+		return nil, errNotFoundAddress
+	}
+	if err := codes.ValidatePrefectureValues(params.Address.PrefectureCode); err != nil {
+		return nil, err
+	}
 	sparams := &NewOrderPaymentSummaryParams{
-		Address:   params.Address,
-		Baskets:   params.Baskets,
-		Products:  params.Products,
-		Shipping:  params.Shipping,
-		Promotion: params.Promotion,
+		PrefectureCode: params.Address.PrefectureCode,
+		Baskets:        params.Baskets,
+		Products:       params.Products,
+		Shipping:       params.Shipping,
+		Promotion:      params.Promotion,
 	}
 	summary, err := NewOrderPaymentSummary(sparams)
 	if err != nil {

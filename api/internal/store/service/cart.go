@@ -8,8 +8,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
-	"github.com/and-period/furumaru/api/internal/user"
-	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -34,28 +32,16 @@ func (s *service) GetCart(ctx context.Context, in *store.GetCartInput) (*entity.
 }
 
 func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) {
+	s.logger.Debug("calc cart", zap.Any("input", in))
 	if err := s.validator.Struct(in); err != nil {
 		return nil, nil, internalError(err)
 	}
 	var (
-		shippingAddress *uentity.Address
-		shipping        *entity.Shipping
-		cart            *entity.Cart
-		promotion       *entity.Promotion
+		shipping  *entity.Shipping
+		cart      *entity.Cart
+		promotion *entity.Promotion
 	)
 	eg, ectx := errgroup.WithContext(ctx)
-	// 配送先住所の取得
-	eg.Go(func() (err error) {
-		if in.ShippingAddressID == "" {
-			return
-		}
-		in := &user.GetAddressInput{
-			UserID:    in.UserID,
-			AddressID: in.ShippingAddressID,
-		}
-		shippingAddress, err = s.user.GetAddress(ectx, in)
-		return
-	})
 	// カートの取得
 	eg.Go(func() (err error) {
 		cart, err = s.getCart(ectx, in.SessionID)
@@ -75,8 +61,7 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 		if promotion.IsEnabled(s.now()) {
 			return
 		}
-		s.logger.Warn("Failed to disable promotion", zap.String("promotionId", in.PromotionID),
-			zap.String("userId", in.UserID), zap.String("sessionId", in.SessionID))
+		s.logger.Warn("Failed to disable promotion", zap.String("sessionId", in.SessionID), zap.String("promotionId", in.PromotionID))
 		promotion = nil
 		return
 	})
@@ -94,11 +79,11 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 		return nil, nil, internalError(err)
 	}
 	params := &entity.NewOrderPaymentSummaryParams{
-		Address:   shippingAddress,
-		Baskets:   baskets,
-		Products:  products,
-		Shipping:  shipping,
-		Promotion: promotion,
+		PrefectureCode: in.PrefectureCode,
+		Baskets:        baskets,
+		Products:       products,
+		Shipping:       shipping,
+		Promotion:      promotion,
 	}
 	summary, err := entity.NewOrderPaymentSummary(params)
 	if err != nil {
