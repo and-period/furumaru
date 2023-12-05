@@ -8,7 +8,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
+	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 func (s *service) GetCart(ctx context.Context, in *store.GetCartInput) (*entity.Cart, error) {
@@ -27,6 +31,81 @@ func (s *service) GetCart(ctx context.Context, in *store.GetCartInput) (*entity.
 		return nil, internalError(err)
 	}
 	return cart, nil
+}
+
+func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, nil, internalError(err)
+	}
+	var (
+		shippingAddress *uentity.Address
+		shipping        *entity.Shipping
+		cart            *entity.Cart
+		promotion       *entity.Promotion
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	// 配送先住所の取得
+	eg.Go(func() (err error) {
+		if in.ShippingAddressID == "" {
+			return
+		}
+		in := &user.GetAddressInput{
+			UserID:    in.UserID,
+			AddressID: in.ShippingAddressID,
+		}
+		shippingAddress, err = s.user.GetAddress(ectx, in)
+		return
+	})
+	// カートの取得
+	eg.Go(func() (err error) {
+		cart, err = s.getCart(ectx, in.SessionID)
+		return
+	})
+	// 配送設定の取得
+	eg.Go(func() (err error) {
+		shipping, err = s.getShippingByCoordinatorID(ectx, in.CoordinatorID)
+		return
+	})
+	// プロモーションの取得
+	eg.Go(func() (err error) {
+		if in.PromotionID == "" {
+			return
+		}
+		promotion, err = s.db.Promotion.Get(ectx, in.PromotionID)
+		if promotion.IsEnabled(s.now()) {
+			return
+		}
+		s.logger.Warn("Failed to disable promotion", zap.String("promotionId", in.PromotionID),
+			zap.String("userId", in.UserID), zap.String("sessionId", in.SessionID))
+		promotion = nil
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, nil, internalError(err)
+	}
+	// 購入する買い物かごのみ取得
+	baskets := cart.Baskets.FilterByCoordinatorID(in.CoordinatorID).FilterByBoxNumber(in.BoxNumber)
+	if len(baskets) == 0 {
+		return nil, nil, fmt.Errorf("service: no target baskets: %w", exception.ErrInvalidArgument)
+	}
+	// 在庫一覧を取得
+	products, err := s.db.Product.MultiGet(ctx, baskets.ProductIDs())
+	if err != nil {
+		return nil, nil, internalError(err)
+	}
+	params := &entity.NewOrderPaymentSummaryParams{
+		Address:   shippingAddress,
+		Baskets:   baskets,
+		Products:  products,
+		Shipping:  shipping,
+		Promotion: promotion,
+	}
+	summary, err := entity.NewOrderPaymentSummary(params)
+	if err != nil {
+		return nil, nil, internalError(err)
+	}
+	cart.Baskets = baskets
+	return cart, summary, nil
 }
 
 func (s *service) AddCartItem(ctx context.Context, in *store.AddCartItemInput) error {

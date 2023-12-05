@@ -7,20 +7,20 @@ delete:
   - cookieAuth: []
   parameters:
   - in: path
-    name: number
-    schema:
-      type: integer
-      format: int64
-    description: 買い物かごの通番
-    required: true
-    example: 1
-  - in: path
     name: productId
     schema:
       type: string
     description: 商品ID
     required: true
     example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: number
+    schema:
+      type: integer
+      format: int64
+    description: 買い物かごの通番(未指定の場合、すべての買い物かごが対象)
+    required: false
+    example: 1
   responses:
     204:
       description: 成功

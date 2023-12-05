@@ -204,7 +204,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 			UserID:    params.payload.UserID,
 			AddressID: params.payload.ShippingAddressID,
 		}
-		shippingAddress, err = s.user.GetAddress(ctx, in)
+		shippingAddress, err = s.user.GetAddress(ectx, in)
 		return
 	})
 	// カートの取得
@@ -214,7 +214,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	})
 	// 配送設定の取得
 	eg.Go(func() (err error) {
-		shipping, err = s.getShippingByCoordinatorID(ctx, params.payload.CoordinatorID)
+		shipping, err = s.getShippingByCoordinatorID(ectx, params.payload.CoordinatorID)
 		return
 	})
 	// プロモーションの取得
@@ -222,7 +222,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		if params.payload.PromotionID == "" {
 			return
 		}
-		promotion, err = s.db.Promotion.Get(ctx, params.payload.PromotionID)
+		promotion, err = s.db.Promotion.Get(ectx, params.payload.PromotionID)
 		return
 	})
 	if err := eg.Wait(); err != nil {
@@ -230,7 +230,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 	// プロモーションの有効性検証
 	if params.payload.PromotionID != "" && !promotion.IsEnabled(s.now()) {
-		s.logger.Warn("Failed to user disable promotion",
+		s.logger.Warn("Failed to disable promotion",
 			zap.String("userId", params.payload.UserID), zap.String("promotionId", params.payload.PromotionID))
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
 	}

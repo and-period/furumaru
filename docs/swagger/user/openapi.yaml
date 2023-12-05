@@ -75,10 +75,12 @@ paths:
   # Cart
   /v1/carts:
     $ref: './paths/v1/carts/index.yaml'
+  /v1/carts/{coordinatorId}/calc:
+    $ref: './paths/v1/carts/_coordinatorId/calc.yaml'
   /v1/carts/-/items:
     $ref: './paths/v1/carts/-/items/index.yaml'
-  /v1/carts/{number}/items/{productId}:
-    $ref: './paths/v1/carts/_number/items/_productId/index.yaml'
+  /v1/carts/-/items/{productId}:
+    $ref: './paths/v1/carts/-/items/_productId/index.yaml'
   # Checkout
   /v1/checkouts:
     $ref: './paths/v1/checkouts/index.yaml'
@@ -117,6 +119,8 @@ components:
       $ref: './components/schemas/codes/product.yaml#/deliveryType'
     storageMethodType:
       $ref: './components/schemas/codes/product.yaml#/storageMethodType'
+    discountType:
+      $ref: './components/schemas/codes/promotion.yaml#/discountType'
     scheduleStatus:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
     paymentSystemStatus:
@@ -128,6 +132,8 @@ components:
       $ref: './components/schemas/entity/address.yaml#/address'
     cart:
       $ref: './components/schemas/entity/cart.yaml#/cart'
+    cartItem:
+      $ref: './components/schemas/entity/cart.yaml#/cartItem'
     category:
       $ref: './components/schemas/entity/category.yaml#/category'
     coordinator:
@@ -142,6 +148,8 @@ components:
       $ref: './components/schemas/entity/product-type.yaml#/productType'
     product:
       $ref: './components/schemas/entity/product.yaml#/product'
+    promotion:
+      $ref: './components/schemas/entity/promotion.yaml#/promotion'
     schedule:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     paymentSystem:
@@ -192,6 +200,8 @@ components:
       $ref: './components/schemas/v1/address.response.yaml#/addressesResponse'
     v1CartResponse:
       $ref: './components/schemas/v1/cart.response.yaml#/cartResponse'
+    v1CalcCartResponse:
+      $ref: './components/schemas/v1/cart.response.yaml#/calcCartResponse'
     v1CheckoutResponse:
       $ref: './components/schemas/v1/checkout.response.yaml#/checkoutResponse'
     v1ScheduleResponse:

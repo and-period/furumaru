@@ -30,11 +30,14 @@ checkoutRequest:
       $ref: '#/checkoutCreditCard'
   required:
   - coordinatorId
+  - boxNumber
+  - promotionId
   - billingAddressId
   - shippingAddressId
   - paymentMethod
   - callbackUrl
   - total
+  - creditCard
   example:
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     boxNumber: 1

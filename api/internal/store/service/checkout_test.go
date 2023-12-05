@@ -989,7 +989,7 @@ func TestCheckout(t *testing.T) {
 			in.ExpiredAt = now.Add(defaultCartTTL)
 			in.CreatedAt = now
 			in.UpdatedAt = now
-			return nil
+			return err
 		}
 		mocks.cache.EXPECT().Get(gomock.Any(), &entity.Cart{SessionID: sessionID}).DoAndReturn(fn)
 	}

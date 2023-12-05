@@ -16,12 +16,15 @@
 import * as runtime from '../runtime';
 import type {
   AddCartItemRequest,
+  CalcCartResponse,
   CartResponse,
   ErrorResponse,
 } from '../models/index';
 import {
     AddCartItemRequestFromJSON,
     AddCartItemRequestToJSON,
+    CalcCartResponseFromJSON,
+    CalcCartResponseToJSON,
     CartResponseFromJSON,
     CartResponseToJSON,
     ErrorResponseFromJSON,
@@ -32,9 +35,15 @@ export interface V1AddCartItemRequest {
     body: AddCartItemRequest;
 }
 
+export interface V1CalcCartRequest {
+    coordinatorId: string;
+    number?: number;
+    address?: string;
+}
+
 export interface V1RemoveCartItemRequest {
-    number: number;
     productId: string;
+    number?: number;
 }
 
 /**
@@ -75,6 +84,52 @@ export class CartApi extends runtime.BaseAPI {
     }
 
     /**
+     * 買い物かごの金額計算
+     */
+    async v1CalcCartRaw(requestParameters: V1CalcCartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CalcCartResponse>> {
+        if (requestParameters.coordinatorId === null || requestParameters.coordinatorId === undefined) {
+            throw new runtime.RequiredError('coordinatorId','Required parameter requestParameters.coordinatorId was null or undefined when calling v1CalcCart.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.number !== undefined) {
+            queryParameters['number'] = requestParameters.number;
+        }
+
+        if (requestParameters.address !== undefined) {
+            queryParameters['address'] = requestParameters.address;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/carts/{coordinatorId}/calc`.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters.coordinatorId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CalcCartResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 買い物かごの金額計算
+     */
+    async v1CalcCart(requestParameters: V1CalcCartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CalcCartResponse> {
+        const response = await this.v1CalcCartRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * 買い物かご取得
      */
     async v1GetCartRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CartResponse>> {
@@ -104,20 +159,20 @@ export class CartApi extends runtime.BaseAPI {
      * 買い物かごから商品を削除
      */
     async v1RemoveCartItemRaw(requestParameters: V1RemoveCartItemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.number === null || requestParameters.number === undefined) {
-            throw new runtime.RequiredError('number','Required parameter requestParameters.number was null or undefined when calling v1RemoveCartItem.');
-        }
-
         if (requestParameters.productId === null || requestParameters.productId === undefined) {
             throw new runtime.RequiredError('productId','Required parameter requestParameters.productId was null or undefined when calling v1RemoveCartItem.');
         }
 
         const queryParameters: any = {};
 
+        if (requestParameters.number !== undefined) {
+            queryParameters['number'] = requestParameters.number;
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/carts/{number}/items/{productId}`.replace(`{${"number"}}`, encodeURIComponent(String(requestParameters.number))).replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters.productId))),
+            path: `/v1/carts/-/items/{productId}`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters.productId))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
