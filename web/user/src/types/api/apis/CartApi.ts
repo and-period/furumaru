@@ -38,7 +38,7 @@ export interface V1AddCartItemRequest {
 export interface V1CalcCartRequest {
     coordinatorId: string;
     number?: number;
-    address?: string;
+    prefecture?: string;
 }
 
 export interface V1RemoveCartItemRequest {
@@ -97,22 +97,14 @@ export class CartApi extends runtime.BaseAPI {
             queryParameters['number'] = requestParameters.number;
         }
 
-        if (requestParameters.address !== undefined) {
-            queryParameters['address'] = requestParameters.address;
+        if (requestParameters.prefecture !== undefined) {
+            queryParameters['prefecture'] = requestParameters.prefecture;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
         const response = await this.request({
-            path: `/v1/carts/{coordinatorId}/calc`.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters.coordinatorId))),
+            path: `/v1/carts/{coordinatorId}`.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters.coordinatorId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

@@ -32,6 +32,12 @@ func GetQuery(ctx *gin.Context, query string, defaultValue string) string {
 	return ctx.DefaultQuery(query, defaultValue)
 }
 
+func GetQueryInt32(ctx *gin.Context, query string, defaultValue int32) (int32, error) {
+	str := strconv.FormatInt(int64(defaultValue), 10)
+	num, err := strconv.ParseInt(ctx.DefaultQuery(query, str), 10, 32)
+	return int32(num), err
+}
+
 func GetQueryInt64(ctx *gin.Context, query string, defaultValue int64) (int64, error) {
 	str := strconv.FormatInt(defaultValue, 10)
 	return strconv.ParseInt(ctx.DefaultQuery(query, str), 10, 64)

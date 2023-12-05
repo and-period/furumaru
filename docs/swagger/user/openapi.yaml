@@ -75,8 +75,8 @@ paths:
   # Cart
   /v1/carts:
     $ref: './paths/v1/carts/index.yaml'
-  /v1/carts/{coordinatorId}/calc:
-    $ref: './paths/v1/carts/_coordinatorId/calc.yaml'
+  /v1/carts/{coordinatorId}:
+    $ref: './paths/v1/carts/_coordinatorId/index.yaml'
   /v1/carts/-/items:
     $ref: './paths/v1/carts/-/items/index.yaml'
   /v1/carts/-/items/{productId}:

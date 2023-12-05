@@ -4,7 +4,6 @@ get:
   tags:
   - Cart
   security:
-  - bearerAuth: []
   - cookieAuth: []
   parameters:
   - in: path
@@ -23,12 +22,12 @@ get:
     required: false
     example: 1
   - in: query
-    name: address
+    name: prefecture
     schema:
       type: string
-    description: 配送先住所ID(ログイン状態で指定した場合、配送手数料を含めて返却する)
+    description: 配送先都道府県コード(指定した場合、配送手数料を含めて返却する)
     required: false
-    example: 1
+    example: 13
   responses:
     200:
       description: 成功
