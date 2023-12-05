@@ -57,6 +57,7 @@ resources:
                     - mediaLive:DescribeInput
                     - mediaLive:DeleteInput
                     - mediaLive:DescribeChannel
+                    - mediaLive:ListChannels
                     - mediaLive:CreateChannel
                     - mediaLive:DeleteChannel
                     - mediaStore:CreateContainer
@@ -132,6 +133,11 @@ functions:
   calculateMP4StartTime:
     role: lambdaRole
     handler: functions/calculateMP4StartTime/handler.calculateMP4StartTime
+    memorySize: 128
+    timeout: 10
+  getExistsChannelIndex:
+    role: lambdaRole
+    handler: functions/getExistsChannelIndex/handler.getExistsChannelIndex
     memorySize: 128
     timeout: 10
   disableDistribution:
@@ -260,8 +266,73 @@ stepFunctions:
               MediaLiveChannelId.$: $[0][0].ChannelResult.Channel.Id
               MediaStoreContainerArn.$: $[0][2].ContainerResult.Container.Arn
             Branches:
-              - StartAt: CreateChannel
+              - StartAt: ListChannels
                 States:
+                  ListChannels:
+                    Type: Task
+                    Comment: ライブ配信 - チャンネル一覧を取得
+                    InputPath: $
+                    ResultPath: $[0].ListChannelsResult
+                    Resource: arn:aws:states:::aws-sdk:medialive:listChannels
+                    Parameters:
+                      MaxResults: 100
+                    Next: ExtractChannelNames
+                  ExtractChannelNames:
+                    Type: Pass
+                    Comment: ライブ配信 - チャンネル一覧からチャンネル名を抽出
+                    InputPath: $
+                    ResultPath: $[0].ExtractChannelNamesResult
+                    Parameters:
+                      ChannelNames.$: $[0].ListChannelsResult.Channels[*].Name
+                    Next: CheckAnyChannelExists
+                  CheckAnyChannelExists:
+                    Type: Choice
+                    Comment: チャンネル一覧に、チャンネルが一つでもあるか確認
+                    InputPath: $
+                    Choices:
+                      - Variable: $[0].ExtractChannelNamesResult.ChannelNames
+                        IsPresent: true
+                        Next: CompareChannelNames
+                    Default: CreateChannel
+                  CompareChannelNames:
+                    Type: Pass
+                    Comment: ライブ配信 - チャンネル名一覧を比較
+                    InputPath: $
+                    ResultPath: $[0].CompareChannelNamesResult
+                    Parameters:
+                      ChannelExists.$: States.ArrayContains($[0].ExtractChannelNamesResult.ChannelNames, $[0].ChannelInput.Name)
+                    Next: CheckSpecifyChannelExists
+                  CheckSpecifyChannelExists:
+                    Type: Choice
+                    Comment: チャンネル一覧に、特定のNameを持つチャンネルがあるか確認
+                    InputPath: $
+                    Choices:
+                      - Variable: $[0].CompareChannelNamesResult.ChannelExists
+                        BooleanEquals: true
+                        Next: GetExistsChannelIndex
+                    Default: CreateChannel
+                  GetExistsChannelIndex:
+                    Type: Task
+                    Comment: ライブ配信 - チャンネル一覧から特定のNameを持つチャンネルのインデックスを取得
+                    InputPath: $
+                    ResultPath: $[0].GetExistsChannelIndexResult
+                    Resource:
+                      Fn::GetAtt: [getExistsChannelIndex, Arn]
+                    Parameters:
+                      ChannelNames.$: $[0].ExtractChannelNamesResult.ChannelNames
+                      ChannelName.$: $[0].ChannelInput.Name
+                    Next: PassChannelInfo
+                  PassChannelInfo:
+                    Type: Pass
+                    Comment: ライブ配信 - チャンネル一覧から特定のNameを持つチャンネルの情報を抽出してDB保存用に格納する
+                    InputPath: $
+                    ResultPath: $[0].ChannelResult
+                    Parameters:
+                      Channel.$: States.ArrayGetItem($[0].ListChannelsResult.Channels, $[0].GetExistsChannelIndexResult)
+                    Next: SkipCreateChannel
+                  SkipCreateChannel:
+                    Type: Succeed
+                    Comment: チャンネルが存在する場合は終了
                   CreateChannel:
                     Type: Task
                     Comment: ライブ配信 - チャンネルを作成
