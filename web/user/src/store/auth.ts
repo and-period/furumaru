@@ -70,6 +70,17 @@ export const useAuthStore = defineStore('auth', {
       const res = await this.authApiClient(this.accessToken).v1GetAuthUser()
       this.user = res
     },
+
+    async logout() {
+      try {
+        await this.authApiClient(this.accessToken).v1SignOut()
+      } catch (error) {
+        this.errorHandler(error)
+      } finally {
+        // stateを初期状態にリセット
+        this.$reset()
+      }
+    },
   },
 })
 
