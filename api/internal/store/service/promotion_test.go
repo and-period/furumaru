@@ -208,7 +208,7 @@ func TestGetPromotion(t *testing.T) {
 		DiscountRate: 0,
 		Code:         "code0001",
 		CodeType:     entity.PromotionCodeTypeOnce,
-		StartAt:      now,
+		StartAt:      now.AddDate(0, -1, 0),
 		EndAt:        now.AddDate(0, 1, 0),
 		CreatedAt:    now,
 		UpdatedAt:    now,
@@ -250,6 +250,19 @@ func TestGetPromotion(t *testing.T) {
 			expect:    nil,
 			expectErr: exception.ErrInternal,
 		},
+		{
+			name: "failed to get enabled promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				promotion := &entity.Promotion{}
+				mocks.db.Promotion.EXPECT().Get(ctx, "promotion-id").Return(promotion, nil)
+			},
+			input: &store.GetPromotionInput{
+				PromotionID: "promotion-id",
+				OnlyEnabled: true,
+			},
+			expect:    nil,
+			expectErr: exception.ErrNotFound,
+		},
 	}
 
 	for _, tt := range tests {
@@ -258,7 +271,7 @@ func TestGetPromotion(t *testing.T) {
 			actual, err := service.GetPromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
-		}))
+		}, withNow(now)))
 	}
 }
 

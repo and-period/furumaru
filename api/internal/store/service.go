@@ -80,9 +80,10 @@ type Service interface {
 	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error              // 注文配送情報更新
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error) // 集計結果一覧取得
 	// 買い物かご
-	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error) // 取得
-	AddCartItem(ctx context.Context, in *AddCartItemInput) error         // 商品を追加
-	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error   // 商品を削除
+	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error)                                // 取得
+	CalcCart(ctx context.Context, in *CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) // 購入前の支払い情報取得
+	AddCartItem(ctx context.Context, in *AddCartItemInput) error                                        // 商品を追加
+	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error                                  // 商品を削除
 	// 購入処理
 	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error) // 支払い申請（クレジットカード）
 	CheckoutPayPay(ctx context.Context, in *CheckoutPayPayInput) (string, error)         // 支払い申請（PayPay）

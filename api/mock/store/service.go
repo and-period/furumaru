@@ -79,6 +79,22 @@ func (mr *MockServiceMockRecorder) ApproveSchedule(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApproveSchedule", reflect.TypeOf((*MockService)(nil).ApproveSchedule), ctx, in)
 }
 
+// CalcCart mocks base method.
+func (m *MockService) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CalcCart", ctx, in)
+	ret0, _ := ret[0].(*entity.Cart)
+	ret1, _ := ret[1].(*entity.OrderPaymentSummary)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// CalcCart indicates an expected call of CalcCart.
+func (mr *MockServiceMockRecorder) CalcCart(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CalcCart", reflect.TypeOf((*MockService)(nil).CalcCart), ctx, in)
+}
+
 // CancelOrder mocks base method.
 func (m *MockService) CancelOrder(ctx context.Context, in *store.CancelOrderInput) error {
 	m.ctrl.T.Helper()

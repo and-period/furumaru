@@ -6,10 +6,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
-	"github.com/shopspring/decimal"
 )
-
-var taxRate = decimal.NewFromFloat(0.10) // 税率（10%)
 
 // 支払いステータス
 type PaymentStatus int32
@@ -79,8 +76,8 @@ type OrderPayments []*OrderPayment
 
 type NewOrderPaymentParams struct {
 	OrderID    string
-	Address    *entity.Address
 	MethodType PaymentMethodType
+	Address    *entity.Address
 	Baskets    CartBaskets
 	Products   Products
 	Shipping   *Shipping
@@ -114,38 +111,28 @@ func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
 }
 
 func NewOrderPayment(params *NewOrderPaymentParams) (*OrderPayment, error) {
-	var shippingFee int64
-	// 商品購入価格の算出
-	subtotal, err := params.Baskets.TotalPrice(params.Products.Map())
+	sparams := &NewOrderPaymentSummaryParams{
+		Address:   params.Address,
+		Baskets:   params.Baskets,
+		Products:  params.Products,
+		Shipping:  params.Shipping,
+		Promotion: params.Promotion,
+	}
+	summary, err := NewOrderPaymentSummary(sparams)
 	if err != nil {
 		return nil, err
 	}
-	// 商品配送料金の算出
-	for _, basket := range params.Baskets {
-		fee, err := params.Shipping.CalcShippingFee(basket.BoxSize, basket.BoxType, subtotal, params.Address.PrefectureCode)
-		if err != nil {
-			return nil, err
-		}
-		shippingFee += fee
-	}
-	// 割引金額の算出
-	discount := params.Promotion.CalcDiscount(subtotal, shippingFee)
-	// 支払い金額の算出
-	dsubtotal := decimal.NewFromInt(subtotal).Add(decimal.NewFromInt(shippingFee))
-	ddiscount := decimal.NewFromInt(discount)
-	dtax := dsubtotal.Sub(ddiscount).Mul(taxRate)
-	dtotal := dsubtotal.Sub(ddiscount).Add(dtax)
 	return &OrderPayment{
 		OrderID:           params.OrderID,
 		AddressRevisionID: params.Address.AddressRevision.ID,
 		Status:            PaymentStatusPending,
 		TransactionID:     "",
 		MethodType:        params.MethodType,
-		Subtotal:          subtotal,
-		Discount:          discount,
-		ShippingFee:       shippingFee,
-		Tax:               dtax.IntPart(),
-		Total:             dtotal.IntPart(),
+		Subtotal:          summary.Subtotal,
+		Discount:          summary.Discount,
+		ShippingFee:       summary.ShippingFee,
+		Tax:               summary.Tax,
+		Total:             summary.Total,
 	}, nil
 }
 

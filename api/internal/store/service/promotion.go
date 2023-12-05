@@ -64,7 +64,13 @@ func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput)
 		return nil, internalError(err)
 	}
 	promotion, err := s.db.Promotion.Get(ctx, in.PromotionID)
-	return promotion, internalError(err)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	if in.OnlyEnabled && !promotion.IsEnabled(s.now()) {
+		return nil, fmt.Errorf("this promotion is disabled: %w", exception.ErrNotFound)
+	}
+	return promotion, nil
 }
 
 func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotionInput) (*entity.Promotion, error) {

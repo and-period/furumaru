@@ -5,10 +5,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
+	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -275,6 +280,293 @@ func TestGetCart(t *testing.T) {
 			actual, err := service.GetCart(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
+		}, withNow(now)))
+	}
+}
+
+func TestCalcCart(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	shikoku := []int32{
+		codes.PrefectureValues["tokushima"],
+		codes.PrefectureValues["kagawa"],
+		codes.PrefectureValues["ehime"],
+		codes.PrefectureValues["kochi"],
+	}
+	set := set.New(shikoku...)
+	others := make([]int32, 0, 47-len(shikoku))
+	for _, val := range codes.PrefectureValues {
+		if set.Contains(val) {
+			continue
+		}
+		others = append(others, val)
+	}
+	rates := entity.ShippingRates{
+		{Number: 1, Name: "四国", Price: 250, PrefectureCodes: shikoku},
+		{Number: 2, Name: "その他", Price: 500, PrefectureCodes: others},
+	}
+	cart := &entity.Cart{
+		SessionID: "session-id",
+		Baskets: entity.CartBaskets{{
+			BoxNumber:     1,
+			BoxType:       entity.ShippingTypeNormal,
+			BoxSize:       entity.ShippingSize80,
+			BoxRate:       80,
+			Items:         entity.CartItems{{ProductID: "product-id", Quantity: 2}},
+			CoordinatorID: "coordinator-id",
+		}},
+		ExpiredAt: now.Add(defaultCartTTL),
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+	cartmocks := func(mocks *mocks, sessionID string, cart *entity.Cart, err error) {
+		fn := func(_ context.Context, in *entity.Cart) error {
+			in.Baskets = cart.Baskets
+			in.ExpiredAt = now.Add(defaultCartTTL)
+			in.CreatedAt = now
+			in.UpdatedAt = now
+			return err
+		}
+		mocks.cache.EXPECT().Get(gomock.Any(), &entity.Cart{SessionID: sessionID}).DoAndReturn(fn)
+	}
+	addressIn := &user.GetAddressInput{
+		UserID:    "user-id",
+		AddressID: "address-id",
+	}
+	address := &uentity.Address{
+		AddressRevision: uentity.AddressRevision{
+			ID:             1,
+			AddressID:      "address-id",
+			Lastname:       "&.",
+			Firstname:      "購入者",
+			PostalCode:     "1000014",
+			Prefecture:     "東京都",
+			PrefectureCode: 13,
+			City:           "千代田区",
+			AddressLine1:   "永田町1-7-1",
+			AddressLine2:   "",
+			PhoneNumber:    "+819012345678",
+		},
+		ID:        "address-id",
+		UserID:    "user-id",
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+	shipping := &entity.Shipping{
+		ShippingRevision: entity.ShippingRevision{
+			ShippingID:        "coordinator-id",
+			Box60Rates:        rates,
+			Box60Frozen:       800,
+			Box80Rates:        rates,
+			Box80Frozen:       800,
+			Box100Rates:       rates,
+			Box100Frozen:      800,
+			HasFreeShipping:   true,
+			FreeShippingRates: 3000,
+		},
+		ID:            "coordinator-id",
+		CoordinatorID: "coordinator-id",
+		CreatedAt:     now,
+		UpdatedAt:     now,
+	}
+	promotion := &entity.Promotion{
+		ID:           "promotion-id",
+		Title:        "プロモーションタイトル",
+		Description:  "プロモーションの詳細です。",
+		Public:       true,
+		PublishedAt:  now.AddDate(0, -1, 0),
+		DiscountType: entity.DiscountTypeRate,
+		DiscountRate: 10,
+		Code:         "testcode",
+		CodeType:     entity.PromotionCodeTypeAlways,
+		StartAt:      now.AddDate(0, -1, 0),
+		EndAt:        now.AddDate(0, 1, 0),
+	}
+	products := func(inventory int64) entity.Products {
+		return entity.Products{
+			{
+				ID:        "product-id",
+				Name:      "じゃがいも",
+				Inventory: inventory,
+				ProductRevision: entity.ProductRevision{
+					ID:        1,
+					ProductID: "product-id",
+					Price:     500,
+				},
+			},
+		}
+	}
+	tests := []struct {
+		name          string
+		setup         func(ctx context.Context, mocks *mocks)
+		input         *store.CalcCartInput
+		expectCart    *entity.Cart
+		expectSummary *entity.OrderPaymentSummary
+		expectErr     error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+			},
+			input: &store.CalcCartInput{
+				UserID:            "user-id",
+				SessionID:         "session-id",
+				CoordinatorID:     "coordinator-id",
+				BoxNumber:         0,
+				PromotionID:       "promotion-id",
+				ShippingAddressID: "address-id",
+			},
+			expectCart: cart,
+			expectSummary: &entity.OrderPaymentSummary{
+				Subtotal:    1000,
+				Discount:    100,
+				ShippingFee: 500,
+				Tax:         140,
+				TaxRate:     10,
+				Total:       1540,
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success without shipping and promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+			},
+			input: &store.CalcCartInput{
+				UserID:            "",
+				SessionID:         "session-id",
+				CoordinatorID:     "coordinator-id",
+				BoxNumber:         0,
+				PromotionID:       "",
+				ShippingAddressID: "",
+			},
+			expectCart: cart,
+			expectSummary: &entity.OrderPaymentSummary{
+				Subtotal:    1000,
+				Discount:    0,
+				ShippingFee: 0,
+				Tax:         100,
+				TaxRate:     10,
+				Total:       1100,
+			},
+			expectErr: nil,
+		},
+		{
+			name: "failed to get cart",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, assert.AnError)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+			},
+			input: &store.CalcCartInput{
+				UserID:            "user-id",
+				SessionID:         "session-id",
+				CoordinatorID:     "coordinator-id",
+				BoxNumber:         0,
+				PromotionID:       "promotion-id",
+				ShippingAddressID: "address-id",
+			},
+			expectCart:    nil,
+			expectSummary: nil,
+			expectErr:     exception.ErrInternal,
+		},
+		{
+			name: "failed to get address",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(nil, assert.AnError)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+			},
+			input: &store.CalcCartInput{
+				UserID:            "user-id",
+				SessionID:         "session-id",
+				CoordinatorID:     "coordinator-id",
+				BoxNumber:         0,
+				PromotionID:       "promotion-id",
+				ShippingAddressID: "address-id",
+			},
+			expectCart:    nil,
+			expectSummary: nil,
+			expectErr:     exception.ErrInternal,
+		},
+		{
+			name: "failed to get shipping",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(nil, assert.AnError)
+				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+			},
+			input: &store.CalcCartInput{
+				UserID:            "user-id",
+				SessionID:         "session-id",
+				CoordinatorID:     "coordinator-id",
+				BoxNumber:         0,
+				PromotionID:       "promotion-id",
+				ShippingAddressID: "address-id",
+			},
+			expectCart:    nil,
+			expectSummary: nil,
+			expectErr:     exception.ErrInternal,
+		},
+		{
+			name: "failed to get promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(nil, assert.AnError)
+			},
+			input: &store.CalcCartInput{
+				UserID:            "user-id",
+				SessionID:         "session-id",
+				CoordinatorID:     "coordinator-id",
+				BoxNumber:         0,
+				PromotionID:       "promotion-id",
+				ShippingAddressID: "address-id",
+			},
+			expectCart:    nil,
+			expectSummary: nil,
+			expectErr:     exception.ErrInternal,
+		},
+		{
+			name: "failed to get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, assert.AnError)
+			},
+			input: &store.CalcCartInput{
+				UserID:            "user-id",
+				SessionID:         "session-id",
+				CoordinatorID:     "coordinator-id",
+				BoxNumber:         0,
+				PromotionID:       "promotion-id",
+				ShippingAddressID: "address-id",
+			},
+			expectCart:    nil,
+			expectSummary: nil,
+			expectErr:     exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			cart, summary, err := service.CalcCart(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expectCart, cart)
+			assert.Equal(t, tt.expectSummary, summary)
 		}, withNow(now)))
 	}
 }

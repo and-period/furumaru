@@ -293,6 +293,7 @@ type MultiGetPromotionsInput struct {
 
 type GetPromotionInput struct {
 	PromotionID string `validate:"required"`
+	OnlyEnabled bool   `validate:""`
 }
 
 type CreatePromotionInput struct {
@@ -465,6 +466,15 @@ type GetCartInput struct {
 	SessionID string `validate:"required"`
 }
 
+type CalcCartInput struct {
+	UserID            string `validate:"required_with=ShippingAddressID"`
+	SessionID         string `validate:"required"`
+	CoordinatorID     string `validate:"required"`
+	BoxNumber         int64  `validate:"min=0"`
+	PromotionID       string `validate:""`
+	ShippingAddressID string `validate:""`
+}
+
 type AddCartItemInput struct {
 	SessionID string `validate:"required"`
 	ProductID string `validate:"required"`
@@ -473,7 +483,7 @@ type AddCartItemInput struct {
 
 type RemoveCartItemInput struct {
 	SessionID string `validate:"required"`
-	BoxNumber int64  `validate:"required"`
+	BoxNumber int64  `validate:"min=0"`
 	ProductID string `validate:"required"`
 }
 

@@ -43,13 +43,13 @@ export interface CheckoutRequest {
      * @type {number}
      * @memberof CheckoutRequest
      */
-    boxNumber?: number;
+    boxNumber: number;
     /**
      * プロモーションID（割引適用時のみ）
      * @type {string}
      * @memberof CheckoutRequest
      */
-    promotionId?: string;
+    promotionId: string;
     /**
      * 請求先住所ID
      * @type {string}
@@ -85,7 +85,7 @@ export interface CheckoutRequest {
      * @type {CheckoutCreditCard}
      * @memberof CheckoutRequest
      */
-    creditCard?: CheckoutCreditCard;
+    creditCard: CheckoutCreditCard;
 }
 
 /**
@@ -94,11 +94,14 @@ export interface CheckoutRequest {
 export function instanceOfCheckoutRequest(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "coordinatorId" in value;
+    isInstance = isInstance && "boxNumber" in value;
+    isInstance = isInstance && "promotionId" in value;
     isInstance = isInstance && "billingAddressId" in value;
     isInstance = isInstance && "shippingAddressId" in value;
     isInstance = isInstance && "paymentMethod" in value;
     isInstance = isInstance && "callbackUrl" in value;
     isInstance = isInstance && "total" in value;
+    isInstance = isInstance && "creditCard" in value;
 
     return isInstance;
 }
@@ -114,14 +117,14 @@ export function CheckoutRequestFromJSONTyped(json: any, ignoreDiscriminator: boo
     return {
         
         'coordinatorId': json['coordinatorId'],
-        'boxNumber': !exists(json, 'boxNumber') ? undefined : json['boxNumber'],
-        'promotionId': !exists(json, 'promotionId') ? undefined : json['promotionId'],
+        'boxNumber': json['boxNumber'],
+        'promotionId': json['promotionId'],
         'billingAddressId': json['billingAddressId'],
         'shippingAddressId': json['shippingAddressId'],
         'paymentMethod': PaymentMethodTypeFromJSON(json['paymentMethod']),
         'callbackUrl': json['callbackUrl'],
         'total': json['total'],
-        'creditCard': !exists(json, 'creditCard') ? undefined : CheckoutCreditCardFromJSON(json['creditCard']),
+        'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
     };
 }
 

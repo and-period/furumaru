@@ -94,3 +94,153 @@ cartResponse:
       originCity: '彦根市'
       startAt: 1640962800
       endAt: 1640962800
+calcCartResponse:
+  type: object
+  properties:
+    carts:
+      type: array
+      description: 買い物かご一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/cart'
+    cartItems:
+      type: array
+      description: 買い物かご内の商品一覧(集約結果)
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/cartItem'
+    products:
+      type: array
+      description: 商品一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/product'
+    coordinator:
+      $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    promotion:
+      $ref: './../../../openapi.yaml#/components/schemas/promotion'
+    subTotal:
+      type: integer
+      format: int64
+      description: 小計(税抜:商品合計金額)
+    discount:
+      type: integer
+      format: int64
+      description: 割引金額(税抜)
+    shippingFee:
+      type: integer
+      format: int64
+      description: 配送手数料(税抜)
+    tax:
+      type: integer
+      format: int64
+      description: 消費税
+    taxRate:
+      type: integer
+      format: int64
+      description: 消費税率(%)
+    total:
+      type: integer
+      format: int64
+      description: 合計金額(税込)
+  required:
+  - carts
+  - cartItems
+  - products
+  - coordinator
+  - promotion
+  - subTotal
+  - discount
+  - shippingFee
+  - tax
+  - taxRate
+  - total
+  example:
+    carts:
+    - number: 1
+      type: 1
+      size: 1
+      rate: 80
+      items:
+      - productId: 'kSByoE6FetnPs5Byk3a9Zx'
+        quantity: 1
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    cartItems:
+    - productId: 'kSByoE6FetnPs5Byk3a9Zx'
+      quantity: 1
+    products:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '新鮮なじゃがいも'
+      description: '新鮮なじゃがいもをお届けします。'
+      status: 2
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      media:
+      - url: 'https://and-period.jp/thumbnail01.png'
+        isThumbnail: true
+        images:
+        - url: 'https://and-period.jp/thumbnail_240.png'
+          size: 1
+        - url: 'https://and-period.jp/thumbnail_675.png'
+          size: 2
+        - url: 'https://and-period.jp/thumbnail_900.png'
+          size: 3
+      - url: 'https://and-period.jp/thumbnail02.png'
+        isThumbnail: false
+        images: []
+      price: 2500
+      inventory: 30
+      weight: 2.5
+      itemUnit: '袋'
+      itemDescription: '1袋あたり2.5kgのじゃがいも'
+      deliveryType: 1
+      recommendedPoint1: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint2: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint3: 'シャリシャリほろ苦がクセになる！'
+      expirationDate: 7
+      storageMethodType: 1
+      box60Rate: 80
+      box80Rate: 50
+      box100Rate: 40
+      originPrefecture: '東京都'
+      originCity: '彦根市'
+      startAt: 1640962800
+      endAt: 1640962800
+    coordinator:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+    promotion:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'プロモーションタイトル'
+      description: 'セール情報をお届けします。'
+      discountType: 1
+      discountRate: 300
+      code: 'code1234'
+      startAt: 1640962800
+      endAt: 1640962800
+    subtotal: 1000
+    discount: 200
+    shippingFee: 500
+    tax: 130
+    taxRate: 10
+    total: 1430
