@@ -1,6 +1,6 @@
 import type {
   Cart,
-  CartItemsInner,
+  CartItem as CartItemInner,
   Coordinator,
   Product,
   ProductMediaInner,
@@ -21,7 +21,7 @@ export interface ProductItem extends Product {
   thumbnail: ProductMediaInner
 }
 
-export interface CartItem extends CartItemsInner {
+export interface CartItem extends CartItemInner {
   product: ProductItem
 }
 

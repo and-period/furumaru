@@ -3,6 +3,8 @@ get:
   operationId: v1GetAddress
   tags:
   - Address
+  security:
+  - bearerAuth: []
   parameters:
   - in: path
     name: addressId

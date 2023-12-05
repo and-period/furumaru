@@ -3,6 +3,8 @@ get:
   operationId: v1ListAddresses
   tags:
   - Address
+  security:
+  - bearerAuth: []
   parameters:
   - in: query
     name: limit

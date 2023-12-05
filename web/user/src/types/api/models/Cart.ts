@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { CartItemsInner } from './CartItemsInner';
+import type { CartItem } from './CartItem';
 import {
-    CartItemsInnerFromJSON,
-    CartItemsInnerFromJSONTyped,
-    CartItemsInnerToJSON,
-} from './CartItemsInner';
+    CartItemFromJSON,
+    CartItemFromJSONTyped,
+    CartItemToJSON,
+} from './CartItem';
 import type { ShippingSize } from './ShippingSize';
 import {
     ShippingSizeFromJSON,
@@ -64,10 +64,10 @@ export interface Cart {
     rate: number;
     /**
      * 
-     * @type {Array<CartItemsInner>}
+     * @type {Array<CartItem>}
      * @memberof Cart
      */
-    items: Array<CartItemsInner>;
+    items: Array<CartItem>;
     /**
      * コーディネータID
      * @type {string}
@@ -105,7 +105,7 @@ export function CartFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cart
         'type': ShippingTypeFromJSON(json['type']),
         'size': ShippingSizeFromJSON(json['size']),
         'rate': json['rate'],
-        'items': ((json['items'] as Array<any>).map(CartItemsInnerFromJSON)),
+        'items': ((json['items'] as Array<any>).map(CartItemFromJSON)),
         'coordinatorId': json['coordinatorId'],
     };
 }
@@ -123,7 +123,7 @@ export function CartToJSON(value?: Cart | null): any {
         'type': ShippingTypeToJSON(value.type),
         'size': ShippingSizeToJSON(value.size),
         'rate': value.rate,
-        'items': ((value.items as Array<any>).map(CartItemsInnerToJSON)),
+        'items': ((value.items as Array<any>).map(CartItemToJSON)),
         'coordinatorId': value.coordinatorId,
     };
 }

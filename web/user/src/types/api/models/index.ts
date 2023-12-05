@@ -1,5 +1,5 @@
 /* tslint:disable */
- 
+/* eslint-disable */
 export * from './AddCartItemRequest';
 export * from './Address';
 export * from './AddressResponse';
@@ -9,7 +9,6 @@ export * from './AuthUserResponse';
 export * from './CalcCartResponse';
 export * from './Cart';
 export * from './CartItem';
-export * from './CartItemsInner';
 export * from './CartResponse';
 export * from './Category';
 export * from './CheckoutCreditCard';
