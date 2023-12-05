@@ -23,6 +23,7 @@ const { promotions } = storeToRefs(promotionStore)
 const { products } = storeToRefs(productStore)
 
 const loading = ref<boolean>(false)
+const cancelDialog = ref<boolean>(false)
 const refundDialog = ref<boolean>(false)
 const completeFormData = ref<CompleteOrderRequest>({
   shippingMessage: ''
@@ -112,6 +113,7 @@ const handleSubmitCancel = async (): Promise<void> => {
   try {
     loading.value = true
     await orderStore.cancelOrder(orderId)
+    cancelDialog.value = false
     fetchState.refresh()
   } catch (err) {
     if (err instanceof Error) {
@@ -174,6 +176,7 @@ try {
     v-model:complete-form-data="completeFormData"
     v-model:refund-form-data="refundFormData"
     v-model:fulfillments-form-data="fulfillmentsFormData"
+    v-model:cancel-dialog="cancelDialog"
     v-model:refund-dialog="refundDialog"
     :loading="isLoading()"
     :is-alert="isShow"
