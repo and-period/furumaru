@@ -122,6 +122,10 @@ const props = defineProps({
     type: Array<FulfillmentInput>,
     default: () => ([])
   },
+  cancelDialog: {
+    type: Boolean,
+    default: false
+  },
   refundDialog: {
     type: Boolean,
     default: false
@@ -132,6 +136,7 @@ const emit = defineEmits<{
   (e: 'update:complete-form-data', formData: CompleteOrderRequest): void
   (e: 'update:refund-form-data', formData: RefundOrderRequest): void
   (e: 'update:fulfillments-form-data', formData: FulfillmentInput[]): void
+  (e: 'update:cancel-dialog', toggle: boolean): void
   (e: 'update:refund-dialog', toggle: boolean): void
   (e: 'submit:capture'): void
   (e: 'submit:draft'): void
@@ -187,6 +192,10 @@ const refundFormDataValue = computed({
 const fulfillmentsFormDataValue = computed({
   get: (): FulfillmentInput[] => props.fulfillmentsFormData,
   set: (formData: FulfillmentInput[]): void => emit('update:fulfillments-form-data', formData)
+})
+const cancelDialogValue = computed({
+  get: (): boolean => props.cancelDialog,
+  set: (val: boolean): void => emit('update:cancel-dialog', val)
 })
 const refundDialogValue = computed({
   get: (): boolean => props.refundDialog,
@@ -411,6 +420,7 @@ const getProduct = (productId: string): Product | undefined => {
     return product.id === productId
   })
 }
+
 const getProductName = (productId: string): string => {
   const product = getProduct(productId)
   return product?.name || ''
@@ -543,6 +553,23 @@ const getOrderItems = (fulfillmentId: string): OrderItem[] => {
   return items
 }
 
+const showShippingMessage = (): boolean => {
+  const targets: OrderStatus[] = [
+    OrderStatus.PREPARING,
+    OrderStatus.SHIPPED,
+    OrderStatus.COMPLETED
+  ]
+  return targets.includes(props.order.status)
+}
+
+const onClickOpenCancelDialog = (): void => {
+  emit('update:cancel-dialog', true)
+}
+
+const onClickCloseCancelDialog = (): void => {
+  emit('update:cancel-dialog', false)
+}
+
 const onClickOpenRefundDialog = (): void => {
   emit('update:refund-dialog', true)
 }
@@ -578,6 +605,23 @@ const onSubmitRefund = (): void => {
 
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+
+  <v-dialog v-model="cancelDialogValue" width="500">
+    <v-card>
+      <v-card-title>
+        本当に注文キャンセルしますか？
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="error" variant="text" @click="onClickCloseCancelDialog">
+          キャンセル
+        </v-btn>
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitCancel">
+          削除
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 
   <v-dialog v-model="refundDialogValue" width="500">
     <v-card>
@@ -910,6 +954,7 @@ const onSubmitRefund = (): void => {
         </v-card-title>
         <v-card-text>
           <v-textarea
+            v-show="showShippingMessage()"
             v-model="completeFormDataValue.shippingMessage"
             label="お客様へのメッセージ"
             placeholder="例：ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。"
@@ -931,7 +976,7 @@ const onSubmitRefund = (): void => {
         <v-icon start :icon="mdiPlus" />
         発送完了を通知
       </v-btn>
-      <v-btn v-show="isCancelable()" variant="outlined" color="error" class="mr-2" @click="onSubmitCancel()">
+      <v-btn v-show="isCancelable()" variant="outlined" color="error" class="mr-2" @click="onClickOpenCancelDialog()">
         <v-icon start :icon="mdiDelete" />
         注文をキャンセル
       </v-btn>
