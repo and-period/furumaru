@@ -348,6 +348,20 @@ func (mr *MockServiceMockRecorder) ListBroadcasts(ctx, in interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListBroadcasts", reflect.TypeOf((*MockService)(nil).ListBroadcasts), ctx, in)
 }
 
+// PauseBroadcast mocks base method.
+func (m *MockService) PauseBroadcast(ctx context.Context, in *media.PauseBroadcastInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PauseBroadcast", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PauseBroadcast indicates an expected call of PauseBroadcast.
+func (mr *MockServiceMockRecorder) PauseBroadcast(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PauseBroadcast", reflect.TypeOf((*MockService)(nil).PauseBroadcast), ctx, in)
+}
+
 // ResizeCoordinatorHeader mocks base method.
 func (m *MockService) ResizeCoordinatorHeader(ctx context.Context, in *media.ResizeFileInput) error {
 	m.ctrl.T.Helper()
@@ -444,6 +458,20 @@ func (m *MockService) ResizeScheduleThumbnail(ctx context.Context, in *media.Res
 func (mr *MockServiceMockRecorder) ResizeScheduleThumbnail(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeScheduleThumbnail", reflect.TypeOf((*MockService)(nil).ResizeScheduleThumbnail), ctx, in)
+}
+
+// UnpauseBroadcast mocks base method.
+func (m *MockService) UnpauseBroadcast(ctx context.Context, in *media.UnpauseBroadcastInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnpauseBroadcast", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UnpauseBroadcast indicates an expected call of UnpauseBroadcast.
+func (mr *MockServiceMockRecorder) UnpauseBroadcast(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnpauseBroadcast", reflect.TypeOf((*MockService)(nil).UnpauseBroadcast), ctx, in)
 }
 
 // UpdateBroadcastArchive mocks base method.

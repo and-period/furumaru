@@ -8,6 +8,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  pauseDialog: {
+    type: Boolean,
+    default: false
+  },
   liveMp4Dialog: {
     type: Boolean,
     default: false
@@ -42,10 +46,13 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'update:broadcast', broadcast: Broadcast): void
   (e: 'update:mp4-form-data', file: File[] | undefined): void
+  (e: 'update:pause-dialog', toggle: boolean): void
   (e: 'update:live-mp4-dialog', toggle: boolean): void
   (e: 'update:archive-mp4-dialog', toggle: boolean): void
   (e: 'click:activate-static-image'): void
   (e: 'click:deactivate-static-image'): void
+  (e: 'submit:pause'): void
+  (e: 'submit:unpause'): void
   (e: 'submit:change-input-mp4'): void
   (e: 'submit:change-input-rtmp'): void
   (e: 'submit:upload-archive-mp4'): void
@@ -64,6 +71,10 @@ const videoRef = ref<HTMLVideoElement>()
 const broadcastValue = computed({
   get: (): Broadcast => props.broadcast,
   set: (broadcast: Broadcast): void => emit('update:broadcast', broadcast)
+})
+const pauseDialogValue = computed({
+  get: (): boolean => props.pauseDialog,
+  set: (v: boolean): void => emit('update:pause-dialog', v)
 })
 const archiveMp4DialogValue = computed({
   get: (): boolean => props.archiveMp4Dialog,
@@ -119,6 +130,10 @@ const onClickVideo = (): void => {
   }
 }
 
+const onClickPause = (): void => {
+  emit('update:pause-dialog', true)
+}
+
 const onClickActivateStaticImage = (): void => {
   emit('click:activate-static-image')
 }
@@ -137,12 +152,24 @@ const onClickUploadArchiveMp4 = (): void => {
   emit('update:archive-mp4-dialog', true)
 }
 
+const onClosePauseDialog = (): void => {
+  emit('update:pause-dialog', false)
+}
+
 const onCloseArchiveMp4Dialog = (): void => {
   emit('update:archive-mp4-dialog', false)
 }
 
 const onCloseLiveMp4Dialog = (): void => {
   emit('update:live-mp4-dialog', false)
+}
+
+const onSubmitPause = (): void => {
+  emit('submit:pause')
+}
+
+const onSubmitUnpause = (): void => {
+  emit('submit:unpause')
 }
 
 const onSubmitChangeMp4Input = (): void => {
@@ -160,6 +187,23 @@ const onSubmitUploadArchiveMp4 = (): void => {
 
 <template>
   <v-dialog v-model="archiveMp4DialogValue">
+    <v-dialog v-model="pauseDialogValue" width="500">
+      <v-card :loading="props.loading">
+        <v-card-title class="text-h7">
+          本当に一時停止しますか？
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="info" variant="text" @click="onClosePauseDialog">
+            閉じる
+          </v-btn>
+          <v-btn :loading="props.loading" color="error" variant="outlined" @click="onSubmitPause">
+            一時停止
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-card :loading="loading">
       <v-card-title class="primaryLight">
         アーカイブ映像アップロード
@@ -282,6 +326,18 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-card-text>
           <v-list>
             <v-list-item class="px-0">
+              <v-list-item-subtitle>
+                ライブ配信の操作
+              </v-list-item-subtitle>
+              <v-btn block variant="outlined" color="primary" class="mt-2" @click="onClickPause">
+                一時停止する
+              </v-btn>
+              <v-btn block variant="outlined" color="secondary" class="mt-2" @click="onSubmitUnpause">
+                一時停止を解除する
+              </v-btn>
+            </v-list-item>
+
+            <v-list-item class="px-0 mt-4">
               <v-list-item-subtitle>
                 入力チャンネルの設定
               </v-list-item-subtitle>

@@ -14,6 +14,8 @@ type Service interface {
 	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) // 一覧取得(マルシェ開催スケジュールID指定)
 	CreateBroadcast(ctx context.Context, in *CreateBroadcastInput) (*entity.Broadcast, error)                   // 登録
 	UpdateBroadcastArchive(ctx context.Context, in *UpdateBroadcastArchiveInput) error                          // アーカイブ動画の更新
+	PauseBroadcast(ctx context.Context, in *PauseBroadcastInput) error                                          // ライブ配信の一時停止
+	UnpauseBroadcast(ctx context.Context, in *UnpauseBroadcastInput) error                                      // ライブ配信の一時停止を解除
 	ActivateBroadcastRTMP(ctx context.Context, in *ActivateBroadcastRTMPInput) error                            // ライブ配信の入力をRTMPに切り替え
 	ActivateBroadcastMP4(ctx context.Context, in *ActivateBroadcastMP4Input) error                              // ライブ配信の入力をMP4に切り替え
 	ActivateBroadcastStaticImage(ctx context.Context, in *ActivateBroadcastStaticImageInput) error              // ライブ配信のふた絵を有効化

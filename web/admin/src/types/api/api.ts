@@ -8040,14 +8040,14 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
-         * @summary マルシェライブ配信手動開始
+         * @summary マルシェライブ配信一時停止
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1StartBroadcast: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1PauseBroadcast: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
-            assertParamExists('v1StartBroadcast', 'scheduleId', scheduleId)
+            assertParamExists('v1PauseBroadcast', 'scheduleId', scheduleId)
             const localVarPath = `/v1/schedules/{scheduleId}/broadcasts`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -8057,7 +8057,7 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -8078,14 +8078,14 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
-         * @summary マルシェライブ配信手動停止
+         * @summary マルシェライブ配信一時停止解除
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1StopBroadcast: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UnpauseBroadcast: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
-            assertParamExists('v1StopBroadcast', 'scheduleId', scheduleId)
+            assertParamExists('v1UnpauseBroadcast', 'scheduleId', scheduleId)
             const localVarPath = `/v1/schedules/{scheduleId}/broadcasts`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -8095,7 +8095,7 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -8229,24 +8229,24 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary マルシェライブ配信手動開始
+         * @summary マルシェライブ配信一時停止
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1StartBroadcast(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1StartBroadcast(scheduleId, options);
+        async v1PauseBroadcast(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1PauseBroadcast(scheduleId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary マルシェライブ配信手動停止
+         * @summary マルシェライブ配信一時停止解除
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1StopBroadcast(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1StopBroadcast(scheduleId, options);
+        async v1UnpauseBroadcast(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UnpauseBroadcast(scheduleId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -8324,23 +8324,23 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
         },
         /**
          * 
-         * @summary マルシェライブ配信手動開始
+         * @summary マルシェライブ配信一時停止
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1StartBroadcast(scheduleId: string, options?: any): AxiosPromise<object> {
-            return localVarFp.v1StartBroadcast(scheduleId, options).then((request) => request(axios, basePath));
+        v1PauseBroadcast(scheduleId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1PauseBroadcast(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary マルシェライブ配信手動停止
+         * @summary マルシェライブ配信一時停止解除
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1StopBroadcast(scheduleId: string, options?: any): AxiosPromise<object> {
-            return localVarFp.v1StopBroadcast(scheduleId, options).then((request) => request(axios, basePath));
+        v1UnpauseBroadcast(scheduleId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UnpauseBroadcast(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8426,26 +8426,26 @@ export class BroadcastApi extends BaseAPI {
 
     /**
      * 
-     * @summary マルシェライブ配信手動開始
+     * @summary マルシェライブ配信一時停止
      * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1StartBroadcast(scheduleId: string, options?: AxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1StartBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
+    public v1PauseBroadcast(scheduleId: string, options?: AxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1PauseBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary マルシェライブ配信手動停止
+     * @summary マルシェライブ配信一時停止解除
      * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1StopBroadcast(scheduleId: string, options?: AxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1StopBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
+    public v1UnpauseBroadcast(scheduleId: string, options?: AxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1UnpauseBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

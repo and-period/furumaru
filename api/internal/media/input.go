@@ -48,6 +48,14 @@ type UpdateBroadcastArchiveInput struct {
 	Header     *multipart.FileHeader `validate:"required"`
 }
 
+type PauseBroadcastInput struct {
+	ScheduleID string `validate:"required"`
+}
+
+type UnpauseBroadcastInput struct {
+	ScheduleID string `validate:"required"`
+}
+
 type ActivateBroadcastRTMPInput struct {
 	ScheduleID string `validate:"required"`
 }

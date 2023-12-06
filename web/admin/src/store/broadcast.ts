@@ -24,6 +24,32 @@ export const useBroadcastStore = defineStore('broadcast', {
     },
 
     /**
+     * ライブ配信を一時停止する非同期関数
+     * @param scheduleId マルシェ開催スケジュールID
+     * @returns
+     */
+    async pause (scheduleId: string): Promise<void> {
+      try {
+        await apiClient.broadcastApi().v1PauseBroadcast(scheduleId)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * ライブ配信の一時停止を解除する非同期関数
+     * @param scheduleId マルシェ開催スケジュールID
+     * @returns
+     */
+    async unpause (scheduleId: string): Promise<void> {
+      try {
+        await apiClient.broadcastApi().v1UnpauseBroadcast(scheduleId)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
      * ライブ配信のふた絵を有効化する非同期関数
      * @param scheduleId マルシェ開催スケジュールID
      * @returns

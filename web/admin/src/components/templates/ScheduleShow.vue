@@ -22,6 +22,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  pauseDialog: {
+    type: Boolean,
+    default: false
+  },
   createLiveDialog: {
     type: Boolean,
     default: false
@@ -174,6 +178,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'click:new-live'): void
   (e: 'click:edit-live', liveId: string): void
+  (e: 'update:pause-dialog', v: boolean): void
   (e: 'update:live-mp4-dialog', v: boolean): void
   (e: 'update:archive-mp4-dialog', v: boolean): void
   (e: 'update:selected-tab-item', item: string): void
@@ -193,6 +198,8 @@ const emit = defineEmits<{
   (e: 'submit:create-live'): void
   (e: 'submit:update-live'): void
   (e: 'submit:delete-live'): void
+  (e: 'submit:pause'): void
+  (e: 'submit:unpause'): void
   (e: 'submit:activate-static-image'): void
   (e: 'submit:deactivate-static-image'): void
   (e: 'submit:change-input-mp4'): void
@@ -221,6 +228,10 @@ const createLiveDialogValue = computed({
 const updateLiveDialogValue = computed({
   get: (): boolean => props.updateLiveDialog,
   set: (val: boolean): void => emit('update:update-live-dialog', val)
+})
+const pauseDialogValue = computed({
+  get: (): boolean => props.pauseDialog,
+  set: (val: boolean): void => emit('update:pause-dialog', val)
 })
 const liveMp4DialogValue = computed({
   get: (): boolean => props.liveMp4Dialog,
@@ -289,6 +300,14 @@ const onSubmitUpdateLive = (): void => {
 
 const onSubmitDeleteLive = (): void => {
   emit('submit:delete-live')
+}
+
+const onSubmitPause = (): void => {
+  emit('submit:pause')
+}
+
+const onSubmitUnpause = (): void => {
+  emit('submit:unpause')
 }
 
 const onSubmitActivateStaticImage = (): void => {
@@ -369,6 +388,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
 
     <v-window-item value="streaming">
       <organisms-schedule-streaming
+        v-model:pause-dialog="pauseDialogValue"
         v-model:live-mp4-dialog="liveMp4DialogValue"
         v-model:archive-mp4-dialog="archiveMp4DialogValue"
         v-model:mp4-form-data="mp4FormDataValue"
@@ -377,6 +397,8 @@ const onSubmitUploadArchiveMp4 = (): void => {
         :broadcast="broadcast"
         @click:activate-static-image="onSubmitActivateStaticImage"
         @click:deactivate-static-image="onSubmitDeactivateStaticImage"
+        @submit:pause="onSubmitPause"
+        @submit:unpause="onSubmitUnpause"
         @submit:change-input-mp4="onSubmitChangeMp4Input"
         @submit:change-input-rtmp="onSubmitChangeRtmpInput"
         @submit:upload-archive-mp4="onSubmitUploadArchiveMp4"

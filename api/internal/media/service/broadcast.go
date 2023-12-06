@@ -105,6 +105,55 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 	return internalError(err)
 }
 
+func (s *service) PauseBroadcast(ctx context.Context, in *media.PauseBroadcastInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return internalError(err)
+	}
+	if broadcast.Status != entity.BroadcastStatusActive {
+		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+	}
+	settings := []*medialive.ScheduleSetting{{
+		Name:       fmt.Sprintf("%s immediate-pause", jst.Format(s.now(), time.DateTime)),
+		ActionType: medialive.ScheduleActionTypePauseState,
+		StartType:  medialive.ScheduleStartTypeImmediate,
+		Reference:  string(medialive.PipelineIDPipeline0),
+	}}
+	params := &medialive.CreateScheduleParams{
+		ChannelID: broadcast.MediaLiveChannelID,
+		Settings:  settings,
+	}
+	err = s.media.CreateSchedule(ctx, params)
+	return internalError(err)
+}
+
+func (s *service) UnpauseBroadcast(ctx context.Context, in *media.UnpauseBroadcastInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return internalError(err)
+	}
+	if broadcast.Status != entity.BroadcastStatusActive {
+		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
+	}
+	settings := []*medialive.ScheduleSetting{{
+		Name:       fmt.Sprintf("%s immediate-unpause", jst.Format(s.now(), time.DateTime)),
+		ActionType: medialive.ScheduleActionTypeUnpauseState,
+		StartType:  medialive.ScheduleStartTypeImmediate,
+	}}
+	params := &medialive.CreateScheduleParams{
+		ChannelID: broadcast.MediaLiveChannelID,
+		Settings:  settings,
+	}
+	err = s.media.CreateSchedule(ctx, params)
+	return internalError(err)
+}
+
 func (s *service) ActivateBroadcastRTMP(ctx context.Context, in *media.ActivateBroadcastRTMPInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)

@@ -713,7 +713,7 @@ stepFunctions:
                     Parameters:
                       StateMachineArn: arn:aws:states:ap-northeast-1:386661535629:stateMachine:deleteCloudFrontResoursesFunction-${self:provider.stage}
                       Input:
-                        DistributionId.$: $.CloudFrontDistributionArn
+                        CloudFrontDistributionArn.$: $.CloudFrontDistributionArn
                         AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$: $$.Execution.Id
                     End: true
               - StartAt: deleteMediaStoreResources
@@ -798,6 +798,9 @@ stepFunctions:
                     - Variable: $.DescribeInputResult.State
                       StringEquals: "DETACHED"
                       Next: DeleteInput
+                    - Variable: $.DescribeInputResult.State
+                      StringEquals: "DELETED"
+                      Next: DeletedInput
                   Default: DescribeInput
                 DeleteInput:
                   Type: Task
@@ -806,6 +809,8 @@ stepFunctions:
                   Parameters:
                     InputId.$: $.InputId
                   End: true
+                DeletedInput:
+                  Type: Succeed
     deleteCloudFrontMachine:
       name: deleteCloudFrontResoursesFunction-${self:provider.stage}
       role:
@@ -816,7 +821,7 @@ stepFunctions:
           ExtractDistributionId:
             Type: Pass
             InputPath: $
-            ResultPath: $.DistributionId
+            ResultPath: $
             Parameters:
               DistributionId.$: States.ArrayGetItem(States.StringSplit($.CloudFrontDistributionArn, '/'), 1)
             Next: GetDistributionConfig

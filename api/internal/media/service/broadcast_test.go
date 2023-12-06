@@ -401,6 +401,169 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 	}
 }
 
+func TestPauseBroadcast(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	broadcast := &entity.Broadcast{
+		Status:                 entity.BroadcastStatusActive,
+		MediaLiveChannelID:     "12345678",
+		MediaLiveRTMPInputName: "rtmp",
+	}
+	params := &medialive.CreateScheduleParams{
+		ChannelID: "12345678",
+		Settings: []*medialive.ScheduleSetting{{
+			Name:       fmt.Sprintf("%s immediate-pause", jst.Format(now, time.DateTime)),
+			ActionType: medialive.ScheduleActionTypePauseState,
+			StartType:  medialive.ScheduleStartTypeImmediate,
+			Reference:  string(medialive.PipelineIDPipeline0),
+		}},
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.PauseBroadcastInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(nil)
+			},
+			input: &media.PauseBroadcastInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.PauseBroadcastInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.PauseBroadcastInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.PauseBroadcastInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to activate static image",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(assert.AnError)
+			},
+			input: &media.PauseBroadcastInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.PauseBroadcast(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}, withNow(now)))
+	}
+}
+
+func TestUnpauseBroadcast(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	broadcast := &entity.Broadcast{
+		Status:                 entity.BroadcastStatusActive,
+		MediaLiveChannelID:     "12345678",
+		MediaLiveRTMPInputName: "rtmp",
+	}
+	params := &medialive.CreateScheduleParams{
+		ChannelID: "12345678",
+		Settings: []*medialive.ScheduleSetting{{
+			Name:       fmt.Sprintf("%s immediate-unpause", jst.Format(now, time.DateTime)),
+			ActionType: medialive.ScheduleActionTypeUnpauseState,
+			StartType:  medialive.ScheduleStartTypeImmediate,
+		}},
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.UnpauseBroadcastInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(nil)
+			},
+			input: &media.UnpauseBroadcastInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.UnpauseBroadcastInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.UnpauseBroadcastInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.UnpauseBroadcastInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to activate static image",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(assert.AnError)
+			},
+			input: &media.UnpauseBroadcastInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UnpauseBroadcast(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}, withNow(now)))
+	}
+}
+
 func TestActivateBroadcastRTMP(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
