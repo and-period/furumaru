@@ -36,12 +36,11 @@ type listOrdersParams database.ListOrdersParams
 
 func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID).Order("coordinator_id ASC, management_id DESC")
 	}
 	if p.UserID != "" {
-		stmt = stmt.Where("user_id = ?", p.UserID)
+		stmt = stmt.Where("user_id = ?", p.UserID).Order("created_at DESC")
 	}
-	stmt = stmt.Order("updated_at DESC")
 	return stmt
 }
 
@@ -87,7 +86,16 @@ func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*ent
 
 func (o *order) Create(ctx context.Context, order *entity.Order) error {
 	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
+		count := func(stmt *gorm.DB) *gorm.DB {
+			return stmt.Where("coordinator_id = ?", order.CoordinatorID)
+		}
+		total, err := o.db.Count(ctx, o.db.DB, &entity.Order{}, count)
+		if err != nil {
+			return err
+		}
+
 		now := o.now()
+		order.ManagementID = total + 1
 		order.CreatedAt, order.UpdatedAt = now, now
 		order.OrderPayment.CreatedAt, order.OrderPayment.UpdatedAt = now, now
 		for _, f := range order.OrderFulfillments {
