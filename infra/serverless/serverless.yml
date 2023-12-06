@@ -786,10 +786,6 @@ stepFunctions:
                   Resource: arn:aws:states:::aws-sdk:medialive:describeInput
                   Parameters:
                     InputId.$: $.InputId
-                  Next: WaitDettached
-                WaitDettached:
-                  Type: Wait
-                  Seconds: 30
                   Next: CheckInputDetached
                 CheckInputDetached:
                   Type: Choice
@@ -801,7 +797,11 @@ stepFunctions:
                     - Variable: $.DescribeInputResult.State
                       StringEquals: "DELETED"
                       Next: DeletedInput
-                  Default: DescribeInput
+                  Default: WaitDettached
+                WaitDettached:
+                  Type: Wait
+                  Seconds: 30
+                  Next: DescribeInput
                 DeleteInput:
                   Type: Task
                   Resource: arn:aws:states:::aws-sdk:medialive:deleteInput
