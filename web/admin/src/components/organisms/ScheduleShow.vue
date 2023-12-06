@@ -234,11 +234,6 @@ const onSubmit = async (): Promise<void> => {
             variant="plain"
             readonly
           />
-          <v-switch
-            v-model="publicValue"
-            label="公開する"
-            color="primary"
-          />
           <p class="text-subtitle-2 text-grey py-2">
             開催開始日時
           </p>

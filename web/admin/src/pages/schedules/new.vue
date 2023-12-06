@@ -22,7 +22,7 @@ const formData = ref<CreateScheduleRequest>({
   thumbnailUrl: '',
   imageUrl: '',
   openingVideoUrl: '',
-  public: false,
+  public: true, // 公開状態で作成する(承認フラグで公開かの出し分けを実施)
   startAt: dayjs().unix(),
   endAt: dayjs().unix()
 })
