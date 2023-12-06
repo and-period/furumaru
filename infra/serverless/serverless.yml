@@ -218,10 +218,6 @@ stepFunctions:
                     Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
                     Parameters:
                       ContainerName.$: $.ContainerResult.Container.Name
-                    Next: WaitActive
-                  WaitActive:
-                    Type: Wait
-                    Seconds: 2
                     Next: CheckContainerActive
                   CheckContainerActive:
                     Type: Choice
@@ -232,8 +228,12 @@ stepFunctions:
                         Next: ExtractMediaStoreDomain
                       - Variable: $.ContainerStatus.Container.Status
                         StringEquals: "CREATING"
-                        Next: DescribeContainer
+                        Next: WaitActive
                     Default: failed
+                  WaitActive:
+                    Type: Wait
+                    Seconds: 2
+                    Next: DescribeContainer
                   ExtractMediaStoreDomain:
                     Type: Task
                     Comment: ライブ配信 - MediaStoreのドメイン名を抽出
