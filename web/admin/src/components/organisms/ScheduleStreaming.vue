@@ -108,16 +108,12 @@ const onClickVideo = (): void => {
   if (!videoRef.value || !props.broadcast) {
     return
   }
+  if (!isLive()) {
+    return
+  }
 
   const video = videoRef.value
-
-  let src: string = ''
-  if (isLive()) {
-    src = props.broadcast.outputUrl
-  }
-  if (isVOD()) {
-    src = props.broadcast.archiveUrl
-  }
+  const src = props.broadcast.outputUrl
 
   if (Hls.isSupported()) {
     const hls = new Hls({ enableWorker: false })
@@ -280,8 +276,12 @@ const onSubmitUploadArchiveMp4 = (): void => {
       <v-card>
         <v-card-text>
           <v-container>
-            <video id="video" ref="videoRef" controls />
-            <v-btn @click="onClickVideo">
+            <video v-show="isLive()" id="video" ref="videoRef" controls />
+            <video v-show="isVOD()" id="video" controls>
+              <source :src="broadcast.archiveUrl" type="video/mp4">
+              <a :href="broadcast.archiveUrl" type="video/mp4">mp4</a>
+            </video>
+            <v-btn v-show="isLive()" @click="onClickVideo">
               映像の更新
             </v-btn>
           </v-container>
@@ -371,9 +371,6 @@ const onSubmitUploadArchiveMp4 = (): void => {
               <v-list-item-subtitle>
                 オンデマンド配信の設定
               </v-list-item-subtitle>
-              <v-btn block variant="outlined" color="primary" class="mt-2" :href="broadcast.archiveUrl">
-                ダウンロード
-              </v-btn>
               <v-btn block variant="outlined" color="secondary" class="mt-2" @click="onClickUploadArchiveMp4">
                 アップロード
               </v-btn>
