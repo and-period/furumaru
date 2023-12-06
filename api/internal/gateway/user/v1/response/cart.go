@@ -23,15 +23,15 @@ type CartResponse struct {
 }
 
 type CalcCartResponse struct {
-	Carts       []*Cart      `json:"carts"`        // カート一覧
-	Items       []*CartItem  `json:"items"`        // カート内の商品一覧(集計結果)
-	Products    []*Product   `json:"products"`     // 商品一覧
-	Coordinator *Coordinator `json:"coordinators"` // コーディネータ情報
-	Promotion   *Promotion   `json:"promotion"`    // プロモーション情報
-	SubTotal    int64        `json:"subtotal"`     // 購入金額
-	Discount    int64        `json:"discount"`     // 割引金額
-	ShippingFee int64        `json:"shippingFee"`  // 配送手数料
-	Tax         int64        `json:"tax"`          // 消費税
-	TaxRate     int64        `json:"taxRate"`      // 消費税率(%)
-	Total       int64        `json:"total"`        // 合計金額
+	Carts       []*Cart      `json:"carts"`       // カート一覧
+	Items       []*CartItem  `json:"items"`       // カート内の商品一覧(集計結果)
+	Products    []*Product   `json:"products"`    // 商品一覧
+	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
+	Promotion   *Promotion   `json:"promotion"`   // プロモーション情報
+	SubTotal    int64        `json:"subtotal"`    // 購入金額
+	Discount    int64        `json:"discount"`    // 割引金額
+	ShippingFee int64        `json:"shippingFee"` // 配送手数料
+	Tax         int64        `json:"tax"`         // 消費税
+	TaxRate     int64        `json:"taxRate"`     // 消費税率(%)
+	Total       int64        `json:"total"`       // 合計金額
 }
