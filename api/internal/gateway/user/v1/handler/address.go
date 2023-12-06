@@ -88,7 +88,7 @@ func (h *handler) CreateAddress(ctx *gin.Context) {
 		PrefectureCode: req.PrefectureCode,
 		City:           req.City,
 		AddressLine1:   req.AddressLine1,
-		AddressLine2:   req.AddressLine1,
+		AddressLine2:   req.AddressLine2,
 		PhoneNumber:    req.PhoneNumber,
 		IsDefault:      req.IsDefault,
 	}
@@ -120,7 +120,7 @@ func (h *handler) UpdateAddress(ctx *gin.Context) {
 		PrefectureCode: req.PrefectureCode,
 		City:           req.City,
 		AddressLine1:   req.AddressLine1,
-		AddressLine2:   req.AddressLine1,
+		AddressLine2:   req.AddressLine2,
 		PhoneNumber:    req.PhoneNumber,
 		IsDefault:      req.IsDefault,
 	}
