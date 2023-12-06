@@ -8,6 +8,7 @@ on:
     - 'api/config/messenger/**'
     - 'api/internal/messenger/**'
     - 'api/pkg/**'
+    - 'api/go.mod'
     - 'infra/docker/api/**'
 
 env:

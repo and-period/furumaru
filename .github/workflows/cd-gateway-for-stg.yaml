@@ -8,6 +8,7 @@ on:
     - 'api/config/gateway/**'
     - 'api/internal/**'
     - 'api/pkg/**'
+    - 'api/go.mod'
     - 'infra/docker/api/**'
 
 env:
