@@ -25,7 +25,7 @@ onMounted(() => {
   <Teleport to="#snackbar">
     <div
       v-if="isShow"
-      class="mx-auto flex w-[400px] justify-between rounded-lg border-2 border-orange bg-white p-4 text-main shadow-md"
+      class="mx-auto flex w-full justify-between rounded-lg border-2 border-orange bg-white p-4 text-main shadow-md md:w-[400px]"
     >
       <div>{{ text }}</div>
       <button type="button" @click="handelCloseButton">
