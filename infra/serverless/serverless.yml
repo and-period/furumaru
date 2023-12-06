@@ -221,7 +221,7 @@ stepFunctions:
                     Next: WaitActive
                   WaitActive:
                     Type: Wait
-                    Seconds: 1
+                    Seconds: 2
                     Next: CheckContainerActive
                   CheckContainerActive:
                     Type: Choice
@@ -789,7 +789,7 @@ stepFunctions:
                   Next: WaitDettached
                 WaitDettached:
                   Type: Wait
-                  Seconds: 1
+                  Seconds: 30
                   Next: CheckInputDetached
                 CheckInputDetached:
                   Type: Choice
@@ -849,7 +849,7 @@ stepFunctions:
             Next: WaitDisabled
           WaitDisabled:
             Type: Wait
-            Seconds: 1
+            Seconds: 30
             Next: GetDistributionStatus
           GetDistributionStatus:
             Type: Task
