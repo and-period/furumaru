@@ -14,8 +14,8 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/broadcasts", h.authentication, h.filterAccessSchedule)
 
 	r.GET("", h.GetBroadcast)
-	r.POST("", h.PauseBroadcast)
-	r.DELETE("", h.UnpauseBroadcast)
+	r.POST("", h.UnpauseBroadcast)
+	r.DELETE("", h.PauseBroadcast)
 	r.POST("/archive-video", h.UploadBroadcastArchive)
 	r.POST("/static-image", h.ActivateBroadcastStaticImage)
 	r.DELETE("/static-image", h.DeactivateBroadcastStaticImage)

@@ -182,24 +182,24 @@ const onSubmitUploadArchiveMp4 = (): void => {
 </script>
 
 <template>
-  <v-dialog v-model="archiveMp4DialogValue">
-    <v-dialog v-model="pauseDialogValue" width="500">
-      <v-card :loading="props.loading">
-        <v-card-title class="text-h7">
-          本当に一時停止しますか？
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="info" variant="text" @click="onClosePauseDialog">
-            閉じる
-          </v-btn>
-          <v-btn :loading="props.loading" color="error" variant="outlined" @click="onSubmitPause">
-            一時停止
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+  <v-dialog v-model="pauseDialogValue" width="500">
+    <v-card :loading="props.loading">
+      <v-card-title class="text-h7">
+        本当に一時停止しますか？
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="info" variant="text" @click="onClosePauseDialog">
+          閉じる
+        </v-btn>
+        <v-btn :loading="props.loading" color="error" variant="outlined" @click="onSubmitPause">
+          一時停止
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 
+  <v-dialog v-model="archiveMp4DialogValue">
     <v-card :loading="loading">
       <v-card-title class="primaryLight">
         アーカイブ映像アップロード
