@@ -43,6 +43,7 @@ const selector = ref<string>(tab ?? 'schedule')
 const selectedLive = ref<Live>({ ...initialLive })
 const createLiveDialog = ref<boolean>(false)
 const updateLiveDialog = ref<boolean>(false)
+const pauseDialog = ref<boolean>(false)
 const liveMp4Dialog = ref<boolean>(false)
 const archiveMp4Dialog = ref<boolean>(false)
 const scheduleFormData = ref<UpdateScheduleRequest>({
@@ -323,6 +324,35 @@ const handleSubmitDeleteLive = async (): Promise<void> => {
   }
 }
 
+const handleSubmitPause = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await broadcastStore.pause(scheduleId)
+    pauseDialog.value = false
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSubmitUnpause = async (): Promise<void> => {
+  try {
+    loading.value = true
+    await broadcastStore.unpause(scheduleId)
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
+
 const handleSubmitActivateStaticImage = async (): Promise<void> => {
   try {
     loading.value = true
@@ -414,6 +444,7 @@ try {
     v-model:selected-tab-item="selector"
     v-model:create-live-dialog="createLiveDialog"
     v-model:update-live-dialog="updateLiveDialog"
+    v-model:pause-dialog="pauseDialog"
     v-model:live-mp4-dialog="liveMp4Dialog"
     v-model:archive-mp4-dialog="archiveMp4Dialog"
     v-model:schedule-form-data="scheduleFormData"
@@ -446,6 +477,8 @@ try {
     @submit:create-live="handleSubmitCreateLive"
     @submit:update-live="handleSubmitUpdateLive"
     @submit:delete-live="handleSubmitDeleteLive"
+    @submit:pause="handleSubmitPause"
+    @submit:unpause="handleSubmitUnpause"
     @submit:activate-static-image="handleSubmitActivateStaticImage"
     @submit:deactivate-static-image="handleSubmitDeactivateStaticImage"
     @submit:change-input-mp4="handleSubmitChangeMp4Input"
