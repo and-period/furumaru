@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { Prefecture } from './Prefecture';
+import {
+    PrefectureFromJSON,
+    PrefectureFromJSONTyped,
+    PrefectureToJSON,
+} from './Prefecture';
+
 /**
  * アドレス情報
  * @export
@@ -68,6 +75,12 @@ export interface Address {
      */
     prefecture: string;
     /**
+     * 
+     * @type {Prefecture}
+     * @memberof Address
+     */
+    prefectureCode: Prefecture;
+    /**
      * 市区町村
      * @type {string}
      * @memberof Address
@@ -106,6 +119,7 @@ export function instanceOfAddress(value: object): boolean {
     isInstance = isInstance && "firstnameKana" in value;
     isInstance = isInstance && "postalCode" in value;
     isInstance = isInstance && "prefecture" in value;
+    isInstance = isInstance && "prefectureCode" in value;
     isInstance = isInstance && "city" in value;
     isInstance = isInstance && "addressLine1" in value;
     isInstance = isInstance && "addressLine2" in value;
@@ -132,6 +146,7 @@ export function AddressFromJSONTyped(json: any, ignoreDiscriminator: boolean): A
         'firstnameKana': json['firstnameKana'],
         'postalCode': json['postalCode'],
         'prefecture': json['prefecture'],
+        'prefectureCode': PrefectureFromJSON(json['prefectureCode']),
         'city': json['city'],
         'addressLine1': json['addressLine1'],
         'addressLine2': json['addressLine2'],
@@ -156,6 +171,7 @@ export function AddressToJSON(value?: Address | null): any {
         'firstnameKana': value.firstnameKana,
         'postalCode': value.postalCode,
         'prefecture': value.prefecture,
+        'prefectureCode': PrefectureToJSON(value.prefectureCode),
         'city': value.city,
         'addressLine1': value.addressLine1,
         'addressLine2': value.addressLine2,

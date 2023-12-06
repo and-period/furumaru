@@ -14,18 +14,19 @@ type Addresses []*Address
 func NewAddress(address *entity.Address) *Address {
 	return &Address{
 		Address: response.Address{
-			ID:            address.ID,
-			IsDefault:     address.IsDefault,
-			Lastname:      address.Lastname,
-			Firstname:     address.Firstname,
-			LastnameKana:  address.LastnameKana,
-			FirstnameKana: address.FirstnameKana,
-			PostalCode:    address.PostalCode,
-			Prefecture:    address.Prefecture,
-			City:          address.City,
-			AddressLine1:  address.AddressLine1,
-			AddressLine2:  address.AddressLine2,
-			PhoneNumber:   address.PhoneNumber,
+			ID:             address.ID,
+			IsDefault:      address.IsDefault,
+			Lastname:       address.Lastname,
+			Firstname:      address.Firstname,
+			LastnameKana:   address.LastnameKana,
+			FirstnameKana:  address.FirstnameKana,
+			PostalCode:     address.PostalCode,
+			Prefecture:     address.Prefecture,
+			PrefectureCode: address.PrefectureCode,
+			City:           address.City,
+			AddressLine1:   address.AddressLine1,
+			AddressLine2:   address.AddressLine2,
+			PhoneNumber:    address.PhoneNumber,
 		},
 	}
 }
