@@ -240,7 +240,6 @@ const isPreservable = (): boolean => {
 
 const isCancelable = (): boolean => {
   const targets: OrderStatus[] = [
-    OrderStatus.UNPAID,
     OrderStatus.WAITING
   ]
   return targets.includes(props.order.status)
