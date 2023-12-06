@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
-import type { AddCartItemRequest, CartResponse } from '~/types/api'
+import { useAuthStore } from './auth'
+import type {
+  AddCartItemRequest,
+  CalcCartResponse,
+  CartResponse,
+} from '~/types/api'
 import type { ProductItem, ShoppingCart } from '~/types/store'
 
 /**
@@ -10,6 +15,8 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     return {
       cartItems: [],
       recommendProducts: [] as ProductItem[],
+
+      calcCartResponseItem: undefined as CalcCartResponse | undefined,
 
       _shoppingCart: {
         carts: [],
@@ -141,6 +148,18 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         productId,
       })
       this.getCart()
+    },
+
+    async calcCartItemByCoordinatorId(coordinatorId: string) {
+      try {
+        const authStore = useAuthStore()
+        const res = await this.cartApiClient(authStore.accessToken).v1CalcCart({
+          coordinatorId,
+        })
+        this.calcCartResponseItem = res
+      } catch (error) {
+        return this.errorHandler(error)
+      }
     },
   },
 })

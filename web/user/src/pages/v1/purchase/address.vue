@@ -4,7 +4,10 @@ import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 import type { CreateAddressRequest } from '~/types/api'
 import { useAdressStore } from '~/store/address'
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/phone-number'
+import { useShoppingCartStore } from '~/store/shopping'
+import { ApiBaseError } from '~/types/exception'
 
+const route = useRoute()
 const router = useRouter()
 
 const cartItem = MOCK_PURCHASE_ITEMS[0]
@@ -16,7 +19,16 @@ const { addressesFetchState, defaultAddress } = storeToRefs(addressStore)
 const { fetchAddresses, searchAddressByPostalCode, registerAddress } =
   addressStore
 
+const shoppingCartStore = useShoppingCartStore()
+const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
+const { calcCartItemByCoordinatorId } = shoppingCartStore
+
 const targetddress = ref<string>('default')
+const calcCartResponseItemState = ref<{
+  isLoading: boolean
+  hasError: boolean
+  errorMessage: string
+}>({ isLoading: true, hasError: false, errorMessage: '' })
 
 const formData = ref<CreateAddressRequest>({
   lastname: '',
@@ -30,6 +42,15 @@ const formData = ref<CreateAddressRequest>({
   addressLine2: '',
   phoneNumber: '',
   isDefault: true,
+})
+
+const coordinatorId = computed<string>(() => {
+  const id = route.query.coordinatorId
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
 })
 
 const itemsTotalPrice = computed(() => {
@@ -76,6 +97,23 @@ onMounted(() => {
   fetchAddresses()
 })
 
+onMounted(async () => {
+  try {
+    calcCartResponseItemState.value.isLoading = true
+    await calcCartItemByCoordinatorId(coordinatorId.value)
+  } catch (error) {
+    calcCartResponseItemState.value.hasError = true
+    if (error instanceof ApiBaseError) {
+      calcCartResponseItemState.value.errorMessage = error.message
+    } else {
+      calcCartResponseItemState.value.errorMessage =
+        '不明なエラーが発生しました。'
+    }
+  } finally {
+    calcCartResponseItemState.value.isLoading = false
+  }
+})
+
 useSeoMeta({
   title: 'ご購入手続き',
 })
@@ -88,6 +126,13 @@ useSeoMeta({
     >
       ご購入手続き
     </div>
+
+    <the-alert
+      v-if="calcCartResponseItemState.hasError"
+      class="mx-auto my-4 max-w-4xl bg-white"
+    >
+      {{ calcCartResponseItemState.errorMessage }}
+    </the-alert>
 
     <div
       class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"

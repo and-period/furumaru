@@ -1,5 +1,5 @@
 <template>
-  <div class="border border-orange p-2 align-middle text-orange">
+  <div class="border border-orange p-4 align-middle text-orange">
     <slot />
   </div>
 </template>
