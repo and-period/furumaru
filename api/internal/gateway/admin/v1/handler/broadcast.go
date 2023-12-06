@@ -14,8 +14,8 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/broadcasts", h.authentication, h.filterAccessSchedule)
 
 	r.GET("", h.GetBroadcast)
-	r.POST("", h.StartBroadcast)
-	r.DELETE("", h.StopBroadcast)
+	r.POST("", h.PauseBroadcast)
+	r.DELETE("", h.UnpauseBroadcast)
 	r.POST("/archive-video", h.UploadBroadcastArchive)
 	r.POST("/static-image", h.ActivateBroadcastStaticImage)
 	r.DELETE("/static-image", h.DeactivateBroadcastStaticImage)
@@ -38,13 +38,25 @@ func (h *handler) GetBroadcast(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) StartBroadcast(ctx *gin.Context) {
-	// TODO: 詳細の実装
+func (h *handler) PauseBroadcast(ctx *gin.Context) {
+	in := &media.PauseBroadcastInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	}
+	if err := h.media.PauseBroadcast(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *handler) StopBroadcast(ctx *gin.Context) {
-	// TODO: 詳細の実装
+func (h *handler) UnpauseBroadcast(ctx *gin.Context) {
+	in := &media.UnpauseBroadcastInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	}
+	if err := h.media.UnpauseBroadcast(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 

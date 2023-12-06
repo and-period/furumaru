@@ -27,8 +27,8 @@ get:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
 post:
-  summary: マルシェライブ配信手動開始
-  operationId: v1StartBroadcast
+  summary: マルシェライブ配信一時停止解除
+  operationId: v1UnpauseBroadcast
   tags:
   - Broadcast
   security:
@@ -54,8 +54,8 @@ post:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
 delete:
-  summary: マルシェライブ配信手動停止
-  operationId: v1StopBroadcast
+  summary: マルシェライブ配信一時停止
+  operationId: v1PauseBroadcast
   tags:
   - Broadcast
   security:

@@ -29,6 +29,17 @@ const (
 	ScheduleActionTypeStaticImageActivate   ScheduleActionType = "STATIC_IMAGE_ACTIVE"     // 静的イメージのアクティブ化
 	ScheduleActionTypeStaticImageDeactivate ScheduleActionType = "STATIC_IMAGE_DEACTIVATE" // 静的イメージの非アクティブ化
 	ScheduleActionTypeInputSwitch           ScheduleActionType = "INPUT_SWITCH"            // 入力スイッチ
+	ScheduleActionTypePauseState            ScheduleActionType = "PAUSE_STATE"             // 一時停止
+	ScheduleActionTypeUnpauseState          ScheduleActionType = "UNPAUSE_STATE"           // 一時停止を解除
+)
+
+// PipelineID パイプラインID
+// @see - https://docs.aws.amazon.com/ja_jp/medialive/latest/ug/x-actions-in-schedule-pause.html
+type PipelineID string
+
+const (
+	PipelineIDPipeline0 PipelineID = "PIPELINE_0" // パイプライン 0
+	PipelineIDPipeline1 PipelineID = "PIPELINE_1" // パイプライン 1
 )
 
 type CreateScheduleParams struct {
@@ -125,6 +136,16 @@ func (c *client) newScheduleActions(params []*ScheduleSetting) []types.ScheduleA
 		case ScheduleActionTypeStaticImageDeactivate:
 			actions[i].ScheduleActionSettings.StaticImageDeactivateSettings = &types.StaticImageDeactivateScheduleActionSettings{
 				FadeOut: aws.Int32(1000), // 1.0sec
+			}
+		case ScheduleActionTypePauseState:
+			actions[i].ScheduleActionSettings.PauseStateSettings = &types.PauseStateScheduleActionSettings{
+				Pipelines: []types.PipelinePauseStateSettings{{
+					PipelineId: types.PipelineId(p.Reference),
+				}},
+			}
+		case ScheduleActionTypeUnpauseState:
+			actions[i].ScheduleActionSettings.PauseStateSettings = &types.PauseStateScheduleActionSettings{
+				Pipelines: []types.PipelinePauseStateSettings{},
 			}
 		}
 	}
