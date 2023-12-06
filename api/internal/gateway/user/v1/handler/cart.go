@@ -19,7 +19,7 @@ func (h *handler) cartRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/carts")
 
 	r.GET("", h.GetCart)
-	r.GET("/:coordinatorId", h.CalcCart, h.authentication)
+	r.GET("/:coordinatorId", h.CalcCart)
 	r.POST("/-/items", h.AddCartItem)
 	r.DELETE("/-/items/:productId", h.RemoveCartItem)
 }
@@ -68,6 +68,11 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	prefectureCode, err := util.GetQueryInt32(ctx, "prefecture", 0)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
 	promotionID := util.GetQuery(ctx, "promotion", "")
 	coordinatorID := util.GetParam(ctx, "coordinatorId")
 	var (
@@ -79,12 +84,11 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		in := &store.CalcCartInput{
-			UserID:            getUserID(ctx),
-			SessionID:         h.getSessionID(ctx),
-			CoordinatorID:     coordinatorID,
-			BoxNumber:         boxNumber,
-			PromotionID:       promotionID,
-			ShippingAddressID: util.GetQuery(ctx, "address", ""),
+			SessionID:      h.getSessionID(ctx),
+			CoordinatorID:  coordinatorID,
+			BoxNumber:      boxNumber,
+			PromotionID:    promotionID,
+			PrefectureCode: prefectureCode,
 		}
 		cart, summary, err = h.store.CalcCart(ectx, in)
 		return

@@ -6,7 +6,7 @@ p, administrator_delete, /v1/administrators/*, DELETE, allow
 p, auth, /v1/auth, (GET)|(POST)|(DELETE), allow
 p, auth, /v1/auth/*, (GET)|(POST)|(PATCH), allow
 p, broadcast_get, /v1/schedules/*/broadcasts, GET, allow
-p, broadcast_update, /v1/schedules/*/broadcasts, PATCH, allow
+p, broadcast_update, /v1/schedules/*/broadcasts, (POST)|(PATCH)|(DELETE), allow
 p, broadcast_action, /v1/schedules/*/broadcasts/*, (POST)|(DELETE), allow
 p, category_list, /v1/categories, GET, allow
 p, category_create, /v1/categories, POST, allow

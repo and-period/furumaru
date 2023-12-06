@@ -15,7 +15,8 @@ const notificationStore = useNotificationStore()
 const { notifications } = storeToRefs(notificationStore)
 
 const authStore = useAuthStore()
-const { isAuthenticated } = storeToRefs(authStore)
+const { logout } = authStore
+const { isAuthenticated, user } = storeToRefs(authStore)
 
 const shoppingStore = useShoppingCartStore()
 const { getCart, removeProductFromCart } = shoppingStore
@@ -138,6 +139,7 @@ const handleClickRemoveItemFromCartButton = (
     <the-app-header
       :home-path="localePath('/')"
       :is-authenticated="isAuthenticated"
+      :user="user"
       :is-scrolled="isScrolled"
       :authenticated-account-menu-item="authenticatedMenuItems"
       :no-authenticated-account-menu-item="noAuthenticatedMenuItems"
@@ -151,6 +153,7 @@ const handleClickRemoveItemFromCartButton = (
       :cart-menu-message="cartMenuMessage"
       :sp-menu-items="spModeMenuItems"
       :footer-menu-items="footerMenuList"
+      @click:logout-button="logout"
       @click:buy-button="handleClickBuyButton"
       @click:remove-item-from-cart="handleClickRemoveItemFromCartButton"
     />

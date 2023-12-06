@@ -118,11 +118,13 @@ func (c *client) newScheduleActions(params []*ScheduleSetting) []types.ScheduleA
 		case ScheduleActionTypeStaticImageActivate:
 			actions[i].ScheduleActionSettings.StaticImageActivateSettings = &types.StaticImageActivateScheduleActionSettings{
 				Image:  &types.InputLocation{Uri: aws.String(p.Source)},
-				FadeIn: 200, // 0.2sec
+				FadeIn: aws.Int32(1000), // 1.0sec
+				Width:  aws.Int32(1920), // フルHDサイズ
+				Height: aws.Int32(1080), // フルHDサイズ
 			}
 		case ScheduleActionTypeStaticImageDeactivate:
 			actions[i].ScheduleActionSettings.StaticImageDeactivateSettings = &types.StaticImageDeactivateScheduleActionSettings{
-				FadeOut: 200, // 0.2sec
+				FadeOut: aws.Int32(1000), // 1.0sec
 			}
 		}
 	}

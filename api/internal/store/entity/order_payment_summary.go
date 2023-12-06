@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/shopspring/decimal"
 )
 
@@ -23,11 +22,11 @@ type OrderPaymentSummary struct {
 }
 
 type NewOrderPaymentSummaryParams struct {
-	Address   *entity.Address
-	Baskets   CartBaskets
-	Products  Products
-	Shipping  *Shipping
-	Promotion *Promotion
+	PrefectureCode int32
+	Baskets        CartBaskets
+	Products       Products
+	Shipping       *Shipping
+	Promotion      *Promotion
 }
 
 func NewOrderPaymentSummary(params *NewOrderPaymentSummaryParams) (*OrderPaymentSummary, error) {
@@ -39,10 +38,10 @@ func NewOrderPaymentSummary(params *NewOrderPaymentSummaryParams) (*OrderPayment
 	}
 	// 商品配送料金の算出
 	for _, basket := range params.Baskets {
-		if params.Address == nil {
-			break // 配送先情報がない場合、配送料金は算出しない
+		if params.PrefectureCode == 0 {
+			break // 配送先都道府県の指定がない場合、配送料金は算出しない
 		}
-		fee, err := params.Shipping.CalcShippingFee(basket.BoxSize, basket.BoxType, subtotal, params.Address.PrefectureCode)
+		fee, err := params.Shipping.CalcShippingFee(basket.BoxSize, basket.BoxType, subtotal, params.PrefectureCode)
 		if err != nil {
 			return nil, err
 		}

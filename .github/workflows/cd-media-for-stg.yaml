@@ -8,6 +8,7 @@ on:
     - 'api/config/media/**'
     - 'api/internal/media/**'
     - 'api/pkg/**'
+    - 'api/go.mod'
     - 'infra/docker/api/**'
 
 env:

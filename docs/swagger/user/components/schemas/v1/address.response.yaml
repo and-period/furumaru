@@ -15,6 +15,7 @@ addressResponse:
       firstnameKana: 'りようしゃ'
       postalCode: '1000014'
       prefecture: '東京都'
+      prefectureCode: 13
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''
@@ -44,6 +45,7 @@ addressesResponse:
       firstnameKana: 'りようしゃ'
       postalCode: '1000014'
       prefecture: '東京都'
+      prefectureCode: 13
       city: '千代田区'
       addressLine1: '永田町1-7-1'
       addressLine2: ''

@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/stretchr/testify/assert"
@@ -39,22 +38,7 @@ func TestOrderPaymentSummary(t *testing.T) {
 		{
 			name: "success with shipping free",
 			params: &NewOrderPaymentSummaryParams{
-				Address: &entity.Address{
-					AddressRevision: entity.AddressRevision{
-						ID:             1,
-						AddressID:      "address-id",
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
-					ID:     "address-id",
-					UserID: "user-id",
-				},
+				PrefectureCode: 13,
 				Baskets: CartBaskets{
 					{
 						BoxNumber: 1,
@@ -123,22 +107,7 @@ func TestOrderPaymentSummary(t *testing.T) {
 		{
 			name: "success with discount",
 			params: &NewOrderPaymentSummaryParams{
-				Address: &entity.Address{
-					AddressRevision: entity.AddressRevision{
-						ID:             1,
-						AddressID:      "address-id",
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
-					ID:     "address-id",
-					UserID: "user-id",
-				},
+				PrefectureCode: 13,
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
@@ -217,22 +186,7 @@ func TestOrderPaymentSummary(t *testing.T) {
 		{
 			name: "failed to calc total price",
 			params: &NewOrderPaymentSummaryParams{
-				Address: &entity.Address{
-					AddressRevision: entity.AddressRevision{
-						ID:             1,
-						AddressID:      "address-id",
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
-					ID:     "address-id",
-					UserID: "user-id",
-				},
+				PrefectureCode: 13,
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,
@@ -261,22 +215,7 @@ func TestOrderPaymentSummary(t *testing.T) {
 		{
 			name: "failed to calc shipping fee",
 			params: &NewOrderPaymentSummaryParams{
-				Address: &entity.Address{
-					AddressRevision: entity.AddressRevision{
-						ID:             1,
-						AddressID:      "address-id",
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
-					ID:     "address-id",
-					UserID: "user-id",
-				},
+				PrefectureCode: 13,
 				Baskets: []*CartBasket{
 					{
 						BoxNumber: 1,

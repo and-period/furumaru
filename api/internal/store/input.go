@@ -467,12 +467,11 @@ type GetCartInput struct {
 }
 
 type CalcCartInput struct {
-	UserID            string `validate:"required_with=ShippingAddressID"`
-	SessionID         string `validate:"required"`
-	CoordinatorID     string `validate:"required"`
-	BoxNumber         int64  `validate:"min=0"`
-	PromotionID       string `validate:""`
-	ShippingAddressID string `validate:""`
+	SessionID      string `validate:"required"`
+	CoordinatorID  string `validate:"required"`
+	BoxNumber      int64  `validate:"min=0"`
+	PromotionID    string `validate:""`
+	PrefectureCode int32  `validate:"min=0,max=47"`
 }
 
 type AddCartItemInput struct {

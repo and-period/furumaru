@@ -8040,6 +8040,82 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
+         * @summary マルシェライブ配信手動開始
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1StartBroadcast: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1StartBroadcast', 'scheduleId', scheduleId)
+            const localVarPath = `/v1/schedules/{scheduleId}/broadcasts`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary マルシェライブ配信手動停止
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1StopBroadcast: async (scheduleId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1StopBroadcast', 'scheduleId', scheduleId)
+            const localVarPath = `/v1/schedules/{scheduleId}/broadcasts`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary オンデマンド配信用の映像をアップロード
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {File} [video] オンデマンド配信用の映像(mp4形式,200MBまで)
@@ -8153,6 +8229,28 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary マルシェライブ配信手動開始
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1StartBroadcast(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1StartBroadcast(scheduleId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary マルシェライブ配信手動停止
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1StopBroadcast(scheduleId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1StopBroadcast(scheduleId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary オンデマンド配信用の映像をアップロード
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {File} [video] オンデマンド配信用の映像(mp4形式,200MBまで)
@@ -8223,6 +8321,26 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          */
         v1GetBroadcast(scheduleId: string, options?: any): AxiosPromise<BroadcastResponse> {
             return localVarFp.v1GetBroadcast(scheduleId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary マルシェライブ配信手動開始
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1StartBroadcast(scheduleId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1StartBroadcast(scheduleId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary マルシェライブ配信手動停止
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1StopBroadcast(scheduleId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1StopBroadcast(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8304,6 +8422,30 @@ export class BroadcastApi extends BaseAPI {
      */
     public v1GetBroadcast(scheduleId: string, options?: AxiosRequestConfig) {
         return BroadcastApiFp(this.configuration).v1GetBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary マルシェライブ配信手動開始
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BroadcastApi
+     */
+    public v1StartBroadcast(scheduleId: string, options?: AxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1StartBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary マルシェライブ配信手動停止
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BroadcastApi
+     */
+    public v1StopBroadcast(scheduleId: string, options?: AxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1StopBroadcast(scheduleId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
