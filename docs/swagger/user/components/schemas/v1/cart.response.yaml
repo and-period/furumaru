@@ -116,7 +116,7 @@ calcCartResponse:
       $ref: './../../../openapi.yaml#/components/schemas/coordinator'
     promotion:
       $ref: './../../../openapi.yaml#/components/schemas/promotion'
-    subTotal:
+    subtotal:
       type: integer
       format: int64
       description: 小計(税抜:商品合計金額)
@@ -146,7 +146,7 @@ calcCartResponse:
   - products
   - coordinator
   - promotion
-  - subTotal
+  - subtotal
   - discount
   - shippingFee
   - tax
