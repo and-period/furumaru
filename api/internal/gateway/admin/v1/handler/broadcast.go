@@ -15,7 +15,7 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.GetBroadcast)
 	r.POST("", h.StartBroadcast)
-	r.POST("", h.StopBroadcast)
+	r.DELETE("", h.StopBroadcast)
 	r.POST("/archive-video", h.UploadBroadcastArchive)
 	r.POST("/static-image", h.ActivateBroadcastStaticImage)
 	r.DELETE("/static-image", h.DeactivateBroadcastStaticImage)
