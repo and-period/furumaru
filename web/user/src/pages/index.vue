@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import {
   MOCK_LIVE_ITEMS,
   MOCK_ARCHIVES_ITEMS,
@@ -9,10 +10,8 @@ import { useTopPageStore } from '~/store/home'
 const router = useRouter()
 
 const topPageStore = useTopPageStore()
-
+const { archives } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
-
-getHomeContent()
 
 const archiveRef = ref<HTMLDivElement | null>(null)
 const archiveRefScrollLeft = ref<number>(0)
@@ -22,6 +21,10 @@ const updateScrollLeft = () => {
     archiveRefScrollLeft.value = archiveRef.value.scrollLeft
   }
 }
+
+onMounted(() => {
+  getHomeContent()
+})
 
 onMounted(() => {
   if (archiveRef.value) {
@@ -146,11 +149,11 @@ useSeoMeta({
             class="hidden-scrollbar flex flex-col gap-8 md:flex-row md:flex-nowrap md:overflow-x-scroll"
           >
             <the-archive-item
-              v-for="archiveItem in MOCK_ARCHIVES_ITEMS"
-              :id="archiveItem.id"
-              :key="archiveItem.id"
-              :title="archiveItem.title"
-              :img-src="archiveItem.imgSrc"
+              v-for="archive in archives"
+              :id="archive.scheduleId"
+              :key="archive.scheduleId"
+              :title="archive.title"
+              :img-src="archive.thumbnailUrl"
             />
           </div>
           <div class="absolute right-4 flex h-[208px] items-center">

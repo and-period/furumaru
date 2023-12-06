@@ -1,22 +1,29 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 import type { CreateAddressRequest } from '~/types/api'
 import { useAdressStore } from '~/store/address'
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/phone-number'
+import { useShoppingCartStore } from '~/store/shopping'
+import { ApiBaseError } from '~/types/exception'
 
+const route = useRoute()
 const router = useRouter()
-
-const cartItem = MOCK_PURCHASE_ITEMS[0]
-
-const discount = 0
 
 const addressStore = useAdressStore()
 const { addressesFetchState, defaultAddress } = storeToRefs(addressStore)
 const { fetchAddresses, searchAddressByPostalCode, registerAddress } =
   addressStore
 
+const shoppingCartStore = useShoppingCartStore()
+const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
+const { calcCartItemByCoordinatorId } = shoppingCartStore
+
 const targetddress = ref<string>('default')
+const calcCartResponseItemState = ref<{
+  isLoading: boolean
+  hasError: boolean
+  errorMessage: string
+}>({ isLoading: true, hasError: false, errorMessage: '' })
 
 const formData = ref<CreateAddressRequest>({
   lastname: '',
@@ -32,14 +39,13 @@ const formData = ref<CreateAddressRequest>({
   isDefault: true,
 })
 
-const itemsTotalPrice = computed(() => {
-  return cartItem.cartItems[0].items
-    .map((item) => item.price)
-    .reduce((sum, price) => sum + price)
-})
-
-const totalPrice = computed(() => {
-  return itemsTotalPrice.value + discount
+const coordinatorId = computed<string>(() => {
+  const id = route.query.coordinatorId
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
 })
 
 const priceFormatter = (price: number) => {
@@ -65,15 +71,36 @@ const handleSubmitNewAddressForm = async () => {
     ...formData.value,
     phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
   })
-  router.push(`/v1/purchase/confirmation?id=${registerdAddress.id}`)
+  router.push(
+    `/v1/purchase/confirmation?id=${registerdAddress.id}&coordinatorId=${coordinatorId.value}`,
+  )
 }
 
 const handleClickNextStepButton = (id: string) => {
-  router.push(`/v1/purchase/confirmation?id=${id}`)
+  router.push(
+    `/v1/purchase/confirmation?id=${id}&coordinatorId=${coordinatorId.value}`,
+  )
 }
 
 onMounted(() => {
   fetchAddresses()
+})
+
+onMounted(async () => {
+  try {
+    calcCartResponseItemState.value.isLoading = true
+    await calcCartItemByCoordinatorId(coordinatorId.value)
+  } catch (error) {
+    calcCartResponseItemState.value.hasError = true
+    if (error instanceof ApiBaseError) {
+      calcCartResponseItemState.value.errorMessage = error.message
+    } else {
+      calcCartResponseItemState.value.errorMessage =
+        '不明なエラーが発生しました。'
+    }
+  } finally {
+    calcCartResponseItemState.value.isLoading = false
+  }
 })
 
 useSeoMeta({
@@ -88,6 +115,13 @@ useSeoMeta({
     >
       ご購入手続き
     </div>
+
+    <the-alert
+      v-if="calcCartResponseItemState.hasError"
+      class="mx-auto my-4 max-w-4xl bg-white"
+    >
+      {{ calcCartResponseItemState.errorMessage }}
+    </the-alert>
 
     <div
       class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"
@@ -174,85 +208,92 @@ useSeoMeta({
           <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
             注文内容
           </div>
-          <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
-            <p>
-              {{ cartItem.marche }}
-            </p>
-            <p>発想地：{{ cartItem.address }}</p>
-            <p>
-              取扱元：
-              {{ cartItem.sender }}
-            </p>
-            <p>箱の数：2（常温・冷蔵 ✕ 2）</p>
-          </div>
-          <div>
-            <div class="divide-y border-y">
-              <div
-                v-for="(item, i) in cartItem.cartItems[0].items"
-                :key="i"
-                class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
-              >
-                <img
-                  :src="item.imgSrc"
-                  :alt="`${item.name}の画像`"
-                  class="block aspect-square h-[56px] w-[56px]"
-                />
-                <div class="col-span-3 pl-[24px] md:pl-0">
-                  <div>{{ item.name }}</div>
-                  <div
-                    class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
-                  >
-                    数量：{{ 1 }}
+
+          <template v-if="calcCartResponseItem">
+            <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
+              <p>
+                {{ calcCartResponseItem.coordinator.marcheName }}
+              </p>
+              <p>
+                発想地：{{
+                  `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
+                }}
+              </p>
+              <p>
+                取扱元：
+                {{ calcCartResponseItem.coordinator.username }}
+              </p>
+              <p>箱の数：{{ calcCartResponseItem.carts.length }}</p>
+            </div>
+            <div>
+              <div class="divide-y border-y">
+                <div
+                  v-for="(item, i) in calcCartResponseItem.products"
+                  :key="i"
+                  class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
+                >
+                  <img
+                    :src="item.media[0].url"
+                    :alt="`${item.name}の画像`"
+                    class="block aspect-square h-[56px] w-[56px]"
+                  />
+                  <div class="col-span-3 pl-[24px] md:pl-0">
+                    <div>{{ item.name }}</div>
+                    <div
+                      class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                    >
+                      数量：{{ 1 }}
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-self-end text-right">
+                    {{ priceFormatter(item.price) }}
                   </div>
                 </div>
+              </div>
 
-                <div class="flex items-center justify-self-end text-right">
-                  {{ priceFormatter(item.price) }}
+              <div class="my-4 flex gap-2">
+                <div class="grow">
+                  <input
+                    type="text"
+                    class="w-full border border-gray-300 bg-gray-50 p-2.5 text-[14px] md:text-[16px]"
+                    placeholder="クーポンコード"
+                  />
+                </div>
+                <button
+                  class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
+                >
+                  適用する
+                </button>
+              </div>
+
+              <div
+                class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
+              >
+                <div class="col-span-2 md:col-span-1">商品合計（税込）</div>
+                <div class="col-span-3 text-right md:col-span-1">
+                  {{ priceFormatter(calcCartResponseItem.subtotal) }}
+                </div>
+                <div class="col-span-2 md:col-span-1">クーポン利用</div>
+                <div class="col-span-3 text-right md:col-span-1">
+                  {{ priceFormatter(calcCartResponseItem.discount) }}
+                </div>
+                <div class="col-span-2 md:col-span-1">送料（税込）</div>
+                <div class="col-span-3 text-right md:col-span-1">
+                  次ページで計算されます
+                </div>
+              </div>
+
+              <div
+                class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
+              >
+                <div>合計（税込み）</div>
+                <div class="text-right">
+                  {{ priceFormatter(calcCartResponseItem.total) }}
                 </div>
               </div>
             </div>
-
-            <div class="my-4 flex gap-2">
-              <div class="grow">
-                <input
-                  type="text"
-                  class="w-full border border-gray-300 bg-gray-50 p-2.5 text-[14px] md:text-[16px]"
-                  placeholder="クーポンコード"
-                />
-              </div>
-              <button
-                class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
-              >
-                適用する
-              </button>
-            </div>
-
-            <div
-              class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
-            >
-              <div class="col-span-2 md:col-span-1">商品合計（税込）</div>
-              <div class="col-span-3 text-right md:col-span-1">
-                {{ priceFormatter(itemsTotalPrice) }}
-              </div>
-              <div class="col-span-2 md:col-span-1">クーポン利用</div>
-              <div class="col-span-3 text-right md:col-span-1">
-                {{ priceFormatter(discount) }}
-              </div>
-              <div class="col-span-2 md:col-span-1">送料（税込）</div>
-              <div class="col-span-3 text-right md:col-span-1">
-                次ページで計算されます
-              </div>
-            </div>
-
-            <div
-              class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
-            >
-              <div>合計（税込み）</div>
-              <div class="text-right">
-                {{ priceFormatter(totalPrice) }}
-              </div>
-            </div>
-          </div>
+          </template>
         </div>
 
         <div

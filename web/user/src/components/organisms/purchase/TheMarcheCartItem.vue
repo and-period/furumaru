@@ -10,7 +10,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'click:buyButton'): void
+  (e: 'click:buyButton', coordinatorId: string): void
   (e: 'click:removeItemFromCart', cartNumber: Number, id: string): void
 }
 
@@ -30,8 +30,8 @@ const priceStringFormatter = (price: number): string => {
   }).format(price)
 }
 
-const handleBuyButton = () => {
-  emits('click:buyButton')
+const handleBuyButton = (coordinatorId: string) => {
+  emits('click:buyButton', coordinatorId)
 }
 
 const handelClickRemoveItemButton = (id: string) => {
@@ -63,7 +63,7 @@ const handelClickRemoveItemButton = (id: string) => {
 
       <button
         class="mt-8 bg-main p-[14px] text-[16px] text-white"
-        @click="handleBuyButton"
+        @click="handleBuyButton(coordinator.id)"
       >
         このマルシェのご購入手続きへ
       </button>

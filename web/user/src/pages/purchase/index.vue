@@ -11,11 +11,13 @@ const { shoppingCart } = storeToRefs(shoppingCartStore)
 const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
-const handleClickBuyButton = () => {
+const handleClickBuyButton = (coordinatorId: string) => {
   if (isAuthenticated.value) {
-    router.push('/v1/purchase/address')
+    router.push(`/v1/purchase/address?coordinatorId=${coordinatorId}`)
   } else {
-    router.push('/v1/purchase/auth?required=true')
+    router.push(
+      `/v1/purchase/auth?required=true&coordinatorId=${coordinatorId}`,
+    )
   }
 }
 
