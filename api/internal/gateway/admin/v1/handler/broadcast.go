@@ -14,6 +14,8 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/broadcasts", h.authentication, h.filterAccessSchedule)
 
 	r.GET("", h.GetBroadcast)
+	r.POST("", h.StartBroadcast)
+	r.POST("", h.StopBroadcast)
 	r.POST("/archive-video", h.UploadBroadcastArchive)
 	r.POST("/static-image", h.ActivateBroadcastStaticImage)
 	r.DELETE("/static-image", h.DeactivateBroadcastStaticImage)
@@ -34,6 +36,16 @@ func (h *handler) GetBroadcast(ctx *gin.Context) {
 		Broadcast: service.NewBroadcast(broadcast).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) StartBroadcast(ctx *gin.Context) {
+	// TODO: 詳細の実装
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) StopBroadcast(ctx *gin.Context) {
+	// TODO: 詳細の実装
+	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) UploadBroadcastArchive(ctx *gin.Context) {
