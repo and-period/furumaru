@@ -61,7 +61,7 @@ export interface CalcCartResponse {
      * @type {Array<CartItem>}
      * @memberof CalcCartResponse
      */
-    cartItems: Array<CartItem>;
+    items: Array<CartItem>;
     /**
      * 商品一覧
      * @type {Array<Product>}
@@ -124,7 +124,7 @@ export interface CalcCartResponse {
 export function instanceOfCalcCartResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "carts" in value;
-    isInstance = isInstance && "cartItems" in value;
+    isInstance = isInstance && "items" in value;
     isInstance = isInstance && "products" in value;
     isInstance = isInstance && "coordinator" in value;
     isInstance = isInstance && "promotion" in value;
@@ -149,7 +149,7 @@ export function CalcCartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'carts': ((json['carts'] as Array<any>).map(CartFromJSON)),
-        'cartItems': ((json['cartItems'] as Array<any>).map(CartItemFromJSON)),
+        'items': ((json['items'] as Array<any>).map(CartItemFromJSON)),
         'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
         'coordinator': CoordinatorFromJSON(json['coordinator']),
         'promotion': PromotionFromJSON(json['promotion']),
@@ -172,7 +172,7 @@ export function CalcCartResponseToJSON(value?: CalcCartResponse | null): any {
     return {
         
         'carts': ((value.carts as Array<any>).map(CartToJSON)),
-        'cartItems': ((value.cartItems as Array<any>).map(CartItemToJSON)),
+        'items': ((value.items as Array<any>).map(CartItemToJSON)),
         'products': ((value.products as Array<any>).map(ProductToJSON)),
         'coordinator': CoordinatorToJSON(value.coordinator),
         'promotion': PromotionToJSON(value.promotion),

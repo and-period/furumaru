@@ -102,7 +102,7 @@ calcCartResponse:
       description: 買い物かご一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/cart'
-    cartItems:
+    items:
       type: array
       description: 買い物かご内の商品一覧(集約結果)
       items:
@@ -142,7 +142,7 @@ calcCartResponse:
       description: 合計金額(税込)
   required:
   - carts
-  - cartItems
+  - items
   - products
   - coordinator
   - promotion
@@ -162,7 +162,7 @@ calcCartResponse:
       - productId: 'kSByoE6FetnPs5Byk3a9Zx'
         quantity: 1
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
-    cartItems:
+    items:
     - productId: 'kSByoE6FetnPs5Byk3a9Zx'
       quantity: 1
     products:
