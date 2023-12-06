@@ -228,7 +228,7 @@ useSeoMeta({
             <div>
               <div class="divide-y border-y">
                 <div
-                  v-for="(item, i) in calcCartResponseItem?.products"
+                  v-for="(item, i) in calcCartResponseItem.products"
                   :key="i"
                   class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
                 >

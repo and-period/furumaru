@@ -2,16 +2,30 @@
 import { storeToRefs } from 'pinia'
 import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 import { useAdressStore } from '~/store/address'
+import { useShoppingCartStore } from '~/store/shopping'
 
 const addressStore = useAdressStore()
 const { address, addressFetchState } = storeToRefs(addressStore)
 const { fetchAddress } = addressStore
+
+const shoppingCartStore = useShoppingCartStore()
+const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
+const { calcCartItemByCoordinatorId } = shoppingCartStore
 
 const route = useRoute()
 const router = useRouter()
 
 const addressId = computed<string>(() => {
   const id = route.query.id
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
+})
+
+const coordinatorId = computed<string>(() => {
+  const id = route.query.coordinatorId
   if (id) {
     return String(id)
   } else {
@@ -52,6 +66,13 @@ const handleClickNextStepButton = () => {
 onMounted(async () => {
   if (addressId.value) {
     await fetchAddress(addressId.value)
+  }
+})
+
+onMounted(async () => {
+  if (!calcCartResponseItem.value) {
+    // storeの情報がない場合のみ再取得する
+    await calcCartItemByCoordinatorId(coordinatorId.value)
   }
 })
 
@@ -253,70 +274,76 @@ useSeoMeta({
           <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
             注文内容
           </div>
-          <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
-            <p>
-              {{ cartItem.marche }}
-            </p>
-            <p>発想地：{{ cartItem.address }}</p>
-            <p>
-              取扱元：
-              {{ cartItem.sender }}
-            </p>
-            <p>箱の数：2（常温・冷蔵 ✕ 2）</p>
-          </div>
-          <div>
+          <template v-if="calcCartResponseItem">
+            <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
+              <p>
+                {{ calcCartResponseItem.coordinator.marcheName }}
+              </p>
+              <p>
+                発想地：{{
+                  `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
+                }}
+              </p>
+              <p>
+                取扱元：
+                {{ calcCartResponseItem.coordinator.username }}
+              </p>
+              <p>箱の数：{{ calcCartResponseItem.carts.length }}</p>
+            </div>
             <div>
-              <div
-                v-for="(item, i) in cartItem.cartItems[0].items"
-                :key="i"
-                class="grid grid-cols-5 border-t py-2 text-[12px] tracking-[1.2px]"
-              >
-                <img
-                  :src="item.imgSrc"
-                  :alt="`${item.name}の画像`"
-                  class="block aspect-square h-[56px] w-[56px]"
-                />
-                <div class="col-span-3 pl-[24px] md:pl-0">
-                  <div>{{ item.name }}</div>
-                  <div
-                    class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
-                  >
-                    数量：{{ 1 }}
+              <div>
+                <div
+                  v-for="(item, i) in calcCartResponseItem.products"
+                  :key="i"
+                  class="grid grid-cols-5 border-t py-2 text-[12px] tracking-[1.2px]"
+                >
+                  <img
+                    :src="item.media[0].url"
+                    :alt="`${item.name}の画像`"
+                    class="block aspect-square h-[56px] w-[56px]"
+                  />
+                  <div class="col-span-3 pl-[24px] md:pl-0">
+                    <div>{{ item.name }}</div>
+                    <div
+                      class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                    >
+                      数量：{{ 1 }}
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-self-end text-right">
+                    {{ priceFormatter(item.price) }}
                   </div>
                 </div>
+              </div>
 
-                <div class="flex items-center justify-self-end text-right">
-                  {{ priceFormatter(item.price) }}
+              <div
+                class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
+              >
+                <div class="col-span-3 md:col-span-1">商品合計（税込み）</div>
+                <div class="col-span-2 text-right md:col-span-1">
+                  {{ priceFormatter(calcCartResponseItem.subtotal) }}
+                </div>
+                <div class="col-span-3 md:col-span-1">クーポン利用</div>
+                <div class="col-span-2 text-right md:col-span-1">
+                  {{ priceFormatter(calcCartResponseItem.discount) }}
+                </div>
+                <div class="col-span-3 md:col-span-1">送料（合計）</div>
+                <div class="col-span-2 text-right md:col-span-1">
+                  {{ priceFormatter(calcCartResponseItem.shippingFee) }}
+                </div>
+              </div>
+
+              <div
+                class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
+              >
+                <div>合計（税込み）</div>
+                <div class="text-right">
+                  {{ priceFormatter(calcCartResponseItem.total) }}
                 </div>
               </div>
             </div>
-
-            <div
-              class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
-            >
-              <div class="col-span-3 md:col-span-1">商品合計（税込み）</div>
-              <div class="col-span-2 text-right md:col-span-1">
-                {{ priceFormatter(itemsTotalPrice) }}
-              </div>
-              <div class="col-span-3 md:col-span-1">クーポン利用</div>
-              <div class="col-span-2 text-right md:col-span-1">
-                {{ priceFormatter(discount) }}
-              </div>
-              <div class="col-span-3 md:col-span-1">送料（合計）</div>
-              <div class="col-span-2 text-right md:col-span-1">
-                {{ priceFormatter(shipping) }}
-              </div>
-            </div>
-
-            <div
-              class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
-            >
-              <div>合計（税込み）</div>
-              <div class="text-right">
-                {{ priceFormatter(totalPrice) }}
-              </div>
-            </div>
-          </div>
+          </template>
         </div>
 
         <div
