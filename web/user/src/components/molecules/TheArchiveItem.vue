@@ -1,8 +1,8 @@
 <script setup lang="ts">
 interface Props {
-  id: string
-  title: string
-  imgSrc: string
+  id: string | undefined
+  title: string | undefined
+  imgSrc: string | undefined
 }
 
 defineProps<Props>()
@@ -19,9 +19,9 @@ defineProps<Props>()
     </div>
     <div class="mt-2 flex w-full flex-col gap-2">
       <div class="flex items-center justify-between text-sm">
-        <span class="rounded border-2 border-main px-2 font-bold text-main"
-          >アーカイブ配信</span
-        >
+        <span class="rounded border-2 border-main px-2 font-bold text-main">
+          アーカイブ配信
+        </span>
         <button class="h-4 w-4 hover:scale-110">
           <the-ellipsis-vertical-icon class="h-5 w-5" />
         </button>
