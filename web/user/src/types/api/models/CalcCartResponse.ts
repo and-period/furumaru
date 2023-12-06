@@ -85,7 +85,7 @@ export interface CalcCartResponse {
      * @type {number}
      * @memberof CalcCartResponse
      */
-    subTotal: number;
+    subtotal: number;
     /**
      * 割引金額(税抜)
      * @type {number}
@@ -128,7 +128,7 @@ export function instanceOfCalcCartResponse(value: object): boolean {
     isInstance = isInstance && "products" in value;
     isInstance = isInstance && "coordinator" in value;
     isInstance = isInstance && "promotion" in value;
-    isInstance = isInstance && "subTotal" in value;
+    isInstance = isInstance && "subtotal" in value;
     isInstance = isInstance && "discount" in value;
     isInstance = isInstance && "shippingFee" in value;
     isInstance = isInstance && "tax" in value;
@@ -153,7 +153,7 @@ export function CalcCartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
         'coordinator': CoordinatorFromJSON(json['coordinator']),
         'promotion': PromotionFromJSON(json['promotion']),
-        'subTotal': json['subTotal'],
+        'subtotal': json['subtotal'],
         'discount': json['discount'],
         'shippingFee': json['shippingFee'],
         'tax': json['tax'],
@@ -176,7 +176,7 @@ export function CalcCartResponseToJSON(value?: CalcCartResponse | null): any {
         'products': ((value.products as Array<any>).map(ProductToJSON)),
         'coordinator': CoordinatorToJSON(value.coordinator),
         'promotion': PromotionToJSON(value.promotion),
-        'subTotal': value.subTotal,
+        'subtotal': value.subtotal,
         'discount': value.discount,
         'shippingFee': value.shippingFee,
         'tax': value.tax,
