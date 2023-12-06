@@ -947,14 +947,13 @@ const onSubmitRefund = (): void => {
     </v-col>
   </v-row>
   <v-row>
-    <v-col sm="12" md="12" lg="8">
+    <v-col v-show="showShippingMessage()" sm="12" md="12" lg="8">
       <v-card>
         <v-card-title class="pb-4">
           発送連絡
         </v-card-title>
         <v-card-text>
           <v-textarea
-            v-show="showShippingMessage()"
             v-model="completeFormDataValue.shippingMessage"
             label="お客様へのメッセージ"
             placeholder="例：ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。"
