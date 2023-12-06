@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { AuthUserResponse } from '~/types/api'
 import type { FooterMenuItem, HeaderMenuItem, LinkItem } from '~/types/props'
 import type { ShoppingCart } from '~/types/store'
 
@@ -7,6 +8,7 @@ interface Props {
   menuItems: HeaderMenuItem[]
   isScrolled: boolean
   isAuthenticated: boolean
+  user: AuthUserResponse | undefined
   authenticatedAccountMenuItem: LinkItem[]
   noAuthenticatedAccountMenuItem: LinkItem[]
   notificationTitle: string
@@ -25,6 +27,7 @@ defineProps<Props>()
 interface Emits {
   (e: 'click:buyButton'): void
   (e: 'click:removeItemFromCart', cartNumber: number, id: string): void
+  (e: 'click:logoutButton'): void
 }
 
 const emits = defineEmits<Emits>()
@@ -92,6 +95,10 @@ const SP_MENU_ITEMS = [
     to: '/about',
   },
 ]
+
+const handleClickLogoutButton = () => {
+  emits('click:logoutButton')
+}
 </script>
 
 <template>
@@ -135,8 +142,10 @@ const SP_MENU_ITEMS = [
         <the-pc-account-menu
           class="hidden md:block"
           :is-authenticated="isAuthenticated"
+          :user="user"
           :authenticated-menu-items="authenticatedAccountMenuItem"
           :no-authenticated-menu-items="noAuthenticatedAccountMenuItem"
+          @click:logout-button="handleClickLogoutButton"
         />
 
         <the-pc-notification-menu
