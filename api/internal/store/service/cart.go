@@ -54,14 +54,14 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 	})
 	// プロモーションの取得
 	eg.Go(func() (err error) {
-		if in.PromotionID == "" {
+		if in.PromotionCode == "" {
 			return
 		}
-		promotion, err = s.db.Promotion.Get(ectx, in.PromotionID)
+		promotion, err = s.db.Promotion.GetByCode(ectx, in.PromotionCode)
 		if promotion.IsEnabled(s.now()) {
 			return
 		}
-		s.logger.Warn("Failed to disable promotion", zap.String("sessionId", in.SessionID), zap.String("promotionId", in.PromotionID))
+		s.logger.Warn("Failed to disable promotion", zap.String("sessionId", in.SessionID), zap.String("code", in.PromotionCode))
 		promotion = nil
 		return
 	})

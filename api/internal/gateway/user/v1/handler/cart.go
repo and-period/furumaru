@@ -73,7 +73,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	promotionID := util.GetQuery(ctx, "promotion", "")
+	promotionCode := util.GetQuery(ctx, "promotion", "")
 	coordinatorID := util.GetParam(ctx, "coordinatorId")
 	var (
 		cart        *entity.Cart
@@ -87,7 +87,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 			SessionID:      h.getSessionID(ctx),
 			CoordinatorID:  coordinatorID,
 			BoxNumber:      boxNumber,
-			PromotionID:    promotionID,
+			PromotionCode:  promotionCode,
 			PrefectureCode: prefectureCode,
 		}
 		cart, summary, err = h.store.CalcCart(ectx, in)
@@ -98,10 +98,10 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
-		if promotionID == "" {
+		if promotionCode == "" {
 			return
 		}
-		promotion, err = h.getEnabledPromotion(ectx, promotionID)
+		promotion, err = h.getEnabledPromotion(ectx, promotionCode)
 		if errors.Is(err, database.ErrNotFound) {
 			err = nil // エラーは返さず、プロモーション未適用状態で返す
 		}

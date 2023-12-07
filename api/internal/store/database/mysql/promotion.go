@@ -89,6 +89,18 @@ func (p *promotion) Get(ctx context.Context, promotionID string, fields ...strin
 	return promotion, dbError(err)
 }
 
+func (p *promotion) GetByCode(ctx context.Context, code string, fields ...string) (*entity.Promotion, error) {
+	var promotion *entity.Promotion
+
+	stmt := p.db.Statement(ctx, p.db.DB, promotionTable, fields...).
+		Where("code = ?", code)
+
+	if err := stmt.First(&promotion).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return promotion, nil
+}
+
 func (p *promotion) Create(ctx context.Context, promotion *entity.Promotion) error {
 	now := p.now()
 	promotion.CreatedAt, promotion.UpdatedAt = now, now

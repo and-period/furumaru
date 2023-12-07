@@ -8,15 +8,15 @@ checkoutRequest:
       type: integer
       format: int64
       description: 箱の通番（箱単位で購入する場合のみ）
-    promotionId:
-      type: string
-      description: プロモーションID（割引適用時のみ）
     billingAddressId:
       type: string
       description: 請求先住所ID
     shippingAddressId:
       type: string
       description: 配送先住所ID
+    promotionCode:
+      type: string
+      description: プロモーションコード（割引適用時のみ）
     paymentMethod:
       $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
     callbackUrl:
@@ -31,9 +31,9 @@ checkoutRequest:
   required:
   - coordinatorId
   - boxNumber
-  - promotionId
   - billingAddressId
   - shippingAddressId
+  - promotionCode
   - paymentMethod
   - callbackUrl
   - total
@@ -41,9 +41,9 @@ checkoutRequest:
   example:
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     boxNumber: 1
-    promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
     billingAddressId: 'kSByoE6FetnPs5Byk3a9Zx'
     shippingAddressId: 'kSByoE6FetnPs5Byk3a9Zx'
+    promotionCode: 'code1234'
     paymentMethod: 2
     callbackUrl: 'http://example.com/redirect-url'
     total: 1980

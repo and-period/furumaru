@@ -45,12 +45,6 @@ export interface CheckoutRequest {
      */
     boxNumber: number;
     /**
-     * プロモーションID（割引適用時のみ）
-     * @type {string}
-     * @memberof CheckoutRequest
-     */
-    promotionId: string;
-    /**
      * 請求先住所ID
      * @type {string}
      * @memberof CheckoutRequest
@@ -62,6 +56,12 @@ export interface CheckoutRequest {
      * @memberof CheckoutRequest
      */
     shippingAddressId: string;
+    /**
+     * プロモーションコード（割引適用時のみ）
+     * @type {string}
+     * @memberof CheckoutRequest
+     */
+    promotionCode: string;
     /**
      * 
      * @type {PaymentMethodType}
@@ -95,9 +95,9 @@ export function instanceOfCheckoutRequest(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "coordinatorId" in value;
     isInstance = isInstance && "boxNumber" in value;
-    isInstance = isInstance && "promotionId" in value;
     isInstance = isInstance && "billingAddressId" in value;
     isInstance = isInstance && "shippingAddressId" in value;
+    isInstance = isInstance && "promotionCode" in value;
     isInstance = isInstance && "paymentMethod" in value;
     isInstance = isInstance && "callbackUrl" in value;
     isInstance = isInstance && "total" in value;
@@ -118,9 +118,9 @@ export function CheckoutRequestFromJSONTyped(json: any, ignoreDiscriminator: boo
         
         'coordinatorId': json['coordinatorId'],
         'boxNumber': json['boxNumber'],
-        'promotionId': json['promotionId'],
         'billingAddressId': json['billingAddressId'],
         'shippingAddressId': json['shippingAddressId'],
+        'promotionCode': json['promotionCode'],
         'paymentMethod': PaymentMethodTypeFromJSON(json['paymentMethod']),
         'callbackUrl': json['callbackUrl'],
         'total': json['total'],
@@ -139,9 +139,9 @@ export function CheckoutRequestToJSON(value?: CheckoutRequest | null): any {
         
         'coordinatorId': value.coordinatorId,
         'boxNumber': value.boxNumber,
-        'promotionId': value.promotionId,
         'billingAddressId': value.billingAddressId,
         'shippingAddressId': value.shippingAddressId,
+        'promotionCode': value.promotionCode,
         'paymentMethod': PaymentMethodTypeToJSON(value.paymentMethod),
         'callbackUrl': value.callbackUrl,
         'total': value.total,

@@ -296,6 +296,11 @@ type GetPromotionInput struct {
 	OnlyEnabled bool   `validate:""`
 }
 
+type GetPromotionByCodeInput struct {
+	PromotionCode string `validate:"required"`
+	OnlyEnabled   bool   `validate:""`
+}
+
 type CreatePromotionInput struct {
 	Title        string                   `validate:"required,max=64"`
 	Description  string                   `validate:"required,max=2000"`
@@ -470,7 +475,7 @@ type CalcCartInput struct {
 	SessionID      string `validate:"required"`
 	CoordinatorID  string `validate:"required"`
 	BoxNumber      int64  `validate:"min=0"`
-	PromotionID    string `validate:""`
+	PromotionCode  string `validate:"omitempty,len=8"`
 	PrefectureCode int32  `validate:"min=0,max=47"`
 }
 
@@ -519,7 +524,7 @@ type CheckoutDetail struct {
 	SessionID         string `validate:"required"`
 	CoordinatorID     string `validate:"required"`
 	BoxNumber         int64  `validate:"min=0"`
-	PromotionID       string `validate:""`
+	PromotionCode     string `validate:"omitempty,len=8"`
 	BillingAddressID  string `validate:"required"`
 	ShippingAddressID string `validate:"required"`
 	CallbackURL       string `validate:"required,http_url"`

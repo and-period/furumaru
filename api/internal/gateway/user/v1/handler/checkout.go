@@ -42,7 +42,7 @@ func (h *handler) Checkout(ctx *gin.Context) {
 		SessionID:         h.getSessionID(ctx),
 		CoordinatorID:     req.CoordinatorID,
 		BoxNumber:         req.BoxNumber,
-		PromotionID:       req.PromotionID,
+		PromotionCode:     req.PromotionCode,
 		BillingAddressID:  req.BillingAddressID,
 		ShippingAddressID: req.ShippingAddressID,
 		CallbackURL:       req.CallbackURL,
