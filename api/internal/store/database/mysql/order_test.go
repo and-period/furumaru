@@ -102,7 +102,7 @@ func TestOrder_List(t *testing.T) {
 				},
 			},
 			want: want{
-				orders: orders[:1],
+				orders: orders[1:],
 				hasErr: false,
 			},
 		},
