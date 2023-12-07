@@ -102,7 +102,7 @@ func TestOrder_List(t *testing.T) {
 				},
 			},
 			want: want{
-				orders: orders[1:],
+				orders: orders[:1],
 				hasErr: false,
 			},
 		},
@@ -343,7 +343,7 @@ func TestOrder_Get(t *testing.T) {
 			db := &order{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.orderID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
-			assert.ElementsMatch(t, tt.want.order, actual)
+			assert.Equal(t, tt.want.order, actual)
 		})
 	}
 }
