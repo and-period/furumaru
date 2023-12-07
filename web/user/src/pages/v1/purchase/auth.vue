@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
 import type { SignInRequest } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 
 const authStore = useAuthStore()
 const { signIn } = authStore
@@ -26,6 +27,20 @@ const fromNewAccounet = computed<boolean>(() => {
   }
 })
 
+const coordinatorId = computed<string>(() => {
+  const id = route.query.coordinatorId
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
+})
+
+const authErrorState = ref({
+  hasError: false,
+  errorMessage: '',
+})
+
 const formData = ref<SignInRequest>({
   username: '',
   password: '',
@@ -36,8 +51,15 @@ const handleClickNewAccountButton = () => {
 }
 
 const handleSubmitSignForm = async () => {
-  await signIn(formData.value)
-  router.push('/v1/purchase/address')
+  try {
+    await signIn(formData.value)
+    router.push(`/v1/purchase/address?coordinatorId=${coordinatorId.value}`)
+  } catch (error) {
+    authErrorState.value.hasError = true
+    if (error instanceof ApiBaseError) {
+      authErrorState.value.errorMessage = error.message
+    }
+  }
 }
 
 useSeoMeta({
@@ -71,6 +93,9 @@ useSeoMeta({
       <h2 class="mb-[40px] text-center text-[16px] font-bold">
         アカウントをお持ちの方
       </h2>
+      <the-alert v-if="authErrorState.hasError" class="mb-4">{{
+        authErrorState.errorMessage
+      }}</the-alert>
       <the-sign-in-form
         v-model="formData"
         button-text="ログインして購入"
