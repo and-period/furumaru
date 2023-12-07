@@ -36,6 +36,8 @@ type Client interface {
 	SignUp(ctx context.Context, params *SignUpParams) error
 	// ユーザー登録 (コード検証)
 	ConfirmSignUp(ctx context.Context, username, verifyCode string) error
+	// ユーザー登録 (コードの再送)
+	ResendSignUpCode(ctx context.Context, username string) error
 	// パスワードリセット
 	ForgotPassword(ctx context.Context, username string) error
 	// パスワードリセット (コード検証)

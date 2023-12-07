@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -68,6 +69,17 @@ func (s *service) GetUser(ctx context.Context, in *user.GetUserInput) (*entity.U
 func (s *service) CreateUser(ctx context.Context, in *user.CreateUserInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
+	}
+	member, err := s.db.Member.GetByEmail(ctx, in.Email)
+	if err != nil && !errors.Is(err, database.ErrNotFound) {
+		return "", internalError(err)
+	}
+	// 確認コードの検証ができていないユーザーがいる場合、コードの再送を実施
+	if member != nil && member.VerifiedAt.IsZero() {
+		if err := s.userAuth.ResendSignUpCode(ctx, member.CognitoID); err != nil {
+			return "", internalError(err)
+		}
+		return member.UserID, nil
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	params := &entity.NewUserParams{
