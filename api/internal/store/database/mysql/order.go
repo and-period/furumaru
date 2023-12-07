@@ -36,11 +36,12 @@ type listOrdersParams database.ListOrdersParams
 
 func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
-		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID).Order("coordinator_id ASC, management_id DESC")
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
 	if p.UserID != "" {
-		stmt = stmt.Where("user_id = ?", p.UserID).Order("created_at DESC")
+		stmt = stmt.Where("user_id = ?", p.UserID)
 	}
+	stmt = stmt.Order("created_at DESC")
 	return stmt
 }
 
