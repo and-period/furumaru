@@ -519,6 +519,19 @@ func TestVerifyUser(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success resend signup code",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(cognito.ErrCodeExpired)
+				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(nil)
+			},
+			input: &user.VerifyUserInput{
+				UserID:     "user-id",
+				VerifyCode: "123456",
+			},
+			expectErr: nil,
+		},
+		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.VerifyUserInput{},
@@ -540,6 +553,19 @@ func TestVerifyUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
 				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(assert.AnError)
+			},
+			input: &user.VerifyUserInput{
+				UserID:     "user-id",
+				VerifyCode: "123456",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to resend signup code",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(cognito.ErrCodeExpired)
+				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(assert.AnError)
 			},
 			input: &user.VerifyUserInput{
 				UserID:     "user-id",

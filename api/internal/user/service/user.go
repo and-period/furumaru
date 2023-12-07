@@ -113,7 +113,12 @@ func (s *service) VerifyUser(ctx context.Context, in *user.VerifyUserInput) erro
 	if err != nil {
 		return internalError(err)
 	}
-	if err := s.userAuth.ConfirmSignUp(ctx, u.Member.CognitoID, in.VerifyCode); err != nil {
+	err = s.userAuth.ConfirmSignUp(ctx, u.Member.CognitoID, in.VerifyCode)
+	if errors.Is(err, cognito.ErrCodeExpired) {
+		err = s.userAuth.ResendSignUpCode(ctx, u.Member.CognitoID)
+		return internalError(err)
+	}
+	if err != nil {
 		return internalError(err)
 	}
 	err = s.db.Member.UpdateVerified(ctx, in.UserID)
