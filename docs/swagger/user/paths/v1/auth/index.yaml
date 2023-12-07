@@ -54,9 +54,6 @@ delete:
   responses:
     204:
       description: 成功
-      content:
-        application/json:
-          schema: {}
     401:
       description: 認証エラー
       content:

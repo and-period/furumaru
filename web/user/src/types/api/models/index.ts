@@ -25,7 +25,6 @@ export * from './DiscountType';
 export * from './ErrorResponse';
 export * from './ForgotAuthPasswordRequest';
 export * from './ImageSize';
-export * from './InitializeAuthRequest';
 export * from './Live';
 export * from './PaymentMethodType';
 export * from './PaymentSystem';

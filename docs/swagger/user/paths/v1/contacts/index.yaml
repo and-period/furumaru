@@ -12,8 +12,6 @@ post:
   responses:
     204:
       description: 成功
-      content:
-        application/json: {}
     400:
       description: バリデーションエラー
       content:

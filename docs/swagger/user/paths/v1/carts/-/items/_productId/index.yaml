@@ -29,5 +29,3 @@ delete:
           schema:
             type: string
             example: session_id=423XKALd32LdKtqP9fLwrS; Path=/; Max-Age=1209600; HttpOnly
-      content:
-        application/json: {}
