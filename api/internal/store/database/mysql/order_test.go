@@ -52,8 +52,8 @@ func TestOrder_List(t *testing.T) {
 	}
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", now())
-	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", now())
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", 2, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -164,8 +164,8 @@ func TestOrder_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", now())
-	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", now())
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", 2, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -274,7 +274,7 @@ func TestOrder_Get(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "", "coordinator-id", now())
+	o := testOrder("order-id", "user-id", "", "coordinator-id", 1, now())
 	err = db.DB.Create(&o).Error
 	require.NoError(t, err)
 	payment := testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
@@ -391,7 +391,7 @@ func TestOrder_Create(t *testing.T) {
 	items[0] = testOrderItem("fulfillment-id", 1, "order-id", now())
 	items[1] = testOrderItem("fulfillment-id", 2, "order-id", now())
 
-	o := testOrder("order-id", "user-id", "", "coordinator-id", now())
+	o := testOrder("order-id", "user-id", "", "coordinator-id", 1, now())
 	o.OrderPayment = *testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
 	o.OrderFulfillments = fulfillments
 	o.OrderItems = items
@@ -489,7 +489,7 @@ func TestOrder_UpdatePaymentStatus(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -698,7 +698,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -826,7 +826,7 @@ func TestOrder_Draft(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -933,7 +933,7 @@ func TestOrder_Complete(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -1041,7 +1041,7 @@ func TestOrder_Refund(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -1171,8 +1171,8 @@ func TestOrder_Aggregate(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", now())
-	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", now())
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", 2, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -1251,12 +1251,13 @@ func TestOrder_Aggregate(t *testing.T) {
 	}
 }
 
-func testOrder(id, userID, promotionID, coordinatorID string, now time.Time) *entity.Order {
+func testOrder(id, userID, promotionID, coordinatorID string, mgmtID int64, now time.Time) *entity.Order {
 	return &entity.Order{
 		ID:            id,
 		UserID:        userID,
 		PromotionID:   promotionID,
 		CoordinatorID: coordinatorID,
+		ManagementID:  mgmtID,
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
