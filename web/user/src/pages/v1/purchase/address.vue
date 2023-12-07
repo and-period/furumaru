@@ -188,16 +188,6 @@ useSeoMeta({
               @click:search-address-button="handleClickSearchAddressButton"
               @submit="handleSubmitNewAddressForm"
             />
-
-            <div class="mt-[24px] hidden text-right md:block">
-              <button
-                class="bg-main p-[14px] text-[16px] text-white md:w-[240px]"
-                type="submit"
-                form="new-address-form"
-              >
-                お支払方法の選択へ
-              </button>
-            </div>
           </template>
         </div>
 
