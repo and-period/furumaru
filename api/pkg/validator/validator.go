@@ -47,8 +47,7 @@ func NewValidator(opts ...Option) Validator {
 		opts[i](dopts)
 	}
 
-	var hiraganaRegex = regexp.MustCompile(hiraganaString, 0)
-
+	hiraganaRegex := regexp.MustCompile(hiraganaString, 0)
 	passwordRegex := compilePasswordRegex(dopts.password)
 
 	// hiragana - 正規表現を使用して平仮名のみであるかの検証
