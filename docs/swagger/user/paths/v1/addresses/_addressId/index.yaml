@@ -56,9 +56,6 @@ patch:
   responses:
     204:
       description: 成功
-      content:
-        application/json:
-          schema: {}
     400:
       description: バリデーションエラー
       content:
@@ -95,9 +92,6 @@ delete:
   responses:
     204:
       description: 成功
-      content:
-        application/json:
-          schema: {}
     403:
       description: 他のユーザーのアドレス情報
       content:

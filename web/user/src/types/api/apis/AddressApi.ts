@@ -112,7 +112,7 @@ export class AddressApi extends runtime.BaseAPI {
     /**
      * アドレス削除
      */
-    async v1DeleteAddressRaw(requestParameters: V1DeleteAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1DeleteAddressRaw(requestParameters: V1DeleteAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.addressId === null || requestParameters.addressId === undefined) {
             throw new runtime.RequiredError('addressId','Required parameter requestParameters.addressId was null or undefined when calling v1DeleteAddress.');
         }
@@ -136,15 +136,14 @@ export class AddressApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * アドレス削除
      */
-    async v1DeleteAddress(requestParameters: V1DeleteAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1DeleteAddressRaw(requestParameters, initOverrides);
-        return await response.value();
+    async v1DeleteAddress(requestParameters: V1DeleteAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1DeleteAddressRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -268,7 +267,7 @@ export class AddressApi extends runtime.BaseAPI {
     /**
      * アドレス更新
      */
-    async v1UpdateAddressRaw(requestParameters: V1UpdateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1UpdateAddressRaw(requestParameters: V1UpdateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.addressId === null || requestParameters.addressId === undefined) {
             throw new runtime.RequiredError('addressId','Required parameter requestParameters.addressId was null or undefined when calling v1UpdateAddress.');
         }
@@ -299,15 +298,14 @@ export class AddressApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * アドレス更新
      */
-    async v1UpdateAddress(requestParameters: V1UpdateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1UpdateAddressRaw(requestParameters, initOverrides);
-        return await response.value();
+    async v1UpdateAddress(requestParameters: V1UpdateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1UpdateAddressRaw(requestParameters, initOverrides);
     }
 
 }
