@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
+import axios, { type AxiosInstance } from 'axios'
 import { useAuthStore } from '~/store'
 
 // eslint-disable-next-line import/no-mutable-exports

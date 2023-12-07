@@ -291,9 +291,12 @@ const onClickDelete = (): void => {
             {{ getStatus(item.status) }}
           </v-chip>
         </template>
+        <template #[`item.price`]="{ item }">
+          &yen; {{ item.price.toLocaleString() }}
+        </template>
         <template #[`item.inventory`]="{ item }">
           <div :class="getInventoryColor(item.inventory)">
-            {{ item.inventory }}
+            {{ item.inventory.toLocaleString() }}
           </div>
         </template>
         <template #[`item.categoryName`]="{ item }">

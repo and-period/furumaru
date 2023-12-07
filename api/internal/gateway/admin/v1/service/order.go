@@ -67,6 +67,7 @@ func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[in
 			UserID:          order.UserID,
 			CoordinatorID:   order.CoordinatorID,
 			PromotionID:     order.PromotionID,
+			ManagementID:    order.ManagementID,
 			ShippingMessage: order.ShippingMessage,
 			Status:          NewOrderStatus(order).Response(),
 			Payment:         NewOrderPayment(&order.OrderPayment, addresses[order.OrderPayment.AddressRevisionID]).Response(),
