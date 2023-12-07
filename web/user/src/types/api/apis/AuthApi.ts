@@ -18,6 +18,7 @@ import type {
   AuthResponse,
   AuthUserResponse,
   CreateAuthRequest,
+  CreateAuthWithOAuthRequest,
   ErrorResponse,
   ForgotAuthPasswordRequest,
   RefreshAuthTokenRequest,
@@ -35,6 +36,8 @@ import {
     AuthUserResponseToJSON,
     CreateAuthRequestFromJSON,
     CreateAuthRequestToJSON,
+    CreateAuthWithOAuthRequestFromJSON,
+    CreateAuthWithOAuthRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     ForgotAuthPasswordRequestFromJSON,
@@ -60,7 +63,7 @@ export interface V1CreateAuthRequest {
 }
 
 export interface V1CreateAuthWithOAuthRequest {
-    body: object;
+    body: CreateAuthWithOAuthRequest;
 }
 
 export interface V1ForgotAuthPasswordRequest {

@@ -20,6 +20,42 @@ import { exists, mapValues } from '../runtime';
  */
 export interface CreateAuthRequest {
     /**
+     * ユーザー名(表示用)(32文字まで)
+     * @type {string}
+     * @memberof CreateAuthRequest
+     */
+    username: string;
+    /**
+     * ユーザーID(検索用)(32文字まで)
+     * @type {string}
+     * @memberof CreateAuthRequest
+     */
+    accountId: string;
+    /**
+     * 姓(16文字まで)
+     * @type {string}
+     * @memberof CreateAuthRequest
+     */
+    lastname: string;
+    /**
+     * 名(16文字まで)
+     * @type {string}
+     * @memberof CreateAuthRequest
+     */
+    firstname: string;
+    /**
+     * 姓(かな)(ひらがな,32文字まで)
+     * @type {string}
+     * @memberof CreateAuthRequest
+     */
+    lastnameKana: string;
+    /**
+     * 名(かな)(ひらがな,32文字まで)
+     * @type {string}
+     * @memberof CreateAuthRequest
+     */
+    firstnameKana: string;
+    /**
      * メールアドレス
      * @type {string}
      * @memberof CreateAuthRequest
@@ -50,6 +86,12 @@ export interface CreateAuthRequest {
  */
 export function instanceOfCreateAuthRequest(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "username" in value;
+    isInstance = isInstance && "accountId" in value;
+    isInstance = isInstance && "lastname" in value;
+    isInstance = isInstance && "firstname" in value;
+    isInstance = isInstance && "lastnameKana" in value;
+    isInstance = isInstance && "firstnameKana" in value;
     isInstance = isInstance && "email" in value;
     isInstance = isInstance && "phoneNumber" in value;
     isInstance = isInstance && "password" in value;
@@ -68,6 +110,12 @@ export function CreateAuthRequestFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
+        'username': json['username'],
+        'accountId': json['accountId'],
+        'lastname': json['lastname'],
+        'firstname': json['firstname'],
+        'lastnameKana': json['lastnameKana'],
+        'firstnameKana': json['firstnameKana'],
         'email': json['email'],
         'phoneNumber': json['phoneNumber'],
         'password': json['password'],
@@ -84,6 +132,12 @@ export function CreateAuthRequestToJSON(value?: CreateAuthRequest | null): any {
     }
     return {
         
+        'username': value.username,
+        'accountId': value.accountId,
+        'lastname': value.lastname,
+        'firstname': value.firstname,
+        'lastnameKana': value.lastnameKana,
+        'firstnameKana': value.firstnameKana,
         'email': value.email,
         'phoneNumber': value.phoneNumber,
         'password': value.password,

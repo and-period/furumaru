@@ -19,6 +19,7 @@ export * from './CoordinatorHeadersInner';
 export * from './CoordinatorThumbnailsInner';
 export * from './CreateAddressRequest';
 export * from './CreateAuthRequest';
+export * from './CreateAuthWithOAuthRequest';
 export * from './CreateContactRequest';
 export * from './DeliveryType';
 export * from './DiscountType';

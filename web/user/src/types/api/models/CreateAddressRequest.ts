@@ -27,13 +27,13 @@ import {
  */
 export interface CreateAddressRequest {
     /**
-     * 姓(32文字まで)
+     * 姓(16文字まで)
      * @type {string}
      * @memberof CreateAddressRequest
      */
     lastname: string;
     /**
-     * 名(32文字まで)
+     * 名(16文字まで)
      * @type {string}
      * @memberof CreateAddressRequest
      */

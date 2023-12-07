@@ -38,6 +38,18 @@ authUserResponse:
     username:
       type: string
       description: 表示名
+    lastname:
+      type: string
+      description: 姓(16文字まで)
+    firstname:
+      type: string
+      description: 名(16文字まで)
+    lastnameKana:
+      type: string
+      description: 姓(かな)(ひらがな,32文字まで)
+    firstnameKana:
+      type: string
+      description: 名(かな)(ひらがな,32文字まで)
     email:
       type: string
       description: メールアドレス
@@ -47,11 +59,19 @@ authUserResponse:
   required:
   - id
   - username
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
   - email
   - thumbnailUrl
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     username: '&.購入者'
+    lastname: '&.'
+    firstname: '利用者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'りようしゃ'
     email: 'test-user@and-period.jp'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
 createAuthResponse:

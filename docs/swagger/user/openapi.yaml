@@ -169,6 +169,8 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/createAuthRequest'
     v1VerifyAuthRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/verifyAuthRequest'
+    v1CreateAuthWithOAuthRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/createAuthWithOAuthRequest'
     v1UpdateAuthEmailRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/updateAuthEmailRequest'
     v1VerifyAuthEmailRequest:

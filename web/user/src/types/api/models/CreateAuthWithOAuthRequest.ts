@@ -16,98 +16,90 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface AuthUserResponse
+ * @interface CreateAuthWithOAuthRequest
  */
-export interface AuthUserResponse {
+export interface CreateAuthWithOAuthRequest {
     /**
-     * 購入者ID
+     * ユーザー名(表示用)(32文字まで)
      * @type {string}
-     * @memberof AuthUserResponse
-     */
-    id: string;
-    /**
-     * 表示名
-     * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof CreateAuthWithOAuthRequest
      */
     username: string;
     /**
+     * ユーザーID(検索用)(32文字まで)
+     * @type {string}
+     * @memberof CreateAuthWithOAuthRequest
+     */
+    accountId: string;
+    /**
      * 姓(16文字まで)
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof CreateAuthWithOAuthRequest
      */
     lastname: string;
     /**
      * 名(16文字まで)
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof CreateAuthWithOAuthRequest
      */
     firstname: string;
     /**
      * 姓(かな)(ひらがな,32文字まで)
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof CreateAuthWithOAuthRequest
      */
     lastnameKana: string;
     /**
      * 名(かな)(ひらがな,32文字まで)
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof CreateAuthWithOAuthRequest
      */
     firstnameKana: string;
     /**
-     * メールアドレス
+     * 電話番号(国際番号 + 電話番号)
      * @type {string}
-     * @memberof AuthUserResponse
+     * @memberof CreateAuthWithOAuthRequest
      */
-    email: string;
-    /**
-     * サムネイルURL
-     * @type {string}
-     * @memberof AuthUserResponse
-     */
-    thumbnailUrl: string;
+    phoneNumber: string;
 }
 
 /**
- * Check if a given object implements the AuthUserResponse interface.
+ * Check if a given object implements the CreateAuthWithOAuthRequest interface.
  */
-export function instanceOfAuthUserResponse(value: object): boolean {
+export function instanceOfCreateAuthWithOAuthRequest(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "id" in value;
     isInstance = isInstance && "username" in value;
+    isInstance = isInstance && "accountId" in value;
     isInstance = isInstance && "lastname" in value;
     isInstance = isInstance && "firstname" in value;
     isInstance = isInstance && "lastnameKana" in value;
     isInstance = isInstance && "firstnameKana" in value;
-    isInstance = isInstance && "email" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
+    isInstance = isInstance && "phoneNumber" in value;
 
     return isInstance;
 }
 
-export function AuthUserResponseFromJSON(json: any): AuthUserResponse {
-    return AuthUserResponseFromJSONTyped(json, false);
+export function CreateAuthWithOAuthRequestFromJSON(json: any): CreateAuthWithOAuthRequest {
+    return CreateAuthWithOAuthRequestFromJSONTyped(json, false);
 }
 
-export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthUserResponse {
+export function CreateAuthWithOAuthRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAuthWithOAuthRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'id': json['id'],
         'username': json['username'],
+        'accountId': json['accountId'],
         'lastname': json['lastname'],
         'firstname': json['firstname'],
         'lastnameKana': json['lastnameKana'],
         'firstnameKana': json['firstnameKana'],
-        'email': json['email'],
-        'thumbnailUrl': json['thumbnailUrl'],
+        'phoneNumber': json['phoneNumber'],
     };
 }
 
-export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
+export function CreateAuthWithOAuthRequestToJSON(value?: CreateAuthWithOAuthRequest | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -116,14 +108,13 @@ export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
     }
     return {
         
-        'id': value.id,
         'username': value.username,
+        'accountId': value.accountId,
         'lastname': value.lastname,
         'firstname': value.firstname,
         'lastnameKana': value.lastnameKana,
         'firstnameKana': value.firstnameKana,
-        'email': value.email,
-        'thumbnailUrl': value.thumbnailUrl,
+        'phoneNumber': value.phoneNumber,
     };
 }
 
