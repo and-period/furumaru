@@ -24,10 +24,18 @@ get:
   - in: query
     name: prefecture
     schema:
-      type: string
+      type: integer
+      format: int64
     description: 配送先都道府県コード(指定した場合、配送手数料を含めて返却する)
     required: false
     example: 13
+  - in: query
+    name: promotion
+    schema:
+      type: string
+    description: プロモーションコード(指定した場合、割引金額を含めて返却する)
+    required: false
+    example: 'code1234'
   responses:
     200:
       description: 成功

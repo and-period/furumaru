@@ -54,7 +54,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -87,7 +87,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -140,7 +140,7 @@ func TestCheckoutPayPay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -169,7 +169,7 @@ func TestCheckoutPayPay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -218,7 +218,7 @@ func TestCheckoutLinePay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -247,7 +247,7 @@ func TestCheckoutLinePay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -296,7 +296,7 @@ func TestCheckoutMerpay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -325,7 +325,7 @@ func TestCheckoutMerpay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -374,7 +374,7 @@ func TestCheckoutRakutenPay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -403,7 +403,7 @@ func TestCheckoutRakutenPay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -452,7 +452,7 @@ func TestCheckoutAUPay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -481,7 +481,7 @@ func TestCheckoutAUPay(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -673,7 +673,7 @@ func checkoutmocks(
 			UpdatedAt:     now,
 		}, nil)
 	m.db.Promotion.EXPECT().
-		Get(gomock.Any(), "promotion-id").
+		GetByCode(gomock.Any(), "code1234").
 		Return(&entity.Promotion{
 			ID:           "promotion-id",
 			Title:        "プロモーションタイトル",
@@ -682,7 +682,7 @@ func checkoutmocks(
 			PublishedAt:  now.AddDate(0, -1, 0),
 			DiscountType: entity.DiscountTypeRate,
 			DiscountRate: 10,
-			Code:         "testcode",
+			Code:         "code1234",
 			CodeType:     entity.PromotionCodeTypeAlways,
 			StartAt:      now.AddDate(0, -1, 0),
 			EndAt:        now.AddDate(0, 1, 0),
@@ -1100,7 +1100,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil)
 				mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError)
@@ -1112,7 +1112,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1136,7 +1136,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(nil, assert.AnError)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1144,7 +1144,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1168,7 +1168,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(nil, assert.AnError).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1176,7 +1176,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1200,7 +1200,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(nil, assert.AnError)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1208,7 +1208,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1232,7 +1232,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(nil, assert.AnError)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(nil, assert.AnError)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1240,7 +1240,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1265,7 +1265,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1273,7 +1273,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1297,7 +1297,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1305,7 +1305,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1329,7 +1329,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(nil, assert.AnError)
 			},
 			params: &checkoutParams{
@@ -1338,7 +1338,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1362,7 +1362,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(0), nil)
 			},
 			params: &checkoutParams{
@@ -1371,7 +1371,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1395,7 +1395,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 			},
 			params: &checkoutParams{
@@ -1404,7 +1404,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1429,7 +1429,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 			},
 			params: &checkoutParams{
@@ -1438,7 +1438,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1464,7 +1464,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 			},
 			params: &checkoutParams{
@@ -1473,7 +1473,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
@@ -1499,7 +1499,7 @@ func TestCheckout(t *testing.T) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 			},
 			params: &checkoutParams{
@@ -1508,7 +1508,7 @@ func TestCheckout(t *testing.T) {
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
-					PromotionID:       "promotion-id",
+					PromotionCode:     "code1234",
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",

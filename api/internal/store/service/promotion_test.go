@@ -275,6 +275,87 @@ func TestGetPromotion(t *testing.T) {
 	}
 }
 
+func TestGetPromotionByCode(t *testing.T) {
+	t.Parallel()
+
+	now := jst.Date(2022, 8, 13, 18, 30, 0, 0)
+	promotion := &entity.Promotion{
+		ID:           "promotion-id",
+		Title:        "夏の採れたて野菜マルシェを開催!!",
+		Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+		Public:       true,
+		PublishedAt:  now,
+		DiscountType: entity.DiscountTypeFreeShipping,
+		DiscountRate: 0,
+		Code:         "code0001",
+		CodeType:     entity.PromotionCodeTypeOnce,
+		StartAt:      now.AddDate(0, -1, 0),
+		EndAt:        now.AddDate(0, 1, 0),
+		CreatedAt:    now,
+		UpdatedAt:    now,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.GetPromotionByCodeInput
+		expect    *entity.Promotion
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().GetByCode(ctx, "code0001").Return(promotion, nil)
+			},
+			input: &store.GetPromotionByCodeInput{
+				PromotionCode: "code0001",
+			},
+			expect:    promotion,
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &store.GetPromotionByCodeInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Promotion.EXPECT().GetByCode(ctx, "code0001").Return(nil, assert.AnError)
+			},
+			input: &store.GetPromotionByCodeInput{
+				PromotionCode: "code0001",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get enabled promotion",
+			setup: func(ctx context.Context, mocks *mocks) {
+				promotion := &entity.Promotion{}
+				mocks.db.Promotion.EXPECT().GetByCode(ctx, "code0001").Return(promotion, nil)
+			},
+			input: &store.GetPromotionByCodeInput{
+				PromotionCode: "code0001",
+				OnlyEnabled:   true,
+			},
+			expect:    nil,
+			expectErr: exception.ErrNotFound,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetPromotionByCode(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}, withNow(now)))
+	}
+}
+
 func TestCreatePromotion(t *testing.T) {
 	t.Parallel()
 

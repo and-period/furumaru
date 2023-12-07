@@ -73,6 +73,20 @@ func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput)
 	return promotion, nil
 }
 
+func (s *service) GetPromotionByCode(ctx context.Context, in *store.GetPromotionByCodeInput) (*entity.Promotion, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	promotion, err := s.db.Promotion.GetByCode(ctx, in.PromotionCode)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	if in.OnlyEnabled && !promotion.IsEnabled(s.now()) {
+		return nil, fmt.Errorf("this promotion is disabled: %w", exception.ErrNotFound)
+	}
+	return promotion, nil
+}
+
 func (s *service) CreatePromotion(ctx context.Context, in *store.CreatePromotionInput) (*entity.Promotion, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)

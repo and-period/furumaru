@@ -352,7 +352,7 @@ func TestCalcCart(t *testing.T) {
 		PublishedAt:  now.AddDate(0, -1, 0),
 		DiscountType: entity.DiscountTypeRate,
 		DiscountRate: 10,
-		Code:         "testcode",
+		Code:         "code1234",
 		CodeType:     entity.PromotionCodeTypeAlways,
 		StartAt:      now.AddDate(0, -1, 0),
 		EndAt:        now.AddDate(0, 1, 0),
@@ -384,14 +384,14 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
 				CoordinatorID:  "coordinator-id",
 				BoxNumber:      0,
-				PromotionID:    "promotion-id",
+				PromotionCode:  "code1234",
 				PrefectureCode: 13,
 			},
 			expectCart: cart,
@@ -416,7 +416,7 @@ func TestCalcCart(t *testing.T) {
 				SessionID:      "session-id",
 				CoordinatorID:  "coordinator-id",
 				BoxNumber:      0,
-				PromotionID:    "",
+				PromotionCode:  "",
 				PrefectureCode: 0,
 			},
 			expectCart: cart,
@@ -435,13 +435,13 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, assert.AnError)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
 				CoordinatorID:  "coordinator-id",
 				BoxNumber:      0,
-				PromotionID:    "promotion-id",
+				PromotionCode:  "code1234",
 				PrefectureCode: 13,
 			},
 			expectCart:    nil,
@@ -453,13 +453,13 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(nil, assert.AnError)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
 				CoordinatorID:  "coordinator-id",
 				BoxNumber:      0,
-				PromotionID:    "promotion-id",
+				PromotionCode:  "code1234",
 				PrefectureCode: 13,
 			},
 			expectCart:    nil,
@@ -471,13 +471,13 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(nil, assert.AnError)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(nil, assert.AnError)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
 				CoordinatorID:  "coordinator-id",
 				BoxNumber:      0,
-				PromotionID:    "promotion-id",
+				PromotionCode:  "code1234",
 				PrefectureCode: 13,
 			},
 			expectCart:    nil,
@@ -489,14 +489,14 @@ func TestCalcCart(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().Get(gomock.Any(), "promotion-id").Return(promotion, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, assert.AnError)
 			},
 			input: &store.CalcCartInput{
 				SessionID:      "session-id",
 				CoordinatorID:  "coordinator-id",
 				BoxNumber:      0,
-				PromotionID:    "promotion-id",
+				PromotionCode:  "code1234",
 				PrefectureCode: 13,
 			},
 			expectCart:    nil,

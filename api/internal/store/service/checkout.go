@@ -219,19 +219,19 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	})
 	// プロモーションの取得
 	eg.Go(func() (err error) {
-		if params.payload.PromotionID == "" {
+		if params.payload.PromotionCode == "" {
 			return
 		}
-		promotion, err = s.db.Promotion.Get(ectx, params.payload.PromotionID)
+		promotion, err = s.db.Promotion.GetByCode(ectx, params.payload.PromotionCode)
 		return
 	})
 	if err := eg.Wait(); err != nil {
 		return "", internalError(err)
 	}
 	// プロモーションの有効性検証
-	if params.payload.PromotionID != "" && !promotion.IsEnabled(s.now()) {
+	if params.payload.PromotionCode != "" && !promotion.IsEnabled(s.now()) {
 		s.logger.Warn("Failed to disable promotion",
-			zap.String("userId", params.payload.UserID), zap.String("promotionId", params.payload.PromotionID))
+			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
 	}
 	// 購入する買い物かごのみ取得
