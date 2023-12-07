@@ -88,6 +88,19 @@ func TestValidator(t *testing.T) {
 			hasErr: true,
 		},
 		{
+			name: "invalid password only numbers",
+			input: &input{
+				Password: "12345678",
+			},
+			opts: []Option{WithPasswordValidation(&PasswordParams{
+				RequireNumbers:   true,
+				RequireSymbols:   false,
+				RequireUppercase: false,
+				RequireLowercase: true,
+			})},
+			hasErr: true,
+		},
+		{
 			name: "invalid password with numbers",
 			input: &input{
 				Password: "abcxyzABCXYZ_!@#$_%^&*.?()-=+",
