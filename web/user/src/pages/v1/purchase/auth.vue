@@ -26,6 +26,15 @@ const fromNewAccounet = computed<boolean>(() => {
   }
 })
 
+const coordinatorId = computed<string>(() => {
+  const id = route.query.coordinatorId
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
+})
+
 const formData = ref<SignInRequest>({
   username: '',
   password: '',
@@ -37,7 +46,7 @@ const handleClickNewAccountButton = () => {
 
 const handleSubmitSignForm = async () => {
   await signIn(formData.value)
-  router.push('/v1/purchase/address')
+  router.push(`/v1/purchase/address?coordinatorId=${coordinatorId.value}`)
 }
 
 useSeoMeta({
