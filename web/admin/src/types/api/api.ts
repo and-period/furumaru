@@ -2554,6 +2554,12 @@ export interface Order {
      */
     'promotionId': string;
     /**
+     * 注文管理用ID
+     * @type {number}
+     * @memberof Order
+     */
+    'managementId': number;
+    /**
      * 発送連絡時のメッセージ
      * @type {string}
      * @memberof Order

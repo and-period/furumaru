@@ -313,6 +313,79 @@ func TestPromotion_Get(t *testing.T) {
 	}
 }
 
+func TestPromotion_GetByCode(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	p := testPromotion("promotion-id", "code0001", now())
+	err = db.DB.Create(&p).Error
+	require.NoError(t, err)
+
+	type args struct {
+		code string
+	}
+	type want struct {
+		promotion *entity.Promotion
+		err       error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				code: "code0001",
+			},
+			want: want{
+				promotion: p,
+				err:       nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				code: "",
+			},
+			want: want{
+				promotion: nil,
+				err:       database.ErrNotFound,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &promotion{db: db, now: now}
+			actual, err := db.GetByCode(ctx, tt.args.code)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.promotion, actual)
+		})
+	}
+}
+
 func TestPromotion_Create(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

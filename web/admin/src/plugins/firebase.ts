@@ -1,5 +1,5 @@
-import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app'
-import { getMessaging, Messaging } from 'firebase/messaging'
+import { type FirebaseApp, type FirebaseOptions, initializeApp } from 'firebase/app'
+import { getMessaging, type Messaging } from 'firebase/messaging'
 
 /* eslint-disable import/no-mutable-exports */
 let app: FirebaseApp

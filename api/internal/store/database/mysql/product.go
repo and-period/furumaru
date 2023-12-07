@@ -254,7 +254,7 @@ func (p *product) DecreaseInventory(ctx context.Context, revisionID, quantity in
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		var product *entity.Product
 
-		stmt := p.db.Statement(ctx, tx, productTable).
+		stmt := p.db.Statement(ctx, tx, productTable, "products.*").
 			Joins("INNER JOIN product_revisions ON products.id = product_revisions.product_id").
 			Where("product_revisions.id = ?", revisionID)
 		if err := stmt.First(&product).Error; err != nil {

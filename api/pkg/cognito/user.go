@@ -89,6 +89,15 @@ func (c *client) ConfirmSignUp(ctx context.Context, username, verifyCode string)
 	return c.authError(err)
 }
 
+func (c *client) ResendSignUpCode(ctx context.Context, username string) error {
+	in := &cognito.ResendConfirmationCodeInput{
+		ClientId: c.appClientID,
+		Username: aws.String(username),
+	}
+	_, err := c.cognito.ResendConfirmationCode(ctx, in)
+	return c.authError(err)
+}
+
 func (c *client) ForgotPassword(ctx context.Context, username string) error {
 	in := &cognito.ForgotPasswordInput{
 		ClientId: c.appClientID,

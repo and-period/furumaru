@@ -38,7 +38,8 @@ export interface V1AddCartItemRequest {
 export interface V1CalcCartRequest {
     coordinatorId: string;
     number?: number;
-    prefecture?: string;
+    prefecture?: number;
+    promotion?: string;
 }
 
 export interface V1RemoveCartItemRequest {
@@ -99,6 +100,10 @@ export class CartApi extends runtime.BaseAPI {
 
         if (requestParameters.prefecture !== undefined) {
             queryParameters['prefecture'] = requestParameters.prefecture;
+        }
+
+        if (requestParameters.promotion !== undefined) {
+            queryParameters['promotion'] = requestParameters.promotion;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

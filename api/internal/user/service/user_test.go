@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -341,7 +342,6 @@ func TestGetUser(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	t.Parallel()
-
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -349,7 +349,7 @@ func TestCreateUser(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name: "success",
+			name: "success create user",
 			setup: func(ctx context.Context, mocks *mocks) {
 				expectUser := &entity.User{
 					Registered: true,
@@ -364,6 +364,7 @@ func TestCreateUser(t *testing.T) {
 					PhoneNumber: "+819012345678",
 					Password:    "Passw0rd",
 				}
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(nil, database.ErrNotFound)
 				mocks.userAuth.EXPECT().
 					SignUp(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, params *cognito.SignUpParams) error {
@@ -379,6 +380,28 @@ func TestCreateUser(t *testing.T) {
 						assert.Equal(t, expectUser, u)
 						return auth(ctx)
 					})
+			},
+			input: &user.CreateUserInput{
+				Email:                "test@and-period.jp",
+				PhoneNumber:          "+819012345678",
+				Password:             "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "success resend confirmation code",
+			setup: func(ctx context.Context, mocks *mocks) {
+				member := &entity.Member{
+					UserID:       "user-id",
+					CognitoID:    "cognito-id",
+					ProviderType: entity.ProviderTypeEmail,
+					Email:        "test@and-period.jp",
+					PhoneNumber:  "+819012345678",
+					VerifiedAt:   time.Time{},
+				}
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(member, nil)
+				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(nil)
 			},
 			input: &user.CreateUserInput{
 				Email:                "test@and-period.jp",
@@ -406,8 +429,44 @@ func TestCreateUser(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get member",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(nil, assert.AnError)
+			},
+			input: &user.CreateUserInput{
+				Email:                "test@and-period.jp",
+				PhoneNumber:          "+819012345678",
+				Password:             "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to resend confirmation code",
+			setup: func(ctx context.Context, mocks *mocks) {
+				member := &entity.Member{
+					UserID:       "user-id",
+					CognitoID:    "cognito-id",
+					ProviderType: entity.ProviderTypeEmail,
+					Email:        "test@and-period.jp",
+					PhoneNumber:  "+819012345678",
+					VerifiedAt:   time.Time{},
+				}
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(member, nil)
+				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(assert.AnError)
+			},
+			input: &user.CreateUserInput{
+				Email:                "test@and-period.jp",
+				PhoneNumber:          "+819012345678",
+				Password:             "Passw0rd",
+				PasswordConfirmation: "Passw0rd",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to create",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(nil, database.ErrNotFound)
 				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateUserInput{
@@ -460,6 +519,19 @@ func TestVerifyUser(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success resend signup code",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(cognito.ErrCodeExpired)
+				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(nil)
+			},
+			input: &user.VerifyUserInput{
+				UserID:     "user-id",
+				VerifyCode: "123456",
+			},
+			expectErr: nil,
+		},
+		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.VerifyUserInput{},
@@ -481,6 +553,19 @@ func TestVerifyUser(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
 				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(assert.AnError)
+			},
+			input: &user.VerifyUserInput{
+				UserID:     "user-id",
+				VerifyCode: "123456",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to resend signup code",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.User.EXPECT().Get(ctx, "user-id").Return(u, nil)
+				mocks.userAuth.EXPECT().ConfirmSignUp(ctx, "cognito-id", "123456").Return(cognito.ErrCodeExpired)
+				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(assert.AnError)
 			},
 			input: &user.VerifyUserInput{
 				UserID:     "user-id",

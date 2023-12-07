@@ -5,7 +5,6 @@ import { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import {
-  FulfillmentStatus,
   OrderStatus,
   ShippingType,
   type Coordinator,
@@ -100,6 +99,11 @@ const emit = defineEmits<{
 }>()
 
 const headers: VDataTable['headers'] = [
+  {
+    title: '注文No.',
+    key: 'managementId',
+    sortable: false
+  },
   {
     title: '注文者',
     key: 'userId',

@@ -221,6 +221,20 @@ func (mr *MockClientMockRecorder) RefreshToken(ctx, refreshToken interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshToken", reflect.TypeOf((*MockClient)(nil).RefreshToken), ctx, refreshToken)
 }
 
+// ResendSignUpCode mocks base method.
+func (m *MockClient) ResendSignUpCode(ctx context.Context, username string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResendSignUpCode", ctx, username)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResendSignUpCode indicates an expected call of ResendSignUpCode.
+func (mr *MockClientMockRecorder) ResendSignUpCode(ctx, username interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResendSignUpCode", reflect.TypeOf((*MockClient)(nil).ResendSignUpCode), ctx, username)
+}
+
 // SignIn mocks base method.
 func (m *MockClient) SignIn(ctx context.Context, username, password string) (*cognito.AuthResult, error) {
 	m.ctrl.T.Helper()

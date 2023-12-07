@@ -7,12 +7,12 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
-func (h *handler) getEnabledPromotion(ctx context.Context, promotionID string) (*service.Promotion, error) {
-	in := &store.GetPromotionInput{
-		PromotionID: promotionID,
-		OnlyEnabled: true,
+func (h *handler) getEnabledPromotion(ctx context.Context, code string) (*service.Promotion, error) {
+	in := &store.GetPromotionByCodeInput{
+		PromotionCode: code,
+		OnlyEnabled:   true,
 	}
-	promotion, err := h.store.GetPromotion(ctx, in)
+	promotion, err := h.store.GetPromotionByCode(ctx, in)
 	if err != nil {
 		return nil, err
 	}

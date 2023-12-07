@@ -14,6 +14,10 @@ order:
     promotionId:
       type: string
       description: プロモーションID
+    managementId:
+      type: integer
+      format: int64
+      description: 注文管理用ID
     shippingMessage:
       type: string
       description: 発送連絡時のメッセージ
@@ -50,6 +54,7 @@ order:
   - userId
   - coordinatorId
   - promotionId
+  - managementId
   - shippingMessage
   - status
   - payment
@@ -64,6 +69,7 @@ order:
     userId: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+    managementId: 1
     shippingMessage: '購入ありがとうございます'
     status: 5
     payment:

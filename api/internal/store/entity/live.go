@@ -70,10 +70,10 @@ func (l *Live) Validate(schedule *Schedule, lives Lives) error {
 		if l.ID == live.ID || l.ScheduleID != live.ScheduleID {
 			continue
 		}
-		if l.StartAt == live.EndAt || l.StartAt.After(live.EndAt) {
+		if l.StartAt.Equal(live.EndAt) || l.StartAt.After(live.EndAt) {
 			continue
 		}
-		if l.EndAt == live.StartAt || l.EndAt.Before(live.StartAt) {
+		if l.EndAt.Equal(live.StartAt) || l.EndAt.Before(live.StartAt) {
 			continue
 		}
 		return errInvalidLiveSchedule

@@ -148,6 +148,7 @@ func TestOrder(t *testing.T) {
 				UserID:        "user-id",
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "promotion-id",
+				ManagementID:  1,
 				OrderPayment: entity.OrderPayment{
 					OrderID:           "order-id",
 					AddressRevisionID: 1,
@@ -267,6 +268,7 @@ func TestOrder(t *testing.T) {
 					UserID:          "user-id",
 					CoordinatorID:   "coordinator-id",
 					PromotionID:     "promotion-id",
+					ManagementID:    1,
 					ShippingMessage: "",
 					Status:          int32(OrderStatusShipped),
 					CreatedAt:       1640962800,

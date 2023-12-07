@@ -6,6 +6,7 @@ type Order struct {
 	UserID          string              `json:"userId"`          // ユーザーID
 	CoordinatorID   string              `json:"coordinatorId"`   // コーディネータID
 	PromotionID     string              `json:"promotionId"`     // プロモーションID
+	ManagementID    int64               `json:"managementId"`    // 注文管理用ID
 	ShippingMessage string              `json:"shippingMessage"` // 発送連絡時のメッセージ
 	Status          int32               `json:"status"`          // 注文ステータス
 	Payment         *OrderPayment       `json:"payment"`         // 支払い情報

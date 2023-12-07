@@ -449,22 +449,22 @@ const onSubmit = async (): Promise<void> => {
                     コーディネーター様への支払い金額
                   </th>
                   <th class="text-left">
-                    {{ getBenefits() }} 円
+                    {{ getBenefits().toLocaleString() }} 円
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>販売価格</td>
-                  <td>{{ formDataValue.price }} 円</td>
+                  <td>{{ formDataValue.price.toLocaleString() }} 円</td>
                 </tr>
                 <tr>
                   <td>原価</td>
-                  <td>{{ formDataValue.cost }} 円</td>
+                  <td>{{ formDataValue.cost.toLocaleString() }} 円</td>
                 </tr>
                 <tr>
                   <td>手数料(10%)</td>
-                  <td>{{ getCommission() }} 円</td>
+                  <td>{{ getCommission().toLocaleString() }} 円</td>
                 </tr>
               </tbody>
             </v-table>

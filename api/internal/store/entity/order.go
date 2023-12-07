@@ -18,6 +18,7 @@ type Order struct {
 	UserID            string         `gorm:""`                     // ユーザーID
 	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
 	PromotionID       string         `gorm:"default:null"`         // プロモーションID
+	ManagementID      int64          `gorm:""`                     // 管理番号
 	ShippingMessage   string         `gorm:"default:null"`         // 発送時のメッセージ
 	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt         time.Time      `gorm:""`                     // 更新日時

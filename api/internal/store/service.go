@@ -51,6 +51,7 @@ type Service interface {
 	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)  // 一覧取得
 	MultiGetPromotions(ctx context.Context, in *MultiGetPromotionsInput) (entity.Promotions, error) // 一覧取得(ID指定)
 	GetPromotion(ctx context.Context, in *GetPromotionInput) (*entity.Promotion, error)             // 取得
+	GetPromotionByCode(ctx context.Context, in *GetPromotionByCodeInput) (*entity.Promotion, error) // 取得(コード指定)
 	CreatePromotion(ctx context.Context, in *CreatePromotionInput) (*entity.Promotion, error)       // 登録
 	UpdatePromotion(ctx context.Context, in *UpdatePromotionInput) error                            // 更新
 	DeletePromotion(ctx context.Context, in *DeletePromotionInput) error                            // 削除

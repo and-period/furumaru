@@ -1096,6 +1096,26 @@ func (mr *MockPromotionMockRecorder) Get(ctx, promotionID interface{}, fields ..
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockPromotion)(nil).Get), varargs...)
 }
 
+// GetByCode mocks base method.
+func (m *MockPromotion) GetByCode(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, promotionID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetByCode", varargs...)
+	ret0, _ := ret[0].(*entity.Promotion)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByCode indicates an expected call of GetByCode.
+func (mr *MockPromotionMockRecorder) GetByCode(ctx, promotionID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, promotionID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByCode", reflect.TypeOf((*MockPromotion)(nil).GetByCode), varargs...)
+}
+
 // List mocks base method.
 func (m *MockPromotion) List(ctx context.Context, params *database.ListPromotionsParams, fields ...string) (entity.Promotions, error) {
 	m.ctrl.T.Helper()

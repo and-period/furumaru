@@ -218,10 +218,6 @@ stepFunctions:
                     Resource: arn:aws:states:::aws-sdk:mediastore:describeContainer
                     Parameters:
                       ContainerName.$: $.ContainerResult.Container.Name
-                    Next: WaitActive
-                  WaitActive:
-                    Type: Wait
-                    Seconds: 1
                     Next: CheckContainerActive
                   CheckContainerActive:
                     Type: Choice
@@ -232,8 +228,12 @@ stepFunctions:
                         Next: ExtractMediaStoreDomain
                       - Variable: $.ContainerStatus.Container.Status
                         StringEquals: "CREATING"
-                        Next: DescribeContainer
+                        Next: WaitActive
                     Default: failed
+                  WaitActive:
+                    Type: Wait
+                    Seconds: 2
+                    Next: DescribeContainer
                   ExtractMediaStoreDomain:
                     Type: Task
                     Comment: ライブ配信 - MediaStoreのドメイン名を抽出
@@ -786,10 +786,6 @@ stepFunctions:
                   Resource: arn:aws:states:::aws-sdk:medialive:describeInput
                   Parameters:
                     InputId.$: $.InputId
-                  Next: WaitDettached
-                WaitDettached:
-                  Type: Wait
-                  Seconds: 1
                   Next: CheckInputDetached
                 CheckInputDetached:
                   Type: Choice
@@ -801,7 +797,11 @@ stepFunctions:
                     - Variable: $.DescribeInputResult.State
                       StringEquals: "DELETED"
                       Next: DeletedInput
-                  Default: DescribeInput
+                  Default: WaitDettached
+                WaitDettached:
+                  Type: Wait
+                  Seconds: 30
+                  Next: DescribeInput
                 DeleteInput:
                   Type: Task
                   Resource: arn:aws:states:::aws-sdk:medialive:deleteInput
@@ -849,7 +849,7 @@ stepFunctions:
             Next: WaitDisabled
           WaitDisabled:
             Type: Wait
-            Seconds: 1
+            Seconds: 30
             Next: GetDistributionStatus
           GetDistributionStatus:
             Type: Task

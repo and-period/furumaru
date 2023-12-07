@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -69,6 +70,17 @@ func (s *service) CreateUser(ctx context.Context, in *user.CreateUserInput) (str
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
+	member, err := s.db.Member.GetByEmail(ctx, in.Email)
+	if err != nil && !errors.Is(err, database.ErrNotFound) {
+		return "", internalError(err)
+	}
+	// 確認コードの検証ができていないユーザーがいる場合、コードの再送を実施
+	if member != nil && member.VerifiedAt.IsZero() {
+		if err := s.userAuth.ResendSignUpCode(ctx, member.CognitoID); err != nil {
+			return "", internalError(err)
+		}
+		return member.UserID, nil
+	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	params := &entity.NewUserParams{
 		Registered:   true,
@@ -101,7 +113,12 @@ func (s *service) VerifyUser(ctx context.Context, in *user.VerifyUserInput) erro
 	if err != nil {
 		return internalError(err)
 	}
-	if err := s.userAuth.ConfirmSignUp(ctx, u.Member.CognitoID, in.VerifyCode); err != nil {
+	err = s.userAuth.ConfirmSignUp(ctx, u.Member.CognitoID, in.VerifyCode)
+	if errors.Is(err, cognito.ErrCodeExpired) {
+		err = s.userAuth.ResendSignUpCode(ctx, u.Member.CognitoID)
+		return internalError(err)
+	}
+	if err != nil {
 		return internalError(err)
 	}
 	err = s.db.Member.UpdateVerified(ctx, in.UserID)

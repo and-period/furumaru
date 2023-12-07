@@ -1,4 +1,4 @@
-import { Analytics, getAnalytics, logEvent } from 'firebase/analytics'
+import { type Analytics, getAnalytics, logEvent } from 'firebase/analytics'
 
 import { app as fbApp } from './firebase'
 

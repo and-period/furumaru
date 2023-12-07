@@ -114,7 +114,7 @@ const isEditable = (): boolean => {
 const getDiscount = (discountType: number, discountRate: DiscountType): string => {
   switch (discountType) {
     case DiscountType.AMOUNT:
-      return '￥' + discountRate
+      return '￥' + discountRate.toLocaleString()
     case DiscountType.RATE:
       return discountRate + '％'
     case DiscountType.FREE_SHIPPING:
