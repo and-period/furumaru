@@ -18,6 +18,7 @@ import type {
   AuthResponse,
   AuthUserResponse,
   CreateAuthRequest,
+  CreateAuthResponse,
   CreateAuthWithOAuthRequest,
   ErrorResponse,
   ForgotAuthPasswordRequest,
@@ -36,6 +37,8 @@ import {
     AuthUserResponseToJSON,
     CreateAuthRequestFromJSON,
     CreateAuthRequestToJSON,
+    CreateAuthResponseFromJSON,
+    CreateAuthResponseToJSON,
     CreateAuthWithOAuthRequestFromJSON,
     CreateAuthWithOAuthRequestToJSON,
     ErrorResponseFromJSON,
@@ -106,7 +109,7 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * 購入者登録 (メール/SMS認証)
      */
-    async v1CreateAuthRaw(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
+    async v1CreateAuthRaw(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateAuthResponse>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateAuth.');
         }
@@ -125,13 +128,13 @@ export class AuthApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CreateAuthResponseFromJSON(jsonValue));
     }
 
     /**
      * 購入者登録 (メール/SMS認証)
      */
-    async v1CreateAuth(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
+    async v1CreateAuth(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateAuthResponse> {
         const response = await this.v1CreateAuthRaw(requestParameters, initOverrides);
         return await response.value();
     }
