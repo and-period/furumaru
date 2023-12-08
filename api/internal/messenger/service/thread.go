@@ -10,7 +10,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/database"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/user"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -96,16 +95,6 @@ func (s *service) CreateThread(ctx context.Context, in *messenger.CreateThreadIn
 			return nil, internalError(err)
 		}
 	}
-	s.waitGroup.Add(1)
-	go func(contactID string) {
-		defer s.waitGroup.Done()
-		in := &messenger.NotifyReceivedContactInput{
-			ContactID: thread.ContactID,
-		}
-		if err := s.NotifyReceivedContact(context.Background(), in); err != nil {
-			s.logger.Error("Failed to notify received contact", zap.String("contactId", contactID), zap.Error(err))
-		}
-	}(thread.ContactID)
 	return thread, nil
 }
 

@@ -313,15 +313,26 @@ func TestPersonalizations(t *testing.T) {
 				in := &user.MultiGetUsersInput{UserIDs: []string{"user-id"}}
 				users := uentity.Users{
 					{
+						ID:         "user-id",
+						Registered: true,
 						Member: uentity.Member{
-							Username: "username",
-							Email:    "test-user@and-period.jp",
+							Username:      "username",
+							Lastname:      "&.",
+							Firstname:     "利用者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "りようしゃ",
+							Email:         "test-user@and-period.jp",
 						},
 					},
 					{
+						Registered: true,
 						Member: uentity.Member{
-							Username: "username",
-							Email:    "",
+							Username:      "username",
+							Lastname:      "&.",
+							Firstname:     "利用者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "りようしゃ",
+							Email:         "",
 						},
 					},
 				}
@@ -338,28 +349,52 @@ func TestPersonalizations(t *testing.T) {
 			},
 			expect: []*mailer.Personalization{
 				{
-					Name:    "username",
+					Name:    "&. 利用者",
 					Address: "test-user@and-period.jp",
 					Type:    mailer.AddressTypeTo,
 					Substitutions: map[string]interface{}{
 						"key": "value",
-						"氏名":  "username",
+						"氏名":  "&. 利用者",
 					},
 				},
 			},
 			expectErr: nil,
 		},
 		{
-			name:  "success guest",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success guest",
+			setup: func(ctx context.Context, mocks *mocks) {
+				in := &user.MultiGetUsersInput{UserIDs: []string{"user-id"}}
+				users := uentity.Users{
+					{
+						ID:         "user-id",
+						Registered: true,
+						Member: uentity.Member{
+							Username:      "username",
+							Lastname:      "&.",
+							Firstname:     "利用者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "りようしゃ",
+							Email:         "test-user@and-period.jp",
+						},
+					},
+					{
+						Registered: true,
+						Member: uentity.Member{
+							Username:      "username",
+							Lastname:      "&.",
+							Firstname:     "利用者",
+							LastnameKana:  "あんどどっと",
+							FirstnameKana: "りようしゃ",
+							Email:         "",
+						},
+					},
+				}
+				mocks.user.EXPECT().MultiGetUsers(ctx, in).Return(users, nil)
+			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeGuest,
-				UserIDs:   []string{},
-				Guest: &entity.Guest{
-					Name:  "&. スタッフ",
-					Email: "test-user@and-period.jp",
-				},
+				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					EmailID:       entity.EmailIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
@@ -367,12 +402,12 @@ func TestPersonalizations(t *testing.T) {
 			},
 			expect: []*mailer.Personalization{
 				{
-					Name:    "&. スタッフ",
+					Name:    "&. 利用者",
 					Address: "test-user@and-period.jp",
 					Type:    mailer.AddressTypeTo,
 					Substitutions: map[string]interface{}{
 						"key": "value",
-						"氏名":  "&. スタッフ",
+						"氏名":  "&. 利用者",
 					},
 				},
 			},
@@ -697,17 +732,21 @@ func TestFetchUsers(t *testing.T) {
 			CreatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
 			UpdatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
 			Member: uentity.Member{
-				UserID:       "user-id",
-				AccountID:    "account-id",
-				CognitoID:    "cognito-id",
-				Username:     "テストユーザー",
-				ProviderType: uentity.ProviderTypeEmail,
-				Email:        "test-user@and-period.jp",
-				PhoneNumber:  "+810000000000",
-				ThumbnailURL: "https://and-period.jp/thumbnail.png",
-				CreatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
-				UpdatedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
-				VerifiedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				UserID:        "user-id",
+				AccountID:     "account-id",
+				CognitoID:     "cognito-id",
+				Username:      "テストユーザー",
+				Lastname:      "&.",
+				Firstname:     "利用者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "りようしゃ",
+				ProviderType:  uentity.ProviderTypeEmail,
+				Email:         "test-user@and-period.jp",
+				PhoneNumber:   "+810000000000",
+				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+				CreatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				UpdatedAt:     jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				VerifiedAt:    jst.Date(2022, 7, 10, 18, 30, 0, 0),
 			},
 		},
 	}
@@ -727,7 +766,7 @@ func TestFetchUsers(t *testing.T) {
 			userIDs: []string{"user-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				execute := func(name, email string) {
-					assert.Equal(t, "テストユーザー", name)
+					assert.Equal(t, "&. 利用者", name)
 					assert.Equal(t, "test-user@and-period.jp", email)
 				}
 				return execute
@@ -750,51 +789,6 @@ func TestFetchUsers(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
 			err := worker.fetchUsers(ctx, tt.userIDs, tt.execute(t))
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestFetchGuest(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		guest     *entity.Guest
-		execute   func(t *testing.T) func(name, email string)
-		expectErr error
-	}{
-		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			guest: &entity.Guest{
-				Name:  "テストユーザー",
-				Email: "test-user@and-period.jp",
-			},
-			execute: func(t *testing.T) func(name, email string) {
-				execute := func(name, email string) {
-					assert.Equal(t, "テストユーザー", name)
-					assert.Equal(t, "test-user@and-period.jp", email)
-				}
-				return execute
-			},
-			expectErr: nil,
-		},
-		{
-			name:  "guest is empty",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			guest: nil,
-			execute: func(t *testing.T) func(name, email string) {
-				return nil
-			},
-			expectErr: errGuestRequired,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.fetchGuest(tt.guest, tt.execute(t))
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

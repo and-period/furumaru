@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -148,6 +149,16 @@ func (s *service) NotifyPaymentCompleted(ctx context.Context, in *store.NotifyPa
 			zap.String("orderId", in.OrderID), zap.Int32("status", int32(in.Status)), zap.Time("issuedAt", in.IssuedAt))
 		return nil
 	}
+	if err != nil {
+		return internalError(err)
+	}
+	if in.Status != entity.PaymentStatusAuthorized {
+		return nil
+	}
+	notifyIn := &messenger.NotifyOrderAuthorizedInput{
+		OrderID: in.OrderID,
+	}
+	err = s.messenger.NotifyOrderAuthorized(ctx, notifyIn)
 	return internalError(err)
 }
 
