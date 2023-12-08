@@ -30,6 +30,7 @@ const (
 	ProducerHeaderPath            = "producers/header"             // 生産者ヘッダー画像
 	ProducerPromotionVideoPath    = "producers/promotion-video"    // 生産者紹介映像
 	ProducerBonusVideoPath        = "producers/bonus-video"        // 生産者購入特典映像
+	UserThumbnailPath             = "users/thumbnail"              // 購入者サムネイル画像
 	ProductMediaPath              = "products/media"               // 商品メディア
 	ProductMediaImagePath         = "products/media/image"         // 商品メディア(画像)
 	ProductMediaVideoPath         = "products/media/video"         // 商品メディア(映像)
@@ -96,6 +97,11 @@ var (
 		MaxSize: 200 << 20, // 200MB
 		Formats: set.New("video/mp4"),
 		dir:     ProducerBonusVideoPath,
+	}
+	UserThumbnailRegulation = &Regulation{
+		MaxSize: 10 << 20, // 10MB
+		Formats: set.New("image/png", "image/jpeg"),
+		dir:     UserThumbnailPath,
 	}
 	ProductMediaImageRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB

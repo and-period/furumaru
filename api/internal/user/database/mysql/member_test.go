@@ -2,9 +2,11 @@ package mysql
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
@@ -537,6 +539,124 @@ func TestUser_UpdateEmail(t *testing.T) {
 	}
 }
 
+func TestMember_UpdateThumbnails(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	type args struct {
+		userID     string
+		thumbnails common.Images
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				err = db.DB.Create(&u).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&u.Member).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				userID: "user-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				userID: "user-id",
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+		{
+			name: "failed precondition for thumbnail url is empty",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				u.Member.ThumbnailURL = ""
+				err = db.DB.Create(&u).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&u.Member).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				userID: "user-id",
+				thumbnails: common.Images{
+					{
+						Size: common.ImageSizeSmall,
+						URL:  "https://and-period.jp/thumbnail_240.png",
+					},
+					{
+						Size: common.ImageSizeMedium,
+						URL:  "https://and-period.jp/thumbnail_675.png",
+					},
+					{
+						Size: common.ImageSizeLarge,
+						URL:  "https://and-period.jp/thumbnail_900.png",
+					},
+				},
+			},
+			want: want{
+				hasErr: true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, memberTable, userTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &member{db: db, now: now}
+			err = db.UpdateThumbnails(ctx, tt.args.userID, tt.args.thumbnails)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestMember_Delete(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -613,7 +733,7 @@ func TestMember_Delete(t *testing.T) {
 }
 
 func testMember(id, email, phoneNumber string, now time.Time) *entity.Member {
-	return &entity.Member{
+	m := &entity.Member{
 		UserID:        id,
 		AccountID:     id,
 		CognitoID:     id,
@@ -626,8 +746,11 @@ func testMember(id, email, phoneNumber string, now time.Time) *entity.Member {
 		Email:         email,
 		PhoneNumber:   phoneNumber,
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		Thumbnails:    common.Images{},
 		CreatedAt:     now,
 		UpdatedAt:     now,
 		VerifiedAt:    now,
 	}
+	m.ThumbnailsJSON, _ = json.Marshal(m.Thumbnails)
+	return m
 }

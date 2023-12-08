@@ -103,7 +103,8 @@ func (h *handler) GetUser(ctx *gin.Context) {
 		return
 	}
 	res := &response.UserResponse{
-		User: user.Response(),
+		User:    user.Response(),
+		Address: user.Address().Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

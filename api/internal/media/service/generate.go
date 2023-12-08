@@ -39,6 +39,10 @@ func (s *service) GenerateProducerPromotionVideo(ctx context.Context, in *media.
 	return s.generateFile(ctx, in, entity.ProducerPromotionVideoRegulation)
 }
 
+func (s *service) GenerateUserThumbnail(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	return s.generateFile(ctx, in, entity.UserThumbnailRegulation)
+}
+
 func (s *service) GenerateProducerBonusVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
 	return s.generateFile(ctx, in, entity.ProducerBonusVideoRegulation)
 }

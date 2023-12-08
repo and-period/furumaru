@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { ScheduleThumbnailsInner } from './ScheduleThumbnailsInner';
+import {
+    ScheduleThumbnailsInnerFromJSON,
+    ScheduleThumbnailsInnerFromJSONTyped,
+    ScheduleThumbnailsInnerToJSON,
+} from './ScheduleThumbnailsInner';
+
 /**
  * 
  * @export
@@ -67,6 +74,12 @@ export interface AuthUserResponse {
      * @memberof AuthUserResponse
      */
     thumbnailUrl: string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<ScheduleThumbnailsInner>}
+     * @memberof AuthUserResponse
+     */
+    thumbnails: Array<ScheduleThumbnailsInner>;
 }
 
 /**
@@ -82,6 +95,7 @@ export function instanceOfAuthUserResponse(value: object): boolean {
     isInstance = isInstance && "firstnameKana" in value;
     isInstance = isInstance && "email" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
+    isInstance = isInstance && "thumbnails" in value;
 
     return isInstance;
 }
@@ -104,6 +118,7 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'firstnameKana': json['firstnameKana'],
         'email': json['email'],
         'thumbnailUrl': json['thumbnailUrl'],
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(ScheduleThumbnailsInnerFromJSON)),
     };
 }
 
@@ -124,6 +139,7 @@ export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
         'firstnameKana': value.firstnameKana,
         'email': value.email,
         'thumbnailUrl': value.thumbnailUrl,
+        'thumbnails': ((value.thumbnails as Array<any>).map(ScheduleThumbnailsInnerToJSON)),
     };
 }
 

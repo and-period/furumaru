@@ -392,6 +392,11 @@ type VerifyUserPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type UpdateUserThumbnailsInput struct {
+	UserID     string        `validate:"required"`
+	Thumbnails common.Images `validate:""`
+}
+
 type DeleteUserInput struct {
 	UserID string `validate:"required"`
 }
