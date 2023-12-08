@@ -445,97 +445,6 @@ func TestMember_UpdateVerified(t *testing.T) {
 	}
 }
 
-func TestUser_UpdateAccount(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	type args struct {
-		userID    string
-		accountID string
-		username  string
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
-				err := db.DB.Create(&user).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&user.Member).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				userID:    "user-id",
-				accountID: "account-id",
-				username:  "username",
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name: "failed to duplicate account id",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				user := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
-				err := db.DB.Create(&user).Error
-				require.NoError(t, err)
-				user.Member.AccountID = ""
-				err = db.DB.Create(&user.Member).Error
-				require.NoError(t, err)
-
-				other := testUser("other-id", "test-other@and-period.jp", "+81111111111", now())
-				err = db.DB.Create(&other).Error
-				require.NoError(t, err)
-				other.Member.AccountID = "account-id"
-				err = db.DB.Create(&other.Member).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				userID:    "user-id",
-				accountID: "account-id",
-				username:  "username",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, memberTable, userTable)
-			require.NoError(t, err)
-			tt.setup(ctx, t, db)
-
-			db := &member{db: db, now: now}
-			err = db.UpdateAccount(ctx, tt.args.userID, tt.args.accountID, tt.args.username)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
 func TestUser_UpdateEmail(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -709,6 +618,10 @@ func testMember(id, email, phoneNumber string, now time.Time) *entity.Member {
 		AccountID:     id,
 		CognitoID:     id,
 		Username:      id,
+		Lastname:      "&.",
+		Firstname:     "利用者",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "りようしゃ",
 		ProviderType:  entity.ProviderTypeEmail,
 		Email:         email,
 		PhoneNumber:   phoneNumber,
@@ -716,6 +629,5 @@ func testMember(id, email, phoneNumber string, now time.Time) *entity.Member {
 		CreatedAt:     now,
 		UpdatedAt:     now,
 		VerifiedAt:    now,
-		InitializedAt: now,
 	}
 }

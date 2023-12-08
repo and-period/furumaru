@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, useCommonStore, useCustomerStore } from '~/store'
+import { useAddressStore, useAuthStore, useCommonStore, useCustomerStore } from '~/store'
 
 const route = useRoute()
 const router = useRouter()
 const commonStore = useCommonStore()
 const authStore = useAuthStore()
+const addressStore = useAddressStore()
 const customerStore = useCustomerStore()
 const pagination = usePagination()
 const { isShow, alertText, alertType, show } = useAlert('error')
@@ -14,6 +15,7 @@ const { isShow, alertText, alertType, show } = useAlert('error')
 const customerId = route.params.id as string
 
 const { role } = storeToRefs(authStore)
+const { address } = storeToRefs(addressStore)
 const { customer, orders, totalOrders, totalAmount } = storeToRefs(customerStore)
 
 const loading = ref<boolean>(false)
@@ -87,6 +89,7 @@ try {
     :alert-type="alertType"
     :alert-text="alertText"
     :customer="customer"
+    :address="address"
     :orders="orders"
     :order-total="totalOrders"
     :order-amount="totalAmount"

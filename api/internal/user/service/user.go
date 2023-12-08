@@ -83,11 +83,17 @@ func (s *service) CreateUser(ctx context.Context, in *user.CreateUserInput) (str
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	params := &entity.NewUserParams{
-		Registered:   true,
-		CognitoID:    cognitoID,
-		ProviderType: entity.ProviderTypeEmail,
-		Email:        in.Email,
-		PhoneNumber:  in.PhoneNumber,
+		Registered:    true,
+		CognitoID:     cognitoID,
+		Username:      in.Username,
+		AccountID:     in.AccountID,
+		Lastname:      in.Lastname,
+		Firstname:     in.Firstname,
+		LastnameKana:  in.LastnameKana,
+		FirstnameKana: in.FirstnameKana,
+		ProviderType:  entity.ProviderTypeEmail,
+		Email:         in.Email,
+		PhoneNumber:   in.PhoneNumber,
 	}
 	u := entity.NewUser(params)
 	auth := func(ctx context.Context) error {
@@ -136,11 +142,17 @@ func (s *service) CreateUserWithOAuth(
 		return nil, internalError(err)
 	}
 	params := &entity.NewUserParams{
-		Registered:   true,
-		CognitoID:    cuser.Username,
-		ProviderType: entity.ProviderTypeOAuth,
-		Email:        cuser.Email,
-		PhoneNumber:  cuser.PhoneNumber,
+		Registered:    true,
+		CognitoID:     cuser.Username,
+		Username:      in.Username,
+		AccountID:     in.AccountID,
+		Lastname:      in.Lastname,
+		Firstname:     in.Firstname,
+		LastnameKana:  in.LastnameKana,
+		FirstnameKana: in.FirstnameKana,
+		ProviderType:  entity.ProviderTypeOAuth,
+		Email:         cuser.Email,
+		PhoneNumber:   in.PhoneNumber,
 	}
 	u := entity.NewUser(params)
 	auth := func(ctx context.Context) error {
@@ -150,21 +162,6 @@ func (s *service) CreateUserWithOAuth(
 		return nil, internalError(err)
 	}
 	return u, nil
-}
-
-func (s *service) InitializeUser(ctx context.Context, in *user.InitializeUserInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	m, err := s.db.Member.Get(ctx, in.UserID, "account_id")
-	if err != nil {
-		return internalError(err)
-	}
-	if m.AccountID != "" {
-		return fmt.Errorf("%w: %s", exception.ErrFailedPrecondition, "api: already initialized")
-	}
-	err = s.db.Member.UpdateAccount(ctx, in.UserID, in.AccountID, in.Username)
-	return internalError(err)
 }
 
 func (s *service) UpdateUserEmail(ctx context.Context, in *user.UpdateUserEmailInput) error {

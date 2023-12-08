@@ -5,6 +5,17 @@ user:
     id:
       type: string
       description: 購入者ID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/userStatus'
+    registered:
+      type: boolean
+      description: 会員登録フラグ
+    username:
+      type: string
+      description: ユーザー名 (表示名)
+    accountId:
+      type: string
+      description: ユーザー名 (検索用)
     lastname:
       type: string
       description: 姓
@@ -17,31 +28,12 @@ user:
     firstnameKana:
       type: string
       description: 名(かな)
-    registered:
-      type: boolean
-      description: 会員登録フラグ
-    status:
-      $ref: './../../../openapi.yaml#/components/schemas/userStatus'
     email:
       type: string
       description: メールアドレス
     phoneNumber:
       type: string
       description: 電話番号 (国際番号 + 電話番号)
-    postalCode:
-      type: string
-      description: 郵便番号
-    prefectureCode:
-      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
-    city:
-      type: string
-      description: 市区町村
-    addressLine1:
-      type: string
-      description: 町名・番地
-    addressLine2:
-      type: string
-      description: ビル名・号室など
     createdAt:
       type: integer
       format: int64
@@ -52,36 +44,30 @@ user:
       description: 更新日時 (unixtime)
   required:
   - id
+  - status
+  - registered
+  - username
+  - accountId
   - lastname
   - firstname
   - lastnameKana
   - firstnameKana
-  - registered
-  - status
   - email
   - phoneNumber
-  - postalCode
-  - prefectureCode
-  - city
-  - addressLine1
-  - addressLine2
   - createdAt
   - updatedAt
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 3
+    registered: true
+    username: 'username'
+    accountId: 'account-id'
     lastname: '&.'
     firstname: '購入者'
     lastnameKana: 'あんどどっと'
     firstnameKana: 'こうにゅうしゃ'
-    registered: true
-    status: 4
     email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
-    postalCode: '1000014'
-    prefectureCode: 13
-    city: '千代田区'
-    addressLine1: '永田町1-7-1'
-    addressLine2: ''
     createdAt: 1640962800
     updatedAt: 1640962800
 userToList:

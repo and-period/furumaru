@@ -4,6 +4,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 // UserStatus - 購入者の状態
@@ -13,12 +14,12 @@ const (
 	UserStatusUnknown     UserStatus = 0
 	UserStatusGuest       UserStatus = 1 // 未登録
 	UserStatusProvisional UserStatus = 2 // 仮登録
-	UserStatusVerified    UserStatus = 3 // 認証済み(初期設定前)
-	UserStatusActivated   UserStatus = 4 // 認証済み(初期設定後)
+	UserStatusVerified    UserStatus = 3 // 認証済み
 )
 
 type User struct {
 	response.User
+	address Address
 }
 
 type Users []*User
@@ -37,8 +38,6 @@ func NewUserStatus(status uentity.UserStatus) UserStatus {
 		return UserStatusProvisional
 	case uentity.UserStatusVerified:
 		return UserStatusVerified
-	case uentity.UserStatusActivated:
-		return UserStatusActivated
 	default:
 		return UserStatusUnknown
 	}
@@ -52,16 +51,51 @@ func NewUser(user *uentity.User, address *uentity.Address) *User {
 	if address == nil {
 		address = &uentity.Address{}
 	}
+	if user.Registered {
+		return newMemberUser(user, address)
+	}
+	return newGuestUser(user, address)
+}
+
+func newMemberUser(user *uentity.User, address *uentity.Address) *User {
 	return &User{
 		User: response.User{
-			ID:         user.ID,
-			Registered: user.Registered,
-			Status:     NewUserStatus(user.Status).Response(),
-			Email:      user.Email(),
-			Address:    NewAddress(address).Response(),
-			CreatedAt:  user.CreatedAt.Unix(),
-			UpdatedAt:  user.UpdatedAt.Unix(),
+			ID:            user.ID,
+			Status:        NewUserStatus(user.Status).Response(),
+			Registered:    user.Registered,
+			Username:      user.Member.Username,
+			AccountID:     user.Member.AccountID,
+			Lastname:      user.Member.Lastname,
+			Firstname:     user.Member.Firstname,
+			LastnameKana:  user.Member.LastnameKana,
+			FirstnameKana: user.Member.FirstnameKana,
+			Email:         user.Member.Email,
+			PhoneNumber:   user.Member.PhoneNumber,
+			CreatedAt:     jst.Unix(user.CreatedAt),
+			UpdatedAt:     jst.Unix(user.UpdatedAt),
 		},
+		address: *NewAddress(address),
+	}
+}
+
+func newGuestUser(user *uentity.User, address *uentity.Address) *User {
+	return &User{
+		User: response.User{
+			ID:            user.ID,
+			Status:        NewUserStatus(user.Status).Response(),
+			Registered:    user.Registered,
+			Username:      "",
+			AccountID:     "",
+			Lastname:      address.Lastname,
+			Firstname:     address.Firstname,
+			LastnameKana:  address.LastnameKana,
+			FirstnameKana: address.FirstnameKana,
+			Email:         user.Guest.Email,
+			PhoneNumber:   address.PhoneNumber,
+			CreatedAt:     user.CreatedAt.Unix(),
+			UpdatedAt:     user.UpdatedAt.Unix(),
+		},
+		address: *NewAddress(address),
 	}
 }
 
@@ -104,8 +138,8 @@ func NewUserToList(user *User, order *sentity.AggregatedOrder) *UserToList {
 			Firstname:      user.Firstname,
 			Email:          user.Email,
 			Registered:     user.Registered,
-			PrefectureCode: user.PrefectureCode,
-			City:           user.City,
+			PrefectureCode: user.address.PrefectureCode,
+			City:           user.address.City,
 			TotalOrder:     order.OrderCount,
 			TotalAmount:    order.Subtotal,
 		},

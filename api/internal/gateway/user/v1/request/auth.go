@@ -37,12 +37,6 @@ type CreateAuthWithOAuthRequest struct {
 	PhoneNumber   string `json:"phoneNumber,omitempty"`   // 電話番号
 }
 
-// Deprecated
-type InitializeAuthRequest struct {
-	Username  string `json:"username,omitempty"`  // ユーザー名
-	AccountID string `json:"accountId,omitempty"` // ユーザーID(表示名)
-}
-
 type UpdateAuthEmailRequest struct {
 	Email string `json:"email,omitempty"` // メールアドレス
 }

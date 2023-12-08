@@ -19,19 +19,31 @@ func TestUser(t *testing.T) {
 		{
 			name: "success with member",
 			params: &NewUserParams{
-				Registered:   true,
-				CognitoID:    "cognito-id",
-				ProviderType: ProviderTypeEmail,
-				Email:        "test-user@and-period.jp",
-				PhoneNumber:  "+810000000000",
+				Registered:    true,
+				CognitoID:     "cognito-id",
+				Username:      "username",
+				AccountID:     "account-id",
+				Lastname:      "&.",
+				Firstname:     "利用者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "りようしゃ",
+				ProviderType:  ProviderTypeEmail,
+				Email:         "test-user@and-period.jp",
+				PhoneNumber:   "+810000000000",
 			},
 			expect: &User{
 				Registered: true,
 				Member: Member{
-					CognitoID:    "cognito-id",
-					ProviderType: ProviderTypeEmail,
-					Email:        "test-user@and-period.jp",
-					PhoneNumber:  "+810000000000",
+					CognitoID:     "cognito-id",
+					Username:      "username",
+					AccountID:     "account-id",
+					Lastname:      "&.",
+					Firstname:     "利用者",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "りようしゃ",
+					ProviderType:  ProviderTypeEmail,
+					Email:         "test-user@and-period.jp",
+					PhoneNumber:   "+810000000000",
 				},
 			},
 		},
@@ -242,8 +254,7 @@ func TestUser_SetStatus(t *testing.T) {
 			name: "provisional",
 			user: &User{
 				Member: Member{
-					VerifiedAt:    time.Time{},
-					InitializedAt: time.Time{},
+					VerifiedAt: time.Time{},
 				},
 				Registered: true,
 			},
@@ -253,36 +264,16 @@ func TestUser_SetStatus(t *testing.T) {
 			},
 		},
 		{
-			name: "activated",
-			user: &User{
-				Member: Member{
-					VerifiedAt:    now,
-					InitializedAt: now,
-				},
-				Registered: true,
-			},
-			expect: &User{
-				Member: Member{
-					VerifiedAt:    now,
-					InitializedAt: now,
-				},
-				Registered: true,
-				Status:     UserStatusActivated,
-			},
-		},
-		{
 			name: "verified",
 			user: &User{
 				Member: Member{
-					VerifiedAt:    now,
-					InitializedAt: time.Time{},
+					VerifiedAt: now,
 				},
 				Registered: true,
 			},
 			expect: &User{
 				Member: Member{
-					VerifiedAt:    now,
-					InitializedAt: time.Time{},
+					VerifiedAt: now,
 				},
 				Registered: true,
 				Status:     UserStatusVerified,

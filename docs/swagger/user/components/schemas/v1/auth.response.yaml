@@ -59,6 +59,7 @@ authUserResponse:
   required:
   - id
   - username
+  - accountId
   - lastname
   - firstname
   - lastnameKana
@@ -68,6 +69,7 @@ authUserResponse:
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     username: '&.購入者'
+    accountId: 'account-id'
     lastname: '&.'
     firstname: '利用者'
     lastnameKana: 'あんどどっと'

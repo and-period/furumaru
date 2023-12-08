@@ -312,6 +312,8 @@ components:
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity
+    address:
+      $ref: './components/schemas/entity/address.yaml#/address'
     admin:
       $ref: './components/schemas/entity/admin.yaml#/admin'
     administrator:
