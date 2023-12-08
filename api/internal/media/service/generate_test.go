@@ -583,6 +583,77 @@ func TestGenerateProducerBonusVideo(t *testing.T) {
 	}
 }
 
+func TestGenerateUserThumbnail(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     func() *media.GenerateFileInput
+		expect    string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
+						assert.True(t, strings.HasPrefix(path, entity.ProducerThumbnailPath), path)
+						u, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
+						require.NoError(t, err)
+						return u.String(), nil
+					})
+			},
+			input: func() *media.GenerateFileInput {
+				file, header := testImageFile(t)
+				return &media.GenerateFileInput{File: file, Header: header}
+			},
+			expect:    strings.Join([]string{tmpURL, entity.UserThumbnailPath}, "/"),
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: func() *media.GenerateFileInput {
+				return &media.GenerateFileInput{}
+			},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "invalid file regulation",
+			setup: func(ctx context.Context, mocks *mocks) {
+			},
+			input: func() *media.GenerateFileInput {
+				file, header := testImageFile(t)
+				header.Size = 10<<20 + 1
+				return &media.GenerateFileInput{File: file, Header: header}
+			},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to upload",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("", assert.AnError)
+			},
+			input: func() *media.GenerateFileInput {
+				file, header := testImageFile(t)
+				return &media.GenerateFileInput{File: file, Header: header}
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GenerateUserThumbnail(ctx, tt.input())
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Contains(t, actual, tt.expect)
+		}))
+	}
+}
+
 func TestGenerateProductMediaImage(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

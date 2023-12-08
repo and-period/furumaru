@@ -317,6 +317,21 @@ func (mr *MockServiceMockRecorder) GenerateScheduleThumbnail(ctx, in interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateScheduleThumbnail", reflect.TypeOf((*MockService)(nil).GenerateScheduleThumbnail), ctx, in)
 }
 
+// GenerateUserThumbnail mocks base method.
+func (m *MockService) GenerateUserThumbnail(ctx context.Context, in *media.GenerateFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateUserThumbnail", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateUserThumbnail indicates an expected call of GenerateUserThumbnail.
+func (mr *MockServiceMockRecorder) GenerateUserThumbnail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateUserThumbnail", reflect.TypeOf((*MockService)(nil).GenerateUserThumbnail), ctx, in)
+}
+
 // GetBroadcastByScheduleID mocks base method.
 func (m *MockService) GetBroadcastByScheduleID(ctx context.Context, in *media.GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) {
 	m.ctrl.T.Helper()
@@ -458,6 +473,20 @@ func (m *MockService) ResizeScheduleThumbnail(ctx context.Context, in *media.Res
 func (mr *MockServiceMockRecorder) ResizeScheduleThumbnail(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeScheduleThumbnail", reflect.TypeOf((*MockService)(nil).ResizeScheduleThumbnail), ctx, in)
+}
+
+// ResizeUserThumbnail mocks base method.
+func (m *MockService) ResizeUserThumbnail(ctx context.Context, in *media.ResizeFileInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResizeUserThumbnail", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ResizeUserThumbnail indicates an expected call of ResizeUserThumbnail.
+func (mr *MockServiceMockRecorder) ResizeUserThumbnail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeUserThumbnail", reflect.TypeOf((*MockService)(nil).ResizeUserThumbnail), ctx, in)
 }
 
 // UnpauseBroadcast mocks base method.
@@ -681,4 +710,19 @@ func (m *MockService) UploadScheduleThumbnail(ctx context.Context, in *media.Upl
 func (mr *MockServiceMockRecorder) UploadScheduleThumbnail(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadScheduleThumbnail", reflect.TypeOf((*MockService)(nil).UploadScheduleThumbnail), ctx, in)
+}
+
+// UploadUserThumbnail mocks base method.
+func (m *MockService) UploadUserThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UploadUserThumbnail", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UploadUserThumbnail indicates an expected call of UploadUserThumbnail.
+func (mr *MockServiceMockRecorder) UploadUserThumbnail(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadUserThumbnail", reflect.TypeOf((*MockService)(nil).UploadUserThumbnail), ctx, in)
 }

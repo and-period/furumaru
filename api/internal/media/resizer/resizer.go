@@ -148,6 +148,8 @@ func (r *resizer) run(ctx context.Context, payload *entity.ResizerPayload) error
 		return r.producerThumbnail(ctx, payload)
 	case entity.FileTypeProducerHeader:
 		return r.producerHeader(ctx, payload)
+	case entity.FileTypeUserThumbnail:
+		return r.userThumbnail(ctx, payload)
 	case entity.FileTypeProductMedia:
 		return r.productMedia(ctx, payload)
 	case entity.FileTypeProductTypeIcon:

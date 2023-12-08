@@ -43,6 +43,10 @@ func (s *service) UploadProducerBonusVideo(ctx context.Context, in *media.Upload
 	return s.uploadFile(ctx, in, entity.ProducerBonusVideoPath)
 }
 
+func (s *service) UploadUserThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
+	return s.uploadFile(ctx, in, entity.UserThumbnailPath)
+}
+
 func (s *service) UploadProductMedia(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProductMediaPath)
 }
