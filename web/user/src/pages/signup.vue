@@ -31,6 +31,12 @@ const t = (str: keyof I18n['auth']['signUp']) => {
 }
 
 const formData = reactive<CreateAuthRequest>({
+  username: '',
+  accountId: '',
+  lastname: '',
+  firstname: '',
+  lastnameKana: '',
+  firstnameKana: '',
   email: '',
   phoneNumber: '',
   password: '',
@@ -67,12 +73,14 @@ const handleSubmit = async () => {
       return
     }
 
-    const { id } = await signUp({
+    const result = await signUp({
       ...formData,
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber),
     })
 
-    let query = `?id=${id}`
+    console.log(result)
+
+    let query = `?id=${result.id}`
 
     if (redirectToPurchase.value) {
       query = `${query}&redirect_to_purchase=true`
