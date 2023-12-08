@@ -49,6 +49,14 @@ func (s *service) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entit
 	return order, internalError(err)
 }
 
+func (s *service) GetOrderByTransactionID(ctx context.Context, in *store.GetOrderByTransactionIDInput) (*entity.Order, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	order, err := s.db.Order.GetByTransactionID(ctx, in.UserID, in.TransactionID)
+	return order, internalError(err)
+}
+
 func (s *service) CaptureOrder(ctx context.Context, in *store.CaptureOrderInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)

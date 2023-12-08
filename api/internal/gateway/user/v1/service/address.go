@@ -7,6 +7,7 @@ import (
 
 type Address struct {
 	response.Address
+	revisionID int64
 }
 
 type Addresses []*Address
@@ -28,6 +29,7 @@ func NewAddress(address *entity.Address) *Address {
 			AddressLine2:   address.AddressLine2,
 			PhoneNumber:    address.PhoneNumber,
 		},
+		revisionID: address.AddressRevision.ID,
 	}
 }
 
@@ -39,6 +41,14 @@ func NewAddresses(addresses entity.Addresses) Addresses {
 	res := make(Addresses, len(addresses))
 	for i := range addresses {
 		res[i] = NewAddress(addresses[i])
+	}
+	return res
+}
+
+func (as Addresses) MapByRevision() map[int64]*Address {
+	res := make(map[int64]*Address, len(as))
+	for _, a := range as {
+		res[a.revisionID] = a
 	}
 	return res
 }

@@ -505,6 +505,21 @@ func (mr *MockServiceMockRecorder) GetOrder(ctx, in interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrder", reflect.TypeOf((*MockService)(nil).GetOrder), ctx, in)
 }
 
+// GetOrderByTransactionID mocks base method.
+func (m *MockService) GetOrderByTransactionID(ctx context.Context, in *store.GetOrderByTransactionIDInput) (*entity.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOrderByTransactionID", ctx, in)
+	ret0, _ := ret[0].(*entity.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOrderByTransactionID indicates an expected call of GetOrderByTransactionID.
+func (mr *MockServiceMockRecorder) GetOrderByTransactionID(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrderByTransactionID", reflect.TypeOf((*MockService)(nil).GetOrderByTransactionID), ctx, in)
+}
+
 // GetPaymentSystem mocks base method.
 func (m *MockService) GetPaymentSystem(ctx context.Context, in *store.GetPaymentSystemInput) (*entity.PaymentSystem, error) {
 	m.ctrl.T.Helper()

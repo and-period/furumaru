@@ -1,0 +1,17 @@
+orderRefundType:
+  type: integer
+  format: int32
+  description: 注文キャンセル理由
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  x-enum-varnames:
+  - NONE
+  - CANCELED
+  - REFUNDED
+  x-enum-descriptions:
+  - 未キャンセル
+  - キャンセル済み
+  - 返金済み

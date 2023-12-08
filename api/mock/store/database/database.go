@@ -389,6 +389,21 @@ func (mr *MockOrderMockRecorder) Get(ctx, orderID interface{}, fields ...interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockOrder)(nil).Get), varargs...)
 }
 
+// GetByTransactionID mocks base method.
+func (m *MockOrder) GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByTransactionID", ctx, userID, transactionID)
+	ret0, _ := ret[0].(*entity.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByTransactionID indicates an expected call of GetByTransactionID.
+func (mr *MockOrderMockRecorder) GetByTransactionID(ctx, userID, transactionID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByTransactionID", reflect.TypeOf((*MockOrder)(nil).GetByTransactionID), ctx, userID, transactionID)
+}
+
 // List mocks base method.
 func (m *MockOrder) List(ctx context.Context, params *database.ListOrdersParams, fields ...string) (entity.Orders, error) {
 	m.ctrl.T.Helper()

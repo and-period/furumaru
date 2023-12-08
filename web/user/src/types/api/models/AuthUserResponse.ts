@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { ScheduleThumbnailsInner } from './ScheduleThumbnailsInner';
+import type { CoordinatorThumbnailsInner } from './CoordinatorThumbnailsInner';
 import {
-    ScheduleThumbnailsInnerFromJSON,
-    ScheduleThumbnailsInnerFromJSONTyped,
-    ScheduleThumbnailsInnerToJSON,
-} from './ScheduleThumbnailsInner';
+    CoordinatorThumbnailsInnerFromJSON,
+    CoordinatorThumbnailsInnerFromJSONTyped,
+    CoordinatorThumbnailsInnerToJSON,
+} from './CoordinatorThumbnailsInner';
 
 /**
  * 
@@ -76,10 +76,10 @@ export interface AuthUserResponse {
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<ScheduleThumbnailsInner>}
+     * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof AuthUserResponse
      */
-    thumbnails: Array<ScheduleThumbnailsInner>;
+    thumbnails: Array<CoordinatorThumbnailsInner>;
 }
 
 /**
@@ -118,7 +118,7 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'firstnameKana': json['firstnameKana'],
         'email': json['email'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ScheduleThumbnailsInnerFromJSON)),
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
     };
 }
 
@@ -139,7 +139,7 @@ export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
         'firstnameKana': value.firstnameKana,
         'email': value.email,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ScheduleThumbnailsInnerToJSON)),
+        'thumbnails': ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
     };
 }
 

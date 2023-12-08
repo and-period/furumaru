@@ -1,124 +1,78 @@
 package service
 
-import "github.com/and-period/furumaru/api/internal/store/entity"
-
-// ShippingSize - 配送時の箱の大きさ
-type ShippingSize int32
-
-const (
-	ShippingSizeUnknown ShippingSize = 0
-	ShippingSize60      ShippingSize = 1 // 箱のサイズ:60
-	ShippingSize80      ShippingSize = 2 // 箱のサイズ:80
-	ShippingSize100     ShippingSize = 3 // 箱のサイズ:100
+import (
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
+	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
-// ShippingType - 配送方法
-type ShippingType int32
+// OrderStatus - 注文ステータス
+type OrderStatus int32
 
 const (
-	ShippingTypeUnknown ShippingType = 0
-	ShippingTypeNormal  ShippingType = 1 // 常温・冷蔵便
-	ShippingTypeFrozen  ShippingType = 2 // 冷凍便
+	OrderStatusUnknown   OrderStatus = 0
+	OrderStatusUnpaid    OrderStatus = 1 // 支払い待ち
+	OrderStatusPreparing OrderStatus = 2 // 発送対応中
+	OrderStatusCompleted OrderStatus = 3 // 完了
+	OrderStatusCanceled  OrderStatus = 4 // キャンセル
+	OrderStatusRefunded  OrderStatus = 5 // 返金
+	OrderStatusFailed    OrderStatus = 6 // 失敗
 )
 
-// PaymentMethodType - 決済手段
-type PaymentMethodType int32
+type Order struct {
+	response.Order
+}
 
-const (
-	PaymentMethodTypeUnknown     PaymentMethodType = 0
-	PaymentMethodTypeCash        PaymentMethodType = 1 // 代引支払い
-	PaymentMethodTypeCreditCard  PaymentMethodType = 2 // クレジットカード決済
-	PaymentMethodTypeKonbini     PaymentMethodType = 3 // コンビニ決済
-	PaymentMethodTypeBankTranser PaymentMethodType = 4 // 銀行振込決済
-	PaymentMethodTypePayPay      PaymentMethodType = 5 // QR決済（PayPay）
-	PaymentMethodTypeLinePay     PaymentMethodType = 6 // QR決済（LINE Pay）
-	PaymentMethodTypeMerpay      PaymentMethodType = 7 // QR決済（メルペイ）
-	PaymentMethodTypeRakutenPay  PaymentMethodType = 8 // QR決済（楽天ペイ）
-	PaymentMethodTypeAUPay       PaymentMethodType = 9 // QR決済（au PAY）
-)
+type Orders []*Order
 
-func NewShippingSize(size entity.ShippingSize) ShippingSize {
-	switch size {
-	case entity.ShippingSize60:
-		return ShippingSize60
-	case entity.ShippingSize80:
-		return ShippingSize80
-	case entity.ShippingSize100:
-		return ShippingSize100
+func NewOrderStatus(order *entity.Order) OrderStatus {
+	if order == nil {
+		return OrderStatusUnknown
+	}
+	switch order.OrderPayment.Status {
+	case entity.PaymentStatusPending:
+		return OrderStatusUnpaid
+	case entity.PaymentStatusAuthorized, entity.PaymentStatusCaptured:
+		if order.CompletedAt.IsZero() {
+			return OrderStatusPreparing
+		}
+		return OrderStatusCompleted
+	case entity.PaymentStatusCanceled:
+		return OrderStatusCanceled
+	case entity.PaymentStatusRefunded:
+		return OrderStatusRefunded
+	case entity.PaymentStatusFailed:
+		return OrderStatusFailed
 	default:
-		return ShippingSizeUnknown
+		return OrderStatusUnknown
 	}
 }
 
-func (s ShippingSize) Response() int32 {
+func (s OrderStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewShippingType(typ entity.ShippingType) ShippingType {
-	switch typ {
-	case entity.ShippingTypeNormal:
-		return ShippingTypeNormal
-	case entity.ShippingTypeFrozen:
-		return ShippingTypeFrozen
-	default:
-		return ShippingTypeUnknown
+func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product) *Order {
+	return &Order{
+		Order: response.Order{
+			ID:            order.ID,
+			CoordinatorID: order.CoordinatorID,
+			PromotionID:   order.PromotionID,
+			Status:        NewOrderStatus(order).Response(),
+			Payment:       NewOrderPayment(&order.OrderPayment, addresses[order.OrderPayment.AddressRevisionID]).Response(),
+			Refund:        NewOrderRefund(&order.OrderPayment).Response(),
+			Fulfillments:  NewOrderFulfillments(order.OrderFulfillments, addresses).Response(),
+			Items:         NewOrderItems(order.OrderItems, products).Response(),
+		},
 	}
 }
 
-func (t ShippingType) Response() int32 {
-	return int32(t)
+func (o *Order) ProductIDs() []string {
+	return set.UniqBy(o.Items, func(i *response.OrderItem) string {
+		return i.ProductID
+	})
 }
 
-func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
-	switch typ {
-	case entity.PaymentMethodTypeCash:
-		return PaymentMethodTypeCash
-	case entity.PaymentMethodTypeCreditCard:
-		return PaymentMethodTypeCreditCard
-	case entity.PaymentMethodTypeKonbini:
-		return PaymentMethodTypeKonbini
-	case entity.PaymentMethodTypeBankTranser:
-		return PaymentMethodTypeBankTranser
-	case entity.PaymentMethodTypePayPay:
-		return PaymentMethodTypePayPay
-	case entity.PaymentMethodTypeLinePay:
-		return PaymentMethodTypeLinePay
-	case entity.PaymentMethodTypeMerpay:
-		return PaymentMethodTypeMerpay
-	case entity.PaymentMethodTypeRakutenPay:
-		return PaymentMethodTypeRakutenPay
-	case entity.PaymentMethodTypeAUPay:
-		return PaymentMethodTypeAUPay
-	default:
-		return PaymentMethodTypeUnknown
-	}
-}
-
-func (t PaymentMethodType) StoreEntity() entity.PaymentMethodType {
-	switch t {
-	case PaymentMethodTypeCash:
-		return entity.PaymentMethodTypeCash
-	case PaymentMethodTypeCreditCard:
-		return entity.PaymentMethodTypeCreditCard
-	case PaymentMethodTypeKonbini:
-		return entity.PaymentMethodTypeKonbini
-	case PaymentMethodTypeBankTranser:
-		return entity.PaymentMethodTypeBankTranser
-	case PaymentMethodTypePayPay:
-		return entity.PaymentMethodTypePayPay
-	case PaymentMethodTypeLinePay:
-		return entity.PaymentMethodTypeLinePay
-	case PaymentMethodTypeMerpay:
-		return entity.PaymentMethodTypeMerpay
-	case PaymentMethodTypeRakutenPay:
-		return entity.PaymentMethodTypeRakutenPay
-	case PaymentMethodTypeAUPay:
-		return entity.PaymentMethodTypeAUPay
-	default:
-		return entity.PaymentMethodTypeUnknown
-	}
-}
-
-func (t PaymentMethodType) Response() int32 {
-	return int32(t)
+func (o *Order) Response() *response.Order {
+	return &o.Order
 }

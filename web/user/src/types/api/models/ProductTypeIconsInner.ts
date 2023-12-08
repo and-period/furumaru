@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { ImageSize } from './ImageSize';
+import {
+    ImageSizeFromJSON,
+    ImageSizeFromJSONTyped,
+    ImageSizeToJSON,
+} from './ImageSize';
+
 /**
  * 
  * @export
@@ -27,10 +34,10 @@ export interface ProductTypeIconsInner {
     url: string;
     /**
      * 
-     * @type {object}
+     * @type {ImageSize}
      * @memberof ProductTypeIconsInner
      */
-    size: object;
+    size: ImageSize;
 }
 
 /**
@@ -55,7 +62,7 @@ export function ProductTypeIconsInnerFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'url': json['url'],
-        'size': json['size'],
+        'size': ImageSizeFromJSON(json['size']),
     };
 }
 
@@ -69,7 +76,7 @@ export function ProductTypeIconsInnerToJSON(value?: ProductTypeIconsInner | null
     return {
         
         'url': value.url,
-        'size': value.size,
+        'size': ImageSizeToJSON(value.size),
     };
 }
 
