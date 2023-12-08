@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -75,6 +76,13 @@ func NewUser(params *NewUserParams) *User {
 		Member:     member,
 		Guest:      guest,
 	}
+}
+
+func (u *User) Name() string {
+	if !u.Registered {
+		return "ゲスト"
+	}
+	return strings.TrimSpace(strings.Join([]string{u.Lastname, u.Firstname}, " "))
 }
 
 func (u *User) Email() string {
