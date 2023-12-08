@@ -99,6 +99,13 @@ func newGuestUser(user *uentity.User, address *uentity.Address) *User {
 	}
 }
 
+func (u *User) Address() *Address {
+	if u == nil || u.address.AddressID == "" {
+		return nil
+	}
+	return &u.address
+}
+
 func (u *User) Response() *response.User {
 	return &u.User
 }

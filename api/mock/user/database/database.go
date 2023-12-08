@@ -843,6 +843,20 @@ func (mr *MockMemberMockRecorder) UpdateEmail(ctx, userID, email interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEmail", reflect.TypeOf((*MockMember)(nil).UpdateEmail), ctx, userID, email)
 }
 
+// UpdateThumbnails mocks base method.
+func (m *MockMember) UpdateThumbnails(ctx context.Context, userID string, thumbnails common.Images) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateThumbnails", ctx, userID, thumbnails)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateThumbnails indicates an expected call of UpdateThumbnails.
+func (mr *MockMemberMockRecorder) UpdateThumbnails(ctx, userID, thumbnails interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThumbnails", reflect.TypeOf((*MockMember)(nil).UpdateThumbnails), ctx, userID, thumbnails)
+}
+
 // UpdateVerified mocks base method.
 func (m *MockMember) UpdateVerified(ctx context.Context, userID string) error {
 	m.ctrl.T.Helper()

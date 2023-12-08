@@ -75,6 +75,7 @@ type Service interface {
 	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordInput) error                   // パスワード更新
 	ForgotUserPassword(ctx context.Context, in *ForgotUserPasswordInput) error                   // パスワードリセット (メール送信)
 	VerifyUserPassword(ctx context.Context, in *VerifyUserPasswordInput) error                   // パスワードリセット (パスワード更新)
+	UpdateUserThumbnails(ctx context.Context, in *UpdateUserThumbnailsInput) error               // サムネイル(リサイズ済み)更新
 	DeleteUser(ctx context.Context, in *DeleteUserInput) error                                   // 退会
 	// アドレス帳
 	ListAddresses(ctx context.Context, in *ListAddressesInput) (entity.Addresses, int64, error)                      // 一覧取得

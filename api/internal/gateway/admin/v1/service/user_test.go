@@ -219,6 +219,78 @@ func TestUser(t *testing.T) {
 	}
 }
 
+func TestUser_Address(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		user   *User
+		expect *Address
+	}{
+		{
+			name: "success",
+			user: &User{
+				User: response.User{
+					ID:            "user-id",
+					Status:        int32(UserStatusVerified),
+					Registered:    true,
+					Username:      "username",
+					AccountID:     "account-id",
+					Lastname:      "&.",
+					Firstname:     "購入者",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "こうにゅうしゃ",
+					Email:         "test-user@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					CreatedAt:     1640962800,
+					UpdatedAt:     1640962800,
+				},
+				address: Address{
+					Address: response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						LastnameKana:   "あんどどっと",
+						FirstnameKana:  "こうにゅうしゃ",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+					revisionID: 1,
+				},
+			},
+			expect: &Address{
+				Address: response.Address{
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
+					PostalCode:     "1000014",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "+819012345678",
+				},
+				revisionID: 1,
+			},
+		},
+		{
+			name:   "empty",
+			user:   &User{},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.user.Address())
+		})
+	}
+}
+
 func TestUser_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

@@ -1000,6 +1000,20 @@ func (mr *MockServiceMockRecorder) UpdateUserPassword(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockService)(nil).UpdateUserPassword), ctx, in)
 }
 
+// UpdateUserThumbnails mocks base method.
+func (m *MockService) UpdateUserThumbnails(ctx context.Context, in *user.UpdateUserThumbnailsInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateUserThumbnails", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateUserThumbnails indicates an expected call of UpdateUserThumbnails.
+func (mr *MockServiceMockRecorder) UpdateUserThumbnails(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserThumbnails", reflect.TypeOf((*MockService)(nil).UpdateUserThumbnails), ctx, in)
+}
+
 // VerifyAdminEmail mocks base method.
 func (m *MockService) VerifyAdminEmail(ctx context.Context, in *user.VerifyAdminEmailInput) error {
 	m.ctrl.T.Helper()
