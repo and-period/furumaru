@@ -204,9 +204,15 @@ func TestWorker_Run(t *testing.T) {
 		UserIDs: []string{"user-id"},
 	}
 	users := uentity.Users{{
+		ID:         "user-id",
+		Registered: true,
 		Member: uentity.Member{
-			Username: "username",
-			Email:    "test-user@and-period.jp",
+			Username:      "username",
+			Lastname:      "username",
+			Firstname:     "",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "りようしゃ",
+			Email:         "test-user@and-period.jp",
 		},
 	}}
 	devicesIn := &user.MultiGetAdminDevicesInput{
