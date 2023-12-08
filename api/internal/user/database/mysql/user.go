@@ -144,10 +144,15 @@ func (u *user) fill(ctx context.Context, tx *gorm.DB, users ...*entity.User) err
 func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Members, error) {
 	var members entity.Members
 
-	err := u.db.Statement(ctx, tx, memberTable).
-		Where("user_id IN (?)", userIDs).
-		Find(&members).Error
-	return members, err
+	stmt := u.db.Statement(ctx, tx, memberTable).Where("user_id IN (?)", userIDs)
+
+	if err := stmt.Find(&members).Error; err != nil {
+		return nil, err
+	}
+	if err := members.Fill(); err != nil {
+		return nil, err
+	}
+	return members, nil
 }
 
 func (u *user) fetchGuests(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Guests, error) {
