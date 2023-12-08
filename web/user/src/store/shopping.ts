@@ -5,7 +5,7 @@ import type {
   CalcCartResponse,
   CartResponse,
 } from '~/types/api'
-import type { ProductItem, ShoppingCart } from '~/types/store'
+import type { CalcCart, ProductItem, ShoppingCart } from '~/types/store'
 
 /**
  * 買い物かごを管理するグローバルステート
@@ -16,7 +16,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       cartItems: [],
       recommendProducts: [] as ProductItem[],
 
-      calcCartResponseItem: undefined as CalcCartResponse | undefined,
+      _calcCartResponseItem: undefined as CalcCartResponse | undefined,
 
       _shoppingCart: {
         carts: [],
@@ -110,6 +110,34 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       }
     },
 
+    calcCartResponseItem: (state): CalcCart | undefined => {
+      if (state._calcCartResponseItem) {
+        // 商品情報をマッピング
+        const products: ProductItem[] =
+          state._calcCartResponseItem.products.map((product) => {
+            return {
+              ...product,
+              thumbnail: product.media.find((m) => m.isThumbnail),
+            }
+          })
+
+        return {
+          ...state._calcCartResponseItem,
+          // 買い物カゴの中身の商品をマッピング
+          items: state._calcCartResponseItem.items.map((item) => {
+            return {
+              ...item,
+              product: products.find(
+                (product) => product.id === item.productId,
+              ),
+            }
+          }),
+        }
+      } else {
+        return undefined
+      }
+    },
+
     cartIsEmpty: (state) => {
       return state._shoppingCart.carts.length === 0
     },
@@ -156,7 +184,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         const res = await this.cartApiClient(authStore.accessToken).v1CalcCart({
           coordinatorId,
         })
-        this.calcCartResponseItem = res
+        this._calcCartResponseItem = res
       } catch (error) {
         return this.errorHandler(error)
       }
