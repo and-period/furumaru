@@ -79,6 +79,67 @@ func TestUser(t *testing.T) {
 	}
 }
 
+func TestUser_Name(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		user   *User
+		expect string
+	}{
+		{
+			name: "success member",
+			user: &User{
+				ID:         "user-id",
+				Registered: true,
+				Member: Member{
+					UserID:        "user-id",
+					AccountID:     "account-id",
+					CognitoID:     "cognito-id",
+					Username:      "username",
+					Lastname:      "&.",
+					Firstname:     "利用者",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "りようしゃ",
+					ProviderType:  ProviderTypeEmail,
+					Email:         "test-user@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					VerifiedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: "&. 利用者",
+		},
+		{
+			name: "success guest",
+			user: &User{
+				ID:         "user-id",
+				Registered: false,
+				Guest: Guest{
+					UserID:      "user-id",
+					Email:       "test-user@and-period.jp",
+					PhoneNumber: "+819012345678",
+					CreatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:   jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			expect: "ゲスト",
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.user.Name())
+		})
+	}
+}
+
 func TestUser_Email(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

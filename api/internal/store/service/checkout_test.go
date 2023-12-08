@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -739,6 +740,9 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 		PaymentID: "payment-id",
 		IssuedAt:  now,
 	}
+	in := &messenger.NotifyOrderAuthorizedInput{
+		OrderID: "order-id",
+	}
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, mocks *mocks)
@@ -746,14 +750,33 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 		expect error
 	}{
 		{
-			name: "success",
+			name: "success authorized",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(nil)
+				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(nil)
 			},
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
 				PaymentID: "payment-id",
 				Status:    entity.PaymentStatusAuthorized,
+				IssuedAt:  now,
+			},
+			expect: nil,
+		},
+		{
+			name: "success canceled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				params := &database.UpdateOrderPaymentParams{
+					Status:    entity.PaymentStatusCanceled,
+					PaymentID: "payment-id",
+					IssuedAt:  now,
+				}
+				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(nil)
+			},
+			input: &store.NotifyPaymentCompletedInput{
+				OrderID:   "order-id",
+				PaymentID: "payment-id",
+				Status:    entity.PaymentStatusCanceled,
 				IssuedAt:  now,
 			},
 			expect: nil,
@@ -789,6 +812,20 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 				IssuedAt:  now,
 			},
 			expect: nil,
+		},
+		{
+			name: "failed to notify order authorized",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(nil)
+				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(assert.AnError)
+			},
+			input: &store.NotifyPaymentCompletedInput{
+				OrderID:   "order-id",
+				PaymentID: "payment-id",
+				Status:    entity.PaymentStatusAuthorized,
+				IssuedAt:  now,
+			},
+			expect: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
