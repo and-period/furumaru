@@ -246,6 +246,7 @@ func TestUser_Address(t *testing.T) {
 				},
 				address: Address{
 					Address: response.Address{
+						AddressID:      "address-id",
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -262,6 +263,7 @@ func TestUser_Address(t *testing.T) {
 			},
 			expect: &Address{
 				Address: response.Address{
+					AddressID:      "address-id",
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					LastnameKana:   "あんどどっと",
