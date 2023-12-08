@@ -597,7 +597,7 @@ func TestGenerateUserThumbnail(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
 					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
-						assert.True(t, strings.HasPrefix(path, entity.ProducerThumbnailPath), path)
+						assert.True(t, strings.HasPrefix(path, entity.UserThumbnailPath), path)
 						u, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
 						require.NoError(t, err)
 						return u.String(), nil

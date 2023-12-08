@@ -101,7 +101,7 @@ var (
 	UserThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
-		dir:     ProducerHeaderPath,
+		dir:     UserThumbnailPath,
 	}
 	ProductMediaImageRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
