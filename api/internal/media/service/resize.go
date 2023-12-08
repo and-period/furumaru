@@ -24,6 +24,10 @@ func (s *service) ResizeProducerHeader(ctx context.Context, in *media.ResizeFile
 	return s.sendResizeMessage(ctx, in, entity.FileTypeProducerHeader)
 }
 
+func (s *service) ResizeUserThumbnail(ctx context.Context, in *media.ResizeFileInput) error {
+	return s.sendResizeMessage(ctx, in, entity.FileTypeUserThumbnail)
+}
+
 func (s *service) ResizeProductMedia(ctx context.Context, in *media.ResizeFileInput) error {
 	return s.sendResizeMessage(ctx, in, entity.FileTypeProductMedia)
 }

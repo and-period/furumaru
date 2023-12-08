@@ -42,6 +42,10 @@ type Service interface {
 	UploadProducerPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)     // 紹介映像アップロード
 	GenerateProducerBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)     // 購入特典映像を生成
 	UploadProducerBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)         // 購入特典映像アップロード
+	// 購入者
+	GenerateUserThumbnail(ctx context.Context, in *GenerateFileInput) (string, error) // サムネイル画像を生成
+	UploadUserThumbnail(ctx context.Context, in *UploadFileInput) (string, error)     // サムネイル画像アップロード
+	ResizeUserThumbnail(ctx context.Context, in *ResizeFileInput) error               // サムネイル画像リサイズ
 	// 商品
 	GenerateProductMediaImage(ctx context.Context, in *GenerateFileInput) (string, error) // メディア(画像)を生成
 	GenerateProductMediaVideo(ctx context.Context, in *GenerateFileInput) (string, error) // メディア(映像)を生成

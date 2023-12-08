@@ -12,6 +12,7 @@ const (
 	FileTypeProductMedia         FileType = 5 // 商品メディア
 	FileTypeProductTypeIcon      FileType = 6 // 品目アイコン画像
 	FileTypeScheduleThumbnail    FileType = 7 // 開催スケジュールサムネイル画像
+	FileTypeUserThumbnail        FileType = 8 // 購入者サムネイル画像
 )
 
 // ResizerPayload - メディア

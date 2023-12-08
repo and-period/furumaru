@@ -35,7 +35,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/v1AuthUserResponse'
+            $ref: './../../../../openapi.yaml#/components/schemas/v1CreateAuthResponse'
     400:
       description: バリデーションエラー
       content:
@@ -64,9 +64,6 @@ delete:
   responses:
     204:
       description: 成功
-      content:
-        application/json:
-          schema: {}
     401:
       description: 認証エラー
       content:

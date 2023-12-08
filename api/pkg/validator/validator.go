@@ -37,11 +37,6 @@ const (
 	passwordString = "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$"
 )
 
-var (
-	hiraganaRegex = regexp.MustCompile(hiraganaString, 0)
-	passwordRegex *regexp.Regexp
-)
-
 //nolint:errcheck
 func NewValidator(opts ...Option) Validator {
 	v := validator.New()
@@ -52,30 +47,34 @@ func NewValidator(opts ...Option) Validator {
 		opts[i](dopts)
 	}
 
-	compilePasswordRegex(dopts.password)
+	hiraganaRegex := regexp.MustCompile(hiraganaString, 0)
+	passwordRegex := compilePasswordRegex(dopts.password)
 
 	// hiragana - 正規表現を使用して平仮名のみであるかの検証
-	v.RegisterValidation("hiragana", validateHiragana)
+	v.RegisterValidation("hiragana", validateHiragana(hiraganaRegex))
 	// password - 正規表現を利用してパスワードに使用不可な文字を含んでいないかの検証
-	v.RegisterValidation("password", validatePassword)
+	v.RegisterValidation("password", validatePassword(passwordRegex))
 
 	return v
 }
 
-func validateHiragana(fl validator.FieldLevel) bool {
-	match, _ := hiraganaRegex.MatchString(fl.Field().String())
-	return match
+func validateHiragana(regex *regexp.Regexp) func(fl validator.FieldLevel) bool {
+	return func(fl validator.FieldLevel) bool {
+		match, _ := regex.MatchString(fl.Field().String())
+		return match
+	}
 }
 
-func validatePassword(fl validator.FieldLevel) bool {
-	match, _ := passwordRegex.MatchString(fl.Field().String())
-	return match
+func validatePassword(regex *regexp.Regexp) func(fl validator.FieldLevel) bool {
+	return func(fl validator.FieldLevel) bool {
+		match, _ := regex.MatchString(fl.Field().String())
+		return match
+	}
 }
 
-func compilePasswordRegex(params *PasswordParams) {
+func compilePasswordRegex(params *PasswordParams) *regexp.Regexp {
 	if params == nil {
-		passwordRegex = regexp.MustCompile(passwordString, 0)
-		return
+		return regexp.MustCompile(passwordString, 0)
 	}
 	b := &strings.Builder{}
 	b.WriteString("^")
@@ -92,5 +91,5 @@ func compilePasswordRegex(params *PasswordParams) {
 		b.WriteString("(?=.*[a-z])")
 	}
 	b.WriteString(passwordString[1:]) // はじめの「^」を除いた文字列を代入
-	passwordRegex = regexp.MustCompile(b.String(), 0)
+	return regexp.MustCompile(b.String(), 0)
 }

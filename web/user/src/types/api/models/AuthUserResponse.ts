@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { ScheduleThumbnailsInner } from './ScheduleThumbnailsInner';
+import {
+    ScheduleThumbnailsInnerFromJSON,
+    ScheduleThumbnailsInnerFromJSONTyped,
+    ScheduleThumbnailsInnerToJSON,
+} from './ScheduleThumbnailsInner';
+
 /**
  * 
  * @export
@@ -32,6 +39,30 @@ export interface AuthUserResponse {
      */
     username: string;
     /**
+     * 姓(16文字まで)
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    lastname: string;
+    /**
+     * 名(16文字まで)
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    firstname: string;
+    /**
+     * 姓(かな)(ひらがな,32文字まで)
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    lastnameKana: string;
+    /**
+     * 名(かな)(ひらがな,32文字まで)
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    firstnameKana: string;
+    /**
      * メールアドレス
      * @type {string}
      * @memberof AuthUserResponse
@@ -43,6 +74,12 @@ export interface AuthUserResponse {
      * @memberof AuthUserResponse
      */
     thumbnailUrl: string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<ScheduleThumbnailsInner>}
+     * @memberof AuthUserResponse
+     */
+    thumbnails: Array<ScheduleThumbnailsInner>;
 }
 
 /**
@@ -52,8 +89,13 @@ export function instanceOfAuthUserResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "id" in value;
     isInstance = isInstance && "username" in value;
+    isInstance = isInstance && "lastname" in value;
+    isInstance = isInstance && "firstname" in value;
+    isInstance = isInstance && "lastnameKana" in value;
+    isInstance = isInstance && "firstnameKana" in value;
     isInstance = isInstance && "email" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
+    isInstance = isInstance && "thumbnails" in value;
 
     return isInstance;
 }
@@ -70,8 +112,13 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'id': json['id'],
         'username': json['username'],
+        'lastname': json['lastname'],
+        'firstname': json['firstname'],
+        'lastnameKana': json['lastnameKana'],
+        'firstnameKana': json['firstnameKana'],
         'email': json['email'],
         'thumbnailUrl': json['thumbnailUrl'],
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(ScheduleThumbnailsInnerFromJSON)),
     };
 }
 
@@ -86,8 +133,13 @@ export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
         
         'id': value.id,
         'username': value.username,
+        'lastname': value.lastname,
+        'firstname': value.firstname,
+        'lastnameKana': value.lastnameKana,
+        'firstnameKana': value.firstnameKana,
         'email': value.email,
         'thumbnailUrl': value.thumbnailUrl,
+        'thumbnails': ((value.thumbnails as Array<any>).map(ScheduleThumbnailsInnerToJSON)),
     };
 }
 

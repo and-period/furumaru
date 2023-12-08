@@ -384,6 +384,34 @@ func TestRegulation_Validate(t *testing.T) {
 			},
 			expect: ErrInvalidFileFormat,
 		},
+		// UserThumbnail
+		{
+			name:       "success user thumbnail",
+			regulation: UserThumbnailRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				return testImageFile(t)
+			},
+			expect: nil,
+		},
+		{
+			name:       "required for user thumbnail",
+			regulation: UserThumbnailRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				_, header := testImageFile(t)
+				return nil, header
+			},
+			expect: ErrInvalidFileFormat,
+		},
+		{
+			name:       "invalid size for user thumbnail",
+			regulation: UserThumbnailRegulation,
+			input: func(t *testing.T) (io.Reader, *multipart.FileHeader) {
+				file, header := testImageFile(t)
+				header.Size = 10<<20 + 1
+				return file, header
+			},
+			expect: ErrTooLargeFileSize,
+		},
 		// ProductMediaImage
 		{
 			name:       "success product media image",

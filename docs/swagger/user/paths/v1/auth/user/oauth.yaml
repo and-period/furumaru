@@ -9,7 +9,8 @@ post:
     required: true
     content:
       application/json:
-        schema: {}
+        schema:
+          $ref: './../../../../openapi.yaml#/components/schemas/v1CreateAuthWithOAuthRequest'
   responses:
     200:
       description: 成功

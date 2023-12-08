@@ -139,7 +139,7 @@ func authError(err error) error {
 	switch {
 	case errors.Is(err, cognito.ErrInvalidArgument):
 		return exception.ErrInvalidArgument
-	case errors.Is(err, cognito.ErrUnauthenticated):
+	case errors.Is(err, cognito.ErrUnauthenticated), errors.Is(err, cognito.ErrCodeExpired):
 		return exception.ErrUnauthenticated
 	case errors.Is(err, cognito.ErrNotFound):
 		return exception.ErrNotFound

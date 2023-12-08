@@ -374,20 +374,6 @@ func (mr *MockServiceMockRecorder) GetUserAuth(ctx, in interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAuth", reflect.TypeOf((*MockService)(nil).GetUserAuth), ctx, in)
 }
 
-// InitializeUser mocks base method.
-func (m *MockService) InitializeUser(ctx context.Context, in *user.InitializeUserInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InitializeUser", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// InitializeUser indicates an expected call of InitializeUser.
-func (mr *MockServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockService)(nil).InitializeUser), ctx, in)
-}
-
 // ListAddresses mocks base method.
 func (m *MockService) ListAddresses(ctx context.Context, in *user.ListAddressesInput) (entity.Addresses, int64, error) {
 	m.ctrl.T.Helper()
@@ -1012,6 +998,20 @@ func (m *MockService) UpdateUserPassword(ctx context.Context, in *user.UpdateUse
 func (mr *MockServiceMockRecorder) UpdateUserPassword(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockService)(nil).UpdateUserPassword), ctx, in)
+}
+
+// UpdateUserThumbnails mocks base method.
+func (m *MockService) UpdateUserThumbnails(ctx context.Context, in *user.UpdateUserThumbnailsInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateUserThumbnails", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateUserThumbnails indicates an expected call of UpdateUserThumbnails.
+func (mr *MockServiceMockRecorder) UpdateUserThumbnails(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserThumbnails", reflect.TypeOf((*MockService)(nil).UpdateUserThumbnails), ctx, in)
 }
 
 // VerifyAdminEmail mocks base method.

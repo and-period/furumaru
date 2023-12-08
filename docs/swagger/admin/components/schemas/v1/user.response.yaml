@@ -3,16 +3,22 @@ userResponse:
   properties:
     user:
       $ref: './../../../openapi.yaml#/components/schemas/user'
+    address:
+      $ref: './../../../openapi.yaml#/components/schemas/address'
   required:
   - user
+  - address
   example:
     user:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 3
+      registered: true
+      username: 'username'
+      accountId: 'account-id'
       lastname: '&.'
       firstname: '購入者'
       lastnameKana: 'あんどどっと'
       firstnameKana: 'こうにゅうしゃ'
-      registered: true
       email: 'test-user@and-period.jp'
       phoneNumber: '+819012345678'
       postalCode: '1000014'
@@ -22,6 +28,19 @@ userResponse:
       addressLine2: ''
       createdAt: 1640962800
       updatedAt: 1640962800
+    address:
+      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '利用者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'りようしゃ'
+      postalCode: '1000014'
+      prefecture: '東京都'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
 usersResponse:
   type: object
   properties:

@@ -2,13 +2,15 @@ package mysql
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -40,6 +42,9 @@ func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ..
 	if err := stmt.First(&member).Error; err != nil {
 		return nil, dbError(err)
 	}
+	if err := member.Fill(); err != nil {
+		return nil, dbError(err)
+	}
 	return member, nil
 }
 
@@ -51,6 +56,9 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 		Where("provider_type = ?", entity.ProviderTypeEmail)
 
 	if err := stmt.First(&member).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := member.Fill(); err != nil {
 		return nil, dbError(err)
 	}
 	return member, nil
@@ -96,35 +104,6 @@ func (m *member) UpdateVerified(ctx context.Context, userID string) error {
 	return dbError(err)
 }
 
-func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username string) error {
-	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
-		var current *entity.Member
-		err := m.db.Statement(ctx, tx, memberTable, "user_id").
-			Where("user_id != ?", userID).
-			Where("account_id = ?", accountID).
-			First(&current).Error
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err
-		}
-		if current.UserID != "" {
-			return database.ErrAlreadyExists
-		}
-
-		now := m.now()
-		params := map[string]interface{}{
-			"account_id": accountID,
-			"username":   username,
-			"updated_at": now,
-		}
-		err = tx.WithContext(ctx).
-			Table(memberTable).
-			Where("user_id = ?", userID).
-			Updates(params).Error
-		return err
-	})
-	return dbError(err)
-}
-
 func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		current, err := m.get(ctx, tx, userID, "provider_type")
@@ -140,6 +119,34 @@ func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 			"email":      email,
 			"updated_at": now,
 		}
+		err = tx.WithContext(ctx).
+			Table(memberTable).
+			Where("user_id = ?", userID).
+			Updates(params).Error
+		return err
+	})
+	return dbError(err)
+}
+
+func (m *member) UpdateThumbnails(ctx context.Context, userID string, thumbnails common.Images) error {
+	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
+		member, err := m.get(ctx, tx, userID, "thumbnail_url")
+		if err != nil {
+			return err
+		}
+		if member.ThumbnailURL == "" {
+			return fmt.Errorf("database: thumbnail url is empty: %w", database.ErrFailedPrecondition)
+		}
+
+		buf, err := thumbnails.Marshal()
+		if err != nil {
+			return err
+		}
+		params := map[string]interface{}{
+			"thumbnails": datatypes.JSON(buf),
+			"updated_at": m.now(),
+		}
+
 		err = tx.WithContext(ctx).
 			Table(memberTable).
 			Where("user_id = ?", userID).
@@ -188,6 +195,9 @@ func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...
 
 	if err := stmt.First(&member).Error; err != nil {
 		return nil, err
+	}
+	if err := member.Fill(); err != nil {
+		return nil, dbError(err)
 	}
 	return member, nil
 }

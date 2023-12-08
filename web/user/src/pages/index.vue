@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import {
-  MOCK_LIVE_ITEMS,
-  MOCK_ARCHIVES_ITEMS,
-  MOCK_RECOMMEND_ITEMS,
-} from '~/constants/mock'
+import { MOCK_LIVE_ITEMS, MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
 
 const router = useRouter()

@@ -3,10 +3,10 @@ createAddressRequest:
   properties:
     lastname:
       type: string
-      description: 姓(32文字まで)
+      description: 姓(16文字まで)
     firstname:
       type: string
-      description: 名(32文字まで)
+      description: 名(16文字まで)
     lastnameKana:
       type: string
       description: 姓(かな)(ひらがな,32文字まで)
@@ -62,10 +62,10 @@ updateAddressRequest:
   properties:
     lastname:
       type: string
-      description: 姓(32文字まで)
+      description: 姓(16文字まで)
     firstname:
       type: string
-      description: 名(32文字まで)
+      description: 名(16文字まで)
     lastnameKana:
       type: string
       description: 姓(かな)(ひらがな,32文字まで)

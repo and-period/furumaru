@@ -18,9 +18,10 @@ import type {
   AuthResponse,
   AuthUserResponse,
   CreateAuthRequest,
+  CreateAuthResponse,
+  CreateAuthWithOAuthRequest,
   ErrorResponse,
   ForgotAuthPasswordRequest,
-  InitializeAuthRequest,
   RefreshAuthTokenRequest,
   ResetAuthPasswordRequest,
   SignInRequest,
@@ -36,12 +37,14 @@ import {
     AuthUserResponseToJSON,
     CreateAuthRequestFromJSON,
     CreateAuthRequestToJSON,
+    CreateAuthResponseFromJSON,
+    CreateAuthResponseToJSON,
+    CreateAuthWithOAuthRequestFromJSON,
+    CreateAuthWithOAuthRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     ForgotAuthPasswordRequestFromJSON,
     ForgotAuthPasswordRequestToJSON,
-    InitializeAuthRequestFromJSON,
-    InitializeAuthRequestToJSON,
     RefreshAuthTokenRequestFromJSON,
     RefreshAuthTokenRequestToJSON,
     ResetAuthPasswordRequestFromJSON,
@@ -63,15 +66,11 @@ export interface V1CreateAuthRequest {
 }
 
 export interface V1CreateAuthWithOAuthRequest {
-    body: object;
+    body: CreateAuthWithOAuthRequest;
 }
 
 export interface V1ForgotAuthPasswordRequest {
     body: ForgotAuthPasswordRequest;
-}
-
-export interface V1InitializeAuthRequest {
-    body: InitializeAuthRequest;
 }
 
 export interface V1RefreshAuthTokenRequest {
@@ -110,7 +109,7 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * 購入者登録 (メール/SMS認証)
      */
-    async v1CreateAuthRaw(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
+    async v1CreateAuthRaw(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateAuthResponse>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateAuth.');
         }
@@ -129,13 +128,13 @@ export class AuthApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CreateAuthResponseFromJSON(jsonValue));
     }
 
     /**
      * 購入者登録 (メール/SMS認証)
      */
-    async v1CreateAuth(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
+    async v1CreateAuth(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateAuthResponse> {
         const response = await this.v1CreateAuthRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -184,7 +183,7 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * 購入者退会
      */
-    async v1DeleteAuthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1DeleteAuthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -204,21 +203,20 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * 購入者退会
      */
-    async v1DeleteAuth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1DeleteAuthRaw(initOverrides);
-        return await response.value();
+    async v1DeleteAuth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1DeleteAuthRaw(initOverrides);
     }
 
     /**
      * パスワードリセット
      */
-    async v1ForgotAuthPasswordRaw(requestParameters: V1ForgotAuthPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1ForgotAuthPasswordRaw(requestParameters: V1ForgotAuthPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1ForgotAuthPassword.');
         }
@@ -237,15 +235,14 @@ export class AuthApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * パスワードリセット
      */
-    async v1ForgotAuthPassword(requestParameters: V1ForgotAuthPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1ForgotAuthPasswordRaw(requestParameters, initOverrides);
-        return await response.value();
+    async v1ForgotAuthPassword(requestParameters: V1ForgotAuthPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1ForgotAuthPasswordRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -317,47 +314,6 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * 初回登録(表示名, 検索名)
-     */
-    async v1InitializeAuthRaw(requestParameters: V1InitializeAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1InitializeAuth.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/auth/initialized`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters.body as any,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse<any>(response);
-    }
-
-    /**
-     * 初回登録(表示名, 検索名)
-     */
-    async v1InitializeAuth(requestParameters: V1InitializeAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1InitializeAuthRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * トークン更新
      */
     async v1RefreshAuthTokenRaw(requestParameters: V1RefreshAuthTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthResponse>> {
@@ -401,7 +357,7 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * パスワードリセット - コード検証
      */
-    async v1ResetAuthPasswordRaw(requestParameters: V1ResetAuthPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1ResetAuthPasswordRaw(requestParameters: V1ResetAuthPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1ResetAuthPassword.');
         }
@@ -420,15 +376,14 @@ export class AuthApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * パスワードリセット - コード検証
      */
-    async v1ResetAuthPassword(requestParameters: V1ResetAuthPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1ResetAuthPasswordRaw(requestParameters, initOverrides);
-        return await response.value();
+    async v1ResetAuthPassword(requestParameters: V1ResetAuthPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1ResetAuthPasswordRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -475,7 +430,7 @@ export class AuthApi extends runtime.BaseAPI {
     /**
      * サインアウト
      */
-    async v1SignOutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1SignOutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -495,21 +450,20 @@ export class AuthApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * サインアウト
      */
-    async v1SignOut(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1SignOutRaw(initOverrides);
-        return await response.value();
+    async v1SignOut(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1SignOutRaw(initOverrides);
     }
 
     /**
      * メールアドレス更新
      */
-    async v1UpdateAuthEmailRaw(requestParameters: V1UpdateAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1UpdateAuthEmailRaw(requestParameters: V1UpdateAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthEmail.');
         }
@@ -536,21 +490,20 @@ export class AuthApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * メールアドレス更新
      */
-    async v1UpdateAuthEmail(requestParameters: V1UpdateAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1UpdateAuthEmailRaw(requestParameters, initOverrides);
-        return await response.value();
+    async v1UpdateAuthEmail(requestParameters: V1UpdateAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1UpdateAuthEmailRaw(requestParameters, initOverrides);
     }
 
     /**
      * パスワード更新
      */
-    async v1UpdateUserPasswordRaw(requestParameters: V1UpdateUserPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1UpdateUserPasswordRaw(requestParameters: V1UpdateUserPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateUserPassword.');
         }
@@ -577,21 +530,20 @@ export class AuthApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * パスワード更新
      */
-    async v1UpdateUserPassword(requestParameters: V1UpdateUserPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1UpdateUserPasswordRaw(requestParameters, initOverrides);
-        return await response.value();
+    async v1UpdateUserPassword(requestParameters: V1UpdateUserPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1UpdateUserPasswordRaw(requestParameters, initOverrides);
     }
 
     /**
      * 購入者登録 - コード検証 (メール/SMS認証)
      */
-    async v1VerifyAuthRaw(requestParameters: V1VerifyAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1VerifyAuthRaw(requestParameters: V1VerifyAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1VerifyAuth.');
         }
@@ -610,21 +562,20 @@ export class AuthApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * 購入者登録 - コード検証 (メール/SMS認証)
      */
-    async v1VerifyAuth(requestParameters: V1VerifyAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1VerifyAuthRaw(requestParameters, initOverrides);
-        return await response.value();
+    async v1VerifyAuth(requestParameters: V1VerifyAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1VerifyAuthRaw(requestParameters, initOverrides);
     }
 
     /**
      * メールアドレス更新 - コード検証
      */
-    async v1VerifyAuthEmailRaw(requestParameters: V1VerifyAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async v1VerifyAuthEmailRaw(requestParameters: V1VerifyAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1VerifyAuthEmail.');
         }
@@ -651,15 +602,14 @@ export class AuthApi extends runtime.BaseAPI {
             body: requestParameters.body as any,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * メールアドレス更新 - コード検証
      */
-    async v1VerifyAuthEmail(requestParameters: V1VerifyAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.v1VerifyAuthEmailRaw(requestParameters, initOverrides);
-        return await response.value();
+    async v1VerifyAuthEmail(requestParameters: V1VerifyAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1VerifyAuthEmailRaw(requestParameters, initOverrides);
     }
 
 }

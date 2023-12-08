@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { MOCK_PURCHASE_ITEMS } from '~/constants/mock'
 import { useAdressStore } from '~/store/address'
 import { useShoppingCartStore } from '~/store/shopping'
 
@@ -31,21 +30,6 @@ const coordinatorId = computed<string>(() => {
   } else {
     return ''
   }
-})
-
-const cartItem = MOCK_PURCHASE_ITEMS[0]
-
-const discount = -500
-const shipping = 2500
-
-const itemsTotalPrice = computed(() => {
-  return cartItem.cartItems[0].items
-    .map((item) => item.price)
-    .reduce((sum, price) => sum + price)
-})
-
-const totalPrice = computed(() => {
-  return itemsTotalPrice.value + discount + shipping
 })
 
 const priceFormatter = (price: number) => {

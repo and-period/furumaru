@@ -80,6 +80,7 @@ var (
 	ErrResourceExhausted = errors.New("cognito: resource exhausted")
 	ErrUnknown           = errors.New("cognito: unknown")
 	ErrTimeout           = errors.New("cognito: timeout")
+	ErrCodeExpired       = errors.New("cognito: code expired")
 	errNotFoundEmail     = errors.New("cognito: not found requested email")
 )
 
@@ -181,7 +182,7 @@ func (c *client) authError(err error) error {
 	switch {
 	case errors.As(err, &cme), errors.As(err, &ipe):
 		return fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
-	case errors.As(err, &ece), errors.As(err, &nae), errors.As(err, &pre), errors.As(err, &uce):
+	case errors.As(err, &nae), errors.As(err, &pre), errors.As(err, &uce):
 		return fmt.Errorf("%w: %s", ErrUnauthenticated, err.Error())
 	case errors.As(err, &rne), errors.As(err, &une):
 		return fmt.Errorf("%w: %s", ErrNotFound, err.Error())
@@ -191,6 +192,8 @@ func (c *client) authError(err error) error {
 		return fmt.Errorf("%w: %s", ErrResourceExhausted, err.Error())
 	case errors.As(err, &cfe), errors.As(err, &iee):
 		return fmt.Errorf("%w: %s", ErrInternal, err.Error())
+	case errors.As(err, &ece):
+		return fmt.Errorf("%w: %s", ErrCodeExpired, err.Error())
 	default:
 		return fmt.Errorf("%w: %s", ErrUnknown, err.Error())
 	}

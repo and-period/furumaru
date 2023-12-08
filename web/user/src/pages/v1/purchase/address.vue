@@ -188,16 +188,6 @@ useSeoMeta({
               @click:search-address-button="handleClickSearchAddressButton"
               @submit="handleSubmitNewAddressForm"
             />
-
-            <div class="mt-[24px] hidden text-right md:block">
-              <button
-                class="bg-main p-[14px] text-[16px] text-white md:w-[240px]"
-                type="submit"
-                form="new-address-form"
-              >
-                お支払方法の選択へ
-              </button>
-            </div>
           </template>
         </div>
 
@@ -228,27 +218,30 @@ useSeoMeta({
             <div>
               <div class="divide-y border-y">
                 <div
-                  v-for="(item, i) in calcCartResponseItem.products"
+                  v-for="(item, i) in calcCartResponseItem.items"
                   :key="i"
                   class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
                 >
-                  <img
-                    :src="item.media[0].url"
-                    :alt="`${item.name}の画像`"
-                    class="block aspect-square h-[56px] w-[56px]"
-                  />
-                  <div class="col-span-3 pl-[24px] md:pl-0">
-                    <div>{{ item.name }}</div>
-                    <div
-                      class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
-                    >
-                      数量：{{ 1 }}
+                  <template v-if="item.product">
+                    <img
+                      v-if="item.product.thumbnail"
+                      :src="item.product.thumbnail.url"
+                      :alt="`${item.product.name}の画像`"
+                      class="block aspect-square h-[56px] w-[56px]"
+                    />
+                    <div class="col-span-3 pl-[24px] md:pl-0">
+                      <div>{{ item.product.name }}</div>
+                      <div
+                        class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                      >
+                        数量：{{ item.quantity }}
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="flex items-center justify-self-end text-right">
-                    {{ priceFormatter(item.price) }}
-                  </div>
+                    <div class="flex items-center justify-self-end text-right">
+                      {{ priceFormatter(item.product.price) }}
+                    </div>
+                  </template>
                 </div>
               </div>
 

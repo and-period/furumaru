@@ -1,4 +1,5 @@
 import type {
+  CalcCartResponse,
   Cart,
   CartItem as CartItemInner,
   Coordinator,
@@ -18,11 +19,11 @@ export interface MediaItem {
 }
 
 export interface ProductItem extends Product {
-  thumbnail: ProductMediaInner
+  thumbnail: ProductMediaInner | undefined
 }
 
 export interface CartItem extends CartItemInner {
-  product: ProductItem
+  product: ProductItem | undefined
 }
 
 export interface ShoppingCart extends Cart {
@@ -31,4 +32,12 @@ export interface ShoppingCart extends Cart {
   useRate: number
   coordinator: Coordinator
   items: CartItem[]
+}
+
+export interface CalcCartItem extends CartItem {
+  quantity: number
+}
+
+export interface CalcCart extends CalcCartResponse {
+  items: CalcCartItem[]
 }

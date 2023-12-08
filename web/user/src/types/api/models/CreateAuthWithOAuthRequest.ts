@@ -16,75 +16,57 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface CreateAuthRequest
+ * @interface CreateAuthWithOAuthRequest
  */
-export interface CreateAuthRequest {
+export interface CreateAuthWithOAuthRequest {
     /**
      * ユーザー名(表示用)(32文字まで)
      * @type {string}
-     * @memberof CreateAuthRequest
+     * @memberof CreateAuthWithOAuthRequest
      */
     username: string;
     /**
      * ユーザーID(検索用)(32文字まで)
      * @type {string}
-     * @memberof CreateAuthRequest
+     * @memberof CreateAuthWithOAuthRequest
      */
     accountId: string;
     /**
      * 姓(16文字まで)
      * @type {string}
-     * @memberof CreateAuthRequest
+     * @memberof CreateAuthWithOAuthRequest
      */
     lastname: string;
     /**
      * 名(16文字まで)
      * @type {string}
-     * @memberof CreateAuthRequest
+     * @memberof CreateAuthWithOAuthRequest
      */
     firstname: string;
     /**
      * 姓(かな)(ひらがな,32文字まで)
      * @type {string}
-     * @memberof CreateAuthRequest
+     * @memberof CreateAuthWithOAuthRequest
      */
     lastnameKana: string;
     /**
      * 名(かな)(ひらがな,32文字まで)
      * @type {string}
-     * @memberof CreateAuthRequest
+     * @memberof CreateAuthWithOAuthRequest
      */
     firstnameKana: string;
     /**
-     * メールアドレス
-     * @type {string}
-     * @memberof CreateAuthRequest
-     */
-    email: string;
-    /**
      * 電話番号(国際番号 + 電話番号)
      * @type {string}
-     * @memberof CreateAuthRequest
+     * @memberof CreateAuthWithOAuthRequest
      */
     phoneNumber: string;
-    /**
-     * パスワード(8~32文字, 英小文字,数字を少なくとも1文字ずつは含む)
-     * @type {string}
-     * @memberof CreateAuthRequest
-     */
-    password: string;
-    /**
-     * パスワード(確認用)
-     * @type {string}
-     * @memberof CreateAuthRequest
-     */
-    passwordConfirmation: string;
 }
 
 /**
- * Check if a given object implements the CreateAuthRequest interface.
+ * Check if a given object implements the CreateAuthWithOAuthRequest interface.
  */
-export function instanceOfCreateAuthRequest(value: object): boolean {
+export function instanceOfCreateAuthWithOAuthRequest(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "username" in value;
     isInstance = isInstance && "accountId" in value;
@@ -92,19 +74,16 @@ export function instanceOfCreateAuthRequest(value: object): boolean {
     isInstance = isInstance && "firstname" in value;
     isInstance = isInstance && "lastnameKana" in value;
     isInstance = isInstance && "firstnameKana" in value;
-    isInstance = isInstance && "email" in value;
     isInstance = isInstance && "phoneNumber" in value;
-    isInstance = isInstance && "password" in value;
-    isInstance = isInstance && "passwordConfirmation" in value;
 
     return isInstance;
 }
 
-export function CreateAuthRequestFromJSON(json: any): CreateAuthRequest {
-    return CreateAuthRequestFromJSONTyped(json, false);
+export function CreateAuthWithOAuthRequestFromJSON(json: any): CreateAuthWithOAuthRequest {
+    return CreateAuthWithOAuthRequestFromJSONTyped(json, false);
 }
 
-export function CreateAuthRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAuthRequest {
+export function CreateAuthWithOAuthRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAuthWithOAuthRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -116,14 +95,11 @@ export function CreateAuthRequestFromJSONTyped(json: any, ignoreDiscriminator: b
         'firstname': json['firstname'],
         'lastnameKana': json['lastnameKana'],
         'firstnameKana': json['firstnameKana'],
-        'email': json['email'],
         'phoneNumber': json['phoneNumber'],
-        'password': json['password'],
-        'passwordConfirmation': json['passwordConfirmation'],
     };
 }
 
-export function CreateAuthRequestToJSON(value?: CreateAuthRequest | null): any {
+export function CreateAuthWithOAuthRequestToJSON(value?: CreateAuthWithOAuthRequest | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -138,10 +114,7 @@ export function CreateAuthRequestToJSON(value?: CreateAuthRequest | null): any {
         'firstname': value.firstname,
         'lastnameKana': value.lastnameKana,
         'firstnameKana': value.firstnameKana,
-        'email': value.email,
         'phoneNumber': value.phoneNumber,
-        'password': value.password,
-        'passwordConfirmation': value.passwordConfirmation,
     };
 }
 

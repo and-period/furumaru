@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -14,8 +15,7 @@ const (
 	UserStatusUnknown     UserStatus = 0
 	UserStatusGuest       UserStatus = 1 // 未登録
 	UserStatusProvisional UserStatus = 2 // 仮登録
-	UserStatusVerified    UserStatus = 3 // 認証済み(初期設定前)
-	UserStatusActivated   UserStatus = 4 // 認証済み(初期設定後)
+	UserStatusVerified    UserStatus = 3 // 認証済み
 )
 
 // User - 購入者情報
@@ -34,11 +34,17 @@ type User struct {
 type Users []*User
 
 type NewUserParams struct {
-	Registered   bool
-	CognitoID    string
-	ProviderType ProviderType
-	Email        string
-	PhoneNumber  string
+	Registered    bool
+	CognitoID     string
+	Username      string
+	AccountID     string
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
+	ProviderType  ProviderType
+	Email         string
+	PhoneNumber   string
 }
 
 func NewUser(params *NewUserParams) *User {
@@ -50,6 +56,12 @@ func NewUser(params *NewUserParams) *User {
 	if params.Registered {
 		member.UserID = userID
 		member.CognitoID = params.CognitoID
+		member.Username = params.Username
+		member.AccountID = params.AccountID
+		member.Lastname = params.Lastname
+		member.Firstname = params.Firstname
+		member.LastnameKana = params.LastnameKana
+		member.FirstnameKana = params.FirstnameKana
 		member.ProviderType = params.ProviderType
 		member.Email = params.Email
 		member.PhoneNumber = params.PhoneNumber
@@ -64,6 +76,13 @@ func NewUser(params *NewUserParams) *User {
 		Member:     member,
 		Guest:      guest,
 	}
+}
+
+func (u *User) Name() string {
+	if !u.Registered {
+		return "ゲスト"
+	}
+	return strings.TrimSpace(strings.Join([]string{u.Lastname, u.Firstname}, " "))
 }
 
 func (u *User) Email() string {
@@ -90,13 +109,9 @@ func (u *User) SetStatus() {
 	if u == nil {
 		return
 	}
-	if !u.Registered {
-		u.Status = UserStatusGuest
-		return
-	}
 	switch {
-	case !u.InitializedAt.IsZero():
-		u.Status = UserStatusActivated
+	case !u.Registered:
+		u.Status = UserStatusGuest
 	case !u.VerifiedAt.IsZero():
 		u.Status = UserStatusVerified
 	default:

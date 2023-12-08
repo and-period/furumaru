@@ -5,7 +5,7 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminRole } from '~/types/api'
+import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminRole, type Address } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -36,6 +36,8 @@ const props = defineProps({
     type: Object as PropType<User>,
     default: (): User => ({
       id: '',
+      username: '',
+      accountId: '',
       lastname: '',
       firstname: '',
       lastnameKana: '',
@@ -44,13 +46,25 @@ const props = defineProps({
       status: UserStatus.UNKNOWN,
       email: '',
       phoneNumber: '',
+      createdAt: 0,
+      updatedAt: 0
+    })
+  },
+  address: {
+    type: Object as PropType<Address>,
+    default: (): Address => ({
+      addressId: '',
+      lastname: '',
+      firstname: '',
+      lastnameKana: '',
+      firstnameKana: '',
       postalCode: '',
+      prefecture: '',
       prefectureCode: Prefecture.UNKNOWN,
       city: '',
       addressLine1: '',
       addressLine2: '',
-      createdAt: 0,
-      updatedAt: 0
+      phoneNumber: ''
     })
   },
   orders: {
@@ -155,10 +169,10 @@ const getPhoneNumber = (): string => {
 }
 
 const getAddressArea = (): string => {
-  const prefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
-    return prefecture.value === props.customer.prefectureCode
-  })
-  return prefecture ? `${prefecture.text} ${props.customer.city}` : props.customer.city
+  if (!props.address) {
+    return ''
+  }
+  return `${props.address.prefecture} ${props.address.city}`
 }
 
 const getCustomerStatus = (): string => {
@@ -290,27 +304,36 @@ const onSubmitDelete = (): void => {
             </v-list-item>
             <v-list-item class="mb-4">
               <v-list-item-subtitle class="mb-2">
-                登録状況
+                基本情報
               </v-list-item-subtitle>
-              <v-chip size="small" :color="getCustomerStatusColor()">
-                {{ getCustomerStatus() }}
-              </v-chip>
+              <div>
+                ステータス：
+                <v-chip size="small" :color="getCustomerStatusColor()">
+                  {{ getCustomerStatus() }}
+                </v-chip>
+              </div>
+              <div v-show="customer.username != ''">
+                ユーザー名：{{ customer.username }}
+              </div>
+              <div v-show="customer.accountId != ''">
+                アカウントID：{{ customer.accountId }}
+              </div>
             </v-list-item>
             <v-list-item class="mb-4">
               <v-list-item-subtitle class="pb-2">
                 連絡先情報
               </v-list-item-subtitle>
-              <div>{{ props.customer.email }}</div>
-              <div>{{ getPhoneNumber() }}</div>
+              <div>メール：{{ props.customer.email }}</div>
+              <div>電話番号：{{ getPhoneNumber() }}</div>
             </v-list-item>
-            <v-list-item>
+            <v-list-item v-show="props.address?.postalCode !== ''">
               <v-list-item-subtitle class="pb-2">
                 請求先情報
               </v-list-item-subtitle>
-              <div>&#12306; {{ props.customer.postalCode }}</div>
+              <div>&#12306; {{ props.address?.postalCode || '' }}</div>
               <div>{{ getAddressArea() }}</div>
-              <div>{{ props.customer.addressLine1 }}</div>
-              <div>{{ props.customer.addressLine2 }}</div>
+              <div>{{ props.address?.addressLine1 || '' }}</div>
+              <div>{{ props.address?.addressLine2 || '' }}</div>
             </v-list-item>
           </v-list>
         </v-card-text>

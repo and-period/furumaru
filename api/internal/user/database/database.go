@@ -155,8 +155,8 @@ type Member interface {
 	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Member, error)
 	Create(ctx context.Context, user *entity.User, auth func(ctx context.Context) error) error
 	UpdateVerified(ctx context.Context, userID string) error
-	UpdateAccount(ctx context.Context, userID, accountID, username string) error
 	UpdateEmail(ctx context.Context, userID, email string) error
+	UpdateThumbnails(ctx context.Context, userID string, thumbnails common.Images) error
 	Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error
 }
 

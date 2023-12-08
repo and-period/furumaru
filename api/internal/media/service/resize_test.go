@@ -249,6 +249,65 @@ func TestResizeProducerHeader(t *testing.T) {
 	}
 }
 
+func TestResizeUserThumbnail(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.ResizeFileInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.producer.EXPECT().
+					SendMessage(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, buf []byte) (string, error) {
+						payload := &entity.ResizerPayload{}
+						err := json.Unmarshal(buf, payload)
+						require.NoError(t, err)
+						expect := &entity.ResizerPayload{
+							TargetID: "target-id",
+							FileType: entity.FileTypeUserThumbnail,
+							URLs:     []string{"http://example.com/test.jpg"},
+						}
+						assert.Equal(t, expect, payload)
+						return "message-id", nil
+					})
+			},
+			input: &media.ResizeFileInput{
+				TargetID: "target-id",
+				URLs:     []string{"http://example.com/test.jpg"},
+			},
+			expect: nil,
+		},
+		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &media.ResizeFileInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to send message",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.producer.EXPECT().SendMessage(ctx, gomock.Any()).Return("", assert.AnError)
+			},
+			input: &media.ResizeFileInput{
+				TargetID: "target-id",
+				URLs:     []string{"http://example.com/test.jpg"},
+			},
+			expect: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.ResizeUserThumbnail(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
 func TestResizeProductMedia(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

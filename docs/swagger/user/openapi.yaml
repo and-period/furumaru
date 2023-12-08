@@ -35,8 +35,6 @@ paths:
     $ref: './paths/v1/auth/index.yaml'
   /v1/auth/refresh-token:
     $ref: './paths/v1/auth/refresh-token.yaml'
-  /v1/auth/initialized:
-    $ref: './paths/v1/auth/initialized.yaml'
   /v1/auth/email:
     $ref: './paths/v1/auth/email/index.yaml'
   /v1/auth/email/verified:
@@ -169,10 +167,10 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
     v1CreateAuthRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/createAuthRequest'
-    v1InitializeAuthRequest:
-      $ref: './components/schemas/v1/auth.request.yaml#/initializeAuthRequest'
     v1VerifyAuthRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/verifyAuthRequest'
+    v1CreateAuthWithOAuthRequest:
+      $ref: './components/schemas/v1/auth.request.yaml#/createAuthWithOAuthRequest'
     v1UpdateAuthEmailRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/updateAuthEmailRequest'
     v1VerifyAuthEmailRequest:
@@ -194,6 +192,8 @@ components:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
     v1AuthUserResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
+    v1CreateAuthResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/createAuthResponse'
     v1AddressResponse:
       $ref: './components/schemas/v1/address.response.yaml#/addressResponse'
     v1AddressesResponse:
