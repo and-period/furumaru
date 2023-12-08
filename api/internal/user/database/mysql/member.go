@@ -42,6 +42,9 @@ func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ..
 	if err := stmt.First(&member).Error; err != nil {
 		return nil, dbError(err)
 	}
+	if err := member.Fill(); err != nil {
+		return nil, dbError(err)
+	}
 	return member, nil
 }
 
@@ -53,6 +56,9 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 		Where("provider_type = ?", entity.ProviderTypeEmail)
 
 	if err := stmt.First(&member).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := member.Fill(); err != nil {
 		return nil, dbError(err)
 	}
 	return member, nil
@@ -189,6 +195,9 @@ func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...
 
 	if err := stmt.First(&member).Error; err != nil {
 		return nil, err
+	}
+	if err := member.Fill(); err != nil {
+		return nil, dbError(err)
 	}
 	return member, nil
 }

@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -644,7 +645,7 @@ func TestMember_UpdateThumbnails(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, memberTable, adminTable)
+			err := delete(ctx, memberTable, userTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -732,7 +733,7 @@ func TestMember_Delete(t *testing.T) {
 }
 
 func testMember(id, email, phoneNumber string, now time.Time) *entity.Member {
-	return &entity.Member{
+	m := &entity.Member{
 		UserID:        id,
 		AccountID:     id,
 		CognitoID:     id,
@@ -745,8 +746,11 @@ func testMember(id, email, phoneNumber string, now time.Time) *entity.Member {
 		Email:         email,
 		PhoneNumber:   phoneNumber,
 		ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+		Thumbnails:    common.Images{},
 		CreatedAt:     now,
 		UpdatedAt:     now,
 		VerifiedAt:    now,
 	}
+	m.ThumbnailsJSON, _ = json.Marshal(m.Thumbnails)
+	return m
 }
