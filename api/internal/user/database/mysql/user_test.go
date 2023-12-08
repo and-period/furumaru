@@ -299,7 +299,7 @@ func testUser(id, email, phoneNumber string, now time.Time) *entity.User {
 	return &entity.User{
 		ID:         id,
 		Registered: true,
-		Status:     entity.UserStatusProvisional,
+		Status:     entity.UserStatusVerified,
 		Member:     *testMember(id, email, phoneNumber, now),
 		CreatedAt:  now,
 		UpdatedAt:  now,
