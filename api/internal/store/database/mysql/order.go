@@ -88,10 +88,10 @@ func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*ent
 func (o *order) GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error) {
 	var order *entity.Order
 
-	stmt := o.db.Statement(ctx, o.db.DB, orderTable, "order.*").
-		Joins("INNER JOIN order_payment.order_id ON order.id = order_payment.order_id").
-		Where("order.user_id = ?", userID).
-		Where("order_payment.transaction_id = ?", transactionID)
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, "orders.*").
+		Joins("INNER JOIN order_payments.order_id ON orders.id = order_payments.order_id").
+		Where("orders.user_id = ?", userID).
+		Where("order_payments.transaction_id = ?", transactionID)
 
 	if err := stmt.First(&order).Error; err != nil {
 		return nil, err
