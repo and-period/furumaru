@@ -251,6 +251,12 @@ func (h *handler) CreateAuth(ctx *gin.Context) {
 	}
 
 	in := &user.CreateUserInput{
+		Username:             req.Username,
+		AccountID:            req.AccountID,
+		Lastname:             req.Lastname,
+		Firstname:            req.Firstname,
+		LastnameKana:         req.LastnameKana,
+		FirstnameKana:        req.FirstnameKana,
 		Email:                req.Email,
 		PhoneNumber:          req.PhoneNumber,
 		Password:             req.Password,
@@ -286,9 +292,21 @@ func (h *handler) CreateAuthWithOAuth(ctx *gin.Context) {
 		h.unauthorized(ctx, err)
 		return
 	}
+	req := &request.CreateAuthWithOAuthRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
 
 	in := &user.CreateUserWithOAuthInput{
-		AccessToken: token,
+		AccessToken:   token,
+		Username:      req.Username,
+		AccountID:     req.AccountID,
+		Lastname:      req.Lastname,
+		Firstname:     req.Firstname,
+		LastnameKana:  req.LastnameKana,
+		FirstnameKana: req.FirstnameKana,
+		PhoneNumber:   req.PhoneNumber,
 	}
 	u, err := h.user.CreateUserWithOAuth(ctx, in)
 	if err != nil {
