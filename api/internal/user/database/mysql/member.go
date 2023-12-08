@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -86,35 +85,6 @@ func (m *member) UpdateVerified(ctx context.Context, userID string) error {
 		params := map[string]interface{}{
 			"updated_at":  now,
 			"verified_at": now,
-		}
-		err = tx.WithContext(ctx).
-			Table(memberTable).
-			Where("user_id = ?", userID).
-			Updates(params).Error
-		return err
-	})
-	return dbError(err)
-}
-
-func (m *member) UpdateAccount(ctx context.Context, userID, accountID, username string) error {
-	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
-		var current *entity.Member
-		err := m.db.Statement(ctx, tx, memberTable, "user_id").
-			Where("user_id != ?", userID).
-			Where("account_id = ?", accountID).
-			First(&current).Error
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err
-		}
-		if current.UserID != "" {
-			return database.ErrAlreadyExists
-		}
-
-		now := m.now()
-		params := map[string]interface{}{
-			"account_id": accountID,
-			"username":   username,
-			"updated_at": now,
 		}
 		err = tx.WithContext(ctx).
 			Table(memberTable).

@@ -374,20 +374,6 @@ func (mr *MockServiceMockRecorder) GetUserAuth(ctx, in interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserAuth", reflect.TypeOf((*MockService)(nil).GetUserAuth), ctx, in)
 }
 
-// InitializeUser mocks base method.
-func (m *MockService) InitializeUser(ctx context.Context, in *user.InitializeUserInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InitializeUser", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// InitializeUser indicates an expected call of InitializeUser.
-func (mr *MockServiceMockRecorder) InitializeUser(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeUser", reflect.TypeOf((*MockService)(nil).InitializeUser), ctx, in)
-}
-
 // ListAddresses mocks base method.
 func (m *MockService) ListAddresses(ctx context.Context, in *user.ListAddressesInput) (entity.Addresses, int64, error) {
 	m.ctrl.T.Helper()

@@ -70,7 +70,6 @@ type Service interface {
 	CreateUser(ctx context.Context, in *CreateUserInput) (string, error)                         // 登録 (メールアドレス/SMS認証)
 	VerifyUser(ctx context.Context, in *VerifyUserInput) error                                   // 登録後の確認 (メールアドレス/SMS認証)
 	CreateUserWithOAuth(ctx context.Context, in *CreateUserWithOAuthInput) (*entity.User, error) // 登録 (OAuth認証)
-	InitializeUser(ctx context.Context, in *InitializeUserInput) error                           // Deprecated: 登録後の初回更新
 	UpdateUserEmail(ctx context.Context, in *UpdateUserEmailInput) error                         // メールアドレス更新
 	VerifyUserEmail(ctx context.Context, in *VerifyUserEmailInput) error                         // メールアドレス更新後の確認
 	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordInput) error                   // パスワード更新

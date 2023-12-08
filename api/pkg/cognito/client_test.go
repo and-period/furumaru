@@ -45,7 +45,7 @@ func TestAuthError(t *testing.T) {
 		},
 		{
 			name:   "unauthenticated",
-			err:    &types.ExpiredCodeException{Message: aws.String("some error")},
+			err:    &types.NotAuthorizedException{Message: aws.String("some error")},
 			expect: ErrUnauthenticated,
 		},
 		{
@@ -67,6 +67,11 @@ func TestAuthError(t *testing.T) {
 			name:   "internal",
 			err:    &types.InternalErrorException{Message: aws.String("some error")},
 			expect: ErrInternal,
+		},
+		{
+			name:   "code expired",
+			err:    &types.ExpiredCodeException{Message: aws.String("some error")},
+			expect: ErrCodeExpired,
 		},
 		{
 			name:   "canceled",

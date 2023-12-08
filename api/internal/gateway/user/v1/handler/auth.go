@@ -18,7 +18,6 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.POST("", h.SignIn)
 	r.DELETE("", h.SignOut)
 	r.POST("/refresh-token", h.RefreshAuthToken)
-	r.POST("/initialized", h.authentication, h.InitializeAuth)
 	r.PATCH("/email", h.authentication, h.UpdateAuthEmail)
 	r.POST("/email/verified", h.authentication, h.VerifyAuthEmail)
 	r.PATCH("/password", h.authentication, h.UpdateAuthPassword)
@@ -113,27 +112,6 @@ func (h *handler) RefreshAuthToken(ctx *gin.Context) {
 		Auth: service.NewAuth(auth).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
-}
-
-func (h *handler) InitializeAuth(ctx *gin.Context) {
-	req := &request.InitializeAuthRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-
-	in := &user.InitializeUserInput{
-		UserID:    getUserID(ctx),
-		AccountID: req.AccountID,
-		Username:  req.Username,
-	}
-
-	if err := h.user.InitializeUser(ctx, in); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
-	ctx.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *handler) UpdateAuthEmail(ctx *gin.Context) {

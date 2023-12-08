@@ -1,3 +1,4 @@
+export { useAddressStore } from './address'
 export { useAdminStore } from './admin'
 export { useAdministratorStore } from './administrator'
 export { useAuthStore } from './auth'

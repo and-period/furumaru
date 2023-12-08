@@ -336,12 +336,12 @@ type GetUserInput struct {
 }
 
 type CreateUserInput struct {
-	// Username             string `validate:"required,max=32"`
-	// AccountID            string `validate:"required,max=32"`
-	// Lastname             string `validate:"required,max=16"`
-	// Firstname            string `validate:"required,max=16"`
-	// LastnameKana         string `validate:"required,max=32,hiragana"`
-	// FirstnameKana        string `validate:"required,max=32,hiragana"`
+	Username             string `validate:"required,max=32"`
+	AccountID            string `validate:"required,max=32"`
+	Lastname             string `validate:"required,max=16"`
+	Firstname            string `validate:"required,max=16"`
+	LastnameKana         string `validate:"required,max=32,hiragana"`
+	FirstnameKana        string `validate:"required,max=32,hiragana"`
 	Email                string `validate:"required,max=256,email"`
 	PhoneNumber          string `validate:"required,e164"`
 	Password             string `validate:"min=8,max=32,password"`
@@ -353,22 +353,15 @@ type VerifyUserInput struct {
 	VerifyCode string `validate:"required"`
 }
 
-// Deprecated
-type InitializeUserInput struct {
-	UserID    string `validate:"required"`
-	Username  string `validate:"required,max=32"`
-	AccountID string `validate:"required,max=32"`
-}
-
 type CreateUserWithOAuthInput struct {
-	AccessToken string `validate:"required"`
-	// Username      string `validate:"required,max=32"`
-	// AccountID     string `validate:"required,max=32"`
-	// Lastname      string `validate:"required,max=16"`
-	// Firstname     string `validate:"required,max=16"`
-	// LastnameKana  string `validate:"required,max=32,hiragana"`
-	// FirstnameKana string `validate:"required,max=32,hiragana"`
-	// PhoneNumber   string `validate:"required,e164"`
+	AccessToken   string `validate:"required"`
+	Username      string `validate:"required,max=32"`
+	AccountID     string `validate:"required,max=32"`
+	Lastname      string `validate:"required,max=16"`
+	Firstname     string `validate:"required,max=16"`
+	LastnameKana  string `validate:"required,max=32,hiragana"`
+	FirstnameKana string `validate:"required,max=32,hiragana"`
+	PhoneNumber   string `validate:"required,e164"`
 }
 
 type UpdateUserEmailInput struct {
@@ -432,8 +425,8 @@ type GetDefaultAddressInput struct {
 
 type CreateAddressInput struct {
 	UserID         string `validate:"required"`
-	Lastname       string `validate:"required,max=32"`
-	Firstname      string `validate:"required,max=32"`
+	Lastname       string `validate:"required,max=16"`
+	Firstname      string `validate:"required,max=16"`
 	LastnameKana   string `validate:"required,max=32,hiragana"`
 	FirstnameKana  string `validate:"required,max=32,hiragana"`
 	PostalCode     string `validate:"required,max=16,numeric"`
@@ -448,8 +441,8 @@ type CreateAddressInput struct {
 type UpdateAddressInput struct {
 	AddressID      string `validate:"required"`
 	UserID         string `validate:"required"`
-	Lastname       string `validate:"required,max=32"`
-	Firstname      string `validate:"required,max=32"`
+	Lastname       string `validate:"required,max=16"`
+	Firstname      string `validate:"required,max=16"`
 	LastnameKana   string `validate:"required,max=32,hiragana"`
 	FirstnameKana  string `validate:"required,max=32,hiragana"`
 	PostalCode     string `validate:"required,max=16,numeric"`

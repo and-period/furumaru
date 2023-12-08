@@ -13,6 +13,7 @@ type Auth struct {
 type AuthUser struct {
 	ID            string `json:"id"`                      // ユーザーID
 	Username      string `json:"username"`                // ユーザー名 (表示名)
+	AccountID     string `json:"accountId"`               // ユーザー名 (検索用)
 	ThumbnailURL  string `json:"thumbnailUrl"`            // サムネイルURL
 	Lastname      string `json:"lastname,omitempty"`      // 姓
 	Firstname     string `json:"firstname,omitempty"`     // 名

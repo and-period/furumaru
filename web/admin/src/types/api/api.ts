@@ -24,6 +24,87 @@ import type { RequestArgs } from './base';
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 
 /**
+ * アドレス情報
+ * @export
+ * @interface Address
+ */
+export interface Address {
+    /**
+     * アドレス帳ID
+     * @type {string}
+     * @memberof Address
+     */
+    'addressId': string;
+    /**
+     * 姓
+     * @type {string}
+     * @memberof Address
+     */
+    'lastname': string;
+    /**
+     * 名
+     * @type {string}
+     * @memberof Address
+     */
+    'firstname': string;
+    /**
+     * 姓（かな）
+     * @type {string}
+     * @memberof Address
+     */
+    'lastnameKana': string;
+    /**
+     * 名（かな）
+     * @type {string}
+     * @memberof Address
+     */
+    'firstnameKana': string;
+    /**
+     * 郵便番号
+     * @type {string}
+     * @memberof Address
+     */
+    'postalCode': string;
+    /**
+     * 都道府県
+     * @type {string}
+     * @memberof Address
+     */
+    'prefecture': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof Address
+     */
+    'prefectureCode': Prefecture;
+    /**
+     * 市区町村
+     * @type {string}
+     * @memberof Address
+     */
+    'city': string;
+    /**
+     * 町名・番地
+     * @type {string}
+     * @memberof Address
+     */
+    'addressLine1': string;
+    /**
+     * ビル名・号室など
+     * @type {string}
+     * @memberof Address
+     */
+    'addressLine2': string;
+    /**
+     * 電話番号 (国際番号 + 電話番号)
+     * @type {string}
+     * @memberof Address
+     */
+    'phoneNumber': string;
+}
+
+
+/**
  * 管理者情報
  * @export
  * @interface Admin
@@ -6011,6 +6092,30 @@ export interface User {
      */
     'id': string;
     /**
+     * 
+     * @type {UserStatus}
+     * @memberof User
+     */
+    'status': UserStatus;
+    /**
+     * 会員登録フラグ
+     * @type {boolean}
+     * @memberof User
+     */
+    'registered': boolean;
+    /**
+     * ユーザー名 (表示名)
+     * @type {string}
+     * @memberof User
+     */
+    'username': string;
+    /**
+     * ユーザー名 (検索用)
+     * @type {string}
+     * @memberof User
+     */
+    'accountId': string;
+    /**
      * 姓
      * @type {string}
      * @memberof User
@@ -6035,18 +6140,6 @@ export interface User {
      */
     'firstnameKana': string;
     /**
-     * 会員登録フラグ
-     * @type {boolean}
-     * @memberof User
-     */
-    'registered': boolean;
-    /**
-     * 
-     * @type {UserStatus}
-     * @memberof User
-     */
-    'status': UserStatus;
-    /**
      * メールアドレス
      * @type {string}
      * @memberof User
@@ -6058,36 +6151,6 @@ export interface User {
      * @memberof User
      */
     'phoneNumber': string;
-    /**
-     * 郵便番号
-     * @type {string}
-     * @memberof User
-     */
-    'postalCode': string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof User
-     */
-    'prefectureCode': Prefecture;
-    /**
-     * 市区町村
-     * @type {string}
-     * @memberof User
-     */
-    'city': string;
-    /**
-     * 町名・番地
-     * @type {string}
-     * @memberof User
-     */
-    'addressLine1': string;
-    /**
-     * ビル名・号室など
-     * @type {string}
-     * @memberof User
-     */
-    'addressLine2': string;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -6179,6 +6242,12 @@ export interface UserResponse {
      * @memberof UserResponse
      */
     'user': User;
+    /**
+     * 
+     * @type {Address}
+     * @memberof UserResponse
+     */
+    'address': Address;
 }
 /**
  * 購入者の状態
@@ -6200,13 +6269,9 @@ export const UserStatus = {
     */
     PROVISIONAL: 2,
     /**
-    * 認証済み(初期設定前)
+    * 認証済み
     */
-    VERIFIED: 3,
-    /**
-    * 認証済み(初期設定後)
-    */
-    ACTIVATED: 4
+    VERIFIED: 3
 } as const;
 
 export type UserStatus = typeof UserStatus[keyof typeof UserStatus];

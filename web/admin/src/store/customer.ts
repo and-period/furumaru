@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 
 import { apiClient } from '~/plugins/api-client'
 import type { User, UserOrder, UserToList } from '~/types/api'
+import { useAddressStore } from '~/store'
 
 export const useCustomerStore = defineStore('customer', {
   state: () => ({
@@ -37,7 +38,9 @@ export const useCustomerStore = defineStore('customer', {
     async getCustomer (customerId: string): Promise<void> {
       try {
         const res = await apiClient.userApi().v1GetUser(customerId)
+        const addressStore = useAddressStore()
         this.customer = res.data.user
+        addressStore.address = res.data.address
       } catch (err) {
         return this.errorHandler(err)
       }

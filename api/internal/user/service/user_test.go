@@ -354,9 +354,15 @@ func TestCreateUser(t *testing.T) {
 				expectUser := &entity.User{
 					Registered: true,
 					Member: entity.Member{
-						ProviderType: entity.ProviderTypeEmail,
-						Email:        "test@and-period.jp",
-						PhoneNumber:  "+819012345678",
+						Username:      "username",
+						AccountID:     "account-id",
+						Lastname:      "&.",
+						Firstname:     "利用者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "りようしゃ",
+						ProviderType:  entity.ProviderTypeEmail,
+						Email:         "test@and-period.jp",
+						PhoneNumber:   "+819012345678",
 					},
 				}
 				expectSignUp := &cognito.SignUpParams{
@@ -382,6 +388,12 @@ func TestCreateUser(t *testing.T) {
 					})
 			},
 			input: &user.CreateUserInput{
+				Username:             "username",
+				AccountID:            "account-id",
+				Lastname:             "&.",
+				Firstname:            "利用者",
+				LastnameKana:         "あんどどっと",
+				FirstnameKana:        "りようしゃ",
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "Passw0rd",
@@ -393,17 +405,29 @@ func TestCreateUser(t *testing.T) {
 			name: "success resend confirmation code",
 			setup: func(ctx context.Context, mocks *mocks) {
 				member := &entity.Member{
-					UserID:       "user-id",
-					CognitoID:    "cognito-id",
-					ProviderType: entity.ProviderTypeEmail,
-					Email:        "test@and-period.jp",
-					PhoneNumber:  "+819012345678",
-					VerifiedAt:   time.Time{},
+					UserID:        "user-id",
+					CognitoID:     "cognito-id",
+					Username:      "username",
+					AccountID:     "account-id",
+					Lastname:      "&.",
+					Firstname:     "利用者",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "りようしゃ",
+					ProviderType:  entity.ProviderTypeEmail,
+					Email:         "test@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					VerifiedAt:    time.Time{},
 				}
 				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(member, nil)
 				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(nil)
 			},
 			input: &user.CreateUserInput{
+				Username:             "username",
+				AccountID:            "account-id",
+				Lastname:             "&.",
+				Firstname:            "利用者",
+				LastnameKana:         "あんどどっと",
+				FirstnameKana:        "りようしゃ",
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "Passw0rd",
@@ -421,6 +445,12 @@ func TestCreateUser(t *testing.T) {
 			name:  "failed to unmatch password",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &user.CreateUserInput{
+				Username:             "username",
+				AccountID:            "account-id",
+				Lastname:             "&.",
+				Firstname:            "利用者",
+				LastnameKana:         "あんどどっと",
+				FirstnameKana:        "りようしゃ",
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "Passw0rd",
@@ -434,6 +464,12 @@ func TestCreateUser(t *testing.T) {
 				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(nil, assert.AnError)
 			},
 			input: &user.CreateUserInput{
+				Username:             "username",
+				AccountID:            "account-id",
+				Lastname:             "&.",
+				Firstname:            "利用者",
+				LastnameKana:         "あんどどっと",
+				FirstnameKana:        "りようしゃ",
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "Passw0rd",
@@ -445,17 +481,29 @@ func TestCreateUser(t *testing.T) {
 			name: "failed to resend confirmation code",
 			setup: func(ctx context.Context, mocks *mocks) {
 				member := &entity.Member{
-					UserID:       "user-id",
-					CognitoID:    "cognito-id",
-					ProviderType: entity.ProviderTypeEmail,
-					Email:        "test@and-period.jp",
-					PhoneNumber:  "+819012345678",
-					VerifiedAt:   time.Time{},
+					UserID:        "user-id",
+					CognitoID:     "cognito-id",
+					Username:      "username",
+					AccountID:     "account-id",
+					Lastname:      "&.",
+					Firstname:     "利用者",
+					LastnameKana:  "あんどどっと",
+					FirstnameKana: "りようしゃ",
+					ProviderType:  entity.ProviderTypeEmail,
+					Email:         "test@and-period.jp",
+					PhoneNumber:   "+819012345678",
+					VerifiedAt:    time.Time{},
 				}
 				mocks.db.Member.EXPECT().GetByEmail(ctx, "test@and-period.jp").Return(member, nil)
 				mocks.userAuth.EXPECT().ResendSignUpCode(ctx, "cognito-id").Return(assert.AnError)
 			},
 			input: &user.CreateUserInput{
+				Username:             "username",
+				AccountID:            "account-id",
+				Lastname:             "&.",
+				Firstname:            "利用者",
+				LastnameKana:         "あんどどっと",
+				FirstnameKana:        "りようしゃ",
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "Passw0rd",
@@ -470,6 +518,12 @@ func TestCreateUser(t *testing.T) {
 				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateUserInput{
+				Username:             "username",
+				AccountID:            "account-id",
+				Lastname:             "&.",
+				Firstname:            "利用者",
+				LastnameKana:         "あんどどっと",
+				FirstnameKana:        "りようしゃ",
 				Email:                "test@and-period.jp",
 				PhoneNumber:          "+819012345678",
 				Password:             "Passw0rd",
@@ -619,9 +673,15 @@ func TestCreateUserWithOAuth(t *testing.T) {
 				expectUser := &entity.User{
 					Registered: true,
 					Member: entity.Member{
-						ProviderType: entity.ProviderTypeOAuth,
-						Email:        "test-user@and-period.jp",
-						PhoneNumber:  "+810000000000",
+						Username:      "username",
+						AccountID:     "account-id",
+						Lastname:      "&.",
+						Firstname:     "利用者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "りようしゃ",
+						ProviderType:  entity.ProviderTypeOAuth,
+						Email:         "test-user@and-period.jp",
+						PhoneNumber:   "+810000000000",
 					},
 				}
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(auth, nil)
@@ -635,7 +695,14 @@ func TestCreateUserWithOAuth(t *testing.T) {
 					})
 			},
 			input: &user.CreateUserWithOAuthInput{
-				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				AccessToken:   "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				Username:      "username",
+				AccountID:     "account-id",
+				Lastname:      "&.",
+				Firstname:     "利用者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "りようしゃ",
+				PhoneNumber:   "+810000000000",
 			},
 			expectErr: nil,
 		},
@@ -651,7 +718,14 @@ func TestCreateUserWithOAuth(t *testing.T) {
 				mocks.userAuth.EXPECT().GetUser(ctx, "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ").Return(nil, assert.AnError)
 			},
 			input: &user.CreateUserWithOAuthInput{
-				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				AccessToken:   "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				Username:      "username",
+				AccountID:     "account-id",
+				Lastname:      "&.",
+				Firstname:     "利用者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "りようしゃ",
+				PhoneNumber:   "+810000000000",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -662,7 +736,14 @@ func TestCreateUserWithOAuth(t *testing.T) {
 				mocks.db.Member.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateUserWithOAuthInput{
-				AccessToken: "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				AccessToken:   "eyJraWQiOiJXOWxyODBzODRUVXQ3eWdyZ",
+				Username:      "username",
+				AccountID:     "account-id",
+				Lastname:      "&.",
+				Firstname:     "利用者",
+				LastnameKana:  "あんどどっと",
+				FirstnameKana: "りようしゃ",
+				PhoneNumber:   "+810000000000",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -672,83 +753,6 @@ func TestCreateUserWithOAuth(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.CreateUserWithOAuth(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestInitializeUser(t *testing.T) {
-	t.Parallel()
-	m := &entity.Member{AccountID: ""}
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.InitializeUserInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().Get(ctx, "user-id", "account_id").Return(m, nil)
-				mocks.db.Member.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(nil)
-			},
-			input: &user.InitializeUserInput{
-				UserID:    "user-id",
-				AccountID: "account-id",
-				Username:  "username",
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.InitializeUserInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().Get(ctx, "user-id", "account_id").Return(nil, assert.AnError)
-			},
-			input: &user.InitializeUserInput{
-				UserID:    "user-id",
-				AccountID: "account-id",
-				Username:  "username",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to get user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				m := &entity.Member{AccountID: "account-id"}
-				mocks.db.Member.EXPECT().Get(ctx, "user-id", "account_id").Return(m, nil)
-			},
-			input: &user.InitializeUserInput{
-				UserID:    "user-id",
-				AccountID: "account-id",
-				Username:  "username",
-			},
-			expectErr: exception.ErrFailedPrecondition,
-		},
-		{
-			name: "failed to initilaze user",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Member.EXPECT().Get(ctx, "user-id", "account_id").Return(m, nil)
-				mocks.db.Member.EXPECT().UpdateAccount(ctx, "user-id", "account-id", "username").Return(assert.AnError)
-			},
-			input: &user.InitializeUserInput{
-				UserID:    "user-id",
-				AccountID: "account-id",
-				Username:  "username",
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.InitializeUser(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
@@ -1201,7 +1205,7 @@ func TestDeleteUser(t *testing.T) {
 	m := &entity.User{
 		ID:         "user-id",
 		Registered: true,
-		Status:     entity.UserStatusActivated,
+		Status:     entity.UserStatusVerified,
 		Member: entity.Member{
 			UserID:       "user-id",
 			CognitoID:    "cognito-id",
