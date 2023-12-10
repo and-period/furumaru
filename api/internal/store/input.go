@@ -432,6 +432,11 @@ type GetOrderInput struct {
 	OrderID string `validate:"required"`
 }
 
+type GetOrderByTransactionIDInput struct {
+	UserID        string `validate:"required"`
+	TransactionID string `validate:"required"`
+}
+
 type CaptureOrderInput struct {
 	OrderID string `validate:"required"`
 }

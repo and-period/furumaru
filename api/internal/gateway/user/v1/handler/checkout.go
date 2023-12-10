@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -18,7 +19,7 @@ func (h *handler) checkoutRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/checkouts", h.authentication)
 
 	r.POST("", h.Checkout)
-	r.GET("/:sessionId")
+	r.GET("/:transactionId", h.GetCheckoutState)
 }
 
 func (h *handler) Checkout(ctx *gin.Context) {
@@ -104,10 +105,58 @@ func (h *handler) Checkout(ctx *gin.Context) {
 }
 
 func (h *handler) GetCheckoutState(ctx *gin.Context) {
-	_ = util.GetParam(ctx, "sessionId")
-	// TODO: 詳細の実装
-	res := &response.CheckoutResponse{
-		URL: "http://example.com",
+	in := &store.GetOrderByTransactionIDInput{
+		UserID:        getUserID(ctx),
+		TransactionID: util.GetParam(ctx, "transactionId"),
+	}
+	sorder, err := h.store.GetOrderByTransactionID(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	var (
+		addresses service.Addresses
+		products  service.Products
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		addresses, err = h.multiGetAddressesByRevision(ectx, sorder.AddressRevisionIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		products, err = h.multiGetProductsByRevision(ectx, sorder.ProductRevisionIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	order := service.NewOrder(sorder, addresses.MapByRevision(), products.MapByRevision())
+	var (
+		coordinator *service.Coordinator
+		promotion   *service.Promotion
+	)
+	eg, ectx = errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, order.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
+		if order.PromotionID == "" {
+			return nil
+		}
+		promotion, err = h.getPromotion(ectx, order.PromotionID)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.OrderResponse{
+		Order:       order.Response(),
+		Coordinator: coordinator.Response(),
+		Promotion:   promotion.Response(),
+		Products:    products.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

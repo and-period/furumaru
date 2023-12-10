@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { ScheduleThumbnailsInner } from './ScheduleThumbnailsInner';
+import type { CoordinatorThumbnailsInner } from './CoordinatorThumbnailsInner';
 import {
-    ScheduleThumbnailsInnerFromJSON,
-    ScheduleThumbnailsInnerFromJSONTyped,
-    ScheduleThumbnailsInnerToJSON,
-} from './ScheduleThumbnailsInner';
+    CoordinatorThumbnailsInnerFromJSON,
+    CoordinatorThumbnailsInnerFromJSONTyped,
+    CoordinatorThumbnailsInnerToJSON,
+} from './CoordinatorThumbnailsInner';
 
 /**
  * 
@@ -58,10 +58,10 @@ export interface TopLiveProductsInner {
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<ScheduleThumbnailsInner>}
+     * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof TopLiveProductsInner
      */
-    thumbnails: Array<ScheduleThumbnailsInner>;
+    thumbnails: Array<CoordinatorThumbnailsInner>;
 }
 
 /**
@@ -94,7 +94,7 @@ export function TopLiveProductsInnerFromJSONTyped(json: any, ignoreDiscriminator
         'price': json['price'],
         'inventory': json['inventory'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ScheduleThumbnailsInnerFromJSON)),
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
     };
 }
 
@@ -112,7 +112,7 @@ export function TopLiveProductsInnerToJSON(value?: TopLiveProductsInner | null):
         'price': value.price,
         'inventory': value.inventory,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ScheduleThumbnailsInnerToJSON)),
+        'thumbnails': ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
     };
 }
 

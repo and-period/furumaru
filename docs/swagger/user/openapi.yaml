@@ -82,6 +82,8 @@ paths:
   # Checkout
   /v1/checkouts:
     $ref: './paths/v1/checkouts/index.yaml'
+  /v1/checkouts/{transactionId}:
+    $ref: './paths/v1/checkouts/_transactionId/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
@@ -105,12 +107,22 @@ components:
       $ref: './components/schemas/codes/common.yaml#/weekday'
     imageSize:
       $ref: './components/schemas/codes/image.yaml#/imageSize'
+    orderStatus:
+      $ref: './components/schemas/codes/order.yaml#/orderStatus'
+    fulfillmentStatus:
+      $ref: './components/schemas/codes/order-fulfillment.yaml#/fulfillmentStatus'
+    shippingCarrier:
+      $ref: './components/schemas/codes/order-fulfillment.yaml#/shippingCarrier'
     shippingSize:
-      $ref: './components/schemas/codes/order.yaml#/shippingSize'
+      $ref: './components/schemas/codes/order-fulfillment.yaml#/shippingSize'
     shippingType:
-      $ref: './components/schemas/codes/order.yaml#/shippingType'
+      $ref: './components/schemas/codes/order-fulfillment.yaml#/shippingType'
     paymentMethodType:
-      $ref: './components/schemas/codes/order.yaml#/paymentMethodType'
+      $ref: './components/schemas/codes/order-payment.yaml#/paymentMethodType'
+    paymentStatus:
+      $ref: './components/schemas/codes/order-payment.yaml#/paymentStatus'
+    orderRefundType:
+      $ref: './components/schemas/codes/order-refund.yaml#/orderRefundType'
     productStatus:
       $ref: './components/schemas/codes/product.yaml#/productStatus'
     deliveryType:
@@ -138,6 +150,8 @@ components:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
     live:
       $ref: './components/schemas/entity/live.yaml#/live'
+    order:
+      $ref: './components/schemas/entity/order.yaml#/order'
     producer:
       $ref: './components/schemas/entity/producer.yaml#/producer'
     productTag:
@@ -204,6 +218,8 @@ components:
       $ref: './components/schemas/v1/cart.response.yaml#/calcCartResponse'
     v1CheckoutResponse:
       $ref: './components/schemas/v1/checkout.response.yaml#/checkoutResponse'
+    v1OrderResponse:
+      $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
     v1ProductResponse:

@@ -85,6 +85,23 @@ func (o *order) Get(ctx context.Context, orderID string, fields ...string) (*ent
 	return order, dbError(err)
 }
 
+func (o *order) GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error) {
+	var order *entity.Order
+
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, "orders.*").
+		Joins("INNER JOIN order_payments ON orders.id = order_payments.order_id").
+		Where("orders.user_id = ?", userID).
+		Where("order_payments.transaction_id = ?", transactionID)
+
+	if err := stmt.First(&order).Error; err != nil {
+		return nil, err
+	}
+	if err := o.fill(ctx, o.db.DB, order); err != nil {
+		return nil, err
+	}
+	return order, nil
+}
+
 func (o *order) Create(ctx context.Context, order *entity.Order) error {
 	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
 		count := func(stmt *gorm.DB) *gorm.DB {

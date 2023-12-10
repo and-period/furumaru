@@ -5,6 +5,7 @@ get:
   - Checkout
   security:
   - bearerAuth: []
+  - cookieAuth: []
   requestBody:
     required: true
     content:

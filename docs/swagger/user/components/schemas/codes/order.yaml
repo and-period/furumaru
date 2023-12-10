@@ -1,44 +1,7 @@
-shippingSize:
+orderStatus:
   type: integer
   format: int32
-  description: 配送時の箱の大きさ
-  nullable: false
-  enum:
-  - 0
-  - 1
-  - 2
-  - 3
-  x-enum-varnames:
-  - UNKNOWN
-  - SIZE60
-  - SIZE80
-  - SIZE100
-  x-enum-descriptions:
-  - 不明
-  - '箱のサイズ:60'
-  - '箱のサイズ:80'
-  - '箱のサイズ:100'
-shippingType:
-  type: integer
-  format: int32
-  description: 配送方法
-  nullable: false
-  enum:
-  - 0
-  - 1
-  - 2
-  x-enum-varnames:
-  - UNKNOWN
-  - NORMAL
-  - FROZEN
-  x-enum-descriptions:
-  - 不明
-  - 常温・冷蔵便
-  - 冷凍便
-paymentMethodType:
-  type: integer
-  format: int32
-  description: 決済手段
+  description: 注文ステータス
   nullable: false
   enum:
   - 0
@@ -48,28 +11,19 @@ paymentMethodType:
   - 4
   - 5
   - 6
-  - 7
-  - 8
-  - 9
   x-enum-varnames:
   - UNKNOWN
-  - CASH
-  - CREDIT_CARD
-  - KONBINI
-  - BANK_TRANSFER
-  - PAYPAY
-  - LINE_PAY
-  - MERPAY
-  - RAKUTEN_PAY
-  - AU_PAY
+  - UNPAID
+  - PREPARING
+  - COMPLETED
+  - CANCELED
+  - REFUNDED
+  - FAILED
   x-enum-descriptions:
   - 不明
-  - 代引支払い
-  - クレジットカード決済
-  - コンビニ決済
-  - 銀行振込決済
-  - QR決済（PayPay）
-  - QR決済（Line Pay）
-  - QR決済（メルペイ）
-  - QR決済（楽天ペイ）
-  - QR決済（au PAY）
+  - 支払い待ち
+  - 発送対応中
+  - 完了
+  - キャンセル
+  - 返金
+  - 失敗

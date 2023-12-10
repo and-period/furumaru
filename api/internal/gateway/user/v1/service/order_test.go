@@ -2,276 +2,549 @@ package service
 
 import (
 	"testing"
+	"time"
 
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestShippingSize(t *testing.T) {
+func TestOrderStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		order    *entity.Order
+		expect   OrderStatus
+		response int32
+	}{
+		{
+			name:     "empty",
+			order:    nil,
+			expect:   OrderStatusUnknown,
+			response: 0,
+		},
+		{
+			name: "unpaid",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusPending},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusUnpaid,
+			response: 1,
+		},
+		{
+			name: "preparing",
+			order: &entity.Order{
+				OrderPayment: entity.OrderPayment{Status: entity.PaymentStatusCaptured},
+				OrderFulfillments: entity.OrderFulfillments{{
+					Status: entity.FulfillmentStatusUnfulfilled,
+				}},
+				CompletedAt: time.Time{},
+			},
+			expect:   OrderStatusPreparing,
+			response: 2,
+		},
+		{
+			name: "completed",
+			order: &entity.Order{
+				OrderPayment: entity.OrderPayment{Status: entity.PaymentStatusCaptured},
+				OrderFulfillments: entity.OrderFulfillments{{
+					Status: entity.FulfillmentStatusFulfilled,
+				}},
+				CompletedAt: time.Now(),
+			},
+			expect:   OrderStatusCompleted,
+			response: 3,
+		},
+		{
+			name: "canceled",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusCanceled},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusCanceled,
+			response: 4,
+		},
+		{
+			name: "refunded",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusRefunded},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusRefunded,
+			response: 5,
+		},
+		{
+			name: "failed",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusFailed},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusFailed,
+			response: 6,
+		},
+		{
+			name: "unknown",
+			order: &entity.Order{
+				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusUnknown},
+				OrderFulfillments: entity.OrderFulfillments{},
+				CompletedAt:       time.Time{},
+			},
+			expect:   OrderStatusUnknown,
+			response: 0,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewOrderStatus(tt.order)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.response, actual.Response())
+		})
+	}
+}
+
+func TestOrder(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		order     *entity.Order
+		addresses map[int64]*Address
+		products  map[int64]*Product
+		expect    *Order
+	}{
+		{
+			name: "success",
+			order: &entity.Order{
+				ID:            "order-id",
+				UserID:        "user-id",
+				CoordinatorID: "coordinator-id",
+				PromotionID:   "promotion-id",
+				ManagementID:  1,
+				OrderPayment: entity.OrderPayment{
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					TransactionID:     "transaction-id",
+					Status:            entity.PaymentStatusCaptured,
+					MethodType:        entity.PaymentMethodTypeCreditCard,
+					Subtotal:          1980,
+					Discount:          0,
+					ShippingFee:       550,
+					Tax:               253,
+					Total:             2783,
+					RefundTotal:       0,
+					RefundType:        entity.RefundTypeNone,
+					RefundReason:      "",
+					OrderedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					PaidAt:            jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					RefundedAt:        time.Time{},
+					CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				},
+				OrderFulfillments: entity.OrderFulfillments{
+					{
+						ID:                "fulfillment-id",
+						OrderID:           "order-id",
+						AddressRevisionID: 1,
+						TrackingNumber:    "",
+						Status:            entity.FulfillmentStatusFulfilled,
+						ShippingCarrier:   entity.ShippingCarrierUnknown,
+						ShippingType:      entity.ShippingTypeNormal,
+						BoxNumber:         1,
+						BoxSize:           entity.ShippingSize60,
+						CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						ShippedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					},
+				},
+				OrderItems: entity.OrderItems{
+					{
+						FulfillmentID:     "fulfillment-id",
+						OrderID:           "order-id",
+						ProductRevisionID: 1,
+						Quantity:          1,
+						CreatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						UpdatedAt:         jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					},
+				},
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+			},
+			addresses: map[int64]*Address{
+				1: {
+					Address: response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+					revisionID: 1,
+				},
+			},
+			products: map[int64]*Product{
+				1: {
+					Product: response.Product{
+						ID:              "product-id",
+						CoordinatorID:   "coordinator-id",
+						ProducerID:      "producer-id",
+						CategoryID:      "promotion-id",
+						ProductTypeID:   "product-type-id",
+						ProductTagIDs:   []string{"product-tag-id"},
+						Name:            "新鮮なじゃがいも",
+						Description:     "新鮮なじゃがいもをお届けします。",
+						Status:          int32(ProductStatusForSale),
+						Inventory:       100,
+						Weight:          1.3,
+						ItemUnit:        "袋",
+						ItemDescription: "1袋あたり100gのじゃがいも",
+						Media: []*response.ProductMedia{
+							{
+								URL:         "https://and-period.jp/thumbnail01.png",
+								IsThumbnail: true,
+								Images:      []*response.Image{},
+							},
+							{
+								URL:         "https://and-period.jp/thumbnail02.png",
+								IsThumbnail: false,
+								Images:      []*response.Image{},
+							},
+						},
+						Price:             400,
+						RecommendedPoint1: "ポイント1",
+						RecommendedPoint2: "ポイント2",
+						RecommendedPoint3: "ポイント3",
+						StorageMethodType: int32(StorageMethodTypeNormal),
+						DeliveryType:      int32(DeliveryTypeNormal),
+						Box60Rate:         50,
+						Box80Rate:         40,
+						Box100Rate:        30,
+						OriginCity:        "彦根市",
+						StartAt:           1640962800,
+						EndAt:             1640962800,
+					},
+				},
+			},
+			expect: &Order{
+				Order: response.Order{
+					ID:            "order-id",
+					CoordinatorID: "coordinator-id",
+					PromotionID:   "promotion-id",
+					Status:        int32(OrderStatusPreparing),
+					Payment: &response.OrderPayment{
+						TransactionID: "transaction-id",
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
+						Status:        PaymentStatusPaid.Response(),
+						Subtotal:      1980,
+						Discount:      0,
+						ShippingFee:   550,
+						Tax:           253,
+						Total:         2783,
+						OrderedAt:     1640962800,
+						PaidAt:        1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
+					},
+					Fulfillments: []*response.OrderFulfillment{
+						{
+							FulfillmentID:   "fulfillment-id",
+							TrackingNumber:  "",
+							Status:          FulfillmentStatusFulfilled.Response(),
+							ShippingCarrier: ShippingCarrierUnknown.Response(),
+							ShippingType:    ShippingTypeNormal.Response(),
+							BoxNumber:       1,
+							BoxSize:         ShippingSize60.Response(),
+							ShippedAt:       1640962800,
+							Address: &response.Address{
+								Lastname:       "&.",
+								Firstname:      "購入者",
+								PostalCode:     "1000014",
+								PrefectureCode: 13,
+								City:           "千代田区",
+								AddressLine1:   "永田町1-7-1",
+								AddressLine2:   "",
+								PhoneNumber:    "+819012345678",
+							},
+						},
+					},
+					Refund: &response.OrderRefund{
+						Total:      0,
+						Type:       RefundTypeNone.Response(),
+						Reason:     "",
+						Canceled:   false,
+						CanceledAt: 0,
+					},
+					Items: []*response.OrderItem{
+						{
+							FulfillmentID: "fulfillment-id",
+							ProductID:     "product-id",
+							Price:         400,
+							Quantity:      1,
+						},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expect, NewOrder(tt.order, tt.addresses, tt.products))
+		})
+	}
+}
+
+func TestOrder_ProductIDs(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		status entity.ShippingSize
-		expect ShippingSize
+		order  *Order
+		expect []string
 	}{
 		{
-			name:   "size 60",
-			status: entity.ShippingSize60,
-			expect: ShippingSize60,
-		},
-		{
-			name:   "size 80",
-			status: entity.ShippingSize80,
-			expect: ShippingSize80,
-		},
-		{
-			name:   "size 100",
-			status: entity.ShippingSize100,
-			expect: ShippingSize100,
-		},
-		{
-			name:   "unknown",
-			status: entity.ShippingSizeUnknown,
-			expect: ShippingSizeUnknown,
+			name: "success",
+			order: &Order{
+				Order: response.Order{
+					ID:            "order-id",
+					CoordinatorID: "coordinator-id",
+					PromotionID:   "",
+					Status:        int32(OrderStatusPreparing),
+					Payment: &response.OrderPayment{
+						TransactionID: "transaction-id",
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
+						Status:        PaymentStatusPaid.Response(),
+						Subtotal:      1100,
+						Discount:      0,
+						ShippingFee:   500,
+						Tax:           160,
+						Total:         1760,
+						OrderedAt:     1640962800,
+						PaidAt:        1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
+					},
+					Fulfillments: []*response.OrderFulfillment{
+						{
+							FulfillmentID:   "fulfillment-id",
+							TrackingNumber:  "",
+							Status:          FulfillmentStatusFulfilled.Response(),
+							ShippingCarrier: ShippingCarrierUnknown.Response(),
+							ShippingType:    ShippingTypeNormal.Response(),
+							BoxNumber:       1,
+							BoxSize:         ShippingSize60.Response(),
+							ShippedAt:       1640962800,
+							Address: &response.Address{
+								Lastname:       "&.",
+								Firstname:      "購入者",
+								PostalCode:     "1000014",
+								PrefectureCode: 13,
+								City:           "千代田区",
+								AddressLine1:   "永田町1-7-1",
+								AddressLine2:   "",
+								PhoneNumber:    "+819012345678",
+							},
+						},
+					},
+					Refund: &response.OrderRefund{
+						Total:      0,
+						Type:       RefundTypeNone.Response(),
+						Reason:     "",
+						Canceled:   false,
+						CanceledAt: 0,
+					},
+					Items: []*response.OrderItem{
+						{
+							FulfillmentID: "fulfillment-id",
+							ProductID:     "product-id",
+							Price:         400,
+							Quantity:      1,
+						},
+					},
+				},
+			},
+			expect: []string{"product-id"},
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, NewShippingSize(tt.status))
+			assert.ElementsMatch(t, tt.expect, tt.order.ProductIDs())
 		})
 	}
 }
 
-func TestShippingSize_Response(t *testing.T) {
+func TestOrder_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		status ShippingSize
-		expect int32
+		order  *Order
+		expect *response.Order
 	}{
 		{
-			name:   "success",
-			status: ShippingSize60,
-			expect: 1,
+			name: "success",
+			order: &Order{
+				Order: response.Order{
+					ID:            "order-id",
+					CoordinatorID: "coordinator-id",
+					PromotionID:   "promotion-id",
+					Status:        int32(OrderStatusPreparing),
+					Payment: &response.OrderPayment{
+						TransactionID: "transaction-id",
+						MethodType:    PaymentMethodTypeCreditCard.Response(),
+						Status:        PaymentStatusPaid.Response(),
+						Subtotal:      1980,
+						Discount:      0,
+						ShippingFee:   550,
+						Tax:           253,
+						Total:         2783,
+						OrderedAt:     1640962800,
+						PaidAt:        1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
+					},
+					Fulfillments: []*response.OrderFulfillment{
+						{
+							FulfillmentID:   "fulfillment-id",
+							TrackingNumber:  "",
+							Status:          FulfillmentStatusFulfilled.Response(),
+							ShippingCarrier: ShippingCarrierUnknown.Response(),
+							ShippingType:    ShippingTypeNormal.Response(),
+							BoxNumber:       1,
+							BoxSize:         ShippingSize60.Response(),
+							ShippedAt:       1640962800,
+							Address: &response.Address{
+								Lastname:       "&.",
+								Firstname:      "購入者",
+								PostalCode:     "1000014",
+								PrefectureCode: 13,
+								City:           "千代田区",
+								AddressLine1:   "永田町1-7-1",
+								AddressLine2:   "",
+								PhoneNumber:    "+819012345678",
+							},
+						},
+					},
+					Refund: &response.OrderRefund{
+						Total:      0,
+						Type:       RefundTypeNone.Response(),
+						Reason:     "",
+						Canceled:   false,
+						CanceledAt: 0,
+					},
+					Items: []*response.OrderItem{
+						{
+							FulfillmentID: "fulfillment-id",
+							ProductID:     "product-id",
+							Price:         400,
+							Quantity:      1,
+						},
+					},
+				},
+			},
+			expect: &response.Order{
+				ID:            "order-id",
+				CoordinatorID: "coordinator-id",
+				PromotionID:   "promotion-id",
+				Status:        int32(OrderStatusPreparing),
+				Payment: &response.OrderPayment{
+					TransactionID: "transaction-id",
+					MethodType:    PaymentMethodTypeCreditCard.Response(),
+					Status:        PaymentStatusPaid.Response(),
+					Subtotal:      1980,
+					Discount:      0,
+					ShippingFee:   550,
+					Tax:           253,
+					Total:         2783,
+					OrderedAt:     1640962800,
+					PaidAt:        1640962800,
+					Address: &response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+				},
+				Fulfillments: []*response.OrderFulfillment{
+					{
+						FulfillmentID:   "fulfillment-id",
+						TrackingNumber:  "",
+						Status:          FulfillmentStatusFulfilled.Response(),
+						ShippingCarrier: ShippingCarrierUnknown.Response(),
+						ShippingType:    ShippingTypeNormal.Response(),
+						BoxNumber:       1,
+						BoxSize:         ShippingSize60.Response(),
+						ShippedAt:       1640962800,
+						Address: &response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "+819012345678",
+						},
+					},
+				},
+				Refund: &response.OrderRefund{
+					Total:      0,
+					Type:       RefundTypeNone.Response(),
+					Reason:     "",
+					Canceled:   false,
+					CanceledAt: 0,
+				},
+				Items: []*response.OrderItem{
+					{
+						FulfillmentID: "fulfillment-id",
+						ProductID:     "product-id",
+						Price:         400,
+						Quantity:      1,
+					},
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.status.Response())
-		})
-	}
-}
-
-func TestShippingType(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		status entity.ShippingType
-		expect ShippingType
-	}{
-		{
-			name:   "normal",
-			status: entity.ShippingTypeNormal,
-			expect: ShippingTypeNormal,
-		},
-		{
-			name:   "frozen",
-			status: entity.ShippingTypeFrozen,
-			expect: ShippingTypeFrozen,
-		},
-		{
-			name:   "unknown",
-			status: entity.ShippingTypeUnknown,
-			expect: ShippingTypeUnknown,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, NewShippingType(tt.status))
-		})
-	}
-}
-
-func TestShippingType_Response(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		status ShippingType
-		expect int32
-	}{
-		{
-			name:   "success",
-			status: ShippingTypeNormal,
-			expect: 1,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.status.Response())
-		})
-	}
-}
-
-func TestPaymentMethodType(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name       string
-		methodType entity.PaymentMethodType
-		expect     PaymentMethodType
-	}{
-		{
-			name:       "cash",
-			methodType: entity.PaymentMethodTypeCash,
-			expect:     PaymentMethodTypeCash,
-		},
-		{
-			name:       "credit card",
-			methodType: entity.PaymentMethodTypeCreditCard,
-			expect:     PaymentMethodTypeCreditCard,
-		},
-		{
-			name:       "konbini",
-			methodType: entity.PaymentMethodTypeKonbini,
-			expect:     PaymentMethodTypeKonbini,
-		},
-		{
-			name:       "bank transfer",
-			methodType: entity.PaymentMethodTypeBankTranser,
-			expect:     PaymentMethodTypeBankTranser,
-		},
-		{
-			name:       "paypay",
-			methodType: entity.PaymentMethodTypePayPay,
-			expect:     PaymentMethodTypePayPay,
-		},
-		{
-			name:       "line pay",
-			methodType: entity.PaymentMethodTypeLinePay,
-			expect:     PaymentMethodTypeLinePay,
-		},
-		{
-			name:       "merpay",
-			methodType: entity.PaymentMethodTypeMerpay,
-			expect:     PaymentMethodTypeMerpay,
-		},
-		{
-			name:       "rakuten pay",
-			methodType: entity.PaymentMethodTypeRakutenPay,
-			expect:     PaymentMethodTypeRakutenPay,
-		},
-		{
-			name:       "au pay",
-			methodType: entity.PaymentMethodTypeAUPay,
-			expect:     PaymentMethodTypeAUPay,
-		},
-		{
-			name:       "unknown",
-			methodType: entity.PaymentMethodTypeUnknown,
-			expect:     PaymentMethodTypeUnknown,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, NewPaymentMethodType(tt.methodType))
-		})
-	}
-}
-
-func TestPaymentMethodType_StoreEntity(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name       string
-		methodType PaymentMethodType
-		expect     entity.PaymentMethodType
-	}{
-		{
-			name:       "cash",
-			methodType: PaymentMethodTypeCash,
-			expect:     entity.PaymentMethodTypeCash,
-		},
-		{
-			name:       "credit card",
-			methodType: PaymentMethodTypeCreditCard,
-			expect:     entity.PaymentMethodTypeCreditCard,
-		},
-		{
-			name:       "konbini",
-			methodType: PaymentMethodTypeKonbini,
-			expect:     entity.PaymentMethodTypeKonbini,
-		},
-		{
-			name:       "bank transfer",
-			methodType: PaymentMethodTypeBankTranser,
-			expect:     entity.PaymentMethodTypeBankTranser,
-		},
-		{
-			name:       "paypay",
-			methodType: PaymentMethodTypePayPay,
-			expect:     entity.PaymentMethodTypePayPay,
-		},
-		{
-			name:       "line pay",
-			methodType: PaymentMethodTypeLinePay,
-			expect:     entity.PaymentMethodTypeLinePay,
-		},
-		{
-			name:       "merpay",
-			methodType: PaymentMethodTypeMerpay,
-			expect:     entity.PaymentMethodTypeMerpay,
-		},
-		{
-			name:       "rakuten pay",
-			methodType: PaymentMethodTypeRakutenPay,
-			expect:     entity.PaymentMethodTypeRakutenPay,
-		},
-		{
-			name:       "au pay",
-			methodType: PaymentMethodTypeAUPay,
-			expect:     entity.PaymentMethodTypeAUPay,
-		},
-		{
-			name:       "unknown",
-			methodType: PaymentMethodTypeUnknown,
-			expect:     entity.PaymentMethodTypeUnknown,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.methodType.StoreEntity())
-		})
-	}
-}
-
-func TestPaymentMethodType_Response(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name              string
-		PaymentMethodType PaymentMethodType
-		expect            int32
-	}{
-		{
-			name:              "success",
-			PaymentMethodType: PaymentMethodTypeCreditCard,
-			expect:            2,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.PaymentMethodType.Response())
+			assert.Equal(t, tt.expect, tt.order.Response())
 		})
 	}
 }

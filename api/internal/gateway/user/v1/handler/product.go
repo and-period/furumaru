@@ -184,3 +184,17 @@ func (h *handler) getProduct(ctx context.Context, productID string) (*service.Pr
 	}
 	return service.NewProduct(sproduct), nil
 }
+
+func (h *handler) multiGetProductsByRevision(ctx context.Context, revisionIDs []int64) (service.Products, error) {
+	if len(revisionIDs) == 0 {
+		return service.Products{}, nil
+	}
+	in := &store.MultiGetProductsByRevisionInput{
+		ProductRevisionIDs: revisionIDs,
+	}
+	products, err := h.store.MultiGetProductsByRevision(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducts(products), nil
+}

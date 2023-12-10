@@ -22,6 +22,7 @@ func TestAddress(t *testing.T) {
 				UserID:    "user-id",
 				IsDefault: true,
 				AddressRevision: entity.AddressRevision{
+					ID:             1,
 					Lastname:       "&.",
 					Firstname:      "購入者",
 					LastnameKana:   "あんどどっと",
@@ -51,6 +52,7 @@ func TestAddress(t *testing.T) {
 					AddressLine2:   "",
 					PhoneNumber:    "+819012345678",
 				},
+				revisionID: 1,
 			},
 		},
 	}
@@ -89,6 +91,7 @@ func TestAddress_Response(t *testing.T) {
 					AddressLine2:   "",
 					PhoneNumber:    "+819012345678",
 				},
+				revisionID: 1,
 			},
 			expect: &response.Address{
 				ID:             "address-id",
@@ -131,6 +134,7 @@ func TestAddresses(t *testing.T) {
 					UserID:    "user-id",
 					IsDefault: true,
 					AddressRevision: entity.AddressRevision{
+						ID:             1,
 						Lastname:       "&.",
 						Firstname:      "購入者",
 						LastnameKana:   "あんどどっと",
@@ -162,6 +166,7 @@ func TestAddresses(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "+819012345678",
 					},
+					revisionID: 1,
 				},
 			},
 		},
@@ -172,6 +177,60 @@ func TestAddresses(t *testing.T) {
 			t.Parallel()
 			actual := NewAddresses(tt.addresses)
 			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestAddresses_MapRevision(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		addresses Addresses
+		expect    map[int64]*Address
+	}{
+		{
+			name: "success",
+			addresses: Addresses{
+				{
+					Address: response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						LastnameKana:   "あんどどっと",
+						FirstnameKana:  "こうにゅうしゃ",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+					revisionID: 1,
+				},
+			},
+			expect: map[int64]*Address{
+				1: {
+					Address: response.Address{
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						LastnameKana:   "あんどどっと",
+						FirstnameKana:  "こうにゅうしゃ",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "+819012345678",
+					},
+					revisionID: 1,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.addresses.MapByRevision())
 		})
 	}
 }
@@ -202,6 +261,7 @@ func TestAddresses_Response(t *testing.T) {
 						AddressLine2:   "",
 						PhoneNumber:    "+819012345678",
 					},
+					revisionID: 1,
 				},
 			},
 			expect: []*response.Address{

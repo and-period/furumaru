@@ -25,6 +25,12 @@ import {
     CoordinatorThumbnailsInnerFromJSONTyped,
     CoordinatorThumbnailsInnerToJSON,
 } from './CoordinatorThumbnailsInner';
+import type { Weekday } from './Weekday';
+import {
+    WeekdayFromJSON,
+    WeekdayFromJSONTyped,
+    WeekdayToJSON,
+} from './Weekday';
 
 /**
  * コーディネータ情報
@@ -64,10 +70,10 @@ export interface Coordinator {
     productTypeIds: Array<string>;
     /**
      * 営業曜日
-     * @type {Array<object>}
+     * @type {Array<Weekday>}
      * @memberof Coordinator
      */
-    businessDays: Array<object>;
+    businessDays: Array<Weekday>;
     /**
      * サムネイルURL
      * @type {string}
@@ -163,7 +169,7 @@ export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'username': json['username'],
         'profile': json['profile'],
         'productTypeIds': json['productTypeIds'],
-        'businessDays': json['businessDays'],
+        'businessDays': ((json['businessDays'] as Array<any>).map(WeekdayFromJSON)),
         'thumbnailUrl': json['thumbnailUrl'],
         'thumbnails': ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
         'headerUrl': json['headerUrl'],
@@ -190,7 +196,7 @@ export function CoordinatorToJSON(value?: Coordinator | null): any {
         'username': value.username,
         'profile': value.profile,
         'productTypeIds': value.productTypeIds,
-        'businessDays': value.businessDays,
+        'businessDays': ((value.businessDays as Array<any>).map(WeekdayToJSON)),
         'thumbnailUrl': value.thumbnailUrl,
         'thumbnails': ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
         'headerUrl': value.headerUrl,

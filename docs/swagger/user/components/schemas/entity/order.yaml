@@ -1,0 +1,354 @@
+order:
+  type: object
+  description: 注文履歴情報
+  properties:
+    id:
+      type: string
+      description: 注文履歴ID
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    promotionId:
+      type: string
+      description: プロモーションID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/orderStatus'
+    payment:
+      $ref: '#/orderPayment'
+    refund:
+      $ref: '#/orderRefund'
+    fulfillments:
+      type: array
+      description: 注文配送一覧
+      items:
+        $ref: '#/orderFulfillment'
+    items:
+      type: array
+      description: 注文商品一覧
+      items:
+        $ref: '#/orderItem'
+  required:
+  - id
+  - coordinatorId
+  - promotionId
+  - status
+  - payment
+  - refund
+  - fulfillments
+  - items
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 5
+    payment:
+      transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      methodType: 2
+      status: 4
+      subtotal: 1000
+      discount: 200
+      shippingFee: 500
+      tax: 130
+      total: 1430
+      orderedAt: 1640962800
+      paidAt: 1640962800
+      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '購入者'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
+    refund:
+      total: 0
+      type: 2
+      reason: ''
+      canceled: false
+      canceledAt: 0
+    fulfillments:
+    - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+      trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 1
+      shippingCarrier: 1
+      shippingType: 1
+      boxNumber: 1
+      boxSize: 2
+      boxRate: 80
+      shippedAt: 0
+      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+      lastname: '&.'
+      firstname: '購入者'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
+    items:
+    - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productId: 'kSByoE6FetnPs5Byk3a9Zx'
+      price: 500
+      quantity: 2
+orderPayment:
+  type: object
+  description: 注文決済情報
+  properties:
+    transactionId:
+      type: string
+      description: 取引ID
+    methodType:
+      $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/paymentStatus'
+    subtotal:
+      type: integer
+      format: int64
+      description: 購入金額
+    discount:
+      type: integer
+      format: int64
+      description: 割引金額
+    shippingFee:
+      type: integer
+      format: int64
+      description: 配送手数料
+    tax:
+      type: integer
+      format: int64
+      description: 消費税
+    total:
+      type: integer
+      format: int64
+      description: 合計金額
+    orderedAt:
+      type: integer
+      format: int64
+      description: 注文日時（unixtime）
+    paidAt:
+      type: integer
+      format: int64
+      description: 支払日時（unixtime）
+    addressId:
+      type: string
+      description: 請求先 住所ID
+    lastname:
+      type: string
+      description: 請求先 氏名（姓）
+    firstname:
+      type: string
+      description: 請求先 氏名（名）
+    postalCode:
+      type: string
+      description: 請求先 郵便番号
+    prefectureCode:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+      description: 請求先 都道府県
+    city:
+      type: string
+      description: 請求先 市区町村
+    addressLine1:
+      type: string
+      description: 請求先 町名・番地
+    addressLine2:
+      type: string
+      description: 請求先 ビル名・号室など
+    phoneNumber:
+      type: string
+      description: 請求先 電話番号
+  required:
+  - transactionId
+  - methodType
+  - status
+  - subtotal
+  - discount
+  - shippingFee
+  - tax
+  - total
+  - orderedAt
+  - paidAt
+  - addressId
+  - lastname
+  - firstname
+  - postalCode
+  - prefectureCode
+  - city
+  - addressLine1
+  - addressLine2
+  - phoneNumber
+  example:
+    transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
+    methodType: 2
+    status: 4
+    subtotal: 1000
+    discount: 200
+    shippingFee: 500
+    tax: 130
+    total: 1430
+    orderedAt: 1640962800
+    paidAt: 1640962800
+    addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+    lastname: '&.'
+    firstname: '購入者'
+    postalCode: '1000014'
+    prefectureCode: 13
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    phoneNumber: '+819012345678'
+orderRefund:
+  type: object
+  description: 注文キャンセル情報
+  properties:
+    total:
+      type: integer
+      format: int64
+      description: 返金金額
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/orderRefundType'
+    reason:
+      type: string
+      description: 注文キャンセル理由
+    canceled:
+      type: boolean
+      description: 注文キャンセルフラグ
+    canceledAt:
+      type: integer
+      format: int64
+      description: 注文キャンセル日時（unixtime）
+  required:
+  - total
+  - type
+  - reason
+  - canceled
+  - canceledAt
+  example:
+    total: 0
+    type: 2
+    reason: ''
+    canceled: false
+    canceledAt: 0
+orderFulfillment:
+  type: object
+  description: 注文配送情報
+  properties:
+    fulfillmentId:
+      type: string
+      description: 注文配送ID
+    trackingNumber:
+      type: string
+      description: 伝票番号
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/fulfillmentStatus'
+    shippingCarrier:
+      $ref: './../../../openapi.yaml#/components/schemas/shippingCarrier'
+    shippingType:
+      $ref: './../../../openapi.yaml#/components/schemas/shippingType'
+    boxNumber:
+      type: integer
+      format: int64
+      description: 箱の通番
+    boxSize:
+      $ref: './../../../openapi.yaml#/components/schemas/shippingSize'
+    boxRate:
+      type: integer
+      format: int64
+      description: 箱の占有率
+    shippedAt:
+      type: integer
+      format: int64
+      description: 配送日時（unixtime）
+    addressId:
+      type: string
+      description: 配送先 住所ID
+    lastname:
+      type: string
+      description: 配送先 氏名（姓）
+    firstname:
+      type: string
+      description: 配送先 氏名（名）
+    postalCode:
+      type: string
+      description: 配送先 郵便番号
+    prefectureCode:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+      description: 配送先 都道府県
+    city:
+      type: string
+      description: 配送先 市区町村
+    addressLine1:
+      type: string
+      description: 配送先 町名・番地
+    addressLine2:
+      type: string
+      description: 配送先 ビル名・号室など
+    phoneNumber:
+      type: string
+      description: 配送先 電話番号
+  required:
+  - fulfillmentId
+  - trackingNumber
+  - status
+  - shippingCarrier
+  - shippingType
+  - boxNumber
+  - boxSize
+  - boxRate
+  - shippedAt
+  - addressId
+  - lastname
+  - firstname
+  - postalCode
+  - prefectureCode
+  - city
+  - addressLine1
+  - addressLine2
+  - phoneNumber
+  example:
+    fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+    trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 1
+    shippingCarrier: 1
+    shippingType: 1
+    boxNumber: 1
+    boxSize: 2
+    boxRate: 80
+    shippedAt: 0
+    addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+    lastname: '&.'
+    firstname: '購入者'
+    postalCode: '1000014'
+    prefectureCode: 13
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    phoneNumber: '+819012345678'
+orderItem:
+  type: object
+  description: 注文商品情報
+  properties:
+    fulfillmentId:
+      type: string
+      description: 注文配送ID
+    productId:
+      type: string
+      description: 商品ID
+    price:
+      type: integer
+      format: int64
+      description: 購入価格
+    quantity:
+      type: integer
+      format: int64
+      description: 購入数量
+  required:
+  - fulfillmentId
+  - productId
+  - price
+  - quantity
+  example:
+    fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+    productId: 'kSByoE6FetnPs5Byk3a9Zx'
+    price: 500
+    quantity: 2

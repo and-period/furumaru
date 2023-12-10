@@ -13,18 +13,18 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { CoordinatorThumbnailsInner } from './CoordinatorThumbnailsInner';
+import {
+    CoordinatorThumbnailsInnerFromJSON,
+    CoordinatorThumbnailsInnerFromJSONTyped,
+    CoordinatorThumbnailsInnerToJSON,
+} from './CoordinatorThumbnailsInner';
 import type { ScheduleStatus } from './ScheduleStatus';
 import {
     ScheduleStatusFromJSON,
     ScheduleStatusFromJSONTyped,
     ScheduleStatusToJSON,
 } from './ScheduleStatus';
-import type { ScheduleThumbnailsInner } from './ScheduleThumbnailsInner';
-import {
-    ScheduleThumbnailsInnerFromJSON,
-    ScheduleThumbnailsInnerFromJSONTyped,
-    ScheduleThumbnailsInnerToJSON,
-} from './ScheduleThumbnailsInner';
 
 /**
  * マルシェ開催スケジュール情報
@@ -70,10 +70,10 @@ export interface Schedule {
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<ScheduleThumbnailsInner>}
+     * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof Schedule
      */
-    thumbnails: Array<ScheduleThumbnailsInner>;
+    thumbnails: Array<CoordinatorThumbnailsInner>;
     /**
      * 映像配信URL
      * @type {string}
@@ -129,7 +129,7 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'title': json['title'],
         'description': json['description'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ScheduleThumbnailsInnerFromJSON)),
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
         'distributionUrl': json['distributionUrl'],
         'startAt': json['startAt'],
         'endAt': json['endAt'],
@@ -151,7 +151,7 @@ export function ScheduleToJSON(value?: Schedule | null): any {
         'title': value.title,
         'description': value.description,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ScheduleThumbnailsInnerToJSON)),
+        'thumbnails': ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
         'distributionUrl': value.distributionUrl,
         'startAt': value.startAt,
         'endAt': value.endAt,

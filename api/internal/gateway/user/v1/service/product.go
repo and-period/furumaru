@@ -39,6 +39,7 @@ const (
 
 type Product struct {
 	response.Product
+	revisionID int64
 }
 
 type Products []*Product
@@ -163,6 +164,7 @@ func NewProduct(product *entity.Product) *Product {
 			StartAt:           product.StartAt.Unix(),
 			EndAt:             product.EndAt.Unix(),
 		},
+		revisionID: product.ProductRevision.ID,
 	}
 }
 
@@ -180,6 +182,14 @@ func NewProducts(products entity.Products) Products {
 	res := make(Products, len(products))
 	for i := range products {
 		res[i] = NewProduct(products[i])
+	}
+	return res
+}
+
+func (ps Products) MapByRevision() map[int64]*Product {
+	res := make(map[int64]*Product, len(ps))
+	for _, p := range ps {
+		res[p.revisionID] = p
 	}
 	return res
 }

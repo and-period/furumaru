@@ -18,6 +18,7 @@ import type {
   CheckoutRequest,
   CheckoutResponse,
   ErrorResponse,
+  OrderResponse,
 } from '../models/index';
 import {
     CheckoutRequestFromJSON,
@@ -26,10 +27,16 @@ import {
     CheckoutResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    OrderResponseFromJSON,
+    OrderResponseToJSON,
 } from '../models/index';
 
 export interface V1CheckoutRequest {
     body: CheckoutRequest;
+}
+
+export interface V1GetCartRequest {
+    transactionId: string;
 }
 
 /**
@@ -75,6 +82,44 @@ export class CheckoutApi extends runtime.BaseAPI {
      */
     async v1Checkout(requestParameters: V1CheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
         const response = await this.v1CheckoutRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 注文情報の取得
+     */
+    async v1GetCartRaw(requestParameters: V1GetCartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OrderResponse>> {
+        if (requestParameters.transactionId === null || requestParameters.transactionId === undefined) {
+            throw new runtime.RequiredError('transactionId','Required parameter requestParameters.transactionId was null or undefined when calling v1GetCart.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/checkouts/{transactionId}`.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters.transactionId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => OrderResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 注文情報の取得
+     */
+    async v1GetCart(requestParameters: V1GetCartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OrderResponse> {
+        const response = await this.v1GetCartRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
