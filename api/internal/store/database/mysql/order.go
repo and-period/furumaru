@@ -89,7 +89,7 @@ func (o *order) GetByTransactionID(ctx context.Context, userID, transactionID st
 	var order *entity.Order
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, "orders.*").
-		Joins("INNER JOIN order_payments.order_id ON orders.id = order_payments.order_id").
+		Joins("INNER JOIN order_payments ON orders.id = order_payments.order_id").
 		Where("orders.user_id = ?", userID).
 		Where("order_payments.transaction_id = ?", transactionID)
 
