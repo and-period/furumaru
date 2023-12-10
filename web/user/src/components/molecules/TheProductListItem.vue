@@ -62,7 +62,7 @@ const handleClickAddCartButton = () => {
     </div>
 
     <p
-      class="mt-2 grow text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
+      class="mt-2 line-clamp-3 grow text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
     >
       {{ name }}
     </p>
