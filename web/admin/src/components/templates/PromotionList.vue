@@ -194,7 +194,7 @@ const onClickDelete = (): void => {
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat :loading="props.loading">
+  <v-card class="mt-4" flat>
     <v-card-title class="d-flex flex-row">
       セール情報
       <v-spacer />
@@ -207,6 +207,7 @@ const onClickDelete = (): void => {
     <v-card-text>
       <v-data-table-server
         :headers="headers"
+        :loading="loading"
         :items="promotions"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"

@@ -937,7 +937,7 @@ const onSubmitRefund = (): void => {
             label="伝票番号"
             :readonly="!isUpdatableFulfillment()"
           />
-          <v-btn v-show="isUpdatableFulfillment()" class="mt-2" variant="outlined" @click="onSubmitUpdate(fulfillment.fulfillmentId)">
+          <v-btn v-show="isUpdatableFulfillment()" :loading="loading" class="mt-2" variant="outlined" @click="onSubmitUpdate(fulfillment.fulfillmentId)">
             <v-icon start :icon="mdiPlus" />
             更新
           </v-btn>
@@ -962,23 +962,51 @@ const onSubmitRefund = (): void => {
       </v-card>
     </v-col>
     <v-col sm="12" md="12" lg="8">
-      <v-btn v-show="isPreservable()" variant="outlined" color="info" class="mr-2" @click="onSubmitSaveDraft()">
+      <v-btn
+        v-show="isPreservable()"
+        :loading="loading"
+        variant="outlined"
+        color="info"
+        class="mr-2"
+        @click="onSubmitSaveDraft()"
+      >
         <v-icon start :icon="mdiPlus" />
         下書きを保存
       </v-btn>
-      <v-btn v-show="isAuthorized()" variant="outlined" color="primary" class="mr-2" @click="onSubmitCapture()">
+      <v-btn
+        v-show="isAuthorized()"
+        :loading="loading"
+        variant="outlined"
+        color="primary"
+        class="mr-2"
+        @click="onSubmitCapture()"
+      >
         <v-icon start :icon="mdiPlus" />
         注文を確定
       </v-btn>
-      <v-btn v-show="isShipped()" variant="outlined" color="primary" class="mr-2" @click="onSubmitComplete()">
+      <v-btn
+        v-show="isShipped()"
+        :loading="loading"
+        variant="outlined"
+        color="primary"
+        class="mr-2"
+        @click="onSubmitComplete()"
+      >
         <v-icon start :icon="mdiPlus" />
         発送完了を通知
       </v-btn>
-      <v-btn v-show="isCancelable()" variant="outlined" color="error" class="mr-2" @click="onClickOpenCancelDialog()">
+      <v-btn
+        v-show="isCancelable()"
+        :loading="loading"
+        variant="outlined"
+        color="error"
+        class="mr-2"
+        @click="onClickOpenCancelDialog()"
+      >
         <v-icon start :icon="mdiDelete" />
         注文をキャンセル
       </v-btn>
-      <v-btn v-show="isRefundable()" variant="outlined" color="error" @click="onClickOpenRefundDialog">
+      <v-btn v-show="isRefundable()" :loading="loading" variant="outlined" color="error" @click="onClickOpenRefundDialog">
         <v-icon start :icon="mdiDelete" />
         返金
       </v-btn>

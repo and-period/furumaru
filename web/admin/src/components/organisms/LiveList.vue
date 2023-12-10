@@ -365,7 +365,7 @@ const onSubmitDelete = (): void => {
 
 <template>
   <v-dialog v-model="createDialogValue" width="500">
-    <v-card :loading="props.loading">
+    <v-card>
       <v-card-title class="text-h6 primaryLight">
         出演者登録
       </v-card-title>
@@ -500,7 +500,7 @@ const onSubmitDelete = (): void => {
   </v-dialog>
 
   <v-dialog v-model="updateDialogValue" width="500">
-    <v-card :loading="props.loading">
+    <v-card>
       <v-card-title class="text-h6 primaryLight">
         出演者更新
       </v-card-title>

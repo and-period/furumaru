@@ -693,7 +693,7 @@ const onSubmit = async (): Promise<void> => {
     </v-col>
   </v-row>
 
-  <v-btn block variant="outlined" @click="onSubmit">
+  <v-btn :loading="loading" block variant="outlined" @click="onSubmit">
     <v-icon start :icon="mdiPlus" />
     更新
   </v-btn>

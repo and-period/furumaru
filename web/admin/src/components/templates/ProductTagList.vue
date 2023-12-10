@@ -268,7 +268,7 @@ const submitDelete = (): void => {
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat :loading="loading">
+  <v-card class="mt-4" flat>
     <v-card-title class="d-flex flex-row">
       商品タグ管理
       <v-spacer />
@@ -281,6 +281,7 @@ const submitDelete = (): void => {
     <v-card-text>
       <v-data-table-server
         :headers="headers"
+        :loading="loading"
         :items="props.productTags"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"

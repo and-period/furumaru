@@ -70,7 +70,7 @@ const onSubmit = async (): Promise<void> => {
         />
       </v-card-text>
       <v-card-actions>
-        <v-btn block :loading="loading" type="submit" color="primary" variant="outlined">
+        <v-btn :loading="loading" block type="submit" color="primary" variant="outlined">
           変更
         </v-btn>
       </v-card-actions>

@@ -185,7 +185,7 @@ const onSubmitDelete = (): void => {
 
 <template>
   <v-dialog v-model="createDialogValue" width="500">
-    <v-card :loading="props.loading">
+    <v-card>
       <v-card-title class="primaryLight">
         カテゴリー登録
       </v-card-title>
@@ -202,7 +202,7 @@ const onSubmitDelete = (): void => {
         <v-btn color="error" variant="text" @click="onClickCloseCreateDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onSubmitCreate">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitCreate">
           登録
         </v-btn>
       </v-card-actions>
@@ -210,7 +210,7 @@ const onSubmitDelete = (): void => {
   </v-dialog>
 
   <v-dialog v-model="updateDialogValue" width="500">
-    <v-card :loading="props.loading">
+    <v-card>
       <v-card-title class="primaryLight">
         カテゴリー編集
       </v-card-title>
@@ -227,7 +227,7 @@ const onSubmitDelete = (): void => {
         <v-btn color="error" variant="text" @click="onClickCloseUpdateDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onSubmitUpdate">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitUpdate">
           編集
         </v-btn>
       </v-card-actions>
@@ -235,7 +235,7 @@ const onSubmitDelete = (): void => {
   </v-dialog>
 
   <v-dialog v-model="deleteDialogValue" width="500">
-    <v-card :loading="props.loading">
+    <v-card>
       <v-card-title class="text-h7">
         {{ props.category?.name || '' }}を本当に削除しますか？
       </v-card-title>
@@ -244,7 +244,7 @@ const onSubmitDelete = (): void => {
         <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
           キャンセル
         </v-btn>
-        <v-btn :loading="props.loading" color="primary" variant="outlined" @click="onSubmitDelete">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitDelete">
           削除
         </v-btn>
       </v-card-actions>
@@ -263,6 +263,7 @@ const onSubmitDelete = (): void => {
     <v-card-text>
       <v-data-table-server
         :headers="headers"
+        :loading="loading"
         :items="categories"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"

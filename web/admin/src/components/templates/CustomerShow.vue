@@ -371,10 +371,10 @@ const onSubmitDelete = (): void => {
         <v-card-text>
           <v-data-table-server
             :headers="headers"
+            :loading="loading"
             :items="props.orders"
             :items-per-page="props.tableItemsPerPage"
             :items-length="props.orderTotal"
-            :loading="props.loading"
             no-data-text="注文履歴がありません"
             hover
             @update:page="onClickUpdatePage"

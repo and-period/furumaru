@@ -183,7 +183,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
 
 <template>
   <v-dialog v-model="pauseDialogValue" width="500">
-    <v-card :loading="props.loading">
+    <v-card>
       <v-card-title class="text-h7">
         本当に一時停止しますか？
       </v-card-title>
@@ -192,7 +192,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-btn color="info" variant="text" @click="onClosePauseDialog">
           閉じる
         </v-btn>
-        <v-btn :loading="props.loading" color="error" variant="outlined" @click="onSubmitPause">
+        <v-btn :loading="loading" color="error" variant="outlined" @click="onSubmitPause">
           一時停止
         </v-btn>
       </v-card-actions>
@@ -200,7 +200,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
   </v-dialog>
 
   <v-dialog v-model="archiveMp4DialogValue">
-    <v-card :loading="loading">
+    <v-card>
       <v-card-title class="primaryLight">
         アーカイブ映像アップロード
       </v-card-title>
@@ -228,7 +228,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-btn color="error" variant="text" @click="onCloseArchiveMp4Dialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onSubmitUploadArchiveMp4">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitUploadArchiveMp4">
           送信
         </v-btn>
       </v-card-actions>
@@ -236,7 +236,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
   </v-dialog>
 
   <v-dialog v-model="liveMp4DialogValue">
-    <v-card :loading="loading">
+    <v-card>
       <v-card-title class="primaryLight">
         ライブ映像切り替え
       </v-card-title>
@@ -264,7 +264,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-btn color="error" variant="text" @click="onCloseLiveMp4Dialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onSubmitChangeMp4Input">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitChangeMp4Input">
           送信
         </v-btn>
       </v-card-actions>

@@ -159,7 +159,7 @@ const onSubmitDelete = (): void => {
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat :loading="loading">
+  <v-card class="mt-4" flat>
     <v-card-title class="d-flex flex-row">
       配送設定一覧
       <v-spacer />
@@ -172,6 +172,7 @@ const onSubmitDelete = (): void => {
     <v-card-text>
       <v-data-table-server
         :headers="headers"
+        :loading="loading"
         :items="shippings"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"

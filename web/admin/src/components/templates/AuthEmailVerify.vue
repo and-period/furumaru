@@ -71,7 +71,7 @@ const onSubmit = async (): Promise<void> => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card elevation="0" :loading="loading">
+  <v-card elevation="0">
     <v-card-title>二要素認証</v-card-title>
 
     <v-card-text>
@@ -89,7 +89,7 @@ const onSubmit = async (): Promise<void> => {
       </div>
     </v-card-text>
     <v-card-actions>
-      <v-btn block :loading="loading" variant="outlined" color="primary" @click="onSubmit">
+      <v-btn :loading="loading" block variant="outlined" color="primary" @click="onSubmit">
         認証
       </v-btn>
     </v-card-actions>

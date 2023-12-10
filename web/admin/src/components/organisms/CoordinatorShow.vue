@@ -374,8 +374,8 @@ const onClickSearchAddress = (): void => {
           v-model:city="formDataValue.city"
           v-model:address-line1="formDataValue.addressLine1"
           v-model:address-line2="formDataValue.addressLine2"
-          :error-message="props.searchErrorMessage"
-          :loading="props.searchLoading"
+          :error-message="searchErrorMessage"
+          :loading="loading"
           @click:search="onClickSearchAddress"
         />
         <p>SNS連携</p>

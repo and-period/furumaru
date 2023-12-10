@@ -88,10 +88,6 @@ const scheduleValue = computed({
   get: (): Schedule => props.schedule,
   set: (schedule: Schedule): void => emit('update:schedule', schedule)
 })
-const publicValue = computed({
-  get: (): boolean => props.schedule.public,
-  set: (publish: boolean): void => emit('update:public', publish)
-})
 const formDataRules = computed(() => ({
   title: { required, maxLength: maxLength(200) },
   description: { required, maxLength: maxLength(2000) }
@@ -283,7 +279,7 @@ const onSubmit = async (): Promise<void> => {
     </v-col>
   </v-row>
 
-  <v-btn block :loading="props.loading" variant="outlined" color="primary" @click="onSubmit">
+  <v-btn block :loading="loading" variant="outlined" color="primary" @click="onSubmit">
     更新
   </v-btn>
 </template>

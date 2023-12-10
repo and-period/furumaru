@@ -196,8 +196,7 @@ const onClickSearchAddress = (): void => {
   <v-card>
     <v-card-title>生産者詳細</v-card-title>
 
-    <v-skeleton-loader v-if="props.loading" type="article" />
-    <v-form v-else @submit.prevent="onSubmit">
+    <v-form @submit.prevent="onSubmit">
       <v-card-text>
         <v-text-field
           v-model="validate.username.$model"

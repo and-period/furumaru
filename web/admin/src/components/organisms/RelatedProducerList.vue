@@ -3,9 +3,13 @@ import { mdiAccount, mdiPencil } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 
 import { useCoordinatorStore } from '~/store'
-import { Producer } from '~/types/api'
+import type { Producer } from '~/types/api'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   tableFooterProps: {
     type: Object,
     default: () => {}
@@ -77,6 +81,7 @@ const handleEdit = (item: Producer) => {
   <div>
     <v-data-table-server
       :headers="producerHeaders"
+      :loading="loading"
       :items="relateProducers"
       :items-length="totalItems"
       :footer-props="props.tableFooterProps"

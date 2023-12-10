@@ -5,6 +5,10 @@ import type { AlertType } from '~/lib/hooks'
 import type { SignInRequest } from '~/types/api'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -76,7 +80,7 @@ const onSubmit = (): void => {
         </nuxt-link>
       </v-card-text>
       <v-card-actions>
-        <v-btn type="submit" block color="primary" variant="outlined">
+        <v-btn :loading="loading" type="submit" block color="primary" variant="outlined">
           ログイン
         </v-btn>
       </v-card-actions>

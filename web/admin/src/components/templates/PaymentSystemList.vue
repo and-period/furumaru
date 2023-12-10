@@ -98,12 +98,13 @@ const onSubmit = (methodType: PaymentMethodType): void => {
 <template>
   <v-alert v-show="isAlert" :type="alertType" v-text="alertText" />
 
-  <v-card class="mt-4" flat :loading="loading">
+  <v-card class="mt-4" flat>
     <v-card-title>決済システム状態管理</v-card-title>
 
     <v-card-text>
       <v-data-table-server
         :headers="headers"
+        :loading="loading"
         :items="systems"
         :items-length="systems.length"
         no-data-text="登録されている決済システムがありません。"

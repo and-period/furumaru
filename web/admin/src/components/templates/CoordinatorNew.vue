@@ -365,7 +365,7 @@ const onClickSearchAddress = (): void => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
+        <v-btn :loading="loading" block variant="outlined" color="primary" type="submit">
           登録
         </v-btn>
       </v-card-actions>

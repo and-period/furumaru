@@ -160,7 +160,7 @@ const onSubmit = async (): Promise<void> => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card :loading="loading">
+  <v-card>
     <v-card-title>お知らせ登録</v-card-title>
 
     <v-form @submit.prevent="onSubmit">

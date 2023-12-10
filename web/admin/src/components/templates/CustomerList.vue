@@ -117,12 +117,13 @@ const onClickRow = (item: UserToList): void => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card flat :loading="loading">
+  <v-card flat>
     <v-card-title>顧客管理</v-card-title>
 
     <v-card-text>
       <v-data-table-server
         :headers="headers"
+        :loading="loading"
         :items="props.customers"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"

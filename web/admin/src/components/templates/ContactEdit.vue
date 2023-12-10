@@ -90,7 +90,7 @@ const onSubmit = async (): Promise<void> => {
 <template>
   <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
 
-  <v-card :loading="loading" elevation="0">
+  <v-card elevation="0">
     <v-card-title>お問合せ管理</v-card-title>
 
     <v-form @submit.prevent="onSubmit">
@@ -142,7 +142,7 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary">
+        <v-btn :loading="loading" block variant="outlined" color="primary">
           更新
         </v-btn>
       </v-card-actions>

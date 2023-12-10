@@ -36,7 +36,7 @@ const parsedMessage = computed<string>(() => {
 
   <v-row no-gutters>
     <v-col cols="2">
-      <v-card :loading="loading" class="elevation-1 flex-shrink-0 mr-3">
+      <v-card class="elevation-1 flex-shrink-0 mr-3">
         <v-list-item>
           <v-list-item-title>メッセージ一覧</v-list-item-title>
         </v-list-item>

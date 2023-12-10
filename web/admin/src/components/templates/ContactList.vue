@@ -117,6 +117,7 @@ const onClickRow = (contactId: string): void => {
     <v-card-text>
       <v-data-table-server
         :headers="headers"
+        :loading="loading"
         :items="props.contacts"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"

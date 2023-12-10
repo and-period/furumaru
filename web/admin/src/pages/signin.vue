@@ -11,6 +11,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const loading = ref<boolean>(false)
 const formData = reactive<SignInRequest>({
   username: '',
   password: ''
@@ -18,6 +19,7 @@ const formData = reactive<SignInRequest>({
 
 const handleSubmit = async () => {
   try {
+    loading.value = true
     const path = await authStore.signIn(formData)
     router.push(path)
   } catch (err) {
@@ -25,6 +27,8 @@ const handleSubmit = async () => {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -32,6 +36,7 @@ const handleSubmit = async () => {
 <template>
   <templates-auth-sign-in
     v-model:form-data="formData"
+    :loading="loading"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"

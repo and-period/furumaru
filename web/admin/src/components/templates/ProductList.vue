@@ -254,14 +254,14 @@ const onClickDelete = (): void => {
         <v-btn color="error" variant="text" @click="toggleDeleteDialog">
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat :loading="props.loading">
+  <v-card class="mt-4" flat>
     <v-card-title class="d-flex flex-row">
       商品管理
       <v-spacer />
@@ -274,6 +274,7 @@ const onClickDelete = (): void => {
     <v-card-text>
       <v-data-table-server
         :headers="headers"
+        :loading="loading"
         :items="props.products"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
