@@ -109,10 +109,12 @@ const onSubmit = async (): Promise<void> => {
 
     <v-form @submit.prevent="onSubmit">
       <v-card-text>
-        <!-- vuetifyが対応し次第、改修する -->
-        <v-text-field
+        <v-otp-input
           v-model="validate.verifyCode.$model"
-          label="コード（メールに記載されている6桁の数字）"
+          focus-all
+          label="認証コード"
+          variant="solo-filled"
+          :length="6"
           :error-messages="getErrorMessage(validate.verifyCode.$errors)"
         />
         <v-text-field

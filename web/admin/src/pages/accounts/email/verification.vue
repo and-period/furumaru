@@ -14,7 +14,14 @@ const email = route.params.email as string
 
 const loading = ref<boolean>(false)
 const formData = ref<VerifyAuthEmailRequest>({
-  verifyCode: route.params.verifyCode as string
+  verifyCode: ''
+})
+
+watch(formData.value, (): void => {
+  if (formData.value.verifyCode.length !== 6) {
+    return
+  }
+  handleSubmit()
 })
 
 const handleClickResendEmail = async (): Promise<void> => {
@@ -51,6 +58,7 @@ const handleSubmit = async (): Promise<void> => {
     }
     console.log(err)
   } finally {
+    formData.value.verifyCode = ''
     loading.value = false
   }
 }
