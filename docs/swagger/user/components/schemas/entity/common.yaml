@@ -1,0 +1,14 @@
+thumbnail:
+  type: object
+  properties:
+    url:
+      type: string
+      description: リサイズ済みサムネイルURL
+    size:
+      $ref: './../../../openapi.yaml#/components/schemas/imageSize'
+  required:
+  - url
+  - size
+  example:
+    url: 'https://example.com/thumbnail_240.png'
+    size: 1

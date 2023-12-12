@@ -32,16 +32,7 @@ coordinator:
       type: array
       description: リサイズ済みサムネイルURL一覧
       items:
-        type: object
-        properties:
-          url:
-            type: string
-            description: リサイズ済みサムネイルURL
-          size:
-            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-        required:
-        - url
-        - size
+        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
     headerUrl:
       type: string
       description: ヘッダー画像URL

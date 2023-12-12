@@ -13,18 +13,18 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { CoordinatorThumbnailsInner } from './CoordinatorThumbnailsInner';
-import {
-    CoordinatorThumbnailsInnerFromJSON,
-    CoordinatorThumbnailsInnerFromJSONTyped,
-    CoordinatorThumbnailsInnerToJSON,
-} from './CoordinatorThumbnailsInner';
 import type { ScheduleStatus } from './ScheduleStatus';
 import {
     ScheduleStatusFromJSON,
     ScheduleStatusFromJSONTyped,
     ScheduleStatusToJSON,
 } from './ScheduleStatus';
+import type { Thumbnail } from './Thumbnail';
+import {
+    ThumbnailFromJSON,
+    ThumbnailFromJSONTyped,
+    ThumbnailToJSON,
+} from './Thumbnail';
 import type { TopLiveProductsInner } from './TopLiveProductsInner';
 import {
     TopLiveProductsInnerFromJSON,
@@ -64,10 +64,10 @@ export interface TopLive {
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
+     * @type {Array<Thumbnail>}
      * @memberof TopLive
      */
-    thumbnails: Array<CoordinatorThumbnailsInner>;
+    thumbnails: Array<Thumbnail>;
     /**
      * マルシェ開始日時 (unixtime)
      * @type {number}
@@ -119,7 +119,7 @@ export function TopLiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): T
         'status': ScheduleStatusFromJSON(json['status']),
         'title': json['title'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
         'startAt': json['startAt'],
         'endAt': json['endAt'],
         'products': ((json['products'] as Array<any>).map(TopLiveProductsInnerFromJSON)),
@@ -139,7 +139,7 @@ export function TopLiveToJSON(value?: TopLive | null): any {
         'status': ScheduleStatusToJSON(value.status),
         'title': value.title,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
+        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
         'startAt': value.startAt,
         'endAt': value.endAt,
         'products': ((value.products as Array<any>).map(TopLiveProductsInnerToJSON)),

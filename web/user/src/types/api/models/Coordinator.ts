@@ -19,12 +19,12 @@ import {
     CoordinatorHeadersInnerFromJSONTyped,
     CoordinatorHeadersInnerToJSON,
 } from './CoordinatorHeadersInner';
-import type { CoordinatorThumbnailsInner } from './CoordinatorThumbnailsInner';
+import type { Thumbnail } from './Thumbnail';
 import {
-    CoordinatorThumbnailsInnerFromJSON,
-    CoordinatorThumbnailsInnerFromJSONTyped,
-    CoordinatorThumbnailsInnerToJSON,
-} from './CoordinatorThumbnailsInner';
+    ThumbnailFromJSON,
+    ThumbnailFromJSONTyped,
+    ThumbnailToJSON,
+} from './Thumbnail';
 import type { Weekday } from './Weekday';
 import {
     WeekdayFromJSON,
@@ -82,10 +82,10 @@ export interface Coordinator {
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
+     * @type {Array<Thumbnail>}
      * @memberof Coordinator
      */
-    thumbnails: Array<CoordinatorThumbnailsInner>;
+    thumbnails: Array<Thumbnail>;
     /**
      * ヘッダー画像URL
      * @type {string}
@@ -171,7 +171,7 @@ export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'productTypeIds': json['productTypeIds'],
         'businessDays': ((json['businessDays'] as Array<any>).map(WeekdayFromJSON)),
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
         'headerUrl': json['headerUrl'],
         'headers': ((json['headers'] as Array<any>).map(CoordinatorHeadersInnerFromJSON)),
         'promotionVideoUrl': json['promotionVideoUrl'],
@@ -198,7 +198,7 @@ export function CoordinatorToJSON(value?: Coordinator | null): any {
         'productTypeIds': value.productTypeIds,
         'businessDays': ((value.businessDays as Array<any>).map(WeekdayToJSON)),
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
+        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
         'headerUrl': value.headerUrl,
         'headers': ((value.headers as Array<any>).map(CoordinatorHeadersInnerToJSON)),
         'promotionVideoUrl': value.promotionVideoUrl,

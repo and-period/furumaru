@@ -13,18 +13,18 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { CoordinatorThumbnailsInner } from './CoordinatorThumbnailsInner';
-import {
-    CoordinatorThumbnailsInnerFromJSON,
-    CoordinatorThumbnailsInnerFromJSONTyped,
-    CoordinatorThumbnailsInnerToJSON,
-} from './CoordinatorThumbnailsInner';
 import type { ScheduleStatus } from './ScheduleStatus';
 import {
     ScheduleStatusFromJSON,
     ScheduleStatusFromJSONTyped,
     ScheduleStatusToJSON,
 } from './ScheduleStatus';
+import type { Thumbnail } from './Thumbnail';
+import {
+    ThumbnailFromJSON,
+    ThumbnailFromJSONTyped,
+    ThumbnailToJSON,
+} from './Thumbnail';
 
 /**
  * マルシェ開催スケジュール情報
@@ -70,10 +70,10 @@ export interface Schedule {
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
+     * @type {Array<Thumbnail>}
      * @memberof Schedule
      */
-    thumbnails: Array<CoordinatorThumbnailsInner>;
+    thumbnails: Array<Thumbnail>;
     /**
      * 映像配信URL
      * @type {string}
@@ -129,7 +129,7 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'title': json['title'],
         'description': json['description'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
         'distributionUrl': json['distributionUrl'],
         'startAt': json['startAt'],
         'endAt': json['endAt'],
@@ -151,7 +151,7 @@ export function ScheduleToJSON(value?: Schedule | null): any {
         'title': value.title,
         'description': value.description,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
+        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
         'distributionUrl': value.distributionUrl,
         'startAt': value.startAt,
         'endAt': value.endAt,

@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { CoordinatorThumbnailsInner } from './CoordinatorThumbnailsInner';
+import type { Thumbnail } from './Thumbnail';
 import {
-    CoordinatorThumbnailsInnerFromJSON,
-    CoordinatorThumbnailsInnerFromJSONTyped,
-    CoordinatorThumbnailsInnerToJSON,
-} from './CoordinatorThumbnailsInner';
+    ThumbnailFromJSON,
+    ThumbnailFromJSONTyped,
+    ThumbnailToJSON,
+} from './Thumbnail';
 
 /**
  * 過去のマルシェ情報
@@ -46,10 +46,10 @@ export interface TopArchive {
     thumbnailUrl?: string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
+     * @type {Array<Thumbnail>}
      * @memberof TopArchive
      */
-    thumbnails?: Array<CoordinatorThumbnailsInner>;
+    thumbnails?: Array<Thumbnail>;
 }
 
 /**
@@ -74,7 +74,7 @@ export function TopArchiveFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'scheduleId': !exists(json, 'scheduleId') ? undefined : json['scheduleId'],
         'title': !exists(json, 'title') ? undefined : json['title'],
         'thumbnailUrl': !exists(json, 'thumbnailUrl') ? undefined : json['thumbnailUrl'],
-        'thumbnails': !exists(json, 'thumbnails') ? undefined : ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
+        'thumbnails': !exists(json, 'thumbnails') ? undefined : ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
     };
 }
 
@@ -90,7 +90,7 @@ export function TopArchiveToJSON(value?: TopArchive | null): any {
         'scheduleId': value.scheduleId,
         'title': value.title,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': value.thumbnails === undefined ? undefined : ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
+        'thumbnails': value.thumbnails === undefined ? undefined : ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
     };
 }
 

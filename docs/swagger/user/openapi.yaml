@@ -146,6 +146,8 @@ components:
       $ref: './components/schemas/entity/cart.yaml#/cartItem'
     category:
       $ref: './components/schemas/entity/category.yaml#/category'
+    thumbnail:
+      $ref: './components/schemas/entity/common.yaml#/thumbnail'
     coordinator:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
     live:

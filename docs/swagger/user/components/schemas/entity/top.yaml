@@ -17,16 +17,7 @@ topLive:
       type: array
       description: リサイズ済みサムネイルURL一覧
       items:
-        type: object
-        properties:
-          url:
-            type: string
-            description: リサイズ済みサムネイルURL
-          size:
-            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-        required:
-        - url
-        - size
+        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
     startAt:
       type: integer
       format: int64
@@ -62,16 +53,7 @@ topLive:
             type: array
             description: リサイズ済みサムネイルURL一覧
             items:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: リサイズ済みサムネイルURL
-                size:
-                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-              required:
-              - url
-              - size
+              $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
         required:
         - id
         - name
@@ -132,16 +114,7 @@ topArchive:
       type: array
       description: リサイズ済みサムネイルURL一覧
       items:
-        type: object
-        properties:
-          url:
-            type: string
-            description: リサイズ済みサムネイルURL
-          size:
-            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-        required:
-        - url
-        - size
+        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
   example:
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
     title: '&.マルシェ'
