@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { MOCK_LIVE_ITEMS, MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
+import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
 
 const router = useRouter()
 
 const topPageStore = useTopPageStore()
-const { archives } = storeToRefs(topPageStore)
+const { archives, lives } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
 
 const archiveRef = ref<HTMLDivElement | null>(null)
@@ -54,8 +54,8 @@ const handleClickArchiveRightButton = () => {
   }
 }
 
-const handleClickLiveItem = (_: string) => {
-  router.push('/live')
+const handleClickLiveItem = (id: string) => {
+  router.push(`/live/${id}`)
 }
 
 const banners: string[] = [
@@ -69,14 +69,6 @@ const isOpen = ref<boolean>(false)
 const handleClickMoreViewButton = () => {
   isOpen.value = !isOpen.value
 }
-
-const liveItems = computed(() => {
-  if (isOpen.value) {
-    return MOCK_LIVE_ITEMS
-  } else {
-    return MOCK_LIVE_ITEMS.slice(0, 6)
-  }
-})
 
 useSeoMeta({
   title: 'トップページ',
@@ -101,18 +93,18 @@ useSeoMeta({
             leave-to-class="opacity-0 h-0"
           >
             <the-live-item
-              v-for="liveItem in liveItems"
-              :id="liveItem.id"
-              :key="liveItem.id"
+              v-for="liveItem in lives"
+              :id="liveItem.scheduleId"
+              :key="liveItem.scheduleId"
               :title="liveItem.title"
-              :img-src="liveItem.imgSrc"
+              :img-src="liveItem.thumbnailUrl"
               :start-at="liveItem.startAt"
-              :published="liveItem.published"
-              :marche-name="liveItem.marcheName"
-              :address="liveItem.address"
-              :cn-name="liveItem.cnName"
-              :cn-img-src="liveItem.cnImgSrc"
-              @click="handleClickLiveItem(id)"
+              :published="true"
+              marche-name=""
+              address=""
+              cn-name=""
+              cn-img-src=""
+              @click="handleClickLiveItem(liveItem.scheduleId)"
             />
           </transition-group>
         </div>

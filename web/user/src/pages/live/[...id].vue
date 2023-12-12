@@ -1,7 +1,28 @@
 <script setup lang="ts">
 import { MOCK_LIVE_VIDEO } from '~/constants/mock'
+import { useScheduleStore } from '~/store/schedule'
+import type { ScheduleResponse } from '~/types/api'
+
+const scheduleStore = useScheduleStore()
+const { getSchedule } = scheduleStore
+
+const route = useRoute()
+
+const isLoading = ref<boolean>(false)
+const schedule = ref<ScheduleResponse | undefined>(undefined)
+
+const scheduleId = computed<string>(() => {
+  return route.params.id as string
+})
 
 const live = MOCK_LIVE_VIDEO
+
+onMounted(async () => {
+  isLoading.value = true
+  const res = await getSchedule(scheduleId.value)
+  schedule.value = res
+  isLoading.value = false
+})
 
 useSeoMeta({
   title: 'ライブ配信',
@@ -12,20 +33,22 @@ useSeoMeta({
   <div
     class="mx-auto grid max-w-[1440px] grid-flow-col auto-rows-max grid-cols-3 gap-8 text-main xl:px-14"
   >
-    <div class="col-span-3 lg:col-span-2">
-      <the-live-video-player
-        :video-src="'https://furumaru-dev.s3.ap-northeast-1.amazonaws.com/promotion/promotion.mp4'"
-        :title="live.title"
-        :start-at="live.startAt"
-        :is-archive="live.published"
-        :marche-name="live.marcheName"
-        :description="live.description"
-        :address="live.address"
-        :cn-img-src="live.cnImgSrc"
-        :cn-name="live.cnName"
-      />
-      <the-live-timeline class="mt-4" />
-    </div>
+    <template v-if="schedule">
+      <div class="col-span-3 lg:col-span-2">
+        <the-live-video-player
+          :video-src="schedule.schedule.distributionUrl"
+          :title="schedule.schedule.title"
+          :start-at="schedule.schedule.startAt"
+          :description="schedule.schedule.description"
+          :is-archive="false"
+          :marche-name="live.marcheName"
+          :address="live.address"
+          :cn-img-src="live.cnImgSrc"
+          :cn-name="live.cnName"
+        />
+        <the-live-timeline class="mt-4" />
+      </div>
+    </template>
 
     <!-- PC画面のみ表示する右サイドバー -->
     <div class="col-span-1 hidden lg:block">
