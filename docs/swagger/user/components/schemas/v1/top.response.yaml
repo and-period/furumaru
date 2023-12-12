@@ -5,12 +5,12 @@ topCommonResponse:
       type: array
       description: 開催中・開催予定のマルシェ一覧
       items:
-        $ref: './../../../openapi.yaml#/components/schemas/topLive'
+        $ref: './../../../openapi.yaml#/components/schemas/liveSummary'
     archives:
       type: array
       description: 過去のマルシェ一覧
       items:
-        $ref: './../../../openapi.yaml#/components/schemas/topArchive'
+        $ref: './../../../openapi.yaml#/components/schemas/archiveSummary'
     coordinators:
       type: array
       description: コーディネータ一覧

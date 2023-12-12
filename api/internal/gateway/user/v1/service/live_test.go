@@ -32,7 +32,6 @@ func TestLive(t *testing.T) {
 			},
 			expect: &Live{
 				Live: response.Live{
-					ID:         "live-id",
 					ScheduleID: "schedule-id",
 					ProducerID: "producer-id",
 					ProductIDs: []string{"product-id"},
@@ -64,7 +63,6 @@ func TestLive_Response(t *testing.T) {
 			name: "success",
 			live: &Live{
 				Live: response.Live{
-					ID:         "live-id",
 					ScheduleID: "schedule-id",
 					ProducerID: "producer-id",
 					ProductIDs: []string{"product-id"},
@@ -74,7 +72,6 @@ func TestLive_Response(t *testing.T) {
 				},
 			},
 			expect: &response.Live{
-				ID:         "live-id",
 				ScheduleID: "schedule-id",
 				ProducerID: "producer-id",
 				ProductIDs: []string{"product-id"},
@@ -119,7 +116,6 @@ func TestLives(t *testing.T) {
 			expect: Lives{
 				{
 					Live: response.Live{
-						ID:         "live-id",
 						ScheduleID: "schedule-id",
 						ProducerID: "producer-id",
 						ProductIDs: []string{"product-id"},
@@ -153,7 +149,6 @@ func TestLives_Response(t *testing.T) {
 			lives: Lives{
 				{
 					Live: response.Live{
-						ID:         "live-id",
 						ScheduleID: "schedule-id",
 						ProducerID: "producer-id",
 						ProductIDs: []string{"product-id"},
@@ -165,7 +160,6 @@ func TestLives_Response(t *testing.T) {
 			},
 			expect: []*response.Live{
 				{
-					ID:         "live-id",
 					ScheduleID: "schedule-id",
 					ProducerID: "producer-id",
 					ProductIDs: []string{"product-id"},

@@ -90,8 +90,8 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 	}
 
 	res := &response.TopCommonResponse{
-		Lives:        service.NewTopCommonLives(schedules, lives, products).Response(),
-		Archives:     service.NewTopCommonArchives(archives).Response(),
+		Lives:        service.NewLiveSummaries(schedules, lives, products).Response(),
+		Archives:     service.NewArchiveSummaries(archives).Response(),
 		Coordinators: coordinators.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)

@@ -14,7 +14,6 @@ type Lives []*Live
 func NewLive(live *entity.Live) *Live {
 	return &Live{
 		Live: response.Live{
-			ID:         live.ID,
 			ScheduleID: live.ScheduleID,
 			ProducerID: live.ProducerID,
 			ProductIDs: live.ProductIDs,

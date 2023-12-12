@@ -152,6 +152,12 @@ components:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
     live:
       $ref: './components/schemas/entity/live.yaml#/live'
+    liveSummary:
+      $ref: './components/schemas/entity/live.yaml#/liveSummary'
+    liveProduct:
+      $ref: './components/schemas/entity/live.yaml#/liveProduct'
+    archiveSummary:
+      $ref: './components/schemas/entity/live.yaml#/archiveSummary'
     order:
       $ref: './components/schemas/entity/order.yaml#/order'
     producer:
@@ -168,10 +174,6 @@ components:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     paymentSystem:
       $ref: './components/schemas/entity/status.yaml#/paymentSystem'
-    topArchive:
-      $ref: './components/schemas/entity/top.yaml#/topArchive'
-    topLive:
-      $ref: './components/schemas/entity/top.yaml#/topLive'
     # Request
     v1CreateAddressRequest:
       $ref: './components/schemas/v1/address.request.yaml#/createAddressRequest'
