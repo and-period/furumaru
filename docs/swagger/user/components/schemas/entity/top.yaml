@@ -5,6 +5,9 @@ topLive:
     scheduleId:
       type: string
       description: 開催スケジュールID
+    coordinatorId:
+      type: string
+      description: コーディネータID
     status:
       $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
     title:
@@ -63,6 +66,7 @@ topLive:
         - thumbnails
   required:
   - scheduleId
+  - coordinatorId
   - status
   - title
   - thumbnailUrl
@@ -72,6 +76,7 @@ topLive:
   - products
   example:
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     status: 2
     title: '&.マルシェ'
     thumbnailUrl: 'https://example.com/thumbnail.png'
@@ -104,6 +109,9 @@ topArchive:
     scheduleId:
       type: string
       description: 開催スケジュールID
+    coordinatorId:
+      type: string
+      description: コーディネータID
     title:
       type: string
       description: タイトル
@@ -115,8 +123,15 @@ topArchive:
       description: リサイズ済みサムネイルURL一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
+  required:
+  - scheduleId
+  - coordinatorId
+  - title
+  - thumbnailUrl
+  - thumbnails
   example:
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     title: '&.マルシェ'
     thumbnailUrl: 'https://example.com/thumbnail.png'
     thumbnails:

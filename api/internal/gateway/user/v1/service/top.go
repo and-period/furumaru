@@ -20,14 +20,15 @@ type TopCommonArchives []*TopCommonArchive
 func NewTopCommonLive(schedule *entity.Schedule, products entity.Products) *TopCommonLive {
 	return &TopCommonLive{
 		TopCommonLive: response.TopCommonLive{
-			ScheduleID:   schedule.ID,
-			Status:       NewScheduleStatus(schedule.Status, false).Response(),
-			Title:        schedule.Title,
-			ThumbnailURL: schedule.ThumbnailURL,
-			Thumbnails:   NewImages(schedule.Thumbnails).Response(),
-			StartAt:      schedule.StartAt.Unix(),
-			EndAt:        schedule.EndAt.Unix(),
-			Products:     newTopCommonLiveProducts(products),
+			ScheduleID:    schedule.ID,
+			CoordinatorID: schedule.CoordinatorID,
+			Status:        NewScheduleStatus(schedule.Status, false).Response(),
+			Title:         schedule.Title,
+			ThumbnailURL:  schedule.ThumbnailURL,
+			Thumbnails:    NewImages(schedule.Thumbnails).Response(),
+			StartAt:       schedule.StartAt.Unix(),
+			EndAt:         schedule.EndAt.Unix(),
+			Products:      newTopCommonLiveProducts(products),
 		},
 	}
 }
@@ -80,10 +81,11 @@ func (ls TopCommonLives) Response() []*response.TopCommonLive {
 func NewTopCommonArchive(schedule *entity.Schedule) *TopCommonArchive {
 	return &TopCommonArchive{
 		TopCommonArchive: response.TopCommonArchive{
-			ScheduleID:   schedule.ID,
-			Title:        schedule.Title,
-			ThumbnailURL: schedule.ThumbnailURL,
-			Thumbnails:   NewImages(schedule.Thumbnails).Response(),
+			ScheduleID:    schedule.ID,
+			CoordinatorID: schedule.CoordinatorID,
+			Title:         schedule.Title,
+			ThumbnailURL:  schedule.ThumbnailURL,
+			Thumbnails:    NewImages(schedule.Thumbnails).Response(),
 		},
 	}
 }

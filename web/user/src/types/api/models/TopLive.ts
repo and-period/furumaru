@@ -45,6 +45,12 @@ export interface TopLive {
      */
     scheduleId: string;
     /**
+     * コーディネータID
+     * @type {string}
+     * @memberof TopLive
+     */
+    coordinatorId: string;
+    /**
      * 
      * @type {ScheduleStatus}
      * @memberof TopLive
@@ -94,6 +100,7 @@ export interface TopLive {
 export function instanceOfTopLive(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "scheduleId" in value;
+    isInstance = isInstance && "coordinatorId" in value;
     isInstance = isInstance && "status" in value;
     isInstance = isInstance && "title" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
@@ -116,6 +123,7 @@ export function TopLiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): T
     return {
         
         'scheduleId': json['scheduleId'],
+        'coordinatorId': json['coordinatorId'],
         'status': ScheduleStatusFromJSON(json['status']),
         'title': json['title'],
         'thumbnailUrl': json['thumbnailUrl'],
@@ -136,6 +144,7 @@ export function TopLiveToJSON(value?: TopLive | null): any {
     return {
         
         'scheduleId': value.scheduleId,
+        'coordinatorId': value.coordinatorId,
         'status': ScheduleStatusToJSON(value.status),
         'title': value.title,
         'thumbnailUrl': value.thumbnailUrl,

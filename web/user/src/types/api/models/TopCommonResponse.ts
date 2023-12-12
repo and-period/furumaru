@@ -13,6 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { Coordinator } from './Coordinator';
+import {
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
 import type { TopArchive } from './TopArchive';
 import {
     TopArchiveFromJSON,
@@ -44,6 +50,12 @@ export interface TopCommonResponse {
      * @memberof TopCommonResponse
      */
     archives: Array<TopArchive>;
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof TopCommonResponse
+     */
+    coordinators: Array<Coordinator>;
 }
 
 /**
@@ -53,6 +65,7 @@ export function instanceOfTopCommonResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "lives" in value;
     isInstance = isInstance && "archives" in value;
+    isInstance = isInstance && "coordinators" in value;
 
     return isInstance;
 }
@@ -69,6 +82,7 @@ export function TopCommonResponseFromJSONTyped(json: any, ignoreDiscriminator: b
         
         'lives': ((json['lives'] as Array<any>).map(TopLiveFromJSON)),
         'archives': ((json['archives'] as Array<any>).map(TopArchiveFromJSON)),
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
     };
 }
 
@@ -83,6 +97,7 @@ export function TopCommonResponseToJSON(value?: TopCommonResponse | null): any {
         
         'lives': ((value.lives as Array<any>).map(TopLiveToJSON)),
         'archives': ((value.archives as Array<any>).map(TopArchiveToJSON)),
+        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
     };
 }
 

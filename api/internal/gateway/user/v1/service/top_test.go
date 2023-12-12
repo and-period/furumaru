@@ -100,10 +100,11 @@ func TestTopCommonLive(t *testing.T) {
 			},
 			expect: &TopCommonLive{
 				TopCommonLive: response.TopCommonLive{
-					ScheduleID:   "schedule-id",
-					Status:       int32(ScheduleStatusLive),
-					Title:        "スケジュールタイトル",
-					ThumbnailURL: "https://example.com/thumbnail.png",
+					ScheduleID:    "schedule-id",
+					CoordinatorID: "coordinator-id",
+					Status:        int32(ScheduleStatusLive),
+					Title:         "スケジュールタイトル",
+					ThumbnailURL:  "https://example.com/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -150,10 +151,11 @@ func TestTopCommonLive_Response(t *testing.T) {
 			name: "success",
 			live: &TopCommonLive{
 				TopCommonLive: response.TopCommonLive{
-					ScheduleID:   "schedule-id",
-					Status:       int32(ScheduleStatusLive),
-					Title:        "スケジュールタイトル",
-					ThumbnailURL: "https://example.com/thumbnail.png",
+					ScheduleID:    "schedule-id",
+					CoordinatorID: "coordinator-id",
+					Status:        int32(ScheduleStatusLive),
+					Title:         "スケジュールタイトル",
+					ThumbnailURL:  "https://example.com/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -178,10 +180,11 @@ func TestTopCommonLive_Response(t *testing.T) {
 				},
 			},
 			expect: &response.TopCommonLive{
-				ScheduleID:   "schedule-id",
-				Status:       int32(ScheduleStatusLive),
-				Title:        "スケジュールタイトル",
-				ThumbnailURL: "https://example.com/thumbnail.png",
+				ScheduleID:    "schedule-id",
+				CoordinatorID: "coordinator-id",
+				Status:        int32(ScheduleStatusLive),
+				Title:         "スケジュールタイトル",
+				ThumbnailURL:  "https://example.com/thumbnail.png",
 				Thumbnails: []*response.Image{
 					{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 					{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -322,10 +325,11 @@ func TestTopCommonLives(t *testing.T) {
 			expect: TopCommonLives{
 				{
 					TopCommonLive: response.TopCommonLive{
-						ScheduleID:   "schedule-id",
-						Status:       int32(ScheduleStatusLive),
-						Title:        "スケジュールタイトル",
-						ThumbnailURL: "https://example.com/thumbnail.png",
+						ScheduleID:    "schedule-id",
+						CoordinatorID: "coordinator-id",
+						Status:        int32(ScheduleStatusLive),
+						Title:         "スケジュールタイトル",
+						ThumbnailURL:  "https://example.com/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -374,10 +378,11 @@ func TestTopCommonLives_Response(t *testing.T) {
 			lives: TopCommonLives{
 				{
 					TopCommonLive: response.TopCommonLive{
-						ScheduleID:   "schedule-id",
-						Status:       int32(ScheduleStatusLive),
-						Title:        "スケジュールタイトル",
-						ThumbnailURL: "https://example.com/thumbnail.png",
+						ScheduleID:    "schedule-id",
+						CoordinatorID: "coordinator-id",
+						Status:        int32(ScheduleStatusLive),
+						Title:         "スケジュールタイトル",
+						ThumbnailURL:  "https://example.com/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -404,10 +409,11 @@ func TestTopCommonLives_Response(t *testing.T) {
 			},
 			expect: []*response.TopCommonLive{
 				{
-					ScheduleID:   "schedule-id",
-					Status:       int32(ScheduleStatusLive),
-					Title:        "スケジュールタイトル",
-					ThumbnailURL: "https://example.com/thumbnail.png",
+					ScheduleID:    "schedule-id",
+					CoordinatorID: "coordinator-id",
+					Status:        int32(ScheduleStatusLive),
+					Title:         "スケジュールタイトル",
+					ThumbnailURL:  "https://example.com/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
 						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
@@ -438,6 +444,216 @@ func TestTopCommonLives_Response(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.lives.Response())
+		})
+	}
+}
+
+func TestTopCommonArchive(t *testing.T) {
+	t.Parallel()
+	now := jst.Date(2022, 1, 1, 0, 0, 0, 0)
+	tests := []struct {
+		name     string
+		schedule *entity.Schedule
+		expect   *TopCommonArchive
+	}{
+		{
+			name: "success",
+			schedule: &entity.Schedule{
+				ID:            "schedule-id",
+				CoordinatorID: "coordinator-id",
+				Status:        entity.ScheduleStatusClosed,
+				Title:         "スケジュールタイトル",
+				Description:   "スケジュールの詳細です。",
+				ThumbnailURL:  "https://example.com/thumbnail.png",
+				Thumbnails: common.Images{
+					{URL: "https://example.com/thumbnail_240.png", Size: common.ImageSizeSmall},
+					{URL: "https://example.com/thumbnail_675.png", Size: common.ImageSizeMedium},
+					{URL: "https://example.com/thumbnail_900.png", Size: common.ImageSizeLarge},
+				},
+				ImageURL:        "https://example.com/image.png",
+				OpeningVideoURL: "https://example.com/opening-video.mp4",
+				Public:          true,
+				Approved:        true,
+				ApprovedAdminID: "admin-id",
+				StartAt:         now.AddDate(0, -1, 0),
+				EndAt:           now.AddDate(0, 1, 0),
+				CreatedAt:       now,
+				UpdatedAt:       now,
+			},
+			expect: &TopCommonArchive{
+				TopCommonArchive: response.TopCommonArchive{
+					ScheduleID:    "schedule-id",
+					CoordinatorID: "coordinator-id",
+					Title:         "スケジュールタイトル",
+					ThumbnailURL:  "https://example.com/thumbnail.png",
+					Thumbnails: []*response.Image{
+						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
+						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
+						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewTopCommonArchive(tt.schedule)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestTopCommonArchive_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		archive *TopCommonArchive
+		expect  *response.TopCommonArchive
+	}{
+		{
+			name: "success",
+			archive: &TopCommonArchive{
+				TopCommonArchive: response.TopCommonArchive{
+					ScheduleID:    "schedule-id",
+					CoordinatorID: "coordinator-id",
+					Title:         "スケジュールタイトル",
+					ThumbnailURL:  "https://example.com/thumbnail.png",
+					Thumbnails: []*response.Image{
+						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
+						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
+						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
+					},
+				},
+			},
+			expect: &response.TopCommonArchive{
+				ScheduleID:    "schedule-id",
+				CoordinatorID: "coordinator-id",
+				Title:         "スケジュールタイトル",
+				ThumbnailURL:  "https://example.com/thumbnail.png",
+				Thumbnails: []*response.Image{
+					{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
+					{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
+					{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.archive.Response())
+		})
+	}
+}
+
+func TestTopCommonArchives(t *testing.T) {
+	t.Parallel()
+	now := jst.Date(2022, 1, 1, 0, 0, 0, 0)
+	tests := []struct {
+		name      string
+		schedules entity.Schedules
+		expect    TopCommonArchives
+	}{
+		{
+			name: "success",
+			schedules: entity.Schedules{
+				{
+					ID:            "schedule-id",
+					CoordinatorID: "coordinator-id",
+					Status:        entity.ScheduleStatusClosed,
+					Title:         "スケジュールタイトル",
+					Description:   "スケジュールの詳細です。",
+					ThumbnailURL:  "https://example.com/thumbnail.png",
+					Thumbnails: common.Images{
+						{URL: "https://example.com/thumbnail_240.png", Size: common.ImageSizeSmall},
+						{URL: "https://example.com/thumbnail_675.png", Size: common.ImageSizeMedium},
+						{URL: "https://example.com/thumbnail_900.png", Size: common.ImageSizeLarge},
+					},
+					ImageURL:        "https://example.com/image.png",
+					OpeningVideoURL: "https://example.com/opening-video.mp4",
+					Public:          true,
+					Approved:        true,
+					ApprovedAdminID: "admin-id",
+					StartAt:         now.AddDate(0, -1, 0),
+					EndAt:           now.AddDate(0, 1, 0),
+					CreatedAt:       now,
+					UpdatedAt:       now,
+				},
+			},
+			expect: TopCommonArchives{
+				{
+					TopCommonArchive: response.TopCommonArchive{
+						ScheduleID:    "schedule-id",
+						CoordinatorID: "coordinator-id",
+						Title:         "スケジュールタイトル",
+						ThumbnailURL:  "https://example.com/thumbnail.png",
+						Thumbnails: []*response.Image{
+							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
+							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
+							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
+						},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewTopCommonArchives(tt.schedules)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestTopCommonArchives_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		archives TopCommonArchives
+		expect   []*response.TopCommonArchive
+	}{
+		{
+			name: "success",
+			archives: TopCommonArchives{
+				{
+					TopCommonArchive: response.TopCommonArchive{
+						ScheduleID:    "schedule-id",
+						CoordinatorID: "coordinator-id",
+						Title:         "スケジュールタイトル",
+						ThumbnailURL:  "https://example.com/thumbnail.png",
+						Thumbnails: []*response.Image{
+							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
+							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
+							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
+						},
+					},
+				},
+			},
+			expect: []*response.TopCommonArchive{
+				{
+					ScheduleID:    "schedule-id",
+					CoordinatorID: "coordinator-id",
+					Title:         "スケジュールタイトル",
+					ThumbnailURL:  "https://example.com/thumbnail.png",
+					Thumbnails: []*response.Image{
+						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
+						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
+						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.archives.Response())
 		})
 	}
 }

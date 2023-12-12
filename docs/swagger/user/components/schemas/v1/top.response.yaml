@@ -11,9 +11,15 @@ topCommonResponse:
       description: 過去のマルシェ一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/topArchive'
+    coordinators:
+      type: array
+      description: コーディネータ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
   required:
   - lives
   - archives
+  - coordinators
   example:
     lives:
     - scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -53,3 +59,31 @@ topCommonResponse:
         size: 2
       - url: 'https://example.com/thumbnail_900.png'
         size: 3
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      marcheName: '&.マルシェ'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'

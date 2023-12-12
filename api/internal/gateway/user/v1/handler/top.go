@@ -10,6 +10,7 @@ import (
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -80,9 +81,18 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 		return
 	}
 
+	set := set.New(schedules.CoordinatorIDs()...)
+	set.Add(archives.CoordinatorIDs()...)
+	coordinators, err := h.multiGetCoordinators(ctx, set.Slice())
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.TopCommonResponse{
-		Lives:    service.NewTopCommonLives(schedules, lives, products).Response(),
-		Archives: service.NewTopCommonArchives(archives).Response(),
+		Lives:        service.NewTopCommonLives(schedules, lives, products).Response(),
+		Archives:     service.NewTopCommonArchives(archives).Response(),
+		Coordinators: coordinators.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
