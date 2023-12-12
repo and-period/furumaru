@@ -34,7 +34,7 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 	eg.Go(func() (err error) {
 		in := &store.ListSchedulesInput{
 			// 終了予定時間を過ぎたあとも配信しているケースを救うため
-			EndAtGte:      h.now().Add(time.Hour),
+			EndAtGte:      h.now().Add(-time.Hour),
 			OnlyPublished: true,
 			NoLimit:       true,
 		}
