@@ -17,4 +17,16 @@ export const useTopPageStore = defineStore('top-page', {
       this.archives = response.archives
     },
   },
+
+  getters: {
+    lives: (state) => {
+      return [
+        ...state._lives.map((live) => {
+          return {
+            ...live,
+          }
+        }),
+      ]
+    },
+  },
 })
