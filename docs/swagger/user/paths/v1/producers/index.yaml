@@ -1,8 +1,8 @@
 get:
-  summary: コーディネータ一覧取得
-  operationId: v1ListCoordinators
+  summary: 生産者一覧取得
+  operationId: v1ListProducers
   tags:
-  - Coordinator
+  - Producer
   parameters:
   - in: query
     name: limit
@@ -26,4 +26,4 @@ get:
       content:
         application/json:
           schema:
-            $ref: './../../../openapi.yaml#/components/schemas/v1CoordinatorsResponse'
+            $ref: './../../../openapi.yaml#/components/schemas/v1ProducersResponse'

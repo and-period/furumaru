@@ -49,6 +49,8 @@ export * from './PaymentSystemsResponse';
 export * from './PostalCodeResponse';
 export * from './Prefecture';
 export * from './Producer';
+export * from './ProducerResponse';
+export * from './ProducersResponse';
 export * from './Product';
 export * from './ProductMediaInner';
 export * from './ProductMediaInnerImagesInner';

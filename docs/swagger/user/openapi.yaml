@@ -23,6 +23,8 @@ tags:
   description: マルシェ開催スケジュール関連
 - name: Coordinator
   description: コーディネータ関連
+- name: Producer
+  description: 生産者関連
 - name: Product
   description: 商品関連
 - name: Contact
@@ -86,6 +88,11 @@ paths:
     $ref: './paths/v1/coordinators/index.yaml'
   /v1/coordinators/{coordinatorId}:
     $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
+  # Producer
+  /v1/producers:
+    $ref: './paths/v1/producers/index.yaml'
+  /v1/producers/{producerId}:
+    $ref: './paths/v1/producers/_producerId/index.yaml'
   # Product
   /v1/products:
     $ref: './paths/v1/products/index.yaml'
@@ -237,6 +244,10 @@ components:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
+    v1ProducerResponse:
+      $ref: './components/schemas/v1/producer.response.yaml#/producerResponse'
+    v1ProducersResponse:
+      $ref: './components/schemas/v1/producer.response.yaml#/producersResponse'
     v1ProductResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:

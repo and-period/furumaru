@@ -7,6 +7,7 @@ export * from './CheckoutApi';
 export * from './ContactApi';
 export * from './CoordinatorApi';
 export * from './OtherApi';
+export * from './ProducerApi';
 export * from './ProductApi';
 export * from './ScheduleApi';
 export * from './StatusApi';

@@ -2,10 +2,37 @@ package handler
 
 import (
 	"context"
+	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/gin-gonic/gin"
 )
+
+func (h *handler) producerRoutes(rg *gin.RouterGroup) {
+	r := rg.Group("/producers")
+
+	r.GET("", h.ListProducers)
+	r.GET("/:producerId", h.GetProducer)
+}
+
+func (h *handler) ListProducers(ctx *gin.Context) {
+	res := &response.ProducersResponse{
+		Producers: []*response.Producer{},
+		Total:     0,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) GetProducer(ctx *gin.Context) {
+	res := &response.ProducerResponse{
+		Producer:  &response.Producer{},
+		Products:  []*response.Product{},
+		Schedules: []*response.Schedule{},
+	}
+	ctx.JSON(http.StatusOK, res)
+}
 
 func (h *handler) listProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {
 	if coordinatorID == "" {

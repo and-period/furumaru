@@ -32,6 +32,11 @@ export interface V1GetCoordinatorRequest {
     coordinatorId: string;
 }
 
+export interface V1ListCoordinatorsRequest {
+    limit?: number;
+    offset?: number;
+}
+
 /**
  * 
  */
@@ -70,8 +75,16 @@ export class CoordinatorApi extends runtime.BaseAPI {
     /**
      * コーディネータ一覧取得
      */
-    async v1ListCoordinatorsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CoordinatorsResponse>> {
+    async v1ListCoordinatorsRaw(requestParameters: V1ListCoordinatorsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CoordinatorsResponse>> {
         const queryParameters: any = {};
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
+
+        if (requestParameters.offset !== undefined) {
+            queryParameters['offset'] = requestParameters.offset;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -88,8 +101,8 @@ export class CoordinatorApi extends runtime.BaseAPI {
     /**
      * コーディネータ一覧取得
      */
-    async v1ListCoordinators(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CoordinatorsResponse> {
-        const response = await this.v1ListCoordinatorsRaw(initOverrides);
+    async v1ListCoordinators(requestParameters: V1ListCoordinatorsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CoordinatorsResponse> {
+        const response = await this.v1ListCoordinatorsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
