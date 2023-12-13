@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { MOCK_LIVE_VIDEO } from '~/constants/mock'
 import { useScheduleStore } from '~/store/schedule'
 import type { ScheduleResponse } from '~/types/api'
+import type { LiveTimeLineItem } from '~/types/props/schedule'
 
 const scheduleStore = useScheduleStore()
 const { getSchedule } = scheduleStore
@@ -15,7 +15,28 @@ const scheduleId = computed<string>(() => {
   return route.params.id as string
 })
 
-const live = MOCK_LIVE_VIDEO
+const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
+  if (schedule.value) {
+    return (
+      schedule.value.lives.map((live) => {
+        const producer = schedule.value?.producers.find(
+          (p) => p.id === live.producerId,
+        )
+        const products =
+          schedule.value?.products.filter((p) => {
+            return p.id in live.productIds
+          }) ?? []
+        return {
+          ...live,
+          producer,
+          products,
+        }
+      }) ?? []
+    )
+  } else {
+    return []
+  }
+})
 
 onMounted(async () => {
   isLoading.value = true
@@ -34,19 +55,19 @@ useSeoMeta({
     class="mx-auto grid max-w-[1440px] grid-flow-col auto-rows-max grid-cols-3 gap-8 text-main xl:px-14"
   >
     <template v-if="schedule">
-      <div class="col-span-3 lg:col-span-2">
+      <div class="col-span-3">
         <the-live-video-player
           :video-src="schedule.schedule.distributionUrl"
           :title="schedule.schedule.title"
           :start-at="schedule.schedule.startAt"
           :description="schedule.schedule.description"
           :is-archive="false"
-          :marche-name="live.marcheName"
-          :address="live.address"
-          :cn-img-src="live.cnImgSrc"
-          :cn-name="live.cnName"
+          marche-name=""
+          inventory:address=""
+          cn-img-src=""
+          cn-name=""
         />
-        <the-live-timeline class="mt-4" />
+        <the-live-timeline class="mt-4" :items="liveTimeLineItems" />
       </div>
     </template>
 
