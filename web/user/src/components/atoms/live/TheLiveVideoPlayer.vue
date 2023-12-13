@@ -89,7 +89,7 @@ const handleClickShowDetailButton = () => {
         <p
           v-show="showDetail"
           class="mt-6 whitespace-pre-wrap text-[14px] tracking-[1.4px]"
-          v-text="description"
+          v-html="description"
         ></p>
         <button
           class="inline-flex w-full items-center justify-center gap-2 text-[12px] tracking-[1.2px]"
