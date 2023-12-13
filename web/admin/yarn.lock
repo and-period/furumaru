@@ -11848,10 +11848,10 @@ vue@^3.3.8:
     "@vue/server-renderer" "3.3.8"
     "@vue/shared" "3.3.8"
 
-vuetify@^3.3.13:
-  version "3.3.23"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-3.3.23.tgz#b456ac20ea945fa746f2a056f8157e38ee2756e6"
-  integrity sha512-EVEFvDyKr/HK2+hQJyhQSjIDULDaBi9vfgAAB0ekm+2Tvc8AkaDwb7VK44R2eilGFGpju6iN52FV7Uasj8SmIg==
+vuetify@^3.4.7:
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-3.4.7.tgz#3bb39f081fc66be0ad1038cf3c8458584a03354f"
+  integrity sha512-K++yer5H94Yi/uzgKDOTYRPA9qipVntomEohRsegfAnRqmFyw2x9clHVEoTRa/Fvk3nkHti0zn90Mp7mSUwVnw==
 
 w3c-keyname@^2.2.0:
   version "2.2.8"
