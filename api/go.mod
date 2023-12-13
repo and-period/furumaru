@@ -12,7 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.31.5
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.26.3
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.2
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.43.0
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.43.3
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.5
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.24.2

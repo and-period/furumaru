@@ -65,8 +65,8 @@ github.com/aws/aws-sdk-go-v2/service/ivs v1.25.5 h1:YQ7BZG/n4VxYleWoSyTTe1X14CA2
 github.com/aws/aws-sdk-go-v2/service/ivs v1.25.5/go.mod h1:ZSwe7Aadb5C0A3L6LFnSIr/AF9Yh4UWJCh2iuLDLYPQ=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.2 h1:yirnNE3Z5kgc2cPQxgK4T56OrqGi03ctALvuUo3Br0U=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.2/go.mod h1:aBv5lnPhvVrqf5UX5pB4FUnaC1Bwr1QCbE9Ikhb6zYg=
-github.com/aws/aws-sdk-go-v2/service/medialive v1.43.0 h1:gDTQNHqQ7ljSOnJaPALFVa37zUyuGppytlBfD43qdUw=
-github.com/aws/aws-sdk-go-v2/service/medialive v1.43.0/go.mod h1:ng4z2X4iXow0bq3WlfyXgpQ0ZocNv/gGjsZWpzPdDpU=
+github.com/aws/aws-sdk-go-v2/service/medialive v1.43.3 h1:/Ub7sD+eD7K6FWQeuALyVApqyec5Ngk893X3VrVPN6c=
+github.com/aws/aws-sdk-go-v2/service/medialive v1.43.3/go.mod h1:fH6Wz0q9JXupxmSgCFPwxymnpiX6PitFx2f/AqjuayM=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2 h1:DLSAG8zpJV2pYsU+UPkj1IEZghyBnnUsvIRs6UuXSDU=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2/go.mod h1:thjZng67jGsvMyVZnSxlcqKyLwB0XTG8bHIRZPTJ+Bs=
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.5 h1:qYi/BfDrWXZxlmRjlKCyFmtI4HKJwW8OKDKhKRAOZQI=
