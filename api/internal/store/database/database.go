@@ -71,6 +71,7 @@ type Live interface {
 
 type ListLivesParams struct {
 	ScheduleIDs []string
+	ProducerID  string
 	Limit       int
 	Offset      int
 }
@@ -299,6 +300,7 @@ type Schedule interface {
 
 type ListSchedulesParams struct {
 	CoordinatorID string
+	ProducerID    string
 	StartAtGte    time.Time
 	StartAtLt     time.Time
 	EndAtGte      time.Time

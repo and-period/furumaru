@@ -32,6 +32,10 @@ func (p listLivesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.ScheduleIDs) > 0 {
 		stmt = stmt.Where("schedule_id IN (?)", p.ScheduleIDs)
 	}
+	if p.ProducerID != "" {
+		stmt = stmt.Where("producer_id = ?", p.ProducerID)
+	}
+	stmt = stmt.Order("start_at DESC")
 	return stmt
 }
 

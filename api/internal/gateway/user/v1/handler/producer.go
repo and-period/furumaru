@@ -6,8 +6,12 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) producerRoutes(rg *gin.RouterGroup) {
@@ -18,19 +22,87 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) ListProducers(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	producersIn := &user.ListProducersInput{
+		Limit:  limit,
+		Offset: offset,
+	}
+	producers, total, err := h.user.ListProducers(ctx, producersIn)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.ProducersResponse{
-		Producers: []*response.Producer{},
-		Total:     0,
+		Producers: service.NewProducers(producers).Response(),
+		Total:     total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) GetProducer(ctx *gin.Context) {
+	producer, err := h.getProducer(ctx, util.GetParam(ctx, "producerId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	var (
+		lives    service.LiveSummaries
+		archives service.ArchiveSummaries
+		products entity.Products
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		params := &listLiveSummariesParams{
+			producerID: producer.ID,
+		}
+		lives, err = h.listLiveSummaries(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		params := &listArchiveSummariesParams{
+			coordinatorID: producer.ID,
+			noLimit:       true,
+		}
+		archives, err = h.listArchiveSummaries(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &store.ListProductsInput{
+			ProducerID:    producer.ID,
+			EndAtGte:      h.now(),
+			OnlyPublished: true,
+			NoLimit:       true,
+		}
+		products, _, err = h.store.ListProducts(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.ProducerResponse{
-		Producer: &response.Producer{},
-		Products: []*response.Product{},
-		Lives:    []*response.LiveSummary{},
-		Archives: []*response.ArchiveSummary{},
+		Producer: producer.Response(),
+		Lives:    lives.Response(),
+		Archives: archives.Response(),
+		Products: service.NewProducts(products).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

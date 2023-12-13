@@ -19,6 +19,7 @@ func (s *service) ListLives(ctx context.Context, in *store.ListLivesInput) (enti
 	}
 	params := &database.ListLivesParams{
 		ScheduleIDs: in.ScheduleIDs,
+		ProducerID:  in.ProducerID,
 		Limit:       int(in.Limit),
 		Offset:      int(in.Offset),
 	}

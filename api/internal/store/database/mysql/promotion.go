@@ -41,6 +41,9 @@ func (p listPromotionsParams) stmt(stmt *gorm.DB) *gorm.DB {
 		}
 		stmt = stmt.Order(value)
 	}
+	if len(p.Orders) == 0 {
+		stmt = stmt.Order("start_at DESC")
+	}
 	return stmt
 }
 

@@ -34,6 +34,7 @@ func (p listCoordinatorsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Username != "" {
 		stmt = stmt.Where("username LIKE ?", fmt.Sprintf("%%%s%%", p.Username))
 	}
+	stmt = stmt.Where("updated_at DESC")
 	return stmt
 }
 

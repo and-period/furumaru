@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -77,8 +78,11 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	}
 
 	var (
-		lives    service.LiveSummaries
-		archives service.ArchiveSummaries
+		lives        service.LiveSummaries
+		archives     service.ArchiveSummaries
+		productTypes service.ProductTypes
+		producers    service.Producers
+		products     entity.Products
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -96,17 +100,6 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		archives, err = h.listArchiveSummaries(ectx, params)
 		return
 	})
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
-	var (
-		productTypes service.ProductTypes
-		producers    service.Producers
-		products     service.Products
-	)
-	eg, ectx = errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
 		productTypes, err = h.multiGetProductTypes(ectx, coordinator.ProductTypeIDs)
 		return
@@ -122,11 +115,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 			OnlyPublished: true,
 			NoLimit:       true,
 		}
-		sproducts, _, err := h.store.ListProducts(ectx, in)
-		if err != nil {
-			return err
-		}
-		products = service.NewProducts(sproducts)
+		products, _, err = h.store.ListProducts(ectx, in)
 		return nil
 	})
 	if err := eg.Wait(); err != nil {
@@ -140,7 +129,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 		Archives:     archives.Response(),
 		ProductTypes: productTypes.Response(),
 		Producers:    producers.Response(),
-		Products:     products.Response(),
+		Products:     service.NewProducts(products).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
