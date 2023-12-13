@@ -27,9 +27,10 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 
 func (h *handler) GetProducer(ctx *gin.Context) {
 	res := &response.ProducerResponse{
-		Producer:  &response.Producer{},
-		Products:  []*response.Product{},
-		Schedules: []*response.Schedule{},
+		Producer: &response.Producer{},
+		Products: []*response.Product{},
+		Lives:    []*response.LiveSummary{},
+		Archives: []*response.ArchiveSummary{},
 	}
 	ctx.JSON(http.StatusOK, res)
 }
