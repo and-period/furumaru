@@ -366,6 +366,59 @@ func TestLiveSummaries(t *testing.T) {
 	}
 }
 
+func TestLiveSummaries_CoordinatorIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		lives  LiveSummaries
+		expect []string
+	}{
+		{
+			name: "success",
+			lives: LiveSummaries{
+				{
+					LiveSummary: response.LiveSummary{
+						ScheduleID:    "schedule-id",
+						CoordinatorID: "coordinator-id",
+						Status:        int32(ScheduleStatusLive),
+						Title:         "スケジュールタイトル",
+						ThumbnailURL:  "https://example.com/thumbnail.png",
+						Thumbnails: []*response.Image{
+							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
+							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
+							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
+						},
+						StartAt: 1638284400,
+						EndAt:   1643641200,
+						Products: []*response.LiveProduct{
+							{
+								ProductID:    "product-id",
+								Name:         "新鮮なじゃがいも",
+								Price:        400,
+								Inventory:    100,
+								ThumbnailURL: "https://example.com/thumbnail01.png",
+								Thumbnails: []*response.Image{
+									{URL: "https://example.com/thumbnail01_240.png", Size: int32(ImageSizeSmall)},
+									{URL: "https://example.com/thumbnail01_675.png", Size: int32(ImageSizeMedium)},
+									{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
+								},
+							},
+						},
+					},
+				},
+			},
+			expect: []string{"coordinator-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.lives.CoordinatorIDs())
+		})
+	}
+}
+
 func TestLiveSummaries_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

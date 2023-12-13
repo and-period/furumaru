@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type LiveSummary struct {
@@ -39,6 +40,12 @@ func NewLiveSummaries(schedules entity.Schedules, lives entity.Lives, products e
 		res[i] = NewLiveSummary(schedules[i], products.Filter(productIDs...))
 	}
 	return res
+}
+
+func (ls LiveSummaries) CoordinatorIDs() []string {
+	return set.UniqBy(ls, func(l *LiveSummary) string {
+		return l.CoordinatorID
+	})
 }
 
 func (ls LiveSummaries) Response() []*response.LiveSummary {

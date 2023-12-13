@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 type ArchiveSummary struct {
@@ -33,6 +34,12 @@ func NewArchiveSummaries(schedules entity.Schedules) ArchiveSummaries {
 		res[i] = NewArchiveSummary(schedules[i])
 	}
 	return res
+}
+
+func (as ArchiveSummaries) CoordinatorIDs() []string {
+	return set.UniqBy(as, func(a *ArchiveSummary) string {
+		return a.CoordinatorID
+	})
 }
 
 func (as ArchiveSummaries) Response() []*response.ArchiveSummary {

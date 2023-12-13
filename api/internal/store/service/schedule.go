@@ -105,7 +105,8 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		ctx := context.Background()
 		createFn := func() error {
 			in := &media.CreateBroadcastInput{
-				ScheduleID: schedule.ID,
+				ScheduleID:    schedule.ID,
+				CoordinatorID: schedule.CoordinatorID,
 			}
 			_, err := s.media.CreateBroadcast(ctx, in)
 			return err

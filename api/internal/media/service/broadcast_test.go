@@ -27,23 +27,26 @@ func TestListBroadcasts(t *testing.T) {
 
 	now := jst.Date(2023, 10, 20, 18, 30, 0, 0)
 	params := &database.ListBroadcastsParams{
-		Limit:        30,
-		Offset:       0,
-		OnlyArchived: true,
+		ScheduleIDs:   []string{"schedule-id"},
+		CoordinatorID: "coordinator-id",
+		Limit:         30,
+		Offset:        0,
+		OnlyArchived:  true,
 		Orders: []*database.ListBroadcastsOrder{
 			{Key: entity.BroadcastOrderByUpdatedAt, OrderByASC: true},
 		},
 	}
 	broadcasts := entity.Broadcasts{
 		{
-			ID:         "broadcast-id",
-			ScheduleID: "schedule-id",
-			Status:     entity.BroadcastStatusIdle,
-			InputURL:   "rtmp://127.0.0.1:1935/app/instance",
-			OutputURL:  "http://example.com/index.m3u8",
-			ArchiveURL: "http://example.com/archive.mp4",
-			CreatedAt:  now,
-			UpdatedAt:  now,
+			ID:            "broadcast-id",
+			ScheduleID:    "schedule-id",
+			CoordinatorID: "coordinator-id",
+			Status:        entity.BroadcastStatusIdle,
+			InputURL:      "rtmp://127.0.0.1:1935/app/instance",
+			OutputURL:     "http://example.com/index.m3u8",
+			ArchiveURL:    "http://example.com/archive.mp4",
+			CreatedAt:     now,
+			UpdatedAt:     now,
 		},
 	}
 
@@ -62,9 +65,11 @@ func TestListBroadcasts(t *testing.T) {
 				mocks.db.Broadcast.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &media.ListBroadcastsInput{
-				Limit:        30,
-				Offset:       0,
-				OnlyArchived: true,
+				ScheduleIDs:   []string{"schedule-id"},
+				CoordinatorID: "coordinator-id",
+				Limit:         30,
+				Offset:        0,
+				OnlyArchived:  true,
 				Orders: []*media.ListBroadcastsOrder{
 					{Key: entity.BroadcastOrderByUpdatedAt, OrderByASC: true},
 				},
@@ -88,9 +93,11 @@ func TestListBroadcasts(t *testing.T) {
 				mocks.db.Broadcast.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &media.ListBroadcastsInput{
-				Limit:        30,
-				Offset:       0,
-				OnlyArchived: true,
+				ScheduleIDs:   []string{"schedule-id"},
+				CoordinatorID: "coordinator-id",
+				Limit:         30,
+				Offset:        0,
+				OnlyArchived:  true,
 				Orders: []*media.ListBroadcastsOrder{
 					{Key: entity.BroadcastOrderByUpdatedAt, OrderByASC: true},
 				},
@@ -106,9 +113,11 @@ func TestListBroadcasts(t *testing.T) {
 				mocks.db.Broadcast.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &media.ListBroadcastsInput{
-				Limit:        30,
-				Offset:       0,
-				OnlyArchived: true,
+				ScheduleIDs:   []string{"schedule-id"},
+				CoordinatorID: "coordinator-id",
+				Limit:         30,
+				Offset:        0,
+				OnlyArchived:  true,
 				Orders: []*media.ListBroadcastsOrder{
 					{Key: entity.BroadcastOrderByUpdatedAt, OrderByASC: true},
 				},
@@ -134,13 +143,14 @@ func TestGetBroadcastByScheduleID(t *testing.T) {
 	t.Parallel()
 
 	broadcast := &entity.Broadcast{
-		ID:         "broadcast-id",
-		ScheduleID: "schedule-id",
-		Status:     entity.BroadcastStatusIdle,
-		InputURL:   "rtmp://127.0.0.1:1935/app/instance",
-		OutputURL:  "http://example.com/index.m3u8",
-		CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-		UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		ID:            "broadcast-id",
+		ScheduleID:    "schedule-id",
+		CoordinatorID: "coordinator-id",
+		Status:        entity.BroadcastStatusIdle,
+		InputURL:      "rtmp://127.0.0.1:1935/app/instance",
+		OutputURL:     "http://example.com/index.m3u8",
+		CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+		UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
 	}
 
 	tests := []struct {
@@ -207,17 +217,19 @@ func TestCreateBroadcast(t *testing.T) {
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, broadcast *entity.Broadcast) error {
 						expect := &entity.Broadcast{
-							ID:         broadcast.ID, // ignore
-							ScheduleID: "schedule-id",
-							Type:       entity.BroadcastTypeNormal,
-							Status:     entity.BroadcastStatusDisabled,
+							ID:            broadcast.ID, // ignore
+							ScheduleID:    "schedule-id",
+							CoordinatorID: "coordinator-id",
+							Type:          entity.BroadcastTypeNormal,
+							Status:        entity.BroadcastStatusDisabled,
 						}
 						assert.Equal(t, expect, broadcast)
 						return nil
 					})
 			},
 			input: &media.CreateBroadcastInput{
-				ScheduleID: "schedule-id",
+				ScheduleID:    "schedule-id",
+				CoordinatorID: "coordinator-id",
 			},
 			expectErr: nil,
 		},
@@ -233,7 +245,8 @@ func TestCreateBroadcast(t *testing.T) {
 				mocks.db.Broadcast.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &media.CreateBroadcastInput{
-				ScheduleID: "schedule-id",
+				ScheduleID:    "schedule-id",
+				CoordinatorID: "coordinator-id",
 			},
 			expectErr: exception.ErrInternal,
 		},
