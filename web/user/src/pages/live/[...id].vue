@@ -51,6 +51,7 @@ useSeoMeta({
     </template>
 
     <!-- PC画面のみ表示する右サイドバー -->
+    <!--
     <div class="col-span-1 hidden lg:block">
       <div class="flex h-[450px] flex-col bg-white p-4">
         <div class="grow overflow-scroll"></div>
@@ -64,5 +65,6 @@ useSeoMeta({
         </div>
       </div>
     </div>
+    -->
   </div>
 </template>
