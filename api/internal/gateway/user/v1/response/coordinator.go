@@ -20,3 +20,17 @@ type Coordinator struct {
 	Prefecture        string         `json:"prefecture"`        // 都道府県
 	City              string         `json:"city"`              // 市区町村
 }
+
+type CoordinatorResponse struct {
+	Coordinator  *Coordinator      `json:"coordinator"`  // コーディネータ情報
+	Lives        []*LiveSummary    `json:"lives"`        // 配信中・配信予定のマルシェ一覧
+	Archives     []*ArchiveSummary `json:"archives"`     // 過去のマルシェ一覧
+	ProductTypes []*ProductType    `json:"productTypes"` // 品目一覧
+	Producers    []*Producer       `json:"producers"`    // 生産者一覧
+	Products     []*Product        `json:"products"`     // 生産者に関連づく商品一覧
+}
+
+type CoordinatorsResponse struct {
+	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
+	Total       int64        `json:"total"`       // コーディネータ合計数
+}

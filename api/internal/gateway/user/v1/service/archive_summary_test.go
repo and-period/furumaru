@@ -172,6 +172,42 @@ func TestArchiveSummaries(t *testing.T) {
 	}
 }
 
+func TestArchiveSummaries_CoordinatorIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		archives ArchiveSummaries
+		expect   []string
+	}{
+		{
+			name: "success",
+			archives: ArchiveSummaries{
+				{
+					ArchiveSummary: response.ArchiveSummary{
+						ScheduleID:    "schedule-id",
+						CoordinatorID: "coordinator-id",
+						Title:         "スケジュールタイトル",
+						ThumbnailURL:  "https://example.com/thumbnail.png",
+						Thumbnails: []*response.Image{
+							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
+							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
+							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
+						},
+					},
+				},
+			},
+			expect: []string{"coordinator-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.archives.CoordinatorIDs())
+		})
+	}
+}
+
 func TestArchiveSummaries_Response(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

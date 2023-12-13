@@ -17,6 +17,7 @@ export * from './CheckoutRequest';
 export * from './CheckoutResponse';
 export * from './Coordinator';
 export * from './CoordinatorHeadersInner';
+export * from './CoordinatorResponse';
 export * from './CreateAddressRequest';
 export * from './CreateAuthRequest';
 export * from './CreateAuthResponse';

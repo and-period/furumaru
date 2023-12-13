@@ -16,13 +16,15 @@ func TestBroadcast(t *testing.T) {
 		{
 			name: "success",
 			params: &NewBroadcastParams{
-				ScheduleID: "schedule-id",
+				ScheduleID:    "schedule-id",
+				CoordinatorID: "coordinator-id",
 			},
 			expect: &Broadcast{
-				ID:         "",
-				ScheduleID: "schedule-id",
-				Type:       BroadcastTypeNormal,
-				Status:     BroadcastStatusDisabled,
+				ID:            "",
+				ScheduleID:    "schedule-id",
+				CoordinatorID: "coordinator-id",
+				Type:          BroadcastTypeNormal,
+				Status:        BroadcastStatusDisabled,
 			},
 		},
 	}

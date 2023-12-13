@@ -7,6 +7,20 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 )
 
+func (h *handler) listProducersByCoordinatorID(ctx context.Context, coordinatorID string) (service.Producers, error) {
+	if coordinatorID == "" {
+		return service.Producers{}, nil
+	}
+	in := &user.ListProducersInput{
+		CoordinatorID: coordinatorID,
+	}
+	producers, _, err := h.user.ListProducers(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewProducers(producers), nil
+}
+
 func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (service.Producers, error) {
 	if len(producerIDs) == 0 {
 		return service.Producers{}, nil

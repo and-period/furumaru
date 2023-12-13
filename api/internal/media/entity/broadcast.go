@@ -37,6 +37,7 @@ const (
 type Broadcast struct {
 	ID                        string          `gorm:"primaryKey;<-:create"` // ライブ配信ID
 	ScheduleID                string          `gorm:"default:null"`         // 開催スケジュールID
+	CoordinatorID             string          `gorm:""`                     // コーディネータID
 	Type                      BroadcastType   `gorm:""`                     // ライブ配信種別
 	Status                    BroadcastStatus `gorm:""`                     // ライブ配信状況
 	InputURL                  string          `gorm:""`                     // ライブ配信URL(入力)
@@ -57,15 +58,17 @@ type Broadcast struct {
 type Broadcasts []*Broadcast
 
 type NewBroadcastParams struct {
-	ScheduleID string
+	ScheduleID    string
+	CoordinatorID string
 }
 
 func NewBroadcast(params *NewBroadcastParams) *Broadcast {
 	return &Broadcast{
-		ID:         uuid.Base58Encode(uuid.New()),
-		ScheduleID: params.ScheduleID,
-		Type:       BroadcastTypeNormal,
-		Status:     BroadcastStatusDisabled,
+		ID:            uuid.Base58Encode(uuid.New()),
+		ScheduleID:    params.ScheduleID,
+		CoordinatorID: params.CoordinatorID,
+		Type:          BroadcastTypeNormal,
+		Status:        BroadcastStatusDisabled,
 	}
 }
 

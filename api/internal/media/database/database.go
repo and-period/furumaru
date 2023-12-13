@@ -33,11 +33,12 @@ type Broadcast interface {
 }
 
 type ListBroadcastsParams struct {
-	ScheduleIDs  []string
-	OnlyArchived bool
-	Limit        int
-	Offset       int
-	Orders       []*ListBroadcastsOrder
+	ScheduleIDs   []string
+	CoordinatorID string
+	OnlyArchived  bool
+	Limit         int
+	Offset        int
+	Orders        []*ListBroadcastsOrder
 }
 
 type ListBroadcastsOrder struct {

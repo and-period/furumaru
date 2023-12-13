@@ -132,6 +132,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/v1")
 	// 公開エンドポイント
 	h.authRoutes(v1)
+	h.coordinatorRoutes(v1)
 	h.scheduleRoutes(v1)
 	h.topRoutes(v1)
 	h.postalCodeRoutes(v1)
