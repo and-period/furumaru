@@ -19,74 +19,88 @@ import {
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
 } from './ArchiveSummary';
-import type { Coordinator } from './Coordinator';
-import {
-    CoordinatorFromJSON,
-    CoordinatorFromJSONTyped,
-    CoordinatorToJSON,
-} from './Coordinator';
 import type { LiveSummary } from './LiveSummary';
 import {
     LiveSummaryFromJSON,
     LiveSummaryFromJSONTyped,
     LiveSummaryToJSON,
 } from './LiveSummary';
+import type { Producer } from './Producer';
+import {
+    ProducerFromJSON,
+    ProducerFromJSONTyped,
+    ProducerToJSON,
+} from './Producer';
+import type { Product } from './Product';
+import {
+    ProductFromJSON,
+    ProductFromJSONTyped,
+    ProductToJSON,
+} from './Product';
 
 /**
  * 
  * @export
- * @interface TopCommonResponse
+ * @interface ProducerResponse
  */
-export interface TopCommonResponse {
+export interface ProducerResponse {
+    /**
+     * 
+     * @type {Producer}
+     * @memberof ProducerResponse
+     */
+    producer: Producer;
     /**
      * 開催中・開催予定のマルシェ一覧
      * @type {Array<LiveSummary>}
-     * @memberof TopCommonResponse
+     * @memberof ProducerResponse
      */
     lives: Array<LiveSummary>;
     /**
      * 過去のマルシェ一覧
      * @type {Array<ArchiveSummary>}
-     * @memberof TopCommonResponse
+     * @memberof ProducerResponse
      */
     archives: Array<ArchiveSummary>;
     /**
-     * コーディネータ一覧
-     * @type {Array<Coordinator>}
-     * @memberof TopCommonResponse
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof ProducerResponse
      */
-    coordinators: Array<Coordinator>;
+    products: Array<Product>;
 }
 
 /**
- * Check if a given object implements the TopCommonResponse interface.
+ * Check if a given object implements the ProducerResponse interface.
  */
-export function instanceOfTopCommonResponse(value: object): boolean {
+export function instanceOfProducerResponse(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "producer" in value;
     isInstance = isInstance && "lives" in value;
     isInstance = isInstance && "archives" in value;
-    isInstance = isInstance && "coordinators" in value;
+    isInstance = isInstance && "products" in value;
 
     return isInstance;
 }
 
-export function TopCommonResponseFromJSON(json: any): TopCommonResponse {
-    return TopCommonResponseFromJSONTyped(json, false);
+export function ProducerResponseFromJSON(json: any): ProducerResponse {
+    return ProducerResponseFromJSONTyped(json, false);
 }
 
-export function TopCommonResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TopCommonResponse {
+export function ProducerResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProducerResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
+        'producer': ProducerFromJSON(json['producer']),
         'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
         'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
-        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
+        'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
     };
 }
 
-export function TopCommonResponseToJSON(value?: TopCommonResponse | null): any {
+export function ProducerResponseToJSON(value?: ProducerResponse | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -95,9 +109,10 @@ export function TopCommonResponseToJSON(value?: TopCommonResponse | null): any {
     }
     return {
         
+        'producer': ProducerToJSON(value.producer),
         'lives': ((value.lives as Array<any>).map(LiveSummaryToJSON)),
         'archives': ((value.archives as Array<any>).map(ArchiveSummaryToJSON)),
-        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
+        'products': ((value.products as Array<any>).map(ProductToJSON)),
     };
 }
 

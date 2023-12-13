@@ -13,6 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { LiveProduct } from './LiveProduct';
+import {
+    LiveProductFromJSON,
+    LiveProductFromJSONTyped,
+    LiveProductToJSON,
+} from './LiveProduct';
 import type { ScheduleStatus } from './ScheduleStatus';
 import {
     ScheduleStatusFromJSON,
@@ -25,79 +31,73 @@ import {
     ThumbnailFromJSONTyped,
     ThumbnailToJSON,
 } from './Thumbnail';
-import type { TopLiveProductsInner } from './TopLiveProductsInner';
-import {
-    TopLiveProductsInnerFromJSON,
-    TopLiveProductsInnerFromJSONTyped,
-    TopLiveProductsInnerToJSON,
-} from './TopLiveProductsInner';
 
 /**
  * 開催中・開催予定のマルシェ情報
  * @export
- * @interface TopLive
+ * @interface LiveSummary
  */
-export interface TopLive {
+export interface LiveSummary {
     /**
      * 開催スケジュールID
      * @type {string}
-     * @memberof TopLive
+     * @memberof LiveSummary
      */
     scheduleId: string;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof TopLive
+     * @memberof LiveSummary
      */
     coordinatorId: string;
     /**
      * 
      * @type {ScheduleStatus}
-     * @memberof TopLive
+     * @memberof LiveSummary
      */
     status: ScheduleStatus;
     /**
      * タイトル
      * @type {string}
-     * @memberof TopLive
+     * @memberof LiveSummary
      */
     title: string;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof TopLive
+     * @memberof LiveSummary
      */
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
-     * @memberof TopLive
+     * @memberof LiveSummary
      */
     thumbnails: Array<Thumbnail>;
     /**
      * マルシェ開始日時 (unixtime)
      * @type {number}
-     * @memberof TopLive
+     * @memberof LiveSummary
      */
     startAt: number;
     /**
      * マルシェ終了日時 (unixtime)
      * @type {number}
-     * @memberof TopLive
+     * @memberof LiveSummary
      */
     endAt: number;
     /**
      * 販売商品一覧
-     * @type {Array<TopLiveProductsInner>}
-     * @memberof TopLive
+     * @type {Array<LiveProduct>}
+     * @memberof LiveSummary
      */
-    products: Array<TopLiveProductsInner>;
+    products: Array<LiveProduct>;
 }
 
 /**
- * Check if a given object implements the TopLive interface.
+ * Check if a given object implements the LiveSummary interface.
  */
-export function instanceOfTopLive(value: object): boolean {
+export function instanceOfLiveSummary(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "scheduleId" in value;
     isInstance = isInstance && "coordinatorId" in value;
@@ -112,11 +112,11 @@ export function instanceOfTopLive(value: object): boolean {
     return isInstance;
 }
 
-export function TopLiveFromJSON(json: any): TopLive {
-    return TopLiveFromJSONTyped(json, false);
+export function LiveSummaryFromJSON(json: any): LiveSummary {
+    return LiveSummaryFromJSONTyped(json, false);
 }
 
-export function TopLiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): TopLive {
+export function LiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean): LiveSummary {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -130,11 +130,11 @@ export function TopLiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): T
         'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
         'startAt': json['startAt'],
         'endAt': json['endAt'],
-        'products': ((json['products'] as Array<any>).map(TopLiveProductsInnerFromJSON)),
+        'products': ((json['products'] as Array<any>).map(LiveProductFromJSON)),
     };
 }
 
-export function TopLiveToJSON(value?: TopLive | null): any {
+export function LiveSummaryToJSON(value?: LiveSummary | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -151,7 +151,7 @@ export function TopLiveToJSON(value?: TopLive | null): any {
         'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
         'startAt': value.startAt,
         'endAt': value.endAt,
-        'products': ((value.products as Array<any>).map(TopLiveProductsInnerToJSON)),
+        'products': ((value.products as Array<any>).map(LiveProductToJSON)),
     };
 }
 

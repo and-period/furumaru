@@ -20,12 +20,6 @@ import { exists, mapValues } from '../runtime';
  */
 export interface Live {
     /**
-     * ライブID
-     * @type {string}
-     * @memberof Live
-     */
-    id: string;
-    /**
      * マルシェ開催スケジュールID
      * @type {string}
      * @memberof Live
@@ -68,7 +62,6 @@ export interface Live {
  */
 export function instanceOfLive(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "id" in value;
     isInstance = isInstance && "scheduleId" in value;
     isInstance = isInstance && "producerId" in value;
     isInstance = isInstance && "productIds" in value;
@@ -89,7 +82,6 @@ export function LiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): Live
     }
     return {
         
-        'id': json['id'],
         'scheduleId': json['scheduleId'],
         'producerId': json['producerId'],
         'productIds': json['productIds'],
@@ -108,7 +100,6 @@ export function LiveToJSON(value?: Live | null): any {
     }
     return {
         
-        'id': value.id,
         'scheduleId': value.scheduleId,
         'producerId': value.producerId,
         'productIds': value.productIds,

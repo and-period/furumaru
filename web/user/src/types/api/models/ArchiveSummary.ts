@@ -23,45 +23,45 @@ import {
 /**
  * 過去のマルシェ情報
  * @export
- * @interface TopArchive
+ * @interface ArchiveSummary
  */
-export interface TopArchive {
+export interface ArchiveSummary {
     /**
      * 開催スケジュールID
      * @type {string}
-     * @memberof TopArchive
+     * @memberof ArchiveSummary
      */
     scheduleId: string;
     /**
      * コーディネータID
      * @type {string}
-     * @memberof TopArchive
+     * @memberof ArchiveSummary
      */
     coordinatorId: string;
     /**
      * タイトル
      * @type {string}
-     * @memberof TopArchive
+     * @memberof ArchiveSummary
      */
     title: string;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof TopArchive
+     * @memberof ArchiveSummary
      */
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
-     * @memberof TopArchive
+     * @memberof ArchiveSummary
      */
     thumbnails: Array<Thumbnail>;
 }
 
 /**
- * Check if a given object implements the TopArchive interface.
+ * Check if a given object implements the ArchiveSummary interface.
  */
-export function instanceOfTopArchive(value: object): boolean {
+export function instanceOfArchiveSummary(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "scheduleId" in value;
     isInstance = isInstance && "coordinatorId" in value;
@@ -72,11 +72,11 @@ export function instanceOfTopArchive(value: object): boolean {
     return isInstance;
 }
 
-export function TopArchiveFromJSON(json: any): TopArchive {
-    return TopArchiveFromJSONTyped(json, false);
+export function ArchiveSummaryFromJSON(json: any): ArchiveSummary {
+    return ArchiveSummaryFromJSONTyped(json, false);
 }
 
-export function TopArchiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): TopArchive {
+export function ArchiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean): ArchiveSummary {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -90,7 +90,7 @@ export function TopArchiveFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     };
 }
 
-export function TopArchiveToJSON(value?: TopArchive | null): any {
+export function ArchiveSummaryToJSON(value?: ArchiveSummary | null): any {
     if (value === undefined) {
         return undefined;
     }

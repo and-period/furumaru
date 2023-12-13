@@ -21,76 +21,84 @@ import {
 } from './Thumbnail';
 
 /**
- * 過去のマルシェ情報
+ * マルシェに関連づく商品情報
  * @export
- * @interface TopArchive
+ * @interface LiveProduct
  */
-export interface TopArchive {
+export interface LiveProduct {
     /**
-     * 開催スケジュールID
+     * 商品ID
      * @type {string}
-     * @memberof TopArchive
+     * @memberof LiveProduct
      */
-    scheduleId: string;
+    id: string;
     /**
-     * コーディネータID
+     * 商品名
      * @type {string}
-     * @memberof TopArchive
+     * @memberof LiveProduct
      */
-    coordinatorId: string;
+    name: string;
     /**
-     * タイトル
-     * @type {string}
-     * @memberof TopArchive
+     * 販売価格
+     * @type {number}
+     * @memberof LiveProduct
      */
-    title: string;
+    price: number;
+    /**
+     * 在庫数
+     * @type {number}
+     * @memberof LiveProduct
+     */
+    inventory: number;
     /**
      * サムネイルURL
      * @type {string}
-     * @memberof TopArchive
+     * @memberof LiveProduct
      */
     thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
-     * @memberof TopArchive
+     * @memberof LiveProduct
      */
     thumbnails: Array<Thumbnail>;
 }
 
 /**
- * Check if a given object implements the TopArchive interface.
+ * Check if a given object implements the LiveProduct interface.
  */
-export function instanceOfTopArchive(value: object): boolean {
+export function instanceOfLiveProduct(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "scheduleId" in value;
-    isInstance = isInstance && "coordinatorId" in value;
-    isInstance = isInstance && "title" in value;
+    isInstance = isInstance && "id" in value;
+    isInstance = isInstance && "name" in value;
+    isInstance = isInstance && "price" in value;
+    isInstance = isInstance && "inventory" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
     isInstance = isInstance && "thumbnails" in value;
 
     return isInstance;
 }
 
-export function TopArchiveFromJSON(json: any): TopArchive {
-    return TopArchiveFromJSONTyped(json, false);
+export function LiveProductFromJSON(json: any): LiveProduct {
+    return LiveProductFromJSONTyped(json, false);
 }
 
-export function TopArchiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): TopArchive {
+export function LiveProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): LiveProduct {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'scheduleId': json['scheduleId'],
-        'coordinatorId': json['coordinatorId'],
-        'title': json['title'],
+        'id': json['id'],
+        'name': json['name'],
+        'price': json['price'],
+        'inventory': json['inventory'],
         'thumbnailUrl': json['thumbnailUrl'],
         'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
     };
 }
 
-export function TopArchiveToJSON(value?: TopArchive | null): any {
+export function LiveProductToJSON(value?: LiveProduct | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -99,9 +107,10 @@ export function TopArchiveToJSON(value?: TopArchive | null): any {
     }
     return {
         
-        'scheduleId': value.scheduleId,
-        'coordinatorId': value.coordinatorId,
-        'title': value.title,
+        'id': value.id,
+        'name': value.name,
+        'price': value.price,
+        'inventory': value.inventory,
         'thumbnailUrl': value.thumbnailUrl,
         'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
     };

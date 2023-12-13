@@ -29,11 +29,12 @@ func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsIn
 		}
 	}
 	params := &database.ListBroadcastsParams{
-		ScheduleIDs:  in.ScheduleIDs,
-		OnlyArchived: in.OnlyArchived,
-		Limit:        int(in.Limit),
-		Offset:       int(in.Offset),
-		Orders:       orders,
+		ScheduleIDs:   in.ScheduleIDs,
+		CoordinatorID: in.CoordinatorID,
+		OnlyArchived:  in.OnlyArchived,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
+		Orders:        orders,
 	}
 	var (
 		broadcasts entity.Broadcasts
@@ -67,7 +68,8 @@ func (s *service) CreateBroadcast(ctx context.Context, in *media.CreateBroadcast
 		return nil, internalError(err)
 	}
 	params := &entity.NewBroadcastParams{
-		ScheduleID: in.ScheduleID,
+		ScheduleID:    in.ScheduleID,
+		CoordinatorID: in.CoordinatorID,
 	}
 	broadcast := entity.NewBroadcast(params)
 	if err := s.db.Broadcast.Create(ctx, broadcast); err != nil {

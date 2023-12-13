@@ -13,18 +13,22 @@ tags:
   description: 認証関連
 - name: Address
   description: アドレス帳関連
-- name: Contact
-  description: お問い合わせ関連
-- name: Schedule
-  description: マルシェ開催スケジュール関連
-- name: Product
-  description: 商品関連
-- name: Top
-  description: トップページ関連
 - name: Cart
   description: 買い物かご関連
 - name: Checkout
   description: 購入関連
+- name: Top
+  description: トップページ関連
+- name: Schedule
+  description: マルシェ開催スケジュール関連
+- name: Coordinator
+  description: コーディネータ関連
+- name: Producer
+  description: 生産者関連
+- name: Product
+  description: 商品関連
+- name: Contact
+  description: お問い合わせ関連
 - name: Status
   description: システム状態関連
 - name: Other
@@ -56,20 +60,6 @@ paths:
     $ref: './paths/v1/addresses/index.yaml'
   /v1/addresses/{addressId}:
     $ref: './paths/v1/addresses/_addressId/index.yaml'
-  # Contact
-  /v1/contacts:
-    $ref: './paths/v1/contacts/index.yaml'
-  # Schedule
-  /v1/schedules/{scheduleId}:
-    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
-  # Product
-  /v1/products:
-    $ref: './paths/v1/products/index.yaml'
-  /v1/products/{productId}:
-    $ref: './paths/v1/products/_productId/index.yaml'
-  # Top
-  /v1/top/common:
-    $ref: './paths/v1/top/common.yaml'
   # Cart
   /v1/carts:
     $ref: './paths/v1/carts/index.yaml'
@@ -84,6 +74,30 @@ paths:
     $ref: './paths/v1/checkouts/index.yaml'
   /v1/checkouts/{transactionId}:
     $ref: './paths/v1/checkouts/_transactionId/index.yaml'
+  # Contact
+  /v1/contacts:
+    $ref: './paths/v1/contacts/index.yaml'
+  # Top
+  /v1/top/common:
+    $ref: './paths/v1/top/common.yaml'
+  # Schedule
+  /v1/schedules/{scheduleId}:
+    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
+  # Coordinator
+  /v1/coordinators:
+    $ref: './paths/v1/coordinators/index.yaml'
+  /v1/coordinators/{coordinatorId}:
+    $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
+  # Producer
+  /v1/producers:
+    $ref: './paths/v1/producers/index.yaml'
+  /v1/producers/{producerId}:
+    $ref: './paths/v1/producers/_producerId/index.yaml'
+  # Product
+  /v1/products:
+    $ref: './paths/v1/products/index.yaml'
+  /v1/products/{productId}:
+    $ref: './paths/v1/products/_productId/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
@@ -152,6 +166,12 @@ components:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
     live:
       $ref: './components/schemas/entity/live.yaml#/live'
+    liveSummary:
+      $ref: './components/schemas/entity/live.yaml#/liveSummary'
+    liveProduct:
+      $ref: './components/schemas/entity/live.yaml#/liveProduct'
+    archiveSummary:
+      $ref: './components/schemas/entity/live.yaml#/archiveSummary'
     order:
       $ref: './components/schemas/entity/order.yaml#/order'
     producer:
@@ -168,10 +188,6 @@ components:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     paymentSystem:
       $ref: './components/schemas/entity/status.yaml#/paymentSystem'
-    topArchive:
-      $ref: './components/schemas/entity/top.yaml#/topArchive'
-    topLive:
-      $ref: './components/schemas/entity/top.yaml#/topLive'
     # Request
     v1CreateAddressRequest:
       $ref: './components/schemas/v1/address.request.yaml#/createAddressRequest'
@@ -220,10 +236,18 @@ components:
       $ref: './components/schemas/v1/cart.response.yaml#/calcCartResponse'
     v1CheckoutResponse:
       $ref: './components/schemas/v1/checkout.response.yaml#/checkoutResponse'
+    v1CoordinatorResponse:
+      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
+    v1CoordinatorsResponse:
+      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
+    v1ProducerResponse:
+      $ref: './components/schemas/v1/producer.response.yaml#/producerResponse'
+    v1ProducersResponse:
+      $ref: './components/schemas/v1/producer.response.yaml#/producersResponse'
     v1ProductResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:

@@ -1,0 +1,243 @@
+coordinatorResponse:
+  type: object
+  properties:
+    coordinator:
+      $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    lives:
+      type: array
+      description: 開催中・開催予定のマルシェ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/liveSummary'
+    archives:
+      type: array
+      description: 過去のマルシェ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/archiveSummary'
+    productTypes:
+      type: array
+      description: 品目一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/productType'
+    producers:
+      type: array
+      description: 生産者一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/producer'
+    products:
+      type: array
+      description: 商品一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/product'
+  required:
+  - coordinator
+  - lives
+  - archives
+  - productTypes
+  - producers
+  - products
+  example:
+    coordinator:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    lives:
+    - scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 2
+      title: '&.マルシェ'
+      thumbnailUrl: 'https://example.com/thumbnail.png'
+      thumbnails:
+      - url: 'https://example.com/thumbnail_240.png'
+        size: 1
+      - url: 'https://example.com/thumbnail_675.png'
+        size: 2
+      - url: 'https://example.com/thumbnail_900.png'
+        size: 3
+      startAt: 1640962800
+      endAt: 1640962800
+      products:
+      - id: 'kSByoE6FetnPs5Byk3a9Zx'
+        title: '芽が出たじゃがいも'
+        price: 1980
+        inventory: 30
+        thumbnailUrl: 'https://example.com/thumbnail.png'
+        thumbnails:
+        - url: 'https://example.com/thumbnail_240.png'
+          size: 1
+        - url: 'https://example.com/thumbnail_675.png'
+          size: 2
+        - url: 'https://example.com/thumbnail_900.png'
+          size: 3
+    archives:
+    - scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: '&.マルシェ'
+      thumbnailUrl: 'https://example.com/thumbnail.png'
+      thumbnails:
+      - url: 'https://example.com/thumbnail_240.png'
+        size: 1
+      - url: 'https://example.com/thumbnail_675.png'
+        size: 2
+      - url: 'https://example.com/thumbnail_900.png'
+        size: 3
+    productTypes:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'じゃがいも'
+      iconUrl: 'https://and-period.jp/icon.png'
+      icons:
+      - url: 'https://and-period.jp/icon_240.png'
+        size: 1
+      - url: 'https://and-period.jp/icon_675.png'
+        size: 2
+      - url: 'https://and-period.jp/icon_900.png'
+        size: 3
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    producers:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: '&.農園'
+      profile: '紹介文です。'
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    products:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '新鮮なじゃがいも'
+      description: '新鮮なじゃがいもをお届けします。'
+      status: 2
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      media:
+      - url: 'https://and-period.jp/thumbnail01.png'
+        isThumbnail: true
+        images:
+        - url: 'https://and-period.jp/thumbnail_240.png'
+          size: 1
+        - url: 'https://and-period.jp/thumbnail_675.png'
+          size: 2
+        - url: 'https://and-period.jp/thumbnail_900.png'
+          size: 3
+      - url: 'https://and-period.jp/thumbnail02.png'
+        isThumbnail: false
+        images: []
+      price: 2500
+      inventory: 30
+      weight: 2.5
+      itemUnit: '袋'
+      itemDescription: '1袋あたり2.5kgのじゃがいも'
+      deliveryType: 1
+      recommendedPoint1: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint2: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint3: 'シャリシャリほろ苦がクセになる！'
+      expirationDate: 7
+      storageMethodType: 1
+      box60Rate: 80
+      box80Rate: 50
+      box100Rate: 40
+      originPrefecture: '東京都'
+      originCity: '彦根市'
+      startAt: 1640962800
+      endAt: 1640962800
+coordinatorsResponse:
+  type: object
+  properties:
+    coordinators:
+      type: array
+      description: コーディネータ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    productTypes:
+      type: array
+      description: 品目一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/productType'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - coordinators
+  - productTypes
+  - total
+  example:
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    productTypes:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'じゃがいも'
+      iconUrl: 'https://and-period.jp/icon.png'
+      icons:
+      - url: 'https://and-period.jp/icon_240.png'
+        size: 1
+      - url: 'https://and-period.jp/icon_675.png'
+        size: 2
+      - url: 'https://and-period.jp/icon_900.png'
+        size: 3
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    total: 1
