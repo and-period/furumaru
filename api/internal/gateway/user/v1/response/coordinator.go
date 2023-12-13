@@ -31,6 +31,7 @@ type CoordinatorResponse struct {
 }
 
 type CoordinatorsResponse struct {
-	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
-	Total       int64        `json:"total"`       // コーディネータ合計数
+	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
+	ProductTypes []*ProductType `json:"productTypes"` // 品目一覧
+	Total        int64          `json:"total"`        // コーディネータ合計数
 }

@@ -1,0 +1,12 @@
+get:
+  summary: コーディネータ一覧取得
+  operationId: v1ListCoordinators
+  tags:
+  - Coordinator
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1CoordinatorsResponse'

@@ -16,7 +16,57 @@ import (
 func (h *handler) coordinatorRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/coordinators")
 
+	r.GET("", h.ListCoordinators)
 	r.GET("/:coordinatorId", h.GetCoordinator)
+}
+
+func (h *handler) ListCoordinators(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	coordinatorsIn := &user.ListCoordinatorsInput{
+		Limit:  limit,
+		Offset: offset,
+	}
+	coordinators, total, err := h.user.ListCoordinators(ctx, coordinatorsIn)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if len(coordinators) == 0 {
+		res := &response.CoordinatorsResponse{
+			Coordinators: []*response.Coordinator{},
+			ProductTypes: []*response.ProductType{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	productTypes, err := h.multiGetProductTypes(ctx, coordinators.ProductTypeIDs())
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.CoordinatorsResponse{
+		Coordinators: service.NewCoordinators(coordinators).Response(),
+		ProductTypes: productTypes.Response(),
+		Total:        total,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) GetCoordinator(ctx *gin.Context) {

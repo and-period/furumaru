@@ -16,11 +16,14 @@
 import * as runtime from '../runtime';
 import type {
   CoordinatorResponse,
+  CoordinatorsResponse,
   ErrorResponse,
 } from '../models/index';
 import {
     CoordinatorResponseFromJSON,
     CoordinatorResponseToJSON,
+    CoordinatorsResponseFromJSON,
+    CoordinatorsResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
 } from '../models/index';
@@ -61,6 +64,32 @@ export class CoordinatorApi extends runtime.BaseAPI {
      */
     async v1GetCoordinator(requestParameters: V1GetCoordinatorRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CoordinatorResponse> {
         const response = await this.v1GetCoordinatorRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * コーディネータ一覧取得
+     */
+    async v1ListCoordinatorsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CoordinatorsResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/coordinators`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CoordinatorsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * コーディネータ一覧取得
+     */
+    async v1ListCoordinators(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CoordinatorsResponse> {
+        const response = await this.v1ListCoordinatorsRaw(initOverrides);
         return await response.value();
     }
 

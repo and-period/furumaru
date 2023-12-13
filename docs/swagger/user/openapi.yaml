@@ -82,6 +82,8 @@ paths:
   /v1/schedules/{scheduleId}:
     $ref: './paths/v1/schedules/_scheduleId/index.yaml'
   # Coordinator
+  /v1/coordinators:
+    $ref: './paths/v1/coordinators/index.yaml'
   /v1/coordinators/{coordinatorId}:
     $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
   # Product
@@ -229,6 +231,8 @@ components:
       $ref: './components/schemas/v1/checkout.response.yaml#/checkoutResponse'
     v1CoordinatorResponse:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
+    v1CoordinatorsResponse:
+      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1ScheduleResponse:

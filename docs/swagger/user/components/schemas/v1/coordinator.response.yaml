@@ -102,7 +102,7 @@ coordinatorResponse:
       - url: 'https://example.com/thumbnail_900.png'
         size: 3
     productTypes:
-      id: 'kSByoE6FetnPs5Byk3a9Zx'
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
       iconUrl: 'https://and-period.jp/icon.png'
       icons:
@@ -179,3 +179,65 @@ coordinatorResponse:
       originCity: '彦根市'
       startAt: 1640962800
       endAt: 1640962800
+coordinatorsResponse:
+  type: object
+  properties:
+    coordinators:
+      type: array
+      description: コーディネータ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    productTypes:
+      type: array
+      description: 品目一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/productType'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - coordinators
+  - productTypes
+  - total
+  example:
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    productTypes:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: 'じゃがいも'
+      iconUrl: 'https://and-period.jp/icon.png'
+      icons:
+      - url: 'https://and-period.jp/icon_240.png'
+        size: 1
+      - url: 'https://and-period.jp/icon_675.png'
+        size: 2
+      - url: 'https://and-period.jp/icon_900.png'
+        size: 3
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+    total: 1
