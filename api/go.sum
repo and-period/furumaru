@@ -69,8 +69,8 @@ github.com/aws/aws-sdk-go-v2/service/medialive v1.43.0 h1:gDTQNHqQ7ljSOnJaPALFVa
 github.com/aws/aws-sdk-go-v2/service/medialive v1.43.0/go.mod h1:ng4z2X4iXow0bq3WlfyXgpQ0ZocNv/gGjsZWpzPdDpU=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2 h1:DLSAG8zpJV2pYsU+UPkj1IEZghyBnnUsvIRs6UuXSDU=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2/go.mod h1:thjZng67jGsvMyVZnSxlcqKyLwB0XTG8bHIRZPTJ+Bs=
-github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.2 h1:JKbfiLwEqJp8zaOAOn6AVSMS96gdwP3TjBMvZYsbxqE=
-github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.2/go.mod h1:pbBOMK8UicdDK11zsPSGbpFh9Xwbd1oD3t7pSxXgNxU=
+github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.5 h1:qYi/BfDrWXZxlmRjlKCyFmtI4HKJwW8OKDKhKRAOZQI=
+github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.5/go.mod h1:4Ae1NCLK6ghmjzd45Tc33GgCKhUWD2ORAlULtMO1Cbs=
 github.com/aws/aws-sdk-go-v2/service/sfn v1.24.2 h1:1MdBvJRX8S6sFzuCSt8AfO1YdSABNTHWj4pUtLC7K8w=
 github.com/aws/aws-sdk-go-v2/service/sfn v1.24.2/go.mod h1:Wr5tlkuVOylK0t5LFMJngamwWRM/HJY2NHsA6yJzo5c=
 github.com/aws/aws-sdk-go-v2/service/sqs v1.29.2 h1:D7xR2SdV6s7x0YtFvrKKsqf0znov28CGrcj5S8LiQFo=
