@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import type { LiveTimelineItemMock } from '~/constants/mock'
+import dayjs from 'dayjs'
+import type { Product } from '~/types/api'
 
 interface Props {
-  time: string
-  description: string
-  marcheName: string
-  cnImgSrc: string
-  items: LiveTimelineItemMock[]
+  startAt: number
+  comment: string
+  username: string | undefined
+  thumbnailUrl: string | undefined
+  items: Product[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const priceFormatter = (price: number) => {
   return new Intl.NumberFormat('ja-JP', {
@@ -17,6 +18,10 @@ const priceFormatter = (price: number) => {
     currency: 'JPY',
   }).format(price)
 }
+
+const startAtString = computed(() => {
+  return dayjs.unix(props.startAt).format('hh:mm')
+})
 </script>
 
 <template>
@@ -27,7 +32,7 @@ const priceFormatter = (price: number) => {
     <time
       class="absolute -left-14 mt-2 text-[14px] font-medium leading-none tracking-[1.4px]"
     >
-      {{ time }}
+      {{ startAtString }}
     </time>
 
     <div
@@ -35,14 +40,22 @@ const priceFormatter = (price: number) => {
     >
       <div class="col-span-1 flex items-center gap-4 md:flex-col">
         <div class="flex w-full flex-col items-center">
-          <img :src="cnImgSrc" class="mb-2 h-[66px] w-[66px] rounded-full" />
-          <p class="text-center text-[14px] font-medium tracking-[1.4px]">
-            {{ marcheName }}
+          <img
+            v-if="thumbnailUrl"
+            :src="thumbnailUrl"
+            class="mb-2 h-[66px] w-[66px] rounded-full"
+          />
+          <p
+            v-if="username"
+            class="text-center text-[14px] font-medium tracking-[1.4px]"
+          >
+            {{ username }}
           </p>
         </div>
-        <div class="text-[12px] font-medium tracking-[1.2px]">
-          {{ description }}
-        </div>
+        <div
+          class="text-[12px] font-medium tracking-[1.2px]"
+          v-html="comment"
+        ></div>
       </div>
 
       <div
