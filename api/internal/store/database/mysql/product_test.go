@@ -967,6 +967,8 @@ func testProduct(productID, typeID, categoryID, coordinatorID, producerID string
 		Item:            1,
 		ItemUnit:        "袋",
 		ItemDescription: "1袋あたり100gのじゃがいも",
+		ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+		Thumbnails:      common.Images{},
 		Media: entity.MultiProductMedia{
 			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},

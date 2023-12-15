@@ -87,6 +87,8 @@ type Product struct {
 	Item                  int64             `gorm:""`                                       // 数量
 	ItemUnit              string            `gorm:""`                                       // 数量単位
 	ItemDescription       string            `gorm:""`                                       // 数量単位説明
+	ThumbnailURL          string            `gorm:"-"`                                      // サムネイルURL
+	Thumbnails            common.Images     `gorm:"-"`                                      // リサイズ済サムネイル一覧
 	Media                 MultiProductMedia `gorm:"-"`                                      // メディア一覧
 	MediaJSON             datatypes.JSON    `gorm:"default:null;column:media"`              // メディア一覧(JSON)
 	ExpirationDate        int64             `gorm:""`                                       // 賞味期限(単位:日)
@@ -224,6 +226,7 @@ func (p *Product) Fill(revision *ProductRevision, now time.Time) (err error) {
 		return
 	}
 	p.SetStatus(now)
+	p.SetThumbnail()
 	p.ProductRevision = *revision
 	p.OriginPrefecture, _ = codes.ToPrefectureJapanese(p.OriginPrefectureCode)
 	return
@@ -241,6 +244,16 @@ func (p *Product) SetStatus(now time.Time) {
 		p.Status = ProductStatusForSale
 	default:
 		p.Status = ProductStatusOutOfSale
+	}
+}
+
+func (p *Product) SetThumbnail() {
+	for _, media := range p.Media {
+		if !media.IsThumbnail {
+			continue
+		}
+		p.ThumbnailURL = media.URL
+		p.Thumbnails = media.Images
 	}
 }
 
