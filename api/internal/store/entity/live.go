@@ -81,6 +81,17 @@ func (l *Live) Validate(schedule *Schedule, lives Lives) error {
 	return nil
 }
 
+func (l *Live) ExcludeProductIDs(products map[string]*Product) {
+	productIDs := make([]string, 0, len(l.ProductIDs))
+	for _, productID := range l.ProductIDs {
+		if _, ok := products[productID]; !ok {
+			continue
+		}
+		productIDs = append(productIDs, productID)
+	}
+	l.ProductIDs = productIDs
+}
+
 func (ls Lives) IDs() []string {
 	return set.UniqBy(ls, func(l *Live) string {
 		return l.ID
@@ -104,6 +115,12 @@ func (ls Lives) ProductIDs() []string {
 func (ls Lives) Fill(products map[string]LiveProducts) {
 	for i := range ls {
 		ls[i].Fill(products[ls[i].ID])
+	}
+}
+
+func (ls Lives) ExcludeProductIDs(products map[string]*Product) {
+	for i := range ls {
+		ls[i].ExcludeProductIDs(products)
 	}
 }
 

@@ -39,6 +39,14 @@ func (s *service) ListLives(ctx context.Context, in *store.ListLivesInput) (enti
 	if err := eg.Wait(); err != nil {
 		return nil, 0, internalError(err)
 	}
+	if len(lives) == 0 || !in.OnlyPublished {
+		return lives, total, nil
+	}
+	products, err := s.db.Product.MultiGet(ctx, lives.ProductIDs())
+	if err != nil {
+		return nil, 0, internalError(err)
+	}
+	lives.ExcludeProductIDs(products.FilterByPublished().Map())
 	return lives, total, nil
 }
 
