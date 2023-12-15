@@ -1,7 +1,60 @@
 <script setup lang="ts">
-import { MOCK_LIVE_VIDEO } from '~/constants/mock'
+import dayjs from 'dayjs'
+import { useScheduleStore } from '~/store/schedule'
+import type { ScheduleResponse } from '~/types/api'
+import type { LiveTimeLineItem } from '~/types/props/schedule'
 
-const live = MOCK_LIVE_VIDEO
+const scheduleStore = useScheduleStore()
+const { getSchedule } = scheduleStore
+
+const route = useRoute()
+
+const isLoading = ref<boolean>(false)
+const schedule = ref<ScheduleResponse | undefined>(undefined)
+
+const scheduleId = computed<string>(() => {
+  return route.params.id as string
+})
+
+const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
+  if (schedule.value) {
+    return (
+      schedule.value.lives.map((live) => {
+        // 生産者情報のマッピング
+        const producer = schedule.value?.producers.find(
+          (p) => p.id === live.producerId,
+        )
+        // 商品のマッピング
+        const products = live.productIds.map((id) => {
+          return schedule.value?.products.find((p) => p.id === id)
+        })
+        // コーディネーターのマッピング
+        return {
+          ...live,
+          producer,
+          products,
+        }
+      }) ?? []
+    )
+  } else {
+    return []
+  }
+})
+
+const isLiveStreaming = computed<boolean>(() => {
+  if (schedule.value) {
+    return dayjs().isAfter(schedule.value.schedule.startAt)
+  } else {
+    return false
+  }
+})
+
+onMounted(async () => {
+  isLoading.value = true
+  const res = await getSchedule(scheduleId.value)
+  schedule.value = res
+  isLoading.value = false
+})
 
 useSeoMeta({
   title: 'ライブ配信',
@@ -12,20 +65,23 @@ useSeoMeta({
   <div
     class="mx-auto grid max-w-[1440px] grid-flow-col auto-rows-max grid-cols-3 gap-8 text-main xl:px-14"
   >
-    <div class="col-span-3 lg:col-span-2">
-      <the-live-video-player
-        :video-src="'https://furumaru-dev.s3.ap-northeast-1.amazonaws.com/promotion/promotion.mp4'"
-        :title="live.title"
-        :start-at="live.startAt"
-        :is-archive="live.published"
-        :marche-name="live.marcheName"
-        :description="live.description"
-        :address="live.address"
-        :cn-img-src="live.cnImgSrc"
-        :cn-name="live.cnName"
-      />
-      <the-live-timeline class="mt-4" />
-    </div>
+    <template v-if="schedule">
+      <div class="col-span-3">
+        <the-live-video-player
+          :video-src="schedule.schedule.distributionUrl"
+          :title="schedule.schedule.title"
+          :start-at="schedule.schedule.startAt"
+          :end-at="schedule.schedule.endAt"
+          :description="schedule.schedule.description"
+          :is-live-streaming="isLiveStreaming"
+          :marche-name="schedule.coordinator.marcheName"
+          :address="schedule.coordinator.city"
+          :cn-name="schedule.coordinator.username"
+          :cn-img-src="schedule.coordinator.thumbnailUrl"
+        />
+        <the-live-timeline class="mt-4" :items="liveTimeLineItems" />
+      </div>
+    </template>
 
     <!-- PC画面のみ表示する右サイドバー -->
     <!--

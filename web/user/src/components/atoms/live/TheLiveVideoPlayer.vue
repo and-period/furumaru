@@ -4,11 +4,10 @@ import * as dayjs from 'dayjs'
 
 interface Props {
   videoSrc: string
-  videoType: string
   title: string
   startAt: number
-  endAt: string
-  isArchive: boolean
+  endAt: number
+  isLiveStreaming: boolean
   marcheName: string
   description: string
   address: string
@@ -49,21 +48,27 @@ const handleClickShowDetailButton = () => {
 
 <template>
   <div>
-    <video :src="videoSrc" class="aspect-video w-full" controls playsinline />
-    <div class="mt-2 px-4 lg:px-0">
+    <video
+      ref="videoRef"
+      :src="videoSrc"
+      class="aspect-video w-full"
+      controls
+      playsinline
+    />
+    <div class="mt-2 px-4">
       <div class="flex items-center gap-2">
         <div
           :class="{
             'flex max-w-fit items-center justify-center rounded px-2 font-bold': true,
-            'border-2 border-orange bg-orange text-white': isArchive,
-            'border-2 border-main text-main': !isArchive,
+            'border-2 border-orange bg-orange text-white': isLiveStreaming,
+            'border-2 border-main text-main': !isLiveStreaming,
           }"
         >
-          <div class="mr-2 pt-[2px]">
+          <div v-if="isLiveStreaming" class="mr-2 pt-[2px]">
             <the-live-icon />
           </div>
           <div class="align-middle">
-            {{ isArchive ? 'LIVE' : '配信予定' }}
+            {{ isLiveStreaming ? 'LIVE' : '配信予定' }}
           </div>
         </div>
         <div class="text-[14px] tracking-[1.4px] after:content-['〜']">
@@ -89,7 +94,7 @@ const handleClickShowDetailButton = () => {
         <p
           v-show="showDetail"
           class="mt-6 whitespace-pre-wrap text-[14px] tracking-[1.4px]"
-          v-text="description"
+          v-html="description"
         ></p>
         <button
           class="inline-flex w-full items-center justify-center gap-2 text-[12px] tracking-[1.2px]"

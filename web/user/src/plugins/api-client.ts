@@ -6,6 +6,7 @@ import {
   CartApi,
   CheckoutApi,
   ProductApi,
+  ScheduleApi,
   TopApi,
 } from '~/types/api'
 
@@ -36,12 +37,17 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   const checkoutApiClient = (token?: string): CheckoutApi =>
     apiClientFactory.create(CheckoutApi, token)
 
+  // スケジュール
+  const scheduleApiClient = (token?: string): ScheduleApi =>
+    apiClientFactory.create(ScheduleApi, token)
+
   store.authApiClient = authApiClient
   store.topPageApiClient = topPageApiClient
   store.productApiClient = productApiClient
   store.cartApiClient = cartApiClient
   store.addressApiClient = addressApiClient
   store.checkoutApiClient = checkoutApiClient
+  store.scheduleApiClient = scheduleApiClient
 }
 
 /**

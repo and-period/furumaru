@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { MOCK_LIVE_ITEMS, MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
+import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
 
 const router = useRouter()
 
 const topPageStore = useTopPageStore()
-const { archives } = storeToRefs(topPageStore)
+const { archives, lives } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
+
+const isInItLoading = ref<boolean>(false)
 
 const archiveRef = ref<HTMLDivElement | null>(null)
 const archiveRefScrollLeft = ref<number>(0)
@@ -18,8 +20,10 @@ const updateScrollLeft = () => {
   }
 }
 
-onMounted(() => {
-  getHomeContent()
+onMounted(async () => {
+  isInItLoading.value = true
+  await getHomeContent()
+  isInItLoading.value = false
 })
 
 onMounted(() => {
@@ -54,8 +58,8 @@ const handleClickArchiveRightButton = () => {
   }
 }
 
-const handleClickLiveItem = (_: string) => {
-  router.push('/live')
+const handleClickLiveItem = (id: string) => {
+  router.push(`/live/${id}`)
 }
 
 const banners: string[] = [
@@ -70,14 +74,6 @@ const handleClickMoreViewButton = () => {
   isOpen.value = !isOpen.value
 }
 
-const liveItems = computed(() => {
-  if (isOpen.value) {
-    return MOCK_LIVE_ITEMS
-  } else {
-    return MOCK_LIVE_ITEMS.slice(0, 6)
-  }
-})
-
 useSeoMeta({
   title: 'トップページ',
 })
@@ -89,45 +85,48 @@ useSeoMeta({
 
     <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
-        <div
-          class="mx-auto grid max-w-7xl gap-x-10 gap-y-8 px-2 md:grid-cols-2 lg:grid-cols-3"
-        >
-          <transition-group
-            enter-active-class="duration-300 ease-in-out"
-            enter-from-class="opacity-0 h-0"
-            enter-to-class="opacity-100 h-full"
-            leave-active-class="duration-300 ease-in-out"
-            leave-from-class="opacity-100 h-full"
-            leave-to-class="opacity-0 h-0"
+        <template v-if="isInItLoading"> </template>
+        <template v-if="lives.length > 0">
+          <div
+            class="mx-auto grid max-w-7xl gap-x-10 gap-y-8 px-2 md:grid-cols-2 lg:grid-cols-3"
           >
-            <the-live-item
-              v-for="liveItem in liveItems"
-              :id="liveItem.id"
-              :key="liveItem.id"
-              :title="liveItem.title"
-              :img-src="liveItem.imgSrc"
-              :start-at="liveItem.startAt"
-              :published="liveItem.published"
-              :marche-name="liveItem.marcheName"
-              :address="liveItem.address"
-              :cn-name="liveItem.cnName"
-              :cn-img-src="liveItem.cnImgSrc"
-              @click="handleClickLiveItem(id)"
-            />
-          </transition-group>
-        </div>
-        <div class="mb-4 mt-10 flex w-full justify-center">
-          <button
-            class="relative w-60 bg-main py-2 text-white"
-            @click="handleClickMoreViewButton"
-          >
-            もっと見る
-            <div class="absolute bottom-3.5 right-4">
-              <the-up-arrow-icon v-show="isOpen" fill="white" />
-              <the-down-arrow-icon v-show="!isOpen" fill="white" />
-            </div>
-          </button>
-        </div>
+            <transition-group
+              enter-active-class="duration-300 ease-in-out"
+              enter-from-class="opacity-0 h-0"
+              enter-to-class="opacity-100 h-full"
+              leave-active-class="duration-300 ease-in-out"
+              leave-from-class="opacity-100 h-full"
+              leave-to-class="opacity-0 h-0"
+            >
+              <the-live-item
+                v-for="liveItem in lives"
+                :id="liveItem.scheduleId"
+                :key="liveItem.scheduleId"
+                :title="liveItem.title"
+                :img-src="liveItem.thumbnailUrl"
+                :start-at="liveItem.startAt"
+                :is-live-streaming="liveItem.isLiveStreaming"
+                :marche-name="liveItem.coordinator.marcheName"
+                :address="liveItem.coordinator.city"
+                :cn-name="liveItem.coordinator.username"
+                :cn-img-src="liveItem.coordinator.thumbnailUrl"
+                @click="handleClickLiveItem(liveItem.scheduleId)"
+              />
+            </transition-group>
+          </div>
+          <div class="mb-4 mt-10 flex w-full justify-center">
+            <button
+              class="relative w-60 bg-main py-2 text-white"
+              @click="handleClickMoreViewButton"
+            >
+              もっと見る
+              <div class="absolute bottom-3.5 right-4">
+                <the-up-arrow-icon v-show="isOpen" fill="white" />
+                <the-down-arrow-icon v-show="!isOpen" fill="white" />
+              </div>
+            </button>
+          </div>
+        </template>
       </the-content-box>
 
       <the-content-box title="archive" sub-title="過去のマルシェ">

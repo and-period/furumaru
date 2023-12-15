@@ -6,6 +6,7 @@ import {
   CheckoutApi,
   ProductApi,
   TopApi,
+  ScheduleApi,
 } from '../api'
 import { CustomErrorMessage } from '~/plugins/api-error-handler'
 import VueI18n from 'vue-i18n'
@@ -28,6 +29,7 @@ declare module 'pinia' {
     cartApiClient: (token?: string) => CartApi
     addressApiClient: (token?: string) => AddressApi
     checkoutApiClient: (token?: string) => CheckoutApi
+    scheduleApiClient: (token?: string) => ScheduleApi
     i18n: VueI18
   }
 }
