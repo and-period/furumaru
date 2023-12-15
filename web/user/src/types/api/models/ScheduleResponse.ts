@@ -61,7 +61,7 @@ export interface ScheduleResponse {
      * @type {Coordinator}
      * @memberof ScheduleResponse
      */
-    coordinators?: Coordinator;
+    coordinator: Coordinator;
     /**
      * ライブ配信一覧
      * @type {Array<Live>}
@@ -88,6 +88,7 @@ export interface ScheduleResponse {
 export function instanceOfScheduleResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "schedule" in value;
+    isInstance = isInstance && "coordinator" in value;
     isInstance = isInstance && "lives" in value;
     isInstance = isInstance && "producers" in value;
     isInstance = isInstance && "products" in value;
@@ -106,7 +107,7 @@ export function ScheduleResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'schedule': ScheduleFromJSON(json['schedule']),
-        'coordinators': !exists(json, 'coordinators') ? undefined : CoordinatorFromJSON(json['coordinators']),
+        'coordinator': CoordinatorFromJSON(json['coordinator']),
         'lives': ((json['lives'] as Array<any>).map(LiveFromJSON)),
         'producers': ((json['producers'] as Array<any>).map(ProducerFromJSON)),
         'products': ((json['products'] as Array<any>).map(ProductFromJSON)),
@@ -123,7 +124,7 @@ export function ScheduleResponseToJSON(value?: ScheduleResponse | null): any {
     return {
         
         'schedule': ScheduleToJSON(value.schedule),
-        'coordinators': CoordinatorToJSON(value.coordinators),
+        'coordinator': CoordinatorToJSON(value.coordinator),
         'lives': ((value.lives as Array<any>).map(LiveToJSON)),
         'producers': ((value.producers as Array<any>).map(ProducerToJSON)),
         'products': ((value.products as Array<any>).map(ProductToJSON)),

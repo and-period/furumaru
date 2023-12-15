@@ -15,6 +15,8 @@ type Product struct {
 	Weight            float64         `json:"weight"`            // 重量(kg,少数第一位まで)
 	ItemUnit          string          `json:"itemUnit"`          // 数量単位
 	ItemDescription   string          `json:"itemDescription"`   // 数量単位説明
+	ThumbnailURL      string          `json:"thumbnailUrl"`      // サムネイルURL
+	Thumbnails        []*Image        `json:"thumbnails"`        // リサイズ済みサムネイル
 	Media             []*ProductMedia `json:"media"`             // メディア一覧
 	Price             int64           `json:"price"`             // 販売価格
 	ExpirationDate    int64           `json:"expirationDate"`    // 賞味期限(単位:日)

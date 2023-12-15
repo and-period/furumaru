@@ -37,6 +37,12 @@ import {
     StorageMethodTypeFromJSONTyped,
     StorageMethodTypeToJSON,
 } from './StorageMethodType';
+import type { Thumbnail } from './Thumbnail';
+import {
+    ThumbnailFromJSON,
+    ThumbnailFromJSONTyped,
+    ThumbnailToJSON,
+} from './Thumbnail';
 
 /**
  * 商品情報
@@ -98,6 +104,18 @@ export interface Product {
      * @memberof Product
      */
     productTagIds: Array<string>;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof Product
+     */
+    thumbnailUrl: string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<Thumbnail>}
+     * @memberof Product
+     */
+    thumbnails: Array<Thumbnail>;
     /**
      * 
      * @type {Array<ProductMediaInner>}
@@ -228,6 +246,8 @@ export function instanceOfProduct(value: object): boolean {
     isInstance = isInstance && "categoryId" in value;
     isInstance = isInstance && "productTypeId" in value;
     isInstance = isInstance && "productTagIds" in value;
+    isInstance = isInstance && "thumbnailUrl" in value;
+    isInstance = isInstance && "thumbnails" in value;
     isInstance = isInstance && "media" in value;
     isInstance = isInstance && "price" in value;
     isInstance = isInstance && "inventory" in value;
@@ -270,6 +290,8 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         'categoryId': json['categoryId'],
         'productTypeId': json['productTypeId'],
         'productTagIds': json['productTagIds'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
         'media': ((json['media'] as Array<any>).map(ProductMediaInnerFromJSON)),
         'price': json['price'],
         'inventory': json['inventory'],
@@ -310,6 +332,8 @@ export function ProductToJSON(value?: Product | null): any {
         'categoryId': value.categoryId,
         'productTypeId': value.productTypeId,
         'productTagIds': value.productTagIds,
+        'thumbnailUrl': value.thumbnailUrl,
+        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
         'media': ((value.media as Array<any>).map(ProductMediaInnerToJSON)),
         'price': value.price,
         'inventory': value.inventory,
