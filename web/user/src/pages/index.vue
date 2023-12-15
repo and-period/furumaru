@@ -106,10 +106,10 @@ useSeoMeta({
                 :img-src="liveItem.thumbnailUrl"
                 :start-at="liveItem.startAt"
                 :is-live-streaming="liveItem.isLiveStreaming"
-                marche-name=""
-                address=""
-                cn-name=""
-                cn-img-src=""
+                :marche-name="liveItem.coordinator.marcheName"
+                :address="liveItem.coordinator.city"
+                :cn-name="liveItem.coordinator.username"
+                :cn-img-src="liveItem.coordinator.thumbnailUrl"
                 @click="handleClickLiveItem(liveItem.scheduleId)"
               />
             </transition-group>
