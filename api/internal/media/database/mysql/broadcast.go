@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/database"
@@ -31,8 +32,20 @@ func (p listBroadcastsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.ScheduleIDs) > 0 {
 		stmt = stmt.Where("schedule_id IN (?)", p.ScheduleIDs)
 	}
+	if p.CoordinatorID != "" {
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
 	if p.OnlyArchived {
 		stmt = stmt.Where("archive_url != ''")
+	}
+	for i := range p.Orders {
+		var value string
+		if p.Orders[i].OrderByASC {
+			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
+		} else {
+			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
+		}
+		stmt = stmt.Order(value)
 	}
 	return stmt
 }

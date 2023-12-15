@@ -32,8 +32,8 @@ func TestBroadcast_List(t *testing.T) {
 	require.NoError(t, err)
 
 	broadcasts := make(entity.Broadcasts, 2)
-	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id01", now().AddDate(0, 1, 0))
-	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id02", now())
+	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id01", "coordinator-id", now().AddDate(0, 1, 0))
+	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id02", "coordinator-id", now())
 	err = db.DB.Create(&broadcasts).Error
 	require.NoError(t, err)
 
@@ -117,8 +117,8 @@ func TestBroadcast_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	broadcasts := make(entity.Broadcasts, 2)
-	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id01", now().AddDate(0, 1, 0))
-	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id02", now())
+	broadcasts[0] = testBroadcast("broadcast-id01", "schedule-id01", "coordinator-id", now().AddDate(0, 1, 0))
+	broadcasts[1] = testBroadcast("broadcast-id02", "schedule-id02", "coordinator-id", now())
 	err = db.DB.Create(&broadcasts).Error
 	require.NoError(t, err)
 
@@ -201,7 +201,7 @@ func TestBroadcast_GetByScheduleID(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	b := testBroadcast("broadcast-id", "schedule-id", now())
+	b := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 	err = db.DB.Create(&b).Error
 	require.NoError(t, err)
 
@@ -289,7 +289,7 @@ func TestBroadcast_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				broadcast: testBroadcast("broadcast-id", "schedule-id", now()),
+				broadcast: testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now()),
 			},
 			want: want{
 				err: nil,
@@ -298,12 +298,12 @@ func TestBroadcast_Create(t *testing.T) {
 		{
 			name: "already exists",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				broadcast := testBroadcast("broadcast-id", "schedule-id", now())
+				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 				err := db.DB.Create(&broadcast).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				broadcast: testBroadcast("broadcast-id", "schedule-id", now()),
+				broadcast: testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now()),
 			},
 			want: want{
 				err: database.ErrAlreadyExists,
@@ -359,7 +359,7 @@ func TestBroadcast_Update(t *testing.T) {
 		{
 			name: "success active",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				broadcast := testBroadcast("broadcast-id", "schedule-id", now())
+				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&broadcast).Error
 				require.NoError(t, err)
 			},
@@ -388,7 +388,7 @@ func TestBroadcast_Update(t *testing.T) {
 		{
 			name: "success disable",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				broadcast := testBroadcast("broadcast-id", "schedule-id", now())
+				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&broadcast).Error
 				require.NoError(t, err)
 			},
@@ -405,7 +405,7 @@ func TestBroadcast_Update(t *testing.T) {
 		{
 			name: "success archive",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				broadcast := testBroadcast("broadcast-id", "schedule-id", now())
+				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&broadcast).Error
 				require.NoError(t, err)
 			},
@@ -425,7 +425,7 @@ func TestBroadcast_Update(t *testing.T) {
 		{
 			name: "success other",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				broadcast := testBroadcast("broadcast-id", "schedule-id", now())
+				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
 				err = db.DB.Create(&broadcast).Error
 				require.NoError(t, err)
 			},
@@ -459,15 +459,16 @@ func TestBroadcast_Update(t *testing.T) {
 	}
 }
 
-func testBroadcast(broadcastID, scheduleID string, now time.Time) *entity.Broadcast {
+func testBroadcast(broadcastID, scheduleID, coordinatorID string, now time.Time) *entity.Broadcast {
 	return &entity.Broadcast{
-		ID:         broadcastID,
-		ScheduleID: scheduleID,
-		Type:       entity.BroadcastTypeNormal,
-		Status:     entity.BroadcastStatusIdle,
-		InputURL:   "rtmp://127.0.0.1/1935/app/instance",
-		OutputURL:  "http://example.com/index.m3u8",
-		CreatedAt:  now,
-		UpdatedAt:  now,
+		ID:            broadcastID,
+		ScheduleID:    scheduleID,
+		CoordinatorID: coordinatorID,
+		Type:          entity.BroadcastTypeNormal,
+		Status:        entity.BroadcastStatusIdle,
+		InputURL:      "rtmp://127.0.0.1/1935/app/instance",
+		OutputURL:     "http://example.com/index.m3u8",
+		CreatedAt:     now,
+		UpdatedAt:     now,
 	}
 }

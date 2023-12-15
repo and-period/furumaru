@@ -270,7 +270,14 @@ func TestProduct_Fill(t *testing.T) {
 					"tag-id01",
 					"tag-id02",
 				},
-				TagIDsJSON: datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
+				TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
+				ThumbnailURL: "https://and-period.jp/thumbnail.png",
+				Thumbnails: common.Images{
+					{
+						URL:  "https://and-period.jp/thumbnail_240.png",
+						Size: common.ImageSizeSmall,
+					},
+				},
 				Media: MultiProductMedia{
 					{
 						URL:         "https://and-period.jp/thumbnail.png",
@@ -537,7 +544,14 @@ func TestProducts_Fill(t *testing.T) {
 						"tag-id01",
 						"tag-id02",
 					},
-					TagIDsJSON: datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
+					TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					Thumbnails: common.Images{
+						{
+							URL:  "https://and-period.jp/thumbnail_240.png",
+							Size: common.ImageSizeSmall,
+						},
+					},
 					Media: MultiProductMedia{
 						{
 							URL:         "https://and-period.jp/thumbnail.png",
@@ -574,7 +588,14 @@ func TestProducts_Fill(t *testing.T) {
 						"tag-id01",
 						"tag-id02",
 					},
-					TagIDsJSON: datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
+					TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
+					ThumbnailURL: "https://and-period.jp/thumbnail.png",
+					Thumbnails: common.Images{
+						{
+							URL:  "https://and-period.jp/thumbnail_240.png",
+							Size: common.ImageSizeSmall,
+						},
+					},
 					Media: MultiProductMedia{
 						{
 							URL:         "https://and-period.jp/thumbnail.png",

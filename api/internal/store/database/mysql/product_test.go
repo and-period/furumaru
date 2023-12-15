@@ -967,9 +967,27 @@ func testProduct(productID, typeID, categoryID, coordinatorID, producerID string
 		Item:            1,
 		ItemUnit:        "袋",
 		ItemDescription: "1袋あたり100gのじゃがいも",
+		ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
+		Thumbnails: common.Images{
+			{
+				URL:  "https://and-period/jp/thumbnail_240.png",
+				Size: common.ImageSizeSmall,
+			},
+		},
 		Media: entity.MultiProductMedia{
-			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+			{
+				URL:         "https://and-period.jp/thumbnail01.png",
+				IsThumbnail: true,
+				Images: common.Images{{
+					URL:  "https://and-period/jp/thumbnail_240.png",
+					Size: common.ImageSizeSmall,
+				}},
+			},
+			{
+				URL:         "https://and-period.jp/thumbnail02.png",
+				IsThumbnail: false,
+				Images:      common.Images{},
+			},
 		},
 		ExpirationDate:       7,
 		StorageMethodType:    entity.StorageMethodTypeNormal,

@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { CoordinatorThumbnailsInner } from './CoordinatorThumbnailsInner';
+import type { Thumbnail } from './Thumbnail';
 import {
-    CoordinatorThumbnailsInnerFromJSON,
-    CoordinatorThumbnailsInnerFromJSONTyped,
-    CoordinatorThumbnailsInnerToJSON,
-} from './CoordinatorThumbnailsInner';
+    ThumbnailFromJSON,
+    ThumbnailFromJSONTyped,
+    ThumbnailToJSON,
+} from './Thumbnail';
 
 /**
  * 過去のマルシェ情報
@@ -31,25 +31,31 @@ export interface TopArchive {
      * @type {string}
      * @memberof TopArchive
      */
-    scheduleId?: string;
+    scheduleId: string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof TopArchive
+     */
+    coordinatorId: string;
     /**
      * タイトル
      * @type {string}
      * @memberof TopArchive
      */
-    title?: string;
+    title: string;
     /**
      * サムネイルURL
      * @type {string}
      * @memberof TopArchive
      */
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     /**
      * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
+     * @type {Array<Thumbnail>}
      * @memberof TopArchive
      */
-    thumbnails?: Array<CoordinatorThumbnailsInner>;
+    thumbnails: Array<Thumbnail>;
 }
 
 /**
@@ -57,6 +63,11 @@ export interface TopArchive {
  */
 export function instanceOfTopArchive(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "scheduleId" in value;
+    isInstance = isInstance && "coordinatorId" in value;
+    isInstance = isInstance && "title" in value;
+    isInstance = isInstance && "thumbnailUrl" in value;
+    isInstance = isInstance && "thumbnails" in value;
 
     return isInstance;
 }
@@ -71,10 +82,11 @@ export function TopArchiveFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'scheduleId': !exists(json, 'scheduleId') ? undefined : json['scheduleId'],
-        'title': !exists(json, 'title') ? undefined : json['title'],
-        'thumbnailUrl': !exists(json, 'thumbnailUrl') ? undefined : json['thumbnailUrl'],
-        'thumbnails': !exists(json, 'thumbnails') ? undefined : ((json['thumbnails'] as Array<any>).map(CoordinatorThumbnailsInnerFromJSON)),
+        'scheduleId': json['scheduleId'],
+        'coordinatorId': json['coordinatorId'],
+        'title': json['title'],
+        'thumbnailUrl': json['thumbnailUrl'],
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
     };
 }
 
@@ -88,9 +100,10 @@ export function TopArchiveToJSON(value?: TopArchive | null): any {
     return {
         
         'scheduleId': value.scheduleId,
+        'coordinatorId': value.coordinatorId,
         'title': value.title,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': value.thumbnails === undefined ? undefined : ((value.thumbnails as Array<any>).map(CoordinatorThumbnailsInnerToJSON)),
+        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
     };
 }
 

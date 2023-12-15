@@ -3,7 +3,7 @@ scheduleResponse:
   properties:
     schedule:
       $ref: './../../../openapi.yaml#/components/schemas/schedule'
-    coordinators:
+    coordinator:
       $ref: './../../../openapi.yaml#/components/schemas/coordinator'
     lives:
       type: array

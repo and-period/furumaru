@@ -163,26 +163,11 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 	in := &store.MultiGetProductsInput{
 		ProductIDs: productIDs,
 	}
-	sproducts, err := h.store.MultiGetProducts(ctx, in)
+	products, err := h.store.MultiGetProducts(ctx, in)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducts(sproducts.FilterByPublished()), nil
-}
-
-func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
-	in := &store.GetProductInput{
-		ProductID: productID,
-	}
-	sproduct, err := h.store.GetProduct(ctx, in)
-	if err != nil {
-		return nil, err
-	}
-	if !sproduct.Public {
-		// 非公開のものは利用者側に表示しない
-		return nil, exception.ErrNotFound
-	}
-	return service.NewProduct(sproduct), nil
+	return service.NewProducts(products.FilterByPublished()), nil
 }
 
 func (h *handler) multiGetProductsByRevision(ctx context.Context, revisionIDs []int64) (service.Products, error) {
@@ -196,5 +181,20 @@ func (h *handler) multiGetProductsByRevision(ctx context.Context, revisionIDs []
 	if err != nil {
 		return nil, err
 	}
-	return service.NewProducts(products), nil
+	return service.NewProducts(products.FilterByPublished()), nil
+}
+
+func (h *handler) getProduct(ctx context.Context, productID string) (*service.Product, error) {
+	in := &store.GetProductInput{
+		ProductID: productID,
+	}
+	product, err := h.store.GetProduct(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	if !product.Public {
+		// 非公開のものは利用者側に表示しない
+		return nil, exception.ErrNotFound
+	}
+	return service.NewProduct(product), nil
 }

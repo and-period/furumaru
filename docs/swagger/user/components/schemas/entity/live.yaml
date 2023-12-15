@@ -2,9 +2,6 @@ live:
   type: object
   description: マルシェタイムテーブル情報
   properties:
-    id:
-      type: string
-      description: ライブID
     scheduleId:
       type: string
       description: マルシェ開催スケジュールID
@@ -29,7 +26,6 @@ live:
       format: int64
       description: ライブ終了予定日時 (unixtime)
   required:
-  - id
   - scheduleId
   - producerId
   - productIds
@@ -37,10 +33,168 @@ live:
   - startAt
   - endAt
   example:
-    id: 'kSByoE6FetnPs5Byk3a9Zx'
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
     producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     productIds: ['kSByoE6FetnPs5Byk3a9Zx']
     comment: 'よろしくお願いします。'
     startAt: 1640962800
     endAt: 1640962800
+liveSummary:
+  type: object
+  description: 開催中・開催予定のマルシェ情報
+  properties:
+    scheduleId:
+      type: string
+      description: 開催スケジュールID
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
+    title:
+      type: string
+      description: タイトル
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    thumbnails:
+      type: array
+      description: リサイズ済みサムネイルURL一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
+    startAt:
+      type: integer
+      format: int64
+      description: マルシェ開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: マルシェ終了日時 (unixtime)
+    products:
+      type: array
+      description: 販売商品一覧
+      items:
+        $ref: '#/liveProduct'
+  required:
+  - scheduleId
+  - coordinatorId
+  - status
+  - title
+  - thumbnailUrl
+  - thumbnails
+  - startAt
+  - endAt
+  - products
+  example:
+    scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 2
+    title: '&.マルシェ'
+    thumbnailUrl: 'https://example.com/thumbnail.png'
+    thumbnails:
+    - url: 'https://example.com/thumbnail_240.png'
+      size: 1
+    - url: 'https://example.com/thumbnail_675.png'
+      size: 2
+    - url: 'https://example.com/thumbnail_900.png'
+      size: 3
+    startAt: 1640962800
+    endAt: 1640962800
+    products:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '芽が出たじゃがいも'
+      price: 1980
+      inventory: 30
+      thumbnailUrl: 'https://example.com/thumbnail.png'
+      thumbnails:
+      - url: 'https://example.com/thumbnail_240.png'
+        size: 1
+      - url: 'https://example.com/thumbnail_675.png'
+        size: 2
+      - url: 'https://example.com/thumbnail_900.png'
+        size: 3
+liveProduct:
+  type: object
+  description: マルシェに関連づく商品情報
+  properties:
+    id:
+      type: string
+      description: 商品ID
+    name:
+      type: string
+      description: 商品名
+    price:
+      type: integer
+      format: int64
+      description: 販売価格
+    inventory:
+      type: integer
+      format: int64
+      description: 在庫数
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    thumbnails:
+      type: array
+      description: リサイズ済みサムネイルURL一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
+  required:
+  - id
+  - name
+  - price
+  - inventory
+  - thumbnailUrl
+  - thumbnails
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    name: '芽が出たじゃがいも'
+    price: 1980
+    inventory: 30
+    thumbnailUrl: 'https://example.com/thumbnail.png'
+    thumbnails:
+    - url: 'https://example.com/thumbnail_240.png'
+      size: 1
+    - url: 'https://example.com/thumbnail_675.png'
+      size: 2
+    - url: 'https://example.com/thumbnail_900.png'
+      size: 3
+archiveSummary:
+  type: object
+  description: 過去のマルシェ情報
+  properties:
+    scheduleId:
+      type: string
+      description: 開催スケジュールID
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    title:
+      type: string
+      description: タイトル
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    thumbnails:
+      type: array
+      description: リサイズ済みサムネイルURL一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
+  required:
+  - scheduleId
+  - coordinatorId
+  - title
+  - thumbnailUrl
+  - thumbnails
+  example:
+    scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    title: '&.マルシェ'
+    thumbnailUrl: 'https://example.com/thumbnail.png'
+    thumbnails:
+    - url: 'https://example.com/thumbnail_240.png'
+      size: 1
+    - url: 'https://example.com/thumbnail_675.png'
+      size: 2
+    - url: 'https://example.com/thumbnail_900.png'
+      size: 3

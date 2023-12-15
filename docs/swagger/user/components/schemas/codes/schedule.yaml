@@ -15,7 +15,7 @@ scheduleStatus:
   - LIVE
   - CLOSED
   - ARCHIVED
-  x-enum-description:
+  x-enum-descriptions:
   - 不明
   - ライブ配信前
   - ライブ配信中

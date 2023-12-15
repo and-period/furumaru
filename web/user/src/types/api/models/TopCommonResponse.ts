@@ -13,18 +13,24 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { TopArchive } from './TopArchive';
+import type { ArchiveSummary } from './ArchiveSummary';
 import {
-    TopArchiveFromJSON,
-    TopArchiveFromJSONTyped,
-    TopArchiveToJSON,
-} from './TopArchive';
-import type { TopLive } from './TopLive';
+    ArchiveSummaryFromJSON,
+    ArchiveSummaryFromJSONTyped,
+    ArchiveSummaryToJSON,
+} from './ArchiveSummary';
+import type { Coordinator } from './Coordinator';
 import {
-    TopLiveFromJSON,
-    TopLiveFromJSONTyped,
-    TopLiveToJSON,
-} from './TopLive';
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
+import type { LiveSummary } from './LiveSummary';
+import {
+    LiveSummaryFromJSON,
+    LiveSummaryFromJSONTyped,
+    LiveSummaryToJSON,
+} from './LiveSummary';
 
 /**
  * 
@@ -34,16 +40,22 @@ import {
 export interface TopCommonResponse {
     /**
      * 開催中・開催予定のマルシェ一覧
-     * @type {Array<TopLive>}
+     * @type {Array<LiveSummary>}
      * @memberof TopCommonResponse
      */
-    lives: Array<TopLive>;
+    lives: Array<LiveSummary>;
     /**
      * 過去のマルシェ一覧
-     * @type {Array<TopArchive>}
+     * @type {Array<ArchiveSummary>}
      * @memberof TopCommonResponse
      */
-    archives: Array<TopArchive>;
+    archives: Array<ArchiveSummary>;
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof TopCommonResponse
+     */
+    coordinators: Array<Coordinator>;
 }
 
 /**
@@ -53,6 +65,7 @@ export function instanceOfTopCommonResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "lives" in value;
     isInstance = isInstance && "archives" in value;
+    isInstance = isInstance && "coordinators" in value;
 
     return isInstance;
 }
@@ -67,8 +80,9 @@ export function TopCommonResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'lives': ((json['lives'] as Array<any>).map(TopLiveFromJSON)),
-        'archives': ((json['archives'] as Array<any>).map(TopArchiveFromJSON)),
+        'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
+        'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
+        'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
     };
 }
 
@@ -81,8 +95,9 @@ export function TopCommonResponseToJSON(value?: TopCommonResponse | null): any {
     }
     return {
         
-        'lives': ((value.lives as Array<any>).map(TopLiveToJSON)),
-        'archives': ((value.archives as Array<any>).map(TopArchiveToJSON)),
+        'lives': ((value.lives as Array<any>).map(LiveSummaryToJSON)),
+        'archives': ((value.archives as Array<any>).map(ArchiveSummaryToJSON)),
+        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
     };
 }
 

@@ -41,6 +41,9 @@ func (p listProductTagsParams) stmt(stmt *gorm.DB) *gorm.DB {
 		}
 		stmt = stmt.Order(value)
 	}
+	if len(p.Orders) == 0 {
+		stmt = stmt.Order("name ASC")
+	}
 	return stmt
 }
 

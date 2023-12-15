@@ -5,6 +5,9 @@ topLive:
     scheduleId:
       type: string
       description: 開催スケジュールID
+    coordinatorId:
+      type: string
+      description: コーディネータID
     status:
       $ref: './../../../openapi.yaml#/components/schemas/scheduleStatus'
     title:
@@ -17,16 +20,7 @@ topLive:
       type: array
       description: リサイズ済みサムネイルURL一覧
       items:
-        type: object
-        properties:
-          url:
-            type: string
-            description: リサイズ済みサムネイルURL
-          size:
-            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-        required:
-        - url
-        - size
+        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
     startAt:
       type: integer
       format: int64
@@ -62,16 +56,7 @@ topLive:
             type: array
             description: リサイズ済みサムネイルURL一覧
             items:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: リサイズ済みサムネイルURL
-                size:
-                  $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-              required:
-              - url
-              - size
+              $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
         required:
         - id
         - name
@@ -81,6 +66,7 @@ topLive:
         - thumbnails
   required:
   - scheduleId
+  - coordinatorId
   - status
   - title
   - thumbnailUrl
@@ -90,6 +76,7 @@ topLive:
   - products
   example:
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     status: 2
     title: '&.マルシェ'
     thumbnailUrl: 'https://example.com/thumbnail.png'
@@ -122,6 +109,9 @@ topArchive:
     scheduleId:
       type: string
       description: 開催スケジュールID
+    coordinatorId:
+      type: string
+      description: コーディネータID
     title:
       type: string
       description: タイトル
@@ -132,18 +122,16 @@ topArchive:
       type: array
       description: リサイズ済みサムネイルURL一覧
       items:
-        type: object
-        properties:
-          url:
-            type: string
-            description: リサイズ済みサムネイルURL
-          size:
-            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-        required:
-        - url
-        - size
+        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
+  required:
+  - scheduleId
+  - coordinatorId
+  - title
+  - thumbnailUrl
+  - thumbnails
   example:
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     title: '&.マルシェ'
     thumbnailUrl: 'https://example.com/thumbnail.png'
     thumbnails:

@@ -22,6 +22,7 @@ func (s *service) ListSchedules(ctx context.Context, in *store.ListSchedulesInpu
 	}
 	params := &database.ListSchedulesParams{
 		CoordinatorID: in.CoordinatorID,
+		ProducerID:    in.ProducerID,
 		StartAtGte:    in.StartAtGte,
 		StartAtLt:     in.StartAtLt,
 		EndAtGte:      in.EndAtGte,
@@ -105,7 +106,8 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		ctx := context.Background()
 		createFn := func() error {
 			in := &media.CreateBroadcastInput{
-				ScheduleID: schedule.ID,
+				ScheduleID:    schedule.ID,
+				CoordinatorID: schedule.CoordinatorID,
 			}
 			_, err := s.media.CreateBroadcast(ctx, in)
 			return err

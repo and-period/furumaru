@@ -148,6 +148,8 @@ func NewProduct(product *entity.Product) *Product {
 			Weight:            NewProductWeight(product.Weight, product.WeightUnit),
 			ItemUnit:          product.ItemUnit,
 			ItemDescription:   product.ItemDescription,
+			ThumbnailURL:      product.ThumbnailURL,
+			Thumbnails:        NewImages(product.Thumbnails).Response(),
 			Media:             NewMultiProductMedia(product.Media).Response(),
 			Price:             product.Price,
 			ExpirationDate:    product.ExpirationDate,

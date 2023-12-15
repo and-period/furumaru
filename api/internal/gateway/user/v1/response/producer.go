@@ -16,3 +16,15 @@ type Producer struct {
 	Prefecture        string   `json:"prefecture"`        // 都道府県
 	City              string   `json:"city"`              // 市区町村
 }
+
+type ProducerResponse struct {
+	Producer *Producer         `json:"producer"` // 生産者情報
+	Lives    []*LiveSummary    `json:"lives"`    // 配信中・配信予定のマルシェ一覧
+	Archives []*ArchiveSummary `json:"archives"` // 過去のマルシェ一覧
+	Products []*Product        `json:"products"` // 商品一覧
+}
+
+type ProducersResponse struct {
+	Producers []*Producer `json:"producers"` // 生産者一覧
+	Total     int64       `json:"total"`     // 生産者合計数
+}

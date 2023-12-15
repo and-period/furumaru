@@ -30,6 +30,8 @@ func TestListLives(t *testing.T) {
 			ScheduleID: "schedule-id",
 			StartAt:    now.AddDate(0, -1, 0),
 			EndAt:      now.AddDate(0, 1, 0),
+			ProducerID: "producer-id01",
+			ProductIDs: []string{"product-id"},
 			CreatedAt:  now,
 			UpdatedAt:  now,
 		},
@@ -38,8 +40,50 @@ func TestListLives(t *testing.T) {
 			ScheduleID: "schedule-id",
 			StartAt:    now.AddDate(0, -1, 0),
 			EndAt:      now.AddDate(0, 1, 0),
+			ProducerID: "producer-id02",
+			ProductIDs: []string{"product-id"},
 			CreatedAt:  now,
 			UpdatedAt:  now,
+		},
+	}
+	products := entity.Products{
+		{
+			ID:              "product-id",
+			TypeID:          "type-id",
+			TagIDs:          []string{"tag-id"},
+			CoordinatorID:   "coordinator-id",
+			ProducerID:      "producer-id",
+			Name:            "新鮮なじゃがいも",
+			Description:     "新鮮なじゃがいもをお届けします。",
+			Public:          true,
+			Inventory:       100,
+			Weight:          100,
+			WeightUnit:      entity.WeightUnitGram,
+			Item:            1,
+			ItemUnit:        "袋",
+			ItemDescription: "1袋あたり100gのじゃがいも",
+			Media: entity.MultiProductMedia{
+				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+			},
+			ExpirationDate:    7,
+			StorageMethodType: entity.StorageMethodTypeNormal,
+			DeliveryType:      entity.DeliveryTypeNormal,
+			Box60Rate:         50,
+			Box80Rate:         40,
+			Box100Rate:        30,
+			OriginPrefecture:  "滋賀県",
+			OriginCity:        "彦根市",
+			ProductRevision: entity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     400,
+				Cost:      300,
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 
@@ -61,6 +105,23 @@ func TestListLives(t *testing.T) {
 				ScheduleIDs: []string{"schedule-id"},
 				Limit:       20,
 				Offset:      0,
+			},
+			expect:      lives,
+			expectTotal: 2,
+			expectErr:   nil,
+		},
+		{
+			name: "success without unpublished",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().List(gomock.Any(), params).Return(lives, nil)
+				mocks.db.Live.EXPECT().Count(gomock.Any(), params).Return(int64(2), nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products, nil)
+			},
+			input: &store.ListLivesInput{
+				ScheduleIDs:   []string{"schedule-id"},
+				Limit:         20,
+				Offset:        0,
+				OnlyPublished: true,
 			},
 			expect:      lives,
 			expectTotal: 2,
@@ -102,6 +163,23 @@ func TestListLives(t *testing.T) {
 				ScheduleIDs: []string{"schedule-id"},
 				Limit:       20,
 				Offset:      0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Live.EXPECT().List(gomock.Any(), params).Return(lives, nil)
+				mocks.db.Live.EXPECT().Count(gomock.Any(), params).Return(int64(2), nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.ListLivesInput{
+				ScheduleIDs:   []string{"schedule-id"},
+				Limit:         20,
+				Offset:        0,
+				OnlyPublished: true,
 			},
 			expect:      nil,
 			expectTotal: 0,
