@@ -16,6 +16,24 @@ func TestSet_NewEmpty(t *testing.T) {
 	assert.NotNil(t, New[int64](1))
 }
 
+func TestSet_NewBy(t *testing.T) {
+	t.Parallel()
+	type input struct {
+		key   string
+		value int64
+	}
+	values := []*input{
+		{key: "test01", value: 1},
+		{key: "test02", value: 2},
+		{key: "test03", value: 2},
+		{key: "test04", value: 3},
+	}
+	iter := func(in *input) int64 {
+		return in.value
+	}
+	assert.Len(t, UniqBy(values, iter), 3)
+}
+
 func TestSet_Uniq(t *testing.T) {
 	t.Parallel()
 	values := []int64{1, 2, 2, 3, 3, 3}

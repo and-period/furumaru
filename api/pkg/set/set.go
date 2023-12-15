@@ -5,15 +5,26 @@ type Set[T comparable] struct {
 	values map[T]struct{}
 }
 
-// New - 構造体の生成(cap指定)
+// New - 渡された値を基に構造体の生成
 func New[T comparable](values ...T) *Set[T] {
 	return NewEmpty[T](len(values)).Add(values...)
 }
 
+// New - 構造体の生成(cap指定)
 func NewEmpty[T comparable](cap int) *Set[T] {
 	return &Set[T]{
 		values: make(map[T]struct{}, cap),
 	}
+}
+
+// NewBy - 渡された操作を実行して構造体の生成
+func NewBy[T comparable, V any](values []V, iteratee func(V) T) *Set[T] {
+	set := NewEmpty[T](len(values))
+	for i := range values {
+		key := iteratee(values[i])
+		set.Add(key)
+	}
+	return set
 }
 
 // Uniq - 渡された値の重複を排除して返す

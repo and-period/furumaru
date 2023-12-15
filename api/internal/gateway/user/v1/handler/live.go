@@ -28,9 +28,10 @@ func (h *handler) listLiveSummaries(ctx context.Context, params *listLiveSummari
 		return service.LiveSummaries{}, err
 	}
 	livesIn := &store.ListLivesInput{
-		ScheduleIDs: schedules.IDs(),
-		ProducerID:  params.producerID,
-		NoLimit:     true,
+		ScheduleIDs:   schedules.IDs(),
+		ProducerID:    params.producerID,
+		NoLimit:       true,
+		OnlyPublished: true,
 	}
 	lives, _, err := h.store.ListLives(ctx, livesIn)
 	if err != nil || len(lives) == 0 {
