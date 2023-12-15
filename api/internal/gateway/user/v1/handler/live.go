@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
-	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
@@ -13,11 +12,13 @@ const liveEndDuration = time.Hour // 終了予定時間を過ぎたあとも配�
 
 type listLiveSummariesParams struct {
 	coordinatorID string
+	producerID    string
 }
 
 func (h *handler) listLiveSummaries(ctx context.Context, params *listLiveSummariesParams) (service.LiveSummaries, error) {
 	in := &store.ListSchedulesInput{
 		CoordinatorID: params.coordinatorID,
+		ProducerID:    params.producerID,
 		EndAtGte:      h.now().Add(-liveEndDuration),
 		OnlyPublished: true,
 		NoLimit:       true,
@@ -27,8 +28,10 @@ func (h *handler) listLiveSummaries(ctx context.Context, params *listLiveSummari
 		return service.LiveSummaries{}, err
 	}
 	livesIn := &store.ListLivesInput{
-		ScheduleIDs: schedules.IDs(),
-		NoLimit:     true,
+		ScheduleIDs:   schedules.IDs(),
+		ProducerID:    params.producerID,
+		NoLimit:       true,
+		OnlyPublished: true,
 	}
 	lives, _, err := h.store.ListLives(ctx, livesIn)
 	if err != nil || len(lives) == 0 {
@@ -46,27 +49,21 @@ func (h *handler) listLiveSummaries(ctx context.Context, params *listLiveSummari
 
 type listArchiveSummariesParams struct {
 	coordinatorID string
+	producerID    string
 	limit         int64
 	offset        int64
 	noLimit       bool
 }
 
 func (h *handler) listArchiveSummaries(ctx context.Context, params *listArchiveSummariesParams) (service.ArchiveSummaries, error) {
-	broadcastsIn := &media.ListBroadcastsInput{
+	in := &store.ListSchedulesInput{
 		CoordinatorID: params.coordinatorID,
-		OnlyArchived:  true,
-		Limit:         params.limit,
-		Offset:        params.offset,
-		NoLimit:       params.noLimit,
+		ProducerID:    params.producerID,
+		EndAtLt:       h.now().Add(-liveEndDuration),
+		OnlyPublished: true,
+		NoLimit:       true,
 	}
-	broadcasts, _, err := h.media.ListBroadcasts(ctx, broadcastsIn)
-	if err != nil || len(broadcasts) == 0 {
-		return service.ArchiveSummaries{}, err
-	}
-	schedulesIn := &store.MultiGetSchedulesInput{
-		ScheduleIDs: broadcasts.ScheduleIDs(),
-	}
-	archives, err := h.store.MultiGetSchedules(ctx, schedulesIn)
+	archives, _, err := h.store.ListSchedules(ctx, in)
 	if err != nil {
 		return nil, err
 	}
