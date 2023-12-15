@@ -87,6 +87,10 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async refreshAccsessToken(refreshToken: string) {
+      if (!refreshToken) {
+        console.debug('リフレッシュトークンが存在しません')
+        return
+      }
       try {
         const res = await this.authApiClient().v1RefreshAuthToken({
           body: { refreshToken },
