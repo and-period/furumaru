@@ -6,7 +6,7 @@ interface Props {
   title: string
   imgSrc: string
   startAt: number
-  published: boolean
+  isLiveStreaming: boolean
   marcheName: string
   address: string
   cnName: string
@@ -26,7 +26,7 @@ const formattedStartAt = computed(() => {
 })
 
 const handleClick = () => {
-  if (props.published) {
+  if (props.isLiveStreaming) {
     emits('click')
   }
 }
@@ -37,13 +37,13 @@ const handleClick = () => {
     :class="{
       ' text-main ': true,
       'group cursor-pointer bg-base drop-shadow-sm duration-75 ease-in-out lg:hover:z-10 lg:hover:scale-[1.2] lg:hover:bg-white':
-        published,
+        isLiveStreaming,
     }"
     @click="handleClick"
   >
     <div class="relative w-full p-4">
       <div
-        v-if="published"
+        v-if="isLiveStreaming"
         class="absolute -left-4 -top-4 z-[1] flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange xl:-left-8 xl:-top-8"
       >
         <the-live-icon />
@@ -57,7 +57,7 @@ const handleClick = () => {
           class="aspect-video"
         />
         <div
-          v-if="!published"
+          v-if="!isLiveStreaming"
           class="absolute bottom-0 flex h-[48px] w-full items-center justify-center bg-black/50 text-[16px] font-bold tracking-[1.6px] text-white"
         >
           {{ formattedStartAt }} 〜 配信予定
@@ -70,11 +70,11 @@ const handleClick = () => {
             <span
               :class="{
                 'rounded px-2 font-bold': true,
-                'border-2 border-orange bg-white text-orange': published,
-                'border-2 border-main text-main': !published,
+                'border-2 border-orange bg-white text-orange': isLiveStreaming,
+                'border-2 border-main text-main': !isLiveStreaming,
               }"
             >
-              {{ published ? '配信中' : '配信予定' }}
+              {{ isLiveStreaming ? '配信中' : '配信予定' }}
             </span>
             <span class="ml-2 after:content-['〜']">{{
               formattedStartAt

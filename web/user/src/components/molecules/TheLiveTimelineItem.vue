@@ -20,7 +20,7 @@ const priceFormatter = (price: number) => {
 }
 
 const startAtString = computed(() => {
-  return dayjs.unix(props.startAt).format('hh:mm')
+  return dayjs.unix(props.startAt).format('HH:mm')
 })
 </script>
 
@@ -59,10 +59,10 @@ const startAtString = computed(() => {
       </div>
 
       <div
-        class="flex flex-col gap-4 md:col-span-3 md:grid md:grid-cols-2 md:gap-8"
+        class="flex flex-col items-start gap-4 md:col-span-3 md:grid md:grid-cols-2 md:gap-8"
       >
         <div v-for="item in items" :key="item.id" class="flex gap-[10px]">
-          <img :src="item.imgSrc" class="h-20 w-20" />
+          <img :src="item.media[0].url" class="h-20 w-20" />
           <div class="flex flex-col justify-between">
             <div class="text-[12px] tracking-[1.2px]">
               {{ item.name }}

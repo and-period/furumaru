@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import { useScheduleStore } from '~/store/schedule'
 import type { ScheduleResponse } from '~/types/api'
 import type { LiveTimeLineItem } from '~/types/props/schedule'
@@ -19,13 +20,15 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
   if (schedule.value) {
     return (
       schedule.value.lives.map((live) => {
+        // 生産者情報のマッピング
         const producer = schedule.value?.producers.find(
           (p) => p.id === live.producerId,
         )
-        const products =
-          schedule.value?.products.filter((p) => {
-            return p.id in live.productIds
-          }) ?? []
+        // 商品のマッピング
+        const products = live.productIds.map((id) => {
+          return schedule.value?.products.find((p) => p.id === id)
+        })
+        // コーディネーターのマッピング
         return {
           ...live,
           producer,
@@ -35,6 +38,14 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
     )
   } else {
     return []
+  }
+})
+
+const isLiveStreaming = computed<boolean>(() => {
+  if (schedule.value) {
+    return dayjs().isAfter(schedule.value.schedule.startAt)
+  } else {
+    return false
   }
 })
 
@@ -60,12 +71,13 @@ useSeoMeta({
           :video-src="schedule.schedule.distributionUrl"
           :title="schedule.schedule.title"
           :start-at="schedule.schedule.startAt"
+          :end-at="schedule.schedule.endAt"
           :description="schedule.schedule.description"
-          :is-archive="false"
-          marche-name=""
-          inventory:address=""
-          cn-img-src=""
-          cn-name=""
+          :is-live-streaming="isLiveStreaming"
+          :marche-name="schedule.coordinator.marcheName"
+          :address="schedule.coordinator.city"
+          :cn-name="schedule.coordinator.username"
+          :cn-img-src="schedule.coordinator.thumbnailUrl"
         />
         <the-live-timeline class="mt-4" :items="liveTimeLineItems" />
       </div>

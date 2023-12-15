@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import type { TopArchive, TopCommonResponse, TopLive } from '~/types/api'
 
 export const useTopPageStore = defineStore('top-page', {
@@ -24,6 +25,7 @@ export const useTopPageStore = defineStore('top-page', {
         ...state._lives.map((live) => {
           return {
             ...live,
+            isLiveStreaming: dayjs().isAfter(live.startAt),
           }
         }),
       ]
