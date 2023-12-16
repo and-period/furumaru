@@ -24,6 +24,7 @@ const (
 	ProductStatusPresale   ProductStatus = 2 // 予約受付中
 	ProductStatusForSale   ProductStatus = 3 // 販売中
 	ProductStatusOutOfSale ProductStatus = 4 // 販売期間外
+	ProductStatusArchived  ProductStatus = 5 // アーカイブ済み
 )
 
 // WeightUnit - 重量単位
@@ -233,11 +234,11 @@ func (p *Product) Fill(revision *ProductRevision, now time.Time) (err error) {
 }
 
 func (p *Product) SetStatus(now time.Time) {
-	if !p.Public {
-		p.Status = ProductStatusPrivate
-		return
-	}
 	switch {
+	case !p.DeletedAt.Time.IsZero():
+		p.Status = ProductStatusArchived
+	case !p.Public:
+		p.Status = ProductStatusPrivate
 	case now.Before(p.StartAt):
 		p.Status = ProductStatusPresale
 	case now.Before(p.EndAt):
@@ -419,7 +420,7 @@ func (ps Products) Filter(productIDs ...string) Products {
 func (ps Products) FilterByPublished() Products {
 	res := make(Products, 0, len(ps))
 	for _, p := range ps {
-		if !p.Public {
+		if p.Status == ProductStatusPrivate || p.Status == ProductStatusArchived {
 			continue
 		}
 		res = append(res, p)

@@ -4079,7 +4079,11 @@ export const ProductStatus = {
     /**
     * 販売期間外
     */
-    OUT_OF_SALES: 4
+    OUT_OF_SALES: 4,
+    /**
+    * アーカイブ済み
+    */
+    ARCHIVED: 5
 } as const;
 
 export type ProductStatus = typeof ProductStatus[keyof typeof ProductStatus];

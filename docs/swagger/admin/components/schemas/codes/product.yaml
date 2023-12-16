@@ -9,18 +9,21 @@ productStatus:
   - 2
   - 3
   - 4
+  - 5
   x-enum-varnames:
   - UNKNOWN
   - PRIVATE
   - PRESALE
   - FOR_SALE
   - OUT_OF_SALES
+  - ARCHIVED
   x-enum-descriptions:
   - 不明
   - 非公開
   - 予約受付中
   - 販売中
   - 販売期間外
+  - アーカイブ済み
 deliveryType:
   type: integer
   format: int32

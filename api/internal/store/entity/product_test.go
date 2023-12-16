@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
 func TestProduct(t *testing.T) {
@@ -331,6 +332,13 @@ func TestProduct_SetStatus(t *testing.T) {
 		product *Product
 		expect  ProductStatus
 	}{
+		{
+			name: "archived",
+			product: &Product{
+				DeletedAt: gorm.DeletedAt{Time: time.Now()},
+			},
+			expect: ProductStatusArchived,
+		},
 		{
 			name: "private",
 			product: &Product{

@@ -136,6 +136,17 @@ const isRegisterable = (): boolean => {
   return props.role === AdminRole.COORDINATOR
 }
 
+const isDeletable = (product?: Product): boolean => {
+  if (!product || product.status === ProductStatus.ARCHIVED) {
+    return false
+  }
+  const targets: AdminRole[] = [
+    AdminRole.ADMINISTRATOR,
+    AdminRole.COORDINATOR
+  ]
+  return targets.includes(props.role)
+}
+
 const getCategoryName = (categoryId: string): string => {
   const category = props.categories.find((category: Category): boolean => {
     return category.id === categoryId
@@ -184,6 +195,8 @@ const getStatus = (status: ProductStatus): string => {
       return '販売終了'
     case ProductStatus.PRIVATE:
       return '非公開'
+    case ProductStatus.ARCHIVED:
+      return 'アーカイブ済み'
     default:
       return ''
   }
@@ -199,6 +212,8 @@ const getStatusColor = (status: ProductStatus): string => {
       return 'secondary'
     case ProductStatus.PRIVATE:
       return 'warning'
+    case ProductStatus.ARCHIVED:
+      return 'error'
     default:
       return ''
   }
@@ -313,7 +328,7 @@ const onClickDelete = (): void => {
           {{ getPrefecture(item.originPrefectureCode) }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item)">
+          <v-btn v-show="isDeletable()" variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item)">
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>
