@@ -162,7 +162,6 @@ func (m *member) Delete(ctx context.Context, userID string, auth func(ctx contex
 		memberParams := map[string]interface{}{
 			"exists":     nil,
 			"updated_at": now,
-			"deleted_at": now,
 		}
 		err := tx.WithContext(ctx).
 			Table(memberTable).
@@ -190,8 +189,7 @@ func (m *member) Delete(ctx context.Context, userID string, auth func(ctx contex
 func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...string) (*entity.Member, error) {
 	var member *entity.Member
 
-	stmt := m.db.Statement(ctx, tx, memberTable, fields...).
-		Where("user_id = ?", userID)
+	stmt := m.db.Statement(ctx, tx, memberTable, fields...).Unscoped().Where("user_id = ?", userID)
 
 	if err := stmt.First(&member).Error; err != nil {
 		return nil, err

@@ -30,7 +30,6 @@ func (g *guest) Delete(ctx context.Context, userID string) error {
 		guestParams := map[string]interface{}{
 			"exists":     nil,
 			"updated_at": now,
-			"deleted_at": now,
 		}
 		err := tx.WithContext(ctx).
 			Table(guestTable).
