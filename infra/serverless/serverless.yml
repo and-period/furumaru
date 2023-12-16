@@ -951,6 +951,17 @@ stepFunctions:
             Resource: arn:aws:states:::aws-sdk:mediastore:deleteContainer
             Parameters:
               ContainerName.$: $.ExtractContainerNameResult.ContainerName
+            Retry:
+              - ErrorEquals:
+                  - MediaStore.ContainerInUseException
+                IntervalSeconds: 3
+                MaxAttempts: 10
+                BackoffRate: 2
+            Catch:
+              - ErrorEquals:
+                  - MediaStore.ContainerNotFoundException
+                Comment: コンテナが存在しない場合は終了
+                Next: Finish
             Next: Finish
           Finish:
             Type: Pass
