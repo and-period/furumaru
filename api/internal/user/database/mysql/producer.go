@@ -246,27 +246,13 @@ func (p *producer) UpdateRelationship(ctx context.Context, coordinatorID string,
 func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := p.now()
-		producerParams := map[string]interface{}{
-			"updated_at": now,
-			"deleted_at": now,
-		}
-		err := tx.WithContext(ctx).
-			Table(producerTable).
-			Where("admin_id = ?", producerID).
-			Updates(producerParams).Error
-		if err != nil {
-			return err
-		}
-		adminParams := map[string]interface{}{
+		updates := map[string]interface{}{
 			"exists":     nil,
 			"updated_at": now,
 			"deleted_at": now,
 		}
-		err = tx.WithContext(ctx).
-			Table(adminTable).
-			Where("id = ?", producerID).
-			Updates(adminParams).Error
-		if err != nil {
+		stmt := tx.WithContext(ctx).Table(adminTable).Where("id = ?", producerID)
+		if err := stmt.Updates(updates).Error; err != nil {
 			return err
 		}
 		return auth(ctx)
@@ -337,7 +323,7 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 		return nil
 	}
 
-	stmt := p.db.Statement(ctx, tx, adminTable).Where("id IN (?)", ids)
+	stmt := p.db.Statement(ctx, tx, adminTable).Unscoped().Where("id IN (?)", ids)
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}

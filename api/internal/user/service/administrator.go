@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -196,7 +197,11 @@ func (s *service) deleteCognitoAdmin(adminID string) func(context.Context) error
 		if err != nil {
 			return err
 		}
-		return s.adminAuth.DeleteUser(ctx, admin.CognitoID)
+		err = s.adminAuth.DeleteUser(ctx, admin.CognitoID)
+		if errors.Is(err, cognito.ErrNotFound) {
+			return nil // すでに削除済み
+		}
+		return err
 	}
 }
 
