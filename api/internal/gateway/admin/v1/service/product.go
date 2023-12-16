@@ -16,6 +16,7 @@ const (
 	ProductStatusPresale   ProductStatus = 2 // 予約受付中
 	ProductStatusForSale   ProductStatus = 3 // 販売中
 	ProductStatusOutOfSale ProductStatus = 4 // 販売期間外
+	ProductStatusArchived  ProductStatus = 5 // アーカイブ済み
 )
 
 // StorageMethodType - 保存方法
@@ -62,6 +63,8 @@ func NewProductStatus(status entity.ProductStatus) ProductStatus {
 		return ProductStatusForSale
 	case entity.ProductStatusOutOfSale:
 		return ProductStatusOutOfSale
+	case entity.ProductStatusArchived:
+		return ProductStatusArchived
 	default:
 		return ProductStatusUnknown
 	}

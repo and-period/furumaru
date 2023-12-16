@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
-import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, type ProductTag, type ProductType, StorageMethodType, type UpdateProductRequest, Weekday } from '~/types/api'
+import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, type ProductTag, type ProductType, StorageMethodType, type UpdateProductRequest, Weekday, AdminRole } from '~/types/api'
 import {
   required,
   getErrorMessage,
@@ -32,6 +32,10 @@ const props = defineProps({
   alertText: {
     type: String,
     default: ''
+  },
+  role: {
+    type: Number as PropType<AdminRole>,
+    default: AdminRole.UNKNOWN
   },
   formData: {
     type: Object as PropType<UpdateProductRequest>,
@@ -141,6 +145,7 @@ const productStatuses = [
   { title: '販売中', value: ProductStatus.FOR_SALE },
   { title: '販売期間外', value: ProductStatus.OUT_OF_SALES },
   { title: '非公開', value: ProductStatus.PRIVATE },
+  { title: 'アーカイブ済み', value: ProductStatus.ARCHIVED },
   { title: '不明', value: ProductStatus.UNKNOWN }
 ]
 const storageMethodTypes = [
@@ -262,6 +267,17 @@ const producerIdValue = computed(() => props.product.producerId)
 
 const formDataValidate = useVuelidate(formDataRules, formDataValue)
 const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+
+const isUpdatable = (product?: Product): boolean => {
+  if (!product || product.status === ProductStatus.ARCHIVED) {
+    return false
+  }
+  const targets: AdminRole[] = [
+    AdminRole.ADMINISTRATOR,
+    AdminRole.COORDINATOR
+  ]
+  return targets.includes(props.role)
+}
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)
@@ -693,7 +709,7 @@ const onSubmit = async (): Promise<void> => {
     </v-col>
   </v-row>
 
-  <v-btn :loading="loading" block variant="outlined" @click="onSubmit">
+  <v-btn v-show="isUpdatable()" :loading="loading" block variant="outlined" @click="onSubmit">
     <v-icon start :icon="mdiPlus" />
     更新
   </v-btn>
