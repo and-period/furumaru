@@ -9,6 +9,106 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestAdminRole(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name                string
+		role                entity.AdminRole
+		expect              AdminRole
+		expectString        string
+		expectIsCoordinator bool
+		expectResponse      int32
+	}{
+		{
+			name:                "administrator",
+			role:                entity.AdminRoleAdministrator,
+			expect:              AdminRoleAdministrator,
+			expectString:        "administrator",
+			expectIsCoordinator: false,
+			expectResponse:      1,
+		},
+		{
+			name:                "coordinator",
+			role:                entity.AdminRoleCoordinator,
+			expect:              AdminRoleCoordinator,
+			expectString:        "coordinator",
+			expectIsCoordinator: true,
+			expectResponse:      2,
+		},
+		{
+			name:                "producer",
+			role:                entity.AdminRoleProducer,
+			expect:              AdminRoleProducer,
+			expectString:        "producer",
+			expectIsCoordinator: false,
+			expectResponse:      3,
+		},
+		{
+			name:                "unknown",
+			role:                entity.AdminRoleUnknown,
+			expect:              AdminRoleUnknown,
+			expectString:        "unknown",
+			expectIsCoordinator: false,
+			expectResponse:      0,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewAdminRole(tt.role)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expectString, actual.String())
+			assert.Equal(t, tt.expectIsCoordinator, actual.IsCoordinator())
+			assert.Equal(t, tt.expectResponse, actual.Response())
+		})
+	}
+}
+
+func TestAdminStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name           string
+		role           entity.AdminStatus
+		expect         AdminStatus
+		expectResponse int32
+	}{
+		{
+			name:           "invited",
+			role:           entity.AdminStatusInvited,
+			expect:         AdminStatusInvited,
+			expectResponse: 1,
+		},
+		{
+			name:           "activated",
+			role:           entity.AdminStatusActivated,
+			expect:         AdminStatusActivated,
+			expectResponse: 2,
+		},
+		{
+			name:           "deactivated",
+			role:           entity.AdminStatusDeactivated,
+			expect:         AdminStatusDeactivated,
+			expectResponse: 3,
+		},
+		{
+			name:           "unknown",
+			role:           entity.AdminStatusUnknown,
+			expect:         AdminStatusUnknown,
+			expectResponse: 0,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewAdminStatus(tt.role)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expectResponse, actual.Response())
+		})
+	}
+}
+
 func TestAdmin(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

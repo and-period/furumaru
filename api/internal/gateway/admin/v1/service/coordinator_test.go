@@ -64,7 +64,7 @@ func TestCoordinator(t *testing.T) {
 			expect: &Coordinator{
 				Coordinator: response.Coordinator{
 					ID:             "coordinator-id",
-					Status:         entity.AdminStatusActivated,
+					Status:         int32(AdminStatusActivated),
 					Lastname:       "&.",
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",
@@ -122,7 +122,7 @@ func TestCoordinator_Response(t *testing.T) {
 			coordinator: &Coordinator{
 				Coordinator: response.Coordinator{
 					ID:             "coordinator-id",
-					Status:         entity.AdminStatusActivated,
+					Status:         int32(AdminStatusActivated),
 					Lastname:       "&.",
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",
@@ -159,7 +159,7 @@ func TestCoordinator_Response(t *testing.T) {
 			},
 			expect: &response.Coordinator{
 				ID:             "coordinator-id",
-				Status:         entity.AdminStatusActivated,
+				Status:         int32(AdminStatusActivated),
 				Lastname:       "&.",
 				Firstname:      "管理者",
 				LastnameKana:   "あんどどっと",
@@ -289,7 +289,7 @@ func TestCoordinators(t *testing.T) {
 				{
 					Coordinator: response.Coordinator{
 						ID:             "coordinator-id01",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -327,7 +327,7 @@ func TestCoordinators(t *testing.T) {
 				{
 					Coordinator: response.Coordinator{
 						ID:                "coordinator-id02",
-						Status:            entity.AdminStatusActivated,
+						Status:            int32(AdminStatusActivated),
 						Lastname:          "&.",
 						Firstname:         "管理者",
 						LastnameKana:      "あんどどっと",
@@ -379,7 +379,7 @@ func TestCoordinators_Response(t *testing.T) {
 				{
 					Coordinator: response.Coordinator{
 						ID:             "coordinator-id01",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						Lastname:       "&.",
 						Firstname:      "管理者",
 						LastnameKana:   "あんどどっと",
@@ -417,7 +417,7 @@ func TestCoordinators_Response(t *testing.T) {
 				{
 					Coordinator: response.Coordinator{
 						ID:                "coordinator-id02",
-						Status:            entity.AdminStatusActivated,
+						Status:            int32(AdminStatusActivated),
 						Lastname:          "&.",
 						Firstname:         "管理者",
 						LastnameKana:      "あんどどっと",
@@ -448,7 +448,7 @@ func TestCoordinators_Response(t *testing.T) {
 			expect: []*response.Coordinator{
 				{
 					ID:             "coordinator-id01",
-					Status:         entity.AdminStatusActivated,
+					Status:         int32(AdminStatusActivated),
 					Lastname:       "&.",
 					Firstname:      "管理者",
 					LastnameKana:   "あんどどっと",
@@ -484,7 +484,7 @@ func TestCoordinators_Response(t *testing.T) {
 				},
 				{
 					ID:                "coordinator-id02",
-					Status:            entity.AdminStatusActivated,
+					Status:            int32(AdminStatusActivated),
 					Lastname:          "&.",
 					Firstname:         "管理者",
 					LastnameKana:      "あんどどっと",

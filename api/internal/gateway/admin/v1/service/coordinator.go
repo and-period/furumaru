@@ -15,7 +15,7 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 	return &Coordinator{
 		Coordinator: response.Coordinator{
 			ID:                coordinator.ID,
-			Status:            coordinator.Status,
+			Status:            NewAdminStatus(coordinator.Status).Response(),
 			Lastname:          coordinator.Lastname,
 			Firstname:         coordinator.Firstname,
 			LastnameKana:      coordinator.LastnameKana,

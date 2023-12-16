@@ -15,6 +15,7 @@ const (
 	UserStatusGuest       UserStatus = 1 // 未登録
 	UserStatusProvisional UserStatus = 2 // 仮登録
 	UserStatusVerified    UserStatus = 3 // 認証済み
+	UserStatusDeactivated UserStatus = 4 // 無効
 )
 
 type User struct {
@@ -38,6 +39,8 @@ func NewUserStatus(status uentity.UserStatus) UserStatus {
 		return UserStatusProvisional
 	case uentity.UserStatusVerified:
 		return UserStatusVerified
+	case uentity.UserStatusDeactivated:
+		return UserStatusDeactivated
 	default:
 		return UserStatusUnknown
 	}
@@ -144,6 +147,7 @@ func NewUserToList(user *User, order *sentity.AggregatedOrder) *UserToList {
 			Lastname:       user.Lastname,
 			Firstname:      user.Firstname,
 			Email:          user.Email,
+			Status:         user.Status,
 			Registered:     user.Registered,
 			PrefectureCode: user.address.PrefectureCode,
 			City:           user.address.City,

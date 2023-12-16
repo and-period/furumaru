@@ -256,9 +256,9 @@ components:
   schemas:
     # Common
     adminRole:
-      $ref: './components/schemas/codes/auth.yaml#/adminRole'
+      $ref: './components/schemas/codes/admin.yaml#/adminRole'
     adminStatus:
-      $ref: './components/schemas/codes/auth.yaml#/adminStatus'
+      $ref: './components/schemas/codes/admin.yaml#/adminStatus'
     broadcastStatus:
       $ref: './components/schemas/codes/broadcast.yaml#/broadcastStatus'
     prefecture:
