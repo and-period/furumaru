@@ -264,14 +264,15 @@ func (p *producer) AggregateByCoordinatorID(
 	ctx context.Context, coordinatorIDs []string,
 ) (map[string]int64, error) {
 	fields := []string{
-		"coordinator_id",
-		"COUNT(*) AS total",
+		"producers.coordinator_id AS coordinator_id",
+		"COUNT(producers.admin_id) AS total",
 	}
 
 	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...).
-		Where("coordinator_id IN (?)", coordinatorIDs).
-		Where("deleted_at IS NULL").
-		Group("coordinator_id")
+		Joins("INNER JOIN admins ON admins.id = producers.admin_id").
+		Where("producers.coordinator_id IN (?)", coordinatorIDs).
+		Where("admins.deleted_at IS NULL").
+		Group("producers.coordinator_id")
 
 	rows, err := stmt.Rows()
 	if err != nil {
