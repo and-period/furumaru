@@ -1,3 +1,4 @@
+import { useAuthStore } from './auth'
 import type { CheckoutRequest } from '~/types/api'
 
 export const useCheckoutStore = defineStore('checkout', {
@@ -12,7 +13,10 @@ export const useCheckoutStore = defineStore('checkout', {
   actions: {
     async checkout(payload: CheckoutRequest) {
       this.checkoutState.isLoading = true
-      await this.checkoutApiClient().v1Checkout({ body: payload })
+      const authStore = useAuthStore()
+      await this.checkoutApiClient(authStore.accessToken).v1Checkout({
+        body: payload,
+      })
       this.checkoutState.isLoading = false
     },
   },
