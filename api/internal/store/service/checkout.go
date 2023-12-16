@@ -264,6 +264,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 	// 注文インスタンスの生成
 	oparams := &entity.NewOrderParams{
+		OrderID:           params.payload.RequestID,
 		CoordinatorID:     params.payload.CoordinatorID,
 		Customer:          customer,
 		BillingAddress:    billingAddress,

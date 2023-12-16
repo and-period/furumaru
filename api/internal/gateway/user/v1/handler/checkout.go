@@ -41,6 +41,7 @@ func (h *handler) Checkout(ctx *gin.Context) {
 	detail := &store.CheckoutDetail{
 		UserID:            getUserID(ctx),
 		SessionID:         h.getSessionID(ctx),
+		RequestID:         req.RequestID,
 		CoordinatorID:     req.CoordinatorID,
 		BoxNumber:         req.BoxNumber,
 		PromotionCode:     req.PromotionCode,

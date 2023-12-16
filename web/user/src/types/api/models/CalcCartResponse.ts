@@ -116,6 +116,12 @@ export interface CalcCartResponse {
      * @memberof CalcCartResponse
      */
     total: number;
+    /**
+     * 支払い時にAPIへ送信するキー(重複判定用)
+     * @type {string}
+     * @memberof CalcCartResponse
+     */
+    requestId?: string;
 }
 
 /**
@@ -159,6 +165,7 @@ export function CalcCartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'tax': json['tax'],
         'taxRate': json['taxRate'],
         'total': json['total'],
+        'requestId': !exists(json, 'requestId') ? undefined : json['requestId'],
     };
 }
 
@@ -182,6 +189,7 @@ export function CalcCartResponseToJSON(value?: CalcCartResponse | null): any {
         'tax': value.tax,
         'taxRate': value.taxRate,
         'total': value.total,
+        'requestId': value.requestId,
     };
 }
 

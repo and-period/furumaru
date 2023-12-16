@@ -34,4 +34,5 @@ type CalcCartResponse struct {
 	Tax         int64        `json:"tax"`         // 消費税
 	TaxRate     int64        `json:"taxRate"`     // 消費税率(%)
 	Total       int64        `json:"total"`       // 合計金額
+	RequestID   string       `json:"requestId"`   // 支払い時にAPIへ送信するキー(重複判定用)
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -129,6 +130,7 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		Tax:         summary.Tax,
 		TaxRate:     summary.TaxRate,
 		Total:       summary.Total,
+		RequestID:   uuid.Base58Encode(uuid.New()),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
