@@ -1308,13 +1308,16 @@ func TestProducts_FilterByPublished(t *testing.T) {
 		{
 			name: "success",
 			products: Products{
-				{ID: "product-id01", Public: true},
-				{ID: "product-id02", Public: false},
-				{ID: "product-id03", Public: true},
+				{ID: "product-id01", Status: ProductStatusPrivate},
+				{ID: "product-id02", Status: ProductStatusPresale},
+				{ID: "product-id03", Status: ProductStatusForSale},
+				{ID: "product-id04", Status: ProductStatusOutOfSale},
+				{ID: "product-id05", Status: ProductStatusArchived},
 			},
 			expect: Products{
-				{ID: "product-id01", Public: true},
-				{ID: "product-id03", Public: true},
+				{ID: "product-id02", Status: ProductStatusPresale},
+				{ID: "product-id03", Status: ProductStatusForSale},
+				{ID: "product-id04", Status: ProductStatusOutOfSale},
 			},
 		},
 	}
