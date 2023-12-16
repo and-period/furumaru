@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { useScheduleStore } from '~/store/schedule'
+import { useShoppingCartStore } from '~/store/shopping'
 import type { ScheduleResponse } from '~/types/api'
+import type { Snackbar } from '~/types/props'
 import type { LiveTimeLineItem } from '~/types/props/schedule'
 
 const scheduleStore = useScheduleStore()
 const { getSchedule } = scheduleStore
+
+const shoppingCartStore = useShoppingCartStore()
+const { addCart } = shoppingCartStore
+
+const snackbarItems = ref<Snackbar[]>([])
 
 const route = useRoute()
 
@@ -49,6 +56,14 @@ const isLiveStreaming = computed<boolean>(() => {
   }
 })
 
+const handleClickAddCart = (name: string, id: string, quantity: number) => {
+  addCart({ productId: id, quantity })
+  snackbarItems.value.push({
+    text: `買い物カゴに「${name}」を追加しました`,
+    isShow: true,
+  })
+}
+
 onMounted(async () => {
   isLoading.value = true
   const res = await getSchedule(scheduleId.value)
@@ -62,6 +77,13 @@ useSeoMeta({
 </script>
 
 <template>
+  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+    <the-snackbar
+      v-model:is-show="snackbarItem.isShow"
+      :text="snackbarItem.text"
+    />
+  </template>
+
   <div
     class="mx-auto grid max-w-[1440px] grid-flow-col auto-rows-max grid-cols-3 gap-8 text-main xl:px-14"
   >
@@ -79,7 +101,11 @@ useSeoMeta({
           :cn-name="schedule.coordinator.username"
           :cn-img-src="schedule.coordinator.thumbnailUrl"
         />
-        <the-live-timeline class="mt-4" :items="liveTimeLineItems" />
+        <the-live-timeline
+          class="mt-4"
+          :items="liveTimeLineItems"
+          @click:add-cart="handleClickAddCart"
+        />
       </div>
     </template>
 

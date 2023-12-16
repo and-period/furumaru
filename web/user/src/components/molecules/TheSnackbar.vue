@@ -28,7 +28,7 @@ onMounted(() => {
       class="mx-auto flex w-full justify-between rounded-lg border-2 border-orange bg-white p-4 text-main shadow-md md:w-[400px]"
     >
       <div>{{ text }}</div>
-      <button type="button" @click="handelCloseButton">
+      <button type="button" class="ml-4" @click="handelCloseButton">
         <the-outline-close-icon />
       </button>
     </div>
