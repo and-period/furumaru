@@ -86,6 +86,8 @@ userToList:
     email:
       type: string
       description: メールアドレス
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/userStatus'
     registered:
       type: boolean
       description: 会員登録フラグ
@@ -107,6 +109,7 @@ userToList:
   - lastname
   - firstname
   - email
+  - status
   - registered
   - prefectureCode
   - city
@@ -117,6 +120,7 @@ userToList:
     lastname: '&.'
     firstname: '購入者'
     email: 'test-user@and-period.jp'
+    status: 3
     registered: true
     prefectureCode: 13
     city: '千代田区'

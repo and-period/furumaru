@@ -6271,7 +6271,11 @@ export const UserStatus = {
     /**
     * 認証済み
     */
-    VERIFIED: 3
+    VERIFIED: 3,
+    /**
+    * 退会済み
+    */
+    WITH_DRAWAL: 4
 } as const;
 
 export type UserStatus = typeof UserStatus[keyof typeof UserStatus];
@@ -6307,6 +6311,12 @@ export interface UserToList {
      * @memberof UserToList
      */
     'email': string;
+    /**
+     * 
+     * @type {UserStatus}
+     * @memberof UserToList
+     */
+    'status': UserStatus;
     /**
      * 会員登録フラグ
      * @type {boolean}
