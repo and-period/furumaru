@@ -140,6 +140,9 @@ calcCartResponse:
       type: integer
       format: int64
       description: 合計金額(税込)
+    requestId:
+      type: string
+      description: 支払い時にAPIへ送信するキー(重複判定用)
   required:
   - carts
   - items
@@ -244,3 +247,4 @@ calcCartResponse:
     tax: 130
     taxRate: 10
     total: 1430
+    requestId: 'kSByoE6FetnPs5Byk3a9Zx'

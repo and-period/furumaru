@@ -532,6 +532,7 @@ type CheckoutAUPayInput struct {
 type CheckoutDetail struct {
 	UserID            string `validate:"required"`
 	SessionID         string `validate:"required"`
+	RequestID         string `validate:"required"`
 	CoordinatorID     string `validate:"required"`
 	BoxNumber         int64  `validate:"min=0"`
 	PromotionCode     string `validate:"omitempty,len=8"`

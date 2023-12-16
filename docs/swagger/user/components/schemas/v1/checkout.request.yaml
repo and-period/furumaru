@@ -1,6 +1,9 @@
 checkoutRequest:
   type: object
   properties:
+    requestId:
+      type: string
+      description: 支払いキー(重複判定用)
     coordinatorId:
       type: string
       description: コーディネータID
@@ -29,6 +32,7 @@ checkoutRequest:
     creditCard:
       $ref: '#/checkoutCreditCard'
   required:
+  - requestId
   - coordinatorId
   - boxNumber
   - billingAddressId
@@ -39,6 +43,7 @@ checkoutRequest:
   - total
   - creditCard
   example:
+    requestId: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     boxNumber: 1
     billingAddressId: 'kSByoE6FetnPs5Byk3a9Zx'

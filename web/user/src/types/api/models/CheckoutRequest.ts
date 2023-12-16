@@ -33,6 +33,12 @@ import {
  */
 export interface CheckoutRequest {
     /**
+     * 支払いキー(重複判定用)
+     * @type {string}
+     * @memberof CheckoutRequest
+     */
+    requestId: string;
+    /**
      * コーディネータID
      * @type {string}
      * @memberof CheckoutRequest
@@ -93,6 +99,7 @@ export interface CheckoutRequest {
  */
 export function instanceOfCheckoutRequest(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "requestId" in value;
     isInstance = isInstance && "coordinatorId" in value;
     isInstance = isInstance && "boxNumber" in value;
     isInstance = isInstance && "billingAddressId" in value;
@@ -116,6 +123,7 @@ export function CheckoutRequestFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
+        'requestId': json['requestId'],
         'coordinatorId': json['coordinatorId'],
         'boxNumber': json['boxNumber'],
         'billingAddressId': json['billingAddressId'],
@@ -137,6 +145,7 @@ export function CheckoutRequestToJSON(value?: CheckoutRequest | null): any {
     }
     return {
         
+        'requestId': value.requestId,
         'coordinatorId': value.coordinatorId,
         'boxNumber': value.boxNumber,
         'billingAddressId': value.billingAddressId,

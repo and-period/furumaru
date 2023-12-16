@@ -5,7 +5,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/set"
-	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/gorm"
 )
 
@@ -39,6 +38,7 @@ type AggregatedOrder struct {
 type AggregatedOrders []*AggregatedOrder
 
 type NewOrderParams struct {
+	OrderID           string
 	CoordinatorID     string
 	Customer          *entity.User
 	BillingAddress    *entity.Address
@@ -55,9 +55,8 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 	if params.Promotion != nil {
 		promotionID = params.Promotion.ID
 	}
-	orderID := uuid.Base58Encode(uuid.New())
 	pparams := &NewOrderPaymentParams{
-		OrderID:    orderID,
+		OrderID:    params.OrderID,
 		Address:    params.BillingAddress,
 		MethodType: params.PaymentMethodType,
 		Baskets:    params.Baskets,
@@ -70,7 +69,7 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 		return nil, err
 	}
 	fparams := &NewOrderFulfillmentsParams{
-		OrderID:  orderID,
+		OrderID:  params.OrderID,
 		Address:  params.ShippingAddress,
 		Baskets:  params.Baskets,
 		Products: params.Products.Map(),
@@ -83,7 +82,7 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 		OrderPayment:      *payment,
 		OrderFulfillments: fulfillments,
 		OrderItems:        items,
-		ID:                orderID,
+		ID:                params.OrderID,
 		UserID:            params.Customer.ID,
 		CoordinatorID:     params.CoordinatorID,
 		PromotionID:       promotionID,
