@@ -81,30 +81,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
               }
             }),
             // 占有率
-            useRate: cart.items
-              .map((item) => {
-                const product = state._shoppingCart.products.find(
-                  (product) => product.id === item.productId,
-                )
-                return product
-              })
-              .map((product) => {
-                if (product) {
-                  switch (cart.size) {
-                    case 1:
-                      return product.box60Rate
-                    case 2:
-                      return product.box80Rate
-                    case 3:
-                      return product.box100Rate
-                    default:
-                      return 0
-                  }
-                } else {
-                  return 0
-                }
-              })
-              .reduce((sum, rate) => sum + rate),
+            useRate: cart.rate,
           }
         }),
       }
