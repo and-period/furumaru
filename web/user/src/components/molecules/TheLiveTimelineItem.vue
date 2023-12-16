@@ -12,16 +12,19 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const priceFormatter = (price: number) => {
-  return new Intl.NumberFormat('ja-JP', {
-    style: 'currency',
-    currency: 'JPY',
-  }).format(price)
+interface Emits {
+  (e: 'click:addCart', name: string, id: string, quantity: number): void
 }
+
+const emits = defineEmits<Emits>()
 
 const startAtString = computed(() => {
   return dayjs.unix(props.startAt).format('HH:mm')
 })
+
+const handleClickAddCart = (name: string, id: string, quantity: number) => {
+  emits('click:addCart', name, id, quantity)
+}
 </script>
 
 <template>
@@ -61,31 +64,12 @@ const startAtString = computed(() => {
       <div
         class="flex flex-col items-start gap-4 md:col-span-3 md:grid md:grid-cols-2 md:gap-8"
       >
-        <div v-for="item in items" :key="item.id" class="flex gap-[10px]">
-          <img :src="item.media[0].url" class="h-20 w-20" />
-          <div class="flex flex-col justify-between">
-            <div class="text-[12px] tracking-[1.2px]">
-              {{ item.name }}
-            </div>
-            <div>
-              <p
-                class="mb-2 text-[12px] font-bold after:ml-2 after:content-['(税込)']"
-              >
-                {{ priceFormatter(item.price) }}
-              </p>
-              <div class="flex h-6 items-center gap-2 text-[10px]">
-                <div class="inline-flex h-full items-center">
-                  <select class="h-full border-[1px] border-main px-2">
-                    <option value="0">0</option>
-                  </select>
-                </div>
-                <button class="flex h-full bg-main px-4 py-1 text-white">
-                  カゴに入れる
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <the-live-timeline-product
+          v-for="item in items"
+          :key="item.id"
+          :product="item"
+          @click:add-cart="handleClickAddCart"
+        />
       </div>
     </div>
   </li>

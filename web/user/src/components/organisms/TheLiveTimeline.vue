@@ -6,6 +6,16 @@ interface Props {
 }
 
 defineProps<Props>()
+
+interface Emits {
+  (e: 'click:addCart', name: string, id: string, quantity: number): void
+}
+
+const emits = defineEmits<Emits>()
+
+const handleClickAddCart = (name: string, id: string, quantity: number) => {
+  emits('click:addCart', name, id, quantity)
+}
 </script>
 
 <template>
@@ -19,6 +29,7 @@ defineProps<Props>()
         :username="liveTimeline.producer?.username"
         :comment="liveTimeline.comment"
         :items="liveTimeline.products"
+        @click:add-cart="handleClickAddCart"
       />
     </ol>
   </div>
