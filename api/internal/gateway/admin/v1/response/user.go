@@ -23,6 +23,7 @@ type UserToList struct {
 	Lastname       string `json:"lastname"`       // 姓
 	Firstname      string `json:"firstname"`      // 名
 	Email          string `json:"email"`          // メールアドレス
+	Status         int32  `json:"status"`         // 購入者ステータス
 	Registered     bool   `json:"registered"`     // 会員登録フラグ
 	PrefectureCode int32  `json:"prefectureCode"` // 都道府県
 	City           string `json:"city"`           // 市区町村

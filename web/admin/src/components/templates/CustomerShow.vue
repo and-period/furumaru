@@ -5,7 +5,7 @@ import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
-import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminRole, type Address } from '~/types/api'
+import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminRole, type Address, AdminStatus } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -146,6 +146,9 @@ const deleteDialogValue = computed({
 })
 
 const isEditable = (): boolean => {
+  if (!props.customer || props.customer.status === AdminStatus.DEACTIVATED) {
+    return false
+  }
   return props.role === AdminRole.ADMINISTRATOR
 }
 
@@ -176,11 +179,33 @@ const getAddressArea = (): string => {
 }
 
 const getCustomerStatus = (): string => {
-  return props.customer.registered ? '登録済み' : '未登録'
+  switch (props.customer.status) {
+    case UserStatus.GUEST:
+      return 'ゲスト'
+    case UserStatus.PROVISIONAL:
+      return '仮登録'
+    case UserStatus.VERIFIED:
+      return '認証済み'
+    case UserStatus.WITH_DRAWAL:
+      return '退会済み'
+    default:
+      return '不明'
+  }
 }
 
 const getCustomerStatusColor = (): string => {
-  return props.customer.registered ? 'primary' : 'red'
+  switch (props.customer.status) {
+    case UserStatus.GUEST:
+      return 'secondary'
+    case UserStatus.PROVISIONAL:
+      return 'warning'
+    case UserStatus.VERIFIED:
+      return 'primary'
+    case UserStatus.WITH_DRAWAL:
+      return 'error'
+    default:
+      return 'unknown'
+  }
 }
 
 const getPaymentStatus = (status: PaymentStatus): string => {

@@ -17,7 +17,7 @@ func NewAdministrator(admin *entity.Administrator) *Administrator {
 	return &Administrator{
 		Administrator: response.Administrator{
 			ID:            admin.ID,
-			Status:        admin.Status,
+			Status:        NewAdminStatus(admin.Status).Response(),
 			Lastname:      admin.Lastname,
 			Firstname:     admin.Firstname,
 			LastnameKana:  admin.LastnameKana,

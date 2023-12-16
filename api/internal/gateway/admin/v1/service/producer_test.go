@@ -56,7 +56,7 @@ func TestProducer(t *testing.T) {
 			expect: &Producer{
 				Producer: response.Producer{
 					ID:            "producer-id",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -107,7 +107,7 @@ func TestProducer_Response(t *testing.T) {
 			producer: &Producer{
 				Producer: response.Producer{
 					ID:            "producer-id",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -137,7 +137,7 @@ func TestProducer_Response(t *testing.T) {
 			},
 			expect: &response.Producer{
 				ID:            "producer-id",
-				Status:        entity.AdminStatusActivated,
+				Status:        int32(AdminStatusActivated),
 				CoordinatorID: "coordinator-id",
 				Lastname:      "&.",
 				Firstname:     "管理者",
@@ -188,7 +188,7 @@ func TestProducer_Name(t *testing.T) {
 			producer: &Producer{
 				Producer: response.Producer{
 					ID:            "producer-id",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -303,7 +303,7 @@ func TestProducers(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:            "producer-id01",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -334,7 +334,7 @@ func TestProducers(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:             "producer-id02",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						CoordinatorID:  "coordinator-id",
 						Lastname:       "&.",
 						Firstname:      "管理者",
@@ -379,7 +379,7 @@ func TestProducers_IDs(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:             "producer-id01",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						CoordinatorID:  "coordinator-id",
 						Lastname:       "&.",
 						Firstname:      "管理者",
@@ -423,7 +423,7 @@ func TestProducers_Map(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:             "producer-id01",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						CoordinatorID:  "coordinator-id",
 						Lastname:       "&.",
 						Firstname:      "管理者",
@@ -444,7 +444,7 @@ func TestProducers_Map(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:             "producer-id02",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						CoordinatorID:  "coordinator-id",
 						Lastname:       "&.",
 						Firstname:      "管理者",
@@ -467,7 +467,7 @@ func TestProducers_Map(t *testing.T) {
 				"producer-id01": {
 					Producer: response.Producer{
 						ID:             "producer-id01",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						CoordinatorID:  "coordinator-id",
 						Lastname:       "&.",
 						Firstname:      "管理者",
@@ -488,7 +488,7 @@ func TestProducers_Map(t *testing.T) {
 				"producer-id02": {
 					Producer: response.Producer{
 						ID:             "producer-id02",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						CoordinatorID:  "coordinator-id",
 						Lastname:       "&.",
 						Firstname:      "管理者",
@@ -532,7 +532,7 @@ func TestProducers_Contains(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:             "producer-id01",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						CoordinatorID:  "coordinator-id",
 						Lastname:       "&.",
 						Firstname:      "管理者",
@@ -560,7 +560,7 @@ func TestProducers_Contains(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:             "producer-id01",
-						Status:         entity.AdminStatusActivated,
+						Status:         int32(AdminStatusActivated),
 						CoordinatorID:  "coordinator-id",
 						Lastname:       "&.",
 						Firstname:      "管理者",
@@ -605,7 +605,7 @@ func TestProducers_Response(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:            "producer-id01",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -635,7 +635,7 @@ func TestProducers_Response(t *testing.T) {
 				{
 					Producer: response.Producer{
 						ID:            "producer-id02",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						CoordinatorID: "coordinator-id",
 						Lastname:      "&.",
 						Firstname:     "管理者",
@@ -666,7 +666,7 @@ func TestProducers_Response(t *testing.T) {
 			expect: []*response.Producer{
 				{
 					ID:            "producer-id01",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",
@@ -694,7 +694,7 @@ func TestProducers_Response(t *testing.T) {
 				},
 				{
 					ID:            "producer-id02",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					CoordinatorID: "coordinator-id",
 					Lastname:      "&.",
 					Firstname:     "管理者",

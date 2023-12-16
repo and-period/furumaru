@@ -8,13 +8,16 @@ userStatus:
   - 1
   - 2
   - 3
+  - 4
   x-enum-varnames:
   - UNKNOWN
   - GUEST
   - PROVISIONAL
   - VERIFIED
+  - WITH_DRAWAL
   x-enum-descriptions:
   - 不明
   - 未登録
   - 仮登録
   - 認証済み
+  - 退会済み

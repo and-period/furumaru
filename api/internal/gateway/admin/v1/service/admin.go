@@ -7,11 +7,82 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
+// AdminRole - 管理者ロール
+type AdminRole int32
+
+const (
+	AdminRoleUnknown       AdminRole = 0
+	AdminRoleAdministrator AdminRole = 1 // 管理者
+	AdminRoleCoordinator   AdminRole = 2 // コーディネータ
+	AdminRoleProducer      AdminRole = 3 // 生産者
+)
+
+// AdminStatus - 管理者ステータス
+type AdminStatus int32
+
+const (
+	AdminStatusUnknown     AdminStatus = 0
+	AdminStatusInvited     AdminStatus = 1 // 招待中
+	AdminStatusActivated   AdminStatus = 2 // 有効
+	AdminStatusDeactivated AdminStatus = 3 // 無効
+)
+
 type Admin struct {
 	response.Admin
 }
 
 type Admins []*Admin
+
+func NewAdminRole(role entity.AdminRole) AdminRole {
+	switch role {
+	case entity.AdminRoleAdministrator:
+		return AdminRoleAdministrator
+	case entity.AdminRoleCoordinator:
+		return AdminRoleCoordinator
+	case entity.AdminRoleProducer:
+		return AdminRoleProducer
+	default:
+		return AdminRoleUnknown
+	}
+}
+
+func (r AdminRole) String() string {
+	switch r {
+	case AdminRoleAdministrator:
+		return "administrator"
+	case AdminRoleCoordinator:
+		return "coordinator"
+	case AdminRoleProducer:
+		return "producer"
+	default:
+		return "unknown"
+	}
+}
+
+func (r AdminRole) IsCoordinator() bool {
+	return r == AdminRoleCoordinator
+}
+
+func (r AdminRole) Response() int32 {
+	return int32(r)
+}
+
+func NewAdminStatus(status entity.AdminStatus) AdminStatus {
+	switch status {
+	case entity.AdminStatusInvited:
+		return AdminStatusInvited
+	case entity.AdminStatusActivated:
+		return AdminStatusActivated
+	case entity.AdminStatusDeactivated:
+		return AdminStatusDeactivated
+	default:
+		return AdminStatusUnknown
+	}
+}
+
+func (s AdminStatus) Response() int32 {
+	return int32(s)
+}
 
 func NewAdmin(admin *entity.Admin) *Admin {
 	return &Admin{
