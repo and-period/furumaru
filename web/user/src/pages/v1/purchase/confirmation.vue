@@ -4,6 +4,7 @@ import { useAdressStore } from '~/store/address'
 import { useCheckoutStore } from '~/store/checkout'
 import { useShoppingCartStore } from '~/store/shopping'
 import type { CheckoutRequest } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 
 const addressStore = useAdressStore()
 const { address, addressFetchState } = storeToRefs(addressStore)
@@ -57,6 +58,8 @@ const checkoutFormData = ref<CheckoutRequest>({
   },
 })
 
+const checkoutError = ref<string>('')
+
 const priceFormatter = (price: number) => {
   return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
@@ -69,8 +72,18 @@ const handleClickPreviousStepButton = () => {
 }
 
 const handleClickNextStepButton = async () => {
-  await checkout(checkoutFormData.value)
-  // router.push('/v1/purchase/complete')
+  try {
+    const url = await checkout(checkoutFormData.value)
+    const urlObj = new URL(url)
+    router.push({
+      path: urlObj.pathname,
+      query: urlObj.searchParams,
+    })
+  } catch (error) {
+    if (error instanceof ApiBaseError) {
+      checkoutError.value = error.message
+    }
+  }
 }
 
 onMounted(async () => {
@@ -111,6 +124,10 @@ useSeoMeta({
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
       ご購入手続き
     </div>
+
+    <the-alert v-if="checkoutError" class="mt-4 bg-white" type="error">{{
+      checkoutError
+    }}</the-alert>
 
     <div
       class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"
@@ -214,6 +231,7 @@ useSeoMeta({
               <template v-if="checkoutFormData.paymentMethod === 2">
                 <div class="mt-4 flex w-full items-center gap-4">
                   <the-text-input
+                    v-model="checkoutFormData.creditCard.number"
                     placeholder="カード番号"
                     :with-label="false"
                     name="cc-number"
@@ -248,25 +266,28 @@ useSeoMeta({
                 </div>
                 <div class="flex gap-4">
                   <the-text-input
+                    v-model="checkoutFormData.creditCard.month"
                     placeholder="有効期限 (月)"
                     :with-label="false"
                     name="cc-exp-month"
-                    type="text"
+                    type="number"
                     pattern="[0-9]*"
                     class="mt-4 w-1/2"
                     required
                   />
                   <the-text-input
+                    v-model="checkoutFormData.creditCard.year"
                     placeholder="有効期限 (年)"
                     :with-label="false"
                     name="cc-exp-year"
-                    type="text"
+                    type="number"
                     pattern="[0-9]*"
                     class="mt-4 w-1/2"
                     required
                   />
                 </div>
                 <the-text-input
+                  v-model="checkoutFormData.creditCard.verificationValue"
                   placeholder="セキュリティコード"
                   :with-label="false"
                   name="cc-csc"
