@@ -94,6 +94,8 @@ onMounted(async () => {
   }
   checkoutFormData.value.requestId = calcCartResponseItem.value?.requestId ?? ''
   checkoutFormData.value.coordinatorId = coordinatorId.value
+  checkoutFormData.value.total = calcCartResponseItem.value?.total ?? 0
+  checkoutFormData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
 })
 
 useSeoMeta({

@@ -89,6 +89,7 @@ export const useAuthStore = defineStore('auth', {
     async refreshAccsessToken(refreshToken: string) {
       if (!refreshToken) {
         console.debug('リフレッシュトークンが存在しません')
+        this.$reset()
         return
       }
       try {

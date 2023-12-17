@@ -14,7 +14,7 @@ export const useCheckoutStore = defineStore('checkout', {
     async checkout(payload: CheckoutRequest) {
       this.checkoutState.isLoading = true
       const authStore = useAuthStore()
-      await this.checkoutApiClient(authStore.accessToken).v1Checkout({
+      const _ = await this.checkoutApiClient(authStore.accessToken).v1Checkout({
         body: payload,
       })
       this.checkoutState.isLoading = false
