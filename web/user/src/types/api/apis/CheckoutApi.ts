@@ -68,7 +68,7 @@ export class CheckoutApi extends runtime.BaseAPI {
         }
         const response = await this.request({
             path: `/v1/checkouts`,
-            method: 'GET',
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters.body as any,
