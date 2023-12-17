@@ -52,7 +52,7 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("JSON_SEARCH(product_tag_ids, 'all', ?) IS NOT NULL", p.ProductTagID)
 	}
 	if p.OnlyPublished {
-		stmt = stmt.Where("public = ?", true)
+		stmt = stmt.Where("public = ?", true).Where("deleted_at IS NULL")
 	}
 	for i := range p.Orders {
 		var value string
@@ -66,6 +66,7 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if len(p.Orders) == 0 {
 		stmt = stmt.Order("start_at DESC")
 	}
+	stmt = stmt.Unscoped()
 	return stmt
 }
 
@@ -300,8 +301,7 @@ func (p *product) Delete(ctx context.Context, productID string) error {
 func (p *product) multiGet(ctx context.Context, tx *gorm.DB, productIDs []string, fields ...string) (entity.Products, error) {
 	var products entity.Products
 
-	stmt := p.db.Statement(ctx, tx, productTable, fields...).
-		Where("id IN (?)", productIDs)
+	stmt := p.db.Statement(ctx, tx, productTable, fields...).Unscoped().Where("id IN (?)", productIDs)
 
 	if err := stmt.Find(&products).Error; err != nil {
 		return nil, err
@@ -315,8 +315,7 @@ func (p *product) multiGet(ctx context.Context, tx *gorm.DB, productIDs []string
 func (p *product) get(ctx context.Context, tx *gorm.DB, productID string, fields ...string) (*entity.Product, error) {
 	var product *entity.Product
 
-	stmt := p.db.Statement(ctx, tx, productTable, fields...).
-		Where("id = ?", productID)
+	stmt := p.db.Statement(ctx, tx, productTable, fields...).Unscoped().Where("id = ?", productID)
 
 	if err := stmt.First(&product).Error; err != nil {
 		return nil, err

@@ -38,6 +38,11 @@ func TestProductStatus(t *testing.T) {
 			expect: ProductStatusOutOfSale,
 		},
 		{
+			name:   "archived",
+			status: entity.ProductStatusArchived,
+			expect: ProductStatusArchived,
+		},
+		{
 			name:   "unknown",
 			status: entity.ProductStatusUnknown,
 			expect: ProductStatusUnknown,
