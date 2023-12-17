@@ -80,18 +80,21 @@ onMounted(async () => {
         availablePaymentSystem.value[0].methodType
     }
   })
+
   if (addressId.value) {
     checkoutFormData.value.billingAddressId = addressId.value
     checkoutFormData.value.shippingAddressId = addressId.value
     await fetchAddress(addressId.value)
   }
-})
 
-onMounted(async () => {
   if (!calcCartResponseItem.value) {
     // storeの情報がない場合のみ再取得する
-    await calcCartItemByCoordinatorId(coordinatorId.value)
+    await calcCartItemByCoordinatorId(
+      coordinatorId.value,
+      address.value?.prefectureCode,
+    )
   }
+
   checkoutFormData.value.requestId = calcCartResponseItem.value?.requestId ?? ''
   checkoutFormData.value.coordinatorId = coordinatorId.value
   checkoutFormData.value.total = calcCartResponseItem.value?.total ?? 0
