@@ -100,13 +100,10 @@ onMounted(async () => {
     await fetchAddress(addressId.value)
   }
 
-  if (!calcCartResponseItem.value) {
-    // storeの情報がない場合のみ再取得する
-    await calcCartItemByCoordinatorId(
-      coordinatorId.value,
-      address.value?.prefectureCode,
-    )
-  }
+  await calcCartItemByCoordinatorId(
+    coordinatorId.value,
+    address.value?.prefectureCode,
+  )
 
   checkoutFormData.value.requestId = calcCartResponseItem.value?.requestId ?? ''
   checkoutFormData.value.coordinatorId = coordinatorId.value
