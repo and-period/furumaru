@@ -241,27 +241,13 @@ func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, h
 func (c *coordinator) Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error {
 	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := c.now()
-		coordinatorParams := map[string]interface{}{
-			"updated_at": now,
-			"deleted_at": now,
-		}
-		err := tx.WithContext(ctx).
-			Table(coordinatorTable).
-			Where("admin_id = ?", coordinatorID).
-			Updates(coordinatorParams).Error
-		if err != nil {
-			return err
-		}
-		adminParams := map[string]interface{}{
+		updates := map[string]interface{}{
 			"exists":     nil,
 			"updated_at": now,
 			"deleted_at": now,
 		}
-		err = tx.WithContext(ctx).
-			Table(adminTable).
-			Where("id = ?", coordinatorID).
-			Updates(adminParams).Error
-		if err != nil {
+		stmt := tx.WithContext(ctx).Table(adminTable).Where("id = ?", coordinatorID)
+		if err := stmt.Updates(updates).Error; err != nil {
 			return err
 		}
 		return auth(ctx)
@@ -298,8 +284,7 @@ func (c *coordinator) fill(ctx context.Context, tx *gorm.DB, coordinators ...*en
 		return nil
 	}
 
-	stmt := c.db.Statement(ctx, tx, adminTable).
-		Where("id IN (?)", ids)
+	stmt := c.db.Statement(ctx, tx, adminTable).Unscoped().Where("id IN (?)", ids)
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}

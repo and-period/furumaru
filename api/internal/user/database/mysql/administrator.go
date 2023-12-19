@@ -136,27 +136,13 @@ func (a *administrator) Delete(
 ) error {
 	err := a.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := a.now()
-		administratorParams := map[string]interface{}{
-			"updated_at": now,
-			"deleted_at": now,
-		}
-		err := tx.WithContext(ctx).
-			Table(administratorTable).
-			Where("admin_id = ?", administratorID).
-			Updates(administratorParams).Error
-		if err != nil {
-			return err
-		}
-		adminParams := map[string]interface{}{
+		updates := map[string]interface{}{
 			"exists":     nil,
 			"updated_at": now,
 			"deleted_at": now,
 		}
-		err = tx.WithContext(ctx).
-			Table(adminTable).
-			Where("id = ?", administratorID).
-			Updates(adminParams).Error
-		if err != nil {
+		stmt := tx.WithContext(ctx).Table(adminTable).Where("id = ?", administratorID)
+		if err := stmt.Updates(updates).Error; err != nil {
 			return err
 		}
 		return auth(ctx)
@@ -183,8 +169,7 @@ func (a *administrator) fill(ctx context.Context, tx *gorm.DB, administrators ..
 		return nil
 	}
 
-	stmt := a.db.Statement(ctx, tx, adminTable).
-		Where("id IN (?)", ids)
+	stmt := a.db.Statement(ctx, tx, adminTable).Unscoped().Where("id IN (?)", ids)
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}

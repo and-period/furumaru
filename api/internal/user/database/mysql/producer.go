@@ -246,27 +246,13 @@ func (p *producer) UpdateRelationship(ctx context.Context, coordinatorID string,
 func (p *producer) Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error {
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := p.now()
-		producerParams := map[string]interface{}{
-			"updated_at": now,
-			"deleted_at": now,
-		}
-		err := tx.WithContext(ctx).
-			Table(producerTable).
-			Where("admin_id = ?", producerID).
-			Updates(producerParams).Error
-		if err != nil {
-			return err
-		}
-		adminParams := map[string]interface{}{
+		updates := map[string]interface{}{
 			"exists":     nil,
 			"updated_at": now,
 			"deleted_at": now,
 		}
-		err = tx.WithContext(ctx).
-			Table(adminTable).
-			Where("id = ?", producerID).
-			Updates(adminParams).Error
-		if err != nil {
+		stmt := tx.WithContext(ctx).Table(adminTable).Where("id = ?", producerID)
+		if err := stmt.Updates(updates).Error; err != nil {
 			return err
 		}
 		return auth(ctx)
@@ -278,14 +264,15 @@ func (p *producer) AggregateByCoordinatorID(
 	ctx context.Context, coordinatorIDs []string,
 ) (map[string]int64, error) {
 	fields := []string{
-		"coordinator_id",
-		"COUNT(*) AS total",
+		"producers.coordinator_id AS coordinator_id",
+		"COUNT(producers.admin_id) AS total",
 	}
 
 	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...).
-		Where("coordinator_id IN (?)", coordinatorIDs).
-		Where("deleted_at IS NULL").
-		Group("coordinator_id")
+		Joins("INNER JOIN admins ON admins.id = producers.admin_id").
+		Where("producers.coordinator_id IN (?)", coordinatorIDs).
+		Where("admins.deleted_at IS NULL").
+		Group("producers.coordinator_id")
 
 	rows, err := stmt.Rows()
 	if err != nil {
@@ -337,7 +324,7 @@ func (p *producer) fill(ctx context.Context, tx *gorm.DB, producers ...*entity.P
 		return nil
 	}
 
-	stmt := p.db.Statement(ctx, tx, adminTable).Where("id IN (?)", ids)
+	stmt := p.db.Statement(ctx, tx, adminTable).Unscoped().Where("id IN (?)", ids)
 	if err := stmt.Find(&admins).Error; err != nil {
 		return err
 	}

@@ -16,6 +16,7 @@ const (
 	UserStatusGuest       UserStatus = 1 // 未登録
 	UserStatusProvisional UserStatus = 2 // 仮登録
 	UserStatusVerified    UserStatus = 3 // 認証済み
+	UserStatusDeactivated UserStatus = 4 // 無効
 )
 
 // User - 購入者情報
@@ -110,6 +111,8 @@ func (u *User) SetStatus() {
 		return
 	}
 	switch {
+	case !u.DeletedAt.Time.IsZero():
+		u.Status = UserStatusDeactivated
 	case !u.Registered:
 		u.Status = UserStatusGuest
 	case !u.VerifiedAt.IsZero():

@@ -30,8 +30,7 @@ func (a *admin) MultiGet(
 ) (entity.Admins, error) {
 	var admins entity.Admins
 
-	stmt := a.db.Statement(ctx, a.db.DB, adminTable, fields...).
-		Where("id IN (?)", adminIDs)
+	stmt := a.db.Statement(ctx, a.db.DB, adminTable, fields...).Where("id IN (?)", adminIDs)
 
 	if err := stmt.Find(&admins).Error; err != nil {
 		return nil, dbError(err)

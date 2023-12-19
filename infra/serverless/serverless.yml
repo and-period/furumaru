@@ -399,11 +399,11 @@ stepFunctions:
                                 HlsId3SegmentTagging: DISABLED
                                 IFrameOnlyPlaylists: DISABLED
                                 IncompleteSegmentBehavior: AUTO
-                                IndexNSegments: 10
+                                IndexNSegments: 60
                                 InputLossAction: EMIT_OUTPUT
                                 IvInManifest: INCLUDE
                                 IvSource: FOLLOWS_SEGMENT_NUMBER
-                                KeepSegments: 21
+                                KeepSegments: 126
                                 ManifestCompression: NONE
                                 ManifestDurationFormat: FLOATING_POINT
                                 Mode: LIVE
@@ -412,7 +412,7 @@ stepFunctions:
                                 ProgramDateTimeClock: INITIALIZE_FROM_OUTPUT_TIMECODE
                                 ProgramDateTimePeriod: 600
                                 RedundantManifest: DISABLED
-                                SegmentLength: 10
+                                SegmentLength: 2
                                 SegmentationMode: USE_SEGMENT_DURATION
                                 SegmentsPerSubdirectory: 10000
                                 StreamInfResolution: INCLUDE
@@ -951,6 +951,17 @@ stepFunctions:
             Resource: arn:aws:states:::aws-sdk:mediastore:deleteContainer
             Parameters:
               ContainerName.$: $.ExtractContainerNameResult.ContainerName
+            Retry:
+              - ErrorEquals:
+                  - MediaStore.ContainerInUseException
+                IntervalSeconds: 3
+                MaxAttempts: 10
+                BackoffRate: 2
+            Catch:
+              - ErrorEquals:
+                  - MediaStore.ContainerNotFoundException
+                Comment: コンテナが存在しない場合は終了
+                Next: Finish
             Next: Finish
           Finish:
             Type: Pass

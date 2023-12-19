@@ -53,6 +53,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -86,6 +87,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -139,6 +141,7 @@ func TestCheckoutPayPay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -168,6 +171,7 @@ func TestCheckoutPayPay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -217,6 +221,7 @@ func TestCheckoutLinePay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -246,6 +251,7 @@ func TestCheckoutLinePay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -295,6 +301,7 @@ func TestCheckoutMerpay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -324,6 +331,7 @@ func TestCheckoutMerpay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -373,6 +381,7 @@ func TestCheckoutRakutenPay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -402,6 +411,7 @@ func TestCheckoutRakutenPay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -451,6 +461,7 @@ func TestCheckoutAUPay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -480,6 +491,7 @@ func TestCheckoutAUPay(t *testing.T) {
 				CheckoutDetail: store.CheckoutDetail{
 					UserID:            "user-id",
 					SessionID:         "session-id",
+					RequestID:         "order-id",
 					CoordinatorID:     "coordinator-id",
 					BoxNumber:         0,
 					PromotionCode:     "code1234",
@@ -542,6 +554,7 @@ func checkoutmocks(
 		UpdatedAt: now,
 	}
 	params := &komoju.CreateSessionParams{
+		OrderID:      "order-id",
 		Amount:       1540,
 		CallbackURL:  "http://example.com/callback",
 		PaymentTypes: entity.NewKomojuPaymentTypes(methodType),
@@ -567,6 +580,7 @@ func checkoutmocks(
 	}
 	order := &entity.Order{
 		OrderPayment: entity.OrderPayment{
+			OrderID:           "order-id",
 			AddressRevisionID: 1,
 			Status:            entity.PaymentStatusPending,
 			TransactionID:     "transaction-id",
@@ -580,6 +594,7 @@ func checkoutmocks(
 		},
 		OrderFulfillments: entity.OrderFulfillments{
 			{
+				OrderID:           "order-id",
 				AddressRevisionID: 1,
 				Status:            entity.FulfillmentStatusUnfulfilled,
 				TrackingNumber:    "",
@@ -592,10 +607,12 @@ func checkoutmocks(
 		},
 		OrderItems: entity.OrderItems{
 			{
+				OrderID:           "order-id",
 				ProductRevisionID: 1,
 				Quantity:          2,
 			},
 		},
+		ID:            "order-id",
 		UserID:        "user-id",
 		CoordinatorID: "coordinator-id",
 		PromotionID:   "promotion-id",
@@ -702,26 +719,16 @@ func checkoutmocks(
 				},
 			},
 		}, nil)
-	m.komojuSession.EXPECT().
-		Create(gomock.Any(), gomock.Any()).
-		DoAndReturn(func(_ context.Context, in *komoju.CreateSessionParams) (*komoju.SessionResponse, error) {
-			params.OrderID = in.OrderID // ignore
-			require.Equal(t, in, params)
-			return &komoju.SessionResponse{ID: "transaction-id"}, nil
-		})
+	m.komojuSession.EXPECT().Create(gomock.Any(), params).Return(&komoju.SessionResponse{ID: "transaction-id"}, nil)
 	m.db.Order.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
 		DoAndReturn(func(_ context.Context, in *entity.Order) error {
-			order.ID = in.ID // ignore
-			order.OrderPayment.OrderID = in.ID
 			require.Len(t, in.OrderFulfillments, len(order.OrderFulfillments))
 			for i := range order.OrderFulfillments {
-				order.OrderFulfillments[i].OrderID = in.ID
 				order.OrderFulfillments[i].ID = in.OrderFulfillments[i].ID
 			}
 			require.Len(t, in.OrderItems, len(order.OrderItems))
 			for i := range order.OrderItems {
-				order.OrderItems[i].OrderID = in.ID
 				order.OrderItems[i].FulfillmentID = in.OrderItems[i].FulfillmentID
 			}
 			require.Equal(t, order, in)
@@ -1030,44 +1037,36 @@ func TestCheckout(t *testing.T) {
 		}
 		mocks.cache.EXPECT().Get(gomock.Any(), &entity.Cart{SessionID: sessionID}).DoAndReturn(fn)
 	}
-	sparams := func() *komoju.CreateSessionParams {
-		return &komoju.CreateSessionParams{
-			Amount:       1540,
-			CallbackURL:  "http://example.com/callback",
-			PaymentTypes: []komoju.PaymentType{komoju.PaymentTypeCreditCard},
-			Customer: &komoju.CreateSessionCustomer{
-				ID:    "user-id",
-				Name:  "&. 購入者",
-				Email: "test@example.com",
-			},
-			BillingAddress: &komoju.CreateSessionAddress{
-				ZipCode:      "1000014",
-				Prefecture:   "東京都",
-				City:         "千代田区",
-				AddressLine1: "永田町1-7-1",
-				AddressLine2: "",
-			},
-			ShippingAddress: &komoju.CreateSessionAddress{
-				ZipCode:      "1000014",
-				Prefecture:   "東京都",
-				City:         "千代田区",
-				AddressLine1: "永田町1-7-1",
-				AddressLine2: "",
-			},
-		}
+	sparams := &komoju.CreateSessionParams{
+		OrderID:      "order-id",
+		Amount:       1540,
+		CallbackURL:  "http://example.com/callback",
+		PaymentTypes: []komoju.PaymentType{komoju.PaymentTypeCreditCard},
+		Customer: &komoju.CreateSessionCustomer{
+			ID:    "user-id",
+			Name:  "&. 購入者",
+			Email: "test@example.com",
+		},
+		BillingAddress: &komoju.CreateSessionAddress{
+			ZipCode:      "1000014",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "永田町1-7-1",
+			AddressLine2: "",
+		},
+		ShippingAddress: &komoju.CreateSessionAddress{
+			ZipCode:      "1000014",
+			Prefecture:   "東京都",
+			City:         "千代田区",
+			AddressLine1: "永田町1-7-1",
+			AddressLine2: "",
+		},
 	}
 	session := &komoju.SessionResponse{ID: "transaction-id"}
-	sessionmocks := func(mocks *mocks, params *komoju.CreateSessionParams, session *komoju.SessionResponse, err error) {
-		fn := func(_ context.Context, in *komoju.CreateSessionParams) (*komoju.SessionResponse, error) {
-			params.OrderID = in.OrderID // ignore
-			require.Equal(t, in, params)
-			return session, err
-		}
-		mocks.komojuSession.EXPECT().Create(gomock.Any(), gomock.Any()).DoAndReturn(fn)
-	}
 	order := func() *entity.Order {
 		return &entity.Order{
 			OrderPayment: entity.OrderPayment{
+				OrderID:           "order-id",
 				AddressRevisionID: 1,
 				Status:            entity.PaymentStatusPending,
 				TransactionID:     "transaction-id",
@@ -1081,6 +1080,7 @@ func TestCheckout(t *testing.T) {
 			},
 			OrderFulfillments: entity.OrderFulfillments{
 				{
+					OrderID:           "order-id",
 					AddressRevisionID: 1,
 					Status:            entity.FulfillmentStatusUnfulfilled,
 					TrackingNumber:    "",
@@ -1093,10 +1093,12 @@ func TestCheckout(t *testing.T) {
 			},
 			OrderItems: entity.OrderItems{
 				{
+					OrderID:           "order-id",
 					ProductRevisionID: 1,
 					Quantity:          2,
 				},
 			},
+			ID:            "order-id",
 			UserID:        "user-id",
 			CoordinatorID: "coordinator-id",
 			PromotionID:   "promotion-id",
@@ -1104,16 +1106,12 @@ func TestCheckout(t *testing.T) {
 	}
 	ordermocks := func(mocks *mocks, order *entity.Order, err error) {
 		fn := func(_ context.Context, in *entity.Order) error {
-			order.ID = in.ID // ignore
-			order.OrderPayment.OrderID = in.ID
 			require.Len(t, in.OrderFulfillments, len(order.OrderFulfillments))
 			for i := range order.OrderFulfillments {
-				order.OrderFulfillments[i].OrderID = in.ID
 				order.OrderFulfillments[i].ID = in.OrderFulfillments[i].ID
 			}
 			require.Len(t, in.OrderItems, len(order.OrderItems))
 			for i := range order.OrderItems {
-				order.OrderItems[i].OrderID = in.ID
 				order.OrderItems[i].FulfillmentID = in.OrderItems[i].FulfillmentID
 			}
 			require.Equal(t, order, in)
@@ -1132,7 +1130,6 @@ func TestCheckout(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				sessionmocks(mocks, sparams(), session, nil)
 				ordermocks(mocks, order(), nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
@@ -1140,11 +1137,13 @@ func TestCheckout(t *testing.T) {
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
 				mocks.db.Product.EXPECT().MultiGet(gomock.Any(), []string{}).Return(entity.Products{}, nil)
+				mocks.komojuSession.EXPECT().Create(gomock.Any(), sparams).Return(session, nil)
 				mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(assert.AnError)
 				mocks.db.Product.EXPECT().DecreaseInventory(gomock.Any(), int64(1), int64(2)).Return(nil).AnyTimes()
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1177,6 +1176,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1209,6 +1209,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1241,6 +1242,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1273,6 +1275,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1306,6 +1309,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1338,6 +1342,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1371,6 +1376,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1404,6 +1410,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1437,6 +1444,7 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1462,15 +1470,16 @@ func TestCheckout(t *testing.T) {
 			name: "failed to create session",
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				sessionmocks(mocks, sparams(), nil, assert.AnError)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.komojuSession.EXPECT().Create(gomock.Any(), sparams).Return(nil, assert.AnError)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1496,16 +1505,17 @@ func TestCheckout(t *testing.T) {
 			name: "failed to create order",
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				sessionmocks(mocks, sparams(), session, nil)
 				ordermocks(mocks, order(), assert.AnError)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.komojuSession.EXPECT().Create(gomock.Any(), sparams).Return(session, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",
@@ -1531,16 +1541,17 @@ func TestCheckout(t *testing.T) {
 			name: "failed to callback function",
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
-				sessionmocks(mocks, sparams(), session, nil)
 				ordermocks(mocks, order(), nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
 				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
 				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.komojuSession.EXPECT().Create(gomock.Any(), sparams).Return(session, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
 					UserID:            "user-id",
 					SessionID:         "session-id",
 					CoordinatorID:     "coordinator-id",

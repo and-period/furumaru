@@ -5,7 +5,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"gorm.io/datatypes"
-	"gorm.io/gorm"
 )
 
 // ProviderType - 認証方法
@@ -36,7 +35,6 @@ type Member struct {
 	CreatedAt      time.Time      `gorm:"<-:create"`                      // 登録日時
 	UpdatedAt      time.Time      `gorm:""`                               // 更新日時
 	VerifiedAt     time.Time      `gorm:"default:null"`                   // 確認日時
-	DeletedAt      gorm.DeletedAt `gorm:"default:null"`                   // 削除日時
 }
 
 type Members []*Member

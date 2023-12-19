@@ -7,7 +7,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"gorm.io/datatypes"
-	"gorm.io/gorm"
 )
 
 // Producer - 生産者情報
@@ -36,7 +35,6 @@ type Producer struct {
 	AddressLine2      string         `gorm:""`                               // ビル名・号室など
 	CreatedAt         time.Time      `gorm:"<-:create"`                      // 登録日時
 	UpdatedAt         time.Time      `gorm:""`                               // 更新日時
-	DeletedAt         gorm.DeletedAt `gorm:"default:null"`                   // 退会日時
 }
 
 type Producers []*Producer

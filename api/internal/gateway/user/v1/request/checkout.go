@@ -1,6 +1,7 @@
 package request
 
 type CheckoutRequest struct {
+	RequestID         string              `json:"requestId,omitempty"`         // 支払いキー(重複判定用)
 	CoordinatorID     string              `json:"coordinatorId,omitempty"`     // コーディネータID
 	BoxNumber         int64               `json:"boxNumber,omitempty"`         // 箱の通番（箱単位で購入する場合）
 	BillingAddressID  string              `json:"billingAddressId,omitempty"`  // 請求先住所ID

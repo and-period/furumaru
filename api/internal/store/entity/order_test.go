@@ -40,6 +40,7 @@ func TestOrder(t *testing.T) {
 		{
 			name: "success",
 			params: &NewOrderParams{
+				OrderID:       "order-id",
 				CoordinatorID: "coordinator-id",
 				Customer: &entity.User{
 					Member: entity.Member{
@@ -157,7 +158,7 @@ func TestOrder(t *testing.T) {
 			},
 			expect: &Order{
 				OrderPayment: OrderPayment{
-					OrderID:           "", // ignore
+					OrderID:           "order-id",
 					AddressRevisionID: 1,
 					Status:            PaymentStatusPending,
 					TransactionID:     "",
@@ -170,7 +171,7 @@ func TestOrder(t *testing.T) {
 				},
 				OrderFulfillments: OrderFulfillments{
 					{
-						OrderID:           "", // ignore
+						OrderID:           "order-id",
 						AddressRevisionID: 1,
 						Status:            FulfillmentStatusUnfulfilled,
 						TrackingNumber:    "",
@@ -184,16 +185,16 @@ func TestOrder(t *testing.T) {
 				OrderItems: OrderItems{
 					{
 						ProductRevisionID: 1,
-						OrderID:           "", // ignore
+						OrderID:           "order-id",
 						Quantity:          1,
 					},
 					{
 						ProductRevisionID: 2,
-						OrderID:           "", // ignore
+						OrderID:           "order-id",
 						Quantity:          2,
 					},
 				},
-				ID:            "", // ignore
+				ID:            "order-id",
 				UserID:        "user-id",
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "",
@@ -210,15 +211,11 @@ func TestOrder(t *testing.T) {
 				return
 			}
 			assert.NoError(t, err)
-			actual.ID = ""                   // ignore
-			actual.OrderPayment.OrderID = "" // ignore
 			for _, f := range actual.OrderFulfillments {
-				f.ID = ""      // ignore
-				f.OrderID = "" // ignore
+				f.ID = "" // ignore
 			}
 			for _, i := range actual.OrderItems {
 				i.FulfillmentID = "" // ignore
-				i.OrderID = ""       // ignore
 			}
 			assert.Equal(t, tt.expect, actual)
 		})

@@ -37,7 +37,7 @@ func TestAdministrator(t *testing.T) {
 			expect: &Administrator{
 				Administrator: response.Administrator{
 					ID:            "admin-id",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -71,7 +71,7 @@ func TestAdministrator_Response(t *testing.T) {
 			admin: &Administrator{
 				Administrator: response.Administrator{
 					ID:            "admin-id",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -84,7 +84,7 @@ func TestAdministrator_Response(t *testing.T) {
 			},
 			expect: &response.Administrator{
 				ID:            "admin-id",
-				Status:        entity.AdminStatusActivated,
+				Status:        int32(AdminStatusActivated),
 				Lastname:      "&.",
 				Firstname:     "管理者",
 				LastnameKana:  "あんどどっと",
@@ -152,7 +152,7 @@ func TestAdministrators(t *testing.T) {
 				{
 					Administrator: response.Administrator{
 						ID:            "admin-id01",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -166,7 +166,7 @@ func TestAdministrators(t *testing.T) {
 				{
 					Administrator: response.Administrator{
 						ID:            "admin-id02",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -202,7 +202,7 @@ func TestAdministrators_Response(t *testing.T) {
 				{
 					Administrator: response.Administrator{
 						ID:            "admin-id01",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -216,7 +216,7 @@ func TestAdministrators_Response(t *testing.T) {
 				{
 					Administrator: response.Administrator{
 						ID:            "admin-id02",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -231,7 +231,7 @@ func TestAdministrators_Response(t *testing.T) {
 			expect: []*response.Administrator{
 				{
 					ID:            "admin-id01",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -243,7 +243,7 @@ func TestAdministrators_Response(t *testing.T) {
 				},
 				{
 					ID:            "admin-id02",
-					Status:        entity.AdminStatusActivated,
+					Status:        int32(AdminStatusActivated),
 					Lastname:      "&.",
 					Firstname:     "管理者",
 					LastnameKana:  "あんどどっと",
@@ -278,7 +278,7 @@ func TestAdministrator_Map(t *testing.T) {
 				{
 					Administrator: response.Administrator{
 						ID:            "admin-id01",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -292,7 +292,7 @@ func TestAdministrator_Map(t *testing.T) {
 				{
 					Administrator: response.Administrator{
 						ID:            "admin-id02",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -308,7 +308,7 @@ func TestAdministrator_Map(t *testing.T) {
 				"admin-id01": {
 					Administrator: response.Administrator{
 						ID:            "admin-id01",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",
@@ -322,7 +322,7 @@ func TestAdministrator_Map(t *testing.T) {
 				"admin-id02": {
 					Administrator: response.Administrator{
 						ID:            "admin-id02",
-						Status:        entity.AdminStatusActivated,
+						Status:        int32(AdminStatusActivated),
 						Lastname:      "&.",
 						Firstname:     "管理者",
 						LastnameKana:  "あんどどっと",

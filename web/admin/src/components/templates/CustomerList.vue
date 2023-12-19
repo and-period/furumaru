@@ -3,7 +3,7 @@ import { mdiDelete } from '@mdi/js'
 import { VDataTable } from 'vuetify/lib/labs/components.mjs'
 import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
-import type { UserToList } from '~/types/api'
+import { UserStatus, type UserToList } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -69,8 +69,8 @@ const headers: VDataTable['headers'] = [
     sortable: false
   },
   {
-    title: 'アカウントの有無',
-    key: 'registered',
+    title: 'ステータス',
+    key: 'status',
     sortable: false
   }
 ]
@@ -82,12 +82,34 @@ const getName = (item: UserToList): string => {
   return item.email
 }
 
-const getStatus = (registered: boolean): string => {
-  return registered ? '有' : '無'
+const getStatus = (status: UserStatus): string => {
+  switch (status) {
+    case UserStatus.GUEST:
+      return 'ゲスト'
+    case UserStatus.PROVISIONAL:
+      return '仮登録'
+    case UserStatus.VERIFIED:
+      return '認証済み'
+    case UserStatus.WITH_DRAWAL:
+      return '退会済み'
+    default:
+      return '不明'
+  }
 }
 
-const getStatusColor = (account: boolean): string => {
-  return account ? 'primary' : 'red'
+const getStatusColor = (status: UserStatus): string => {
+  switch (status) {
+    case UserStatus.GUEST:
+      return 'secondary'
+    case UserStatus.PROVISIONAL:
+      return 'warning'
+    case UserStatus.VERIFIED:
+      return 'primary'
+    case UserStatus.WITH_DRAWAL:
+      return 'error'
+    default:
+      return 'unknown'
+  }
 }
 
 const getAddress = (customer: UserToList): string => {
@@ -145,9 +167,9 @@ const onClickRow = (item: UserToList): void => {
         <template #[`item.totalAmount`]="{ item }">
           &yen; {{ `${item.totalAmount.toLocaleString()}` }}
         </template>
-        <template #[`item.registered`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.registered)">
-            {{ getStatus(item.registered) }}
+        <template #[`item.status`]="{ item }">
+          <v-chip size="small" :color="getStatusColor(item.status)">
+            {{ getStatus(item.status) }}
           </v-chip>
         </template>
       </v-data-table-server>

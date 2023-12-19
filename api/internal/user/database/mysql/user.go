@@ -31,7 +31,7 @@ func (p listUsersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.OnlyRegistered {
 		stmt = stmt.Where("registered = ?", true)
 	}
-	stmt = stmt.Order("updated_at DESC")
+	stmt = stmt.Unscoped().Order("updated_at DESC")
 	return stmt
 }
 
@@ -73,9 +73,7 @@ func (u *user) Count(ctx context.Context, params *database.ListUsersParams) (int
 func (u *user) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.Users, error) {
 	var users entity.Users
 
-	stmt := u.db.Statement(ctx, u.db.DB, userTable, fields...).
-		Table(userTable).Select(fields).
-		Where("id IN (?)", userIDs)
+	stmt := u.db.Statement(ctx, u.db.DB, userTable, fields...).Unscoped().Where("id IN (?)", userIDs)
 
 	if err := stmt.Find(&users).Error; err != nil {
 		return nil, dbError(err)
@@ -109,6 +107,7 @@ func (u *user) get(ctx context.Context, tx *gorm.DB, userID string, fields ...st
 	var user *entity.User
 
 	err := u.db.Statement(ctx, tx, userTable, fields...).
+		Unscoped().
 		Where("id = ?", userID).
 		First(&user).Error
 	return user, err
@@ -158,8 +157,6 @@ func (u *user) fetchMembers(ctx context.Context, tx *gorm.DB, userIDs []string) 
 func (u *user) fetchGuests(ctx context.Context, tx *gorm.DB, userIDs []string) (entity.Guests, error) {
 	var guests entity.Guests
 
-	err := u.db.Statement(ctx, tx, guestTable).
-		Where("user_id IN (?)", userIDs).
-		Find(&guests).Error
+	err := u.db.Statement(ctx, tx, guestTable).Where("user_id IN (?)", userIDs).Find(&guests).Error
 	return guests, err
 }
