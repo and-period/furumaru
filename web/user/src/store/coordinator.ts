@@ -3,9 +3,14 @@ import { defineStore } from 'pinia'
 import type { CoordinatorResponse } from '~/types/api'
 
 export const useCoordinatorStore = defineStore('coordinator', {
-  state: () => ({
-    coordinatorResponse: {} as CoordinatorResponse,
-  }),
+  state: () => {
+    return {
+      coordinatorFetchState: {
+        isLoading: false,
+      },
+      coordinatorResponse: {} as CoordinatorResponse,
+    }
+  },
 
   actions: {
     /**
@@ -13,11 +18,17 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param coordinatorId 対象のコーディネーターのID
      */
     async fetchCoordinator (id: string): Promise<void> {
-      const response : CoordinatorResponse = await this.coordinatorApiClient().v1GetCoordinator({
-        coordinatorId: id,
-      })
-      console.log(response)
+      const response : CoordinatorResponse = await this.coordinatorApiClient().v1GetCoordinator({coordinatorId: id})
       this.coordinatorResponse = response
+      this.coordinatorFetchState.isLoading = false
     },
+  },
+
+  getters: {
+    coordnatorInfo(state) {
+      return {
+        ...state.coordinatorResponse.coordinator,
+      }
+    }
   }
 })
