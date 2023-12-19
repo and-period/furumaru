@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 
-import type { Coordinator } from '~/types/api'
+import type { CoordinatorResponse } from '~/types/api'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
-    coordinator: {} as Coordinator,
+    coordinatorResponse: {} as CoordinatorResponse,
   }),
 
   actions: {
@@ -12,7 +12,12 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * コーディネーターの詳細情報を取得する非同期関数
      * @param coordinatorId 対象のコーディネーターのID
      */
-    async getCoordinator (coordinatorId: string): Promise<void> {
+    async fetchCoordinator (id: string): Promise<void> {
+      const response : CoordinatorResponse = await this.coordinatorApiClient().v1GetCoordinator({
+        coordinatorId: id,
+      })
+      console.log(response)
+      this.coordinatorResponse = response
     },
   }
 })
