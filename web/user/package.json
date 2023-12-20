@@ -26,7 +26,7 @@
     "markdown-it": "^13.0.2",
     "nuxt": "^3.4.3",
     "pinia": "^2.0.30",
-    "postcss-custom-properties": "^13.1.4",
+    "postcss-custom-properties": "^13.3.3",
     "sass": "^1.57.1"
   },
   "devDependencies": {
