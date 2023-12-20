@@ -28,6 +28,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
     coordnatorInfo(state) {
       return {
         ...state.coordinatorResponse.coordinator,
+        // 関連product
+        product: state.coordinatorResponse.productTypes,
       }
     }
   }
