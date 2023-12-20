@@ -19,6 +19,7 @@ const props = defineProps<Props>()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 const showDetail = ref<boolean>(false)
+const hls = ref<Hls | null>(null)
 
 onMounted(() => {
   if (videoRef.value) {
@@ -26,9 +27,9 @@ onMounted(() => {
     const src = props.videoSrc
 
     if (Hls.isSupported()) {
-      const hls = new Hls({ enableWorker: false })
-      hls.loadSource(src)
-      hls.attachMedia(video)
+      hls.value = new Hls({ enableWorker: false })
+      hls.value.loadSource(src)
+      hls.value.attachMedia(video)
       videoRef.value.play()
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src
@@ -44,6 +45,16 @@ const formattedStartAt = computed(() => {
 const handleClickShowDetailButton = () => {
   showDetail.value = !showDetail.value
 }
+
+onUnmounted(() => {
+  if (hls.value) {
+    hls.value.destroy()
+  }
+  if (videoRef.value) {
+    videoRef.value.pause()
+    videoRef.value.src = ''
+  }
+})
 </script>
 
 <template>
