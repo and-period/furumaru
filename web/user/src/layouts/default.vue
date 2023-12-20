@@ -159,7 +159,7 @@ const handleClickRemoveItemFromCartButton = (
     />
     <div
       id="snackbar"
-      class="absolute top-[120px] z-[70] flex min-h-min w-full flex-col gap-2 bg-transparent"
+      class="absolute top-[28px] z-[70] flex min-h-min w-full flex-col gap-2 bg-transparent md:top-[120px]"
     ></div>
   </div>
   <div class="flex min-h-screen flex-col bg-base">
