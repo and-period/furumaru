@@ -109,7 +109,7 @@ const isScrolled = ref<boolean>(false)
 const onScroll = () => {
   if (!isScrolled.value && window.scrollY > 50) {
     isScrolled.value = true
-  } else if (isScrolled.value && window.scrollY < 30) {
+  } else if (isScrolled.value && window.scrollY < 5) {
     isScrolled.value = false
   }
 }

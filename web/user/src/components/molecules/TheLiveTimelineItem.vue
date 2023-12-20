@@ -56,7 +56,7 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
           </p>
         </div>
         <div
-          class="text-[12px] font-medium tracking-[1.2px]"
+          class="w-full overflow-auto text-[12px] font-medium tracking-[1.2px]"
           v-html="comment"
         ></div>
       </div>

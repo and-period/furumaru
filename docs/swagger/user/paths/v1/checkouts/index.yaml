@@ -1,4 +1,4 @@
-get:
+post:
   summary: 商品購入
   operationId: v1Checkout
   tags:

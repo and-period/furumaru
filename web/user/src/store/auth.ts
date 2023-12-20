@@ -8,6 +8,7 @@ import type {
   SignInRequest,
   VerifyAuthRequest,
 } from '~/types/api'
+import { AuthError } from '~/types/exception'
 
 /**
  * 認証情報を管理するグローバルステート
@@ -89,7 +90,10 @@ export const useAuthStore = defineStore('auth', {
     async refreshAccsessToken(refreshToken: string) {
       if (!refreshToken) {
         console.debug('リフレッシュトークンが存在しません')
-        return
+        this.$reset()
+        return Promise.reject(
+          new AuthError('リフレッシュトークンが存在しません'),
+        )
       }
       try {
         const res = await this.authApiClient().v1RefreshAuthToken({
@@ -99,7 +103,7 @@ export const useAuthStore = defineStore('auth', {
         this.refreshToken = res.refreshToken
         this.setExpiredAt(res.expiresIn)
       } catch (error) {
-        this.errorHandler(error)
+        return this.errorHandler(error)
       }
     },
 
