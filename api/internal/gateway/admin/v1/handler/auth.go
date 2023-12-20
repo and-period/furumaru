@@ -30,6 +30,7 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.POST("/forgot-password", h.ForgotAuthPassword)
 	r.POST("/forgot-password/verified", h.ResetAuthPassword)
 	r.GET("/user", h.authentication, h.GetAuthUser)
+	r.GET("/coordinator", h.authentication, h.GetAuthCoordinator)
 	r.PATCH("/coordinator", h.authentication, h.UpdateAuthCoordinator)
 	r.GET("/coordinator/shippings", h.authentication, h.GetAuthShipping)
 	r.PATCH("/coordinator/shippings", h.authentication, h.UpsertAuthShipping)
@@ -281,6 +282,33 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
+	if getRole(ctx) != service.AdminRoleCoordinator {
+		h.forbidden(ctx, errors.New("this user is not coordinator"))
+		return
+	}
+
+	in := &user.GetCoordinatorInput{
+		CoordinatorID: getAdminID(ctx),
+	}
+	coordinator, err := h.user.GetCoordinator(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	productTypes, err := h.multiGetProductTypes(ctx, coordinator.ProductTypeIDs)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.CoordinatorResponse{
+		Coordinator:  service.NewCoordinator(coordinator).Response(),
+		ProductTypes: productTypes.Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
