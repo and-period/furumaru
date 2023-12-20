@@ -7189,6 +7189,40 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary 自身のコーディネータ情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthCoordinator: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/auth/coordinator`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 自身の配送設定取得
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7447,7 +7481,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @summary 管理者情報更新(コーディネータ)
+         * @summary 自身のコーディネータ情報更新
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7678,6 +7712,16 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 自身のコーディネータ情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetAuthCoordinator(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoordinatorResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuthCoordinator(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 自身の配送設定取得
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7752,7 +7796,7 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 管理者情報更新(コーディネータ)
+         * @summary 自身のコーディネータ情報更新
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7836,6 +7880,15 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary 自身のコーディネータ情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthCoordinator(options?: any): AxiosPromise<CoordinatorResponse> {
+            return localVarFp.v1GetAuthCoordinator(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 自身の配送設定取得
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7903,7 +7956,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @summary 管理者情報更新(コーディネータ)
+         * @summary 自身のコーディネータ情報更新
          * @param {UpdateCoordinatorRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7982,6 +8035,17 @@ export class AuthApi extends BaseAPI {
      */
     public v1GetAuth(options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1GetAuth(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 自身のコーディネータ情報取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1GetAuthCoordinator(options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1GetAuthCoordinator(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8067,7 +8131,7 @@ export class AuthApi extends BaseAPI {
 
     /**
      * 
-     * @summary 管理者情報更新(コーディネータ)
+     * @summary 自身のコーディネータ情報更新
      * @param {UpdateCoordinatorRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}

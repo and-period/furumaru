@@ -1,5 +1,25 @@
+get:
+  summary: 自身のコーディネータ情報取得
+  operationId: v1GetAuthCoordinator
+  tags:
+  - Auth
+  security:
+  - bearerAuth: []
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1CoordinatorResponse'
+    404:
+      description: コーディネータが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
 patch:
-  summary: 管理者情報更新(コーディネータ)
+  summary: 自身のコーディネータ情報更新
   operationId: v1UpdateAuthCoordinator
   tags:
   - Auth
