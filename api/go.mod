@@ -11,7 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.12.9
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.31.5
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.26.3
-	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.2
+	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.5
 	github.com/aws/aws-sdk-go-v2/service/medialive v1.43.3
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.5
@@ -75,10 +75,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.9 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.9 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.9 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.7.1 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.7.2 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.2.8 // indirect
 	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.18.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.10.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.10.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.2.8 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.8.9 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.10.8 // indirect
@@ -111,7 +111,7 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect

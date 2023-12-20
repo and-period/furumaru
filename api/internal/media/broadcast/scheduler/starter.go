@@ -90,8 +90,8 @@ func (s *starter) run(ctx context.Context, target time.Time) error {
 func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 	s.logger.Debug("Starting channel...", zap.Time("target", target))
 	in := &store.ListSchedulesInput{
-		StartAtLt: target.Add(5 * time.Minute), // マルシェ開催開始5分前〜
-		EndAtGte:  target,                      // 〜マルシェ開催終了
+		StartAtLt: target.Add(15 * time.Minute), // マルシェ開催開始15分前〜
+		EndAtGte:  target,                       // 〜マルシェ開催終了
 		NoLimit:   true,
 	}
 	schedules, total, err := s.store.ListSchedules(ctx, in)
@@ -154,14 +154,16 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 	return eg.Wait()
 }
 
-func (s *starter) newStartScheduleSettings(_ *sentity.Schedule, broadcast *entity.Broadcast) []*medialive.ScheduleSetting {
-	// 配信切り替えは管理画面から行うため、一律オープニング動画再生から始めるようにする
+func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast *entity.Broadcast) []*medialive.ScheduleSetting {
+	sourceURL, _ := s.storage.ReplaceURLToS3URI(schedule.OpeningVideoURL)
+	// ライブ配信開始時は一律、オープニング動画再生から始めるようにする
 	return []*medialive.ScheduleSetting{
 		{
-			Name:       fmt.Sprintf("%s immediate-input-rtmp", jst.Format(s.now(), time.DateTime)),
+			Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(s.now(), time.DateTime)),
 			ActionType: medialive.ScheduleActionTypeInputSwitch,
 			StartType:  medialive.ScheduleStartTypeImmediate,
-			Reference:  broadcast.MediaLiveRTMPInputName,
+			Reference:  broadcast.MediaLiveMP4InputName,
+			Source:     sourceURL,
 		},
 	}
 }
