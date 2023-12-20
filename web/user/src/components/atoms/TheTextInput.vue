@@ -68,7 +68,7 @@ const viewMessage = computed(() => {
         :required="required"
         :type="type"
         :class="{
-          'block w-full border-b border-main bg-transparent px-2 leading-10 focus:outline-none': true,
+          'block w-full border-b border-main bg-transparent px-2 leading-10 outline-none focus:outline-none': true,
           'border-b-2 border-orange': hasError,
         }"
       />
