@@ -74,11 +74,7 @@ const handleClickPreviousStepButton = () => {
 const handleClickNextStepButton = async () => {
   try {
     const url = await checkout(checkoutFormData.value)
-    const urlObj = new URL(url)
-    router.push({
-      path: urlObj.pathname,
-      query: urlObj.searchParams,
-    })
+    window.location.href = url
   } catch (error) {
     if (error instanceof ApiBaseError) {
       checkoutError.value = error.message
