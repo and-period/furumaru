@@ -10,7 +10,7 @@ export default defineNuxtPlugin(() => {
 
   client = axios.create({
     baseURL: baseUrl,
-    timeout: 10000, // 10sec
+    timeout: 20000, // 20sec
     withCredentials: true,
     headers: {}
   })
