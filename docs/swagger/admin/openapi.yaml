@@ -75,6 +75,10 @@ paths:
     $ref: './paths/v1/auth/forgot-password/verified.yaml'
   /v1/auth/user:
     $ref: './paths/v1/auth/user/index.yaml'
+  /v1/auth/coordinator:
+    $ref: './paths/v1/auth/coordinator/index.yaml'
+  /v1/auth/coordinator/shippings:
+    $ref: './paths/v1/auth/coordinator/shippings.yaml'
   # Administrator
   /v1/administrators:
     $ref: './paths/v1/administrators/index.yaml'
