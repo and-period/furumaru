@@ -156,36 +156,15 @@ func (s *starter) startChannel(ctx context.Context, target time.Time) error {
 
 func (s *starter) newStartScheduleSettings(schedule *sentity.Schedule, broadcast *entity.Broadcast) []*medialive.ScheduleSetting {
 	sourceURL, _ := s.storage.ReplaceURLToS3URI(schedule.OpeningVideoURL)
-	switch {
-	case s.now().After(schedule.StartAt.Add(-6 * time.Minute)):
-		// ライブ配信開始まで6分を切っている場合、オープニング動画再生から始めるようにする
-		return []*medialive.ScheduleSetting{
-			{
-				Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(s.now(), time.DateTime)),
-				ActionType: medialive.ScheduleActionTypeInputSwitch,
-				StartType:  medialive.ScheduleStartTypeImmediate,
-				Reference:  broadcast.MediaLiveMP4InputName,
-				Source:     sourceURL,
-			},
-		}
-	default:
-		// ライブ配信開始まで6分以上時間ありの場合、５分前からオープニング動画が再生されるようにする
-		return []*medialive.ScheduleSetting{
-			{
-				Name:       fmt.Sprintf("%s immediate-static-image-activate", jst.Format(s.now(), time.DateTime)),
-				ActionType: medialive.ScheduleActionTypeStaticImageActivate,
-				StartType:  medialive.ScheduleStartTypeImmediate,
-				Source:     schedule.ImageURL,
-			},
-			{
-				Name:       fmt.Sprintf("%s fixed-input-mp4", jst.Format(schedule.StartAt.Add(-5*time.Minute), time.DateTime)),
-				ActionType: medialive.ScheduleActionTypeInputSwitch,
-				StartType:  medialive.ScheduleStartTypeFixed,
-				ExecutedAt: schedule.StartAt.Add(-5 * time.Minute),
-				Reference:  broadcast.MediaLiveMP4InputName,
-				Source:     sourceURL,
-			},
-		}
+	// ライブ配信開始時は一律、オープニング動画再生から始めるようにする
+	return []*medialive.ScheduleSetting{
+		{
+			Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(s.now(), time.DateTime)),
+			ActionType: medialive.ScheduleActionTypeInputSwitch,
+			StartType:  medialive.ScheduleStartTypeImmediate,
+			Reference:  broadcast.MediaLiveMP4InputName,
+			Source:     sourceURL,
+		},
 	}
 }
 
