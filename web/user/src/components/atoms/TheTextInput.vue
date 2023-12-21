@@ -11,6 +11,7 @@ interface Props {
   errorMessage?: string
   name?: string
   id?: string
+  pattern?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -67,6 +68,7 @@ const viewMessage = computed(() => {
         :placeholder="placeholder"
         :required="required"
         :type="type"
+        :pattern="pattern"
         :class="{
           'block w-full border-b border-main bg-transparent px-2 leading-10 outline-none focus:outline-none': true,
           'border-b-2 border-orange': hasError,
