@@ -9,13 +9,18 @@ import {
   AdminRole,
   type AuthResponse,
   type AuthUserResponse,
+  type Coordinator,
   type ForgotAuthPasswordRequest,
   type ResetAuthPasswordRequest,
+  type Shipping,
   type SignInRequest,
   type UpdateAuthEmailRequest,
   type UpdateAuthPasswordRequest,
+  type UpdateCoordinatorRequest,
+  type UpsertShippingRequest,
   type VerifyAuthEmailRequest
 } from '~/types/api'
+import { useProductTypeStore } from '~/store'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -23,6 +28,8 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     auth: undefined as AuthResponse | undefined,
     user: undefined as AuthUserResponse | undefined,
+    coordinator: {} as Coordinator,
+    shipping: {} as Shipping,
     expiredAt: undefined as Dayjs | undefined
   }),
 
@@ -210,6 +217,60 @@ export const useAuthStore = defineStore('auth', {
           console.log('failed to get device token', err)
           return ''
         })
+    },
+
+    /**
+     * コーディネーターの詳細情報を取得する非同期関数
+     */
+    async getCoordinator (): Promise<void> {
+      try {
+        const res = await apiClient.authApi().v1GetAuthCoordinator()
+
+        const productTypeStore = useProductTypeStore()
+        this.coordinator = res.data.coordinator
+        productTypeStore.productTypes = res.data.productTypes
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * コーディネーターの情報を更新する非同期関数
+     * @param payload
+     */
+    async updateCoordinator (payload: UpdateCoordinatorRequest): Promise<void> {
+      try {
+        await apiClient.authApi().v1UpdateAuthCoordinator(payload)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 指定したコーディネーターの配送設定を取得する非同期関数
+     * @param coordinatorId
+     * @returns
+     */
+    async fetchShipping (): Promise<void> {
+      try {
+        const res = await apiClient.authApi().v1GetAuthShipping()
+        this.shipping = res.data.shipping
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 指定したコーディネーターの配送設定を変更する非同期関数
+     * @param payload
+     * @returns
+     */
+    async upsertShipping (payload: UpsertShippingRequest): Promise<void> {
+      try {
+        await apiClient.authApi().v1UpsertAuthShipping(payload)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
     },
 
     setRedirectPath (payload: string) {
