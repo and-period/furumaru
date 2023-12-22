@@ -203,12 +203,14 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
 
     async calcCartItemByCoordinatorId(
       coordinatorId: string,
+      cartNumber?: number,
       prefecture?: number,
     ): Promise<string | undefined> {
       try {
         const authStore = useAuthStore()
         const res = await this.cartApiClient(authStore.accessToken).v1CalcCart({
           coordinatorId,
+          number: cartNumber,
           prefecture,
         })
         this._calcCartResponseItem = res
