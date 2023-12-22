@@ -17,25 +17,25 @@ import * as runtime from '../runtime';
 import type {
   CheckoutRequest,
   CheckoutResponse,
+  CheckoutStateResponse,
   ErrorResponse,
-  OrderResponse,
 } from '../models/index';
 import {
     CheckoutRequestFromJSON,
     CheckoutRequestToJSON,
     CheckoutResponseFromJSON,
     CheckoutResponseToJSON,
+    CheckoutStateResponseFromJSON,
+    CheckoutStateResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-    OrderResponseFromJSON,
-    OrderResponseToJSON,
 } from '../models/index';
 
 export interface V1CheckoutRequest {
     body: CheckoutRequest;
 }
 
-export interface V1GetCartRequest {
+export interface V1GetCheckoutStateRequest {
     transactionId: string;
 }
 
@@ -88,9 +88,9 @@ export class CheckoutApi extends runtime.BaseAPI {
     /**
      * 注文情報の取得
      */
-    async v1GetCartRaw(requestParameters: V1GetCartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OrderResponse>> {
+    async v1GetCheckoutStateRaw(requestParameters: V1GetCheckoutStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutStateResponse>> {
         if (requestParameters.transactionId === null || requestParameters.transactionId === undefined) {
-            throw new runtime.RequiredError('transactionId','Required parameter requestParameters.transactionId was null or undefined when calling v1GetCart.');
+            throw new runtime.RequiredError('transactionId','Required parameter requestParameters.transactionId was null or undefined when calling v1GetCheckoutState.');
         }
 
         const queryParameters: any = {};
@@ -112,14 +112,14 @@ export class CheckoutApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OrderResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutStateResponseFromJSON(jsonValue));
     }
 
     /**
      * 注文情報の取得
      */
-    async v1GetCart(requestParameters: V1GetCartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OrderResponse> {
-        const response = await this.v1GetCartRaw(requestParameters, initOverrides);
+    async v1GetCheckoutState(requestParameters: V1GetCheckoutStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutStateResponse> {
+        const response = await this.v1GetCheckoutStateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

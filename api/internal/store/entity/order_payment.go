@@ -88,6 +88,25 @@ type NewOrderPaymentParams struct {
 	Promotion  *Promotion
 }
 
+func NewPaymentStatus(status komoju.PaymentStatus) PaymentStatus {
+	switch status {
+	case komoju.PaymentStatusPending:
+		return PaymentStatusPending
+	case komoju.PaymentStatusAuthorized:
+		return PaymentStatusAuthorized
+	case komoju.PaymentStatusCaptured:
+		return PaymentStatusCaptured
+	case komoju.PaymentStatusCancelled:
+		return PaymentStatusCanceled
+	case komoju.PaymentStatusRefunded:
+		return PaymentStatusRefunded
+	case komoju.PaymentStatusExpired, komoju.PaymentStatusFailed:
+		return PaymentStatusFailed
+	default:
+		return PaymentStatusUnknown
+	}
+}
+
 func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
 	switch methodType {
 	case PaymentMethodTypeCash:

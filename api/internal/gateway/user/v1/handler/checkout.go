@@ -10,7 +10,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -106,58 +105,18 @@ func (h *handler) Checkout(ctx *gin.Context) {
 }
 
 func (h *handler) GetCheckoutState(ctx *gin.Context) {
-	in := &store.GetOrderByTransactionIDInput{
+	in := &store.GetCheckoutStateInput{
 		UserID:        getUserID(ctx),
 		TransactionID: util.GetParam(ctx, "transactionId"),
 	}
-	sorder, err := h.store.GetOrderByTransactionID(ctx, in)
+	orderID, status, err := h.store.GetCheckoutState(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	var (
-		addresses service.Addresses
-		products  service.Products
-	)
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		addresses, err = h.multiGetAddressesByRevision(ectx, sorder.AddressRevisionIDs())
-		return
-	})
-	eg.Go(func() (err error) {
-		products, err = h.multiGetProductsByRevision(ectx, sorder.ProductRevisionIDs())
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	order := service.NewOrder(sorder, addresses.MapByRevision(), products.MapByRevision())
-	var (
-		coordinator *service.Coordinator
-		promotion   *service.Promotion
-	)
-	eg, ectx = errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		coordinator, err = h.getCoordinator(ectx, order.CoordinatorID)
-		return
-	})
-	eg.Go(func() (err error) {
-		if order.PromotionID == "" {
-			return nil
-		}
-		promotion, err = h.getPromotion(ectx, order.PromotionID)
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	res := &response.OrderResponse{
-		Order:       order.Response(),
-		Coordinator: coordinator.Response(),
-		Promotion:   promotion.Response(),
-		Products:    products.Response(),
+	res := &response.CheckoutStateResponse{
+		OrderID: orderID,
+		Status:  service.NewPaymentStatus(status).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
