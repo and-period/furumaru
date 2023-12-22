@@ -36,6 +36,18 @@ const coordinatorId = computed<string>(() => {
   }
 })
 
+const cartNumber = computed<number | undefined>(() => {
+  const id = route.query.cartNumber
+  const idNumber = Number(id)
+  if (idNumber === 0) {
+    return undefined
+  }
+  if (isNaN(idNumber)) {
+    return undefined
+  }
+  return idNumber
+})
+
 const authErrorState = ref({
   hasError: false,
   errorMessage: '',
@@ -53,7 +65,13 @@ const handleClickNewAccountButton = () => {
 const handleSubmitSignForm = async () => {
   try {
     await signIn(formData.value)
-    router.push(`/v1/purchase/address?coordinatorId=${coordinatorId.value}`)
+    router.push({
+      path: '/v1/purchase/address',
+      query: {
+        coordinatorId: coordinatorId.value,
+        cartNumber: cartNumber.value,
+      },
+    })
   } catch (error) {
     authErrorState.value.hasError = true
     if (error instanceof ApiBaseError) {

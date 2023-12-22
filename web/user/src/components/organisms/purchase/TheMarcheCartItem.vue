@@ -11,6 +11,7 @@ interface Props {
 
 interface Emits {
   (e: 'click:buyButton', coordinatorId: string): void
+  (e: 'click:cartBuyButton', coordinatorId: string, cartNumber: number): void
   (e: 'click:removeItemFromCart', cartNumber: Number, id: string): void
 }
 
@@ -30,8 +31,12 @@ const priceStringFormatter = (price: number): string => {
   }).format(price)
 }
 
-const handleBuyButton = (coordinatorId: string) => {
-  emits('click:buyButton', coordinatorId)
+const handleBuyButton = () => {
+  emits('click:buyButton', props.coordinator.id)
+}
+
+const handleCartBuyButton = () => {
+  emits('click:cartBuyButton', props.coordinator.id, props.cartNumber)
 }
 
 const handelClickRemoveItemButton = (id: string) => {
@@ -63,7 +68,7 @@ const handelClickRemoveItemButton = (id: string) => {
 
       <button
         class="mt-8 bg-main p-[14px] text-[16px] text-white"
-        @click="handleBuyButton(coordinator.id)"
+        @click="handleBuyButton"
       >
         このマルシェのご購入手続きへ
       </button>
@@ -215,7 +220,10 @@ const handelClickRemoveItemButton = (id: string) => {
               <div>※送料はご購入手続き画面で加算されます。</div>
             </div>
 
-            <button class="bg-main p-[14px] text-[16px] text-white">
+            <button
+              class="bg-main p-[14px] text-[16px] text-white"
+              @click="handleCartBuyButton"
+            >
               このカゴのご購入手続きへ
             </button>
           </div>
