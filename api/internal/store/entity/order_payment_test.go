@@ -12,6 +12,63 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestPaymentStatusFromSession(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status komoju.PaymentStatus
+		expect PaymentStatus
+	}{
+		{
+			name:   "pending",
+			status: komoju.PaymentStatusPending,
+			expect: PaymentStatusPending,
+		},
+		{
+			name:   "authorized",
+			status: komoju.PaymentStatusAuthorized,
+			expect: PaymentStatusAuthorized,
+		},
+		{
+			name:   "captured",
+			status: komoju.PaymentStatusCaptured,
+			expect: PaymentStatusCaptured,
+		},
+		{
+			name:   "refunded",
+			status: komoju.PaymentStatusRefunded,
+			expect: PaymentStatusRefunded,
+		},
+		{
+			name:   "cancelled",
+			status: komoju.PaymentStatusCancelled,
+			expect: PaymentStatusCanceled,
+		},
+		{
+			name:   "expired",
+			status: komoju.PaymentStatusExpired,
+			expect: PaymentStatusFailed,
+		},
+		{
+			name:   "failed",
+			status: komoju.PaymentStatusFailed,
+			expect: PaymentStatusFailed,
+		},
+		{
+			name:   "failed",
+			status: "",
+			expect: PaymentStatusUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, NewPaymentStatus(tt.status))
+		})
+	}
+}
+
 func TestKomojuPaymentTypes(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

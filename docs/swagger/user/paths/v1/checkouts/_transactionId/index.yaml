@@ -1,6 +1,6 @@
 get:
   summary: 注文情報の取得
-  operationId: v1GetCart
+  operationId: v1GetCheckoutState
   tags:
   - Checkout
   security:
@@ -20,7 +20,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/v1OrderResponse'
+            $ref: './../../../../openapi.yaml#/components/schemas/v1CheckoutStateResponse'
     404:
       description: 注文情報が存在しない
       content:

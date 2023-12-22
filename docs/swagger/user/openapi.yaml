@@ -236,6 +236,8 @@ components:
       $ref: './components/schemas/v1/cart.response.yaml#/calcCartResponse'
     v1CheckoutResponse:
       $ref: './components/schemas/v1/checkout.response.yaml#/checkoutResponse'
+    v1CheckoutStateResponse:
+      $ref: './components/schemas/v1/checkout.response.yaml#/checkoutStateResponse'
     v1CoordinatorResponse:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
     v1CoordinatorsResponse:
