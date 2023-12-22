@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPaymentStatusFromSession(t *testing.T) {
+func TestPaymentStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string

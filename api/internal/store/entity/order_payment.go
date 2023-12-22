@@ -96,9 +96,11 @@ func NewPaymentStatus(status komoju.PaymentStatus) PaymentStatus {
 		return PaymentStatusAuthorized
 	case komoju.PaymentStatusCaptured:
 		return PaymentStatusCaptured
+	case komoju.PaymentStatusCancelled:
+		return PaymentStatusCanceled
 	case komoju.PaymentStatusRefunded:
 		return PaymentStatusRefunded
-	case komoju.PaymentStatusCancelled, komoju.PaymentStatusExpired:
+	case komoju.PaymentStatusExpired, komoju.PaymentStatusFailed:
 		return PaymentStatusFailed
 	default:
 		return PaymentStatusUnknown

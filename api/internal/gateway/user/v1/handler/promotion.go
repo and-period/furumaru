@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
+//nolint:unused
 func (h *handler) getPromotion(ctx context.Context, promotionID string) (*service.Promotion, error) {
 	in := &store.GetPromotionInput{
 		PromotionID: promotionID,
