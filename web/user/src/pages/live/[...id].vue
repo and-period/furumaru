@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import { useScheduleStore } from '~/store/schedule'
 import { useShoppingCartStore } from '~/store/shopping'
-import type { ScheduleResponse } from '~/types/api'
+import { ScheduleStatus, type ScheduleResponse } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { LiveTimeLineItem } from '~/types/props/schedule'
 
@@ -50,8 +49,7 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
 
 const isLiveStreaming = computed<boolean>(() => {
   if (schedule.value) {
-    const now = dayjs()
-    return now.isAfter(schedule.value.schedule.startAt)
+    return schedule.value.schedule.status === ScheduleStatus.LIVE
   } else {
     return false
   }
@@ -59,8 +57,7 @@ const isLiveStreaming = computed<boolean>(() => {
 
 const isArchive = computed<boolean>(() => {
   if (schedule.value) {
-    const now = dayjs()
-    return now.isAfter(schedule.value.schedule.endAt)
+    return schedule.value.schedule.status === ScheduleStatus.ARCHIVED
   } else {
     return false
   }
