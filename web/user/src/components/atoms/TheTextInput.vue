@@ -70,7 +70,7 @@ const viewMessage = computed(() => {
         :type="type"
         :pattern="pattern"
         :class="{
-          'block w-full appearance-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none ': true,
+          'block w-full appearance-none rounded-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none': true,
           'border-b-2 border-orange': hasError,
         }"
       />
