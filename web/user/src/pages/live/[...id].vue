@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import { useScheduleStore } from '~/store/schedule'
 import { useShoppingCartStore } from '~/store/shopping'
 import type { ScheduleResponse } from '~/types/api'
