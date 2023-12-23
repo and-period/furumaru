@@ -89,7 +89,7 @@ const handleSubmit = () => {
       />
       <button
         type="button"
-        class="bg-main px-4 py-1 text-white"
+        class="whitespace-nowrap bg-main px-4 py-1 text-white"
         @click="handleClickSearchAddressButton"
       >
         検索
