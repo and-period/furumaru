@@ -98,7 +98,7 @@ const handleSubmit = () => {
     <select
       v-model="formDataValue.prefectureCode"
       :class="{
-        'mb-1 block w-full appearance-none rounded-none border-b border-main p-1  text-inherit focus:outline-none': true,
+        'mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none': true,
       }"
       required
     >
