@@ -155,6 +155,8 @@ useSeoMeta({
               :key="archive.scheduleId"
               :title="archive.title"
               :img-src="archive.thumbnailUrl"
+              class="cursor-pointer"
+              @click="handleClickLiveItem(archive.scheduleId)"
             />
           </div>
           <div class="absolute right-4 flex h-[208px] items-center">

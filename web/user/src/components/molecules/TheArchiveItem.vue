@@ -6,10 +6,20 @@ interface Props {
 }
 
 defineProps<Props>()
+
+interface Emits {
+  (e: 'click'): void
+}
+
+const emits = defineEmits<Emits>()
+
+const handleClick = () => {
+  emits('click')
+}
 </script>
 
 <template>
-  <div class="min-w-[368px] text-main">
+  <div class="min-w-[368px] text-main" @click="handleClick">
     <div class="w-full">
       <img
         class="h-[208px] w-full object-cover"
@@ -22,7 +32,7 @@ defineProps<Props>()
         <span class="rounded border-2 border-main px-2 font-bold text-main">
           アーカイブ配信
         </span>
-        <button class="h-4 w-4 hover:scale-110">
+        <button class="h-4 w-4 hover:scale-110" type="button" @click.stop>
           <the-ellipsis-vertical-icon class="h-5 w-5" />
         </button>
       </div>

@@ -50,7 +50,17 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
 
 const isLiveStreaming = computed<boolean>(() => {
   if (schedule.value) {
-    return dayjs().isAfter(schedule.value.schedule.startAt)
+    const now = dayjs()
+    return now.isAfter(schedule.value.schedule.startAt)
+  } else {
+    return false
+  }
+})
+
+const isArchive = computed<boolean>(() => {
+  if (schedule.value) {
+    const now = dayjs()
+    return now.isAfter(schedule.value.schedule.endAt)
   } else {
     return false
   }
@@ -96,6 +106,7 @@ useSeoMeta({
           :end-at="schedule.schedule.endAt"
           :description="schedule.schedule.description"
           :is-live-streaming="isLiveStreaming"
+          :is-archive="isArchive"
           :marche-name="schedule.coordinator.marcheName"
           :address="schedule.coordinator.city"
           :cn-name="schedule.coordinator.username"
