@@ -83,6 +83,8 @@ const handleSubmitSignForm = async () => {
 useSeoMeta({
   title: 'ログイン',
 })
+
+const hideV1App = false
 </script>
 
 <template>
@@ -123,7 +125,7 @@ useSeoMeta({
         username-placeholder="メールアドレス"
         @submit="handleSubmitSignForm"
       />
-      <div class="mt-[24px] text-center text-[14px] underline">
+      <div v-if="hideV1App" class="mt-[24px] text-center text-[14px] underline">
         パスワードをお忘れの方はこちら
       </div>
     </div>
