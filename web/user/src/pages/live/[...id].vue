@@ -50,8 +50,7 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
 
 const isLiveStreaming = computed<boolean>(() => {
   if (schedule.value) {
-    const now = dayjs()
-    return now.isAfter(schedule.value.schedule.startAt)
+    return schedule.value.schedule.status === 2
   } else {
     return false
   }
@@ -59,8 +58,7 @@ const isLiveStreaming = computed<boolean>(() => {
 
 const isArchive = computed<boolean>(() => {
   if (schedule.value) {
-    const now = dayjs()
-    return now.isAfter(schedule.value.schedule.endAt)
+    return schedule.value.schedule.status === 4
   } else {
     return false
   }
