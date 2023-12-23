@@ -39,6 +39,8 @@ fetchProducts()
 useSeoMeta({
   title: 'すべての商品',
 })
+
+const hideV1App = false
 </script>
 
 <template>
@@ -49,12 +51,16 @@ useSeoMeta({
     />
   </template>
 
-  <div class="flex flex-col bg-white px-[15px] py-[48px] text-main md:px-[36px]">
+  <div
+    class="flex flex-col bg-white px-[15px] py-[48px] text-main md:px-[36px]"
+  >
     <div class="w-full">
-      <p class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]">
+      <p
+        class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]"
+      >
         すべての商品
       </p>
-      <div class="mt-[24px] w-full md:mt-[38px]">
+      <div v-if="hideV1App" class="mt-[24px] w-full md:mt-[38px]">
         <div class="relative mx-auto md:w-[648px]">
           <the-search-icon class="absolute left-[24px] top-[12px]" />
           <input
@@ -67,8 +73,10 @@ useSeoMeta({
     </div>
     <hr class="mt-[40px]" />
     <div class="mt-[24px] w-full">
-      <div class="text-right">
-        <div class="inline-flex text-[12px] tracking-[1.3px] text-typography md:text-[13px]">
+      <div v-if="hideV1App" class="text-right">
+        <div
+          class="inline-flex text-[12px] tracking-[1.3px] text-typography md:text-[13px]"
+        >
           <div class="mr-[16px]">並び替え：</div>
           <div class="inline-flex gap-[22px]">
             <button class="border-b border-main pb-2 text-main">新着順</button>
