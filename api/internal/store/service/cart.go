@@ -157,6 +157,9 @@ func (s *service) refreshCart(ctx context.Context, cart *entity.Cart) error {
 		return err
 	}
 	now := s.now()
+	if cart.CreatedAt.IsZero() {
+		cart.CreatedAt = now
+	}
 	cart.UpdatedAt = now
 	cart.ExpiredAt = now.Add(s.cartTTL) // 有効期限を延長
 	return s.cache.Insert(ctx, cart)
