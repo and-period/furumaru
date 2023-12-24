@@ -174,6 +174,7 @@ const onClickSearchAddress = (): void => {
           <v-col cols="12" ms="12" lg="6">
             <molecules-video-select-form
               label="紹介動画"
+              :loading="loading"
               :video-url="formDataValue.promotionVideoUrl"
               :error="props.promotionVideoUploadStatus.error"
               :message="props.promotionVideoUploadStatus.message"
@@ -183,6 +184,7 @@ const onClickSearchAddress = (): void => {
           <v-col cols="12" sm="12" lg="6">
             <molecules-video-select-form
               label="サンキュー動画"
+              :loading="loading"
               :video-url="formDataValue.bonusVideoUrl"
               :error="props.bonusVideoUploadStatus.error"
               :message="props.bonusVideoUploadStatus.message"
@@ -247,6 +249,7 @@ const onClickSearchAddress = (): void => {
           <v-col cols="12" sm="6" md="6">
             <molecules-icon-select-form
               label="アイコン画像"
+              :loading="loading"
               :img-url="formDataValue.thumbnailUrl"
               :error="props.thumbnailUploadStatus.error"
               :message="props.thumbnailUploadStatus.message"
@@ -256,6 +259,7 @@ const onClickSearchAddress = (): void => {
           <v-col cols="12" sm="6" md="6">
             <molecules-image-select-form
               label="ヘッダー画像"
+              :loading="loading"
               :img-url="formDataValue.headerUrl"
               :error="props.headerUploadStatus.error"
               :message="props.headerUploadStatus.message"

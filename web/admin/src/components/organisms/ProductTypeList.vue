@@ -285,6 +285,7 @@ const onSubmitDelete = (): void => {
         />
         <molecules-image-select-form
           label="アイコン"
+          :loading="loading"
           :img-url="createFormDataValue.iconUrl"
           :error="props.createIconUploadStatus.error"
           :message="props.createIconUploadStatus.message"
@@ -325,6 +326,7 @@ const onSubmitDelete = (): void => {
         />
         <molecules-image-select-form
           label="アイコン"
+          :loading="loading"
           :img-url="updateFormDataValue.iconUrl"
           :error="props.updateIconUploadStatus.error"
           :message="props.updateIconUploadStatus.message"
