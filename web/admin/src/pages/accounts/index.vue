@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store'
-import { AdminRole } from '~/types/api';
+import { AdminRole } from '~/types/api'
 import type { SettingMenu } from '~/types/props'
 
 const router = useRouter()
