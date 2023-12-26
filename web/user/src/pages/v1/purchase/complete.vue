@@ -1,10 +1,35 @@
 <script setup lang="ts">
+import { useCheckoutStore } from '~/store/checkout'
+import type { CheckoutStateResponse } from '~/types/api'
+
 const router = useRouter()
+const route = useRoute()
+
+const checkoutStore = useCheckoutStore()
+const { checkTransactionStatus } = checkoutStore
+
+const sessionId = computed<string>(() => {
+  const id = route.query.session_id
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
+})
+
+const checkoutStatus = ref<CheckoutStateResponse | undefined>(undefined)
 
 const handleBackTopPageButton = () => {
   router.push('/')
 }
+
+onMounted(async () => {
+  if (sessionId.value) {
+    checkoutStatus.value = await checkTransactionStatus(sessionId.value)
+  }
+})
 </script>
+
 <template>
   <div class="text-main">
     <div class="hidden md:block">
@@ -21,7 +46,9 @@ const handleBackTopPageButton = () => {
         <img src="/img/purchase/complete.svg" />
       </div>
       <div class="text-[16px] font-bold tracking-[1.6px]">
-        <p class="mt-[40px] flex justify-center">ご注文ありがとうございます！</p>
+        <p class="mt-[40px] flex justify-center">
+          ご注文ありがとうございます！
+        </p>
         <p class="mt-2 flex justify-center">ご購入手続きが完了しました。</p>
       </div>
     </div>
@@ -42,7 +69,9 @@ const handleBackTopPageButton = () => {
           注文の詳細は、アカウントページの注文履歴からもご確認いただけます。
         </p>
       </div>
-      <div class="mb-4 mt-[40px] flex w-full justify-center px-16 md:mt-20 md:px-0">
+      <div
+        class="mb-4 mt-[40px] flex w-full justify-center px-16 md:mt-20 md:px-0"
+      >
         <button
           class="w-[400px] bg-main py-2 tracking-[1.6px] text-white"
           @click="handleBackTopPageButton"
