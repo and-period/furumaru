@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { ContactStatus, type ContactsResponse } from '~/types/api'
