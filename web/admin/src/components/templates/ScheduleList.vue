@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
 import { type Coordinator, ScheduleStatus, type Schedule, AdminRole } from '~/types/api'

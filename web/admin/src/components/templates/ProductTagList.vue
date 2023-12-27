@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import useVuelidate from '@vuelidate/core'
+
 import type { AlertType } from '~/lib/hooks'
 import { AdminRole, type CreateProductTagRequest, type ProductTag, type UpdateProductTagRequest } from '~/types/api'
 import { required, getErrorMessage, maxLength } from '~/lib/validations'

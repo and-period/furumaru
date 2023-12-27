@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
-import { type PrefecturesListItem, prefecturesList } from '~/constants'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
+import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
 import { type Product, type ProductMediaInner, Prefecture, ProductStatus, type Category, type ProductTag, type ProductType, type Producer, AdminRole } from '~/types/api'
