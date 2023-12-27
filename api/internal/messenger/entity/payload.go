@@ -10,6 +10,8 @@ const (
 	EventTypeReceivedContact    EventType = 3 // お問い合わせ受領通知
 	EventTypeNotification       EventType = 4 // お知らせ発行通知
 	EventTypeOrderAuthorized    EventType = 5 // 支払い完了通知
+	EventTypeOrderShipped       EventType = 6 // 発送完了通知
+	EventTypeStartLive          EventType = 7 // ライブ配信開始通知
 )
 
 // UserType - 通知先ユーザー種別
