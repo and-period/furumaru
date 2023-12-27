@@ -79,7 +79,7 @@ func (a *app) accessLogger() gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
 		var req []byte
-		if a.debugMode {
+		if a.enableDebugMode(ctx) {
 			req, _ = io.ReadAll(ctx.Request.Body)
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(req))
 		}
@@ -110,8 +110,13 @@ func (a *app) accessLogger() gin.HandlerFunc {
 			zap.String("ip", ctx.ClientIP()),
 			zap.String("userAgent", ctx.Request.UserAgent()),
 			zap.Int64("latency", end.Sub(start).Milliseconds()),
-			zap.String("time", end.Format("2006-01-02 15:04:05")),
+			zap.String("requestedAt", start.Format(time.RFC3339Nano)),
+			zap.String("responsedAt", end.Format(time.RFC3339Nano)),
 			zap.String("userId", ctx.GetHeader("adminId")),
+		}
+		if a.enableDebugMode(ctx) {
+			str := strings.ReplaceAll(bytes.NewBuffer(req).String(), "\n", "")
+			fields = append(fields, zap.String("request", str))
 		}
 
 		// ~ 399
@@ -120,10 +125,6 @@ func (a *app) accessLogger() gin.HandlerFunc {
 			return
 		}
 
-		if a.debugMode {
-			str := strings.ReplaceAll(bytes.NewBuffer(req).String(), "\n", "")
-			fields = append(fields, zap.String("request", str))
-		}
 		res, err := w.errorResponse()
 		if err != nil {
 			a.logger.Error("Failed to parse http response", zap.Error(err))
@@ -165,6 +166,14 @@ func (a *app) accessLogger() gin.HandlerFunc {
 			}
 		}(msg)
 	}
+}
+
+func (a *app) enableDebugMode(ctx *gin.Context) bool {
+	const contentType = "application/json"
+	if !a.debugMode {
+		return false
+	}
+	return strings.Contains(ctx.ContentType(), contentType)
 }
 
 type alertMessageParams struct {
