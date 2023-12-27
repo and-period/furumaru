@@ -85,7 +85,15 @@ type NotifyReceivedContactInput struct {
 	ContactID string `validate:"required"`
 }
 
+type NotifyStartLiveInput struct {
+	ScheduleID string `validate:"required"`
+}
+
 type NotifyOrderAuthorizedInput struct {
+	OrderID string `validate:"required"`
+}
+
+type NotifyOrderShippedInput struct {
 	OrderID string `validate:"required"`
 }
 
