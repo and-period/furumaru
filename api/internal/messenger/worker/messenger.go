@@ -7,7 +7,7 @@ import (
 )
 
 func (w *worker) messenger(ctx context.Context, payload *entity.WorkerPayload) error {
-	template, err := w.db.MessageTemplate.Get(ctx, payload.Message.MessageID)
+	template, err := w.db.MessageTemplate.Get(ctx, payload.Message.TemplateID)
 	if err != nil {
 		return err
 	}

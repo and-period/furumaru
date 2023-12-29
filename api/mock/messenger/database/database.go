@@ -431,7 +431,7 @@ func (m *MockMessageTemplate) EXPECT() *MockMessageTemplateMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockMessageTemplate) Get(ctx context.Context, messageID string, fields ...string) (*entity.MessageTemplate, error) {
+func (m *MockMessageTemplate) Get(ctx context.Context, messageID entity.MessageTemplateID, fields ...string) (*entity.MessageTemplate, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, messageID}
 	for _, a := range fields {
@@ -594,7 +594,7 @@ func (m *MockPushTemplate) EXPECT() *MockPushTemplateMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockPushTemplate) Get(ctx context.Context, pushID string, fields ...string) (*entity.PushTemplate, error) {
+func (m *MockPushTemplate) Get(ctx context.Context, pushID entity.PushTemplateID, fields ...string) (*entity.PushTemplate, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, pushID}
 	for _, a := range fields {
@@ -708,7 +708,7 @@ func (m *MockReportTemplate) EXPECT() *MockReportTemplateMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockReportTemplate) Get(ctx context.Context, reportID string, fields ...string) (*entity.ReportTemplate, error) {
+func (m *MockReportTemplate) Get(ctx context.Context, reportID entity.ReportTemplateID, fields ...string) (*entity.ReportTemplate, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, reportID}
 	for _, a := range fields {

@@ -8,18 +8,21 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
+// EmailTemplateID - メールテンプレートID
+type EmailTemplateID string
+
 const (
-	EmailIDAdminRegister       = "admin-register"        // 管理者登録
-	EmailIDAdminResetPassword  = "admin-reset-password"  // 管理者パスワードリセット
-	EmailIDUserReceivedContact = "user-received-contact" // お問い合わせ受領
-	EmailIDUserOrderAuthorized = "user-order-authorized" // 支払い完了
-	EmailIDUserOrderShipped    = "user-order-shipped"    // 発送完了
-	EmailIDUserStartLive       = "user-start-live"       // ライブ配信開始
+	EmailTemplateIDAdminRegister       EmailTemplateID = "admin-register"        // 管理者登録
+	EmailTemplateIDAdminResetPassword  EmailTemplateID = "admin-reset-password"  // 管理者パスワードリセット
+	EmailTemplateIDUserReceivedContact EmailTemplateID = "user-received-contact" // お問い合わせ受領
+	EmailTemplateIDUserOrderAuthorized EmailTemplateID = "user-order-authorized" // 支払い完了
+	EmailTemplateIDUserOrderShipped    EmailTemplateID = "user-order-shipped"    // 発送完了
+	EmailTemplateIDUserStartLive       EmailTemplateID = "user-start-live"       // ライブ配信開始
 )
 
 // MailConfig - メール送信設定
 type MailConfig struct {
-	EmailID       string            `json:"emailId"`       // メールテンプレートID
+	TemplateID    EmailTemplateID   `json:"templateId"`    // メールテンプレートID
 	Substitutions map[string]string `json:"substitutions"` // メール動的内容
 }
 

@@ -11,10 +11,10 @@ import (
 
 // ReportTemplate - システムレポートテンプレート
 type ReportTemplate struct {
-	TemplateID string    `gorm:"primaryKey;column:id;<-:create"` // レポートID
-	Template   string    `gorm:""`                               // テンプレート
-	CreatedAt  time.Time `gorm:"<-:create"`                      // 登録日時
-	UpdatedAt  time.Time `gorm:""`                               // 更新日時
+	TemplateID ReportTemplateID `gorm:"primaryKey;column:id;<-:create"` // テンプレートID
+	Template   string           `gorm:""`                               // テンプレート
+	CreatedAt  time.Time        `gorm:"<-:create"`                      // 登録日時
+	UpdatedAt  time.Time        `gorm:""`                               // 更新日時
 }
 
 func (t *ReportTemplate) Build(fields map[string]string) (linebot.FlexContainer, error) {

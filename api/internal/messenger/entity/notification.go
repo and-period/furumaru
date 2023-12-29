@@ -114,6 +114,19 @@ func NewNotification(params *NewNotificationParams) *Notification {
 	}
 }
 
+func (n *Notification) TemplateID() MessageTemplateID {
+	switch n.Type {
+	case NotificationTypeSystem:
+		return MessageTemplateIDNotificationSystem
+	case NotificationTypeLive:
+		return MessageTemplateIDNotificationLive
+	case NotificationTypePromotion:
+		return MessageTemplateIDNotificationPromotion
+	default:
+		return MessageTemplateIDNotificationOther
+	}
+}
+
 func (n *Notification) HasUserTarget() bool {
 	set := set.New(targetUsers...)
 	for i := range n.Targets {
