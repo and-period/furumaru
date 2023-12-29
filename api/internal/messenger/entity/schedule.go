@@ -15,6 +15,7 @@ const (
 
 var ScheduleTypes = []ScheduleType{
 	ScheduleTypeNotification,
+	ScheduleTypeStartLive,
 }
 
 // ScheduleStatus - 通知スケジュール実行状態
