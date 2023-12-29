@@ -21,8 +21,13 @@ func (s *service) ReserveStartLive(ctx context.Context, in *messenger.ReserveSta
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	scheduleIn := &store.GetScheduleInput{}
+	scheduleIn := &store.GetScheduleInput{
+		ScheduleID: in.ScheduleID,
+	}
 	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("service: not found schedule: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
 	if err != nil {
 		return internalError(err)
 	}

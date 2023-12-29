@@ -68,7 +68,7 @@ type GetMessageInput struct {
 }
 
 type ReserveStartLiveInput struct {
-	ScheduleID string
+	ScheduleID string `validate:"required"`
 }
 
 type ReserveNotificationInput struct {
