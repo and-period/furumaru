@@ -51,6 +51,8 @@ const handleClickFacebookSingInButton = () => {
 const handleClickLineSingInButton = () => {
   emits('click:lineSingInButton')
 }
+
+const hideV1App = false
 </script>
 
 <template>
@@ -76,24 +78,26 @@ const handleClickLineSingInButton = () => {
             @submit="handleSubmit"
           />
 
-          <p class="my-6 underline">
-            <nuxt-link :to="forgetPasswordLink.href">
-              {{ forgetPasswordLink.text }}
-            </nuxt-link>
-          </p>
+          <template v-if="hideV1App">
+            <p class="my-6 underline">
+              <nuxt-link :to="forgetPasswordLink.href">
+                {{ forgetPasswordLink.text }}
+              </nuxt-link>
+            </p>
 
-          <the-google-auth-button
-            :button-text="googleButtonText"
-            @click="handleClickGoogleSingInButton"
-          />
-          <the-facebook-auth-button
-            :button-text="facebookButtonText"
-            @click="handleClickFacebookSingInButton"
-          />
-          <the-line-auth-button
-            :button-text="lineButtonText"
-            @click="handleClickLineSingInButton"
-          />
+            <the-google-auth-button
+              :button-text="googleButtonText"
+              @click="handleClickGoogleSingInButton"
+            />
+            <the-facebook-auth-button
+              :button-text="facebookButtonText"
+              @click="handleClickFacebookSingInButton"
+            />
+            <the-line-auth-button
+              :button-text="lineButtonText"
+              @click="handleClickLineSingInButton"
+            />
+          </template>
 
           <div class="my-6">
             <p class="mb-2">{{ dontHaveAccountText }}<br /></p>

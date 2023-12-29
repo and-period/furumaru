@@ -43,7 +43,7 @@ defineExpose<Expose>({
     </the-icon-button>
     <the-dropdown-area
       v-show="isShow"
-      class="absolute -right-8 min-w-[240px] before:absolute before:-top-8 before:right-1 before:-translate-x-1/2 before:border-[24px] before:border-transparent before:border-b-white before:content-['']"
+      class="absolute right-0 min-w-[240px] before:absolute before:-right-7 before:-top-8 before:-translate-x-1/2 before:border-[24px] before:border-transparent before:border-b-white before:content-[''] md:-right-8 md:before:right-1"
     >
       <div class="px-4 text-right">
         <the-icon-button @click="handleCloseIconClick">

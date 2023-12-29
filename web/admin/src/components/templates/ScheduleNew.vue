@@ -211,6 +211,7 @@ const onSubmit = async (): Promise<void> => {
           <v-col cols="12" sm="12" md="4">
             <molecules-image-select-form
               label="サムネイル画像"
+              :loading="loading"
               :img-url="formDataValue.thumbnailUrl"
               :error="props.thumbnailUploadStatus.error"
               :message="props.thumbnailUploadStatus.message"
@@ -220,6 +221,7 @@ const onSubmit = async (): Promise<void> => {
           <v-col cols="12" sm="12" md="4">
             <molecules-video-select-form
               label="オープニング動画"
+              :loading="loading"
               :video-url="formDataValue.openingVideoUrl"
               :error="props.openingVideoUploadStatus.error"
               :message="props.openingVideoUploadStatus.message"
@@ -229,6 +231,7 @@ const onSubmit = async (): Promise<void> => {
           <v-col cols="12" sm="12" md="4">
             <molecules-image-select-form
               label="待機中の画像"
+              :loading="loading"
               :accept="['image/png']"
               :img-url="formDataValue.imageUrl"
               :error="props.imageUploadStatus.error"

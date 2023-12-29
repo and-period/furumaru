@@ -13,6 +13,8 @@ const (
 	EmailIDAdminResetPassword  = "admin-reset-password"  // 管理者パスワードリセット
 	EmailIDUserReceivedContact = "user-received-contact" // お問い合わせ受領
 	EmailIDUserOrderAuthorized = "user-order-authorized" // 支払い完了
+	EmailIDUserOrderShipped    = "user-order-shipped"    // 発送完了
+	EmailIDUserStartLive       = "user-start-live"       // ライブ配信開始
 )
 
 // MailConfig - メール送信設定
@@ -73,6 +75,15 @@ func (b *TemplateDataBuilder) Contact(title, body string) *TemplateDataBuilder {
 	return b
 }
 
+func (b *TemplateDataBuilder) Live(title, coordinator string, startAt, endAt time.Time) *TemplateDataBuilder {
+	b.data["タイトル"] = title
+	b.data["コーディネータ名"] = coordinator
+	b.data["開催日"] = startAt.Format(time.DateOnly)
+	b.data["開始時間"] = startAt.Format("15:04")
+	b.data["終了時間"] = endAt.Format("15:04")
+	return b
+}
+
 func (b *TemplateDataBuilder) Order(order *sentity.Order) *TemplateDataBuilder {
 	b.data["決済方法"] = newPaymentMethodName(order.OrderPayment.MethodType)
 	b.data["商品金額"] = strconv.FormatInt(order.OrderPayment.Subtotal, 10)
@@ -80,6 +91,11 @@ func (b *TemplateDataBuilder) Order(order *sentity.Order) *TemplateDataBuilder {
 	b.data["配送手数料"] = strconv.FormatInt(order.OrderPayment.ShippingFee, 10)
 	b.data["消費税"] = strconv.FormatInt(order.OrderPayment.Tax, 10)
 	b.data["合計金額"] = strconv.FormatInt(order.OrderPayment.Total, 10)
+	return b
+}
+
+func (b *TemplateDataBuilder) Shipped(message string) *TemplateDataBuilder {
+	b.data["メッセージ"] = message
 	return b
 }
 

@@ -7189,6 +7189,74 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary 自身のコーディネータ情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthCoordinator: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/auth/coordinator`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 自身の配送設定取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthShipping: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/auth/coordinator/shippings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 管理者情報取得
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7413,6 +7481,46 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary 自身のコーディネータ情報更新
+         * @param {UpdateCoordinatorRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateAuthCoordinator: async (body: UpdateCoordinatorRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateAuthCoordinator', 'body', body)
+            const localVarPath = `/v1/auth/coordinator`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary メールアドレス更新
          * @param {UpdateAuthEmailRequest} body 
          * @param {*} [options] Override http request option.
@@ -7462,6 +7570,46 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
             // verify required parameter 'body' is not null or undefined
             assertParamExists('v1UpdateAuthPassword', 'body', body)
             const localVarPath = `/v1/auth/password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 自身の配送設定更新
+         * @param {UpsertShippingRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpsertAuthShipping: async (body: UpsertShippingRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpsertAuthShipping', 'body', body)
+            const localVarPath = `/v1/auth/coordinator/shippings`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -7564,6 +7712,26 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 自身のコーディネータ情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetAuthCoordinator(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CoordinatorResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuthCoordinator(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 自身の配送設定取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetAuthShipping(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShippingResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetAuthShipping(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary 管理者情報取得
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7628,6 +7796,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 自身のコーディネータ情報更新
+         * @param {UpdateCoordinatorRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateAuthCoordinator(body: UpdateCoordinatorRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateAuthCoordinator(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary メールアドレス更新
          * @param {UpdateAuthEmailRequest} body 
          * @param {*} [options] Override http request option.
@@ -7646,6 +7825,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
          */
         async v1UpdateAuthPassword(body: UpdateAuthPasswordRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateAuthPassword(body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 自身の配送設定更新
+         * @param {UpsertShippingRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpsertAuthShipping(body: UpsertShippingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpsertAuthShipping(body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7687,6 +7877,24 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          */
         v1GetAuth(options?: any): AxiosPromise<AuthResponse> {
             return localVarFp.v1GetAuth(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 自身のコーディネータ情報取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthCoordinator(options?: any): AxiosPromise<CoordinatorResponse> {
+            return localVarFp.v1GetAuthCoordinator(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 自身の配送設定取得
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetAuthShipping(options?: any): AxiosPromise<ShippingResponse> {
+            return localVarFp.v1GetAuthShipping(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7748,6 +7956,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary 自身のコーディネータ情報更新
+         * @param {UpdateCoordinatorRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateAuthCoordinator(body: UpdateCoordinatorRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateAuthCoordinator(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary メールアドレス更新
          * @param {UpdateAuthEmailRequest} body 
          * @param {*} [options] Override http request option.
@@ -7765,6 +7983,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          */
         v1UpdateAuthPassword(body: UpdateAuthPasswordRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateAuthPassword(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 自身の配送設定更新
+         * @param {UpsertShippingRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpsertAuthShipping(body: UpsertShippingRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpsertAuthShipping(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7807,6 +8035,28 @@ export class AuthApi extends BaseAPI {
      */
     public v1GetAuth(options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1GetAuth(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 自身のコーディネータ情報取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1GetAuthCoordinator(options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1GetAuthCoordinator(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 自身の配送設定取得
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1GetAuthShipping(options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1GetAuthShipping(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7881,6 +8131,18 @@ export class AuthApi extends BaseAPI {
 
     /**
      * 
+     * @summary 自身のコーディネータ情報更新
+     * @param {UpdateCoordinatorRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1UpdateAuthCoordinator(body: UpdateCoordinatorRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1UpdateAuthCoordinator(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary メールアドレス更新
      * @param {UpdateAuthEmailRequest} body 
      * @param {*} [options] Override http request option.
@@ -7901,6 +8163,18 @@ export class AuthApi extends BaseAPI {
      */
     public v1UpdateAuthPassword(body: UpdateAuthPasswordRequest, options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).v1UpdateAuthPassword(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 自身の配送設定更新
+     * @param {UpsertShippingRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public v1UpsertAuthShipping(body: UpsertShippingRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).v1UpsertAuthShipping(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

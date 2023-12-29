@@ -34,7 +34,7 @@ func (h *handler) listLiveSummaries(ctx context.Context, params *listLiveSummari
 		OnlyPublished: true,
 	}
 	lives, _, err := h.store.ListLives(ctx, livesIn)
-	if err != nil || len(lives) == 0 {
+	if err != nil {
 		return service.LiveSummaries{}, err
 	}
 	productsIn := &store.MultiGetProductsInput{

@@ -4,12 +4,16 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) authRoutes(rg *gin.RouterGroup) {
@@ -26,6 +30,10 @@ func (h *handler) authRoutes(rg *gin.RouterGroup) {
 	r.POST("/forgot-password", h.ForgotAuthPassword)
 	r.POST("/forgot-password/verified", h.ResetAuthPassword)
 	r.GET("/user", h.authentication, h.GetAuthUser)
+	r.GET("/coordinator", h.authentication, h.GetAuthCoordinator)
+	r.PATCH("/coordinator", h.authentication, h.UpdateAuthCoordinator)
+	r.GET("/coordinator/shippings", h.authentication, h.GetAuthShipping)
+	r.PATCH("/coordinator/shippings", h.authentication, h.UpsertAuthShipping)
 }
 
 func (h *handler) GetAuth(ctx *gin.Context) {
@@ -273,5 +281,187 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 		return
 	}
 
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) GetAuthCoordinator(ctx *gin.Context) {
+	if getRole(ctx) != service.AdminRoleCoordinator {
+		h.forbidden(ctx, errors.New("this user is not coordinator"))
+		return
+	}
+
+	in := &user.GetCoordinatorInput{
+		CoordinatorID: getAdminID(ctx),
+	}
+	coordinator, err := h.user.GetCoordinator(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	productTypes, err := h.multiGetProductTypes(ctx, coordinator.ProductTypeIDs)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.CoordinatorResponse{
+		Coordinator:  service.NewCoordinator(coordinator).Response(),
+		ProductTypes: productTypes.Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpdateAuthCoordinator(ctx *gin.Context) {
+	if getRole(ctx) != service.AdminRoleCoordinator {
+		h.forbidden(ctx, errors.New("this user is not coordinator"))
+		return
+	}
+
+	req := &request.UpdateCoordinatorRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	productTypes, err := h.multiGetProductTypes(ctx, req.ProductTypeIDs)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if len(productTypes) != len(req.ProductTypeIDs) {
+		h.badRequest(ctx, errors.New("handler: unmatch product types length"))
+		return
+	}
+
+	var thumbnailURL, headerURL, promotionVideoURL, bonusVideoURL string
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if req.ThumbnailURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.ThumbnailURL,
+		}
+		thumbnailURL, err = h.media.UploadCoordinatorThumbnail(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.HeaderURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.HeaderURL,
+		}
+		headerURL, err = h.media.UploadCoordinatorHeader(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.PromotionVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.PromotionVideoURL,
+		}
+		promotionVideoURL, err = h.media.UploadCoordinatorPromotionVideo(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		if req.BonusVideoURL == "" {
+			return
+		}
+		in := &media.UploadFileInput{
+			URL: req.BonusVideoURL,
+		}
+		bonusVideoURL, err = h.media.UploadCoordinatorBonusVideo(ectx, in)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	in := &user.UpdateCoordinatorInput{
+		CoordinatorID:     getAdminID(ctx),
+		Lastname:          req.Lastname,
+		Firstname:         req.Firstname,
+		LastnameKana:      req.LastnameKana,
+		FirstnameKana:     req.FirstnameKana,
+		MarcheName:        req.MarcheName,
+		Username:          req.Username,
+		Profile:           req.Profile,
+		ProductTypeIDs:    req.ProductTypeIDs,
+		ThumbnailURL:      thumbnailURL,
+		HeaderURL:         headerURL,
+		PromotionVideoURL: promotionVideoURL,
+		BonusVideoURL:     bonusVideoURL,
+		InstagramID:       req.InstagramID,
+		FacebookID:        req.FacebookID,
+		PhoneNumber:       req.PhoneNumber,
+		PostalCode:        req.PostalCode,
+		PrefectureCode:    req.PrefectureCode,
+		City:              req.City,
+		AddressLine1:      req.AddressLine1,
+		AddressLine2:      req.AddressLine2,
+		BusinessDays:      req.BusinessDays,
+	}
+	if err := h.user.UpdateCoordinator(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{})
+}
+
+func (h *handler) GetAuthShipping(ctx *gin.Context) {
+	if getRole(ctx) != service.AdminRoleCoordinator {
+		h.forbidden(ctx, errors.New("this user is not coordinator"))
+		return
+	}
+
+	in := &store.GetShippingByCoordinatorIDInput{
+		CoordinatorID: getAdminID(ctx),
+	}
+	shipping, err := h.store.GetShippingByCoordinatorID(ctx, in)
+	if errors.Is(err, exception.ErrNotFound) {
+		// 配送設定の登録をしていない場合、デフォルト設定を返却する
+		in := &store.GetDefaultShippingInput{}
+		shipping, err = h.store.GetDefaultShipping(ctx, in)
+	}
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.ShippingResponse{
+		Shipping: service.NewShipping(shipping).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) UpsertAuthShipping(ctx *gin.Context) {
+	if getRole(ctx) != service.AdminRoleCoordinator {
+		h.forbidden(ctx, errors.New("this user is not coordinator"))
+		return
+	}
+
+	req := &request.UpsertShippingRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	in := &store.UpsertShippingInput{
+		CoordinatorID:     getAdminID(ctx),
+		Box60Rates:        h.newShippingRatesForUpsert(req.Box60Rates),
+		Box60Frozen:       req.Box60Frozen,
+		Box80Rates:        h.newShippingRatesForUpsert(req.Box80Rates),
+		Box80Frozen:       req.Box80Frozen,
+		Box100Rates:       h.newShippingRatesForUpsert(req.Box100Rates),
+		Box100Frozen:      req.Box100Frozen,
+		HasFreeShipping:   req.HasFreeShipping,
+		FreeShippingRates: req.FreeShippingRates,
+	}
+	if err := h.store.UpsertShipping(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.JSON(http.StatusNoContent, gin.H{})
 }

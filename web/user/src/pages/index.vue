@@ -86,6 +86,12 @@ useSeoMeta({
     <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
         <template v-if="isInItLoading"> </template>
+        <template v-if="lives.length === 0">
+          <p class="text-center text-main">
+            ただいまライブは開催されていません。
+            新しいライブが開催されるまでお待ちください。
+          </p>
+        </template>
         <template v-if="lives.length > 0">
           <div
             class="mx-auto grid max-w-7xl gap-x-10 gap-y-8 px-2 md:grid-cols-2 lg:grid-cols-3"
@@ -149,6 +155,8 @@ useSeoMeta({
               :key="archive.scheduleId"
               :title="archive.title"
               :img-src="archive.thumbnailUrl"
+              class="cursor-pointer"
+              @click="handleClickLiveItem(archive.scheduleId)"
             />
           </div>
           <div class="absolute right-4 flex h-[208px] items-center">
@@ -166,7 +174,11 @@ useSeoMeta({
         </div>
       </the-content-box>
 
-      <the-content-box title="recommend" sub-title="おすすめの商品">
+      <the-content-box
+        v-if="false"
+        title="recommend"
+        sub-title="おすすめの商品"
+      >
         <div
           class="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
         >

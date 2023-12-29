@@ -109,7 +109,7 @@ const isScrolled = ref<boolean>(false)
 const onScroll = () => {
   if (!isScrolled.value && window.scrollY > 50) {
     isScrolled.value = true
-  } else if (isScrolled.value && window.scrollY < 30) {
+  } else if (isScrolled.value && window.scrollY < 5) {
     isScrolled.value = false
   }
 }
@@ -157,6 +157,10 @@ const handleClickRemoveItemFromCartButton = (
       @click:buy-button="handleClickBuyButton"
       @click:remove-item-from-cart="handleClickRemoveItemFromCartButton"
     />
+    <div
+      id="snackbar"
+      class="absolute top-[28px] z-[70] flex min-h-min w-full flex-col gap-2 bg-transparent md:top-[120px]"
+    ></div>
   </div>
   <div class="flex min-h-screen flex-col bg-base">
     <main class="grow overflow-hidden">

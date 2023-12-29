@@ -8,6 +8,7 @@ interface Props {
   startAt: number
   endAt: number
   isLiveStreaming: boolean
+  isArchive: boolean
   marcheName: string
   description: string
   address: string
@@ -19,16 +20,21 @@ const props = defineProps<Props>()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 const showDetail = ref<boolean>(false)
+const hls = ref<Hls | null>(null)
 
 onMounted(() => {
   if (videoRef.value) {
     const video = videoRef.value
     const src = props.videoSrc
 
+    if (props.isArchive) {
+      return
+    }
+
     if (Hls.isSupported()) {
-      const hls = new Hls({ enableWorker: false })
-      hls.loadSource(src)
-      hls.attachMedia(video)
+      hls.value = new Hls({ enableWorker: false })
+      hls.value.loadSource(src)
+      hls.value.attachMedia(video)
       videoRef.value.play()
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src
@@ -44,6 +50,16 @@ const formattedStartAt = computed(() => {
 const handleClickShowDetailButton = () => {
   showDetail.value = !showDetail.value
 }
+
+onUnmounted(() => {
+  if (hls.value) {
+    hls.value.destroy()
+  }
+  if (videoRef.value) {
+    videoRef.value.pause()
+    videoRef.value.src = ''
+  }
+})
 </script>
 
 <template>
@@ -57,20 +73,24 @@ const handleClickShowDetailButton = () => {
     />
     <div class="mt-2 px-4">
       <div class="flex items-center gap-2">
-        <div
-          :class="{
-            'flex max-w-fit items-center justify-center rounded px-2 font-bold': true,
-            'border-2 border-orange bg-orange text-white': isLiveStreaming,
-            'border-2 border-main text-main': !isLiveStreaming,
-          }"
-        >
-          <div v-if="isLiveStreaming" class="mr-2 pt-[2px]">
-            <the-live-icon />
+        <template v-if="isArchive">
+          <div
+            class="flex max-w-fit items-center justify-center rounded border-2 border-main px-2 font-bold text-main"
+          >
+            アーカイブ
           </div>
-          <div class="align-middle">
-            {{ isLiveStreaming ? 'LIVE' : '配信予定' }}
+        </template>
+        <template v-else-if="isLiveStreaming">
+          <div
+            class="flex max-w-fit items-center justify-center rounded border-2 border-orange bg-orange px-2 font-bold text-white"
+          >
+            <div class="mr-2 pt-[2px]">
+              <the-live-icon />
+            </div>
+            <div class="align-middle">LIVE</div>
           </div>
-        </div>
+        </template>
+
         <div class="text-[14px] tracking-[1.4px] after:content-['〜']">
           {{ formattedStartAt }}
         </div>

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+
 import { AdminRole, type Category, type CreateProductTypeRequest, type ProductType, type UpdateProductTypeRequest } from '~/types/api'
 import { type ImageUploadStatus } from '~/types/props'
 import { required, getErrorMessage, maxLength } from '~/lib/validations'
@@ -285,6 +286,7 @@ const onSubmitDelete = (): void => {
         />
         <molecules-image-select-form
           label="アイコン"
+          :loading="loading"
           :img-url="createFormDataValue.iconUrl"
           :error="props.createIconUploadStatus.error"
           :message="props.createIconUploadStatus.message"
@@ -325,6 +327,7 @@ const onSubmitDelete = (): void => {
         />
         <molecules-image-select-form
           label="アイコン"
+          :loading="loading"
           :img-url="updateFormDataValue.iconUrl"
           :error="props.updateIconUploadStatus.error"
           :message="props.updateIconUploadStatus.message"

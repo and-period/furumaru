@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { mdiDotsVertical } from '@mdi/js'
 import { unix } from 'dayjs'
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
-import { type PrefecturesListItem, prefecturesList } from '~/constants'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import type { AlertType } from '~/lib/hooks'
 import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, AdminRole, type Address, AdminStatus } from '~/types/api'

@@ -501,6 +501,11 @@ type RemoveCartItemInput struct {
 	ProductID string `validate:"required"`
 }
 
+type GetCheckoutStateInput struct {
+	UserID        string `validate:"required"`
+	TransactionID string `validate:"required"`
+}
+
 type CheckoutCreditCardInput struct {
 	CheckoutDetail
 	Number            string `validate:"required,numeric"`

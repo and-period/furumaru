@@ -29,11 +29,11 @@
     "dayjs": "^1.11.7",
     "firebase": "^9.23.0",
     "hls.js": "^1.4.10",
-    "nuxt": "^3.8.1",
+    "nuxt": "^3.9.0",
     "pinia": "^2.0.35",
     "sass": "^1.62.1",
     "universal-cookie": "^4.0.4",
-    "vuetify": "^3.3.13"
+    "vuetify": "^3.4.8"
   },
   "devDependencies": {
     "@mdi/js": "^7.2.96",

@@ -48,6 +48,18 @@ const coordinatorId = computed<string>(() => {
   }
 })
 
+const cartNumber = computed<number | undefined>(() => {
+  const id = route.query.cartNumber
+  const idNumber = Number(id)
+  if (idNumber === 0) {
+    return undefined
+  }
+  if (isNaN(idNumber)) {
+    return undefined
+  }
+  return idNumber
+})
+
 const priceFormatter = (price: number) => {
   return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
@@ -71,15 +83,25 @@ const handleSubmitNewAddressForm = async () => {
     ...formData.value,
     phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
   })
-  router.push(
-    `/v1/purchase/confirmation?id=${registerdAddress.id}&coordinatorId=${coordinatorId.value}`,
-  )
+  router.push({
+    path: '/v1/purchase/confirmation',
+    query: {
+      id: registerdAddress.id,
+      coordinatorId: coordinatorId.value,
+      cartNumber: cartNumber.value,
+    },
+  })
 }
 
 const handleClickNextStepButton = (id: string) => {
-  router.push(
-    `/v1/purchase/confirmation?id=${id}&coordinatorId=${coordinatorId.value}`,
-  )
+  router.push({
+    path: '/v1/purchase/confirmation',
+    query: {
+      id,
+      coordinatorId: coordinatorId.value,
+      cartNumber: cartNumber.value,
+    },
+  })
 }
 
 onMounted(() => {
@@ -89,7 +111,11 @@ onMounted(() => {
 onMounted(async () => {
   try {
     calcCartResponseItemState.value.isLoading = true
-    await calcCartItemByCoordinatorId(coordinatorId.value)
+    await calcCartItemByCoordinatorId(
+      coordinatorId.value,
+      cartNumber.value,
+      undefined,
+    )
   } catch (error) {
     calcCartResponseItemState.value.hasError = true
     if (error instanceof ApiBaseError) {

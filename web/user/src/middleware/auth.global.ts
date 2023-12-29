@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { useAuthStore } from '~/store/auth'
+import { ApiBaseError } from '~/types/exception'
 
 export default defineNuxtRouteMiddleware(async () => {
   const authStore = useAuthStore()
@@ -10,8 +11,14 @@ export default defineNuxtRouteMiddleware(async () => {
     } else {
       // 認証トークンの期限切れの場合
       // 認証トークンとユーザー情報の再取得を行う
-      await authStore.refreshAccsessToken(authStore.refreshToken)
-      await authStore.fetchUserInfo()
+      try {
+        await authStore.refreshAccsessToken(authStore.refreshToken)
+        await authStore.fetchUserInfo()
+      } catch (error) {
+        if (error instanceof ApiBaseError) {
+          console.log(error)
+        }
+      }
     }
   }
 })

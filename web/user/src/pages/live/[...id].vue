@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import { useScheduleStore } from '~/store/schedule'
 import { useShoppingCartStore } from '~/store/shopping'
-import type { ScheduleResponse } from '~/types/api'
+import { ScheduleStatus, type ScheduleResponse } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { LiveTimeLineItem } from '~/types/props/schedule'
 
@@ -50,7 +49,15 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
 
 const isLiveStreaming = computed<boolean>(() => {
   if (schedule.value) {
-    return dayjs().isAfter(schedule.value.schedule.startAt)
+    return schedule.value.schedule.status === ScheduleStatus.LIVE
+  } else {
+    return false
+  }
+})
+
+const isArchive = computed<boolean>(() => {
+  if (schedule.value) {
+    return schedule.value.schedule.status === ScheduleStatus.ARCHIVED
   } else {
     return false
   }
@@ -96,6 +103,7 @@ useSeoMeta({
           :end-at="schedule.schedule.endAt"
           :description="schedule.schedule.description"
           :is-live-streaming="isLiveStreaming"
+          :is-archive="isArchive"
           :marche-name="schedule.coordinator.marcheName"
           :address="schedule.coordinator.city"
           :cn-name="schedule.coordinator.username"

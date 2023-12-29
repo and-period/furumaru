@@ -19,6 +19,25 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
+func (s *service) GetCheckoutState(ctx context.Context, in *store.GetCheckoutStateInput) (string, entity.PaymentStatus, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", entity.PaymentStatusUnknown, internalError(err)
+	}
+	order, err := s.db.Order.GetByTransactionID(ctx, in.UserID, in.TransactionID)
+	if err != nil {
+		return "", entity.PaymentStatusUnknown, internalError(err)
+	}
+	if order.OrderPayment.Status != entity.PaymentStatusPending {
+		return order.ID, order.OrderPayment.Status, nil
+	}
+	// 未払い状態の場合、KOMOJUから最新の状態を取得する
+	res, err := s.komoju.Session.Get(ctx, in.TransactionID)
+	if err != nil || res.Payment == nil {
+		return order.ID, entity.PaymentStatusUnknown, internalError(err)
+	}
+	return order.ID, entity.NewPaymentStatus(res.Payment.Status), nil
+}
+
 func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCreditCardInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)

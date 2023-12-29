@@ -245,6 +245,8 @@ func TestCreateNotification(t *testing.T) {
 						assert.Equal(t, expect, notification)
 						return nil
 					})
+				// 非同期関連
+				mocks.db.Notification.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			input: &messenger.CreateNotificationInput{
 				Type:        entity.NotificationTypeSystem,
@@ -259,7 +261,7 @@ func TestCreateNotification(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name: "success system",
+			name: "success promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
 				mocks.store.EXPECT().GetPromotion(gomock.Any(), promotionIn).Return(promotion, nil)
@@ -283,6 +285,8 @@ func TestCreateNotification(t *testing.T) {
 						assert.Equal(t, expect, notification)
 						return nil
 					})
+				// 非同期関連
+				mocks.db.Notification.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			input: &messenger.CreateNotificationInput{
 				Type:        entity.NotificationTypePromotion,
@@ -303,7 +307,7 @@ func TestCreateNotification(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get admin",
+			name: "not found admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, exception.ErrNotFound)
 			},
@@ -318,6 +322,23 @@ func TestCreateNotification(t *testing.T) {
 				PromotionID: "",
 			},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.CreateNotificationInput{
+				Type:        entity.NotificationTypeSystem,
+				Title:       "キャベツ祭り開催",
+				Body:        "旬のキャベツを売り出します",
+				Note:        "",
+				Targets:     []entity.NotificationTarget{entity.NotificationTargetUsers},
+				PublishedAt: now.AddDate(0, 0, 1),
+				CreatedBy:   "admin-id",
+				PromotionID: "",
+			},
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "invalid domain validation",
@@ -414,6 +435,8 @@ func TestUpdateNotification(t *testing.T) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(admin, nil)
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification(), nil)
 				mocks.db.Notification.EXPECT().Update(ctx, "notification-id", params).Return(nil)
+				// 非同期関連
+				mocks.db.Notification.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			input: &messenger.UpdateNotificationInput{
 				NotificationID: "notification-id",
@@ -430,7 +453,7 @@ func TestUpdateNotification(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name: "failed to get admin",
+			name: "not found admin",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, exception.ErrNotFound)
 			},
@@ -447,6 +470,25 @@ func TestUpdateNotification(t *testing.T) {
 				UpdatedBy:   "admin-id",
 			},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get admin",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetAdmin(gomock.Any(), adminIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.UpdateNotificationInput{
+				NotificationID: "notification-id",
+				Title:          "キャベツ祭り開催",
+				Body:           "旬のキャベツが大安売り",
+				Note:           "",
+				Targets: []entity.NotificationTarget{
+					entity.NotificationTargetProducers,
+					entity.NotificationTargetCoordinators,
+				},
+				PublishedAt: now.AddDate(0, 0, 1),
+				UpdatedBy:   "admin-id",
+			},
+			expectErr: exception.ErrInternal,
 		},
 		{
 			name:      "invalid argument",
