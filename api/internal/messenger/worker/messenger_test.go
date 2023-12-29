@@ -16,7 +16,7 @@ func TestMessenger(t *testing.T) {
 
 	now := jst.Date(2022, 7, 21, 18, 30, 0, 0)
 	template := &entity.MessageTemplate{
-		TemplateID:    entity.MessageIDNotification,
+		TemplateID:    entity.MessageTemplateIDNotificationLive,
 		TitleTemplate: "件名: {{.Title}}",
 		BodyTemplate:  "テンプレートです。",
 		CreatedAt:     jst.Date(2022, 7, 21, 18, 30, 0, 0),
@@ -32,7 +32,7 @@ func TestMessenger(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageIDNotification).Return(template, nil)
+				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageTemplateIDNotificationLive).Return(template, nil)
 				mocks.db.Message.EXPECT().
 					MultiCreate(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, messages entity.Messages) error {
@@ -59,7 +59,7 @@ func TestMessenger(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Message: &entity.MessageConfig{
-					MessageID:   entity.MessageIDNotification,
+					TemplateID:  entity.MessageTemplateIDNotificationLive,
 					MessageType: entity.MessageTypeNotification,
 					Title:       "メッセージタイトル",
 					Link:        "https://and-period.jp",
@@ -71,7 +71,7 @@ func TestMessenger(t *testing.T) {
 		{
 			name: "failed to get message template",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageIDNotification).Return(nil, assert.AnError)
+				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageTemplateIDNotificationLive).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -79,7 +79,7 @@ func TestMessenger(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Message: &entity.MessageConfig{
-					MessageID:   entity.MessageIDNotification,
+					TemplateID:  entity.MessageTemplateIDNotificationLive,
 					MessageType: entity.MessageTypeNotification,
 					Title:       "メッセージタイトル",
 					Link:        "https://and-period.jp",
@@ -91,7 +91,7 @@ func TestMessenger(t *testing.T) {
 		{
 			name: "failed to multi create messages",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageIDNotification).Return(template, nil)
+				mocks.db.MessageTemplate.EXPECT().Get(ctx, entity.MessageTemplateIDNotificationLive).Return(template, nil)
 				mocks.db.Message.EXPECT().MultiCreate(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
@@ -100,7 +100,7 @@ func TestMessenger(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Message: &entity.MessageConfig{
-					MessageID:   entity.MessageIDNotification,
+					TemplateID:  entity.MessageTemplateIDNotificationLive,
 					MessageType: entity.MessageTypeNotification,
 					Title:       "メッセージタイトル",
 					Link:        "https://and-period.jp",

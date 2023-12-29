@@ -108,7 +108,7 @@ type ListMessagesOrder struct {
 }
 
 type MessageTemplate interface {
-	Get(ctx context.Context, messageID string, fields ...string) (*entity.MessageTemplate, error)
+	Get(ctx context.Context, messageID entity.MessageTemplateID, fields ...string) (*entity.MessageTemplate, error)
 }
 
 type Notification interface {
@@ -143,7 +143,7 @@ type UpdateNotificationParams struct {
 }
 
 type PushTemplate interface {
-	Get(ctx context.Context, pushID string, fields ...string) (*entity.PushTemplate, error)
+	Get(ctx context.Context, pushID entity.PushTemplateID, fields ...string) (*entity.PushTemplate, error)
 }
 
 type ReceivedQueue interface {
@@ -153,7 +153,7 @@ type ReceivedQueue interface {
 }
 
 type ReportTemplate interface {
-	Get(ctx context.Context, reportID string, fields ...string) (*entity.ReportTemplate, error)
+	Get(ctx context.Context, reportID entity.ReportTemplateID, fields ...string) (*entity.ReportTemplate, error)
 }
 
 type Schedule interface {

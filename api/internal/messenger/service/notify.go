@@ -36,7 +36,7 @@ func (s *service) NotifyStartLive(ctx context.Context, in *messenger.NotifyStart
 		Live(schedule.Title, coordinator.Username, schedule.StartAt, schedule.EndAt).
 		WebURL(maker.Live(schedule.ID))
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDUserStartLive,
+		TemplateID:    entity.EmailTemplateIDUserStartLive,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{
@@ -61,7 +61,7 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 	}
 	builder := entity.NewTemplateDataBuilder().Order(order)
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDUserOrderAuthorized,
+		TemplateID:    entity.EmailTemplateIDUserOrderAuthorized,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{
@@ -91,7 +91,7 @@ func (s *service) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOr
 		Order(order).
 		Shipped(order.ShippingMessage)
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDUserOrderShipped,
+		TemplateID:    entity.EmailTemplateIDUserOrderShipped,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{
@@ -115,7 +115,7 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 		WebURL(maker.SignIn()).
 		Password(in.Password)
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDAdminRegister,
+		TemplateID:    entity.EmailTemplateIDAdminRegister,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{
@@ -139,7 +139,7 @@ func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.No
 		WebURL(maker.SignIn()).
 		Password(in.Password)
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDAdminResetPassword,
+		TemplateID:    entity.EmailTemplateIDAdminResetPassword,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{
@@ -159,6 +159,13 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 		return internalError(err)
 	}
 	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
+	if err != nil {
+		return internalError(err)
+	}
+	adminIn := &user.GetAdminInput{
+		AdminID: notification.CreatedBy,
+	}
+	admin, err := s.user.GetAdmin(ctx, adminIn)
 	if err != nil {
 		return internalError(err)
 	}
@@ -190,9 +197,10 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
-		ReportID:    entity.ReportIDNotification,
+		TemplateID:  entity.ReportTemplateIDNotification,
 		Overview:    notification.Title,
 		Detail:      notification.Body,
+		Author:      admin.Name(),
 		Link:        maker.Notification(notification.ID),
 		PublishedAt: notification.PublishedAt,
 	}
@@ -209,7 +217,7 @@ func (s *service) notifyUserNotification(ctx context.Context, notification *enti
 		return nil
 	}
 	message := &entity.MessageConfig{
-		MessageID:   entity.MessageIDNotification,
+		TemplateID:  notification.TemplateID(),
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
 		ReceivedAt:  s.now(),
@@ -224,7 +232,7 @@ func (s *service) notifyUserNotification(ctx context.Context, notification *enti
 func (s *service) notifyAdminNotification(ctx context.Context, notification *entity.Notification) error {
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	message := &entity.MessageConfig{
-		MessageID:   entity.MessageIDNotification,
+		TemplateID:  notification.TemplateID(),
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
 		Link:        maker.Notification(notification.ID),

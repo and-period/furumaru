@@ -20,7 +20,7 @@ func TestMessageTemplate_Build(t *testing.T) {
 		{
 			name: "success",
 			template: &MessageTemplate{
-				TemplateID:    MessageIDNotification,
+				TemplateID:    MessageTemplateIDNotificationSystem,
 				TitleTemplate: "件名: {{.Title}}",
 				BodyTemplate:  "内容: {{.Body}}",
 				CreatedAt:     jst.Date(2022, 7, 14, 18, 30, 0, 0),

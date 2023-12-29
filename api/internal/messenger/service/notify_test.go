@@ -89,7 +89,7 @@ func TestNotifyStartLive(t *testing.T) {
 							UserType:  entity.UserTypeUser,
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDUserStartLive,
+								TemplateID: entity.EmailTemplateIDUserStartLive,
 								Substitutions: map[string]string{
 									"タイトル":     "マルシェタイトル",
 									"コーディネータ名": "&. 担当者",
@@ -262,7 +262,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 							UserType:  entity.UserTypeUser,
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDUserOrderAuthorized,
+								TemplateID: entity.EmailTemplateIDUserOrderAuthorized,
 								Substitutions: map[string]string{
 									"決済方法":  "クレジットカード決済",
 									"商品金額":  "4460",
@@ -403,7 +403,7 @@ func TestNotifyOrderShipped(t *testing.T) {
 							UserType:  entity.UserTypeUser,
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDUserOrderShipped,
+								TemplateID: entity.EmailTemplateIDUserOrderShipped,
 								Substitutions: map[string]string{
 									"決済方法":  "クレジットカード決済",
 									"商品金額":  "4460",
@@ -498,7 +498,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDAdminRegister,
+								TemplateID: entity.EmailTemplateIDAdminRegister,
 								Substitutions: map[string]string{
 									"サイトURL": "http://admin.example.com/signin",
 									"パスワード":  "!Qaz2wsx",
@@ -581,7 +581,7 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDAdminResetPassword,
+								TemplateID: entity.EmailTemplateIDAdminResetPassword,
 								Substitutions: map[string]string{
 									"サイトURL": "http://admin.example.com/signin",
 									"パスワード":  "!Qaz2wsx",
@@ -633,6 +633,7 @@ func TestNotifyNotification(t *testing.T) {
 	now := jst.Date(2022, 7, 21, 18, 30, 0, 0)
 	notification := &entity.Notification{
 		ID:    "notification-id",
+		Type:  entity.NotificationTypeLive,
 		Title: "お知らせ件名",
 		Body:  "お知らせ内容",
 		Targets: []entity.NotificationTarget{
@@ -640,7 +641,21 @@ func TestNotifyNotification(t *testing.T) {
 			entity.NotificationTargetCoordinators,
 			entity.NotificationTargetProducers,
 		},
+		CreatedBy:   "admin-id",
 		PublishedAt: now,
+	}
+	adminIn := &user.GetAdminInput{
+		AdminID: "admin-id",
+	}
+	admin := &uentity.Admin{
+		ID:            "admin-id",
+		Role:          uentity.AdminRoleAdministrator,
+		Status:        uentity.AdminStatusActivated,
+		Lastname:      "&.",
+		Firstname:     "管理者",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "かんりしゃ",
+		Email:         "test@example.com",
 	}
 	users := uentity.Users{{ID: "user-id"}}
 	coordinators := uentity.Coordinators{{AdminID: "admin-id"}}
@@ -656,6 +671,7 @@ func TestNotifyNotification(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(users, int64(1), nil)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(coordinators, int64(1), nil)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(producers, int64(0), nil)
@@ -701,7 +717,7 @@ func TestNotifyNotification(t *testing.T) {
 								UserType:  entity.UserTypeUser,
 								UserIDs:   []string{"user-id"},
 								Message: &entity.MessageConfig{
-									MessageID:   entity.MessageIDNotification,
+									TemplateID:  entity.MessageTemplateIDNotificationLive,
 									MessageType: entity.MessageTypeNotification,
 									Title:       "お知らせ件名",
 									ReceivedAt:  now.Local(),
@@ -713,7 +729,7 @@ func TestNotifyNotification(t *testing.T) {
 								UserType:  entity.UserTypeCoordinator,
 								UserIDs:   []string{"admin-id"},
 								Message: &entity.MessageConfig{
-									MessageID:   entity.MessageIDNotification,
+									TemplateID:  entity.MessageTemplateIDNotificationLive,
 									MessageType: entity.MessageTypeNotification,
 									Title:       "お知らせ件名",
 									Link:        "http://admin.example.com/notifications/notification-id",
@@ -726,9 +742,10 @@ func TestNotifyNotification(t *testing.T) {
 								UserType:  entity.UserTypeNone,
 								UserIDs:   nil,
 								Report: &entity.ReportConfig{
-									ReportID:    entity.ReportIDNotification,
+									TemplateID:  entity.ReportTemplateIDNotification,
 									Overview:    "お知らせ件名",
 									Detail:      "お知らせ内容",
+									Author:      "&. 管理者",
 									Link:        "http://admin.example.com/notifications/notification-id",
 									PublishedAt: now.Local(),
 								},
@@ -746,8 +763,9 @@ func TestNotifyNotification(t *testing.T) {
 		{
 			name: "success to target none",
 			setup: func(ctx context.Context, mocks *mocks) {
-				notification := &entity.Notification{Targets: []entity.NotificationTarget{}}
+				notification := &entity.Notification{Targets: []entity.NotificationTarget{}, CreatedBy: "admin-id"}
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", nil)
 			},
@@ -776,6 +794,18 @@ func TestNotifyNotification(t *testing.T) {
 			name: "failed to notify user notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyNotificationInput{
+				NotificationID: "notification-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to notify user notification",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(uentity.Coordinators{}, int64(0), nil)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(uentity.Producers{}, int64(0), nil)
@@ -789,6 +819,7 @@ func TestNotifyNotification(t *testing.T) {
 			name: "failed to notify admin notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(uentity.Users{}, int64(0), nil)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
