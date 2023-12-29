@@ -33,6 +33,7 @@ type Schedule struct {
 	Status      ScheduleStatus `gorm:""`                     // 実行ステータス
 	Count       int64          `gorm:""`                     // 実行回数
 	SentAt      time.Time      `gorm:""`                     // 送信日時
+	Deadline    time.Time      `gorm:"default:null"`         // 送信締め切り日時
 	CreatedAt   time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt   time.Time      `gorm:""`                     // 更新日時
 }
@@ -50,6 +51,10 @@ func NewSchedule(messageType ScheduleType, messageID string, sentAt time.Time) *
 }
 
 func (s *Schedule) Executable(now time.Time) bool {
+	if !s.Deadline.IsZero() && s.Deadline.Before(now) {
+		// 通知予定時間を過ぎてしまっている
+		return false
+	}
 	switch s.Status {
 	case ScheduleStatusWaiting:
 		if now.Before(s.SentAt) {
@@ -71,6 +76,10 @@ func (s *Schedule) Executable(now time.Time) bool {
 }
 
 func (s *Schedule) ShouldCancel(now time.Time) bool {
+	if !s.Deadline.IsZero() && s.Deadline.Before(now) {
+		// 通知予定時間を過ぎてしまっている
+		return true
+	}
 	switch s.Status {
 	case ScheduleStatusWaiting, ScheduleStatusDone, ScheduleStatusCanceled:
 		return false

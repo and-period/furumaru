@@ -50,6 +50,16 @@ func TestSchedule_Executable(t *testing.T) {
 		expect   bool
 	}{
 		{
+			name: "deadline",
+			schedule: &Schedule{
+				Status:   ScheduleStatusWaiting,
+				Count:    0,
+				SentAt:   now.Add(-1 * time.Minute),
+				Deadline: now.Add(-1 * time.Minute),
+			},
+			expect: false,
+		},
+		{
 			name: "waiting",
 			schedule: &Schedule{
 				Status: ScheduleStatusWaiting,
@@ -112,6 +122,13 @@ func TestSchedule_Executable(t *testing.T) {
 			},
 			expect: false,
 		},
+		{
+			name: "unknown",
+			schedule: &Schedule{
+				Status: -1,
+			},
+			expect: false,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -131,6 +148,16 @@ func TestSchedule_ShouldCancel(t *testing.T) {
 		schedule *Schedule
 		expect   bool
 	}{
+		{
+			name: "deadline",
+			schedule: &Schedule{
+				Status:   ScheduleStatusWaiting,
+				Count:    0,
+				SentAt:   now.Add(-1 * time.Minute),
+				Deadline: now.Add(-1 * time.Minute),
+			},
+			expect: true,
+		},
 		{
 			name: "waiting",
 			schedule: &Schedule{
@@ -181,6 +208,13 @@ func TestSchedule_ShouldCancel(t *testing.T) {
 				Status:    ScheduleStatusCanceled,
 				Count:     2,
 				UpdatedAt: now.Add(-15 * time.Minute),
+			},
+			expect: false,
+		},
+		{
+			name: "unknown",
+			schedule: &Schedule{
+				Status: -1,
 			},
 			expect: false,
 		},
