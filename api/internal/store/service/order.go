@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -105,8 +107,20 @@ func (s *service) CompleteOrder(ctx context.Context, in *store.CompleteOrderInpu
 		ShippingMessage: in.ShippingMessage,
 		CompletedAt:     s.now(),
 	}
-	err = s.db.Order.Complete(ctx, in.OrderID, params)
-	return internalError(err)
+	if err := s.db.Order.Complete(ctx, in.OrderID, params); err != nil {
+		return internalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		in := &messenger.NotifyOrderShippedInput{
+			OrderID: order.ID,
+		}
+		if err := s.messenger.NotifyOrderShipped(context.Background(), in); err != nil {
+			s.logger.Error("Failed to notify order shipped", zap.String("orderId", order.ID), zap.Error(err))
+		}
+	}()
+	return nil
 }
 
 func (s *service) CancelOrder(ctx context.Context, in *store.CancelOrderInput) error {
