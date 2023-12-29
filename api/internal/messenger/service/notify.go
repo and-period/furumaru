@@ -220,6 +220,7 @@ func (s *service) notifyUserNotification(ctx context.Context, notification *enti
 		TemplateID:  notification.TemplateID(),
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
+		Detail:      notification.Body,
 		ReceivedAt:  s.now(),
 	}
 	payload := &entity.WorkerPayload{
@@ -235,6 +236,7 @@ func (s *service) notifyAdminNotification(ctx context.Context, notification *ent
 		TemplateID:  notification.TemplateID(),
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
+		Detail:      notification.Body,
 		Link:        maker.Notification(notification.ID),
 		ReceivedAt:  s.now(),
 	}
