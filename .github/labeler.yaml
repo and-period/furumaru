@@ -2,49 +2,79 @@
 # Frontend
 ##################################################
 frontend (admin):
-- web/admin/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - web/admin/**/*
 frontend (user):
-- web/user/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - web/user/**/*
 
 ##################################################
 # Backend
 ##################################################
 backend (api):
-- api/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - api/**/*
 backend (gateway):
-- api/internal/gateway/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - api/internal/gateway/**/*
 backend (media):
-- api/internal/media/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - api/internal/media/**/*
 backend (messenger):
-- api/internal/messenger/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - api/internal/messenger/**/*
 backend (store):
-- api/internal/store/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - api/internal/store/**/*
 backend (user):
-- api/internal/user/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - api/internal/user/**/*
 backend (function):
-- func/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - func/**/*
 
 ##################################################
 # Infrastructure
 ##################################################
 infra (container):
-- infra/docker/**/*
-- infra/helm/**
-- infra/kubernetes/**
+- changed-files:
+  - any-glob-to-any-file:
+    - infra/docker/**/*
+    - infra/helm/**
+    - infra/kubernetes/**
 infra (terraform):
-- infra/terraform/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - infra/terraform/**/*
 infra (database):
-- infra/mysql/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - infra/mysql/**/*
 
 ##################################################
 # Other
 ##################################################
 docs:
-- docs/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - docs/**/*
 test:
-- api/**/*_test.go
-- func/**/*_test.go
-- web/**/*.spec.ts
-- web/**/*.test.ts
+- changed-files:
+  - any-glob-to-any-file:
+    - api/**/*_test.go
+    - func/**/*_test.go
+    - web/**/*.spec.ts
+    - web/**/*.test.ts
 workflow:
-- .github/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - .github/**/*
