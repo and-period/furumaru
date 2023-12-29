@@ -72,7 +72,7 @@ func (s *schedule) Upsert(ctx context.Context, schedule *entity.Schedule) error 
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
-		if current.Status != entity.ScheduleStatusWaiting {
+		if current != nil && current.Status != entity.ScheduleStatusWaiting {
 			return fmt.Errorf("database: schedule is already executed: %w", database.ErrFailedPrecondition)
 		}
 
