@@ -40,13 +40,21 @@ type Schedule struct {
 
 type Schedules []*Schedule
 
-func NewSchedule(messageType ScheduleType, messageID string, sentAt time.Time) *Schedule {
+type NewScheduleParams struct {
+	MessageType ScheduleType
+	MessageID   string
+	SentAt      time.Time
+	Deadline    time.Time
+}
+
+func NewSchedule(params *NewScheduleParams) *Schedule {
 	return &Schedule{
-		MessageType: messageType,
-		MessageID:   messageID,
+		MessageType: params.MessageType,
+		MessageID:   params.MessageID,
 		Status:      ScheduleStatusWaiting,
 		Count:       0,
-		SentAt:      sentAt,
+		SentAt:      params.SentAt,
+		Deadline:    params.Deadline,
 	}
 }
 
