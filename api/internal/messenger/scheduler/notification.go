@@ -45,8 +45,12 @@ func (s *scheduler) dispatchNotification(ctx context.Context, target time.Time) 
 		if _, ok := scheduleMap[n.ID]; ok {
 			continue
 		}
-		schedule := entity.NewSchedule(entity.ScheduleTypeNotification, n.ID, n.PublishedAt)
-		schedules = append(schedules, schedule)
+		params := &entity.NewScheduleParams{
+			MessageType: entity.ScheduleTypeNotification,
+			MessageID:   n.ID,
+			SentAt:      n.PublishedAt,
+		}
+		schedules = append(schedules, entity.NewSchedule(params))
 	}
 
 	// 通知スケジュールにしたがってそれぞれ実行

@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 const scheduleTable = "schedules"
@@ -59,25 +60,27 @@ func (s *schedule) List(ctx context.Context, params *database.ListSchedulesParam
 
 func (s *schedule) UpsertProcessing(ctx context.Context, schedule *entity.Schedule) error {
 	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := s.now()
+		schedule.CreatedAt, schedule.UpdatedAt = now, now
+
 		current, err := s.get(ctx, tx, schedule.MessageType, schedule.MessageID)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
-
-		now := s.now()
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			schedule.CreatedAt, schedule.UpdatedAt = now, now
-		} else {
-			if !current.Executable(now) {
-				return fmt.Errorf("database: schedule is not executable %w", database.ErrFailedPrecondition)
-			}
-			schedule.UpdatedAt = now
+		if current != nil && !current.Executable(now) {
+			return fmt.Errorf("database: schedule is not executable %w", database.ErrFailedPrecondition)
 		}
-		schedule.Status = entity.ScheduleStatusProcessing
-		schedule.Count++
 
-		err = tx.WithContext(ctx).Table(scheduleTable).Save(&schedule).Error
-		return err
+		updates := map[string]interface{}{
+			"status":     entity.ScheduleStatusProcessing,
+			"count":      schedule.Count + 1,
+			"updated_at": now,
+		}
+		stmt := tx.WithContext(ctx).Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "message_type"}, {Name: "message_id"}},
+			DoUpdates: clause.Assignments(updates),
+		})
+		return stmt.Create(&schedule).Error
 	})
 	return dbError(err)
 }
