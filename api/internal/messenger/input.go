@@ -67,6 +67,14 @@ type GetMessageInput struct {
 	UserID    string          `validate:""`
 }
 
+type ReserveStartLiveInput struct {
+	ScheduleID string `validate:"required"`
+}
+
+type ReserveNotificationInput struct {
+	NotificationID string `validate:"required"`
+}
+
 type NotifyRegisterAdminInput struct {
 	AdminID  string `validate:"required"`
 	Password string `validate:"required"`

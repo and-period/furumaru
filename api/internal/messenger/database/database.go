@@ -158,6 +158,8 @@ type ReportTemplate interface {
 
 type Schedule interface {
 	List(ctx context.Context, params *ListSchedulesParams, fields ...string) (entity.Schedules, error)
+	Get(ctx context.Context, messageType entity.ScheduleType, messageID string, fields ...string) (*entity.Schedule, error)
+	Upsert(ctx context.Context, schedule *entity.Schedule) error
 	UpsertProcessing(ctx context.Context, schedule *entity.Schedule) error
 	UpdateDone(ctx context.Context, messageType entity.ScheduleType, messageID string) error
 	UpdateCancel(ctx context.Context, messageType entity.ScheduleType, messageID string) error
