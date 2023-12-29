@@ -189,6 +189,7 @@ func TestSchedule_Upsert(t *testing.T) {
 			name: "success update",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				schedule := testSchedule(entity.ScheduleTypeNotification, "schedule-id", now())
+				schedule.Status = entity.ScheduleStatusWaiting
 				err := db.DB.Create(&schedule).Error
 				require.NoError(t, err)
 			},

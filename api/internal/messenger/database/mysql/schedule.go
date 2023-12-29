@@ -69,17 +69,20 @@ func (s *schedule) Upsert(ctx context.Context, schedule *entity.Schedule) error 
 		schedule.CreatedAt, schedule.UpdatedAt = now, now
 
 		current, err := s.get(ctx, tx, schedule.MessageType, schedule.MessageID, "status")
-		if err != nil {
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
-		if current.Status == entity.ScheduleStatusWaiting {
+		if current.Status != entity.ScheduleStatusWaiting {
 			return fmt.Errorf("database: schedule is already executed: %w", database.ErrFailedPrecondition)
 		}
 
 		updates := map[string]interface{}{
 			"sent_at":    schedule.SentAt,
-			"deadline":   schedule.Deadline,
+			"deadline":   nil,
 			"updated_at": now,
+		}
+		if !schedule.Deadline.IsZero() {
+			updates["deadline"] = schedule.Deadline
 		}
 		stmt := tx.WithContext(ctx).Clauses(clause.OnConflict{
 			Columns:   []clause.Column{{Name: "message_type"}, {Name: "message_id"}},
