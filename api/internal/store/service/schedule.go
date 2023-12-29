@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -95,7 +96,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	if err := s.db.Schedule.Create(ctx, schedule); err != nil {
 		return nil, internalError(err)
 	}
-	s.waitGroup.Add(2)
+	s.waitGroup.Add(3)
 	go func() {
 		defer s.waitGroup.Done()
 		s.resizeSchedule(context.Background(), schedule.ID, in.ThumbnailURL)
@@ -115,6 +116,15 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 		retry := backoff.NewExponentialBackoff(maxRetries)
 		if err := backoff.Retry(ctx, retry, createFn, backoff.WithRetryablel(s.isRetryable)); err != nil {
 			s.logger.Error("Failed to create broadcast", zap.String("scheduleId", schedule.ID), zap.Error(err))
+		}
+	}()
+	go func() {
+		defer s.waitGroup.Done()
+		in := &messenger.ReserveStartLiveInput{
+			ScheduleID: schedule.ID,
+		}
+		if err := s.messenger.ReserveStartLive(context.Background(), in); err != nil {
+			s.logger.Error("Failed to reserve start live", zap.String("scheduleId", schedule.ID), zap.Error(err))
 		}
 	}()
 	return schedule, nil
@@ -140,7 +150,7 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 	if err := s.db.Schedule.Update(ctx, in.ScheduleID, params); err != nil {
 		return internalError(err)
 	}
-	s.waitGroup.Add(1)
+	s.waitGroup.Add(2)
 	go func() {
 		defer s.waitGroup.Done()
 		var thumbnailURL string
@@ -148,6 +158,15 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 			thumbnailURL = in.ThumbnailURL
 		}
 		s.resizeSchedule(context.Background(), schedule.ID, thumbnailURL)
+	}()
+	go func() {
+		defer s.waitGroup.Done()
+		in := &messenger.ReserveStartLiveInput{
+			ScheduleID: schedule.ID,
+		}
+		if err := s.messenger.ReserveStartLive(context.Background(), in); err != nil {
+			s.logger.Error("Failed to reserve start live", zap.String("scheduleId", schedule.ID), zap.Error(err))
+		}
 	}()
 	return nil
 }
