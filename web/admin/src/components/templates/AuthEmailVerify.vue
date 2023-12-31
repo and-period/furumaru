@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
-import { helpers } from '@vuelidate/validators'
 import type { VerifyAuthEmailRequest } from '~/types/api'
 import type { AlertType } from '~/lib/hooks'
-import { required, getErrorMessage, minLength, maxLength } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
+import { VerifyAuthEmailValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -40,19 +40,12 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const rules = computed(() => ({
-  verifyCode: {
-    required,
-    minLength: helpers.withMessage('検証コードは6文字で入力してください。', minLength(6)),
-    maxLength: helpers.withMessage('検証コードは6文字で入力してください。', maxLength(6))
-  }
-}))
 const formDataValue = computed({
   get: () => props.formData,
   set: (formData: VerifyAuthEmailRequest) => emit('update:from-data', formData)
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(VerifyAuthEmailValidationRules, formDataValue)
 
 const onClickResendEmail = (): void => {
   emit('click:resend-email')

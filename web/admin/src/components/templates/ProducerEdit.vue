@@ -2,9 +2,10 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
-import { getErrorMessage, maxLength, required, tel, email } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { AdminStatus, Prefecture, type Producer, type UpdateProducerRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
+import { UpdateProducerValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -127,18 +128,6 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const rules = computed(() => ({
-  lastname: { required, maxLength: maxLength(16) },
-  firstname: { required, maxLength: maxLength(16) },
-  lastnameKana: { required, maxLength: maxLength(32) },
-  firstnameKana: { required, maxLength: maxLength(32) },
-  username: { required, maxLength: maxLength(64) },
-  email: { email },
-  phoneNumber: { tel },
-  profile: { maxLength: maxLength(2000) },
-  instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) }
-}))
 const formDataValue = computed({
   get: (): UpdateProducerRequest => props.formData,
   set: (val: UpdateProducerRequest): void => emit('update:form-data', val)
@@ -148,7 +137,7 @@ const producerValue = computed({
   set: (producer: Producer): void => emit('update:producer', producer)
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(UpdateProducerValidationRules, formDataValue)
 
 const onChangeThumbnailFile = (files?: FileList) => {
   if (!files) {

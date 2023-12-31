@@ -2,7 +2,8 @@
 import useVuelidate from '@vuelidate/core'
 import type { UpdateAuthEmailRequest } from '~/types/api'
 import type { AlertType } from '~/lib/hooks'
-import { required, email, getErrorMessage } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
+import { UpdateAuthEmailValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -34,15 +35,12 @@ const emits = defineEmits<{
   (e: 'submit'): void,
 }>()
 
-const rules = computed(() => ({
-  email: { required, email }
-}))
 const formDataValue = computed({
   get: () => props.formData,
   set: (formData: UpdateAuthEmailRequest) => emits('update:form-data', formData)
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(UpdateAuthEmailValidationRules, formDataValue)
 
 const onSubmit = async (): Promise<void> => {
   const valid = await validate.value.$validate()

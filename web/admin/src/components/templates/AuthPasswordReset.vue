@@ -1,17 +1,11 @@
 <script lang="ts" setup>
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 import useVuelidate, { type ValidationArgs } from '@vuelidate/core'
-import { helpers } from '@vuelidate/validators'
 
 import type { AlertType } from '~/lib/hooks'
-import {
-  required,
-  minLength,
-  maxLength,
-  sameAs,
-  getErrorMessage
-} from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import type { ResetAuthPasswordRequest } from '~/types/api'
+import { ResetAuthPasswordValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -50,22 +44,7 @@ const emit = defineEmits<{
 const showPassword = ref<boolean>(false)
 const showPasswordConfirmation = ref<boolean>(false)
 
-const rules = computed<ValidationArgs>(() => ({
-  verifyCode: {
-    required,
-    minLength: helpers.withMessage('検証コードは6文字で入力してください。', minLength(6)),
-    maxLength: helpers.withMessage('検証コードは6文字で入力してください。', maxLength(6))
-  },
-  password: {
-    required,
-    minLength: minLength(8),
-    maxLength: maxLength(32)
-  },
-  passwordConfirmation: {
-    required,
-    sameAs: helpers.withMessage('パスワードが一致しません', sameAs(props.formData.password))
-  }
-}))
+const rules = computed<ValidationArgs>(() => ResetAuthPasswordValidationRules(props.formData.password))
 const formDataValue = computed({
   get: (): ResetAuthPasswordRequest => props.formData,
   set: (v: ResetAuthPasswordRequest): void => emit('update:form-data', v)

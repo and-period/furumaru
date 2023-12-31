@@ -3,12 +3,7 @@ import { mdiPencil, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import { getResizedImages } from '~/lib/helpers'
-import {
-  getErrorMessage,
-  maxLength,
-  maxLengthArray,
-  required
-} from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import {
   type CreateLiveRequest,
   type Live,
@@ -20,6 +15,7 @@ import {
   type UpdateLiveRequest
 } from '~/types/api'
 import type { LiveTime } from '~/types/props'
+import { CreateLiveValidationRules, TimeDataValidationRules, UpdateLiveValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -120,27 +116,6 @@ const liveValue = computed({
   get: (): Live => props.live,
   set: (live: Live): void => emits('update:live', live)
 })
-const createFormDataRules = computed(() => ({
-  producerId: { required },
-  productIds: { maxLengthArray: maxLengthArray(8) },
-  comment: { required, maxLength: maxLength(2000) }
-}))
-const updateFormDataRules = computed(() => ({
-  productIds: { maxLengthArray: maxLengthArray(8) },
-  comment: { required, maxLength: maxLength(2000) }
-}))
-const createTimeDataRules = computed(() => ({
-  startDate: { required },
-  startTime: { required },
-  endDate: { required },
-  endTime: { required }
-}))
-const updateTimeDataRules = computed(() => ({
-  startDate: { required },
-  startTime: { required },
-  endDate: { required },
-  endTime: { required }
-}))
 const createDialogValue = computed({
   get: (): boolean => props.createDialog,
   set: (val: boolean): void => emits('update:create-dialog', val)
@@ -188,22 +163,10 @@ const updateTimeDataValue = computed({
   }
 })
 
-const createFormDataValidate = useVuelidate(
-  createFormDataRules,
-  createFormDataValue
-)
-const updateFormDataValidate = useVuelidate(
-  updateFormDataRules,
-  updateFormDataValue
-)
-const createTimeDataValidate = useVuelidate(
-  createTimeDataRules,
-  createTimeDataValue
-)
-const updateTimeDataValidate = useVuelidate(
-  updateTimeDataRules,
-  updateTimeDataValue
-)
+const createFormDataValidate = useVuelidate(CreateLiveValidationRules, createFormDataValue)
+const updateFormDataValidate = useVuelidate(UpdateLiveValidationRules, updateFormDataValue)
+const createTimeDataValidate = useVuelidate(TimeDataValidationRules, createTimeDataValue)
+const updateTimeDataValidate = useVuelidate(TimeDataValidationRules, updateTimeDataValue)
 
 const onChangeCreateStartAt = (): void => {
   const startAt = dayjs(

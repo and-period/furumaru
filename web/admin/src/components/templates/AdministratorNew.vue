@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import type { AlertType } from '~/lib/hooks'
-import { email, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import type { CreateAdministratorRequest } from '~/types/api'
+import { CreateAdministratorValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -39,20 +40,12 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const rules = computed(() => ({
-  lastname: { required, maxLength: maxLength(16) },
-  firstname: { required, maxLength: maxLength(16) },
-  lastnameKana: { required, maxLength: maxLength(32) },
-  firstnameKana: { required, maxLength: maxLength(32) },
-  email: { required, email },
-  phoneNumber: { required, tel }
-}))
 const formDataValue = computed({
   get: (): CreateAdministratorRequest => props.formData,
   set: (formData: CreateAdministratorRequest): void => emit('update:form-data', formData)
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(CreateAdministratorValidationRules, formDataValue)
 
 const onSubmit = async (): Promise<void> => {
   const valid = await validate.value.$validate()
