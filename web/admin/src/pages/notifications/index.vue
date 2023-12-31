@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { VDataTable } from 'vuetify/labs/components'
-
+import { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAdminStore, useAuthStore, useCommonStore, useNotificationStore } from '~/store'
 

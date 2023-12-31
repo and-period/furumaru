@@ -1,8 +1,9 @@
 <script setup lang='ts'>
 import useVuelidate from '@vuelidate/core'
 import { type PrefecturesListSelectItems } from '~/lib/prefectures'
-import { required, getErrorMessage, minValue, minLengthArray } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import type { UpdateDefaultShippingRate, UpsertShippingRate } from '~/types/api'
+import { UpsertShippingRateValidationRules } from '~/types/validations'
 
 interface Props {
   modelValue: UpdateDefaultShippingRate | UpsertShippingRate
@@ -23,13 +24,7 @@ const formDataValue = computed({
   set: (val: UpdateDefaultShippingRate | UpsertShippingRate) => emits('update:modelValue', val)
 })
 
-const rules = computed(() => ({
-  name: { required },
-  price: { required, minValue: minValue(1) },
-  prefectureCodes: { minLengthArray: minLengthArray(1) }
-}))
-
-const v$ = useVuelidate<UpdateDefaultShippingRate | UpsertShippingRate>(rules, formDataValue)
+const v$ = useVuelidate<UpdateDefaultShippingRate | UpsertShippingRate>(UpsertShippingRateValidationRules, formDataValue)
 
 const handleClickSelectAll = () => {
   emits('click:selectAll')

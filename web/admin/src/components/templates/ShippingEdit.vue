@@ -3,8 +3,9 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import type { AlertType } from '~/lib/hooks'
 import type { Shipping, UpdateDefaultShippingRequest, UpsertShippingRequest } from '~/types/api'
-import { required, getErrorMessage, minValue } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { type PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
+import { UpsertShippingValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -78,12 +79,6 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const rules = computed(() => ({
-  hasFreeShipping: { required },
-  box60Frozen: { required, minValue: minValue(0) },
-  box80Frozen: { required, minValue: minValue(0) },
-  box100Frozen: { required, minValue: minValue(0) }
-}))
 const formDataValue = computed({
   get: (): UpdateDefaultShippingRequest | UpsertShippingRequest => props.formData,
   set: (formData: UpdateDefaultShippingRequest | UpsertShippingRequest): void => emit('update:form-data', formData)
@@ -98,7 +93,7 @@ const box100RateItemsSize = computed(() => {
   return [...Array(formDataValue.value.box100Rates.length).keys()]
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(UpsertShippingValidationRules, formDataValue)
 
 const addBox60RateItem = () => {
   formDataValue.value.box60Rates.push({

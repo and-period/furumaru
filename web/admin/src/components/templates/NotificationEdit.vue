@@ -3,9 +3,11 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 
-import { getErrorMessage, maxLength, required } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { AdminRole, DiscountType, type Notification, NotificationStatus, NotificationTarget, NotificationType, type Promotion, type UpdateNotificationRequest } from '~/types/api'
 import type { NotificationTime } from '~/types/props'
+import { TimeDataValidationRules } from '~/types/validations'
+import { UpdateNotificationValidationRules } from '~/types/validations/notification'
 
 const props = defineProps({
   loading: {
@@ -92,16 +94,6 @@ const targetList = [
   { title: '管理者', value: NotificationTarget.ADMINISTRATORS }
 ]
 
-const formDataRules = computed(() => ({
-  targets: {},
-  title: { maxLength: maxLength(128) },
-  body: { required, maxLength: maxLength(2000) },
-  note: { required, maxLength: maxLength(2000) }
-}))
-const timeDataRules = computed(() => ({
-  publishedDate: {},
-  publishedTime: {}
-}))
 const formDataValue = computed({
   get: (): UpdateNotificationRequest => props.formData as UpdateNotificationRequest,
   set: (formData: UpdateNotificationRequest) => emit('update:form-data', formData)
@@ -120,8 +112,8 @@ const notificationValue = computed((): Notification => {
   return props.notification
 })
 
-const formDataValidate = useVuelidate(formDataRules, formDataValue)
-const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+const formDataValidate = useVuelidate(UpdateNotificationValidationRules, formDataValue)
+const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const isEditable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR

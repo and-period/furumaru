@@ -4,7 +4,8 @@ import useVuelidate from '@vuelidate/core'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { AdminRole, type Category, type CreateCategoryRequest, type UpdateCategoryRequest } from '~/types/api'
-import { required, getErrorMessage, maxLength } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
+import { CreateCategoryValidationRules, UpdateCategoryValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -104,12 +105,6 @@ const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
-const createFormDataRules = computed(() => ({
-  name: { required, maxlength: maxLength(32) }
-}))
-const updateFormDataRules = computed(() => ({
-  name: { required, maxlength: maxLength(32) }
-}))
 const createFormDataValue = computed({
   get: (): CreateCategoryRequest => props.createFormData,
   set: (formData: CreateCategoryRequest): void => emit('update:create-form-data', formData)
@@ -119,8 +114,8 @@ const updateFormDataValue = computed({
   set: (formData: UpdateCategoryRequest): void => emit('update:update-form-data', formData)
 })
 
-const createFormDataValidate = useVuelidate(createFormDataRules, createFormDataValue)
-const updateFormDataValidate = useVuelidate(updateFormDataRules, updateFormDataValue)
+const createFormDataValidate = useVuelidate(CreateCategoryValidationRules, createFormDataValue)
+const updateFormDataValidate = useVuelidate(UpdateCategoryValidationRules, updateFormDataValue)
 
 const isRegisterable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR

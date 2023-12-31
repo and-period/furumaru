@@ -5,6 +5,7 @@ import useVuelidate from '@vuelidate/core'
 import type { Shipping, UpsertShippingRequest } from '~/types/api'
 import { required, getErrorMessage, minValue } from '~/lib/validations'
 import { type PrefecturesListSelectItems, getSelectablePrefecturesList } from '~/lib/prefectures'
+import { UpsertShippingValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -86,7 +87,7 @@ const box100RateItemsSize = computed(() => {
   return [...Array(formDataValue.value.box100Rates.length).keys()]
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(UpsertShippingValidationRules, formDataValue)
 
 const addBox60RateItem = () => {
   formDataValue.value.box60Rates.push({
