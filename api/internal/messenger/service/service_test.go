@@ -21,8 +21,8 @@ import (
 )
 
 var (
-	adminWebURL, _ = url.Parse("htts://admin.and-period.jp")
-	userWebURL, _  = url.Parse("htts://user.and-period.jp")
+	adminWebURL, _ = url.Parse("http://admin.example.com")
+	userWebURL, _  = url.Parse("http://user.example.com")
 )
 
 type mocks struct {

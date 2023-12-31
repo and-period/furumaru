@@ -82,22 +82,6 @@ func TestProducer_List(t *testing.T) {
 				hasErr:    false,
 			},
 		},
-		{
-			name:  "success only unrelated",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				params: &database.ListProducersParams{
-					Username:      "&.",
-					Limit:         1,
-					Offset:        1,
-					OnlyUnrelated: true,
-				},
-			},
-			want: want{
-				producers: entity.Producers{},
-				hasErr:    false,
-			},
-		},
 	}
 
 	for _, tt := range tests {
@@ -524,6 +508,7 @@ func TestProducer_Update(t *testing.T) {
 					FirstnameKana:  "すたっふ",
 					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 					HeaderURL:      "https://and-period.jp/header.png",
+					Email:          "test-admin01@and-period.jp",
 					PhoneNumber:    "+819012345678",
 					PostalCode:     "1000014",
 					PrefectureCode: 13,
@@ -815,101 +800,6 @@ func TestProducer_UpdateHeaders(t *testing.T) {
 
 			db := &producer{db: db, now: now}
 			err = db.UpdateHeaders(ctx, tt.args.ProducerID, tt.args.headers)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
-func TestProducer_UpdateRelationship(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	type args struct {
-		coordinatorID string
-		producerIDs   []string
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success to relate",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				p := testProducer("admin-id", "", now())
-				err = db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				coordinatorID: "coordinator-id",
-				producerIDs:   []string{"admin-id"},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name: "success to unrelate",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", now())
-				err = db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				coordinatorID: "",
-				producerIDs:   []string{"admin-id"},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, producerTable, coordinatorTable, adminTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &producer{db: db, now: now}
-			err = db.UpdateRelationship(ctx, tt.args.coordinatorID, tt.args.producerIDs...)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 		})
 	}

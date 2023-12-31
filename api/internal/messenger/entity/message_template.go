@@ -9,11 +9,11 @@ import (
 
 // MessageTemplate - メッセージテンプレート
 type MessageTemplate struct {
-	TemplateID    string    `gorm:"primaryKey;column:id;<-:create"` // メッセージID
-	TitleTemplate string    `gorm:""`                               // テンプレート(件名)
-	BodyTemplate  string    `gorm:""`                               // テンプレート(内容)
-	CreatedAt     time.Time `gorm:"<-:create"`                      // 登録日時
-	UpdatedAt     time.Time `gorm:""`                               // 更新日時
+	TemplateID    MessageTemplateID `gorm:"primaryKey;column:id;<-:create"` // テンプレートID
+	TitleTemplate string            `gorm:""`                               // テンプレート(件名)
+	BodyTemplate  string            `gorm:""`                               // テンプレート(内容)
+	CreatedAt     time.Time         `gorm:"<-:create"`                      // 登録日時
+	UpdatedAt     time.Time         `gorm:""`                               // 更新日時
 }
 
 func (t *MessageTemplate) Build(fields map[string]string) (string, string, error) {

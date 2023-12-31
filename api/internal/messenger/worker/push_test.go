@@ -20,7 +20,7 @@ func TestMultiSendPush(t *testing.T) {
 	}
 	devices := []string{"instance-id"}
 	template := &entity.PushTemplate{
-		TemplateID:    entity.PushIDContact,
+		TemplateID:    entity.PushTemplateIDContact,
 		TitleTemplate: "件名: {{.Title}}",
 		BodyTemplate:  "テンプレートです。",
 		ImageURL:      "https://and-period.jp/image.png",
@@ -44,7 +44,7 @@ func TestMultiSendPush(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(devices, nil)
-				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushIDContact).Return(template, nil)
+				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushTemplateIDContact).Return(template, nil)
 				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(1), int64(0), nil)
 			},
 			payload: &entity.WorkerPayload{
@@ -52,8 +52,8 @@ func TestMultiSendPush(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"Title": "テストお問い合わせ"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
 			expectErr: nil,
@@ -69,8 +69,8 @@ func TestMultiSendPush(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"Title": "テストお問い合わせ"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
 			expectErr: nil,
@@ -85,8 +85,8 @@ func TestMultiSendPush(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"Title": "テストお問い合わせ"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
 			expectErr: assert.AnError,
@@ -95,15 +95,15 @@ func TestMultiSendPush(t *testing.T) {
 			name: "failed to get push template",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(devices, nil)
-				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushIDContact).Return(nil, assert.AnError)
+				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushTemplateIDContact).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeReceivedContact,
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"Title": "テストお問い合わせ"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
 			expectErr: assert.AnError,
@@ -112,7 +112,7 @@ func TestMultiSendPush(t *testing.T) {
 			name: "failed to multi send push",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdminDevices(ctx, in).Return(devices, nil)
-				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushIDContact).Return(template, nil)
+				mocks.db.PushTemplate.EXPECT().Get(ctx, entity.PushTemplateIDContact).Return(template, nil)
 				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(0), int64(0), assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
@@ -120,8 +120,8 @@ func TestMultiSendPush(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"Title": "テストお問い合わせ"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"Title": "テストお問い合わせ"},
 				},
 			},
 			expectErr: assert.AnError,
@@ -159,8 +159,8 @@ func TestFetchTokens(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"key": "value"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"key": "value"},
 				},
 			},
 			expect:    []string{"instance-id"},
@@ -178,8 +178,8 @@ func TestFetchTokens(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"key": "value"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"key": "value"},
 				},
 			},
 			expect:    []string{"instance-id"},
@@ -196,8 +196,8 @@ func TestFetchTokens(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"key": "value"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"key": "value"},
 				},
 			},
 			expect:    nil,
@@ -214,8 +214,8 @@ func TestFetchTokens(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"key": "value"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"key": "value"},
 				},
 			},
 			expect:    nil,
@@ -229,8 +229,8 @@ func TestFetchTokens(t *testing.T) {
 				UserType:  entity.UserTypeGuest,
 				UserIDs:   []string{"user-id"},
 				Push: &entity.PushConfig{
-					PushID: entity.PushIDContact,
-					Data:   map[string]string{"key": "value"},
+					TemplateID: entity.PushTemplateIDContact,
+					Data:       map[string]string{"key": "value"},
 				},
 			},
 			expect:    nil,

@@ -169,7 +169,6 @@ type Producer interface {
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
 	UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error
 	UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error
-	UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error
 	Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error
 	AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error)
 }
@@ -179,7 +178,6 @@ type ListProducersParams struct {
 	Username      string
 	Limit         int
 	Offset        int
-	OnlyUnrelated bool
 }
 
 type UpdateProducerParams struct {
@@ -195,6 +193,7 @@ type UpdateProducerParams struct {
 	BonusVideoURL     string
 	InstagramID       string
 	FacebookID        string
+	Email             string
 	PhoneNumber       string
 	PostalCode        string
 	PrefectureCode    int32

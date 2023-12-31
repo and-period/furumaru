@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"testing"
+	"time"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -17,6 +19,165 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestNotifyStartLive(t *testing.T) {
+	t.Parallel()
+	now := jst.Date(2023, 12, 25, 18, 30, 0, 0)
+	scheduleIn := &store.GetScheduleInput{
+		ScheduleID: "schedule-id",
+	}
+	schedule := &sentity.Schedule{
+		ID:              "schedule-id",
+		CoordinatorID:   "coordinator-id",
+		Status:          sentity.ScheduleStatusLive,
+		Title:           "マルシェタイトル",
+		Description:     "マルシェ詳細",
+		ThumbnailURL:    "",
+		Thumbnails:      common.Images{},
+		ImageURL:        "",
+		OpeningVideoURL: "",
+		Public:          false,
+		Approved:        false,
+		ApprovedAdminID: "",
+		StartAt:         now,
+		EndAt:           now.Add(time.Hour),
+		CreatedAt:       now,
+		UpdatedAt:       now,
+	}
+	coordinatorIn := &user.GetCoordinatorInput{
+		CoordinatorID: "coordinator-id",
+	}
+	coordinator := &uentity.Coordinator{
+		Admin: uentity.Admin{
+			ID:            "coordinator-id",
+			Lastname:      "&.",
+			Firstname:     "コーディネータ",
+			LastnameKana:  "あんどどっと",
+			FirstnameKana: "こーでぃねーた",
+		},
+		AdminID:  "coordinator-id",
+		Username: "&. 担当者",
+	}
+	usersIn := &user.ListUsersInput{
+		Limit:          200,
+		Offset:         0,
+		OnlyRegistered: true,
+	}
+	users := uentity.Users{{ID: "user-id"}}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *messenger.NotifyStartLiveInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
+				mocks.producer.EXPECT().
+					SendMessage(gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
+						payload := &entity.WorkerPayload{}
+						err := json.Unmarshal(b, payload)
+						require.NoError(t, err)
+						expect := &entity.WorkerPayload{
+							QueueID:   payload.QueueID, // ignore
+							EventType: entity.EventTypeStartLive,
+							UserType:  entity.UserTypeUser,
+							UserIDs:   []string{"user-id"},
+							Email: &entity.MailConfig{
+								TemplateID: entity.EmailTemplateIDUserStartLive,
+								Substitutions: map[string]string{
+									"タイトル":     "マルシェタイトル",
+									"コーディネータ名": "&. 担当者",
+									"開催日":      "2023-12-25",
+									"開始時間":     "18:30",
+									"終了時間":     "19:30",
+									"サイトURL":   "http://user.example.com/live/schedule-id",
+								},
+							},
+						}
+						assert.Equal(t, expect, payload)
+						return "", nil
+					})
+			},
+			input: &messenger.NotifyStartLiveInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "failed to get schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyStartLiveInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyStartLiveInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to list users",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(nil, int64(0), assert.AnError)
+			},
+			input: &messenger.NotifyStartLiveInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to create received queue",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(assert.AnError)
+			},
+			input: &messenger.NotifyStartLiveInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to send message",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
+				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", assert.AnError)
+			},
+			input: &messenger.NotifyStartLiveInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.NotifyStartLive(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
 
 func TestNotifyOrderAuthorized(t *testing.T) {
 	t.Parallel()
@@ -101,7 +262,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 							UserType:  entity.UserTypeUser,
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDUserOrderAuthorized,
+								TemplateID: entity.EmailTemplateIDUserOrderAuthorized,
 								Substitutions: map[string]string{
 									"決済方法":  "クレジットカード決済",
 									"商品金額":  "4460",
@@ -158,6 +319,148 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 	}
 }
 
+func TestNotifyOrderShipped(t *testing.T) {
+	t.Parallel()
+	orderIn := &store.GetOrderInput{
+		OrderID: "order-id",
+	}
+	order := &sentity.Order{
+		OrderPayment: sentity.OrderPayment{
+			OrderID:           "order-id",
+			AddressRevisionID: 1,
+			Status:            sentity.PaymentStatusPending,
+			TransactionID:     "transaction-id",
+			PaymentID:         "payment-id",
+			MethodType:        sentity.PaymentMethodTypeCreditCard,
+			Subtotal:          4460,
+			Discount:          446,
+			ShippingFee:       0,
+			Tax:               401,
+			Total:             4415,
+		},
+		OrderFulfillments: sentity.OrderFulfillments{
+			{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				Status:            sentity.FulfillmentStatusUnfulfilled,
+				TrackingNumber:    "",
+				ShippingCarrier:   sentity.ShippingCarrierUnknown,
+				ShippingType:      sentity.ShippingTypeNormal,
+				BoxNumber:         1,
+				BoxSize:           sentity.ShippingSize60,
+			},
+		},
+		OrderItems: sentity.OrderItems{
+			{
+				ProductRevisionID: 1,
+				OrderID:           "order-id",
+				Quantity:          1,
+			},
+			{
+				ProductRevisionID: 2,
+				OrderID:           "order-id",
+				Quantity:          2,
+			},
+		},
+		ID:              "order-id",
+		UserID:          "user-id",
+		CoordinatorID:   "coordinator-id",
+		PromotionID:     "",
+		ShippingMessage: "購入ありがとうございました",
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *messenger.NotifyOrderShippedInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.db.ReceivedQueue.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
+						expect := &entity.ReceivedQueue{
+							ID:        queue.ID, // ignore
+							EventType: entity.EventTypeOrderShipped,
+							UserType:  entity.UserTypeUser,
+							UserIDs:   []string{"user-id"},
+							Done:      false,
+						}
+						assert.Equal(t, expect, queue)
+						return nil
+					})
+				mocks.producer.EXPECT().
+					SendMessage(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, b []byte) (string, error) {
+						payload := &entity.WorkerPayload{}
+						err := json.Unmarshal(b, payload)
+						require.NoError(t, err)
+						expect := &entity.WorkerPayload{
+							QueueID:   payload.QueueID, // ignore
+							EventType: entity.EventTypeOrderShipped,
+							UserType:  entity.UserTypeUser,
+							UserIDs:   []string{"user-id"},
+							Email: &entity.MailConfig{
+								TemplateID: entity.EmailTemplateIDUserOrderShipped,
+								Substitutions: map[string]string{
+									"決済方法":  "クレジットカード決済",
+									"商品金額":  "4460",
+									"配送手数料": "0",
+									"割引金額":  "446",
+									"消費税":   "401",
+									"合計金額":  "4415",
+									"メッセージ": "購入ありがとうございました",
+								},
+							},
+						}
+						assert.Equal(t, expect, payload)
+						return "message-id", nil
+					})
+			},
+			input: &messenger.NotifyOrderShippedInput{
+				OrderID: "order-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &messenger.NotifyOrderShippedInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get order",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderShippedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to send messag",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &messenger.NotifyOrderShippedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.NotifyOrderShipped(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
 func TestNotifyRegisterAdmin(t *testing.T) {
 	t.Parallel()
 
@@ -195,9 +498,9 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDAdminRegister,
+								TemplateID: entity.EmailTemplateIDAdminRegister,
 								Substitutions: map[string]string{
-									"サイトURL": "htts://admin.and-period.jp/signin",
+									"サイトURL": "http://admin.example.com/signin",
 									"パスワード":  "!Qaz2wsx",
 								},
 							},
@@ -278,9 +581,9 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 							UserType:  entity.UserTypeAdmin,
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
-								EmailID: entity.EmailIDAdminResetPassword,
+								TemplateID: entity.EmailTemplateIDAdminResetPassword,
 								Substitutions: map[string]string{
-									"サイトURL": "htts://admin.and-period.jp/signin",
+									"サイトURL": "http://admin.example.com/signin",
 									"パスワード":  "!Qaz2wsx",
 								},
 							},
@@ -330,6 +633,7 @@ func TestNotifyNotification(t *testing.T) {
 	now := jst.Date(2022, 7, 21, 18, 30, 0, 0)
 	notification := &entity.Notification{
 		ID:    "notification-id",
+		Type:  entity.NotificationTypeLive,
 		Title: "お知らせ件名",
 		Body:  "お知らせ内容",
 		Targets: []entity.NotificationTarget{
@@ -337,7 +641,21 @@ func TestNotifyNotification(t *testing.T) {
 			entity.NotificationTargetCoordinators,
 			entity.NotificationTargetProducers,
 		},
+		CreatedBy:   "admin-id",
 		PublishedAt: now,
+	}
+	adminIn := &user.GetAdminInput{
+		AdminID: "admin-id",
+	}
+	admin := &uentity.Admin{
+		ID:            "admin-id",
+		Role:          uentity.AdminRoleAdministrator,
+		Status:        uentity.AdminStatusActivated,
+		Lastname:      "&.",
+		Firstname:     "管理者",
+		LastnameKana:  "あんどどっと",
+		FirstnameKana: "かんりしゃ",
+		Email:         "test@example.com",
 	}
 	users := uentity.Users{{ID: "user-id"}}
 	coordinators := uentity.Coordinators{{AdminID: "admin-id"}}
@@ -353,6 +671,7 @@ func TestNotifyNotification(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(users, int64(1), nil)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(coordinators, int64(1), nil)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(producers, int64(0), nil)
@@ -398,9 +717,10 @@ func TestNotifyNotification(t *testing.T) {
 								UserType:  entity.UserTypeUser,
 								UserIDs:   []string{"user-id"},
 								Message: &entity.MessageConfig{
-									MessageID:   entity.MessageIDNotification,
+									TemplateID:  entity.MessageTemplateIDNotificationLive,
 									MessageType: entity.MessageTypeNotification,
 									Title:       "お知らせ件名",
+									Detail:      "お知らせ内容",
 									ReceivedAt:  now.Local(),
 								},
 							},
@@ -410,10 +730,11 @@ func TestNotifyNotification(t *testing.T) {
 								UserType:  entity.UserTypeCoordinator,
 								UserIDs:   []string{"admin-id"},
 								Message: &entity.MessageConfig{
-									MessageID:   entity.MessageIDNotification,
+									TemplateID:  entity.MessageTemplateIDNotificationLive,
 									MessageType: entity.MessageTypeNotification,
 									Title:       "お知らせ件名",
-									Link:        "htts://admin.and-period.jp/notifications/notification-id",
+									Detail:      "お知らせ内容",
+									Link:        "http://admin.example.com/notifications/notification-id",
 									ReceivedAt:  now.Local(),
 								},
 							},
@@ -423,10 +744,11 @@ func TestNotifyNotification(t *testing.T) {
 								UserType:  entity.UserTypeNone,
 								UserIDs:   nil,
 								Report: &entity.ReportConfig{
-									ReportID:    entity.ReportIDNotification,
+									TemplateID:  entity.ReportTemplateIDNotification,
 									Overview:    "お知らせ件名",
 									Detail:      "お知らせ内容",
-									Link:        "htts://admin.and-period.jp/notifications/notification-id",
+									Author:      "&. 管理者",
+									Link:        "http://admin.example.com/notifications/notification-id",
 									PublishedAt: now.Local(),
 								},
 							},
@@ -443,8 +765,9 @@ func TestNotifyNotification(t *testing.T) {
 		{
 			name: "success to target none",
 			setup: func(ctx context.Context, mocks *mocks) {
-				notification := &entity.Notification{Targets: []entity.NotificationTarget{}}
+				notification := &entity.Notification{Targets: []entity.NotificationTarget{}, CreatedBy: "admin-id"}
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", nil)
 			},
@@ -473,6 +796,18 @@ func TestNotifyNotification(t *testing.T) {
 			name: "failed to notify user notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyNotificationInput{
+				NotificationID: "notification-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to notify user notification",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(uentity.Coordinators{}, int64(0), nil)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(uentity.Producers{}, int64(0), nil)
@@ -486,6 +821,7 @@ func TestNotifyNotification(t *testing.T) {
 			name: "failed to notify admin notification",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
+				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(uentity.Users{}, int64(0), nil)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)

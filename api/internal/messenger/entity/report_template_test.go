@@ -20,7 +20,7 @@ func TestReportTemplate_Build(t *testing.T) {
 		{
 			name: "success",
 			template: &ReportTemplate{
-				TemplateID: ReportIDReceivedContact,
+				TemplateID: ReportTemplateIDReceivedContact,
 				Template:   tmpl,
 				CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 				UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),

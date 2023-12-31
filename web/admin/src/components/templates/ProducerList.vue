@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { mdiAccount, mdiDelete, mdiPlus } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import { AdminRole, AdminStatus, type Coordinator, type Producer } from '~/types/api'
+import { AdminRole, type Coordinator, type Producer } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -85,11 +86,6 @@ const headers: VDataTable['headers'] = [
     sortable: false
   },
   {
-    title: 'ステータス',
-    key: 'status',
-    sortable: false
-  },
-  {
     title: '',
     key: 'actions',
     sortable: false
@@ -112,32 +108,6 @@ const getCoordinatorName = (coordinatorId: string) => {
     return coordinator.id === coordinatorId
   })
   return coordinator ? coordinator.username : ''
-}
-
-const getStatus = (status: AdminStatus): string => {
-  switch (status) {
-    case AdminStatus.ACTIVATED:
-      return '有効'
-    case AdminStatus.INVITED:
-      return '招待中'
-    case AdminStatus.DEACTIVATED:
-      return '無効'
-    default:
-      return '不明'
-  }
-}
-
-const getStatusColor = (status: AdminStatus): string => {
-  switch (status) {
-    case AdminStatus.ACTIVATED:
-      return 'primary'
-    case AdminStatus.INVITED:
-      return 'secondary'
-    case AdminStatus.DEACTIVATED:
-      return 'error'
-    default:
-      return 'unknown'
-  }
 }
 
 const producerName = (producer?: Producer): string => {
@@ -243,11 +213,6 @@ const onClickDelete = (): void => {
         </template>
         <template #[`item.phoneNumber`]="{ item }">
           {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}
-        </template>
-        <template #[`item.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.status)">
-            {{ getStatus(item.status) }}
-          </v-chip>
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn

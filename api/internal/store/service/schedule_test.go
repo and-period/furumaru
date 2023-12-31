@@ -298,6 +298,7 @@ func TestCreateSchedule(t *testing.T) {
 					})
 				mocks.media.EXPECT().ResizeScheduleThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
 				mocks.media.EXPECT().CreateBroadcast(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
+				mocks.messenger.EXPECT().ReserveStartLive(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateScheduleInput{
 				CoordinatorID:   "coordinator-id",
@@ -423,6 +424,7 @@ func TestUpdateSchedule(t *testing.T) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
 				mocks.db.Schedule.EXPECT().Update(ctx, "schedule-id", &params).Return(nil)
 				mocks.media.EXPECT().ResizeScheduleThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				mocks.messenger.EXPECT().ReserveStartLive(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.UpdateScheduleInput{
 				ScheduleID:      "schedule-id",

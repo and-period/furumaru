@@ -20,7 +20,7 @@ func TestPushTemplate_Build(t *testing.T) {
 		{
 			name: "success",
 			template: &PushTemplate{
-				TemplateID:    PushIDContact,
+				TemplateID:    PushTemplateIDContact,
 				TitleTemplate: "件名: {{.Title}}",
 				BodyTemplate:  "内容: {{.Body}}",
 				ImageURL:      "https://and-period.jp/image.png",

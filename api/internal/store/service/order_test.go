@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -694,6 +695,9 @@ func TestCompleteOrder(t *testing.T) {
 		ShippingMessage: "購入ありがとうございます。",
 		CompletedAt:     now,
 	}
+	messengerIn := &messenger.NotifyOrderShippedInput{
+		OrderID: "order-id",
+	}
 	tests := []struct {
 		name   string
 		setup  func(ctx context.Context, mocks *mocks)
@@ -705,6 +709,7 @@ func TestCompleteOrder(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 				mocks.db.Order.EXPECT().Complete(ctx, "order-id", params).Return(nil)
+				mocks.messenger.EXPECT().NotifyOrderShipped(gomock.Any(), messengerIn).Return(assert.AnError)
 			},
 			input: &store.CompleteOrderInput{
 				OrderID:         "order-id",

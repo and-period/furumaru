@@ -16,17 +16,17 @@ func (w *worker) multiSendMail(ctx context.Context, payload *entity.WorkerPayloa
 	if err != nil {
 		return err
 	}
-	return w.sendMail(ctx, payload.Email.EmailID, ps...)
+	return w.sendMail(ctx, payload.Email.TemplateID, ps...)
 }
 
-func (w *worker) sendMail(ctx context.Context, emailID string, ps ...*mailer.Personalization) error {
+func (w *worker) sendMail(ctx context.Context, templateID entity.EmailTemplateID, ps ...*mailer.Personalization) error {
 	if len(ps) == 0 {
-		w.logger.Debug("Personalizations is empty", zap.String("emailId", emailID))
+		w.logger.Debug("Personalizations is empty", zap.String("templateId", string(templateID)))
 		return nil
 	}
-	w.logger.Debug("Send email", zap.String("emailId", emailID), zap.Any("personalizations", ps))
+	w.logger.Debug("Send email", zap.String("templateId", string(templateID)), zap.Any("personalizations", ps))
 	sendFn := func() error {
-		return w.mailer.MultiSendFromInfo(ctx, emailID, ps)
+		return w.mailer.MultiSendFromInfo(ctx, string(templateID), ps)
 	}
 	retry := backoff.NewExponentialBackoff(w.maxRetries)
 	return backoff.Retry(ctx, retry, sendFn, backoff.WithRetryablel(w.isRetryable))

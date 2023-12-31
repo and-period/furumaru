@@ -29,16 +29,6 @@ get:
     description: 農家名(あいまい検索)(64文字以内)
     required: false
     example: '&.農家'
-  - in: query
-    name: filters
-    schema:
-      type: string
-    description: |
-      フィルタ
-      ・複数指定時は`,`区切り
-      ・指定可能フィールド:unrelated
-    required: false
-    example: 'unrelated'
   responses:
     200:
       description: 成功

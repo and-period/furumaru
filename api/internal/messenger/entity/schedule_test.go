@@ -11,17 +11,17 @@ import (
 func TestSchedule(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name        string
-		messageType ScheduleType
-		messageID   string
-		sentAt      time.Time
-		expect      *Schedule
+		name   string
+		params *NewScheduleParams
+		expect *Schedule
 	}{
 		{
-			name:        "success",
-			messageType: ScheduleTypeNotification,
-			messageID:   "message-id",
-			sentAt:      jst.Date(2022, 7, 18, 18, 30, 0, 0),
+			name: "success",
+			params: &NewScheduleParams{
+				MessageType: ScheduleTypeNotification,
+				MessageID:   "message-id",
+				SentAt:      jst.Date(2022, 7, 18, 18, 30, 0, 0),
+			},
 			expect: &Schedule{
 				MessageType: ScheduleTypeNotification,
 				MessageID:   "message-id",
@@ -35,7 +35,7 @@ func TestSchedule(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewSchedule(tt.messageType, tt.messageID, tt.sentAt)
+			actual := NewSchedule(tt.params)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -49,6 +49,16 @@ func TestSchedule_Executable(t *testing.T) {
 		schedule *Schedule
 		expect   bool
 	}{
+		{
+			name: "deadline",
+			schedule: &Schedule{
+				Status:   ScheduleStatusWaiting,
+				Count:    0,
+				SentAt:   now.Add(-1 * time.Minute),
+				Deadline: now.Add(-1 * time.Minute),
+			},
+			expect: false,
+		},
 		{
 			name: "waiting",
 			schedule: &Schedule{
@@ -112,6 +122,13 @@ func TestSchedule_Executable(t *testing.T) {
 			},
 			expect: false,
 		},
+		{
+			name: "unknown",
+			schedule: &Schedule{
+				Status: -1,
+			},
+			expect: false,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -131,6 +148,16 @@ func TestSchedule_ShouldCancel(t *testing.T) {
 		schedule *Schedule
 		expect   bool
 	}{
+		{
+			name: "deadline",
+			schedule: &Schedule{
+				Status:   ScheduleStatusWaiting,
+				Count:    0,
+				SentAt:   now.Add(-1 * time.Minute),
+				Deadline: now.Add(-1 * time.Minute),
+			},
+			expect: true,
+		},
 		{
 			name: "waiting",
 			schedule: &Schedule{
@@ -181,6 +208,13 @@ func TestSchedule_ShouldCancel(t *testing.T) {
 				Status:    ScheduleStatusCanceled,
 				Count:     2,
 				UpdatedAt: now.Add(-15 * time.Minute),
+			},
+			expect: false,
+		},
+		{
+			name: "unknown",
+			schedule: &Schedule{
+				Status: -1,
 			},
 			expect: false,
 		},

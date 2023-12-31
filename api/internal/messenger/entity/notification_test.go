@@ -286,6 +286,58 @@ func TestNotification_Fill(t *testing.T) {
 	}
 }
 
+func TestNotification_TemplateID(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		notification *Notification
+		expect       MessageTemplateID
+	}{
+		{
+			name: "system",
+			notification: &Notification{
+				Type: NotificationTypeSystem,
+			},
+			expect: MessageTemplateIDNotificationSystem,
+		},
+		{
+			name: "live",
+			notification: &Notification{
+				Type: NotificationTypeLive,
+			},
+			expect: MessageTemplateIDNotificationLive,
+		},
+		{
+			name: "promotion",
+			notification: &Notification{
+				Type: NotificationTypePromotion,
+			},
+			expect: MessageTemplateIDNotificationPromotion,
+		},
+		{
+			name: "other",
+			notification: &Notification{
+				Type: NotificationTypeOther,
+			},
+			expect: MessageTemplateIDNotificationOther,
+		},
+		{
+			name: "unknown",
+			notification: &Notification{
+				Type: NotificationTypeUnknown,
+			},
+			expect: MessageTemplateIDNotificationOther,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.notification.TemplateID())
+		})
+	}
+}
+
 func TestNotification_HasTarget(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

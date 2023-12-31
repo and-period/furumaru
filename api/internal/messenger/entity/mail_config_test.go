@@ -9,6 +9,7 @@ import (
 )
 
 func TestTemplateBuilder(t *testing.T) {
+	now := jst.Date(2022, 1, 2, 18, 30, 0, 0)
 	order := &sentity.Order{
 		OrderPayment: sentity.OrderPayment{
 			OrderID:           "order-id",
@@ -32,6 +33,7 @@ func TestTemplateBuilder(t *testing.T) {
 		UserID:            "user-id",
 		CoordinatorID:     "coordinator-id",
 		PromotionID:       "promotion-id",
+		ShippingMessage:   "ありがとうございます",
 	}
 	builder := NewTemplateDataBuilder().
 		Data(map[string]string{"key": "value"}).
@@ -41,7 +43,9 @@ func TestTemplateBuilder(t *testing.T) {
 		Password("!Qaz2wsx").
 		WebURL("http://example.com").
 		Contact("件名", "本文").
-		Order(order)
+		Live("マルシェ", "濵田 海斗", now, now).
+		Order(order).
+		Shipped(order.ShippingMessage)
 	data := builder.Build()
 	assert.Equal(t, "value", data["key"])
 	assert.Equal(t, "2022年01月", data["年月"])
@@ -51,10 +55,16 @@ func TestTemplateBuilder(t *testing.T) {
 	assert.Equal(t, "http://example.com", data["サイトURL"])
 	assert.Equal(t, "件名", data["件名"])
 	assert.Equal(t, "本文", data["本文"])
+	assert.Equal(t, "マルシェ", data["タイトル"])
+	assert.Equal(t, "濵田 海斗", data["コーディネータ名"])
+	assert.Equal(t, "2022-01-02", data["開催日"])
+	assert.Equal(t, "18:30", data["開始時間"])
+	assert.Equal(t, "18:30", data["終了時間"])
 	assert.Equal(t, "クレジットカード決済", data["決済方法"])
 	assert.Equal(t, "2000", data["商品金額"])
 	assert.Equal(t, "500", data["割引金額"])
 	assert.Equal(t, "500", data["配送手数料"])
 	assert.Equal(t, "200", data["消費税"])
 	assert.Equal(t, "2200", data["合計金額"])
+	assert.Equal(t, "ありがとうございます", data["メッセージ"])
 }

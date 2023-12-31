@@ -1040,25 +1040,6 @@ func (mr *MockProducerMockRecorder) UpdateHeaders(ctx, producerID, headers inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateHeaders", reflect.TypeOf((*MockProducer)(nil).UpdateHeaders), ctx, producerID, headers)
 }
 
-// UpdateRelationship mocks base method.
-func (m *MockProducer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{ctx, coordinatorID}
-	for _, a := range producerIDs {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "UpdateRelationship", varargs...)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateRelationship indicates an expected call of UpdateRelationship.
-func (mr *MockProducerMockRecorder) UpdateRelationship(ctx, coordinatorID interface{}, producerIDs ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{ctx, coordinatorID}, producerIDs...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRelationship", reflect.TypeOf((*MockProducer)(nil).UpdateRelationship), varargs...)
-}
-
 // UpdateThumbnails mocks base method.
 func (m *MockProducer) UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error {
 	m.ctrl.T.Helper()

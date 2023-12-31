@@ -2,7 +2,7 @@
 import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
-import { getErrorMessage, maxLength, required, tel } from '~/lib/validations'
+import { getErrorMessage, maxLength, required, tel, email } from '~/lib/validations'
 import { AdminStatus, Prefecture, type Producer, type UpdateProducerRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
@@ -62,6 +62,7 @@ const props = defineProps({
       firstname: '',
       firstnameKana: '',
       username: '',
+      email: '',
       phoneNumber: '',
       postalCode: '',
       prefectureCode: Prefecture.HOKKAIDO,
@@ -132,7 +133,8 @@ const rules = computed(() => ({
   lastnameKana: { required, maxLength: maxLength(32) },
   firstnameKana: { required, maxLength: maxLength(32) },
   username: { required, maxLength: maxLength(64) },
-  phoneNumber: { required, tel },
+  email: { email },
+  phoneNumber: { tel },
   profile: { maxLength: maxLength(2000) },
   instagramId: { maxLength: maxLength(30) },
   facebookId: { maxLength: maxLength(50) }
@@ -271,7 +273,6 @@ const onClickSearchAddress = (): void => {
           v-model="producerValue.email"
           label="連絡先（Email）"
           type="email"
-          readonly
         />
         <v-text-field
           v-model="validate.phoneNumber.$model"

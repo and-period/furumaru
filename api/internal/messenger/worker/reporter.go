@@ -11,16 +11,16 @@ import (
 )
 
 func (w *worker) reporter(ctx context.Context, payload *entity.WorkerPayload) error {
-	template, err := w.db.ReportTemplate.Get(ctx, payload.Report.ReportID)
+	template, err := w.db.ReportTemplate.Get(ctx, payload.Report.TemplateID)
 	if err != nil {
 		return err
 	}
-	altText := fmt.Sprintf("[ふるマル] %s", payload.Report.ReportID)
+	altText := fmt.Sprintf("[ふるマル] %s", payload.Report.TemplateID)
 	container, err := template.Build(payload.Report.Fields())
 	if err != nil {
 		return err
 	}
-	w.logger.Debug("Send report", zap.String("reportId", payload.Report.ReportID), zap.Any("message", container))
+	w.logger.Debug("Send report", zap.String("templateId", string(payload.Report.TemplateID)), zap.Any("message", container))
 	sendFn := func() error {
 		return w.line.PushMessage(ctx, linebot.NewFlexMessage(altText, container))
 	}

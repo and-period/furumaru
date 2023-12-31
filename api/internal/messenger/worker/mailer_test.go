@@ -47,14 +47,14 @@ func TestMultiSendMail(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().MultiGetAdmins(ctx, in).Return(admins, nil)
-				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, entity.EmailIDAdminRegister, personalizations).Return(nil)
+				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "admin-register", personalizations).Return(nil)
 			},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -70,7 +70,7 @@ func TestMultiSendMail(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -106,7 +106,7 @@ func TestSendMail(t *testing.T) {
 	tests := []struct {
 		name             string
 		setup            func(ctx context.Context, mocks *mocks)
-		emailID          string
+		templateID       entity.EmailTemplateID
 		personalizations []*mailer.Personalization
 		expectErr        error
 	}{
@@ -115,14 +115,14 @@ func TestSendMail(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "email-id", personalizations).Return(nil)
 			},
-			emailID:          "email-id",
+			templateID:       "email-id",
 			personalizations: personalizations,
 			expectErr:        nil,
 		},
 		{
 			name:             "personalizations is empty",
 			setup:            func(ctx context.Context, mocks *mocks) {},
-			emailID:          "email-id",
+			templateID:       "email-id",
 			personalizations: nil,
 			expectErr:        nil,
 		},
@@ -131,7 +131,7 @@ func TestSendMail(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.mailer.EXPECT().MultiSendFromInfo(ctx, "email-id", personalizations).Return(assert.AnError)
 			},
-			emailID:          "email-id",
+			templateID:       "email-id",
 			personalizations: personalizations,
 			expectErr:        assert.AnError,
 		},
@@ -142,7 +142,7 @@ func TestSendMail(t *testing.T) {
 					MultiSendFromInfo(ctx, "email-id", personalizations).
 					Return(mailer.ErrUnavailable).Times(2)
 			},
-			emailID:          "email-id",
+			templateID:       "email-id",
 			personalizations: personalizations,
 			expectErr:        mailer.ErrUnavailable,
 		},
@@ -151,7 +151,7 @@ func TestSendMail(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.sendMail(ctx, tt.emailID, tt.personalizations...)
+			err := worker.sendMail(ctx, tt.templateID, tt.personalizations...)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
@@ -183,7 +183,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeAdmin,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -218,7 +218,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeAdministrator,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -254,7 +254,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeCoordinator,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -290,7 +290,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeProducer,
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -343,7 +343,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeUser,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -396,7 +396,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeGuest,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},
@@ -421,7 +421,7 @@ func TestPersonalizations(t *testing.T) {
 				UserType:  entity.UserTypeNone,
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
-					EmailID:       entity.EmailIDAdminRegister,
+					TemplateID:    entity.EmailTemplateIDAdminRegister,
 					Substitutions: map[string]string{"key": "value"},
 				},
 			},

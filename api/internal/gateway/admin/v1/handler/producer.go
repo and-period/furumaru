@@ -11,7 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
-	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -23,8 +22,6 @@ func (h *handler) producerRoutes(rg *gin.RouterGroup) {
 	r.POST("", h.CreateProducer)
 	r.GET("/:producerId", h.filterAccessProducer, h.GetProducer)
 	r.PATCH("/:producerId", h.filterAccessProducer, h.UpdateProducer)
-	r.PATCH("/:producerId/email", h.filterAccessProducer, h.UpdateProducerEmail)
-	r.PATCH("/:producerId/password", h.filterAccessProducer, h.ResetProducerPassword)
 	r.DELETE("/:producerId", h.filterAccessProducer, h.DeleteProducer)
 }
 
@@ -67,7 +64,9 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		Limit:    limit,
 		Offset:   offset,
 	}
-	h.addlistProducerFilters(ctx, in)
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
+	}
 	producers, total, err := h.user.ListProducers(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
@@ -85,19 +84,6 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
-}
-
-func (h *handler) addlistProducerFilters(ctx *gin.Context, in *user.ListProducersInput) {
-	strs := util.GetQueryStrings(ctx, "filters")
-	filters := set.NewEmpty[string](len(strs))
-	filters.Add(strs...)
-	if filters.Contains("unrelated") { // 未関連状態の生産者のみ取得
-		in.OnlyUnrelated = true
-		return
-	}
-	if getRole(ctx) == service.AdminRoleCoordinator {
-		in.CoordinatorID = getAdminID(ctx)
-	}
 }
 
 func (h *handler) GetProducer(ctx *gin.Context) {
@@ -287,6 +273,7 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		BonusVideoURL:     bonusVideoURL,
 		InstagramID:       req.InstagramID,
 		FacebookID:        req.FacebookID,
+		Email:             req.Email,
 		PhoneNumber:       req.PhoneNumber,
 		PostalCode:        req.PostalCode,
 		PrefectureCode:    req.PrefectureCode,
@@ -295,37 +282,6 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		AddressLine2:      req.AddressLine2,
 	}
 	if err := h.user.UpdateProducer(ctx, in); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
-	ctx.JSON(http.StatusNoContent, gin.H{})
-}
-
-func (h *handler) UpdateProducerEmail(ctx *gin.Context) {
-	req := &request.UpdateProducerEmailRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-
-	in := &user.UpdateProducerEmailInput{
-		ProducerID: util.GetParam(ctx, "producerId"),
-		Email:      req.Email,
-	}
-	if err := h.user.UpdateProducerEmail(ctx, in); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
-	ctx.JSON(http.StatusNoContent, gin.H{})
-}
-
-func (h *handler) ResetProducerPassword(ctx *gin.Context) {
-	in := &user.ResetProducerPasswordInput{
-		ProducerID: util.GetParam(ctx, "producerId"),
-	}
-	if err := h.user.ResetProducerPassword(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}

@@ -36,7 +36,7 @@ func TestPushTemplate_Get(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		messageID string
+		messageID entity.PushTemplateID
 	}
 	type want struct {
 		template *entity.PushTemplate
@@ -89,7 +89,7 @@ func TestPushTemplate_Get(t *testing.T) {
 	}
 }
 
-func testPushTemplate(id string, now time.Time) *entity.PushTemplate {
+func testPushTemplate(id entity.PushTemplateID, now time.Time) *entity.PushTemplate {
 	return &entity.PushTemplate{
 		TemplateID:    id,
 		TitleTemplate: "件名: {{.Title}}",

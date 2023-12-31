@@ -49,9 +49,6 @@ p, producer_create, /v1/producers, POST, allow
 p, producer_update, /v1/producers/*, (POST)|(PATCH), allow
 p, producer_delete, /v1/producers/*, DELETE, allow
 p, producer_uploader, /v1/upload/producers/*, POST, allow
-p, related_producer_list, /v1/coordinators/*/producers, GET, allow
-p, related_producer_create, /v1/coordinators/*/producers, POST, allow
-p, related_producer_delete, /v1/coordinators/*/producers/*, DELETE, allow
 p, product_list, /v1/products, GET, allow
 p, product_get, /v1/products/*, GET, allow
 p, product_create, /v1/products, POST, allow
@@ -141,9 +138,6 @@ g, administrator, producer_create
 g, administrator, producer_update
 g, administrator, producer_delete
 g, administrator, producer_uploader
-g, administrator, related_producer_list
-g, administrator, related_producer_create
-g, administrator, related_producer_delete
 g, administrator, postal_code_search
 g, administrator, product_list
 g, administrator, product_get
@@ -215,9 +209,6 @@ g, coordinator, producer_create
 g, coordinator, producer_update
 g, coordinator, producer_delete
 g, coordinator, producer_uploader
-g, coordinator, related_producer_list
-g, coordinator, related_producer_create
-g, coordinator, related_producer_delete
 g, coordinator, order_list
 g, coordinator, order_get
 g, coordinator, order_update

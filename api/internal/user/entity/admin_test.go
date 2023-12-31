@@ -2,9 +2,11 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 )
 
 func TestAdminRole(t *testing.T) {
@@ -155,6 +157,60 @@ func TestAdmin_Name(t *testing.T) {
 			t.Parallel()
 			actual := tt.admin.Name()
 			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestAdmin_Fill(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name         string
+		admin        *Admin
+		expectStatus AdminStatus
+	}{
+		{
+			name: "producer",
+			admin: &Admin{
+				Role: AdminRoleProducer,
+			},
+			expectStatus: AdminStatusDeactivated,
+		},
+		{
+			name: "invited",
+			admin: &Admin{
+				Role:          AdminRoleCoordinator,
+				FirstSignInAt: time.Time{},
+			},
+			expectStatus: AdminStatusInvited,
+		},
+		{
+			name: "activated",
+			admin: &Admin{
+				Role:          AdminRoleCoordinator,
+				FirstSignInAt: now,
+			},
+			expectStatus: AdminStatusActivated,
+		},
+		{
+			name: "deactivated",
+			admin: &Admin{
+				Role:          AdminRoleCoordinator,
+				FirstSignInAt: now,
+				DeletedAt: gorm.DeletedAt{
+					Time:  now,
+					Valid: true,
+				},
+			},
+			expectStatus: AdminStatusDeactivated,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.admin.Fill()
+			assert.Equal(t, tt.expectStatus, tt.admin.Status)
 		})
 	}
 }

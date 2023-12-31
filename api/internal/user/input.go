@@ -212,7 +212,6 @@ type ListProducersInput struct {
 	Username      string `validate:"max=64"`
 	Limit         int64  `validate:"required_without=CoordinatorID,max=200"`
 	Offset        int64  `validate:"min=0"`
-	OnlyUnrelated bool   `validate:""`
 }
 
 type MultiGetProducersInput struct {
@@ -237,10 +236,10 @@ type CreateProducerInput struct {
 	BonusVideoURL     string `validate:"omitempty,url"`
 	InstagramID       string `validate:"max=30"`
 	FacebookID        string `validate:"max=50"`
-	Email             string `validate:"required,max=256,email"`
-	PhoneNumber       string `validate:"required,e164"`
-	PostalCode        string `validate:"max=16,numeric"`
-	PrefectureCode    int32  `validate:"required"`
+	Email             string `validate:"omitempty,max=256,email"`
+	PhoneNumber       string `validate:"omitempty,e164"`
+	PostalCode        string `validate:"omitempty,max=16,numeric"`
+	PrefectureCode    int32  `validate:"min=0"`
 	City              string `validate:"max=32"`
 	AddressLine1      string `validate:"max=64"`
 	AddressLine2      string `validate:"max=64"`
@@ -260,17 +259,13 @@ type UpdateProducerInput struct {
 	BonusVideoURL     string `validate:"omitempty,url"`
 	InstagramID       string `validate:"max=30"`
 	FacebookID        string `validate:"max=50"`
-	PhoneNumber       string `validate:"required,e164"`
-	PostalCode        string `validate:"max=16,numeric"`
-	PrefectureCode    int32  `validate:"required"`
+	Email             string `validate:"omitempty,max=256,email"`
+	PhoneNumber       string `validate:"omitempty,e164"`
+	PostalCode        string `validate:"omitempty,max=16,numeric"`
+	PrefectureCode    int32  `validate:"min=0"`
 	City              string `validate:"max=32"`
 	AddressLine1      string `validate:"max=64"`
 	AddressLine2      string `validate:"max=64"`
-}
-
-type UpdateProducerEmailInput struct {
-	ProducerID string `validate:"required"`
-	Email      string `validate:"required,max=256,email"`
 }
 
 type UpdateProducerThumbnailsInput struct {
@@ -281,19 +276,6 @@ type UpdateProducerThumbnailsInput struct {
 type UpdateProducerHeadersInput struct {
 	ProducerID string        `validate:"required"`
 	Headers    common.Images `validate:""`
-}
-
-type ResetProducerPasswordInput struct {
-	ProducerID string `validate:"required"`
-}
-
-type RelateProducersInput struct {
-	CoordinatorID string   `validate:"required"`
-	ProducerIDs   []string `validate:"min=1,max=20,dive,required"`
-}
-
-type UnrelateProducerInput struct {
-	ProducerID string `validate:"required"`
 }
 
 type DeleteProducerInput struct {
