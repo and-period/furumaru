@@ -51,12 +51,8 @@ type Service interface {
 	GetProducer(ctx context.Context, in *GetProducerInput) (*entity.Producer, error)             // １件取得
 	CreateProducer(ctx context.Context, in *CreateProducerInput) (*entity.Producer, error)       // 登録
 	UpdateProducer(ctx context.Context, in *UpdateProducerInput) error                           // 更新
-	UpdateProducerEmail(ctx context.Context, in *UpdateProducerEmailInput) error                 // メールアドレス更新
 	UpdateProducerThumbnails(ctx context.Context, in *UpdateProducerThumbnailsInput) error       // サムネイル(リサイズ済み)更新
 	UpdateProducerHeaders(ctx context.Context, in *UpdateProducerHeadersInput) error             // ヘッダー画像(リサイズ済み)更新
-	ResetProducerPassword(ctx context.Context, in *ResetProducerPasswordInput) error             // パスワードリセット
-	RelateProducers(ctx context.Context, in *RelateProducersInput) error                         // コーディネータとの関連付け
-	UnrelateProducer(ctx context.Context, in *UnrelateProducerInput) error                       // コーディネータとの関連付け解除
 	DeleteProducer(ctx context.Context, in *DeleteProducerInput) error                           // 退会
 	// 購入者
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)               // サインイン

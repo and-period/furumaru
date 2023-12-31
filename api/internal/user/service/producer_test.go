@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -370,11 +369,9 @@ func TestCreateProducer(t *testing.T) {
 					DoAndReturn(func(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error {
 						expectProducer.ID = producer.ID
 						expectProducer.AdminID = producer.ID
-						expectProducer.CognitoID = producer.CognitoID
 						assert.Equal(t, expectProducer, producer)
 						return nil
 					})
-				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
 				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
@@ -388,34 +385,6 @@ func TestCreateProducer(t *testing.T) {
 				Profile:        "紹介文です。",
 				ThumbnailURL:   "https://and-period.jp/thumbnail.png",
 				HeaderURL:      "https://and-period.jp/header.png",
-				InstagramID:    "instgram-id",
-				FacebookID:     "facebook-id",
-				Email:          "test-admin@and-period.jp",
-				PhoneNumber:    "+819012345678",
-				PostalCode:     "1000014",
-				PrefectureCode: 13,
-				City:           "千代田区",
-				AddressLine1:   "永田町1-7-1",
-				AddressLine2:   "",
-			},
-			expectErr: nil,
-		},
-		{
-			name: "success without notify register admin",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Producer.EXPECT().Create(ctx, gomock.Any(), gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
-			},
-			input: &user.CreateProducerInput{
-				CoordinatorID:  "coordinator-id",
-				Lastname:       "&.",
-				Firstname:      "スタッフ",
-				LastnameKana:   "あんどぴりおど",
-				FirstnameKana:  "すたっふ",
-				Username:       "&.農園",
-				ThumbnailURL:   "",
-				HeaderURL:      "",
 				InstagramID:    "instgram-id",
 				FacebookID:     "facebook-id",
 				Email:          "test-admin@and-period.jp",
@@ -505,7 +474,7 @@ func TestCreateProducer(t *testing.T) {
 				Email:          "test-admin@and-period.jp",
 				PhoneNumber:    "+819012345678",
 				PostalCode:     "1000014",
-				PrefectureCode: -1,
+				PrefectureCode: 100,
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
@@ -594,6 +563,7 @@ func TestUpdateProducer(t *testing.T) {
 		HeaderURL:      "https://and-period.jp/header.png",
 		InstagramID:    "instagram-account",
 		FacebookID:     "facebook-account",
+		Email:          "test-admin@and-period.jp",
 		PhoneNumber:    "+819012345678",
 		PostalCode:     "1000014",
 		PrefectureCode: 13,
@@ -630,6 +600,7 @@ func TestUpdateProducer(t *testing.T) {
 				HeaderURL:      "https://tmp.and-period.jp/header.png",
 				InstagramID:    "instagram-account",
 				FacebookID:     "facebook-account",
+				Email:          "test-admin@and-period.jp",
 				PhoneNumber:    "+819012345678",
 				PostalCode:     "1000014",
 				PrefectureCode: 13,
@@ -659,9 +630,10 @@ func TestUpdateProducer(t *testing.T) {
 				HeaderURL:      "https://and-period.jp/header.png",
 				InstagramID:    "instagram-account",
 				FacebookID:     "facebook-account",
+				Email:          "test-admin@and-period.jp",
 				PhoneNumber:    "+819012345678",
 				PostalCode:     "1000014",
-				PrefectureCode: -1,
+				PrefectureCode: 100,
 				City:           "千代田区",
 				AddressLine1:   "永田町1-7-1",
 				AddressLine2:   "",
@@ -684,6 +656,7 @@ func TestUpdateProducer(t *testing.T) {
 				HeaderURL:      "https://and-period.jp/header.png",
 				InstagramID:    "instagram-account",
 				FacebookID:     "facebook-account",
+				Email:          "test-admin@and-period.jp",
 				PhoneNumber:    "+819012345678",
 				PostalCode:     "1000014",
 				PrefectureCode: 13,
@@ -710,6 +683,7 @@ func TestUpdateProducer(t *testing.T) {
 				HeaderURL:      "https://and-period.jp/header.png",
 				InstagramID:    "instagram-account",
 				FacebookID:     "facebook-account",
+				Email:          "test-admin@and-period.jp",
 				PhoneNumber:    "+819012345678",
 				PostalCode:     "1000014",
 				PrefectureCode: 13,
@@ -725,118 +699,6 @@ func TestUpdateProducer(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProducer(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestUpdateProducerEmail(t *testing.T) {
-	t.Parallel()
-
-	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
-	producer := &entity.Producer{
-		Admin: entity.Admin{
-			ID:            "admin-id",
-			CognitoID:     "cognito-id",
-			Role:          entity.AdminRoleProducer,
-			Status:        entity.AdminStatusActivated,
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			Email:         "test-admin@and-period.jp",
-		},
-		AdminID:        "admin-id",
-		CoordinatorID:  "coordinator-id",
-		Username:       "&.農園",
-		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-		Thumbnails:     common.Images{},
-		HeaderURL:      "https://and-period.jp/header.png",
-		Headers:        common.Images{},
-		InstagramID:    "instagram-account",
-		FacebookID:     "facebook-account",
-		PhoneNumber:    "+819012345678",
-		PostalCode:     "1000014",
-		Prefecture:     "東京都",
-		PrefectureCode: 13,
-		City:           "千代田区",
-		AddressLine1:   "永田町1-7-1",
-		AddressLine2:   "",
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
-	params := &cognito.AdminChangeEmailParams{
-		Username: "cognito-id",
-		Email:    "test-admin@and-period.jp",
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.UpdateProducerEmailInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "producer-id", "test-admin@and-period.jp").Return(nil)
-			},
-			input: &user.UpdateProducerEmailInput{
-				ProducerID: "producer-id",
-				Email:      "test-admin@and-period.jp",
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.UpdateProducerEmailInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get by admin id",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(nil, assert.AnError)
-			},
-			input: &user.UpdateProducerEmailInput{
-				ProducerID: "producer-id",
-				Email:      "test-admin@and-period.jp",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to admin change email",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(assert.AnError)
-			},
-			input: &user.UpdateProducerEmailInput{
-				ProducerID: "producer-id",
-				Email:      "test-admin@and-period.jp",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to update email",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.adminAuth.EXPECT().AdminChangeEmail(ctx, params).Return(nil)
-				mocks.db.Admin.EXPECT().UpdateEmail(ctx, "producer-id", "test-admin@and-period.jp").Return(assert.AnError)
-			},
-			input: &user.UpdateProducerEmailInput{
-				ProducerID: "producer-id",
-				Email:      "test-admin@and-period.jp",
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateProducerEmail(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
@@ -963,275 +825,6 @@ func TestUpdateProducerHeaders(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProducerHeaders(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestResetProducerPassword(t *testing.T) {
-	t.Parallel()
-
-	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
-	producer := &entity.Producer{
-		Admin: entity.Admin{
-			ID:            "admin-id",
-			CognitoID:     "cognito-id",
-			Role:          entity.AdminRoleProducer,
-			Status:        entity.AdminStatusActivated,
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			Email:         "test-admin@and-period.jp",
-		},
-		AdminID:        "admin-id",
-		CoordinatorID:  "coordinator-id",
-		Username:       "&.農園",
-		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-		Thumbnails:     common.Images{},
-		HeaderURL:      "https://and-period.jp/header.png",
-		Headers:        common.Images{},
-		InstagramID:    "instagram-account",
-		FacebookID:     "facebook-account",
-		PhoneNumber:    "+819012345678",
-		PostalCode:     "1000014",
-		Prefecture:     "東京都",
-		PrefectureCode: 13,
-		City:           "千代田区",
-		AddressLine1:   "永田町1-7-1",
-		AddressLine2:   "",
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.ResetProducerPasswordInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.adminAuth.EXPECT().
-					AdminChangePassword(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, params *cognito.AdminChangePasswordParams) error {
-						expect := &cognito.AdminChangePasswordParams{
-							Username:  "cognito-id",
-							Password:  params.Password, // ignore
-							Permanent: true,
-						}
-						assert.Equal(t, expect, params)
-						return nil
-					})
-				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(nil)
-			},
-			input: &user.ResetProducerPasswordInput{
-				ProducerID: "producer-id",
-			},
-			expectErr: nil,
-		},
-		{
-			name: "success without notify",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(nil)
-				mocks.messenger.EXPECT().NotifyResetAdminPassword(gomock.Any(), gomock.Any()).Return(assert.AnError)
-			},
-			input: &user.ResetProducerPasswordInput{
-				ProducerID: "producer-id",
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.ResetProducerPasswordInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get by admin id",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(nil, assert.AnError)
-			},
-			input: &user.ResetProducerPasswordInput{
-				ProducerID: "producer-id",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to admin change password",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
-				mocks.adminAuth.EXPECT().AdminChangePassword(ctx, gomock.Any()).Return(assert.AnError)
-			},
-			input: &user.ResetProducerPasswordInput{
-				ProducerID: "producer-id",
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ResetProducerPassword(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestRelateProducers(t *testing.T) {
-	t.Parallel()
-
-	producers := entity.Producers{{
-		AdminID: "producer-id",
-	}}
-	coordinator := &entity.Coordinator{
-		AdminID: "coordinator-id",
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.RelateProducersInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(producers, nil)
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "coordinator-id", "producer-id").Return(nil)
-			},
-			input: &user.RelateProducersInput{
-				CoordinatorID: "coordinator-id",
-				ProducerIDs:   []string{"producer-id"},
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.RelateProducersInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to not found coordinator",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, exception.ErrNotFound)
-			},
-			input: &user.RelateProducersInput{
-				CoordinatorID: "coordinator-id",
-				ProducerIDs:   []string{"producer-id"},
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to get coordinator",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, assert.AnError)
-			},
-			input: &user.RelateProducersInput{
-				CoordinatorID: "coordinator-id",
-				ProducerIDs:   []string{"producer-id"},
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to multi get producers",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(nil, assert.AnError)
-			},
-			input: &user.RelateProducersInput{
-				CoordinatorID: "coordinator-id",
-				ProducerIDs:   []string{"producer-id"},
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to contain invalid producers",
-			setup: func(ctx context.Context, mocks *mocks) {
-				producers := entity.Producers{{
-					AdminID:       "producer-id",
-					CoordinatorID: "coordinator-id",
-				}}
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(producers, nil)
-			},
-			input: &user.RelateProducersInput{
-				CoordinatorID: "coordinator-id",
-				ProducerIDs:   []string{"producer-id"},
-			},
-			expectErr: exception.ErrFailedPrecondition,
-		},
-		{
-			name: "failed to update relationship",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
-				mocks.db.Producer.EXPECT().MultiGet(ctx, []string{"producer-id"}).Return(producers, nil)
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "coordinator-id", "producer-id").Return(assert.AnError)
-			},
-			input: &user.RelateProducersInput{
-				CoordinatorID: "coordinator-id",
-				ProducerIDs:   []string{"producer-id"},
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.RelateProducers(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestUnrelateProducer(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.UnrelateProducerInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "", "producer-id").Return(nil)
-			},
-			input: &user.UnrelateProducerInput{
-				ProducerID: "producer-id",
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.UnrelateProducerInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to update relationship",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().UpdateRelationship(ctx, "", "producer-id").Return(assert.AnError)
-			},
-			input: &user.UnrelateProducerInput{
-				ProducerID: "producer-id",
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UnrelateProducer(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

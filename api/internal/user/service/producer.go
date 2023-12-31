@@ -11,9 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"github.com/and-period/furumaru/api/pkg/cognito"
-	"github.com/and-period/furumaru/api/pkg/random"
-	"github.com/and-period/furumaru/api/pkg/uuid"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -27,7 +24,6 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 		Username:      in.Username,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),
-		OnlyUnrelated: in.OnlyUnrelated,
 	}
 	var (
 		producers entity.Producers
@@ -65,7 +61,6 @@ func (s *service) GetProducer(ctx context.Context, in *user.GetProducerInput) (*
 }
 
 func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInput) (*entity.Producer, error) {
-	const size = 8
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
@@ -76,10 +71,8 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err != nil {
 		return nil, internalError(err)
 	}
-	cognitoID := uuid.Base58Encode(uuid.New())
-	password := random.NewStrings(size)
 	adminParams := &entity.NewAdminParams{
-		CognitoID:     cognitoID,
+		CognitoID:     "", // 生産者は認証機能を持たせない
 		Role:          entity.AdminRoleProducer,
 		Lastname:      in.Lastname,
 		Firstname:     in.Firstname,
@@ -109,22 +102,17 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err != nil {
 		return nil, fmt.Errorf("service: failed to new producer: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
-	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
+	auth := func(_ context.Context) error {
+		return nil // 生産者は認証機能を持たないため何もしない
+	}
 	if err := s.db.Producer.Create(ctx, producer, auth); err != nil {
 		return nil, internalError(err)
 	}
-	s.logger.Debug("Create producer", zap.String("producerId", producer.ID), zap.String("password", password))
-	s.waitGroup.Add(2)
+	s.logger.Debug("Create producer", zap.String("producerId", producer.ID))
+	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		s.resizeProducer(context.Background(), producer.ID, in.ThumbnailURL, in.HeaderURL)
-	}()
-	go func() {
-		defer s.waitGroup.Done()
-		err := s.notifyRegisterAdmin(context.Background(), producer.ID, password)
-		if err != nil {
-			s.logger.Warn("Failed to notify register admin", zap.String("producerId", producer.ID), zap.Error(err))
-		}
 	}()
 	return producer, nil
 }
@@ -133,8 +121,10 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
-		return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
+	if in.PrefectureCode > 0 {
+		if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
+			return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
+		}
 	}
 	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
 	if err != nil {
@@ -153,6 +143,7 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 		BonusVideoURL:     in.BonusVideoURL,
 		InstagramID:       in.InstagramID,
 		FacebookID:        in.FacebookID,
+		Email:             in.Email,
 		PhoneNumber:       in.PhoneNumber,
 		PostalCode:        in.PostalCode,
 		PrefectureCode:    in.PrefectureCode,
@@ -178,25 +169,6 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 	return nil
 }
 
-func (s *service) UpdateProducerEmail(ctx context.Context, in *user.UpdateProducerEmailInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
-	if err != nil {
-		return internalError(err)
-	}
-	params := &cognito.AdminChangeEmailParams{
-		Username: producer.CognitoID,
-		Email:    in.Email,
-	}
-	if err := s.adminAuth.AdminChangeEmail(ctx, params); err != nil {
-		return internalError(err)
-	}
-	err = s.db.Admin.UpdateEmail(ctx, in.ProducerID, in.Email)
-	return internalError(err)
-}
-
 func (s *service) UpdateProducerThumbnails(ctx context.Context, in *user.UpdateProducerThumbnailsInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
@@ -213,76 +185,14 @@ func (s *service) UpdateProducerHeaders(ctx context.Context, in *user.UpdateProd
 	return internalError(err)
 }
 
-func (s *service) ResetProducerPassword(ctx context.Context, in *user.ResetProducerPasswordInput) error {
-	const size = 8
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
-	if err != nil {
-		return internalError(err)
-	}
-	password := random.NewStrings(size)
-	params := &cognito.AdminChangePasswordParams{
-		Username:  producer.CognitoID,
-		Password:  password,
-		Permanent: true,
-	}
-	if err := s.adminAuth.AdminChangePassword(ctx, params); err != nil {
-		return internalError(err)
-	}
-	s.logger.Debug("Reset producer password",
-		zap.String("producerId", in.ProducerID), zap.String("password", password),
-	)
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		err := s.notifyResetAdminPassword(context.Background(), in.ProducerID, password)
-		if err != nil {
-			s.logger.Warn("Failed to notify reset admin password",
-				zap.String("producerId", in.ProducerID), zap.Error(err),
-			)
-		}
-	}()
-	return nil
-}
-
-func (s *service) RelateProducers(ctx context.Context, in *user.RelateProducersInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	_, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
-	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("api: invalid coordinator id: %w", exception.ErrInvalidArgument)
-	}
-	if err != nil {
-		return internalError(err)
-	}
-	producers, err := s.db.Producer.MultiGet(ctx, in.ProducerIDs)
-	if err != nil {
-		return internalError(err)
-	}
-	producers = producers.Unrelated()
-	if len(producers) != len(in.ProducerIDs) {
-		return fmt.Errorf("api: contains invalid producers: %w", exception.ErrFailedPrecondition)
-	}
-	err = s.db.Producer.UpdateRelationship(ctx, in.CoordinatorID, in.ProducerIDs...)
-	return internalError(err)
-}
-
-func (s *service) UnrelateProducer(ctx context.Context, in *user.UnrelateProducerInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	err := s.db.Producer.UpdateRelationship(ctx, "", in.ProducerID)
-	return internalError(err)
-}
-
 func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	err := s.db.Producer.Delete(ctx, in.ProducerID, s.deleteCognitoAdmin(in.ProducerID))
+	auth := func(_ context.Context) error {
+		return nil // 生産者は認証機能を持たないため何もしない
+	}
+	err := s.db.Producer.Delete(ctx, in.ProducerID, auth)
 	return internalError(err)
 }
 
