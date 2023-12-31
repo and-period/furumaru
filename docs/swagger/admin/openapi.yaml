@@ -99,8 +99,6 @@ paths:
     $ref: './paths/v1/coordinators/_coordinatorId/password.yaml'
   /v1/coordinators/{coordinatorId}/producers:
     $ref: './paths/v1/coordinators/_coordinatorId/producers/index.yaml'
-  /v1/coordinators/{coordinatorId}/producers/{producerId}:
-    $ref: './paths/v1/coordinators/_coordinatorId/producers/_producerId/index.yaml'
   # Producer
   /v1/producers:
     $ref: './paths/v1/producers/index.yaml'

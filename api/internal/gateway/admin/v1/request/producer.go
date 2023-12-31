@@ -36,18 +36,11 @@ type UpdateProducerRequest struct {
 	BonusVideoURL     string `json:"bonusVideoUrl,omitempty"`     // 購入特典映像URL
 	InstagramID       string `json:"instagramId,omitempty"`       // Instagramアカウント
 	FacebookID        string `json:"facebookId,omitempty"`        // Facebookアカウント
+	Email             string `json:"email,omitempty"`             // メールアドレス
 	PhoneNumber       string `json:"phoneNumber,omitempty"`       // 電話番号
 	PostalCode        string `json:"postalCode,omitempty"`        // 郵便番号
 	PrefectureCode    int32  `json:"prefectureCode,omitempty"`    // 都道府県
 	City              string `json:"city,omitempty"`              // 市区町村
 	AddressLine1      string `json:"addressLine1,omitempty"`      // 町名・番地
 	AddressLine2      string `json:"addressLine2,omitempty"`      // ビル名・号室など
-}
-
-type UpdateProducerEmailRequest struct {
-	Email string `json:"email,omitempty"` // メールアドレス
-}
-
-type RelateProducersRequest struct {
-	ProducerIDs []string `json:"producerIds,omitempty"` // 関連づける生産者ID一覧
 }

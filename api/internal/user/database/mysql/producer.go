@@ -34,9 +34,6 @@ func (p listProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
-	if p.OnlyUnrelated {
-		stmt = stmt.Where("coordinator_id IS NULL")
-	}
 	if p.Username != "" {
 		stmt = stmt.Where("username LIKE ?", fmt.Sprintf("%%%s%%", p.Username))
 	}
@@ -129,10 +126,11 @@ func (p *producer) Update(ctx context.Context, producerID string, params *databa
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := p.now()
 		adminParams := map[string]interface{}{
-			"lastname":       params.Lastname,
-			"firstname":      params.Firstname,
-			"lastname_kana":  params.LastnameKana,
-			"firstname_kana": params.FirstnameKana,
+			"lastname":       mysql.NullString(params.Lastname),
+			"firstname":      mysql.NullString(params.Firstname),
+			"lastname_kana":  mysql.NullString(params.LastnameKana),
+			"firstname_kana": mysql.NullString(params.FirstnameKana),
+			"email":          mysql.NullString(params.Email),
 			"updated_at":     now,
 		}
 		producerParams := map[string]interface{}{
@@ -144,12 +142,12 @@ func (p *producer) Update(ctx context.Context, producerID string, params *databa
 			"bonus_video_url":     params.BonusVideoURL,
 			"instagram_id":        params.InstagramID,
 			"facebook_id":         params.FacebookID,
-			"phone_number":        params.PhoneNumber,
-			"postal_code":         params.PostalCode,
-			"prefecture":          params.PrefectureCode,
-			"city":                params.City,
-			"address_line1":       params.AddressLine1,
-			"address_line2":       params.AddressLine2,
+			"phone_number":        mysql.NullString(params.PhoneNumber),
+			"postal_code":         mysql.NullString(params.PostalCode),
+			"prefecture":          mysql.NullInt(params.PrefectureCode),
+			"city":                mysql.NullString(params.City),
+			"address_line1":       mysql.NullString(params.AddressLine1),
+			"address_line2":       mysql.NullString(params.AddressLine2),
 			"updated_at":          now,
 		}
 
@@ -222,24 +220,6 @@ func (p *producer) UpdateHeaders(ctx context.Context, producerID string, headers
 			Updates(params).Error
 		return err
 	})
-	return dbError(err)
-}
-
-func (p *producer) UpdateRelationship(ctx context.Context, coordinatorID string, producerIDs ...string) error {
-	var id *string
-	if coordinatorID != "" {
-		id = &coordinatorID
-	}
-
-	params := map[string]interface{}{
-		"coordinator_id": id,
-		"updated_at":     p.now(),
-	}
-	stmt := p.db.DB.WithContext(ctx).
-		Table(producerTable).
-		Where("admin_id IN (?)", producerIDs)
-
-	err := stmt.Updates(params).Error
 	return dbError(err)
 }
 

@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -15,8 +14,6 @@ func (h *handler) relatedProducerRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/coordinators/:coordinatorId/producers", h.authentication, h.filterAccessRelatedProducer)
 
 	r.GET("", h.ListRelatedProducers)
-	r.POST("", h.RelateProducers)
-	r.DELETE("/:producerId", h.filterAccessProducer, h.UnrelateProducer)
 }
 
 func (h *handler) filterAccessRelatedProducer(ctx *gin.Context) {
@@ -72,46 +69,4 @@ func (h *handler) ListRelatedProducers(ctx *gin.Context) {
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
-}
-
-func (h *handler) RelateProducers(ctx *gin.Context) {
-	req := &request.RelateProducersRequest{}
-	if err := ctx.BindJSON(req); err != nil {
-		h.badRequest(ctx, err)
-		return
-	}
-
-	coordinator, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId"))
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
-	in := &user.RelateProducersInput{
-		CoordinatorID: coordinator.ID,
-		ProducerIDs:   req.ProducerIDs,
-	}
-	if err := h.user.RelateProducers(ctx, in); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
-	ctx.JSON(http.StatusNoContent, gin.H{})
-}
-
-func (h *handler) UnrelateProducer(ctx *gin.Context) {
-	if _, err := h.getCoordinator(ctx, util.GetParam(ctx, "coordinatorId")); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
-	in := &user.UnrelateProducerInput{
-		ProducerID: util.GetParam(ctx, "producerId"),
-	}
-	if err := h.user.UnrelateProducer(ctx, in); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
-	ctx.JSON(http.StatusNoContent, gin.H{})
 }
