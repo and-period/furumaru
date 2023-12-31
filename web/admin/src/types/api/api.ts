@@ -4477,19 +4477,6 @@ export interface RegisterAuthDeviceRequest {
 /**
  * 
  * @export
- * @interface RelateProducersRequest
- */
-export interface RelateProducersRequest {
-    /**
-     * 関連つける生産者ID一覧 (20件まで)
-     * @type {Array<string>}
-     * @memberof RelateProducersRequest
-     */
-    'producerIds': Array<string>;
-}
-/**
- * 
- * @export
  * @interface ResetAuthPasswordRequest
  */
 export interface ResetAuthPasswordRequest {
@@ -5526,19 +5513,6 @@ export interface UpdatePaymentSystemRequest {
 /**
  * 
  * @export
- * @interface UpdateProducerEmailRequest
- */
-export interface UpdateProducerEmailRequest {
-    /**
-     * メールアドレス
-     * @type {string}
-     * @memberof UpdateProducerEmailRequest
-     */
-    'email': string;
-}
-/**
- * 
- * @export
  * @interface UpdateProducerRequest
  */
 export interface UpdateProducerRequest {
@@ -5572,6 +5546,12 @@ export interface UpdateProducerRequest {
      * @memberof UpdateProducerRequest
      */
     'username': string;
+    /**
+     * メールアドレス
+     * @type {string}
+     * @memberof UpdateProducerRequest
+     */
+    'email': string;
     /**
      * 電話番号 (国際番号 + 電話番号)
      * @type {string}
@@ -6372,19 +6352,6 @@ export interface UsersResponse {
      * @memberof UsersResponse
      */
     'total': number;
-}
-/**
- * 
- * @export
- * @interface V1RelateProducersRequest
- */
-export interface V1RelateProducersRequest {
-    /**
-     * 関連つける生産者ID一覧 (20件まで)
-     * @type {Array<string>}
-     * @memberof V1RelateProducersRequest
-     */
-    'producerIds': Array<string>;
 }
 /**
  * 
@@ -13092,92 +13059,6 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
-         * @summary 生産者メールアドレス更新
-         * @param {string} producerId 生産者ID
-         * @param {UpdateProducerEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateProducerEmail: async (producerId: string, body: UpdateProducerEmailRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'producerId' is not null or undefined
-            assertParamExists('v1UpdateProducerEmail', 'producerId', producerId)
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('v1UpdateProducerEmail', 'body', body)
-            const localVarPath = `/v1/producers/{producerId}/email`
-                .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者パスワード更新(ランダム生成)
-         * @param {string} producerId 生産者ID
-         * @param {object} [body] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateProducerPassword: async (producerId: string, body?: object, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'producerId' is not null or undefined
-            assertParamExists('v1UpdateProducerPassword', 'producerId', producerId)
-            const localVarPath = `/v1/producers/{producerId}/password`
-                .replace(`{${"producerId"}}`, encodeURIComponent(String(producerId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary 生産者購入特典動画アップロード
          * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
          * @param {*} [options] Override http request option.
@@ -13428,34 +13309,6 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 生産者メールアドレス更新
-         * @param {string} producerId 生産者ID
-         * @param {UpdateProducerEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UpdateProducerEmail(producerId: string, body: UpdateProducerEmailRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProducerEmail(producerId, body, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProducerApi.v1UpdateProducerEmail']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 生産者パスワード更新(ランダム生成)
-         * @param {string} producerId 生産者ID
-         * @param {object} [body] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UpdateProducerPassword(producerId: string, body?: object, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProducerPassword(producerId, body, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProducerApi.v1UpdateProducerPassword']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
          * @summary 生産者購入特典動画アップロード
          * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
          * @param {*} [options] Override http request option.
@@ -13571,28 +13424,6 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
-         * @summary 生産者メールアドレス更新
-         * @param {string} producerId 生産者ID
-         * @param {UpdateProducerEmailRequest} body 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateProducerEmail(producerId: string, body: UpdateProducerEmailRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.v1UpdateProducerEmail(producerId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者パスワード更新(ランダム生成)
-         * @param {string} producerId 生産者ID
-         * @param {object} [body] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UpdateProducerPassword(producerId: string, body?: object, options?: any): AxiosPromise<object> {
-            return localVarFp.v1UpdateProducerPassword(producerId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @summary 生産者購入特典動画アップロード
          * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
          * @param {*} [options] Override http request option.
@@ -13702,32 +13533,6 @@ export class ProducerApi extends BaseAPI {
      */
     public v1UpdateProducer(producerId: string, body: UpdateProducerRequest, options?: RawAxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1UpdateProducer(producerId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 生産者メールアドレス更新
-     * @param {string} producerId 生産者ID
-     * @param {UpdateProducerEmailRequest} body 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProducerApi
-     */
-    public v1UpdateProducerEmail(producerId: string, body: UpdateProducerEmailRequest, options?: RawAxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1UpdateProducerEmail(producerId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 生産者パスワード更新(ランダム生成)
-     * @param {string} producerId 生産者ID
-     * @param {object} [body] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProducerApi
-     */
-    public v1UpdateProducerPassword(producerId: string, body?: object, options?: RawAxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1UpdateProducerPassword(producerId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

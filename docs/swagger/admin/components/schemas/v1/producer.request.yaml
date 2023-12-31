@@ -121,6 +121,10 @@ updateProducerRequest:
     username:
       type: string
       description: 生産者名(64文字まで)
+    email:
+      type: string
+      format: email
+      description: メールアドレス
     phoneNumber:
       type: string
       description: 電話番号 (国際番号 + 電話番号)
@@ -165,6 +169,7 @@ updateProducerRequest:
   - lastnameKana
   - firstnameKana
   - username
+  - email
   - phoneNumber
   - postalCode
   - prefectureCode
@@ -184,6 +189,7 @@ updateProducerRequest:
     lastnameKana: 'あんどどっと'
     firstnameKana: 'かんりしゃ'
     username: '&.農園'
+    email: 'test-user@and-period.jp'
     phoneNumber: '+819012345678'
     postalCode: '1000014'
     prefectureCode: 13
@@ -197,28 +203,3 @@ updateProducerRequest:
     bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
     instagramId: 'instagram-id'
     facebookId: 'facebook-id'
-updateProducerEmailRequest:
-  type: object
-  properties:
-    email:
-      type: string
-      format: email
-      description: メールアドレス
-  required:
-  - email
-  example:
-    email: 'test-user@and-period.jp'
-relateProducersRequest:
-  type: object
-  properties:
-    producerIds:
-      type: array
-      description: 関連つける生産者ID一覧 (20件まで)
-      items:
-        type: string
-        description: 関連づける生産者ID
-  required:
-  - producerIds
-  example:
-    producerIds:
-    - 'kSByoE6FetnPs5Byk3a9Zx'

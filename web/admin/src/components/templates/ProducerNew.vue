@@ -102,8 +102,8 @@ const rules = computed(() => ({
   lastnameKana: { required, kana, maxLength: maxLength(32) },
   firstnameKana: { required, kana, maxLength: maxLength(32) },
   username: { required, maxLength: maxLength(64) },
-  email: { required, email },
-  phoneNumber: { required, tel },
+  email: { email },
+  phoneNumber: { tel },
   profile: { maxLength: maxLength(2000) },
   instagramId: { maxLength: maxLength(30) },
   facebookId: { maxLength: maxLength(50) }
