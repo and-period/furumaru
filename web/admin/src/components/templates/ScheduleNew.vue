@@ -2,9 +2,10 @@
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
-import { getErrorMessage, maxLength, required } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import type { CreateScheduleRequest } from '~/types/api'
 import type { ImageUploadStatus, ScheduleTime } from '~/types/props'
+import { CreateScheduleValidationRules, TimeDataValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -68,16 +69,6 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const formDataRules = computed(() => ({
-  title: { required, maxLength: maxLength(200) },
-  description: { required, maxLength: maxLength(2000) }
-}))
-const timeDataRules = computed(() => ({
-  startDate: { required },
-  startTime: { required },
-  endDate: { required },
-  endTime: { required }
-}))
 const formDataValue = computed({
   get: (): CreateScheduleRequest => props.formData,
   set: (formData: CreateScheduleRequest): void => emit('update:form-data', formData)
@@ -97,8 +88,8 @@ const timeDataValue = computed({
   }
 })
 
-const formDataValidate = useVuelidate(formDataRules, formDataValue)
-const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+const formDataValidate = useVuelidate(CreateScheduleValidationRules, formDataValue)
+const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)

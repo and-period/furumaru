@@ -3,8 +3,9 @@ import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
 import { type CreateProducerRequest, Prefecture } from '~/types/api'
-import { email, kana, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import type { ImageUploadStatus } from '~/types/props'
+import { CreateProducerValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -96,24 +97,12 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const rules = computed(() => ({
-  lastname: { required, maxLength: maxLength(16) },
-  firstname: { required, maxLength: maxLength(16) },
-  lastnameKana: { required, kana, maxLength: maxLength(32) },
-  firstnameKana: { required, kana, maxLength: maxLength(32) },
-  username: { required, maxLength: maxLength(64) },
-  email: { email },
-  phoneNumber: { tel },
-  profile: { maxLength: maxLength(2000) },
-  instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) }
-}))
 const formDataValue = computed({
   get: (): CreateProducerRequest => props.formData,
   set: (formData: CreateProducerRequest) => emit('update:form-data', formData)
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(CreateProducerValidationRules, formDataValue)
 
 const onChangeThumbnailFile = (files?: FileList) => {
   if (!files) {

@@ -3,9 +3,11 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { getErrorMessage, maxLength, required } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { type CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, type Promotion } from '~/types/api'
 import type { NotificationTime } from '~/types/props'
+import { TimeDataValidationRules } from '~/types/validations'
+import { CreateNotificationValidationRules } from '~/types/validations/notification'
 
 const props = defineProps({
   loading: {
@@ -64,18 +66,6 @@ const targetList = [
 
 const selectedPromotion = ref<Promotion>()
 
-const formDataRules = computed(() => ({
-  type: { required },
-  targets: {},
-  title: { maxLength: maxLength(128) },
-  body: { required, maxLength: maxLength(2000) },
-  note: { required, maxLength: maxLength(2000) },
-  promotionId: {}
-}))
-const timeDataRules = computed(() => ({
-  publishedDate: { required },
-  publishedTime: { required }
-}))
 const formDataValue = computed({
   get: (): CreateNotificationRequest => props.formData as CreateNotificationRequest,
   set: (formData: CreateNotificationRequest) => emit('update:form-data', formData)
@@ -91,8 +81,8 @@ const timeDataValue = computed({
   }
 })
 
-const formDataValidate = useVuelidate(formDataRules, formDataValue)
-const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+const formDataValidate = useVuelidate(CreateNotificationValidationRules, formDataValue)
+const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const onChangePublishedAt = (): void => {
   const publishedAt = dayjs(`${timeDataValue.value.publishedDate} ${timeDataValue.value.publishedTime}`)

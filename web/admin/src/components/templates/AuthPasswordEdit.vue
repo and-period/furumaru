@@ -3,14 +3,9 @@ import { mdiEye, mdiEyeOff } from '@mdi/js'
 import useVuelidate, { type ValidationArgs } from '@vuelidate/core'
 
 import type { AlertType } from '~/lib/hooks'
-import {
-  required,
-  minLength,
-  maxLength,
-  sameAs,
-  getErrorMessage
-} from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import type { UpdateAuthPasswordRequest } from '~/types/api'
+import { UpdateAuthPasswordValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -44,20 +39,7 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const rules = computed<ValidationArgs>(() => ({
-  oldPassword: {
-    required
-  },
-  newPassword: {
-    required,
-    minLength: minLength(8),
-    maxLength: maxLength(32)
-  },
-  passwordConfirmation: {
-    required,
-    sameAs: sameAs(props.formData.newPassword)
-  }
-}))
+const rules = computed<ValidationArgs>(() => UpdateAuthPasswordValidationRules(props.formData.newPassword))
 const formDataValue = computed({
   get: (): UpdateAuthPasswordRequest => props.formData,
   set: (formData: UpdateAuthPasswordRequest): void => emit('update:form-data', formData)

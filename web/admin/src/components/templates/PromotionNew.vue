@@ -3,9 +3,10 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { getErrorMessage, minValue, maxLength, minLength, required } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { type CreatePromotionRequest, DiscountType } from '~/types/api'
 import type { PromotionTime } from '~/types/props'
+import { CreatePromotionValidationRules, TimeDataValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -54,19 +55,6 @@ const discountMethodList = [
   { method: '送料無料', value: DiscountType.FREE_SHIPPING }
 ]
 
-const formDataRules = computed(() => ({
-  title: { required, maxLength: maxLength(200) },
-  description: { required, maxLength: maxLength(2000) },
-  discountType: {},
-  discountRate: { minValue: minValue(0) },
-  code: { required, minLength: minLength(8), maxLength: maxLength(8) }
-}))
-const timeDataRules = computed(() => ({
-  startDate: { required },
-  startTime: { required },
-  endDate: { required },
-  endTime: { required }
-}))
 const formDataValue = computed({
   get: (): CreatePromotionRequest => props.formData,
   set: (val: CreatePromotionRequest) => emit('update:form-data', val)
@@ -86,8 +74,8 @@ const timeDataValue = computed({
   }
 })
 
-const formDataValidate = useVuelidate(formDataRules, formDataValue)
-const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+const formDataValidate = useVuelidate(CreatePromotionValidationRules, formDataValue)
+const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)

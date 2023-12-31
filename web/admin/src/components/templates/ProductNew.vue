@@ -6,15 +6,9 @@ import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import { type Category, type CreateProductRequest, DeliveryType, Prefecture, type Producer, ProductStatus, type ProductTag, type ProductType, StorageMethodType, Weekday } from '~/types/api'
 import type { ProductTime } from '~/types/props'
-import {
-  required,
-  getErrorMessage,
-  maxLength,
-  minValue,
-  maxValue,
-  maxLengthArray
-} from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { type PrefecturesListItem, prefecturesList, type CityListItem, cityList } from '~/constants'
+import { CreateProductValidationRules, TimeDataValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -121,48 +115,7 @@ const deliveryTypes = [
   { title: '冷凍便', value: DeliveryType.FROZEN }
 ]
 const itemUnits = ['個', '瓶']
-const weekdays = [
-  { title: '日曜日', value: Weekday.SUNDAY },
-  { title: '月曜日', value: Weekday.MONDAY },
-  { title: '火曜日', value: Weekday.TUESDAY },
-  { title: '水曜日', value: Weekday.WEDNESDAY },
-  { title: '木曜日', value: Weekday.THURSDAY },
-  { title: '金曜日', value: Weekday.FRIDAY },
-  { title: '土曜日', value: Weekday.SATURDAY }
-]
 
-const formDataRules = computed(() => ({
-  name: { required, maxLength: maxLength(128) },
-  description: { required, maxLength: maxLength(20000) },
-  public: {},
-  producerId: { required },
-  productTypeId: { required },
-  productTagIds: { maxLengthArray: maxLengthArray(8) },
-  media: { maxLengthArray: maxLengthArray(8) },
-  price: { required, minValue: minValue(0) },
-  cost: { required, minValue: minValue(0) },
-  inventory: { required, minValue: minValue(0) },
-  weight: { required, minValue: minValue(0) },
-  itemUnit: { required },
-  itemDescription: { required },
-  deliveryType: { required },
-  recommendedPoint1: { maxLength: maxLength(128) },
-  recommendedPoint2: { maxLength: maxLength(128) },
-  recommendedPoint3: { maxLength: maxLength(128) },
-  expirationDate: { required, minValue: minValue(0) },
-  storageMethodType: { required },
-  box60Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
-  box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
-  box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
-  originPrefectureCode: {},
-  originCity: {}
-}))
-const timeDataRules = computed(() => ({
-  startDate: { required },
-  startTime: { required },
-  endDate: { required },
-  endTime: { required }
-}))
 const formDataValue = computed({
   get: (): CreateProductRequest => props.formData,
   set: (formData: CreateProductRequest): void => emit('update:form-data', formData)
@@ -235,8 +188,8 @@ const thumbnailIndex = computed<number>({
   }
 })
 
-const formDataValidate = useVuelidate(formDataRules, formDataValue)
-const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+const formDataValidate = useVuelidate(CreateProductValidationRules, formDataValue)
+const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)

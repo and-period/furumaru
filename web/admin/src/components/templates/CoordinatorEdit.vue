@@ -175,16 +175,6 @@ const props = defineProps({
   }
 })
 
-const weekdays = [
-  { title: '日曜日', value: Weekday.SUNDAY },
-  { title: '月曜日', value: Weekday.MONDAY },
-  { title: '火曜日', value: Weekday.TUESDAY },
-  { title: '水曜日', value: Weekday.WEDNESDAY },
-  { title: '木曜日', value: Weekday.THURSDAY },
-  { title: '金曜日', value: Weekday.FRIDAY },
-  { title: '土曜日', value: Weekday.SATURDAY }
-]
-
 const emit = defineEmits<{
   (e: 'update:selected-tab-item', item: string): void
   (e: 'update:coordinator-form-data', formData: UpdateCoordinatorRequest): void
