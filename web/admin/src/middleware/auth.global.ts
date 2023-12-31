@@ -24,14 +24,18 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
     return navigateTo('/signin')
   }
 
-  // AccessTokenの更新
-  await store.getAuthByRefreshToken(refreshToken).catch((err) => {
+  try {
+    // AccessTokenの更新
+    await store.getAuthByRefreshToken(refreshToken)
+  } catch (err) {
     console.log('failed to refresh auth token', err)
-    navigateTo('/signin')
-  })
+    return navigateTo('/signin')
+  }
 
   // ログインユーザーの情報取得
-  store.getUser()
+  store.getUser().catch((err) => {
+    console.log('failed to get user', err)
+  })
 
   // Push通知用のDeviceToken取得/登録
   store
@@ -47,6 +51,6 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
       return store.registerDeviceToken(deviceToken)
     })
     .catch((err) => {
-      console.log('Push notifications are disabled.', err)
+      console.log('push notifications are disabled.', err)
     })
 })
