@@ -26,12 +26,13 @@ func TestGetCheckoutState(t *testing.T) {
 	now := jst.Date(2022, 10, 10, 18, 30, 0, 0)
 	order := func(status entity.PaymentStatus) *entity.Order {
 		return &entity.Order{
-			ID:            "order-id",
-			UserID:        "user-id",
-			PromotionID:   "",
-			CoordinatorID: "coordinator-id",
-			CreatedAt:     now,
-			UpdatedAt:     now,
+			ID:              "order-id",
+			UserID:          "user-id",
+			PromotionID:     "",
+			CoordinatorID:   "coordinator-id",
+			ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
+			CreatedAt:       now,
+			UpdatedAt:       now,
 			OrderPayment: entity.OrderPayment{
 				OrderID:           "order-id",
 				AddressRevisionID: 1,
@@ -764,10 +765,11 @@ func checkoutmocks(
 				Quantity:          2,
 			},
 		},
-		ID:            "order-id",
-		UserID:        "user-id",
-		CoordinatorID: "coordinator-id",
-		PromotionID:   "promotion-id",
+		ID:              "order-id",
+		UserID:          "user-id",
+		CoordinatorID:   "coordinator-id",
+		PromotionID:     "promotion-id",
+		ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}
 
 	m.user.EXPECT().
@@ -1250,10 +1252,11 @@ func TestCheckout(t *testing.T) {
 					Quantity:          2,
 				},
 			},
-			ID:            "order-id",
-			UserID:        "user-id",
-			CoordinatorID: "coordinator-id",
-			PromotionID:   "promotion-id",
+			ID:              "order-id",
+			UserID:          "user-id",
+			CoordinatorID:   "coordinator-id",
+			PromotionID:     "promotion-id",
+			ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 		}
 	}
 	ordermocks := func(mocks *mocks, order *entity.Order, err error) {
