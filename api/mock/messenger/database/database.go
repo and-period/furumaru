@@ -431,7 +431,7 @@ func (m *MockMessageTemplate) EXPECT() *MockMessageTemplateMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockMessageTemplate) Get(ctx context.Context, messageID string, fields ...string) (*entity.MessageTemplate, error) {
+func (m *MockMessageTemplate) Get(ctx context.Context, messageID entity.MessageTemplateID, fields ...string) (*entity.MessageTemplate, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, messageID}
 	for _, a := range fields {
@@ -594,7 +594,7 @@ func (m *MockPushTemplate) EXPECT() *MockPushTemplateMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockPushTemplate) Get(ctx context.Context, pushID string, fields ...string) (*entity.PushTemplate, error) {
+func (m *MockPushTemplate) Get(ctx context.Context, pushID entity.PushTemplateID, fields ...string) (*entity.PushTemplate, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, pushID}
 	for _, a := range fields {
@@ -708,7 +708,7 @@ func (m *MockReportTemplate) EXPECT() *MockReportTemplateMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockReportTemplate) Get(ctx context.Context, reportID string, fields ...string) (*entity.ReportTemplate, error) {
+func (m *MockReportTemplate) Get(ctx context.Context, reportID entity.ReportTemplateID, fields ...string) (*entity.ReportTemplate, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, reportID}
 	for _, a := range fields {
@@ -748,6 +748,26 @@ func NewMockSchedule(ctrl *gomock.Controller) *MockSchedule {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockSchedule) EXPECT() *MockScheduleMockRecorder {
 	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockSchedule) Get(ctx context.Context, messageType entity.ScheduleType, messageID string, fields ...string) (*entity.Schedule, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, messageType, messageID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Get", varargs...)
+	ret0, _ := ret[0].(*entity.Schedule)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockScheduleMockRecorder) Get(ctx, messageType, messageID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, messageType, messageID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockSchedule)(nil).Get), varargs...)
 }
 
 // List mocks base method.
@@ -796,6 +816,20 @@ func (m *MockSchedule) UpdateDone(ctx context.Context, messageType entity.Schedu
 func (mr *MockScheduleMockRecorder) UpdateDone(ctx, messageType, messageID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDone", reflect.TypeOf((*MockSchedule)(nil).UpdateDone), ctx, messageType, messageID)
+}
+
+// Upsert mocks base method.
+func (m *MockSchedule) Upsert(ctx context.Context, schedule *entity.Schedule) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Upsert", ctx, schedule)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Upsert indicates an expected call of Upsert.
+func (mr *MockScheduleMockRecorder) Upsert(ctx, schedule interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upsert", reflect.TypeOf((*MockSchedule)(nil).Upsert), ctx, schedule)
 }
 
 // UpsertProcessing mocks base method.

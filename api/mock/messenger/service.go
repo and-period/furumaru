@@ -335,6 +335,20 @@ func (mr *MockServiceMockRecorder) NotifyOrderAuthorized(ctx, in interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyOrderAuthorized", reflect.TypeOf((*MockService)(nil).NotifyOrderAuthorized), ctx, in)
 }
 
+// NotifyOrderShipped mocks base method.
+func (m *MockService) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOrderShippedInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotifyOrderShipped", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// NotifyOrderShipped indicates an expected call of NotifyOrderShipped.
+func (mr *MockServiceMockRecorder) NotifyOrderShipped(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyOrderShipped", reflect.TypeOf((*MockService)(nil).NotifyOrderShipped), ctx, in)
+}
+
 // NotifyRegisterAdmin mocks base method.
 func (m *MockService) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyRegisterAdminInput) error {
 	m.ctrl.T.Helper()
@@ -361,6 +375,48 @@ func (m *MockService) NotifyResetAdminPassword(ctx context.Context, in *messenge
 func (mr *MockServiceMockRecorder) NotifyResetAdminPassword(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyResetAdminPassword", reflect.TypeOf((*MockService)(nil).NotifyResetAdminPassword), ctx, in)
+}
+
+// NotifyStartLive mocks base method.
+func (m *MockService) NotifyStartLive(ctx context.Context, in *messenger.NotifyStartLiveInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NotifyStartLive", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// NotifyStartLive indicates an expected call of NotifyStartLive.
+func (mr *MockServiceMockRecorder) NotifyStartLive(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotifyStartLive", reflect.TypeOf((*MockService)(nil).NotifyStartLive), ctx, in)
+}
+
+// ReserveNotification mocks base method.
+func (m *MockService) ReserveNotification(ctx context.Context, in *messenger.ReserveNotificationInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReserveNotification", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ReserveNotification indicates an expected call of ReserveNotification.
+func (mr *MockServiceMockRecorder) ReserveNotification(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReserveNotification", reflect.TypeOf((*MockService)(nil).ReserveNotification), ctx, in)
+}
+
+// ReserveStartLive mocks base method.
+func (m *MockService) ReserveStartLive(ctx context.Context, in *messenger.ReserveStartLiveInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReserveStartLive", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ReserveStartLive indicates an expected call of ReserveStartLive.
+func (mr *MockServiceMockRecorder) ReserveStartLive(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReserveStartLive", reflect.TypeOf((*MockService)(nil).ReserveStartLive), ctx, in)
 }
 
 // UpdateContact mocks base method.

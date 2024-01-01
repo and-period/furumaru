@@ -17,10 +17,10 @@ func (w *worker) multiSendPush(ctx context.Context, payload *entity.WorkerPayloa
 		return err
 	}
 	if len(tokens) == 0 {
-		w.logger.Debug("Tokens is empty", zap.String("pushId", payload.Push.PushID))
+		w.logger.Debug("Tokens is empty", zap.String("templateId", string(payload.Push.TemplateID)))
 		return nil
 	}
-	template, err := w.db.PushTemplate.Get(ctx, payload.Push.PushID)
+	template, err := w.db.PushTemplate.Get(ctx, payload.Push.TemplateID)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (w *worker) multiSendPush(ctx context.Context, payload *entity.WorkerPayloa
 		ImageURL: template.ImageURL,
 		Data:     payload.Push.Data,
 	}
-	w.logger.Debug("Send push", zap.String("pushId", payload.Push.PushID), zap.Any("message", msg))
+	w.logger.Debug("Send push", zap.String("templateId", string(payload.Push.TemplateID)), zap.Any("message", msg))
 	sendFn := func() error {
 		return w.sendMessaing(ctx, msg, payload.UserType, tokens)
 	}

@@ -21,6 +21,30 @@ const handleClickBuyButton = (coordinatorId: string) => {
   }
 }
 
+const handleClickCartBuyButton = (
+  coordinatorId: string,
+  cartNumber: number,
+) => {
+  if (isAuthenticated.value) {
+    router.push({
+      path: '/v1/purchase/address',
+      query: {
+        coordinatorId,
+        cartNumber,
+      },
+    })
+  } else {
+    router.push({
+      path: '/v1/purchase/auth',
+      query: {
+        required: true,
+        coordinatorId,
+        cartNumber,
+      },
+    })
+  }
+}
+
 const handelClickRemoveItemFromCartButton = (
   cartNumber: number,
   id: string,
@@ -44,9 +68,7 @@ useSeoMeta({
 
       <ul class="list-disc px-6">
         <li>マルシェごとのご注文手続き・お届けとなります。</li>
-        <li>
-          買い物カゴごとに送料がかかります。詳しくはこちらからご確認ください。
-        </li>
+        <li>買い物カゴごとに送料がかかります。</li>
       </ul>
     </div>
 
@@ -58,6 +80,7 @@ useSeoMeta({
         :cart-number="cartItem.number"
         :coordinator="cartItem.coordinator"
         :items="cartItem.items"
+        @click:cart-buy-button="handleClickCartBuyButton"
         @click:buy-button="handleClickBuyButton"
         @click:remove-item-from-cart="handelClickRemoveItemFromCartButton"
       />

@@ -3,8 +3,9 @@ import useVuelidate from '@vuelidate/core'
 import { mdiFacebook, mdiInstagram } from '@mdi/js'
 import type { AlertType } from '~/lib/hooks'
 import { type CreateCoordinatorRequest, Prefecture, type ProductType, Weekday } from '~/types/api'
-import { email, kana, getErrorMessage, maxLength, required, tel } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import type { ImageUploadStatus } from '~/types/props'
+import { CreateCoordinatorValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -113,26 +114,12 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const rules = computed(() => ({
-  lastname: { required, maxLength: maxLength(16) },
-  firstname: { required, maxLength: maxLength(16) },
-  lastnameKana: { required, kana, maxLength: maxLength(32) },
-  firstnameKana: { required, kana, maxLength: maxLength(32) },
-  marcheName: { required, maxLength: maxLength(64) },
-  username: { required, maxLength: maxLength(64) },
-  email: { required, email },
-  phoneNumber: { required, tel },
-  profile: { maxLength: maxLength(2000) },
-  instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) },
-  businessDays: {}
-}))
 const formDataValue = computed({
   get: (): CreateCoordinatorRequest => props.formData,
   set: (formData: CreateCoordinatorRequest): void => emit('update:form-data', formData)
 })
 
-const validate = useVuelidate(rules, formDataValue)
+const validate = useVuelidate(CreateCoordinatorValidationRules, formDataValue)
 
 const onChangeThumbnailFile = (files?: FileList) => {
   if (!files) {
@@ -252,6 +239,7 @@ const onClickSearchAddress = (): void => {
           <v-col cols="12" ms="12" lg="6">
             <molecules-video-select-form
               label="紹介動画"
+              :loading="loading"
               :video-url="formDataValue.promotionVideoUrl"
               :error="props.promotionVideoUploadStatus.error"
               :message="props.promotionVideoUploadStatus.message"
@@ -261,6 +249,7 @@ const onClickSearchAddress = (): void => {
           <v-col cols="12" sm="12" lg="6">
             <molecules-video-select-form
               label="サンキュー動画"
+              :loading="loading"
               :video-url="formDataValue.bonusVideoUrl"
               :error="props.bonusVideoUploadStatus.error"
               :message="props.bonusVideoUploadStatus.message"
@@ -323,6 +312,7 @@ const onClickSearchAddress = (): void => {
           <v-col cols="12" sm="6" md="6">
             <molecules-icon-select-form
               label="アイコン画像"
+              :loading="loading"
               :img-url="formDataValue.thumbnailUrl"
               :error="props.thumbnailUploadStatus.error"
               :message="props.thumbnailUploadStatus.message"
@@ -332,6 +322,7 @@ const onClickSearchAddress = (): void => {
           <v-col cols="12" sm="6" md="6">
             <molecules-image-select-form
               label="ヘッダー画像"
+              :loading="loading"
               :img-url="formDataValue.headerUrl"
               :error="props.headerUploadStatus.error"
               :message="props.headerUploadStatus.message"

@@ -36,7 +36,7 @@ func TestReportTemplate_Get(t *testing.T) {
 	require.NoError(t, err)
 
 	type args struct {
-		reportID string
+		reportID entity.ReportTemplateID
 	}
 	type want struct {
 		template *entity.ReportTemplate
@@ -89,7 +89,7 @@ func TestReportTemplate_Get(t *testing.T) {
 	}
 }
 
-func testReportTemplate(id string, now time.Time) *entity.ReportTemplate {
+func testReportTemplate(id entity.ReportTemplateID, now time.Time) *entity.ReportTemplate {
 	return &entity.ReportTemplate{
 		TemplateID: id,
 		Template:   "テンプレート: {{.Body}}",

@@ -5,16 +5,10 @@ import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, type ProductTag, type ProductType, StorageMethodType, type UpdateProductRequest, Weekday, AdminRole } from '~/types/api'
-import {
-  required,
-  getErrorMessage,
-  maxLength,
-  minValue,
-  maxValue,
-  maxLengthArray
-} from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { prefecturesList, cityList, type PrefecturesListItem, type CityListItem } from '~/constants'
 import type { ProductTime } from '~/types/props'
+import { TimeDataValidationRules, UpdateProductValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -161,37 +155,6 @@ const deliveryTypes = [
 ]
 const itemUnits = ['個', '瓶']
 
-const formDataRules = computed(() => ({
-  name: { required, maxLength: maxLength(128) },
-  description: { required },
-  public: {},
-  productTypeId: { required },
-  productTagIds: { maxLengthArray: maxLengthArray(8) },
-  media: { maxLengthArray: maxLengthArray(8) },
-  price: { required, minValue: minValue(0) },
-  cost: { required, minValue: minValue(0) },
-  inventory: { required, minValue: minValue(0) },
-  weight: { required, minValue: minValue(0) },
-  itemUnit: { required },
-  itemDescription: { required },
-  deliveryType: { required },
-  recommendedPoint1: { maxLength: maxLength(128) },
-  recommendedPoint2: { maxLength: maxLength(128) },
-  recommendedPoint3: { maxLength: maxLength(128) },
-  expirationDate: { required, minValue: minValue(0) },
-  storageMethodType: { required },
-  box60Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
-  box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
-  box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
-  originPrefectureCode: {},
-  originCity: {}
-}))
-const timeDataRules = computed(() => ({
-  startDate: { required },
-  startTime: { required },
-  endDate: { required },
-  endTime: { required }
-}))
 const formDataValue = computed({
   get: (): UpdateProductRequest => props.formData,
   set: (v: UpdateProductRequest): void => emit('update:form-data', v)
@@ -265,8 +228,8 @@ const thumbnailIndex = computed<number>({
 })
 const producerIdValue = computed(() => props.product.producerId)
 
-const formDataValidate = useVuelidate(formDataRules, formDataValue)
-const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+const formDataValidate = useVuelidate(UpdateProductValidationRules, formDataValue)
+const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const isUpdatable = (product?: Product): boolean => {
   if (!product || product.status === ProductStatus.ARCHIVED) {

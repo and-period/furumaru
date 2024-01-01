@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
-import { getErrorMessage, maxLength, required } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { type Schedule, ScheduleStatus, type UpdateScheduleRequest } from '~/types/api'
 import type { ImageUploadStatus, ScheduleTime } from '~/types/props'
+import { TimeDataValidationRules, UpdateScheduleValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -88,16 +89,6 @@ const scheduleValue = computed({
   get: (): Schedule => props.schedule,
   set: (schedule: Schedule): void => emit('update:schedule', schedule)
 })
-const formDataRules = computed(() => ({
-  title: { required, maxLength: maxLength(200) },
-  description: { required, maxLength: maxLength(2000) }
-}))
-const timeDataRules = computed(() => ({
-  startDate: { required },
-  startTime: { required },
-  endDate: { required },
-  endTime: { required }
-}))
 const formDataValue = computed({
   get: (): UpdateScheduleRequest => props.formData,
   set: (formData: UpdateScheduleRequest): void => emit('update:form-data', formData)
@@ -117,8 +108,8 @@ const timeDataValue = computed({
   }
 })
 
-const formDataValidate = useVuelidate(formDataRules, formDataValue)
-const timeDataValidate = useVuelidate(timeDataRules, timeDataValue)
+const formDataValidate = useVuelidate(UpdateScheduleValidationRules, formDataValue)
+const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)
@@ -187,6 +178,7 @@ const onSubmit = async (): Promise<void> => {
               <v-col cols="12" sm="12" md="4">
                 <molecules-image-select-form
                   label="サムネイル画像"
+                  :loading="loading"
                   :img-url="formDataValue.thumbnailUrl"
                   :error="props.thumbnailUploadStatus.error"
                   :message="props.thumbnailUploadStatus.message"
@@ -196,6 +188,7 @@ const onSubmit = async (): Promise<void> => {
               <v-col cols="12" sm="12" md="4">
                 <molecules-video-select-form
                   label="オープニング動画"
+                  :loading="loading"
                   :video-url="formDataValue.openingVideoUrl"
                   :error="props.openingVideoUploadStatus.error"
                   :message="props.openingVideoUploadStatus.message"
@@ -205,6 +198,7 @@ const onSubmit = async (): Promise<void> => {
               <v-col cols="12" sm="12" md="4">
                 <molecules-image-select-form
                   label="待機中の画像"
+                  :loading="loading"
                   :accept="['image/png']"
                   :img-url="formDataValue.imageUrl"
                   :error="props.imageUploadStatus.error"

@@ -9,12 +9,12 @@ import (
 
 // PushTemplate - プッシュテンプレート
 type PushTemplate struct {
-	TemplateID    string    `gorm:"primaryKey;column:id;<-:create"` // プッシュ通知ID
-	TitleTemplate string    `gorm:""`                               // テンプレート(件名)
-	BodyTemplate  string    `gorm:""`                               // テンプレート(内容)
-	ImageURL      string    `gorm:""`                               // 添付画像URL
-	CreatedAt     time.Time `gorm:"<-:create"`                      // 登録日時
-	UpdatedAt     time.Time `gorm:""`                               // 更新日時
+	TemplateID    PushTemplateID `gorm:"primaryKey;column:id;<-:create"` // プッシュ通知ID
+	TitleTemplate string         `gorm:""`                               // テンプレート(件名)
+	BodyTemplate  string         `gorm:""`                               // テンプレート(内容)
+	ImageURL      string         `gorm:""`                               // 添付画像URL
+	CreatedAt     time.Time      `gorm:"<-:create"`                      // 登録日時
+	UpdatedAt     time.Time      `gorm:""`                               // 更新日時
 }
 
 func (t *PushTemplate) Build(fields map[string]string) (string, string, error) {

@@ -35,15 +35,15 @@ const (
 // Admin - 管理者共通情報
 type Admin struct {
 	ID            string         `gorm:"primaryKey;<-:create"` // 管理者ID
-	CognitoID     string         `gorm:"<-:create"`            // 管理者ID (Cognito用)
+	CognitoID     string         `gorm:"default:null"`         // 管理者ID (Cognito用)
 	Role          AdminRole      `gorm:"<-:create"`            // 管理者権限
 	Status        AdminStatus    `gorm:"-"`                    // 管理者ステータス
-	Lastname      string         `gorm:""`                     // 姓
-	Firstname     string         `gorm:""`                     // 名
-	LastnameKana  string         `gorm:""`                     // 姓(かな)
-	FirstnameKana string         `gorm:""`                     // 名(かな)
-	Email         string         `gorm:""`                     // メールアドレス
-	Device        string         `gorm:""`                     // デバイストークン(Push通知用)
+	Lastname      string         `gorm:"default:null"`         // 姓
+	Firstname     string         `gorm:"default:null"`         // 名
+	LastnameKana  string         `gorm:"default:null"`         // 姓(かな)
+	FirstnameKana string         `gorm:"default:null"`         // 名(かな)
+	Email         string         `gorm:"default:null"`         // メールアドレス
+	Device        string         `gorm:"default:null"`         // デバイストークン(Push通知用)
 	FirstSignInAt time.Time      `gorm:"default:null"`         // 初回ログイン日時
 	LastSignInAt  time.Time      `gorm:"default:null"`         // 最終ログイン日時
 	CreatedAt     time.Time      `gorm:"<-:create"`            // 登録日時
@@ -98,6 +98,11 @@ func (a *Admin) Name() string {
 }
 
 func (a *Admin) Fill() {
+	if a.Role == AdminRoleProducer {
+		// 生産者は認証機能を持たないため、一律無効状態にする
+		a.Status = AdminStatusDeactivated
+		return
+	}
 	switch {
 	case !a.DeletedAt.Time.IsZero():
 		a.Status = AdminStatusDeactivated

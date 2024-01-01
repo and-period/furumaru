@@ -648,20 +648,6 @@ func (mr *MockServiceMockRecorder) RegisterAdminDevice(ctx, in interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterAdminDevice", reflect.TypeOf((*MockService)(nil).RegisterAdminDevice), ctx, in)
 }
 
-// RelateProducers mocks base method.
-func (m *MockService) RelateProducers(ctx context.Context, in *user.RelateProducersInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RelateProducers", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// RelateProducers indicates an expected call of RelateProducers.
-func (mr *MockServiceMockRecorder) RelateProducers(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RelateProducers", reflect.TypeOf((*MockService)(nil).RelateProducers), ctx, in)
-}
-
 // RemoveCoordinatorProductType mocks base method.
 func (m *MockService) RemoveCoordinatorProductType(ctx context.Context, in *user.RemoveCoordinatorProductTypeInput) error {
 	m.ctrl.T.Helper()
@@ -702,20 +688,6 @@ func (m *MockService) ResetCoordinatorPassword(ctx context.Context, in *user.Res
 func (mr *MockServiceMockRecorder) ResetCoordinatorPassword(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetCoordinatorPassword", reflect.TypeOf((*MockService)(nil).ResetCoordinatorPassword), ctx, in)
-}
-
-// ResetProducerPassword mocks base method.
-func (m *MockService) ResetProducerPassword(ctx context.Context, in *user.ResetProducerPasswordInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ResetProducerPassword", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// ResetProducerPassword indicates an expected call of ResetProducerPassword.
-func (mr *MockServiceMockRecorder) ResetProducerPassword(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetProducerPassword", reflect.TypeOf((*MockService)(nil).ResetProducerPassword), ctx, in)
 }
 
 // SignInAdmin mocks base method.
@@ -774,20 +746,6 @@ func (m *MockService) SignOutUser(ctx context.Context, in *user.SignOutUserInput
 func (mr *MockServiceMockRecorder) SignOutUser(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignOutUser", reflect.TypeOf((*MockService)(nil).SignOutUser), ctx, in)
-}
-
-// UnrelateProducer mocks base method.
-func (m *MockService) UnrelateProducer(ctx context.Context, in *user.UnrelateProducerInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UnrelateProducer", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UnrelateProducer indicates an expected call of UnrelateProducer.
-func (mr *MockServiceMockRecorder) UnrelateProducer(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnrelateProducer", reflect.TypeOf((*MockService)(nil).UnrelateProducer), ctx, in)
 }
 
 // UpdateAddress mocks base method.
@@ -928,20 +886,6 @@ func (m *MockService) UpdateProducer(ctx context.Context, in *user.UpdateProduce
 func (mr *MockServiceMockRecorder) UpdateProducer(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProducer", reflect.TypeOf((*MockService)(nil).UpdateProducer), ctx, in)
-}
-
-// UpdateProducerEmail mocks base method.
-func (m *MockService) UpdateProducerEmail(ctx context.Context, in *user.UpdateProducerEmailInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateProducerEmail", ctx, in)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateProducerEmail indicates an expected call of UpdateProducerEmail.
-func (mr *MockServiceMockRecorder) UpdateProducerEmail(ctx, in interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProducerEmail", reflect.TypeOf((*MockService)(nil).UpdateProducerEmail), ctx, in)
 }
 
 // UpdateProducerHeaders mocks base method.

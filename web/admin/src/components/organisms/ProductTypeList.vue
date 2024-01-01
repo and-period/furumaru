@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { mdiAccount, mdiPencil, mdiDelete, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+
 import { AdminRole, type Category, type CreateProductTypeRequest, type ProductType, type UpdateProductTypeRequest } from '~/types/api'
 import { type ImageUploadStatus } from '~/types/props'
-import { required, getErrorMessage, maxLength } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
 import { getResizedImages } from '~/lib/helpers'
+import { CreateProductTypeValidationRules, UpdateProductTypeValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -148,14 +150,6 @@ const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val)
 })
-const createFormDataRules = computed(() => ({
-  name: { required, maxlength: maxLength(32) },
-  iconUrl: { required }
-}))
-const updateFormDataRules = computed(() => ({
-  name: { required, maxlength: maxLength(32) },
-  iconUrl: { required }
-}))
 const createFormDataValue = computed({
   get: (): CreateProductTypeRequest => props.createFormData,
   set: (formData: CreateProductTypeRequest): void => emit('update:create-form-data', formData)
@@ -165,8 +159,8 @@ const updateFormDataValue = computed({
   set: (formData: UpdateProductTypeRequest): void => emit('update:update-form-data', formData)
 })
 
-const createFormDataValidate = useVuelidate(createFormDataRules, createFormDataValue)
-const updateFormDataValidate = useVuelidate(updateFormDataRules, updateFormDataValue)
+const createFormDataValidate = useVuelidate(CreateProductTypeValidationRules, createFormDataValue)
+const updateFormDataValidate = useVuelidate(UpdateProductTypeValidationRules, updateFormDataValue)
 
 const isRegisterable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR
@@ -285,6 +279,7 @@ const onSubmitDelete = (): void => {
         />
         <molecules-image-select-form
           label="アイコン"
+          :loading="loading"
           :img-url="createFormDataValue.iconUrl"
           :error="props.createIconUploadStatus.error"
           :message="props.createIconUploadStatus.message"
@@ -325,6 +320,7 @@ const onSubmitDelete = (): void => {
         />
         <molecules-image-select-form
           label="アイコン"
+          :loading="loading"
           :img-url="updateFormDataValue.iconUrl"
           :error="props.updateIconUploadStatus.error"
           :message="props.updateIconUploadStatus.message"

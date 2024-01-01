@@ -16,7 +16,7 @@ func TestReporter(t *testing.T) {
 	t.Parallel()
 
 	template := &entity.ReportTemplate{
-		TemplateID: entity.ReportIDReceivedContact,
+		TemplateID: entity.ReportTemplateIDReceivedContact,
 		Template:   `{"type":"bubble","body":{"type":"box","contents":[{"type":"text","text":"{{.Overview}}"}]}}`,
 		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
@@ -43,7 +43,7 @@ func TestReporter(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportIDReceivedContact).Return(template, nil)
+				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportTemplateIDReceivedContact).Return(template, nil)
 				mocks.line.EXPECT().PushMessage(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, messages ...linebot.SendingMessage) error {
 						require.Len(t, messages, 1)
@@ -58,9 +58,9 @@ func TestReporter(t *testing.T) {
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeReceivedContact,
 				Report: &entity.ReportConfig{
-					ReportID: entity.ReportIDReceivedContact,
-					Overview: "お問い合わせ件名",
-					Link:     "htts://admin.and-period.jp/contacts/contact-id",
+					TemplateID: entity.ReportTemplateIDReceivedContact,
+					Overview:   "お問い合わせ件名",
+					Link:       "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
 			expectErr: nil,
@@ -68,15 +68,15 @@ func TestReporter(t *testing.T) {
 		{
 			name: "failed to get report template",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportIDReceivedContact).Return(nil, assert.AnError)
+				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportTemplateIDReceivedContact).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeReceivedContact,
 				Report: &entity.ReportConfig{
-					ReportID: entity.ReportIDReceivedContact,
-					Overview: "お問い合わせ件名",
-					Link:     "htts://admin.and-period.jp/contacts/contact-id",
+					TemplateID: entity.ReportTemplateIDReceivedContact,
+					Overview:   "お問い合わせ件名",
+					Link:       "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
 			expectErr: assert.AnError,
@@ -84,16 +84,16 @@ func TestReporter(t *testing.T) {
 		{
 			name: "failed to push line message",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportIDReceivedContact).Return(template, nil)
+				mocks.db.ReportTemplate.EXPECT().Get(ctx, entity.ReportTemplateIDReceivedContact).Return(template, nil)
 				mocks.line.EXPECT().PushMessage(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeReceivedContact,
 				Report: &entity.ReportConfig{
-					ReportID: entity.ReportIDReceivedContact,
-					Overview: "お問い合わせ件名",
-					Link:     "htts://admin.and-period.jp/contacts/contact-id",
+					TemplateID: entity.ReportTemplateIDReceivedContact,
+					Overview:   "お問い合わせ件名",
+					Link:       "htts://admin.and-period.jp/contacts/contact-id",
 				},
 			},
 			expectErr: assert.AnError,

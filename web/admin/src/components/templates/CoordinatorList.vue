@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiAccount, mdiDelete } from '@mdi/js'
-import { VDataTable } from 'vuetify/labs/components'
+import { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 
 import { getResizedImages } from '~/lib/helpers'

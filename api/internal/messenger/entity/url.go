@@ -29,7 +29,7 @@ func (m *AdminURLMaker) SignIn() string {
 
 // Contact - お問い合わせ詳細
 func (m *AdminURLMaker) Contact(contactID string) string {
-	// e.g.) /contacts/contact-id
+	// e.g.) /contacts/:contact-id
 	paths := []string{"contacts", contactID}
 	webURL := *m.url // copy
 	webURL.Path = strings.Join(paths, "/")
@@ -38,7 +38,7 @@ func (m *AdminURLMaker) Contact(contactID string) string {
 
 // Notification - お知らせ詳細
 func (m *AdminURLMaker) Notification(notificationID string) string {
-	// e.g.) /notifications/notification-id
+	// e.g.) /notifications/:notification-id
 	paths := []string{"notifications", notificationID}
 	webURL := *m.url // copy
 	webURL.Path = strings.Join(paths, "/")
@@ -62,6 +62,14 @@ func NewUserURLMaker(url *url.URL) *UserURLMaker {
 func (m *UserURLMaker) SignIn() string {
 	// e.g.) /signin
 	paths := []string{"signin"}
+	webURL := *m.url // copy
+	webURL.Path = strings.Join(paths, "/")
+	return webURL.String()
+}
+
+func (m *UserURLMaker) Live(scheduleID string) string {
+	// e.g.) /live/:live-id
+	paths := []string{"live", scheduleID}
 	webURL := *m.url // copy
 	webURL.Path = strings.Join(paths, "/")
 	return webURL.String()

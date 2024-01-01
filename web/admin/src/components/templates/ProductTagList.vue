@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPencil, mdiPlus } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import useVuelidate from '@vuelidate/core'
+
 import type { AlertType } from '~/lib/hooks'
 import { AdminRole, type CreateProductTagRequest, type ProductTag, type UpdateProductTagRequest } from '~/types/api'
-import { required, getErrorMessage, maxLength } from '~/lib/validations'
+import { getErrorMessage } from '~/lib/validations'
+import { CreateProductTagValidationRules, UpdateProductTagValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -99,12 +101,6 @@ const headers: VDataTable['headers'] = [
 
 const selectedItem = ref<ProductTag>()
 
-const newFormDataRules = computed(() => ({
-  name: { required, maxlength: maxLength(32) }
-}))
-const editFormDataRules = computed(() => ({
-  name: { required, maxlength: maxLength(32) }
-}))
 const newDialogValue = computed({
   get: (): boolean => props.newDialog,
   set: (toggle: boolean): void => emit('update:new-dialog', toggle)
@@ -126,8 +122,8 @@ const editFormDataValue = computed({
   set: (formData: UpdateProductTagRequest): void => emit('update:edit-form-data', formData)
 })
 
-const newValidate = useVuelidate<CreateProductTagRequest>(newFormDataRules, newFormDataValue)
-const editValidate = useVuelidate<UpdateProductTagRequest>(editFormDataRules, editFormDataValue)
+const newValidate = useVuelidate<CreateProductTagRequest>(CreateProductTagValidationRules, newFormDataValue)
+const editValidate = useVuelidate<UpdateProductTagRequest>(UpdateProductTagValidationRules, editFormDataValue)
 
 const isRegisterable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR

@@ -1,0 +1,55 @@
+import type { ValidationArgs } from '@vuelidate/core'
+import { maxLength, maxLengthArray, maxValue, minValue, required } from '~/lib/validations'
+
+export const CreateProductValidationRules: ValidationArgs = {
+  name: { required, maxLength: maxLength(128) },
+  description: { required, maxLength: maxLength(20000) },
+  public: {},
+  producerId: { required },
+  productTypeId: { required },
+  productTagIds: { maxLengthArray: maxLengthArray(8) },
+  media: { maxLengthArray: maxLengthArray(8) },
+  price: { required, minValue: minValue(0) },
+  cost: { required, minValue: minValue(0) },
+  inventory: { required, minValue: minValue(0) },
+  weight: { required, minValue: minValue(0) },
+  itemUnit: { required, maxValue: maxValue(16) },
+  itemDescription: { required, maxValue: maxValue(64) },
+  deliveryType: { required },
+  recommendedPoint1: { maxLength: maxLength(128) },
+  recommendedPoint2: { maxLength: maxLength(128) },
+  recommendedPoint3: { maxLength: maxLength(128) },
+  expirationDate: { required, minValue: minValue(0) },
+  storageMethodType: { required },
+  box60Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
+  box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
+  box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
+  originPrefectureCode: { required },
+  originCity: { required, maxValue: maxValue(32) }
+}
+
+export const UpdateProductValidationRules: ValidationArgs = {
+  name: { required, maxLength: maxLength(128) },
+  description: { required, maxLength: maxLength(20000) },
+  public: {},
+  productTypeId: { required },
+  productTagIds: { maxLengthArray: maxLengthArray(8) },
+  media: { maxLengthArray: maxLengthArray(8) },
+  price: { required, minValue: minValue(0) },
+  cost: { required, minValue: minValue(0) },
+  inventory: { required, minValue: minValue(0) },
+  weight: { required, minValue: minValue(0) },
+  itemUnit: { required, maxValue: maxValue(16) },
+  itemDescription: { required, maxValue: maxValue(64) },
+  deliveryType: { required },
+  recommendedPoint1: { maxLength: maxLength(128) },
+  recommendedPoint2: { maxLength: maxLength(128) },
+  recommendedPoint3: { maxLength: maxLength(128) },
+  expirationDate: { required, minValue: minValue(0) },
+  storageMethodType: { required },
+  box60Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
+  box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
+  box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
+  originPrefectureCode: { required },
+  originCity: { required, maxValue: maxValue(32) }
+}

@@ -31,6 +31,16 @@ export const useCoordinatorStore = defineStore('coordinator', {
         // 関連product
         product: state.coordinatorResponse.productTypes,
       }
+    },
+    archives(state) {
+      return {
+        ...state.coordinatorResponse.archives,
+      }
+    },
+    lives(state) {
+      return {
+        ...state.coordinatorResponse.lives,
+      }
     }
   }
 })

@@ -1,6 +1,4 @@
 export default defineNuxtConfig({
-  dev: false,
-  telemetry: false,
   ssr: false,
   srcDir: 'src',
   app: {

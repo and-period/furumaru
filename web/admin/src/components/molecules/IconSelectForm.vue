@@ -2,6 +2,10 @@
 import { mdiPlus } from '@mdi/js'
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
   label: {
     type: String,
     default: ''
@@ -51,7 +55,14 @@ const onChangeFile = (): void => {
 <template>
   <div class="d-flex flex-column flex-grow-1 flex-shrink-1 pb-4">
     <p>{{ props.label }}の設定</p>
-    <v-card class="text-center" role="button" flat @click="onClick">
+    <v-card
+      :disabled="loading"
+      :loading="loading"
+      class="text-center"
+      role="button"
+      flat
+      @click="onClick"
+    >
       <v-card-text>
         <div class="mb-4">
           <v-avatar v-if="props.imgUrl === ''" size="80" :icon="mdiPlus" />

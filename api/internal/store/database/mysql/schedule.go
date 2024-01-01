@@ -52,6 +52,7 @@ func (p listSchedulesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.OnlyPublished {
 		stmt = stmt.Where("public = ?", true).Where("approved = ?", true)
 	}
+	stmt = stmt.Order("start_at DESC, end_at ASC")
 	return stmt
 }
 

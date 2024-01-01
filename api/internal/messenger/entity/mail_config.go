@@ -8,16 +8,21 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
+// EmailTemplateID - メールテンプレートID
+type EmailTemplateID string
+
 const (
-	EmailIDAdminRegister       = "admin-register"        // 管理者登録
-	EmailIDAdminResetPassword  = "admin-reset-password"  // 管理者パスワードリセット
-	EmailIDUserReceivedContact = "user-received-contact" // お問い合わせ受領
-	EmailIDUserOrderAuthorized = "user-order-authorized" // 支払い完了
+	EmailTemplateIDAdminRegister       EmailTemplateID = "admin-register"        // 管理者登録
+	EmailTemplateIDAdminResetPassword  EmailTemplateID = "admin-reset-password"  // 管理者パスワードリセット
+	EmailTemplateIDUserReceivedContact EmailTemplateID = "user-received-contact" // お問い合わせ受領
+	EmailTemplateIDUserOrderAuthorized EmailTemplateID = "user-order-authorized" // 支払い完了
+	EmailTemplateIDUserOrderShipped    EmailTemplateID = "user-order-shipped"    // 発送完了
+	EmailTemplateIDUserStartLive       EmailTemplateID = "user-start-live"       // ライブ配信開始
 )
 
 // MailConfig - メール送信設定
 type MailConfig struct {
-	EmailID       string            `json:"emailId"`       // メールテンプレートID
+	TemplateID    EmailTemplateID   `json:"templateId"`    // メールテンプレートID
 	Substitutions map[string]string `json:"substitutions"` // メール動的内容
 }
 
@@ -73,6 +78,15 @@ func (b *TemplateDataBuilder) Contact(title, body string) *TemplateDataBuilder {
 	return b
 }
 
+func (b *TemplateDataBuilder) Live(title, coordinator string, startAt, endAt time.Time) *TemplateDataBuilder {
+	b.data["タイトル"] = title
+	b.data["コーディネータ名"] = coordinator
+	b.data["開催日"] = startAt.Format(time.DateOnly)
+	b.data["開始時間"] = startAt.Format("15:04")
+	b.data["終了時間"] = endAt.Format("15:04")
+	return b
+}
+
 func (b *TemplateDataBuilder) Order(order *sentity.Order) *TemplateDataBuilder {
 	b.data["決済方法"] = newPaymentMethodName(order.OrderPayment.MethodType)
 	b.data["商品金額"] = strconv.FormatInt(order.OrderPayment.Subtotal, 10)
@@ -80,6 +94,11 @@ func (b *TemplateDataBuilder) Order(order *sentity.Order) *TemplateDataBuilder {
 	b.data["配送手数料"] = strconv.FormatInt(order.OrderPayment.ShippingFee, 10)
 	b.data["消費税"] = strconv.FormatInt(order.OrderPayment.Tax, 10)
 	b.data["合計金額"] = strconv.FormatInt(order.OrderPayment.Total, 10)
+	return b
+}
+
+func (b *TemplateDataBuilder) Shipped(message string) *TemplateDataBuilder {
+	b.data["メッセージ"] = message
 	return b
 }
 

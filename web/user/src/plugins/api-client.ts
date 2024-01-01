@@ -8,6 +8,7 @@ import {
   CoordinatorApi,
   ProductApi,
   ScheduleApi,
+  StatusApi,
   TopApi,
 } from '~/types/api'
 
@@ -46,6 +47,9 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   const coordinatorApiClient = (token?: string): CoordinatorApi =>
     apiClientFactory.create(CoordinatorApi, token)
 
+  // 支払いシステム状態取得API
+  const statusApiClient = (): StatusApi => apiClientFactory.create(StatusApi)
+
   store.authApiClient = authApiClient
   store.topPageApiClient = topPageApiClient
   store.productApiClient = productApiClient
@@ -54,6 +58,7 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   store.checkoutApiClient = checkoutApiClient
   store.scheduleApiClient = scheduleApiClient
   store.coordinatorApiClient = coordinatorApiClient
+  store.statusApiClient = statusApiClient
 }
 
 /**

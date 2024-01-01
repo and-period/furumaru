@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -107,6 +108,16 @@ func (s *service) CreateNotification(
 	if err := s.db.Notification.Create(ctx, notification); err != nil {
 		return nil, internalError(err)
 	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		in := &messenger.ReserveNotificationInput{
+			NotificationID: notification.ID,
+		}
+		if err := s.ReserveNotification(context.Background(), in); err != nil {
+			s.logger.Error("Failed to reserve notification", zap.String("notificationId", notification.ID), zap.Error(err))
+		}
+	}()
 	return notification, nil
 }
 
@@ -148,8 +159,20 @@ func (s *service) UpdateNotification(ctx context.Context, in *messenger.UpdateNo
 		PublishedAt: in.PublishedAt,
 		UpdatedBy:   in.UpdatedBy,
 	}
-	err = s.db.Notification.Update(ctx, in.NotificationID, params)
-	return internalError(err)
+	if err := s.db.Notification.Update(ctx, in.NotificationID, params); err != nil {
+		return internalError(err)
+	}
+	s.waitGroup.Add(1)
+	go func() {
+		defer s.waitGroup.Done()
+		in := &messenger.ReserveNotificationInput{
+			NotificationID: notification.ID,
+		}
+		if err := s.ReserveNotification(context.Background(), in); err != nil {
+			s.logger.Error("Failed to reserve notification", zap.String("notificationId", notification.ID), zap.Error(err))
+		}
+	}()
+	return nil
 }
 
 func (s *service) DeleteNotification(ctx context.Context, in *messenger.DeleteNotificationInput) error {

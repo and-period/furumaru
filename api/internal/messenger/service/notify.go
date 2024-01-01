@@ -12,6 +12,41 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// NotifyStartLive - ライブ配信開始
+func (s *service) NotifyStartLive(ctx context.Context, in *messenger.NotifyStartLiveInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	scheduleIn := &store.GetScheduleInput{
+		ScheduleID: in.ScheduleID,
+	}
+	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
+	if err != nil {
+		return internalError(err)
+	}
+	coordinatorIn := &user.GetCoordinatorInput{
+		CoordinatorID: schedule.CoordinatorID,
+	}
+	coordinator, err := s.user.GetCoordinator(ctx, coordinatorIn)
+	if err != nil {
+		return internalError(err)
+	}
+	maker := entity.NewUserURLMaker(s.userWebURL())
+	builder := entity.NewTemplateDataBuilder().
+		Live(schedule.Title, coordinator.Username, schedule.StartAt, schedule.EndAt).
+		WebURL(maker.Live(schedule.ID))
+	mail := &entity.MailConfig{
+		TemplateID:    entity.EmailTemplateIDUserStartLive,
+		Substitutions: builder.Build(),
+	}
+	payload := &entity.WorkerPayload{
+		EventType: entity.EventTypeStartLive,
+		Email:     mail,
+	}
+	err = s.sendAllUsers(ctx, payload)
+	return internalError(err)
+}
+
 // NotifyOrderAuthorized - 支払い完了
 func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.NotifyOrderAuthorizedInput) error {
 	if err := s.validator.Struct(in); err != nil {
@@ -26,12 +61,42 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 	}
 	builder := entity.NewTemplateDataBuilder().Order(order)
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDUserOrderAuthorized,
+		TemplateID:    entity.EmailTemplateIDUserOrderAuthorized,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
 		EventType: entity.EventTypeOrderAuthorized,
+		UserType:  entity.UserTypeUser,
+		UserIDs:   []string{order.UserID},
+		Email:     mail,
+	}
+	err = s.sendMessage(ctx, payload)
+	return internalError(err)
+}
+
+// NotifyOrderShipped - 発送完了
+func (s *service) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOrderShippedInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	orderIn := &store.GetOrderInput{
+		OrderID: in.OrderID,
+	}
+	order, err := s.store.GetOrder(ctx, orderIn)
+	if err != nil {
+		return internalError(err)
+	}
+	builder := entity.NewTemplateDataBuilder().
+		Order(order).
+		Shipped(order.ShippingMessage)
+	mail := &entity.MailConfig{
+		TemplateID:    entity.EmailTemplateIDUserOrderShipped,
+		Substitutions: builder.Build(),
+	}
+	payload := &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeOrderShipped,
 		UserType:  entity.UserTypeUser,
 		UserIDs:   []string{order.UserID},
 		Email:     mail,
@@ -50,7 +115,7 @@ func (s *service) NotifyRegisterAdmin(ctx context.Context, in *messenger.NotifyR
 		WebURL(maker.SignIn()).
 		Password(in.Password)
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDAdminRegister,
+		TemplateID:    entity.EmailTemplateIDAdminRegister,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{
@@ -74,7 +139,7 @@ func (s *service) NotifyResetAdminPassword(ctx context.Context, in *messenger.No
 		WebURL(maker.SignIn()).
 		Password(in.Password)
 	mail := &entity.MailConfig{
-		EmailID:       entity.EmailIDAdminResetPassword,
+		TemplateID:    entity.EmailTemplateIDAdminResetPassword,
 		Substitutions: builder.Build(),
 	}
 	payload := &entity.WorkerPayload{
@@ -94,6 +159,13 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 		return internalError(err)
 	}
 	notification, err := s.db.Notification.Get(ctx, in.NotificationID)
+	if err != nil {
+		return internalError(err)
+	}
+	adminIn := &user.GetAdminInput{
+		AdminID: notification.CreatedBy,
+	}
+	admin, err := s.user.GetAdmin(ctx, adminIn)
 	if err != nil {
 		return internalError(err)
 	}
@@ -125,9 +197,10 @@ func (s *service) NotifyNotification(ctx context.Context, in *messenger.NotifyNo
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
-		ReportID:    entity.ReportIDNotification,
+		TemplateID:  entity.ReportTemplateIDNotification,
 		Overview:    notification.Title,
 		Detail:      notification.Body,
+		Author:      admin.Name(),
 		Link:        maker.Notification(notification.ID),
 		PublishedAt: notification.PublishedAt,
 	}
@@ -144,9 +217,10 @@ func (s *service) notifyUserNotification(ctx context.Context, notification *enti
 		return nil
 	}
 	message := &entity.MessageConfig{
-		MessageID:   entity.MessageIDNotification,
+		TemplateID:  notification.TemplateID(),
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
+		Detail:      notification.Body,
 		ReceivedAt:  s.now(),
 	}
 	payload := &entity.WorkerPayload{
@@ -159,9 +233,10 @@ func (s *service) notifyUserNotification(ctx context.Context, notification *enti
 func (s *service) notifyAdminNotification(ctx context.Context, notification *entity.Notification) error {
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	message := &entity.MessageConfig{
-		MessageID:   entity.MessageIDNotification,
+		TemplateID:  notification.TemplateID(),
 		MessageType: entity.MessageTypeNotification,
 		Title:       notification.Title,
+		Detail:      notification.Body,
 		Link:        maker.Notification(notification.ID),
 		ReceivedAt:  s.now(),
 	}

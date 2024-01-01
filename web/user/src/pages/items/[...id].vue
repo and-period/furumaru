@@ -112,16 +112,14 @@ useSeoMeta({
 
   <template v-if="!productFetchState.isLoading && product.thumbnail">
     <div
-      class="bg-white px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 md:px-[112px]"
+      class="gap-4 bg-white px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 md:px-[112px]"
     >
-      <div class="w-full">
-        <div class="mx-auto aspect-square w-full md:h-[500px] md:w-[500px]">
-          <img
-            class="w-full"
-            :src="product.thumbnail.url"
-            :alt="`${product.name}のサムネイル画像`"
-          />
-        </div>
+      <div class="mx-auto aspect-square w-full max-w-[500px]">
+        <img
+          class="w-full"
+          :src="product.thumbnail.url"
+          :alt="`${product.name}のサムネイル画像`"
+        />
       </div>
 
       <div class="flex w-full flex-col gap-4">
@@ -265,65 +263,53 @@ useSeoMeta({
     </div>
   </template>
 
-  <div class="mx-auto mt-[40px] w-full px-[16px] md:mt-[80px] md:w-[1216px]">
-    <div class="w-full rounded-3xl bg-white">
-      <div class="px-[16px] pt-10 md:px-[64px]">
+  <template v-if="product.producer">
+    <div class="mx-auto mt-[40px] w-full px-4 xl:px-28">
+      <div
+        class="flex w-full flex-col rounded-3xl bg-white px-8 py-10 text-main xl:px-16"
+      >
         <p
-          class="mx-auto rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
+          class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
         >
           この商品の生産者
         </p>
-      </div>
-      <div
-        v-if="product.producer"
-        class="mx-auto px-[16px] pt-16 md:grid md:grid-cols-8 md:px-[64px]"
-      >
-        <img
-          :src="product.producer.thumbnailUrl"
-          :alt="`${product.producer.username}`"
-          class="mx-auto aspect-square w-[120px] rounded-full"
-        />
-        <div class="text-main md:col-span-2 md:ml-4">
-          <div class="test-sm flex justify-center gap-3 pt-4 md:gap-4">
-            <p class="text-sm font-[500] tracking-[1.4px]">
-              {{ product.originPrefecture }}
-            </p>
-            <p class="text-sm font-[500] tracking-[1.4px]">
-              {{ product.originCity }}
-            </p>
-          </div>
-          <div class="flex items-end justify-center pt-4">
-            <p class="text-[14px] font-[500] tracking-[1.4px]">生産者</p>
-            <p class="pl-6 text-[16px] tracking-[1.4px] md:text-[24px]">{{ product.producer.username }}</p>
-          </div>
-        </div>
-        <div class="break-words pt-[24px] tracking-[1.4px] md:col-span-5 md:pt-0 md:tracking-[1.6px]">
-          {{ product.producer.profile }}
-        </div>
-      </div>
-      <div class="flex justify-center px-[16px] pb-12 pt-[24px] md:justify-end md:px-[64px] md:pt-[45px]">
-        <button class="flex items-center text-main">
-          詳しく見る
-          <div class="pl-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="7"
-              height="12"
-              viewBox="0 0 7 12"
-              fill="none"
+
+        <div class="mt-[64px] flex w-full flex-col gap-4 md:flex-row lg:gap-10">
+          <div
+            class="flex min-w-max flex-col items-center justify-center gap-4 md:flex-row"
+          >
+            <img
+              :src="product.producer.thumbnailUrl"
+              :alt="`${product.producer.username}`"
+              class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px]"
+            />
+            <div
+              class="flex min-w-max grow flex-col items-center gap-2 md:items-start md:gap-2 md:whitespace-nowrap"
             >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M1 11.3125L0.0302535 10.3428L4.71736 5.65565L0.0302528 0.968538L0.999999 -0.00120831L6.65685 5.65565L1 11.3125Z"
-                fill="#604C3F"
-              />
-            </svg>
+              <p class="text-sm font-[500] tracking-[1.4px]">
+                {{ `${product.originPrefecture} ${product.originCity}` }}
+              </p>
+              <p
+                class="text-[16px] tracking-[1.4px] before:mr-1 before:text-[14px] before:font-medium before:content-['生産者'] md:text-[24px]"
+              >
+                {{ product.producer.username }}
+              </p>
+            </div>
           </div>
-        </button>
+          <div class="pt-[24px] tracking-[1.4px] md:pt-0 md:tracking-[1.6px]">
+            {{ product.producer.profile }}
+          </div>
+        </div>
+
+        <div class="mt-4 w-full text-right">
+          <button class="inline-flex items-center">
+            詳しく見る
+            <the-right-arrow-icon class="ml-2 h-[12px] w-[12px]" />
+          </button>
+        </div>
       </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <style scoped>

@@ -1,11 +1,18 @@
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
-import type {
-  AddCartItemRequest,
-  CalcCartResponse,
-  CartResponse,
+import {
+  PaymentMethodType,
+  type AddCartItemRequest,
+  type CalcCartResponse,
+  type CartResponse,
+  type PaymentSystem,
 } from '~/types/api'
-import type { CalcCart, ProductItem, ShoppingCart } from '~/types/store'
+import type {
+  CalcCart,
+  PaymentSystemStatus,
+  ProductItem,
+  ShoppingCart,
+} from '~/types/store'
 
 /**
  * 買い物かごを管理するグローバルステート
@@ -23,6 +30,8 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         coordinators: [],
         products: [],
       } as CartResponse,
+
+      _paymentSystemStatus: [] as PaymentSystem[],
     }
   },
 
@@ -134,6 +143,43 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         .reduce((sum, price) => sum + price)
       return totalPrice
     },
+
+    availablePaymentSystem: (state): PaymentSystemStatus[] => {
+      // マッピング用の関数を用意
+      const methodNameMappter = (methodType: PaymentMethodType): string => {
+        switch (methodType) {
+          case PaymentMethodType.CASH:
+            return '現金支払い'
+          case PaymentMethodType.CREDIT_CARD:
+            return 'クレジットカード決済'
+          case PaymentMethodType.KONBINI:
+            return 'コンビニ決済'
+          case PaymentMethodType.BANK_TRANSFER:
+            return '銀行振込決済'
+          case PaymentMethodType.PAYPAY:
+            return 'QR決済（PayPay）'
+          case PaymentMethodType.LINE_PAY:
+            return 'QR決済（Line Pay）'
+          case PaymentMethodType.MERPAY:
+            return 'QR決済（メルペイ）'
+          case PaymentMethodType.RAKUTEN_PAY:
+            return 'QR決済（楽天ペイ）'
+          case PaymentMethodType.AU_PAY:
+            return 'QR決済（au PAY）'
+          case PaymentMethodType.UNKNOWN:
+          default:
+            return ''
+        }
+      }
+      return state._paymentSystemStatus
+        .map((item) => {
+          return {
+            ...item,
+            methodName: methodNameMappter(item.methodType),
+          }
+        })
+        .filter((item) => item.status === 1)
+    },
   },
 
   actions: {
@@ -155,16 +201,29 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       this.getCart()
     },
 
-    async calcCartItemByCoordinatorId(coordinatorId: string) {
+    async calcCartItemByCoordinatorId(
+      coordinatorId: string,
+      cartNumber?: number,
+      prefecture?: number,
+    ): Promise<string | undefined> {
       try {
         const authStore = useAuthStore()
         const res = await this.cartApiClient(authStore.accessToken).v1CalcCart({
           coordinatorId,
+          number: cartNumber,
+          prefecture,
         })
         this._calcCartResponseItem = res
+        const requestId = res.requestId
+        return requestId
       } catch (error) {
         return this.errorHandler(error)
       }
+    },
+
+    async fetchAvailablePaymentOptions() {
+      const res = await this.statusApiClient().v1ListPaymentSystems()
+      this._paymentSystemStatus = res.systems
     },
   },
 })

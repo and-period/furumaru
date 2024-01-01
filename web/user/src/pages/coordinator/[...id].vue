@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import { useCoordinatorStore } from '~/store/coordinator'
 
 const route = useRoute()
+const router = useRouter()
 
 const coordinatorStore = useCoordinatorStore()
 
@@ -19,17 +20,22 @@ const id = computed<string>(() => {
   }
 })
 
+const handleClickLiveItem = (id: string) => {
+  router.push(`/live/${id}`)
+}
+
 fetchCoordinator(id.value)
+
 </script>
 
 <template>
-  <div class="h-[1500px]">
-    <div class="relative mx-auto w-[1216px] text-main">
+  <div>
+    <div class="static mx-auto w-[1216px] text-main">
       <img
         class="h-[320px] w-[1216px] object-cover"
         :src="coordinator.coordnatorInfo.value.headerUrl"
       />
-      <div class="absolute top-[236px] grid grid-cols-6">
+      <div class="relative bottom-20 grid grid-cols-7 gap-12">
         <div class="col-span-2">
           <div class="flex justify-center">
             <img
@@ -123,8 +129,50 @@ fetchCoordinator(id.value)
             </div>
           </div>
         </div>
-        <div class="col-span-3 pt-[84px]">
-          <img src="/img/coordinator/marche.svg" />
+        <div class="static col-span-5 pt-[100px] text-main">
+          <div class="flex w-full">
+            <img src="/img/coordinator/marche.svg" class="z-10 w-full" />
+          </div>
+          <div
+            class="relative bottom-8 z-0 w-full justify-end bg-white pt-[65px]"
+          >
+            <div
+              class="mx-auto flex w-[675px] justify-center rounded-3xl bg-base py-[3px] text-[16px]"
+            >
+              配信中・配信予定のマルシェ
+            </div>
+              <div
+                class="mx-auto grid w-[675px] grid-cols-2 gap-8 bg-white pt-4"
+              >
+                <the-coordinator-live-item
+                  v-for="liveItem in coordinator.lives.value"
+                  :id="liveItem.scheduleId"
+                  :key="liveItem.scheduleId"
+                  :title="liveItem.title"
+                  :img-src="liveItem.thumbnailUrl"
+                  :start-at="liveItem.startAt"
+                  :is-live-status="liveItem.status"
+                  @click="handleClickLiveItem(liveItem.scheduleId)"
+                />
+              </div>
+            <div
+              class="mx-auto flex w-[675px] justify-center rounded-3xl bg-base py-[3px] text-[16px]"
+            >
+              過去のマルシェ
+            </div>
+            <div class="mx-auto grid w-[675px] grid-cols-2 gap-8 bg-white pt-4">
+              <the-archive-item
+                v-for="archive in coordinator.archives.value"
+                :id="archive.scheduleId"
+                :key="archive.scheduleId"
+                :title="archive.title"
+                :img-src="archive.thumbnailUrl"
+                :width="320"
+                class="cursor-pointer"
+                @click="handleClickLiveItem(archive.scheduleId)"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

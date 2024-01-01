@@ -89,7 +89,7 @@ const handleSubmit = () => {
       />
       <button
         type="button"
-        class="bg-main px-4 py-1 text-white"
+        class="whitespace-nowrap bg-main px-4 py-1 text-white"
         @click="handleClickSearchAddressButton"
       >
         検索
@@ -98,7 +98,7 @@ const handleSubmit = () => {
     <select
       v-model="formDataValue.prefectureCode"
       :class="{
-        'mb-1 block w-full border-b border-main px-1 py-2 leading-10 text-inherit focus:outline-none': true,
+        'mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none': true,
       }"
       required
     >

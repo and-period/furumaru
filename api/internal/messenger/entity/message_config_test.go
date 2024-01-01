@@ -17,15 +17,17 @@ func TestMessageConfig_Fields(t *testing.T) {
 		{
 			name: "success",
 			message: &MessageConfig{
-				MessageID:   MessageIDNotification,
+				TemplateID:  MessageTemplateIDNotificationSystem,
 				MessageType: MessageTypeNotification,
 				Title:       "メッセージのタイトル",
+				Detail:      "メッセージの詳細です。",
 				Author:      "&.スタッフ",
 				Link:        "https://and-period.jp",
 				ReceivedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 			},
 			expect: map[string]string{
 				"Title":  "メッセージのタイトル",
+				"Detail": "メッセージの詳細です。",
 				"Author": "&.スタッフ",
 			},
 		},

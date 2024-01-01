@@ -8,3 +8,17 @@ checkoutResponse:
   - url
   example:
     url: 'http://example.com/redirect-url'
+checkoutStateResponse:
+  type: object
+  properties:
+    orderId:
+      type: string
+      description: 注文履歴ID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/orderStatus'
+  required:
+  - orderId
+  - status
+  example:
+    orderId: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 5

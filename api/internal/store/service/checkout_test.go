@@ -14,11 +14,163 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestGetCheckoutState(t *testing.T) {
+	t.Parallel()
+	now := jst.Date(2022, 10, 10, 18, 30, 0, 0)
+	order := func(status entity.PaymentStatus) *entity.Order {
+		return &entity.Order{
+			ID:            "order-id",
+			UserID:        "user-id",
+			PromotionID:   "",
+			CoordinatorID: "coordinator-id",
+			CreatedAt:     now,
+			UpdatedAt:     now,
+			OrderPayment: entity.OrderPayment{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				TransactionID:     "transaction-id",
+				Status:            status,
+				MethodType:        entity.PaymentMethodTypeCreditCard,
+				Subtotal:          1100,
+				Discount:          0,
+				ShippingFee:       500,
+				Tax:               160,
+				Total:             1760,
+				CreatedAt:         now,
+				UpdatedAt:         now,
+			},
+			OrderFulfillments: entity.OrderFulfillments{
+				{
+					ID:                "fulfillment-id",
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					Status:            entity.FulfillmentStatusUnfulfilled,
+					TrackingNumber:    "",
+					ShippingCarrier:   entity.ShippingCarrierUnknown,
+					ShippingType:      entity.ShippingTypeNormal,
+					BoxNumber:         1,
+					BoxSize:           entity.ShippingSize60,
+					CreatedAt:         now,
+					UpdatedAt:         now,
+				},
+			},
+			OrderItems: []*entity.OrderItem{
+				{
+					FulfillmentID:     "fufillment-id",
+					ProductRevisionID: 1,
+					OrderID:           "order-id",
+					Quantity:          1,
+					CreatedAt:         now,
+					UpdatedAt:         now,
+				},
+				{
+					FulfillmentID:     "fufillment-id",
+					ProductRevisionID: 2,
+					OrderID:           "order-id",
+					Quantity:          2,
+					CreatedAt:         now,
+					UpdatedAt:         now,
+				},
+			},
+		}
+	}
+	session := &komoju.SessionResponse{
+		ID: "transaction-id",
+		Payment: &komoju.PaymentInfo{
+			Status: komoju.PaymentStatusAuthorized,
+		},
+	}
+	tests := []struct {
+		name          string
+		setup         func(ctx context.Context, mocks *mocks)
+		input         *store.GetCheckoutStateInput
+		expectOrderID string
+		expectStatus  entity.PaymentStatus
+		expectErr     error
+	}{
+		{
+			name: "success when authorized",
+			setup: func(ctx context.Context, mocks *mocks) {
+				order := order(entity.PaymentStatusAuthorized)
+				mocks.db.Order.EXPECT().GetByTransactionID(ctx, "user-id", "transaction-id").Return(order, nil)
+			},
+			input: &store.GetCheckoutStateInput{
+				UserID:        "user-id",
+				TransactionID: "transaction-id",
+			},
+			expectOrderID: "order-id",
+			expectStatus:  entity.PaymentStatusAuthorized,
+			expectErr:     nil,
+		},
+		{
+			name: "success when pending",
+			setup: func(ctx context.Context, mocks *mocks) {
+				order := order(entity.PaymentStatusPending)
+				mocks.db.Order.EXPECT().GetByTransactionID(ctx, "user-id", "transaction-id").Return(order, nil)
+				mocks.komojuSession.EXPECT().Get(ctx, "transaction-id").Return(session, nil)
+			},
+			input: &store.GetCheckoutStateInput{
+				UserID:        "user-id",
+				TransactionID: "transaction-id",
+			},
+			expectOrderID: "order-id",
+			expectStatus:  entity.PaymentStatusAuthorized,
+			expectErr:     nil,
+		},
+		{
+			name:          "invalid argument",
+			setup:         func(ctx context.Context, mocks *mocks) {},
+			input:         &store.GetCheckoutStateInput{},
+			expectOrderID: "",
+			expectStatus:  entity.PaymentStatusUnknown,
+			expectErr:     exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get order",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().GetByTransactionID(ctx, "user-id", "transaction-id").Return(nil, assert.AnError)
+			},
+			input: &store.GetCheckoutStateInput{
+				UserID:        "user-id",
+				TransactionID: "transaction-id",
+			},
+			expectOrderID: "",
+			expectStatus:  entity.PaymentStatusUnknown,
+			expectErr:     exception.ErrInternal,
+		},
+		{
+			name: "failed to get session",
+			setup: func(ctx context.Context, mocks *mocks) {
+				order := order(entity.PaymentStatusPending)
+				mocks.db.Order.EXPECT().GetByTransactionID(ctx, "user-id", "transaction-id").Return(order, nil)
+				mocks.komojuSession.EXPECT().Get(ctx, "transaction-id").Return(nil, assert.AnError)
+			},
+			input: &store.GetCheckoutStateInput{
+				UserID:        "user-id",
+				TransactionID: "transaction-id",
+			},
+			expectOrderID: "order-id",
+			expectStatus:  entity.PaymentStatusUnknown,
+			expectErr:     exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			orderID, status, err := service.GetCheckoutState(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expectOrderID, orderID)
+			assert.Equal(t, tt.expectStatus, status)
+		}))
+	}
+}
 
 func TestCheckoutCreditCard(t *testing.T) {
 	t.Parallel()
