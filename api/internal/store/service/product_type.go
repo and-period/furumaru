@@ -77,7 +77,12 @@ func (s *service) CreateProductType(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	productType := entity.NewProductType(in.Name, in.IconURL, in.CategoryID)
+	params := &entity.NewProductTypeParams{
+		CategoryID: in.CategoryID,
+		Name:       in.Name,
+		IconURL:    in.IconURL,
+	}
+	productType := entity.NewProductType(params)
 	if err := s.db.ProductType.Create(ctx, productType); err != nil {
 		return nil, internalError(err)
 	}

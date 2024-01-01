@@ -11,12 +11,15 @@ func TestCategory(t *testing.T) {
 
 	tests := []struct {
 		name   string
+		params *NewCategoryParams
 		input  string
 		expect *Category
 	}{
 		{
-			name:  "success",
-			input: "野菜",
+			name: "success",
+			params: &NewCategoryParams{
+				Name: "野菜",
+			},
 			expect: &Category{
 				Name: "野菜",
 			},
@@ -27,7 +30,7 @@ func TestCategory(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewCategory(tt.input)
+			actual := NewCategory(tt.params)
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})

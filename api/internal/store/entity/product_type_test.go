@@ -12,20 +12,23 @@ func TestProductType(t *testing.T) {
 
 	tests := []struct {
 		name       string
+		params     *NewProductTypeParams
 		input      string
 		iconURL    string
 		categoryID string
 		expect     *ProductType
 	}{
 		{
-			name:       "success",
-			input:      "じゃがいも",
-			iconURL:    "https://and-period.jp/icon.png",
-			categoryID: "category-id",
-			expect: &ProductType{
+			name: "success",
+			params: &NewProductTypeParams{
+				CategoryID: "category-id",
 				Name:       "じゃがいも",
 				IconURL:    "https://and-period.jp/icon.png",
+			},
+			expect: &ProductType{
 				CategoryID: "category-id",
+				Name:       "じゃがいも",
+				IconURL:    "https://and-period.jp/icon.png",
 			},
 		},
 	}
@@ -34,7 +37,7 @@ func TestProductType(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewProductType(tt.input, tt.iconURL, tt.categoryID)
+			actual := NewProductType(tt.params)
 			actual.ID = "" // ignore
 			assert.Equal(t, tt.expect, actual)
 		})
