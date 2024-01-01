@@ -5,7 +5,7 @@ import { useAuthStore } from '~/store'
 let client: AxiosInstance
 
 export const defaultTimeout: number = 20000 // 20sec
-export const uploadTimeout: number = 20000 // 200sec
+export const uploadTimeout: number = 200000 // 200sec
 
 export default defineNuxtPlugin(() => {
   const runtimeConfig = useRuntimeConfig()
