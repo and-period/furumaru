@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import {
+  useAuthStore,
   useCategoryStore,
   useCommonStore,
   useProducerStore,
@@ -14,6 +15,7 @@ import { type UpdateProductRequest, type CreateProductRequestMediaInner, Deliver
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 const categoryStore = useCategoryStore()
 const commonStore = useCommonStore()
 const producerStore = useProducerStore()
@@ -22,6 +24,7 @@ const productTagStore = useProductTagStore()
 const productTypeStore = useProductTypeStore()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
+const { role } = storeToRefs(authStore)
 const { categories } = storeToRefs(categoryStore)
 const { producers } = storeToRefs(producerStore)
 const { productTags } = storeToRefs(productTagStore)
@@ -198,6 +201,7 @@ try {
     :categories="categories"
     :product-types="productTypes"
     :product-tags="productTags"
+    :role="role"
     @update:files="handleImageUpload"
     @update:search-category="handleSearchCategory"
     @update:search-product-type="handleSearchProductType"
