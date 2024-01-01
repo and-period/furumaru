@@ -71,7 +71,10 @@ func (s *service) CreateCategory(ctx context.Context, in *store.CreateCategoryIn
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	category := entity.NewCategory(in.Name)
+	params := &entity.NewCategoryParams{
+		Name: in.Name,
+	}
+	category := entity.NewCategory(params)
 	if err := s.db.Category.Create(ctx, category); err != nil {
 		return nil, internalError(err)
 	}

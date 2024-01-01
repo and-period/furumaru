@@ -1,4 +1,8 @@
-// usage: go run ./main.go -db-host=127.0.0.1 -db-port=3316 -db-password=1234567
+// データベースにスキーマを適用します
+//
+//	usage: go run ./database-migrate/main.go \
+//	 -db-host='127.0.0.1' -db-port='3316' \
+//	 -db-username='root' -db-password='12345678'
 package main
 
 import (
@@ -6,7 +10,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -238,7 +242,7 @@ func (a *app) getSchema(tx *sql.Tx, schema *schema) (bool, error) {
 }
 
 func (a *app) applySchema(tx *sql.Tx, schema *schema) error {
-	bytes, err := ioutil.ReadFile(schema.path)
+	bytes, err := os.ReadFile(schema.path)
 	if err != nil {
 		return err
 	}
@@ -265,7 +269,7 @@ func (a *app) applySchema(tx *sql.Tx, schema *schema) error {
 }
 
 func (a *app) newSchemas(srcDir string) ([]*schema, error) {
-	files, err := ioutil.ReadDir(srcDir)
+	files, err := os.ReadDir(srcDir)
 	if err != nil {
 		return nil, err
 	}

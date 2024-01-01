@@ -22,9 +22,21 @@ type Category struct {
 
 type Categories []*Category
 
-func NewCategory(name string) *Category {
+type NewCategoryParams struct {
+	Name string
+}
+
+func NewCategory(params *NewCategoryParams) *Category {
 	return &Category{
 		ID:   uuid.Base58Encode(uuid.New()),
-		Name: name,
+		Name: params.Name,
 	}
+}
+
+func (cs Categories) MapByName() map[string]*Category {
+	res := make(map[string]*Category, len(cs))
+	for _, c := range cs {
+		res[c.Name] = c
+	}
+	return res
 }
