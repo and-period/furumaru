@@ -66,10 +66,6 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
-const statusList = [
-  { status: '有効', value: true },
-  { status: '無効', value: false }
-]
 const discountMethodList = [
   { method: '円', value: DiscountType.AMOUNT },
   { method: '%', value: DiscountType.RATE },

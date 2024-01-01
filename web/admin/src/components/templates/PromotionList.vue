@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus } from '@mdi/js'
-import { unix } from 'dayjs'
+import dayjs, { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
@@ -112,7 +112,7 @@ const isEditable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR
 }
 
-const getDiscount = (discountType: number, discountRate: DiscountType): string => {
+const getDiscount = (discountType: DiscountType, discountRate: number): string => {
   switch (discountType) {
     case DiscountType.AMOUNT:
       return '￥' + discountRate.toLocaleString()
@@ -125,12 +125,36 @@ const getDiscount = (discountType: number, discountRate: DiscountType): string =
   }
 }
 
-const getStatus = (status: boolean): string => {
-  return status ? '有効' : '無効'
+const getStatus = (promotion: Promotion): string => {
+  if (!promotion || !promotion.public) {
+    return '無効'
+  }
+  const now = dayjs()
+  const startAt = unix(promotion.startAt)
+  if (now.isBefore(startAt)) {
+    return '開始前'
+  }
+  const endAt = unix(promotion.startAt)
+  if (now.isAfter(endAt)) {
+    return '終了'
+  }
+  return '有効'
 }
 
-const getStatusColor = (status: boolean): string => {
-  return status ? 'primary' : 'error'
+const getStatusColor = (promotion: Promotion): string => {
+  if (!promotion || !promotion.public) {
+    return 'error'
+  }
+  const now = dayjs()
+  const startAt = unix(promotion.startAt)
+  if (now.isBefore(startAt)) {
+    return 'info'
+  }
+  const endAt = unix(promotion.startAt)
+  if (now.isAfter(endAt)) {
+    return 'secondary'
+  }
+  return 'primary'
 }
 
 const getDay = (unixTime: number): string => {
@@ -226,8 +250,8 @@ const onClickDelete = (): void => {
           {{ item.title }}
         </template>
         <template #[`item.public`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.public)">
-            {{ getStatus(item.public) }}
+          <v-chip size="small" :color="getStatusColor(item)">
+            {{ getStatus(item) }}
           </v-chip>
         </template>
         <template #[`item.code`]="{ item }">
