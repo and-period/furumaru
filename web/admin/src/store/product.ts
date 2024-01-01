@@ -13,6 +13,7 @@ import type {
   UpdateProductRequest,
   UploadImageResponse
 } from '~/types/api'
+import { uploadTimeout } from '~/plugins/axios'
 
 export const useProductStore = defineStore('product', {
   state: () => ({
@@ -116,7 +117,8 @@ export const useProductStore = defineStore('product', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data

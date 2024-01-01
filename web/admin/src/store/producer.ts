@@ -10,6 +10,7 @@ import type {
   UploadImageResponse,
   UploadVideoResponse
 } from '~/types/api'
+import { uploadTimeout } from '~/plugins/axios'
 
 export const useProducerStore = defineStore('producer', {
   state: () => ({
@@ -107,7 +108,8 @@ export const useProducerStore = defineStore('producer', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
@@ -128,7 +130,8 @@ export const useProducerStore = defineStore('producer', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
@@ -149,7 +152,8 @@ export const useProducerStore = defineStore('producer', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
@@ -170,7 +174,8 @@ export const useProducerStore = defineStore('producer', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data

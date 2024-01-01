@@ -10,6 +10,7 @@ import type {
   UploadImageResponse,
   UploadVideoResponse
 } from '~/types/api'
+import { uploadTimeout } from '~/plugins/axios'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
@@ -121,7 +122,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
@@ -142,7 +144,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
@@ -163,7 +166,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
@@ -184,7 +188,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data

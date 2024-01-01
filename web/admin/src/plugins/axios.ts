@@ -4,13 +4,16 @@ import { useAuthStore } from '~/store'
 // eslint-disable-next-line import/no-mutable-exports
 let client: AxiosInstance
 
+export const defaultTimeout: number = 20000 // 20sec
+export const uploadTimeout: number = 20000 // 200sec
+
 export default defineNuxtPlugin(() => {
   const runtimeConfig = useRuntimeConfig()
   const baseUrl = runtimeConfig.public.API_BASE_URL
 
   client = axios.create({
     baseURL: baseUrl,
-    timeout: 20000, // 20sec
+    timeout: defaultTimeout,
     withCredentials: true,
     headers: {}
   })

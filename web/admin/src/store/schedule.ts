@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
 import type { ApproveScheduleRequest, CreateScheduleRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest, UploadImageResponse, UploadVideoResponse } from '~/types/api'
+import { uploadTimeout } from '~/plugins/axios'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
@@ -114,7 +115,8 @@ export const useScheduleStore = defineStore('schedule', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
@@ -135,7 +137,8 @@ export const useScheduleStore = defineStore('schedule', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
@@ -156,7 +159,8 @@ export const useScheduleStore = defineStore('schedule', {
           {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: uploadTimeout
           }
         )
         return res.data
