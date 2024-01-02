@@ -116,9 +116,9 @@ type Coordinator interface {
 }
 
 type ListCoordinatorsParams struct {
-	Username string
-	Limit    int
-	Offset   int
+	Name   string
+	Limit  int
+	Offset int
 }
 
 type UpdateCoordinatorParams struct {
@@ -175,7 +175,7 @@ type Producer interface {
 
 type ListProducersParams struct {
 	CoordinatorID string
-	Username      string
+	Name          string
 	Limit         int
 	Offset        int
 }

@@ -21,7 +21,7 @@ func (s *service) ListProducers(ctx context.Context, in *user.ListProducersInput
 	}
 	params := &database.ListProducersParams{
 		CoordinatorID: in.CoordinatorID,
-		Username:      in.Username,
+		Name:          in.Name,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),
 	}
