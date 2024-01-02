@@ -1298,6 +1298,37 @@ func TestProducts_Filter(t *testing.T) {
 	}
 }
 
+func TestProducts_FilterBySales(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products Products
+		expect   Products
+	}{
+		{
+			name: "success",
+			products: Products{
+				{ID: "product-id01", Status: ProductStatusPrivate},
+				{ID: "product-id02", Status: ProductStatusPresale},
+				{ID: "product-id03", Status: ProductStatusForSale},
+				{ID: "product-id04", Status: ProductStatusOutOfSale},
+				{ID: "product-id05", Status: ProductStatusArchived},
+			},
+			expect: Products{
+				{ID: "product-id03", Status: ProductStatusForSale},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.products.FilterBySales()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestProducts_FilterByPublished(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

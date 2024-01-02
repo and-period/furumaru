@@ -153,7 +153,7 @@ func (s *service) refreshCart(ctx context.Context, cart *entity.Cart) error {
 	if err != nil {
 		return err
 	}
-	if err := cart.Refresh(products.FilterByPublished()); err != nil {
+	if err := cart.Refresh(products.FilterBySales()); err != nil {
 		return err
 	}
 	now := s.now()
