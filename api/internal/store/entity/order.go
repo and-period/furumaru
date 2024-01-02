@@ -86,6 +86,7 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 		UserID:            params.Customer.ID,
 		CoordinatorID:     params.CoordinatorID,
 		PromotionID:       promotionID,
+		ShippingMessage:   "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}, nil
 }
 
