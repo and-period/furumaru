@@ -89,6 +89,7 @@ const doCheckout = async () => {
       ...checkoutFormData.value,
       boxNumber: cartNumber.value ?? 0,
     })
+    console.log('debug', 'doCheckout', url)
     window.location.href = url
   } catch (error) {
     if (error instanceof ApiBaseError) {
