@@ -13,6 +13,7 @@ const isLoading = ref<boolean>(false)
 
 const sessionId = computed<string>(() => {
   const id = route.query.session_id
+  console.log('debug', 'sessionId', id)
   if (id) {
     return String(id)
   } else {
@@ -39,6 +40,7 @@ const handleBackCartPageButton = () => {
 }
 
 onMounted(async () => {
+  console.log('debug', 'onMounted', sessionId.value)
   if (sessionId.value) {
     isLoading.value = true
     checkoutStatus.value = await checkTransactionStatus(sessionId.value)
