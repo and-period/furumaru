@@ -25,7 +25,6 @@ const handleClickLiveItem = (id: string) => {
 }
 
 fetchCoordinator(id.value)
-
 </script>
 
 <template>
@@ -134,27 +133,25 @@ fetchCoordinator(id.value)
             <img src="/img/coordinator/marche.svg" class="z-10 w-full" />
           </div>
           <div
-            class="relative bottom-8 z-0 w-full justify-end bg-white pt-[65px]"
+            class="relative bottom-8 z-0 w-full justify-end bg-white pb-10 pt-[65px]"
           >
             <div
               class="mx-auto flex w-[675px] justify-center rounded-3xl bg-base py-[3px] text-[16px]"
             >
               配信中・配信予定のマルシェ
             </div>
-              <div
-                class="mx-auto grid w-[675px] grid-cols-2 gap-8 bg-white pt-4"
-              >
-                <the-coordinator-live-item
-                  v-for="liveItem in coordinator.lives.value"
-                  :id="liveItem.scheduleId"
-                  :key="liveItem.scheduleId"
-                  :title="liveItem.title"
-                  :img-src="liveItem.thumbnailUrl"
-                  :start-at="liveItem.startAt"
-                  :is-live-status="liveItem.status"
-                  @click="handleClickLiveItem(liveItem.scheduleId)"
-                />
-              </div>
+            <div class="mx-auto grid w-[675px] grid-cols-2 gap-8 bg-white pt-4">
+              <the-coordinator-live-item
+                v-for="liveItem in coordinator.lives.value"
+                :id="liveItem.scheduleId"
+                :key="liveItem.scheduleId"
+                :title="liveItem.title"
+                :img-src="liveItem.thumbnailUrl"
+                :start-at="liveItem.startAt"
+                :is-live-status="liveItem.status"
+                @click="handleClickLiveItem(liveItem.scheduleId)"
+              />
+            </div>
             <div
               class="mx-auto flex w-[675px] justify-center rounded-3xl bg-base py-[3px] text-[16px]"
             >
@@ -172,6 +169,11 @@ fetchCoordinator(id.value)
                 @click="handleClickLiveItem(archive.scheduleId)"
               />
             </div>
+          </div>
+          <div class="flex w-full justify-center gap-[70px] text-main">
+            <img src="/img/coordinator/left.svg" />
+            <p class="pt-5 text-[20px]">生産者一覧</p>
+            <img src="/img/coordinator/right.svg" />
           </div>
         </div>
       </div>
