@@ -72,7 +72,7 @@ func TestProducer_List(t *testing.T) {
 			args: args{
 				params: &database.ListProducersParams{
 					CoordinatorID: "coordinator-id",
-					Username:      "&.",
+					Name:          "農園",
 					Limit:         1,
 					Offset:        1,
 				},
@@ -151,7 +151,7 @@ func TestProducer_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProducersParams{
-					Username: "&.",
+					Name: "農園",
 				},
 			},
 			want: want{
