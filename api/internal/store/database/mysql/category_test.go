@@ -33,7 +33,7 @@ func TestCategory_List(t *testing.T) {
 
 	categories := make(entity.Categories, 3)
 	categories[0] = testCategory("category-id01", "野菜", now())
-	categories[1] = testCategory("category-id02", "果物", now())
+	categories[1] = testCategory("category-id02", "水産加工物", now())
 	categories[2] = testCategory("category-id03", "水産物", now())
 	err = db.DB.Create(&categories).Error
 	require.NoError(t, err)
@@ -56,7 +56,7 @@ func TestCategory_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListCategoriesParams{
-					Name:   "物",
+					Name:   "水産",
 					Limit:  1,
 					Offset: 1,
 				},
@@ -131,7 +131,7 @@ func TestCategory_Count(t *testing.T) {
 
 	categories := make(entity.Categories, 3)
 	categories[0] = testCategory("category-id01", "野菜", now())
-	categories[1] = testCategory("category-id02", "果物", now())
+	categories[1] = testCategory("category-id02", "水産加工物", now())
 	categories[2] = testCategory("category-id03", "水産物", now())
 	err = db.DB.Create(&categories).Error
 	require.NoError(t, err)
@@ -154,7 +154,7 @@ func TestCategory_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListCategoriesParams{
-					Name: "物",
+					Name: "水産",
 				},
 			},
 			want: want{

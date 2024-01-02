@@ -33,7 +33,7 @@ func TestProductTag_List(t *testing.T) {
 
 	productTags := make(entity.ProductTags, 3)
 	productTags[0] = testProductTag("tag-id01", "野菜", now())
-	productTags[1] = testProductTag("tag-id02", "果物", now())
+	productTags[1] = testProductTag("tag-id02", "水産加工物", now())
 	productTags[2] = testProductTag("tag-id03", "水産物", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
@@ -56,7 +56,7 @@ func TestProductTag_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProductTagsParams{
-					Name:   "物",
+					Name:   "水産",
 					Limit:  1,
 					Offset: 1,
 				},
@@ -131,7 +131,7 @@ func TestProductTag_Count(t *testing.T) {
 
 	productTags := make(entity.ProductTags, 3)
 	productTags[0] = testProductTag("tag-id01", "野菜", now())
-	productTags[1] = testProductTag("tag-id02", "果物", now())
+	productTags[1] = testProductTag("tag-id02", "水産加工物", now())
 	productTags[2] = testProductTag("tag-id03", "水産物", now())
 	err = db.DB.Create(&productTags).Error
 	require.NoError(t, err)
@@ -154,7 +154,7 @@ func TestProductTag_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProductTagsParams{
-					Name: "物",
+					Name: "水産",
 				},
 			},
 			want: want{
