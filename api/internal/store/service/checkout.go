@@ -270,9 +270,18 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		return "", fmt.Errorf("service: no target baskets: %w", exception.ErrInvalidArgument)
 	}
 	// 在庫一覧を取得
-	products, err := s.db.Product.MultiGet(ctx, baskets.ProductIDs())
+	productIDs := baskets.ProductIDs()
+	products, err := s.db.Product.MultiGet(ctx, productIDs)
 	if err != nil {
 		return "", internalError(err)
+	}
+	products = products.FilterBySales()
+	// 商品がすべて販売中かの確認
+	if len(productIDs) != len(products) {
+		s.logger.Warn("Failed because there are products outside the sales period",
+			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
+			zap.String("coordinatorId", params.payload.CoordinatorID), zap.Int64("boxNumber", params.payload.BoxNumber))
+		return "", fmt.Errorf("service: there are products outside the sales period: %w", exception.ErrFailedPrecondition)
 	}
 	// 在庫の過不足確認
 	if err := baskets.VerifyQuantities(products.Map()); err != nil {
