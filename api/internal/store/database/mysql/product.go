@@ -54,6 +54,9 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.OnlyPublished {
 		stmt = stmt.Where("public = ?", true).Where("deleted_at IS NULL")
 	}
+	if !p.EndAtGte.IsZero() {
+		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
+	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {

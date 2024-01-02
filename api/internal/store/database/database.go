@@ -166,6 +166,7 @@ type ListProductsParams struct {
 	ProductTypeIDs []string
 	ProductTagID   string
 	OnlyPublished  bool
+	EndAtGte       time.Time
 	Limit          int
 	Offset         int
 	Orders         []*ListProductsOrder

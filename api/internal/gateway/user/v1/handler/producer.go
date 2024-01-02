@@ -85,10 +85,10 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 	})
 	eg.Go(func() (err error) {
 		in := &store.ListProductsInput{
-			ProducerID:    producer.ID,
-			EndAtGte:      h.now(),
-			OnlyPublished: true,
-			NoLimit:       true,
+			ProducerID:       producer.ID,
+			OnlyPublished:    true,
+			ExcludeOutOfSale: true,
+			NoLimit:          true,
 		}
 		products, _, err = h.store.ListProducts(ectx, in)
 		return

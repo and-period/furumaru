@@ -26,6 +26,7 @@ func TestListProducts(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 		ProducerID:    "",
 		ProducerIDs:   []string{"producer-id"},
+		EndAtGte:      jst.Date(2022, 6, 28, 18, 30, 0, 0),
 		Limit:         30,
 		Offset:        0,
 		Orders: []*database.ListProductsOrder{
@@ -88,12 +89,13 @@ func TestListProducts(t *testing.T) {
 				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListProductsInput{
-				Name:          "みかん",
-				CoordinatorID: "coordinator-id",
-				ProducerID:    "",
-				ProducerIDs:   []string{"producer-id"},
-				Limit:         30,
-				Offset:        0,
+				Name:             "みかん",
+				CoordinatorID:    "coordinator-id",
+				ProducerID:       "",
+				ProducerIDs:      []string{"producer-id"},
+				ExcludeOutOfSale: true,
+				Limit:            30,
+				Offset:           0,
 				Orders: []*store.ListProductsOrder{
 					{Key: entity.ProductOrderByName, OrderByASC: true},
 				},
@@ -117,12 +119,13 @@ func TestListProducts(t *testing.T) {
 				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListProductsInput{
-				Name:          "みかん",
-				CoordinatorID: "coordinator-id",
-				ProducerID:    "",
-				ProducerIDs:   []string{"producer-id"},
-				Limit:         30,
-				Offset:        0,
+				Name:             "みかん",
+				CoordinatorID:    "coordinator-id",
+				ProducerID:       "",
+				ProducerIDs:      []string{"producer-id"},
+				ExcludeOutOfSale: true,
+				Limit:            30,
+				Offset:           0,
 				Orders: []*store.ListProductsOrder{
 					{Key: entity.ProductOrderByName, OrderByASC: true},
 				},
@@ -138,12 +141,13 @@ func TestListProducts(t *testing.T) {
 				mocks.db.Product.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListProductsInput{
-				Name:          "みかん",
-				CoordinatorID: "coordinator-id",
-				ProducerID:    "",
-				ProducerIDs:   []string{"producer-id"},
-				Limit:         30,
-				Offset:        0,
+				Name:             "みかん",
+				CoordinatorID:    "coordinator-id",
+				ProducerID:       "",
+				ProducerIDs:      []string{"producer-id"},
+				ExcludeOutOfSale: true,
+				Limit:            30,
+				Offset:           0,
 				Orders: []*store.ListProductsOrder{
 					{Key: entity.ProductOrderByName, OrderByASC: true},
 				},
@@ -161,7 +165,7 @@ func TestListProducts(t *testing.T) {
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
 			assert.Equal(t, tt.expectTotal, total)
-		}))
+		}, withNow(now)))
 	}
 }
 

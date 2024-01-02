@@ -39,6 +39,9 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		Offset:        int(in.Offset),
 		Orders:        orders,
 	}
+	if in.ExcludeOutOfSale {
+		params.EndAtGte = s.now()
+	}
 	var (
 		products entity.Products
 		total    int64

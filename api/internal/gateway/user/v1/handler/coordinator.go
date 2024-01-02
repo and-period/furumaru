@@ -110,10 +110,10 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	})
 	eg.Go(func() error {
 		in := &store.ListProductsInput{
-			CoordinatorID: coordinator.ID,
-			EndAtGte:      h.now(),
-			OnlyPublished: true,
-			NoLimit:       true,
+			CoordinatorID:    coordinator.ID,
+			OnlyPublished:    true,
+			ExcludeOutOfSale: true,
+			NoLimit:          true,
 		}
 		products, _, err = h.store.ListProducts(ectx, in)
 		return nil
