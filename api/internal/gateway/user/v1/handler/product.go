@@ -38,9 +38,10 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	}
 
 	in := &store.ListProductsInput{
-		Limit:         limit,
-		Offset:        offset,
-		OnlyPublished: true,
+		Limit:            limit,
+		Offset:           offset,
+		OnlyPublished:    true,
+		ExcludeOutOfSale: true,
 	}
 	products, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {

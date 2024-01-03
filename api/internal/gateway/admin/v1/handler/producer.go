@@ -60,9 +60,9 @@ func (h *handler) ListProducers(ctx *gin.Context) {
 	}
 
 	in := &user.ListProducersInput{
-		Username: util.GetQuery(ctx, "username", ""),
-		Limit:    limit,
-		Offset:   offset,
+		Name:   util.GetQuery(ctx, "username", ""),
+		Limit:  limit,
+		Offset: offset,
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		in.CoordinatorID = getAdminID(ctx)

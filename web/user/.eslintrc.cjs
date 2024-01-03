@@ -9,6 +9,8 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-unused-vars': 'off',
     "@typescript-eslint/consistent-type-imports": "error",
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-unused-vars': [
       'error',
       {
@@ -18,6 +20,7 @@ module.exports = {
         destructuredArrayIgnorePattern: '^_',
       },
     ],
+    'vue/no-v-html': 'off',
   },
   overrides: [
     {

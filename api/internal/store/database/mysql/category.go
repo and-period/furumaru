@@ -30,7 +30,7 @@ type listCategoriesParams database.ListCategoriesParams
 
 func (p listCategoriesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+		stmt = stmt.Where("MATCH (`name`) AGAINST (?)", p.Name)
 	}
 	for i := range p.Orders {
 		var value string

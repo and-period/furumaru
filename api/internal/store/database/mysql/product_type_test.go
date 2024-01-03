@@ -41,7 +41,7 @@ func TestProductType_List(t *testing.T) {
 	require.NoError(t, err)
 	productTypes := make(entity.ProductTypes, 3)
 	productTypes[0] = testProductType("category-id01", "category-id01", "野菜", now())
-	productTypes[1] = testProductType("category-id02", "category-id02", "果物", now())
+	productTypes[1] = testProductType("category-id02", "category-id02", "水産加工物", now())
 	productTypes[2] = testProductType("category-id03", "category-id02", "水産物", now())
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
@@ -64,7 +64,7 @@ func TestProductType_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProductTypesParams{
-					Name:       "物",
+					Name:       "水産",
 					CategoryID: "category-id02",
 					Limit:      1,
 					Offset:     1,
@@ -145,7 +145,7 @@ func TestProductType_Count(t *testing.T) {
 	require.NoError(t, err)
 	productTypes := make(entity.ProductTypes, 3)
 	productTypes[0] = testProductType("category-id01", "category-id01", "野菜", now())
-	productTypes[1] = testProductType("category-id02", "category-id02", "果物", now())
+	productTypes[1] = testProductType("category-id02", "category-id02", "水産加工物", now())
 	productTypes[2] = testProductType("category-id03", "category-id02", "水産物", now())
 	err = db.DB.Create(&productTypes).Error
 	require.NoError(t, err)
@@ -168,7 +168,7 @@ func TestProductType_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListProductTypesParams{
-					Name:       "物",
+					Name:       "水産",
 					CategoryID: "category-id02",
 				},
 			},

@@ -417,6 +417,17 @@ func (ps Products) Filter(productIDs ...string) Products {
 	return res
 }
 
+func (ps Products) FilterBySales() Products {
+	res := make(Products, 0, len(ps))
+	for _, p := range ps {
+		if p.Status != ProductStatusForSale {
+			continue
+		}
+		res = append(res, p)
+	}
+	return res
+}
+
 func (ps Products) FilterByPublished() Products {
 	res := make(Products, 0, len(ps))
 	for _, p := range ps {

@@ -32,7 +32,7 @@ type listProductTypesParams database.ListProductTypesParams
 
 func (p listProductTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
-		stmt = stmt.Where("name LIKE ?", fmt.Sprintf("%%%s%%", p.Name))
+		stmt = stmt.Where("MATCH (`name`) AGAINST (?)", p.Name)
 	}
 	if p.CategoryID != "" {
 		stmt = stmt.Where("category_id = ?", p.CategoryID)

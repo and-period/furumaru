@@ -866,6 +866,8 @@ func checkoutmocks(
 				ID:        "product-id",
 				Name:      "じゃがいも",
 				Inventory: 30,
+				Public:    true,
+				Status:    entity.ProductStatusForSale,
 				ProductRevision: entity.ProductRevision{
 					ID:        1,
 					ProductID: "product-id",
@@ -1159,6 +1161,8 @@ func TestCheckout(t *testing.T) {
 				ID:        "product-id",
 				Name:      "じゃがいも",
 				Inventory: inventory,
+				Public:    true,
+				Status:    entity.ProductStatusForSale,
 				ProductRevision: entity.ProductRevision{
 					ID:        1,
 					ProductID: "product-id",
@@ -1520,7 +1524,7 @@ func TestCheckout(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to insufficient stock",
+			name: "failed to get products",
 			setup: func(ctx context.Context, mocks *mocks) {
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
@@ -1552,6 +1556,40 @@ func TestCheckout(t *testing.T) {
 			},
 			expect:    "",
 			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to unmatch products count",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(entity.Products{}, nil)
+			},
+			params: &checkoutParams{
+				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
+					UserID:            "user-id",
+					SessionID:         "session-id",
+					CoordinatorID:     "coordinator-id",
+					BoxNumber:         0,
+					PromotionCode:     "code1234",
+					BillingAddressID:  "address-id",
+					ShippingAddressID: "address-id",
+					CallbackURL:       "http://example.com/callback",
+					Total:             1000,
+				},
+				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					res := &komoju.OrderSessionResponse{
+						RedirectURL: "http://example.com/redirect",
+					}
+					return res, nil
+				},
+			},
+			expect:    "",
+			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
 			name: "failed to insufficient stock",
