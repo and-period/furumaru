@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.25.11
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.9
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.12.13
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.31.5
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.32.0
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.26.7
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.5
 	github.com/aws/aws-sdk-go-v2/service/medialive v1.43.3
