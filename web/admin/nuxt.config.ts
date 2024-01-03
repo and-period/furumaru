@@ -30,10 +30,6 @@ export default defineNuxtConfig({
     '@nuxtjs/stylelint-module',
     ['@pinia/nuxt', { autoImports: ['defineStore'] }]
   ],
-  devtools: {
-    enabled: true,
-    vscode: {}
-  },
   googleFonts: {
     download: true,
     inject: true,
