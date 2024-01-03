@@ -9,7 +9,7 @@ const route = useRoute()
 const checkoutStore = useCheckoutStore()
 const { checkTransactionStatus } = checkoutStore
 
-const isLoading = ref<boolean>(false)
+const isLoading = ref<boolean>(true)
 
 const sessionId = computed<string>(() => {
   const id = route.query.session_id

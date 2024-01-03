@@ -2,7 +2,7 @@ import en from './src/locales/en_us.json'
 import ja from './src/locales/ja_jp.json'
 
 export default defineNuxtConfig({
-  ssr: false,
+  ssr: true,
   srcDir: 'src',
   app: {
     head: {
