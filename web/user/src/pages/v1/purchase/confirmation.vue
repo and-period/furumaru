@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import dayjs from 'dayjs'
 import { useAdressStore } from '~/store/address'
 import { useCheckoutStore } from '~/store/checkout'
 import { useShoppingCartStore } from '~/store/shopping'
@@ -290,27 +291,28 @@ useSeoMeta({
                   />
                 </div>
               </div>
-              <div class="flex gap-4">
-                <the-text-input
+              <div class="mt-2 flex gap-4">
+                <select
                   v-model="checkoutFormData.creditCard.month"
-                  placeholder="有効期限 (月)"
-                  :with-label="false"
-                  name="cc-exp-month"
-                  type="number"
-                  pattern="[0-9]*"
-                  class="mt-4 w-1/2"
-                  required
-                />
-                <the-text-input
+                  class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
+                >
+                  <option :value="0" disabled>有効期限 (月)</option>
+                  <option v-for="i in 12" :key="i" :value="i">{{ i }}月</option>
+                </select>
+
+                <select
                   v-model="checkoutFormData.creditCard.year"
-                  placeholder="有効期限 (年)"
-                  :with-label="false"
-                  name="cc-exp-year"
-                  type="number"
-                  pattern="[0-9]*"
-                  class="mt-4 w-1/2"
-                  required
-                />
+                  class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
+                >
+                  <option value="0" disabled>有効期限 (年)</option>
+                  <option
+                    v-for="i in 11"
+                    :key="i"
+                    :value="dayjs().year() + i - 1"
+                  >
+                    {{ dayjs().year() + i - 1 }}
+                  </option>
+                </select>
               </div>
               <the-text-input
                 v-model="checkoutFormData.creditCard.verificationValue"
@@ -323,30 +325,6 @@ useSeoMeta({
                 required
               />
             </form>
-
-            <div
-              class="mt-12 text-left text-[16px] font-bold tracking-[1.6px] text-main"
-            >
-              お届け日の指定
-            </div>
-            <div class="mt-4 grid grid-cols-2 gap-4">
-              <the-text-input
-                placeholder="お届け希望日"
-                :with-label="false"
-                type="date"
-                pattern="[0-9]*"
-                class="w-full"
-                required
-              />
-              <the-text-input
-                placeholder="お届け時間帯"
-                :with-label="false"
-                type="time"
-                pattern="[0-9]*"
-                class="w-full"
-                required
-              />
-            </div>
           </div>
         </div>
 
