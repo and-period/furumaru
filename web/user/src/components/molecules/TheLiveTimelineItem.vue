@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
+import { unix } from 'dayjs'
 import type { Product } from '~/types/api'
 
 interface Props {
@@ -19,7 +19,7 @@ interface Emits {
 const emits = defineEmits<Emits>()
 
 const startAtString = computed(() => {
-  return dayjs.unix(props.startAt).format('HH:mm')
+  return unix(props.startAt).format('HH:mm')
 })
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
