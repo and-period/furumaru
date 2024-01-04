@@ -60,6 +60,7 @@ func TestTemplateBuilder(t *testing.T) {
 	assert.Equal(t, "2022-01-02", data["開催日"])
 	assert.Equal(t, "18:30", data["開始時間"])
 	assert.Equal(t, "18:30", data["終了時間"])
+	assert.Equal(t, "order-id", data["注文番号"])
 	assert.Equal(t, "クレジットカード決済", data["決済方法"])
 	assert.Equal(t, "2000", data["商品金額"])
 	assert.Equal(t, "500", data["割引金額"])

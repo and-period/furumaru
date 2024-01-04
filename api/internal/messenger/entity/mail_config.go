@@ -88,6 +88,7 @@ func (b *TemplateDataBuilder) Live(title, coordinator string, startAt, endAt tim
 }
 
 func (b *TemplateDataBuilder) Order(order *sentity.Order) *TemplateDataBuilder {
+	b.data["注文番号"] = order.ID
 	b.data["決済方法"] = newPaymentMethodName(order.OrderPayment.MethodType)
 	b.data["商品金額"] = strconv.FormatInt(order.OrderPayment.Subtotal, 10)
 	b.data["割引金額"] = strconv.FormatInt(order.OrderPayment.Discount, 10)

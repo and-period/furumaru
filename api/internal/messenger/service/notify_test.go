@@ -264,6 +264,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 							Email: &entity.MailConfig{
 								TemplateID: entity.EmailTemplateIDUserOrderAuthorized,
 								Substitutions: map[string]string{
+									"注文番号":  "order-id",
 									"決済方法":  "クレジットカード決済",
 									"商品金額":  "4460",
 									"配送手数料": "0",
@@ -405,6 +406,7 @@ func TestNotifyOrderShipped(t *testing.T) {
 							Email: &entity.MailConfig{
 								TemplateID: entity.EmailTemplateIDUserOrderShipped,
 								Substitutions: map[string]string{
+									"注文番号":  "order-id",
 									"決済方法":  "クレジットカード決済",
 									"商品金額":  "4460",
 									"配送手数料": "0",
