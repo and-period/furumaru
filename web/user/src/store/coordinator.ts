@@ -39,8 +39,19 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
     lives(state) {
       return {
-        ...state.coordinatorResponse.lives,
+        ...state.coordinatorResponse.lives
       }
+    },
+    producers(state) {
+      return state.coordinatorResponse.producers?.map((producer) => {
+        return {
+          ...producer,
+          products: state.coordinatorResponse.products.filter((product) => {
+            return product.producerId === producer.id
+          }
+        )
+        }
+      })
     }
   }
 })

@@ -39,7 +39,7 @@ const handleClick = () => {
   <div class="min-w-[368px]" @click="handleClick">
       <div class="w-full">
         <img
-          class="w-[320px] object-cover"
+          class="w-[320px] cursor-pointer object-cover"
           :src="imgSrc"
           :alt="`live-${title}-thumbnail`"
         />

@@ -149,6 +149,7 @@ fetchCoordinator(id.value)
                 :img-src="liveItem.thumbnailUrl"
                 :start-at="liveItem.startAt"
                 :is-live-status="liveItem.status"
+                class="pt-10"
                 @click="handleClickLiveItem(liveItem.scheduleId)"
               />
             </div>
@@ -174,6 +175,17 @@ fetchCoordinator(id.value)
             <img src="/img/coordinator/left.svg" />
             <p class="pt-5 text-[20px]">生産者一覧</p>
             <img src="/img/coordinator/right.svg" />
+          </div>
+          <div class="grid grid-cols-2 pt-[100px] gap-y-[80px]">
+            <the-producer-list
+              v-for="producer in coordinator.producers.value"
+              :id="producer.id"
+              :key="producer.id"
+              :name="producer.username"
+              :profile="producer.profile"
+              :img-src="producer.thumbnailUrl"
+              :products="producer.products"
+              />
           </div>
         </div>
       </div>
