@@ -7,6 +7,7 @@ import {
   ProductApi,
   TopApi,
   ScheduleApi,
+  CoordinatorApi,
   StatusApi,
 } from '../api'
 import { CustomErrorMessage } from '~/plugins/api-error-handler'
@@ -31,6 +32,7 @@ declare module 'pinia' {
     addressApiClient: (token?: string) => AddressApi
     checkoutApiClient: (token?: string) => CheckoutApi
     scheduleApiClient: (token?: string) => ScheduleApi
+    coordinatorApiClient: (token?: string) => CoordinatorApi
     statusApiClient: () => StatusApi
     i18n: VueI18
   }

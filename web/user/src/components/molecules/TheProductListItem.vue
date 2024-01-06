@@ -19,6 +19,8 @@ interface Emits {
 
 const props = defineProps<Props>()
 
+const router = useRouter()
+
 const emits = defineEmits<Emits>()
 
 const quantity = ref<number>(1)
@@ -32,6 +34,10 @@ const priceString = computed<string>(() => {
 
 const handleClickItem = () => {
   emits('click:item', props.id)
+}
+
+const handleClickCoorinator = () => {
+  router.push(`/coordinator/${props.coordinator?.id}`)
 }
 
 const handleClickAddCartButton = () => {
@@ -128,18 +134,22 @@ const handleClickAddCartButton = () => {
         />
         <div>
           <div class="hidden md:block">
-            <p
-              class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+            <button
+              @click="handleClickCoorinator"
             >
-              {{ coordinator.marcheName }}
-            </p>
+              <p
+                class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+              >
+                {{ coordinator.marcheName }}
+              </p>
+            </button>
             <p class="text-[11px]">
               {{ coordinator.prefecture }} {{ coordinator.city }}
             </p>
           </div>
           <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
             <p class="whitespace-nowrap">取扱元:</p>
-            <p class="text-[12px] underline md:text-[14px]">
+            <p class="text-[12px] md:text-[14px]">
               {{ coordinator.username }}
             </p>
           </div>

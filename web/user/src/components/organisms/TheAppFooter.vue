@@ -18,7 +18,7 @@ defineProps<Props>()
         <p class="text-lg font-bold tracking-widest">Follow us !</p>
 
         <div class="flex justify-center gap-x-3">
-          <a href="#" class="block">
+          <a href="https://www.instagram.com/furusato_marche" class="block">
             <the-instagram-icon
               id="footer-instagram-icon"
               class="inline h-5 w-5"

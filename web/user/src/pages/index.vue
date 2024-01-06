@@ -155,6 +155,7 @@ useSeoMeta({
               :key="archive.scheduleId"
               :title="archive.title"
               :img-src="archive.thumbnailUrl"
+              :width="368"
               class="cursor-pointer"
               @click="handleClickLiveItem(archive.scheduleId)"
             />
