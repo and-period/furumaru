@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type { Product } from "~/types/api"
+
 interface Props {
   id: string | undefined
   name: string | undefined
   profile: string | undefined
   imgSrc: string | undefined
-  products: undefined
+  products: Product[] | undefined
 }
 
 defineProps<Props>()

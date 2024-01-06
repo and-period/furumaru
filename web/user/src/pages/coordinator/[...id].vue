@@ -9,7 +9,7 @@ const coordinatorStore = useCoordinatorStore()
 
 const { fetchCoordinator } = coordinatorStore
 
-const coordinator = storeToRefs(coordinatorStore)
+const  { coordnatorInfo, archives, lives, producers } = storeToRefs(coordinatorStore)
 
 const id = computed<string>(() => {
   const ids = route.params.id
@@ -32,31 +32,31 @@ fetchCoordinator(id.value)
     <div class="static mx-auto w-[1216px] text-main">
       <img
         class="h-[320px] w-[1216px] object-cover"
-        :src="coordinator.coordnatorInfo.value.headerUrl"
+        :src="coordnatorInfo.headerUrl"
       />
       <div class="relative bottom-20 grid grid-cols-7 gap-12">
         <div class="col-span-2">
           <div class="flex justify-center">
             <img
-              :src="coordinator.coordnatorInfo.value.thumbnailUrl"
+              :src="coordnatorInfo.thumbnailUrl"
               class="block aspect-square w-[168px] rounded-full border-2 border-white"
             />
           </div>
           <p class="mt-4 text-center text-[20px] font-bold tracking-[2.0px]">
-            {{ coordinator.coordnatorInfo.value.marcheName }}
+            {{ coordnatorInfo.marcheName }}
           </p>
           <div class="flex justify-center pt-2 text-[14px] tracking-[1.4px]">
-            <p>{{ coordinator.coordnatorInfo.value.prefecture }}</p>
-            <p class="pl-2">{{ coordinator.coordnatorInfo.value.city }}</p>
+            <p>{{ coordnatorInfo.prefecture }}</p>
+            <p class="pl-2">{{ coordnatorInfo.city }}</p>
           </div>
           <div class="my-4 flex justify-center tracking-[2.4px]">
             <p class="mt-auto text-[14px]">コーディネータ</p>
             <p class="ml-2 text-[24px] font-bold">
-              {{ coordinator.coordnatorInfo.value.username }}
+              {{ coordnatorInfo.username }}
             </p>
           </div>
           <p class="text-[16px] tracking-[1.6px]">
-            {{ coordinator.coordnatorInfo.value.profile }}
+            {{ coordnatorInfo.profile }}
           </p>
           <hr class="my-4 border-dashed border-main" />
           <div class="grid grid-cols-3">
@@ -65,7 +65,7 @@ fetchCoordinator(id.value)
               <a
                 :href="
                   'https://www.instagram.com/' +
-                  coordinator.coordnatorInfo.value.instagramId
+                  coordnatorInfo.instagramId
                 "
                 target="_blank"
               >
@@ -101,7 +101,7 @@ fetchCoordinator(id.value)
               <a
                 :href="
                   'https://www.facebook.com/' +
-                  coordinator.coordnatorInfo.value.facebookId
+                  coordnatorInfo.facebookId
                 "
                 target="_blank"
               >
@@ -142,7 +142,7 @@ fetchCoordinator(id.value)
             </div>
             <div class="mx-auto grid w-[675px] grid-cols-2 gap-8 bg-white pt-4">
               <the-coordinator-live-item
-                v-for="liveItem in coordinator.lives.value"
+                v-for="liveItem in lives"
                 :id="liveItem.scheduleId"
                 :key="liveItem.scheduleId"
                 :title="liveItem.title"
@@ -153,14 +153,16 @@ fetchCoordinator(id.value)
                 @click="handleClickLiveItem(liveItem.scheduleId)"
               />
             </div>
+            <div class="my-8">
             <div
               class="mx-auto flex w-[675px] justify-center rounded-3xl bg-base py-[3px] text-[16px]"
             >
               過去のマルシェ
             </div>
+            </div>
             <div class="mx-auto grid w-[675px] grid-cols-2 gap-8 bg-white pt-4">
               <the-archive-item
-                v-for="archive in coordinator.archives.value"
+                v-for="archive in archives"
                 :id="archive.scheduleId"
                 :key="archive.scheduleId"
                 :title="archive.title"
@@ -176,9 +178,9 @@ fetchCoordinator(id.value)
             <p class="pt-5 text-[20px]">生産者一覧</p>
             <img src="/img/coordinator/right.svg" />
           </div>
-          <div class="grid grid-cols-2 pt-[100px] gap-y-[80px]">
+          <div class="grid grid-cols-2 gap-y-[80px] pt-[100px]">
             <the-producer-list
-              v-for="producer in coordinator.producers.value"
+              v-for="producer in producers"
               :id="producer.id"
               :key="producer.id"
               :name="producer.username"
