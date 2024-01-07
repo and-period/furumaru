@@ -36,16 +36,16 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div class="min-w-[368px]" @click="handleClick">
-      <div class="w-full">
+  <div @click="handleClick">
+      <div class="flex justify-center">
         <img
-          class="w-[320px] cursor-pointer object-cover"
+          class="h-[208px] cursor-pointer object-cover"
           :src="imgSrc"
           :alt="`live-${title}-thumbnail`"
         />
       </div>
 
-      <div class="mt-4 flex w-full flex-col gap-2">
+      <div class="ml-0 mt-4 flex w-full flex-col gap-2 md:ml-4">
         <div class="flex items-center text-sm">
           <div class="grow">
             <span
@@ -57,13 +57,13 @@ const handleClick = () => {
             >
               {{ isLiveStreaming(isLiveStatus) ? '配信中' : '配信予定' }}
             </span>
-            <span class="ml-2 after:content-['〜']">{{
+            <span class="ml-2 text-main after:content-['〜']">{{
               formattedStartAt
             }}</span>
           </div>
         </div>
 
-        <p class="line-clamp-3">
+        <p class="line-clamp-3 break-words text-[14px] text-main md:text-[16px]">
           {{ title }}
         </p>
       </div>
