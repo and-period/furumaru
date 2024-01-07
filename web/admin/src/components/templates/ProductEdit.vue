@@ -4,7 +4,7 @@ import { mdiClose, mdiPlus } from '@mdi/js'
 import useVuelidate from '@vuelidate/core'
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
-import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, type ProductTag, type ProductType, StorageMethodType, type UpdateProductRequest, Weekday, AdminRole } from '~/types/api'
+import { type Category, DeliveryType, Prefecture, type Producer, type Product, ProductStatus, type ProductTag, type ProductType, StorageMethodType, type UpdateProductRequest, AdminRole } from '~/types/api'
 import { getErrorMessage } from '~/lib/validations'
 import { prefecturesList, cityList, type PrefecturesListItem, type CityListItem } from '~/constants'
 import type { ProductTime } from '~/types/props'
@@ -231,8 +231,8 @@ const producerIdValue = computed(() => props.product.producerId)
 const formDataValidate = useVuelidate(UpdateProductValidationRules, formDataValue)
 const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
-const isUpdatable = (product?: Product): boolean => {
-  if (!product || product.status === ProductStatus.ARCHIVED) {
+const isUpdatable = (): boolean => {
+  if (props.product.status === ProductStatus.ARCHIVED) {
     return false
   }
   const targets: AdminRole[] = [

@@ -13,8 +13,8 @@ export const CreateProductValidationRules: ValidationArgs = {
   cost: { required, minValue: minValue(0) },
   inventory: { required, minValue: minValue(0) },
   weight: { required, minValue: minValue(0) },
-  itemUnit: { required, maxValue: maxValue(16) },
-  itemDescription: { required, maxValue: maxValue(64) },
+  itemUnit: { required, maxLength: maxLength(16) },
+  itemDescription: { required, maxLength: maxLength(64) },
   deliveryType: { required },
   recommendedPoint1: { maxLength: maxLength(128) },
   recommendedPoint2: { maxLength: maxLength(128) },
@@ -25,7 +25,7 @@ export const CreateProductValidationRules: ValidationArgs = {
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   originPrefectureCode: { required },
-  originCity: { required, maxValue: maxValue(32) }
+  originCity: { required, maxLength: maxLength(32) }
 }
 
 export const UpdateProductValidationRules: ValidationArgs = {
@@ -39,8 +39,8 @@ export const UpdateProductValidationRules: ValidationArgs = {
   cost: { required, minValue: minValue(0) },
   inventory: { required, minValue: minValue(0) },
   weight: { required, minValue: minValue(0) },
-  itemUnit: { required, maxValue: maxValue(16) },
-  itemDescription: { required, maxValue: maxValue(64) },
+  itemUnit: { required, maxLength: maxLength(16) },
+  itemDescription: { required, maxLength: maxLength(64) },
   deliveryType: { required },
   recommendedPoint1: { maxLength: maxLength(128) },
   recommendedPoint2: { maxLength: maxLength(128) },
@@ -51,5 +51,5 @@ export const UpdateProductValidationRules: ValidationArgs = {
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   originPrefectureCode: { required },
-  originCity: { required, maxValue: maxValue(32) }
+  originCity: { required, maxLength: maxLength(32) }
 }

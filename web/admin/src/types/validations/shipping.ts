@@ -1,5 +1,5 @@
 import type { ValidationArgs } from '@vuelidate/core'
-import { maxLengthArray, maxValue, minLengthArray, minValue, required } from '~/lib/validations'
+import { maxLengthArray, maxLength, maxValue, minLengthArray, minValue, required } from '~/lib/validations'
 
 export const UpsertShippingValidationRules: ValidationArgs = {
   hasFreeShipping: {},
@@ -9,7 +9,7 @@ export const UpsertShippingValidationRules: ValidationArgs = {
 }
 
 export const UpsertShippingRateValidationRules: ValidationArgs = {
-  name: { required, maxValue: maxValue(64) },
+  name: { required, maxLength: maxLength(64) },
   price: { required, minValue: minValue(1), maxValue: maxValue(9999999999) },
   prefectureCodes: { minLengthArray: minLengthArray(1), maxLengthArray: maxLengthArray(47) }
 }
