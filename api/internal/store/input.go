@@ -508,10 +508,10 @@ type GetCheckoutStateInput struct {
 
 type CheckoutCreditCardInput struct {
 	CheckoutDetail
-	Number            string `validate:"required,numeric"`
+	Number            string `validate:"required,credit_card"`
 	Month             int64  `validate:"min=1,max=12"`
 	Year              int64  `validate:"min=2000,max=2100"`
-	VerificationValue string `validate:"required,numeric,max=4"`
+	VerificationValue string `validate:"min=3,max=4,numeric"`
 }
 
 type CheckoutPayPayInput struct {

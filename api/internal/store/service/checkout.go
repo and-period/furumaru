@@ -42,6 +42,16 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
+	cardParams := &entity.NewCreditCardParams{
+		Number: in.Number,
+		Month:  in.Month,
+		Year:   in.Year,
+		CVV:    in.VerificationValue,
+	}
+	card := entity.NewCreditCard(cardParams)
+	if err := card.Validate(s.now()); err != nil {
+		return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
 	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderCreditCardParams{
 			SessionID:         sessionID,
@@ -352,6 +362,10 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 	// 決済依頼処理
 	pay, err := params.payFn(ctx, session.ID, oparams)
+	if komoju.NewErrCode(err) == komoju.ErrCodeUnprocessableEntity && session.ReturnURL != "" {
+		// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
+		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), nil
+	}
 	if err != nil {
 		return "", internalError(err)
 	}

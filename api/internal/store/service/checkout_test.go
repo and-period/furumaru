@@ -231,6 +231,30 @@ func TestCheckoutCreditCard(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name:  "invalid credit card detail",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.CheckoutCreditCardInput{
+				CheckoutDetail: store.CheckoutDetail{
+					UserID:            "user-id",
+					SessionID:         "session-id",
+					RequestID:         "order-id",
+					CoordinatorID:     "coordinator-id",
+					BoxNumber:         0,
+					PromotionCode:     "code1234",
+					BillingAddressID:  "address-id",
+					ShippingAddressID: "address-id",
+					CallbackURL:       "http://example.com/callback",
+					Total:             1540,
+				},
+				Number:            "4111111111111111",
+				Month:             12,
+				Year:              2020,
+				VerificationValue: "123",
+			},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
 			name: "failed to order credit card",
 			setup: func(ctx context.Context, mocks *mocks) {
 				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeCreditCard)
@@ -1220,7 +1244,10 @@ func TestCheckout(t *testing.T) {
 			AddressLine2: "",
 		},
 	}
-	session := &komoju.SessionResponse{ID: "transaction-id"}
+	session := &komoju.SessionResponse{
+		ID:        "transaction-id",
+		ReturnURL: "https://example.com",
+	}
 	order := func() *entity.Order {
 		return &entity.Order{
 			OrderPayment: entity.OrderPayment{
@@ -1729,6 +1756,39 @@ func TestCheckout(t *testing.T) {
 			},
 			expect:    "",
 			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to create order when unprocessable entity error",
+			setup: func(ctx context.Context, mocks *mocks) {
+				cartmocks(mocks, cart.SessionID, cart, nil)
+				ordermocks(mocks, order(), nil)
+				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
+				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
+				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
+				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
+				mocks.db.Product.EXPECT().MultiGet(ctx, []string{"product-id"}).Return(products(30), nil)
+				mocks.komojuSession.EXPECT().Create(gomock.Any(), sparams).Return(session, nil)
+			},
+			params: &checkoutParams{
+				payload: &store.CheckoutDetail{
+					RequestID:         "order-id",
+					UserID:            "user-id",
+					SessionID:         "session-id",
+					CoordinatorID:     "coordinator-id",
+					BoxNumber:         0,
+					PromotionCode:     "code1234",
+					BillingAddressID:  "address-id",
+					ShippingAddressID: "address-id",
+					CallbackURL:       "http://example.com/callback",
+					Total:             1540,
+				},
+				paymentMethodType: entity.PaymentMethodTypeCreditCard,
+				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+					return nil, &komoju.Error{Code: komoju.ErrCodeUnprocessableEntity}
+				},
+			},
+			expect:    "https://example.com?session_id=transaction-id",
+			expectErr: nil,
 		},
 		{
 			name: "failed to callback function",

@@ -35,6 +35,14 @@ const (
 	ErrCodeNotCancellable      ErrCode = "not_cancellable"
 )
 
+func NewErrCode(err error) ErrCode {
+	var e *Error
+	if errors.As(err, &e) {
+		return e.Code
+	}
+	return ""
+}
+
 type Error struct {
 	Method  string
 	Route   string
