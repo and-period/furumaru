@@ -29,38 +29,38 @@ fetchCoordinator(id.value)
 
 <template>
   <div>
-    <div class="static mx-auto w-[1216px] text-main">
+    <div class="static mx-auto w-full text-main md:w-[1216px]">
       <img
-        class="h-[320px] w-[1216px] object-cover"
+        class="h-[160px] w-full object-cover md:h-[320px] md:w-[1216px]"
         :src="coordnatorInfo.headerUrl"
       />
-      <div class="relative bottom-20 grid grid-cols-7 gap-12">
+      <div class="relative bottom-[50px] md:bottom-20 md:grid md:grid-cols-7 md:gap-12">
         <div class="col-span-2">
           <div class="flex justify-center">
             <img
               :src="coordnatorInfo.thumbnailUrl"
-              class="block aspect-square w-[168px] rounded-full border-2 border-white"
+              class="block aspect-square w-[120px] rounded-full border-2 border-white md:w-[168px]"
             />
           </div>
-          <p class="mt-4 text-center text-[20px] font-bold tracking-[2.0px]">
+          <p class="mt-4 text-center text-[16px] font-bold tracking-[2.0px] md:text-[20px]">
             {{ coordnatorInfo.marcheName }}
           </p>
-          <div class="flex justify-center pt-2 text-[14px] tracking-[1.4px]">
+          <div class="flex justify-center pt-2 text-[12px] tracking-[1.4px] md:text-[14px]">
             <p>{{ coordnatorInfo.prefecture }}</p>
             <p class="pl-2">{{ coordnatorInfo.city }}</p>
           </div>
           <div class="my-4 flex justify-center tracking-[2.4px]">
-            <p class="mt-auto text-[14px]">コーディネータ</p>
-            <p class="ml-2 text-[24px] font-bold">
+            <p class="mt-auto text-[12px] md:text-[14px]">コーディネータ</p>
+            <p class="ml-2 text-[16px] font-bold md:text-[24px]">
               {{ coordnatorInfo.username }}
             </p>
           </div>
-          <p class="text-[16px] tracking-[1.6px]">
+          <p class="mx-4 text-[14px] tracking-[1.4px] md:mx-0 md:text-[16px] md:tracking-[1.6px]">
             {{ coordnatorInfo.profile }}
           </p>
-          <hr class="my-4 border-dashed border-main" />
-          <div class="grid grid-cols-3">
-            <div class="col-span-2">SNSでフォローするー</div>
+          <hr class="m-4 border-dashed border-main md:mx-0" />
+          <div class="mx-4 grid grid-cols-3 md:mx-0">
+            <div class="col-span-2 text-[14px] md:text-[16px]">SNSでフォローするー</div>
             <div class="flex justify-end">
               <a
                 :href="
@@ -70,10 +70,8 @@ fetchCoordinator(id.value)
                 target="_blank"
               >
                 <svg
-                  class="mr-[16px]"
+                  class="mr-[16px] h-[24p] w-[24px] md:h-[32px] md:w-[32px]"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
                   viewBox="0 0 32 32"
                   fill="none"
                 >
@@ -106,6 +104,7 @@ fetchCoordinator(id.value)
                 target="_blank"
               >
                 <svg
+                  class="h-[24px] w-[24px] md:h-[32px] md:w-[32px]"
                   xmlns="http://www.w3.org/2000/svg"
                   width="32"
                   height="32"
@@ -128,19 +127,19 @@ fetchCoordinator(id.value)
             </div>
           </div>
         </div>
-        <div class="static col-span-5 pt-[100px] text-main">
-          <div class="flex w-full">
+        <div class="static pt-[16px] text-main md:col-span-5 md:pt-[100px]">
+          <div class="flex w-full px-4 md:px-0">
             <img src="/img/coordinator/marche.svg" class="z-10 w-full" />
           </div>
           <div
-            class="relative bottom-8 z-0 w-full justify-end bg-white pb-10 pt-[65px]"
+            class="relative bottom-4 z-0 mx-4 bg-white pb-10 pt-[65px] md:bottom-8 md:mx-0 md:w-full"
           >
             <div
-              class="mx-auto flex w-[675px] justify-center rounded-3xl bg-base py-[3px] text-[16px]"
+              class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto md:w-[675px]"
             >
               配信中・配信予定のマルシェ
             </div>
-            <div class="mx-auto grid w-[675px] grid-cols-2 gap-8 bg-white pt-4">
+            <div class="mx-auto grid grid-cols-1 gap-8 bg-white pt-4 md:w-[675px] md:grid-cols-2">
               <the-coordinator-live-item
                 v-for="liveItem in lives"
                 :id="liveItem.scheduleId"
@@ -155,13 +154,13 @@ fetchCoordinator(id.value)
             </div>
             <div class="my-8">
             <div
-              class="mx-auto flex w-[675px] justify-center rounded-3xl bg-base py-[3px] text-[16px]"
+              class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto md:w-[675px]"
             >
               過去のマルシェ
             </div>
             </div>
-            <div class="mx-auto grid w-[675px] grid-cols-2 gap-8 bg-white pt-4">
-              <the-archive-item
+            <div class="mx-auto grid grid-cols-1 gap-8 bg-white pt-4 md:w-[675px] md:grid-cols-2">
+              <the-coordinator-archive-item
                 v-for="archive in archives"
                 :id="archive.scheduleId"
                 :key="archive.scheduleId"
@@ -173,12 +172,12 @@ fetchCoordinator(id.value)
               />
             </div>
           </div>
-          <div class="flex w-full justify-center gap-[70px] text-main">
-            <img src="/img/coordinator/left.svg" />
-            <p class="pt-5 text-[20px]">生産者一覧</p>
-            <img src="/img/coordinator/right.svg" />
+          <div class="flex w-full justify-center gap-[25px] text-main md:gap-[70px]">
+            <img class="w-[120px] md:w-[260px]" src="/img/coordinator/left.svg" />
+            <p class="pt-5 text-[14px] font-bold md:text-[20px]">生産者一覧</p>
+            <img class="w-[120px] md:w-[260px]" src="/img/coordinator/right.svg" />
           </div>
-          <div class="grid grid-cols-2 gap-y-[80px] pt-[100px]">
+          <div class="grid grid-cols-1 gap-y-[80px] pt-[80px] md:grid-cols-2 md:pt-[100px] mx-4">
             <the-producer-list
               v-for="producer in producers"
               :id="producer.id"
