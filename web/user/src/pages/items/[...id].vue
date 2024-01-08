@@ -122,7 +122,7 @@ useSeoMeta({
         />
       </div>
 
-      <div class="flex w-full flex-col gap-4">
+      <div class="mt-4 flex w-full flex-col gap-4">
         <div
           class="break-words text-[16px] tracking-[1.6px] md:text-[24px] md:tracking-[2.4px]"
         >
@@ -296,17 +296,19 @@ useSeoMeta({
               </p>
             </div>
           </div>
-          <div class="pt-[24px] tracking-[1.4px] md:pt-0 md:tracking-[1.6px]">
+          <div class="pt-2 text-[14px] tracking-[1.4px] md:pt-0 md:text-[16px] md:tracking-[1.6px]">
             {{ product.producer.profile }}
           </div>
         </div>
 
+        <!--
         <div class="mt-4 w-full text-right">
           <button class="inline-flex items-center">
             詳しく見る
             <the-right-arrow-icon class="ml-2 h-[12px] w-[12px]" />
           </button>
         </div>
+        -->
       </div>
     </div>
   </template>
