@@ -187,13 +187,13 @@ const onSubmit = async (): Promise<void> => {
             density="compact"
             @update:model-value="onChangeEndAt"
           />
-          <v-textarea
-            v-model="formDataValidate.description.$model"
-            :error-message="getErrorMessage(formDataValidate.description.$errors)"
-            label="詳細"
-            maxlength="2000"
-          />
         </div>
+        <v-textarea
+          v-model="formDataValidate.description.$model"
+          :error-message="getErrorMessage(formDataValidate.description.$errors)"
+          label="詳細"
+          maxlength="2000"
+        />
         <v-row>
           <v-col cols="12" sm="12" md="4">
             <molecules-image-select-form
