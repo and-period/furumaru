@@ -53,7 +53,7 @@ const handleSubmit = () => {
         v-model="formData.accountId"
         label="ユーザーID"
         :with-label="false"
-        placeholder="ユーザーID（@furumaruchan）"
+        placeholder="ユーザーID（furumaruchan）"
         type="text"
         required
       />
