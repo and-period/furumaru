@@ -43,7 +43,7 @@ const circleItems = computed<CircleItem[]>(() => [
     description: t('forthPointDescription'),
     linkItem: {
       text: t('forthPointLinkText'),
-      href: localePath('/'),
+      href: localePath('/legal-notice'),
     },
   },
 ])
