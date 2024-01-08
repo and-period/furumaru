@@ -432,18 +432,12 @@ const onSubmitDelete = (): void => {
             />
           </template>
         </v-autocomplete>
-        <p class="text-subtitle-2 text-grey py-2">
-          概要
-        </p>
-        <client-only>
-          <tiptap-editor
-            v-model="createFormDataValidate.comment.$model"
-            :error-message="
-              getErrorMessage(createFormDataValidate.comment.$errors)
-            "
-            class="mb-4"
-          />
-        </client-only>
+        <v-textarea
+          v-model="createFormDataValidate.comment.$model"
+          :error-message="getErrorMessage(createFormDataValidate.comment.$errors)"
+          label="概要"
+          maxlength="2000"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -562,18 +556,12 @@ const onSubmitDelete = (): void => {
             />
           </template>
         </v-autocomplete>
-        <p class="text-subtitle-2 text-grey py-2">
-          概要
-        </p>
-        <client-only>
-          <tiptap-editor
-            v-model="updateFormDataValidate.comment.$model"
-            :error-message="
-              getErrorMessage(updateFormDataValidate.comment.$errors)
-            "
-            class="mb-4"
-          />
-        </client-only>
+        <v-textarea
+          v-model="updateFormDataValidate.comment.$model"
+          :error-message="getErrorMessage(updateFormDataValidate.comment.$errors)"
+          label="概要"
+          maxlength="2000"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
