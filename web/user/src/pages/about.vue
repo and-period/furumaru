@@ -81,19 +81,21 @@ useSeoMeta({
           <p class="mb-6 text-2xl font-bold md:whitespace-pre">
             {{ item.title }}
           </p>
-          <p class="whitespace-pre-wrap text-left text-xl leading-9">
+          <p
+            class="whitespace-pre-wrap text-left text-[14px] leading-9 md:text-xl"
+          >
             {{ item.description }}
           </p>
           <div
             v-if="item.linkItem"
-            class="mt-10 text-[16px] font-semibold md:text-xl"
+            class="mt-10 text-[14px] font-semibold md:text-xl"
           >
             <nuxt-link
               :to="item.linkItem.href"
-              class="flex flex-row justify-center"
+              class="flex flex-row items-center justify-center"
             >
               {{ item.linkItem.text }}
-              <div class="ml-2 mt-2">
+              <div class="ml-2">
                 <svg
                   width="10"
                   height="17"
