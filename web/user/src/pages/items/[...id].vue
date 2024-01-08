@@ -120,6 +120,17 @@ useSeoMeta({
           :src="product.thumbnail.url"
           :alt="`${product.name}のサムネイル画像`"
         />
+        <div
+          v-for="(m, i) in product.media"
+          :key="i"
+          class="mt-2 grid w-full gap-4"
+        >
+          <img
+            :src="m.url"
+            :alt="`${product.name}の画像_${i}`"
+            class="aspect-square w-[72px] cursor-pointer"
+          />
+        </div>
       </div>
 
       <div class="mt-4 flex w-full flex-col gap-4">
@@ -296,7 +307,9 @@ useSeoMeta({
               </p>
             </div>
           </div>
-          <div class="pt-2 text-[14px] tracking-[1.4px] md:pt-0 md:text-[16px] md:tracking-[1.6px]">
+          <div
+            class="pt-2 text-[14px] tracking-[1.4px] md:pt-0 md:text-[16px] md:tracking-[1.6px]"
+          >
             {{ product.producer.profile }}
           </div>
         </div>
