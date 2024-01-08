@@ -20,11 +20,10 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div class="min-w-[368px] text-main" @click="handleClick">
+  <div class="w-full text-main" @click="handleClick">
     <div class="w-full">
       <img
-        class="h-[208px] object-cover"
-        :width="width"
+        class="h-[208px] w-full object-cover"
         :src="imgSrc"
         :alt="`archive-${title}-thumbnail`"
       />

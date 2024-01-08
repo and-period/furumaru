@@ -76,11 +76,11 @@ const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
         <div class="border border-orange p-3 text-sm text-orange">
           現在のカゴの数: {{ cartItems.length }}
           <p>
-            買い物カゴごとに送料がかかります。 詳しくは<a
-              href="/legal-notice"
-              class="underline"
-              >こちら</a
-            >からご確認ください。
+            買い物カゴごとに送料がかかります。 詳しくは
+            <nuxt-link href="/legal-notice" class="underline">
+              こちら
+            </nuxt-link>
+            からご確認ください。
           </p>
         </div>
 
