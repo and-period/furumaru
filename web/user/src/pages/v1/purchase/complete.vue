@@ -85,7 +85,9 @@ onMounted(async () => {
         <div
           class="mt-[40px] flex flex-col items-center justify-center md:mt-20"
         >
-          <p class="text-[14px] font-medium tracking-[2px] md:text-xl">
+          <p
+            class="text-center text-[14px] font-medium tracking-[2px] md:text-xl"
+          >
             お客様の注文IDは「{{ checkoutStatus?.orderId }}」です
           </p>
           <div
