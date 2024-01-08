@@ -75,13 +75,7 @@ const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
 
         <div class="border border-orange p-3 text-sm text-orange">
           現在のカゴの数: {{ cartItems.length }}
-          <p>
-            買い物カゴごとに送料がかかります。 詳しくは<a
-              href="#"
-              class="underline"
-              >こちら</a
-            >からご確認ください。
-          </p>
+          <p>買い物カゴごとに送料がかかります。</p>
         </div>
 
         <the-cart-item
