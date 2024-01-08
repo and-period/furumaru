@@ -116,11 +116,15 @@ const handleClickAddCartButton = () => {
       class="mt-4 flex flex-col gap-4 text-xs md:flex-row md:items-center"
     >
       <div class="md:hidden">
-        <p
-          class="mb-2 w-full whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+        <button
+              @click="handleClickCoorinator"
         >
-          {{ coordinator.marcheName }}
-        </p>
+          <p
+            class="mb-2 w-full whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+          >
+            {{ coordinator.marcheName }}
+          </p>
+        </button>
         <p class="text-[11px]">
           {{ coordinator.prefecture }} {{ coordinator.city }}
         </p>
