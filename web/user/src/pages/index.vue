@@ -147,7 +147,7 @@ useSeoMeta({
           </div>
           <div
             ref="archiveRef"
-            class="hidden-scrollbar flex flex-col gap-8 md:flex-row md:flex-nowrap md:overflow-x-scroll"
+            class="hidden-scrollbar flex w-full flex-col gap-8 md:flex-row md:overflow-x-scroll"
           >
             <the-archive-item
               v-for="archive in archives"
@@ -156,7 +156,7 @@ useSeoMeta({
               :title="archive.title"
               :img-src="archive.thumbnailUrl"
               :width="368"
-              class="cursor-pointer"
+              class="cursor-pointer md:min-w-[368px]"
               @click="handleClickLiveItem(archive.scheduleId)"
             />
           </div>
