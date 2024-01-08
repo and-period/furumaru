@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"net/http"
 	"testing"
 	"time"
 
@@ -1784,7 +1785,7 @@ func TestCheckout(t *testing.T) {
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
 				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
-					return nil, &komoju.Error{Code: komoju.ErrCodeUnprocessableEntity}
+					return nil, &komoju.Error{Status: http.StatusUnprocessableEntity, Code: komoju.ErrCodeUnprocessableEntity}
 				},
 			},
 			expect:    "https://example.com?session_id=transaction-id",

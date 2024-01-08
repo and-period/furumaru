@@ -362,7 +362,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 	// 決済依頼処理
 	pay, err := params.payFn(ctx, session.ID, oparams)
-	if komoju.NewErrCode(err) == komoju.ErrCodeUnprocessableEntity && session.ReturnURL != "" {
+	if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
 		// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
 		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), nil
 	}

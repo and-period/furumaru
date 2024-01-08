@@ -158,6 +158,7 @@ func (c *APIClient) statusCheck(res *http.Response, params *APIParams) error {
 	return &Error{
 		Method:  params.Method,
 		Route:   params.Path,
+		Status:  res.StatusCode,
 		Code:    ErrCode(out.Data.Code),
 		Message: out.Data.Message,
 	}
