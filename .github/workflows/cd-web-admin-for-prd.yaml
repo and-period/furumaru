@@ -1,0 +1,55 @@
+name: '[Frontend] Deploy Admin Web for prd'
+on:
+  push:
+    tags:
+    - 'v*'
+    paths:
+    - '.github/workflows/cd-web-admin-for-prd.yaml'
+    - 'web/admin/**'
+    - 'infra/docker/web/admin/**'
+  workflow_dispatch:
+
+env:
+  SERVICE: admin-web
+  TZ: 'Asia/Tokyo'
+  NODE_VERSION: 18.15.0
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  setup:
+    name: build_and_deploy
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./web/admin
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'yarn'
+
+    - name: Install Amplify CLI
+      run: yarn global add @aws-amplify/cli
+
+    - name: Configure AWS credentials from IAM Role
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Deploy to Amplify
+      run: amplify publish
