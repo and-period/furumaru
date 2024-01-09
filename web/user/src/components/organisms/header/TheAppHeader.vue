@@ -27,6 +27,7 @@ defineProps<Props>()
 interface Emits {
   (e: 'click:buyButton'): void
   (e: 'click:removeItemFromCart', cartNumber: number, id: string): void
+  (e: 'click:myPageButton'): void
   (e: 'click:logoutButton'): void
 }
 
@@ -62,7 +63,7 @@ const SP_MENU_ITEMS = [
   {
     icon: 'account',
     text: 'マイページ',
-    to: '/',
+    to: '/account',
   },
   // {
   //   icon: 'ring',
@@ -95,6 +96,10 @@ const SP_MENU_ITEMS = [
     to: '/about',
   },
 ]
+
+const handleClickMyPageButton = () => {
+  emits('click:myPageButton')
+}
 
 const handleClickLogoutButton = () => {
   emits('click:logoutButton')
@@ -146,6 +151,7 @@ const handleClickLogoutButton = () => {
           :authenticated-menu-items="authenticatedAccountMenuItem"
           :no-authenticated-menu-items="noAuthenticatedAccountMenuItem"
           @click:logout-button="handleClickLogoutButton"
+          @click:my-page-button="handleClickMyPageButton"
         />
 
         <the-pc-notification-menu
