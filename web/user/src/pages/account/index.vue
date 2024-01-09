@@ -30,6 +30,12 @@ useSeoMeta({
         <div class="rounded bg-white p-4">
           <dl>
             <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt>表示名</dt>
+              <dd class="sm:col-span-2">
+                {{ user.username }}
+              </dd>
+            </div>
+            <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
               <dt>氏名（ふりがな）</dt>
               <dd class="sm:col-span-2">
                 {{ `${user.lastname} ${user.firstname}` }}
@@ -37,9 +43,9 @@ useSeoMeta({
               </dd>
             </div>
             <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-              <dt>ユーザーID</dt>
+              <dt>アカウントID</dt>
               <dd class="sm:col-span-2">
-                {{ user.username }}
+                {{ user.accountId }}
               </dd>
             </div>
             <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
