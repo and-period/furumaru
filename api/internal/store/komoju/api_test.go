@@ -153,6 +153,7 @@ func TestAPIClient_statusCheck(t *testing.T) {
 			expect: &Error{
 				Method:  http.MethodPost,
 				Route:   "/hoge",
+				Status:  401,
 				Code:    "missing_parameter",
 				Message: "A required parameter (amount) is missing",
 			},

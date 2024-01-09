@@ -288,17 +288,12 @@ const onSubmit = async (): Promise<void> => {
               label="商品名"
               outlined
             />
-          </v-card-text>
-
-          <v-card-subtitle>商品説明</v-card-subtitle>
-          <v-card-text>
-            <client-only>
-              <tiptap-editor
-                v-model="formDataValidate.description.$model"
-                :error-message="getErrorMessage(formDataValidate.description.$errors)"
-                class="mb-4"
-              />
-            </client-only>
+            <v-textarea
+              v-model="formDataValidate.description.$model"
+              :error-message="getErrorMessage(formDataValidate.description.$errors)"
+              label="商品説明"
+              maxlength="2000"
+            />
           </v-card-text>
 
           <v-card-subtitle>商品画像登録</v-card-subtitle>

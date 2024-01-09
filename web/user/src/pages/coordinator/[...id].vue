@@ -139,7 +139,7 @@ fetchCoordinator(id.value)
             >
               配信中・配信予定のマルシェ
             </div>
-            <div class="mx-auto grid grid-cols-1 gap-8 bg-white pt-4 md:w-[675px] md:grid-cols-2">
+            <div class="md:mx-auto grid grid-cols-1 gap-8 bg-white pt-4 md:w-[675px] md:grid-cols-2 mx-4">
               <the-coordinator-live-item
                 v-for="liveItem in lives"
                 :id="liveItem.scheduleId"

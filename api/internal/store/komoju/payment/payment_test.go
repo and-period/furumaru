@@ -195,6 +195,7 @@ func TestSession_Capture(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/payments/%s/capture",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -317,6 +318,7 @@ func TestSession_Cancel(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/payments/%s/cancel",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -476,6 +478,7 @@ func TestSession_Refund(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/payments/%s/refund",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -667,6 +670,7 @@ func TestSession_RefundRequest(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/payments/%s/refund_request",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
