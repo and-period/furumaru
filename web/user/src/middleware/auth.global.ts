@@ -13,10 +13,20 @@ export default defineNuxtRouteMiddleware(async () => {
       // 認証トークンとユーザー情報の再取得を行う
       try {
         await authStore.refreshAccsessToken(authStore.refreshToken)
+      } catch (error) {
+        // リフレッシュトークンが期限切れの場合
+        if (error instanceof ApiBaseError) {
+          console.log('リフレッシュトークンが期限切れです', error)
+        }
+        // ログアウト処理を入れることで認証情報をクリアする
+        authStore.logout()
+        return
+      }
+      try {
         await authStore.fetchUserInfo()
       } catch (error) {
         if (error instanceof ApiBaseError) {
-          console.log(error)
+          console.log('認証エラー', error)
         }
       }
     }
