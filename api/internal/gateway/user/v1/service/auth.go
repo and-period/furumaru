@@ -42,6 +42,7 @@ func NewAuthUser(user *entity.User) *AuthUser {
 			Firstname:     user.Member.Firstname,
 			LastnameKana:  user.Member.LastnameKana,
 			FirstnameKana: user.Member.FirstnameKana,
+			Email:         user.Email(),
 		},
 	}
 }
