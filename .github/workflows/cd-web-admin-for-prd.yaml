@@ -12,9 +12,10 @@ on:
 env:
   SERVICE: admin-web
   TZ: 'Asia/Tokyo'
-  NODE_VERSION: 18.15.0
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  APP_ID: ${{ secrets.PRD_AMPLIFY_ADMIN_APP_ID }}
+  BRANCH_NAME: main
 
 permissions:
   id-token: write
@@ -36,15 +37,6 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'yarn'
-
-    - name: Install Amplify CLI
-      run: yarn global add @aws-amplify/cli
-
     - name: Configure AWS credentials from IAM Role
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -52,4 +44,9 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
 
     - name: Deploy to Amplify
-      run: amplify publish
+      run: |
+        aws amplify start-job \
+          --app-id=${APP_ID} \
+          --region=${AWS_REGION} \
+          --job-type RELEASE \
+          --branch-name=${BRANCH_NAME}
