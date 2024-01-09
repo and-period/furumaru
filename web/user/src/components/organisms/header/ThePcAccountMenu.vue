@@ -12,12 +12,20 @@ interface Props {
 defineProps<Props>()
 
 interface Emits {
+  (e: 'click:myPageButton'): void
   (e: 'click:logoutButton'): void
 }
 
 const emits = defineEmits<Emits>()
 
 const dropdownRef = ref<{ close: () => void } | undefined>(undefined)
+
+const handleClickMyPageButton = () => {
+  emits('click:myPageButton')
+  if (dropdownRef.value) {
+    dropdownRef.value.close()
+  }
+}
 
 const handleClickLogoutButton = () => {
   emits('click:logoutButton')
@@ -50,6 +58,13 @@ const handleClickLogoutButton = () => {
             <template v-else> ユーザー名が未設定です </template>
           </div>
         </div>
+
+        <button
+          class="px-4 py-2 text-left underline hover:bg-gray-200"
+          @click="handleClickMyPageButton"
+        >
+          マイページ
+        </button>
 
         <button
           class="px-4 py-2 text-left underline hover:bg-gray-200"
