@@ -188,16 +188,12 @@ const onSubmit = async (): Promise<void> => {
             @update:model-value="onChangeEndAt"
           />
         </div>
-        <p class="text-subtitle-2 text-grey py-2">
-          詳細
-        </p>
-        <client-only>
-          <tiptap-editor
-            v-model="formDataValidate.description.$model"
-            :error-message="getErrorMessage(formDataValidate.description.$errors)"
-            class="mb-4"
-          />
-        </client-only>
+        <v-textarea
+          v-model="formDataValidate.description.$model"
+          :error-message="getErrorMessage(formDataValidate.description.$errors)"
+          label="詳細"
+          maxlength="2000"
+        />
         <v-row>
           <v-col cols="12" sm="12" md="4">
             <molecules-image-select-form
