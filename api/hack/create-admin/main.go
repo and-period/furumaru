@@ -142,13 +142,16 @@ func (a *app) setupDB(host, port, username, password string, tls bool) (*mysql.C
 }
 
 func (a *app) setupAWSConfig(ctx context.Context, accessKey, secretKey string) (aws.Config, error) {
-	awscreds := aws.NewCredentialsCache(
-		awscredentials.NewStaticCredentialsProvider(accessKey, secretKey, ""),
-	)
-	return awsconfig.LoadDefaultConfig(ctx,
+	opts := []func(*awsconfig.LoadOptions) error{
 		awsconfig.WithRegion(awsRegion),
-		awsconfig.WithCredentialsProvider(awscreds),
-	)
+	}
+	if accessKey != "" || secretKey != "" {
+		awscreds := aws.NewCredentialsCache(
+			awscredentials.NewStaticCredentialsProvider(accessKey, secretKey, ""),
+		)
+		opts = append(opts, awsconfig.WithCredentialsProvider(awscreds))
+	}
+	return awsconfig.LoadDefaultConfig(ctx, opts...)
 }
 
 func (a *app) setupAuth(clientID, poolID string) cognito.Client {
