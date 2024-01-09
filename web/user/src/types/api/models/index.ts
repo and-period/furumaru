@@ -1,5 +1,5 @@
 /* tslint:disable */
- 
+/* eslint-disable */
 export * from './AddCartItemRequest';
 export * from './Address';
 export * from './AddressResponse';
