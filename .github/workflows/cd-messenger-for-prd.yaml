@@ -99,7 +99,7 @@ jobs:
       run: |
         aws lambda update-function-code \
           --function-name="${LAMBDA_FUNCTION_SCHEDULER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:la:${ECR_IMAGE_TAG}
+          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}"
         | jq '. | del(.Environment)'
 
   deploy_worker:
@@ -135,5 +135,5 @@ jobs:
       run: |
         aws lambda update-function-code \
           --function-name="${LAMBDA_FUNCTION_WORKER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:la:${ECR_IMAGE_TAG}
+          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}"
         | jq '. | del(.Environment)'

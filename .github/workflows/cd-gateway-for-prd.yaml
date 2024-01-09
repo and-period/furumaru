@@ -112,7 +112,7 @@ jobs:
       with:
         task-definition: ./admin-task-definition.json
         container-name: ${{ env.ECS_CONTAINER_ADMIN }}
-        image: ${{ env.ECR_REPOSITORY_URL }}:${ECR_IMAGE_TAG}
+        image: ${{ env.ECR_REPOSITORY_URL }}:${{ env.ECR_IMAGE_TAG }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -163,7 +163,7 @@ jobs:
       with:
         task-definition: ./user-task-definition.json
         container-name: ${{ env.ECS_CONTAINER_USER }}
-        image: ${{ env.ECR_REPOSITORY_URL }}:${ECR_IMAGE_TAG}
+        image: ${{ env.ECR_REPOSITORY_URL }}:${{ env.ECR_IMAGE_TAG }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
