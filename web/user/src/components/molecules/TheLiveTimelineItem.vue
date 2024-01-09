@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { unix } from 'dayjs'
+import dayjs from 'dayjs'
 import type { Product } from '~/types/api'
+
+const { unix } = dayjs
 
 interface Props {
   startAt: number
