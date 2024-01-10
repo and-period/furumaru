@@ -46,7 +46,7 @@ const handleClick = () => {
       </div>
 
       <div class="ml-0 mt-4 flex w-full flex-col gap-2 md:ml-4">
-        <div class="flex items-center text-sm">
+        <div class="flex items-center text-sm mx-4 md:mx-0">
           <div class="grow">
             <span
               :class="{
@@ -63,7 +63,7 @@ const handleClick = () => {
           </div>
         </div>
 
-        <p class="line-clamp-3 break-words text-[14px] text-main md:text-[16px]">
+        <p class="line-clamp-3 break-words text-[14px] text-main md:text-[16px] mx-4 md:mx-0">
           {{ title }}
         </p>
       </div>
