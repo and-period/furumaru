@@ -1,0 +1,254 @@
+"テンプレートID","テンプレート"
+"notification","{
+  ""type"": ""bubble"",
+  ""size"": ""giga"",
+  ""direction"": ""ltr"",
+  ""header"": {
+    ""type"": ""box"",
+    ""layout"": ""vertical"",
+    ""contents"": [
+      {
+        ""type"": ""text"",
+        ""text"": ""ふるマル メッセージ通知"",
+        ""color"": ""#FFFFFF"",
+        ""size"": ""lg""
+      }
+    ]
+  },
+  ""body"": {
+    ""type"": ""box"",
+    ""layout"": ""vertical"",
+    ""contents"": [
+      {
+        ""type"": ""text"",
+        ""text"": ""お知らせが投稿されました"",
+        ""weight"": ""bold"",
+        ""size"": ""lg""
+      },
+      {
+        ""type"": ""box"",
+        ""layout"": ""vertical"",
+        ""margin"": ""lg"",
+        ""spacing"": ""sm"",
+        ""contents"": [
+          {
+            ""type"": ""box"",
+            ""layout"": ""baseline"",
+            ""spacing"": ""sm"",
+            ""contents"": [
+              {
+                ""type"": ""text"",
+                ""text"": ""件名"",
+                ""color"": ""#aaaaaa"",
+                ""size"": ""sm"",
+                ""flex"": 1
+              },
+              {
+                ""type"": ""text"",
+                ""text"": ""{{.Overview}}"",
+                ""wrap"": true,
+                ""color"": ""#666666"",
+                ""size"": ""sm"",
+                ""flex"": 5
+              }
+            ]
+          },
+          {
+            ""type"": ""box"",
+            ""layout"": ""baseline"",
+            ""spacing"": ""sm"",
+            ""contents"": [
+              {
+                ""type"": ""text"",
+                ""text"": ""投稿者"",
+                ""color"": ""#aaaaaa"",
+                ""size"": ""sm"",
+                ""flex"": 1
+              },
+              {
+                ""type"": ""text"",
+                ""text"": ""{{.Author}}"",
+                ""wrap"": true,
+                ""color"": ""#666666"",
+                ""size"": ""sm"",
+                ""flex"": 5
+              }
+            ]
+          },
+          {
+            ""type"": ""box"",
+            ""layout"": ""baseline"",
+            ""spacing"": ""sm"",
+            ""contents"": [
+              {
+                ""type"": ""text"",
+                ""text"": ""投稿日時"",
+                ""color"": ""#aaaaaa"",
+                ""size"": ""sm"",
+                ""flex"": 1
+              },
+              {
+                ""type"": ""text"",
+                ""text"": ""{{.PublishedAt}}"",
+                ""wrap"": true,
+                ""color"": ""#666666"",
+                ""size"": ""sm"",
+                ""flex"": 5
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  ""footer"": {
+    ""type"": ""box"",
+    ""layout"": ""vertical"",
+    ""spacing"": ""sm"",
+    ""contents"": [
+      {
+        ""type"": ""button"",
+        ""style"": ""link"",
+        ""height"": ""sm"",
+        ""action"": {
+          ""type"": ""uri"",
+          ""label"": ""お知らせ詳細画面を開く"",
+          ""uri"": ""{{.Link}}""
+        }
+      }
+    ],
+    ""flex"": 0
+  },
+  ""styles"": {
+    ""header"": {
+      ""backgroundColor"": ""#2196F3""
+    }
+  }
+}"
+"received-contact","{
+  ""type"": ""bubble"",
+  ""size"": ""giga"",
+  ""direction"": ""ltr"",
+  ""header"": {
+    ""type"": ""box"",
+    ""layout"": ""vertical"",
+    ""contents"": [
+      {
+        ""type"": ""text"",
+        ""text"": ""ふるマル メッセージ通知"",
+        ""color"": ""#FFFFFF"",
+        ""size"": ""lg""
+      }
+    ]
+  },
+  ""body"": {
+    ""type"": ""box"",
+    ""layout"": ""vertical"",
+    ""contents"": [
+      {
+        ""type"": ""text"",
+        ""text"": ""お問い合わせを受信しました。内容を確認の上、対応をお願いします。"",
+        ""weight"": ""bold"",
+        ""size"": ""lg"",
+        ""wrap"": true
+      },
+      {
+        ""type"": ""box"",
+        ""layout"": ""vertical"",
+        ""margin"": ""lg"",
+        ""spacing"": ""sm"",
+        ""contents"": [
+          {
+            ""type"": ""box"",
+            ""layout"": ""baseline"",
+            ""spacing"": ""sm"",
+            ""contents"": [
+              {
+                ""type"": ""text"",
+                ""text"": ""件名"",
+                ""color"": ""#aaaaaa"",
+                ""size"": ""sm"",
+                ""flex"": 1
+              },
+              {
+                ""type"": ""text"",
+                ""text"": ""{{.Overview}}"",
+                ""wrap"": true,
+                ""color"": ""#666666"",
+                ""size"": ""sm"",
+                ""flex"": 5
+              }
+            ]
+          },
+          {
+            ""type"": ""box"",
+            ""layout"": ""baseline"",
+            ""spacing"": ""sm"",
+            ""contents"": [
+              {
+                ""type"": ""text"",
+                ""text"": ""投稿者"",
+                ""color"": ""#aaaaaa"",
+                ""size"": ""sm"",
+                ""flex"": 1
+              },
+              {
+                ""type"": ""text"",
+                ""text"": ""{{.Author}}"",
+                ""wrap"": true,
+                ""color"": ""#666666"",
+                ""size"": ""sm"",
+                ""flex"": 5
+              }
+            ]
+          },
+          {
+            ""type"": ""box"",
+            ""layout"": ""baseline"",
+            ""spacing"": ""sm"",
+            ""contents"": [
+              {
+                ""type"": ""text"",
+                ""text"": ""投稿日時"",
+                ""color"": ""#aaaaaa"",
+                ""size"": ""sm"",
+                ""flex"": 1
+              },
+              {
+                ""type"": ""text"",
+                ""text"": ""{{.ReceivedAt}}"",
+                ""wrap"": true,
+                ""color"": ""#666666"",
+                ""size"": ""sm"",
+                ""flex"": 5
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  ""footer"": {
+    ""type"": ""box"",
+    ""layout"": ""vertical"",
+    ""spacing"": ""sm"",
+    ""contents"": [
+      {
+        ""type"": ""button"",
+        ""style"": ""link"",
+        ""height"": ""sm"",
+        ""action"": {
+          ""type"": ""uri"",
+          ""label"": ""お問い合わせ詳細画面を開く"",
+          ""uri"": ""{{.Link}}""
+        }
+      }
+    ],
+    ""flex"": 0
+  },
+  ""styles"": {
+    ""header"": {
+      ""backgroundColor"": ""#2196F3""
+    }
+  }
+}"

@@ -12,7 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.32.1
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.26.7
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.5
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.43.3
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.44.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.5
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.24.2
@@ -46,7 +46,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/stripe/stripe-go/v73 v73.16.0
-	go.uber.org/mock v0.3.0
+	go.uber.org/mock v0.4.0
 	go.uber.org/zap v1.25.0
 	golang.org/x/image v0.14.0
 	golang.org/x/sync v0.5.0

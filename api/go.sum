@@ -65,8 +65,8 @@ github.com/aws/aws-sdk-go-v2/service/ivs v1.25.5 h1:YQ7BZG/n4VxYleWoSyTTe1X14CA2
 github.com/aws/aws-sdk-go-v2/service/ivs v1.25.5/go.mod h1:ZSwe7Aadb5C0A3L6LFnSIr/AF9Yh4UWJCh2iuLDLYPQ=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.5 h1:qIp6ApeU/pkVeEhQwnEF7jXmsXY10JPFkd7JOs981as=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.48.5/go.mod h1:MgueuUh0qhyZdoqot24bBD/+uzQ4ubOcMHCfMFXXAm0=
-github.com/aws/aws-sdk-go-v2/service/medialive v1.43.3 h1:/Ub7sD+eD7K6FWQeuALyVApqyec5Ngk893X3VrVPN6c=
-github.com/aws/aws-sdk-go-v2/service/medialive v1.43.3/go.mod h1:fH6Wz0q9JXupxmSgCFPwxymnpiX6PitFx2f/AqjuayM=
+github.com/aws/aws-sdk-go-v2/service/medialive v1.44.1 h1:5iU4di93LKUIUAvcHY9TXR8MvrHKhrOjpL/CINGuV04=
+github.com/aws/aws-sdk-go-v2/service/medialive v1.44.1/go.mod h1:SITOSt2FpMrkZzTD/8ykcnK0zpbBLcjk/1LUhcU/gzE=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2 h1:DLSAG8zpJV2pYsU+UPkj1IEZghyBnnUsvIRs6UuXSDU=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2/go.mod h1:thjZng67jGsvMyVZnSxlcqKyLwB0XTG8bHIRZPTJ+Bs=
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.5 h1:qYi/BfDrWXZxlmRjlKCyFmtI4HKJwW8OKDKhKRAOZQI=
@@ -395,8 +395,8 @@ go.uber.org/goleak v1.1.10/go.mod h1:8a7PlsEVH3e/a/GLqe5IIrQx6GzcnRmZEufDUTk4A7A
 go.uber.org/goleak v1.1.11/go.mod h1:cwTWslyiVhfpKIDGSZEM2HlOvcqm+tG4zioyIeLoqMQ=
 go.uber.org/goleak v1.2.0 h1:xqgm/S+aQvhWFTtR0XK3Jvg7z8kGV8P4X14IzwN3Eqk=
 go.uber.org/goleak v1.2.0/go.mod h1:XJYK+MuIchqpmGmUSAzotztawfKvYLUIgg7guXrwVUo=
-go.uber.org/mock v0.3.0 h1:3mUxI1No2/60yUYax92Pt8eNOEecx2D3lcXZh2NEZJo=
-go.uber.org/mock v0.3.0/go.mod h1:a6FSlNadKUHUa9IP5Vyt1zh4fC7uAwxMutEAscFbkZc=
+go.uber.org/mock v0.4.0 h1:VcM4ZOtdbR4f6VXfiOpwpVJDL6lCReaZ6mw31wqh7KU=
+go.uber.org/mock v0.4.0/go.mod h1:a6FSlNadKUHUa9IP5Vyt1zh4fC7uAwxMutEAscFbkZc=
 go.uber.org/multierr v1.6.0/go.mod h1:cdWPpRnG4AhwMwsgIHip0KRBQjJy5kYEpYjJxpXp9iU=
 go.uber.org/multierr v1.7.0/go.mod h1:7EAYxJLBy9rStEaz58O2t4Uvip6FSURkq8/ppBp95ak=
 go.uber.org/multierr v1.11.0 h1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=
