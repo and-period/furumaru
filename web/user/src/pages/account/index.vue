@@ -4,17 +4,24 @@ import { useAdressStore } from '~/store/address'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/phone-number'
 import { useAuthStore } from '~/store/auth'
 
+const router = useRouter()
+
 const addressStore = useAdressStore()
 const { addresses } = storeToRefs(addressStore)
 const { fetchAddresses } = addressStore
 
 const authStore = useAuthStore()
 const { user } = storeToRefs(authStore)
-const { fetchUserInfo } = authStore
+const { fetchUserInfo, logout } = authStore
 
 await useAsyncData('account', () => {
   return Promise.all([fetchUserInfo(), fetchAddresses()])
 })
+
+const handleClickLogout = async () => {
+  await logout()
+  router.push('/')
+}
 
 useSeoMeta({
   title: 'アカウント',
@@ -103,6 +110,10 @@ useSeoMeta({
           </dl>
         </div>
       </div>
+    </div>
+
+    <div class="text-right">
+      <button class="underline" @click="handleClickLogout">ログアウト</button>
     </div>
   </div>
 </template>
