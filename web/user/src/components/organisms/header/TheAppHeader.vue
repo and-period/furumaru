@@ -22,7 +22,7 @@ interface Props {
   footerMenuItems: FooterMenuItem[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 interface Emits {
   (e: 'click:buyButton'): void
@@ -59,11 +59,11 @@ const handleClickRemoveItemFromCartButton = (
   emits('click:removeItemFromCart', cartNumber, id)
 }
 
-const SP_MENU_ITEMS = [
+const SP_MENU_ITEMS = computed(() => [
   {
     icon: 'account',
-    text: 'マイページ',
-    to: '/account',
+    text: props.isAuthenticated ? 'マイページ' : 'ログイン',
+    to: props.isAuthenticated ? '/account' : '/signin',
   },
   // {
   //   icon: 'ring',
@@ -95,7 +95,7 @@ const SP_MENU_ITEMS = [
     text: 'ふるマルについて',
     to: '/about',
   },
-]
+])
 
 const handleClickMyPageButton = () => {
   emits('click:myPageButton')
