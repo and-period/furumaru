@@ -19,12 +19,6 @@ import {
     FulfillmentStatusFromJSONTyped,
     FulfillmentStatusToJSON,
 } from './FulfillmentStatus';
-import type { Prefecture } from './Prefecture';
-import {
-    PrefectureFromJSON,
-    PrefectureFromJSONTyped,
-    PrefectureToJSON,
-} from './Prefecture';
 import type { ShippingCarrier } from './ShippingCarrier';
 import {
     ShippingCarrierFromJSON,
@@ -104,60 +98,6 @@ export interface OrderFulfillment {
      * @memberof OrderFulfillment
      */
     shippedAt: number;
-    /**
-     * 配送先 住所ID
-     * @type {string}
-     * @memberof OrderFulfillment
-     */
-    addressId: string;
-    /**
-     * 配送先 氏名（姓）
-     * @type {string}
-     * @memberof OrderFulfillment
-     */
-    lastname: string;
-    /**
-     * 配送先 氏名（名）
-     * @type {string}
-     * @memberof OrderFulfillment
-     */
-    firstname: string;
-    /**
-     * 配送先 郵便番号
-     * @type {string}
-     * @memberof OrderFulfillment
-     */
-    postalCode: string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof OrderFulfillment
-     */
-    prefectureCode: Prefecture;
-    /**
-     * 配送先 市区町村
-     * @type {string}
-     * @memberof OrderFulfillment
-     */
-    city: string;
-    /**
-     * 配送先 町名・番地
-     * @type {string}
-     * @memberof OrderFulfillment
-     */
-    addressLine1: string;
-    /**
-     * 配送先 ビル名・号室など
-     * @type {string}
-     * @memberof OrderFulfillment
-     */
-    addressLine2: string;
-    /**
-     * 配送先 電話番号
-     * @type {string}
-     * @memberof OrderFulfillment
-     */
-    phoneNumber: string;
 }
 
 /**
@@ -174,15 +114,6 @@ export function instanceOfOrderFulfillment(value: object): boolean {
     isInstance = isInstance && "boxSize" in value;
     isInstance = isInstance && "boxRate" in value;
     isInstance = isInstance && "shippedAt" in value;
-    isInstance = isInstance && "addressId" in value;
-    isInstance = isInstance && "lastname" in value;
-    isInstance = isInstance && "firstname" in value;
-    isInstance = isInstance && "postalCode" in value;
-    isInstance = isInstance && "prefectureCode" in value;
-    isInstance = isInstance && "city" in value;
-    isInstance = isInstance && "addressLine1" in value;
-    isInstance = isInstance && "addressLine2" in value;
-    isInstance = isInstance && "phoneNumber" in value;
 
     return isInstance;
 }
@@ -206,15 +137,6 @@ export function OrderFulfillmentFromJSONTyped(json: any, ignoreDiscriminator: bo
         'boxSize': ShippingSizeFromJSON(json['boxSize']),
         'boxRate': json['boxRate'],
         'shippedAt': json['shippedAt'],
-        'addressId': json['addressId'],
-        'lastname': json['lastname'],
-        'firstname': json['firstname'],
-        'postalCode': json['postalCode'],
-        'prefectureCode': PrefectureFromJSON(json['prefectureCode']),
-        'city': json['city'],
-        'addressLine1': json['addressLine1'],
-        'addressLine2': json['addressLine2'],
-        'phoneNumber': json['phoneNumber'],
     };
 }
 
@@ -236,15 +158,6 @@ export function OrderFulfillmentToJSON(value?: OrderFulfillment | null): any {
         'boxSize': ShippingSizeToJSON(value.boxSize),
         'boxRate': value.boxRate,
         'shippedAt': value.shippedAt,
-        'addressId': value.addressId,
-        'lastname': value.lastname,
-        'firstname': value.firstname,
-        'postalCode': value.postalCode,
-        'prefectureCode': PrefectureToJSON(value.prefectureCode),
-        'city': value.city,
-        'addressLine1': value.addressLine1,
-        'addressLine2': value.addressLine2,
-        'phoneNumber': value.phoneNumber,
     };
 }
 

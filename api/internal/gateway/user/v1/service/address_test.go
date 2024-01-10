@@ -109,6 +109,11 @@ func TestAddress_Response(t *testing.T) {
 				PhoneNumber:    "+819012345678",
 			},
 		},
+		{
+			name:    "nil",
+			address: nil,
+			expect:  nil,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt

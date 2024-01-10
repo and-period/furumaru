@@ -171,7 +171,6 @@ func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (se
 	return service.NewProducts(products.FilterByPublished()), nil
 }
 
-//nolint:unused
 func (h *handler) multiGetProductsByRevision(ctx context.Context, revisionIDs []int64) (service.Products, error) {
 	if len(revisionIDs) == 0 {
 		return service.Products{}, nil

@@ -1,0 +1,28 @@
+get:
+  summary: 注文履歴情報取得
+  operationId: v1GetOrder
+  tags:
+  - Order
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: orderId
+    schema:
+      type: string
+    description: 注文履歴ID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1OrderResponse'
+    404:
+      description: 注文履歴が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

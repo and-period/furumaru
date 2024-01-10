@@ -28,7 +28,10 @@ const (
 	sessionTTL = 14 * 24 * 60 * 60 // 14days
 )
 
-var errNotFoundCart = errors.New("handler: not found cart")
+var (
+	errNotFoundCart  = errors.New("handler: not found cart")
+	errNotFoundOrder = errors.New("handler: not found order")
+)
 
 /**
  * ###############################################
@@ -143,6 +146,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.addressRoutes(v1)
 	h.cartRoutes(v1)
 	h.checkoutRoutes(v1)
+	h.orderRoutes(v1)
 }
 
 /**

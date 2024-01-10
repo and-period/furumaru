@@ -35,7 +35,6 @@ const (
 
 type OrderPayment struct {
 	response.OrderPayment
-	orderID string
 }
 
 type OrderPayments []*OrderPayment
@@ -113,7 +112,7 @@ func (s PaymentStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrderPayment(payment *entity.OrderPayment, address *Address) *OrderPayment {
+func NewOrderPayment(payment *entity.OrderPayment) *OrderPayment {
 	return &OrderPayment{
 		OrderPayment: response.OrderPayment{
 			TransactionID: payment.TransactionID,
@@ -126,9 +125,7 @@ func NewOrderPayment(payment *entity.OrderPayment, address *Address) *OrderPayme
 			Total:         payment.Total,
 			OrderedAt:     jst.Unix(payment.OrderedAt),
 			PaidAt:        jst.Unix(payment.PaidAt),
-			Address:       address.Response(),
 		},
-		orderID: payment.OrderID,
 	}
 }
 
@@ -139,10 +136,10 @@ func (p *OrderPayment) Response() *response.OrderPayment {
 	return &p.OrderPayment
 }
 
-func NewOrderPayments(payments entity.OrderPayments, addresses map[int64]*Address) OrderPayments {
+func NewOrderPayments(payments entity.OrderPayments) OrderPayments {
 	res := make(OrderPayments, len(payments))
-	for i, p := range payments {
-		res[i] = NewOrderPayment(p, addresses[p.AddressRevisionID])
+	for i := range payments {
+		res[i] = NewOrderPayment(payments[i])
 	}
 	return res
 }

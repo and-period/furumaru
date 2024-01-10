@@ -53,16 +53,28 @@ func (s OrderStatus) Response() int32 {
 }
 
 func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product) *Order {
+	var billingAddress, shippingAddress *Address
+	if address, ok := addresses[order.OrderPayment.AddressRevisionID]; ok {
+		billingAddress = address
+	}
+	if len(order.OrderFulfillments) > 0 {
+		// 現状すべての配送先が同一になっているため
+		if address, ok := addresses[order.OrderFulfillments[0].AddressRevisionID]; ok {
+			shippingAddress = address
+		}
+	}
 	return &Order{
 		Order: response.Order{
-			ID:            order.ID,
-			CoordinatorID: order.CoordinatorID,
-			PromotionID:   order.PromotionID,
-			Status:        NewOrderStatus(order).Response(),
-			Payment:       NewOrderPayment(&order.OrderPayment, addresses[order.OrderPayment.AddressRevisionID]).Response(),
-			Refund:        NewOrderRefund(&order.OrderPayment).Response(),
-			Fulfillments:  NewOrderFulfillments(order.OrderFulfillments, addresses).Response(),
-			Items:         NewOrderItems(order.OrderItems, products).Response(),
+			ID:              order.ID,
+			CoordinatorID:   order.CoordinatorID,
+			PromotionID:     order.PromotionID,
+			Status:          NewOrderStatus(order).Response(),
+			Payment:         NewOrderPayment(&order.OrderPayment).Response(),
+			Refund:          NewOrderRefund(&order.OrderPayment).Response(),
+			Fulfillments:    NewOrderFulfillments(order.OrderFulfillments).Response(),
+			Items:           NewOrderItems(order.OrderItems, products).Response(),
+			BillingAddress:  billingAddress.Response(),
+			ShippingAddress: shippingAddress.Response(),
 		},
 	}
 }
@@ -75,4 +87,20 @@ func (o *Order) ProductIDs() []string {
 
 func (o *Order) Response() *response.Order {
 	return &o.Order
+}
+
+func NewOrders(orders entity.Orders, addresses map[int64]*Address, products map[int64]*Product) Orders {
+	res := make(Orders, len(orders))
+	for i := range orders {
+		res[i] = NewOrder(orders[i], addresses, products)
+	}
+	return res
+}
+
+func (os Orders) Response() []*response.Order {
+	res := make([]*response.Order, len(os))
+	for i := range os {
+		res[i] = os[i].Response()
+	}
+	return res
 }
