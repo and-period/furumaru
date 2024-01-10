@@ -92,18 +92,8 @@ func (a *address) Count(ctx context.Context, params *database.ListAddressesParam
 }
 
 func (a *address) MultiGet(ctx context.Context, addressIDs []string, fields ...string) (entity.Addresses, error) {
-	var addresses entity.Addresses
-
-	stmt := a.db.Statement(ctx, a.db.DB, addressTable, fields...).
-		Where("id IN (?)", addressIDs)
-
-	if err := stmt.Find(&addresses).Error; err != nil {
-		return nil, dbError(err)
-	}
-	if err := a.fill(ctx, a.db.DB, addresses...); err != nil {
-		return nil, dbError(err)
-	}
-	return addresses, nil
+	addresses, err := a.multiGet(ctx, a.db.DB, addressIDs, fields...)
+	return addresses, dbError(err)
 }
 
 func (a *address) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Addresses, error) {
@@ -120,7 +110,7 @@ func (a *address) MultiGetByRevision(ctx context.Context, revisionIDs []int64, f
 	}
 	revisions.Fill()
 
-	addresses, err := a.MultiGet(ctx, revisions.AddressIDs(), fields...)
+	addresses, err := a.multiGet(ctx, a.db.DB, revisions.AddressIDs(), fields...)
 	if err != nil {
 		return nil, err
 	}
@@ -256,6 +246,20 @@ func (a *address) Delete(ctx context.Context, addressID, userID string) error {
 
 	err := stmt.Updates(updates).Error
 	return dbError(err)
+}
+
+func (a *address) multiGet(ctx context.Context, tx *gorm.DB, addressIDs []string, fields ...string) (entity.Addresses, error) {
+	var addresses entity.Addresses
+
+	stmt := a.db.Statement(ctx, tx, addressTable, fields...).Unscoped().Where("id IN (?)", addressIDs)
+
+	if err := stmt.Find(&addresses).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := a.fill(ctx, tx, addresses...); err != nil {
+		return nil, dbError(err)
+	}
+	return addresses, nil
 }
 
 func (a *address) get(ctx context.Context, tx *gorm.DB, addressID string, fields ...string) (*entity.Address, error) {

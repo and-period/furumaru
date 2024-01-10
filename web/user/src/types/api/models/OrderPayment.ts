@@ -25,12 +25,6 @@ import {
     PaymentStatusFromJSONTyped,
     PaymentStatusToJSON,
 } from './PaymentStatus';
-import type { Prefecture } from './Prefecture';
-import {
-    PrefectureFromJSON,
-    PrefectureFromJSONTyped,
-    PrefectureToJSON,
-} from './Prefecture';
 
 /**
  * 注文決済情報
@@ -98,60 +92,6 @@ export interface OrderPayment {
      * @memberof OrderPayment
      */
     paidAt: number;
-    /**
-     * 請求先 住所ID
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    addressId: string;
-    /**
-     * 請求先 氏名（姓）
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    lastname: string;
-    /**
-     * 請求先 氏名（名）
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    firstname: string;
-    /**
-     * 請求先 郵便番号
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    postalCode: string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof OrderPayment
-     */
-    prefectureCode: Prefecture;
-    /**
-     * 請求先 市区町村
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    city: string;
-    /**
-     * 請求先 町名・番地
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    addressLine1: string;
-    /**
-     * 請求先 ビル名・号室など
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    addressLine2: string;
-    /**
-     * 請求先 電話番号
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    phoneNumber: string;
 }
 
 /**
@@ -169,15 +109,6 @@ export function instanceOfOrderPayment(value: object): boolean {
     isInstance = isInstance && "total" in value;
     isInstance = isInstance && "orderedAt" in value;
     isInstance = isInstance && "paidAt" in value;
-    isInstance = isInstance && "addressId" in value;
-    isInstance = isInstance && "lastname" in value;
-    isInstance = isInstance && "firstname" in value;
-    isInstance = isInstance && "postalCode" in value;
-    isInstance = isInstance && "prefectureCode" in value;
-    isInstance = isInstance && "city" in value;
-    isInstance = isInstance && "addressLine1" in value;
-    isInstance = isInstance && "addressLine2" in value;
-    isInstance = isInstance && "phoneNumber" in value;
 
     return isInstance;
 }
@@ -202,15 +133,6 @@ export function OrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'total': json['total'],
         'orderedAt': json['orderedAt'],
         'paidAt': json['paidAt'],
-        'addressId': json['addressId'],
-        'lastname': json['lastname'],
-        'firstname': json['firstname'],
-        'postalCode': json['postalCode'],
-        'prefectureCode': PrefectureFromJSON(json['prefectureCode']),
-        'city': json['city'],
-        'addressLine1': json['addressLine1'],
-        'addressLine2': json['addressLine2'],
-        'phoneNumber': json['phoneNumber'],
     };
 }
 
@@ -233,15 +155,6 @@ export function OrderPaymentToJSON(value?: OrderPayment | null): any {
         'total': value.total,
         'orderedAt': value.orderedAt,
         'paidAt': value.paidAt,
-        'addressId': value.addressId,
-        'lastname': value.lastname,
-        'firstname': value.firstname,
-        'postalCode': value.postalCode,
-        'prefectureCode': PrefectureToJSON(value.prefectureCode),
-        'city': value.city,
-        'addressLine1': value.addressLine1,
-        'addressLine2': value.addressLine2,
-        'phoneNumber': value.phoneNumber,
     };
 }
 

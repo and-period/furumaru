@@ -27,6 +27,10 @@ order:
       description: 注文商品一覧
       items:
         $ref: '#/orderItem'
+    billingAddress:
+      $ref: './../../../openapi.yaml#/components/schemas/address'
+    shippingAddress:
+      $ref: './../../../openapi.yaml#/components/schemas/address'
   required:
   - id
   - coordinatorId
@@ -36,6 +40,8 @@ order:
   - refund
   - fulfillments
   - items
+  - billingAddress
+  - shippingAddress
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -52,15 +58,6 @@ order:
       total: 1430
       orderedAt: 1640962800
       paidAt: 1640962800
-      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
-      lastname: '&.'
-      firstname: '購入者'
-      postalCode: '1000014'
-      prefectureCode: 13
-      city: '千代田区'
-      addressLine1: '永田町1-7-1'
-      addressLine2: ''
-      phoneNumber: '+819012345678'
     refund:
       total: 0
       type: 2
@@ -77,20 +74,39 @@ order:
       boxSize: 2
       boxRate: 80
       shippedAt: 0
-      addressId: 'kSByoE6FetnPs5Byk3a9Zx'
-      lastname: '&.'
-      firstname: '購入者'
-      postalCode: '1000014'
-      prefectureCode: 13
-      city: '千代田区'
-      addressLine1: '永田町1-7-1'
-      addressLine2: ''
-      phoneNumber: '+819012345678'
     items:
     - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
       productId: 'kSByoE6FetnPs5Byk3a9Zx'
       price: 500
       quantity: 2
+    billingAddress:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      isDefault: true
+      lastname: '&.'
+      firstname: '利用者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'りようしゃ'
+      postalCode: '1000014'
+      prefecture: '東京都'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
+    shippingAddress:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      isDefault: true
+      lastname: '&.'
+      firstname: '利用者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'りようしゃ'
+      postalCode: '1000014'
+      prefecture: '東京都'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '+819012345678'
 orderPayment:
   type: object
   description: 注文決済情報
@@ -130,33 +146,6 @@ orderPayment:
       type: integer
       format: int64
       description: 支払日時（unixtime）
-    addressId:
-      type: string
-      description: 請求先 住所ID
-    lastname:
-      type: string
-      description: 請求先 氏名（姓）
-    firstname:
-      type: string
-      description: 請求先 氏名（名）
-    postalCode:
-      type: string
-      description: 請求先 郵便番号
-    prefectureCode:
-      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
-      description: 請求先 都道府県
-    city:
-      type: string
-      description: 請求先 市区町村
-    addressLine1:
-      type: string
-      description: 請求先 町名・番地
-    addressLine2:
-      type: string
-      description: 請求先 ビル名・号室など
-    phoneNumber:
-      type: string
-      description: 請求先 電話番号
   required:
   - transactionId
   - methodType
@@ -168,15 +157,6 @@ orderPayment:
   - total
   - orderedAt
   - paidAt
-  - addressId
-  - lastname
-  - firstname
-  - postalCode
-  - prefectureCode
-  - city
-  - addressLine1
-  - addressLine2
-  - phoneNumber
   example:
     transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
     methodType: 2
@@ -188,15 +168,6 @@ orderPayment:
     total: 1430
     orderedAt: 1640962800
     paidAt: 1640962800
-    addressId: 'kSByoE6FetnPs5Byk3a9Zx'
-    lastname: '&.'
-    firstname: '購入者'
-    postalCode: '1000014'
-    prefectureCode: 13
-    city: '千代田区'
-    addressLine1: '永田町1-7-1'
-    addressLine2: ''
-    phoneNumber: '+819012345678'
 orderRefund:
   type: object
   description: 注文キャンセル情報
@@ -259,33 +230,6 @@ orderFulfillment:
       type: integer
       format: int64
       description: 配送日時（unixtime）
-    addressId:
-      type: string
-      description: 配送先 住所ID
-    lastname:
-      type: string
-      description: 配送先 氏名（姓）
-    firstname:
-      type: string
-      description: 配送先 氏名（名）
-    postalCode:
-      type: string
-      description: 配送先 郵便番号
-    prefectureCode:
-      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
-      description: 配送先 都道府県
-    city:
-      type: string
-      description: 配送先 市区町村
-    addressLine1:
-      type: string
-      description: 配送先 町名・番地
-    addressLine2:
-      type: string
-      description: 配送先 ビル名・号室など
-    phoneNumber:
-      type: string
-      description: 配送先 電話番号
   required:
   - fulfillmentId
   - trackingNumber
@@ -296,15 +240,6 @@ orderFulfillment:
   - boxSize
   - boxRate
   - shippedAt
-  - addressId
-  - lastname
-  - firstname
-  - postalCode
-  - prefectureCode
-  - city
-  - addressLine1
-  - addressLine2
-  - phoneNumber
   example:
     fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
     trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -315,15 +250,6 @@ orderFulfillment:
     boxSize: 2
     boxRate: 80
     shippedAt: 0
-    addressId: 'kSByoE6FetnPs5Byk3a9Zx'
-    lastname: '&.'
-    firstname: '購入者'
-    postalCode: '1000014'
-    prefectureCode: 13
-    city: '千代田区'
-    addressLine1: '永田町1-7-1'
-    addressLine2: ''
-    phoneNumber: '+819012345678'
 orderItem:
   type: object
   description: 注文商品情報

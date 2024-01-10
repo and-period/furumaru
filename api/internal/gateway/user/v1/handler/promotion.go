@@ -7,6 +7,20 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 )
 
+func (h *handler) multiGetPromotion(ctx context.Context, promotionIDs []string) (service.Promotions, error) {
+	if len(promotionIDs) == 0 {
+		return service.Promotions{}, nil
+	}
+	in := &store.MultiGetPromotionsInput{
+		PromotionIDs: promotionIDs,
+	}
+	promotions, err := h.store.MultiGetPromotions(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewPromotions(promotions), nil
+}
+
 //nolint:unused
 func (h *handler) getPromotion(ctx context.Context, promotionID string) (*service.Promotion, error) {
 	in := &store.GetPromotionInput{

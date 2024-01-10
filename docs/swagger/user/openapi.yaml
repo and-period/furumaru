@@ -17,6 +17,8 @@ tags:
   description: 買い物かご関連
 - name: Checkout
   description: 購入関連
+- name: Order
+  description: 注文履歴関連
 - name: Top
   description: トップページ関連
 - name: Schedule
@@ -74,6 +76,11 @@ paths:
     $ref: './paths/v1/checkouts/index.yaml'
   /v1/checkouts/{transactionId}:
     $ref: './paths/v1/checkouts/_transactionId/index.yaml'
+  # Order
+  /v1/orders:
+    $ref: './paths/v1/orders/index.yaml'
+  /v1/orders/{orderId}:
+    $ref: './paths/v1/orders/_orderId/index.yaml'
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
@@ -244,6 +251,8 @@ components:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
+    v1OrdersResponse:
+      $ref: './components/schemas/v1/order.response.yaml#/ordersResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
     v1ProducerResponse:

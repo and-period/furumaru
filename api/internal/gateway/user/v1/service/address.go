@@ -34,6 +34,9 @@ func NewAddress(address *entity.Address) *Address {
 }
 
 func (a *Address) Response() *response.Address {
+	if a == nil {
+		return nil
+	}
 	return &a.Address
 }
 

@@ -13,6 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { Address } from './Address';
+import {
+    AddressFromJSON,
+    AddressFromJSONTyped,
+    AddressToJSON,
+} from './Address';
 import type { OrderFulfillment } from './OrderFulfillment';
 import {
     OrderFulfillmentFromJSON,
@@ -98,6 +104,18 @@ export interface Order {
      * @memberof Order
      */
     items: Array<OrderItem>;
+    /**
+     * 
+     * @type {Address}
+     * @memberof Order
+     */
+    billingAddress: Address;
+    /**
+     * 
+     * @type {Address}
+     * @memberof Order
+     */
+    shippingAddress: Address;
 }
 
 /**
@@ -113,6 +131,8 @@ export function instanceOfOrder(value: object): boolean {
     isInstance = isInstance && "refund" in value;
     isInstance = isInstance && "fulfillments" in value;
     isInstance = isInstance && "items" in value;
+    isInstance = isInstance && "billingAddress" in value;
+    isInstance = isInstance && "shippingAddress" in value;
 
     return isInstance;
 }
@@ -135,6 +155,8 @@ export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ord
         'refund': OrderRefundFromJSON(json['refund']),
         'fulfillments': ((json['fulfillments'] as Array<any>).map(OrderFulfillmentFromJSON)),
         'items': ((json['items'] as Array<any>).map(OrderItemFromJSON)),
+        'billingAddress': AddressFromJSON(json['billingAddress']),
+        'shippingAddress': AddressFromJSON(json['shippingAddress']),
     };
 }
 
@@ -155,6 +177,8 @@ export function OrderToJSON(value?: Order | null): any {
         'refund': OrderRefundToJSON(value.refund),
         'fulfillments': ((value.fulfillments as Array<any>).map(OrderFulfillmentToJSON)),
         'items': ((value.items as Array<any>).map(OrderItemToJSON)),
+        'billingAddress': AddressToJSON(value.billingAddress),
+        'shippingAddress': AddressToJSON(value.shippingAddress),
     };
 }
 

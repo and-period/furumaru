@@ -290,18 +290,7 @@ func TestOrderPayment(t *testing.T) {
 					Total:         2783,
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
-					Address: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
 				},
-				orderID: "order-id",
 			},
 		},
 	}
@@ -309,7 +298,7 @@ func TestOrderPayment(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewOrderPayment(tt.payment, tt.address))
+			assert.Equal(t, tt.expect, NewOrderPayment(tt.payment))
 		})
 	}
 }
@@ -335,18 +324,7 @@ func TestOrderPayment_Response(t *testing.T) {
 					Total:         1760,
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
-					Address: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
 				},
-				orderID: "order-id",
 			},
 			expect: &response.OrderPayment{
 				TransactionID: "transaction-id",
@@ -359,16 +337,6 @@ func TestOrderPayment_Response(t *testing.T) {
 				Total:         1760,
 				OrderedAt:     1640962800,
 				PaidAt:        1640962800,
-				Address: &response.Address{
-					Lastname:       "&.",
-					Firstname:      "購入者",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "+819012345678",
-				},
 			},
 		},
 	}

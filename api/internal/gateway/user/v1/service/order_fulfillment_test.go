@@ -279,18 +279,7 @@ func TestOrderFulfillment(t *testing.T) {
 					BoxSize:         ShippingSize60.Response(),
 					BoxRate:         80,
 					ShippedAt:       1640962800,
-					Address: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
 				},
-				orderID: "order-id",
 			},
 		},
 	}
@@ -298,7 +287,7 @@ func TestOrderFulfillment(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewOrderFulfillment(tt.fulfillment, tt.address))
+			assert.Equal(t, tt.expect, NewOrderFulfillment(tt.fulfillment))
 		})
 	}
 }
@@ -323,18 +312,7 @@ func TestOrderFulfillment_Response(t *testing.T) {
 					BoxSize:         ShippingSize60.Response(),
 					BoxRate:         80,
 					ShippedAt:       1640962800,
-					Address: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
 				},
-				orderID: "order-id",
 			},
 			expect: &response.OrderFulfillment{
 				FulfillmentID:   "fulfillment-id",
@@ -346,16 +324,6 @@ func TestOrderFulfillment_Response(t *testing.T) {
 				BoxSize:         ShippingSize60.Response(),
 				BoxRate:         80,
 				ShippedAt:       1640962800,
-				Address: &response.Address{
-					Lastname:       "&.",
-					Firstname:      "購入者",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "+819012345678",
-				},
 			},
 		},
 	}
@@ -422,18 +390,7 @@ func TestOrderFulfillments(t *testing.T) {
 						BoxSize:         ShippingSize60.Response(),
 						BoxRate:         80,
 						ShippedAt:       1640962800,
-						Address: &response.Address{
-							Lastname:       "&.",
-							Firstname:      "購入者",
-							PostalCode:     "1000014",
-							PrefectureCode: 13,
-							City:           "千代田区",
-							AddressLine1:   "永田町1-7-1",
-							AddressLine2:   "",
-							PhoneNumber:    "+819012345678",
-						},
 					},
-					orderID: "order-id",
 				},
 			},
 		},
@@ -442,7 +399,7 @@ func TestOrderFulfillments(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewOrderFulfillments(tt.fulfillments, tt.addresses))
+			assert.Equal(t, tt.expect, NewOrderFulfillments(tt.fulfillments))
 		})
 	}
 }
@@ -468,18 +425,7 @@ func TestOrderFulfillments_Response(t *testing.T) {
 						BoxSize:         ShippingSize60.Response(),
 						BoxRate:         80,
 						ShippedAt:       1640962800,
-						Address: &response.Address{
-							Lastname:       "&.",
-							Firstname:      "購入者",
-							PostalCode:     "1000014",
-							PrefectureCode: 13,
-							City:           "千代田区",
-							AddressLine1:   "永田町1-7-1",
-							AddressLine2:   "",
-							PhoneNumber:    "+819012345678",
-						},
 					},
-					orderID: "order-id",
 				},
 			},
 			expect: []*response.OrderFulfillment{
@@ -493,16 +439,6 @@ func TestOrderFulfillments_Response(t *testing.T) {
 					BoxSize:         ShippingSize60.Response(),
 					BoxRate:         80,
 					ShippedAt:       1640962800,
-					Address: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
 				},
 			},
 		},
