@@ -172,7 +172,7 @@ const handleClickLogoutButton = () => {
         />
 
         <the-icon-button
-          class="hidden h-10 w-10 md:block lg:hidden"
+          class="hidden h-10 w-10 md:block xl:hidden"
           @click="handleClickMenuIconButton"
         >
           <the-outline-close-icon v-if="spMenuOpen" />
