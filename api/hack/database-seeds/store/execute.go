@@ -7,10 +7,12 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/hack/database-seeds/common"
+	"github.com/and-period/furumaru/api/hack/database-seeds/master"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -20,9 +22,13 @@ import (
 )
 
 const (
-	database       = "stores"
-	srcCategory    = "category.csv"
-	srcProductType = "product-type.csv"
+	database           = "stores"
+	srcCategory        = "category.csv"
+	srcProductType     = "product-type.csv"
+	srcPaymentStatus   = "payment-status.csv"
+	srcMessageTemplate = "message-template.csv"
+	srcPushTemplate    = "push-template.csv"
+	srcReportTemplate  = "report-template.csv"
 )
 
 var (
@@ -51,14 +57,24 @@ func NewClient(params *common.Params) (common.Client, error) {
 }
 
 func (a *app) Execute(ctx context.Context) error {
-	a.logger.Info("Executing store database seeds...")
+	a.logger.Info("Executing stores database seeds...")
 	if err := a.executeCategories(ctx); err != nil {
 		return err
 	}
+	a.logger.Info("Completed categories table")
 	if err := a.executeProductTypes(ctx); err != nil {
 		return err
 	}
-	a.logger.Info("Completed store database seeds")
+	a.logger.Info("Completed product_types table")
+	if err := a.executeShipping(ctx); err != nil {
+		return err
+	}
+	a.logger.Info("Completed shippings table")
+	if err := a.executePaymentSystems(ctx); err != nil {
+		return err
+	}
+	a.logger.Info("Completed payment_systems table")
+	a.logger.Info("Completed stores database seeds")
 	return nil
 }
 
@@ -166,6 +182,87 @@ func (a *app) executeProductTypes(ctx context.Context) error {
 				DoNothing: true, // 他のカラムが追加されたらfalseにする
 			})
 			if err := stmt.Create(&productType).Error; err != nil {
+				return err
+			}
+		}
+	})
+}
+
+func (a *app) executeShipping(ctx context.Context) error {
+	return a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := a.now()
+
+		shipping := master.DefaultShipping
+		shipping.CreatedAt = now
+		shipping.UpdatedAt = now
+
+		stmt := tx.WithContext(ctx).Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "id"}},
+			DoNothing: true,
+		})
+		if err := stmt.Create(&shipping).Error; err != nil {
+			return err
+		}
+
+		revision := master.DefaultShippingRevision
+		revision.CreatedAt = now
+		revision.UpdatedAt = now
+		if err := revision.FillJSON(); err != nil {
+			return err
+		}
+
+		stmt = tx.WithContext(ctx).Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "id"}},
+			DoNothing: true, // 過去の配送履歴等に影響するため、変更があっても反映しない
+		})
+		return stmt.Create(&revision).Error
+	})
+}
+
+func (a *app) executePaymentSystems(ctx context.Context) error {
+	reader, file, err := a.newReader(srcPaymentStatus)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	return a.db.Transaction(ctx, func(tx *gorm.DB) error {
+		for {
+			records, err := reader.Read()
+			if errors.Is(err, io.EOF) {
+				return nil
+			}
+			// 形式）"決済ID","状態種別"
+			if len(records) < 2 {
+				return errInvalidCSVFormat
+			}
+
+			methodType, err := strconv.ParseInt(records[0], 10, 32)
+			if err != nil {
+				return err
+			}
+			status, err := strconv.ParseInt(records[0], 10, 32)
+			if err != nil {
+				return err
+			}
+			now := a.now()
+			system := &entity.PaymentSystem{
+				MethodType: entity.PaymentMethodType(methodType),
+				Status:     entity.PaymentSystemStatus(status),
+				CreatedAt:  now,
+				UpdatedAt:  now,
+			}
+			updates := map[string]interface{}{
+				"method_type": system.MethodType,
+				"status":      system.Status,
+				"updated_at":  now,
+			}
+
+			stmt := tx.WithContext(ctx).Clauses(clause.OnConflict{
+				Columns:   []clause.Column{{Name: "method_type"}},
+				DoUpdates: clause.Assignments(updates),
+			})
+			if err := stmt.Create(&system).Error; err != nil {
 				return err
 			}
 		}
