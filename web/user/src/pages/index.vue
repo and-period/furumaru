@@ -20,7 +20,7 @@ const updateScrollLeft = () => {
   }
 }
 
-useAsyncData('home', async () => {
+onMounted(async () => {
   isInItLoading.value = true
   await getHomeContent()
   isInItLoading.value = false
@@ -120,7 +120,7 @@ useSeoMeta({
               />
             </transition-group>
           </div>
-          <div class="mb-4 mt-10 flex w-full justify-center">
+          <div v-if="false" class="mb-4 mt-10 flex w-full justify-center">
             <button
               class="relative w-60 bg-main py-2 text-white"
               @click="handleClickMoreViewButton"
