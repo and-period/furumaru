@@ -96,24 +96,26 @@ useSeoMeta({
   >
     <template v-if="schedule">
       <div class="col-span-3">
-        <the-live-video-player
-          :video-src="schedule.schedule.distributionUrl"
-          :title="schedule.schedule.title"
-          :start-at="schedule.schedule.startAt"
-          :end-at="schedule.schedule.endAt"
-          :description="schedule.schedule.description"
-          :is-live-streaming="isLiveStreaming"
-          :is-archive="isArchive"
-          :marche-name="schedule.coordinator.marcheName"
-          :address="schedule.coordinator.city"
-          :cn-name="schedule.coordinator.username"
-          :cn-img-src="schedule.coordinator.thumbnailUrl"
-        />
-        <the-live-timeline
-          class="mt-4"
-          :items="liveTimeLineItems"
-          @click:add-cart="handleClickAddCart"
-        />
+        <client-only>
+          <the-live-video-player
+            :video-src="schedule.schedule.distributionUrl"
+            :title="schedule.schedule.title"
+            :start-at="schedule.schedule.startAt"
+            :end-at="schedule.schedule.endAt"
+            :description="schedule.schedule.description"
+            :is-live-streaming="isLiveStreaming"
+            :is-archive="isArchive"
+            :marche-name="schedule.coordinator.marcheName"
+            :address="schedule.coordinator.city"
+            :cn-name="schedule.coordinator.username"
+            :cn-img-src="schedule.coordinator.thumbnailUrl"
+          />
+          <the-live-timeline
+            class="mt-4"
+            :items="liveTimeLineItems"
+            @click:add-cart="handleClickAddCart"
+          />
+        </client-only>
       </div>
     </template>
 
