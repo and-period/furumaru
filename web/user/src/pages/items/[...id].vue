@@ -122,10 +122,10 @@ useSeoMeta({
     <div
       class="gap-4 bg-white px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 md:px-[112px]"
     >
-      <div class="mx-auto aspect-square w-full max-w-[500px]">
+      <div class="mx-auto aspect-square h-full w-full max-w-[500px]">
         <div class="flex aspect-square w-full justify-center">
           <img
-            class="block w-full object-contain"
+            class="block h-full w-full object-contain"
             :src="
               selectedMediaIndex === -1
                 ? product.thumbnail.url
