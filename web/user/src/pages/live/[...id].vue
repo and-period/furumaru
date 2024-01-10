@@ -71,7 +71,7 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
   })
 }
 
-onMounted(async () => {
+useAsyncData(`schedule-${scheduleId.value}`, async () => {
   isLoading.value = true
   const res = await getSchedule(scheduleId.value)
   schedule.value = res

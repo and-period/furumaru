@@ -112,7 +112,7 @@ onUnmounted(() => {
 
       <div>
         <p
-          v-show="showDetail"
+          v-if="showDetail"
           class="mt-6 whitespace-pre-wrap text-[14px] tracking-[1.4px]"
           v-html="description"
         ></p>
