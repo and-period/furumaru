@@ -20,7 +20,7 @@ const updateScrollLeft = () => {
   }
 }
 
-onMounted(async () => {
+useAsyncData('home', async () => {
   isInItLoading.value = true
   await getHomeContent()
   isInItLoading.value = false

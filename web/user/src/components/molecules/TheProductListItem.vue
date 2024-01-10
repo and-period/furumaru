@@ -104,7 +104,7 @@ const handleClickAddCartButton = () => {
       </div>
       <button
         :disabled="!hasStock"
-        class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white disabled:cursor-not-allowed disabled:bg-main/60 lg:px-4 lg:text-[14px]"
+        class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white disabled:cursor-not-allowed disabled:bg-main/60 lg:px-4 xl:text-[14px]"
         @click="handleClickAddCartButton"
       >
         <the-cart-icon id="add-cart-icon" class="mr-1 h-2 w-2 lg:h-4 lg:w-4" />
@@ -116,9 +116,7 @@ const handleClickAddCartButton = () => {
       class="mt-4 flex flex-col gap-4 text-xs md:flex-row md:items-center"
     >
       <div class="md:hidden">
-        <button
-              @click="handleClickCoorinator"
-        >
+        <button @click="handleClickCoorinator">
           <p
             class="mb-2 w-full whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
           >
@@ -138,9 +136,7 @@ const handleClickAddCartButton = () => {
         />
         <div>
           <div class="hidden md:block">
-            <button
-              @click="handleClickCoorinator"
-            >
+            <button @click="handleClickCoorinator">
               <p
                 class="mb-2 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
               >

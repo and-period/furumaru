@@ -34,7 +34,9 @@ const handleClickAddCartButton = async (
   })
 }
 
-fetchProducts()
+useAsyncData('products', () => {
+  return fetchProducts()
+})
 
 useSeoMeta({
   title: 'すべての商品',
