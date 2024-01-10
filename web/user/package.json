@@ -17,7 +17,7 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.4.6",
+    "@pinia/nuxt": "^0.5.1",
     "@tailwindcss/typography": "^0.5.10",
     "@types/markdown-it": "^13.0.2",
     "axios": "^1.2.2",
