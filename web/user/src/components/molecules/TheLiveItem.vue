@@ -36,7 +36,7 @@ const handleClick = () => {
   <div
     :class="{
       ' text-main ': true,
-      'group cursor-pointer bg-base drop-shadow-sm duration-75 ease-in-out lg:hover:z-10 lg:hover:scale-[1.2] lg:hover:bg-white':
+      'lg:group cursor-pointer bg-base drop-shadow-sm duration-75 ease-in-out lg:hover:z-10 lg:hover:scale-[1.2] lg:hover:bg-white':
         isLiveStreaming,
     }"
     @click="handleClick"
@@ -54,7 +54,7 @@ const handleClick = () => {
         <img
           :src="imgSrc"
           :alt="`live-${title}-thumbnail`"
-          class="aspect-video"
+          class="aspect-video w-full object-cover"
         />
         <div
           v-if="!isLiveStreaming"
