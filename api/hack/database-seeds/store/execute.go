@@ -241,7 +241,7 @@ func (a *app) executePaymentSystems(ctx context.Context) error {
 			if err != nil {
 				return err
 			}
-			status, err := strconv.ParseInt(records[0], 10, 32)
+			status, err := strconv.ParseInt(records[1], 10, 32)
 			if err != nil {
 				return err
 			}
