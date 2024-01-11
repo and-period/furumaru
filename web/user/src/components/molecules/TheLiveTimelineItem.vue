@@ -43,24 +43,23 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
     <div
       class="mt-2 flex flex-col gap-x-12 gap-y-4 pl-6 pt-[24px] md:grid md:grid-cols-4"
     >
-      <div class="col-span-1 flex items-center gap-4 md:flex-col">
-        <div class="flex w-full flex-col items-center">
+      <div class="col-span-1 flex items-center gap-2 md:flex-col">
+        <div class="flex w-[80px] flex-col items-center">
           <img
             v-if="thumbnailUrl"
             :src="thumbnailUrl"
-            class="mb-2 h-[66px] w-[66px] rounded-full"
+            class="mb-2 h-[48px] w-[48px] rounded-full"
           />
           <p
             v-if="username"
-            class="text-center text-[14px] font-medium tracking-[1.4px]"
+            class="text-center text-[12px] font-medium tracking-[1.4px] md:text-[14px]"
           >
             {{ username }}
           </p>
         </div>
         <div
-          class="w-full overflow-auto text-[12px] font-medium tracking-[1.2px]"
-          v-html="comment"
-        ></div>
+          class="w-[150px] overflow-auto break-words text-[12px] font-medium tracking-[1.2px]"
+        >{{ comment }}</div>
       </div>
 
       <div
