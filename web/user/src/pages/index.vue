@@ -63,7 +63,7 @@ const handleClickLiveItem = (id: string) => {
 }
 
 const banners: string[] = [
-  '/img/banner.png',
+  '/img/banner2.jpg',
   '/img/banner.png',
   '/img/banner.png',
 ]
