@@ -48,11 +48,11 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
           <img
             v-if="thumbnailUrl"
             :src="thumbnailUrl"
-            class="mb-2 w-[48px] h-[48px] rounded-full"
+            class="mb-2 h-[48px] w-[48px] rounded-full"
           />
           <p
             v-if="username"
-            class="text-center text-[12px] md:text-[14px] font-medium tracking-[1.4px]"
+            class="text-center text-[12px] font-medium tracking-[1.4px] md:text-[14px]"
           >
             {{ username }}
           </p>
