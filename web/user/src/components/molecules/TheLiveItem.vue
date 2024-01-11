@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 
 interface Props {
   id: string
