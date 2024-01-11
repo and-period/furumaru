@@ -26,6 +26,10 @@ const handleClickLogout = async () => {
 useSeoMeta({
   title: 'アカウント',
 })
+
+definePageMeta({
+  middleware: 'auth',
+})
 </script>
 
 <template>
