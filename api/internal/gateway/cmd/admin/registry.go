@@ -161,6 +161,10 @@ func (a *app) inject(ctx context.Context) error {
 			newrelic.ConfigAppName(a.AppName),
 			newrelic.ConfigLicense(params.newRelicLicense),
 			newrelic.ConfigAppLogForwardingEnabled(true),
+			func(cfg *newrelic.Config) {
+				cfg.HostDisplayName = fmt.Sprintf("%s-%s", a.AppName, a.Environment)
+				cfg.Labels = map[string]string{"Environment": a.Environment}
+			},
 		)
 		if err != nil {
 			return fmt.Errorf("cmd: failed to create newrelic client: %w", err)
