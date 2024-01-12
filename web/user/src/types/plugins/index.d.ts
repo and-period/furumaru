@@ -9,6 +9,7 @@ import {
   ScheduleApi,
   CoordinatorApi,
   StatusApi,
+  OrderApi,
 } from '../api'
 import { CustomErrorMessage } from '~/plugins/api-error-handler'
 import VueI18n from 'vue-i18n'
@@ -34,6 +35,7 @@ declare module 'pinia' {
     scheduleApiClient: (token?: string) => ScheduleApi
     coordinatorApiClient: (token?: string) => CoordinatorApi
     statusApiClient: () => StatusApi
+    orderApiClient: (token?: string) => OrderApi
     i18n: VueI18
   }
 }
