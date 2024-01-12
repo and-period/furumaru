@@ -3,6 +3,12 @@ import { storeToRefs } from 'pinia'
 import { useAdressStore } from '~/store/address'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/phone-number'
 import { useAuthStore } from '~/store/auth'
+import { useOrderStore } from '~/store/order'
+import {
+  getOrderStatusString,
+  getOperationResultFromOrderStatus,
+} from '~/lib/order'
+import type { OrderStatus } from '~/types/api'
 
 const router = useRouter()
 
@@ -14,13 +20,35 @@ const authStore = useAuthStore()
 const { user } = storeToRefs(authStore)
 const { fetchUserInfo, logout } = authStore
 
+const orderStore = useOrderStore()
+const { fetchOrderHsitoryList } = orderStore
+const { orderHistories, total } = storeToRefs(orderStore)
+
 await useAsyncData('account', () => {
-  return Promise.all([fetchUserInfo(), fetchAddresses()])
+  return Promise.all([
+    fetchUserInfo(),
+    fetchAddresses(),
+    fetchOrderHsitoryList(),
+  ])
 })
 
 const handleClickLogout = async () => {
   await logout()
   router.push('/')
+}
+
+const getClassNameFromOrderStatus = (status: OrderStatus) => {
+  const operationResult = getOperationResultFromOrderStatus(status)
+  switch (operationResult) {
+    case 'success':
+      return 'bg-green'
+    case 'failed':
+      return 'bg-red-700'
+    case 'canceled':
+      return 'bg-yellow-600'
+    default:
+      return ''
+  }
 }
 
 useSeoMeta({
@@ -70,10 +98,70 @@ definePageMeta({
       </template>
     </div>
 
+    <!-- 注文履歴一覧表示エリア -->
+    <div>
+      <div class="mb-2 text-[16px] font-semibold">
+        注文履歴（{{ total }}件）
+      </div>
+      <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        <div
+          v-for="order in orderHistories"
+          :key="order.id"
+          class="bg-white p-4"
+        >
+          <div
+            class="flex flex-col gap-4 sm:grid sm:grid-cols-3 md:grid-cols-4"
+          >
+            <div class="flex items-center justify-center sm:aspect-square">
+              <img
+                class="block max-w-[80px] rounded-full"
+                :src="order.coordinator?.thumbnailUrl"
+                :alt="`${order.coordinator?.username}のサムネイル`"
+              />
+            </div>
+            <dl class="col-span-2 md:col-span-3">
+              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt>注文ID</dt>
+                <dd class="sm:col-span-2">
+                  {{ order.id }}
+                </dd>
+              </div>
+              <div
+                v-if="order.coordinator"
+                class="py-2 sm:grid sm:grid-cols-3 sm:gap-4"
+              >
+                <dt>マルシェ名</dt>
+                <dd class="sm:col-span-2">
+                  {{ order.coordinator.marcheName }}
+                </dd>
+              </div>
+              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt>注文品数</dt>
+                <dd>
+                  {{ order.items.length }}
+                </dd>
+              </div>
+              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt>ステータス</dt>
+                <dd class="sm:col-span-2">
+                  <span
+                    :class="getClassNameFromOrderStatus(order.status)"
+                    class="inline-block rounded-lg px-2 py-1 text-[14px] text-white sm:mt-1"
+                  >
+                    {{ getOrderStatusString(order.status) }}
+                  </span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- アドレス帳情報表示エリア -->
     <div>
       <div class="mb-2 text-[16px] font-semibold">アドレス帳</div>
-      <div class="flex flex-col gap-4 sm:flex-row">
+      <div class="grid gap-4 sm:grid-cols-2">
         <div
           v-for="(address, i) in addresses"
           :key="address.id"
