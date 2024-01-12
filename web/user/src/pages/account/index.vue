@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import dayjs from 'dayjs'
 import { useAdressStore } from '~/store/address'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/phone-number'
 import { useAuthStore } from '~/store/auth'
@@ -8,6 +9,7 @@ import {
   getOrderStatusString,
   getOperationResultFromOrderStatus,
 } from '~/lib/order'
+import { priceFormatter } from '~/lib/price'
 import type { OrderStatus } from '~/types/api'
 
 const router = useRouter()
@@ -107,7 +109,7 @@ definePageMeta({
         <div
           v-for="order in orderHistories"
           :key="order.id"
-          class="bg-white p-4"
+          class="flex flex-col bg-white p-4"
         >
           <div
             class="flex flex-col gap-4 sm:grid sm:grid-cols-3 md:grid-cols-4"
@@ -126,6 +128,16 @@ definePageMeta({
                   {{ order.id }}
                 </dd>
               </div>
+              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt>注文日時</dt>
+                <dd class="sm:col-span-2">
+                  {{
+                    dayjs
+                      .unix(order.payment.orderedAt)
+                      .format('YYYY/MM/DD HH:mm')
+                  }}
+                </dd>
+              </div>
               <div
                 v-if="order.coordinator"
                 class="py-2 sm:grid sm:grid-cols-3 sm:gap-4"
@@ -141,6 +153,14 @@ definePageMeta({
                   {{ order.items.length }}
                 </dd>
               </div>
+
+              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt>支払い金額</dt>
+                <dd>
+                  {{ priceFormatter(order.payment.total) }}
+                </dd>
+              </div>
+
               <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
                 <dt>ステータス</dt>
                 <dd class="sm:col-span-2">
@@ -153,6 +173,11 @@ definePageMeta({
                 </dd>
               </div>
             </dl>
+          </div>
+          <div class="mt-2 text-right text-[14px]">
+            <nuxt-link :to="`/account/orders/${order.id}`" class="underline">
+              詳細を見る
+            </nuxt-link>
           </div>
         </div>
       </div>
