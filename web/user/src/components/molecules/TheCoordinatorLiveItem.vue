@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { ScheduleStatus } from '~/types/api'
 
 interface Props {
