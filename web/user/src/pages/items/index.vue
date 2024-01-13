@@ -5,6 +5,7 @@ import { useShoppingCartStore } from '~/store/shopping'
 import type { Snackbar } from '~/types/props'
 
 const router = useRouter()
+const route = useRoute()
 
 const productStore = useProductStore()
 const shoppingCartStore = useShoppingCartStore()
@@ -34,8 +35,53 @@ const handleClickAddCartButton = async (
   })
 }
 
+// 1ページ当たりに表示する商品数
+const pagePerItems = ref<number>(20)
+
+// 現在のページ番号
+const currentPage = computed<number>(() => {
+  return route.query.page ? Number(route.query.page) : 1
+})
+
+// ページネーション情報
+const pagination = computed<{
+  limit: number
+  offset: number
+  totalPage: number
+  pageArray: number[]
+}>(() => {
+  const totalPage = Math.ceil(products.value.length / pagePerItems.value)
+  const pageArray = Array.from({ length: totalPage }, (_, i) => i + 1)
+
+  return {
+    limit: pagePerItems.value,
+    offset: pagePerItems.value * (currentPage.value - 1),
+    totalPage,
+    pageArray,
+  }
+})
+
+const handleClickPreviosPageButton = () => {
+  if (currentPage.value === 1) return
+  handleClickPage(currentPage.value - 1)
+}
+
+const handleClickPage = (page: number) => {
+  router.push({
+    query: {
+      ...route.query,
+      page,
+    },
+  })
+}
+
+const handleClickNextPageButton = () => {
+  if (currentPage.value === pagination.value.totalPage) return
+  handleClickPage(currentPage.value + 1)
+}
+
 useAsyncData('products', () => {
-  return fetchProducts()
+  return fetchProducts(pagePerItems.value, pagination.value.offset)
 })
 
 useSeoMeta({
@@ -119,6 +165,27 @@ const hideV1App = false
             @click:add-cart="handleClickAddCartButton"
           />
         </template>
+      </div>
+      <div class="mt-8 text-center">
+        <div class="inline-flex gap-4 text-main">
+          <button @click="handleClickPreviosPageButton">
+            <the-left-arrow-icon class="h-3" />
+          </button>
+          <button
+            v-for="page in pagination.pageArray"
+            :key="page"
+            :class="{
+              'h-8 w-8 rounded-full p-1': true,
+              'bg-main text-white': page === currentPage,
+            }"
+            @click="handleClickPage(page)"
+          >
+            {{ page }}
+          </button>
+          <button @click="handleClickNextPageButton">
+            <the-right-arrow-icon class="h-3" />
+          </button>
+        </div>
       </div>
     </div>
   </div>
