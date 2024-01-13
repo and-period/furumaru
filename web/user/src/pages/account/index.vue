@@ -13,6 +13,7 @@ import { priceFormatter } from '~/lib/price'
 import type { OrderStatus } from '~/types/api'
 
 const router = useRouter()
+const route = useRoute()
 
 const addressStore = useAdressStore()
 const { addresses } = storeToRefs(addressStore)
@@ -24,13 +25,81 @@ const { fetchUserInfo, logout } = authStore
 
 const orderStore = useOrderStore()
 const { fetchOrderHsitoryList } = orderStore
-const { orderHistories, total } = storeToRefs(orderStore)
+const { orderHistories, total, fetchState } = storeToRefs(orderStore)
+
+// 1ページ当たりに表示する注文履歴数
+const orderPagePerItems = ref<number>(20)
+
+// 注文履歴の現在のページ番号
+const currentOrderPage = computed<number>(() => {
+  return route.query.orderPage ? Number(route.query.orderPage) : 1
+})
+
+// 注文履歴のページネーション情報
+const orderPagination = computed<{
+  limit: number
+  offset: number
+  totalPage: number
+  pageArray: number[]
+}>(() => {
+  const totalPage = Math.ceil(total.value / orderPagePerItems.value)
+  const pageArray = Array.from({ length: totalPage }, (_, i) => i + 1)
+
+  return {
+    limit: orderPagePerItems.value,
+    offset: orderPagePerItems.value * (currentOrderPage.value - 1),
+    totalPage,
+    pageArray,
+  }
+})
+
+// 一つ前の注文履歴ページへ遷移する
+const handleClickPreviosOrderPageButton = () => {
+  if (currentOrderPage.value === 1) return
+  router.push({
+    query: {
+      ...route.query,
+      orderPage: currentOrderPage.value - 1,
+    },
+  })
+}
+
+// 指定した注文履歴ページへ遷移する
+const handleClickOrderPage = (page: number) => {
+  router.push({
+    query: {
+      ...route.query,
+      orderPage: page,
+    },
+  })
+}
+
+// 一つ後の注文履歴ページへ遷移する
+const handleClickNextOrderPageButton = () => {
+  if (currentOrderPage.value === orderPagination.value.totalPage) return
+  router.push({
+    query: {
+      ...route.query,
+      orderPage: currentOrderPage.value + 1,
+    },
+  })
+}
+
+watch(currentOrderPage, () => {
+  fetchOrderHsitoryList(
+    orderPagination.value.limit,
+    orderPagination.value.offset,
+  )
+})
 
 await useAsyncData('account', () => {
   return Promise.all([
     fetchUserInfo(),
     fetchAddresses(),
-    fetchOrderHsitoryList(),
+    fetchOrderHsitoryList(
+      orderPagination.value.limit,
+      orderPagination.value.offset,
+    ),
   ])
 })
 
@@ -106,79 +175,104 @@ definePageMeta({
         注文履歴（{{ total }}件）
       </div>
       <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-        <div
-          v-for="order in orderHistories"
-          :key="order.id"
-          class="flex flex-col bg-white p-4"
-        >
+        <template v-if="fetchState.isLoading"> </template>
+        <template v-else>
           <div
-            class="flex flex-col gap-4 sm:grid sm:grid-cols-3 md:grid-cols-4"
+            v-for="order in orderHistories"
+            :key="order.id"
+            class="flex flex-col bg-white p-4"
           >
-            <div class="flex items-center justify-center sm:aspect-square">
-              <img
-                class="block max-w-[80px] rounded-full"
-                :src="order.coordinator?.thumbnailUrl"
-                :alt="`${order.coordinator?.username}のサムネイル`"
-              />
+            <div
+              class="flex flex-col gap-4 sm:grid sm:grid-cols-3 md:grid-cols-4"
+            >
+              <div class="flex items-center justify-center sm:aspect-square">
+                <img
+                  class="block max-w-[80px] rounded-full"
+                  :src="order.coordinator?.thumbnailUrl"
+                  :alt="`${order.coordinator?.username}のサムネイル`"
+                />
+              </div>
+              <dl class="col-span-2 md:col-span-3">
+                <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>注文ID</dt>
+                  <dd class="sm:col-span-2">
+                    {{ order.id }}
+                  </dd>
+                </div>
+                <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>注文日時</dt>
+                  <dd class="sm:col-span-2">
+                    {{
+                      dayjs
+                        .unix(order.payment.orderedAt)
+                        .format('YYYY/MM/DD HH:mm')
+                    }}
+                  </dd>
+                </div>
+                <div
+                  v-if="order.coordinator"
+                  class="py-2 sm:grid sm:grid-cols-3 sm:gap-4"
+                >
+                  <dt>マルシェ名</dt>
+                  <dd class="sm:col-span-2">
+                    {{ order.coordinator.marcheName }}
+                  </dd>
+                </div>
+                <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>注文品数</dt>
+                  <dd>
+                    {{ order.items.length }}
+                  </dd>
+                </div>
+
+                <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>支払い金額</dt>
+                  <dd>
+                    {{ priceFormatter(order.payment.total) }}
+                  </dd>
+                </div>
+
+                <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>ステータス</dt>
+                  <dd class="sm:col-span-2">
+                    <span
+                      :class="getClassNameFromOrderStatus(order.status)"
+                      class="inline-block rounded-lg px-2 py-1 text-[14px] text-white sm:mt-1"
+                    >
+                      {{ getOrderStatusString(order.status) }}
+                    </span>
+                  </dd>
+                </div>
+              </dl>
             </div>
-            <dl class="col-span-2 md:col-span-3">
-              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>注文ID</dt>
-                <dd class="sm:col-span-2">
-                  {{ order.id }}
-                </dd>
-              </div>
-              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>注文日時</dt>
-                <dd class="sm:col-span-2">
-                  {{
-                    dayjs
-                      .unix(order.payment.orderedAt)
-                      .format('YYYY/MM/DD HH:mm')
-                  }}
-                </dd>
-              </div>
-              <div
-                v-if="order.coordinator"
-                class="py-2 sm:grid sm:grid-cols-3 sm:gap-4"
-              >
-                <dt>マルシェ名</dt>
-                <dd class="sm:col-span-2">
-                  {{ order.coordinator.marcheName }}
-                </dd>
-              </div>
-              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>注文品数</dt>
-                <dd>
-                  {{ order.items.length }}
-                </dd>
-              </div>
-
-              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>支払い金額</dt>
-                <dd>
-                  {{ priceFormatter(order.payment.total) }}
-                </dd>
-              </div>
-
-              <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>ステータス</dt>
-                <dd class="sm:col-span-2">
-                  <span
-                    :class="getClassNameFromOrderStatus(order.status)"
-                    class="inline-block rounded-lg px-2 py-1 text-[14px] text-white sm:mt-1"
-                  >
-                    {{ getOrderStatusString(order.status) }}
-                  </span>
-                </dd>
-              </div>
-            </dl>
+            <div class="mt-2 text-right text-[14px]">
+              <nuxt-link :to="`/account/orders/${order.id}`" class="underline">
+                詳細を見る
+              </nuxt-link>
+            </div>
           </div>
-          <div class="mt-2 text-right text-[14px]">
-            <nuxt-link :to="`/account/orders/${order.id}`" class="underline">
-              詳細を見る
-            </nuxt-link>
-          </div>
+        </template>
+      </div>
+      <!-- ページネーション -->
+      <div class="mt-2 text-right">
+        <div class="inline-flex gap-4 text-main">
+          <button @click="handleClickPreviosOrderPageButton">
+            <the-left-arrow-icon class="h-3" />
+          </button>
+          <button
+            v-for="page in orderPagination.pageArray"
+            :key="page"
+            :class="{
+              'p-1': true,
+              'font-semibold': page === currentOrderPage,
+            }"
+            @click="handleClickOrderPage(page)"
+          >
+            {{ page }}
+          </button>
+          <button @click="handleClickNextOrderPageButton">
+            <the-right-arrow-icon class="h-3" />
+          </button>
         </div>
       </div>
     </div>
