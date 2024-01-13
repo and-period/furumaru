@@ -254,7 +254,7 @@ definePageMeta({
         </template>
       </div>
       <!-- ページネーション -->
-      <div class="mt-2 text-right">
+      <div class="mt-4 text-center">
         <div class="inline-flex gap-4 text-main">
           <button @click="handleClickPreviosOrderPageButton">
             <the-left-arrow-icon class="h-3" />
@@ -263,8 +263,8 @@ definePageMeta({
             v-for="page in orderPagination.pageArray"
             :key="page"
             :class="{
-              'p-1': true,
-              'font-semibold': page === currentOrderPage,
+              'h-8 w-8 rounded-full p-1': true,
+              'bg-main text-white': page === currentOrderPage,
             }"
             @click="handleClickOrderPage(page)"
           >
