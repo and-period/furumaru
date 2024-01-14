@@ -98,7 +98,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
-		coordinators, err = h.multiGetCoordinators(ectx, orders.CoordinatorIDs())
+		coordinators, err = h.multiGetCoordinatorsWithDeleted(ectx, orders.CoordinatorIDs())
 		return
 	})
 	eg.Go(func() (err error) {
@@ -146,7 +146,7 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
-		coordinator, err = h.getCoordinator(ectx, order.CoordinatorID)
+		coordinator, err = h.getCoordinatorWithDeleted(ectx, order.CoordinatorID)
 		return
 	})
 	eg.Go(func() (err error) {
