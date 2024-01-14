@@ -186,6 +186,18 @@ func TestMultiGetCoordinators(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success with deleted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().MultiGetWithDeleted(ctx, []string{"admin-id"}).Return(coordinators, nil)
+			},
+			input: &user.MultiGetCoordinatorsInput{
+				CoordinatorIDs: []string{"admin-id"},
+				WithDeleted:    true,
+			},
+			expect:    coordinators,
+			expectErr: nil,
+		},
+		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &user.MultiGetCoordinatorsInput{
@@ -201,6 +213,18 @@ func TestMultiGetCoordinators(t *testing.T) {
 			},
 			input: &user.MultiGetCoordinatorsInput{
 				CoordinatorIDs: []string{"admin-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get coordinators with deleted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().MultiGetWithDeleted(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
+			},
+			input: &user.MultiGetCoordinatorsInput{
+				CoordinatorIDs: []string{"admin-id"},
+				WithDeleted:    true,
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
@@ -271,6 +295,18 @@ func TestGetCoordinator(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success with deleted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().GetWithDeleted(ctx, "admin-id").Return(coordinator, nil)
+			},
+			input: &user.GetCoordinatorInput{
+				CoordinatorID: "admin-id",
+				WithDeleted:   true,
+			},
+			expect:    coordinator,
+			expectErr: nil,
+		},
+		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.GetCoordinatorInput{},
@@ -284,6 +320,18 @@ func TestGetCoordinator(t *testing.T) {
 			},
 			input: &user.GetCoordinatorInput{
 				CoordinatorID: "admin-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get coordinator with deleted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Coordinator.EXPECT().GetWithDeleted(ctx, "admin-id").Return(nil, assert.AnError)
+			},
+			input: &user.GetCoordinatorInput{
+				CoordinatorID: "admin-id",
+				WithDeleted:   true,
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,

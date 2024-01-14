@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
 func TestCoordinator(t *testing.T) {
@@ -236,6 +237,76 @@ func TestCoordinator_MultiGet(t *testing.T) {
 	}
 }
 
+func TestCoordinator_MultiGetWithDeleted(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[0].DeletedAt = gorm.DeletedAt{Valid: true, Time: now()}
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = db.DB.Create(&admins).Error
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = db.DB.Create(&coordinators).Error
+	require.NoError(t, err)
+
+	type args struct {
+		adminIDs []string
+	}
+	type want struct {
+		coordinators entity.Coordinators
+		hasErr       bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				adminIDs: []string{"admin-id01", "admin-id02"},
+			},
+			want: want{
+				coordinators: coordinators,
+				hasErr:       false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &coordinator{db: db, now: now}
+			actual, err := db.MultiGetWithDeleted(ctx, tt.args.adminIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.coordinators, actual)
+		})
+	}
+}
+
 func TestCoordinator_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -306,6 +377,98 @@ func TestCoordinator_Get(t *testing.T) {
 
 			db := &coordinator{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.adminID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.coordinator, actual)
+		})
+	}
+}
+
+func TestCoordinator_GetWithDeleted(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[0].DeletedAt = gorm.DeletedAt{Valid: true, Time: now()}
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = db.DB.Create(&admins).Error
+	coordinators := make(entity.Coordinators, 2)
+	coordinators[0] = testCoordinator("admin-id01", now())
+	coordinators[0].Admin = *admins[0]
+	coordinators[1] = testCoordinator("admin-id02", now())
+	coordinators[1].Admin = *admins[1]
+	err = db.DB.Create(&coordinators).Error
+	require.NoError(t, err)
+
+	type args struct {
+		adminID string
+	}
+	type want struct {
+		coordinator *entity.Coordinator
+		hasErr      bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success to activated",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				adminID: "admin-id01",
+			},
+			want: want{
+				coordinator: coordinators[0],
+				hasErr:      false,
+			},
+		},
+		{
+			name:  "success to deactivated",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				adminID: "admin-id02",
+			},
+			want: want{
+				coordinator: coordinators[0],
+				hasErr:      false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				adminID: "",
+			},
+			want: want{
+				coordinator: nil,
+				hasErr:      true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &coordinator{db: db, now: now}
+			actual, err := db.GetWithDeleted(ctx, tt.args.adminID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.coordinator, actual)
 		})
