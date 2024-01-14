@@ -956,7 +956,7 @@ func TestRefundOrder(t *testing.T) {
 	}
 	params := &komoju.RefundParams{
 		PaymentID:   "payment-id",
-		Amount:      1760,
+		Amount:      1600,
 		Description: "在庫が不足していたため。",
 	}
 	payment := &komoju.PaymentResponse{}
