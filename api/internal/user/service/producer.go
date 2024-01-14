@@ -48,7 +48,15 @@ func (s *service) MultiGetProducers(ctx context.Context, in *user.MultiGetProduc
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	producers, err := s.db.Producer.MultiGet(ctx, in.ProducerIDs)
+	var (
+		producers entity.Producers
+		err       error
+	)
+	if in.WithDeleted {
+		producers, err = s.db.Producer.MultiGetWithDeleted(ctx, in.ProducerIDs)
+	} else {
+		producers, err = s.db.Producer.MultiGet(ctx, in.ProducerIDs)
+	}
 	return producers, internalError(err)
 }
 
@@ -56,7 +64,15 @@ func (s *service) GetProducer(ctx context.Context, in *user.GetProducerInput) (*
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
+	var (
+		producer *entity.Producer
+		err      error
+	)
+	if in.WithDeleted {
+		producer, err = s.db.Producer.GetWithDeleted(ctx, in.ProducerID)
+	} else {
+		producer, err = s.db.Producer.Get(ctx, in.ProducerID)
+	}
 	return producer, internalError(err)
 }
 

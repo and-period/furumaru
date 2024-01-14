@@ -91,11 +91,47 @@ func (p *producer) MultiGet(
 	return producers, nil
 }
 
+func (p *producer) MultiGetWithDeleted(
+	ctx context.Context, producerIDs []string, fields ...string,
+) (entity.Producers, error) {
+	var producers entity.Producers
+
+	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...).
+		Where("admin_id IN (?)", producerIDs).
+		Unscoped()
+
+	if err := stmt.Find(&producers).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := p.fill(ctx, p.db.DB, producers...); err != nil {
+		return nil, dbError(err)
+	}
+	return producers, nil
+}
+
 func (p *producer) Get(
 	ctx context.Context, producerID string, fields ...string,
 ) (*entity.Producer, error) {
 	producer, err := p.get(ctx, p.db.DB, producerID, fields...)
 	if err != nil {
+		return nil, dbError(err)
+	}
+	if err := p.fill(ctx, p.db.DB, producer); err != nil {
+		return nil, dbError(err)
+	}
+	return producer, nil
+}
+
+func (p *producer) GetWithDeleted(
+	ctx context.Context, producerID string, fields ...string,
+) (*entity.Producer, error) {
+	var producer *entity.Producer
+
+	stmt := p.db.Statement(ctx, p.db.DB, producerTable, fields...).
+		Where("admin_id = ?", producerID).
+		Unscoped()
+
+	if err := stmt.First(&producer).Error; err != nil {
 		return nil, dbError(err)
 	}
 	if err := p.fill(ctx, p.db.DB, producer); err != nil {
