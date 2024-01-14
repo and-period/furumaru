@@ -16,7 +16,7 @@ const localePath = useLocalePath()
 
 const { signUp } = useAuthStore()
 
-// 買い物カゴ画面から認証に飛ばされたかのフラグ
+// 買い物カゴ画面から飛ばされたかのフラグ
 const redirectToPurchase = computed<boolean>(() => {
   const redirectToPurchaseParam = route.query.redirect_to_purchase
   if (redirectToPurchaseParam) {
@@ -24,6 +24,29 @@ const redirectToPurchase = computed<boolean>(() => {
   } else {
     return false
   }
+})
+
+// コーディネーターID
+const coordinatorId = computed<string>(() => {
+  const id = route.query.coordinatorId
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
+})
+
+// カート番号
+const cartNumber = computed<number | undefined>(() => {
+  const id = route.query.cartNumber
+  const idNumber = Number(id)
+  if (idNumber === 0) {
+    return undefined
+  }
+  if (isNaN(idNumber)) {
+    return undefined
+  }
+  return idNumber
 })
 
 const t = (str: keyof I18n['auth']['signUp']) => {
@@ -78,15 +101,15 @@ const handleSubmit = async () => {
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.phoneNumber),
     })
 
-    console.log(result)
-
-    let query = `?id=${result.id}`
-
-    if (redirectToPurchase.value) {
-      query = `${query}&redirect_to_purchase=true`
-    }
-
-    router.push(`/verify${query}`)
+    router.push({
+      path: 'verify',
+      query: {
+        id: result.id,
+        redirect_to_purchase: redirectToPurchase.value,
+        coordinatorId: coordinatorId.value,
+        cartNumber: cartNumber.value,
+      },
+    })
   } catch (error) {
     if (error instanceof ApiBaseError) {
       apiErrorMessage.value = error.message

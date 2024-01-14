@@ -59,7 +59,14 @@ const formData = ref<SignInRequest>({
 })
 
 const handleClickNewAccountButton = () => {
-  router.push('/signup?redirect_to_purchase=true')
+  router.push({
+    path: '/signup',
+    query: {
+      redirect_to_purchase: true,
+      coordinatorId: coordinatorId.value,
+      cartNumber: cartNumber.value,
+    },
+  })
 }
 
 const handleSubmitSignForm = async () => {
