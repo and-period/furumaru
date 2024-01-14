@@ -28,15 +28,38 @@ func TestTemplateBuilder(t *testing.T) {
 			RefundReason:      "",
 		},
 		OrderFulfillments: []*sentity.OrderFulfillment{},
-		OrderItems:        []*sentity.OrderItem{},
-		ID:                "order-id",
-		UserID:            "user-id",
-		CoordinatorID:     "coordinator-id",
-		PromotionID:       "promotion-id",
-		ShippingMessage:   "ありがとうございます",
+		OrderItems: []*sentity.OrderItem{{
+			FulfillmentID:     "fulfillment-id",
+			ProductRevisionID: 1,
+			OrderID:           "order-id",
+			Quantity:          2,
+		}},
+		ID:              "order-id",
+		UserID:          "user-id",
+		CoordinatorID:   "coordinator-id",
+		PromotionID:     "promotion-id",
+		ShippingMessage: "ありがとうございます",
+	}
+	products := map[int64]*sentity.Product{
+		1: {
+			ProductRevision: sentity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     1000,
+				Cost:      500,
+			},
+			ID:            "product-id",
+			CoordinatorID: "coordinator-id",
+			ProducerID:    "producer-id",
+			TypeID:        "product-type-id",
+			TagIDs:        []string{"tag-id"},
+			Name:          "おいしいじゃがいも",
+			Public:        true,
+			ThumbnailURL:  "http://example.com/image.png",
+		},
 	}
 	builder := NewTemplateDataBuilder().
-		Data(map[string]string{"key": "value"}).
+		Data(map[string]any{"key": "value"}).
 		YearMonth(jst.Date(2022, 1, 2, 18, 30, 0, 0)).
 		Name("中村 広大").
 		Email("test-user@and-period.jp").
@@ -45,6 +68,7 @@ func TestTemplateBuilder(t *testing.T) {
 		Contact("件名", "本文").
 		Live("マルシェ", "濵田 海斗", now, now).
 		Order(order).
+		OrderItems(order.OrderItems, products).
 		Shipped(order.ShippingMessage)
 	data := builder.Build()
 	assert.Equal(t, "value", data["key"])
@@ -68,4 +92,11 @@ func TestTemplateBuilder(t *testing.T) {
 	assert.Equal(t, "200", data["消費税"])
 	assert.Equal(t, "2200", data["合計金額"])
 	assert.Equal(t, "ありがとうございます", data["メッセージ"])
+	assert.Equal(t, []map[string]string{{
+		"商品名":      "おいしいじゃがいも",
+		"サムネイルURL": "http://example.com/image.png",
+		"購入数":      "2",
+		"商品金額":     "1000",
+		"合計金額":     "2000",
+	}}, data["商品一覧"])
 }

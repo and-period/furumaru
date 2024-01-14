@@ -47,7 +47,7 @@ func (w *worker) newPersonalizations(
 			Name:          name,
 			Address:       email,
 			Type:          mailer.AddressTypeTo,
-			Substitutions: mailer.NewSubstitutions(builder.Build()),
+			Substitutions: builder.Build(),
 		}
 		ps = append(ps, p)
 	}

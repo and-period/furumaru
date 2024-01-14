@@ -24,7 +24,7 @@ func TestReceivedQueue(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Email: &MailConfig{
 					TemplateID:    EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"パスワード": "!Qaz2wsx"},
+					Substitutions: map[string]interface{}{"パスワード": "!Qaz2wsx"},
 				},
 			},
 			expect: &ReceivedQueue{

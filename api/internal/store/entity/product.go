@@ -405,6 +405,14 @@ func (ps Products) Map() map[string]*Product {
 	return res
 }
 
+func (ps Products) MapByRevision() map[int64]*Product {
+	res := make(map[int64]*Product, len(ps))
+	for _, p := range ps {
+		res[p.ProductRevision.ID] = p
+	}
+	return res
+}
+
 func (ps Products) Filter(productIDs ...string) Products {
 	set := set.New(productIDs...)
 	res := make(Products, 0, len(ps))

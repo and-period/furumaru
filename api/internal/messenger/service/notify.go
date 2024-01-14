@@ -7,6 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"golang.org/x/sync/errgroup"
@@ -59,7 +60,13 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 	if err != nil {
 		return internalError(err)
 	}
-	builder := entity.NewTemplateDataBuilder().Order(order)
+	products, err := s.multiGetProductsByRevision(ctx, order.ProductRevisionIDs())
+	if err != nil {
+		return internalError(err)
+	}
+	builder := entity.NewTemplateDataBuilder().
+		Order(order).
+		OrderItems(order.OrderItems, products.MapByRevision())
 	mail := &entity.MailConfig{
 		TemplateID:    entity.EmailTemplateIDUserOrderAuthorized,
 		Substitutions: builder.Build(),
@@ -87,8 +94,13 @@ func (s *service) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOr
 	if err != nil {
 		return internalError(err)
 	}
+	products, err := s.multiGetProductsByRevision(ctx, order.ProductRevisionIDs())
+	if err != nil {
+		return internalError(err)
+	}
 	builder := entity.NewTemplateDataBuilder().
 		Order(order).
+		OrderItems(order.OrderItems, products.MapByRevision()).
 		Shipped(order.ShippingMessage)
 	mail := &entity.MailConfig{
 		TemplateID:    entity.EmailTemplateIDUserOrderShipped,
@@ -376,4 +388,14 @@ func (s *service) sendAllProducers(ctx context.Context, payload *entity.WorkerPa
 		return producers.IDs(), total, nil
 	}
 	return s.sendAll(ctx, payload, entity.UserTypeProducer, listFn)
+}
+
+func (s *service) multiGetProductsByRevision(ctx context.Context, revisionIDs []int64) (sentity.Products, error) {
+	if len(revisionIDs) == 0 {
+		return sentity.Products{}, nil
+	}
+	in := &store.MultiGetProductsByRevisionInput{
+		ProductRevisionIDs: revisionIDs,
+	}
+	return s.store.MultiGetProductsByRevision(ctx, in)
 }

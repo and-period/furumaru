@@ -22,25 +22,25 @@ const (
 
 // MailConfig - メール送信設定
 type MailConfig struct {
-	TemplateID    EmailTemplateID   `json:"templateId"`    // メールテンプレートID
-	Substitutions map[string]string `json:"substitutions"` // メール動的内容
+	TemplateID    EmailTemplateID        `json:"templateId"`    // メールテンプレートID
+	Substitutions map[string]interface{} `json:"substitutions"` // メール動的内容
 }
 
 type TemplateDataBuilder struct {
-	data map[string]string
+	data map[string]interface{}
 }
 
 func NewTemplateDataBuilder() *TemplateDataBuilder {
 	return &TemplateDataBuilder{
-		data: map[string]string{},
+		data: map[string]interface{}{},
 	}
 }
 
-func (b *TemplateDataBuilder) Build() map[string]string {
+func (b *TemplateDataBuilder) Build() map[string]any {
 	return b.data
 }
 
-func (b *TemplateDataBuilder) Data(data map[string]string) *TemplateDataBuilder {
+func (b *TemplateDataBuilder) Data(data map[string]any) *TemplateDataBuilder {
 	if data != nil {
 		b.data = data
 	}
@@ -98,6 +98,19 @@ func (b *TemplateDataBuilder) Order(order *sentity.Order) *TemplateDataBuilder {
 	return b
 }
 
+func (b *TemplateDataBuilder) OrderItems(items sentity.OrderItems, products map[int64]*sentity.Product) *TemplateDataBuilder {
+	data := make([]map[string]string, 0, len(items))
+	for _, item := range items {
+		product, ok := products[item.ProductRevisionID]
+		if !ok {
+			product = &sentity.Product{}
+		}
+		data = append(data, newOrderItem(item, product))
+	}
+	b.data["商品一覧"] = data
+	return b
+}
+
 func (b *TemplateDataBuilder) Shipped(message string) *TemplateDataBuilder {
 	b.data["メッセージ"] = message
 	return b
@@ -128,5 +141,15 @@ func newPaymentMethodName(typ sentity.PaymentMethodType) string {
 		return "QR決済（au PAY）"
 	default:
 		return ""
+	}
+}
+
+func newOrderItem(item *sentity.OrderItem, product *sentity.Product) map[string]string {
+	return map[string]string{
+		"商品名":      product.Name,
+		"サムネイルURL": product.ThumbnailURL,
+		"購入数":      strconv.FormatInt(item.Quantity, 10),
+		"商品金額":     strconv.FormatInt(product.Price, 10),
+		"合計金額":     strconv.FormatInt(product.Price*item.Quantity, 10),
 	}
 }
