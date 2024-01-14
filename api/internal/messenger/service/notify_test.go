@@ -249,6 +249,28 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			},
 		},
 	}
+	addresses := uentity.Addresses{
+		{
+			AddressRevision: uentity.AddressRevision{
+				ID:             1,
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "太郎",
+				LastnameKana:   "あんどどっと",
+				FirstnameKana:  "たろう",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			ID:        "address-id",
+			UserID:    "user-id",
+			IsDefault: true,
+		},
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -260,6 +282,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
@@ -294,6 +317,8 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 									"割引金額":  "446",
 									"消費税":   "401",
 									"合計金額":  "4415",
+									"郵便番号":  "1000014",
+									"住所":    "東京都 千代田区 永田町1-7-1",
 									"商品一覧": []interface{}{
 										map[string]interface{}{
 											"商品名":      "おいしいじゃがいも",
@@ -354,6 +379,19 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderAuthorizedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to send messag",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderAuthorizedInput{
@@ -442,6 +480,28 @@ func TestNotifyOrderShipped(t *testing.T) {
 			},
 		},
 	}
+	addresses := uentity.Addresses{
+		{
+			AddressRevision: uentity.AddressRevision{
+				ID:             1,
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "太郎",
+				LastnameKana:   "あんどどっと",
+				FirstnameKana:  "たろう",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			ID:        "address-id",
+			UserID:    "user-id",
+			IsDefault: true,
+		},
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -453,6 +513,7 @@ func TestNotifyOrderShipped(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
@@ -487,6 +548,8 @@ func TestNotifyOrderShipped(t *testing.T) {
 									"割引金額":  "446",
 									"消費税":   "401",
 									"合計金額":  "4415",
+									"郵便番号":  "1000014",
+									"住所":    "東京都 千代田区 永田町1-7-1",
 									"メッセージ": "購入ありがとうございました",
 									"商品一覧": []interface{}{
 										map[string]interface{}{
@@ -548,6 +611,19 @@ func TestNotifyOrderShipped(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
 				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderShippedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to send messag",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderShippedInput{

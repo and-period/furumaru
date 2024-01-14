@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"golang.org/x/sync/errgroup"
 )
@@ -64,8 +65,13 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 	if err != nil {
 		return internalError(err)
 	}
+	addresses, err := s.multiGetAddressesByRevision(ctx, order.OrderFulfillments.AddressRevisionIDs())
+	if err != nil {
+		return internalError(err)
+	}
 	builder := entity.NewTemplateDataBuilder().
-		Order(order).
+		OrderPayment(&order.OrderPayment).
+		OrderFulfillment(order.OrderFulfillments, addresses.MapByRevision()).
 		OrderItems(order.OrderItems, products.MapByRevision())
 	mail := &entity.MailConfig{
 		TemplateID:    entity.EmailTemplateIDUserOrderAuthorized,
@@ -98,8 +104,13 @@ func (s *service) NotifyOrderShipped(ctx context.Context, in *messenger.NotifyOr
 	if err != nil {
 		return internalError(err)
 	}
+	addresses, err := s.multiGetAddressesByRevision(ctx, order.OrderFulfillments.AddressRevisionIDs())
+	if err != nil {
+		return internalError(err)
+	}
 	builder := entity.NewTemplateDataBuilder().
-		Order(order).
+		OrderPayment(&order.OrderPayment).
+		OrderFulfillment(order.OrderFulfillments, addresses.MapByRevision()).
 		OrderItems(order.OrderItems, products.MapByRevision()).
 		Shipped(order.ShippingMessage)
 	mail := &entity.MailConfig{
@@ -398,4 +409,14 @@ func (s *service) multiGetProductsByRevision(ctx context.Context, revisionIDs []
 		ProductRevisionIDs: revisionIDs,
 	}
 	return s.store.MultiGetProductsByRevision(ctx, in)
+}
+
+func (s *service) multiGetAddressesByRevision(ctx context.Context, revisionIDs []int64) (uentity.Addresses, error) {
+	if len(revisionIDs) == 0 {
+		return uentity.Addresses{}, nil
+	}
+	in := &user.MultiGetAddressesByRevisionInput{
+		AddressRevisionIDs: revisionIDs,
+	}
+	return s.user.MultiGetAddressesByRevision(ctx, in)
 }
