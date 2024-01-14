@@ -276,6 +276,7 @@ func TestProducer_MultiGetWithDeleted(t *testing.T) {
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[0].Status = entity.AdminStatusDeactivated
 	admins[0].DeletedAt = gorm.DeletedAt{Valid: true, Time: now()}
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
@@ -434,6 +435,7 @@ func TestProducer_GetWithDeleted(t *testing.T) {
 	require.NoError(t, err)
 	admins := make(entity.Admins, 2)
 	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[0].Status = entity.AdminStatusDeactivated
 	admins[0].DeletedAt = gorm.DeletedAt{Valid: true, Time: now()}
 	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
 	err = db.DB.Create(&admins).Error
