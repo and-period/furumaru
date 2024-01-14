@@ -90,7 +90,7 @@ func TestNotifyStartLive(t *testing.T) {
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
 								TemplateID: entity.EmailTemplateIDUserStartLive,
-								Substitutions: map[string]string{
+								Substitutions: map[string]interface{}{
 									"タイトル":     "マルシェタイトル",
 									"コーディネータ名": "&. 担当者",
 									"開催日":      "2023-12-25",
@@ -227,6 +227,50 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 		CoordinatorID: "coordinator-id",
 		PromotionID:   "",
 	}
+	products := sentity.Products{
+		{
+			ID:           "product-id01",
+			Name:         "おいしいじゃがいも",
+			ThumbnailURL: "http://example.com/image01.png",
+			ProductRevision: sentity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id01",
+				Price:     2000,
+			},
+		},
+		{
+			ID:           "product-id02",
+			Name:         "よく茹でたカリフラワー",
+			ThumbnailURL: "http://example.com/image02.png",
+			ProductRevision: sentity.ProductRevision{
+				ID:        2,
+				ProductID: "product-id02",
+				Price:     1230,
+			},
+		},
+	}
+	addresses := uentity.Addresses{
+		{
+			AddressRevision: uentity.AddressRevision{
+				ID:             1,
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "太郎",
+				LastnameKana:   "あんどどっと",
+				FirstnameKana:  "たろう",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			ID:        "address-id",
+			UserID:    "user-id",
+			IsDefault: true,
+		},
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -237,6 +281,8 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
@@ -263,7 +309,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
 								TemplateID: entity.EmailTemplateIDUserOrderAuthorized,
-								Substitutions: map[string]string{
+								Substitutions: map[string]interface{}{
 									"注文番号":  "order-id",
 									"決済方法":  "クレジットカード決済",
 									"商品金額":  "4460",
@@ -271,6 +317,24 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 									"割引金額":  "446",
 									"消費税":   "401",
 									"合計金額":  "4415",
+									"郵便番号":  "1000014",
+									"住所":    "東京都 千代田区 永田町1-7-1",
+									"商品一覧": []interface{}{
+										map[string]interface{}{
+											"商品名":      "おいしいじゃがいも",
+											"サムネイルURL": "http://example.com/image01.png",
+											"購入数":      "1",
+											"商品金額":     "2000",
+											"合計金額":     "2000",
+										},
+										map[string]interface{}{
+											"商品名":      "よく茹でたカリフラワー",
+											"サムネイルURL": "http://example.com/image02.png",
+											"購入数":      "2",
+											"商品金額":     "1230",
+											"合計金額":     "2460",
+										},
+									},
 								},
 							},
 						}
@@ -300,9 +364,34 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
+			name: "failed to multi get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderAuthorizedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to send messag",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderAuthorizedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to send messag",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderAuthorizedInput{
@@ -369,6 +458,50 @@ func TestNotifyOrderShipped(t *testing.T) {
 		PromotionID:     "",
 		ShippingMessage: "購入ありがとうございました",
 	}
+	products := sentity.Products{
+		{
+			ID:           "product-id01",
+			Name:         "おいしいじゃがいも",
+			ThumbnailURL: "http://example.com/image01.png",
+			ProductRevision: sentity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id01",
+				Price:     2000,
+			},
+		},
+		{
+			ID:           "product-id02",
+			Name:         "よく茹でたカリフラワー",
+			ThumbnailURL: "http://example.com/image02.png",
+			ProductRevision: sentity.ProductRevision{
+				ID:        2,
+				ProductID: "product-id02",
+				Price:     1230,
+			},
+		},
+	}
+	addresses := uentity.Addresses{
+		{
+			AddressRevision: uentity.AddressRevision{
+				ID:             1,
+				AddressID:      "address-id",
+				Lastname:       "&.",
+				Firstname:      "太郎",
+				LastnameKana:   "あんどどっと",
+				FirstnameKana:  "たろう",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "+819012345678",
+			},
+			ID:        "address-id",
+			UserID:    "user-id",
+			IsDefault: true,
+		},
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -379,6 +512,8 @@ func TestNotifyOrderShipped(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, queue *entity.ReceivedQueue) error {
@@ -405,7 +540,7 @@ func TestNotifyOrderShipped(t *testing.T) {
 							UserIDs:   []string{"user-id"},
 							Email: &entity.MailConfig{
 								TemplateID: entity.EmailTemplateIDUserOrderShipped,
-								Substitutions: map[string]string{
+								Substitutions: map[string]interface{}{
 									"注文番号":  "order-id",
 									"決済方法":  "クレジットカード決済",
 									"商品金額":  "4460",
@@ -413,7 +548,25 @@ func TestNotifyOrderShipped(t *testing.T) {
 									"割引金額":  "446",
 									"消費税":   "401",
 									"合計金額":  "4415",
+									"郵便番号":  "1000014",
+									"住所":    "東京都 千代田区 永田町1-7-1",
 									"メッセージ": "購入ありがとうございました",
+									"商品一覧": []interface{}{
+										map[string]interface{}{
+											"商品名":      "おいしいじゃがいも",
+											"サムネイルURL": "http://example.com/image01.png",
+											"購入数":      "1",
+											"商品金額":     "2000",
+											"合計金額":     "2000",
+										},
+										map[string]interface{}{
+											"商品名":      "よく茹でたカリフラワー",
+											"サムネイルURL": "http://example.com/image02.png",
+											"購入数":      "2",
+											"商品金額":     "1230",
+											"合計金額":     "2460",
+										},
+									},
 								},
 							},
 						}
@@ -443,9 +596,34 @@ func TestNotifyOrderShipped(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
+			name: "failed to multi get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderShippedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to send messag",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyOrderShippedInput{
+				OrderID: "order-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to send messag",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetOrder(ctx, orderIn).Return(order, nil)
+				mocks.store.EXPECT().MultiGetProductsByRevision(ctx, gomock.Any()).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(ctx, gomock.Any()).Return(addresses, nil)
 				mocks.db.ReceivedQueue.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.NotifyOrderShippedInput{
@@ -501,7 +679,7 @@ func TestNotifyRegisterAdmin(t *testing.T) {
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
 								TemplateID: entity.EmailTemplateIDAdminRegister,
-								Substitutions: map[string]string{
+								Substitutions: map[string]interface{}{
 									"サイトURL": "http://admin.example.com/signin",
 									"パスワード":  "!Qaz2wsx",
 								},
@@ -584,7 +762,7 @@ func TestNotifyResetAdminPassword(t *testing.T) {
 							UserIDs:   []string{"admin-id"},
 							Email: &entity.MailConfig{
 								TemplateID: entity.EmailTemplateIDAdminResetPassword,
-								Substitutions: map[string]string{
+								Substitutions: map[string]interface{}{
 									"サイトURL": "http://admin.example.com/signin",
 									"パスワード":  "!Qaz2wsx",
 								},

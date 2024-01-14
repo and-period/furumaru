@@ -55,7 +55,7 @@ func TestMultiSendMail(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expectErr: nil,
@@ -71,7 +71,7 @@ func TestMultiSendMail(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expectErr: assert.AnError,
@@ -184,7 +184,7 @@ func TestPersonalizations(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expect: []*mailer.Personalization{
@@ -219,7 +219,7 @@ func TestPersonalizations(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expect: []*mailer.Personalization{
@@ -255,7 +255,7 @@ func TestPersonalizations(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expect: []*mailer.Personalization{
@@ -291,7 +291,7 @@ func TestPersonalizations(t *testing.T) {
 				UserIDs:   []string{"admin-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expect: []*mailer.Personalization{
@@ -344,7 +344,7 @@ func TestPersonalizations(t *testing.T) {
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expect: []*mailer.Personalization{
@@ -397,7 +397,7 @@ func TestPersonalizations(t *testing.T) {
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expect: []*mailer.Personalization{
@@ -422,7 +422,7 @@ func TestPersonalizations(t *testing.T) {
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expectErr: errUnknownUserType,

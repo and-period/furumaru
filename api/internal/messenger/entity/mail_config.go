@@ -1,3 +1,4 @@
+//nolint:lll
 package entity
 
 import (
@@ -5,6 +6,7 @@ import (
 	"time"
 
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
@@ -22,25 +24,25 @@ const (
 
 // MailConfig - メール送信設定
 type MailConfig struct {
-	TemplateID    EmailTemplateID   `json:"templateId"`    // メールテンプレートID
-	Substitutions map[string]string `json:"substitutions"` // メール動的内容
+	TemplateID    EmailTemplateID        `json:"templateId"`    // メールテンプレートID
+	Substitutions map[string]interface{} `json:"substitutions"` // メール動的内容
 }
 
 type TemplateDataBuilder struct {
-	data map[string]string
+	data map[string]interface{}
 }
 
 func NewTemplateDataBuilder() *TemplateDataBuilder {
 	return &TemplateDataBuilder{
-		data: map[string]string{},
+		data: map[string]interface{}{},
 	}
 }
 
-func (b *TemplateDataBuilder) Build() map[string]string {
+func (b *TemplateDataBuilder) Build() map[string]any {
 	return b.data
 }
 
-func (b *TemplateDataBuilder) Data(data map[string]string) *TemplateDataBuilder {
+func (b *TemplateDataBuilder) Data(data map[string]any) *TemplateDataBuilder {
 	if data != nil {
 		b.data = data
 	}
@@ -87,14 +89,41 @@ func (b *TemplateDataBuilder) Live(title, coordinator string, startAt, endAt tim
 	return b
 }
 
-func (b *TemplateDataBuilder) Order(order *sentity.Order) *TemplateDataBuilder {
-	b.data["注文番号"] = order.ID
-	b.data["決済方法"] = newPaymentMethodName(order.OrderPayment.MethodType)
-	b.data["商品金額"] = strconv.FormatInt(order.OrderPayment.Subtotal, 10)
-	b.data["割引金額"] = strconv.FormatInt(order.OrderPayment.Discount, 10)
-	b.data["配送手数料"] = strconv.FormatInt(order.OrderPayment.ShippingFee, 10)
-	b.data["消費税"] = strconv.FormatInt(order.OrderPayment.Tax, 10)
-	b.data["合計金額"] = strconv.FormatInt(order.OrderPayment.Total, 10)
+func (b *TemplateDataBuilder) OrderPayment(payment *sentity.OrderPayment) *TemplateDataBuilder {
+	b.data["注文番号"] = payment.OrderID
+	b.data["決済方法"] = newPaymentMethodName(payment.MethodType)
+	b.data["商品金額"] = strconv.FormatInt(payment.Subtotal, 10)
+	b.data["割引金額"] = strconv.FormatInt(payment.Discount, 10)
+	b.data["配送手数料"] = strconv.FormatInt(payment.ShippingFee, 10)
+	b.data["消費税"] = strconv.FormatInt(payment.Tax, 10)
+	b.data["合計金額"] = strconv.FormatInt(payment.Total, 10)
+	return b
+}
+
+func (b *TemplateDataBuilder) OrderFulfillment(fulfillments sentity.OrderFulfillments, addresses map[int64]*uentity.Address) *TemplateDataBuilder {
+	if len(fulfillments) == 0 || len(addresses) == 0 {
+		return b
+	}
+	address, ok := addresses[fulfillments[0].AddressRevisionID]
+	if !ok {
+		return b
+	}
+	// 現時点だと同一住所への配送しか対応していないため、１つ目の情報のみ取得
+	b.data["郵便番号"] = address.PostalCode
+	b.data["住所"] = address.FullPath()
+	return b
+}
+
+func (b *TemplateDataBuilder) OrderItems(items sentity.OrderItems, products map[int64]*sentity.Product) *TemplateDataBuilder {
+	data := make([]map[string]string, 0, len(items))
+	for _, item := range items {
+		product, ok := products[item.ProductRevisionID]
+		if !ok {
+			product = &sentity.Product{}
+		}
+		data = append(data, newOrderItem(item, product))
+	}
+	b.data["商品一覧"] = data
 	return b
 }
 
@@ -128,5 +157,15 @@ func newPaymentMethodName(typ sentity.PaymentMethodType) string {
 		return "QR決済（au PAY）"
 	default:
 		return ""
+	}
+}
+
+func newOrderItem(item *sentity.OrderItem, product *sentity.Product) map[string]string {
+	return map[string]string{
+		"商品名":      product.Name,
+		"サムネイルURL": product.ThumbnailURL,
+		"購入数":      strconv.FormatInt(item.Quantity, 10),
+		"商品金額":     strconv.FormatInt(product.Price, 10),
+		"合計金額":     strconv.FormatInt(product.Price*item.Quantity, 10),
 	}
 }

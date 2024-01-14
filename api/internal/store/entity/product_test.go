@@ -1253,6 +1253,107 @@ func TestProducts_Map(t *testing.T) {
 	}
 }
 
+func TestProducts_MapByRevision(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name     string
+		products Products
+		expect   map[int64]*Product
+	}{
+		{
+			name: "success",
+			products: Products{
+				{
+					ID:              "product-id",
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  "滋賀県",
+					OriginCity:        "彦根市",
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
+				},
+			},
+			expect: map[int64]*Product{
+				1: {
+					ID:              "product-id",
+					CoordinatorID:   "coordinator-id",
+					ProducerID:      "producer-id",
+					TypeID:          "type-id",
+					TagIDs:          []string{"tag-id"},
+					Name:            "新鮮なじゃがいも",
+					Description:     "新鮮なじゃがいもをお届けします。",
+					Public:          true,
+					Status:          0,
+					Inventory:       100,
+					Weight:          100,
+					WeightUnit:      WeightUnitGram,
+					Item:            1,
+					ItemUnit:        "袋",
+					ItemDescription: "1袋あたり100gのじゃがいも",
+					Media: MultiProductMedia{
+						{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+						{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					},
+					ExpirationDate:    7,
+					RecommendedPoints: []string{"おすすめポイント"},
+					StorageMethodType: StorageMethodTypeNormal,
+					DeliveryType:      DeliveryTypeNormal,
+					Box60Rate:         50,
+					Box80Rate:         40,
+					Box100Rate:        30,
+					OriginPrefecture:  "滋賀県",
+					OriginCity:        "彦根市",
+					StartAt:           now,
+					EndAt:             now.AddDate(1, 0, 0),
+					ProductRevision: ProductRevision{
+						ID:        1,
+						ProductID: "product-id",
+						Price:     400,
+						Cost:      300,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.MapByRevision())
+		})
+	}
+}
+
 func TestProducts_Filter(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
