@@ -271,13 +271,18 @@ definePageMeta({
           </div>
         </template>
       </div>
-      <!-- ページネーション -->
-      <the-pagination
-        class="mt-4"
-        :current-page="currentOrderPage"
-        :page-array="orderPagination.pageArray"
-        @change-page="handleChangeOrderPage"
-      />
+      <template v-if="orderHistories.length > 0">
+        <!-- ページネーション -->
+        <the-pagination
+          class="mt-4"
+          :current-page="currentOrderPage"
+          :page-array="orderPagination.pageArray"
+          @change-page="handleChangeOrderPage"
+        />
+      </template>
+      <template v-else>
+        <div class="mt-4 text-center">注文履歴がありません</div>
+      </template>
     </div>
 
     <!-- アドレス帳情報表示エリア -->
@@ -324,12 +329,17 @@ definePageMeta({
           </dl>
         </div>
       </div>
-      <the-pagination
-        class="mt-4"
-        :current-page="currentAddressPage"
-        :page-array="addressPagination.pageArray"
-        @change-page="handleChangeAddressPage"
-      />
+      <template v-if="addresses.length > 0">
+        <the-pagination
+          class="mt-4"
+          :current-page="currentAddressPage"
+          :page-array="addressPagination.pageArray"
+          @change-page="handleChangeAddressPage"
+        />
+      </template>
+      <template v-else>
+        <div class="mt-4 text-center">登録されている住所がありません</div>
+      </template>
     </div>
 
     <div class="text-right">
