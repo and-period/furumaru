@@ -39,6 +39,29 @@ const redirectToPurchase = computed<boolean>(() => {
   }
 })
 
+// コーディネーターID
+const coordinatorId = computed<string>(() => {
+  const id = route.query.coordinatorId
+  if (id) {
+    return String(id)
+  } else {
+    return ''
+  }
+})
+
+// カート番号
+const cartNumber = computed<number | undefined>(() => {
+  const id = route.query.cartNumber
+  const idNumber = Number(id)
+  if (idNumber === 0) {
+    return undefined
+  }
+  if (isNaN(idNumber)) {
+    return undefined
+  }
+  return idNumber
+})
+
 const code = ref<string>('')
 const errorMessage = ref<string>('')
 
@@ -49,7 +72,14 @@ const handleSubmit = async () => {
       id: id.value,
     })
     if (redirectToPurchase.value) {
-      router.push('/v1/purchase/auth?from_new_accounet=true')
+      router.push({
+        path: '/v1/purchase/auth',
+        query: {
+          from_new_accounet: true,
+          coordinatorId: coordinatorId.value,
+          cartNumber: cartNumber.value,
+        },
+      })
     } else {
       router.push('/')
     }
