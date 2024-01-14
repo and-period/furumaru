@@ -7,7 +7,7 @@ upsertShippingRate:
     price:
       type: integer
       format: int64
-      description: 配送料金(100万未満)
+      description: 配送料金(税込:100万未満)
     prefectureCodes:
       type: array
       description: 対象都道府県コード一覧
@@ -28,7 +28,7 @@ upsertShippingRequest:
     box60Frozen:
       type: integer
       format: int64
-      description: 箱サイズ60の冷凍便追加配送料(100万未満)
+      description: 箱サイズ60の冷凍便追加配送料(税込:100万未満)
     box80Rates:
       type: array
       description: 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
@@ -37,7 +37,7 @@ upsertShippingRequest:
     box80Frozen:
       type: integer
       format: int64
-      description: 箱サイズ80の冷凍便追加配送料(100万未満)
+      description: 箱サイズ80の冷凍便追加配送料(税込:100万未満)
     box100Rates:
       type: array
       description: 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
@@ -46,14 +46,14 @@ upsertShippingRequest:
     box100Frozen:
       type: integer
       format: int64
-      description: 箱サイズ100の冷凍便追加配送料(100万未満)
+      description: 箱サイズ100の冷凍便追加配送料(税込:100万未満)
     hasFreeShipping:
       type: boolean
       description: 送料無料オプションの有無
     freeShippingRates:
       type: integer
       format: int64
-      description: 送料無料になる金額(100万未満)
+      description: 送料無料になる金額(税込:100万未満)
   required:
   - box60Rates
   - box60Frozen
@@ -105,7 +105,7 @@ updateDefaultShippingRate:
     price:
       type: integer
       format: int64
-      description: 配送料金(100万未満)
+      description: 配送料金(税込:100万未満)
     prefectureCodes:
       type: array
       description: 対象都道府県コード一覧
@@ -126,7 +126,7 @@ updateDefaultShippingRequest:
     box60Frozen:
       type: integer
       format: int64
-      description: 箱サイズ60の冷凍便追加配送料(100万未満)
+      description: 箱サイズ60の冷凍便追加配送料(税込:100万未満)
     box80Rates:
       type: array
       description: 箱サイズ80の通常配送料一覧(すべての都道府県の設定が必須)
@@ -135,7 +135,7 @@ updateDefaultShippingRequest:
     box80Frozen:
       type: integer
       format: int64
-      description: 箱サイズ80の冷凍便追加配送料(100万未満)
+      description: 箱サイズ80の冷凍便追加配送料(税込:100万未満)
     box100Rates:
       type: array
       description: 箱サイズ100の通常配送料一覧(すべての都道府県の設定が必須)
@@ -144,14 +144,14 @@ updateDefaultShippingRequest:
     box100Frozen:
       type: integer
       format: int64
-      description: 箱サイズ100の冷凍便追加配送料(100万未満)
+      description: 箱サイズ100の冷凍便追加配送料(税込:100万未満)
     hasFreeShipping:
       type: boolean
       description: 送料無料オプションの有無
     freeShippingRates:
       type: integer
       format: int64
-      description: 送料無料になる金額(100万未満)
+      description: 送料無料になる金額(税込:100万未満)
   required:
   - box60Rates
   - box60Frozen

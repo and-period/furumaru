@@ -123,7 +123,7 @@ export interface Product {
      */
     media: Array<ProductMediaInner>;
     /**
-     * 販売価格
+     * 販売価格（税込）
      * @type {number}
      * @memberof Product
      */

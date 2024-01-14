@@ -27,7 +27,7 @@ type LiveSummary struct {
 type LiveProduct struct {
 	ProductID    string   `json:"id"`           // 商品ID
 	Name         string   `json:"name"`         // 商品名
-	Price        int64    `json:"price"`        // 販売価格
+	Price        int64    `json:"price"`        // 販売価格(税込)
 	Inventory    int64    `json:"inventory"`    // 在庫数
 	ThumbnailURL string   `json:"thumbnailUrl"` // サムネイルURL
 	Thumbnails   []*Image `json:"thumbnails"`   // サムネイル一覧(リサイズ済み)

@@ -22,8 +22,8 @@ func TestTemplateBuilder(t *testing.T) {
 			Subtotal:          2000,
 			Discount:          500,
 			ShippingFee:       500,
-			Tax:               200,
-			Total:             2200,
+			Tax:               181,
+			Total:             2000,
 			RefundTotal:       0,
 			RefundType:        0,
 			RefundReason:      "",
@@ -125,8 +125,8 @@ func TestTemplateBuilder(t *testing.T) {
 		assert.Equal(t, "2000", data["商品金額"])
 		assert.Equal(t, "500", data["割引金額"])
 		assert.Equal(t, "500", data["配送手数料"])
-		assert.Equal(t, "200", data["消費税"])
-		assert.Equal(t, "2200", data["合計金額"])
+		assert.Equal(t, "181", data["消費税"])
+		assert.Equal(t, "2000", data["合計金額"])
 		assert.Equal(t, "1000014", data["郵便番号"])
 		assert.Equal(t, "東京都 千代田区 永田町1-7-1", data["住所"])
 		assert.Equal(t, "ありがとうございます", data["メッセージ"])

@@ -50,6 +50,7 @@ const props = defineProps({
     type: Object as PropType<Order>,
     default: (): Order => ({
       id: '',
+      managementId: 0,
       coordinatorId: '',
       promotionId: '',
       userId: '',
@@ -62,7 +63,6 @@ const props = defineProps({
         subtotal: 0,
         discount: 0,
         shippingFee: 0,
-        tax: 0,
         total: 0,
         addressId: '',
         lastname: '',
@@ -755,15 +755,10 @@ const onSubmitRefund = (): void => {
                     <td />
                     <td>&yen; {{ order.payment.discount.toLocaleString() }}</td>
                   </tr>
-                  <tr>
-                    <td>消費税</td>
-                    <td />
-                    <td>&yen; {{ order.payment.tax.toLocaleString() }}</td>
-                  </tr>
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td>支払い合計</td>
+                    <td>支払い合計（税込み）</td>
                     <td />
                     <td>&yen; {{ order.payment.total.toLocaleString() }}</td>
                   </tr>
@@ -780,7 +775,7 @@ const onSubmitRefund = (): void => {
         <v-card-text>
           <v-data-table :headers="productHeaders" :items="getAllItems()">
             <template #[`item.media`]="{ item }">
-              <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.productId)" :srcset="getResizedThumbnails(item.media)" />
+              <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.productId)" :srcset="getResizedThumbnails(item.productId)" />
             </template>
             <template #[`item.name`]="{ item }">
               {{ getProductName(item.productId) }}
@@ -903,7 +898,7 @@ const onSubmitRefund = (): void => {
             <v-col cols="12">
               <v-data-table :headers="productHeaders" :items="getOrderItems(fulfillment.fulfillmentId)">
                 <template #[`item.media`]="{ item }">
-                  <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.productId)" :srcset="getResizedThumbnails(item.media)" />
+                  <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.productId)" :srcset="getResizedThumbnails(item.productId)" />
                 </template>
                 <template #[`item.name`]="{ item }">
                   {{ getProductName(item.productId) }}

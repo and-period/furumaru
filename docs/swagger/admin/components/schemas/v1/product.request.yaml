@@ -43,11 +43,11 @@ createProductRequest:
     price:
       type: integer
       format: int64
-      description: 販売価格(0以上)
+      description: 販売価格(税込:0以上)
     cost:
       type: integer
       format: int64
-      description: 原価(0以上)
+      description: 原価(税込:0以上)
     inventory:
       type: integer
       format: int64
@@ -204,11 +204,11 @@ updateProductRequest:
     price:
       type: integer
       format: int64
-      description: 販売価格(0以上)
+      description: 販売価格(税込:0以上)
     cost:
       type: integer
       format: int64
-      description: 原価(0以上)
+      description: 原価(税込:0以上)
     inventory:
       type: integer
       format: int64

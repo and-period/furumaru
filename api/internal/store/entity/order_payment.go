@@ -58,11 +58,11 @@ type OrderPayment struct {
 	TransactionID     string            `gorm:""`                     // 決済ID(決済代行システム)
 	PaymentID         string            `gorm:""`                     // 決済ID(決済代行システム)
 	MethodType        PaymentMethodType `gorm:""`                     // 決済手段種別
-	Subtotal          int64             `gorm:""`                     // 購入金額
-	Discount          int64             `gorm:""`                     // 割引金額
-	ShippingFee       int64             `gorm:""`                     // 配送手数料
-	Tax               int64             `gorm:""`                     // 消費税
-	Total             int64             `gorm:""`                     // 合計金額
+	Subtotal          int64             `gorm:""`                     // 購入金額(税込)
+	Discount          int64             `gorm:""`                     // 割引金額(税込)
+	ShippingFee       int64             `gorm:""`                     // 配送手数料(税込)
+	Tax               int64             `gorm:""`                     // 消費税(内税)
+	Total             int64             `gorm:""`                     // 合計金額(税込)
 	RefundTotal       int64             `gorm:""`                     // 返金金額
 	RefundType        RefundType        `gorm:""`                     // 注文キャンセル種別
 	RefundReason      string            `gorm:""`                     // 注文キャンセル理由
