@@ -11,7 +11,13 @@ import {
   useProductTagStore,
   useProductTypeStore
 } from '~/store'
-import { type UpdateProductRequest, type CreateProductRequestMediaInner, DeliveryType, StorageMethodType, Prefecture } from '~/types/api'
+import {
+  type UpdateProductRequest,
+  type CreateProductRequestMediaInner,
+  DeliveryType,
+  StorageMethodType,
+  Prefecture
+} from '~/types/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -83,7 +89,9 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 })
 
 watch(selectedCategoryId, (newValue?: string, oldValue?: string): void => {
-  productTypeStore.fetchProductTypesByCategoryId(selectedCategoryId.value || '')
+  productTypeStore.fetchProductTypesByCategoryId(
+    selectedCategoryId.value || ''
+  )
   if (newValue === oldValue) {
     return
   }
@@ -96,7 +104,9 @@ const isLoading = (): boolean => {
 
 const handleSearchCategory = async (name: string): Promise<void> => {
   try {
-    const categoryIds: string[] = selectedCategoryId.value ? [selectedCategoryId.value] : []
+    const categoryIds: string[] = selectedCategoryId.value
+      ? [selectedCategoryId.value]
+      : []
     await categoryStore.searchCategories(name, categoryIds)
   } catch (err) {
     if (err instanceof Error) {
@@ -108,8 +118,14 @@ const handleSearchCategory = async (name: string): Promise<void> => {
 
 const handleSearchProductType = async (name: string): Promise<void> => {
   try {
-    const productTypeIds: string[] = formData.value.productTypeId ? [formData.value.productTypeId] : []
-    await productTypeStore.searchProductTypes(name, selectedCategoryId.value, productTypeIds)
+    const productTypeIds: string[] = formData.value.productTypeId
+      ? [formData.value.productTypeId]
+      : []
+    await productTypeStore.searchProductTypes(
+      name,
+      selectedCategoryId.value,
+      productTypeIds
+    )
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -136,7 +152,8 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
       const uploadImage = await productStore.uploadProductImage(file)
       formData.value.media.push({
         ...uploadImage,
-        isThumbnail: index === 0
+        // 一度すべてサムネイルをfalse状態でmediaに加える
+        isThumbnail: false
       })
     } catch (err) {
       if (err instanceof Error) {
@@ -147,14 +164,20 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
   }
   loading.value = false
 
+  // サムネイル画像が設定済みかをmediaの配列を走査して確認
   const thumbnailItem = formData.value.media.find(item => item.isThumbnail)
   if (thumbnailItem) {
+    // 設定されていれば処理終了
     return
   }
-  formData.value.media = formData.value.media.map((item, i): CreateProductRequestMediaInner => ({
-    ...item,
-    isThumbnail: i === 0
-  }))
+
+  // 設定されていなければ、mediaの最初の要素をサムネイルに設定
+  formData.value.media = formData.value.media.map(
+    (item, i): CreateProductRequestMediaInner => ({
+      ...item,
+      isThumbnail: i === 0
+    })
+  )
 }
 
 const handleSubmit = async (): Promise<void> => {
