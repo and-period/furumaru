@@ -51,31 +51,25 @@ export interface OrderPayment {
      */
     status: PaymentStatus;
     /**
-     * 購入金額
+     * 購入金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     subtotal: number;
     /**
-     * 割引金額
+     * 割引金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     discount: number;
     /**
-     * 配送手数料
+     * 配送手数料（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     shippingFee: number;
     /**
-     * 消費税
-     * @type {number}
-     * @memberof OrderPayment
-     */
-    tax: number;
-    /**
-     * 合計金額
+     * 合計金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
@@ -105,7 +99,6 @@ export function instanceOfOrderPayment(value: object): boolean {
     isInstance = isInstance && "subtotal" in value;
     isInstance = isInstance && "discount" in value;
     isInstance = isInstance && "shippingFee" in value;
-    isInstance = isInstance && "tax" in value;
     isInstance = isInstance && "total" in value;
     isInstance = isInstance && "orderedAt" in value;
     isInstance = isInstance && "paidAt" in value;
@@ -129,7 +122,6 @@ export function OrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'subtotal': json['subtotal'],
         'discount': json['discount'],
         'shippingFee': json['shippingFee'],
-        'tax': json['tax'],
         'total': json['total'],
         'orderedAt': json['orderedAt'],
         'paidAt': json['paidAt'],
@@ -151,7 +143,6 @@ export function OrderPaymentToJSON(value?: OrderPayment | null): any {
         'subtotal': value.subtotal,
         'discount': value.discount,
         'shippingFee': value.shippingFee,
-        'tax': value.tax,
         'total': value.total,
         'orderedAt': value.orderedAt,
         'paidAt': value.paidAt,

@@ -17,7 +17,7 @@ type Product struct {
 	ItemUnit             string          `json:"itemUnit"`             // 数量単位
 	ItemDescription      string          `json:"itemDescription"`      // 数量単位説明
 	Media                []*ProductMedia `json:"media"`                // メディア一覧
-	Price                int64           `json:"price"`                // 販売価格
+	Price                int64           `json:"price"`                // 販売価格(税込)
 	Cost                 int64           `json:"cost"`                 // 原価
 	ExpirationDate       int64           `json:"expirationDate"`       // 賞味期限(単位:日)
 	RecommendedPoint1    string          `json:"recommendedPoint1"`    // おすすめポイント1

@@ -7,16 +7,17 @@ import (
 const taxRate int64 = 10 // 税率（10%)
 
 var (
+	one        = decimal.NewFromInt(1)
 	percent    = decimal.NewFromInt(100)
 	taxPercent = decimal.NewFromInt(taxRate).Div(percent)
 )
 
 // チェックアウト前の支払い情報
 type OrderPaymentSummary struct {
-	Subtotal    int64 // 購入金額
-	Discount    int64 // 割引金額
-	ShippingFee int64 // 配送手数料
-	Tax         int64 // 消費税
+	Subtotal    int64 // 購入金額(税込)
+	Discount    int64 // 割引金額(税込)
+	ShippingFee int64 // 配送手数料(税込)
+	Tax         int64 // 消費税(内税)
 	TaxRate     int64 // 消費税率(%)
 	Total       int64 // 合計金額
 }
@@ -49,11 +50,11 @@ func NewOrderPaymentSummary(params *NewOrderPaymentSummaryParams) (*OrderPayment
 	}
 	// 割引金額の算出
 	discount := params.Promotion.CalcDiscount(subtotal, shippingFee)
-	// 支払い金額の算出
+	// 支払い金額の算出（消費税額＝税込価格÷（1+消費税率）×消費税率）
 	dsubtotal := decimal.NewFromInt(subtotal).Add(decimal.NewFromInt(shippingFee))
 	ddiscount := decimal.NewFromInt(discount)
-	dtax := dsubtotal.Sub(ddiscount).Mul(taxPercent)
-	dtotal := dsubtotal.Sub(ddiscount).Add(dtax)
+	dtotal := dsubtotal.Sub(ddiscount)
+	dtax := dtotal.Div(one.Add(taxPercent)).Mul(taxPercent)
 	return &OrderPaymentSummary{
 		Subtotal:    subtotal,
 		Discount:    discount,

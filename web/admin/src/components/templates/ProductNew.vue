@@ -384,7 +384,7 @@ const onSubmit = async (): Promise<void> => {
             <v-text-field
               v-model.number="formDataValidate.cost.$model"
               :error-messages="getErrorMessage(formDataValidate.cost.$errors)"
-              label="原価"
+              label="原価(税込)"
               type="number"
               min="0"
               suffix="円"

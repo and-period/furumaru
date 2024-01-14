@@ -12,7 +12,7 @@ shippingRate:
     price:
       type: integer
       format: int64
-      description: 配送料金
+      description: 配送料金（税込）
     prefectureCodes:
       type: array
       description: 対象都道府県コード一覧
@@ -41,7 +41,7 @@ shipping:
     box60Frozen:
       type: integer
       format: int64
-      description: 箱サイズ60の冷凍便追加配送料
+      description: 箱サイズ60の冷凍便追加配送料（税込）
     box80Rates:
       type: array
       description: 箱サイズ80の通常配送料一覧
@@ -50,7 +50,7 @@ shipping:
     box80Frozen:
       type: integer
       format: int64
-      description: 箱サイズ80の冷凍便追加配送料
+      description: 箱サイズ80の冷凍便追加配送料（税込）
     box100Rates:
       type: array
       description: 箱サイズ100の通常配送料一覧
@@ -59,14 +59,14 @@ shipping:
     box100Frozen:
       type: integer
       format: int64
-      description: 箱サイズ100の冷凍便追加配送料
+      description: 箱サイズ100の冷凍便追加配送料（税込）
     hasFreeShipping:
       type: boolean
       description: 送料無料オプションの有無
     freeShippingRates:
       type: integer
       format: int64
-      description: 送料無料になる金額
+      description: 送料無料になる金額（税込）
     createdAt:
       type: integer
       format: int64

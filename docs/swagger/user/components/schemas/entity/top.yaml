@@ -44,7 +44,7 @@ topLive:
           price:
             type: integer
             format: int64
-            description: 販売価格
+            description: 販売価格（税込）
           inventory:
             type: integer
             format: int64

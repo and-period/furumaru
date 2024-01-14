@@ -195,8 +195,8 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 			Subtotal:          4460,
 			Discount:          446,
 			ShippingFee:       0,
-			Tax:               401,
-			Total:             4415,
+			Tax:               364,
+			Total:             4014,
 		},
 		OrderFulfillments: sentity.OrderFulfillments{
 			{
@@ -315,8 +315,8 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 									"商品金額":  "4460",
 									"配送手数料": "0",
 									"割引金額":  "446",
-									"消費税":   "401",
-									"合計金額":  "4415",
+									"消費税":   "364",
+									"合計金額":  "4014",
 									"郵便番号":  "1000014",
 									"住所":    "東京都 千代田区 永田町1-7-1",
 									"商品一覧": []interface{}{
@@ -425,8 +425,8 @@ func TestNotifyOrderShipped(t *testing.T) {
 			Subtotal:          4460,
 			Discount:          446,
 			ShippingFee:       0,
-			Tax:               401,
-			Total:             4415,
+			Tax:               364,
+			Total:             4014,
 		},
 		OrderFulfillments: sentity.OrderFulfillments{
 			{
@@ -546,8 +546,8 @@ func TestNotifyOrderShipped(t *testing.T) {
 									"商品金額":  "4460",
 									"配送手数料": "0",
 									"割引金額":  "446",
-									"消費税":   "401",
-									"合計金額":  "4415",
+									"消費税":   "364",
+									"合計金額":  "4014",
 									"郵便番号":  "1000014",
 									"住所":    "東京都 千代田区 永田町1-7-1",
 									"メッセージ": "購入ありがとうございました",

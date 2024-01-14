@@ -32,7 +32,7 @@ export interface OrderItem {
      */
     productId: string;
     /**
-     * 購入価格
+     * 購入価格（税込み）
      * @type {number}
      * @memberof OrderItem
      */

@@ -34,8 +34,7 @@ orderResponse:
         subtotal: 1000
         discount: 200
         shippingFee: 500
-        tax: 130
-        total: 1430
+        total: 1300
         orderedAt: 1640962800
         paidAt: 1640962800
         addressId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -235,8 +234,7 @@ ordersResponse:
         subtotal: 1000
         discount: 200
         shippingFee: 500
-        tax: 130
-        total: 1430
+        total: 1300
         orderedAt: 1640962800
         paidAt: 1640962800
         addressId: 'kSByoE6FetnPs5Byk3a9Zx'

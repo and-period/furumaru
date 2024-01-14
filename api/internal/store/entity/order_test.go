@@ -166,8 +166,8 @@ func TestOrder(t *testing.T) {
 					Subtotal:          4460,
 					Discount:          446,
 					ShippingFee:       0,
-					Tax:               401,
-					Total:             4415,
+					Tax:               364,
+					Total:             4014,
 				},
 				OrderFulfillments: OrderFulfillments{
 					{
