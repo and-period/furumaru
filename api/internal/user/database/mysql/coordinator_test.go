@@ -443,7 +443,7 @@ func TestCoordinator_GetWithDeleted(t *testing.T) {
 				adminID: "admin-id02",
 			},
 			want: want{
-				coordinator: coordinators[0],
+				coordinator: coordinators[1],
 				hasErr:      false,
 			},
 		},
