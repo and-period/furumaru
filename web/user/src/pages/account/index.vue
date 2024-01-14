@@ -39,7 +39,6 @@ const currentOrderPage = computed<number>(() => {
 const orderPagination = computed<{
   limit: number
   offset: number
-  totalPage: number
   pageArray: number[]
 }>(() => {
   const totalPage = Math.ceil(total.value / orderPagePerItems.value)
@@ -48,24 +47,12 @@ const orderPagination = computed<{
   return {
     limit: orderPagePerItems.value,
     offset: orderPagePerItems.value * (currentOrderPage.value - 1),
-    totalPage,
     pageArray,
   }
 })
 
-// 一つ前の注文履歴ページへ遷移する
-const handleClickPreviosOrderPageButton = () => {
-  if (currentOrderPage.value === 1) return
-  router.push({
-    query: {
-      ...route.query,
-      orderPage: currentOrderPage.value - 1,
-    },
-  })
-}
-
 // 指定した注文履歴ページへ遷移する
-const handleClickOrderPage = (page: number) => {
+const handleChangeOrderPage = (page: number) => {
   router.push({
     query: {
       ...route.query,
@@ -74,13 +61,37 @@ const handleClickOrderPage = (page: number) => {
   })
 }
 
-// 一つ後の注文履歴ページへ遷移する
-const handleClickNextOrderPageButton = () => {
-  if (currentOrderPage.value === orderPagination.value.totalPage) return
+// 1ページ当たりに表示するアドレス帳数
+const addressPagePerItems = ref<number>(20)
+
+// アドレス帳の現在のページ番号
+const currentAddressPage = computed<number>(() => {
+  return route.query.addressPage ? Number(route.query.addressPage) : 1
+})
+
+// アドレス帳のページネーション情報
+const addressPagination = computed<{
+  limit: number
+  offset: number
+  pageArray: number[]
+}>(() => {
+  const totalPage = Math.ceil(
+    addresses.value.length / addressPagePerItems.value,
+  )
+  const pageArray = Array.from({ length: totalPage }, (_, i) => i + 1)
+
+  return {
+    limit: addressPagePerItems.value,
+    offset: addressPagePerItems.value * (currentAddressPage.value - 1),
+    pageArray,
+  }
+})
+
+const handleChangeAddressPage = (page: number) => {
   router.push({
     query: {
       ...route.query,
-      orderPage: currentOrderPage.value + 1,
+      addressPage: page,
     },
   })
 }
@@ -92,10 +103,17 @@ watch(currentOrderPage, () => {
   )
 })
 
+watch(currentAddressPage, () => {
+  fetchAddresses(addressPagination.value.limit, addressPagination.value.offset)
+})
+
 await useAsyncData('account', () => {
   return Promise.all([
     fetchUserInfo(),
-    fetchAddresses(),
+    fetchAddresses(
+      addressPagination.value.limit,
+      addressPagination.value.offset,
+    ),
     fetchOrderHsitoryList(
       orderPagination.value.limit,
       orderPagination.value.offset,
@@ -254,27 +272,12 @@ definePageMeta({
         </template>
       </div>
       <!-- ページネーション -->
-      <div class="mt-4 text-center">
-        <div class="inline-flex gap-4 text-main">
-          <button @click="handleClickPreviosOrderPageButton">
-            <the-left-arrow-icon class="h-3" />
-          </button>
-          <button
-            v-for="page in orderPagination.pageArray"
-            :key="page"
-            :class="{
-              'h-8 w-8 rounded-full p-1': true,
-              'bg-main text-white': page === currentOrderPage,
-            }"
-            @click="handleClickOrderPage(page)"
-          >
-            {{ page }}
-          </button>
-          <button @click="handleClickNextOrderPageButton">
-            <the-right-arrow-icon class="h-3" />
-          </button>
-        </div>
-      </div>
+      <the-pagination
+        class="mt-4"
+        :current-page="currentOrderPage"
+        :page-array="orderPagination.pageArray"
+        @change-page="handleChangeOrderPage"
+      />
     </div>
 
     <!-- アドレス帳情報表示エリア -->
@@ -321,6 +324,12 @@ definePageMeta({
           </dl>
         </div>
       </div>
+      <the-pagination
+        class="mt-4"
+        :current-page="currentAddressPage"
+        :page-array="addressPagination.pageArray"
+        @change-page="handleChangeAddressPage"
+      />
     </div>
 
     <div class="text-right">

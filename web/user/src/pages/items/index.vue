@@ -47,7 +47,6 @@ const currentPage = computed<number>(() => {
 const pagination = computed<{
   limit: number
   offset: number
-  totalPage: number
   pageArray: number[]
 }>(() => {
   const totalPage = Math.ceil(products.value.length / pagePerItems.value)
@@ -56,15 +55,9 @@ const pagination = computed<{
   return {
     limit: pagePerItems.value,
     offset: pagePerItems.value * (currentPage.value - 1),
-    totalPage,
     pageArray,
   }
 })
-
-const handleClickPreviosPageButton = () => {
-  if (currentPage.value === 1) return
-  handleClickPage(currentPage.value - 1)
-}
 
 const handleClickPage = (page: number) => {
   router.push({
@@ -73,11 +66,6 @@ const handleClickPage = (page: number) => {
       page,
     },
   })
-}
-
-const handleClickNextPageButton = () => {
-  if (currentPage.value === pagination.value.totalPage) return
-  handleClickPage(currentPage.value + 1)
 }
 
 useAsyncData('products', () => {
@@ -166,27 +154,12 @@ const hideV1App = false
           />
         </template>
       </div>
-      <div class="mt-8 text-center">
-        <div class="inline-flex gap-4 text-main">
-          <button @click="handleClickPreviosPageButton">
-            <the-left-arrow-icon class="h-3" />
-          </button>
-          <button
-            v-for="page in pagination.pageArray"
-            :key="page"
-            :class="{
-              'h-8 w-8 rounded-full p-1': true,
-              'bg-main text-white': page === currentPage,
-            }"
-            @click="handleClickPage(page)"
-          >
-            {{ page }}
-          </button>
-          <button @click="handleClickNextPageButton">
-            <the-right-arrow-icon class="h-3" />
-          </button>
-        </div>
-      </div>
+      <the-pagination
+        class="mt-8"
+        :current-page="currentPage"
+        :page-array="pagination.pageArray"
+        @change-page="handleClickPage"
+      />
     </div>
   </div>
 </template>
