@@ -76,6 +76,10 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
   })
 }
 
+const handleCLickCorodinator = (id: string) => {
+  router.push(`/coordinator/${id}`)
+}
+
 useAsyncData(`schedule-${scheduleId.value}`, async () => {
   isLoading.value = true
   const res = await getSchedule(scheduleId.value)
@@ -110,10 +114,12 @@ useSeoMeta({
             :description="schedule.schedule.description"
             :is-live-streaming="isLiveStreaming"
             :is-archive="isArchive"
+            :cordinator-id="schedule.coordinator.id"
             :marche-name="schedule.coordinator.marcheName"
             :address="schedule.coordinator.city"
             :cn-name="schedule.coordinator.username"
             :cn-img-src="schedule.coordinator.thumbnailUrl"
+            @click:cordinator="handleCLickCorodinator"
           />
           <the-live-timeline
             class="mt-4"
