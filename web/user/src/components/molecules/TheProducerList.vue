@@ -23,7 +23,7 @@ const handleClickProductItem = (productId: string) => {
 </script>
 
 <template>
-  <div class="mx-auto rounded-3xl bg-white text-main md:w-[384px]">
+  <div class="mx-auto w-full rounded-3xl bg-white text-main">
     <div class="relative bottom-10">
       <img
         :src="imgSrc"
@@ -40,14 +40,14 @@ const handleClickProductItem = (productId: string) => {
     >
       {{ profile }}
     </p>
-    <div class="pt-[40px]">
+    <div class="px-4 pt-[40px]">
       <div
-        class="mx-4 flex w-[320px] justify-center rounded-3xl bg-base py-[3px] text-[14px] font-bold md:mx-auto md:text-[16px]"
+        class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[14px] font-bold md:mx-auto md:text-[16px]"
       >
         この生産者の商品
       </div>
     </div>
-    <div class="grid grid-cols-2 pt-10">
+    <div class="grid gap-2 px-4 pt-10 lg:grid-cols-2">
       <the-coordinator-product-list
         v-for="product in products"
         :id="product.id"

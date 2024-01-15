@@ -147,13 +147,15 @@ useAsyncData(`coordinator-${id.value}`, () => {
           <div
             class="relative bottom-4 z-0 mx-4 bg-white pb-10 pt-[65px] md:bottom-8 md:mx-0 md:w-full"
           >
-            <div
-              class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto md:w-[675px]"
-            >
-              配信中・配信予定のマルシェ
+            <div class="px-4">
+              <div
+                class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
+              >
+                配信中・配信予定のマルシェ
+              </div>
             </div>
             <div
-              class="mx-4 grid grid-cols-1 gap-8 bg-white pt-4 md:mx-auto md:w-[675px] md:grid-cols-2"
+              class="mx-4 grid grid-cols-1 gap-8 bg-white pt-4 md:mx-auto md:grid-cols-2"
             >
               <the-coordinator-live-item
                 v-for="liveItem in lives"
@@ -167,15 +169,15 @@ useAsyncData(`coordinator-${id.value}`, () => {
                 @click="handleClickLiveItem(liveItem.scheduleId)"
               />
             </div>
-            <div class="my-8">
+            <div class="my-8 px-4">
               <div
-                class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto md:w-[675px]"
+                class="flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto"
               >
                 過去のマルシェ
               </div>
             </div>
             <div
-              class="mx-auto grid grid-cols-1 gap-8 bg-white pt-4 md:w-[675px] md:grid-cols-2"
+              class="mx-auto grid grid-cols-1 gap-8 bg-white p-4 md:grid-cols-2"
             >
               <the-coordinator-archive-item
                 v-for="archive in archives"
@@ -190,20 +192,24 @@ useAsyncData(`coordinator-${id.value}`, () => {
             </div>
           </div>
           <div
-            class="flex w-full justify-center gap-[25px] text-main md:gap-[70px]"
+            class="flex w-full flex-nowrap justify-between text-main md:gap-[70px]"
           >
             <img
               class="w-[120px] md:w-[260px]"
               src="/img/coordinator/left.svg"
             />
-            <p class="pt-5 text-[14px] font-bold md:text-[20px]">生産者一覧</p>
+            <p
+              class="whitespace-nowrap pt-5 text-[14px] font-bold md:text-[20px]"
+            >
+              生産者一覧
+            </p>
             <img
               class="w-[120px] md:w-[260px]"
               src="/img/coordinator/right.svg"
             />
           </div>
           <div
-            class="mx-4 grid grid-cols-1 gap-y-[80px] pt-[80px] md:grid-cols-2 md:pt-[100px]"
+            class="grid grid-cols-1 gap-x-4 gap-y-[80px] pt-[80px] md:grid-cols-2 md:pt-[100px] lg:gap-x-6"
           >
             <the-producer-list
               v-for="producer in producers"

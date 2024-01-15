@@ -37,7 +37,7 @@ const handleClickItem = () => {
 
 <template>
   <div class="mx-auto flex flex-col text-main">
-    <div class="relative w-[144px]">
+    <div class="relative max-w-[144px]">
       <div
         v-if="!hasStock"
         class="absolute inset-0 flex items-center justify-center bg-black/50"
