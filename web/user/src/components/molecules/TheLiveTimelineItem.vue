@@ -15,6 +15,7 @@ interface Props {
 const props = defineProps<Props>()
 
 interface Emits {
+  (e: 'click:item', id: string): void
   (e: 'click:addCart', name: string, id: string, quantity: number): void
 }
 
@@ -23,6 +24,10 @@ const emits = defineEmits<Emits>()
 const startAtString = computed(() => {
   return unix(props.startAt).format('HH:mm')
 })
+
+const handleClickItem = (prodictId: string) => {
+  emits('click:item', prodictId)
+}
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
   emits('click:addCart', name, id, quantity)
@@ -59,7 +64,9 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
         </div>
         <div
           class="w-[150px] overflow-auto break-words text-[12px] font-medium tracking-[1.2px]"
-        >{{ comment }}</div>
+        >
+          {{ comment }}
+        </div>
       </div>
 
       <div
@@ -69,6 +76,7 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
           v-for="item in items"
           :key="item.id"
           :product="item"
+          @click:item="handleClickItem"
           @click:add-cart="handleClickAddCart"
         />
       </div>

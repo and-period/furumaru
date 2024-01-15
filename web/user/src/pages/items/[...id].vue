@@ -38,6 +38,14 @@ const priceString = computed<string>(() => {
   }
 })
 
+const hasStock = computed<boolean>(() => {
+  if (product.value) {
+    return product.value.inventory > 0
+  } else {
+    return false
+  }
+})
+
 const handleClickAddCartButton = () => {
   addCart({
     productId: id.value,
@@ -236,7 +244,8 @@ useSeoMeta({
         </div>
 
         <button
-          class="mt-2 w-full bg-main py-4 text-center text-white md:mt-8"
+          class="mt-2 w-full bg-main py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
+          :disabled="!hasStock"
           @click="handleClickAddCartButton"
         >
           買い物カゴに入れる

@@ -8,10 +8,15 @@ interface Props {
 defineProps<Props>()
 
 interface Emits {
+  (e: 'click:item', id: string): void
   (e: 'click:addCart', name: string, id: string, quantity: number): void
 }
 
 const emits = defineEmits<Emits>()
+
+const handleClickItem = (prodictId: string) => {
+  emits('click:item', prodictId)
+}
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
   emits('click:addCart', name, id, quantity)
@@ -29,6 +34,7 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
         :username="liveTimeline.producer?.username"
         :comment="liveTimeline.comment"
         :items="liveTimeline.products"
+        @click:item="handleClickItem"
         @click:add-cart="handleClickAddCart"
       />
     </ol>
