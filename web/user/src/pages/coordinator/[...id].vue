@@ -25,6 +25,10 @@ const handleClickLiveItem = (id: string) => {
   router.push(`/live/${id}`)
 }
 
+const handleClickProductItem = (id: string) => {
+  router.push(`/items/${id}`)
+}
+
 useAsyncData(`coordinator-${id.value}`, () => {
   return fetchCoordinator(id.value)
 })
@@ -32,7 +36,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
 
 <template>
   <div>
-    <div class="text-main static mx-auto w-full md:w-[1216px]">
+    <div class="static mx-auto w-full text-main md:max-w-[1216px]">
       <img
         class="h-[160px] w-full object-cover md:h-[320px] md:w-[1216px]"
         :src="coordnatorInfo.headerUrl"
@@ -69,10 +73,10 @@ useAsyncData(`coordinator-${id.value}`, () => {
           >
             {{ coordnatorInfo.profile }}
           </p>
-          <hr class="border-main m-4 border-dashed md:mx-0" />
+          <hr class="m-4 border-dashed border-main md:mx-0" />
           <div class="mx-4 grid grid-cols-3 md:mx-0">
             <div class="col-span-2 text-[14px] md:text-[16px]">
-              SNSでフォローするー
+              SNSでフォローする
             </div>
             <div class="flex justify-end">
               <a
@@ -136,7 +140,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             </div>
           </div>
         </div>
-        <div class="text-main static pt-[16px] md:col-span-5 md:pt-[100px]">
+        <div class="static pt-[16px] text-main md:col-span-5 md:pt-[100px]">
           <div class="flex w-full px-4 md:px-0">
             <img src="/img/coordinator/marche.svg" class="z-10 w-full" />
           </div>
@@ -144,7 +148,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             class="relative bottom-4 z-0 mx-4 bg-white pb-10 pt-[65px] md:bottom-8 md:mx-0 md:w-full"
           >
             <div
-              class="bg-base mx-4 flex justify-center rounded-3xl py-[3px] text-[16px] md:mx-auto md:w-[675px]"
+              class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto md:w-[675px]"
             >
               配信中・配信予定のマルシェ
             </div>
@@ -165,7 +169,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             </div>
             <div class="my-8">
               <div
-                class="bg-base mx-4 flex justify-center rounded-3xl py-[3px] text-[16px] md:mx-auto md:w-[675px]"
+                class="mx-4 flex justify-center rounded-3xl bg-base py-[3px] text-[16px] md:mx-auto md:w-[675px]"
               >
                 過去のマルシェ
               </div>
@@ -186,7 +190,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             </div>
           </div>
           <div
-            class="text-main flex w-full justify-center gap-[25px] md:gap-[70px]"
+            class="flex w-full justify-center gap-[25px] text-main md:gap-[70px]"
           >
             <img
               class="w-[120px] md:w-[260px]"
@@ -209,6 +213,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
               :profile="producer.profile"
               :img-src="producer.thumbnailUrl"
               :products="producer.products"
+              @click:product-item="handleClickProductItem"
             />
           </div>
         </div>
