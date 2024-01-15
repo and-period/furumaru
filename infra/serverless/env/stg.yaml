@@ -8,3 +8,7 @@ vpc:
     - subnet-07b6a4ffae11d776e
     - subnet-0da4d3c74a6f0dcc8
     - subnet-0ed4ad2c7c78df133
+
+externalFunction:
+  RegisterResoursesInfoArn:
+    arn:aws:lambda:ap-northeast-1:386661535629:function:furumaru-media-start-updater-stg

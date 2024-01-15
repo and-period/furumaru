@@ -8,3 +8,7 @@ vpc:
     - subnet-0921aee7f4878d99a
     - subnet-0a02af7f49f721f4b
     - subnet-0a6346c7163944834
+
+externalFunction:
+  RegisterResoursesInfoArn:
+    arn:aws:lambda:ap-northeast-1:386661535629:function:furumaru-media-start-updater-prd
