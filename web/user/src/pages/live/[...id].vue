@@ -13,6 +13,7 @@ const { addCart } = shoppingCartStore
 
 const snackbarItems = ref<Snackbar[]>([])
 
+const router = useRouter()
 const route = useRoute()
 
 const isLoading = ref<boolean>(false)
@@ -62,6 +63,10 @@ const isArchive = computed<boolean>(() => {
     return false
   }
 })
+
+const handleClickItem = (prodictId: string) => {
+  router.push(`/items/${prodictId}`)
+}
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
   addCart({ productId: id, quantity })
@@ -113,6 +118,7 @@ useSeoMeta({
           <the-live-timeline
             class="mt-4"
             :items="liveTimeLineItems"
+            @click:item="handleClickItem"
             @click:add-cart="handleClickAddCart"
           />
         </client-only>

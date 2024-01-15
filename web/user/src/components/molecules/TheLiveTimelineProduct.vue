@@ -9,6 +9,7 @@ interface Props {
 const props = defineProps<Props>()
 
 interface Emits {
+  (e: 'click:item', id: string): void
   (e: 'click:addCart', name: string, id: string, quantity: number): void
 }
 
@@ -32,6 +33,10 @@ const thumbnailUrl = computed<string>(() => {
 const handleClickAddCart = () => {
   emits('click:addCart', props.product.name, props.product.id, formData.value)
 }
+
+const handleClickItemTitle = () => {
+  emits('click:item', props.product.id)
+}
 </script>
 
 <template>
@@ -40,7 +45,10 @@ const handleClickAddCart = () => {
       <img :src="thumbnailUrl" class="h-20 w-20" />
     </template>
     <div class="flex flex-col justify-between">
-      <div class="text-[12px] tracking-[1.2px]">
+      <div
+        class="text-[12px] tracking-[1.2px] hover:cursor-pointer hover:underline"
+        @click="handleClickItemTitle"
+      >
         {{ product.name }}
       </div>
       <div>
@@ -69,7 +77,7 @@ const handleClickAddCart = () => {
           </div>
           <button
             class="flex h-full bg-main px-4 py-1 text-white"
-            @click="handleClickAddCart"
+            @click.stop="handleClickAddCart"
           >
             カゴに入れる
           </button>
