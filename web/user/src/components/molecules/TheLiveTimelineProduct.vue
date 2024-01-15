@@ -38,7 +38,7 @@ const handleClickAddCart = () => {
   emits('click:addCart', props.product.name, props.product.id, formData.value)
 }
 
-const handleClickItemTitle = () => {
+const handleClickItem = () => {
   if (hasStock.value) {
     emits('click:item', props.product.id)
   }
@@ -55,14 +55,19 @@ const handleClickItemTitle = () => {
         >
           <p class="text-[14px] font-semibold text-white">在庫なし</p>
         </div>
-        <img :src="thumbnailUrl" class="h-20 w-20" />
+        <img
+          :src="thumbnailUrl"
+          class="h-20 w-20"
+          :class="{ 'hover:cursor-pointer hover:underline': hasStock }"
+          @click="handleClickItem"
+        />
       </div>
     </template>
     <div class="flex flex-col justify-between">
       <div
         class="text-[12px] tracking-[1.2px]"
         :class="{ 'hover:cursor-pointer hover:underline': hasStock }"
-        @click="handleClickItemTitle"
+        @click="handleClickItem"
       >
         {{ product.name }}
       </div>
