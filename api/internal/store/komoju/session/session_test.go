@@ -253,6 +253,7 @@ func TestSession_Get(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodGet,
 					Route:   "/api/v1/sessions/%s",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -536,6 +537,7 @@ func TestSession_Create(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -679,6 +681,7 @@ func TestSession_Cancel(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/cancel",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -848,6 +851,7 @@ func TestSession_ExecuteCreditCard(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -1023,6 +1027,7 @@ func TestSession_ExecuteBankTransfer(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -1172,6 +1177,7 @@ func TestSession_ExecuteKonbini(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -1309,6 +1315,7 @@ func TestSession_ExecutePayPay(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -1454,6 +1461,7 @@ func TestSession_ExecuteLinePay(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -1595,6 +1603,7 @@ func TestSession_ExecuteMerpay(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -1736,6 +1745,7 @@ func TestSession_ExecuteRakutenPay(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},
@@ -1875,6 +1885,7 @@ func TestSession_ExecuteAUPay(t *testing.T) {
 				err: &komoju.Error{
 					Method:  http.MethodPost,
 					Route:   "/api/v1/sessions/%s/pay",
+					Status:  http.StatusNotFound,
 					Code:    komoju.ErrCodeNotFound,
 					Message: "The requested resource could not be found.",
 				},

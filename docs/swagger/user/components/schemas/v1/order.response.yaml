@@ -29,19 +29,9 @@ orderResponse:
         subtotal: 1000
         discount: 200
         shippingFee: 500
-        tax: 130
-        total: 1430
+        total: 1300
         orderedAt: 1640962800
         paidAt: 1640962800
-        addressId: 'kSByoE6FetnPs5Byk3a9Zx'
-        lastname: '&.'
-        firstname: '購入者'
-        postalCode: '1000014'
-        prefectureCode: 13
-        city: '千代田区'
-        addressLine1: '永田町1-7-1'
-        addressLine2: ''
-        phoneNumber: '+819012345678'
       refund:
         total: 0
         type: 2
@@ -58,7 +48,13 @@ orderResponse:
         boxSize: 2
         boxRate: 80
         shippedAt: 0
-        addressId: 'kSByoE6FetnPs5Byk3a9Zx'
+      items:
+      - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+        productId: 'kSByoE6FetnPs5Byk3a9Zx'
+        price: 500
+        quantity: 2
+      billingAddress:
+        id: 'kSByoE6FetnPs5Byk3a9Zx'
         lastname: '&.'
         firstname: '購入者'
         postalCode: '1000014'
@@ -67,11 +63,16 @@ orderResponse:
         addressLine1: '永田町1-7-1'
         addressLine2: ''
         phoneNumber: '+819012345678'
-      items:
-      - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
-        productId: 'kSByoE6FetnPs5Byk3a9Zx'
-        price: 500
-        quantity: 2
+      shippingAddress:
+        id: 'kSByoE6FetnPs5Byk3a9Zx'
+        lastname: '&.'
+        firstname: '購入者'
+        postalCode: '1000014'
+        prefectureCode: 13
+        city: '千代田区'
+        addressLine1: '永田町1-7-1'
+        addressLine2: ''
+        phoneNumber: '+819012345678'
     coordinator:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       storeName: '&.農園'
@@ -149,3 +150,167 @@ orderResponse:
       originCity: '彦根市'
       startAt: 1640962800
       endAt: 1640962800
+ordersResponse:
+  type: object
+  properties:
+    orders:
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/order'
+    coordinators:
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    promotions:
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/promotion'
+    products:
+      type: array
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/product'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - orders
+  - coordinators
+  - promotions
+  - products
+  - total
+  example:
+    orders:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      status: 5
+      payment:
+        transactionId: 'kSByoE6FetnPs5Byk3a9Zx'
+        methodType: 2
+        status: 4
+        subtotal: 1000
+        discount: 200
+        shippingFee: 500
+        total: 1300
+        orderedAt: 1640962800
+        paidAt: 1640962800
+      refund:
+        total: 0
+        type: 2
+        reason: ''
+        canceled: false
+        canceledAt: 0
+      fulfillments:
+      - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+        trackingNumber: 'kSByoE6FetnPs5Byk3a9Zx'
+        status: 1
+        shippingCarrier: 1
+        shippingType: 1
+        boxNumber: 1
+        boxSize: 2
+        boxRate: 80
+        shippedAt: 0
+      items:
+      - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
+        productId: 'kSByoE6FetnPs5Byk3a9Zx'
+        price: 500
+        quantity: 2
+      billingAddress:
+        id: 'kSByoE6FetnPs5Byk3a9Zx'
+        lastname: '&.'
+        firstname: '購入者'
+        postalCode: '1000014'
+        prefectureCode: 13
+        city: '千代田区'
+        addressLine1: '永田町1-7-1'
+        addressLine2: ''
+        phoneNumber: '+819012345678'
+      shippingAddress:
+        id: 'kSByoE6FetnPs5Byk3a9Zx'
+        lastname: '&.'
+        firstname: '購入者'
+        postalCode: '1000014'
+        prefectureCode: 13
+        city: '千代田区'
+        addressLine1: '永田町1-7-1'
+        addressLine2: ''
+        phoneNumber: '+819012345678'
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      thumbnails:
+      - url: 'https://and-period.jp/thumbnail_240.png'
+        size: 1
+      - url: 'https://and-period.jp/thumbnail_675.png'
+        size: 2
+      - url: 'https://and-period.jp/thumbnail_900.png'
+        size: 3
+      headerUrl: 'https://and-period.jp/header.png'
+      headers:
+      - url: 'https://and-period.jp/header_240.png'
+        size: 1
+      - url: 'https://and-period.jp/header_675.png'
+        size: 2
+      - url: 'https://and-period.jp/header_900.png'
+        size: 3
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    promotions:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: 'プロモーションタイトル'
+      description: 'セール情報をお届けします。'
+      discountType: 1
+      discountRate: 300
+      code: 'code1234'
+      startAt: 1640962800
+      endAt: 1640962800
+    products:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '新鮮なじゃがいも'
+      description: '新鮮なじゃがいもをお届けします。'
+      status: 2
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      media:
+      - url: 'https://and-period.jp/thumbnail01.png'
+        isThumbnail: true
+        images:
+        - url: 'https://and-period.jp/thumbnail_240.png'
+          size: 1
+        - url: 'https://and-period.jp/thumbnail_675.png'
+          size: 2
+        - url: 'https://and-period.jp/thumbnail_900.png'
+          size: 3
+      - url: 'https://and-period.jp/thumbnail02.png'
+        isThumbnail: false
+        images: []
+      price: 2500
+      inventory: 30
+      weight: 2.5
+      itemUnit: '袋'
+      itemDescription: '1袋あたり2.5kgのじゃがいも'
+      deliveryType: 1
+      recommendedPoint1: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint2: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint3: 'シャリシャリほろ苦がクセになる！'
+      expirationDate: 7
+      storageMethodType: 1
+      box60Rate: 80
+      box80Rate: 50
+      box100Rate: 40
+      originPrefecture: '滋賀県'
+      originCity: '彦根市'
+      startAt: 1640962800
+      endAt: 1640962800
+    total: 2

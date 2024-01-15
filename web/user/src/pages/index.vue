@@ -20,7 +20,7 @@ const updateScrollLeft = () => {
   }
 }
 
-onMounted(async () => {
+useAsyncData('home-content', async () => {
   isInItLoading.value = true
   await getHomeContent()
   isInItLoading.value = false
@@ -63,7 +63,7 @@ const handleClickLiveItem = (id: string) => {
 }
 
 const banners: string[] = [
-  '/img/banner.png',
+  '/img/banner2.jpg',
   '/img/banner.png',
   '/img/banner.png',
 ]
@@ -120,7 +120,7 @@ useSeoMeta({
               />
             </transition-group>
           </div>
-          <div class="mb-4 mt-10 flex w-full justify-center">
+          <div v-if="false" class="mb-4 mt-10 flex w-full justify-center">
             <button
               class="relative w-60 bg-main py-2 text-white"
               @click="handleClickMoreViewButton"
@@ -156,7 +156,7 @@ useSeoMeta({
               :title="archive.title"
               :img-src="archive.thumbnailUrl"
               :width="368"
-              class="cursor-pointer md:min-w-[368px]"
+              class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
               @click="handleClickLiveItem(archive.scheduleId)"
             />
           </div>

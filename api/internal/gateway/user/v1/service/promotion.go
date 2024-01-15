@@ -19,6 +19,8 @@ type Promotion struct {
 	response.Promotion
 }
 
+type Promotions []*Promotion
+
 func NewDiscountType(typ entity.DiscountType) DiscountType {
 	switch typ {
 	case entity.DiscountTypeAmount:
@@ -69,4 +71,20 @@ func (p *Promotion) Response() *response.Promotion {
 		return nil
 	}
 	return &p.Promotion
+}
+
+func NewPromotions(promotions entity.Promotions) Promotions {
+	res := make(Promotions, len(promotions))
+	for i := range promotions {
+		res[i] = NewPromotion(promotions[i])
+	}
+	return res
+}
+
+func (ps Promotions) Response() []*response.Promotion {
+	res := make([]*response.Promotion, len(ps))
+	for i := range ps {
+		res[i] = ps[i].Response()
+	}
+	return res
 }

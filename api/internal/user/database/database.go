@@ -106,7 +106,9 @@ type Coordinator interface {
 	List(ctx context.Context, params *ListCoordinatorsParams, fields ...string) (entity.Coordinators, error)
 	Count(ctx context.Context, params *ListCoordinatorsParams) (int64, error)
 	MultiGet(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
+	MultiGetWithDeleted(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error)
 	Get(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
+	GetWithDeleted(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
 	Create(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
 	UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error
@@ -164,7 +166,9 @@ type Producer interface {
 	List(ctx context.Context, params *ListProducersParams, fields ...string) (entity.Producers, error)
 	Count(ctx context.Context, params *ListProducersParams) (int64, error)
 	MultiGet(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
+	MultiGetWithDeleted(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error)
 	Get(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
+	GetWithDeleted(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
 	UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error

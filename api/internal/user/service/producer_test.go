@@ -182,6 +182,18 @@ func TestMultiGetProducers(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success with deleted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().MultiGetWithDeleted(ctx, []string{"admin-id"}).Return(producers, nil)
+			},
+			input: &user.MultiGetProducersInput{
+				ProducerIDs: []string{"admin-id"},
+				WithDeleted: true,
+			},
+			expect:    producers,
+			expectErr: nil,
+		},
+		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &user.MultiGetProducersInput{
@@ -197,6 +209,18 @@ func TestMultiGetProducers(t *testing.T) {
 			},
 			input: &user.MultiGetProducersInput{
 				ProducerIDs: []string{"admin-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get producers with deleted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().MultiGetWithDeleted(ctx, []string{"admin-id"}).Return(nil, assert.AnError)
+			},
+			input: &user.MultiGetProducersInput{
+				ProducerIDs: []string{"admin-id"},
+				WithDeleted: true,
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,
@@ -267,6 +291,18 @@ func TestGetProducer(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success with deleted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().GetWithDeleted(ctx, "admin-id").Return(producer, nil)
+			},
+			input: &user.GetProducerInput{
+				ProducerID:  "admin-id",
+				WithDeleted: true,
+			},
+			expect:    producer,
+			expectErr: nil,
+		},
+		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &user.GetProducerInput{},
@@ -280,6 +316,18 @@ func TestGetProducer(t *testing.T) {
 			},
 			input: &user.GetProducerInput{
 				ProducerID: "admin-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get producer with deleted",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Producer.EXPECT().GetWithDeleted(ctx, "admin-id").Return(nil, assert.AnError)
+			},
+			input: &user.GetProducerInput{
+				ProducerID:  "admin-id",
+				WithDeleted: true,
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,

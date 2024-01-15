@@ -147,6 +147,46 @@ func TestAddress_Name(t *testing.T) {
 	}
 }
 
+func TestAddress_FullPath(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		address *Address
+		expect  string
+	}{
+		{
+			name: "success",
+			address: &Address{
+				ID:        "address-id",
+				UserID:    "user-id",
+				IsDefault: true,
+				AddressRevision: AddressRevision{
+					AddressID:      "address-id",
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
+					PostalCode:     "1000014",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "+819012345678",
+				},
+			},
+			expect: "東京都 千代田区 永田町1-7-1",
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.address.FullPath())
+		})
+	}
+}
+
 func TestAddress_String(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -286,11 +326,19 @@ func TestAddresses_Map(t *testing.T) {
 			name: "success",
 			addresses: Addresses{
 				{
+					AddressRevision: AddressRevision{
+						ID:        1,
+						AddressID: "address-id01",
+					},
 					ID:        "address-id01",
 					UserID:    "user-id",
 					IsDefault: true,
 				},
 				{
+					AddressRevision: AddressRevision{
+						ID:        2,
+						AddressID: "address-id02",
+					},
 					ID:        "address-id02",
 					UserID:    "user-id",
 					IsDefault: false,
@@ -298,11 +346,19 @@ func TestAddresses_Map(t *testing.T) {
 			},
 			expect: map[string]*Address{
 				"address-id01": {
+					AddressRevision: AddressRevision{
+						ID:        1,
+						AddressID: "address-id01",
+					},
 					ID:        "address-id01",
 					UserID:    "user-id",
 					IsDefault: true,
 				},
 				"address-id02": {
+					AddressRevision: AddressRevision{
+						ID:        2,
+						AddressID: "address-id02",
+					},
 					ID:        "address-id02",
 					UserID:    "user-id",
 					IsDefault: false,
@@ -315,6 +371,66 @@ func TestAddresses_Map(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.addresses.Map())
+		})
+	}
+}
+
+func TestAddresses_MapByRevision(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		addresses Addresses
+		expect    map[int64]*Address
+	}{
+		{
+			name: "success",
+			addresses: Addresses{
+				{
+					AddressRevision: AddressRevision{
+						ID:        1,
+						AddressID: "address-id01",
+					},
+					ID:        "address-id01",
+					UserID:    "user-id",
+					IsDefault: true,
+				},
+				{
+					AddressRevision: AddressRevision{
+						ID:        2,
+						AddressID: "address-id02",
+					},
+					ID:        "address-id02",
+					UserID:    "user-id",
+					IsDefault: false,
+				},
+			},
+			expect: map[int64]*Address{
+				1: {
+					AddressRevision: AddressRevision{
+						ID:        1,
+						AddressID: "address-id01",
+					},
+					ID:        "address-id01",
+					UserID:    "user-id",
+					IsDefault: true,
+				},
+				2: {
+					AddressRevision: AddressRevision{
+						ID:        2,
+						AddressID: "address-id02",
+					},
+					ID:        "address-id02",
+					UserID:    "user-id",
+					IsDefault: false,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.addresses.MapByRevision())
 		})
 	}
 }

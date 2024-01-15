@@ -127,8 +127,6 @@ func (h *handler) CalcCart(ctx *gin.Context) {
 		SubTotal:    summary.Subtotal,
 		Discount:    summary.Discount,
 		ShippingFee: summary.ShippingFee,
-		Tax:         summary.Tax,
-		TaxRate:     summary.TaxRate,
 		Total:       summary.Total,
 		RequestID:   uuid.Base58Encode(uuid.New()),
 	}

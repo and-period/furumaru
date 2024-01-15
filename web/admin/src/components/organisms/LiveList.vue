@@ -15,7 +15,11 @@ import {
   type UpdateLiveRequest
 } from '~/types/api'
 import type { LiveTime } from '~/types/props'
-import { CreateLiveValidationRules, TimeDataValidationRules, UpdateLiveValidationRules } from '~/types/validations'
+import {
+  CreateLiveValidationRules,
+  TimeDataValidationRules,
+  UpdateLiveValidationRules
+} from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -163,10 +167,22 @@ const updateTimeDataValue = computed({
   }
 })
 
-const createFormDataValidate = useVuelidate(CreateLiveValidationRules, createFormDataValue)
-const updateFormDataValidate = useVuelidate(UpdateLiveValidationRules, updateFormDataValue)
-const createTimeDataValidate = useVuelidate(TimeDataValidationRules, createTimeDataValue)
-const updateTimeDataValidate = useVuelidate(TimeDataValidationRules, updateTimeDataValue)
+const createFormDataValidate = useVuelidate(
+  CreateLiveValidationRules,
+  createFormDataValue
+)
+const updateFormDataValidate = useVuelidate(
+  UpdateLiveValidationRules,
+  updateFormDataValue
+)
+const createTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  createTimeDataValue
+)
+const updateTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  updateTimeDataValue
+)
 
 const onChangeCreateStartAt = (): void => {
   const startAt = dayjs(
@@ -330,7 +346,7 @@ const onSubmitDelete = (): void => {
   <v-dialog v-model="createDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h6 primaryLight">
-        出演者登録
+        スケジュール登録
       </v-card-title>
       <v-card-text>
         <p class="text-subtitle-2 text-grey pb-2">
@@ -432,18 +448,14 @@ const onSubmitDelete = (): void => {
             />
           </template>
         </v-autocomplete>
-        <p class="text-subtitle-2 text-grey py-2">
-          概要
-        </p>
-        <client-only>
-          <tiptap-editor
-            v-model="createFormDataValidate.comment.$model"
-            :error-message="
-              getErrorMessage(createFormDataValidate.comment.$errors)
-            "
-            class="mb-4"
-          />
-        </client-only>
+        <v-textarea
+          v-model="createFormDataValidate.comment.$model"
+          :error-message="
+            getErrorMessage(createFormDataValidate.comment.$errors)
+          "
+          label="概要"
+          maxlength="2000"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -465,7 +477,7 @@ const onSubmitDelete = (): void => {
   <v-dialog v-model="updateDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h6 primaryLight">
-        出演者更新
+        スケジュール更新
       </v-card-title>
       <v-card-text>
         <p class="text-subtitle-2 text-grey pb-2">
@@ -562,18 +574,14 @@ const onSubmitDelete = (): void => {
             />
           </template>
         </v-autocomplete>
-        <p class="text-subtitle-2 text-grey py-2">
-          概要
-        </p>
-        <client-only>
-          <tiptap-editor
-            v-model="updateFormDataValidate.comment.$model"
-            :error-message="
-              getErrorMessage(updateFormDataValidate.comment.$errors)
-            "
-            class="mb-4"
-          />
-        </client-only>
+        <v-textarea
+          v-model="updateFormDataValidate.comment.$model"
+          :error-message="
+            getErrorMessage(updateFormDataValidate.comment.$errors)
+          "
+          label="概要"
+          maxlength="2000"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -688,7 +696,7 @@ const onSubmitDelete = (): void => {
     <v-col sm="12">
       <v-btn block variant="outlined" color="primary" @click="onClickNew">
         <v-icon :icon="mdiPlus" />
-        出演者を追加
+        生産者と商品を追加
       </v-btn>
     </v-col>
   </v-row>

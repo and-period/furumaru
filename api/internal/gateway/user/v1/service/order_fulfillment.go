@@ -45,7 +45,6 @@ const (
 
 type OrderFulfillment struct {
 	response.OrderFulfillment
-	orderID string
 }
 
 type OrderFulfillments []*OrderFulfillment
@@ -112,7 +111,7 @@ func (t ShippingType) Response() int32 {
 	return int32(t)
 }
 
-func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, address *Address) *OrderFulfillment {
+func NewOrderFulfillment(fulfillment *entity.OrderFulfillment) *OrderFulfillment {
 	return &OrderFulfillment{
 		OrderFulfillment: response.OrderFulfillment{
 			FulfillmentID:   fulfillment.ID,
@@ -124,9 +123,7 @@ func NewOrderFulfillment(fulfillment *entity.OrderFulfillment, address *Address)
 			BoxSize:         NewShippingSize(fulfillment.BoxSize).Response(),
 			BoxRate:         fulfillment.BoxRate,
 			ShippedAt:       jst.Unix(fulfillment.ShippedAt),
-			Address:         address.Response(),
 		},
-		orderID: fulfillment.OrderID,
 	}
 }
 
@@ -134,10 +131,10 @@ func (f *OrderFulfillment) Response() *response.OrderFulfillment {
 	return &f.OrderFulfillment
 }
 
-func NewOrderFulfillments(fulfillments entity.OrderFulfillments, addresses map[int64]*Address) OrderFulfillments {
+func NewOrderFulfillments(fulfillments entity.OrderFulfillments) OrderFulfillments {
 	res := make(OrderFulfillments, len(fulfillments))
-	for i, f := range fulfillments {
-		res[i] = NewOrderFulfillment(f, addresses[f.AddressRevisionID])
+	for i := range fulfillments {
+		res[i] = NewOrderFulfillment(fulfillments[i])
 	}
 	return res
 }

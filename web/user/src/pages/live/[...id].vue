@@ -13,6 +13,7 @@ const { addCart } = shoppingCartStore
 
 const snackbarItems = ref<Snackbar[]>([])
 
+const router = useRouter()
 const route = useRoute()
 
 const isLoading = ref<boolean>(false)
@@ -63,6 +64,10 @@ const isArchive = computed<boolean>(() => {
   }
 })
 
+const handleClickItem = (prodictId: string) => {
+  router.push(`/items/${prodictId}`)
+}
+
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
   addCart({ productId: id, quantity })
   snackbarItems.value.push({
@@ -71,7 +76,11 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
   })
 }
 
-onMounted(async () => {
+const handleCLickCorodinator = (id: string) => {
+  router.push(`/coordinator/${id}`)
+}
+
+useAsyncData(`schedule-${scheduleId.value}`, async () => {
   isLoading.value = true
   const res = await getSchedule(scheduleId.value)
   schedule.value = res
@@ -96,24 +105,29 @@ useSeoMeta({
   >
     <template v-if="schedule">
       <div class="col-span-3">
-        <the-live-video-player
-          :video-src="schedule.schedule.distributionUrl"
-          :title="schedule.schedule.title"
-          :start-at="schedule.schedule.startAt"
-          :end-at="schedule.schedule.endAt"
-          :description="schedule.schedule.description"
-          :is-live-streaming="isLiveStreaming"
-          :is-archive="isArchive"
-          :marche-name="schedule.coordinator.marcheName"
-          :address="schedule.coordinator.city"
-          :cn-name="schedule.coordinator.username"
-          :cn-img-src="schedule.coordinator.thumbnailUrl"
-        />
-        <the-live-timeline
-          class="mt-4"
-          :items="liveTimeLineItems"
-          @click:add-cart="handleClickAddCart"
-        />
+        <client-only>
+          <the-live-video-player
+            :video-src="schedule.schedule.distributionUrl"
+            :title="schedule.schedule.title"
+            :start-at="schedule.schedule.startAt"
+            :end-at="schedule.schedule.endAt"
+            :description="schedule.schedule.description"
+            :is-live-streaming="isLiveStreaming"
+            :is-archive="isArchive"
+            :cordinator-id="schedule.coordinator.id"
+            :marche-name="schedule.coordinator.marcheName"
+            :address="schedule.coordinator.city"
+            :cn-name="schedule.coordinator.username"
+            :cn-img-src="schedule.coordinator.thumbnailUrl"
+            @click:cordinator="handleCLickCorodinator"
+          />
+          <the-live-timeline
+            class="mt-4"
+            :items="liveTimeLineItems"
+            @click:item="handleClickItem"
+            @click:add-cart="handleClickAddCart"
+          />
+        </client-only>
       </div>
     </template>
 

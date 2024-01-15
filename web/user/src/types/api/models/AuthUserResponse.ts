@@ -33,6 +33,12 @@ export interface AuthUserResponse {
      */
     id: string;
     /**
+     * 検索名
+     * @type {string}
+     * @memberof AuthUserResponse
+     */
+    accountId: string;
+    /**
      * 表示名
      * @type {string}
      * @memberof AuthUserResponse
@@ -88,6 +94,7 @@ export interface AuthUserResponse {
 export function instanceOfAuthUserResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "id" in value;
+    isInstance = isInstance && "accountId" in value;
     isInstance = isInstance && "username" in value;
     isInstance = isInstance && "lastname" in value;
     isInstance = isInstance && "firstname" in value;
@@ -111,6 +118,7 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'id': json['id'],
+        'accountId': json['accountId'],
         'username': json['username'],
         'lastname': json['lastname'],
         'firstname': json['firstname'],
@@ -132,6 +140,7 @@ export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
     return {
         
         'id': value.id,
+        'accountId': value.accountId,
         'username': value.username,
         'lastname': value.lastname,
         'firstname': value.firstname,

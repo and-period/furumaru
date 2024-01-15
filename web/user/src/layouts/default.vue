@@ -114,14 +114,6 @@ const onScroll = () => {
   }
 }
 
-onMounted(() => {
-  window.addEventListener('scroll', onScroll)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-})
-
 const handleClickBuyButton = () => {
   router.push('/purchase')
 }
@@ -132,6 +124,18 @@ const handleClickRemoveItemFromCartButton = (
 ) => {
   removeProductFromCart(cartNumber, id)
 }
+
+const handleClickMyPageButton = () => {
+  router.push('/account')
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', onScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+})
 </script>
 
 <template>
@@ -154,6 +158,7 @@ const handleClickRemoveItemFromCartButton = (
       :sp-menu-items="spModeMenuItems"
       :footer-menu-items="footerMenuList"
       @click:logout-button="logout"
+      @click:my-page-button="handleClickMyPageButton"
       @click:buy-button="handleClickBuyButton"
       @click:remove-item-from-cart="handleClickRemoveItemFromCartButton"
     />

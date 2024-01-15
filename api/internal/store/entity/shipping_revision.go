@@ -19,15 +19,15 @@ type ShippingRevision struct {
 	ShippingID        string         `gorm:""`                                 // 配送設定ID
 	Box60Rates        ShippingRates  `gorm:"-"`                                // 箱サイズ60の通常便配送料一覧
 	Box60RatesJSON    datatypes.JSON `gorm:"default:null;column:box60_rates"`  // 箱サイズ60の通常便配送料一覧(JSON)
-	Box60Frozen       int64          `gorm:""`                                 // 箱サイズ60の冷凍便追加配送料
+	Box60Frozen       int64          `gorm:""`                                 // 箱サイズ60の冷凍便追加配送料(税込)
 	Box80Rates        ShippingRates  `gorm:"-"`                                // 箱サイズ80の通常便配送料一覧
 	Box80RatesJSON    datatypes.JSON `gorm:"default:null;column:box80_rates"`  // 箱サイズ80の通常便配送料一覧(JSON)
-	Box80Frozen       int64          `gorm:""`                                 // 箱サイズ80の冷凍便追加配送料
+	Box80Frozen       int64          `gorm:""`                                 // 箱サイズ80の冷凍便追加配送料(税込)
 	Box100Rates       ShippingRates  `gorm:"-"`                                // 箱サイズ100の通常便配送料一覧
 	Box100RatesJSON   datatypes.JSON `gorm:"default:null;column:box100_rates"` // 箱サイズ100の通常便配送料一覧(JSON)
-	Box100Frozen      int64          `gorm:""`                                 // 箱サイズ100の冷凍便追加配送料
+	Box100Frozen      int64          `gorm:""`                                 // 箱サイズ100の冷凍便追加配送料(税込)
 	HasFreeShipping   bool           `gorm:""`                                 // 送料無料オプションの有無
-	FreeShippingRates int64          `gorm:""`                                 // 送料無料になる金額
+	FreeShippingRates int64          `gorm:""`                                 // 送料無料になる金額(税込)
 	CreatedAt         time.Time      `gorm:"<-:create"`                        // 登録日時
 	UpdatedAt         time.Time      `gorm:""`                                 // 更新日時
 }
@@ -38,7 +38,7 @@ type ShippingRevisions []*ShippingRevision
 type ShippingRate struct {
 	Number          int64   `json:"number"`      // No.
 	Name            string  `json:"name"`        // 配送料金設定名
-	Price           int64   `json:"price"`       // 配送料金
+	Price           int64   `json:"price"`       // 配送料金(税込)
 	PrefectureCodes []int32 `json:"prefectures"` // 対象都道府県一覧
 }
 

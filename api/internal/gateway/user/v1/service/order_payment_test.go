@@ -254,8 +254,8 @@ func TestOrderPayment(t *testing.T) {
 				Subtotal:          1980,
 				Discount:          0,
 				ShippingFee:       550,
-				Tax:               253,
-				Total:             2783,
+				Tax:               230,
+				Total:             2530,
 				RefundTotal:       0,
 				RefundType:        entity.RefundTypeNone,
 				RefundReason:      "",
@@ -286,22 +286,10 @@ func TestOrderPayment(t *testing.T) {
 					Subtotal:      1980,
 					Discount:      0,
 					ShippingFee:   550,
-					Tax:           253,
-					Total:         2783,
+					Total:         2530,
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
-					Address: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
 				},
-				orderID: "order-id",
 			},
 		},
 	}
@@ -309,7 +297,7 @@ func TestOrderPayment(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewOrderPayment(tt.payment, tt.address))
+			assert.Equal(t, tt.expect, NewOrderPayment(tt.payment))
 		})
 	}
 }
@@ -331,22 +319,10 @@ func TestOrderPayment_Response(t *testing.T) {
 					Subtotal:      1100,
 					Discount:      0,
 					ShippingFee:   500,
-					Tax:           160,
-					Total:         1760,
+					Total:         1600,
 					OrderedAt:     1640962800,
 					PaidAt:        1640962800,
-					Address: &response.Address{
-						Lastname:       "&.",
-						Firstname:      "購入者",
-						PostalCode:     "1000014",
-						PrefectureCode: 13,
-						City:           "千代田区",
-						AddressLine1:   "永田町1-7-1",
-						AddressLine2:   "",
-						PhoneNumber:    "+819012345678",
-					},
 				},
-				orderID: "order-id",
 			},
 			expect: &response.OrderPayment{
 				TransactionID: "transaction-id",
@@ -355,20 +331,9 @@ func TestOrderPayment_Response(t *testing.T) {
 				Subtotal:      1100,
 				Discount:      0,
 				ShippingFee:   500,
-				Tax:           160,
-				Total:         1760,
+				Total:         1600,
 				OrderedAt:     1640962800,
 				PaidAt:        1640962800,
-				Address: &response.Address{
-					Lastname:       "&.",
-					Firstname:      "購入者",
-					PostalCode:     "1000014",
-					PrefectureCode: 13,
-					City:           "千代田区",
-					AddressLine1:   "永田町1-7-1",
-					AddressLine2:   "",
-					PhoneNumber:    "+819012345678",
-				},
 			},
 		},
 	}

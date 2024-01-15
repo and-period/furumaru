@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/shopspring/decimal"
 )
 
@@ -186,6 +187,12 @@ func NewProducts(products entity.Products) Products {
 		res[i] = NewProduct(products[i])
 	}
 	return res
+}
+
+func (ps Products) IDs() []string {
+	return set.UniqBy(ps, func(p *Product) string {
+		return p.ID
+	})
 }
 
 func (ps Products) MapByRevision() map[int64]*Product {

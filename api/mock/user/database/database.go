@@ -585,6 +585,26 @@ func (mr *MockCoordinatorMockRecorder) Get(ctx, coordinatorID interface{}, field
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockCoordinator)(nil).Get), varargs...)
 }
 
+// GetWithDeleted mocks base method.
+func (m *MockCoordinator) GetWithDeleted(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, coordinatorID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetWithDeleted", varargs...)
+	ret0, _ := ret[0].(*entity.Coordinator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetWithDeleted indicates an expected call of GetWithDeleted.
+func (mr *MockCoordinatorMockRecorder) GetWithDeleted(ctx, coordinatorID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, coordinatorID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithDeleted", reflect.TypeOf((*MockCoordinator)(nil).GetWithDeleted), varargs...)
+}
+
 // List mocks base method.
 func (m *MockCoordinator) List(ctx context.Context, params *database.ListCoordinatorsParams, fields ...string) (entity.Coordinators, error) {
 	m.ctrl.T.Helper()
@@ -623,6 +643,26 @@ func (mr *MockCoordinatorMockRecorder) MultiGet(ctx, coordinatorIDs interface{},
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, coordinatorIDs}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockCoordinator)(nil).MultiGet), varargs...)
+}
+
+// MultiGetWithDeleted mocks base method.
+func (m *MockCoordinator) MultiGetWithDeleted(ctx context.Context, coordinatorIDs []string, fields ...string) (entity.Coordinators, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, coordinatorIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGetWithDeleted", varargs...)
+	ret0, _ := ret[0].(entity.Coordinators)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetWithDeleted indicates an expected call of MultiGetWithDeleted.
+func (mr *MockCoordinatorMockRecorder) MultiGetWithDeleted(ctx, coordinatorIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, coordinatorIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetWithDeleted", reflect.TypeOf((*MockCoordinator)(nil).MultiGetWithDeleted), varargs...)
 }
 
 // RemoveProductTypeID mocks base method.
@@ -972,6 +1012,26 @@ func (mr *MockProducerMockRecorder) Get(ctx, producerID interface{}, fields ...i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockProducer)(nil).Get), varargs...)
 }
 
+// GetWithDeleted mocks base method.
+func (m *MockProducer) GetWithDeleted(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, producerID}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetWithDeleted", varargs...)
+	ret0, _ := ret[0].(*entity.Producer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetWithDeleted indicates an expected call of GetWithDeleted.
+func (mr *MockProducerMockRecorder) GetWithDeleted(ctx, producerID interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, producerID}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithDeleted", reflect.TypeOf((*MockProducer)(nil).GetWithDeleted), varargs...)
+}
+
 // List mocks base method.
 func (m *MockProducer) List(ctx context.Context, params *database.ListProducersParams, fields ...string) (entity.Producers, error) {
 	m.ctrl.T.Helper()
@@ -1010,6 +1070,26 @@ func (mr *MockProducerMockRecorder) MultiGet(ctx, producerIDs interface{}, field
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, producerIDs}, fields...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGet", reflect.TypeOf((*MockProducer)(nil).MultiGet), varargs...)
+}
+
+// MultiGetWithDeleted mocks base method.
+func (m *MockProducer) MultiGetWithDeleted(ctx context.Context, producerIDs []string, fields ...string) (entity.Producers, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, producerIDs}
+	for _, a := range fields {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MultiGetWithDeleted", varargs...)
+	ret0, _ := ret[0].(entity.Producers)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MultiGetWithDeleted indicates an expected call of MultiGetWithDeleted.
+func (mr *MockProducerMockRecorder) MultiGetWithDeleted(ctx, producerIDs interface{}, fields ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, producerIDs}, fields...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MultiGetWithDeleted", reflect.TypeOf((*MockProducer)(nil).MultiGetWithDeleted), varargs...)
 }
 
 // Update mocks base method.

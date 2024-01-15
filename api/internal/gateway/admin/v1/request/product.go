@@ -13,8 +13,8 @@ type CreateProductRequest struct {
 	ItemUnit             string                `json:"itemUnit,omitempty"`             // 数量単位
 	ItemDescription      string                `json:"itemDescription,omitempty"`      // 数量単位説明
 	Media                []*CreateProductMedia `json:"media,omitempty"`                // メディア一覧
-	Price                int64                 `json:"price,omitempty"`                // 販売価格
-	Cost                 int64                 `json:"cost,omitempty"`                 // 原価
+	Price                int64                 `json:"price,omitempty"`                // 販売価格(税込)
+	Cost                 int64                 `json:"cost,omitempty"`                 // 原価(税込)
 	ExpirationDate       int64                 `json:"expirationDate,omitempty"`       // 賞味期限(単位:日)
 	RecommendedPoint1    string                `json:"recommendedPoint1,omitempty"`    // おすすめポイント1
 	RecommendedPoint2    string                `json:"recommendedPoint2,omitempty"`    // おすすめポイント2
@@ -46,8 +46,8 @@ type UpdateProductRequest struct {
 	ItemUnit             string                `json:"itemUnit,omitempty"`             // 数量単位
 	ItemDescription      string                `json:"itemDescription,omitempty"`      // 数量単位説明
 	Media                []*UpdateProductMedia `json:"media,omitempty"`                // メディア一覧
-	Price                int64                 `json:"price,omitempty"`                // 販売価格
-	Cost                 int64                 `json:"cost,omitempty"`                 // 原価
+	Price                int64                 `json:"price,omitempty"`                // 販売価格(税込)
+	Cost                 int64                 `json:"cost,omitempty"`                 // 原価(税込)
 	ExpirationDate       int64                 `json:"expirationDate,omitempty"`       // 賞味期限(単位:日)
 	RecommendedPoint1    string                `json:"recommendedPoint1,omitempty"`    // おすすめポイント1
 	RecommendedPoint2    string                `json:"recommendedPoint2,omitempty"`    // おすすめポイント2

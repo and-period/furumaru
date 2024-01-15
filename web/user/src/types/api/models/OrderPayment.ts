@@ -25,12 +25,6 @@ import {
     PaymentStatusFromJSONTyped,
     PaymentStatusToJSON,
 } from './PaymentStatus';
-import type { Prefecture } from './Prefecture';
-import {
-    PrefectureFromJSON,
-    PrefectureFromJSONTyped,
-    PrefectureToJSON,
-} from './Prefecture';
 
 /**
  * 注文決済情報
@@ -57,31 +51,25 @@ export interface OrderPayment {
      */
     status: PaymentStatus;
     /**
-     * 購入金額
+     * 購入金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     subtotal: number;
     /**
-     * 割引金額
+     * 割引金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     discount: number;
     /**
-     * 配送手数料
+     * 配送手数料（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     shippingFee: number;
     /**
-     * 消費税
-     * @type {number}
-     * @memberof OrderPayment
-     */
-    tax: number;
-    /**
-     * 合計金額
+     * 合計金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
@@ -98,60 +86,6 @@ export interface OrderPayment {
      * @memberof OrderPayment
      */
     paidAt: number;
-    /**
-     * 請求先 住所ID
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    addressId: string;
-    /**
-     * 請求先 氏名（姓）
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    lastname: string;
-    /**
-     * 請求先 氏名（名）
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    firstname: string;
-    /**
-     * 請求先 郵便番号
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    postalCode: string;
-    /**
-     * 
-     * @type {Prefecture}
-     * @memberof OrderPayment
-     */
-    prefectureCode: Prefecture;
-    /**
-     * 請求先 市区町村
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    city: string;
-    /**
-     * 請求先 町名・番地
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    addressLine1: string;
-    /**
-     * 請求先 ビル名・号室など
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    addressLine2: string;
-    /**
-     * 請求先 電話番号
-     * @type {string}
-     * @memberof OrderPayment
-     */
-    phoneNumber: string;
 }
 
 /**
@@ -165,19 +99,9 @@ export function instanceOfOrderPayment(value: object): boolean {
     isInstance = isInstance && "subtotal" in value;
     isInstance = isInstance && "discount" in value;
     isInstance = isInstance && "shippingFee" in value;
-    isInstance = isInstance && "tax" in value;
     isInstance = isInstance && "total" in value;
     isInstance = isInstance && "orderedAt" in value;
     isInstance = isInstance && "paidAt" in value;
-    isInstance = isInstance && "addressId" in value;
-    isInstance = isInstance && "lastname" in value;
-    isInstance = isInstance && "firstname" in value;
-    isInstance = isInstance && "postalCode" in value;
-    isInstance = isInstance && "prefectureCode" in value;
-    isInstance = isInstance && "city" in value;
-    isInstance = isInstance && "addressLine1" in value;
-    isInstance = isInstance && "addressLine2" in value;
-    isInstance = isInstance && "phoneNumber" in value;
 
     return isInstance;
 }
@@ -198,19 +122,9 @@ export function OrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'subtotal': json['subtotal'],
         'discount': json['discount'],
         'shippingFee': json['shippingFee'],
-        'tax': json['tax'],
         'total': json['total'],
         'orderedAt': json['orderedAt'],
         'paidAt': json['paidAt'],
-        'addressId': json['addressId'],
-        'lastname': json['lastname'],
-        'firstname': json['firstname'],
-        'postalCode': json['postalCode'],
-        'prefectureCode': PrefectureFromJSON(json['prefectureCode']),
-        'city': json['city'],
-        'addressLine1': json['addressLine1'],
-        'addressLine2': json['addressLine2'],
-        'phoneNumber': json['phoneNumber'],
     };
 }
 
@@ -229,19 +143,9 @@ export function OrderPaymentToJSON(value?: OrderPayment | null): any {
         'subtotal': value.subtotal,
         'discount': value.discount,
         'shippingFee': value.shippingFee,
-        'tax': value.tax,
         'total': value.total,
         'orderedAt': value.orderedAt,
         'paidAt': value.paidAt,
-        'addressId': value.addressId,
-        'lastname': value.lastname,
-        'firstname': value.firstname,
-        'postalCode': value.postalCode,
-        'prefectureCode': PrefectureToJSON(value.prefectureCode),
-        'city': value.city,
-        'addressLine1': value.addressLine1,
-        'addressLine2': value.addressLine2,
-        'phoneNumber': value.phoneNumber,
     };
 }
 

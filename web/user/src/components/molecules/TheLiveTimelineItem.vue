@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { unix } from 'dayjs'
+import dayjs from 'dayjs'
 import type { Product } from '~/types/api'
+
+const { unix } = dayjs
 
 interface Props {
   startAt: number
@@ -13,6 +15,7 @@ interface Props {
 const props = defineProps<Props>()
 
 interface Emits {
+  (e: 'click:item', id: string): void
   (e: 'click:addCart', name: string, id: string, quantity: number): void
 }
 
@@ -21,6 +24,10 @@ const emits = defineEmits<Emits>()
 const startAtString = computed(() => {
   return unix(props.startAt).format('HH:mm')
 })
+
+const handleClickItem = (prodictId: string) => {
+  emits('click:item', prodictId)
+}
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
   emits('click:addCart', name, id, quantity)
@@ -41,24 +48,25 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
     <div
       class="mt-2 flex flex-col gap-x-12 gap-y-4 pl-6 pt-[24px] md:grid md:grid-cols-4"
     >
-      <div class="col-span-1 flex items-center gap-4 md:flex-col">
-        <div class="flex w-full flex-col items-center">
+      <div class="col-span-1 flex items-center gap-2 md:flex-col">
+        <div class="flex w-[80px] flex-col items-center">
           <img
             v-if="thumbnailUrl"
             :src="thumbnailUrl"
-            class="mb-2 h-[66px] w-[66px] rounded-full"
+            class="mb-2 h-[48px] w-[48px] rounded-full"
           />
           <p
             v-if="username"
-            class="text-center text-[14px] font-medium tracking-[1.4px]"
+            class="text-center text-[12px] font-medium tracking-[1.4px] md:text-[14px]"
           >
             {{ username }}
           </p>
         </div>
         <div
-          class="w-full overflow-auto text-[12px] font-medium tracking-[1.2px]"
-          v-html="comment"
-        ></div>
+          class="w-[150px] overflow-auto break-words text-[12px] font-medium tracking-[1.2px]"
+        >
+          {{ comment }}
+        </div>
       </div>
 
       <div
@@ -68,6 +76,7 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
           v-for="item in items"
           :key="item.id"
           :product="item"
+          @click:item="handleClickItem"
           @click:add-cart="handleClickAddCart"
         />
       </div>

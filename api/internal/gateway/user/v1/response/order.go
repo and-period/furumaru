@@ -2,14 +2,16 @@ package response
 
 // Order - 注文履歴情報
 type Order struct {
-	ID            string              `json:"id"`            // 注文履歴ID
-	CoordinatorID string              `json:"coordinatorId"` // コーディネータID
-	PromotionID   string              `json:"promotionId"`   // プロモーションID
-	Status        int32               `json:"status"`        // 注文ステータス
-	Payment       *OrderPayment       `json:"payment"`       // 支払い情報
-	Refund        *OrderRefund        `json:"refund"`        // 注文キャンセル情報
-	Fulfillments  []*OrderFulfillment `json:"fulfillments"`  // 配送情報一覧
-	Items         []*OrderItem        `json:"items"`         // 注文商品一覧
+	ID              string              `json:"id"`              // 注文履歴ID
+	CoordinatorID   string              `json:"coordinatorId"`   // コーディネータID
+	PromotionID     string              `json:"promotionId"`     // プロモーションID
+	Status          int32               `json:"status"`          // 注文ステータス
+	Payment         *OrderPayment       `json:"payment"`         // 支払い情報
+	Refund          *OrderRefund        `json:"refund"`          // 注文キャンセル情報
+	Fulfillments    []*OrderFulfillment `json:"fulfillments"`    // 配送情報一覧
+	Items           []*OrderItem        `json:"items"`           // 注文商品一覧
+	BillingAddress  *Address            `json:"shippingAddress"` // 請求先情報
+	ShippingAddress *Address            `json:"billingAddress"`  // 配送先情報
 }
 
 // OrderPayment - 支払い情報
@@ -17,14 +19,12 @@ type OrderPayment struct {
 	TransactionID string `json:"transactionId"` // 取引ID
 	MethodType    int32  `json:"methodType"`    // 決済手段種別
 	Status        int32  `json:"status"`        // 支払い状況
-	Subtotal      int64  `json:"subtotal"`      // 購入金額
-	Discount      int64  `json:"discount"`      // 割引金額
-	ShippingFee   int64  `json:"shippingFee"`   // 配送手数料
-	Tax           int64  `json:"tax"`           // 消費税
-	Total         int64  `json:"total"`         // 合計金額
+	Subtotal      int64  `json:"subtotal"`      // 購入金額(税込)
+	Discount      int64  `json:"discount"`      // 割引金額(税込)
+	ShippingFee   int64  `json:"shippingFee"`   // 配送手数料(税込)
+	Total         int64  `json:"total"`         // 合計金額(税込)
 	OrderedAt     int64  `json:"orderedAt"`     // 注文日時
 	PaidAt        int64  `json:"paidAt"`        // 支払日時
-	*Address             // 請求先情報
 }
 
 // OrderRefund - 注文キャンセル情報
@@ -47,14 +47,13 @@ type OrderFulfillment struct {
 	BoxSize         int32  `json:"boxSize"`         // 箱の大きさ
 	BoxRate         int64  `json:"boxRate"`         // 箱の占有率
 	ShippedAt       int64  `json:"shippedAt"`       // 配送日時
-	*Address               // 配送先情報
 }
 
 // OrderItem - 注文商品情報
 type OrderItem struct {
 	FulfillmentID string `json:"fulfillmentId"` // 配送情報ID
 	ProductID     string `json:"productId"`     // 商品ID
-	Price         int64  `json:"price"`         // 購入価格
+	Price         int64  `json:"price"`         // 購入価格(税込)
 	Quantity      int64  `json:"quantity"`      // 購入数量
 }
 
@@ -63,4 +62,12 @@ type OrderResponse struct {
 	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
 	Promotion   *Promotion   `json:"promotion"`   // プロモーション情報
 	Products    []*Product   `json:"products"`    // 商品一覧
+}
+
+type OrdersResponse struct {
+	Order        []*Order       `json:"orders"`       // 注文履歴一覧
+	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
+	Promotions   []*Promotion   `json:"promotions"`   // プロモーション一覧
+	Products     []*Product     `json:"products"`     // 商品一覧
+	Total        int64          `json:"total"`        // 合計数
 }

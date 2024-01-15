@@ -35,6 +35,9 @@ authUserResponse:
     id:
       type: string
       description: 購入者ID
+    accountId:
+      type: string
+      description: 検索名
     username:
       type: string
       description: 表示名
@@ -63,8 +66,8 @@ authUserResponse:
         $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
   required:
   - id
-  - username
   - accountId
+  - username
   - lastname
   - firstname
   - lastnameKana
@@ -74,8 +77,8 @@ authUserResponse:
   - thumbnails
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
-    username: '&.購入者'
     accountId: 'account-id'
+    username: '&.購入者'
     lastname: '&.'
     firstname: '利用者'
     lastnameKana: 'あんどどっと'

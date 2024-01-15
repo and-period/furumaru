@@ -1676,13 +1676,13 @@ export interface CreateProductRequest {
      */
     'media': Array<CreateProductRequestMediaInner>;
     /**
-     * 販売価格(0以上)
+     * 販売価格(税込:0以上)
      * @type {number}
      * @memberof CreateProductRequest
      */
     'price': number;
     /**
-     * 原価(0以上)
+     * 原価(税込:0以上)
      * @type {number}
      * @memberof CreateProductRequest
      */
@@ -2833,7 +2833,7 @@ export interface OrderItem {
      */
     'productId': string;
     /**
-     * 購入価格
+     * 購入価格（税込）
      * @type {number}
      * @memberof OrderItem
      */
@@ -2870,31 +2870,25 @@ export interface OrderPayment {
      */
     'status': PaymentStatus;
     /**
-     * 購入金額
+     * 購入金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     'subtotal': number;
     /**
-     * 割引金額
+     * 割引金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     'discount': number;
     /**
-     * 配送手数料
+     * 配送手数料（税込）
      * @type {number}
      * @memberof OrderPayment
      */
     'shippingFee': number;
     /**
-     * 消費税
-     * @type {number}
-     * @memberof OrderPayment
-     */
-    'tax': number;
-    /**
-     * 合計金額
+     * 合計金額（税込）
      * @type {number}
      * @memberof OrderPayment
      */
@@ -3836,13 +3830,13 @@ export interface Product {
      */
     'media': Array<ProductMediaInner>;
     /**
-     * 販売価格
+     * 販売価格（税込）
      * @type {number}
      * @memberof Product
      */
     'price': number;
     /**
-     * 原価
+     * 原価（税込）
      * @type {number}
      * @memberof Product
      */
@@ -4691,7 +4685,7 @@ export interface Shipping {
      */
     'box60Rates': Array<ShippingRate>;
     /**
-     * 箱サイズ60の冷凍便追加配送料
+     * 箱サイズ60の冷凍便追加配送料（税込）
      * @type {number}
      * @memberof Shipping
      */
@@ -4703,7 +4697,7 @@ export interface Shipping {
      */
     'box80Rates': Array<ShippingRate>;
     /**
-     * 箱サイズ80の冷凍便追加配送料
+     * 箱サイズ80の冷凍便追加配送料（税込）
      * @type {number}
      * @memberof Shipping
      */
@@ -4715,7 +4709,7 @@ export interface Shipping {
      */
     'box100Rates': Array<ShippingRate>;
     /**
-     * 箱サイズ100の冷凍便追加配送料
+     * 箱サイズ100の冷凍便追加配送料（税込）
      * @type {number}
      * @memberof Shipping
      */
@@ -4727,7 +4721,7 @@ export interface Shipping {
      */
     'hasFreeShipping': boolean;
     /**
-     * 送料無料になる金額
+     * 送料無料になる金額（税込）
      * @type {number}
      * @memberof Shipping
      */
@@ -4788,7 +4782,7 @@ export interface ShippingRate {
      */
     'name': string;
     /**
-     * 配送料金
+     * 配送料金（税込）
      * @type {number}
      * @memberof ShippingRate
      */
@@ -5339,7 +5333,7 @@ export interface UpdateDefaultShippingRate {
      */
     'name': string;
     /**
-     * 配送料金(100万未満)
+     * 配送料金(税込:100万未満)
      * @type {number}
      * @memberof UpdateDefaultShippingRate
      */
@@ -5364,7 +5358,7 @@ export interface UpdateDefaultShippingRequest {
      */
     'box60Rates': Array<UpdateDefaultShippingRate>;
     /**
-     * 箱サイズ60の冷凍便追加配送料(100万未満)
+     * 箱サイズ60の冷凍便追加配送料(税込:100万未満)
      * @type {number}
      * @memberof UpdateDefaultShippingRequest
      */
@@ -5376,7 +5370,7 @@ export interface UpdateDefaultShippingRequest {
      */
     'box80Rates': Array<UpdateDefaultShippingRate>;
     /**
-     * 箱サイズ80の冷凍便追加配送料(100万未満)
+     * 箱サイズ80の冷凍便追加配送料(税込:100万未満)
      * @type {number}
      * @memberof UpdateDefaultShippingRequest
      */
@@ -5388,7 +5382,7 @@ export interface UpdateDefaultShippingRequest {
      */
     'box100Rates': Array<UpdateDefaultShippingRate>;
     /**
-     * 箱サイズ100の冷凍便追加配送料(100万未満)
+     * 箱サイズ100の冷凍便追加配送料(税込:100万未満)
      * @type {number}
      * @memberof UpdateDefaultShippingRequest
      */
@@ -5400,7 +5394,7 @@ export interface UpdateDefaultShippingRequest {
      */
     'hasFreeShipping': boolean;
     /**
-     * 送料無料になる金額(100万未満)
+     * 送料無料になる金額(税込:100万未満)
      * @type {number}
      * @memberof UpdateDefaultShippingRequest
      */
@@ -5676,13 +5670,13 @@ export interface UpdateProductRequest {
      */
     'media': Array<CreateProductRequestMediaInner>;
     /**
-     * 販売価格(0以上)
+     * 販売価格(税込:0以上)
      * @type {number}
      * @memberof UpdateProductRequest
      */
     'price': number;
     /**
-     * 原価(0以上)
+     * 原価(税込:0以上)
      * @type {number}
      * @memberof UpdateProductRequest
      */
@@ -5996,7 +5990,7 @@ export interface UpsertShippingRate {
      */
     'name': string;
     /**
-     * 配送料金(100万未満)
+     * 配送料金(税込:100万未満)
      * @type {number}
      * @memberof UpsertShippingRate
      */
@@ -6021,7 +6015,7 @@ export interface UpsertShippingRequest {
      */
     'box60Rates': Array<UpsertShippingRate>;
     /**
-     * 箱サイズ60の冷凍便追加配送料(100万未満)
+     * 箱サイズ60の冷凍便追加配送料(税込:100万未満)
      * @type {number}
      * @memberof UpsertShippingRequest
      */
@@ -6033,7 +6027,7 @@ export interface UpsertShippingRequest {
      */
     'box80Rates': Array<UpsertShippingRate>;
     /**
-     * 箱サイズ80の冷凍便追加配送料(100万未満)
+     * 箱サイズ80の冷凍便追加配送料(税込:100万未満)
      * @type {number}
      * @memberof UpsertShippingRequest
      */
@@ -6045,7 +6039,7 @@ export interface UpsertShippingRequest {
      */
     'box100Rates': Array<UpsertShippingRate>;
     /**
-     * 箱サイズ100の冷凍便追加配送料(100万未満)
+     * 箱サイズ100の冷凍便追加配送料(税込:100万未満)
      * @type {number}
      * @memberof UpsertShippingRequest
      */
@@ -6057,7 +6051,7 @@ export interface UpsertShippingRequest {
      */
     'hasFreeShipping': boolean;
     /**
-     * 送料無料になる金額(100万未満)
+     * 送料無料になる金額(税込:100万未満)
      * @type {number}
      * @memberof UpsertShippingRequest
      */

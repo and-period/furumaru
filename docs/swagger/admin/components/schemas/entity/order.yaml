@@ -79,8 +79,7 @@ order:
       subtotal: 1000
       discount: 200
       shippingFee: 500
-      tax: 130
-      total: 1430
+      total: 1300
       orderedAt: 1640962800
       paidAt: 1640962800
       addressId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -139,23 +138,19 @@ orderPayment:
     subtotal:
       type: integer
       format: int64
-      description: 購入金額
+      description: 購入金額（税込）
     discount:
       type: integer
       format: int64
-      description: 割引金額
+      description: 割引金額（税込）
     shippingFee:
       type: integer
       format: int64
-      description: 配送手数料
-    tax:
-      type: integer
-      format: int64
-      description: 消費税
+      description: 配送手数料（税込）
     total:
       type: integer
       format: int64
-      description: 合計金額
+      description: 合計金額（税込）
     orderedAt:
       type: integer
       format: int64
@@ -198,7 +193,6 @@ orderPayment:
   - subtotal
   - discount
   - shippingFee
-  - tax
   - total
   - orderedAt
   - paidAt
@@ -218,8 +212,7 @@ orderPayment:
     subtotal: 1000
     discount: 200
     shippingFee: 500
-    tax: 130
-    total: 1430
+    total: 1300
     orderedAt: 1640962800
     paidAt: 1640962800
     addressId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -371,7 +364,7 @@ orderItem:
     price:
       type: integer
       format: int64
-      description: 購入価格
+      description: 購入価格（税込）
     quantity:
       type: integer
       format: int64

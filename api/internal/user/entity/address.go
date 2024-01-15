@@ -69,6 +69,11 @@ func (a *Address) Name() string {
 	return strings.TrimSpace(str)
 }
 
+func (a *Address) FullPath() string {
+	str := strings.Join([]string{a.Prefecture, a.City, a.AddressLine1, a.AddressLine2}, " ")
+	return strings.TrimSpace(str)
+}
+
 func (a *Address) String() string {
 	str := strings.Join([]string{a.Prefecture, a.City, a.AddressLine1, a.AddressLine2}, " ")
 	return strings.TrimSpace(str)
@@ -88,6 +93,14 @@ func (as Addresses) Map() map[string]*Address {
 	res := make(map[string]*Address, len(as))
 	for _, a := range as {
 		res[a.ID] = a
+	}
+	return res
+}
+
+func (as Addresses) MapByRevision() map[int64]*Address {
+	res := make(map[int64]*Address, len(as))
+	for _, a := range as {
+		res[a.AddressRevision.ID] = a
 	}
 	return res
 }

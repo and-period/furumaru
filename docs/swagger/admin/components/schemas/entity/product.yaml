@@ -66,11 +66,11 @@ product:
     price:
       type: integer
       format: int64
-      description: 販売価格
+      description: 販売価格（税込）
     cost:
       type: integer
       format: int64
-      description: 原価
+      description: 原価（税込）
     inventory:
       type: integer
       format: int64

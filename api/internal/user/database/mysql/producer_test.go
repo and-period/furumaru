@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
 func TestProducer(t *testing.T) {
@@ -253,6 +254,83 @@ func TestProducer_MultiGet(t *testing.T) {
 	}
 }
 
+func TestProducer_MultiGetWithDeleted(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	coordinator := testCoordinator("coordinator-id", now())
+	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&coordinator.Admin).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&coordinator).Error
+	require.NoError(t, err)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[0].Status = entity.AdminStatusDeactivated
+	admins[0].DeletedAt = gorm.DeletedAt{Valid: true, Time: now()}
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = db.DB.Create(&admins).Error
+	producers := make(entity.Producers, 2)
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
+	producers[0].Admin = *admins[0]
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
+	producers[1].Admin = *admins[1]
+	err = db.DB.Create(&producers).Error
+	require.NoError(t, err)
+
+	type args struct {
+		producerIDs []string
+	}
+	type want struct {
+		producers entity.Producers
+		hasErr    bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				producerIDs: []string{"admin-id01", "admin-id02"},
+			},
+			want: want{
+				producers: producers,
+				hasErr:    false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
+			actual, err := db.MultiGetWithDeleted(ctx, tt.args.producerIDs)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.producers, actual)
+		})
+	}
+}
+
 func TestProducer_Get(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -329,6 +407,105 @@ func TestProducer_Get(t *testing.T) {
 
 			db := &producer{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.producerID)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+			assert.Equal(t, tt.want.producer, actual)
+		})
+	}
+}
+
+func TestProducer_GetWithDeleted(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	coordinator := testCoordinator("coordinator-id", now())
+	coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
+	err = db.DB.Create(&coordinator.Admin).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&coordinator).Error
+	require.NoError(t, err)
+	admins := make(entity.Admins, 2)
+	admins[0] = testAdmin("admin-id01", "cognito-id01", "test-admin01@and-period.jp", now())
+	admins[0].Status = entity.AdminStatusDeactivated
+	admins[0].DeletedAt = gorm.DeletedAt{Valid: true, Time: now()}
+	admins[1] = testAdmin("admin-id02", "cognito-id02", "test-admin02@and-period.jp", now())
+	err = db.DB.Create(&admins).Error
+	producers := make(entity.Producers, 2)
+	producers[0] = testProducer("admin-id01", "coordinator-id", now())
+	producers[0].Admin = *admins[0]
+	producers[1] = testProducer("admin-id02", "coordinator-id", now())
+	producers[1].Admin = *admins[1]
+	err = db.DB.Create(&producers).Error
+	require.NoError(t, err)
+
+	type args struct {
+		producerID string
+	}
+	type want struct {
+		producer *entity.Producer
+		hasErr   bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success to activated",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				producerID: "admin-id01",
+			},
+			want: want{
+				producer: producers[0],
+				hasErr:   false,
+			},
+		},
+		{
+			name:  "success to deactivated",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				producerID: "admin-id02",
+			},
+			want: want{
+				producer: producers[1],
+				hasErr:   false,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				producerID: "",
+			},
+			want: want{
+				producer: nil,
+				hasErr:   true,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &producer{db: db, now: now}
+			actual, err := db.GetWithDeleted(ctx, tt.args.producerID)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
 			assert.Equal(t, tt.want.producer, actual)
 		})

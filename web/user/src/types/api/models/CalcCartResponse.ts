@@ -81,35 +81,23 @@ export interface CalcCartResponse {
      */
     promotion: Promotion;
     /**
-     * 小計(税抜:商品合計金額)
+     * 小計(税込:商品合計金額)
      * @type {number}
      * @memberof CalcCartResponse
      */
     subtotal: number;
     /**
-     * 割引金額(税抜)
+     * 割引金額(税込)
      * @type {number}
      * @memberof CalcCartResponse
      */
     discount: number;
     /**
-     * 配送手数料(税抜)
+     * 配送手数料(税込)
      * @type {number}
      * @memberof CalcCartResponse
      */
     shippingFee: number;
-    /**
-     * 消費税
-     * @type {number}
-     * @memberof CalcCartResponse
-     */
-    tax: number;
-    /**
-     * 消費税率(%)
-     * @type {number}
-     * @memberof CalcCartResponse
-     */
-    taxRate: number;
     /**
      * 合計金額(税込)
      * @type {number}
@@ -137,8 +125,6 @@ export function instanceOfCalcCartResponse(value: object): boolean {
     isInstance = isInstance && "subtotal" in value;
     isInstance = isInstance && "discount" in value;
     isInstance = isInstance && "shippingFee" in value;
-    isInstance = isInstance && "tax" in value;
-    isInstance = isInstance && "taxRate" in value;
     isInstance = isInstance && "total" in value;
 
     return isInstance;
@@ -162,8 +148,6 @@ export function CalcCartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'subtotal': json['subtotal'],
         'discount': json['discount'],
         'shippingFee': json['shippingFee'],
-        'tax': json['tax'],
-        'taxRate': json['taxRate'],
         'total': json['total'],
         'requestId': !exists(json, 'requestId') ? undefined : json['requestId'],
     };
@@ -186,8 +170,6 @@ export function CalcCartResponseToJSON(value?: CalcCartResponse | null): any {
         'subtotal': value.subtotal,
         'discount': value.discount,
         'shippingFee': value.shippingFee,
-        'tax': value.tax,
-        'taxRate': value.taxRate,
         'total': value.total,
         'requestId': value.requestId,
     };

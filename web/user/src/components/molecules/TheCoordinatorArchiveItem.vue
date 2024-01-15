@@ -23,13 +23,13 @@ const handleClick = () => {
   <div class="text-main" @click="handleClick">
     <div class="flex justify-center">
       <img
-        class="h-[208px] object-cover"
+        class="aspect-video w-full object-cover"
         :width="width"
         :src="imgSrc"
         :alt="`archive-${title}-thumbnail`"
       />
     </div>
-    <div class="ml-4 mt-2 flex w-full flex-col gap-2 md:ml-0 md:pt-0">
+    <div class="mt-2 flex w-full flex-col gap-2 md:ml-0 md:pt-0">
       <div class="flex items-center justify-between text-sm">
         <span class="rounded border-2 border-main px-2 font-bold text-main">
           アーカイブ配信

@@ -1,0 +1,7 @@
+"テンプレートID","タイトル","本文"
+"notification-live","{{.Title}}","{{.Detail}}"
+"notification-promotion","プロモーションコードが発行されました","新しいプロモーションコードが発行されました。
+詳細は、以下を確認してください。
+
+{{.Detail}}"
+"notification-system","{{.Title}}","{{.Detail}}"

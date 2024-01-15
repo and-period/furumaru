@@ -5,6 +5,7 @@ import { useShoppingCartStore } from '~/store/shopping'
 import type { Snackbar } from '~/types/props'
 
 const router = useRouter()
+const route = useRoute()
 
 const productStore = useProductStore()
 const shoppingCartStore = useShoppingCartStore()
@@ -34,7 +35,42 @@ const handleClickAddCartButton = async (
   })
 }
 
-fetchProducts()
+// 1ページ当たりに表示する商品数
+const pagePerItems = ref<number>(20)
+
+// 現在のページ番号
+const currentPage = computed<number>(() => {
+  return route.query.page ? Number(route.query.page) : 1
+})
+
+// ページネーション情報
+const pagination = computed<{
+  limit: number
+  offset: number
+  pageArray: number[]
+}>(() => {
+  const totalPage = Math.ceil(products.value.length / pagePerItems.value)
+  const pageArray = Array.from({ length: totalPage }, (_, i) => i + 1)
+
+  return {
+    limit: pagePerItems.value,
+    offset: pagePerItems.value * (currentPage.value - 1),
+    pageArray,
+  }
+})
+
+const handleClickPage = (page: number) => {
+  router.push({
+    query: {
+      ...route.query,
+      page,
+    },
+  })
+}
+
+useAsyncData('products', () => {
+  return fetchProducts(pagePerItems.value, pagination.value.offset)
+})
 
 useSeoMeta({
   title: 'すべての商品',
@@ -118,6 +154,12 @@ const hideV1App = false
           />
         </template>
       </div>
+      <the-pagination
+        class="mt-8"
+        :current-page="currentPage"
+        :page-array="pagination.pageArray"
+        @change-page="handleClickPage"
+      />
     </div>
   </div>
 </template>

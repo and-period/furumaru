@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"net/http"
 	"testing"
 	"time"
 
@@ -42,8 +43,8 @@ func TestGetCheckoutState(t *testing.T) {
 				Subtotal:          1100,
 				Discount:          0,
 				ShippingFee:       500,
-				Tax:               160,
-				Total:             1760,
+				Tax:               145,
+				Total:             1400,
 				CreatedAt:         now,
 				UpdatedAt:         now,
 			},
@@ -213,7 +214,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 				Number:            "4111111111111111",
 				Month:             12,
@@ -244,7 +245,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 				Number:            "4111111111111111",
 				Month:             12,
@@ -271,7 +272,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 				Number:            "4111111111111111",
 				Month:             12,
@@ -325,7 +326,7 @@ func TestCheckoutPayPay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -355,7 +356,7 @@ func TestCheckoutPayPay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "",
@@ -405,7 +406,7 @@ func TestCheckoutLinePay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -435,7 +436,7 @@ func TestCheckoutLinePay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "",
@@ -485,7 +486,7 @@ func TestCheckoutMerpay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -515,7 +516,7 @@ func TestCheckoutMerpay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "",
@@ -565,7 +566,7 @@ func TestCheckoutRakutenPay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -595,7 +596,7 @@ func TestCheckoutRakutenPay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "",
@@ -645,7 +646,7 @@ func TestCheckoutAUPay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -675,7 +676,7 @@ func TestCheckoutAUPay(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 			},
 			expect:    "",
@@ -732,7 +733,7 @@ func checkoutmocks(
 	}
 	params := &komoju.CreateSessionParams{
 		OrderID:      "order-id",
-		Amount:       1540,
+		Amount:       1400,
 		CallbackURL:  "http://example.com/callback",
 		PaymentTypes: entity.NewKomojuPaymentTypes(methodType),
 		Customer: &komoju.CreateSessionCustomer{
@@ -765,8 +766,8 @@ func checkoutmocks(
 			Subtotal:          1000,
 			Discount:          100,
 			ShippingFee:       500,
-			Tax:               140,
-			Total:             1540,
+			Tax:               127,
+			Total:             1400,
 			OrderedAt:         now,
 		},
 		OrderFulfillments: entity.OrderFulfillments{
@@ -1221,7 +1222,7 @@ func TestCheckout(t *testing.T) {
 	}
 	sparams := &komoju.CreateSessionParams{
 		OrderID:      "order-id",
-		Amount:       1540,
+		Amount:       1400,
 		CallbackURL:  "http://example.com/callback",
 		PaymentTypes: []komoju.PaymentType{komoju.PaymentTypeCreditCard},
 		Customer: &komoju.CreateSessionCustomer{
@@ -1259,8 +1260,8 @@ func TestCheckout(t *testing.T) {
 				Subtotal:          1000,
 				Discount:          100,
 				ShippingFee:       500,
-				Tax:               140,
-				Total:             1540,
+				Tax:               127,
+				Total:             1400,
 				OrderedAt:         now,
 			},
 			OrderFulfillments: entity.OrderFulfillments{
@@ -1338,7 +1339,7 @@ func TestCheckout(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
 				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
@@ -1708,7 +1709,7 @@ func TestCheckout(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
 				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
@@ -1744,7 +1745,7 @@ func TestCheckout(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
 				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
@@ -1780,11 +1781,11 @@ func TestCheckout(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
 				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
-					return nil, &komoju.Error{Code: komoju.ErrCodeUnprocessableEntity}
+					return nil, &komoju.Error{Status: http.StatusUnprocessableEntity, Code: komoju.ErrCodeUnprocessableEntity}
 				},
 			},
 			expect:    "https://example.com?session_id=transaction-id",
@@ -1813,7 +1814,7 @@ func TestCheckout(t *testing.T) {
 					BillingAddressID:  "address-id",
 					ShippingAddressID: "address-id",
 					CallbackURL:       "http://example.com/callback",
-					Total:             1540,
+					Total:             1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
 				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {

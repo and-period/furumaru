@@ -288,7 +288,7 @@ func TestWorker_Run(t *testing.T) {
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID: entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{
+					Substitutions: map[string]interface{}{
 						"key": "value",
 						"氏名":  "username",
 					},
@@ -372,7 +372,7 @@ func TestWorker_Run(t *testing.T) {
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expectErr: nil,
@@ -404,7 +404,7 @@ func TestWorker_Run(t *testing.T) {
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expectErr: assert.AnError,
@@ -422,7 +422,7 @@ func TestWorker_Run(t *testing.T) {
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expectErr: assert.AnError,
@@ -481,7 +481,7 @@ func TestWorker_Run(t *testing.T) {
 				UserIDs:   []string{"user-id"},
 				Email: &entity.MailConfig{
 					TemplateID:    entity.EmailTemplateIDAdminRegister,
-					Substitutions: map[string]string{"key": "value"},
+					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
 			expectErr: assert.AnError,

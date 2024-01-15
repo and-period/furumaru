@@ -23,8 +23,6 @@ const id = computed<string>(() => {
   }
 })
 
-fetchProduct(id.value)
-
 const snackbarItems = ref<Snackbar[]>([])
 
 const quantity = ref<number>(1)
@@ -37,6 +35,14 @@ const priceString = computed<string>(() => {
     }).format(product.value.price)
   } else {
     return ''
+  }
+})
+
+const hasStock = computed<boolean>(() => {
+  if (product.value) {
+    return product.value.inventory > 0
+  } else {
+    return false
   }
 })
 
@@ -81,6 +87,16 @@ const getStorageMethodType = (type: number) => {
 
 const title = computed<string>(() => product.value.name)
 
+const selectedMediaIndex = ref<number>(-1)
+
+const handleClickMediaItem = (index: number) => {
+  selectedMediaIndex.value = index
+}
+
+useAsyncData(`product-${id.value}`, () => {
+  return fetchProduct(id.value)
+})
+
 useSeoMeta({
   title,
 })
@@ -114,21 +130,28 @@ useSeoMeta({
     <div
       class="gap-4 bg-white px-4 pb-6 pt-[40px] text-main md:grid md:grid-cols-2 md:px-[112px]"
     >
-      <div class="mx-auto aspect-square w-full max-w-[500px]">
-        <img
-          class="w-full"
-          :src="product.thumbnail.url"
-          :alt="`${product.name}のサムネイル画像`"
-        />
+      <div class="mx-auto w-full max-w-[500px]">
+        <div class="flex aspect-square h-full w-full justify-center">
+          <img
+            class="block h-full w-full object-contain"
+            :src="
+              selectedMediaIndex === -1
+                ? product.thumbnail.url
+                : product.media[selectedMediaIndex].url
+            "
+            :alt="`${product.name}のサムネイル画像`"
+          />
+        </div>
         <div
-          v-for="(m, i) in product.media"
-          :key="i"
-          class="mt-2 grid w-full gap-4"
+          class="hidden-scrollbar mt-2 grid w-full grid-flow-col justify-start gap-2 overflow-x-scroll"
         >
           <img
+            v-for="(m, i) in product.media"
+            :key="i"
             :src="m.url"
             :alt="`${product.name}の画像_${i}`"
             class="aspect-square w-[72px] cursor-pointer"
+            @click="handleClickMediaItem(i)"
           />
         </div>
       </div>
@@ -221,7 +244,8 @@ useSeoMeta({
         </div>
 
         <button
-          class="mt-2 w-full bg-main py-4 text-center text-white md:mt-8"
+          class="mt-2 w-full bg-main py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
+          :disabled="!hasStock"
           @click="handleClickAddCartButton"
         >
           買い物カゴに入れる

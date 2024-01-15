@@ -92,11 +92,47 @@ func (c *coordinator) MultiGet(
 	return coordinators, nil
 }
 
+func (c *coordinator) MultiGetWithDeleted(
+	ctx context.Context, coordinatorIDs []string, fields ...string,
+) (entity.Coordinators, error) {
+	var coordinators entity.Coordinators
+
+	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
+		Where("admin_id IN (?)", coordinatorIDs).
+		Unscoped()
+
+	if err := stmt.Find(&coordinators).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := c.fill(ctx, c.db.DB, coordinators...); err != nil {
+		return nil, dbError(err)
+	}
+	return coordinators, nil
+}
+
 func (c *coordinator) Get(
 	ctx context.Context, coordinatorID string, fields ...string,
 ) (*entity.Coordinator, error) {
 	coordinator, err := c.get(ctx, c.db.DB, coordinatorID, fields...)
 	if err != nil {
+		return nil, dbError(err)
+	}
+	if err := c.fill(ctx, c.db.DB, coordinator); err != nil {
+		return nil, dbError(err)
+	}
+	return coordinator, nil
+}
+
+func (c *coordinator) GetWithDeleted(
+	ctx context.Context, coordinatorID string, fields ...string,
+) (*entity.Coordinator, error) {
+	var coordinator *entity.Coordinator
+
+	stmt := c.db.Statement(ctx, c.db.DB, coordinatorTable, fields...).
+		Where("admin_id = ?", coordinatorID).
+		Unscoped()
+
+	if err := stmt.First(&coordinator).Error; err != nil {
 		return nil, dbError(err)
 	}
 	if err := c.fill(ctx, c.db.DB, coordinator); err != nil {

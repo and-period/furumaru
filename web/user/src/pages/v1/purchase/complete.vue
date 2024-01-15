@@ -116,6 +116,7 @@ onMounted(async () => {
         </div>
       </div>
     </template>
+
     <template v-if="operationResult === 'canceled'">
       <div
         class="mt-[40px] flex flex-col items-center justify-center gap-10 text-main"

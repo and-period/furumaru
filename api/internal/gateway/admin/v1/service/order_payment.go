@@ -125,7 +125,6 @@ func NewOrderPayment(payment *entity.OrderPayment, address *Address) *OrderPayme
 			Subtotal:      payment.Subtotal,
 			Discount:      payment.Discount,
 			ShippingFee:   payment.ShippingFee,
-			Tax:           payment.Tax,
 			Total:         payment.Total,
 			OrderedAt:     jst.Unix(payment.OrderedAt),
 			PaidAt:        jst.Unix(payment.PaidAt),

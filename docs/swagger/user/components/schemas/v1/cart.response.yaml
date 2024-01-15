@@ -119,23 +119,15 @@ calcCartResponse:
     subtotal:
       type: integer
       format: int64
-      description: 小計(税抜:商品合計金額)
+      description: 小計(税込:商品合計金額)
     discount:
       type: integer
       format: int64
-      description: 割引金額(税抜)
+      description: 割引金額(税込)
     shippingFee:
       type: integer
       format: int64
-      description: 配送手数料(税抜)
-    tax:
-      type: integer
-      format: int64
-      description: 消費税
-    taxRate:
-      type: integer
-      format: int64
-      description: 消費税率(%)
+      description: 配送手数料(税込)
     total:
       type: integer
       format: int64
@@ -152,8 +144,6 @@ calcCartResponse:
   - subtotal
   - discount
   - shippingFee
-  - tax
-  - taxRate
   - total
   example:
     carts:
@@ -244,7 +234,5 @@ calcCartResponse:
     subtotal: 1000
     discount: 200
     shippingFee: 500
-    tax: 130
-    taxRate: 10
-    total: 1430
+    total: 1300
     requestId: 'kSByoE6FetnPs5Byk3a9Zx'

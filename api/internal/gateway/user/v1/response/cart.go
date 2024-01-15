@@ -28,11 +28,9 @@ type CalcCartResponse struct {
 	Products    []*Product   `json:"products"`    // 商品一覧
 	Coordinator *Coordinator `json:"coordinator"` // コーディネータ情報
 	Promotion   *Promotion   `json:"promotion"`   // プロモーション情報
-	SubTotal    int64        `json:"subtotal"`    // 購入金額
-	Discount    int64        `json:"discount"`    // 割引金額
-	ShippingFee int64        `json:"shippingFee"` // 配送手数料
-	Tax         int64        `json:"tax"`         // 消費税
-	TaxRate     int64        `json:"taxRate"`     // 消費税率(%)
-	Total       int64        `json:"total"`       // 合計金額
+	SubTotal    int64        `json:"subtotal"`    // 購入金額(税込)
+	Discount    int64        `json:"discount"`    // 割引金額(税込)
+	ShippingFee int64        `json:"shippingFee"` // 配送手数料(税込)
+	Total       int64        `json:"total"`       // 合計金額(税込)
 	RequestID   string       `json:"requestId"`   // 支払い時にAPIへ送信するキー(重複判定用)
 }

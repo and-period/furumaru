@@ -375,7 +375,7 @@ const onSubmitDelete = (): void => {
           <v-row>
             <v-col>
               <v-card-subtitle class="pb-4">
-                支払い金額
+                購入商品金額（※送料等は除く）
               </v-card-subtitle>
               <div class="px-4">
                 &yen; {{ props.orderAmount.toLocaleString() }}
@@ -411,14 +411,14 @@ const onSubmitDelete = (): void => {
                 {{ getPaymentStatus(item.status) }}
               </v-chip>
             </template>
-            <template #[`item.total`]="{ item }">
-              &yen; {{ item.total.toLocaleString() }}
-            </template>
             <template #[`item.orderedAt`]="{ item }">
               {{ getOrderedAt(item.orderedAt) }}
             </template>
             <template #[`item.paidAt`]="{ item }">
               {{ getPaidAt(item.paidAt) }}
+            </template>
+            <template #[`item.total`]="{ item }">
+              &yen; {{ item.total.toLocaleString() }}
             </template>
           </v-data-table-server>
         </v-card-text>

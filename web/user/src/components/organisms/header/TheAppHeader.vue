@@ -22,11 +22,12 @@ interface Props {
   footerMenuItems: FooterMenuItem[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 interface Emits {
   (e: 'click:buyButton'): void
   (e: 'click:removeItemFromCart', cartNumber: number, id: string): void
+  (e: 'click:myPageButton'): void
   (e: 'click:logoutButton'): void
 }
 
@@ -58,11 +59,11 @@ const handleClickRemoveItemFromCartButton = (
   emits('click:removeItemFromCart', cartNumber, id)
 }
 
-const SP_MENU_ITEMS = [
+const SP_MENU_ITEMS = computed(() => [
   {
     icon: 'account',
-    text: 'マイページ',
-    to: '/',
+    text: props.isAuthenticated ? 'マイページ' : 'ログイン',
+    to: props.isAuthenticated ? '/account' : '/signin',
   },
   // {
   //   icon: 'ring',
@@ -94,7 +95,11 @@ const SP_MENU_ITEMS = [
     text: 'ふるマルについて',
     to: '/about',
   },
-]
+])
+
+const handleClickMyPageButton = () => {
+  emits('click:myPageButton')
+}
 
 const handleClickLogoutButton = () => {
   emits('click:logoutButton')
@@ -146,6 +151,7 @@ const handleClickLogoutButton = () => {
           :authenticated-menu-items="authenticatedAccountMenuItem"
           :no-authenticated-menu-items="noAuthenticatedAccountMenuItem"
           @click:logout-button="handleClickLogoutButton"
+          @click:my-page-button="handleClickMyPageButton"
         />
 
         <the-pc-notification-menu
@@ -166,7 +172,7 @@ const handleClickLogoutButton = () => {
         />
 
         <the-icon-button
-          class="hidden h-10 w-10 md:block lg:hidden"
+          class="hidden h-10 w-10 md:block xl:hidden"
           @click="handleClickMenuIconButton"
         >
           <the-outline-close-icon v-if="spMenuOpen" />

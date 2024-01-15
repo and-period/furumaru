@@ -120,10 +120,12 @@ type ListCoordinatorsInput struct {
 
 type MultiGetCoordinatorsInput struct {
 	CoordinatorIDs []string `validate:"dive,required"`
+	WithDeleted    bool     `validate:""`
 }
 
 type GetCoordinatorInput struct {
 	CoordinatorID string `validate:"required"`
+	WithDeleted   bool   `validate:""`
 }
 
 type CreateCoordinatorInput struct {
@@ -216,10 +218,12 @@ type ListProducersInput struct {
 
 type MultiGetProducersInput struct {
 	ProducerIDs []string `validate:"dive,required"`
+	WithDeleted bool     `validate:""`
 }
 
 type GetProducerInput struct {
-	ProducerID string `validate:"required"`
+	ProducerID  string `validate:"required"`
+	WithDeleted bool   `validate:""`
 }
 
 type CreateProducerInput struct {

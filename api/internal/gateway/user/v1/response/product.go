@@ -18,7 +18,7 @@ type Product struct {
 	ThumbnailURL      string          `json:"thumbnailUrl"`      // サムネイルURL
 	Thumbnails        []*Image        `json:"thumbnails"`        // リサイズ済みサムネイル
 	Media             []*ProductMedia `json:"media"`             // メディア一覧
-	Price             int64           `json:"price"`             // 販売価格
+	Price             int64           `json:"price"`             // 販売価格(税込)
 	ExpirationDate    int64           `json:"expirationDate"`    // 賞味期限(単位:日)
 	RecommendedPoint1 string          `json:"recommendedPoint1"` // おすすめポイント1
 	RecommendedPoint2 string          `json:"recommendedPoint2"` // おすすめポイント2

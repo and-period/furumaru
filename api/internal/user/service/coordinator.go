@@ -55,7 +55,15 @@ func (s *service) MultiGetCoordinators(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	coordinators, err := s.db.Coordinator.MultiGet(ctx, in.CoordinatorIDs)
+	var (
+		coordinators entity.Coordinators
+		err          error
+	)
+	if in.WithDeleted {
+		coordinators, err = s.db.Coordinator.MultiGetWithDeleted(ctx, in.CoordinatorIDs)
+	} else {
+		coordinators, err = s.db.Coordinator.MultiGet(ctx, in.CoordinatorIDs)
+	}
 	return coordinators, internalError(err)
 }
 
@@ -65,7 +73,15 @@ func (s *service) GetCoordinator(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
+	var (
+		coordinator *entity.Coordinator
+		err         error
+	)
+	if in.WithDeleted {
+		coordinator, err = s.db.Coordinator.GetWithDeleted(ctx, in.CoordinatorID)
+	} else {
+		coordinator, err = s.db.Coordinator.Get(ctx, in.CoordinatorID)
+	}
 	return coordinator, internalError(err)
 }
 
