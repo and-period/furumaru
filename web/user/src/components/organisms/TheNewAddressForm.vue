@@ -143,7 +143,7 @@ const handleSubmit = () => {
         type="checkbox"
         class="h-4 w-4 rounded accent-main"
       />
-      <label for="isDefault">この住所を配送先の既定値とする</label>
+      <label for="isDefault">この住所を基本の配送先に指定する</label>
     </div>
   </form>
 </template>
