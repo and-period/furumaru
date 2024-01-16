@@ -45,7 +45,7 @@ const handelClickRemoveItemButton = (id: string) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-8 text-main lg:grid lg:grid-flow-col">
+  <div class="text-main flex flex-col gap-8 lg:grid lg:grid-flow-col">
     <div class="flex flex-col">
       <div class="text-[20px] font-bold tracking-[2px]">
         {{ coordinator.marcheName }}
@@ -53,8 +53,8 @@ const handelClickRemoveItemButton = (id: string) => {
 
       <div class="my-9">
         <div>カゴの数：{{ cart.items.length }}</div>
-        <div>発送地：{{ coordinator.username }}</div>
-        <div>発送元：{{}}</div>
+        <div>発送地：{{ `${coordinator.prefecture}${coordinator.city}` }}</div>
+        <div>発送元：{{ coordinator.username }}</div>
       </div>
 
       <div class="flex items-center justify-between font-bold">
@@ -62,12 +62,12 @@ const handelClickRemoveItemButton = (id: string) => {
         <div class="text-[20px]">{{ priceStringFormatter(totalPrice) }}</div>
       </div>
 
-      <hr class="my-5 border-main" />
+      <hr class="border-main my-5" />
 
       <div>※送料はご購入手続き画面で加算されます。</div>
 
       <button
-        class="mt-8 bg-main p-[14px] text-[16px] text-white"
+        class="bg-main mt-8 p-[14px] text-[16px] text-white"
         @click="handleBuyButton"
       >
         このマルシェのご購入手続きへ
@@ -83,12 +83,12 @@ const handelClickRemoveItemButton = (id: string) => {
 
       <div class="flex flex-col gap-y-6 lg:gap-y-16">
         <div
-          class="mb-7 rounded-2xl bg-base p-2 text-center font-bold tracking-[1.2px] text-main"
+          class="bg-base text-main mb-7 rounded-2xl p-2 text-center font-bold tracking-[1.2px]"
         >
           買い物カゴ #{{ cartNumber }} -{{ coordinator.marcheName }}-
         </div>
 
-        <div class="flex w-full flex-col text-main">
+        <div class="text-main flex w-full flex-col">
           <!-- PC、タブレットのみで表示する -->
           <div
             class="hidden grid-cols-5 items-center border-b py-2 text-[12px] tracking-[1.2px] md:grid"
@@ -175,7 +175,7 @@ const handelClickRemoveItemButton = (id: string) => {
                 {{ priceStringFormatter(totalPrice) }}
               </div>
             </div>
-            <hr class="my-4 border-main" />
+            <hr class="border-main my-4" />
             <div class="text-[12px]">
               ※送料はご購入手続き画面で加算されます。
             </div>
@@ -186,21 +186,21 @@ const handelClickRemoveItemButton = (id: string) => {
 
             <div class="flex grow flex-col gap-4 whitespace-nowrap">
               <div class="flex flex-col gap-2 text-center">
-                <div class="rounded-3xl bg-base py-[3px] text-[12px]">
+                <div class="bg-base rounded-3xl py-[3px] text-[12px]">
                   箱タイプ
                 </div>
                 <div class="text-[14px]">{{ cart.boxType }}</div>
               </div>
 
               <div class="flex flex-col gap-2 text-center">
-                <div class="rounded-3xl bg-base py-[3px] text-[12px]">
+                <div class="bg-base rounded-3xl py-[3px] text-[12px]">
                   箱サイズ
                 </div>
                 <div class="text-[14px]">{{ cart.boxSize }}</div>
               </div>
 
               <div class="flex flex-col gap-2 text-center">
-                <div class="rounded-3xl bg-base py-[3px] text-[12px]">
+                <div class="bg-base rounded-3xl py-[3px] text-[12px]">
                   占有率
                 </div>
                 <div class="text-[14px]">{{ cart.useRate }}</div>
@@ -216,7 +216,7 @@ const handelClickRemoveItemButton = (id: string) => {
                   {{ priceStringFormatter(totalPrice) }}
                 </div>
               </div>
-              <hr class="my-4 border-main" />
+              <hr class="border-main my-4" />
               <div>※送料はご購入手続き画面で加算されます。</div>
             </div>
 
