@@ -53,8 +53,8 @@ const handelClickRemoveItemButton = (id: string) => {
 
       <div class="my-9">
         <div>カゴの数：{{ cart.items.length }}</div>
-        <div>発送地：{{ coordinator.username }}</div>
-        <div>発送元：{{}}</div>
+        <div>発送地：{{ `${coordinator.prefecture}${coordinator.city}` }}</div>
+        <div>取り扱い元：{{ coordinator.username }}</div>
       </div>
 
       <div class="flex items-center justify-between font-bold">
