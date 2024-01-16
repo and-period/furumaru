@@ -300,7 +300,7 @@ definePageMeta({
               v-if="address.isDefault"
               class="inline-block rounded-2xl bg-orange px-2 py-1 text-[12px] text-white"
             >
-              規定の住所
+              基本の住所
             </div>
           </div>
           <dl>
