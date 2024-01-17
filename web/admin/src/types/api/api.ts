@@ -6163,6 +6163,12 @@ export interface UserOrder {
      */
     'status': PaymentStatus;
     /**
+     * 購入商品合計金額
+     * @type {number}
+     * @memberof UserOrder
+     */
+    'subtotal': number;
+    /**
      * 支払い合計金額
      * @type {number}
      * @memberof UserOrder
@@ -6196,17 +6202,29 @@ export interface UserOrdersResponse {
      */
     'orders': Array<UserOrder>;
     /**
-     * 合計数
+     * 注文合計回数
      * @type {number}
      * @memberof UserOrdersResponse
      */
-    'total': number;
+    'orderTotalCount': number;
     /**
-     * 購入合計金額
+     * 支払い合計回数
      * @type {number}
      * @memberof UserOrdersResponse
      */
-    'totalAmount': number;
+    'paymentTotalCount': number;
+    /**
+     * 購入商品合計金額
+     * @type {number}
+     * @memberof UserOrdersResponse
+     */
+    'productTotalAmount': number;
+    /**
+     * 支払い合計金額
+     * @type {number}
+     * @memberof UserOrdersResponse
+     */
+    'paymentTotalAmount': number;
 }
 /**
  * 
@@ -6314,17 +6332,11 @@ export interface UserToList {
      */
     'city': string;
     /**
-     * 購入回数
+     * 支払い回数
      * @type {number}
      * @memberof UserToList
      */
-    'totalOrder': number;
-    /**
-     * 購入金額
-     * @type {number}
-     * @memberof UserToList
-     */
-    'totalAmount': number;
+    'paymentTotalCount': number;
 }
 
 

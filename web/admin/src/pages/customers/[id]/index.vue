@@ -16,7 +16,14 @@ const customerId = route.params.id as string
 
 const { role } = storeToRefs(authStore)
 const { address } = storeToRefs(addressStore)
-const { customer, orders, totalOrders, totalAmount } = storeToRefs(customerStore)
+const {
+  customer,
+  orders,
+  totalOrderCount,
+  totalPaymentCount,
+  totalProductAmount,
+  totalPaymentAmount
+} = storeToRefs(customerStore)
 
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
@@ -91,8 +98,10 @@ try {
     :customer="customer"
     :address="address"
     :orders="orders"
-    :order-total="totalOrders"
-    :order-amount="totalAmount"
+    :total-order-count="totalOrderCount"
+    :total-payment-count="totalPaymentCount"
+    :total-product-amount="totalProductAmount"
+    :total-payment-amount="totalPaymentAmount"
     @click:row="handleClickRow"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"

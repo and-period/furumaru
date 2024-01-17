@@ -143,9 +143,9 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 	}
 
 	var (
-		orders      sentity.Orders
-		totalOrder  int64
-		totalAmount int64
+		orders          sentity.Orders
+		aggregatedOrder *sentity.AggregatedOrder
+		total           int64
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -157,7 +157,7 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 		if getRole(ctx) == service.AdminRoleCoordinator {
 			in.CoordinatorID = getAdminID(ctx)
 		}
-		orders, totalOrder, err = h.store.ListOrders(ectx, in)
+		orders, total, err = h.store.ListOrders(ectx, in)
 		return
 	})
 	eg.Go(func() error {
@@ -173,9 +173,9 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 		}
 		order, ok := aggregate.Map()[userID]
 		if !ok {
-			return nil
+			order = &sentity.AggregatedOrder{}
 		}
-		totalAmount = order.Subtotal
+		aggregatedOrder = order
 		return nil
 	})
 	if err := eg.Wait(); err != nil {
@@ -184,9 +184,11 @@ func (h *handler) ListUserOrders(ctx *gin.Context) {
 	}
 
 	res := &response.UserOrdersResponse{
-		Orders:      service.NewUserOrders(orders).Response(),
-		Total:       totalOrder,
-		TotalAmount: totalAmount,
+		Orders:             service.NewUserOrders(orders).Response(),
+		OrderTotalCount:    total,
+		PaymentTotalCount:  aggregatedOrder.OrderCount,
+		ProductTotalAmount: aggregatedOrder.Subtotal,
+		PaymentTotalAmount: aggregatedOrder.Total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

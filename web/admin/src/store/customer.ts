@@ -11,8 +11,10 @@ export const useCustomerStore = defineStore('customer', {
     customersToList: [] as UserToList[],
     orders: [] as UserOrder[],
     totalItems: 0,
-    totalOrders: 0,
-    totalAmount: 0
+    totalOrderCount: 0,
+    totalPaymentCount: 0,
+    totalProductAmount: 0,
+    totalPaymentAmount: 0
   }),
 
   actions: {
@@ -55,8 +57,10 @@ export const useCustomerStore = defineStore('customer', {
       try {
         const res = await apiClient.userApi().v1ListUserOrders(customerId, limit, offset)
         this.orders = res.data.orders
-        this.totalOrders = res.data.total
-        this.totalAmount = res.data.totalAmount
+        this.totalOrderCount = res.data.orderTotalCount
+        this.totalPaymentCount = res.data.paymentTotalAmount
+        this.totalProductAmount = res.data.productTotalAmount
+        this.totalPaymentAmount = res.data.paymentTotalAmount
       } catch (err) {
         return this.errorHandler(err)
       }

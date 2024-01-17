@@ -64,8 +64,7 @@ usersResponse:
       registered: true
       prefectureCode: 13
       city: '横浜市'
-      totalOrder: 2
-      totalAmount: 5000
+      paymentTotalCount: 2
     total: 1
 userOrdersResponse:
   type: object
@@ -75,24 +74,37 @@ userOrdersResponse:
       description: 注文履歴一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/userOrder'
-    total:
+    orderTotalCount:
       type: integer
       format: int64
-      description: 合計数
-    totalAmount:
+      description: 注文合計回数
+    paymentTotalCount:
       type: integer
       format: int64
-      description: 購入合計金額
+      description: 支払い合計回数
+    productTotalAmount:
+      type: integer
+      format: int64
+      description: 購入商品合計金額
+    paymentTotalAmount:
+      type: integer
+      format: int64
+      description: 支払い合計金額
   required:
   - orders
-  - total
-  - totalAmount
+  - orderTotalCount
+  - paymentTotalCount
+  - productTotalAmount
+  - paymentTotalAmount
   example:
     orders:
     - orderId: 'kSByoE6FetnPs5Byk3a9Zx'
       status: 2
+      subtotal: 1200
       total: 1980
       orderedAt: 1640962800
       paidAt: 1640962800
-    total: 1
-    totalAmount: 1980
+    orderTotalCount: 1
+    paymentTotalCount: 1
+    productTotalAmount: 1200
+    paymentTotalAmount: 1980

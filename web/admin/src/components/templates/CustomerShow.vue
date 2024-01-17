@@ -71,11 +71,19 @@ const props = defineProps({
     type: Array<UserOrder>,
     default: () => []
   },
-  orderTotal: {
+  totalOrderCount: {
     type: Number,
     default: 0
   },
-  orderAmount: {
+  totalPaymentCount: {
+    type: Number,
+    default: 0
+  },
+  totalProductAmount: {
+    type: Number,
+    default: 0
+  },
+  totalPaymentAmount: {
     type: Number,
     default: 0
   },
@@ -378,7 +386,7 @@ const onSubmitDelete = (): void => {
                 購入商品金額（※送料等は除く）
               </v-card-subtitle>
               <div class="px-4">
-                &yen; {{ props.orderAmount.toLocaleString() }}
+                &yen; {{ props.totalProductAmount.toLocaleString() }}
               </div>
             </v-col>
             <v-col>
@@ -386,7 +394,7 @@ const onSubmitDelete = (): void => {
                 注文数
               </v-card-subtitle>
               <div class="px-4">
-                {{ props.orderTotal.toLocaleString() }} 件
+                {{ props.totalPaymentCount.toLocaleString() }} 件
               </div>
             </v-col>
           </v-row>
@@ -399,7 +407,7 @@ const onSubmitDelete = (): void => {
             :loading="loading"
             :items="props.orders"
             :items-per-page="props.tableItemsPerPage"
-            :items-length="props.orderTotal"
+            :items-length="props.totalOrderCount"
             no-data-text="注文履歴がありません"
             hover
             @update:page="onClickUpdatePage"

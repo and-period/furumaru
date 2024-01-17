@@ -1184,6 +1184,7 @@ func TestAggregateOrders(t *testing.T) {
 			OrderCount: 2,
 			Subtotal:   6000,
 			Discount:   1000,
+			Total:      5000,
 		},
 	}
 

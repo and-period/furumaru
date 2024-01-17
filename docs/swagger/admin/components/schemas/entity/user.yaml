@@ -96,14 +96,10 @@ userToList:
     city:
       type: string
       description: 市区町村
-    totalOrder:
+    paymentTotalCount:
       type: integer
       format: int64
-      description: 購入回数
-    totalAmount:
-      type: integer
-      format: itn64
-      description: 購入金額
+      description: 支払い回数
   required:
   - id
   - lastname
@@ -113,8 +109,7 @@ userToList:
   - registered
   - prefectureCode
   - city
-  - totalOrder
-  - totalAmount
+  - paymentTotalCount
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     lastname: '&.'
@@ -124,8 +119,7 @@ userToList:
     registered: true
     prefectureCode: 13
     city: '千代田区'
-    totalOrder: 2
-    totalAmount: 1980
+    paymentTotalCount: 2
 userOrder:
   type: object
   description: 購入者の注文情報
@@ -135,6 +129,10 @@ userOrder:
       description: 注文履歴ID
     status:
       $ref: './../../../openapi.yaml#/components/schemas/paymentStatus'
+    subtotal:
+      type: integer
+      format: int64
+      description: 購入商品合計金額
     total:
       type: integer
       format: int64
@@ -150,6 +148,7 @@ userOrder:
   required:
   - orderId
   - status
+  - subtotal
   - total
   - orderedAt
   - paidAt

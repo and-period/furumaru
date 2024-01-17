@@ -143,16 +143,15 @@ func NewUserToList(user *User, order *sentity.AggregatedOrder) *UserToList {
 	}
 	return &UserToList{
 		UserToList: response.UserToList{
-			ID:             user.ID,
-			Lastname:       user.Lastname,
-			Firstname:      user.Firstname,
-			Email:          user.Email,
-			Status:         user.Status,
-			Registered:     user.Registered,
-			PrefectureCode: user.address.PrefectureCode,
-			City:           user.address.City,
-			TotalOrder:     order.OrderCount,
-			TotalAmount:    order.Subtotal,
+			ID:                user.ID,
+			Lastname:          user.Lastname,
+			Firstname:         user.Firstname,
+			Email:             user.Email,
+			Status:            user.Status,
+			Registered:        user.Registered,
+			PrefectureCode:    user.address.PrefectureCode,
+			City:              user.address.City,
+			PaymentTotalCount: order.OrderCount,
 		},
 	}
 }
