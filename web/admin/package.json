@@ -19,7 +19,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
     "@tiptap/pm": "^2.0.3",
-    "@tiptap/starter-kit": "^2.1.12",
+    "@tiptap/starter-kit": "^2.1.16",
     "@tiptap/vue-3": "^2.0.3",
     "@vuelidate/core": "^2.0.2",
     "@vuelidate/validators": "^2.0.3",
