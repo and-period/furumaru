@@ -213,7 +213,7 @@ definePageMeta({
               <dl class="col-span-2 md:col-span-3">
                 <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
                   <dt>注文ID</dt>
-                  <dd class="sm:col-span-2">
+                  <dd class="line-clamp-1 sm:col-span-2">
                     {{ order.id }}
                   </dd>
                 </div>
