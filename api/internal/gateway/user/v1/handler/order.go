@@ -171,5 +171,8 @@ func (h *handler) getOrder(ctx context.Context, userID, orderID string) (*servic
 		products, err = h.multiGetProductsByRevision(ectx, order.ProductRevisionIDs())
 		return
 	})
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
 	return service.NewOrder(order, addresses.MapByRevision(), products.MapByRevision()), nil
 }
