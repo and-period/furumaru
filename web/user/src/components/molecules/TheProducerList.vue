@@ -47,7 +47,7 @@ const handleClickProductItem = (productId: string) => {
         この生産者の商品
       </div>
     </div>
-    <div class="grid gap-2 px-4 pt-10 lg:grid-cols-2">
+    <div class="grid grid-cols-2 gap-2 px-4 pt-10">
       <the-coordinator-product-list
         v-for="product in products"
         :id="product.id"
