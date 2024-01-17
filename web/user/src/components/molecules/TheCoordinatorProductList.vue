@@ -37,7 +37,7 @@ const handleClickItem = () => {
 
 <template>
   <div class="mx-auto flex flex-col text-main">
-    <div class="relative max-w-[144px]">
+    <div class="relative max-w-[144px] mx-auto">
       <div
         v-if="!hasStock"
         class="absolute inset-0 flex items-center justify-center bg-black/50"
@@ -59,7 +59,7 @@ const handleClickItem = () => {
     </div>
 
     <p
-      class="mt-2 line-clamp-3 grow text-[14px] tracking-[1.4px] md:text-[14px] md:tracking-[1.6px]"
+      class="mt-2 line-clamp-3 max-w-[144px] grow text-[14px] tracking-[1.4px] md:text-[14px] md:tracking-[1.6px]"
       :class="{ 'hover:cursor-pointer hover:underline': hasStock }"
       @click="handleClickItem"
     >
