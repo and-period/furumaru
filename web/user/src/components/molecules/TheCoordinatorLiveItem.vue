@@ -16,8 +16,8 @@ const formattedStartAt = computed(() => {
   return dayjs.unix(props.startAt).format('YYYY/MM/DD HH:mm')
 })
 
-const isLiveStreaming = (stasus: ScheduleStatus) => {
-  if (stasus === ScheduleStatus.LIVE) {
+const isLiveStreaming = (status: ScheduleStatus) => {
+  if (status === ScheduleStatus.LIVE) {
     return true
   } else {
     return false
