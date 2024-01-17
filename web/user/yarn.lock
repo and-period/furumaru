@@ -138,7 +138,7 @@
   dependencies:
     "@babel/types" "^7.23.0"
 
-"@babel/helper-module-imports@^7.22.15", "@babel/helper-module-imports@^7.22.5":
+"@babel/helper-module-imports@^7.22.15":
   version "7.22.15"
   resolved "https://registry.yarnpkg.com/@babel/helper-module-imports/-/helper-module-imports-7.22.15.tgz#16146307acdc40cc00c3b2c647713076464bdbf0"
   integrity sha512-0pYVBnDKZO2fnSPCrgM/6WMc7eS20Fbok+0r88fp+YtWVLZrp4CkafFGIp+W0VKw4a22sgebPT99y+FDNMdP4w==
@@ -273,7 +273,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
 
-"@babel/plugin-syntax-jsx@^7.22.5":
+"@babel/plugin-syntax-jsx@^7.23.3":
   version "7.23.3"
   resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-jsx/-/plugin-syntax-jsx-7.23.3.tgz#8f2e4f8a9b5f9aa16067e142c1ac9cd9f810f473"
   integrity sha512-EB2MELswq55OHUoRZLGg/zC7QWUKfNLpE57m/S2yr1uEneIgsTgrSzXP3NXEsMkVn76OlaVVnzN+ugObuYGwhg==
@@ -302,7 +302,7 @@
   resolved "https://registry.yarnpkg.com/@babel/standalone/-/standalone-7.23.5.tgz#3209677d9cfd6411734bd758d445e3f93ad2d698"
   integrity sha512-4bqgawmyDPu+9gQhZOKh1ftCUa6BAT0KztElMcWAJgOgQJRNhmGVA0M0McedEqvGi7SbfiBBvlH13Jc47P919A==
 
-"@babel/template@^7.22.15", "@babel/template@^7.22.5":
+"@babel/template@^7.22.15":
   version "7.22.15"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.22.15.tgz#09576efc3830f0430f4548ef971dde1350ef2f38"
   integrity sha512-QPErUVm4uyJa60rkI73qneDacvdvzxshT3kksGqlGWYdOTIUOwJ7RDUL8sGqslY1uXWSL6xMFKEXDS3ox2uF0w==
@@ -311,7 +311,7 @@
     "@babel/parser" "^7.22.15"
     "@babel/types" "^7.22.15"
 
-"@babel/traverse@^7.22.5", "@babel/traverse@^7.23.5", "@babel/traverse@^7.23.6":
+"@babel/traverse@^7.23.5", "@babel/traverse@^7.23.6", "@babel/traverse@^7.23.7":
   version "7.23.7"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.23.7.tgz#9a7bf285c928cb99b5ead19c3b1ce5b310c9c305"
   integrity sha512-tY3mM8rH9jM0YHFGyfC0/xf+SB5eKUu7HPj7/k3fpi9dAlsMc5YbQvDi0Sh2QTPXqMhyaAtzAr807TIyfQrmyg==
@@ -2218,22 +2218,22 @@
     local-pkg "^0.5.0"
     magic-string-ast "^0.3.0"
 
-"@vue/babel-helper-vue-transform-on@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@vue/babel-helper-vue-transform-on/-/babel-helper-vue-transform-on-1.1.5.tgz#a976486b21e108e545524fe41ffe3fc9bbc28c7f"
-  integrity sha512-SgUymFpMoAyWeYWLAY+MkCK3QEROsiUnfaw5zxOVD/M64KQs8D/4oK6Q5omVA2hnvEOE0SCkH2TZxs/jnnUj7w==
+"@vue/babel-helper-vue-transform-on@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@vue/babel-helper-vue-transform-on/-/babel-helper-vue-transform-on-1.1.6.tgz#a0f5a34c61974d70a30af660f4ef377fbdb6439c"
+  integrity sha512-XxM2tZHjYHTd9yiKHHt7fKCN0e2BK2z78UxU5rpjH3YCstEV/tcrW29CaOdrxIdeD0c/9mHHebvXWwDxlphjKA==
 
 "@vue/babel-plugin-jsx@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@vue/babel-plugin-jsx/-/babel-plugin-jsx-1.1.5.tgz#5088bae7dbb83531d94df3742ff650c12fd54973"
-  integrity sha512-nKs1/Bg9U1n3qSWnsHhCVQtAzI6aQXqua8j/bZrau8ywT1ilXQbK4FwEJGmU8fV7tcpuFvWmmN7TMmV1OBma1g==
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@vue/babel-plugin-jsx/-/babel-plugin-jsx-1.1.6.tgz#206eebe34a4d1d1e1cdf400fd1d772de0e8845c7"
+  integrity sha512-s2pK8Wwg0LiR25lyCKWGJePt8aXF0DsXOmTHYJnlKNdT3yTKfdvkKmsWjaHBctFvwWmetedObrAoINc9BeYZlA==
   dependencies:
-    "@babel/helper-module-imports" "^7.22.5"
-    "@babel/plugin-syntax-jsx" "^7.22.5"
-    "@babel/template" "^7.22.5"
-    "@babel/traverse" "^7.22.5"
-    "@babel/types" "^7.22.5"
-    "@vue/babel-helper-vue-transform-on" "^1.1.5"
+    "@babel/helper-module-imports" "^7.22.15"
+    "@babel/plugin-syntax-jsx" "^7.23.3"
+    "@babel/template" "^7.22.15"
+    "@babel/traverse" "^7.23.7"
+    "@babel/types" "^7.23.6"
+    "@vue/babel-helper-vue-transform-on" "^1.1.6"
     camelcase "^6.3.0"
     html-tags "^3.3.1"
     svg-tags "^1.0.0"
