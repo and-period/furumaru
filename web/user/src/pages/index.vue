@@ -111,7 +111,7 @@ useSeoMeta({
                 :title="liveItem.title"
                 :img-src="liveItem.thumbnailUrl"
                 :start-at="liveItem.startAt"
-                :is-live-streaming="liveItem.isLiveStreaming"
+                :is-live-status="liveItem.status"
                 :marche-name="liveItem.coordinator.marcheName"
                 :address="liveItem.coordinator.city"
                 :cn-name="liveItem.coordinator.username"

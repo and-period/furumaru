@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import { ScheduleStatus } from '~/types/api'
 
 interface Props {
   id: string
   title: string
   imgSrc: string
   startAt: number
-  isLiveStreaming: boolean
+  isLiveStatus: ScheduleStatus
   marcheName: string
   address: string
   cnName: string
@@ -25,25 +26,27 @@ const formattedStartAt = computed(() => {
   return dayjs.unix(props.startAt).format('YYYY/MM/DD HH:mm')
 })
 
-const handleClick = () => {
-  if (props.isLiveStreaming) {
-    emits('click')
+const isLiveStreaming = (stasus: ScheduleStatus) => {
+  if (stasus === ScheduleStatus.LIVE) {
+    return true
+  } else {
+    return false
   }
+}
+
+const handleClick = () => {
+  emits('click')
 }
 </script>
 
 <template>
   <div
-    :class="{
-      ' text-main ': true,
-      'lg:group cursor-pointer bg-base drop-shadow-sm duration-75 ease-in-out lg:hover:z-10 lg:hover:scale-[1.2] lg:hover:bg-white':
-        isLiveStreaming,
-    }"
+    class="lg:group cursor-pointer bg-base drop-shadow-sm duration-75 ease-in-out lg:hover:z-10 lg:hover:scale-[1.2] lg:hover:bg-white"
     @click="handleClick"
   >
     <div class="relative w-full p-4">
       <div
-        v-if="isLiveStreaming"
+        v-if="isLiveStreaming(isLiveStatus)"
         class="absolute -left-4 -top-4 z-[1] flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange xl:-left-8 xl:-top-8"
       >
         <the-live-icon />
@@ -57,7 +60,7 @@ const handleClick = () => {
           class="aspect-video w-full object-cover"
         />
         <div
-          v-if="!isLiveStreaming"
+          v-if="!isLiveStreaming(isLiveStatus)"
           class="absolute bottom-0 flex h-[48px] w-full items-center justify-center bg-black/50 text-[16px] font-bold tracking-[1.6px] text-white"
         >
           {{ formattedStartAt }} 〜 配信予定
@@ -70,11 +73,11 @@ const handleClick = () => {
             <span
               :class="{
                 'rounded px-2 font-bold': true,
-                'border-2 border-orange bg-white text-orange': isLiveStreaming,
-                'border-2 border-main text-main': !isLiveStreaming,
+                'border-2 border-orange bg-white text-orange': isLiveStreaming(isLiveStatus),
+                'border-2 border-main text-main': !isLiveStreaming(isLiveStatus),
               }"
             >
-              {{ isLiveStreaming ? '配信中' : '配信予定' }}
+              {{ isLiveStreaming(isLiveStatus) ? '配信中' : '配信予定' }}
             </span>
             <span class="ml-2 after:content-['〜']">{{
               formattedStartAt

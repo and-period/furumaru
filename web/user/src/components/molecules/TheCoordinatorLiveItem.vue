@@ -51,8 +51,8 @@ const handleClick = () => {
           <span
             :class="{
               'rounded px-2 font-bold': true,
-              'border-2 border-orange bg-white text-orange': isLiveStreaming,
-              'border-2 border-main text-main': !isLiveStreaming,
+              'border-2 border-orange bg-white text-orange': isLiveStreaming(isLiveStatus),
+              'border-2 border-main text-main': !isLiveStreaming(isLiveStatus),
             }"
           >
             {{ isLiveStreaming(isLiveStatus) ? '配信中' : '配信予定' }}

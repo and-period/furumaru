@@ -32,7 +32,6 @@ export const useTopPageStore = defineStore('top-page', {
         ...state._lives.map((live) => {
           return {
             ...live,
-            isLiveStreaming: dayjs().isAfter(live.startAt),
             coordinator: state._coordinators.find(
               (c) => c.id === live.coordinatorId,
             ),
