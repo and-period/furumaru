@@ -256,11 +256,13 @@ func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersP
 		"COUNT(DISTINCT(orders.id)) AS order_count",
 		"SUM(order_payments.subtotal) AS subtotal",
 		"SUM(order_payments.discount) AS discount",
+		"SUM(order_payments.total) AS total",
 	}
 
 	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
 		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
-		Where("orders.user_id IN (?)", params.UserIDs)
+		Where("orders.user_id IN (?)", params.UserIDs).
+		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
 	if params.CoordinatorID != "" {
 		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
 	}

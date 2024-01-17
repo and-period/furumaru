@@ -25,6 +25,11 @@ const (
 	PaymentStatusFailed     PaymentStatus = 6 // 失敗/期限切れ
 )
 
+var (
+	PaymentSuccessStatuses = []PaymentStatus{PaymentStatusAuthorized, PaymentStatusCaptured}
+	PaymentFailedStatuses  = []PaymentStatus{PaymentStatusCanceled, PaymentStatusRefunded, PaymentStatusFailed}
+)
+
 // PaymentMethodType - 決済手段
 type PaymentMethodType int32
 

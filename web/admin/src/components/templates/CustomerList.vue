@@ -61,12 +61,7 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: '注文数',
-    key: 'totalOrder',
-    sortable: false
-  },
-  {
-    title: '購入金額',
-    key: 'totalAmount',
+    key: 'paymentTotalCount',
     sortable: false
   },
   {
@@ -164,9 +159,6 @@ const onClickRow = (item: UserToList): void => {
         </template>
         <template #[`item.address`]="{ item }">
           {{ getAddress(item) }}
-        </template>
-        <template #[`item.totalAmount`]="{ item }">
-          &yen; {{ `${item.totalAmount.toLocaleString()}` }}
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip size="small" :color="getStatusColor(item.status)">

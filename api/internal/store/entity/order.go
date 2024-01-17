@@ -33,6 +33,7 @@ type AggregatedOrder struct {
 	OrderCount int64  // 注文合計回数
 	Subtotal   int64  // 購入合計金額
 	Discount   int64  // 割引合計金額
+	Total      int64  // 支払合計金額
 }
 
 type AggregatedOrders []*AggregatedOrder

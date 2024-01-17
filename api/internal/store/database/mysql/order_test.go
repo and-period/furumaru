@@ -1340,6 +1340,7 @@ func TestOrder_Aggregate(t *testing.T) {
 						OrderCount: 2,
 						Subtotal:   3600,
 						Discount:   0,
+						Total:      4600,
 					},
 				},
 				hasErr: false,
