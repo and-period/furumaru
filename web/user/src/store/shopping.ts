@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
 import {
-  PaymentMethodType,
   type AddCartItemRequest,
   type CalcCartResponse,
   type CartResponse,
@@ -13,6 +12,7 @@ import type {
   ProductItem,
   ShoppingCart,
 } from '~/types/store'
+import { getPaymentMethodNameByPaymentMethodType } from '~/lib/order'
 
 /**
  * 買い物かごを管理するグローバルステート
@@ -145,37 +145,13 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     },
 
     availablePaymentSystem: (state): PaymentSystemStatus[] => {
-      // マッピング用の関数を用意
-      const methodNameMappter = (methodType: PaymentMethodType): string => {
-        switch (methodType) {
-          case PaymentMethodType.CASH:
-            return '現金支払い'
-          case PaymentMethodType.CREDIT_CARD:
-            return 'クレジットカード決済'
-          case PaymentMethodType.KONBINI:
-            return 'コンビニ決済'
-          case PaymentMethodType.BANK_TRANSFER:
-            return '銀行振込決済'
-          case PaymentMethodType.PAYPAY:
-            return 'QR決済（PayPay）'
-          case PaymentMethodType.LINE_PAY:
-            return 'QR決済（Line Pay）'
-          case PaymentMethodType.MERPAY:
-            return 'QR決済（メルペイ）'
-          case PaymentMethodType.RAKUTEN_PAY:
-            return 'QR決済（楽天ペイ）'
-          case PaymentMethodType.AU_PAY:
-            return 'QR決済（au PAY）'
-          case PaymentMethodType.UNKNOWN:
-          default:
-            return ''
-        }
-      }
       return state._paymentSystemStatus
         .map((item) => {
           return {
             ...item,
-            methodName: methodNameMappter(item.methodType),
+            methodName: getPaymentMethodNameByPaymentMethodType(
+              item.methodType,
+            ),
           }
         })
         .filter((item) => item.status === 1)

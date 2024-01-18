@@ -1,4 +1,4 @@
-import { OrderStatus } from '~/types/api'
+import { OrderStatus, PaymentMethodType } from '~/types/api'
 
 /**
  * ステータスを文字列に変換する関数
@@ -39,5 +39,38 @@ export function getOperationResultFromOrderStatus(status: OrderStatus): string {
       return 'failed'
     default:
       return 'unknown'
+  }
+}
+
+/**
+ * 決済手段を文字列に変換する関数
+ * @param methodType
+ * @returns
+ */
+export function getPaymentMethodNameByPaymentMethodType(
+  methodType: PaymentMethodType,
+): string {
+  switch (methodType) {
+    case PaymentMethodType.CASH:
+      return '現金支払い'
+    case PaymentMethodType.CREDIT_CARD:
+      return 'クレジットカード決済'
+    case PaymentMethodType.KONBINI:
+      return 'コンビニ決済'
+    case PaymentMethodType.BANK_TRANSFER:
+      return '銀行振込決済'
+    case PaymentMethodType.PAYPAY:
+      return 'QR決済（PayPay）'
+    case PaymentMethodType.LINE_PAY:
+      return 'QR決済（Line Pay）'
+    case PaymentMethodType.MERPAY:
+      return 'QR決済（メルペイ）'
+    case PaymentMethodType.RAKUTEN_PAY:
+      return 'QR決済（楽天ペイ）'
+    case PaymentMethodType.AU_PAY:
+      return 'QR決済（au PAY）'
+    case PaymentMethodType.UNKNOWN:
+    default:
+      return ''
   }
 }
