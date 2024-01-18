@@ -137,17 +137,17 @@ useSeoMeta({
         <!-- 注文商品情報 -->
         <div
           v-if="orderHistory.items.length > 0"
-          class="grid grid-cols-5 items-center border-b py-2 text-[12px] tracking-[1.2px]"
+          class="hidden grid-cols-5 items-center border-b py-2 text-[12px] tracking-[1.2px] md:grid"
         >
           <div class="col-span-2">商品</div>
-          <div>価格（税込み）</div>
-          <div>数量</div>
-          <div>小計（税込み）</div>
+          <div class="text-right">価格（税込み）</div>
+          <div class="text-right">数量</div>
+          <div class="text-right">小計（税込み）</div>
         </div>
         <div v-for="(item, i) in orderHistory.items" :key="i">
           <div
             v-if="item.product"
-            class="grid grid-cols-5 items-center border-b py-2"
+            class="md-text-[16px] flex grid-cols-5 flex-col gap-2 border-b py-2 text-[14px] md:grid md:items-center"
           >
             <div class="col-span-2 flex gap-4">
               <img
@@ -157,19 +157,22 @@ useSeoMeta({
               />
               {{ item.product.name }}
             </div>
-            <div>
+            <div class="text-right">
+              <span class="md:hidden">価格：</span>
               {{ priceFormatter(item.price) }}
             </div>
-            <div>
+            <div class="text-right">
+              <span class="md:hidden">数量：</span>
               {{ item.quantity }}
             </div>
-            <div>
+            <div class="text-right">
+              <span class="md:hidden">小計：</span>
               {{ priceFormatter(item.price * item.quantity) }}
             </div>
           </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-5">
+        <div class="mt-4 grid grid-cols-3 md:grid-cols-5">
           <div class="col-span-2 col-start-4 flex flex-col gap-2 text-[14px]">
             <div class="grid grid-cols-2 text-right">
               <div class="px-4">商品合計</div>
