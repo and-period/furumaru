@@ -76,6 +76,16 @@ export const useAuthStore = defineStore('auth', {
       this.user = res
     },
 
+    /**
+     * フロントエンドの認証情報をリセットする関数
+     */
+    resetState() {
+      this.$reset()
+    },
+
+    /**
+     * ログアウト処理
+     */
     async logout() {
       try {
         await this.authApiClient(this.accessToken).v1SignOut()
@@ -83,7 +93,7 @@ export const useAuthStore = defineStore('auth', {
         this.errorHandler(error)
       } finally {
         // stateを初期状態にリセット
-        this.$reset()
+        this.resetState()
       }
     },
 
