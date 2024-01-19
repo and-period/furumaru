@@ -120,18 +120,8 @@ func (w *worker) fetchCoordinators(
 	return nil
 }
 
-func (w *worker) fetchProducers(ctx context.Context, producerIDs []string, execute func(name, email string)) error {
-	in := &user.MultiGetProducersInput{
-		ProducerIDs: producerIDs,
-	}
-	producers, err := w.user.MultiGetProducers(ctx, in)
-	if err != nil {
-		return err
-	}
-	for i := range producers {
-		execute(producers[i].Username, producers[i].Email)
-	}
-	return nil
+func (w *worker) fetchProducers(_ context.Context, _ []string, _ func(name, email string)) error {
+	return nil // 生産者は認証機能を持たないためメール送信もしない
 }
 
 func (w *worker) fetchUsers(ctx context.Context, userIDs []string, execute func(name, email string)) error {

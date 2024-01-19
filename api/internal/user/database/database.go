@@ -217,6 +217,7 @@ type ListUsersParams struct {
 	Limit          int
 	Offset         int
 	OnlyRegistered bool
+	OnlyVerified   bool
 }
 
 type Error struct {

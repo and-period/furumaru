@@ -307,6 +307,7 @@ type ListUsersInput struct {
 	Limit          int64 `validate:"required,max=200"`
 	Offset         int64 `validate:"min=0"`
 	OnlyRegistered bool  `validate:""`
+	OnlyVerified   bool  `validate:""`
 }
 
 type MultiGetUsersInput struct {

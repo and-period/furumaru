@@ -31,6 +31,10 @@ func (p listUsersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.OnlyRegistered {
 		stmt = stmt.Where("registered = ?", true)
 	}
+	if p.OnlyVerified {
+		stmt = stmt.Joins("INNER JOIN members ON members.user_id = users.id")
+		stmt = stmt.Where("verified_at IS NOT NULL")
+	}
 	stmt = stmt.Unscoped().Order("updated_at DESC")
 	return stmt
 }
