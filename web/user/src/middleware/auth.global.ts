@@ -18,8 +18,8 @@ export default defineNuxtRouteMiddleware(async () => {
         if (error instanceof ApiBaseError) {
           console.log('リフレッシュトークンが期限切れです', error)
         }
-        // ログアウト処理を入れることで認証情報をクリアする
-        authStore.logout()
+        // フロントエンドの認証情報をクリアする
+        authStore.resetState()
         return
       }
       try {
