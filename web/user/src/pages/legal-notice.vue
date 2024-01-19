@@ -20,6 +20,10 @@ const fetchContent = async () => {
 onMounted(() => {
   fetchContent()
 })
+
+useSeoMeta({
+  title: '特定商取引法に基づく表記',
+})
 </script>
 
 <template>

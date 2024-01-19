@@ -20,6 +20,10 @@ const fetchContent = async () => {
 onMounted(() => {
   fetchContent()
 })
+
+useSeoMeta({
+  title: 'プライバシーポリシー',
+})
 </script>
 
 <template>
