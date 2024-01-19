@@ -25,7 +25,7 @@ defineProps<Props>()
   </template>
 
   <template v-if="icon === 'cart'">
-    <the-cart-icon fill="#604C3F" />
+    <the-cart-icon id="cart-icon-xxx" fill="#604C3F" />
   </template>
 
   <template v-if="icon === 'search'">

@@ -133,7 +133,6 @@ const handleClickLogoutButton = () => {
         <ul class="flex list-none gap-x-10">
           <li v-for="(item, i) in menuItems" :key="i">
             <nuxt-link
-              href="#"
               :class="{ 'border-b border-main pb-1': item.active }"
               :to="item.to"
             >
