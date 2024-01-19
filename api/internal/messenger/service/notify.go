@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -25,6 +26,10 @@ func (s *service) NotifyStartLive(ctx context.Context, in *messenger.NotifyStart
 	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
 	if err != nil {
 		return internalError(err)
+	}
+	if !schedule.Published() {
+		s.logger.Warn("This schedule is not published", zap.String("scheduleId", schedule.ID))
+		return nil
 	}
 	coordinatorIn := &user.GetCoordinatorInput{
 		CoordinatorID: schedule.CoordinatorID,
