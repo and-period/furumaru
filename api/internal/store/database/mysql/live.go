@@ -35,7 +35,7 @@ func (p listLivesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.ProducerID != "" {
 		stmt = stmt.Where("producer_id = ?", p.ProducerID)
 	}
-	stmt = stmt.Order("start_at DESC")
+	stmt = stmt.Order("start_at ASC, end_at ASC")
 	return stmt
 }
 
