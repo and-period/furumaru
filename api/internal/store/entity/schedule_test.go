@@ -182,6 +182,44 @@ func TestSchedule_SetStatus(t *testing.T) {
 	}
 }
 
+func TestSchedule_Published(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		schedule *Schedule
+		expect   bool
+	}{
+		{
+			name: "published",
+			schedule: &Schedule{
+				Public:   true,
+				Approved: true,
+			},
+			expect: true,
+		},
+		{
+			name: "unpublished",
+			schedule: &Schedule{
+				Public:   true,
+				Approved: false,
+			},
+			expect: false,
+		},
+		{
+			name:     "nil",
+			schedule: nil,
+			expect:   false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.schedule.Published())
+		})
+	}
+}
+
 func TestSchedules_FIll(t *testing.T) {
 	t.Parallel()
 	now := jst.Date(2022, 8, 15, 0, 0, 0, 0)

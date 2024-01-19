@@ -100,6 +100,13 @@ func (s *Schedule) SetStatus(now time.Time) {
 	}
 }
 
+func (s *Schedule) Published() bool {
+	if s == nil {
+		return false
+	}
+	return s.Public && s.Approved
+}
+
 func (s *Schedule) FillJSON() error {
 	thumbnails, err := s.Thumbnails.Marshal()
 	if err != nil {

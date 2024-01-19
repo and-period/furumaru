@@ -36,8 +36,8 @@ func TestNotifyStartLive(t *testing.T) {
 		Thumbnails:      common.Images{},
 		ImageURL:        "",
 		OpeningVideoURL: "",
-		Public:          false,
-		Approved:        false,
+		Public:          true,
+		Approved:        true,
 		ApprovedAdminID: "",
 		StartAt:         now,
 		EndAt:           now.Add(time.Hour),
@@ -118,6 +118,17 @@ func TestNotifyStartLive(t *testing.T) {
 				ScheduleID: "schedule-id",
 			},
 			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to schedule unpublished",
+			setup: func(ctx context.Context, mocks *mocks) {
+				schedule := &sentity.Schedule{Approved: false}
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+			},
+			input: &messenger.NotifyStartLiveInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: nil,
 		},
 		{
 			name: "failed to get coordinator",
