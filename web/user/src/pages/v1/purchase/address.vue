@@ -10,7 +10,8 @@ const route = useRoute()
 const router = useRouter()
 
 const addressStore = useAdressStore()
-const { addressesFetchState, defaultAddress } = storeToRefs(addressStore)
+const { addressesFetchState, defaultAddress, addresses } =
+  storeToRefs(addressStore)
 const { fetchAddresses, searchAddressByPostalCode, registerAddress } =
   addressStore
 
@@ -18,14 +19,54 @@ const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
 const { calcCartItemByCoordinatorId } = shoppingCartStore
 
-const targetddress = ref<string>('default')
+const fromAddressId = computed<string>(() => {
+  const fromId = route.query.from_address
+  if (fromId) {
+    return String(fromId)
+  } else {
+    return 'default'
+  }
+})
+
+const targetAddressId = computed<string>(() => {
+  const toId = route.query.to_address
+  if (toId) {
+    return String(toId)
+  } else {
+    return 'default'
+  }
+})
+
+const fromAddress = computed(() => {
+  if (fromAddressId.value === 'default') {
+    return defaultAddress.value
+  } else {
+    return addresses.value.find((address) => {
+      return address.id === fromAddressId.value
+    })
+  }
+})
+
+const targetAddress = computed(() => {
+  if (targetAddressId.value === 'default') {
+    return defaultAddress.value
+  } else {
+    return addresses.value.find((address) => {
+      return address.id === targetAddressId.value
+    })
+  }
+})
+
+const fromAddressSelect = ref<boolean>(false)
+const targetddressSelect = ref<string>('default')
+
 const calcCartResponseItemState = ref<{
   isLoading: boolean
   hasError: boolean
   errorMessage: string
 }>({ isLoading: true, hasError: false, errorMessage: '' })
 
-const formData = ref<CreateAddressRequest>({
+const fromAddressFormData = ref<CreateAddressRequest>({
   lastname: '',
   firstname: '',
   lastnameKana: '',
@@ -68,10 +109,12 @@ const priceFormatter = (price: number) => {
 }
 
 const handleClickSearchAddressButton = async () => {
-  const res = await searchAddressByPostalCode(formData.value.postalCode)
-  formData.value.prefectureCode = res.prefectureCode
-  formData.value.city = res.city
-  formData.value.addressLine1 = res.town
+  const res = await searchAddressByPostalCode(
+    fromAddressFormData.value.postalCode,
+  )
+  fromAddressFormData.value.prefectureCode = res.prefectureCode
+  fromAddressFormData.value.city = res.city
+  fromAddressFormData.value.addressLine1 = res.town
 }
 
 const handleClickBackCartButton = () => {
@@ -80,8 +123,10 @@ const handleClickBackCartButton = () => {
 
 const handleSubmitNewAddressForm = async () => {
   const registerdAddress = await registerAddress({
-    ...formData.value,
-    phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
+    ...fromAddressFormData.value,
+    phoneNumber: convertJapaneseToI18nPhoneNumber(
+      fromAddressFormData.value.phoneNumber,
+    ),
   })
   router.push({
     path: '/v1/purchase/confirmation',
@@ -159,57 +204,79 @@ useSeoMeta({
       <template v-else>
         <!-- 左側 -->
         <div class="row-span-1 self-start py-[24px] md:w-full md:py-10">
+          <!-- お客様情報 -->
           <div
             class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
           >
             お客様情報
           </div>
-
           <!-- デフォルトの住所が登録されている場合 -->
           <template v-if="defaultAddress">
             <the-address-info :address="defaultAddress" />
-            <hr class="my-[20px]" />
-            <div class="flex flex-col gap-4">
-              <div class="flex items-center gap-2">
-                <input
-                  id="default-radio"
-                  v-model="targetddress"
-                  type="radio"
-                  class="h-4 w-4 accent-main"
-                  value="default"
-                />
-                <label for="default-radio">上記の住所にお届け</label>
-              </div>
+
+            <div class="mt-4 flex flex-col gap-4">
               <div class="flex items-center gap-2">
                 <input
                   id="other-radio"
-                  v-model="targetddress"
-                  type="radio"
+                  v-model="fromAddressSelect"
+                  type="checkbox"
                   class="h-4 w-4 accent-main"
-                  value="other"
                 />
-                <label for="other-radio">その他の住所にお届け</label>
+                <label for="other-radio">お客様情報を変更する</label>
               </div>
             </div>
-            <template v-if="targetddress === 'other'">
-              <div
-                class="my-6 text-[16px] font-bold tracking-[1.6px] text-main"
-              >
-                お届け先情報
-              </div>
+            <template v-if="fromAddressSelect">
               <the-new-address-form
-                v-model:form-data="formData"
+                v-model:form-data="fromAddressFormData"
+                class="mt-4"
                 form-id="new-address-form"
                 @click:search-address-button="handleClickSearchAddressButton"
                 @submit="handleSubmitNewAddressForm"
               />
             </template>
           </template>
-
           <!-- デフォルトの住所が登録されていない場合 -->
           <template v-else>
             <the-new-address-form
-              v-model:form-data="formData"
+              v-model:form-data="fromAddressFormData"
+              form-id="new-address-form"
+              @click:search-address-button="handleClickSearchAddressButton"
+              @submit="handleSubmitNewAddressForm"
+            />
+          </template>
+
+          <hr class="my-[20px]" />
+
+          <!-- お届け先住所 -->
+          <div class="my-6 text-[16px] font-bold tracking-[1.6px] text-main">
+            お届け先情報
+          </div>
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2">
+              <input
+                id="default-radio"
+                v-model="targetddressSelect"
+                type="radio"
+                class="h-4 w-4 accent-main"
+                value="default"
+              />
+              <label for="default-radio">お客様情報の住所にお届け</label>
+            </div>
+            <div class="flex items-center gap-2">
+              <input
+                id="other-radio"
+                v-model="targetddressSelect"
+                type="radio"
+                class="h-4 w-4 accent-main"
+                value="other"
+              />
+              <label for="other-radio">その他の住所にお届け</label>
+            </div>
+          </div>
+          <template v-if="targetddressSelect === 'other'">
+            <the-new-address-form
+              v-model:form-data="fromAddressFormData"
+              class="mt-4"
               form-id="new-address-form"
               @click:search-address-button="handleClickSearchAddressButton"
               @submit="handleSubmitNewAddressForm"
@@ -326,7 +393,7 @@ useSeoMeta({
             買い物カゴへ戻る
           </button>
 
-          <template v-if="defaultAddress && targetddress === 'default'">
+          <template v-if="defaultAddress && targetddressSelect === 'default'">
             <!-- 通常のボタンの場合 -->
             <button
               class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
