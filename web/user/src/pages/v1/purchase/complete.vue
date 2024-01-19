@@ -47,6 +47,10 @@ onMounted(async () => {
     isLoading.value = false
   }
 })
+
+useSeoMeta({
+  title: '決済確認',
+})
 </script>
 
 <template>

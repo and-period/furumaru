@@ -19,6 +19,11 @@ export default defineNuxtConfig({
           content: '生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ',
         },
         { name: 'format-detection', content: 'telephone=no' },
+        // Google Search Console
+        {
+          name: 'google-site-verification',
+          content: 'xLstKXV5GxV27-afCCeUr5hg8vElOz_Y6sieUFHw8oU',
+        },
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
@@ -69,7 +74,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
-      ENVIRONMENT: process.env.ENVIRONMENT || ''
+      ENVIRONMENT: process.env.ENVIRONMENT || '',
     },
   },
   build: {},

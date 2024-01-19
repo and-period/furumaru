@@ -11,6 +11,10 @@ const t = (str: keyof I18n['auth']['register']) => {
 
 const name = ref<string>('')
 const username = ref<string>('')
+
+useSeoMeta({
+  title: '新規ユーザー登録',
+})
 </script>
 
 <template>

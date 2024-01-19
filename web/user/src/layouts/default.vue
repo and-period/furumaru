@@ -64,11 +64,11 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
 const spModeMenuItems = computed<LinkItem[]>(() => [
   {
     text: ht('myPageLinkText'),
-    href: localePath('/mypage'),
+    href: localePath('/account'),
   },
   {
     text: ht('viewMyCartText'),
-    href: localePath('/cart'),
+    href: localePath('/purchase'),
   },
 ])
 

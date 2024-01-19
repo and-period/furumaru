@@ -48,6 +48,10 @@ const handleSubmit = async () => {
     }
   }
 }
+
+useSeoMeta({
+  title: '新規アカウント登録',
+})
 </script>
 
 <template>
