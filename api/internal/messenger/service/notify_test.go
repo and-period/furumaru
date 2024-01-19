@@ -62,6 +62,7 @@ func TestNotifyStartLive(t *testing.T) {
 		Limit:          200,
 		Offset:         0,
 		OnlyRegistered: true,
+		OnlyVerified:   true,
 	}
 	users := uentity.Users{{ID: "user-id"}}
 	tests := []struct {
@@ -108,6 +109,12 @@ func TestNotifyStartLive(t *testing.T) {
 				ScheduleID: "schedule-id",
 			},
 			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &messenger.NotifyStartLiveInput{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get schedule",

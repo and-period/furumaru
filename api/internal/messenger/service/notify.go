@@ -346,6 +346,7 @@ func (s *service) sendAllUsers(ctx context.Context, payload *entity.WorkerPayloa
 			Limit:          limit,
 			Offset:         offset,
 			OnlyRegistered: true,
+			OnlyVerified:   true,
 		}
 		users, total, err := s.user.ListUsers(ctx, in)
 		if err != nil || len(users) == 0 {

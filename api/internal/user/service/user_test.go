@@ -24,6 +24,7 @@ func TestListUsers(t *testing.T) {
 		Limit:          20,
 		Offset:         0,
 		OnlyRegistered: true,
+		OnlyVerified:   true,
 	}
 	users := entity.Users{
 		{
@@ -64,6 +65,7 @@ func TestListUsers(t *testing.T) {
 				Limit:          20,
 				Offset:         0,
 				OnlyRegistered: true,
+				OnlyVerified:   true,
 			},
 			expect:      users,
 			expectTotal: 1,
@@ -87,6 +89,7 @@ func TestListUsers(t *testing.T) {
 				Limit:          20,
 				Offset:         0,
 				OnlyRegistered: true,
+				OnlyVerified:   true,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -102,6 +105,7 @@ func TestListUsers(t *testing.T) {
 				Limit:          20,
 				Offset:         0,
 				OnlyRegistered: true,
+				OnlyVerified:   true,
 			},
 			expect:      nil,
 			expectTotal: 0,

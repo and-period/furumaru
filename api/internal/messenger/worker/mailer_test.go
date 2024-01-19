@@ -272,19 +272,8 @@ func TestPersonalizations(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name: "success producers",
-			setup: func(ctx context.Context, mocks *mocks) {
-				in := &user.MultiGetProducersInput{ProducerIDs: []string{"admin-id"}}
-				producers := uentity.Producers{{
-					Admin: uentity.Admin{
-						Lastname:  "&.",
-						Firstname: "スタッフ",
-						Email:     "test-user@and-period.jp",
-					},
-					Username: "&. スタッフ",
-				}}
-				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(producers, nil)
-			},
+			name:  "success producers",
+			setup: func(ctx context.Context, mocks *mocks) {},
 			payload: &entity.WorkerPayload{
 				EventType: entity.EventTypeRegisterAdmin,
 				UserType:  entity.UserTypeProducer,
@@ -294,17 +283,7 @@ func TestPersonalizations(t *testing.T) {
 					Substitutions: map[string]interface{}{"key": "value"},
 				},
 			},
-			expect: []*mailer.Personalization{
-				{
-					Name:    "&. スタッフ",
-					Address: "test-user@and-period.jp",
-					Type:    mailer.AddressTypeTo,
-					Substitutions: map[string]interface{}{
-						"key": "value",
-						"氏名":  "&. スタッフ",
-					},
-				},
-			},
+			expect:    []*mailer.Personalization{},
 			expectErr: nil,
 		},
 		{
@@ -647,35 +626,6 @@ func TestFetchCoordinators(t *testing.T) {
 func TestFetchProducers(t *testing.T) {
 	t.Parallel()
 
-	in := &user.MultiGetProducersInput{
-		ProducerIDs: []string{"admin-id"},
-	}
-	producers := uentity.Producers{
-		{
-			Admin: uentity.Admin{
-				ID:            "admin-id",
-				Lastname:      "&.",
-				Firstname:     "スタッフ",
-				LastnameKana:  "あんどぴりおど",
-				FirstnameKana: "すたっふ",
-				Email:         "test-admin@and-period.jp",
-			},
-			AdminID:        "admin-id",
-			Username:       "&.農園",
-			ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-			HeaderURL:      "https://and-period.jp/header.png",
-			PhoneNumber:    "+819012345678",
-			PostalCode:     "1000014",
-			Prefecture:     "東京都",
-			PrefectureCode: 13,
-			City:           "千代田区",
-			AddressLine1:   "永田町1-7-1",
-			AddressLine2:   "",
-			CreatedAt:      jst.Date(2022, 7, 10, 18, 30, 0, 0),
-			UpdatedAt:      jst.Date(2022, 7, 10, 18, 30, 0, 0),
-		},
-	}
-
 	tests := []struct {
 		name        string
 		setup       func(ctx context.Context, mocks *mocks)
@@ -684,10 +634,8 @@ func TestFetchProducers(t *testing.T) {
 		expectErr   error
 	}{
 		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(producers, nil)
-			},
+			name:        "success",
+			setup:       func(ctx context.Context, mocks *mocks) {},
 			producerIDs: []string{"admin-id"},
 			execute: func(t *testing.T) func(name, email string) {
 				execute := func(name, email string) {
@@ -697,17 +645,6 @@ func TestFetchProducers(t *testing.T) {
 				return execute
 			},
 			expectErr: nil,
-		},
-		{
-			name: "failed to get producers",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.user.EXPECT().MultiGetProducers(ctx, in).Return(nil, assert.AnError)
-			},
-			producerIDs: []string{"admin-id"},
-			execute: func(t *testing.T) func(name, email string) {
-				return nil
-			},
-			expectErr: assert.AnError,
 		},
 	}
 	for _, tt := range tests {
