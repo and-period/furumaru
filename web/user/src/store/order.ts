@@ -100,7 +100,7 @@ export const useOrderStore = defineStore('order', {
         items: this.orederResponse.order.items.map((item) => {
           return {
             ...item,
-            product: this._products.find(
+            product: this.orederResponse?.products.find(
               (product) => product.id === item.productId,
             ),
           }
