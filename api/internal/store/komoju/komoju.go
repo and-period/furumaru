@@ -226,7 +226,7 @@ type SessionResponse struct {
 	SecureToken    *SecureToken       `json:"secure_token,omitempty"`
 	PaymentData    *PaymentData       `json:"payment_data"`
 	CustomerID     string             `json:"customer_id,omitempty"`
-	LineItems      []*SessionLineItem `json:"line_items"`
+	LineItems      []*SessionLineItem `json:"line_items,omitempty"`
 }
 
 type OrderSessionResponse struct {
