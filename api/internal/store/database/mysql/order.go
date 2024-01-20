@@ -94,10 +94,10 @@ func (o *order) GetByTransactionID(ctx context.Context, userID, transactionID st
 		Where("order_payments.transaction_id = ?", transactionID)
 
 	if err := stmt.First(&order).Error; err != nil {
-		return nil, err
+		return nil, dbError(err)
 	}
 	if err := o.fill(ctx, o.db.DB, order); err != nil {
-		return nil, err
+		return nil, dbError(err)
 	}
 	return order, nil
 }
