@@ -187,7 +187,7 @@ func (c *client) OrderCreditCard(ctx context.Context, params *komoju.OrderCredit
 			Year:              strconv.FormatInt(params.Year, 10),
 			VerificationValue: params.VerificationValue,
 			Name:              params.Name,
-			ThreeDSecure:      true,
+			// ThreeDSecure:      true,
 		},
 	}
 	req := &komoju.APIParams{
