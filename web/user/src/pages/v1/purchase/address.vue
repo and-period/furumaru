@@ -58,7 +58,11 @@ const targetAddress = computed(() => {
 })
 
 const fromAddressSelect = ref<boolean>(false)
-const targetddressSelect = ref<string>('default')
+const targetAddressSelect = ref<string>('default')
+
+const newUserAddressFormRef = ref<HTMLFormElement | null>(null)
+const addUserAddressFormRef = ref<HTMLFormElement | null>(null)
+const newAddressFormRef = ref<HTMLFormElement | null>(null)
 
 const calcCartResponseItemState = ref<{
   isLoading: boolean
@@ -78,6 +82,20 @@ const fromAddressFormData = ref<CreateAddressRequest>({
   addressLine2: '',
   phoneNumber: '',
   isDefault: true,
+})
+
+const targetAddressFormData = ref<CreateAddressRequest>({
+  lastname: '',
+  firstname: '',
+  lastnameKana: '',
+  firstnameKana: '',
+  postalCode: '',
+  prefectureCode: 0,
+  city: '',
+  addressLine1: '',
+  addressLine2: '',
+  phoneNumber: '',
+  isDefault: false,
 })
 
 const coordinatorId = computed<string>(() => {
@@ -138,15 +156,31 @@ const handleSubmitNewAddressForm = async () => {
   })
 }
 
-const handleClickNextStepButton = (id: string) => {
-  router.push({
-    path: '/v1/purchase/confirmation',
-    query: {
-      id,
-      coordinatorId: coordinatorId.value,
-      cartNumber: cartNumber.value,
-    },
-  })
+const handleClickNextStepButton = () => {
+  // フォーム要素のバリデーション
+  if (newUserAddressFormRef.value) {
+    if (!newUserAddressFormRef.value.reportValidity()) {
+      return
+    }
+  }
+  if (addUserAddressFormRef.value) {
+    if (!addUserAddressFormRef.value.reportValidity()) {
+      return
+    }
+  }
+  if (newAddressFormRef.value) {
+    newAddressFormRef.value.checkValidity()
+  }
+
+  // const id = ''
+  // router.push({
+  //   path: '/v1/purchase/confirmation',
+  //   query: {
+  //     id,
+  //     coordinatorId: coordinatorId.value,
+  //     cartNumber: cartNumber.value,
+  //   },
+  // })
 }
 
 onMounted(() => {
@@ -211,25 +245,26 @@ useSeoMeta({
             お客様情報
           </div>
           <!-- デフォルトの住所が登録されている場合 -->
-          <template v-if="defaultAddress">
-            <the-address-info :address="defaultAddress" />
+          <template v-if="fromAddress">
+            <the-address-info :address="fromAddress" />
 
             <div class="mt-4 flex flex-col gap-4">
               <div class="flex items-center gap-2">
                 <input
-                  id="other-radio"
+                  id="from-address-checkbox"
                   v-model="fromAddressSelect"
                   type="checkbox"
                   class="h-4 w-4 accent-main"
                 />
-                <label for="other-radio">お客様情報を変更する</label>
+                <label for="from-address-checkbox">お客様情報を変更する</label>
               </div>
             </div>
             <template v-if="fromAddressSelect">
               <the-new-address-form
+                ref="newUserAddressFormRef"
                 v-model:form-data="fromAddressFormData"
                 class="mt-4"
-                form-id="new-address-form"
+                form-id="new-user-address-form"
                 @click:search-address-button="handleClickSearchAddressButton"
                 @submit="handleSubmitNewAddressForm"
               />
@@ -238,8 +273,9 @@ useSeoMeta({
           <!-- デフォルトの住所が登録されていない場合 -->
           <template v-else>
             <the-new-address-form
+              ref="addUserAddressFormRef"
               v-model:form-data="fromAddressFormData"
-              form-id="new-address-form"
+              form-id="add-user-address-form"
               @click:search-address-button="handleClickSearchAddressButton"
               @submit="handleSubmitNewAddressForm"
             />
@@ -255,17 +291,31 @@ useSeoMeta({
             <div class="flex items-center gap-2">
               <input
                 id="default-radio"
-                v-model="targetddressSelect"
+                v-model="targetAddressSelect"
                 type="radio"
                 class="h-4 w-4 accent-main"
                 value="default"
               />
               <label for="default-radio">お客様情報の住所にお届け</label>
             </div>
+
+            <div
+              v-if="targetAddressId !== 'default' && targetAddress"
+              class="flex items-center gap-2"
+            >
+              <input
+                id="target-radio"
+                v-model="targetAddressSelect"
+                type="radio"
+                class="h-4 w-4 accent-main"
+                value="target"
+              />
+              <label for="target-radio">指定した住所にお届け</label>
+            </div>
             <div class="flex items-center gap-2">
               <input
                 id="other-radio"
-                v-model="targetddressSelect"
+                v-model="targetAddressSelect"
                 type="radio"
                 class="h-4 w-4 accent-main"
                 value="other"
@@ -273,9 +323,14 @@ useSeoMeta({
               <label for="other-radio">その他の住所にお届け</label>
             </div>
           </div>
-          <template v-if="targetddressSelect === 'other'">
+          <template v-if="targetAddressSelect === 'target' && targetAddress">
+            <the-address-info :address="targetAddress" />
+          </template>
+
+          <template v-if="targetAddressSelect === 'other'">
             <the-new-address-form
-              v-model:form-data="fromAddressFormData"
+              ref="newAddressFormRef"
+              v-model:form-data="targetAddressFormData"
               class="mt-4"
               form-id="new-address-form"
               @click:search-address-button="handleClickSearchAddressButton"
@@ -393,25 +448,13 @@ useSeoMeta({
             買い物カゴへ戻る
           </button>
 
-          <template v-if="defaultAddress && targetddressSelect === 'default'">
-            <!-- 通常のボタンの場合 -->
-            <button
-              class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
-              @click="handleClickNextStepButton(defaultAddress.id)"
-            >
-              お支払方法の選択へ
-            </button>
-          </template>
-          <template v-else>
-            <!-- フォーム要素の場合 -->
-            <button
-              class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
-              type="submit"
-              form="new-address-form"
-            >
-              お支払方法の選択へ
-            </button>
-          </template>
+          <!-- 通常のボタンの場合 -->
+          <button
+            class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
+            @click="handleClickNextStepButton"
+          >
+            お支払方法の選択へ
+          </button>
         </div>
       </template>
     </div>

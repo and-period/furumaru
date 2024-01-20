@@ -138,12 +138,14 @@ const handleSubmit = () => {
     />
     <div class="flex items-center gap-2">
       <input
-        id="isDefault"
+        :id="`${formId}-isDefault`"
         v-model="formDataValue.isDefault"
         type="checkbox"
         class="h-4 w-4 rounded accent-main"
       />
-      <label for="isDefault">この住所を基本の配送先に指定する</label>
+      <label :for="`${formId}-isDefault`">
+        この住所を基本の配送先に指定する
+      </label>
     </div>
   </form>
 </template>
