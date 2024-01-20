@@ -2,6 +2,7 @@
 import { getOperationResultFromOrderStatus } from '~/lib/order'
 import { useCheckoutStore } from '~/store/checkout'
 import type { CheckoutStateResponse } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
 const route = useRoute()
@@ -10,6 +11,8 @@ const checkoutStore = useCheckoutStore()
 const { checkTransactionStatus } = checkoutStore
 
 const isLoading = ref<boolean>(true)
+const hasError = ref<boolean>(false)
+const errorMessage = ref<string>('')
 
 const sessionId = computed<string>(() => {
   const id = route.query.session_id
@@ -42,9 +45,19 @@ const handleBackCartPageButton = () => {
 onMounted(async () => {
   console.log('debug', 'onMounted', sessionId.value)
   if (sessionId.value) {
-    isLoading.value = true
-    checkoutStatus.value = await checkTransactionStatus(sessionId.value)
-    isLoading.value = false
+    try {
+      isLoading.value = true
+      checkoutStatus.value = await checkTransactionStatus(sessionId.value)
+    } catch (error) {
+      hasError.value = true
+      if (error instanceof ApiBaseError) {
+        errorMessage.value = error.message
+        return
+      }
+      errorMessage.value = ''
+    } finally {
+      isLoading.value = false
+    }
   }
 })
 
@@ -63,6 +76,14 @@ useSeoMeta({
   </template>
 
   <template v-else>
+    <template v-if="hasError">
+      <div
+        class="text-oranges container mx-auto mb-4 border border-orange bg-white p-4 text-orange"
+      >
+        {{ errorMessage }}
+      </div>
+    </template>
+
     <template v-if="operationResult === 'success'">
       <div class="text-main">
         <div class="hidden md:block">
