@@ -508,6 +508,7 @@ type GetCheckoutStateInput struct {
 
 type CheckoutCreditCardInput struct {
 	CheckoutDetail
+	Name              string `validate:"required"`
 	Number            string `validate:"required,credit_card"`
 	Month             int64  `validate:"min=1,max=12"`
 	Year              int64  `validate:"min=2000,max=2100"`

@@ -168,8 +168,7 @@ type OrderCreditCardParams struct {
 	Year              int64  // 有効期限（年）
 	VerificationValue string // セキュリティコード
 	Email             string // メールアドレス
-	Lastname          string // 氏名（姓）
-	Firstname         string // 氏名（名）
+	Name              string // 氏名（カード名義）
 }
 
 type OrderBankTransferParams struct {

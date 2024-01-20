@@ -722,10 +722,8 @@ func TestSession_ExecuteCreditCard(t *testing.T) {
 				Month:             "12",
 				Year:              "2023",
 				VerificationValue: "123",
-				// Name:              "&. 利用者",
-				// FamilyName:        "&.",
-				// GivenName:         "利用者",
-				ThreeDSecure: true,
+				Name:              "AND TARO",
+				ThreeDSecure:      true,
 			},
 		}
 		assert.Equal(t, expect, body)
@@ -784,8 +782,7 @@ func TestSession_ExecuteCreditCard(t *testing.T) {
 				Year:              2023,
 				VerificationValue: "123",
 				Email:             "test@example.com",
-				Lastname:          "&.",
-				Firstname:         "利用者",
+				Name:              "AND TARO",
 			},
 			expect: &testResponse{
 				body: &komoju.OrderSessionResponse{
@@ -844,8 +841,7 @@ func TestSession_ExecuteCreditCard(t *testing.T) {
 				Year:              2023,
 				VerificationValue: "123",
 				Email:             "test@example.com",
-				Lastname:          "&.",
-				Firstname:         "利用者",
+				Name:              "AND TARO",
 			},
 			expect: &testResponse{
 				err: &komoju.Error{
