@@ -43,6 +43,7 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 		return "", internalError(err)
 	}
 	cardParams := &entity.NewCreditCardParams{
+		Name:   in.Name,
 		Number: in.Number,
 		Month:  in.Month,
 		Year:   in.Year,
@@ -55,11 +56,11 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderCreditCardParams{
 			SessionID:         sessionID,
-			Name:              in.Name,
-			Number:            in.Number,
-			Month:             in.Month,
-			Year:              in.Year,
-			VerificationValue: in.VerificationValue,
+			Name:              card.Name,
+			Number:            card.Number,
+			Month:             card.Month,
+			Year:              card.Year,
+			VerificationValue: card.CVV,
 			Email:             params.Customer.Email(),
 		}
 		return s.komoju.Session.OrderCreditCard(ctx, in)
