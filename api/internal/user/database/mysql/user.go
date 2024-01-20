@@ -28,14 +28,19 @@ func newUser(db *mysql.Client) database.User {
 type listUsersParams database.ListUsersParams
 
 func (p listUsersParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.WithDeleted {
+		stmt = stmt.Unscoped()
+	}
 	if p.OnlyRegistered {
 		stmt = stmt.Where("registered = ?", true)
 	}
 	if p.OnlyVerified {
-		stmt = stmt.Joins("INNER JOIN members ON members.user_id = users.id")
-		stmt = stmt.Where("verified_at IS NOT NULL")
+		stmt = stmt.Joins("INNER JOIN members ON members.user_id = users.id").
+			Where("users.verified_at IS NOT NULL").
+			Order("members.updated_at DESC")
+	} else {
+		stmt = stmt.Order("updated_at DESC")
 	}
-	stmt = stmt.Unscoped().Order("updated_at DESC")
 	return stmt
 }
 

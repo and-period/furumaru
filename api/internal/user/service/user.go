@@ -23,6 +23,7 @@ func (s *service) ListUsers(ctx context.Context, in *user.ListUsersInput) (entit
 		Offset:         int(in.Offset),
 		OnlyRegistered: in.OnlyRegistered,
 		OnlyVerified:   in.OnlyVerified,
+		WithDeleted:    in.WithDeleted,
 	}
 	var (
 		users entity.Users
