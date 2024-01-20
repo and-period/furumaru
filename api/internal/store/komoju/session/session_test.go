@@ -722,10 +722,10 @@ func TestSession_ExecuteCreditCard(t *testing.T) {
 				Month:             "12",
 				Year:              "2023",
 				VerificationValue: "123",
-				Name:              "&. 利用者",
-				FamilyName:        "&.",
-				GivenName:         "利用者",
-				// ThreeDSecure:      true,
+				// Name:              "&. 利用者",
+				// FamilyName:        "&.",
+				// GivenName:         "利用者",
+				ThreeDSecure: true,
 			},
 		}
 		assert.Equal(t, expect, body)
