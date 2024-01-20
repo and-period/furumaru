@@ -40,7 +40,7 @@ const handleSubmit = () => {
     <div class="grid grid-cols-2 gap-4">
       <the-text-input
         v-model="formDataValue.lastname"
-        placeholder="性"
+        placeholder="姓"
         :with-label="false"
         type="text"
         name="lastname"
