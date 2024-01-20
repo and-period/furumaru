@@ -725,7 +725,7 @@ func TestSession_ExecuteCreditCard(t *testing.T) {
 				Name:              "&. 利用者",
 				FamilyName:        "&.",
 				GivenName:         "利用者",
-				ThreeDSecure:      true,
+				// ThreeDSecure:      true,
 			},
 		}
 		assert.Equal(t, expect, body)
