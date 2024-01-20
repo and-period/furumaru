@@ -44,8 +44,9 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 	}
 
 	in := &user.ListUsersInput{
-		Limit:  limit,
-		Offset: offset,
+		Limit:       limit,
+		Offset:      offset,
+		WithDeleted: true,
 	}
 	users, total, err := h.user.ListUsers(ctx, in)
 	if err != nil {

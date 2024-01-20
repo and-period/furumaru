@@ -218,6 +218,7 @@ type ListUsersParams struct {
 	Offset         int
 	OnlyRegistered bool
 	OnlyVerified   bool
+	WithDeleted    bool
 }
 
 type Error struct {
