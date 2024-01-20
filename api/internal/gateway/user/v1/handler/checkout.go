@@ -58,6 +58,7 @@ func (h *handler) Checkout(ctx *gin.Context) {
 		}
 		in := &store.CheckoutCreditCardInput{
 			CheckoutDetail:    *detail,
+			Name:              req.CreditCard.Name,
 			Number:            req.CreditCard.Number,
 			Month:             req.CreditCard.Month,
 			Year:              req.CreditCard.Year,

@@ -184,8 +184,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 		Year:              2024,
 		VerificationValue: "123",
 		Email:             "test@example.com",
-		Lastname:          "&.",
-		Firstname:         "購入者",
+		Name:              "AND USER",
 	}
 	session := &komoju.OrderSessionResponse{
 		RedirectURL: "http://example.com/redirect",
@@ -216,6 +215,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 					CallbackURL:       "http://example.com/callback",
 					Total:             1400,
 				},
+				Name:              "AND USER",
 				Number:            "4111111111111111",
 				Month:             12,
 				Year:              2024,
@@ -247,6 +247,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 					CallbackURL:       "http://example.com/callback",
 					Total:             1400,
 				},
+				Name:              "AND USER",
 				Number:            "4111111111111111",
 				Month:             12,
 				Year:              2020,
@@ -274,6 +275,7 @@ func TestCheckoutCreditCard(t *testing.T) {
 					CallbackURL:       "http://example.com/callback",
 					Total:             1400,
 				},
+				Name:              "AND USER",
 				Number:            "4111111111111111",
 				Month:             12,
 				Year:              2024,
