@@ -153,7 +153,12 @@ func TestSession_Get(t *testing.T) {
 						Refunds:             []*komoju.Refund{},
 						RefundRequests:      []*komoju.RefundRequest{},
 					},
-					SecureToken: "",
+					SecureToken: &komoju.SecureToken{
+						ID:                 "secure-token",
+						VerificationStatus: "ERRORED",
+						Reason:             "3D Secure 2.0 authentication failed. Please verify your information and try again.",
+						CreatedAt:          now,
+					},
 					PaymentData: &komoju.PaymentData{
 						Capture: captureMode,
 					},
@@ -216,7 +221,12 @@ func TestSession_Get(t *testing.T) {
 						Refunds:             []*komoju.Refund{},
 						RefundRequests:      []*komoju.RefundRequest{},
 					},
-					SecureToken: "",
+					SecureToken: &komoju.SecureToken{
+						ID:                 "secure-token",
+						VerificationStatus: "ERRORED",
+						Reason:             "3D Secure 2.0 authentication failed. Please verify your information and try again.",
+						CreatedAt:          now,
+					},
 					PaymentData: &komoju.PaymentData{
 						Capture: captureMode,
 					},
@@ -383,7 +393,6 @@ func TestSession_Create(t *testing.T) {
 						Refunds:             []*komoju.Refund{},
 						RefundRequests:      []*komoju.RefundRequest{},
 					},
-					SecureToken: "",
 					PaymentData: &komoju.PaymentData{
 						Capture: captureMode,
 					},
@@ -473,7 +482,6 @@ func TestSession_Create(t *testing.T) {
 						Refunds:             []*komoju.Refund{},
 						RefundRequests:      []*komoju.RefundRequest{},
 					},
-					SecureToken: "",
 					PaymentData: &komoju.PaymentData{
 						Capture: captureMode,
 					},
@@ -604,7 +612,6 @@ func TestSession_Cancel(t *testing.T) {
 					CancelledAt: now,
 					Status:      komoju.SessionStatusCancelled,
 					Expired:     false,
-					SecureToken: "",
 					PaymentData: &komoju.PaymentData{
 						Capture: captureMode,
 					},
@@ -644,7 +651,6 @@ func TestSession_Cancel(t *testing.T) {
 					CancelledAt: now,
 					Status:      komoju.SessionStatusCancelled,
 					Expired:     false,
-					SecureToken: "",
 					PaymentData: &komoju.PaymentData{
 						Capture: captureMode,
 					},

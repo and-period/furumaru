@@ -223,7 +223,7 @@ type SessionResponse struct {
 	Status         SessionStatus      `json:"status"`
 	Expired        bool               `json:"expired"`
 	Payment        *PaymentInfo       `json:"payment,omitempty"`
-	SecureToken    string             `json:"secure_token,omitempty"`
+	SecureToken    *SecureToken       `json:"secure_token,omitempty"`
 	PaymentData    *PaymentData       `json:"payment_data"`
 	CustomerID     string             `json:"customer_id,omitempty"`
 	LineItems      []*SessionLineItem `json:"line_items"`
@@ -259,6 +259,13 @@ type PaymentData struct {
 	Name                string `json:"name"`
 	NameKana            string `json:"name_kana"`
 	Capture             string `json:"capture"`
+}
+
+type SecureToken struct {
+	ID                 string    `json:"id,omitempty"`
+	VerificationStatus string    `json:"verification_status,omitempty"`
+	Reason             string    `json:"reason,omitempty"`
+	CreatedAt          time.Time `json:"created_at,omitempty"`
 }
 
 type Komoju struct {
