@@ -64,10 +64,30 @@ const checkoutFormData = ref<CheckoutRequest>({
   callbackUrl: '',
   total: 0,
   creditCard: {
+    name: '',
     number: '',
     month: 0,
     year: 0,
     verificationValue: '',
+  },
+})
+
+const creditCardMonthValue = computed({
+  get: () => {
+    if (checkoutFormData.value.creditCard.month === 0) {
+      return '0'
+    }
+    if (checkoutFormData.value.creditCard.month < 10) {
+      return `0${checkoutFormData.value.creditCard.month}`
+    } else {
+      return String(checkoutFormData.value.creditCard.month)
+    }
+  },
+  set: (val: string) => {
+    const month = Number(val)
+    if (!isNaN(month)) {
+      checkoutFormData.value.creditCard.month = month
+    }
   },
 })
 
@@ -291,13 +311,28 @@ useSeoMeta({
                   />
                 </div>
               </div>
+              <the-text-input
+                v-model="checkoutFormData.creditCard.name"
+                placeholder="カード名義"
+                :with-label="false"
+                name="cc-name"
+                type="text"
+                class="mt-2 w-full"
+                required
+              />
               <div class="mt-2 flex gap-4">
                 <select
-                  v-model="checkoutFormData.creditCard.month"
+                  v-model="creditCardMonthValue"
                   class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
                 >
                   <option :value="0" disabled>有効期限 (月)</option>
-                  <option v-for="i in 12" :key="i" :value="i">{{ i }}月</option>
+                  <option
+                    v-for="i in 12"
+                    :key="i"
+                    :value="i < 10 ? `0${i}` : String(i)"
+                  >
+                    {{ i }}
+                  </option>
                 </select>
 
                 <select
@@ -319,7 +354,7 @@ useSeoMeta({
                 placeholder="セキュリティコード"
                 :with-label="false"
                 name="cc-csc"
-                type="text"
+                type="password"
                 pattern="[0-9]*"
                 class="mt-4 w-1/2"
                 required
