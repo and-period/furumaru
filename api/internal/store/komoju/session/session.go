@@ -190,7 +190,7 @@ func (c *client) OrderCreditCard(ctx context.Context, params *komoju.OrderCredit
 			Name:              strings.Join([]string{params.Lastname, params.Firstname}, " "),
 			FamilyName:        params.Lastname,
 			GivenName:         params.Firstname,
-			ThreeDSecure:      true,
+			// ThreeDSecure:      true,
 		},
 	}
 	req := &komoju.APIParams{
