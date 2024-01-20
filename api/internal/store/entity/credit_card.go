@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"golang.org/x/text/width"
 )
 
 var (
@@ -16,6 +17,7 @@ var (
 
 // CreditCard - クレジットカード情報
 type CreditCard struct {
+	Name   string
 	Number string
 	Month  int64
 	Year   int64
@@ -23,6 +25,7 @@ type CreditCard struct {
 }
 
 type NewCreditCardParams struct {
+	Name   string
 	Number string
 	Month  int64
 	Year   int64
@@ -31,6 +34,7 @@ type NewCreditCardParams struct {
 
 func NewCreditCard(params *NewCreditCardParams) *CreditCard {
 	return &CreditCard{
+		Name:   width.Narrow.String(params.Name),
 		Number: params.Number,
 		Month:  params.Month,
 		Year:   params.Year,
