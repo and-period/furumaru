@@ -408,7 +408,7 @@ type GetLiveInput struct {
 type CreateLiveInput struct {
 	ScheduleID string    `validate:"required"`
 	ProducerID string    `validate:"required"`
-	ProductIDs []string  `validate:"min=0,max=8,unique"`
+	ProductIDs []string  `validate:"min=0,max=16,unique"`
 	Comment    string    `validate:"required,max=2000"`
 	StartAt    time.Time `validate:"required"`
 	EndAt      time.Time `validate:"required,gtfield=StartAt"`
@@ -416,7 +416,7 @@ type CreateLiveInput struct {
 
 type UpdateLiveInput struct {
 	LiveID     string    `validate:"required"`
-	ProductIDs []string  `validate:"min=0,max=8,unique"`
+	ProductIDs []string  `validate:"min=0,max=16,unique"`
 	Comment    string    `validate:"required,max=2000"`
 	StartAt    time.Time `validate:"required"`
 	EndAt      time.Time `validate:"required,gtfield=StartAt"`
