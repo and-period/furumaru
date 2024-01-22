@@ -20,6 +20,12 @@ import { exists, mapValues } from '../runtime';
  */
 export interface CheckoutCreditCard {
     /**
+     * カード名義
+     * @type {string}
+     * @memberof CheckoutCreditCard
+     */
+    name: string;
+    /**
      * カード番号
      * @type {string}
      * @memberof CheckoutCreditCard
@@ -50,6 +56,7 @@ export interface CheckoutCreditCard {
  */
 export function instanceOfCheckoutCreditCard(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "name" in value;
     isInstance = isInstance && "number" in value;
     isInstance = isInstance && "month" in value;
     isInstance = isInstance && "year" in value;
@@ -68,6 +75,7 @@ export function CheckoutCreditCardFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
+        'name': json['name'],
         'number': json['number'],
         'month': json['month'],
         'year': json['year'],
@@ -84,6 +92,7 @@ export function CheckoutCreditCardToJSON(value?: CheckoutCreditCard | null): any
     }
     return {
         
+        'name': value.name,
         'number': value.number,
         'month': value.month,
         'year': value.year,

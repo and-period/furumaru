@@ -60,6 +60,9 @@ checkoutRequest:
 checkoutCreditCard:
   type: object
   properties:
+    name:
+      type: string
+      description: カード名義
     number:
       type: string
       description: カード番号
@@ -75,11 +78,13 @@ checkoutCreditCard:
       type: string
       description: セキュリティコード
   required:
+  - name
   - number
   - month
   - year
   - verificationValue
   example:
+    name: 'AND TARO'
     number: '4111111111111111'
     month: 12
     year: 2024

@@ -308,6 +308,7 @@ type ListUsersInput struct {
 	Offset         int64 `validate:"min=0"`
 	OnlyRegistered bool  `validate:""`
 	OnlyVerified   bool  `validate:""`
+	WithDeleted    bool  `validate:""`
 }
 
 type MultiGetUsersInput struct {

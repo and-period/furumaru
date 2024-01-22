@@ -17,12 +17,14 @@ func TestCrditCard(t *testing.T) {
 		{
 			name: "card brand is visa",
 			params: &NewCreditCardParams{
+				Name:   "ＦＵＲＵＭＡＲＵ　TARO",
 				Number: "4242424242424242",
 				Month:  12,
 				Year:   2024,
 				CVV:    "123",
 			},
 			expect: &CreditCard{
+				Name:   "FURUMARU TARO",
 				Number: "4242424242424242",
 				Month:  12,
 				Year:   2024,

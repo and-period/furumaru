@@ -30,9 +30,11 @@ func (s *service) GetCheckoutState(ctx context.Context, in *store.GetCheckoutSta
 	if order.OrderPayment.Status != entity.PaymentStatusPending {
 		return order.ID, order.OrderPayment.Status, nil
 	}
+	s.logger.Info("This checkout is pending", zap.String("transactionId", in.TransactionID))
 	// 未払い状態の場合、KOMOJUから最新の状態を取得する
 	res, err := s.komoju.Session.Get(ctx, in.TransactionID)
 	if err != nil || res.Payment == nil {
+		s.logger.Warn("Failed to get session state", zap.String("transactionId", in.TransactionID), zap.Error(err))
 		return order.ID, entity.PaymentStatusUnknown, internalError(err)
 	}
 	return order.ID, entity.NewPaymentStatus(res.Payment.Status), nil
@@ -43,6 +45,7 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 		return "", internalError(err)
 	}
 	cardParams := &entity.NewCreditCardParams{
+		Name:   in.Name,
 		Number: in.Number,
 		Month:  in.Month,
 		Year:   in.Year,
@@ -55,13 +58,12 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderCreditCardParams{
 			SessionID:         sessionID,
-			Number:            in.Number,
-			Month:             in.Month,
-			Year:              in.Year,
-			VerificationValue: in.VerificationValue,
+			Name:              card.Name,
+			Number:            card.Number,
+			Month:             card.Month,
+			Year:              card.Year,
+			VerificationValue: card.CVV,
 			Email:             params.Customer.Email(),
-			Lastname:          params.BillingAddress.Lastname,
-			Firstname:         params.BillingAddress.Firstname,
 		}
 		return s.komoju.Session.OrderCreditCard(ctx, in)
 	}

@@ -14,6 +14,7 @@ type CheckoutRequest struct {
 }
 
 type CheckoutCreditCard struct {
+	Name              string `json:"name,omitempty"`              // カード名義
 	Number            string `json:"number,omitempty"`            // カード番号
 	Month             int64  `json:"month,omitempty"`             // 有効期限（月）
 	Year              int64  `json:"year,omitempty"`              // 有効期限（年）
