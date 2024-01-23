@@ -24,8 +24,8 @@ defineProps<Props>()
               class="inline h-5 w-5"
             />
           </a>
-          <a href="#" class="block">
-            <the-facebook-icon
+          <a href="https://twitter.com/furusato_marche" class="block">
+            <the-x-icon
               id="footer-facebook-icon"
               class="inline h-5 w-5"
             />
