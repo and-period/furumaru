@@ -26,8 +26,8 @@ const handleClickProductItem = (productId: string) => {
   <div class="mx-auto w-full rounded-3xl bg-white text-main">
     <div class="relative bottom-10">
       <img
-        :src="imgSrc"
-        class="mx-auto block aspect-square w-[96px] rounded-full border-2 border-white md:w-[120px]"
+        :src="imgSrc ? imgSrc : '/img/furuneko.png'"
+        class="mx-auto block aspect-square w-[96px] rounded-full border-2 border-white object-cover md:w-[120px]"
       />
     </div>
     <p
