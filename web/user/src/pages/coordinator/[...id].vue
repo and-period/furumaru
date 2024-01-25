@@ -37,10 +37,18 @@ useAsyncData(`coordinator-${id.value}`, () => {
 <template>
   <div>
     <div class="static mx-auto w-full text-main md:max-w-[1216px]">
-      <img
-        class="h-[160px] w-full object-cover md:h-[320px] md:w-[1216px]"
-        :src="coordnatorInfo.headerUrl"
-      />
+      <!-- ヘッダー部分 -->
+      <div class="h-[160px] w-full md:h-[320px] md:w-[1216px]">
+        <template v-if="coordnatorInfo.headerUrl">
+          <img
+            class="h-full w-full object-cover"
+            :src="coordnatorInfo.headerUrl"
+          />
+        </template>
+        <template v-else>
+          <div class="h-full w-full bg-gray-200"></div>
+        </template>
+      </div>
       <div
         class="relative bottom-[50px] md:bottom-20 md:grid md:grid-cols-7 md:gap-12"
       >
