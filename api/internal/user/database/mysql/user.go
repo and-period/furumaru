@@ -36,8 +36,8 @@ func (p listUsersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	}
 	if p.OnlyVerified {
 		stmt = stmt.Joins("INNER JOIN members ON members.user_id = users.id").
-			Where("users.verified_at IS NOT NULL").
-			Order("members.updated_at DESC")
+			Where("members.verified_at IS NOT NULL").
+			Order("users.updated_at DESC")
 	} else {
 		stmt = stmt.Order("updated_at DESC")
 	}
