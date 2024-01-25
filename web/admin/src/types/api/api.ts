@@ -10339,11 +10339,12 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 
          * @summary コーディネータサムネイルアップロード
+         * @param {string} [ver] バージョン（システム切り替え対応）
          * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorThumbnail: async (thumbnail?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UploadCoordinatorThumbnail: async (ver?: string, thumbnail?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/upload/coordinators/thumbnail`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -10360,6 +10361,10 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
             // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (ver !== undefined) {
+                localVarQueryParameter['ver'] = ver;
+            }
 
 
             if (thumbnail !== undefined) { 
@@ -10542,12 +10547,13 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary コーディネータサムネイルアップロード
+         * @param {string} [ver] バージョン（システム切り替え対応）
          * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UploadCoordinatorThumbnail(thumbnail?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorThumbnail(thumbnail, options);
+        async v1UploadCoordinatorThumbnail(ver?: string, thumbnail?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorThumbnail(ver, thumbnail, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorThumbnail']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
@@ -10682,12 +10688,13 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         /**
          * 
          * @summary コーディネータサムネイルアップロード
+         * @param {string} [ver] バージョン（システム切り替え対応）
          * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UploadCoordinatorThumbnail(thumbnail?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(axios, basePath));
+        v1UploadCoordinatorThumbnail(ver?: string, thumbnail?: File, options?: any): AxiosPromise<UploadImageResponse> {
+            return localVarFp.v1UploadCoordinatorThumbnail(ver, thumbnail, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -10841,13 +10848,14 @@ export class CoordinatorApi extends BaseAPI {
     /**
      * 
      * @summary コーディネータサムネイルアップロード
+     * @param {string} [ver] バージョン（システム切り替え対応）
      * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CoordinatorApi
      */
-    public v1UploadCoordinatorThumbnail(thumbnail?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(this.axios, this.basePath));
+    public v1UploadCoordinatorThumbnail(ver?: string, thumbnail?: File, options?: RawAxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorThumbnail(ver, thumbnail, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

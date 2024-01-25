@@ -34,6 +34,8 @@ type Bucket interface {
 	GenerateObjectURL(path string) (string, error)
 	// S3 URIの生成
 	GenerateS3URI(path string) string
+	// S3 Bucketへのアップロード用URIの生成
+	GeneratePresignUploadURI(path string, expiresIn time.Duration) (string, error)
 	// オブジェクトURLからS3 URIへの置換
 	ReplaceURLToS3URI(rawURL string) (string, error)
 	// S3 Bucketの接続先情報を取得
@@ -53,9 +55,10 @@ type Params struct {
 }
 
 type bucket struct {
-	s3     *s3.Client
-	name   *string
-	logger *zap.Logger
+	s3        *s3.Client
+	presigner *s3.PresignClient
+	name      *string
+	logger    *zap.Logger
 }
 
 type options struct {
@@ -100,9 +103,10 @@ func NewBucket(cfg aws.Config, params *Params, opts ...Option) Bucket {
 		})
 	})
 	return &bucket{
-		s3:     cli,
-		name:   aws.String(params.Bucket),
-		logger: dopts.logger,
+		s3:        cli,
+		presigner: s3.NewPresignClient(cli),
+		name:      aws.String(params.Bucket),
+		logger:    dopts.logger,
 	}
 }
 
@@ -113,6 +117,18 @@ func (b *bucket) GenerateObjectURL(path string) (string, error) {
 	}
 	u.Path = path
 	return u.String(), nil
+}
+
+func (b *bucket) GeneratePresignUploadURI(path string, expiresIn time.Duration) (string, error) {
+	in := &s3.PutObjectInput{
+		Bucket: aws.String(*b.name),
+		Key:    aws.String(path),
+	}
+	request, err := b.presigner.PresignPutObject(context.Background(), in, s3.WithPresignExpires(expiresIn))
+	if err != nil {
+		return "", err
+	}
+	return request.URL, nil
 }
 
 func (b *bucket) GenerateS3URI(path string) string {

@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
@@ -14,6 +15,48 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.GenerateUploadURLInput
+		expect    string
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.CoordinatorThumbnailPath), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input:     &media.GenerateUploadURLInput{},
+			expect:    "http://example.com/image.png",
+			expectErr: nil,
+		},
+		{
+			name: "failed to generate presign upload uri",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("", assert.AnError)
+			},
+			input:     &media.GenerateUploadURLInput{},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetCoordinatorThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
 
 func TestGenerateCoordinatorThumbnail(t *testing.T) {
 	t.Parallel()

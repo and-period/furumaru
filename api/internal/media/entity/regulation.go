@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	ErrTooLargeFileSize  = errors.New("entity: too large file size")
-	ErrInvalidFileFormat = errors.New("entity: invalid file format")
+	ErrTooLargeFileSize       = errors.New("entity: too large file size")
+	ErrInvalidFileFormat      = errors.New("entity: invalid file format")
+	ErrUnsupportedContentType = errors.New("entity: unsupported content type")
 )
 
 const (
@@ -170,4 +171,10 @@ func (r *Regulation) GenerateFilePath(header *multipart.FileHeader, args ...inte
 	dirname := fmt.Sprintf(r.dir, args...)
 	filename := strings.Join([]string{key, extension}, "")
 	return strings.Join([]string{dirname, filename}, "/")
+}
+
+func (r *Regulation) GetFilePath(args ...interface{}) string {
+	key := uuid.Base58Encode(uuid.New())
+	dirname := fmt.Sprintf(r.dir, args...)
+	return strings.Join([]string{dirname, key}, "/")
 }

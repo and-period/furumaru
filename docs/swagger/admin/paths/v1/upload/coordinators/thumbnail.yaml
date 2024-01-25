@@ -3,6 +3,14 @@ post:
   operationId: v1UploadCoordinatorThumbnail
   tags:
   - Coordinator
+  parameters:
+  - in: query
+    name: ver
+    schema:
+      type: string
+    description: バージョン（システム切り替え対応）
+    required: false
+    example: 'v2'
   security:
   - bearerAuth: []
   requestBody:
