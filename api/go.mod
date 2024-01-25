@@ -43,7 +43,7 @@ require (
 	github.com/sendgrid/sendgrid-go v3.13.0+incompatible
 	github.com/shopspring/decimal v1.3.1
 	github.com/slack-go/slack v0.12.3
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/stripe/stripe-go/v73 v73.16.0
 	go.uber.org/mock v0.4.0
