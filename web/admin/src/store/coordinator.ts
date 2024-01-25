@@ -5,6 +5,7 @@ import { apiClient } from '~/plugins/api-client'
 import type {
   Coordinator,
   CreateCoordinatorRequest,
+  GetUploadUrlRequest,
   Producer,
   UpdateCoordinatorRequest,
   UploadImageResponse,
@@ -111,23 +112,17 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネーターのサムネイル画像をアップロードする非同期関数
+     * コーディネーターのサムネイル画像をアップロードするためのURLを取得する非同期関数
      * @param payload サムネイル画像
      * @returns アップロードされた画像のURI
      */
-    async uploadCoordinatorThumbnail (payload: File): Promise<UploadImageResponse> {
+    async getCoordinatorThumbnailUploadUrl (payload: File): Promise<string> {
       try {
-        const res = await apiClient.coordinatorApi().v1UploadCoordinatorThumbnail(
-          '',
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: payload.type
+        }
+        const res = await apiClient.coordinatorApi().v1GetCoordinatorThumbnailUploadUrl(body)
+        return res.data.url
       } catch (err) {
         return this.errorHandler(err)
       }

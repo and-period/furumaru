@@ -17,6 +17,7 @@ var (
 	ErrTooLargeFileSize       = errors.New("entity: too large file size")
 	ErrInvalidFileFormat      = errors.New("entity: invalid file format")
 	ErrUnsupportedContentType = errors.New("entity: unsupported content type")
+	ErrUnknownContentType     = errors.New("entity: unknown content type")
 )
 
 const (
@@ -173,8 +174,31 @@ func (r *Regulation) GenerateFilePath(header *multipart.FileHeader, args ...inte
 	return strings.Join([]string{dirname, filename}, "/")
 }
 
-func (r *Regulation) GetFilePath(args ...interface{}) string {
+func (r *Regulation) GetObjectKey(contentType string, args ...interface{}) (string, error) {
+	ext, err := r.GetFileExtension(contentType)
+	if err != nil {
+		return "", err
+	}
 	key := uuid.Base58Encode(uuid.New())
 	dirname := fmt.Sprintf(r.dir, args...)
-	return strings.Join([]string{dirname, key}, "/")
+	filename := strings.Join([]string{key, ext}, ".")
+	return strings.Join([]string{dirname, filename}, "/"), nil
+}
+
+// ref: https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+func (r *Regulation) GetFileExtension(contentType string) (string, error) {
+	if !r.Formats.Contains(contentType) {
+		return "", ErrUnsupportedContentType
+	}
+	switch contentType {
+	// 画像タイプ
+	case "image/jpeg":
+		return "jpg", nil
+	case "image/png":
+		return "png", nil
+	case "video/mp4":
+		return "mp4", nil
+	default:
+		return "", ErrUnknownContentType
+	}
 }

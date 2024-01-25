@@ -7,7 +7,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
-type GenerateUploadURLInput struct{}
+type GenerateUploadURLInput struct {
+	FileType string `validate:"required"`
+}
 
 type GenerateFileInput struct {
 	File   io.Reader             `validate:"required"`

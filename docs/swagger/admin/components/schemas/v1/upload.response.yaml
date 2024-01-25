@@ -1,3 +1,13 @@
+uploadUrlResponse:
+  type: object
+  properties:
+    url:
+      type: string
+      description: 署名付きアップロードURL
+  required:
+  - url
+  example:
+    url: 'https://and-period.jp/image.png'
 uploadImageResponse:
   type: object
   properties:

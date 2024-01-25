@@ -31,19 +31,31 @@ func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
 					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
 						assert.True(t, strings.HasPrefix(key, entity.CoordinatorThumbnailPath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
 						return "http://example.com/image.png", nil
 					})
 			},
-			input:     &media.GenerateUploadURLInput{},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
 			expect:    "http://example.com/image.png",
 			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.GenerateUploadURLInput{},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to generate presign upload uri",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("", assert.AnError)
 			},
-			input:     &media.GenerateUploadURLInput{},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
 			expect:    "",
 			expectErr: exception.ErrInternal,
 		},
