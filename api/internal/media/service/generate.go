@@ -5,12 +5,18 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
+func (s *service) GetCoordinatorThumbnailUploadURL(_ context.Context, _ *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(entity.CoordinatorThumbnailRegulation)
+}
+
+// Deprecated
 func (s *service) GenerateCoordinatorThumbnail(ctx context.Context, in *media.GenerateFileInput) (string, error) {
 	return s.generateFile(ctx, in, entity.CoordinatorThumbnailRegulation)
 }
@@ -69,6 +75,12 @@ func (s *service) GenerateScheduleImage(ctx context.Context, in *media.GenerateF
 
 func (s *service) GenerateScheduleOpeningVideo(ctx context.Context, in *media.GenerateFileInput) (string, error) {
 	return s.generateFile(ctx, in, entity.ScheduleOpeningVideoRegulation)
+}
+
+func (s *service) generateUploadURL(reg *entity.Regulation) (string, error) {
+	const expiresIn = 10 * time.Minute
+	url, err := s.tmp.GeneratePresignUploadURI(reg.GetFilePath(), expiresIn)
+	return url, internalError(err)
 }
 
 func (s *service) generateFile(

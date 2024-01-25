@@ -670,6 +670,35 @@ func TestRegulation_GenerateFilePath(t *testing.T) {
 	}
 }
 
+func TestRegulation_GetFilePath(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		regulation *Regulation
+		args       []interface{}
+		expect     string
+	}{
+		{
+			name:       "success",
+			regulation: CoordinatorThumbnailRegulation,
+			expect:     "coordinators/thumbnail/[a-zA-Z0-9]+",
+		},
+		{
+			name:       "success with params",
+			regulation: BroadcastArchiveRegulation,
+			args:       []interface{}{"broadcast-id"},
+			expect:     "schedules/archives/broadcast-id/mp4/[a-zA-Z0-9]+",
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Regexp(t, regexp.MustCompile(tt.expect), tt.regulation.GetFilePath(tt.args...))
+		})
+	}
+}
+
 func testImageFile(t *testing.T) (io.Reader, *multipart.FileHeader) {
 	const filename, format = "and-period.png", "image"
 

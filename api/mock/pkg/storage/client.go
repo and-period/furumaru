@@ -9,6 +9,7 @@ import (
 	io "io"
 	url "net/url"
 	reflect "reflect"
+	time "time"
 
 	gomock "go.uber.org/mock/gomock"
 )
@@ -79,6 +80,21 @@ func (m *MockBucket) GenerateObjectURL(path string) (string, error) {
 func (mr *MockBucketMockRecorder) GenerateObjectURL(path interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateObjectURL", reflect.TypeOf((*MockBucket)(nil).GenerateObjectURL), path)
+}
+
+// GeneratePresignUploadURI mocks base method.
+func (m *MockBucket) GeneratePresignUploadURI(path string, expiresIn time.Duration) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GeneratePresignUploadURI", path, expiresIn)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GeneratePresignUploadURI indicates an expected call of GeneratePresignUploadURI.
+func (mr *MockBucketMockRecorder) GeneratePresignUploadURI(path, expiresIn interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GeneratePresignUploadURI", reflect.TypeOf((*MockBucket)(nil).GeneratePresignUploadURI), path, expiresIn)
 }
 
 // GenerateS3URI mocks base method.

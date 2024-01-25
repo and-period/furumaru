@@ -21,16 +21,17 @@ type Service interface {
 	ActivateBroadcastStaticImage(ctx context.Context, in *ActivateBroadcastStaticImageInput) error              // ライブ配信のふた絵を有効化
 	DeactivateBroadcastStaticImage(ctx context.Context, in *DeactivateBroadcastStaticImageInput) error          // ライブ配信のふた絵を無効化
 	// コーディネータ
-	GenerateCoordinatorThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)      // サムネイル画像を生成
-	UploadCoordinatorThumbnail(ctx context.Context, in *UploadFileInput) (string, error)          // サムネイル画像アップロード
-	ResizeCoordinatorThumbnail(ctx context.Context, in *ResizeFileInput) error                    // サムネイル画像リサイズ
-	GenerateCoordinatorHeader(ctx context.Context, in *GenerateFileInput) (string, error)         // ヘッダー画像を生成
-	UploadCoordinatorHeader(ctx context.Context, in *UploadFileInput) (string, error)             // ヘッダー画像アップロード
-	ResizeCoordinatorHeader(ctx context.Context, in *ResizeFileInput) error                       // ヘッダー画像リサイズ
-	GenerateCoordinatorPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error) // 紹介映像を生成
-	UploadCoordinatorPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)     // 紹介映像アップロード
-	GenerateCoordinatorBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)     // 購入特典映像を生成
-	UploadCoordinatorBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)         // 購入特典映像アップロード
+	GetCoordinatorThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (string, error) // サムネイル画像アップロード用URLの生成
+	GenerateCoordinatorThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)          // Deprecated: サムネイル画像を生成
+	UploadCoordinatorThumbnail(ctx context.Context, in *UploadFileInput) (string, error)              // Deprecated: サムネイル画像アップロード
+	ResizeCoordinatorThumbnail(ctx context.Context, in *ResizeFileInput) error                        // サムネイル画像リサイズ
+	GenerateCoordinatorHeader(ctx context.Context, in *GenerateFileInput) (string, error)             // ヘッダー画像を生成
+	UploadCoordinatorHeader(ctx context.Context, in *UploadFileInput) (string, error)                 // ヘッダー画像アップロード
+	ResizeCoordinatorHeader(ctx context.Context, in *ResizeFileInput) error                           // ヘッダー画像リサイズ
+	GenerateCoordinatorPromotionVideo(ctx context.Context, in *GenerateFileInput) (string, error)     // 紹介映像を生成
+	UploadCoordinatorPromotionVideo(ctx context.Context, in *UploadFileInput) (string, error)         // 紹介映像アップロード
+	GenerateCoordinatorBonusVideo(ctx context.Context, in *GenerateFileInput) (string, error)         // 購入特典映像を生成
+	UploadCoordinatorBonusVideo(ctx context.Context, in *UploadFileInput) (string, error)             // 購入特典映像アップロード
 	// 生産者
 	GenerateProducerThumbnail(ctx context.Context, in *GenerateFileInput) (string, error)      // サムネイル画像を生成
 	UploadProducerThumbnail(ctx context.Context, in *UploadFileInput) (string, error)          // サムネイル画像アップロード

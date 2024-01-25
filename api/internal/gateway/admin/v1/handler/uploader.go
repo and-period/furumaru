@@ -35,8 +35,22 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
-	const filename = "thumbnail"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorThumbnail)
+	ver, ok := ctx.GetQuery("ver")
+	if !ok || ver == "v2" {
+		// Deprecated: 移行が完了したら削除
+		const filename = "thumbnail"
+		h.uploadFile(ctx, filename, h.media.GenerateCoordinatorThumbnail)
+		return
+	}
+	url, err := h.media.GetCoordinatorThumbnailUploadURL(ctx, &media.GenerateUploadURLInput{})
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.UploadImageResponse{
+		URL: url,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) uploadCoordinatorHeader(ctx *gin.Context) {
