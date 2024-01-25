@@ -118,6 +118,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
     async uploadCoordinatorThumbnail (payload: File): Promise<UploadImageResponse> {
       try {
         const res = await apiClient.coordinatorApi().v1UploadCoordinatorThumbnail(
+          '',
           payload,
           {
             headers: {
