@@ -166,7 +166,6 @@ func (r *Regulation) validateFormat(file io.Reader) error {
 	return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
 }
 
-// Deprecated: Use to GetObjectKey
 func (r *Regulation) GenerateFilePath(header *multipart.FileHeader, args ...interface{}) string {
 	key := uuid.Base58Encode(uuid.New())
 	extension := strings.ToLower(filepath.Ext(header.Filename))
