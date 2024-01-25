@@ -453,6 +453,8 @@ components:
       $ref: './components/schemas/v1/order.request.yaml#/refundOrderRequest'
     v1UpdateOrderFulfillmentRequest:
       $ref: './components/schemas/v1/order.request.yaml#/updateOrderFulfillmentRequest'
+    v1GetUploadUrlRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/getUploadUrlRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
@@ -564,6 +566,8 @@ components:
       $ref: './components/schemas/v1/user.response.yaml#/userOrdersResponse'
     v1PostalCodeResponse:
       $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
+    v1UploadUrlResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadUrlResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:

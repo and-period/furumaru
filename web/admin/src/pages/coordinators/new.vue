@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import axios, { type RawAxiosRequestHeaders } from 'axios'
 import { storeToRefs } from 'pinia'
 
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
@@ -94,9 +95,14 @@ const handleUpdateThumbnail = (files: FileList): void => {
   }
 
   loading.value = true
-  coordinatorStore.uploadCoordinatorThumbnail(files[0])
-    .then((res) => {
-      formData.value.thumbnailUrl = res.url
+  coordinatorStore.getCoordinatorThumbnailUploadUrl(files[0])
+    .then(async (url: string) => {
+      const headers: RawAxiosRequestHeaders = {
+        'Content-Type': files[0].type
+      }
+      await axios.put(url, files[0], { headers })
+      const u = new URL(url)
+      formData.value.thumbnailUrl = `${u.origin}${u.pathname}`
     })
     .catch(() => {
       thumbnailUploadStatus.value.error = true

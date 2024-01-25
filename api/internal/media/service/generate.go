@@ -12,8 +12,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
-func (s *service) GetCoordinatorThumbnailUploadURL(_ context.Context, _ *media.GenerateUploadURLInput) (string, error) {
-	return s.generateUploadURL(entity.CoordinatorThumbnailRegulation)
+func (s *service) GetCoordinatorThumbnailUploadURL(_ context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(in, entity.CoordinatorThumbnailRegulation)
 }
 
 // Deprecated
@@ -77,9 +77,13 @@ func (s *service) GenerateScheduleOpeningVideo(ctx context.Context, in *media.Ge
 	return s.generateFile(ctx, in, entity.ScheduleOpeningVideoRegulation)
 }
 
-func (s *service) generateUploadURL(reg *entity.Regulation) (string, error) {
+func (s *service) generateUploadURL(in *media.GenerateUploadURLInput, reg *entity.Regulation) (string, error) {
 	const expiresIn = 10 * time.Minute
-	url, err := s.tmp.GeneratePresignUploadURI(reg.GetFilePath(), expiresIn)
+	key, err := reg.GetObjectKey(in.FileType)
+	if err != nil {
+		return "", fmt.Errorf("service: failed to get object key: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	url, err := s.tmp.GeneratePresignUploadURI(key, expiresIn)
 	return url, internalError(err)
 }
 

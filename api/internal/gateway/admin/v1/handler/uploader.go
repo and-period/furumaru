@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,7 @@ import (
 func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/upload", h.authentication)
 
+	r.GET("/coordinators/thumbnail", h.GetCoordinatorThumbnailUploadURL)
 	r.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
 	r.POST("/coordinators/header", h.uploadCoordinatorHeader)
 	r.POST("/coordinators/promotion-video", h.uploadCoordinatorPromotionVideo)
@@ -34,23 +36,13 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/schedules/opening-video", h.uploadScheduleOpeningVideo)
 }
 
+func (h *handler) GetCoordinatorThumbnailUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetCoordinatorThumbnailUploadURL)
+}
+
 func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
-	ver, ok := ctx.GetQuery("ver")
-	if !ok || ver != "v2" {
-		// Deprecated: 移行が完了したら削除
-		const filename = "thumbnail"
-		h.uploadFile(ctx, filename, h.media.GenerateCoordinatorThumbnail)
-		return
-	}
-	url, err := h.media.GetCoordinatorThumbnailUploadURL(ctx, &media.GenerateUploadURLInput{})
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	res := &response.UploadImageResponse{
-		URL: url,
-	}
-	ctx.JSON(http.StatusOK, res)
+	const filename = "thumbnail"
+	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorThumbnail)
 }
 
 func (h *handler) uploadCoordinatorHeader(ctx *gin.Context) {
@@ -116,6 +108,26 @@ func (h *handler) uploadScheduleImage(ctx *gin.Context) {
 func (h *handler) uploadScheduleOpeningVideo(ctx *gin.Context) {
 	const filename = "video"
 	h.uploadFile(ctx, filename, h.media.GenerateScheduleOpeningVideo)
+}
+
+func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (string, error)) {
+	req := &request.GetUploadURLRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &media.GenerateUploadURLInput{
+		FileType: req.FileType,
+	}
+	url, err := fn(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.UploadURLResponse{
+		URL: url,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) uploadFile(

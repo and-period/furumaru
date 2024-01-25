@@ -1,3 +1,13 @@
+getUploadUrlRequest:
+  type: object
+  properties:
+    fileType:
+      type: string
+      description: MIMEタイプ
+  required:
+  - fileType
+  example:
+    fileType: 'image/png'
 uploadCoordinatorThumbnailRequest:
   type: object
   properties:

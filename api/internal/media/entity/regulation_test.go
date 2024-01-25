@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -670,31 +671,52 @@ func TestRegulation_GenerateFilePath(t *testing.T) {
 	}
 }
 
-func TestRegulation_GetFilePath(t *testing.T) {
+func TestRegulation_GetObjectKey(t *testing.T) {
 	t.Parallel()
+	reg := &Regulation{
+		MaxSize: 0,
+		Formats: set.New[string]("image/jpeg", "image/png", "image/webp", "video/mp4"),
+		dir:     "test",
+	}
 	tests := []struct {
-		name       string
-		regulation *Regulation
-		args       []interface{}
-		expect     string
+		name        string
+		regulation  *Regulation
+		contentType string
+		args        []interface{}
+		expect      string
+		expectErr   error
 	}{
 		{
-			name:       "success",
-			regulation: CoordinatorThumbnailRegulation,
-			expect:     "coordinators/thumbnail/[a-zA-Z0-9]+",
+			name:        "success image/jpeg",
+			regulation:  reg,
+			contentType: "image/jpeg",
+			args:        []interface{}{},
+			expect:      "test/[a-zA-Z0-9]+.jpg",
+			expectErr:   nil,
 		},
 		{
-			name:       "success with params",
-			regulation: BroadcastArchiveRegulation,
-			args:       []interface{}{"broadcast-id"},
-			expect:     "schedules/archives/broadcast-id/mp4/[a-zA-Z0-9]+",
+			name:        "success image/png",
+			regulation:  reg,
+			contentType: "image/png",
+			expect:      "test/[a-zA-Z0-9]+.png",
+			expectErr:   nil,
+		},
+		{
+			name:        "success with params",
+			regulation:  BroadcastArchiveRegulation,
+			contentType: "video/mp4",
+			args:        []interface{}{"broadcast-id"},
+			expect:      "schedules/archives/broadcast-id/mp4/[a-zA-Z0-9]+",
+			expectErr:   nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Regexp(t, regexp.MustCompile(tt.expect), tt.regulation.GetFilePath(tt.args...))
+			actual, err := tt.regulation.GetObjectKey(tt.contentType, tt.args...)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Regexp(t, regexp.MustCompile(tt.expect), actual, actual)
 		})
 	}
 }
