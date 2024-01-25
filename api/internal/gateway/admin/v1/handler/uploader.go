@@ -36,7 +36,7 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 
 func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
 	ver, ok := ctx.GetQuery("ver")
-	if !ok || ver == "v2" {
+	if !ok || ver != "v2" {
 		// Deprecated: 移行が完了したら削除
 		const filename = "thumbnail"
 		h.uploadFile(ctx, filename, h.media.GenerateCoordinatorThumbnail)
