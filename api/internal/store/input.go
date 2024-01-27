@@ -143,7 +143,7 @@ type UpsertShippingInput struct {
 
 type UpsertShippingRate struct {
 	Name            string  `validate:"required"`
-	Price           int64   `validate:"required,lt=10000000000"`
+	Price           int64   `validate:"min=0,lt=10000000000"`
 	PrefectureCodes []int32 `validate:"required"`
 }
 

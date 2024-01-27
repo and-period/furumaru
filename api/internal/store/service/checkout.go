@@ -271,7 +271,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		return "", internalError(err)
 	}
 	// プロモーションの有効性検証
-	if params.payload.PromotionCode != "" && !promotion.IsEnabled(s.now()) {
+	if params.payload.PromotionCode != "" && !promotion.IsEnabled() {
 		s.logger.Warn("Failed to disable promotion",
 			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
 		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)

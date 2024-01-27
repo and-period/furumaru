@@ -609,6 +609,7 @@ func TestPromotion_Delete(t *testing.T) {
 func testPromotion(id, code string, now time.Time) *entity.Promotion {
 	return &entity.Promotion{
 		ID:           id,
+		Status:       entity.PromotionStatusEnabled,
 		Title:        "夏の採れたて野菜マルシェを開催!!",
 		Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 		Public:       true,
@@ -617,8 +618,8 @@ func testPromotion(id, code string, now time.Time) *entity.Promotion {
 		DiscountRate: 0,
 		Code:         code,
 		CodeType:     entity.PromotionCodeTypeOnce,
-		StartAt:      now,
-		EndAt:        now.AddDate(0, 1, 0),
+		StartAt:      now.Add(-time.Hour),
+		EndAt:        now.Add(time.Hour),
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}

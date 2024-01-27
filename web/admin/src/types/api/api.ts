@@ -4347,6 +4347,12 @@ export interface Promotion {
      */
     'description': string;
     /**
+     * 
+     * @type {PromotionStatus}
+     * @memberof Promotion
+     */
+    'status': PromotionStatus;
+    /**
      * 公開フラグ
      * @type {boolean}
      * @memberof Promotion
@@ -4410,6 +4416,38 @@ export interface PromotionResponse {
      */
     'promotion': Promotion;
 }
+/**
+ * プロモーションステータス
+ * @export
+ * @enum {string}
+ */
+
+export const PromotionStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 非公開
+    */
+    PRIVATE: 1,
+    /**
+    * 利用可能前
+    */
+    WAITING: 2,
+    /**
+    * 利用可能
+    */
+    ENABLED: 3,
+    /**
+    * 利用終了
+    */
+    FINISHED: 4
+} as const;
+
+export type PromotionStatus = typeof PromotionStatus[keyof typeof PromotionStatus];
+
+
 /**
  * 
  * @export

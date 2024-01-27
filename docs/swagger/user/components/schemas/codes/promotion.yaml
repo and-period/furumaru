@@ -1,3 +1,26 @@
+promotionStatus:
+  type: integer
+  format: int32
+  description: プロモーションステータス
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  x-enum-varnames:
+  - UNKNOWN
+  - PRIVATE
+  - WAITING
+  - ENABLED
+  - FINISHED
+  x-enum-descriptions:
+  - 不明
+  - 非公開
+  - 利用可能前
+  - 利用可能
+  - 利用終了
 discountType:
   type: integer
   format: int32

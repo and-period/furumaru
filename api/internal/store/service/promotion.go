@@ -67,7 +67,7 @@ func (s *service) GetPromotion(ctx context.Context, in *store.GetPromotionInput)
 	if err != nil {
 		return nil, internalError(err)
 	}
-	if in.OnlyEnabled && !promotion.IsEnabled(s.now()) {
+	if in.OnlyEnabled && !promotion.IsEnabled() {
 		return nil, fmt.Errorf("this promotion is disabled: %w", exception.ErrNotFound)
 	}
 	return promotion, nil
@@ -81,7 +81,7 @@ func (s *service) GetPromotionByCode(ctx context.Context, in *store.GetPromotion
 	if err != nil {
 		return nil, internalError(err)
 	}
-	if in.OnlyEnabled && !promotion.IsEnabled(s.now()) {
+	if in.OnlyEnabled && !promotion.IsEnabled() {
 		return nil, fmt.Errorf("this promotion is disabled: %w", exception.ErrNotFound)
 	}
 	return promotion, nil

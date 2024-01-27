@@ -875,6 +875,7 @@ func checkoutmocks(
 		GetByCode(gomock.Any(), "code1234").
 		Return(&entity.Promotion{
 			ID:           "promotion-id",
+			Status:       entity.PromotionStatusEnabled,
 			Title:        "プロモーションタイトル",
 			Description:  "プロモーションの詳細です。",
 			Public:       true,
@@ -1171,6 +1172,7 @@ func TestCheckout(t *testing.T) {
 	}
 	promotion := &entity.Promotion{
 		ID:           "promotion-id",
+		Status:       entity.PromotionStatusEnabled,
 		Title:        "プロモーションタイトル",
 		Description:  "プロモーションの詳細です。",
 		Public:       true,
@@ -1489,7 +1491,7 @@ func TestCheckout(t *testing.T) {
 		{
 			name: "failed to disable promotion",
 			setup: func(ctx context.Context, mocks *mocks) {
-				promotion := &entity.Promotion{Public: false}
+				promotion := &entity.Promotion{Status: entity.PromotionStatusPrivate}
 				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)

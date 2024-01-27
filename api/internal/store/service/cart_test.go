@@ -347,6 +347,7 @@ func TestCalcCart(t *testing.T) {
 	}
 	promotion := &entity.Promotion{
 		ID:           "promotion-id",
+		Status:       entity.PromotionStatusEnabled,
 		Title:        "プロモーションタイトル",
 		Description:  "プロモーションの詳細です。",
 		Public:       true,
