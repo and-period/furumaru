@@ -17,6 +17,7 @@ env:
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_MEDIA }}
+  LAMBDA_FUNCTION_UPLOADER: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_UPLOADER }}
   LAMBDA_FUNCTION_RESIZER: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_RESIZER }}
   LAMBDA_FUNCTION_START_SCHEDULER: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
   LAMBDA_FUNCTION_CLOSE_SCHEDULER: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
@@ -63,6 +64,38 @@ jobs:
         docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
         docker push -a ${ECR_REPOSITORY_URL}
+
+  deploy_uploader:
+    name: deploy uploader
+    needs: build_and_push
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set ECR_REPOSITORY_URL
+      run: |
+        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
+
+    - name: Configure AWS credentials from IAM Role
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Deploy AWS Lambda function
+      run: |
+        aws lambda update-function-code \
+          --function-name="${LAMBDA_FUNCTION_UPLOADER}" \
+          --image-uri="${ECR_REPOSITORY_URL}:latest" \
+        | jq '. | del(.Environment)'
 
   deploy_resizer:
     name: deploy resizer
