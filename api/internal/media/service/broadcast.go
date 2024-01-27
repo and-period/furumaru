@@ -92,7 +92,7 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 	}
 	reg := entity.BroadcastArchiveRegulation
 	teeReader := io.TeeReader(in.File, &buf)
-	if err := reg.Validate(teeReader, in.Header); err != nil {
+	if err := reg.ValidateV1(teeReader, in.Header); err != nil {
 		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	path := reg.GenerateFilePath(in.Header, broadcast.ScheduleID)

@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRegulation_Validate(t *testing.T) {
+func TestRegulation_ValidateV1(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name       string
@@ -634,7 +634,7 @@ func TestRegulation_Validate(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.ErrorIs(t, tt.regulation.Validate(tt.input(t)), tt.expect)
+			assert.ErrorIs(t, tt.regulation.ValidateV1(tt.input(t)), tt.expect)
 		})
 	}
 }
