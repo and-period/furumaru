@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import axios, { type RawAxiosRequestHeaders } from 'axios'
 
 import { useProductTypeStore } from './product-type'
 import { apiClient } from '~/plugins/api-client'
@@ -116,13 +117,21 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param payload サムネイル画像
      * @returns アップロードされた画像のURI
      */
-    async getCoordinatorThumbnailUploadUrl (payload: File): Promise<string> {
+    async uploadCoordinatorThumbnail (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: payload.type
+          fileType: contentType
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorThumbnailUploadUrl(body)
-        return res.data.url
+
+        const headers: RawAxiosRequestHeaders = {
+          'Content-Type': contentType
+        }
+        await axios.put(res.data.url, payload, { headers })
+
+        const url = new URL(res.data.url)
+        return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err)
       }

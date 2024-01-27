@@ -25,7 +25,7 @@ p, coordinator_get, /v1/coordinators/*, GET, allow
 p, coordinator_create, /v1/coordinators, POST, allow
 p, coordinator_update, /v1/coordinators/*, PATCH, allow
 p, coordinator_delete, /v1/coordinators/*, DELETE, allow
-p, coordinator_uploader, /v1/upload/coordinators/*, (GET)|(POST), allow
+p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
 p, live_list, /v1/schedules/*/lives, GET, allow
 p, live_get, /v1/schedules/*/lives/*, GET, allow
 p, live_create, /v1/schedules/*/lives, POST, allow

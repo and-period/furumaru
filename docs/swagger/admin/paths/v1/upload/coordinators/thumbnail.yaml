@@ -1,4 +1,4 @@
-get:
+post:
   summary: コーディネータサムネイルアップロード用URL取得
   operationId: v1GetCoordinatorThumbnailUploadUrl
   tags:
@@ -18,35 +18,6 @@ get:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/v1UploadUrlResponse'
-    400:
-      description: バリデーションエラー
-      content:
-        application/json:
-          schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
-post:
-  summary: コーディネータサムネイルアップロード
-  operationId: v1UploadCoordinatorThumbnail
-  tags:
-  - Coordinator
-  security:
-  - bearerAuth: []
-  requestBody:
-    required: true
-    content:
-      multipart/form-data:
-        schema:
-          $ref: '../../../../openapi.yaml#/components/schemas/v1UploadCoordinatorThumbnailRequest'
-        encoding:
-          thumbnail:
-            contentType: image/png, image/jpeg
-  responses:
-    200:
-      description: 成功
-      content:
-        application/json:
-          schema:
-            $ref: '../../../../openapi.yaml#/components/schemas/v1UploadImageResponse'
     400:
       description: バリデーションエラー
       content:

@@ -19,8 +19,7 @@ import (
 func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/upload", h.authentication)
 
-	r.GET("/coordinators/thumbnail", h.GetCoordinatorThumbnailUploadURL)
-	r.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
+	r.POST("/coordinators/thumbnail", h.CreateCoordinatorThumbnailUploadURL)
 	r.POST("/coordinators/header", h.uploadCoordinatorHeader)
 	r.POST("/coordinators/promotion-video", h.uploadCoordinatorPromotionVideo)
 	r.POST("/coordinators/bonus-video", h.uploadCoordinatorBonusVideo)
@@ -36,13 +35,8 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/schedules/opening-video", h.uploadScheduleOpeningVideo)
 }
 
-func (h *handler) GetCoordinatorThumbnailUploadURL(ctx *gin.Context) {
+func (h *handler) CreateCoordinatorThumbnailUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetCoordinatorThumbnailUploadURL)
-}
-
-func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
-	const filename = "thumbnail"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorThumbnail)
 }
 
 func (h *handler) uploadCoordinatorHeader(ctx *gin.Context) {

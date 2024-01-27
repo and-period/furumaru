@@ -6005,6 +6005,19 @@ export interface UpdateThreadRequest {
 /**
  * 
  * @export
+ * @interface UploadCoordinatorThumbnailRequest
+ */
+export interface UploadCoordinatorThumbnailRequest {
+    /**
+     * コーディネータサムネイル(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadCoordinatorThumbnailRequest
+     */
+    'thumbnail'?: File;
+}
+/**
+ * 
+ * @export
  * @interface UploadImageResponse
  */
 export interface UploadImageResponse {
@@ -6422,6 +6435,19 @@ export interface UsersResponse {
      * @memberof UsersResponse
      */
     'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorThumbnailRequest
+ */
+export interface V1UploadCoordinatorThumbnailRequest {
+    /**
+     * コーディネータサムネイル(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadCoordinatorThumbnailRequest
+     */
+    'thumbnail'?: File;
 }
 /**
  * 
@@ -10060,7 +10086,7 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -10440,49 +10466,6 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary コーディネータサムネイルアップロード
-         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorThumbnail: async (thumbnail?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/coordinators/thumbnail`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (thumbnail !== undefined) { 
-                localVarFormParams.append('thumbnail', thumbnail as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -10656,19 +10639,6 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
             const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorPromotionVideo']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
-        /**
-         * 
-         * @summary コーディネータサムネイルアップロード
-         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadCoordinatorThumbnail(thumbnail?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorThumbnail(thumbnail, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorThumbnail']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
     }
 };
 
@@ -10805,16 +10775,6 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          */
         v1UploadCoordinatorPromotionVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
             return localVarFp.v1UploadCoordinatorPromotionVideo(video, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary コーディネータサムネイルアップロード
-         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorThumbnail(thumbnail?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -10975,18 +10935,6 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1UploadCoordinatorPromotionVideo(video?: File, options?: RawAxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1UploadCoordinatorPromotionVideo(video, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary コーディネータサムネイルアップロード
-     * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CoordinatorApi
-     */
-    public v1UploadCoordinatorThumbnail(thumbnail?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
