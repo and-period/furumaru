@@ -11,6 +11,7 @@ import (
 	reflect "reflect"
 	time "time"
 
+	storage "github.com/and-period/furumaru/api/pkg/storage"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -35,6 +36,21 @@ func NewMockBucket(ctrl *gomock.Controller) *MockBucket {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockBucket) EXPECT() *MockBucketMockRecorder {
 	return m.recorder
+}
+
+// Copy mocks base method.
+func (m *MockBucket) Copy(ctx context.Context, source, key string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Copy", ctx, source, key)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Copy indicates an expected call of Copy.
+func (mr *MockBucketMockRecorder) Copy(ctx, source, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Copy", reflect.TypeOf((*MockBucket)(nil).Copy), ctx, source, key)
 }
 
 // Download mocks base method.
@@ -83,18 +99,18 @@ func (mr *MockBucketMockRecorder) GenerateObjectURL(path interface{}) *gomock.Ca
 }
 
 // GeneratePresignUploadURI mocks base method.
-func (m *MockBucket) GeneratePresignUploadURI(path string, expiresIn time.Duration) (string, error) {
+func (m *MockBucket) GeneratePresignUploadURI(key string, expiresIn time.Duration) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GeneratePresignUploadURI", path, expiresIn)
+	ret := m.ctrl.Call(m, "GeneratePresignUploadURI", key, expiresIn)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GeneratePresignUploadURI indicates an expected call of GeneratePresignUploadURI.
-func (mr *MockBucketMockRecorder) GeneratePresignUploadURI(path, expiresIn interface{}) *gomock.Call {
+func (mr *MockBucketMockRecorder) GeneratePresignUploadURI(key, expiresIn interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GeneratePresignUploadURI", reflect.TypeOf((*MockBucket)(nil).GeneratePresignUploadURI), path, expiresIn)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GeneratePresignUploadURI", reflect.TypeOf((*MockBucket)(nil).GeneratePresignUploadURI), key, expiresIn)
 }
 
 // GenerateS3URI mocks base method.
@@ -138,6 +154,21 @@ func (m *MockBucket) GetHost() (*url.URL, error) {
 func (mr *MockBucketMockRecorder) GetHost() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHost", reflect.TypeOf((*MockBucket)(nil).GetHost))
+}
+
+// GetMetadata mocks base method.
+func (m *MockBucket) GetMetadata(ctx context.Context, key string) (*storage.Metadata, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMetadata", ctx, key)
+	ret0, _ := ret[0].(*storage.Metadata)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMetadata indicates an expected call of GetMetadata.
+func (mr *MockBucketMockRecorder) GetMetadata(ctx, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetadata", reflect.TypeOf((*MockBucket)(nil).GetMetadata), ctx, key)
 }
 
 // ReplaceURLToS3URI mocks base method.

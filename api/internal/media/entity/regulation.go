@@ -6,6 +6,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -14,6 +15,7 @@ import (
 )
 
 var (
+	ErrNotFoundReguration     = errors.New("entity: not found reguration")
 	ErrTooLargeFileSize       = errors.New("entity: too large file size")
 	ErrInvalidFileFormat      = errors.New("entity: invalid file format")
 	ErrUnsupportedContentType = errors.New("entity: unsupported content type")
@@ -22,6 +24,7 @@ var (
 
 const (
 	BroadcastLiveMP4Path          = "schedules/lives"              // ライブ配信中に使用する動画
+	BroadcastArchivePath          = "schedules/archives"           // ライブ配信後のアーカイブ動画
 	BroadcastArchiveMP4Path       = "schedules/archives/%s/mp4"    // ライブ配信後のアーカイブ動画(mp4)
 	BroadcastArchiveHLSPath       = "schedules/archives/%s/hls"    // ライブ配信後のアーカイブ動画(hls)
 	CoordinatorThumbnailPath      = "coordinators/thumbnail"       // コーディネータサムネイル画像
@@ -137,21 +140,86 @@ var (
 	}
 )
 
-func (r *Regulation) Validate(file io.Reader, header *multipart.FileHeader) error {
+func FindByObjectKey(key string) (*Regulation, error) {
+	dir := path.Dir(key)
+	if strings.HasPrefix(dir, BroadcastArchivePath) {
+		return BroadcastArchiveRegulation, nil
+	}
+	switch dir {
+	case BroadcastLiveMP4Path:
+		return BroadcastLiveMP4Regulation, nil
+	case CoordinatorThumbnailPath:
+		return CoordinatorThumbnailRegulation, nil
+	case CoordinatorHeaderPath:
+		return CoordinatorHeaderRegulation, nil
+	case CoordinatorPromotionVideoPath:
+		return CoordinatorPromotionVideoRegulation, nil
+	case CoordinatorBonusVideoPath:
+		return CoordinatorBonusVideoRegulation, nil
+	case ProducerThumbnailPath:
+		return ProducerThumbnailRegulation, nil
+	case ProducerHeaderPath:
+		return ProducerHeaderRegulation, nil
+	case ProducerPromotionVideoPath:
+		return ProducerPromotionVideoRegulation, nil
+	case ProducerBonusVideoPath:
+		return ProducerBonusVideoRegulation, nil
+	case UserThumbnailPath:
+		return UserThumbnailRegulation, nil
+	case ProductMediaImagePath:
+		return ProductMediaImageRegulation, nil
+	case ProductMediaVideoPath:
+		return ProductMediaVideoRegulation, nil
+	case ProductTypeIconPath:
+		return ProductTypeIconRegulation, nil
+	case ScheduleThumbnailPath:
+		return ScheduleThumbnailRegulation, nil
+	case ScheduleImagePath:
+		return ScheduleImageRegulation, nil
+	case ScheduleOpeningVideoPath:
+		return ScheduleOpeningVideoRegulation, nil
+	default:
+		return nil, ErrNotFoundReguration
+	}
+}
+
+func (r *Regulation) Validate(contentType string, size int64) error {
+	if err := r.validateSize(size); err != nil {
+		return err
+	}
+	return r.validateFormat(contentType)
+}
+
+func (r *Regulation) validateSize(size int64) error {
+	if size > r.MaxSize {
+		return fmt.Errorf("%w: size=%d", ErrTooLargeFileSize, size)
+	}
+	return nil
+}
+
+func (r *Regulation) validateFormat(contentType string) error {
+	if r.Formats.Contains(contentType) {
+		return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
+	}
+	return nil
+}
+
+// Deprecated: Use to Validate
+func (r *Regulation) ValidateV1(file io.Reader, header *multipart.FileHeader) error {
 	if file == nil || header == nil {
 		return fmt.Errorf("entity: file and header is required: %w", ErrInvalidFileFormat)
 	}
-	if !r.validateSize(header) {
+	if !r.validateV1Size(header) {
 		return fmt.Errorf("%w: size=%d", ErrTooLargeFileSize, header.Size)
 	}
-	return r.validateFormat(file)
+	return r.validateV1Format(file)
 }
 
-func (r *Regulation) validateSize(header *multipart.FileHeader) bool {
+func (r *Regulation) validateV1Size(header *multipart.FileHeader) bool {
 	return header.Size <= r.MaxSize
 }
 
-func (r *Regulation) validateFormat(file io.Reader) error {
+func (r *Regulation) validateV1Format(file io.Reader) error {
 	if r.Formats.Len() == 0 {
 		return nil
 	}

@@ -35,19 +35,28 @@ type Bucket interface {
 	// S3 URIの生成
 	GenerateS3URI(path string) string
 	// S3 Bucketへのアップロード用URIの生成
-	GeneratePresignUploadURI(path string, expiresIn time.Duration) (string, error)
+	GeneratePresignUploadURI(key string, expiresIn time.Duration) (string, error)
 	// オブジェクトURLからS3 URIへの置換
 	ReplaceURLToS3URI(rawURL string) (string, error)
 	// S3 Bucketの接続先情報を取得
 	GetHost() (*url.URL, error)
 	// S3 BucketのFQDNを取得
 	GetFQDN() string
+	// S3 Bucketのオブジェクトからメタデータを取得
+	GetMetadata(ctx context.Context, key string) (*Metadata, error)
 	// S3 Bucketからオブジェクトを取得
 	Download(ctx context.Context, url string) (io.Reader, error)
 	// S3 Bucketからオブジェクトを取得とByte型へ変換
 	DownloadAndReadAll(ctx context.Context, url string) ([]byte, error)
 	// S3 Bucketへオブジェクトをアップロード
 	Upload(ctx context.Context, path string, body io.Reader) (string, error)
+	// S3 Bucketへ他バケットからオブジェクトをコピーする
+	Copy(ctx context.Context, source, key string) (string, error)
+}
+
+type Metadata struct {
+	ContentLength int64
+	ContentType   string
 }
 
 type Params struct {
@@ -119,10 +128,10 @@ func (b *bucket) GenerateObjectURL(path string) (string, error) {
 	return u.String(), nil
 }
 
-func (b *bucket) GeneratePresignUploadURI(path string, expiresIn time.Duration) (string, error) {
+func (b *bucket) GeneratePresignUploadURI(key string, expiresIn time.Duration) (string, error) {
 	in := &s3.PutObjectInput{
 		Bucket: aws.String(*b.name),
-		Key:    aws.String(path),
+		Key:    aws.String(key),
 	}
 	request, err := b.presigner.PresignPutObject(context.Background(), in, s3.WithPresignExpires(expiresIn))
 	if err != nil {
@@ -154,6 +163,26 @@ func (b *bucket) GetHost() (*url.URL, error) {
 
 func (b *bucket) GetFQDN() string {
 	return fmt.Sprintf(domain, aws.ToString(b.name))
+}
+
+func (b *bucket) GetMetadata(ctx context.Context, key string) (*Metadata, error) {
+	in := &s3.HeadObjectInput{
+		Bucket: b.name,
+		Key:    aws.String(key),
+	}
+	out, err := b.s3.HeadObject(ctx, in)
+	var bne *types.NotFound
+	if errors.As(err, &bne) {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	res := &Metadata{
+		ContentLength: aws.ToInt64(out.ContentLength),
+		ContentType:   aws.ToString(out.ContentType),
+	}
+	return res, nil
 }
 
 func (b *bucket) Download(ctx context.Context, url string) (io.Reader, error) {
@@ -195,6 +224,19 @@ func (b *bucket) Upload(ctx context.Context, path string, body io.Reader) (strin
 		return "", err
 	}
 	return b.GenerateObjectURL(path)
+}
+
+func (b *bucket) Copy(ctx context.Context, source, key string) (string, error) {
+	in := &s3.CopyObjectInput{
+		Bucket:     b.name,
+		Key:        aws.String(key),
+		CopySource: aws.String(source),
+	}
+	_, err := b.s3.CopyObject(ctx, in)
+	if err != nil {
+		return "", err
+	}
+	return b.GenerateObjectURL(key)
 }
 
 func (b *bucket) generateKeyFromObjectURL(objectURL string) (string, error) {
