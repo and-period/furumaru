@@ -10,6 +10,6 @@ export const UpsertShippingValidationRules: ValidationArgs = {
 
 export const UpsertShippingRateValidationRules: ValidationArgs = {
   name: { required, maxLength: maxLength(64) },
-  price: { required, minValue: minValue(1), maxValue: maxValue(9999999999) },
+  price: { required, minValue: minValue(0), maxValue: maxValue(9999999999) },
   prefectureCodes: { minLengthArray: minLengthArray(1), maxLengthArray: maxLengthArray(47) }
 }
