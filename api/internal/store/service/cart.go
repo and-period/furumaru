@@ -58,7 +58,7 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 			return
 		}
 		promotion, err = s.db.Promotion.GetByCode(ectx, in.PromotionCode)
-		if promotion.IsEnabled(s.now()) {
+		if promotion.IsEnabled() {
 			return
 		}
 		s.logger.Warn("Failed to disable promotion", zap.String("sessionId", in.SessionID), zap.String("code", in.PromotionCode))

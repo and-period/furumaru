@@ -63,6 +63,7 @@ export * from './ProductType';
 export * from './ProductTypeIconsInner';
 export * from './ProductsResponse';
 export * from './Promotion';
+export * from './PromotionStatus';
 export * from './RefreshAuthTokenRequest';
 export * from './ResetAuthPasswordRequest';
 export * from './Schedule';

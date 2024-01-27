@@ -66,8 +66,11 @@ func (p *promotion) List(ctx context.Context, params *database.ListPromotionsPar
 	stmt = prm.stmt(stmt)
 	stmt = prm.pagination(stmt)
 
-	err := stmt.Find(&promotions).Error
-	return promotions, dbError(err)
+	if err := stmt.Find(&promotions).Error; err != nil {
+		return nil, dbError(err)
+	}
+	promotions.Fill(p.now())
+	return promotions, nil
 }
 
 func (p *promotion) Count(ctx context.Context, params *database.ListPromotionsParams) (int64, error) {
@@ -83,8 +86,11 @@ func (p *promotion) MultiGet(ctx context.Context, promotionIDs []string, fields 
 	stmt := p.db.Statement(ctx, p.db.DB, promotionTable, fields...).
 		Where("id IN (?)", promotionIDs)
 
-	err := stmt.Find(&promotions).Error
-	return promotions, dbError(err)
+	if err := stmt.Find(&promotions).Error; err != nil {
+		return nil, dbError(err)
+	}
+	promotions.Fill(p.now())
+	return promotions, nil
 }
 
 func (p *promotion) Get(ctx context.Context, promotionID string, fields ...string) (*entity.Promotion, error) {
@@ -101,6 +107,7 @@ func (p *promotion) GetByCode(ctx context.Context, code string, fields ...string
 	if err := stmt.First(&promotion).Error; err != nil {
 		return nil, dbError(err)
 	}
+	promotion.Fill(p.now())
 	return promotion, nil
 }
 
@@ -154,5 +161,6 @@ func (p *promotion) get(
 	if err := stmt.First(&promotion).Error; err != nil {
 		return nil, err
 	}
+	promotion.Fill(p.now())
 	return promotion, nil
 }

@@ -19,6 +19,12 @@ import {
     DiscountTypeFromJSONTyped,
     DiscountTypeToJSON,
 } from './DiscountType';
+import type { PromotionStatus } from './PromotionStatus';
+import {
+    PromotionStatusFromJSON,
+    PromotionStatusFromJSONTyped,
+    PromotionStatusToJSON,
+} from './PromotionStatus';
 
 /**
  * プロモーション情報
@@ -44,6 +50,12 @@ export interface Promotion {
      * @memberof Promotion
      */
     description: string;
+    /**
+     * 
+     * @type {PromotionStatus}
+     * @memberof Promotion
+     */
+    status: PromotionStatus;
     /**
      * 
      * @type {DiscountType}
@@ -84,6 +96,7 @@ export function instanceOfPromotion(value: object): boolean {
     isInstance = isInstance && "id" in value;
     isInstance = isInstance && "title" in value;
     isInstance = isInstance && "description" in value;
+    isInstance = isInstance && "status" in value;
     isInstance = isInstance && "discountType" in value;
     isInstance = isInstance && "discountRate" in value;
     isInstance = isInstance && "code" in value;
@@ -106,6 +119,7 @@ export function PromotionFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'id': json['id'],
         'title': json['title'],
         'description': json['description'],
+        'status': PromotionStatusFromJSON(json['status']),
         'discountType': DiscountTypeFromJSON(json['discountType']),
         'discountRate': json['discountRate'],
         'code': json['code'],
@@ -126,6 +140,7 @@ export function PromotionToJSON(value?: Promotion | null): any {
         'id': value.id,
         'title': value.title,
         'description': value.description,
+        'status': PromotionStatusToJSON(value.status),
         'discountType': DiscountTypeToJSON(value.discountType),
         'discountRate': value.discountRate,
         'code': value.code,

@@ -301,6 +301,8 @@ components:
       $ref: './components/schemas/codes/product.yaml#/deliveryType'
     storageMethodType:
       $ref: './components/schemas/codes/product.yaml#/storageMethodType'
+    promotionStatus:
+      $ref: './components/schemas/codes/promotion.yaml#/promotionStatus'
     discountType:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     scheduleStatus:

@@ -9,6 +9,71 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestPromotionStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status entity.PromotionStatus
+		expect PromotionStatus
+	}{
+		{
+			name:   "private",
+			status: entity.PromotionStatusPrivate,
+			expect: PromotionStatusPrivate,
+		},
+		{
+			name:   "waiting",
+			status: entity.PromotionStatusWaiting,
+			expect: PromotionStatusWaiting,
+		},
+		{
+			name:   "enabled",
+			status: entity.PromotionStatusEnabled,
+			expect: PromotionStatusEnabled,
+		},
+		{
+			name:   "finisihed",
+			status: entity.PromotionStatusFinished,
+			expect: PromotionStatusFinished,
+		},
+		{
+			name:   "unknown",
+			status: entity.PromotionStatusUnknown,
+			expect: PromotionStatusUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewPromotionStatus(tt.status)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestPromotionStatus_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status PromotionStatus
+		expect int32
+	}{
+		{
+			name:   "success",
+			status: PromotionStatusEnabled,
+			expect: 3,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.status.Response())
+		})
+	}
+}
+
 func TestDiscountType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -119,6 +184,7 @@ func TestPromotion(t *testing.T) {
 				ID:           "promotion-id",
 				Title:        "夏の採れたて野菜マルシェを開催!!",
 				Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+				Status:       entity.PromotionStatusEnabled,
 				Public:       true,
 				PublishedAt:  now,
 				DiscountType: entity.DiscountTypeFreeShipping,
@@ -135,6 +201,7 @@ func TestPromotion(t *testing.T) {
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+					Status:       int32(PromotionStatusEnabled),
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
@@ -167,6 +234,7 @@ func TestPromotion_Response(t *testing.T) {
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+					Status:       int32(PromotionStatusEnabled),
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
@@ -178,6 +246,7 @@ func TestPromotion_Response(t *testing.T) {
 				ID:           "promotion-id",
 				Title:        "夏の採れたて野菜マルシェを開催!!",
 				Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+				Status:       int32(PromotionStatusEnabled),
 				DiscountType: DiscountTypeFreeShipping.Response(),
 				DiscountRate: 0,
 				Code:         "code0001",
@@ -215,6 +284,7 @@ func TestPromotions(t *testing.T) {
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+					Status:       entity.PromotionStatusEnabled,
 					Public:       true,
 					PublishedAt:  now,
 					DiscountType: entity.DiscountTypeFreeShipping,
@@ -233,6 +303,7 @@ func TestPromotions(t *testing.T) {
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+						Status:       int32(PromotionStatusEnabled),
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
@@ -267,6 +338,7 @@ func TestPromotions_Response(t *testing.T) {
 						ID:           "promotion-id",
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+						Status:       int32(PromotionStatusEnabled),
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
@@ -280,6 +352,7 @@ func TestPromotions_Response(t *testing.T) {
 					ID:           "promotion-id",
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
+					Status:       int32(PromotionStatusEnabled),
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
