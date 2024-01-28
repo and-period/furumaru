@@ -76,10 +76,10 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 		return "", fmt.Errorf("%s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	var url string
-	switch u.Host {
-	case s.tmpURL().Host:
+	switch {
+	case s.tmp.IsMyHost(u.String()):
 		url, err = s.uploadPermanentFile(ctx, u)
-	case s.storageURL().Host:
+	case s.storage.IsMyHost(u.String()):
 		url, err = s.downloadFile(ctx, u)
 	default:
 		return "", fmt.Errorf("service: unknown storage host. host=%s: %w", u.Host, exception.ErrInvalidArgument)

@@ -171,6 +171,20 @@ func (mr *MockBucketMockRecorder) GetMetadata(ctx, key interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetadata", reflect.TypeOf((*MockBucket)(nil).GetMetadata), ctx, key)
 }
 
+// IsMyHost mocks base method.
+func (m *MockBucket) IsMyHost(url string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsMyHost", url)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsMyHost indicates an expected call of IsMyHost.
+func (mr *MockBucketMockRecorder) IsMyHost(url interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsMyHost", reflect.TypeOf((*MockBucket)(nil).IsMyHost), url)
+}
+
 // ReplaceURLToS3URI mocks base method.
 func (m *MockBucket) ReplaceURLToS3URI(rawURL string) (string, error) {
 	m.ctrl.T.Helper()

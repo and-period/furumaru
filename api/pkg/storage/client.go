@@ -52,6 +52,8 @@ type Bucket interface {
 	Upload(ctx context.Context, path string, body io.Reader) (string, error)
 	// S3 Bucketへ他バケットからオブジェクトをコピーする
 	Copy(ctx context.Context, source, key string) (string, error)
+	// S3 Bucket URLが自身のバケット用URLかの判定
+	IsMyHost(url string) bool
 }
 
 type Metadata struct {
@@ -167,6 +169,13 @@ func (b *bucket) GetHost() (*url.URL, error) {
 
 func (b *bucket) GetFQDN() string {
 	return fmt.Sprintf(domain, aws.ToString(b.name), b.region)
+}
+
+func (b *bucket) IsMyHost(url string) bool {
+	if !strings.Contains(url, "amazonaws.com") {
+		return false
+	}
+	return strings.Contains(url, aws.ToString(b.name))
 }
 
 func (b *bucket) GetMetadata(ctx context.Context, key string) (*Metadata, error) {
