@@ -143,7 +143,7 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 		u.logger.Warn("Failed to check validation", zap.Error(err))
 		return err
 	}
-	_, err = u.storage.Copy(ctx, u.tmp.GenerateS3URI(key), key)
+	_, err = u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key)
 	if err != nil {
 		u.logger.Error("Failed to copy object", zap.String("key", key), zap.Error(err))
 		return err

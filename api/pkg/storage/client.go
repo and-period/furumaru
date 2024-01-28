@@ -42,6 +42,8 @@ type Bucket interface {
 	GetHost() (*url.URL, error)
 	// S3 BucketのFQDNを取得
 	GetFQDN() string
+	// S3 Buekcet名を取得
+	GetBucketName() string
 	// S3 Bucketのオブジェクトからメタデータを取得
 	GetMetadata(ctx context.Context, key string) (*Metadata, error)
 	// S3 Bucketからオブジェクトを取得
@@ -51,7 +53,7 @@ type Bucket interface {
 	// S3 Bucketへオブジェクトをアップロード
 	Upload(ctx context.Context, path string, body io.Reader) (string, error)
 	// S3 Bucketへ他バケットからオブジェクトをコピーする
-	Copy(ctx context.Context, source, key string) (string, error)
+	Copy(ctx context.Context, srcBucket, srcKey, dstKey string) (string, error)
 	// S3 Bucket URLが自身のバケット用URLかの判定
 	IsMyHost(url string) bool
 }
@@ -168,14 +170,18 @@ func (b *bucket) GetHost() (*url.URL, error) {
 }
 
 func (b *bucket) GetFQDN() string {
-	return fmt.Sprintf(domain, aws.ToString(b.name), b.region)
+	return fmt.Sprintf(domain, b.GetBucketName(), b.region)
+}
+
+func (b *bucket) GetBucketName() string {
+	return aws.ToString(b.name)
 }
 
 func (b *bucket) IsMyHost(url string) bool {
 	if !strings.Contains(url, "amazonaws.com") {
 		return false
 	}
-	return strings.Contains(url, aws.ToString(b.name))
+	return strings.Contains(url, b.GetBucketName())
 }
 
 func (b *bucket) GetMetadata(ctx context.Context, key string) (*Metadata, error) {
@@ -239,17 +245,18 @@ func (b *bucket) Upload(ctx context.Context, path string, body io.Reader) (strin
 	return b.GenerateObjectURL(path)
 }
 
-func (b *bucket) Copy(ctx context.Context, source, key string) (string, error) {
+func (b *bucket) Copy(ctx context.Context, srcBucket, srcKey, dstKey string) (string, error) {
+	source := strings.Join([]string{srcBucket, srcKey}, "/")
 	in := &s3.CopyObjectInput{
 		Bucket:     b.name,
-		Key:        aws.String(key),
+		Key:        aws.String(dstKey),
 		CopySource: aws.String(source),
 	}
 	_, err := b.s3.CopyObject(ctx, in)
 	if err != nil {
 		return "", err
 	}
-	return b.GenerateObjectURL(key)
+	return b.GenerateObjectURL(dstKey)
 }
 
 func (b *bucket) generateKeyFromObjectURL(objectURL string) (string, error) {

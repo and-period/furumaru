@@ -39,18 +39,18 @@ func (m *MockBucket) EXPECT() *MockBucketMockRecorder {
 }
 
 // Copy mocks base method.
-func (m *MockBucket) Copy(ctx context.Context, source, key string) (string, error) {
+func (m *MockBucket) Copy(ctx context.Context, srcBucket, srcKey, dstKey string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Copy", ctx, source, key)
+	ret := m.ctrl.Call(m, "Copy", ctx, srcBucket, srcKey, dstKey)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Copy indicates an expected call of Copy.
-func (mr *MockBucketMockRecorder) Copy(ctx, source, key interface{}) *gomock.Call {
+func (mr *MockBucketMockRecorder) Copy(ctx, srcBucket, srcKey, dstKey interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Copy", reflect.TypeOf((*MockBucket)(nil).Copy), ctx, source, key)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Copy", reflect.TypeOf((*MockBucket)(nil).Copy), ctx, srcBucket, srcKey, dstKey)
 }
 
 // Download mocks base method.
@@ -125,6 +125,20 @@ func (m *MockBucket) GenerateS3URI(path string) string {
 func (mr *MockBucketMockRecorder) GenerateS3URI(path interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateS3URI", reflect.TypeOf((*MockBucket)(nil).GenerateS3URI), path)
+}
+
+// GetBucketName mocks base method.
+func (m *MockBucket) GetBucketName() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBucketName")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetBucketName indicates an expected call of GetBucketName.
+func (mr *MockBucketMockRecorder) GetBucketName() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBucketName", reflect.TypeOf((*MockBucket)(nil).GetBucketName))
 }
 
 // GetFQDN mocks base method.
