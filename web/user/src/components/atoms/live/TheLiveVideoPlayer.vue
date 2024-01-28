@@ -41,16 +41,16 @@ onUnmounted(() => {
     videoRef.value.src = ''
   }
 })
+
+defineExpose({ videoRef })
 </script>
 
 <template>
-  <div>
-    <video
-      ref="videoRef"
-      :src="videoSrc"
-      class="aspect-video w-full"
-      controls
-      playsinline
-    />
-  </div>
+  <video
+    ref="videoRef"
+    :src="videoSrc"
+    class="aspect-video w-full bg-black"
+    controls
+    playsinline
+  />
 </template>

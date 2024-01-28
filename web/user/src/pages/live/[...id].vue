@@ -64,6 +64,18 @@ const isArchive = computed<boolean>(() => {
   }
 })
 
+const liveRef = ref<{ videoRef: HTMLVideoElement | null }>({ videoRef: null })
+
+const livePlayserHeight = computed(() => {
+  if (liveRef.value.videoRef) {
+    if (liveRef.value.videoRef.offsetWidth >= 768) {
+      return 0
+    }
+    return liveRef.value.videoRef.offsetHeight
+  }
+  return 0
+})
+
 const handleClickItem = (prodictId: string) => {
   router.push(`/items/${prodictId}`)
 }
@@ -105,11 +117,13 @@ useSeoMeta({
   >
     <template v-if="schedule">
       <div class="col-span-3">
-        <client-only>
-          <the-live-video-player
-            :video-src="schedule.schedule.distributionUrl"
-            :is-archive="isArchive"
-          />
+        <the-live-video-player
+          ref="liveRef"
+          :video-src="schedule.schedule.distributionUrl"
+          :is-archive="isArchive"
+          class="fixed z-[20] w-full md:static"
+        />
+        <div :style="{ 'padding-top': `${livePlayserHeight}px` }">
           <the-live-description
             :title="schedule.schedule.title"
             :description="schedule.schedule.description"
@@ -129,7 +143,7 @@ useSeoMeta({
             @click:item="handleClickItem"
             @click:add-cart="handleClickAddCart"
           />
-        </client-only>
+        </div>
       </div>
     </template>
 
