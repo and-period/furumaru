@@ -13,6 +13,78 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestGetUploadEvent(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.GetUploadEventInput
+		expect    *entity.UploadEvent
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.UploadEvent{Key: "dir/media.png"}).
+					DoAndReturn(func(ctx context.Context, event *entity.UploadEvent) error {
+						event.Status = entity.UploadStatusSucceeded
+						event.FileGroup = "dir"
+						event.FileType = "image/png"
+						event.UploadURL = "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test"
+						event.ReferenceURL = "http://example.s3.ap-northeast-1.amazonaws.com/dir/media.png"
+						event.ExpiredAt = now.Add(12 * time.Hour)
+						event.CreatedAt = now.Add(-2 * time.Hour)
+						event.UpdatedAt = now.Add(-2 * time.Hour)
+						return nil
+					})
+			},
+			input: &media.GetUploadEventInput{
+				UploadURL: "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test",
+			},
+			expect: &entity.UploadEvent{
+				Key:          "dir/media.png",
+				Status:       entity.UploadStatusSucceeded,
+				FileGroup:    "dir",
+				FileType:     "image/png",
+				UploadURL:    "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test",
+				ReferenceURL: "http://example.s3.ap-northeast-1.amazonaws.com/dir/media.png",
+				ExpiredAt:    now.Add(12 * time.Hour),
+				CreatedAt:    now.Add(-2 * time.Hour),
+				UpdatedAt:    now.Add(-2 * time.Hour),
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.GetUploadEventInput{},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get upload event",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.cache.EXPECT().Get(ctx, &entity.UploadEvent{Key: "dir/media.png"}).Return(assert.AnError)
+			},
+			input: &media.GetUploadEventInput{
+				UploadURL: "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.GetUploadEvent(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
