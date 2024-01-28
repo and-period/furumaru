@@ -347,6 +347,51 @@ func (mr *MockServiceMockRecorder) GetBroadcastByScheduleID(ctx, in interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBroadcastByScheduleID", reflect.TypeOf((*MockService)(nil).GetBroadcastByScheduleID), ctx, in)
 }
 
+// GetCoordinatorBonusVideoUploadURL mocks base method.
+func (m *MockService) GetCoordinatorBonusVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCoordinatorBonusVideoUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCoordinatorBonusVideoUploadURL indicates an expected call of GetCoordinatorBonusVideoUploadURL.
+func (mr *MockServiceMockRecorder) GetCoordinatorBonusVideoUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCoordinatorBonusVideoUploadURL", reflect.TypeOf((*MockService)(nil).GetCoordinatorBonusVideoUploadURL), ctx, in)
+}
+
+// GetCoordinatorHeaderUploadURL mocks base method.
+func (m *MockService) GetCoordinatorHeaderUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCoordinatorHeaderUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCoordinatorHeaderUploadURL indicates an expected call of GetCoordinatorHeaderUploadURL.
+func (mr *MockServiceMockRecorder) GetCoordinatorHeaderUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCoordinatorHeaderUploadURL", reflect.TypeOf((*MockService)(nil).GetCoordinatorHeaderUploadURL), ctx, in)
+}
+
+// GetCoordinatorPromotionVideoUploadURL mocks base method.
+func (m *MockService) GetCoordinatorPromotionVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCoordinatorPromotionVideoUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCoordinatorPromotionVideoUploadURL indicates an expected call of GetCoordinatorPromotionVideoUploadURL.
+func (mr *MockServiceMockRecorder) GetCoordinatorPromotionVideoUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCoordinatorPromotionVideoUploadURL", reflect.TypeOf((*MockService)(nil).GetCoordinatorPromotionVideoUploadURL), ctx, in)
+}
+
 // GetCoordinatorThumbnailUploadURL mocks base method.
 func (m *MockService) GetCoordinatorThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
 	m.ctrl.T.Helper()
@@ -360,6 +405,171 @@ func (m *MockService) GetCoordinatorThumbnailUploadURL(ctx context.Context, in *
 func (mr *MockServiceMockRecorder) GetCoordinatorThumbnailUploadURL(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCoordinatorThumbnailUploadURL", reflect.TypeOf((*MockService)(nil).GetCoordinatorThumbnailUploadURL), ctx, in)
+}
+
+// GetProducerBonusVideoUploadURL mocks base method.
+func (m *MockService) GetProducerBonusVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProducerBonusVideoUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProducerBonusVideoUploadURL indicates an expected call of GetProducerBonusVideoUploadURL.
+func (mr *MockServiceMockRecorder) GetProducerBonusVideoUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProducerBonusVideoUploadURL", reflect.TypeOf((*MockService)(nil).GetProducerBonusVideoUploadURL), ctx, in)
+}
+
+// GetProducerHeaderUploadURL mocks base method.
+func (m *MockService) GetProducerHeaderUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProducerHeaderUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProducerHeaderUploadURL indicates an expected call of GetProducerHeaderUploadURL.
+func (mr *MockServiceMockRecorder) GetProducerHeaderUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProducerHeaderUploadURL", reflect.TypeOf((*MockService)(nil).GetProducerHeaderUploadURL), ctx, in)
+}
+
+// GetProducerPromotionVideoUploadURL mocks base method.
+func (m *MockService) GetProducerPromotionVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProducerPromotionVideoUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProducerPromotionVideoUploadURL indicates an expected call of GetProducerPromotionVideoUploadURL.
+func (mr *MockServiceMockRecorder) GetProducerPromotionVideoUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProducerPromotionVideoUploadURL", reflect.TypeOf((*MockService)(nil).GetProducerPromotionVideoUploadURL), ctx, in)
+}
+
+// GetProducerThumbnailUploadURL mocks base method.
+func (m *MockService) GetProducerThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProducerThumbnailUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProducerThumbnailUploadURL indicates an expected call of GetProducerThumbnailUploadURL.
+func (mr *MockServiceMockRecorder) GetProducerThumbnailUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProducerThumbnailUploadURL", reflect.TypeOf((*MockService)(nil).GetProducerThumbnailUploadURL), ctx, in)
+}
+
+// GetProductMediaImageUploadURL mocks base method.
+func (m *MockService) GetProductMediaImageUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProductMediaImageUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProductMediaImageUploadURL indicates an expected call of GetProductMediaImageUploadURL.
+func (mr *MockServiceMockRecorder) GetProductMediaImageUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProductMediaImageUploadURL", reflect.TypeOf((*MockService)(nil).GetProductMediaImageUploadURL), ctx, in)
+}
+
+// GetProductMediaVideoUploadURL mocks base method.
+func (m *MockService) GetProductMediaVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProductMediaVideoUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProductMediaVideoUploadURL indicates an expected call of GetProductMediaVideoUploadURL.
+func (mr *MockServiceMockRecorder) GetProductMediaVideoUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProductMediaVideoUploadURL", reflect.TypeOf((*MockService)(nil).GetProductMediaVideoUploadURL), ctx, in)
+}
+
+// GetProductTypeIconUploadURL mocks base method.
+func (m *MockService) GetProductTypeIconUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProductTypeIconUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProductTypeIconUploadURL indicates an expected call of GetProductTypeIconUploadURL.
+func (mr *MockServiceMockRecorder) GetProductTypeIconUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProductTypeIconUploadURL", reflect.TypeOf((*MockService)(nil).GetProductTypeIconUploadURL), ctx, in)
+}
+
+// GetScheduleImageUploadURL mocks base method.
+func (m *MockService) GetScheduleImageUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetScheduleImageUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetScheduleImageUploadURL indicates an expected call of GetScheduleImageUploadURL.
+func (mr *MockServiceMockRecorder) GetScheduleImageUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetScheduleImageUploadURL", reflect.TypeOf((*MockService)(nil).GetScheduleImageUploadURL), ctx, in)
+}
+
+// GetScheduleOpeningVideoUploadURL mocks base method.
+func (m *MockService) GetScheduleOpeningVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetScheduleOpeningVideoUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetScheduleOpeningVideoUploadURL indicates an expected call of GetScheduleOpeningVideoUploadURL.
+func (mr *MockServiceMockRecorder) GetScheduleOpeningVideoUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetScheduleOpeningVideoUploadURL", reflect.TypeOf((*MockService)(nil).GetScheduleOpeningVideoUploadURL), ctx, in)
+}
+
+// GetScheduleThumbnailUploadURL mocks base method.
+func (m *MockService) GetScheduleThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetScheduleThumbnailUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetScheduleThumbnailUploadURL indicates an expected call of GetScheduleThumbnailUploadURL.
+func (mr *MockServiceMockRecorder) GetScheduleThumbnailUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetScheduleThumbnailUploadURL", reflect.TypeOf((*MockService)(nil).GetScheduleThumbnailUploadURL), ctx, in)
+}
+
+// GetUserThumbnailUploadURL mocks base method.
+func (m *MockService) GetUserThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserThumbnailUploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserThumbnailUploadURL indicates an expected call of GetUserThumbnailUploadURL.
+func (mr *MockServiceMockRecorder) GetUserThumbnailUploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserThumbnailUploadURL", reflect.TypeOf((*MockService)(nil).GetUserThumbnailUploadURL), ctx, in)
 }
 
 // ListBroadcasts mocks base method.

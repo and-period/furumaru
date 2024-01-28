@@ -11,62 +11,77 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
+// Deprecated
 func (s *service) UploadCoordinatorThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.CoordinatorThumbnailPath)
 }
 
+// Deprecated
 func (s *service) UploadCoordinatorHeader(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.CoordinatorHeaderPath)
 }
 
+// Deprecated
 func (s *service) UploadCoordinatorPromotionVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.CoordinatorPromotionVideoPath)
 }
 
+// Deprecated
 func (s *service) UploadCoordinatorBonusVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.CoordinatorBonusVideoPath)
 }
 
+// Deprecated
 func (s *service) UploadProducerThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProducerThumbnailPath)
 }
 
+// Deprecated
 func (s *service) UploadProducerHeader(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProducerHeaderPath)
 }
 
+// Deprecated
 func (s *service) UploadProducerPromotionVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProducerPromotionVideoPath)
 }
 
+// Deprecated
 func (s *service) UploadProducerBonusVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProducerBonusVideoPath)
 }
 
+// Deprecated
 func (s *service) UploadUserThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.UserThumbnailPath)
 }
 
+// Deprecated
 func (s *service) UploadProductMedia(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProductMediaPath)
 }
 
+// Deprecated
 func (s *service) UploadProductTypeIcon(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ProductTypeIconPath)
 }
 
+// Deprecated
 func (s *service) UploadScheduleThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ScheduleThumbnailPath)
 }
 
+// Deprecated
 func (s *service) UploadScheduleImage(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ScheduleImagePath)
 }
 
+// Deprecated
 func (s *service) UploadScheduleOpeningVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.ScheduleOpeningVideoPath)
 }
 
+// Deprecated
 func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, prefix string) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
@@ -87,6 +102,7 @@ func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, pre
 	return url, internalError(err)
 }
 
+// Deprecated
 func (s *service) parseURL(in *media.UploadFileInput, prefix string) (*url.URL, error) {
 	u, err := url.Parse(in.URL)
 	if err != nil {
@@ -98,6 +114,7 @@ func (s *service) parseURL(in *media.UploadFileInput, prefix string) (*url.URL, 
 	return u, nil
 }
 
+// Deprecated
 func (s *service) uploadPermanentFile(ctx context.Context, u *url.URL) (string, error) {
 	file, err := s.tmp.Download(ctx, u.String())
 	if err != nil {

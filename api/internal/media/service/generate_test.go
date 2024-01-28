@@ -19,11 +19,10 @@ import (
 func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.GenerateUploadURLInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
 			name: "success",
@@ -38,15 +37,518 @@ func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
 			},
-			expect:    "http://example.com/image.png",
-			expectErr: nil,
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetCoordinatorThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetCoordinatorHeaderUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.CoordinatorHeaderPath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetCoordinatorHeaderUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetCoordinatorPromotionVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.CoordinatorPromotionVideoPath), key)
+						assert.True(t, strings.HasSuffix(key, ".mp4"), key)
+						return "http://example.com/video.mp4", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetCoordinatorPromotionVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetCoordinatorBonusVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.CoordinatorBonusVideoPath), key)
+						assert.True(t, strings.HasSuffix(key, ".mp4"), key)
+						return "http://example.com/video.mp4", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetCoordinatorBonusVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetProducerThumbnailUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ProducerThumbnailPath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetProducerThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetProducerHeaderUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ProducerHeaderPath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetProducerHeaderUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetProducerPromotionVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ProducerPromotionVideoPath), key)
+						assert.True(t, strings.HasSuffix(key, ".mp4"), key)
+						return "http://example.com/video.mp4", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetProducerPromotionVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetProducerBonusVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ProducerBonusVideoPath), key)
+						assert.True(t, strings.HasSuffix(key, ".mp4"), key)
+						return "http://example.com/video.mp4", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetProducerBonusVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetUserThumbnailUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.UserThumbnailPath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetUserThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetProductMediaImageUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ProductMediaImagePath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetProductMediaImageUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetProductMediaVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ProductMediaVideoPath), key)
+						assert.True(t, strings.HasSuffix(key, ".mp4"), key)
+						return "http://example.com/video.mp4", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetProductMediaVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetProductTypeIconUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ProductTypeIconPath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetProductTypeIconUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetScheduleThumbnailUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ScheduleThumbnailPath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetScheduleThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetScheduleImageUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ScheduleImagePath), key)
+						assert.True(t, strings.HasSuffix(key, ".png"), key)
+						return "http://example.com/image.png", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetScheduleImageUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetScheduleOpeningVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+					DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+						assert.True(t, strings.HasPrefix(key, entity.ScheduleOpeningVideoPath), key)
+						assert.True(t, strings.HasSuffix(key, ".mp4"), key)
+						return "http://example.com/video.mp4", nil
+					})
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetScheduleOpeningVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGenerateUploadURL(t *testing.T) {
+	tests := []struct {
+		name       string
+		setup      func(ctx context.Context, mocks *mocks)
+		input      *media.GenerateUploadURLInput
+		regulation *entity.Regulation
+		expect     string
+		expectErr  error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("http://example.com", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "http://example.com",
+			expectErr:  nil,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.GenerateUploadURLInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
+			name:       "invalid argument",
+			setup:      func(ctx context.Context, mocks *mocks) {},
+			input:      &media.GenerateUploadURLInput{},
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "",
+			expectErr:  exception.ErrInvalidArgument,
+		},
+		{
+			name:  "failed to get object key",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "",
+			expectErr:  exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to generate presign upload uri",
@@ -56,14 +558,15 @@ func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
 			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "",
+			expectErr:  exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.GetCoordinatorThumbnailUploadURL(ctx, tt.input)
+			actual, err := service.generateUploadURL(tt.input, tt.regulation)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))
