@@ -18,6 +18,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	mock_database "github.com/and-period/furumaru/api/mock/media/database"
+	mock_dynamodb "github.com/and-period/furumaru/api/mock/pkg/dynamodb"
 	mock_medialive "github.com/and-period/furumaru/api/mock/pkg/medialive"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
@@ -39,6 +40,7 @@ var (
 
 type mocks struct {
 	db       *dbMocks
+	cache    *mock_dynamodb.MockClient
 	store    *mock_store.MockService
 	tmp      *mock_storage.MockBucket
 	storage  *mock_storage.MockBucket
@@ -69,6 +71,7 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
 		db:       newDBMocks(ctrl),
+		cache:    mock_dynamodb.NewMockClient(ctrl),
 		store:    mock_store.NewMockService(ctrl),
 		tmp:      mock_storage.NewMockBucket(ctrl),
 		storage:  mock_storage.NewMockBucket(ctrl),
@@ -95,6 +98,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Database: &database.Database{
 			Broadcast: mocks.db.Broadcast,
 		},
+		Cache:     mocks.cache,
 		Store:     mocks.store,
 		Tmp:       mocks.tmp,
 		Storage:   mocks.storage,

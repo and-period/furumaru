@@ -36,13 +36,11 @@ type uploader struct {
 	tmp         storage.Bucket
 	storage     storage.Bucket
 	concurrency int64
-	cacheTTL    time.Duration
 }
 
 type options struct {
 	logger      *zap.Logger
 	concurrency int64
-	cacheTTL    time.Duration
 }
 
 type Option func(*options)
@@ -59,17 +57,10 @@ func WithConcurrency(concurrency int64) Option {
 	}
 }
 
-func WithCacheTTL(ttl time.Duration) Option {
-	return func(opts *options) {
-		opts.cacheTTL = ttl
-	}
-}
-
 func NewUploader(params *Params, opts ...Option) Uploader {
 	dopts := &options{
 		logger:      zap.NewNop(),
 		concurrency: 1,
-		cacheTTL:    6 * time.Hour,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -82,7 +73,6 @@ func NewUploader(params *Params, opts ...Option) Uploader {
 		tmp:         params.Tmp,
 		storage:     params.Storage,
 		concurrency: dopts.concurrency,
-		cacheTTL:    dopts.cacheTTL,
 	}
 }
 
@@ -127,6 +117,15 @@ func (u *uploader) dispatch(ctx context.Context, record events.SQSMessage) error
 }
 
 func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error {
+	event := &entity.UploadEvent{}
+	defer func() {
+		if event.Status == entity.UploadStatusUnknown {
+			return
+		}
+		if err := u.cache.Insert(ctx, event); err != nil {
+			u.logger.Error("Failed to update upload event", zap.Any("event", event), zap.Error(err))
+		}
+	}()
 	u.logger.Debug("Dispatch", zap.Any("record", record))
 	key := record.S3.Object.URLDecodedKey
 	metadata, err := u.tmp.GetMetadata(ctx, key)
@@ -134,21 +133,29 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 		u.logger.Error("Failed to get metadata", zap.String("key", key), zap.Error(err))
 		return err
 	}
-	reg, err := entity.FindByObjectKey(key)
+	event.Key = key
+	if err := u.cache.Get(ctx, event); err != nil {
+		u.logger.Error("Failed to get upload event", zap.String("key", key), zap.Error(err))
+		return err
+	}
+	reg, err := event.Reguration()
 	if err != nil {
 		u.logger.Error("Unknown regulation", zap.String("key", key), zap.Error(err))
+		event.SetResult(false, "", u.now())
 		return err
 	}
 	if err := reg.Validate(metadata.ContentType, metadata.ContentLength); err != nil {
 		u.logger.Warn("Failed to check validation", zap.Error(err))
+		event.SetResult(false, "", u.now())
 		return err
 	}
-	_, err = u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key)
+	reference, err := u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key)
 	if err != nil {
 		u.logger.Error("Failed to copy object", zap.String("key", key), zap.Error(err))
+		event.SetResult(false, "", u.now())
 		return err
 	}
-	// TODO: 結果をキャッシュに保存
+	event.SetResult(true, reference, u.now())
 	return nil
 }
 
