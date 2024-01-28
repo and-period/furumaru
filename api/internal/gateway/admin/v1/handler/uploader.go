@@ -20,9 +20,9 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/upload", h.authentication)
 
 	r.POST("/coordinators/thumbnail", h.CreateCoordinatorThumbnailUploadURL)
-	r.POST("/coordinators/header", h.uploadCoordinatorHeader)
-	r.POST("/coordinators/promotion-video", h.uploadCoordinatorPromotionVideo)
-	r.POST("/coordinators/bonus-video", h.uploadCoordinatorBonusVideo)
+	r.POST("/coordinators/header", h.CreateCoordinatorHeaderUploadURL)
+	r.POST("/coordinators/promotion-video", h.CreateCoordinatorPromotionVideoUploadURL)
+	r.POST("/coordinators/bonus-video", h.CreateCoordinatorBonusVideoUploadURL)
 	r.POST("/producers/thumbnail", h.uploadProducerThumbnail)
 	r.POST("/producers/header", h.uploadProducerHeader)
 	r.POST("/producers/promotion-video", h.uploadProducerPromotionVideo)
@@ -39,19 +39,16 @@ func (h *handler) CreateCoordinatorThumbnailUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetCoordinatorThumbnailUploadURL)
 }
 
-func (h *handler) uploadCoordinatorHeader(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorHeader)
+func (h *handler) CreateCoordinatorHeaderUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetCoordinatorHeaderUploadURL)
 }
 
-func (h *handler) uploadCoordinatorPromotionVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorPromotionVideo)
+func (h *handler) CreateCoordinatorPromotionVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetCoordinatorPromotionVideoUploadURL)
 }
 
-func (h *handler) uploadCoordinatorBonusVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorBonusVideo)
+func (h *handler) CreateCoordinatorBonusVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetCoordinatorBonusVideoUploadURL)
 }
 
 func (h *handler) uploadProducerThumbnail(ctx *gin.Context) {

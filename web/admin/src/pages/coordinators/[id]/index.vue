@@ -193,8 +193,8 @@ const handleUpdateHeader = (files: FileList): void => {
 
   loading.value = true
   coordinatorStore.uploadCoordinatorHeader(files[0])
-    .then((res) => {
-      coordinatorFormData.value.headerUrl = res.url
+    .then((url: string) => {
+      coordinatorFormData.value.headerUrl = url
     })
     .catch(() => {
       headerUploadStatus.value.error = true
@@ -212,8 +212,8 @@ const handleUpdatePromotionVideo = (files: FileList): void => {
 
   loading.value = true
   coordinatorStore.uploadCoordinatorPromotionVideo(files[0])
-    .then((res) => {
-      coordinatorFormData.value.promotionVideoUrl = res.url
+    .then((url: string) => {
+      coordinatorFormData.value.promotionVideoUrl = url
     })
     .catch(() => {
       promotionVideoUploadStatus.value.error = true
@@ -231,8 +231,8 @@ const handleUpdateBonusVideo = (files: FileList): void => {
 
   loading.value = true
   coordinatorStore.uploadCoordinatorBonusVideo(files[0])
-    .then((res) => {
-      coordinatorFormData.value.bonusVideoUrl = res.url
+    .then((url: string) => {
+      coordinatorFormData.value.bonusVideoUrl = url
     })
     .catch(() => {
       bonusVideoUploadStatus.value.error = true

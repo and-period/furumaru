@@ -142,18 +142,21 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param payload ヘッダー画像
      * @returns アップロードされた画像のURI
      */
-    async uploadCoordinatorHeader (payload: File): Promise<UploadImageResponse> {
+    async uploadCoordinatorHeader (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.coordinatorApi().v1UploadCoordinatorHeader(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.coordinatorApi().v1GetCoordinatorHeaderUploadUrl(body)
+
+        const headers: RawAxiosRequestHeaders = {
+          'Content-Type': contentType
+        }
+        await axios.put(res.data.url, payload, { headers })
+
+        const url = new URL(res.data.url)
+        return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -164,18 +167,21 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param payload 紹介画像
      * @returns アップロードされた動画のURI
      */
-    async uploadCoordinatorPromotionVideo (payload: File): Promise<UploadVideoResponse> {
+    async uploadCoordinatorPromotionVideo (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.coordinatorApi().v1UploadCoordinatorPromotionVideo(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.coordinatorApi().v1GetCoordinatorPromotionVideoUploadUrl(body)
+
+        const headers: RawAxiosRequestHeaders = {
+          'Content-Type': contentType
+        }
+        await axios.put(res.data.url, payload, { headers })
+
+        const url = new URL(res.data.url)
+        return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -186,18 +192,21 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param payload サンキュー画像
      * @returns アップロードされた動画のURI
      */
-    async uploadCoordinatorBonusVideo (payload: File): Promise<UploadVideoResponse> {
+    async uploadCoordinatorBonusVideo (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.coordinatorApi().v1UploadCoordinatorBonusVideo(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.coordinatorApi().v1GetCoordinatorBonusVideoUploadUrl(body)
+
+        const headers: RawAxiosRequestHeaders = {
+          'Content-Type': contentType
+        }
+        await axios.put(res.data.url, payload, { headers })
+
+        const url = new URL(res.data.url)
+        return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err)
       }

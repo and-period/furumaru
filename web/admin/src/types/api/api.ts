@@ -6005,6 +6005,45 @@ export interface UpdateThreadRequest {
 /**
  * 
  * @export
+ * @interface UploadCoordinatorBonusVideoRequest
+ */
+export interface UploadCoordinatorBonusVideoRequest {
+    /**
+     * コーディネータ購入特典映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadCoordinatorBonusVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadCoordinatorHeaderRequest
+ */
+export interface UploadCoordinatorHeaderRequest {
+    /**
+     * コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadCoordinatorHeaderRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadCoordinatorPromotionVideoRequest
+ */
+export interface UploadCoordinatorPromotionVideoRequest {
+    /**
+     * コーディネータ紹介映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadCoordinatorPromotionVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
  * @interface UploadCoordinatorThumbnailRequest
  */
 export interface UploadCoordinatorThumbnailRequest {
@@ -6435,6 +6474,45 @@ export interface UsersResponse {
      * @memberof UsersResponse
      */
     'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorBonusVideoRequest
+ */
+export interface V1UploadCoordinatorBonusVideoRequest {
+    /**
+     * コーディネータ購入特典映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadCoordinatorBonusVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorHeaderRequest
+ */
+export interface V1UploadCoordinatorHeaderRequest {
+    /**
+     * コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadCoordinatorHeaderRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorPromotionVideoRequest
+ */
+export interface V1UploadCoordinatorPromotionVideoRequest {
+    /**
+     * コーディネータ紹介映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadCoordinatorPromotionVideoRequest
+     */
+    'video'?: File;
 }
 /**
  * 
@@ -10070,6 +10148,126 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary コーディネータ購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorBonusVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetCoordinatorBonusVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/coordinators/bonus-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary コーディネータヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorHeaderUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetCoordinatorHeaderUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/coordinators/header`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorPromotionVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetCoordinatorPromotionVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/coordinators/promotion-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary コーディネータサムネイルアップロード用URL取得
          * @param {GetUploadUrlRequest} body 
          * @param {*} [options] Override http request option.
@@ -10337,135 +10535,6 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary コーディネータ購入特典動画アップロード
-         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorBonusVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/coordinators/bonus-video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary コーディネータヘッダー画像アップロード
-         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorHeader: async (image?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/coordinators/header`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary コーディネータ紹介動画アップロード
-         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorPromotionVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/coordinators/promotion-video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -10513,6 +10582,45 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinator(coordinatorId, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinator']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary コーディネータ購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetCoordinatorBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinatorBonusVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinatorBonusVideoUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary コーディネータヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetCoordinatorHeaderUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinatorHeaderUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinatorHeaderUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetCoordinatorPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinatorPromotionVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinatorPromotionVideoUploadUrl']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
@@ -10600,45 +10708,6 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
             const operationBasePath = operationServerMap['CoordinatorApi.v1UpdateCoordinatorPassword']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
-        /**
-         * 
-         * @summary コーディネータ購入特典動画アップロード
-         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadCoordinatorBonusVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorBonusVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorBonusVideo']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary コーディネータヘッダー画像アップロード
-         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadCoordinatorHeader(image?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorHeader(image, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorHeader']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary コーディネータ紹介動画アップロード
-         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadCoordinatorPromotionVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorPromotionVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorPromotionVideo']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
     }
 };
 
@@ -10678,6 +10747,36 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          */
         v1GetCoordinator(coordinatorId: string, options?: any): AxiosPromise<CoordinatorResponse> {
             return localVarFp.v1GetCoordinator(coordinatorId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary コーディネータ購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetCoordinatorBonusVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary コーディネータヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorHeaderUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetCoordinatorHeaderUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetCoordinatorPromotionVideoUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -10746,36 +10845,6 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         v1UpdateCoordinatorPassword(coordinatorId: string, body: object, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateCoordinatorPassword(coordinatorId, body, options).then((request) => request(axios, basePath));
         },
-        /**
-         * 
-         * @summary コーディネータ購入特典動画アップロード
-         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorBonusVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadCoordinatorBonusVideo(video, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary コーディネータヘッダー画像アップロード
-         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorHeader(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadCoordinatorHeader(image, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary コーディネータ紹介動画アップロード
-         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorPromotionVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadCoordinatorPromotionVideo(video, options).then((request) => request(axios, basePath));
-        },
     };
 };
 
@@ -10820,6 +10889,42 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1GetCoordinator(coordinatorId: string, options?: RawAxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1GetCoordinator(coordinatorId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary コーディネータ購入特典動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1GetCoordinatorBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1GetCoordinatorBonusVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary コーディネータヘッダー画像アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1GetCoordinatorHeaderUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1GetCoordinatorHeaderUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary コーディネータ紹介動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1GetCoordinatorPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1GetCoordinatorPromotionVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -10899,42 +11004,6 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1UpdateCoordinatorPassword(coordinatorId: string, body: object, options?: RawAxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1UpdateCoordinatorPassword(coordinatorId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary コーディネータ購入特典動画アップロード
-     * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CoordinatorApi
-     */
-    public v1UploadCoordinatorBonusVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorBonusVideo(video, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary コーディネータヘッダー画像アップロード
-     * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CoordinatorApi
-     */
-    public v1UploadCoordinatorHeader(image?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorHeader(image, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary コーディネータ紹介動画アップロード
-     * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CoordinatorApi
-     */
-    public v1UploadCoordinatorPromotionVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorPromotionVideo(video, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
