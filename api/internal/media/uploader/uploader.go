@@ -2,6 +2,7 @@ package uploader
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"sync"
 	"time"
@@ -17,7 +18,7 @@ import (
 )
 
 type Uploader interface {
-	Lambda(ctx context.Context, event events.S3Event) error
+	Lambda(ctx context.Context, event events.SQSEvent) error
 }
 
 type Params struct {
@@ -85,7 +86,7 @@ func NewUploader(params *Params, opts ...Option) Uploader {
 	}
 }
 
-func (u *uploader) Lambda(ctx context.Context, events events.S3Event) (err error) {
+func (u *uploader) Lambda(ctx context.Context, events events.SQSEvent) (err error) {
 	u.logger.Debug("Started Lambda function", zap.Time("now", u.now()))
 	defer func() {
 		u.logger.Debug("Finished Lambda function", zap.Time("now", u.now()), zap.Error(err))
@@ -101,18 +102,30 @@ func (u *uploader) Lambda(ctx context.Context, events events.S3Event) (err error
 		record := record
 		eg.Go(func() error {
 			defer sm.Release(1)
-			err := u.dispatch(ectx, record)
-			if u.isRetryable(err) {
-				return err
-			}
-			u.logger.Error("Failed to check validation", zap.Error(err))
-			return nil
+			return u.dispatch(ectx, record)
 		})
 	}
 	return eg.Wait()
 }
 
-func (u *uploader) dispatch(ctx context.Context, record events.S3EventRecord) error {
+func (u *uploader) dispatch(ctx context.Context, record events.SQSMessage) error {
+	payload := &events.S3EventRecord{}
+	if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
+		u.logger.Error("Failed to unmarshall sqs event", zap.Any("event", record), zap.Error(err))
+		return nil // リトライ不要なためnilで返す
+	}
+	err := u.run(ctx, payload)
+	if err == nil {
+		return nil
+	}
+	u.logger.Error("Failed to upload object", zap.Error(err))
+	if u.isRetryable(err) {
+		return err
+	}
+	return nil
+}
+
+func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error {
 	u.logger.Debug("Dispatch", zap.Any("record", record))
 	key := record.S3.Object.URLDecodedKey
 	metadata, err := u.tmp.GetMetadata(ctx, key)
