@@ -98,7 +98,6 @@ func (u *uploader) Lambda(ctx context.Context, events events.SQSEvent) (err erro
 		if err := sm.Acquire(ctx, 1); err != nil {
 			return err
 		}
-
 		record := record
 		eg.Go(func() error {
 			defer sm.Release(1)
@@ -109,19 +108,20 @@ func (u *uploader) Lambda(ctx context.Context, events events.SQSEvent) (err erro
 }
 
 func (u *uploader) dispatch(ctx context.Context, record events.SQSMessage) error {
-	u.logger.Debug("Received", zap.Any("record", record))
-	payload := &events.S3EventRecord{}
+	payload := &events.S3Event{}
 	if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
 		u.logger.Error("Failed to unmarshall sqs event", zap.Any("event", record), zap.Error(err))
 		return nil // リトライ不要なためnilで返す
 	}
-	err := u.run(ctx, payload)
-	if err == nil {
-		return nil
-	}
-	u.logger.Error("Failed to upload object", zap.Error(err))
-	if u.isRetryable(err) {
-		return err
+	for i := range payload.Records {
+		err := u.run(ctx, &payload.Records[i])
+		if err == nil {
+			return nil
+		}
+		u.logger.Error("Failed to upload object", zap.Error(err))
+		if u.isRetryable(err) {
+			return err
+		}
 	}
 	return nil
 }
