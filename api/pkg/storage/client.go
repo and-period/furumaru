@@ -26,7 +26,7 @@ var (
 
 const (
 	scheme = "https"
-	domain = "%s.s3.amazonaws.com"
+	domain = "%s.s3.%s.amazonaws.com"
 )
 
 type Bucket interface {
@@ -67,6 +67,7 @@ type bucket struct {
 	s3        *s3.Client
 	presigner *s3.PresignClient
 	name      *string
+	region    string
 	logger    *zap.Logger
 }
 
@@ -74,6 +75,7 @@ type options struct {
 	maxRetries int
 	interval   time.Duration
 	logger     *zap.Logger
+	region     string
 }
 
 type Option func(*options)
@@ -101,6 +103,7 @@ func NewBucket(cfg aws.Config, params *Params, opts ...Option) Bucket {
 		maxRetries: retry.DefaultMaxAttempts,
 		interval:   retry.DefaultMaxBackoff,
 		logger:     zap.NewNop(),
+		region:     "ap-northeast-1",
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -115,6 +118,7 @@ func NewBucket(cfg aws.Config, params *Params, opts ...Option) Bucket {
 		s3:        cli,
 		presigner: s3.NewPresignClient(cli),
 		name:      aws.String(params.Bucket),
+		region:    dopts.region,
 		logger:    dopts.logger,
 	}
 }
@@ -162,7 +166,7 @@ func (b *bucket) GetHost() (*url.URL, error) {
 }
 
 func (b *bucket) GetFQDN() string {
-	return fmt.Sprintf(domain, aws.ToString(b.name))
+	return fmt.Sprintf(domain, aws.ToString(b.name), b.region)
 }
 
 func (b *bucket) GetMetadata(ctx context.Context, key string) (*Metadata, error) {
