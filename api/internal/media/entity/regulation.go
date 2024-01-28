@@ -3,10 +3,6 @@ package entity
 import (
 	"errors"
 	"fmt"
-	"io"
-	"mime/multipart"
-	"net/http"
-	"path/filepath"
 	"strings"
 
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -54,12 +50,12 @@ type Regulation struct {
 var (
 	// ライブ配信関連
 	BroadcastArchiveRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
+		MaxSize: 2 << 30, // 2GB
 		Formats: set.New("video/mp4"),
 		dir:     BroadcastArchiveMP4Path,
 	}
 	BroadcastLiveMP4Regulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
+		MaxSize: 2 << 30, // 2GB
 		Formats: set.New("video/mp4"),
 		dir:     BroadcastLiveMP4Path,
 	}
@@ -169,44 +165,6 @@ func (r *Regulation) validateFormat(contentType string) error {
 		return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
 	}
 	return nil
-}
-
-// Deprecated: Use to Validate
-func (r *Regulation) ValidateV1(file io.Reader, header *multipart.FileHeader) error {
-	if file == nil || header == nil {
-		return fmt.Errorf("entity: file and header is required: %w", ErrInvalidFileFormat)
-	}
-	if !r.validateV1Size(header) {
-		return fmt.Errorf("%w: size=%d", ErrTooLargeFileSize, header.Size)
-	}
-	return r.validateV1Format(file)
-}
-
-func (r *Regulation) validateV1Size(header *multipart.FileHeader) bool {
-	return header.Size <= r.MaxSize
-}
-
-func (r *Regulation) validateV1Format(file io.Reader) error {
-	if r.Formats.Len() == 0 {
-		return nil
-	}
-	buf, err := io.ReadAll(file)
-	if err != nil {
-		return err
-	}
-	contentType := http.DetectContentType(buf)
-	if r.Formats.Contains(contentType) {
-		return nil
-	}
-	return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
-}
-
-func (r *Regulation) GenerateFilePath(header *multipart.FileHeader, args ...interface{}) string {
-	key := uuid.Base58Encode(uuid.New())
-	extension := strings.ToLower(filepath.Ext(header.Filename))
-	dirname := fmt.Sprintf(r.dir, args...)
-	filename := strings.Join([]string{key, extension}, "")
-	return strings.Join([]string{dirname, filename}, "/")
 }
 
 func (r *Regulation) GetObjectKey(contentType string, args ...interface{}) (string, error) {
