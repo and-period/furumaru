@@ -198,7 +198,7 @@ func (r *Regulation) validateSize(size int64) error {
 }
 
 func (r *Regulation) validateFormat(contentType string) error {
-	if r.Formats.Contains(contentType) {
+	if !r.Formats.Contains(contentType) {
 		return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
 	}
 	return nil

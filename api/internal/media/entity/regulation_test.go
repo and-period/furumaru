@@ -17,6 +17,57 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestRegulation_Validate(t *testing.T) {
+	t.Parallel()
+	reg := &Regulation{
+		MaxSize: 10 << 20, // 10MB
+		Formats: set.New("image/png", "image/jpeg"),
+		dir:     "image/png",
+	}
+	type args struct {
+		fileType string
+		fileSize int64
+	}
+	tests := []struct {
+		name string
+		args
+		expect error
+	}{
+		{
+			name: "success",
+			args: args{
+				fileType: "image/png",
+				fileSize: 2 << 20, // 2MB
+			},
+			expect: nil,
+		},
+		{
+			name: "invalid size",
+			args: args{
+				fileType: "image/png",
+				fileSize: 20 << 20, // 20MB
+			},
+			expect: ErrTooLargeFileSize,
+		},
+		{
+			name: "invalid format",
+			args: args{
+				fileType: "video/mp4",
+				fileSize: 2 << 20, // 2MB
+			},
+			expect: ErrInvalidFileFormat,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := reg.Validate(tt.fileType, tt.fileSize)
+			assert.ErrorIs(t, err, tt.expect)
+		})
+	}
+}
+
 func TestRegulation_ValidateV1(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
