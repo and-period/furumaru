@@ -6,7 +6,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -53,6 +52,7 @@ type Regulation struct {
 }
 
 var (
+	// ライブ配信関連
 	BroadcastArchiveRegulation = &Regulation{
 		MaxSize: 200 << 20, // 200MB
 		Formats: set.New("video/mp4"),
@@ -63,6 +63,7 @@ var (
 		Formats: set.New("video/mp4"),
 		dir:     BroadcastLiveMP4Path,
 	}
+	// コーディネータ関連
 	CoordinatorThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
@@ -83,6 +84,7 @@ var (
 		Formats: set.New("video/mp4"),
 		dir:     CoordinatorBonusVideoPath,
 	}
+	// 生産者関連
 	ProducerThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
@@ -103,11 +105,13 @@ var (
 		Formats: set.New("video/mp4"),
 		dir:     ProducerBonusVideoPath,
 	}
+	// 購入者関連
 	UserThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
 		dir:     UserThumbnailPath,
 	}
+	// 商品関連
 	ProductMediaImageRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
@@ -118,11 +122,13 @@ var (
 		Formats: set.New("video/mp4"),
 		dir:     ProductMediaVideoPath,
 	}
+	// 品目関連
 	ProductTypeIconRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
 		dir:     ProductTypeIconPath,
 	}
+	// 開催スケジュール関連
 	ScheduleThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
@@ -140,47 +146,8 @@ var (
 	}
 )
 
-func FindByObjectKey(key string) (*Regulation, error) {
-	dir := path.Dir(key)
-	if strings.HasPrefix(dir, BroadcastArchivePath) {
-		return BroadcastArchiveRegulation, nil
-	}
-	switch dir {
-	case BroadcastLiveMP4Path:
-		return BroadcastLiveMP4Regulation, nil
-	case CoordinatorThumbnailPath:
-		return CoordinatorThumbnailRegulation, nil
-	case CoordinatorHeaderPath:
-		return CoordinatorHeaderRegulation, nil
-	case CoordinatorPromotionVideoPath:
-		return CoordinatorPromotionVideoRegulation, nil
-	case CoordinatorBonusVideoPath:
-		return CoordinatorBonusVideoRegulation, nil
-	case ProducerThumbnailPath:
-		return ProducerThumbnailRegulation, nil
-	case ProducerHeaderPath:
-		return ProducerHeaderRegulation, nil
-	case ProducerPromotionVideoPath:
-		return ProducerPromotionVideoRegulation, nil
-	case ProducerBonusVideoPath:
-		return ProducerBonusVideoRegulation, nil
-	case UserThumbnailPath:
-		return UserThumbnailRegulation, nil
-	case ProductMediaImagePath:
-		return ProductMediaImageRegulation, nil
-	case ProductMediaVideoPath:
-		return ProductMediaVideoRegulation, nil
-	case ProductTypeIconPath:
-		return ProductTypeIconRegulation, nil
-	case ScheduleThumbnailPath:
-		return ScheduleThumbnailRegulation, nil
-	case ScheduleImagePath:
-		return ScheduleImageRegulation, nil
-	case ScheduleOpeningVideoPath:
-		return ScheduleOpeningVideoRegulation, nil
-	default:
-		return nil, ErrNotFoundReguration
-	}
+func (r *Regulation) FileGroup() string {
+	return r.dir
 }
 
 func (r *Regulation) Validate(contentType string, size int64) error {

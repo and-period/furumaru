@@ -26,6 +26,7 @@ import (
 	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/medialive"
@@ -55,6 +56,7 @@ type params struct {
 	tmpStorage           storage.Bucket
 	adminAuth            cognito.Client
 	userAuth             cognito.Client
+	cache                dynamodb.Client
 	messengerQueue       sqs.Producer
 	mediaQueue           sqs.Producer
 	medialive            medialive.MediaLive
@@ -151,6 +153,13 @@ func (a *app) inject(ctx context.Context) error {
 		QueueURL: a.SQSMediaQueueURL,
 	}
 	params.mediaQueue = sqs.NewProducer(awscfg, mediaSQSParams, sqs.WithDryRun(a.SQSMockEnabled))
+
+	// Amazon DynamoDBの設定
+	dbParams := &dynamodb.Params{
+		TablePrefix: "furumaru",
+		TableSuffix: a.Environment,
+	}
+	params.cache = dynamodb.NewClient(awscfg, dbParams, dynamodb.WithLogger(params.logger))
 
 	// AWS MediaLiveの設定
 	params.medialive = medialive.NewMediaLive(awscfg, medialive.WithLogger(params.logger))
@@ -402,6 +411,7 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 	params := &mediasrv.Params{
 		WaitGroup: p.waitGroup,
 		Database:  mediadb.NewDatabase(mysql),
+		Cache:     p.cache,
 		MediaLive: p.medialive,
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,

@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sqs"
@@ -26,9 +27,12 @@ var (
 	errInvalidURL = errors.New("service: invalid url")
 )
 
+const defaultUploadEventTTL = 12 * time.Hour // 12hours
+
 type Params struct {
 	WaitGroup *sync.WaitGroup
 	Database  *database.Database
+	Cache     dynamodb.Client
 	MediaLive medialive.MediaLive
 	Tmp       storage.Bucket
 	Storage   storage.Bucket
@@ -37,22 +41,25 @@ type Params struct {
 }
 
 type service struct {
-	logger     *zap.Logger
-	waitGroup  *sync.WaitGroup
-	validator  validator.Validator
-	db         *database.Database
-	tmp        storage.Bucket
-	storage    storage.Bucket
-	tmpURL     func() *url.URL
-	storageURL func() *url.URL
-	producer   sqs.Producer
-	store      store.Service
-	media      medialive.MediaLive
-	now        func() time.Time
+	logger         *zap.Logger
+	waitGroup      *sync.WaitGroup
+	validator      validator.Validator
+	db             *database.Database
+	cache          dynamodb.Client
+	tmp            storage.Bucket
+	storage        storage.Bucket
+	tmpURL         func() *url.URL
+	storageURL     func() *url.URL
+	producer       sqs.Producer
+	store          store.Service
+	media          medialive.MediaLive
+	now            func() time.Time
+	uploadEventTTL time.Duration
 }
 
 type options struct {
-	logger *zap.Logger
+	logger         *zap.Logger
+	uploadEventTTL time.Duration
 }
 
 type Option func(*options)
@@ -63,9 +70,16 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
+func WithUploadEventTTL(ttl time.Duration) Option {
+	return func(opts *options) {
+		opts.uploadEventTTL = ttl
+	}
+}
+
 func NewService(params *Params, opts ...Option) (media.Service, error) {
 	dopts := &options{
-		logger: zap.NewNop(),
+		logger:         zap.NewNop(),
+		uploadEventTTL: defaultUploadEventTTL,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -87,18 +101,20 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		return &url
 	}
 	return &service{
-		logger:     dopts.logger,
-		waitGroup:  params.WaitGroup,
-		validator:  validator.NewValidator(),
-		db:         params.Database,
-		media:      params.MediaLive,
-		tmp:        params.Tmp,
-		tmpURL:     tmpURL,
-		storage:    params.Storage,
-		storageURL: storageURL,
-		producer:   params.Producer,
-		store:      params.Store,
-		now:        jst.Now,
+		logger:         dopts.logger,
+		waitGroup:      params.WaitGroup,
+		validator:      validator.NewValidator(),
+		db:             params.Database,
+		cache:          params.Cache,
+		media:          params.MediaLive,
+		tmp:            params.Tmp,
+		tmpURL:         tmpURL,
+		storage:        params.Storage,
+		storageURL:     storageURL,
+		producer:       params.Producer,
+		store:          params.Store,
+		now:            jst.Now,
+		uploadEventTTL: dopts.uploadEventTTL,
 	}, nil
 }
 
