@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus } from '@mdi/js'
-import dayjs, { unix } from 'dayjs'
+import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { AdminRole, DiscountType, type Promotion } from '~/types/api'
+import { AdminRole, DiscountType, PromotionStatus, type Promotion } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -67,7 +67,7 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: 'ステータス',
-    key: 'public',
+    key: 'status',
     sortable: false
   },
   {
@@ -125,36 +125,34 @@ const getDiscount = (discountType: DiscountType, discountRate: number): string =
   }
 }
 
-const getStatus = (promotion: Promotion): string => {
-  if (!promotion || !promotion.public) {
-    return '無効'
+const getStatus = (status: PromotionStatus): string => {
+  switch (status) {
+    case PromotionStatus.PRIVATE:
+      return '非公開'
+    case PromotionStatus.WAITING:
+      return '開始前'
+    case PromotionStatus.ENABLED:
+      return '有効'
+    case PromotionStatus.FINISHED:
+      return '終了'
+    default:
+      return '無効'
   }
-  const now = dayjs()
-  const startAt = unix(promotion.startAt)
-  if (now.isBefore(startAt)) {
-    return '開始前'
-  }
-  const endAt = unix(promotion.startAt)
-  if (now.isAfter(endAt)) {
-    return '終了'
-  }
-  return '有効'
 }
 
-const getStatusColor = (promotion: Promotion): string => {
-  if (!promotion || !promotion.public) {
-    return 'error'
+const getStatusColor = (status: PromotionStatus): string => {
+  switch (status) {
+    case PromotionStatus.PRIVATE:
+      return 'warning'
+    case PromotionStatus.WAITING:
+      return 'info'
+    case PromotionStatus.ENABLED:
+      return 'primary'
+    case PromotionStatus.FINISHED:
+      return 'secondary'
+    default:
+      return 'error'
   }
-  const now = dayjs()
-  const startAt = unix(promotion.startAt)
-  if (now.isBefore(startAt)) {
-    return 'info'
-  }
-  const endAt = unix(promotion.startAt)
-  if (now.isAfter(endAt)) {
-    return 'secondary'
-  }
-  return 'primary'
 }
 
 const getDay = (unixTime: number): string => {
@@ -249,9 +247,9 @@ const onClickDelete = (): void => {
         <template #[`item.title`]="{ item }">
           {{ item.title }}
         </template>
-        <template #[`item.public`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item)">
-            {{ getStatus(item) }}
+        <template #[`item.status`]="{ item }">
+          <v-chip size="small" :color="getStatusColor(item.status)">
+            {{ getStatus(item.status) }}
           </v-chip>
         </template>
         <template #[`item.code`]="{ item }">
