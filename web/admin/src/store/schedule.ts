@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
+import axios, { type RawAxiosRequestHeaders } from 'axios'
 
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
-import type { ApproveScheduleRequest, CreateScheduleRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest, UploadImageResponse, UploadVideoResponse } from '~/types/api'
-import { uploadTimeout } from '~/plugins/axios'
+import type { ApproveScheduleRequest, CreateScheduleRequest, GetUploadUrlRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest } from '~/types/api'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
@@ -108,18 +108,21 @@ export const useScheduleStore = defineStore('schedule', {
      * @param payload
      * @returns アップロード先URL
      */
-    async uploadScheduleThumbnail (payload: File): Promise<UploadImageResponse> {
+    async uploadScheduleThumbnail (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.scheduleApi().v1UploadScheduleThumbnail(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.scheduleApi().v1GetScheduleThumbnailUploadUrl(body)
+
+        const headers: RawAxiosRequestHeaders = {
+          'Content-Type': contentType
+        }
+        await axios.put(res.data.url, payload, { headers })
+
+        const url = new URL(res.data.url)
+        return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -130,18 +133,21 @@ export const useScheduleStore = defineStore('schedule', {
      * @param payload
      * @returns アップロード先URL
      */
-    async uploadScheduleImage (payload: File): Promise<UploadImageResponse> {
+    async uploadScheduleImage (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.scheduleApi().v1UploadScheduleImage(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.scheduleApi().v1GetScheduleImageUploadUrl(body)
+
+        const headers: RawAxiosRequestHeaders = {
+          'Content-Type': contentType
+        }
+        await axios.put(res.data.url, payload, { headers })
+
+        const url = new URL(res.data.url)
+        return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -152,18 +158,21 @@ export const useScheduleStore = defineStore('schedule', {
      * @param payload
      * @returns アップロード先URL
      */
-    async uploadScheduleOpeningVideo (payload: File): Promise<UploadVideoResponse> {
+    async uploadScheduleOpeningVideo (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.scheduleApi().v1UploadScheduleOpeningVideo(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.scheduleApi().v1GetScheduleOpeningVideoUploadUrl(body)
+
+        const headers: RawAxiosRequestHeaders = {
+          'Content-Type': contentType
+        }
+        await axios.put(res.data.url, payload, { headers })
+
+        const url = new URL(res.data.url)
+        return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }

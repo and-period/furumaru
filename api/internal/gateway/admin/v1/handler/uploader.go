@@ -30,9 +30,9 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/products/image", h.CreateProductImageUploadURL)
 	r.POST("/products/video", h.CreateProductVideoUploadURL)
 	r.POST("/product-types/icon", h.CreateProductTypeIconUploadURL)
-	r.POST("/schedules/thumbnail", h.uploadScheduleThumbnail)
-	r.POST("/schedules/image", h.uploadScheduleImage)
-	r.POST("/schedules/opening-video", h.uploadScheduleOpeningVideo)
+	r.POST("/schedules/thumbnail", h.CreateScheduleThumbnailUploadURL)
+	r.POST("/schedules/image", h.CreateScheduleImageUploadURL)
+	r.POST("/schedules/opening-video", h.CreateScheduleOpeningVideoUploadURL)
 }
 
 func (h *handler) CreateCoordinatorThumbnailUploadURL(ctx *gin.Context) {
@@ -79,19 +79,16 @@ func (h *handler) CreateProductTypeIconUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProductTypeIconUploadURL)
 }
 
-func (h *handler) uploadScheduleThumbnail(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateScheduleThumbnail)
+func (h *handler) CreateScheduleThumbnailUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetScheduleThumbnailUploadURL)
 }
 
-func (h *handler) uploadScheduleImage(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateScheduleImage)
+func (h *handler) CreateScheduleImageUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetScheduleImageUploadURL)
 }
 
-func (h *handler) uploadScheduleOpeningVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateScheduleOpeningVideo)
+func (h *handler) CreateScheduleOpeningVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetScheduleOpeningVideoUploadURL)
 }
 
 func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (string, error)) {
@@ -109,31 +106,6 @@ func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media
 		return
 	}
 	res := &response.UploadURLResponse{
-		URL: url,
-	}
-	ctx.JSON(http.StatusOK, res)
-}
-
-func (h *handler) uploadFile(
-	ctx *gin.Context,
-	filename string,
-	generate func(context.Context, *media.GenerateFileInput) (string, error),
-) {
-	file, header, err := h.parseFile(ctx, filename)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	in := &media.GenerateFileInput{
-		File:   file,
-		Header: header,
-	}
-	url, err := generate(ctx, in)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	res := &response.UploadImageResponse{
 		URL: url,
 	}
 	ctx.JSON(http.StatusOK, res)
