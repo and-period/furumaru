@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia'
-import axios, { type RawAxiosRequestHeaders } from 'axios'
 
+import { fileUpload } from './helper'
 import { useProductTypeStore } from './product-type'
 import { apiClient } from '~/plugins/api-client'
 import {
-  UploadStatus,
   type Coordinator,
   type CreateCoordinatorRequest,
   type GetUploadUrlRequest,
@@ -116,29 +115,13 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @returns アップロードされた画像のURI
      */
     async uploadCoordinatorThumbnail (payload: File): Promise<string> {
-      const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: payload.type
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorThumbnailUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        let reference: string = ''
-        while (reference === '') {
-          const event = await apiClient.otherApi().v1GetUploadState(res.data.url)
-          if (event.data.status === UploadStatus.WAITING) {
-            continue
-          }
-          reference = event.data.url
-        }
-
-        const url = new URL(reference)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -150,20 +133,13 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @returns アップロードされた画像のURI
      */
     async uploadCoordinatorHeader (payload: File): Promise<string> {
-      const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: payload.type
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorHeaderUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        const url = new URL(res.data.url)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -175,20 +151,13 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @returns アップロードされた動画のURI
      */
     async uploadCoordinatorPromotionVideo (payload: File): Promise<string> {
-      const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: payload.type
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorPromotionVideoUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        const url = new URL(res.data.url)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -200,20 +169,13 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @returns アップロードされた動画のURI
      */
     async uploadCoordinatorBonusVideo (payload: File): Promise<string> {
-      const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: payload.type
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorBonusVideoUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        const url = new URL(res.data.url)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }

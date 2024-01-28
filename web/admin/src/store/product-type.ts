@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import axios, { type RawAxiosRequestHeaders } from 'axios'
 
+import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
 import { apiClient } from '~/plugins/api-client'
 import type {
@@ -167,13 +167,7 @@ export const useProductTypeStore = defineStore('productType', {
         }
         const res = await apiClient.productTypeApi().v1GetProductTypeIconUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        const url = new URL(res.data.url)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }

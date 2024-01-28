@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import axios, { type RawAxiosRequestHeaders } from 'axios'
 
+import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
 import type {
@@ -108,13 +108,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerThumbnailUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        const url = new URL(res.data.url)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -133,13 +127,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerHeaderUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        const url = new URL(res.data.url)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -158,13 +146,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerPromotionVideoUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        const url = new URL(res.data.url)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -183,13 +165,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerBonusVideoUploadUrl(body)
 
-        const headers: RawAxiosRequestHeaders = {
-          'Content-Type': contentType
-        }
-        await axios.put(res.data.url, payload, { headers })
-
-        const url = new URL(res.data.url)
-        return `${url.origin}${url.pathname}`
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
