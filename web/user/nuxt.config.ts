@@ -30,7 +30,7 @@ export default defineNuxtConfig({
         { hid: 'og:url', property: 'og:url', content: 'https://www.furumaru.and-period.co.jp/' },
         { hid: 'og:title', property: 'og:title', content: 'ふるマル' },
         { hid: 'og:description', property: 'og:description', content: '生産者のこだわりが「伝える」以上に「伝わる」ライブマルシェ' },
-        { hid: 'og:image', property: 'og:image', content: 'https://www.furumaru.and-period.co.jp//ogp/ogp.jpg' },
+        { hid: 'og:image', property: 'og:image', content: 'https://www.furumaru.and-period.co.jp/ogp/ogp.jpg' },
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
