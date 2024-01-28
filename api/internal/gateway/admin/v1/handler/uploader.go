@@ -12,6 +12,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/gin-gonic/gin"
 )
@@ -19,6 +21,7 @@ import (
 func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/upload", h.authentication)
 
+	r.GET("/state", h.GetUploadState)
 	r.POST("/coordinators/thumbnail", h.CreateCoordinatorThumbnailUploadURL)
 	r.POST("/coordinators/header", h.CreateCoordinatorHeaderUploadURL)
 	r.POST("/coordinators/promotion-video", h.CreateCoordinatorPromotionVideoUploadURL)
@@ -33,6 +36,22 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/schedules/thumbnail", h.CreateScheduleThumbnailUploadURL)
 	r.POST("/schedules/image", h.CreateScheduleImageUploadURL)
 	r.POST("/schedules/opening-video", h.CreateScheduleOpeningVideoUploadURL)
+}
+
+func (h *handler) GetUploadState(ctx *gin.Context) {
+	in := &media.GetUploadEventInput{
+		UploadURL: util.GetQuery(ctx, "src", ""),
+	}
+	event, err := h.media.GetUploadEvent(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.UploadStateResponse{
+		URL:    event.ReferenceURL,
+		Status: service.NewUploadStatus(event.Status).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) CreateCoordinatorThumbnailUploadURL(ctx *gin.Context) {

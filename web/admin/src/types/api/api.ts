@@ -6200,6 +6200,55 @@ export interface UploadScheduleThumbnailRequest {
 /**
  * 
  * @export
+ * @interface UploadStateResponse
+ */
+export interface UploadStateResponse {
+    /**
+     * 参照先ファイルURL
+     * @type {string}
+     * @memberof UploadStateResponse
+     */
+    'url': string;
+    /**
+     * 
+     * @type {UploadStatus}
+     * @memberof UploadStateResponse
+     */
+    'status': UploadStatus;
+}
+
+
+/**
+ * ファイルアップロードの状態
+ * @export
+ * @enum {string}
+ */
+
+export const UploadStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * アップロード中
+    */
+    WAITING: 1,
+    /**
+    * 成功
+    */
+    SUCEEDED: 2,
+    /**
+    * 失敗
+    */
+    FAILED: 3
+} as const;
+
+export type UploadStatus = typeof UploadStatus[keyof typeof UploadStatus];
+
+
+/**
+ * 
+ * @export
  * @interface UploadUrlResponse
  */
 export interface UploadUrlResponse {
@@ -12999,6 +13048,47 @@ export const OtherApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
+         * @summary ファイルアップロード状態取得
+         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetUploadState: async (src: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'src' is not null or undefined
+            assertParamExists('v1GetUploadState', 'src', src)
+            const localVarPath = `/v1/upload/state`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (src !== undefined) {
+                localVarQueryParameter['src'] = src;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 郵便番号情報検索
          * @param {string} postalCode 郵便番号(ハイフンなし)
          * @param {*} [options] Override http request option.
@@ -13047,6 +13137,19 @@ export const OtherApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary ファイルアップロード状態取得
+         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetUploadState(src: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadStateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetUploadState(src, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['OtherApi.v1GetUploadState']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary 郵便番号情報検索
          * @param {string} postalCode 郵便番号(ハイフンなし)
          * @param {*} [options] Override http request option.
@@ -13070,6 +13173,16 @@ export const OtherApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
+         * @summary ファイルアップロード状態取得
+         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetUploadState(src: string, options?: any): AxiosPromise<UploadStateResponse> {
+            return localVarFp.v1GetUploadState(src, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 郵便番号情報検索
          * @param {string} postalCode 郵便番号(ハイフンなし)
          * @param {*} [options] Override http request option.
@@ -13088,6 +13201,18 @@ export const OtherApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class OtherApi extends BaseAPI {
+    /**
+     * 
+     * @summary ファイルアップロード状態取得
+     * @param {string} src アップロード先ファイルURL(署名付きURL)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OtherApi
+     */
+    public v1GetUploadState(src: string, options?: RawAxiosRequestConfig) {
+        return OtherApiFp(this.configuration).v1GetUploadState(src, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 郵便番号情報検索

@@ -11,6 +11,21 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
+func (s *service) GetUploadEvent(ctx context.Context, in *media.GetUploadEventInput) (*entity.UploadEvent, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	u, err := url.Parse(in.UploadURL)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to parse url: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	event := &entity.UploadEvent{Key: strings.TrimPrefix(u.Path, "/")}
+	if err := s.cache.Get(ctx, event); err != nil {
+		return nil, internalError(err)
+	}
+	return event, nil
+}
+
 // Deprecated
 func (s *service) UploadCoordinatorThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
 	return s.uploadFile(ctx, in, entity.CoordinatorThumbnailPath)

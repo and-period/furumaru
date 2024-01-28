@@ -8,6 +8,20 @@ uploadUrlResponse:
   - url
   example:
     url: 'https://and-period.jp/image.png'
+uploadStateResponse:
+  type: object
+  properties:
+    url:
+      type: string
+      description: 参照先ファイルURL
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/uploadStatus'
+  required:
+  - url
+  - status
+  example:
+    url: 'https://and-period.jp/image.png'
+    status: 2
 uploadImageResponse:
   type: object
   properties:
