@@ -3,12 +3,13 @@ import axios, { type RawAxiosRequestHeaders } from 'axios'
 
 import { useProductTypeStore } from './product-type'
 import { apiClient } from '~/plugins/api-client'
-import type {
-  Coordinator,
-  CreateCoordinatorRequest,
-  GetUploadUrlRequest,
-  Producer,
-  UpdateCoordinatorRequest
+import {
+  UploadStatus,
+  type Coordinator,
+  type CreateCoordinatorRequest,
+  type GetUploadUrlRequest,
+  type Producer,
+  type UpdateCoordinatorRequest
 } from '~/types/api'
 
 export const useCoordinatorStore = defineStore('coordinator', {
@@ -127,7 +128,16 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         await axios.put(res.data.url, payload, { headers })
 
-        const url = new URL(res.data.url)
+        let reference: string = ''
+        while (reference === '') {
+          const event = await apiClient.otherApi().v1GetUploadState(res.data.url)
+          if (event.data.status === UploadStatus.WAITING) {
+            continue
+          }
+          reference = event.data.url
+        }
+
+        const url = new URL(reference)
         return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err)

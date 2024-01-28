@@ -87,6 +87,7 @@ p, user_list, /v1/users, GET, allow
 p, user_get, /v1/users/*, GET, allow
 p, user_delete, /v1/users/*, DELETE, allow
 p, postal_code_search, /v1/postal-codes/*, GET, allow
+p, upload_get, /v1/upload/state, GET, allow
 
 g, administrator, administrator_list
 g, administrator, administrator_get
@@ -176,6 +177,7 @@ g, administrator, thread_delete
 g, administrator, user_list
 g, administrator, user_get
 g, administrator, user_delete
+g, administrator, upload_get
 
 g, coordinator, auth
 g, coordinator, broadcast_get
@@ -237,6 +239,7 @@ g, coordinator, thread_update
 g, coordinator, thread_delete
 g, coordinator, user_list
 g, coordinator, user_get
+g, coordinator, upload_get
 
 g, producer, auth
 g, producer, broadcast_get
@@ -271,3 +274,4 @@ g, producer, thread_get
 g, producer, thread_create
 g, producer, thread_update
 g, producer, thread_delete
+g, producer, upload_get
