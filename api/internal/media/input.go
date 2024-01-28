@@ -11,6 +11,10 @@ type GenerateUploadURLInput struct {
 	FileType string `validate:"required"`
 }
 
+type GetUploadEventInput struct {
+	UploadURL string `validate:"required,url"`
+}
+
 type GenerateFileInput struct {
 	File   io.Reader             `validate:"required"`
 	Header *multipart.FileHeader `validate:"required"`

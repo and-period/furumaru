@@ -218,6 +218,8 @@ paths:
   /v1/postal-codes/{postalCode}:
     $ref: './paths/v1/postal-codes/_postalCode.yaml'
   # Upload
+  /v1/upload/state:
+    $ref: './paths/v1/upload/state.yaml'
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
   /v1/upload/coordinators/thumbnail:
@@ -307,6 +309,8 @@ components:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     scheduleStatus:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
+    uploadStatus:
+      $ref: './components/schemas/codes/upload.yaml#/uploadStatus'
     userStatus:
       $ref: './components/schemas/codes/user.yaml#/userStatus'
     errorResponse:
@@ -570,6 +574,8 @@ components:
       $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
     v1UploadUrlResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadUrlResponse'
+    v1UploadStateResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadStateResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:

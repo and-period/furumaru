@@ -1,0 +1,20 @@
+uploadStatus:
+  type: integer
+  format: int32
+  description: ファイルアップロードの状態
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+  x-enum-varnames:
+  - UNKNOWN
+  - WAITING
+  - SUCEEDED
+  - FAILED
+  x-enum-descriptions:
+  - 不明
+  - アップロード中
+  - 成功
+  - 失敗
