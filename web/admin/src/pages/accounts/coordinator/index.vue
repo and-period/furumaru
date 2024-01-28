@@ -169,8 +169,8 @@ const handleUpdateThumbnail = (files: FileList): void => {
 
   loading.value = true
   coordinatorStore.uploadCoordinatorThumbnail(files[0])
-    .then((res) => {
-      coordinatorFormData.value.thumbnailUrl = res.url
+    .then((url: string) => {
+      coordinatorFormData.value.thumbnailUrl = url
     })
     .catch(() => {
       thumbnailUploadStatus.value.error = true

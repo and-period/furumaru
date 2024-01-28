@@ -173,14 +173,9 @@ const handleUpdateThumbnail = (files: FileList): void => {
   }
 
   loading.value = true
-  coordinatorStore.getCoordinatorThumbnailUploadUrl(files[0])
-    .then(async (url: string) => {
-      const headers: RawAxiosRequestHeaders = {
-        'Content-Type': files[0].type
-      }
-      await axios.put(url, files[0], { headers })
-      const u = new URL(url)
-      coordinatorFormData.value.thumbnailUrl = `${u.origin}${u.pathname}`
+  coordinatorStore.uploadCoordinatorThumbnail(files[0])
+    .then((url: string) => {
+      coordinatorFormData.value.thumbnailUrl = url
     })
     .catch(() => {
       thumbnailUploadStatus.value.error = true
