@@ -130,11 +130,8 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
   loading.value = true
   for (const [index, file] of Array.from(files).entries()) {
     try {
-      const uploadImage = await productStore.uploadProductImage(file)
-      formData.value.media.push({
-        ...uploadImage,
-        isThumbnail: index === 0
-      })
+      const url: string = await productStore.uploadProductMedia(file)
+      formData.value.media.push({ url, isThumbnail: index === 0 })
     } catch (err) {
       if (err instanceof Error) {
         show(err.message)

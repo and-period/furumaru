@@ -6122,6 +6122,45 @@ export interface UploadProducerThumbnailRequest {
 /**
  * 
  * @export
+ * @interface UploadProductImageRequest
+ */
+export interface UploadProductImageRequest {
+    /**
+     * 商品画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadProductImageRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProductTypeIconRequest
+ */
+export interface UploadProductTypeIconRequest {
+    /**
+     * 商品アイコン(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadProductTypeIconRequest
+     */
+    'icon'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProductVideoRequest
+ */
+export interface UploadProductVideoRequest {
+    /**
+     * 商品動画(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadProductVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
  * @interface UploadUrlResponse
  */
 export interface UploadUrlResponse {
@@ -6630,6 +6669,45 @@ export interface V1UploadProducerThumbnailRequest {
      * @memberof V1UploadProducerThumbnailRequest
      */
     'thumbnail'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProductImageRequest
+ */
+export interface V1UploadProductImageRequest {
+    /**
+     * 商品画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadProductImageRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProductTypeIconRequest
+ */
+export interface V1UploadProductTypeIconRequest {
+    /**
+     * 商品アイコン(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadProductTypeIconRequest
+     */
+    'icon'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProductVideoRequest
+ */
+export interface V1UploadProductVideoRequest {
+    /**
+     * 商品動画(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadProductVideoRequest
+     */
+    'video'?: File;
 }
 /**
  * 
@@ -13964,6 +14042,86 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary 商品画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductImageUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProductImageUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/products/image`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 商品動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProductVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/products/video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 商品一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -14065,92 +14223,6 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary 商品画像アップロード
-         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductImage: async (image?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/products/image`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 商品動画アップロード
-         * @param {File} [video] 商品動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/products/video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -14202,6 +14274,32 @@ export const ProductApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 商品画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProductImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProductImageUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProductApi.v1GetProductImageUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 商品動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProductVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProductVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProductApi.v1GetProductVideoUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary 商品一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -14229,32 +14327,6 @@ export const ProductApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProduct(productId, body, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['ProductApi.v1UpdateProduct']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 商品画像アップロード
-         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProductImage(image?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductImage(image, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProductApi.v1UploadProductImage']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 商品動画アップロード
-         * @param {File} [video] 商品動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProductVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProductApi.v1UploadProductVideo']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
     }
@@ -14299,6 +14371,26 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary 商品画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductImageUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProductImageUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 商品動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProductVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 商品一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -14321,26 +14413,6 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          */
         v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateProduct(productId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 商品画像アップロード
-         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductImage(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadProductImage(image, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 商品動画アップロード
-         * @param {File} [video] 商品動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadProductVideo(video, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -14390,6 +14462,30 @@ export class ProductApi extends BaseAPI {
 
     /**
      * 
+     * @summary 商品画像アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1GetProductImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1GetProductImageUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1GetProductVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1GetProductVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary 商品一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
@@ -14415,30 +14511,6 @@ export class ProductApi extends BaseAPI {
      */
     public v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: RawAxiosRequestConfig) {
         return ProductApiFp(this.configuration).v1UpdateProduct(productId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 商品画像アップロード
-     * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProductApi
-     */
-    public v1UploadProductImage(image?: File, options?: RawAxiosRequestConfig) {
-        return ProductApiFp(this.configuration).v1UploadProductImage(image, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 商品動画アップロード
-     * @param {File} [video] 商品動画(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProductApi
-     */
-    public v1UploadProductVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return ProductApiFp(this.configuration).v1UploadProductVideo(video, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -14905,6 +14977,46 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary 品目アイコンアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductTypeIconUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProductTypeIconUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/product-types/icon`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 品目一覧取得(商品種別指定なし)
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -15063,49 +15175,6 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary 品目アイコンアップロード
-         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductTypeIcon: async (icon?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/product-types/icon`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (icon !== undefined) { 
-                localVarFormParams.append('icon', icon as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -15142,6 +15211,19 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteProductType(categoryId, productTypeId, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['ProductTypeApi.v1DeleteProductType']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 品目アイコンアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProductTypeIconUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProductTypeIconUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProductTypeApi.v1GetProductTypeIconUploadUrl']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
@@ -15192,19 +15274,6 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
             const operationBasePath = operationServerMap['ProductTypeApi.v1UpdateProductType']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
-        /**
-         * 
-         * @summary 品目アイコンアップロード
-         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProductTypeIcon(icon?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductTypeIcon(icon, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProductTypeApi.v1UploadProductTypeIcon']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
     }
 };
 
@@ -15236,6 +15305,16 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          */
         v1DeleteProductType(categoryId: string, productTypeId: string, options?: any): AxiosPromise<object> {
             return localVarFp.v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 品目アイコンアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductTypeIconUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProductTypeIconUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -15276,16 +15355,6 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
         v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(axios, basePath));
         },
-        /**
-         * 
-         * @summary 品目アイコンアップロード
-         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductTypeIcon(icon?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadProductTypeIcon(icon, options).then((request) => request(axios, basePath));
-        },
     };
 };
 
@@ -15320,6 +15389,18 @@ export class ProductTypeApi extends BaseAPI {
      */
     public v1DeleteProductType(categoryId: string, productTypeId: string, options?: RawAxiosRequestConfig) {
         return ProductTypeApiFp(this.configuration).v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 品目アイコンアップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTypeApi
+     */
+    public v1GetProductTypeIconUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProductTypeApiFp(this.configuration).v1GetProductTypeIconUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -15365,18 +15446,6 @@ export class ProductTypeApi extends BaseAPI {
      */
     public v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: RawAxiosRequestConfig) {
         return ProductTypeApiFp(this.configuration).v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 品目アイコンアップロード
-     * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProductTypeApi
-     */
-    public v1UploadProductTypeIcon(icon?: File, options?: RawAxiosRequestConfig) {
-        return ProductTypeApiFp(this.configuration).v1UploadProductTypeIcon(icon, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

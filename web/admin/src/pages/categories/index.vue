@@ -207,8 +207,8 @@ const handleUploadCreateProductTypeIcon = (files: FileList): void => {
 
   loading.value = true
   productTypeStore.uploadProductTypeIcon(files[0])
-    .then((res) => {
-      createProductTypeFormData.value.iconUrl = res.url
+    .then((url: string) => {
+      createProductTypeFormData.value.iconUrl = url
     })
     .catch(() => {
       createProductTypeIconUploadStatus.value.error = true
@@ -226,8 +226,8 @@ const handleUploadUpdateProductTypeIcon = (files: FileList): void => {
 
   loading.value = true
   productTypeStore.uploadProductTypeIcon(files[0])
-    .then((res) => {
-      updateProductTypeFormData.value.iconUrl = res.url
+    .then((url: string) => {
+      updateProductTypeFormData.value.iconUrl = url
     })
     .catch(() => {
       updateProductTypeIconUploadStatus.value.error = true

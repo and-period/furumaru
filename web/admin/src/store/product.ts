@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import axios, { type RawAxiosRequestHeaders } from 'axios'
 
 import { useCategoryStore } from './category'
 import { useCoordinatorStore } from './coordinator'
@@ -11,9 +12,8 @@ import type {
   ProductResponse,
   Product,
   UpdateProductRequest,
-  UploadImageResponse
+  GetUploadUrlRequest
 } from '~/types/api'
-import { uploadTimeout } from '~/plugins/axios'
 
 export const useProductStore = defineStore('product', {
   state: () => ({
@@ -106,25 +106,40 @@ export const useProductStore = defineStore('product', {
     },
 
     /**
-     * 商品画像をアップロードする非同期関数
+     * 商品メディアファイルをアップロードする非同期関数
      * @param payload
      * @returns
      */
-    async uploadProductImage (payload: File): Promise<UploadImageResponse> {
+    async uploadProductMedia (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.productApi().v1UploadProductImage(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const res = await this.getProductMediaUploadUrl(contentType)
+
+        const headers: RawAxiosRequestHeaders = {
+          'Content-Type': contentType
+        }
+        await axios.put(res, payload, { headers })
+
+        const url = new URL(res)
+        return `${url.origin}${url.pathname}`
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
+    },
+
+    async getProductMediaUploadUrl (contentType: string): Promise<string> {
+      const body: GetUploadUrlRequest = {
+        fileType: contentType
+      }
+      if (contentType.includes('image/')) {
+        const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
+        return res.data.url
+      }
+      if (contentType.includes('video/')) {
+        const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
+        return res.data.url
+      }
+      throw new Error('不明なMINEタイプです。')
     },
 
     /**
