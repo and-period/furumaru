@@ -1,6 +1,6 @@
 post:
-  summary: 生産者紹介動画アップロード
-  operationId: v1UploadProducerPromotionVideo
+  summary: 生産者紹介動画アップロード用URL取得
+  operationId: v1GetProducerPromotionVideoUploadUrl
   tags:
   - Producer
   security:
@@ -8,19 +8,16 @@ post:
   requestBody:
     required: true
     content:
-      multipart/form-data:
+      application/json:
         schema:
-          $ref: '../../../../openapi.yaml#/components/schemas/v1UploadProducerPromotionVideoRequest'
-        encoding:
-          thumbnail:
-            contentType: video/mp4
+          $ref: './../../../../openapi.yaml#/components/schemas/v1GetUploadUrlRequest'
   responses:
     200:
       description: 成功
       content:
         application/json:
           schema:
-            $ref: '../../../../openapi.yaml#/components/schemas/v1UploadVideoResponse'
+            $ref: './../../../../openapi.yaml#/components/schemas/v1UploadUrlResponse'
     400:
       description: バリデーションエラー
       content:

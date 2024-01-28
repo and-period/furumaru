@@ -25,6 +25,7 @@ const formData = ref<UpdateProducerRequest>({
   firstname: '',
   firstnameKana: '',
   username: '',
+  email: '',
   phoneNumber: '',
   postalCode: '',
   prefectureCode: Prefecture.UNKNOWN,
@@ -105,8 +106,8 @@ const handleUpdateThumbnail = (files: FileList): void => {
 
   loading.value = true
   producerStore.uploadProducerThumbnail(files[0])
-    .then((res) => {
-      formData.value.thumbnailUrl = res.url
+    .then((url: string) => {
+      formData.value.thumbnailUrl = url
     })
     .catch(() => {
       thumbnailUploadStatus.value.error = true
@@ -124,8 +125,8 @@ const handleUpdateHeader = (files: FileList): void => {
 
   loading.value = true
   producerStore.uploadProducerHeader(files[0])
-    .then((res) => {
-      formData.value.headerUrl = res.url
+    .then((url: string) => {
+      formData.value.headerUrl = url
     })
     .catch(() => {
       headerUploadStatus.value.error = true
@@ -143,8 +144,8 @@ const handleUpdatePromotionVideo = (files: FileList): void => {
 
   loading.value = true
   producerStore.uploadProducerPromotionVideo(files[0])
-    .then((res) => {
-      formData.value.promotionVideoUrl = res.url
+    .then((url: string) => {
+      formData.value.promotionVideoUrl = url
     })
     .catch(() => {
       promotionVideoUploadStatus.value.error = true
@@ -162,8 +163,8 @@ const handleUpdateBonusVideo = (files: FileList): void => {
 
   loading.value = true
   producerStore.uploadProducerBonusVideo(files[0])
-    .then((res) => {
-      formData.value.bonusVideoUrl = res.url
+    .then((url: string) => {
+      formData.value.bonusVideoUrl = url
     })
     .catch(() => {
       bonusVideoUploadStatus.value.error = true

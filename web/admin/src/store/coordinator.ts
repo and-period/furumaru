@@ -8,11 +8,8 @@ import type {
   CreateCoordinatorRequest,
   GetUploadUrlRequest,
   Producer,
-  UpdateCoordinatorRequest,
-  UploadImageResponse,
-  UploadVideoResponse
+  UpdateCoordinatorRequest
 } from '~/types/api'
-import { uploadTimeout } from '~/plugins/axios'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({

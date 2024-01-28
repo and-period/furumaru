@@ -23,10 +23,10 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/coordinators/header", h.CreateCoordinatorHeaderUploadURL)
 	r.POST("/coordinators/promotion-video", h.CreateCoordinatorPromotionVideoUploadURL)
 	r.POST("/coordinators/bonus-video", h.CreateCoordinatorBonusVideoUploadURL)
-	r.POST("/producers/thumbnail", h.uploadProducerThumbnail)
-	r.POST("/producers/header", h.uploadProducerHeader)
-	r.POST("/producers/promotion-video", h.uploadProducerPromotionVideo)
-	r.POST("/producers/bonus-video", h.UploadProducerBonusVideo)
+	r.POST("/producers/thumbnail", h.CreateProducerThumbnailUploadURL)
+	r.POST("/producers/header", h.CreateProducerHeaderUploadURL)
+	r.POST("/producers/promotion-video", h.CreateProducerPromotionVideoUploadURL)
+	r.POST("/producers/bonus-video", h.CreateProducerBonusVideoUploadURL)
 	r.POST("/products/image", h.uploadProductImage)
 	r.POST("/products/video", h.uploadProductVideo)
 	r.POST("/product-types/icon", h.uploadProductTypeIcon)
@@ -51,24 +51,20 @@ func (h *handler) CreateCoordinatorBonusVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetCoordinatorBonusVideoUploadURL)
 }
 
-func (h *handler) uploadProducerThumbnail(ctx *gin.Context) {
-	const filename = "thumbnail"
-	h.uploadFile(ctx, filename, h.media.GenerateProducerThumbnail)
+func (h *handler) CreateProducerThumbnailUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProducerThumbnailUploadURL)
 }
 
-func (h *handler) uploadProducerHeader(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateProducerHeader)
+func (h *handler) CreateProducerHeaderUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProducerHeaderUploadURL)
 }
 
-func (h *handler) uploadProducerPromotionVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateProducerPromotionVideo)
+func (h *handler) CreateProducerPromotionVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProducerPromotionVideoUploadURL)
 }
 
-func (h *handler) UploadProducerBonusVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateProducerBonusVideo)
+func (h *handler) CreateProducerBonusVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProducerBonusVideoUploadURL)
 }
 
 func (h *handler) uploadProductImage(ctx *gin.Context) {
