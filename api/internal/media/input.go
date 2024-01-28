@@ -11,6 +11,11 @@ type GenerateUploadURLInput struct {
 	FileType string `validate:"required"`
 }
 
+type GenerateBroadcastArchiveMP4UploadInput struct {
+	GenerateUploadURLInput
+	ScheduleID string `validate:"required"`
+}
+
 type GetUploadEventInput struct {
 	UploadURL string `validate:"required,url"`
 }
@@ -54,9 +59,8 @@ type CreateBroadcastInput struct {
 }
 
 type UpdateBroadcastArchiveInput struct {
-	ScheduleID string                `validate:"required"`
-	File       io.Reader             `validate:"required"`
-	Header     *multipart.FileHeader `validate:"required"`
+	ScheduleID string `validate:"required"`
+	ArchiveURL string `validate:"required,url"`
 }
 
 type PauseBroadcastInput struct {
@@ -72,9 +76,8 @@ type ActivateBroadcastRTMPInput struct {
 }
 
 type ActivateBroadcastMP4Input struct {
-	ScheduleID string                `validate:"required"`
-	File       io.Reader             `validate:"required"`
-	Header     *multipart.FileHeader `validate:"required"`
+	ScheduleID string `validate:"required"`
+	InputURL   string `validate:"required,url"`
 }
 
 type ActivateBroadcastStaticImageInput struct {

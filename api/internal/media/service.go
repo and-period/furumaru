@@ -11,16 +11,18 @@ import (
 type Service interface {
 	GetUploadEvent(ctx context.Context, in *GetUploadEventInput) (*entity.UploadEvent, error) // ファイルアップロード結果取得
 	// ライブ配信
-	ListBroadcasts(ctx context.Context, in *ListBroadcastsInput) (entity.Broadcasts, int64, error)              // 一覧取得
-	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) // 一覧取得(マルシェ開催スケジュールID指定)
-	CreateBroadcast(ctx context.Context, in *CreateBroadcastInput) (*entity.Broadcast, error)                   // 登録
-	UpdateBroadcastArchive(ctx context.Context, in *UpdateBroadcastArchiveInput) error                          // アーカイブ動画の更新
-	PauseBroadcast(ctx context.Context, in *PauseBroadcastInput) error                                          // ライブ配信の一時停止
-	UnpauseBroadcast(ctx context.Context, in *UnpauseBroadcastInput) error                                      // ライブ配信の一時停止を解除
-	ActivateBroadcastRTMP(ctx context.Context, in *ActivateBroadcastRTMPInput) error                            // ライブ配信の入力をRTMPに切り替え
-	ActivateBroadcastMP4(ctx context.Context, in *ActivateBroadcastMP4Input) error                              // ライブ配信の入力をMP4に切り替え
-	ActivateBroadcastStaticImage(ctx context.Context, in *ActivateBroadcastStaticImageInput) error              // ライブ配信のふた絵を有効化
-	DeactivateBroadcastStaticImage(ctx context.Context, in *DeactivateBroadcastStaticImageInput) error          // ライブ配信のふた絵を無効化
+	ListBroadcasts(ctx context.Context, in *ListBroadcastsInput) (entity.Broadcasts, int64, error)                   // 一覧取得
+	GetBroadcastByScheduleID(ctx context.Context, in *GetBroadcastByScheduleIDInput) (*entity.Broadcast, error)      // 一覧取得(マルシェ開催スケジュールID指定)
+	CreateBroadcast(ctx context.Context, in *CreateBroadcastInput) (*entity.Broadcast, error)                        // 登録
+	GetBroadcastArchiveMP4UploadURL(ctx context.Context, in *GenerateBroadcastArchiveMP4UploadInput) (string, error) // アーカイブ動画アップロード用URLの生成
+	UpdateBroadcastArchive(ctx context.Context, in *UpdateBroadcastArchiveInput) error                               // アーカイブ動画の更新
+	GetBroadcastLiveMP4UploadURL(ctx context.Context, in *GenerateUploadURLInput) (string, error)                    // ライブ配信アップロード用URLの生成
+	PauseBroadcast(ctx context.Context, in *PauseBroadcastInput) error                                               // ライブ配信の一時停止
+	UnpauseBroadcast(ctx context.Context, in *UnpauseBroadcastInput) error                                           // ライブ配信の一時停止を解除
+	ActivateBroadcastRTMP(ctx context.Context, in *ActivateBroadcastRTMPInput) error                                 // ライブ配信の入力をRTMPに切り替え
+	ActivateBroadcastMP4(ctx context.Context, in *ActivateBroadcastMP4Input) error                                   // ライブ配信の入力をMP4に切り替え
+	ActivateBroadcastStaticImage(ctx context.Context, in *ActivateBroadcastStaticImageInput) error                   // ライブ配信のふた絵を有効化
+	DeactivateBroadcastStaticImage(ctx context.Context, in *DeactivateBroadcastStaticImageInput) error               // ライブ配信のふた絵を無効化
 	// コーディネータ
 	GetCoordinatorThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (string, error)      // サムネイル画像アップロード用URLの生成
 	ResizeCoordinatorThumbnail(ctx context.Context, in *ResizeFileInput) error                             // サムネイル画像リサイズ

@@ -248,6 +248,10 @@ paths:
     $ref: './paths/v1/upload/schedules/image.yaml'
   /v1/upload/schedules/opening-video:
     $ref: './paths/v1/upload/schedules/opening-video.yaml'
+  /v1/upload/schedules/{scheduleId}/broadcasts/archive:
+    $ref: './paths/v1/upload/schedules/_scheduleId/broadcasts/archive.yaml'
+  /v1/upload/schedules/-/broadcasts/live:
+    $ref: './paths/v1/upload/schedules/-/broadcasts/live.yaml'
 components:
   securitySchemes:
     bearerAuth:

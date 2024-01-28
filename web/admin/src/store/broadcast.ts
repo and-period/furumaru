@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 
+import { fileUpload } from './helper'
 import { apiClient } from '~/plugins/api-client'
-import type { Broadcast } from '~/types/api'
+import type { ActivateBroadcastMP4Request, Broadcast, GetUploadUrlRequest, UpdateBroadcastArchiveRequest } from '~/types/api'
 
 export const useBroadcastStore = defineStore('broadcast', {
   state: () => ({
@@ -78,18 +79,22 @@ export const useBroadcastStore = defineStore('broadcast', {
     /**
      * ライブ配信の入力チャンネルをMP4に切り替え
      * @param scheduleId マルシェ開催スケジュールID
-     * @param file ライブ動画
+     * @param payload ライブ動画
      * @returns
      */
-    async activateMp4Input (scheduleId: string, file: File): Promise<void> {
+    async activateMp4Input (scheduleId: string, payload: File): Promise<void> {
       try {
-        await apiClient.broadcastApi().v1ActivateBroadcastMP4(scheduleId, file,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-        )
+        const body: GetUploadUrlRequest = {
+          fileType: payload.type
+        }
+        const res = await apiClient.broadcastApi().v1GetBroadcastLiveUploadUrl(body)
+
+        const inputUrl = await fileUpload(payload, res.data.url)
+
+        const req: ActivateBroadcastMP4Request = {
+          inputUrl
+        }
+        await apiClient.broadcastApi().v1ActivateBroadcastMP4(scheduleId, req)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -98,7 +103,6 @@ export const useBroadcastStore = defineStore('broadcast', {
     /**
      * ライブ配信の入力チャンネルをRTMPに切り替え
      * @param scheduleId マルシェ開催スケジュールID
-     * @param file ライブ動画
      * @returns
      */
     async activateRtmpInput (scheduleId: string): Promise<void> {
@@ -112,18 +116,22 @@ export const useBroadcastStore = defineStore('broadcast', {
     /**
      * オンデマンド配信の動画を差し替え
      * @param scheduleId マルシェ開催スケジュールID
-     * @param file オンデマンド動画
+     * @param payload オンデマンド動画
      * @returns
      */
-    async uploadArchiveMp4 (scheduleId: string, file: File): Promise<void> {
+    async uploadArchiveMp4 (scheduleId: string, payload: File): Promise<void> {
       try {
-        await apiClient.broadcastApi().v1UpdateBroadcastArchive(scheduleId, file,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-        )
+        const body: GetUploadUrlRequest = {
+          fileType: payload.type
+        }
+        const res = await apiClient.broadcastApi().v1GetBroadcastArchiveUploadUrl(scheduleId, body)
+
+        const archiveUrl = await fileUpload(payload, res.data.url)
+
+        const req: UpdateBroadcastArchiveRequest = {
+          archiveUrl
+        }
+        await apiClient.broadcastApi().v1UpdateBroadcastArchive(scheduleId, req)
       } catch (err) {
         return this.errorHandler(err)
       }

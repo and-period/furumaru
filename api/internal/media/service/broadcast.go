@@ -1,10 +1,8 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -79,7 +77,6 @@ func (s *service) CreateBroadcast(ctx context.Context, in *media.CreateBroadcast
 }
 
 func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBroadcastArchiveInput) error {
-	var buf bytes.Buffer
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
@@ -90,19 +87,8 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 	if broadcast.Status != entity.BroadcastStatusDisabled {
 		return fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
 	}
-	reg := entity.BroadcastArchiveRegulation
-	teeReader := io.TeeReader(in.File, &buf)
-	//nolint:staticcheck
-	if err := reg.ValidateV1(teeReader, in.Header); err != nil {
-		return fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
-	}
-	path := reg.GenerateFilePath(in.Header, broadcast.ScheduleID)
-	archiveURL, err := s.storage.Upload(ctx, path, &buf)
-	if err != nil {
-		return internalError(err)
-	}
 	params := &database.UpdateBroadcastParams{UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
-		ArchiveURL: archiveURL,
+		ArchiveURL: in.ArchiveURL,
 	}}
 	err = s.db.Broadcast.Update(ctx, broadcast.ID, params)
 	return internalError(err)
@@ -193,15 +179,7 @@ func (s *service) ActivateBroadcastMP4(ctx context.Context, in *media.ActivateBr
 	if broadcast.Status != entity.BroadcastStatusActive {
 		return fmt.Errorf("service: this broadcase is not activated: %w", exception.ErrFailedPrecondition)
 	}
-	fileIn := &media.GenerateFileInput{
-		File:   in.File,
-		Header: in.Header,
-	}
-	videoURL, err := s.generateFile(ctx, fileIn, entity.BroadcastLiveMP4Regulation)
-	if err != nil {
-		return err
-	}
-	videoURI, err := s.tmp.ReplaceURLToS3URI(videoURL)
+	videoURI, err := s.tmp.ReplaceURLToS3URI(in.InputURL)
 	if err != nil {
 		return internalError(err)
 	}

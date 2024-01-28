@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -81,6 +82,105 @@ func TestGetUploadEvent(t *testing.T) {
 			actual, err := service.GetUploadEvent(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestGetBroadcastArchiveMP4UploadURL(t *testing.T) {
+	t.Parallel()
+	broadcast := &entity.Broadcast{
+		ID:         "broadcast-id",
+		ScheduleID: "schdule-id",
+		Status:     entity.BroadcastStatusDisabled,
+	}
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateBroadcastArchiveMP4UploadInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				path := fmt.Sprintf(entity.BroadcastArchiveMP4Path, "schedule-id")
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				generateUploadURLMocks(mocks, t, path, "mp4", nil)
+			},
+			input: &media.GenerateBroadcastArchiveMP4UploadInput{
+				GenerateUploadURLInput: media.GenerateUploadURLInput{
+					FileType: "video/mp4",
+				},
+				ScheduleID: "schedule-id",
+			},
+			expect: nil,
+		},
+		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &media.GenerateBroadcastArchiveMP4UploadInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.GenerateBroadcastArchiveMP4UploadInput{
+				GenerateUploadURLInput: media.GenerateUploadURLInput{
+					FileType: "video/mp4",
+				},
+				ScheduleID: "schedule-id",
+			},
+			expect: exception.ErrInternal,
+		},
+		{
+			name: "failed precondition",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.GenerateBroadcastArchiveMP4UploadInput{
+				GenerateUploadURLInput: media.GenerateUploadURLInput{
+					FileType: "video/mp4",
+				},
+				ScheduleID: "schedule-id",
+			},
+			expect: exception.ErrFailedPrecondition,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetBroadcastArchiveMP4UploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetBroadcastLiveMP4UploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.BroadcastLiveMP4Path, "mp4", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetBroadcastLiveMP4UploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }

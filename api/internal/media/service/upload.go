@@ -1,10 +1,8 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"net/url"
 	"strings"
 	"time"
@@ -29,6 +27,30 @@ func (s *service) GetUploadEvent(ctx context.Context, in *media.GetUploadEventIn
 	return event, nil
 }
 
+/**
+ * ライブ配信関連
+ */
+func (s *service) GetBroadcastArchiveMP4UploadURL(ctx context.Context, in *media.GenerateBroadcastArchiveMP4UploadInput) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return "", internalError(err)
+	}
+	if broadcast.Status != entity.BroadcastStatusDisabled {
+		return "", fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
+	}
+	return s.generateUploadURL(ctx, &in.GenerateUploadURLInput, entity.BroadcastArchiveRegulation, in.ScheduleID)
+}
+
+func (s *service) GetBroadcastLiveMP4UploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.BroadcastLiveMP4Regulation)
+}
+
+/**
+ * コーディネータ関連
+ */
 func (s *service) GetCoordinatorThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
 	return s.generateUploadURL(ctx, in, entity.CoordinatorThumbnailRegulation)
 }
@@ -45,6 +67,9 @@ func (s *service) GetCoordinatorBonusVideoUploadURL(ctx context.Context, in *med
 	return s.generateUploadURL(ctx, in, entity.CoordinatorBonusVideoRegulation)
 }
 
+/**
+ * 生産者関連
+ */
 func (s *service) GetProducerThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
 	return s.generateUploadURL(ctx, in, entity.ProducerThumbnailRegulation)
 }
@@ -61,10 +86,16 @@ func (s *service) GetProducerBonusVideoUploadURL(ctx context.Context, in *media.
 	return s.generateUploadURL(ctx, in, entity.ProducerBonusVideoRegulation)
 }
 
+/**
+ * 購入者関連
+ */
 func (s *service) GetUserThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
 	return s.generateUploadURL(ctx, in, entity.UserThumbnailRegulation)
 }
 
+/**
+ * 商品関連
+ */
 func (s *service) GetProductMediaImageUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
 	return s.generateUploadURL(ctx, in, entity.ProductMediaImageRegulation)
 }
@@ -73,10 +104,16 @@ func (s *service) GetProductMediaVideoUploadURL(ctx context.Context, in *media.G
 	return s.generateUploadURL(ctx, in, entity.ProductMediaVideoRegulation)
 }
 
+/**
+ * 品目関連
+ */
 func (s *service) GetProductTypeIconUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
 	return s.generateUploadURL(ctx, in, entity.ProductTypeIconRegulation)
 }
 
+/**
+ * 開始スケジュール関連
+ */
 func (s *service) GetScheduleThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
 	return s.generateUploadURL(ctx, in, entity.ScheduleThumbnailRegulation)
 }
@@ -89,11 +126,19 @@ func (s *service) GetScheduleOpeningVideoUploadURL(ctx context.Context, in *medi
 	return s.generateUploadURL(ctx, in, entity.ScheduleOpeningVideoRegulation)
 }
 
-func (s *service) generateUploadURL(ctx context.Context, in *media.GenerateUploadURLInput, reg *entity.Regulation) (string, error) {
+/**
+ * private
+ */
+func (s *service) generateUploadURL(
+	ctx context.Context,
+	in *media.GenerateUploadURLInput,
+	reg *entity.Regulation,
+	keyArgs ...interface{},
+) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	key, err := reg.GetObjectKey(in.FileType)
+	key, err := reg.GetObjectKey(in.FileType, keyArgs...)
 	if err != nil {
 		return "", fmt.Errorf("service: failed to get object key: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
@@ -115,21 +160,4 @@ func (s *service) generateUploadURL(ctx context.Context, in *media.GenerateUploa
 		return "", internalError(err)
 	}
 	return url, nil
-}
-
-func (s *service) generateFile(
-	ctx context.Context, in *media.GenerateFileInput, reg *entity.Regulation,
-) (string, error) {
-	if err := s.validator.Struct(in); err != nil {
-		return "", internalError(err)
-	}
-	var buf bytes.Buffer
-	teeReader := io.TeeReader(in.File, &buf)
-	//nolint:staticcheck
-	if err := reg.ValidateV1(teeReader, in.Header); err != nil {
-		return "", fmt.Errorf("%w: %s", exception.ErrInvalidArgument, err.Error())
-	}
-	path := reg.GenerateFilePath(in.Header)
-	url, err := s.tmp.Upload(ctx, path, &buf)
-	return url, internalError(err)
 }

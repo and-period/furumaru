@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -61,15 +62,14 @@ func (h *handler) UnpauseBroadcast(ctx *gin.Context) {
 }
 
 func (h *handler) UploadBroadcastArchive(ctx *gin.Context) {
-	file, header, err := h.parseFile(ctx, "video")
-	if err != nil {
-		h.httpError(ctx, err)
+	req := &request.UpdateBroadcastArchiveRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
 		return
 	}
 	in := &media.UpdateBroadcastArchiveInput{
 		ScheduleID: util.GetParam(ctx, "scheduleId"),
-		File:       file,
-		Header:     header,
+		ArchiveURL: req.ArchiveURL,
 	}
 	if err := h.media.UpdateBroadcastArchive(ctx, in); err != nil {
 		h.httpError(ctx, err)
@@ -90,15 +90,14 @@ func (h *handler) ActivateBroadcastRTMP(ctx *gin.Context) {
 }
 
 func (h *handler) ActivateBroadcastMP4(ctx *gin.Context) {
-	file, header, err := h.parseFile(ctx, "video")
-	if err != nil {
-		h.httpError(ctx, err)
+	req := &request.ActivateBroadcastMP4Request{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
 		return
 	}
 	in := &media.ActivateBroadcastMP4Input{
 		ScheduleID: util.GetParam(ctx, "scheduleId"),
-		File:       file,
-		Header:     header,
+		InputURL:   req.InputURL,
 	}
 	if err := h.media.ActivateBroadcastMP4(ctx, in); err != nil {
 		h.httpError(ctx, err)

@@ -107,6 +107,21 @@ func (mr *MockServiceMockRecorder) DeactivateBroadcastStaticImage(ctx, in interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateBroadcastStaticImage", reflect.TypeOf((*MockService)(nil).DeactivateBroadcastStaticImage), ctx, in)
 }
 
+// GetBroadcastArchiveMP4UploadURL mocks base method.
+func (m *MockService) GetBroadcastArchiveMP4UploadURL(ctx context.Context, in *media.GenerateBroadcastArchiveMP4UploadInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBroadcastArchiveMP4UploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBroadcastArchiveMP4UploadURL indicates an expected call of GetBroadcastArchiveMP4UploadURL.
+func (mr *MockServiceMockRecorder) GetBroadcastArchiveMP4UploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBroadcastArchiveMP4UploadURL", reflect.TypeOf((*MockService)(nil).GetBroadcastArchiveMP4UploadURL), ctx, in)
+}
+
 // GetBroadcastByScheduleID mocks base method.
 func (m *MockService) GetBroadcastByScheduleID(ctx context.Context, in *media.GetBroadcastByScheduleIDInput) (*entity.Broadcast, error) {
 	m.ctrl.T.Helper()
@@ -120,6 +135,21 @@ func (m *MockService) GetBroadcastByScheduleID(ctx context.Context, in *media.Ge
 func (mr *MockServiceMockRecorder) GetBroadcastByScheduleID(ctx, in interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBroadcastByScheduleID", reflect.TypeOf((*MockService)(nil).GetBroadcastByScheduleID), ctx, in)
+}
+
+// GetBroadcastLiveMP4UploadURL mocks base method.
+func (m *MockService) GetBroadcastLiveMP4UploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBroadcastLiveMP4UploadURL", ctx, in)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBroadcastLiveMP4UploadURL indicates an expected call of GetBroadcastLiveMP4UploadURL.
+func (mr *MockServiceMockRecorder) GetBroadcastLiveMP4UploadURL(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBroadcastLiveMP4UploadURL", reflect.TypeOf((*MockService)(nil).GetBroadcastLiveMP4UploadURL), ctx, in)
 }
 
 // GetCoordinatorBonusVideoUploadURL mocks base method.

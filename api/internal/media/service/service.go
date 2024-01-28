@@ -22,11 +22,6 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	errParseURL   = errors.New("service: failed to parse url")
-	errInvalidURL = errors.New("service: invalid url")
-)
-
 const defaultUploadEventTTL = 12 * time.Hour // 12hours
 
 type Params struct {

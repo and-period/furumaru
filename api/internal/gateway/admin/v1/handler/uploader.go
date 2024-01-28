@@ -2,14 +2,8 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"mime"
-	"mime/multipart"
 	"net/http"
-	"strings"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -36,6 +30,8 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/schedules/thumbnail", h.CreateScheduleThumbnailUploadURL)
 	r.POST("/schedules/image", h.CreateScheduleImageUploadURL)
 	r.POST("/schedules/opening-video", h.CreateScheduleOpeningVideoUploadURL)
+	r.POST("/schedules/:scheduleId/broadcasts/archive", h.CreateBroadcastArchiveMP4UploadURL)
+	r.POST("/schedules/-/broadcasts/live", h.CreateBroadcastLiveMP4UploadURL)
 }
 
 func (h *handler) GetUploadState(ctx *gin.Context) {
@@ -52,6 +48,33 @@ func (h *handler) GetUploadState(ctx *gin.Context) {
 		Status: service.NewUploadStatus(event.Status).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateBroadcastArchiveMP4UploadURL(ctx *gin.Context) {
+	req := &request.GetUploadURLRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &media.GenerateBroadcastArchiveMP4UploadInput{
+		GenerateUploadURLInput: media.GenerateUploadURLInput{
+			FileType: req.FileType,
+		},
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	}
+	url, err := h.media.GetBroadcastArchiveMP4UploadURL(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.UploadURLResponse{
+		URL: url,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateBroadcastLiveMP4UploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetBroadcastLiveMP4UploadURL)
 }
 
 func (h *handler) CreateCoordinatorThumbnailUploadURL(ctx *gin.Context) {
@@ -128,21 +151,4 @@ func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media
 		URL: url,
 	}
 	ctx.JSON(http.StatusOK, res)
-}
-
-func (h *handler) parseFile(ctx *gin.Context, filename string) (io.Reader, *multipart.FileHeader, error) {
-	media, _, err := mime.ParseMediaType(ctx.GetHeader("Content-Type"))
-	if err != nil {
-		err := fmt.Errorf("handler: failed to parse media type. err=%s: %w", err.Error(), exception.ErrInvalidArgument)
-		return nil, nil, err
-	}
-	if !strings.HasPrefix(media, "multipart/") {
-		return nil, nil, fmt.Errorf("%s: %w", errInvalidFileFormat.Error(), exception.ErrInvalidArgument)
-	}
-	file, header, err := ctx.Request.FormFile(filename)
-	if err != nil {
-		err := fmt.Errorf("handler: failed to get file. err=%s: %w", err.Error(), exception.ErrInvalidArgument)
-		return nil, nil, err
-	}
-	return file, header, nil
 }

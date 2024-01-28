@@ -3,9 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"io"
-	"net/url"
-	"strings"
 	"testing"
 	"time"
 
@@ -19,7 +16,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestListBroadcasts(t *testing.T) {
@@ -268,54 +264,33 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 		ScheduleID: "schdule-id",
 		Status:     entity.BroadcastStatusDisabled,
 	}
-	params := func(archiveURL string) *database.UpdateBroadcastParams {
-		return &database.UpdateBroadcastParams{
-			UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
-				ArchiveURL: archiveURL,
-			},
-		}
+	params := &database.UpdateBroadcastParams{
+		UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
+			ArchiveURL: "http://example.com/archive.mp4",
+		},
 	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     func() *media.UpdateBroadcastArchiveInput
+		input     *media.UpdateBroadcastArchiveInput
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				var archiveURL string
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
-						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-						require.NoError(t, err)
-						archiveURL = u.String()
-						return archiveURL, nil
-					})
-				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", gomock.Any()).
-					DoAndReturn(func(_ context.Context, _ string, actual *database.UpdateBroadcastParams) error {
-						expect := params(archiveURL)
-						assert.Equal(t, expect, actual)
-						return nil
-					})
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", params).Return(nil)
 			},
-			input: func() *media.UpdateBroadcastArchiveInput {
-				file, header := testVideoFile(t)
-				return &media.UpdateBroadcastArchiveInput{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.UpdateBroadcastArchiveInput{
+				ScheduleID: "schedule-id",
+				ArchiveURL: "http://example.com/archive.mp4",
 			},
 			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: func() *media.UpdateBroadcastArchiveInput {
-				return &media.UpdateBroadcastArchiveInput{}
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.UpdateBroadcastArchiveInput{},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
@@ -323,13 +298,9 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
 			},
-			input: func() *media.UpdateBroadcastArchiveInput {
-				file, header := testImageFile(t)
-				return &media.UpdateBroadcastArchiveInput{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.UpdateBroadcastArchiveInput{
+				ScheduleID: "schedule-id",
+				ArchiveURL: "http://example.com/archive.mp4",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -339,68 +310,21 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 			},
-			input: func() *media.UpdateBroadcastArchiveInput {
-				file, header := testImageFile(t)
-				return &media.UpdateBroadcastArchiveInput{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.UpdateBroadcastArchiveInput{
+				ScheduleID: "schedule-id",
+				ArchiveURL: "http://example.com/archive.mp4",
 			},
 			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
-			name: "invalid reguration",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-			},
-			input: func() *media.UpdateBroadcastArchiveInput {
-				file, header := testImageFile(t)
-				return &media.UpdateBroadcastArchiveInput{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("", assert.AnError)
-			},
-			input: func() *media.UpdateBroadcastArchiveInput {
-				file, header := testVideoFile(t)
-				return &media.UpdateBroadcastArchiveInput{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
 			name: "failed to update broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				var archiveURL string
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.storage.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
-						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-						require.NoError(t, err)
-						archiveURL = u.String()
-						return archiveURL, nil
-					})
-				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", gomock.Any()).Return(assert.AnError)
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", params).Return(assert.AnError)
 			},
-			input: func() *media.UpdateBroadcastArchiveInput {
-				file, header := testVideoFile(t)
-				return &media.UpdateBroadcastArchiveInput{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.UpdateBroadcastArchiveInput{
+				ScheduleID: "schedule-id",
+				ArchiveURL: "http://example.com/archive.mp4",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -408,7 +332,7 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateBroadcastArchive(ctx, tt.input())
+			err := service.UpdateBroadcastArchive(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
@@ -667,58 +591,39 @@ func TestActivateBroadcastMP4(t *testing.T) {
 		MediaLiveChannelID:    "12345678",
 		MediaLiveMP4InputName: "mp4",
 	}
-	params := func(videoURL string) *medialive.CreateScheduleParams {
-		return &medialive.CreateScheduleParams{
-			ChannelID: "12345678",
-			Settings: []*medialive.ScheduleSetting{{
-				Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(now, time.DateTime)),
-				ActionType: medialive.ScheduleActionTypeInputSwitch,
-				StartType:  medialive.ScheduleStartTypeImmediate,
-				Reference:  broadcast.MediaLiveMP4InputName,
-				Source:     videoURL,
-			}},
-		}
+	params := &medialive.CreateScheduleParams{
+		ChannelID: "12345678",
+		Settings: []*medialive.ScheduleSetting{{
+			Name:       fmt.Sprintf("%s immediate-input-mp4", jst.Format(now, time.DateTime)),
+			ActionType: medialive.ScheduleActionTypeInputSwitch,
+			StartType:  medialive.ScheduleStartTypeImmediate,
+			Reference:  broadcast.MediaLiveMP4InputName,
+			Source:     "s3://example.mp4",
+		}},
 	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     func() *media.ActivateBroadcastMP4Input
+		input     *media.ActivateBroadcastMP4Input
 		expectErr error
 	}{
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
-						assert.True(t, strings.HasPrefix(path, entity.BroadcastLiveMP4Path), path)
-						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-						require.NoError(t, err)
-						return u.String(), nil
-					})
-				mocks.tmp.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("s3://example.mp4", nil)
-				mocks.media.EXPECT().CreateSchedule(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, actual *medialive.CreateScheduleParams) error {
-						assert.Equal(t, actual, params("s3://example.mp4"))
-						return nil
-					})
+				mocks.tmp.EXPECT().ReplaceURLToS3URI("http://example.com/example.mp4").Return("s3://example.mp4", nil)
+				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(nil)
 			},
-			input: func() *media.ActivateBroadcastMP4Input {
-				file, header := testVideoFile(t)
-				return &media.ActivateBroadcastMP4Input{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.ActivateBroadcastMP4Input{
+				ScheduleID: "schedule-id",
+				InputURL:   "http://example.com/example.mp4",
 			},
 			expectErr: nil,
 		},
 		{
-			name:  "invalid argument",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: func() *media.ActivateBroadcastMP4Input {
-				return &media.ActivateBroadcastMP4Input{}
-			},
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.ActivateBroadcastMP4Input{},
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
@@ -726,13 +631,9 @@ func TestActivateBroadcastMP4(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
 			},
-			input: func() *media.ActivateBroadcastMP4Input {
-				file, header := testImageFile(t)
-				return &media.ActivateBroadcastMP4Input{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.ActivateBroadcastMP4Input{
+				ScheduleID: "schedule-id",
+				InputURL:   "http://example.com/example.mp4",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -742,67 +643,21 @@ func TestActivateBroadcastMP4(t *testing.T) {
 				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 			},
-			input: func() *media.ActivateBroadcastMP4Input {
-				file, header := testImageFile(t)
-				return &media.ActivateBroadcastMP4Input{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.ActivateBroadcastMP4Input{
+				ScheduleID: "schedule-id",
+				InputURL:   "http://example.com/example.mp4",
 			},
 			expectErr: exception.ErrFailedPrecondition,
-		},
-		{
-			name: "invalid reguration",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-			},
-			input: func() *media.ActivateBroadcastMP4Input {
-				file, header := testImageFile(t)
-				return &media.ActivateBroadcastMP4Input{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
-			},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).Return("", assert.AnError)
-			},
-			input: func() *media.ActivateBroadcastMP4Input {
-				file, header := testVideoFile(t)
-				return &media.ActivateBroadcastMP4Input{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
-			},
-			expectErr: exception.ErrInternal,
 		},
 		{
 			name: "failed to replace s3 uri",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
-						assert.True(t, strings.HasPrefix(path, entity.BroadcastLiveMP4Path), path)
-						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-						require.NoError(t, err)
-						return u.String(), nil
-					})
-				mocks.tmp.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("", assert.AnError)
+				mocks.tmp.EXPECT().ReplaceURLToS3URI("http://example.com/example.mp4").Return("", assert.AnError)
 			},
-			input: func() *media.ActivateBroadcastMP4Input {
-				file, header := testVideoFile(t)
-				return &media.ActivateBroadcastMP4Input{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.ActivateBroadcastMP4Input{
+				ScheduleID: "schedule-id",
+				InputURL:   "http://example.com/example.mp4",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -810,27 +665,12 @@ func TestActivateBroadcastMP4(t *testing.T) {
 			name: "failed to create schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-				mocks.tmp.EXPECT().Upload(ctx, gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, path string, file io.Reader) (string, error) {
-						assert.True(t, strings.HasPrefix(path, entity.BroadcastLiveMP4Path), path)
-						u, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-						require.NoError(t, err)
-						return u.String(), nil
-					})
-				mocks.tmp.EXPECT().ReplaceURLToS3URI(gomock.Any()).Return("s3://example.mp4", nil)
-				mocks.media.EXPECT().CreateSchedule(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, actual *medialive.CreateScheduleParams) error {
-						assert.Equal(t, actual, params("s3://example.mp4"))
-						return assert.AnError
-					})
+				mocks.tmp.EXPECT().ReplaceURLToS3URI("http://example.com/example.mp4").Return("s3://example.mp4", nil)
+				mocks.media.EXPECT().CreateSchedule(ctx, params).Return(assert.AnError)
 			},
-			input: func() *media.ActivateBroadcastMP4Input {
-				file, header := testVideoFile(t)
-				return &media.ActivateBroadcastMP4Input{
-					ScheduleID: "schedule-id",
-					File:       file,
-					Header:     header,
-				}
+			input: &media.ActivateBroadcastMP4Input{
+				ScheduleID: "schedule-id",
+				InputURL:   "http://example.com/example.mp4",
 			},
 			expectErr: exception.ErrInternal,
 		},
@@ -838,7 +678,7 @@ func TestActivateBroadcastMP4(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.ActivateBroadcastMP4(ctx, tt.input())
+			err := service.ActivateBroadcastMP4(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}, withNow(now)))
 	}

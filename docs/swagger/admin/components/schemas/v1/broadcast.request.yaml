@@ -1,14 +1,20 @@
 updateBroadcastArchiveRequest:
   type: object
   properties:
-    video:
+    archiveUrl:
       type: string
-      format: binary
-      description: オンデマンド配信用の映像(mp4形式,200MBまで)
+      description: オンデマンド配信用の動画URL
+  required:
+  - archiveUrl
+  example:
+    archiveUrl: 'http://example.com/arhive.mp4'
 activateBroadcastMP4Request:
   type: object
   properties:
-    video:
+    inputUrl:
       type: string
-      format: binary
-      description: ライブ配信中に流す映像(mp4形式,200MBまで)
+      description: 配信用の動画URL
+  required:
+  - archiveUrl
+  example:
+    archiveUrl: 'http://example.com/live.mp4'
