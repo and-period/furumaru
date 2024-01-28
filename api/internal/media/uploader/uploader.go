@@ -109,6 +109,7 @@ func (u *uploader) Lambda(ctx context.Context, events events.SQSEvent) (err erro
 }
 
 func (u *uploader) dispatch(ctx context.Context, record events.SQSMessage) error {
+	u.logger.Debug("Received", zap.Any("record", record))
 	payload := &events.S3EventRecord{}
 	if err := json.Unmarshal([]byte(record.Body), payload); err != nil {
 		u.logger.Error("Failed to unmarshall sqs event", zap.Any("event", record), zap.Error(err))
