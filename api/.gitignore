@@ -20,6 +20,9 @@ bin
 # tmp file
 tmp
 
+# test file
+mock
+
 # Serverless directories
 .serverless
 

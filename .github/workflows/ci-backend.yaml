@@ -73,6 +73,9 @@ jobs:
     - name: Setup
       run: make setup
 
+    - name: Create Mock
+      run: make mockgen
+
     - name: Fmt
       run: make fmt
 
@@ -176,6 +179,12 @@ jobs:
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
       run: go mod download
+
+    - name: Setup
+      run: make setup
+
+    - name: Create Mock
+      run: make mockgen
 
     - name: Test
       run: make test
