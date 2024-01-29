@@ -64,6 +64,18 @@ const isArchive = computed<boolean>(() => {
   }
 })
 
+const liveRef = ref<{ videoRef: HTMLVideoElement | null }>({ videoRef: null })
+
+const livePlayserHeight = computed(() => {
+  if (liveRef.value.videoRef) {
+    if (liveRef.value.videoRef.offsetWidth >= 768) {
+      return 0
+    }
+    return liveRef.value.videoRef.offsetHeight
+  }
+  return 0
+})
+
 const handleClickItem = (prodictId: string) => {
   router.push(`/items/${prodictId}`)
 }
@@ -105,20 +117,24 @@ useSeoMeta({
   >
     <template v-if="schedule">
       <div class="col-span-3">
-        <client-only>
-          <the-live-video-player
-            :video-src="schedule.schedule.distributionUrl"
+        <the-live-video-player
+          ref="liveRef"
+          :video-src="schedule.schedule.distributionUrl"
+          :is-archive="isArchive"
+          class="fixed z-[20] w-full md:static"
+        />
+        <div :style="{ 'padding-top': `${livePlayserHeight}px` }">
+          <the-live-description
             :title="schedule.schedule.title"
-            :start-at="schedule.schedule.startAt"
-            :end-at="schedule.schedule.endAt"
             :description="schedule.schedule.description"
-            :is-live-streaming="isLiveStreaming"
             :is-archive="isArchive"
-            :cordinator-id="schedule.coordinator.id"
+            :is-live-streaming="isLiveStreaming"
+            :start-at="schedule.schedule.startAt"
             :marche-name="schedule.coordinator.marcheName"
-            :address="schedule.coordinator.city"
-            :cn-name="schedule.coordinator.username"
-            :cn-img-src="schedule.coordinator.thumbnailUrl"
+            :cordinator-id="schedule.coordinator.id"
+            :cordinator-name="schedule.coordinator.username"
+            :cordinator-img-src="schedule.coordinator.thumbnailUrl"
+            :cordinator-address="schedule.coordinator.city"
             @click:cordinator="handleCLickCorodinator"
           />
           <the-live-timeline
@@ -127,7 +143,7 @@ useSeoMeta({
             @click:item="handleClickItem"
             @click:add-cart="handleClickAddCart"
           />
-        </client-only>
+        </div>
       </div>
     </template>
 
