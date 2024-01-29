@@ -49,7 +49,8 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Broadcast *mock_database.MockBroadcast
+	Broadcast          *mock_database.MockBroadcast
+	BroadcastViewerLog *mock_database.MockBroadcastViewerLog
 }
 
 type testOptions struct {
@@ -82,7 +83,8 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Broadcast: mock_database.NewMockBroadcast(ctrl),
+		Broadcast:          mock_database.NewMockBroadcast(ctrl),
+		BroadcastViewerLog: mock_database.NewMockBroadcastViewerLog(ctrl),
 	}
 }
 
@@ -96,7 +98,8 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
-			Broadcast: mocks.db.Broadcast,
+			Broadcast:          mocks.db.Broadcast,
+			BroadcastViewerLog: mocks.db.BroadcastViewerLog,
 		},
 		Cache:     mocks.cache,
 		Store:     mocks.store,

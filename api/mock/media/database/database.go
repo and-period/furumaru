@@ -118,3 +118,40 @@ func (mr *MockBroadcastMockRecorder) Update(ctx, broadcastID, params interface{}
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockBroadcast)(nil).Update), ctx, broadcastID, params)
 }
+
+// MockBroadcastViewerLog is a mock of BroadcastViewerLog interface.
+type MockBroadcastViewerLog struct {
+	ctrl     *gomock.Controller
+	recorder *MockBroadcastViewerLogMockRecorder
+}
+
+// MockBroadcastViewerLogMockRecorder is the mock recorder for MockBroadcastViewerLog.
+type MockBroadcastViewerLogMockRecorder struct {
+	mock *MockBroadcastViewerLog
+}
+
+// NewMockBroadcastViewerLog creates a new mock instance.
+func NewMockBroadcastViewerLog(ctrl *gomock.Controller) *MockBroadcastViewerLog {
+	mock := &MockBroadcastViewerLog{ctrl: ctrl}
+	mock.recorder = &MockBroadcastViewerLogMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockBroadcastViewerLog) EXPECT() *MockBroadcastViewerLogMockRecorder {
+	return m.recorder
+}
+
+// Create mocks base method.
+func (m *MockBroadcastViewerLog) Create(ctx context.Context, log *entity.BroadcastViewerLog) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, log)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockBroadcastViewerLogMockRecorder) Create(ctx, log interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockBroadcastViewerLog)(nil).Create), ctx, log)
+}

@@ -93,6 +93,20 @@ func (mr *MockServiceMockRecorder) CreateBroadcast(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBroadcast", reflect.TypeOf((*MockService)(nil).CreateBroadcast), ctx, in)
 }
 
+// CreateBroadcastViewerLog mocks base method.
+func (m *MockService) CreateBroadcastViewerLog(ctx context.Context, in *media.CreateBroadcastViewerLogInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateBroadcastViewerLog", ctx, in)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateBroadcastViewerLog indicates an expected call of CreateBroadcastViewerLog.
+func (mr *MockServiceMockRecorder) CreateBroadcastViewerLog(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBroadcastViewerLog", reflect.TypeOf((*MockService)(nil).CreateBroadcastViewerLog), ctx, in)
+}
+
 // DeactivateBroadcastStaticImage mocks base method.
 func (m *MockService) DeactivateBroadcastStaticImage(ctx context.Context, in *media.DeactivateBroadcastStaticImageInput) error {
 	m.ctrl.T.Helper()

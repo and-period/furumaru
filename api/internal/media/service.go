@@ -23,6 +23,8 @@ type Service interface {
 	ActivateBroadcastMP4(ctx context.Context, in *ActivateBroadcastMP4Input) error                                   // ライブ配信の入力をMP4に切り替え
 	ActivateBroadcastStaticImage(ctx context.Context, in *ActivateBroadcastStaticImageInput) error                   // ライブ配信のふた絵を有効化
 	DeactivateBroadcastStaticImage(ctx context.Context, in *DeactivateBroadcastStaticImageInput) error               // ライブ配信のふた絵を無効化
+	// ライブ視聴履歴
+	CreateBroadcastViewerLog(ctx context.Context, in *CreateBroadcastViewerLogInput) error // ライブ配信視聴履歴登録
 	// コーディネータ
 	GetCoordinatorThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (string, error)      // サムネイル画像アップロード用URLの生成
 	ResizeCoordinatorThumbnail(ctx context.Context, in *ResizeFileInput) error                             // サムネイル画像リサイズ

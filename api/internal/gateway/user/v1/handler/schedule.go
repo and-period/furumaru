@@ -18,7 +18,7 @@ import (
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules")
 
-	r.GET("/:scheduleId", h.GetSchedule)
+	r.GET("/:scheduleId", h.createBroadcastViewerLog, h.GetSchedule)
 }
 
 func (h *handler) GetSchedule(ctx *gin.Context) {

@@ -21,7 +21,8 @@ var (
 )
 
 type Database struct {
-	Broadcast Broadcast
+	Broadcast          Broadcast
+	BroadcastViewerLog BroadcastViewerLog
 }
 
 type Broadcast interface {
@@ -68,6 +69,10 @@ type InitializeBroadcastParams struct {
 type UploadBroadcastArchiveParams struct {
 	ArchiveURL   string
 	ArchiveFixed bool
+}
+
+type BroadcastViewerLog interface {
+	Create(ctx context.Context, log *entity.BroadcastViewerLog) error
 }
 
 type Error struct {
