@@ -13,7 +13,8 @@ import (
 
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		Broadcast: newBroadcast(db),
+		Broadcast:          newBroadcast(db),
+		BroadcastViewerLog: newBroadcastViewerLog(db),
 	}
 }
 
