@@ -1,9 +1,6 @@
 package media
 
 import (
-	"io"
-	"mime/multipart"
-
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
@@ -18,15 +15,6 @@ type GenerateBroadcastArchiveMP4UploadInput struct {
 
 type GetUploadEventInput struct {
 	UploadURL string `validate:"required,url"`
-}
-
-type GenerateFileInput struct {
-	File   io.Reader             `validate:"required"`
-	Header *multipart.FileHeader `validate:"required"`
-}
-
-type UploadFileInput struct {
-	URL string `validate:"required,url"`
 }
 
 type ResizeFileInput struct {
@@ -86,4 +74,12 @@ type ActivateBroadcastStaticImageInput struct {
 
 type DeactivateBroadcastStaticImageInput struct {
 	ScheduleID string `validate:"required"`
+}
+
+type CreateBroadcastViewerLogInput struct {
+	ScheduleID string `validate:"required"`
+	SessionID  string `validate:"required"`
+	UserID     string `validate:""`
+	UserAgent  string `validate:""`
+	ClientIP   string `validate:"omitempty,ip_addr"`
 }

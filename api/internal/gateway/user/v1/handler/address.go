@@ -40,7 +40,7 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 	}
 
 	in := &user.ListAddressesInput{
-		UserID: getUserID(ctx),
+		UserID: h.getUserID(ctx),
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -60,7 +60,7 @@ func (h *handler) ListAddresses(ctx *gin.Context) {
 func (h *handler) GetAddress(ctx *gin.Context) {
 	in := &user.GetAddressInput{
 		AddressID: util.GetParam(ctx, "addressId"),
-		UserID:    getUserID(ctx),
+		UserID:    h.getUserID(ctx),
 	}
 	address, err := h.user.GetAddress(ctx, in)
 	if err != nil {
@@ -80,7 +80,7 @@ func (h *handler) CreateAddress(ctx *gin.Context) {
 		return
 	}
 	in := &user.CreateAddressInput{
-		UserID:         getUserID(ctx),
+		UserID:         h.getUserID(ctx),
 		Lastname:       req.Lastname,
 		Firstname:      req.Firstname,
 		LastnameKana:   req.LastnameKana,
@@ -112,7 +112,7 @@ func (h *handler) UpdateAddress(ctx *gin.Context) {
 	}
 	in := &user.UpdateAddressInput{
 		AddressID:      util.GetParam(ctx, "addressId"),
-		UserID:         getUserID(ctx),
+		UserID:         h.getUserID(ctx),
 		Lastname:       req.Lastname,
 		Firstname:      req.Firstname,
 		LastnameKana:   req.LastnameKana,
@@ -135,7 +135,7 @@ func (h *handler) UpdateAddress(ctx *gin.Context) {
 func (h *handler) DeleteAddress(ctx *gin.Context) {
 	in := &user.DeleteAddressInput{
 		AddressID: util.GetParam(ctx, "addressId"),
-		UserID:    getUserID(ctx),
+		UserID:    h.getUserID(ctx),
 	}
 	if err := h.user.DeleteAddress(ctx, in); err != nil {
 		h.httpError(ctx, err)

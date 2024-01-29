@@ -229,7 +229,7 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 
 func (h *handler) GetAuthUser(ctx *gin.Context) {
 	in := &user.GetUserInput{
-		UserID: getUserID(ctx),
+		UserID: h.getUserID(ctx),
 	}
 	u, err := h.user.GetUser(ctx, in)
 	if err != nil {
@@ -276,7 +276,7 @@ func (h *handler) CreateAuth(ctx *gin.Context) {
 
 func (h *handler) DeleteAuth(ctx *gin.Context) {
 	in := &user.DeleteUserInput{
-		UserID: getUserID(ctx),
+		UserID: h.getUserID(ctx),
 	}
 	if err := h.user.DeleteUser(ctx, in); err != nil {
 		h.httpError(ctx, err)

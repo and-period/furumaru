@@ -40,7 +40,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	}
 
 	ordersIn := &store.ListOrdersInput{
-		UserID: getUserID(ctx),
+		UserID: h.getUserID(ctx),
 		Limit:  limit,
 		Offset: offset,
 	}
@@ -104,7 +104,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 }
 
 func (h *handler) GetOrder(ctx *gin.Context) {
-	order, err := h.getOrder(ctx, getUserID(ctx), util.GetParam(ctx, "orderId"))
+	order, err := h.getOrder(ctx, h.getUserID(ctx), util.GetParam(ctx, "orderId"))
 	if err != nil {
 		h.httpError(ctx, err)
 		return
