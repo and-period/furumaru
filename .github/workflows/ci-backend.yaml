@@ -73,6 +73,9 @@ jobs:
     - name: Setup
       run: make setup
 
+    - name: Create Mock
+      run: make mockgen
+
     - name: Fmt
       run: make fmt
 
