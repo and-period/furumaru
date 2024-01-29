@@ -759,3 +759,37 @@ func TestAggregatedOrders_Map(t *testing.T) {
 		})
 	}
 }
+
+func TestAggregatedOrderPromotions_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		orders AggregatedOrderPromotions
+		expect map[string]*AggregatedOrderPromotion
+	}{
+		{
+			name: "success",
+			orders: AggregatedOrderPromotions{
+				{
+					PromotionID:   "promotion-id",
+					OrderCount:    3,
+					DiscountTotal: 1980,
+				},
+			},
+			expect: map[string]*AggregatedOrderPromotion{
+				"promotion-id": {
+					PromotionID:   "promotion-id",
+					OrderCount:    3,
+					DiscountTotal: 1980,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.orders.Map())
+		})
+	}
+}

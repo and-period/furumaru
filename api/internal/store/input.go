@@ -477,6 +477,11 @@ type AggregateOrdersInput struct {
 	UserIDs       []string `validate:"dive,required"`
 }
 
+type AggregateOrdersByPromotionInput struct {
+	CoordinatorID string   `validate:""`
+	PromotionIDs  []string `validate:"dive,required"`
+}
+
 type GetCartInput struct {
 	SessionID string `validate:"required"`
 }

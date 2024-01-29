@@ -25,6 +25,14 @@ promotion:
     code:
       type: string
       description: クーポンコード
+    usedCount:
+      type: integer
+      format: int64
+      description: クーポン利用回数
+    usedAmount:
+      type: integer
+      format: int64
+      description: クーポン利用による割引合計額
     startAt:
       type: integer
       format: int64
@@ -50,6 +58,8 @@ promotion:
   - discountType
   - discountRate
   - code
+  - usedCount
+  - usedAmount
   - startAt
   - endAt
   - createdAt
@@ -63,6 +73,8 @@ promotion:
     discountType: 1
     discountRate: 300
     code: 'code1234'
+    usedCount: 2
+    usedAmount: 1000
     startAt: 1640962800
     endAt: 1640962800
     createdAt: 1640962800

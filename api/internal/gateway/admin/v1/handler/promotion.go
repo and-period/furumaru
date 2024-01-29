@@ -58,9 +58,14 @@ func (h *handler) ListPromotions(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
+	aggregates, err := h.aggregateOrdersByPromotion(ctx, promotions.IDs()...)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 
 	res := &response.PromotionsResponse{
-		Promotions: service.NewPromotions(promotions).Response(),
+		Promotions: service.NewPromotions(promotions, aggregates).Response(),
 		Total:      total,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -99,17 +104,13 @@ func (h *handler) newPromotionOrders(ctx *gin.Context) ([]*store.ListPromotionsO
 }
 
 func (h *handler) GetPromotion(ctx *gin.Context) {
-	in := &store.GetPromotionInput{
-		PromotionID: util.GetParam(ctx, "promotionId"),
-	}
-	promotion, err := h.store.GetPromotion(ctx, in)
+	promotion, err := h.getPromotion(ctx, util.GetParam(ctx, "promotionId"))
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-
 	res := &response.PromotionResponse{
-		Promotion: service.NewPromotion(promotion).Response(),
+		Promotion: promotion.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -139,7 +140,8 @@ func (h *handler) CreatePromotion(ctx *gin.Context) {
 	}
 
 	res := &response.PromotionResponse{
-		Promotion: service.NewPromotion(promotion).Response(),
+		// 初回は集計結果が存在しないためnilで渡す
+		Promotion: service.NewPromotion(promotion, nil).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -194,7 +196,11 @@ func (h *handler) multiGetPromotions(ctx context.Context, promotionIDs []string)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewPromotions(promotions), nil
+	aggregates, err := h.aggregateOrdersByPromotion(ctx, promotionIDs...)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewPromotions(promotions, aggregates), nil
 }
 
 func (h *handler) getPromotion(ctx context.Context, promotionID string) (*service.Promotion, error) {
@@ -205,5 +211,26 @@ func (h *handler) getPromotion(ctx context.Context, promotionID string) (*servic
 	if err != nil {
 		return nil, err
 	}
-	return service.NewPromotion(promotion), nil
+	aggregates, err := h.aggregateOrdersByPromotion(ctx, promotionID)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewPromotion(promotion, aggregates[promotionID]), nil
+}
+
+func (h *handler) aggregateOrdersByPromotion(
+	ctx context.Context,
+	promotionIDs ...string,
+) (map[string]*sentity.AggregatedOrderPromotion, error) {
+	if len(promotionIDs) == 0 {
+		return map[string]*sentity.AggregatedOrderPromotion{}, nil
+	}
+	in := &store.AggregateOrdersByPromotionInput{
+		PromotionIDs: promotionIDs,
+	}
+	aggregates, err := h.store.AggregateOrdersByPromotion(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return aggregates.Map(), nil
 }

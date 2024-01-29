@@ -95,6 +95,7 @@ type Order interface {
 	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
 	Refund(ctx context.Context, orderID string, params *RefundOrderParams) error
 	Aggregate(ctx context.Context, params *AggregateOrdersParams) (entity.AggregatedOrders, error)
+	AggregateByPromotion(ctx context.Context, params *AggregateOrdersByPromotionParams) (entity.AggregatedOrderPromotions, error)
 }
 
 type ListOrdersParams struct {
@@ -137,6 +138,11 @@ type UpdateOrderFulfillmentParams struct {
 type AggregateOrdersParams struct {
 	CoordinatorID string
 	UserIDs       []string
+}
+
+type AggregateOrdersByPromotionParams struct {
+	CoordinatorID string
+	PromotionIDs  []string
 }
 
 type PaymentSystem interface {

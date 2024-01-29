@@ -190,3 +190,18 @@ func (s *service) AggregateOrders(ctx context.Context, in *store.AggregateOrders
 	orders, err := s.db.Order.Aggregate(ctx, params)
 	return orders, internalError(err)
 }
+
+func (s *service) AggregateOrdersByPromotion(
+	ctx context.Context,
+	in *store.AggregateOrdersByPromotionInput,
+) (entity.AggregatedOrderPromotions, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.AggregateOrdersByPromotionParams{
+		CoordinatorID: in.CoordinatorID,
+		PromotionIDs:  in.PromotionIDs,
+	}
+	orders, err := s.db.Order.AggregateByPromotion(ctx, params)
+	return orders, internalError(err)
+}

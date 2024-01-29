@@ -81,7 +81,12 @@ func (t DiscountType) Response() int32 {
 	return int32(t)
 }
 
-func NewPromotion(promotion *entity.Promotion) *Promotion {
+func NewPromotion(promotion *entity.Promotion, aggregate *entity.AggregatedOrderPromotion) *Promotion {
+	var usedCount, usedAmount int64
+	if aggregate != nil {
+		usedCount = aggregate.OrderCount
+		usedAmount = aggregate.DiscountTotal
+	}
 	return &Promotion{
 		Promotion: response.Promotion{
 			ID:           promotion.ID,
@@ -93,6 +98,8 @@ func NewPromotion(promotion *entity.Promotion) *Promotion {
 			DiscountType: NewDiscountType(promotion.DiscountType).Response(),
 			DiscountRate: promotion.DiscountRate,
 			Code:         promotion.Code,
+			UsedCount:    usedCount,
+			UsedAmount:   usedAmount,
 			StartAt:      promotion.StartAt.Unix(),
 			EndAt:        promotion.EndAt.Unix(),
 			CreatedAt:    promotion.CreatedAt.Unix(),
@@ -108,10 +115,10 @@ func (p *Promotion) Response() *response.Promotion {
 	return &p.Promotion
 }
 
-func NewPromotions(promotions entity.Promotions) Promotions {
+func NewPromotions(promotions entity.Promotions, aggregates map[string]*entity.AggregatedOrderPromotion) Promotions {
 	res := make(Promotions, len(promotions))
-	for i := range promotions {
-		res[i] = NewPromotion(promotions[i])
+	for i, p := range promotions {
+		res[i] = NewPromotion(promotions[i], aggregates[p.ID])
 	}
 	return res
 }

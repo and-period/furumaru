@@ -4390,6 +4390,18 @@ export interface Promotion {
      */
     'code': string;
     /**
+     * クーポン利用回数
+     * @type {number}
+     * @memberof Promotion
+     */
+    'usedCount': number;
+    /**
+     * クーポン利用による割引合計額
+     * @type {number}
+     * @memberof Promotion
+     */
+    'usedAmount': number;
+    /**
      * クーポン利用可能開始日時(unixtime)
      * @type {number}
      * @memberof Promotion
