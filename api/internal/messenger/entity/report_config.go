@@ -12,6 +12,7 @@ type ReportTemplateID string
 const (
 	ReportTemplateIDReceivedContact ReportTemplateID = "received-contact" // お問い合わせ受領
 	ReportTemplateIDNotification    ReportTemplateID = "notification"     // お知らせ投稿
+	ReportTemplateIDOrderAuthorized ReportTemplateID = "order-authorized" // 支払い完了
 )
 
 // ReportConfig - システムレポート送信設定

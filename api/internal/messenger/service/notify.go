@@ -66,21 +66,56 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 	if err != nil {
 		return internalError(err)
 	}
-	products, err := s.multiGetProductsByRevision(ctx, order.ProductRevisionIDs())
-	if err != nil {
-		return internalError(err)
-	}
-	addresses, err := s.multiGetAddressesByRevision(ctx, order.OrderFulfillments.AddressRevisionIDs())
-	if err != nil {
+	var (
+		coordinator          *uentity.Coordinator
+		products             sentity.Products
+		paymentAddress       *uentity.Address
+		fulfillmentAddresses uentity.Addresses
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &user.GetCoordinatorInput{
+			CoordinatorID: order.CoordinatorID,
+			WithDeleted:   true, // 購入と同時に退会してしまった際でもメール通知はできるように
+		}
+		coordinator, err = s.user.GetCoordinator(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		products, err = s.multiGetProductsByRevision(ectx, order.ProductRevisionIDs())
+		return
+	})
+	eg.Go(func() error {
+		addresses, err := s.multiGetAddressesByRevision(ectx, []int64{order.OrderPayment.AddressRevisionID})
+		if err != nil || len(addresses) == 0 {
+			paymentAddress = &uentity.Address{}
+			return err
+		}
+		paymentAddress = addresses[0]
+		return nil
+	})
+	eg.Go(func() (err error) {
+		fulfillmentAddresses, err = s.multiGetAddressesByRevision(ectx, order.OrderFulfillments.AddressRevisionIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
 		return internalError(err)
 	}
 	builder := entity.NewTemplateDataBuilder().
 		OrderPayment(&order.OrderPayment).
-		OrderFulfillment(order.OrderFulfillments, addresses.MapByRevision()).
+		OrderFulfillment(order.OrderFulfillments, fulfillmentAddresses.MapByRevision()).
 		OrderItems(order.OrderItems, products.MapByRevision())
 	mail := &entity.MailConfig{
 		TemplateID:    entity.EmailTemplateIDUserOrderAuthorized,
 		Substitutions: builder.Build(),
+	}
+	maker := entity.NewAdminURLMaker(s.adminWebURL())
+	report := &entity.ReportConfig{
+		TemplateID: entity.ReportTemplateIDOrderAuthorized,
+		Overview:   paymentAddress.Name(),
+		Author:     coordinator.Name(),
+		Link:       maker.Order(order.ID),
+		ReceivedAt: order.PaidAt,
 	}
 	payload := &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
@@ -88,6 +123,7 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 		UserType:  entity.UserTypeUser,
 		UserIDs:   []string{order.UserID},
 		Email:     mail,
+		Report:    report,
 	}
 	err = s.sendMessage(ctx, payload)
 	return internalError(err)
