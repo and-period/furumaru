@@ -43,6 +43,7 @@ type Broadcast struct {
 	InputURL                  string          `gorm:""`                     // ライブ配信URL(入力)
 	OutputURL                 string          `gorm:""`                     // ライブ配信URL(出力)
 	ArchiveURL                string          `gorm:""`                     // アーカイブ配信URL
+	ArchiveFixed              bool            `gorm:""`                     // アーカイブ映像を編集したか
 	CloudFrontDistributionArn string          `gorm:"default:null"`         // CloudFrontディストリビューションARN
 	MediaLiveChannelArn       string          `gorm:"default:null"`         // MediaLiveチャンネルARN
 	MediaLiveChannelID        string          `gorm:"default:null"`         // MediaLiveチャンネルID
