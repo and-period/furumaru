@@ -246,7 +246,7 @@ func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
 	}
 	h.waitGroup.Add(1)
 	go func() {
-		defer h.waitGroup.Wait()
+		defer h.waitGroup.Done()
 		if err := h.media.CreateBroadcastViewerLog(context.Background(), in); err != nil {
 			h.logger.Error("Failed to create broadcast viewer log", zap.Error(err))
 		}
