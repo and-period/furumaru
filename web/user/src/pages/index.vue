@@ -65,7 +65,7 @@ const handleClickLiveItem = (id: string) => {
 const banners: string[] = [
   '/img/banner2.jpg',
   '/img/banner.png',
-  '/img/banner.png',
+  '/img/banner3.png',
 ]
 
 const isOpen = ref<boolean>(false)
