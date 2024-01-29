@@ -230,6 +230,43 @@ func TestPromotion_Validate(t *testing.T) {
 	}
 }
 
+func TestPromotions_IDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		promotions Promotions
+		expect     []string
+	}{
+		{
+			name: "success",
+			promotions: Promotions{
+				{
+					ID:           "promotion-id",
+					Status:       PromotionStatusEnabled,
+					Title:        "プロモーションタイトル",
+					Description:  "プロモーションの詳細です。",
+					Public:       true,
+					PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+					DiscountType: DiscountTypeRate,
+					DiscountRate: 0,
+					Code:         "excode01",
+					CodeType:     PromotionCodeTypeAlways,
+					StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				},
+			},
+			expect: []string{"promotion-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.promotions.IDs())
+		})
+	}
+}
+
 func TestPromotions_Fill(t *testing.T) {
 	t.Parallel()
 	now := time.Now()

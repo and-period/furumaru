@@ -4,7 +4,7 @@ import dayjs, { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
-import { AdminRole, DiscountType, type Promotion, type UpdatePromotionRequest } from '~/types/api'
+import { AdminRole, DiscountType, PromotionStatus, type Promotion, type UpdatePromotionRequest } from '~/types/api'
 import type { PromotionTime } from '~/types/props'
 import { TimeDataValidationRules, UpdatePromotionValidationRules } from '~/types/validations'
 
@@ -49,9 +49,12 @@ const props = defineProps({
       title: '',
       description: '',
       public: false,
+      status: PromotionStatus.UNKNOWN,
       discountType: DiscountType.AMOUNT,
       discountRate: 0,
       code: '',
+      usedCount: 0,
+      usedAmount: 0,
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,

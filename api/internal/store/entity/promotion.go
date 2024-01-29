@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/shopspring/decimal"
 )
@@ -163,6 +164,12 @@ func (p *Promotion) Validate() error {
 		p.DiscountRate = 0
 	}
 	return nil
+}
+
+func (ps Promotions) IDs() []string {
+	return set.UniqBy(ps, func(p *Promotion) string {
+		return p.ID
+	})
 }
 
 func (ps Promotions) Fill(now time.Time) {

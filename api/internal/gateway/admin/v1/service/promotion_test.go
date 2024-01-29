@@ -176,6 +176,7 @@ func TestPromotion(t *testing.T) {
 	tests := []struct {
 		name      string
 		promotion *entity.Promotion
+		aggregate *entity.AggregatedOrderPromotion
 		expect    *Promotion
 	}{
 		{
@@ -196,6 +197,11 @@ func TestPromotion(t *testing.T) {
 				CreatedAt:    now,
 				UpdatedAt:    now,
 			},
+			aggregate: &entity.AggregatedOrderPromotion{
+				PromotionID:   "promotion-id",
+				OrderCount:    2,
+				DiscountTotal: 1000,
+			},
 			expect: &Promotion{
 				Promotion: response.Promotion{
 					ID:           "promotion-id",
@@ -207,6 +213,8 @@ func TestPromotion(t *testing.T) {
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
+					UsedCount:    2,
+					UsedAmount:   1000,
 					StartAt:      1640962800,
 					EndAt:        1643641200,
 					CreatedAt:    1640962800,
@@ -219,7 +227,7 @@ func TestPromotion(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewPromotion(tt.promotion))
+			assert.Equal(t, tt.expect, NewPromotion(tt.promotion, tt.aggregate))
 		})
 	}
 }
@@ -244,6 +252,8 @@ func TestPromotion_Response(t *testing.T) {
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
+					UsedCount:    2,
+					UsedAmount:   1000,
 					StartAt:      1640962800,
 					EndAt:        1643641200,
 					CreatedAt:    1640962800,
@@ -260,6 +270,8 @@ func TestPromotion_Response(t *testing.T) {
 				DiscountType: DiscountTypeFreeShipping.Response(),
 				DiscountRate: 0,
 				Code:         "code0001",
+				UsedCount:    2,
+				UsedAmount:   1000,
 				StartAt:      1640962800,
 				EndAt:        1643641200,
 				CreatedAt:    1640962800,
@@ -287,6 +299,7 @@ func TestPromotions(t *testing.T) {
 	tests := []struct {
 		name       string
 		promotions entity.Promotions
+		aggregates map[string]*entity.AggregatedOrderPromotion
 		expect     Promotions
 	}{
 		{
@@ -309,6 +322,13 @@ func TestPromotions(t *testing.T) {
 					UpdatedAt:    now,
 				},
 			},
+			aggregates: map[string]*entity.AggregatedOrderPromotion{
+				"promotion-id": {
+					PromotionID:   "promotion-id",
+					OrderCount:    2,
+					DiscountTotal: 1000,
+				},
+			},
 			expect: Promotions{
 				{
 					Promotion: response.Promotion{
@@ -321,6 +341,8 @@ func TestPromotions(t *testing.T) {
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
 						StartAt:      1640962800,
 						EndAt:        1643641200,
 						CreatedAt:    1640962800,
@@ -334,7 +356,7 @@ func TestPromotions(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewPromotions(tt.promotions))
+			assert.Equal(t, tt.expect, NewPromotions(tt.promotions, tt.aggregates))
 		})
 	}
 }
@@ -360,6 +382,8 @@ func TestPromotions_Map(t *testing.T) {
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
 						StartAt:      1640962800,
 						EndAt:        1643641200,
 						CreatedAt:    1640962800,
@@ -379,6 +403,8 @@ func TestPromotions_Map(t *testing.T) {
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
 						StartAt:      1640962800,
 						EndAt:        1643641200,
 						CreatedAt:    1640962800,
@@ -418,6 +444,8 @@ func TestPromotions_Response(t *testing.T) {
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
 						StartAt:      1640962800,
 						EndAt:        1643641200,
 						CreatedAt:    1640962800,
@@ -436,6 +464,8 @@ func TestPromotions_Response(t *testing.T) {
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
+					UsedCount:    2,
+					UsedAmount:   1000,
 					StartAt:      1640962800,
 					EndAt:        1643641200,
 					CreatedAt:    1640962800,

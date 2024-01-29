@@ -71,16 +71,17 @@ type Service interface {
 	UpdateLive(ctx context.Context, in *UpdateLiveInput) error                      // 更新
 	DeleteLive(ctx context.Context, in *DeleteLiveInput) error                      // 削除
 	// 注文履歴
-	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)                    // 一覧取得
-	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)                               // １件取得
-	GetOrderByTransactionID(ctx context.Context, in *GetOrderByTransactionIDInput) (*entity.Order, error) // １件取得(決済トランザクションID指定)
-	CaptureOrder(ctx context.Context, in *CaptureOrderInput) error                                        // 注文確定
-	DraftOrder(ctx context.Context, in *DraftOrderInput) error                                            // 注文の下書き保存
-	CompleteOrder(ctx context.Context, in *CompleteOrderInput) error                                      // 注文対応完了
-	CancelOrder(ctx context.Context, in *CancelOrderInput) error                                          // 注文キャンセル
-	RefundOrder(ctx context.Context, in *RefundOrderInput) error                                          // 注文返金依頼
-	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error                    // 注文配送情報更新
-	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)       // 集計結果一覧取得
+	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)                                             // 一覧取得
+	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)                                                        // １件取得
+	GetOrderByTransactionID(ctx context.Context, in *GetOrderByTransactionIDInput) (*entity.Order, error)                          // １件取得(決済トランザクションID指定)
+	CaptureOrder(ctx context.Context, in *CaptureOrderInput) error                                                                 // 注文確定
+	DraftOrder(ctx context.Context, in *DraftOrderInput) error                                                                     // 注文の下書き保存
+	CompleteOrder(ctx context.Context, in *CompleteOrderInput) error                                                               // 注文対応完了
+	CancelOrder(ctx context.Context, in *CancelOrderInput) error                                                                   // 注文キャンセル
+	RefundOrder(ctx context.Context, in *RefundOrderInput) error                                                                   // 注文返金依頼
+	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error                                             // 注文配送情報更新
+	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)                                // 集計結果一覧取得
+	AggregateOrdersByPromotion(ctx context.Context, in *AggregateOrdersByPromotionInput) (entity.AggregatedOrderPromotions, error) // プロモーション利用履歴集計結果一覧取得
 	// 買い物かご
 	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error)                                // 取得
 	CalcCart(ctx context.Context, in *CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) // 購入前の支払い情報取得

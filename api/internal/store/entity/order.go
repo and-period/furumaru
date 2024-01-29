@@ -38,6 +38,15 @@ type AggregatedOrder struct {
 
 type AggregatedOrders []*AggregatedOrder
 
+// AggregatedOrderPromotion - プロモーションコード利用履歴集計情報
+type AggregatedOrderPromotion struct {
+	PromotionID   string // プロモーションID
+	OrderCount    int64  // 利用合計回数
+	DiscountTotal int64  // 割引合計金額
+}
+
+type AggregatedOrderPromotions []*AggregatedOrderPromotion
+
 type NewOrderParams struct {
 	OrderID           string
 	CoordinatorID     string
@@ -209,6 +218,14 @@ func (os AggregatedOrders) Map() map[string]*AggregatedOrder {
 	res := make(map[string]*AggregatedOrder, len(os))
 	for _, o := range os {
 		res[o.UserID] = o
+	}
+	return res
+}
+
+func (os AggregatedOrderPromotions) Map() map[string]*AggregatedOrderPromotion {
+	res := make(map[string]*AggregatedOrderPromotion, len(os))
+	for _, o := range os {
+		res[o.PromotionID] = o
 	}
 	return res
 }

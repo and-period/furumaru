@@ -65,6 +65,21 @@ func (mr *MockServiceMockRecorder) AggregateOrders(ctx, in interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateOrders", reflect.TypeOf((*MockService)(nil).AggregateOrders), ctx, in)
 }
 
+// AggregateOrdersByPromotion mocks base method.
+func (m *MockService) AggregateOrdersByPromotion(ctx context.Context, in *store.AggregateOrdersByPromotionInput) (entity.AggregatedOrderPromotions, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AggregateOrdersByPromotion", ctx, in)
+	ret0, _ := ret[0].(entity.AggregatedOrderPromotions)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AggregateOrdersByPromotion indicates an expected call of AggregateOrdersByPromotion.
+func (mr *MockServiceMockRecorder) AggregateOrdersByPromotion(ctx, in interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateOrdersByPromotion", reflect.TypeOf((*MockService)(nil).AggregateOrdersByPromotion), ctx, in)
+}
+
 // ApproveSchedule mocks base method.
 func (m *MockService) ApproveSchedule(ctx context.Context, in *store.ApproveScheduleInput) error {
 	m.ctrl.T.Helper()

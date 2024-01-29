@@ -312,6 +312,21 @@ func (mr *MockOrderMockRecorder) Aggregate(ctx, params interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Aggregate", reflect.TypeOf((*MockOrder)(nil).Aggregate), ctx, params)
 }
 
+// AggregateByPromotion mocks base method.
+func (m *MockOrder) AggregateByPromotion(ctx context.Context, params *database.AggregateOrdersByPromotionParams) (entity.AggregatedOrderPromotions, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AggregateByPromotion", ctx, params)
+	ret0, _ := ret[0].(entity.AggregatedOrderPromotions)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AggregateByPromotion indicates an expected call of AggregateByPromotion.
+func (mr *MockOrderMockRecorder) AggregateByPromotion(ctx, params interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AggregateByPromotion", reflect.TypeOf((*MockOrder)(nil).AggregateByPromotion), ctx, params)
+}
+
 // Complete mocks base method.
 func (m *MockOrder) Complete(ctx context.Context, orderID string, params *database.CompleteOrderParams) error {
 	m.ctrl.T.Helper()

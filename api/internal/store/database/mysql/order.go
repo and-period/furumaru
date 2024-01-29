@@ -272,6 +272,31 @@ func (o *order) Aggregate(ctx context.Context, params *database.AggregateOrdersP
 	return orders, dbError(err)
 }
 
+func (o *order) AggregateByPromotion(
+	ctx context.Context,
+	params *database.AggregateOrdersByPromotionParams,
+) (entity.AggregatedOrderPromotions, error) {
+	var orders entity.AggregatedOrderPromotions
+
+	fields := []string{
+		"orders.promotion_id AS promotion_id",
+		"COUNT(DISTINCT(orders.id)) AS order_count",
+		"SUM(order_payments.discount) AS discount_total",
+	}
+
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, fields...).
+		Joins("INNER JOIN order_payments ON order_payments.order_id = orders.id").
+		Where("orders.promotion_id IN (?)", params.PromotionIDs).
+		Where("order_payments.status IN (?)", entity.PaymentSuccessStatuses)
+	if params.CoordinatorID != "" {
+		stmt = stmt.Where("orders.coordinator_id = ?", params.CoordinatorID)
+	}
+	stmt = stmt.Group("orders.promotion_id")
+
+	err := stmt.Scan(&orders).Error
+	return orders, dbError(err)
+}
+
 func (o *order) get(ctx context.Context, tx *gorm.DB, orderID string, fields ...string) (*entity.Order, error) {
 	var order *entity.Order
 

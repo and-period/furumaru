@@ -87,7 +87,7 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: '使用回数',
-    key: 'total',
+    key: 'usedCount',
     sortable: false
   },
   {
