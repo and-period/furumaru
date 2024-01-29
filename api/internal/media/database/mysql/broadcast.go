@@ -124,6 +124,7 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *data
 	}
 	if params.UploadBroadcastArchiveParams != nil {
 		updates["archive_url"] = params.ArchiveURL
+		updates["archive_fixed"] = params.ArchiveFixed
 	}
 	if params.Status == entity.BroadcastStatusDisabled {
 		updates["input_url"] = ""

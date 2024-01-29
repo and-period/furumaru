@@ -66,7 +66,8 @@ type InitializeBroadcastParams struct {
 }
 
 type UploadBroadcastArchiveParams struct {
-	ArchiveURL string
+	ArchiveURL   string
+	ArchiveFixed bool
 }
 
 type Error struct {

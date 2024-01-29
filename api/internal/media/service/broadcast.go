@@ -88,7 +88,8 @@ func (s *service) UpdateBroadcastArchive(ctx context.Context, in *media.UpdateBr
 		return fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
 	}
 	params := &database.UpdateBroadcastParams{UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
-		ArchiveURL: in.ArchiveURL,
+		ArchiveURL:   in.ArchiveURL,
+		ArchiveFixed: true, // ライブ配信時のコメントとの対応が取れなくなるため、編集済みにする
 	}}
 	err = s.db.Broadcast.Update(ctx, broadcast.ID, params)
 	return internalError(err)

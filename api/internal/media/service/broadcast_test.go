@@ -266,7 +266,8 @@ func TestUpdateBroadcastArchive(t *testing.T) {
 	}
 	params := &database.UpdateBroadcastParams{
 		UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
-			ArchiveURL: "http://example.com/archive.mp4",
+			ArchiveURL:   "http://example.com/archive.mp4",
+			ArchiveFixed: true,
 		},
 	}
 	tests := []struct {
