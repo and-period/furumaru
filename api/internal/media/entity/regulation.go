@@ -50,12 +50,12 @@ type Regulation struct {
 var (
 	// ライブ配信関連
 	BroadcastArchiveRegulation = &Regulation{
-		MaxSize: 2 << 30, // 2GB
+		MaxSize: 3 << 30, // 3GB
 		Formats: set.New("video/mp4"),
 		dir:     BroadcastArchiveMP4Path,
 	}
 	BroadcastLiveMP4Regulation = &Regulation{
-		MaxSize: 2 << 30, // 2GB
+		MaxSize: 3 << 30, // 3GB
 		Formats: set.New("video/mp4"),
 		dir:     BroadcastLiveMP4Path,
 	}
