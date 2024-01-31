@@ -384,6 +384,58 @@ func TestUsers_IDs(t *testing.T) {
 	}
 }
 
+func TestUsers_Map(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		users  Users
+		expect map[string]*User
+	}{
+		{
+			name: "success",
+			users: Users{
+				{
+					ID:         "user-id01",
+					Registered: true,
+					Member: Member{
+						UserID: "user-id01",
+					},
+				},
+				{
+					ID:         "user-id02",
+					Registered: false,
+					Guest: Guest{
+						UserID: "user-id02",
+					},
+				},
+			},
+			expect: map[string]*User{
+				"user-id01": {
+					ID:         "user-id01",
+					Registered: true,
+					Member: Member{
+						UserID: "user-id01",
+					},
+				},
+				"user-id02": {
+					ID:         "user-id02",
+					Registered: false,
+					Guest: Guest{
+						UserID: "user-id02",
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.users.Map())
+		})
+	}
+}
+
 func TestUsers_GroupByRegistered(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

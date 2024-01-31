@@ -1,6 +1,8 @@
 package media
 
 import (
+	"time"
+
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
@@ -82,4 +84,24 @@ type CreateBroadcastViewerLogInput struct {
 	UserID     string `validate:""`
 	UserAgent  string `validate:""`
 	ClientIP   string `validate:"omitempty,ip_addr"`
+}
+
+type ListBroadcastCommentsInput struct {
+	ScheduleID   string                        `validate:"required"`
+	CreatedAtGte time.Time                     `validate:""`
+	CreatedAtLt  time.Time                     `validate:""`
+	Limit        int64                         `validate:"max=200"`
+	NextToken    string                        `validate:""`
+	Orders       []*ListBroadcastCommentsOrder `validate:"dive,required"`
+}
+
+type ListBroadcastCommentsOrder struct {
+	Key        entity.BroadcastCommentOrderBy `validate:"required"`
+	OrderByASC bool                           `validate:""`
+}
+
+type CreateBroadcastCommentInput struct {
+	ScheduleID string `validate:"required"`
+	UserID     string `validate:"required"`
+	Content    string `validate:"required,max=200"`
 }

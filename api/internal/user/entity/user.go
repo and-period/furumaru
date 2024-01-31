@@ -130,6 +130,14 @@ func (us Users) IDs() []string {
 	return res
 }
 
+func (us Users) Map() map[string]*User {
+	res := make(map[string]*User, len(us))
+	for _, u := range us {
+		res[u.ID] = u
+	}
+	return res
+}
+
 func (us Users) GroupByRegistered() map[bool]Users {
 	res := map[bool]Users{
 		true:  make(Users, 0, len(us)),

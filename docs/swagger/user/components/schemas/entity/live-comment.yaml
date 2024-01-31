@@ -1,0 +1,36 @@
+liveComment:
+  type: object
+  properties:
+    userId:
+      type: string
+      description: ユーザーID
+    username:
+      type: string
+      description: ユーザー名
+    accountId:
+      type: string
+      description: アカウントID
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    comment:
+      type: string
+      description: コメント
+    publishedAt:
+      type: integer
+      format: int64
+      description: 投稿日時
+  required:
+  - userId
+  - username
+  - accountId
+  - thumbnailUrl
+  - comment
+  - publishedAt
+  example:
+    userId: 'kSByoE6FetnPs5Byk3a9Zx'
+    username: 'ふるマル 太郎'
+    accountId: 'account-id'
+    thumbnailurl: 'http://example.com/thumbnail.png'
+    comment: 'こんにちは'
+    publishedAt: 1640962800

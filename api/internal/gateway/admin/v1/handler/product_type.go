@@ -90,7 +90,7 @@ func (h *handler) newProductTypeOrders(ctx *gin.Context) ([]*store.ListProductTy
 	for i, p := range params {
 		key, ok := types[p.Key]
 		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderKey)
 		}
 		res[i] = &store.ListProductTypesOrder{
 			Key:        key,

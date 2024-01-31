@@ -30,8 +30,9 @@ const (
 )
 
 var (
-	errNotFoundCart  = errors.New("handler: not found cart")
-	errNotFoundOrder = errors.New("handler: not found order")
+	errNotFoundCart    = errors.New("handler: not found cart")
+	errNotFoundOrder   = errors.New("handler: not found order")
+	errInvalidOrderKey = errors.New("handler: invalid order key")
 )
 
 /**
@@ -148,6 +149,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.cartRoutes(v1)
 	h.checkoutRoutes(v1)
 	h.orderRoutes(v1)
+	h.liveCommentRoutes(v1)
 }
 
 /**

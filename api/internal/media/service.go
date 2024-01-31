@@ -25,6 +25,9 @@ type Service interface {
 	DeactivateBroadcastStaticImage(ctx context.Context, in *DeactivateBroadcastStaticImageInput) error               // ライブ配信のふた絵を無効化
 	// ライブ視聴履歴
 	CreateBroadcastViewerLog(ctx context.Context, in *CreateBroadcastViewerLogInput) error // ライブ配信視聴履歴登録
+	// ライブコメント
+	ListBroadcastComments(ctx context.Context, in *ListBroadcastCommentsInput) (entity.BroadcastComments, string, error) // ライブコメント一覧取得
+	CreateBroadcastComment(ctx context.Context, in *CreateBroadcastCommentInput) (*entity.BroadcastComment, error)       // ライブコメント登録
 	// コーディネータ
 	GetCoordinatorThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (string, error)      // サムネイル画像アップロード用URLの生成
 	ResizeCoordinatorThumbnail(ctx context.Context, in *ResizeFileInput) error                             // サムネイル画像リサイズ

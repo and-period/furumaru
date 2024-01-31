@@ -15,17 +15,32 @@
 
 import * as runtime from '../runtime';
 import type {
+  CreateLiveCommentRequest,
   ErrorResponse,
+  LiveCommentsResponse,
   ScheduleResponse,
 } from '../models/index';
 import {
+    CreateLiveCommentRequestFromJSON,
+    CreateLiveCommentRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    LiveCommentsResponseFromJSON,
+    LiveCommentsResponseToJSON,
     ScheduleResponseFromJSON,
     ScheduleResponseToJSON,
 } from '../models/index';
 
+export interface V1CreateLiveCommentRequest {
+    scheduleId: string;
+    body: CreateLiveCommentRequest;
+}
+
 export interface V1GetScheduleRequest {
+    scheduleId: string;
+}
+
+export interface V1ListLiveCommentsRequest {
     scheduleId: string;
 }
 
@@ -33,6 +48,50 @@ export interface V1GetScheduleRequest {
  * 
  */
 export class ScheduleApi extends runtime.BaseAPI {
+
+    /**
+     * ライブ配信コメント投稿
+     */
+    async v1CreateLiveCommentRaw(requestParameters: V1CreateLiveCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.scheduleId === null || requestParameters.scheduleId === undefined) {
+            throw new runtime.RequiredError('scheduleId','Required parameter requestParameters.scheduleId was null or undefined when calling v1CreateLiveComment.');
+        }
+
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateLiveComment.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters.scheduleId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * ライブ配信コメント投稿
+     */
+    async v1CreateLiveComment(requestParameters: V1CreateLiveCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CreateLiveCommentRaw(requestParameters, initOverrides);
+    }
 
     /**
      * マルシェ開催スケジュール取得
@@ -61,6 +120,44 @@ export class ScheduleApi extends runtime.BaseAPI {
      */
     async v1GetSchedule(requestParameters: V1GetScheduleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ScheduleResponse> {
         const response = await this.v1GetScheduleRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * ライブ配信コメント取得
+     */
+    async v1ListLiveCommentsRaw(requestParameters: V1ListLiveCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveCommentsResponse>> {
+        if (requestParameters.scheduleId === null || requestParameters.scheduleId === undefined) {
+            throw new runtime.RequiredError('scheduleId','Required parameter requestParameters.scheduleId was null or undefined when calling v1ListLiveComments.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters.scheduleId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => LiveCommentsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * ライブ配信コメント取得
+     */
+    async v1ListLiveComments(requestParameters: V1ListLiveCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveCommentsResponse> {
+        const response = await this.v1ListLiveCommentsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

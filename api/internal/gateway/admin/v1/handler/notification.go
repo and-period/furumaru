@@ -163,7 +163,7 @@ func (h *handler) newNotificationOrders(ctx *gin.Context) ([]*messenger.ListNoti
 	for i, p := range params {
 		key, ok := notifications[p.Key]
 		if !ok {
-			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderkey)
+			return nil, fmt.Errorf("handler: unknown order key. key=%s: %w", p.Key, errInvalidOrderKey)
 		}
 		res[i] = &messenger.ListNotificationsOrder{
 			Key:        key,

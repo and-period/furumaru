@@ -26,7 +26,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var errInvalidOrderkey = errors.New("handler: invalid order key")
+var errInvalidOrderKey = errors.New("handler: invalid order key")
 
 /**
  * ###############################################
