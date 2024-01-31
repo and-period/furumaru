@@ -22,6 +22,8 @@ const formDataValue = computed({
   set: (val: CreateAddressRequest) => emits('update:formData', val),
 })
 
+const formRef = ref<HTMLFormElement | null>(null)
+
 const handleClickSearchAddressButton = () => {
   emits('click:searchAddressButton', props.formData.postalCode)
 }
@@ -29,11 +31,14 @@ const handleClickSearchAddressButton = () => {
 const handleSubmit = () => {
   emits('submit')
 }
+
+defineExpose({ formRef })
 </script>
 
 <template>
   <form
     :id="formId"
+    ref="formRef"
     class="flex w-full flex-col gap-4"
     @submit.prevent="handleSubmit"
   >
