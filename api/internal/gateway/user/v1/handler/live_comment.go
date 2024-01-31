@@ -17,8 +17,8 @@ import (
 func (h *handler) liveCommentRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/comments")
 
-	r.GET("", h.ListLiveComments, h.createBroadcastViewerLog)
-	r.POST("", h.CreateLiveComment, h.authentication, h.createBroadcastViewerLog)
+	r.GET("", h.createBroadcastViewerLog, h.ListLiveComments)
+	r.POST("", h.authentication, h.createBroadcastViewerLog, h.CreateLiveComment)
 }
 
 func (h *handler) ListLiveComments(ctx *gin.Context) {
