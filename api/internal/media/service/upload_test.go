@@ -2,1599 +2,696 @@ package service
 
 import (
 	"context"
-	"net/url"
+	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-func TestUploadCoordinatorThumbnail(t *testing.T) {
+func TestGetUploadEvent(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.CoordinatorThumbnailPath, "calmato.png"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
+	now := time.Now()
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
+		input     *media.GetUploadEventInput
+		expect    *entity.UploadEvent
 		expectErr error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				mocks.cache.EXPECT().
+					Get(ctx, &entity.UploadEvent{Key: "dir/media.png"}).
+					DoAndReturn(func(ctx context.Context, event *entity.UploadEvent) error {
+						event.Status = entity.UploadStatusSucceeded
+						event.FileGroup = "dir"
+						event.FileType = "image/png"
+						event.UploadURL = "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test"
+						event.ReferenceURL = "http://example.s3.ap-northeast-1.amazonaws.com/dir/media.png"
+						event.ExpiredAt = now.Add(12 * time.Hour)
+						event.CreatedAt = now.Add(-2 * time.Hour)
+						event.UpdatedAt = now.Add(-2 * time.Hour)
+						return nil
+					})
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GetUploadEventInput{
+				UploadURL: "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
+			expect: &entity.UploadEvent{
+				Key:          "dir/media.png",
+				Status:       entity.UploadStatusSucceeded,
+				FileGroup:    "dir",
+				FileType:     "image/png",
+				UploadURL:    "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test",
+				ReferenceURL: "http://example.s3.ap-northeast-1.amazonaws.com/dir/media.png",
+				ExpiredAt:    now.Add(12 * time.Hour),
+				CreatedAt:    now.Add(-2 * time.Hour),
+				UpdatedAt:    now.Add(-2 * time.Hour),
 			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
 			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
+			input:     &media.GetUploadEventInput{},
+			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
+			name: "failed to get upload event",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
+				mocks.cache.EXPECT().Get(ctx, &entity.UploadEvent{Key: "dir/media.png"}).Return(assert.AnError)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GetUploadEventInput{
+				UploadURL: "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test",
 			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
+			expect:    nil,
 			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadCoordinatorThumbnail(ctx, tt.input)
+			actual, err := service.GetUploadEvent(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }
 
-func TestUploadCoordinatorHeader(t *testing.T) {
+func TestGetBroadcastArchiveMP4UploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.CoordinatorHeaderPath, "calmato.png"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
+	broadcast := &entity.Broadcast{
+		ID:         "broadcast-id",
+		ScheduleID: "schdule-id",
+		Status:     entity.BroadcastStatusDisabled,
+	}
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateBroadcastArchiveMP4UploadInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				path := fmt.Sprintf(entity.BroadcastArchiveMP4Path, "schedule-id")
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				generateUploadURLMocks(mocks, t, path, "mp4", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateBroadcastArchiveMP4UploadInput{
+				GenerateUploadURLInput: media.GenerateUploadURLInput{
+					FileType: "video/mp4",
+				},
+				ScheduleID: "schedule-id",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
+			expect: nil,
 		},
 		{
-			name: "success to download permanent file",
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &media.GenerateBroadcastArchiveMP4UploadInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
 			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
+			input: &media.GenerateBroadcastArchiveMP4UploadInput{
+				GenerateUploadURLInput: media.GenerateUploadURLInput{
+					FileType: "video/mp4",
+				},
+				ScheduleID: "schedule-id",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
+			expect: exception.ErrInternal,
 		},
 		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
+			name: "failed precondition",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateBroadcastArchiveMP4UploadInput{
+				GenerateUploadURLInput: media.GenerateUploadURLInput{
+					FileType: "video/mp4",
+				},
+				ScheduleID: "schedule-id",
 			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: exception.ErrFailedPrecondition,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadCoordinatorHeader(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetBroadcastArchiveMP4UploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadCoordinatorPromotionVideo(t *testing.T) {
+func TestGetBroadcastLiveMP4UploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.CoordinatorPromotionVideoPath, "calmato.mp4"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.BroadcastLiveMP4Path, "mp4", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadCoordinatorPromotionVideo(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetBroadcastLiveMP4UploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadCoordinatorBonusVideo(t *testing.T) {
+func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.CoordinatorBonusVideoPath, "calmato.mp4"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.CoordinatorThumbnailPath, "png", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadCoordinatorBonusVideo(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetCoordinatorThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadProducerThumbnail(t *testing.T) {
+func TestGetCoordinatorHeaderUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.ProducerThumbnailPath, "calmato.png"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.CoordinatorHeaderPath, "png", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadProducerThumbnail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetCoordinatorHeaderUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadProducerHeader(t *testing.T) {
+func TestGetCoordinatorPromotionVideoUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.ProducerHeaderPath, "calmato.png"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.CoordinatorPromotionVideoPath, "mp4", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadProducerHeader(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetCoordinatorPromotionVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadProducerPromotionVideo(t *testing.T) {
+func TestGetCoordinatorBonusVideoUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.ProducerPromotionVideoPath, "calmato.mp4"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.CoordinatorBonusVideoPath, "mp4", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadProducerPromotionVideo(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetCoordinatorBonusVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadProducerBonusVideo(t *testing.T) {
+func TestGetProducerThumbnailUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.ProducerBonusVideoPath, "calmato.mp4"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.ProducerThumbnailPath, "png", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadProducerBonusVideo(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetProducerThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadUserThumbnail(t *testing.T) {
+func TestGetProducerHeaderUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.UserThumbnailPath, "calmato.png"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.ProducerHeaderPath, "png", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadUserThumbnail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetProducerHeaderUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadProductMedia(t *testing.T) {
+func TestGetProducerPromotionVideoUploadURL(t *testing.T) {
 	t.Parallel()
-	// 画像関連
-	image, _ := testImageFile(t)
-	ipath := strings.Join([]string{entity.ProductMediaImagePath, "calmato.png"}, "/")
-	iturl, err := url.Parse(strings.Join([]string{tmpURL, ipath}, "/"))
-	require.NoError(t, err)
-	itpath := strings.TrimPrefix(iturl.Path, "/")
-	isurl, err := url.Parse(strings.Join([]string{storageURL, ipath}, "/"))
-	require.NoError(t, err)
-	// 映像関連
-	video, _ := testVideoFile(t)
-	vpath := strings.Join([]string{entity.ProductMediaVideoPath, "calmato.png"}, "/")
-	vturl, err := url.Parse(strings.Join([]string{tmpURL, vpath}, "/"))
-	require.NoError(t, err)
-	vtpath := strings.TrimPrefix(vturl.Path, "/")
-	vsurl, err := url.Parse(strings.Join([]string{storageURL, vpath}, "/"))
-	require.NoError(t, err)
-	// その他
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, ipath}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent image file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, iturl.String()).Return(image, nil)
-				mocks.storage.EXPECT().Upload(ctx, itpath, gomock.Any()).Return(isurl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.ProducerPromotionVideoPath, "mp4", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: iturl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
 			},
-			expect:    isurl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent image file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, isurl.String()).Return(image, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: isurl.String(),
-			},
-			expect:    isurl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to upload permanent video file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, vturl.String()).Return(video, nil)
-				mocks.storage.EXPECT().Upload(ctx, vtpath, gomock.Any()).Return(vsurl.String(), nil)
-			},
-			input: &media.UploadFileInput{
-				URL: vturl.String(),
-			},
-			expect:    vsurl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent video file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, vsurl.String()).Return(video, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: vsurl.String(),
-			},
-			expect:    vsurl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, iturl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: iturl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, iturl.String()).Return(image, nil)
-				mocks.storage.EXPECT().Upload(ctx, itpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: iturl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, isurl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: isurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadProductMedia(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetProducerPromotionVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadProductTypeIcon(t *testing.T) {
+func TestGetProducerBonusVideoUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.ProductTypeIconPath, "calmato.png"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.ProducerBonusVideoPath, "mp4", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadProductTypeIcon(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetProducerBonusVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadScheduleThumbnail(t *testing.T) {
+func TestGetUserThumbnailUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.ScheduleThumbnailPath, "calmato.png"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.UserThumbnailPath, "png", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadScheduleThumbnail(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetUserThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadScheduleImage(t *testing.T) {
+func TestGetProductMediaImageUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.ScheduleImagePath, "calmato.png"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.ProductMediaImagePath, "png", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadScheduleImage(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
+			_, err := service.GetProductMediaImageUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
 }
 
-func TestUploadScheduleOpeningVideo(t *testing.T) {
+func TestGetProductMediaVideoUploadURL(t *testing.T) {
 	t.Parallel()
-	file, _ := testImageFile(t)
-	path := strings.Join([]string{entity.ScheduleOpeningVideoPath, "calmato.mp4"}, "/")
-	turl, err := url.Parse(strings.Join([]string{tmpURL, path}, "/"))
-	require.NoError(t, err)
-	tpath := strings.TrimPrefix(turl.Path, "/")
-	surl, err := url.Parse(strings.Join([]string{storageURL, path}, "/"))
-	require.NoError(t, err)
-	uurl, err := url.Parse(strings.Join([]string{unknownURL, path}, "/"))
-	require.NoError(t, err)
 	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *media.UploadFileInput
-		expect    string
-		expectErr error
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
 	}{
 		{
-			name: "success to upload permanent file",
+			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return(surl.String(), nil)
+				generateUploadURLMocks(mocks, t, entity.ProductMediaVideoPath, "mp4", nil)
 			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
 			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name: "success to download permanent file",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(file, nil)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    surl.String(),
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &media.UploadFileInput{},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "invalid url",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: unknownURL,
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name:  "unknown storage host",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.UploadFileInput{
-				URL: uurl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to download temporary file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to upload permanent file when upload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.tmp.EXPECT().Download(ctx, turl.String()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(ctx, tpath, gomock.Any()).Return("", assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: turl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
-		},
-		{
-			name: "failed to download permanent file when download",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Download(ctx, surl.String()).Return(nil, assert.AnError)
-			},
-			input: &media.UploadFileInput{
-				URL: surl.String(),
-			},
-			expect:    "",
-			expectErr: exception.ErrInternal,
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.UploadScheduleOpeningVideo(ctx, tt.input)
+			_, err := service.GetProductMediaVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetProductTypeIconUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.ProductTypeIconPath, "png", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetProductTypeIconUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetScheduleThumbnailUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.ScheduleThumbnailPath, "png", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetScheduleThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetScheduleImageUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.ScheduleImagePath, "png", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetScheduleImageUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetScheduleOpeningVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.ScheduleOpeningVideoPath, "mp4", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetScheduleOpeningVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func generateUploadURLMocks(mocks *mocks, t *testing.T, path, ext string, err error) {
+	url := "http://example.com/media." + ext
+	mocks.tmp.EXPECT().
+		GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).
+		DoAndReturn(func(key string, expiresIn time.Duration) (string, error) {
+			assert.True(t, strings.HasPrefix(key, path), key)
+			assert.True(t, strings.HasSuffix(key, ext), key)
+			return url, nil
+		})
+	mocks.cache.EXPECT().Insert(gomock.Any(), gomock.Any()).
+		DoAndReturn(func(ctx context.Context, event *entity.UploadEvent) error {
+			assert.Contains(t, event.FileType, ext)
+			assert.Equal(t, event.UploadURL, url)
+			return err
+		})
+}
+
+func TestGenerateUploadURL(t *testing.T) {
+	tests := []struct {
+		name       string
+		setup      func(ctx context.Context, mocks *mocks)
+		input      *media.GenerateUploadURLInput
+		regulation *entity.Regulation
+		expect     string
+		expectErr  error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("http://example.com", nil)
+				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "http://example.com",
+			expectErr:  nil,
+		},
+		{
+			name:       "invalid argument",
+			setup:      func(ctx context.Context, mocks *mocks) {},
+			input:      &media.GenerateUploadURLInput{},
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "",
+			expectErr:  exception.ErrInvalidArgument,
+		},
+		{
+			name:  "failed to get object key",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "",
+			expectErr:  exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to generate presign upload uri",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("", assert.AnError)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "",
+			expectErr:  exception.ErrInternal,
+		},
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.tmp.EXPECT().GeneratePresignUploadURI(gomock.Any(), 10*time.Minute).Return("http://example.com", nil)
+				mocks.cache.EXPECT().Insert(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			regulation: entity.CoordinatorThumbnailRegulation,
+			expect:     "",
+			expectErr:  exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.generateUploadURL(ctx, tt.input, tt.regulation)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
 		}))

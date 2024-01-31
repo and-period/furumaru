@@ -16,12 +16,9 @@ post:
   requestBody:
     required: true
     content:
-      multipart/form-data:
+      application/json:
         schema:
           $ref: './../../../../../openapi.yaml#/components/schemas/v1ActivateBroadcastMP4Request'
-        encoding:
-          thumbnail:
-            contentType: video/mp4
   responses:
     204:
       description: 成功

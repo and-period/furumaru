@@ -11,7 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -302,30 +301,13 @@ func (h *handler) CreateProduct(ctx *gin.Context) {
 		return
 	}
 
-	eg, ectx = errgroup.WithContext(ctx)
 	productMedia := make([]*store.CreateProductMedia, len(req.Media))
 	for i := range req.Media {
-		i := i
-		eg.Go(func() error {
-			in := &media.UploadFileInput{
-				URL: req.Media[i].URL,
-			}
-			url, err := h.media.UploadProductMedia(ectx, in)
-			if err != nil {
-				return err
-			}
-			productMedia[i] = &store.CreateProductMedia{
-				URL:         url,
-				IsThumbnail: req.Media[i].IsThumbnail,
-			}
-			return nil
-		})
+		productMedia[i] = &store.CreateProductMedia{
+			URL:         req.Media[i].URL,
+			IsThumbnail: req.Media[i].IsThumbnail,
+		}
 	}
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.CreateProductInput{
 		CoordinatorID:        req.CoordinatorID,
@@ -408,30 +390,13 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 
-	eg, ectx = errgroup.WithContext(ctx)
 	productMedia := make([]*store.UpdateProductMedia, len(req.Media))
 	for i := range req.Media {
-		i := i
-		eg.Go(func() error {
-			in := &media.UploadFileInput{
-				URL: req.Media[i].URL,
-			}
-			url, err := h.media.UploadProductMedia(ectx, in)
-			if err != nil {
-				return err
-			}
-			productMedia[i] = &store.UpdateProductMedia{
-				URL:         url,
-				IsThumbnail: req.Media[i].IsThumbnail,
-			}
-			return nil
-		})
+		productMedia[i] = &store.UpdateProductMedia{
+			URL:         req.Media[i].URL,
+			IsThumbnail: req.Media[i].IsThumbnail,
+		}
 	}
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
 	weight, weightUnit := service.NewProductWeightFromRequest(req.Weight)
 	in := &store.UpdateProductInput{
 		ProductID:            util.GetParam(ctx, "productId"),

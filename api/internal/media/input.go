@@ -1,19 +1,20 @@
 package media
 
 import (
-	"io"
-	"mime/multipart"
-
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
-type GenerateFileInput struct {
-	File   io.Reader             `validate:"required"`
-	Header *multipart.FileHeader `validate:"required"`
+type GenerateUploadURLInput struct {
+	FileType string `validate:"required"`
 }
 
-type UploadFileInput struct {
-	URL string `validate:"required,url"`
+type GenerateBroadcastArchiveMP4UploadInput struct {
+	GenerateUploadURLInput
+	ScheduleID string `validate:"required"`
+}
+
+type GetUploadEventInput struct {
+	UploadURL string `validate:"required,url"`
 }
 
 type ResizeFileInput struct {
@@ -46,9 +47,8 @@ type CreateBroadcastInput struct {
 }
 
 type UpdateBroadcastArchiveInput struct {
-	ScheduleID string                `validate:"required"`
-	File       io.Reader             `validate:"required"`
-	Header     *multipart.FileHeader `validate:"required"`
+	ScheduleID string `validate:"required"`
+	ArchiveURL string `validate:"required,url"`
 }
 
 type PauseBroadcastInput struct {
@@ -64,9 +64,8 @@ type ActivateBroadcastRTMPInput struct {
 }
 
 type ActivateBroadcastMP4Input struct {
-	ScheduleID string                `validate:"required"`
-	File       io.Reader             `validate:"required"`
-	Header     *multipart.FileHeader `validate:"required"`
+	ScheduleID string `validate:"required"`
+	InputURL   string `validate:"required,url"`
 }
 
 type ActivateBroadcastStaticImageInput struct {
@@ -75,4 +74,12 @@ type ActivateBroadcastStaticImageInput struct {
 
 type DeactivateBroadcastStaticImageInput struct {
 	ScheduleID string `validate:"required"`
+}
+
+type CreateBroadcastViewerLogInput struct {
+	ScheduleID string `validate:"required"`
+	SessionID  string `validate:"required"`
+	UserID     string `validate:""`
+	UserAgent  string `validate:""`
+	ClientIP   string `validate:"omitempty,ip_addr"`
 }

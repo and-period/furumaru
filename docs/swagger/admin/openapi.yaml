@@ -218,6 +218,8 @@ paths:
   /v1/postal-codes/{postalCode}:
     $ref: './paths/v1/postal-codes/_postalCode.yaml'
   # Upload
+  /v1/upload/state:
+    $ref: './paths/v1/upload/state.yaml'
   /v1/upload/coordinators/header:
     $ref: './paths/v1/upload/coordinators/header.yaml'
   /v1/upload/coordinators/thumbnail:
@@ -246,6 +248,10 @@ paths:
     $ref: './paths/v1/upload/schedules/image.yaml'
   /v1/upload/schedules/opening-video:
     $ref: './paths/v1/upload/schedules/opening-video.yaml'
+  /v1/upload/schedules/{scheduleId}/broadcasts/archive:
+    $ref: './paths/v1/upload/schedules/_scheduleId/broadcasts/archive.yaml'
+  /v1/upload/schedules/-/broadcasts/live:
+    $ref: './paths/v1/upload/schedules/-/broadcasts/live.yaml'
 components:
   securitySchemes:
     bearerAuth:
@@ -301,10 +307,14 @@ components:
       $ref: './components/schemas/codes/product.yaml#/deliveryType'
     storageMethodType:
       $ref: './components/schemas/codes/product.yaml#/storageMethodType'
+    promotionStatus:
+      $ref: './components/schemas/codes/promotion.yaml#/promotionStatus'
     discountType:
       $ref: './components/schemas/codes/promotion.yaml#/discountType'
     scheduleStatus:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
+    uploadStatus:
+      $ref: './components/schemas/codes/upload.yaml#/uploadStatus'
     userStatus:
       $ref: './components/schemas/codes/user.yaml#/userStatus'
     errorResponse:
@@ -453,6 +463,8 @@ components:
       $ref: './components/schemas/v1/order.request.yaml#/refundOrderRequest'
     v1UpdateOrderFulfillmentRequest:
       $ref: './components/schemas/v1/order.request.yaml#/updateOrderFulfillmentRequest'
+    v1GetUploadUrlRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/getUploadUrlRequest'
     v1UploadCoordinatorThumbnailRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
     v1UploadCoordinatorHeaderRequest:
@@ -564,6 +576,10 @@ components:
       $ref: './components/schemas/v1/user.response.yaml#/userOrdersResponse'
     v1PostalCodeResponse:
       $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
+    v1UploadUrlResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadUrlResponse'
+    v1UploadStateResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadStateResponse'
     v1UploadImageResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
     v1UploadVideoResponse:

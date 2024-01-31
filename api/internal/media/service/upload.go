@@ -5,112 +5,159 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
-func (s *service) UploadCoordinatorThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.CoordinatorThumbnailPath)
+func (s *service) GetUploadEvent(ctx context.Context, in *media.GetUploadEventInput) (*entity.UploadEvent, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	u, err := url.Parse(in.UploadURL)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to parse url: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	event := &entity.UploadEvent{Key: strings.TrimPrefix(u.Path, "/")}
+	if err := s.cache.Get(ctx, event); err != nil {
+		return nil, internalError(err)
+	}
+	return event, nil
 }
 
-func (s *service) UploadCoordinatorHeader(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.CoordinatorHeaderPath)
-}
-
-func (s *service) UploadCoordinatorPromotionVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.CoordinatorPromotionVideoPath)
-}
-
-func (s *service) UploadCoordinatorBonusVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.CoordinatorBonusVideoPath)
-}
-
-func (s *service) UploadProducerThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ProducerThumbnailPath)
-}
-
-func (s *service) UploadProducerHeader(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ProducerHeaderPath)
-}
-
-func (s *service) UploadProducerPromotionVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ProducerPromotionVideoPath)
-}
-
-func (s *service) UploadProducerBonusVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ProducerBonusVideoPath)
-}
-
-func (s *service) UploadUserThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.UserThumbnailPath)
-}
-
-func (s *service) UploadProductMedia(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ProductMediaPath)
-}
-
-func (s *service) UploadProductTypeIcon(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ProductTypeIconPath)
-}
-
-func (s *service) UploadScheduleThumbnail(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ScheduleThumbnailPath)
-}
-
-func (s *service) UploadScheduleImage(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ScheduleImagePath)
-}
-
-func (s *service) UploadScheduleOpeningVideo(ctx context.Context, in *media.UploadFileInput) (string, error) {
-	return s.uploadFile(ctx, in, entity.ScheduleOpeningVideoPath)
-}
-
-func (s *service) uploadFile(ctx context.Context, in *media.UploadFileInput, prefix string) (string, error) {
+/**
+ * ライブ配信関連
+ */
+func (s *service) GetBroadcastArchiveMP4UploadURL(ctx context.Context, in *media.GenerateBroadcastArchiveMP4UploadInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	u, err := s.parseURL(in, prefix)
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
 	if err != nil {
-		return "", fmt.Errorf("%s: %w", err.Error(), exception.ErrInvalidArgument)
+		return "", internalError(err)
 	}
-	var url string
-	switch u.Host {
-	case s.tmpURL().Host:
-		url, err = s.uploadPermanentFile(ctx, u)
-	case s.storageURL().Host:
-		url, err = s.downloadFile(ctx, u)
-	default:
-		return "", fmt.Errorf("service: unknown storage host. host=%s: %w", u.Host, exception.ErrInvalidArgument)
+	if broadcast.Status != entity.BroadcastStatusDisabled {
+		return "", fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
 	}
-	return url, internalError(err)
+	return s.generateUploadURL(ctx, &in.GenerateUploadURLInput, entity.BroadcastArchiveRegulation, in.ScheduleID)
 }
 
-func (s *service) parseURL(in *media.UploadFileInput, prefix string) (*url.URL, error) {
-	u, err := url.Parse(in.URL)
-	if err != nil {
-		return nil, fmt.Errorf("%w: %s", errParseURL, err.Error())
-	}
-	if !strings.Contains(u.Path, prefix) {
-		return nil, fmt.Errorf("%w. url=%s", errInvalidURL, in.URL)
-	}
-	return u, nil
+func (s *service) GetBroadcastLiveMP4UploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.BroadcastLiveMP4Regulation)
 }
 
-func (s *service) uploadPermanentFile(ctx context.Context, u *url.URL) (string, error) {
-	file, err := s.tmp.Download(ctx, u.String())
-	if err != nil {
-		return "", err
-	}
-	path := strings.TrimPrefix(u.Path, "/") // url.URLから取得したPathは / から始まるため
-	return s.storage.Upload(ctx, path, file)
+/**
+ * コーディネータ関連
+ */
+func (s *service) GetCoordinatorThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.CoordinatorThumbnailRegulation)
 }
 
-func (s *service) downloadFile(ctx context.Context, u *url.URL) (string, error) {
-	url := u.String()
-	if _, err := s.storage.Download(ctx, url); err != nil {
-		return "", err
+func (s *service) GetCoordinatorHeaderUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.CoordinatorHeaderRegulation)
+}
+
+func (s *service) GetCoordinatorPromotionVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.CoordinatorPromotionVideoRegulation)
+}
+
+func (s *service) GetCoordinatorBonusVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.CoordinatorBonusVideoRegulation)
+}
+
+/**
+ * 生産者関連
+ */
+func (s *service) GetProducerThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ProducerThumbnailRegulation)
+}
+
+func (s *service) GetProducerHeaderUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ProducerHeaderRegulation)
+}
+
+func (s *service) GetProducerPromotionVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ProducerPromotionVideoRegulation)
+}
+
+func (s *service) GetProducerBonusVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ProducerBonusVideoRegulation)
+}
+
+/**
+ * 購入者関連
+ */
+func (s *service) GetUserThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.UserThumbnailRegulation)
+}
+
+/**
+ * 商品関連
+ */
+func (s *service) GetProductMediaImageUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ProductMediaImageRegulation)
+}
+
+func (s *service) GetProductMediaVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ProductMediaVideoRegulation)
+}
+
+/**
+ * 品目関連
+ */
+func (s *service) GetProductTypeIconUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ProductTypeIconRegulation)
+}
+
+/**
+ * 開始スケジュール関連
+ */
+func (s *service) GetScheduleThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ScheduleThumbnailRegulation)
+}
+
+func (s *service) GetScheduleImageUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ScheduleImageRegulation)
+}
+
+func (s *service) GetScheduleOpeningVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (string, error) {
+	return s.generateUploadURL(ctx, in, entity.ScheduleOpeningVideoRegulation)
+}
+
+/**
+ * private
+ */
+func (s *service) generateUploadURL(
+	ctx context.Context,
+	in *media.GenerateUploadURLInput,
+	reg *entity.Regulation,
+	keyArgs ...interface{},
+) (string, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return "", internalError(err)
+	}
+	key, err := reg.GetObjectKey(in.FileType, keyArgs...)
+	if err != nil {
+		return "", fmt.Errorf("service: failed to get object key: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	const expiresIn = 10 * time.Minute
+	url, err := s.tmp.GeneratePresignUploadURI(key, expiresIn)
+	if err != nil {
+		return "", internalError(err)
+	}
+	params := &entity.UploadEventParams{
+		Key:       key,
+		FileGroup: reg.FileGroup(),
+		FileType:  in.FileType,
+		UploadURL: url,
+		Now:       s.now(),
+		TTL:       s.uploadEventTTL,
+	}
+	event := entity.NewUploadEvent(params)
+	if err := s.cache.Insert(ctx, event); err != nil {
+		return "", internalError(err)
 	}
 	return url, nil
 }

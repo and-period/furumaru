@@ -5,6 +5,17 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
+// PromotionStatus - プロモーションの状態
+type PromotionStatus int32
+
+const (
+	PromotionStatusUnknown  PromotionStatus = 0
+	PromotionStatusPrivate  PromotionStatus = 1 // 非公開
+	PromotionStatusWaiting  PromotionStatus = 2 // 利用開始前
+	PromotionStatusEnabled  PromotionStatus = 3 // 利用可能
+	PromotionStatusFinished PromotionStatus = 4 // 利用終了
+)
+
 // DiscountType - 割引計算方法
 type DiscountType int32
 
@@ -20,6 +31,25 @@ type Promotion struct {
 }
 
 type Promotions []*Promotion
+
+func NewPromotionStatus(typ entity.PromotionStatus) PromotionStatus {
+	switch typ {
+	case entity.PromotionStatusPrivate:
+		return PromotionStatusPrivate
+	case entity.PromotionStatusWaiting:
+		return PromotionStatusWaiting
+	case entity.PromotionStatusEnabled:
+		return PromotionStatusEnabled
+	case entity.PromotionStatusFinished:
+		return PromotionStatusFinished
+	default:
+		return PromotionStatusUnknown
+	}
+}
+
+func (s PromotionStatus) Response() int32 {
+	return int32(s)
+}
 
 func NewDiscountType(typ entity.DiscountType) DiscountType {
 	switch typ {
@@ -51,17 +81,25 @@ func (t DiscountType) Response() int32 {
 	return int32(t)
 }
 
-func NewPromotion(promotion *entity.Promotion) *Promotion {
+func NewPromotion(promotion *entity.Promotion, aggregate *entity.AggregatedOrderPromotion) *Promotion {
+	var usedCount, usedAmount int64
+	if aggregate != nil {
+		usedCount = aggregate.OrderCount
+		usedAmount = aggregate.DiscountTotal
+	}
 	return &Promotion{
 		Promotion: response.Promotion{
 			ID:           promotion.ID,
 			Title:        promotion.Title,
 			Description:  promotion.Description,
+			Status:       NewPromotionStatus(promotion.Status).Response(),
 			Public:       promotion.Public,
 			PublishedAt:  promotion.PublishedAt.Unix(),
 			DiscountType: NewDiscountType(promotion.DiscountType).Response(),
 			DiscountRate: promotion.DiscountRate,
 			Code:         promotion.Code,
+			UsedCount:    usedCount,
+			UsedAmount:   usedAmount,
 			StartAt:      promotion.StartAt.Unix(),
 			EndAt:        promotion.EndAt.Unix(),
 			CreatedAt:    promotion.CreatedAt.Unix(),
@@ -77,10 +115,10 @@ func (p *Promotion) Response() *response.Promotion {
 	return &p.Promotion
 }
 
-func NewPromotions(promotions entity.Promotions) Promotions {
+func NewPromotions(promotions entity.Promotions, aggregates map[string]*entity.AggregatedOrderPromotion) Promotions {
 	res := make(Promotions, len(promotions))
-	for i := range promotions {
-		res[i] = NewPromotion(promotions[i])
+	for i, p := range promotions {
+		res[i] = NewPromotion(promotions[i], aggregates[p.ID])
 	}
 	return res
 }

@@ -4,12 +4,23 @@ import (
 	"errors"
 	"time"
 
-	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/shopspring/decimal"
 )
 
 var errInvalidDiscount = errors.New("entity: invalid discount value")
+
+// PromotionStatus - プロモーションの状態
+type PromotionStatus int32
+
+const (
+	PromotionStatusUnknown  PromotionStatus = 0
+	PromotionStatusPrivate  PromotionStatus = 1 // 非公開
+	PromotionStatusWaiting  PromotionStatus = 2 // 利用開始前
+	PromotionStatusEnabled  PromotionStatus = 3 // 利用可能
+	PromotionStatusFinished PromotionStatus = 4 // 利用終了
+)
 
 // DiscountType - 割引計算方法
 type DiscountType int32
@@ -45,6 +56,7 @@ const (
 // Promotion - プロモーション情報
 type Promotion struct {
 	ID           string            `gorm:"primaryKey;<-:create"` // プロモーションID
+	Status       PromotionStatus   `gorm:"-"`                    // 状態
 	Title        string            `gorm:""`                     // タイトル
 	Description  string            `gorm:""`                     // 詳細説明
 	Public       bool              `gorm:""`                     // 公開フラグ
@@ -114,11 +126,28 @@ func (p *Promotion) CalcDiscount(total int64, shippingFee int64) int64 {
 	}
 }
 
-func (p *Promotion) IsEnabled(now time.Time) bool {
+func (p *Promotion) IsEnabled() bool {
 	if p == nil {
 		return false
 	}
-	return p.Public && jst.WithInPeriod(now, p.StartAt, p.EndAt)
+	return p.Status == PromotionStatusEnabled
+}
+
+func (p *Promotion) Fill(now time.Time) {
+	p.SetStatus(now)
+}
+
+func (p *Promotion) SetStatus(now time.Time) {
+	switch {
+	case !p.Public:
+		p.Status = PromotionStatusPrivate
+	case now.Before(p.StartAt):
+		p.Status = PromotionStatusWaiting
+	case now.Before(p.EndAt):
+		p.Status = PromotionStatusEnabled
+	default:
+		p.Status = PromotionStatusFinished
+	}
 }
 
 func (p *Promotion) Validate() error {
@@ -135,4 +164,16 @@ func (p *Promotion) Validate() error {
 		p.DiscountRate = 0
 	}
 	return nil
+}
+
+func (ps Promotions) IDs() []string {
+	return set.UniqBy(ps, func(p *Promotion) string {
+		return p.ID
+	})
+}
+
+func (ps Promotions) Fill(now time.Time) {
+	for i := range ps {
+		ps[i].Fill(now)
+	}
 }

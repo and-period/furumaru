@@ -26,10 +26,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var (
-	errInvalidOrderkey   = errors.New("handler: invalid order key")
-	errInvalidFileFormat = errors.New("handler: invalid file format")
-)
+var errInvalidOrderkey = errors.New("handler: invalid order key")
 
 /**
  * ###############################################

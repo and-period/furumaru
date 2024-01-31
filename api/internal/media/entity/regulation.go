@@ -3,10 +3,6 @@ package entity
 import (
 	"errors"
 	"fmt"
-	"io"
-	"mime/multipart"
-	"net/http"
-	"path/filepath"
 	"strings"
 
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -14,12 +10,16 @@ import (
 )
 
 var (
-	ErrTooLargeFileSize  = errors.New("entity: too large file size")
-	ErrInvalidFileFormat = errors.New("entity: invalid file format")
+	ErrNotFoundReguration     = errors.New("entity: not found reguration")
+	ErrTooLargeFileSize       = errors.New("entity: too large file size")
+	ErrInvalidFileFormat      = errors.New("entity: invalid file format")
+	ErrUnsupportedContentType = errors.New("entity: unsupported content type")
+	ErrUnknownContentType     = errors.New("entity: unknown content type")
 )
 
 const (
 	BroadcastLiveMP4Path          = "schedules/lives"              // ライブ配信中に使用する動画
+	BroadcastArchivePath          = "schedules/archives"           // ライブ配信後のアーカイブ動画
 	BroadcastArchiveMP4Path       = "schedules/archives/%s/mp4"    // ライブ配信後のアーカイブ動画(mp4)
 	BroadcastArchiveHLSPath       = "schedules/archives/%s/hls"    // ライブ配信後のアーカイブ動画(hls)
 	CoordinatorThumbnailPath      = "coordinators/thumbnail"       // コーディネータサムネイル画像
@@ -48,16 +48,18 @@ type Regulation struct {
 }
 
 var (
+	// ライブ配信関連
 	BroadcastArchiveRegulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
+		MaxSize: 3 << 30, // 3GB
 		Formats: set.New("video/mp4"),
 		dir:     BroadcastArchiveMP4Path,
 	}
 	BroadcastLiveMP4Regulation = &Regulation{
-		MaxSize: 200 << 20, // 200MB
+		MaxSize: 3 << 30, // 3GB
 		Formats: set.New("video/mp4"),
 		dir:     BroadcastLiveMP4Path,
 	}
+	// コーディネータ関連
 	CoordinatorThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
@@ -78,6 +80,7 @@ var (
 		Formats: set.New("video/mp4"),
 		dir:     CoordinatorBonusVideoPath,
 	}
+	// 生産者関連
 	ProducerThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
@@ -98,11 +101,13 @@ var (
 		Formats: set.New("video/mp4"),
 		dir:     ProducerBonusVideoPath,
 	}
+	// 購入者関連
 	UserThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
 		dir:     UserThumbnailPath,
 	}
+	// 商品関連
 	ProductMediaImageRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
@@ -113,11 +118,13 @@ var (
 		Formats: set.New("video/mp4"),
 		dir:     ProductMediaVideoPath,
 	}
+	// 品目関連
 	ProductTypeIconRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
 		dir:     ProductTypeIconPath,
 	}
+	// 開催スケジュール関連
 	ScheduleThumbnailRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
 		Formats: set.New("image/png", "image/jpeg"),
@@ -135,39 +142,56 @@ var (
 	}
 )
 
-func (r *Regulation) Validate(file io.Reader, header *multipart.FileHeader) error {
-	if file == nil || header == nil {
-		return fmt.Errorf("entity: file and header is required: %w", ErrInvalidFileFormat)
-	}
-	if !r.validateSize(header) {
-		return fmt.Errorf("%w: size=%d", ErrTooLargeFileSize, header.Size)
-	}
-	return r.validateFormat(file)
+func (r *Regulation) FileGroup() string {
+	return r.dir
 }
 
-func (r *Regulation) validateSize(header *multipart.FileHeader) bool {
-	return header.Size <= r.MaxSize
-}
-
-func (r *Regulation) validateFormat(file io.Reader) error {
-	if r.Formats.Len() == 0 {
-		return nil
-	}
-	buf, err := io.ReadAll(file)
-	if err != nil {
+func (r *Regulation) Validate(contentType string, size int64) error {
+	if err := r.validateSize(size); err != nil {
 		return err
 	}
-	contentType := http.DetectContentType(buf)
-	if r.Formats.Contains(contentType) {
-		return nil
-	}
-	return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
+	return r.validateFormat(contentType)
 }
 
-func (r *Regulation) GenerateFilePath(header *multipart.FileHeader, args ...interface{}) string {
+func (r *Regulation) validateSize(size int64) error {
+	if size > r.MaxSize {
+		return fmt.Errorf("%w: size=%d", ErrTooLargeFileSize, size)
+	}
+	return nil
+}
+
+func (r *Regulation) validateFormat(contentType string) error {
+	if !r.Formats.Contains(contentType) {
+		return fmt.Errorf("%w: content type=%s", ErrInvalidFileFormat, contentType)
+	}
+	return nil
+}
+
+func (r *Regulation) GetObjectKey(contentType string, args ...interface{}) (string, error) {
+	ext, err := r.GetFileExtension(contentType)
+	if err != nil {
+		return "", err
+	}
 	key := uuid.Base58Encode(uuid.New())
-	extension := strings.ToLower(filepath.Ext(header.Filename))
 	dirname := fmt.Sprintf(r.dir, args...)
-	filename := strings.Join([]string{key, extension}, "")
-	return strings.Join([]string{dirname, filename}, "/")
+	filename := strings.Join([]string{key, ext}, ".")
+	return strings.Join([]string{dirname, filename}, "/"), nil
+}
+
+// ref: https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+func (r *Regulation) GetFileExtension(contentType string) (string, error) {
+	if !r.Formats.Contains(contentType) {
+		return "", ErrUnsupportedContentType
+	}
+	switch contentType {
+	// 画像タイプ
+	case "image/jpeg":
+		return "jpg", nil
+	case "image/png":
+		return "png", nil
+	case "video/mp4":
+		return "mp4", nil
+	default:
+		return "", ErrUnknownContentType
+	}
 }

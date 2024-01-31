@@ -9,6 +9,71 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestPromotionStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status entity.PromotionStatus
+		expect PromotionStatus
+	}{
+		{
+			name:   "private",
+			status: entity.PromotionStatusPrivate,
+			expect: PromotionStatusPrivate,
+		},
+		{
+			name:   "waiting",
+			status: entity.PromotionStatusWaiting,
+			expect: PromotionStatusWaiting,
+		},
+		{
+			name:   "enabled",
+			status: entity.PromotionStatusEnabled,
+			expect: PromotionStatusEnabled,
+		},
+		{
+			name:   "finisihed",
+			status: entity.PromotionStatusFinished,
+			expect: PromotionStatusFinished,
+		},
+		{
+			name:   "unknown",
+			status: entity.PromotionStatusUnknown,
+			expect: PromotionStatusUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewPromotionStatus(tt.status)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestPromotionStatus_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status PromotionStatus
+		expect int32
+	}{
+		{
+			name:   "success",
+			status: PromotionStatusEnabled,
+			expect: 3,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.status.Response())
+		})
+	}
+}
+
 func TestDiscountType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -111,12 +176,14 @@ func TestPromotion(t *testing.T) {
 	tests := []struct {
 		name      string
 		promotion *entity.Promotion
+		aggregate *entity.AggregatedOrderPromotion
 		expect    *Promotion
 	}{
 		{
 			name: "success",
 			promotion: &entity.Promotion{
 				ID:           "promotion-id",
+				Status:       entity.PromotionStatusEnabled,
 				Title:        "夏の採れたて野菜マルシェを開催!!",
 				Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 				Public:       true,
@@ -130,9 +197,15 @@ func TestPromotion(t *testing.T) {
 				CreatedAt:    now,
 				UpdatedAt:    now,
 			},
+			aggregate: &entity.AggregatedOrderPromotion{
+				PromotionID:   "promotion-id",
+				OrderCount:    2,
+				DiscountTotal: 1000,
+			},
 			expect: &Promotion{
 				Promotion: response.Promotion{
 					ID:           "promotion-id",
+					Status:       int32(PromotionStatusEnabled),
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 					Public:       true,
@@ -140,6 +213,8 @@ func TestPromotion(t *testing.T) {
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
+					UsedCount:    2,
+					UsedAmount:   1000,
 					StartAt:      1640962800,
 					EndAt:        1643641200,
 					CreatedAt:    1640962800,
@@ -152,7 +227,7 @@ func TestPromotion(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewPromotion(tt.promotion))
+			assert.Equal(t, tt.expect, NewPromotion(tt.promotion, tt.aggregate))
 		})
 	}
 }
@@ -169,6 +244,7 @@ func TestPromotion_Response(t *testing.T) {
 			promotion: &Promotion{
 				Promotion: response.Promotion{
 					ID:           "promotion-id",
+					Status:       int32(PromotionStatusEnabled),
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 					Public:       true,
@@ -176,6 +252,8 @@ func TestPromotion_Response(t *testing.T) {
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
+					UsedCount:    2,
+					UsedAmount:   1000,
 					StartAt:      1640962800,
 					EndAt:        1643641200,
 					CreatedAt:    1640962800,
@@ -184,6 +262,7 @@ func TestPromotion_Response(t *testing.T) {
 			},
 			expect: &response.Promotion{
 				ID:           "promotion-id",
+				Status:       int32(PromotionStatusEnabled),
 				Title:        "夏の採れたて野菜マルシェを開催!!",
 				Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 				Public:       true,
@@ -191,6 +270,8 @@ func TestPromotion_Response(t *testing.T) {
 				DiscountType: DiscountTypeFreeShipping.Response(),
 				DiscountRate: 0,
 				Code:         "code0001",
+				UsedCount:    2,
+				UsedAmount:   1000,
 				StartAt:      1640962800,
 				EndAt:        1643641200,
 				CreatedAt:    1640962800,
@@ -218,6 +299,7 @@ func TestPromotions(t *testing.T) {
 	tests := []struct {
 		name       string
 		promotions entity.Promotions
+		aggregates map[string]*entity.AggregatedOrderPromotion
 		expect     Promotions
 	}{
 		{
@@ -225,6 +307,7 @@ func TestPromotions(t *testing.T) {
 			promotions: entity.Promotions{
 				{
 					ID:           "promotion-id",
+					Status:       entity.PromotionStatusEnabled,
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 					Public:       true,
@@ -239,10 +322,18 @@ func TestPromotions(t *testing.T) {
 					UpdatedAt:    now,
 				},
 			},
+			aggregates: map[string]*entity.AggregatedOrderPromotion{
+				"promotion-id": {
+					PromotionID:   "promotion-id",
+					OrderCount:    2,
+					DiscountTotal: 1000,
+				},
+			},
 			expect: Promotions{
 				{
 					Promotion: response.Promotion{
 						ID:           "promotion-id",
+						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 						Public:       true,
@@ -250,6 +341,8 @@ func TestPromotions(t *testing.T) {
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
 						StartAt:      1640962800,
 						EndAt:        1643641200,
 						CreatedAt:    1640962800,
@@ -263,7 +356,7 @@ func TestPromotions(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewPromotions(tt.promotions))
+			assert.Equal(t, tt.expect, NewPromotions(tt.promotions, tt.aggregates))
 		})
 	}
 }
@@ -281,6 +374,7 @@ func TestPromotions_Map(t *testing.T) {
 				{
 					Promotion: response.Promotion{
 						ID:           "promotion-id",
+						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 						Public:       true,
@@ -288,6 +382,8 @@ func TestPromotions_Map(t *testing.T) {
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
 						StartAt:      1640962800,
 						EndAt:        1643641200,
 						CreatedAt:    1640962800,
@@ -299,6 +395,7 @@ func TestPromotions_Map(t *testing.T) {
 				"promotion-id": {
 					Promotion: response.Promotion{
 						ID:           "promotion-id",
+						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 						Public:       true,
@@ -306,6 +403,8 @@ func TestPromotions_Map(t *testing.T) {
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
 						StartAt:      1640962800,
 						EndAt:        1643641200,
 						CreatedAt:    1640962800,
@@ -337,6 +436,7 @@ func TestPromotions_Response(t *testing.T) {
 				{
 					Promotion: response.Promotion{
 						ID:           "promotion-id",
+						Status:       int32(PromotionStatusEnabled),
 						Title:        "夏の採れたて野菜マルシェを開催!!",
 						Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 						Public:       true,
@@ -344,6 +444,8 @@ func TestPromotions_Response(t *testing.T) {
 						DiscountType: DiscountTypeFreeShipping.Response(),
 						DiscountRate: 0,
 						Code:         "code0001",
+						UsedCount:    2,
+						UsedAmount:   1000,
 						StartAt:      1640962800,
 						EndAt:        1643641200,
 						CreatedAt:    1640962800,
@@ -354,6 +456,7 @@ func TestPromotions_Response(t *testing.T) {
 			expect: []*response.Promotion{
 				{
 					ID:           "promotion-id",
+					Status:       int32(PromotionStatusEnabled),
 					Title:        "夏の採れたて野菜マルシェを開催!!",
 					Description:  "採れたての夏野菜を紹介するマルシェを開催ます!!",
 					Public:       true,
@@ -361,6 +464,8 @@ func TestPromotions_Response(t *testing.T) {
 					DiscountType: DiscountTypeFreeShipping.Response(),
 					DiscountRate: 0,
 					Code:         "code0001",
+					UsedCount:    2,
+					UsedAmount:   1000,
 					StartAt:      1640962800,
 					EndAt:        1643641200,
 					CreatedAt:    1640962800,

@@ -19,6 +19,8 @@ func TestAdminURLMaker(t *testing.T) {
 	assert.Equal(t, "http://example.com/contacts/contact-id", res)
 	res = maker.Notification("notification-id")
 	assert.Equal(t, "http://example.com/notifications/notification-id", res)
+	res = maker.Order("order-id")
+	assert.Equal(t, "http://example.com/orders/order-id", res)
 }
 
 func TestUserURLMaker(t *testing.T) {

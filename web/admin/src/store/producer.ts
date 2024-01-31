@@ -1,16 +1,15 @@
 import { defineStore } from 'pinia'
 
+import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProducerRequest,
+  GetUploadUrlRequest,
   ProducerResponse,
   Producer,
-  UpdateProducerRequest,
-  UploadImageResponse,
-  UploadVideoResponse
+  UpdateProducerRequest
 } from '~/types/api'
-import { uploadTimeout } from '~/plugins/axios'
 
 export const useProducerStore = defineStore('producer', {
   state: () => ({
@@ -101,18 +100,15 @@ export const useProducerStore = defineStore('producer', {
      * @param payload サムネイル画像のファイルオブジェクト
      * @returns アップロード後のサムネイル画像のパスを含んだオブジェクト
      */
-    async uploadProducerThumbnail (payload: File): Promise<UploadImageResponse> {
+    async uploadProducerThumbnail (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.producerApi().v1UploadProducerThumbnail(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.producerApi().v1GetProducerThumbnailUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -123,18 +119,15 @@ export const useProducerStore = defineStore('producer', {
      * @param payload ヘッダー画像のファイルオブジェクト
      * @returns アップロード後のヘッダー画像のパスを含んだオブジェクト
      */
-    async uploadProducerHeader (payload: File): Promise<UploadImageResponse> {
+    async uploadProducerHeader (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.producerApi().v1UploadProducerHeader(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.producerApi().v1GetProducerHeaderUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -145,18 +138,15 @@ export const useProducerStore = defineStore('producer', {
      * @param payload 紹介画像
      * @returns アップロードされた動画のURI
      */
-    async uploadProducerPromotionVideo (payload: File): Promise<UploadVideoResponse> {
+    async uploadProducerPromotionVideo (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.producerApi().v1UploadProducerPromotionVideo(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.producerApi().v1GetProducerPromotionVideoUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -167,18 +157,15 @@ export const useProducerStore = defineStore('producer', {
      * @param payload サンキュー画像
      * @returns アップロードされた動画のURI
      */
-    async uploadProducerBonusVideo (payload: File): Promise<UploadVideoResponse> {
+    async uploadProducerBonusVideo (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.producerApi().v1UploadProducerBonusVideo(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.producerApi().v1GetProducerBonusVideoUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }

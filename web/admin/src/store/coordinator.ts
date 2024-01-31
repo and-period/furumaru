@@ -1,16 +1,15 @@
 import { defineStore } from 'pinia'
 
+import { fileUpload } from './helper'
 import { useProductTypeStore } from './product-type'
 import { apiClient } from '~/plugins/api-client'
-import type {
-  Coordinator,
-  CreateCoordinatorRequest,
-  Producer,
-  UpdateCoordinatorRequest,
-  UploadImageResponse,
-  UploadVideoResponse
+import {
+  type Coordinator,
+  type CreateCoordinatorRequest,
+  type GetUploadUrlRequest,
+  type Producer,
+  type UpdateCoordinatorRequest
 } from '~/types/api'
-import { uploadTimeout } from '~/plugins/axios'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
@@ -111,22 +110,18 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
 
     /**
-     * コーディネーターのサムネイル画像をアップロードする非同期関数
+     * コーディネーターのサムネイル画像をアップロードするためのURLを取得する非同期関数
      * @param payload サムネイル画像
      * @returns アップロードされた画像のURI
      */
-    async uploadCoordinatorThumbnail (payload: File): Promise<UploadImageResponse> {
+    async uploadCoordinatorThumbnail (payload: File): Promise<string> {
       try {
-        const res = await apiClient.coordinatorApi().v1UploadCoordinatorThumbnail(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: payload.type
+        }
+        const res = await apiClient.coordinatorApi().v1GetCoordinatorThumbnailUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -137,18 +132,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param payload ヘッダー画像
      * @returns アップロードされた画像のURI
      */
-    async uploadCoordinatorHeader (payload: File): Promise<UploadImageResponse> {
+    async uploadCoordinatorHeader (payload: File): Promise<string> {
       try {
-        const res = await apiClient.coordinatorApi().v1UploadCoordinatorHeader(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: payload.type
+        }
+        const res = await apiClient.coordinatorApi().v1GetCoordinatorHeaderUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -159,18 +150,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param payload 紹介画像
      * @returns アップロードされた動画のURI
      */
-    async uploadCoordinatorPromotionVideo (payload: File): Promise<UploadVideoResponse> {
+    async uploadCoordinatorPromotionVideo (payload: File): Promise<string> {
       try {
-        const res = await apiClient.coordinatorApi().v1UploadCoordinatorPromotionVideo(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: payload.type
+        }
+        const res = await apiClient.coordinatorApi().v1GetCoordinatorPromotionVideoUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -181,18 +168,14 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * @param payload サンキュー画像
      * @returns アップロードされた動画のURI
      */
-    async uploadCoordinatorBonusVideo (payload: File): Promise<UploadVideoResponse> {
+    async uploadCoordinatorBonusVideo (payload: File): Promise<string> {
       try {
-        const res = await apiClient.coordinatorApi().v1UploadCoordinatorBonusVideo(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: payload.type
+        }
+        const res = await apiClient.coordinatorApi().v1GetCoordinatorBonusVideoUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }

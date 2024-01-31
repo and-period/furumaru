@@ -2,6 +2,7 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/stretchr/testify/assert"
@@ -128,6 +129,42 @@ func TestPromotion_CalcDiscount(t *testing.T) {
 	}
 }
 
+func TestPromotion_IsEnabled(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		promotion *Promotion
+		expect    bool
+	}{
+		{
+			name: "enabled",
+			promotion: &Promotion{
+				Status: PromotionStatusEnabled,
+			},
+			expect: true,
+		},
+		{
+			name: "disabled",
+			promotion: &Promotion{
+				Status: PromotionStatusPrivate,
+			},
+			expect: false,
+		},
+		{
+			name:      "empty",
+			promotion: nil,
+			expect:    false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.promotion.IsEnabled())
+		})
+	}
+}
+
 func TestPromotion_Validate(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -189,6 +226,106 @@ func TestPromotion_Validate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.ErrorIs(t, tt.promotion.Validate(), tt.expect)
+		})
+	}
+}
+
+func TestPromotions_IDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		promotions Promotions
+		expect     []string
+	}{
+		{
+			name: "success",
+			promotions: Promotions{
+				{
+					ID:           "promotion-id",
+					Status:       PromotionStatusEnabled,
+					Title:        "プロモーションタイトル",
+					Description:  "プロモーションの詳細です。",
+					Public:       true,
+					PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+					DiscountType: DiscountTypeRate,
+					DiscountRate: 0,
+					Code:         "excode01",
+					CodeType:     PromotionCodeTypeAlways,
+					StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				},
+			},
+			expect: []string{"promotion-id"},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.promotions.IDs())
+		})
+	}
+}
+
+func TestPromotions_Fill(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name       string
+		promotions Promotions
+		expect     PromotionStatus
+	}{
+		{
+			name: "private",
+			promotions: Promotions{
+				{
+					Public:  false,
+					StartAt: now.Add(-time.Hour),
+					EndAt:   now.Add(time.Hour),
+				},
+			},
+			expect: PromotionStatusPrivate,
+		},
+		{
+			name: "waiting",
+			promotions: Promotions{
+				{
+					Public:  true,
+					StartAt: now.Add(time.Hour),
+					EndAt:   now.Add(2 * time.Hour),
+				},
+			},
+			expect: PromotionStatusWaiting,
+		},
+		{
+			name: "enabled",
+			promotions: Promotions{
+				{
+					Public:  true,
+					StartAt: now.Add(-time.Hour),
+					EndAt:   now.Add(time.Hour),
+				},
+			},
+			expect: PromotionStatusEnabled,
+		},
+		{
+			name: "finished",
+			promotions: Promotions{
+				{
+					Public:  true,
+					StartAt: now.Add(-2 * time.Hour),
+					EndAt:   now.Add(-time.Hour),
+				},
+			},
+			expect: PromotionStatusFinished,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.promotions.Fill(now)
+			assert.Equal(t, tt.expect, tt.promotions[0].Status)
 		})
 	}
 }

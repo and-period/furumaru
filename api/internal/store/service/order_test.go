@@ -1239,3 +1239,70 @@ func TestAggregateOrders(t *testing.T) {
 		}))
 	}
 }
+
+func TestAggregateOrdersByPromotion(t *testing.T) {
+	t.Parallel()
+
+	params := &database.AggregateOrdersByPromotionParams{
+		CoordinatorID: "coordinator-id",
+		PromotionIDs:  []string{"promotion-id"},
+	}
+	orders := entity.AggregatedOrderPromotions{
+		{
+			PromotionID:   "promotion-id",
+			OrderCount:    2,
+			DiscountTotal: 1000,
+		},
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.AggregateOrdersByPromotionInput
+		expect    entity.AggregatedOrderPromotions
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().AggregateByPromotion(ctx, params).Return(orders, nil)
+			},
+			input: &store.AggregateOrdersByPromotionInput{
+				CoordinatorID: "coordinator-id",
+				PromotionIDs:  []string{"promotion-id"},
+			},
+			expect:    orders,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.AggregateOrdersByPromotionInput{
+				PromotionIDs: []string{""},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to aggregate",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().AggregateByPromotion(ctx, params).Return(nil, assert.AnError)
+			},
+			input: &store.AggregateOrdersByPromotionInput{
+				CoordinatorID: "coordinator-id",
+				PromotionIDs:  []string{"promotion-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.AggregateOrdersByPromotion(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}

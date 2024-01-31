@@ -147,14 +147,10 @@ const handleSearchProductTag = async (name: string): Promise<void> => {
 
 const handleImageUpload = async (files: FileList): Promise<void> => {
   loading.value = true
-  for (const [index, file] of Array.from(files).entries()) {
+  for (const [_, file] of Array.from(files).entries()) {
     try {
-      const uploadImage = await productStore.uploadProductImage(file)
-      formData.value.media.push({
-        ...uploadImage,
-        // 一度すべてサムネイルをfalse状態でmediaに加える
-        isThumbnail: false
-      })
+      const url: string = await productStore.uploadProductMedia(file)
+      formData.value.media.push({ url, isThumbnail: false })
     } catch (err) {
       if (err instanceof Error) {
         show(err.message)

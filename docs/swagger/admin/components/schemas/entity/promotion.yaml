@@ -11,6 +11,8 @@ promotion:
     description:
       type: string
       description: 詳細説明
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/promotionStatus'
     public:
       type: boolean
       description: 公開フラグ
@@ -23,6 +25,14 @@ promotion:
     code:
       type: string
       description: クーポンコード
+    usedCount:
+      type: integer
+      format: int64
+      description: クーポン利用回数
+    usedAmount:
+      type: integer
+      format: int64
+      description: クーポン利用による割引合計額
     startAt:
       type: integer
       format: int64
@@ -43,10 +53,13 @@ promotion:
   - id
   - title
   - description
+  - status
   - public
   - discountType
   - discountRate
   - code
+  - usedCount
+  - usedAmount
   - startAt
   - endAt
   - createdAt
@@ -55,10 +68,13 @@ promotion:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     title: 'プロモーションタイトル'
     description: 'セール情報をお届けします。'
+    status: 3
     public: true
     discountType: 1
     discountRate: 300
     code: 'code1234'
+    usedCount: 2
+    usedAmount: 1000
     startAt: 1640962800
     endAt: 1640962800
     createdAt: 1640962800

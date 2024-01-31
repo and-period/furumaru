@@ -2,15 +2,12 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"mime"
-	"mime/multipart"
 	"net/http"
-	"strings"
 
-	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/gin-gonic/gin"
 )
@@ -18,130 +15,140 @@ import (
 func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/upload", h.authentication)
 
-	r.POST("/coordinators/thumbnail", h.uploadCoordinatorThumbnail)
-	r.POST("/coordinators/header", h.uploadCoordinatorHeader)
-	r.POST("/coordinators/promotion-video", h.uploadCoordinatorPromotionVideo)
-	r.POST("/coordinators/bonus-video", h.uploadCoordinatorBonusVideo)
-	r.POST("/producers/thumbnail", h.uploadProducerThumbnail)
-	r.POST("/producers/header", h.uploadProducerHeader)
-	r.POST("/producers/promotion-video", h.uploadProducerPromotionVideo)
-	r.POST("/producers/bonus-video", h.UploadProducerBonusVideo)
-	r.POST("/products/image", h.uploadProductImage)
-	r.POST("/products/video", h.uploadProductVideo)
-	r.POST("/product-types/icon", h.uploadProductTypeIcon)
-	r.POST("/schedules/thumbnail", h.uploadScheduleThumbnail)
-	r.POST("/schedules/image", h.uploadScheduleImage)
-	r.POST("/schedules/opening-video", h.uploadScheduleOpeningVideo)
+	r.GET("/state", h.GetUploadState)
+	r.POST("/coordinators/thumbnail", h.CreateCoordinatorThumbnailUploadURL)
+	r.POST("/coordinators/header", h.CreateCoordinatorHeaderUploadURL)
+	r.POST("/coordinators/promotion-video", h.CreateCoordinatorPromotionVideoUploadURL)
+	r.POST("/coordinators/bonus-video", h.CreateCoordinatorBonusVideoUploadURL)
+	r.POST("/producers/thumbnail", h.CreateProducerThumbnailUploadURL)
+	r.POST("/producers/header", h.CreateProducerHeaderUploadURL)
+	r.POST("/producers/promotion-video", h.CreateProducerPromotionVideoUploadURL)
+	r.POST("/producers/bonus-video", h.CreateProducerBonusVideoUploadURL)
+	r.POST("/products/image", h.CreateProductImageUploadURL)
+	r.POST("/products/video", h.CreateProductVideoUploadURL)
+	r.POST("/product-types/icon", h.CreateProductTypeIconUploadURL)
+	r.POST("/schedules/thumbnail", h.CreateScheduleThumbnailUploadURL)
+	r.POST("/schedules/image", h.CreateScheduleImageUploadURL)
+	r.POST("/schedules/opening-video", h.CreateScheduleOpeningVideoUploadURL)
+	r.POST("/schedules/:scheduleId/broadcasts/archive", h.CreateBroadcastArchiveMP4UploadURL)
+	r.POST("/schedules/-/broadcasts/live", h.CreateBroadcastLiveMP4UploadURL)
 }
 
-func (h *handler) uploadCoordinatorThumbnail(ctx *gin.Context) {
-	const filename = "thumbnail"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorThumbnail)
-}
-
-func (h *handler) uploadCoordinatorHeader(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorHeader)
-}
-
-func (h *handler) uploadCoordinatorPromotionVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorPromotionVideo)
-}
-
-func (h *handler) uploadCoordinatorBonusVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateCoordinatorBonusVideo)
-}
-
-func (h *handler) uploadProducerThumbnail(ctx *gin.Context) {
-	const filename = "thumbnail"
-	h.uploadFile(ctx, filename, h.media.GenerateProducerThumbnail)
-}
-
-func (h *handler) uploadProducerHeader(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateProducerHeader)
-}
-
-func (h *handler) uploadProducerPromotionVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateProducerPromotionVideo)
-}
-
-func (h *handler) UploadProducerBonusVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateProducerBonusVideo)
-}
-
-func (h *handler) uploadProductImage(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateProductMediaImage)
-}
-
-func (h *handler) uploadProductVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateProductMediaVideo)
-}
-
-func (h *handler) uploadProductTypeIcon(ctx *gin.Context) {
-	const filename = "icon"
-	h.uploadFile(ctx, filename, h.media.GenerateProductTypeIcon)
-}
-
-func (h *handler) uploadScheduleThumbnail(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateScheduleThumbnail)
-}
-
-func (h *handler) uploadScheduleImage(ctx *gin.Context) {
-	const filename = "image"
-	h.uploadFile(ctx, filename, h.media.GenerateScheduleImage)
-}
-
-func (h *handler) uploadScheduleOpeningVideo(ctx *gin.Context) {
-	const filename = "video"
-	h.uploadFile(ctx, filename, h.media.GenerateScheduleOpeningVideo)
-}
-
-func (h *handler) uploadFile(
-	ctx *gin.Context,
-	filename string,
-	generate func(context.Context, *media.GenerateFileInput) (string, error),
-) {
-	file, header, err := h.parseFile(ctx, filename)
+func (h *handler) GetUploadState(ctx *gin.Context) {
+	in := &media.GetUploadEventInput{
+		UploadURL: util.GetQuery(ctx, "src", ""),
+	}
+	event, err := h.media.GetUploadEvent(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	in := &media.GenerateFileInput{
-		File:   file,
-		Header: header,
+	res := &response.UploadStateResponse{
+		URL:    event.ReferenceURL,
+		Status: service.NewUploadStatus(event.Status).Response(),
 	}
-	url, err := generate(ctx, in)
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateBroadcastArchiveMP4UploadURL(ctx *gin.Context) {
+	req := &request.GetUploadURLRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &media.GenerateBroadcastArchiveMP4UploadInput{
+		GenerateUploadURLInput: media.GenerateUploadURLInput{
+			FileType: req.FileType,
+		},
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	}
+	url, err := h.media.GetBroadcastArchiveMP4UploadURL(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.UploadImageResponse{
+	res := &response.UploadURLResponse{
 		URL: url,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) parseFile(ctx *gin.Context, filename string) (io.Reader, *multipart.FileHeader, error) {
-	media, _, err := mime.ParseMediaType(ctx.GetHeader("Content-Type"))
+func (h *handler) CreateBroadcastLiveMP4UploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetBroadcastLiveMP4UploadURL)
+}
+
+func (h *handler) CreateCoordinatorThumbnailUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetCoordinatorThumbnailUploadURL)
+}
+
+func (h *handler) CreateCoordinatorHeaderUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetCoordinatorHeaderUploadURL)
+}
+
+func (h *handler) CreateCoordinatorPromotionVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetCoordinatorPromotionVideoUploadURL)
+}
+
+func (h *handler) CreateCoordinatorBonusVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetCoordinatorBonusVideoUploadURL)
+}
+
+func (h *handler) CreateProducerThumbnailUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProducerThumbnailUploadURL)
+}
+
+func (h *handler) CreateProducerHeaderUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProducerHeaderUploadURL)
+}
+
+func (h *handler) CreateProducerPromotionVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProducerPromotionVideoUploadURL)
+}
+
+func (h *handler) CreateProducerBonusVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProducerBonusVideoUploadURL)
+}
+
+func (h *handler) CreateProductImageUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProductMediaImageUploadURL)
+}
+
+func (h *handler) CreateProductVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProductMediaVideoUploadURL)
+}
+
+func (h *handler) CreateProductTypeIconUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetProductTypeIconUploadURL)
+}
+
+func (h *handler) CreateScheduleThumbnailUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetScheduleThumbnailUploadURL)
+}
+
+func (h *handler) CreateScheduleImageUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetScheduleImageUploadURL)
+}
+
+func (h *handler) CreateScheduleOpeningVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetScheduleOpeningVideoUploadURL)
+}
+
+func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (string, error)) {
+	req := &request.GetUploadURLRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &media.GenerateUploadURLInput{
+		FileType: req.FileType,
+	}
+	url, err := fn(ctx, in)
 	if err != nil {
-		err := fmt.Errorf("handler: failed to parse media type. err=%s: %w", err.Error(), exception.ErrInvalidArgument)
-		return nil, nil, err
+		h.httpError(ctx, err)
+		return
 	}
-	if !strings.HasPrefix(media, "multipart/") {
-		return nil, nil, fmt.Errorf("%s: %w", errInvalidFileFormat.Error(), exception.ErrInvalidArgument)
+	res := &response.UploadURLResponse{
+		URL: url,
 	}
-	file, header, err := ctx.Request.FormFile(filename)
-	if err != nil {
-		err := fmt.Errorf("handler: failed to get file. err=%s: %w", err.Error(), exception.ErrInvalidArgument)
-		return nil, nil, err
-	}
-	return file, header, nil
+	ctx.JSON(http.StatusOK, res)
 }

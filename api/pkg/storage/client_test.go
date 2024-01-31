@@ -39,7 +39,7 @@ func TestGenerateObjectURL(t *testing.T) {
 			name:   "success",
 			bucket: "bucket",
 			path:   "dir/path.png",
-			expect: "https://bucket.s3.amazonaws.com/dir/path.png",
+			expect: "https://bucket.s3.ap-northeast-1.amazonaws.com/dir/path.png",
 			hasErr: false,
 		},
 		{
@@ -57,6 +57,7 @@ func TestGenerateObjectURL(t *testing.T) {
 			client := &bucket{
 				s3:     &s3.Client{},
 				name:   aws.String(tt.bucket),
+				region: "ap-northeast-1",
 				logger: &zap.Logger{},
 			}
 			actual, err := client.GenerateObjectURL(tt.path)
@@ -94,6 +95,7 @@ func TestGenerateS3URI(t *testing.T) {
 			client := &bucket{
 				s3:     &s3.Client{},
 				name:   aws.String(tt.bucket),
+				region: "ap-northeast-1",
 				logger: &zap.Logger{},
 			}
 			actual := client.GenerateS3URI(tt.path)
@@ -114,7 +116,7 @@ func TestReplaceURLToS3URI(t *testing.T) {
 		{
 			name:   "success",
 			bucket: "bucket",
-			rawURL: "https://bucket.s3.amazonaws.com/dir/path.png",
+			rawURL: "https://bucket.s3.ap-northeast-1.amazonaws.com/dir/path.png",
 			expect: "s3://bucket/dir/path.png",
 			hasErr: false,
 		},
@@ -140,6 +142,7 @@ func TestReplaceURLToS3URI(t *testing.T) {
 			client := &bucket{
 				s3:     &s3.Client{},
 				name:   aws.String(tt.bucket),
+				region: "ap-northeast-1",
 				logger: &zap.Logger{},
 			}
 			actual, err := client.ReplaceURLToS3URI(tt.rawURL)
@@ -162,7 +165,7 @@ func TestGetHost(t *testing.T) {
 			bucket: "bucket",
 			expect: &url.URL{
 				Scheme: "https",
-				Host:   "bucket.s3.amazonaws.com",
+				Host:   "bucket.s3.ap-northeast-1.amazonaws.com",
 			},
 			hasErr: false,
 		},
@@ -180,6 +183,7 @@ func TestGetHost(t *testing.T) {
 			client := &bucket{
 				s3:     &s3.Client{},
 				name:   aws.String(tt.bucket),
+				region: "ap-northeast-1",
 				logger: &zap.Logger{},
 			}
 			actual, err := client.GetHost()

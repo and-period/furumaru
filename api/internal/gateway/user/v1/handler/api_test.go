@@ -253,13 +253,3 @@ func TestHandler(t *testing.T) {
 	h := NewHandler(&Params{}, opts...)
 	assert.NotNil(t, h)
 }
-
-func TestSetAuth(t *testing.T) {
-	t.Parallel()
-	gin.SetMode(gin.TestMode)
-	w := httptest.NewRecorder()
-	ctx, _ := gin.CreateTestContext(w)
-	ctx.Request = &http.Request{Header: http.Header{}}
-	setAuth(ctx, "user-id")
-	assert.Equal(t, "user-id", getUserID(ctx))
-}

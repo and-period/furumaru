@@ -143,7 +143,7 @@ type UpsertShippingInput struct {
 
 type UpsertShippingRate struct {
 	Name            string  `validate:"required"`
-	Price           int64   `validate:"required,lt=10000000000"`
+	Price           int64   `validate:"min=0,lt=10000000000"`
 	PrefectureCodes []int32 `validate:"required"`
 }
 
@@ -160,7 +160,7 @@ type UpdateDefaultShippingInput struct {
 
 type UpdateDefaultShippingRate struct {
 	Name            string  `validate:"required"`
-	Price           int64   `validate:"required,lt=10000000000"`
+	Price           int64   `validate:"min=0,lt=10000000000"`
 	PrefectureCodes []int32 `validate:"required"`
 }
 
@@ -475,6 +475,11 @@ type UpdateOrderFulfillmentInput struct {
 type AggregateOrdersInput struct {
 	CoordinatorID string   `validate:""`
 	UserIDs       []string `validate:"dive,required"`
+}
+
+type AggregateOrdersByPromotionInput struct {
+	CoordinatorID string   `validate:""`
+	PromotionIDs  []string `validate:"dive,required"`
 }
 
 type GetCartInput struct {

@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
 
+import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateProductTypeRequest,
+  GetUploadUrlRequest,
   ProductType,
-  UpdateProductTypeRequest,
-  UploadImageResponse
+  UpdateProductTypeRequest
 } from '~/types/api'
-import { uploadTimeout } from '~/plugins/axios'
 
 export const useProductTypeStore = defineStore('productType', {
   state: () => ({
@@ -159,18 +159,15 @@ export const useProductTypeStore = defineStore('productType', {
      * @param payload 品目画像のファイルオブジェクト
      * @returns アップロード後の品目画像のパスを含んだオブジェクト
      */
-    async uploadProductTypeIcon (payload: File): Promise<UploadImageResponse> {
+    async uploadProductTypeIcon (payload: File): Promise<string> {
+      const contentType = payload.type
       try {
-        const res = await apiClient.productTypeApi().v1UploadProductTypeIcon(
-          payload,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            timeout: uploadTimeout
-          }
-        )
-        return res.data
+        const body: GetUploadUrlRequest = {
+          fileType: contentType
+        }
+        const res = await apiClient.productTypeApi().v1GetProductTypeIconUploadUrl(body)
+
+        return await fileUpload(payload, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }

@@ -38,7 +38,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       id: modules-cache
       with:
         path: |
@@ -73,6 +73,9 @@ jobs:
     - name: Setup
       run: make setup
 
+    - name: Create Mock
+      run: make mockgen
+
     - name: Fmt
       run: make fmt
 
@@ -103,7 +106,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       id: modules-cache
       with:
         path: |
@@ -165,7 +168,7 @@ jobs:
         done
         echo 'mysql is up - executing command'
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       id: modules-cache
       with:
         path: |
@@ -176,6 +179,12 @@ jobs:
     - name: Download modules
       if: steps.modules-cache.outputs.cache-hit != 'true'
       run: go mod download
+
+    - name: Setup
+      run: make setup
+
+    - name: Create Mock
+      run: make mockgen
 
     - name: Test
       run: make test

@@ -11,6 +11,8 @@ promotion:
     description:
       type: string
       description: 詳細説明
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/promotionStatus'
     discountType:
       $ref: './../../../openapi.yaml#/components/schemas/discountType'
     discountRate:
@@ -32,6 +34,7 @@ promotion:
   - id
   - title
   - description
+  - status
   - discountType
   - discountRate
   - code
@@ -41,6 +44,7 @@ promotion:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     title: 'プロモーションタイトル'
     description: 'セール情報をお届けします。'
+    status: 3
     discountType: 1
     discountRate: 300
     code: 'code1234'

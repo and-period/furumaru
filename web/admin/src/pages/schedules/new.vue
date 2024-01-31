@@ -50,8 +50,8 @@ const handleUploadThumbnail = (files: FileList): void => {
 
   loading.value = true
   scheduleStore.uploadScheduleThumbnail(files[0])
-    .then((res) => {
-      formData.value.thumbnailUrl = res.url
+    .then((url: string) => {
+      formData.value.thumbnailUrl = url
     })
     .catch(() => {
       thumbnailUploadStatus.value.error = true
@@ -69,8 +69,8 @@ const handleUploadImage = (files: FileList): void => {
 
   loading.value = true
   scheduleStore.uploadScheduleImage(files[0])
-    .then((res) => {
-      formData.value.imageUrl = res.url
+    .then((url: string) => {
+      formData.value.imageUrl = url
     })
     .catch(() => {
       imageUploadStatus.value.error = true
@@ -88,8 +88,8 @@ const handleUploadOpeningVideo = (files: FileList): void => {
 
   loading.value = true
   scheduleStore.uploadScheduleOpeningVideo(files[0])
-    .then((res) => {
-      formData.value.openingVideoUrl = res.url
+    .then((url: string) => {
+      formData.value.openingVideoUrl = url
     })
     .catch(() => {
       openingVideoUploadStatus.value.error = true

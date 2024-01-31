@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import axios, { type RawAxiosRequestHeaders } from 'axios'
 import { storeToRefs } from 'pinia'
 
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
@@ -95,8 +96,8 @@ const handleUpdateThumbnail = (files: FileList): void => {
 
   loading.value = true
   coordinatorStore.uploadCoordinatorThumbnail(files[0])
-    .then((res) => {
-      formData.value.thumbnailUrl = res.url
+    .then((url: string) => {
+      formData.value.thumbnailUrl = url
     })
     .catch(() => {
       thumbnailUploadStatus.value.error = true
@@ -114,8 +115,8 @@ const handleUpdateHeader = (files: FileList): void => {
 
   loading.value = true
   coordinatorStore.uploadCoordinatorHeader(files[0])
-    .then((res) => {
-      formData.value.headerUrl = res.url
+    .then((url: string) => {
+      formData.value.headerUrl = url
     })
     .catch(() => {
       headerUploadStatus.value.error = true
@@ -133,8 +134,8 @@ const handleUpdatePromotionVideo = (files: FileList): void => {
 
   loading.value = true
   coordinatorStore.uploadCoordinatorPromotionVideo(files[0])
-    .then((res) => {
-      formData.value.promotionVideoUrl = res.url
+    .then((url: string) => {
+      formData.value.promotionVideoUrl = url
     })
     .catch(() => {
       promotionVideoUploadStatus.value.error = true
@@ -152,8 +153,8 @@ const handleUpdateBonusVideo = (files: FileList): void => {
 
   loading.value = true
   coordinatorStore.uploadCoordinatorBonusVideo(files[0])
-    .then((res) => {
-      formData.value.bonusVideoUrl = res.url
+    .then((url: string) => {
+      formData.value.bonusVideoUrl = url
     })
     .catch(() => {
       bonusVideoUploadStatus.value.error = true

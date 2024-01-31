@@ -24,6 +24,7 @@ import (
 )
 
 const (
+	userIDKey  = "userId"
 	sessionKey = "session_id"
 	sessionTTL = 14 * 24 * 60 * 60 // 14days
 )
@@ -199,7 +200,7 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
 			res.GetDetail(),
 		),
 		sentry.WithUser(&sentry.User{
-			ID:        getUserID(ctx),
+			ID:        h.getUserID(ctx),
 			IPAddress: ctx.ClientIP(),
 		}),
 		sentry.WithTags(map[string]string{
@@ -223,22 +224,48 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
  * ###############################################
  */
 func (h *handler) authentication(ctx *gin.Context) {
-	token, err := util.GetAuthToken(ctx)
-	if err != nil {
+	if err := h.setAuth(ctx); err != nil {
 		h.unauthorized(ctx, err)
 		return
 	}
+	ctx.Next()
+}
 
+func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
+	scheduleID := util.GetParam(ctx, "scheduleId")
+	if scheduleID == "" {
+		ctx.Next()
+		return // 開催スケジュールIDがない場合、ライブ配信と関係ないエンドポイントとなるためスキップ
+	}
+	in := &media.CreateBroadcastViewerLogInput{
+		ScheduleID: scheduleID,
+		SessionID:  h.getSessionID(ctx),
+		UserID:     h.getUserID(ctx),
+		UserAgent:  ctx.Request.UserAgent(),
+		ClientIP:   ctx.ClientIP(),
+	}
+	h.waitGroup.Add(1)
+	go func() {
+		defer h.waitGroup.Done()
+		if err := h.media.CreateBroadcastViewerLog(context.Background(), in); err != nil {
+			h.logger.Error("Failed to create broadcast viewer log", zap.Error(err))
+		}
+	}()
+	ctx.Next()
+}
+
+func (h *handler) setAuth(ctx *gin.Context) error {
+	token, err := util.GetAuthToken(ctx)
+	if err != nil {
+		return err
+	}
 	in := &user.GetUserAuthInput{AccessToken: token}
 	auth, err := h.user.GetUserAuth(ctx, in)
 	if err != nil || auth.UserID == "" {
-		h.unauthorized(ctx, err)
-		return
+		return err
 	}
-
-	setAuth(ctx, auth.UserID)
-
-	ctx.Next()
+	ctx.Request.Header.Set("userId", auth.UserID)
+	return nil
 }
 
 func (h *handler) getSessionID(ctx *gin.Context) string {
@@ -253,12 +280,12 @@ func (h *handler) getSessionID(ctx *gin.Context) string {
 	return sessionID
 }
 
-func setAuth(ctx *gin.Context, userID string) {
+func (h *handler) getUserID(ctx *gin.Context) string {
+	userID := ctx.GetHeader(userIDKey)
 	if userID != "" {
-		ctx.Request.Header.Set("userId", userID)
+		return userID
 	}
-}
-
-func getUserID(ctx *gin.Context) string {
-	return ctx.GetHeader("userId")
+	// ユーザーIDが取得できない場合、認証処理を行いヘッダーへ詰め直す
+	h.setAuth(ctx) //nolint:errcheck
+	return ctx.GetHeader(userIDKey)
 }

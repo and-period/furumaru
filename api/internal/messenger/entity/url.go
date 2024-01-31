@@ -45,6 +45,15 @@ func (m *AdminURLMaker) Notification(notificationID string) string {
 	return webURL.String()
 }
 
+// Order - 注文履歴詳細
+func (m *AdminURLMaker) Order(orderID string) string {
+	// e.g.) /orders/:order-id
+	paths := []string{"orders", orderID}
+	webURL := *m.url // copy
+	webURL.Path = strings.Join(paths, "/")
+	return webURL.String()
+}
+
 /**
  * --------------------------
  * 購入者関連URL生成用

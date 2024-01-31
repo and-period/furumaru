@@ -24,6 +24,19 @@ import type { RequestArgs } from './base';
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
 
 /**
+ * 
+ * @export
+ * @interface ActivateBroadcastMP4Request
+ */
+export interface ActivateBroadcastMP4Request {
+    /**
+     * 配信用の動画URL
+     * @type {string}
+     * @memberof ActivateBroadcastMP4Request
+     */
+    'inputUrl'?: string;
+}
+/**
  * アドレス情報
  * @export
  * @interface Address
@@ -2125,6 +2138,19 @@ export const FulfillmentStatus = {
 export type FulfillmentStatus = typeof FulfillmentStatus[keyof typeof FulfillmentStatus];
 
 
+/**
+ * 
+ * @export
+ * @interface GetUploadUrlRequest
+ */
+export interface GetUploadUrlRequest {
+    /**
+     * MIMEタイプ
+     * @type {string}
+     * @memberof GetUploadUrlRequest
+     */
+    'fileType': string;
+}
 /**
  * 画像サイズ
  * @export
@@ -4334,6 +4360,12 @@ export interface Promotion {
      */
     'description': string;
     /**
+     * 
+     * @type {PromotionStatus}
+     * @memberof Promotion
+     */
+    'status': PromotionStatus;
+    /**
      * 公開フラグ
      * @type {boolean}
      * @memberof Promotion
@@ -4357,6 +4389,18 @@ export interface Promotion {
      * @memberof Promotion
      */
     'code': string;
+    /**
+     * クーポン利用回数
+     * @type {number}
+     * @memberof Promotion
+     */
+    'usedCount': number;
+    /**
+     * クーポン利用による割引合計額
+     * @type {number}
+     * @memberof Promotion
+     */
+    'usedAmount': number;
     /**
      * クーポン利用可能開始日時(unixtime)
      * @type {number}
@@ -4397,6 +4441,38 @@ export interface PromotionResponse {
      */
     'promotion': Promotion;
 }
+/**
+ * プロモーションステータス
+ * @export
+ * @enum {string}
+ */
+
+export const PromotionStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 非公開
+    */
+    PRIVATE: 1,
+    /**
+    * 利用可能前
+    */
+    WAITING: 2,
+    /**
+    * 利用可能
+    */
+    ENABLED: 3,
+    /**
+    * 利用終了
+    */
+    FINISHED: 4
+} as const;
+
+export type PromotionStatus = typeof PromotionStatus[keyof typeof PromotionStatus];
+
+
 /**
  * 
  * @export
@@ -5089,6 +5165,19 @@ export interface UpdateAuthPasswordRequest {
      * @memberof UpdateAuthPasswordRequest
      */
     'passwordConfirmation': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateBroadcastArchiveRequest
+ */
+export interface UpdateBroadcastArchiveRequest {
+    /**
+     * オンデマンド配信用の動画URL
+     * @type {string}
+     * @memberof UpdateBroadcastArchiveRequest
+     */
+    'archiveUrl': string;
 }
 /**
  * 
@@ -5954,6 +6043,58 @@ export interface UpdateThreadRequest {
 /**
  * 
  * @export
+ * @interface UploadCoordinatorBonusVideoRequest
+ */
+export interface UploadCoordinatorBonusVideoRequest {
+    /**
+     * コーディネータ購入特典映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadCoordinatorBonusVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadCoordinatorHeaderRequest
+ */
+export interface UploadCoordinatorHeaderRequest {
+    /**
+     * コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadCoordinatorHeaderRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadCoordinatorPromotionVideoRequest
+ */
+export interface UploadCoordinatorPromotionVideoRequest {
+    /**
+     * コーディネータ紹介映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadCoordinatorPromotionVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadCoordinatorThumbnailRequest
+ */
+export interface UploadCoordinatorThumbnailRequest {
+    /**
+     * コーディネータサムネイル(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadCoordinatorThumbnailRequest
+     */
+    'thumbnail'?: File;
+}
+/**
+ * 
+ * @export
  * @interface UploadImageResponse
  */
 export interface UploadImageResponse {
@@ -5961,6 +6102,198 @@ export interface UploadImageResponse {
      * 画像アップロード先URL
      * @type {string}
      * @memberof UploadImageResponse
+     */
+    'url': string;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProducerBonusVideoRequest
+ */
+export interface UploadProducerBonusVideoRequest {
+    /**
+     * 生産者購入特典映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadProducerBonusVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProducerHeaderRequest
+ */
+export interface UploadProducerHeaderRequest {
+    /**
+     * 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadProducerHeaderRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProducerPromotionVideoRequest
+ */
+export interface UploadProducerPromotionVideoRequest {
+    /**
+     * 生産者紹介映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadProducerPromotionVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProducerThumbnailRequest
+ */
+export interface UploadProducerThumbnailRequest {
+    /**
+     * 生産者サムネイル(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadProducerThumbnailRequest
+     */
+    'thumbnail'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProductImageRequest
+ */
+export interface UploadProductImageRequest {
+    /**
+     * 商品画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadProductImageRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProductTypeIconRequest
+ */
+export interface UploadProductTypeIconRequest {
+    /**
+     * 商品アイコン(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadProductTypeIconRequest
+     */
+    'icon'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadProductVideoRequest
+ */
+export interface UploadProductVideoRequest {
+    /**
+     * 商品動画(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadProductVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadScheduleImageRequest
+ */
+export interface UploadScheduleImageRequest {
+    /**
+     * 開催スケジュール蓋絵画像(png形式,10MBまで)
+     * @type {File}
+     * @memberof UploadScheduleImageRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadScheduleOpeningVideoRequest
+ */
+export interface UploadScheduleOpeningVideoRequest {
+    /**
+     * 開催スケジュールオープニング動画(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof UploadScheduleOpeningVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadScheduleThumbnailRequest
+ */
+export interface UploadScheduleThumbnailRequest {
+    /**
+     * 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof UploadScheduleThumbnailRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface UploadStateResponse
+ */
+export interface UploadStateResponse {
+    /**
+     * 参照先ファイルURL
+     * @type {string}
+     * @memberof UploadStateResponse
+     */
+    'url': string;
+    /**
+     * 
+     * @type {UploadStatus}
+     * @memberof UploadStateResponse
+     */
+    'status': UploadStatus;
+}
+
+
+/**
+ * ファイルアップロードの状態
+ * @export
+ * @enum {string}
+ */
+
+export const UploadStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * アップロード中
+    */
+    WAITING: 1,
+    /**
+    * 成功
+    */
+    SUCEEDED: 2,
+    /**
+    * 失敗
+    */
+    FAILED: 3
+} as const;
+
+export type UploadStatus = typeof UploadStatus[keyof typeof UploadStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface UploadUrlResponse
+ */
+export interface UploadUrlResponse {
+    /**
+     * 署名付きアップロードURL
+     * @type {string}
+     * @memberof UploadUrlResponse
      */
     'url': string;
 }
@@ -6358,6 +6691,214 @@ export interface UsersResponse {
      * @memberof UsersResponse
      */
     'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorBonusVideoRequest
+ */
+export interface V1UploadCoordinatorBonusVideoRequest {
+    /**
+     * コーディネータ購入特典映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadCoordinatorBonusVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorHeaderRequest
+ */
+export interface V1UploadCoordinatorHeaderRequest {
+    /**
+     * コーディネータヘッダー画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadCoordinatorHeaderRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorPromotionVideoRequest
+ */
+export interface V1UploadCoordinatorPromotionVideoRequest {
+    /**
+     * コーディネータ紹介映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadCoordinatorPromotionVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadCoordinatorThumbnailRequest
+ */
+export interface V1UploadCoordinatorThumbnailRequest {
+    /**
+     * コーディネータサムネイル(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadCoordinatorThumbnailRequest
+     */
+    'thumbnail'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadImageResponse
+ */
+export interface V1UploadImageResponse {
+    /**
+     * 画像アップロード先URL
+     * @type {string}
+     * @memberof V1UploadImageResponse
+     */
+    'url': string;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProducerBonusVideoRequest
+ */
+export interface V1UploadProducerBonusVideoRequest {
+    /**
+     * 生産者購入特典映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadProducerBonusVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProducerHeaderRequest
+ */
+export interface V1UploadProducerHeaderRequest {
+    /**
+     * 生産者ヘッダー画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadProducerHeaderRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProducerPromotionVideoRequest
+ */
+export interface V1UploadProducerPromotionVideoRequest {
+    /**
+     * 生産者紹介映像(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadProducerPromotionVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProducerThumbnailRequest
+ */
+export interface V1UploadProducerThumbnailRequest {
+    /**
+     * 生産者サムネイル(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadProducerThumbnailRequest
+     */
+    'thumbnail'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProductImageRequest
+ */
+export interface V1UploadProductImageRequest {
+    /**
+     * 商品画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadProductImageRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProductTypeIconRequest
+ */
+export interface V1UploadProductTypeIconRequest {
+    /**
+     * 商品アイコン(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadProductTypeIconRequest
+     */
+    'icon'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadProductVideoRequest
+ */
+export interface V1UploadProductVideoRequest {
+    /**
+     * 商品動画(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadProductVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadScheduleImageRequest
+ */
+export interface V1UploadScheduleImageRequest {
+    /**
+     * 開催スケジュール蓋絵画像(png形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadScheduleImageRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadScheduleOpeningVideoRequest
+ */
+export interface V1UploadScheduleOpeningVideoRequest {
+    /**
+     * 開催スケジュールオープニング動画(mp4形式,200MBまで)
+     * @type {File}
+     * @memberof V1UploadScheduleOpeningVideoRequest
+     */
+    'video'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadScheduleThumbnailRequest
+ */
+export interface V1UploadScheduleThumbnailRequest {
+    /**
+     * 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
+     * @type {File}
+     * @memberof V1UploadScheduleThumbnailRequest
+     */
+    'image'?: File;
+}
+/**
+ * 
+ * @export
+ * @interface V1UploadVideoResponse
+ */
+export interface V1UploadVideoResponse {
+    /**
+     * 動画アップロード先URL
+     * @type {string}
+     * @memberof V1UploadVideoResponse
+     */
+    'url': string;
 }
 /**
  * 
@@ -8234,13 +8775,15 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
          * 
          * @summary ライブ配信中の入力をMP4へ切り替え
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {File} [video] ライブ配信中に流す映像(mp4形式,200MBまで)
+         * @param {ActivateBroadcastMP4Request} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ActivateBroadcastMP4: async (scheduleId: string, video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ActivateBroadcastMP4: async (scheduleId: string, body: ActivateBroadcastMP4Request, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1ActivateBroadcastMP4', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ActivateBroadcastMP4', 'body', body)
             const localVarPath = `/v1/schedules/{scheduleId}/broadcasts/mp4`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -8253,24 +8796,19 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
     
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8431,6 +8969,90 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
         },
         /**
          * 
+         * @summary ライブ配信アーカイブ動画アップロード用URL取得
+         * @param {string} scheduleId 開催スケジュールID
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetBroadcastArchiveUploadUrl: async (scheduleId: string, body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1GetBroadcastArchiveUploadUrl', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetBroadcastArchiveUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/schedules/{scheduleId}/broadcasts/archive`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary ライブ配信入力動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetBroadcastLiveUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetBroadcastLiveUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/schedules/-/broadcasts/live`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary マルシェライブ配信一時停止
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -8509,13 +9131,15 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
          * 
          * @summary オンデマンド配信用の映像をアップロード
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {File} [video] オンデマンド配信用の映像(mp4形式,200MBまで)
+         * @param {UpdateBroadcastArchiveRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateBroadcastArchive: async (scheduleId: string, video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1UpdateBroadcastArchive: async (scheduleId: string, body: UpdateBroadcastArchiveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1UpdateBroadcastArchive', 'scheduleId', scheduleId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateBroadcastArchive', 'body', body)
             const localVarPath = `/v1/schedules/{scheduleId}/broadcasts/archive-video`
                 .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -8528,24 +9152,19 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
     
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8566,12 +9185,12 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
          * 
          * @summary ライブ配信中の入力をMP4へ切り替え
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {File} [video] ライブ配信中に流す映像(mp4形式,200MBまで)
+         * @param {ActivateBroadcastMP4Request} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ActivateBroadcastMP4(scheduleId: string, video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ActivateBroadcastMP4(scheduleId, video, options);
+        async v1ActivateBroadcastMP4(scheduleId: string, body: ActivateBroadcastMP4Request, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ActivateBroadcastMP4(scheduleId, body, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['BroadcastApi.v1ActivateBroadcastMP4']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
@@ -8630,6 +9249,33 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary ライブ配信アーカイブ動画アップロード用URL取得
+         * @param {string} scheduleId 開催スケジュールID
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetBroadcastArchiveUploadUrl(scheduleId: string, body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetBroadcastArchiveUploadUrl(scheduleId, body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['BroadcastApi.v1GetBroadcastArchiveUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary ライブ配信入力動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetBroadcastLiveUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetBroadcastLiveUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['BroadcastApi.v1GetBroadcastLiveUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary マルシェライブ配信一時停止
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -8658,12 +9304,12 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
          * 
          * @summary オンデマンド配信用の映像をアップロード
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {File} [video] オンデマンド配信用の映像(mp4形式,200MBまで)
+         * @param {UpdateBroadcastArchiveRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1UpdateBroadcastArchive(scheduleId: string, video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateBroadcastArchive(scheduleId, video, options);
+        async v1UpdateBroadcastArchive(scheduleId: string, body: UpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateBroadcastArchive(scheduleId, body, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['BroadcastApi.v1UpdateBroadcastArchive']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
@@ -8682,12 +9328,12 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * 
          * @summary ライブ配信中の入力をMP4へ切り替え
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {File} [video] ライブ配信中に流す映像(mp4形式,200MBまで)
+         * @param {ActivateBroadcastMP4Request} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ActivateBroadcastMP4(scheduleId: string, video?: File, options?: any): AxiosPromise<object> {
-            return localVarFp.v1ActivateBroadcastMP4(scheduleId, video, options).then((request) => request(axios, basePath));
+        v1ActivateBroadcastMP4(scheduleId: string, body: ActivateBroadcastMP4Request, options?: any): AxiosPromise<object> {
+            return localVarFp.v1ActivateBroadcastMP4(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8731,6 +9377,27 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
         },
         /**
          * 
+         * @summary ライブ配信アーカイブ動画アップロード用URL取得
+         * @param {string} scheduleId 開催スケジュールID
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetBroadcastArchiveUploadUrl(scheduleId: string, body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetBroadcastArchiveUploadUrl(scheduleId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary ライブ配信入力動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetBroadcastLiveUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetBroadcastLiveUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary マルシェライブ配信一時停止
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -8753,12 +9420,12 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * 
          * @summary オンデマンド配信用の映像をアップロード
          * @param {string} scheduleId マルシェ開催スケジュールID
-         * @param {File} [video] オンデマンド配信用の映像(mp4形式,200MBまで)
+         * @param {UpdateBroadcastArchiveRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateBroadcastArchive(scheduleId: string, video?: File, options?: any): AxiosPromise<object> {
-            return localVarFp.v1UpdateBroadcastArchive(scheduleId, video, options).then((request) => request(axios, basePath));
+        v1UpdateBroadcastArchive(scheduleId: string, body: UpdateBroadcastArchiveRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateBroadcastArchive(scheduleId, body, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -8774,13 +9441,13 @@ export class BroadcastApi extends BaseAPI {
      * 
      * @summary ライブ配信中の入力をMP4へ切り替え
      * @param {string} scheduleId マルシェ開催スケジュールID
-     * @param {File} [video] ライブ配信中に流す映像(mp4形式,200MBまで)
+     * @param {ActivateBroadcastMP4Request} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1ActivateBroadcastMP4(scheduleId: string, video?: File, options?: RawAxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1ActivateBroadcastMP4(scheduleId, video, options).then((request) => request(this.axios, this.basePath));
+    public v1ActivateBroadcastMP4(scheduleId: string, body: ActivateBroadcastMP4Request, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1ActivateBroadcastMP4(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8833,6 +9500,31 @@ export class BroadcastApi extends BaseAPI {
 
     /**
      * 
+     * @summary ライブ配信アーカイブ動画アップロード用URL取得
+     * @param {string} scheduleId 開催スケジュールID
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BroadcastApi
+     */
+    public v1GetBroadcastArchiveUploadUrl(scheduleId: string, body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1GetBroadcastArchiveUploadUrl(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary ライブ配信入力動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BroadcastApi
+     */
+    public v1GetBroadcastLiveUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1GetBroadcastLiveUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary マルシェライブ配信一時停止
      * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {*} [options] Override http request option.
@@ -8859,13 +9551,13 @@ export class BroadcastApi extends BaseAPI {
      * 
      * @summary オンデマンド配信用の映像をアップロード
      * @param {string} scheduleId マルシェ開催スケジュールID
-     * @param {File} [video] オンデマンド配信用の映像(mp4形式,200MBまで)
+     * @param {UpdateBroadcastArchiveRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1UpdateBroadcastArchive(scheduleId: string, video?: File, options?: RawAxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1UpdateBroadcastArchive(scheduleId, video, options).then((request) => request(this.axios, this.basePath));
+    public v1UpdateBroadcastArchive(scheduleId: string, body: UpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1UpdateBroadcastArchive(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -9980,6 +10672,166 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary コーディネータ購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorBonusVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetCoordinatorBonusVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/coordinators/bonus-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary コーディネータヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorHeaderUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetCoordinatorHeaderUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/coordinators/header`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorPromotionVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetCoordinatorPromotionVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/coordinators/promotion-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary コーディネータサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorThumbnailUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetCoordinatorThumbnailUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/coordinators/thumbnail`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary コーディネータ一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -10207,178 +11059,6 @@ export const CoordinatorApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary コーディネータ購入特典動画アップロード
-         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorBonusVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/coordinators/bonus-video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary コーディネータヘッダー画像アップロード
-         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorHeader: async (image?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/coordinators/header`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary コーディネータ紹介動画アップロード
-         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorPromotionVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/coordinators/promotion-video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary コーディネータサムネイルアップロード
-         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorThumbnail: async (thumbnail?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/coordinators/thumbnail`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (thumbnail !== undefined) { 
-                localVarFormParams.append('thumbnail', thumbnail as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -10426,6 +11106,58 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinator(coordinatorId, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinator']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary コーディネータ購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetCoordinatorBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinatorBonusVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinatorBonusVideoUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary コーディネータヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetCoordinatorHeaderUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinatorHeaderUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinatorHeaderUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetCoordinatorPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinatorPromotionVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinatorPromotionVideoUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary コーディネータサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetCoordinatorThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetCoordinatorThumbnailUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CoordinatorApi.v1GetCoordinatorThumbnailUploadUrl']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
@@ -10500,58 +11232,6 @@ export const CoordinatorApiFp = function(configuration?: Configuration) {
             const operationBasePath = operationServerMap['CoordinatorApi.v1UpdateCoordinatorPassword']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
-        /**
-         * 
-         * @summary コーディネータ購入特典動画アップロード
-         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadCoordinatorBonusVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorBonusVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorBonusVideo']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary コーディネータヘッダー画像アップロード
-         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadCoordinatorHeader(image?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorHeader(image, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorHeader']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary コーディネータ紹介動画アップロード
-         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadCoordinatorPromotionVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorPromotionVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorPromotionVideo']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary コーディネータサムネイルアップロード
-         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadCoordinatorThumbnail(thumbnail?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadCoordinatorThumbnail(thumbnail, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['CoordinatorApi.v1UploadCoordinatorThumbnail']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
     }
 };
 
@@ -10591,6 +11271,46 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          */
         v1GetCoordinator(coordinatorId: string, options?: any): AxiosPromise<CoordinatorResponse> {
             return localVarFp.v1GetCoordinator(coordinatorId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary コーディネータ購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetCoordinatorBonusVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary コーディネータヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorHeaderUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetCoordinatorHeaderUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary コーディネータ紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetCoordinatorPromotionVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary コーディネータサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetCoordinatorThumbnailUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetCoordinatorThumbnailUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -10649,46 +11369,6 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
         v1UpdateCoordinatorPassword(coordinatorId: string, body: object, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateCoordinatorPassword(coordinatorId, body, options).then((request) => request(axios, basePath));
         },
-        /**
-         * 
-         * @summary コーディネータ購入特典動画アップロード
-         * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorBonusVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadCoordinatorBonusVideo(video, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary コーディネータヘッダー画像アップロード
-         * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorHeader(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadCoordinatorHeader(image, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary コーディネータ紹介動画アップロード
-         * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorPromotionVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadCoordinatorPromotionVideo(video, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary コーディネータサムネイルアップロード
-         * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadCoordinatorThumbnail(thumbnail?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(axios, basePath));
-        },
     };
 };
 
@@ -10733,6 +11413,54 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1GetCoordinator(coordinatorId: string, options?: RawAxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1GetCoordinator(coordinatorId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary コーディネータ購入特典動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1GetCoordinatorBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1GetCoordinatorBonusVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary コーディネータヘッダー画像アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1GetCoordinatorHeaderUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1GetCoordinatorHeaderUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary コーディネータ紹介動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1GetCoordinatorPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1GetCoordinatorPromotionVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary コーディネータサムネイルアップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoordinatorApi
+     */
+    public v1GetCoordinatorThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return CoordinatorApiFp(this.configuration).v1GetCoordinatorThumbnailUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -10800,54 +11528,6 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1UpdateCoordinatorPassword(coordinatorId: string, body: object, options?: RawAxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1UpdateCoordinatorPassword(coordinatorId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary コーディネータ購入特典動画アップロード
-     * @param {File} [video] コーディネータ購入特典映像(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CoordinatorApi
-     */
-    public v1UploadCoordinatorBonusVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorBonusVideo(video, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary コーディネータヘッダー画像アップロード
-     * @param {File} [image] コーディネータヘッダー画像(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CoordinatorApi
-     */
-    public v1UploadCoordinatorHeader(image?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorHeader(image, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary コーディネータ紹介動画アップロード
-     * @param {File} [video] コーディネータ紹介映像(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CoordinatorApi
-     */
-    public v1UploadCoordinatorPromotionVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorPromotionVideo(video, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary コーディネータサムネイルアップロード
-     * @param {File} [thumbnail] コーディネータサムネイル(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CoordinatorApi
-     */
-    public v1UploadCoordinatorThumbnail(thumbnail?: File, options?: RawAxiosRequestConfig) {
-        return CoordinatorApiFp(this.configuration).v1UploadCoordinatorThumbnail(thumbnail, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -12557,6 +13237,47 @@ export const OtherApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
+         * @summary ファイルアップロード状態取得
+         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetUploadState: async (src: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'src' is not null or undefined
+            assertParamExists('v1GetUploadState', 'src', src)
+            const localVarPath = `/v1/upload/state`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (src !== undefined) {
+                localVarQueryParameter['src'] = src;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 郵便番号情報検索
          * @param {string} postalCode 郵便番号(ハイフンなし)
          * @param {*} [options] Override http request option.
@@ -12605,6 +13326,19 @@ export const OtherApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary ファイルアップロード状態取得
+         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetUploadState(src: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadStateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetUploadState(src, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['OtherApi.v1GetUploadState']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary 郵便番号情報検索
          * @param {string} postalCode 郵便番号(ハイフンなし)
          * @param {*} [options] Override http request option.
@@ -12628,6 +13362,16 @@ export const OtherApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
+         * @summary ファイルアップロード状態取得
+         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetUploadState(src: string, options?: any): AxiosPromise<UploadStateResponse> {
+            return localVarFp.v1GetUploadState(src, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 郵便番号情報検索
          * @param {string} postalCode 郵便番号(ハイフンなし)
          * @param {*} [options] Override http request option.
@@ -12646,6 +13390,18 @@ export const OtherApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class OtherApi extends BaseAPI {
+    /**
+     * 
+     * @summary ファイルアップロード状態取得
+     * @param {string} src アップロード先ファイルURL(署名付きURL)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OtherApi
+     */
+    public v1GetUploadState(src: string, options?: RawAxiosRequestConfig) {
+        return OtherApiFp(this.configuration).v1GetUploadState(src, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary 郵便番号情報検索
@@ -12972,6 +13728,166 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary 生産者購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducerBonusVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProducerBonusVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/producers/bonus-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 生産者ヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducerHeaderUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProducerHeaderUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/producers/header`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 生産者紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducerPromotionVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProducerPromotionVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/producers/promotion-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 生産者サムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducerThumbnailUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProducerThumbnailUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/producers/thumbnail`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 生産者一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -13063,178 +13979,6 @@ export const ProducerApiAxiosParamCreator = function (configuration?: Configurat
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary 生産者購入特典動画アップロード
-         * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerBonusVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/producers/bonus-video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者ヘッダー画像アップロード
-         * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerHeader: async (image?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/producers/header`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者紹介動画アップロード
-         * @param {File} [video] 生産者紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerPromotionVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/producers/promotion-video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 生産者サムネイルアップロード
-         * @param {File} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerThumbnail: async (thumbnail?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/producers/thumbnail`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (thumbnail !== undefined) { 
-                localVarFormParams.append('thumbnail', thumbnail as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -13286,6 +14030,58 @@ export const ProducerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 生産者購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProducerBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProducerBonusVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProducerApi.v1GetProducerBonusVideoUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 生産者ヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProducerHeaderUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProducerHeaderUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProducerApi.v1GetProducerHeaderUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 生産者紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProducerPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProducerPromotionVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProducerApi.v1GetProducerPromotionVideoUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 生産者サムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProducerThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProducerThumbnailUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProducerApi.v1GetProducerThumbnailUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary 生産者一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -13311,58 +14107,6 @@ export const ProducerApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProducer(producerId, body, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['ProducerApi.v1UpdateProducer']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 生産者購入特典動画アップロード
-         * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProducerBonusVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerBonusVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProducerApi.v1UploadProducerBonusVideo']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 生産者ヘッダー画像アップロード
-         * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProducerHeader(image?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerHeader(image, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProducerApi.v1UploadProducerHeader']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 生産者紹介動画アップロード
-         * @param {File} [video] 生産者紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProducerPromotionVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerPromotionVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProducerApi.v1UploadProducerPromotionVideo']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 生産者サムネイルアップロード
-         * @param {File} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProducerThumbnail(thumbnail?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProducerThumbnail(thumbnail, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProducerApi.v1UploadProducerThumbnail']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
     }
@@ -13407,6 +14151,46 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary 生産者購入特典動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducerBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProducerBonusVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 生産者ヘッダー画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducerHeaderUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProducerHeaderUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 生産者紹介動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducerPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProducerPromotionVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 生産者サムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProducerThumbnailUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProducerThumbnailUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 生産者一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -13427,46 +14211,6 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          */
         v1UpdateProducer(producerId: string, body: UpdateProducerRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateProducer(producerId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者購入特典動画アップロード
-         * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerBonusVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadProducerBonusVideo(video, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者ヘッダー画像アップロード
-         * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerHeader(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadProducerHeader(image, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者紹介動画アップロード
-         * @param {File} [video] 生産者紹介映像(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerPromotionVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadProducerPromotionVideo(video, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 生産者サムネイルアップロード
-         * @param {File} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProducerThumbnail(thumbnail?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadProducerThumbnail(thumbnail, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -13516,6 +14260,54 @@ export class ProducerApi extends BaseAPI {
 
     /**
      * 
+     * @summary 生産者購入特典動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1GetProducerBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1GetProducerBonusVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者ヘッダー画像アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1GetProducerHeaderUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1GetProducerHeaderUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者紹介動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1GetProducerPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1GetProducerPromotionVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 生産者サムネイルアップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProducerApi
+     */
+    public v1GetProducerThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProducerApiFp(this.configuration).v1GetProducerThumbnailUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary 生産者一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
@@ -13539,54 +14331,6 @@ export class ProducerApi extends BaseAPI {
      */
     public v1UpdateProducer(producerId: string, body: UpdateProducerRequest, options?: RawAxiosRequestConfig) {
         return ProducerApiFp(this.configuration).v1UpdateProducer(producerId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 生産者購入特典動画アップロード
-     * @param {File} [video] 生産者購入特典映像(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProducerApi
-     */
-    public v1UploadProducerBonusVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1UploadProducerBonusVideo(video, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 生産者ヘッダー画像アップロード
-     * @param {File} [image] 生産者ヘッダー画像(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProducerApi
-     */
-    public v1UploadProducerHeader(image?: File, options?: RawAxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1UploadProducerHeader(image, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 生産者紹介動画アップロード
-     * @param {File} [video] 生産者紹介映像(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProducerApi
-     */
-    public v1UploadProducerPromotionVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1UploadProducerPromotionVideo(video, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 生産者サムネイルアップロード
-     * @param {File} [thumbnail] 生産者サムネイル(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProducerApi
-     */
-    public v1UploadProducerThumbnail(thumbnail?: File, options?: RawAxiosRequestConfig) {
-        return ProducerApiFp(this.configuration).v1UploadProducerThumbnail(thumbnail, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -13716,6 +14460,86 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary 商品画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductImageUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProductImageUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/products/image`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 商品動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProductVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/products/video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 商品一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -13817,92 +14641,6 @@ export const ProductApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary 商品画像アップロード
-         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductImage: async (image?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/products/image`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 商品動画アップロード
-         * @param {File} [video] 商品動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/products/video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -13954,6 +14692,32 @@ export const ProductApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 商品画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProductImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProductImageUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProductApi.v1GetProductImageUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 商品動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProductVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProductVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProductApi.v1GetProductVideoUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary 商品一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -13981,32 +14745,6 @@ export const ProductApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateProduct(productId, body, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['ProductApi.v1UpdateProduct']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 商品画像アップロード
-         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProductImage(image?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductImage(image, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProductApi.v1UploadProductImage']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 商品動画アップロード
-         * @param {File} [video] 商品動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProductVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProductApi.v1UploadProductVideo']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
     }
@@ -14051,6 +14789,26 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary 商品画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductImageUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProductImageUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 商品動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProductVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 商品一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -14073,26 +14831,6 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          */
         v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateProduct(productId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 商品画像アップロード
-         * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductImage(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadProductImage(image, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 商品動画アップロード
-         * @param {File} [video] 商品動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadProductVideo(video, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -14142,6 +14880,30 @@ export class ProductApi extends BaseAPI {
 
     /**
      * 
+     * @summary 商品画像アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1GetProductImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1GetProductImageUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 商品動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductApi
+     */
+    public v1GetProductVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProductApiFp(this.configuration).v1GetProductVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary 商品一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
@@ -14167,30 +14929,6 @@ export class ProductApi extends BaseAPI {
      */
     public v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: RawAxiosRequestConfig) {
         return ProductApiFp(this.configuration).v1UpdateProduct(productId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 商品画像アップロード
-     * @param {File} [image] 商品画像(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProductApi
-     */
-    public v1UploadProductImage(image?: File, options?: RawAxiosRequestConfig) {
-        return ProductApiFp(this.configuration).v1UploadProductImage(image, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 商品動画アップロード
-     * @param {File} [video] 商品動画(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProductApi
-     */
-    public v1UploadProductVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return ProductApiFp(this.configuration).v1UploadProductVideo(video, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -14657,6 +15395,46 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary 品目アイコンアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductTypeIconUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetProductTypeIconUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/product-types/icon`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 品目一覧取得(商品種別指定なし)
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -14815,49 +15593,6 @@ export const ProductTypeApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary 品目アイコンアップロード
-         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductTypeIcon: async (icon?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/product-types/icon`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (icon !== undefined) { 
-                localVarFormParams.append('icon', icon as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -14894,6 +15629,19 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteProductType(categoryId, productTypeId, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['ProductTypeApi.v1DeleteProductType']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 品目アイコンアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetProductTypeIconUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetProductTypeIconUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ProductTypeApi.v1GetProductTypeIconUploadUrl']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
@@ -14944,19 +15692,6 @@ export const ProductTypeApiFp = function(configuration?: Configuration) {
             const operationBasePath = operationServerMap['ProductTypeApi.v1UpdateProductType']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
-        /**
-         * 
-         * @summary 品目アイコンアップロード
-         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadProductTypeIcon(icon?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadProductTypeIcon(icon, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ProductTypeApi.v1UploadProductTypeIcon']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
     }
 };
 
@@ -14988,6 +15723,16 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          */
         v1DeleteProductType(categoryId: string, productTypeId: string, options?: any): AxiosPromise<object> {
             return localVarFp.v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 品目アイコンアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetProductTypeIconUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetProductTypeIconUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -15028,16 +15773,6 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
         v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(axios, basePath));
         },
-        /**
-         * 
-         * @summary 品目アイコンアップロード
-         * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadProductTypeIcon(icon?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadProductTypeIcon(icon, options).then((request) => request(axios, basePath));
-        },
     };
 };
 
@@ -15072,6 +15807,18 @@ export class ProductTypeApi extends BaseAPI {
      */
     public v1DeleteProductType(categoryId: string, productTypeId: string, options?: RawAxiosRequestConfig) {
         return ProductTypeApiFp(this.configuration).v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 品目アイコンアップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProductTypeApi
+     */
+    public v1GetProductTypeIconUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ProductTypeApiFp(this.configuration).v1GetProductTypeIconUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -15117,18 +15864,6 @@ export class ProductTypeApi extends BaseAPI {
      */
     public v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: RawAxiosRequestConfig) {
         return ProductTypeApiFp(this.configuration).v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 品目アイコンアップロード
-     * @param {File} [icon] 商品アイコン(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ProductTypeApi
-     */
-    public v1UploadProductTypeIcon(icon?: File, options?: RawAxiosRequestConfig) {
-        return ProductTypeApiFp(this.configuration).v1UploadProductTypeIcon(icon, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -15704,6 +16439,126 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary 開催スケジュール蓋絵アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetScheduleImageUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetScheduleImageUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/schedules/image`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 開催スケジュールオープニング動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetScheduleOpeningVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetScheduleOpeningVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/schedules/opening-video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 開催スケジュールサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetScheduleThumbnailUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetScheduleThumbnailUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/schedules/thumbnail`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -15834,135 +16689,6 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary 開催スケジュール蓋絵アップロード
-         * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadScheduleImage: async (image?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/schedules/image`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 開催スケジュールオープニング動画アップロード
-         * @param {File} [video] 開催スケジュールオープニング動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadScheduleOpeningVideo: async (video?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/schedules/opening-video`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (video !== undefined) { 
-                localVarFormParams.append('video', video as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary 開催スケジュールサムネイルアップロード
-         * @param {File} [image] 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadScheduleThumbnail: async (image?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/upload/schedules/thumbnail`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-            if (image !== undefined) { 
-                localVarFormParams.append('image', image as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -16015,6 +16741,45 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 開催スケジュール蓋絵アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetScheduleImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetScheduleImageUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ScheduleApi.v1GetScheduleImageUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 開催スケジュールオープニング動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetScheduleOpeningVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetScheduleOpeningVideoUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ScheduleApi.v1GetScheduleOpeningVideoUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 開催スケジュールサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetScheduleThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetScheduleThumbnailUploadUrl(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ScheduleApi.v1GetScheduleThumbnailUploadUrl']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -16053,45 +16818,6 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateSchedule(scheduleId, body, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['ScheduleApi.v1UpdateSchedule']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 開催スケジュール蓋絵アップロード
-         * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadScheduleImage(image?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadScheduleImage(image, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ScheduleApi.v1UploadScheduleImage']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 開催スケジュールオープニング動画アップロード
-         * @param {File} [video] 開催スケジュールオープニング動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadScheduleOpeningVideo(video?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadVideoResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadScheduleOpeningVideo(video, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ScheduleApi.v1UploadScheduleOpeningVideo']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary 開催スケジュールサムネイルアップロード
-         * @param {File} [image] 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UploadScheduleThumbnail(image?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadImageResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UploadScheduleThumbnail(image, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['ScheduleApi.v1UploadScheduleThumbnail']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
     }
@@ -16137,6 +16863,36 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary 開催スケジュール蓋絵アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetScheduleImageUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetScheduleImageUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 開催スケジュールオープニング動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetScheduleOpeningVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetScheduleOpeningVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 開催スケジュールサムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetScheduleThumbnailUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetScheduleThumbnailUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -16167,36 +16923,6 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          */
         v1UpdateSchedule(scheduleId: string, body: UpdateScheduleRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1UpdateSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 開催スケジュール蓋絵アップロード
-         * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadScheduleImage(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadScheduleImage(image, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 開催スケジュールオープニング動画アップロード
-         * @param {File} [video] 開催スケジュールオープニング動画(mp4形式,200MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadScheduleOpeningVideo(video?: File, options?: any): AxiosPromise<UploadVideoResponse> {
-            return localVarFp.v1UploadScheduleOpeningVideo(video, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary 開催スケジュールサムネイルアップロード
-         * @param {File} [image] 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UploadScheduleThumbnail(image?: File, options?: any): AxiosPromise<UploadImageResponse> {
-            return localVarFp.v1UploadScheduleThumbnail(image, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -16247,6 +16973,42 @@ export class ScheduleApi extends BaseAPI {
 
     /**
      * 
+     * @summary 開催スケジュール蓋絵アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1GetScheduleImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1GetScheduleImageUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 開催スケジュールオープニング動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1GetScheduleOpeningVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1GetScheduleOpeningVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 開催スケジュールサムネイルアップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1GetScheduleThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1GetScheduleThumbnailUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary マルシェ開催スケジュール一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
@@ -16282,42 +17044,6 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1UpdateSchedule(scheduleId: string, body: UpdateScheduleRequest, options?: RawAxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1UpdateSchedule(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 開催スケジュール蓋絵アップロード
-     * @param {File} [image] 開催スケジュール蓋絵画像(png形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ScheduleApi
-     */
-    public v1UploadScheduleImage(image?: File, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1UploadScheduleImage(image, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 開催スケジュールオープニング動画アップロード
-     * @param {File} [video] 開催スケジュールオープニング動画(mp4形式,200MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ScheduleApi
-     */
-    public v1UploadScheduleOpeningVideo(video?: File, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1UploadScheduleOpeningVideo(video, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary 開催スケジュールサムネイルアップロード
-     * @param {File} [image] 開催スケジュールサムネイル画像(png,jpeg形式,10MBまで)
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ScheduleApi
-     */
-    public v1UploadScheduleThumbnail(image?: File, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1UploadScheduleThumbnail(image, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

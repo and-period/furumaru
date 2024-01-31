@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -132,53 +131,6 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	var thumbnailURL, headerURL, promotionVideoURL, bonusVideoURL string
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		if req.ThumbnailURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.ThumbnailURL,
-		}
-		thumbnailURL, err = h.media.UploadCoordinatorThumbnail(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.HeaderURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.HeaderURL,
-		}
-		headerURL, err = h.media.UploadCoordinatorHeader(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.PromotionVideoURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.PromotionVideoURL,
-		}
-		promotionVideoURL, err = h.media.UploadCoordinatorPromotionVideo(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.BonusVideoURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.BonusVideoURL,
-		}
-		bonusVideoURL, err = h.media.UploadCoordinatorBonusVideo(ectx, in)
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
 	in := &user.CreateCoordinatorInput{
 		Lastname:          req.Lastname,
 		Firstname:         req.Firstname,
@@ -188,10 +140,10 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		Username:          req.Username,
 		Profile:           req.Profile,
 		ProductTypeIDs:    req.ProductTypeIDs,
-		ThumbnailURL:      thumbnailURL,
-		HeaderURL:         headerURL,
-		PromotionVideoURL: promotionVideoURL,
-		BonusVideoURL:     bonusVideoURL,
+		ThumbnailURL:      req.ThumbnailURL,
+		HeaderURL:         req.HeaderURL,
+		PromotionVideoURL: req.PromotionVideoURL,
+		BonusVideoURL:     req.BonusVideoURL,
 		InstagramID:       req.InstagramID,
 		FacebookID:        req.FacebookID,
 		Email:             req.Email,
@@ -231,53 +183,6 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	var thumbnailURL, headerURL, promotionVideoURL, bonusVideoURL string
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		if req.ThumbnailURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.ThumbnailURL,
-		}
-		thumbnailURL, err = h.media.UploadCoordinatorThumbnail(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.HeaderURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.HeaderURL,
-		}
-		headerURL, err = h.media.UploadCoordinatorHeader(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.PromotionVideoURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.PromotionVideoURL,
-		}
-		promotionVideoURL, err = h.media.UploadCoordinatorPromotionVideo(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.BonusVideoURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.BonusVideoURL,
-		}
-		bonusVideoURL, err = h.media.UploadCoordinatorBonusVideo(ectx, in)
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
 	in := &user.UpdateCoordinatorInput{
 		CoordinatorID:     util.GetParam(ctx, "coordinatorId"),
 		Lastname:          req.Lastname,
@@ -288,10 +193,10 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		Username:          req.Username,
 		Profile:           req.Profile,
 		ProductTypeIDs:    req.ProductTypeIDs,
-		ThumbnailURL:      thumbnailURL,
-		HeaderURL:         headerURL,
-		PromotionVideoURL: promotionVideoURL,
-		BonusVideoURL:     bonusVideoURL,
+		ThumbnailURL:      req.ThumbnailURL,
+		HeaderURL:         req.HeaderURL,
+		PromotionVideoURL: req.PromotionVideoURL,
+		BonusVideoURL:     req.BonusVideoURL,
 		InstagramID:       req.InstagramID,
 		FacebookID:        req.FacebookID,
 		PhoneNumber:       req.PhoneNumber,

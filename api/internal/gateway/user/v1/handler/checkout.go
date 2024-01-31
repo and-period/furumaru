@@ -38,7 +38,7 @@ func (h *handler) Checkout(ctx *gin.Context) {
 		return
 	}
 	detail := &store.CheckoutDetail{
-		UserID:            getUserID(ctx),
+		UserID:            h.getUserID(ctx),
 		SessionID:         h.getSessionID(ctx),
 		RequestID:         req.RequestID,
 		CoordinatorID:     req.CoordinatorID,
@@ -107,7 +107,7 @@ func (h *handler) Checkout(ctx *gin.Context) {
 
 func (h *handler) GetCheckoutState(ctx *gin.Context) {
 	in := &store.GetCheckoutStateInput{
-		UserID:        getUserID(ctx),
+		UserID:        h.getUserID(ctx),
 		TransactionID: util.GetParam(ctx, "transactionId"),
 	}
 	orderID, status, err := h.store.GetCheckoutState(ctx, in)

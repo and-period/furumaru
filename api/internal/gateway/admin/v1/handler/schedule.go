@@ -10,11 +10,9 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
-	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
@@ -140,50 +138,13 @@ func (h *handler) CreateSchedule(ctx *gin.Context) {
 		return
 	}
 
-	var thumbnailURL, imageURL, openingVideoURL string
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		if req.ThumbnailURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.ThumbnailURL,
-		}
-		thumbnailURL, err = h.media.UploadScheduleThumbnail(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.ImageURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.ImageURL,
-		}
-		imageURL, err = h.media.UploadScheduleImage(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.OpeningVideoURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.OpeningVideoURL,
-		}
-		openingVideoURL, err = h.media.UploadScheduleOpeningVideo(ectx, in)
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
 	in := &store.CreateScheduleInput{
 		CoordinatorID:   req.CoordinatorID,
 		Title:           req.Title,
 		Description:     req.Description,
-		ThumbnailURL:    thumbnailURL,
-		ImageURL:        imageURL,
-		OpeningVideoURL: openingVideoURL,
+		ThumbnailURL:    req.ThumbnailURL,
+		ImageURL:        req.ImageURL,
+		OpeningVideoURL: req.OpeningVideoURL,
 		Public:          req.Public,
 		StartAt:         jst.ParseFromUnix(req.StartAt),
 		EndAt:           jst.ParseFromUnix(req.EndAt),
@@ -209,50 +170,13 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 		return
 	}
 
-	var thumbnailURL, imageURL, openingVideoURL string
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		if req.ThumbnailURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.ThumbnailURL,
-		}
-		thumbnailURL, err = h.media.UploadScheduleThumbnail(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.ImageURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.ImageURL,
-		}
-		imageURL, err = h.media.UploadScheduleImage(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		if req.OpeningVideoURL == "" {
-			return
-		}
-		in := &media.UploadFileInput{
-			URL: req.OpeningVideoURL,
-		}
-		openingVideoURL, err = h.media.UploadScheduleOpeningVideo(ectx, in)
-		return
-	})
-	if err := eg.Wait(); err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
 	in := &store.UpdateScheduleInput{
 		ScheduleID:      util.GetParam(ctx, "scheduleId"),
 		Title:           req.Title,
 		Description:     req.Description,
-		ThumbnailURL:    thumbnailURL,
-		ImageURL:        imageURL,
-		OpeningVideoURL: openingVideoURL,
+		ThumbnailURL:    req.ThumbnailURL,
+		ImageURL:        req.ImageURL,
+		OpeningVideoURL: req.OpeningVideoURL,
 		StartAt:         jst.ParseFromUnix(req.StartAt),
 		EndAt:           jst.ParseFromUnix(req.EndAt),
 	}
