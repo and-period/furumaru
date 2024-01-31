@@ -4527,12 +4527,12 @@
     "@unhead/schema" "1.8.9"
 
 "@unhead/ssr@^1.8.9":
-  version "1.8.9"
-  resolved "https://registry.yarnpkg.com/@unhead/ssr/-/ssr-1.8.9.tgz#69ba063009db83b7ad30cdcb94a43e869b58b22a"
-  integrity sha512-sQaA4FDFD1tRD2JiiHfdEY5rF1i54qFxCRqdX0pB+15JJCYBfIPJMr5T1SLJBgc9pqX4rS3MPg2Fc9DW+0p9yw==
+  version "1.8.10"
+  resolved "https://registry.yarnpkg.com/@unhead/ssr/-/ssr-1.8.10.tgz#057f0dc98bbe8f328fe01f70ba6bf39abf02956b"
+  integrity sha512-7wKRKDd8c2NFmMyPetj8Ah5u2hXunDBZT5Y2DH83O16PiMxx4/uobGamTV1EfcqjTvOKJvAqkrYZNYSWss99NQ==
   dependencies:
-    "@unhead/schema" "1.8.9"
-    "@unhead/shared" "1.8.9"
+    "@unhead/schema" "1.8.10"
+    "@unhead/shared" "1.8.10"
 
 "@unhead/vue@^1.8.9":
   version "1.8.10"
