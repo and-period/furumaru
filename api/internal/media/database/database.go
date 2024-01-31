@@ -5,6 +5,7 @@ package database
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
@@ -22,6 +23,7 @@ var (
 
 type Database struct {
 	Broadcast          Broadcast
+	BroadcastComment   BroadcastComment
 	BroadcastViewerLog BroadcastViewerLog
 }
 
@@ -69,6 +71,26 @@ type InitializeBroadcastParams struct {
 type UploadBroadcastArchiveParams struct {
 	ArchiveURL   string
 	ArchiveFixed bool
+}
+
+type BroadcastComment interface {
+	List(ctx context.Context, params *ListBroadcastCommentsParams, fields ...string) (entity.BroadcastComments, string, error)
+	Create(ctx context.Context, comment *entity.BroadcastComment) error
+}
+
+type ListBroadcastCommentsParams struct {
+	BroadcastID  string
+	WithDisabled bool
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
+	Limit        int64
+	NextToken    string
+	Orders       []*ListBroadcastCommentsOrder
+}
+
+type ListBroadcastCommentsOrder struct {
+	Key        entity.BroadcastCommentOrderBy
+	OrderByASC bool
 }
 
 type BroadcastViewerLog interface {

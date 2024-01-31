@@ -90,6 +90,8 @@ paths:
   # Schedule
   /v1/schedules/{scheduleId}:
     $ref: './paths/v1/schedules/_scheduleId/index.yaml'
+  /v1/schedules/{scheduleId}/comments:
+    $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
   # Coordinator
   /v1/coordinators:
     $ref: './paths/v1/coordinators/index.yaml'
@@ -181,6 +183,8 @@ components:
       $ref: './components/schemas/entity/live.yaml#/liveProduct'
     archiveSummary:
       $ref: './components/schemas/entity/live.yaml#/archiveSummary'
+    liveComment:
+      $ref: './components/schemas/entity/live-comment.yaml#/liveComment'
     order:
       $ref: './components/schemas/entity/order.yaml#/order'
     producer:
@@ -228,6 +232,8 @@ components:
       $ref: './components/schemas/v1/checkout.request.yaml#/checkoutRequest'
     v1CreateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
+    v1CreateLiveCommentRequest:
+      $ref: './components/schemas/v1/live-comment.request.yaml#/createLiveCommentRequest'
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
@@ -251,6 +257,8 @@ components:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
     v1CoordinatorsResponse:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
+    v1LiveCommentsResponse:
+      $ref: './components/schemas/v1/live-comment.response.yaml#/liveCommentsResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1OrdersResponse:

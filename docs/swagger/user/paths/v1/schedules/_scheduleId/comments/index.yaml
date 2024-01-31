@@ -1,0 +1,64 @@
+get:
+  summary: ライブ配信コメント取得
+  operationId: v1ListLiveComments
+  tags:
+  - Schedule
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: scheduleId
+    schema:
+      type: string
+    description: マルシェ開催スケジュールID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1LiveCommentsResponse'
+post:
+  summary: ライブ配信コメント投稿
+  operationId: v1CreateLiveComment
+  tags:
+  - Schedule
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: scheduleId
+    schema:
+      type: string
+    description: マルシェ開催スケジュールID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1CreateLiveCommentRequest'
+  responses:
+    204:
+      description: 成功
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: マルシェ開催スケジュールが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: ライブ配信時間外のためコメント投稿不可
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

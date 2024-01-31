@@ -50,6 +50,7 @@ type mocks struct {
 
 type dbMocks struct {
 	Broadcast          *mock_database.MockBroadcast
+	BroadcastComment   *mock_database.MockBroadcastComment
 	BroadcastViewerLog *mock_database.MockBroadcastViewerLog
 }
 
@@ -84,6 +85,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
 		Broadcast:          mock_database.NewMockBroadcast(ctrl),
+		BroadcastComment:   mock_database.NewMockBroadcastComment(ctrl),
 		BroadcastViewerLog: mock_database.NewMockBroadcastViewerLog(ctrl),
 	}
 }
@@ -99,6 +101,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
 			Broadcast:          mocks.db.Broadcast,
+			BroadcastComment:   mocks.db.BroadcastComment,
 			BroadcastViewerLog: mocks.db.BroadcastViewerLog,
 		},
 		Cache:     mocks.cache,

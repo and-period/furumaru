@@ -1,0 +1,23 @@
+liveCommentsResponse:
+  type: object
+  properties:
+    comments:
+      type: array
+      description: コメント一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/liveComment'
+    nextToken:
+      type: string
+      descripiton: 次の取得位置
+  required:
+  - comments
+  - nextToken
+  example:
+    comments:
+    - userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: 'ふるマル 太郎'
+      accountId: 'account-id'
+      thumbnailurl: 'http://example.com/thumbnail.png'
+      comment: 'こんにちは'
+      publishedAt: 1640962800
+    nextToken: '1640962800'
