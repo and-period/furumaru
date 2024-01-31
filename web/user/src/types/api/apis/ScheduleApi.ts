@@ -42,6 +42,11 @@ export interface V1GetScheduleRequest {
 
 export interface V1ListLiveCommentsRequest {
     scheduleId: string;
+    limit?: number;
+    next?: string;
+    start?: number;
+    end?: number;
+    orders?: string;
 }
 
 /**
@@ -132,6 +137,26 @@ export class ScheduleApi extends runtime.BaseAPI {
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
+
+        if (requestParameters.next !== undefined) {
+            queryParameters['next'] = requestParameters.next;
+        }
+
+        if (requestParameters.start !== undefined) {
+            queryParameters['start'] = requestParameters.start;
+        }
+
+        if (requestParameters.end !== undefined) {
+            queryParameters['end'] = requestParameters.end;
+        }
+
+        if (requestParameters.orders !== undefined) {
+            queryParameters['orders'] = requestParameters.orders;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
