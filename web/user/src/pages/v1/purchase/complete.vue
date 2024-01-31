@@ -4,6 +4,7 @@ import { useCheckoutStore } from '~/store/checkout'
 import type { CheckoutStateResponse } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
+const config = useRuntimeConfig()
 const router = useRouter()
 const route = useRoute()
 
@@ -59,6 +60,22 @@ onMounted(async () => {
       isLoading.value = false
     }
   }
+})
+
+useHead({
+  script: [
+    // 本番環境にだけ Meta Pixel Code を仕込む
+    ...(config.public.ENVIRONMENT === 'prd'
+      ? [
+          {
+            key: 'meta-picel-purchase',
+            src: '/meta/pixel-code-purchase.js',
+            defer: true,
+            type: 'text/javascript',
+          },
+        ]
+      : []),
+  ],
 })
 
 useSeoMeta({
