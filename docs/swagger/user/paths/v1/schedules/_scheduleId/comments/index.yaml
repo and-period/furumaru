@@ -3,8 +3,6 @@ get:
   operationId: v1ListLiveComments
   tags:
   - Schedule
-  security:
-  - bearerAuth: []
   parameters:
   - in: path
     name: scheduleId
