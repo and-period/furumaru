@@ -63,7 +63,7 @@ func (c *broadcastComment) List(
 		stmt = stmt.Order(value)
 	}
 	if len(params.Orders) == 0 {
-		stmt = stmt.Order("created_at ASC")
+		stmt = stmt.Order("created_at DESC")
 	}
 
 	if err := stmt.Find(&comments).Error; err != nil {

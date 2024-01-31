@@ -50,7 +50,7 @@ get:
       ソート
       ・複数指定時は`,`区切り
       ・降順の場合はprefixに`-`をつける
-      ・指定可能フィールド:publishedAt
+      ・指定可能フィールド:publishedAt（デフォルト:-publishedAt）
     required: false
     example: '-publishedAt'
   responses:
