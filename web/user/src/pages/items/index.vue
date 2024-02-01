@@ -142,6 +142,7 @@ const hideV1App = false
             v-for="product in products"
             :id="product.id"
             :key="product.id"
+            :status="product.status"
             :name="product.name"
             :price="product.price"
             :inventory="product.inventory"

@@ -1,8 +1,14 @@
 <script lang="ts" setup>
-import type { Coordinator, ProductMediaInner } from '~/types/api'
+import {
+  ProductStatus,
+  type Coordinator,
+  type ProductMediaInner,
+} from '~/types/api'
+import { productStatusToString } from '~/lib/product'
 
 interface Props {
   id: string
+  status: ProductStatus
   name: string
   inventory: number
   price: number
@@ -32,6 +38,13 @@ const priceString = computed<string>(() => {
   }).format(props.price)
 })
 
+const canAddCart = computed<boolean>(() => {
+  if (props.status === ProductStatus.FOR_SALE && props.hasStock) {
+    return true
+  }
+  return false
+})
+
 const handleClickItem = () => {
   emits('click:item', props.id)
 }
@@ -49,10 +62,16 @@ const handleClickAddCartButton = () => {
   <div class="flex flex-col text-main">
     <div class="relative">
       <div
-        v-if="!hasStock"
+        v-if="!canAddCart"
         class="absolute inset-0 flex items-center justify-center bg-black/50"
       >
-        <p class="text-lg font-semibold text-white">在庫なし</p>
+        <p class="text-lg font-semibold text-white">
+          {{
+            status === ProductStatus.OUT_OF_SALES
+              ? productStatusToString(status)
+              : '在庫なし'
+          }}
+        </p>
       </div>
       <picture
         v-if="thumbnail"
@@ -103,7 +122,7 @@ const handleClickAddCartButton = () => {
         </select>
       </div>
       <button
-        :disabled="!hasStock"
+        :disabled="!canAddCart"
         class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white disabled:cursor-not-allowed disabled:bg-main/60 lg:px-4 xl:text-[14px]"
         @click="handleClickAddCartButton"
       >
