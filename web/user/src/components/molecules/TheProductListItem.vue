@@ -67,9 +67,9 @@ const handleClickAddCartButton = () => {
       >
         <p class="text-lg font-semibold text-white">
           {{
-            status === ProductStatus.OUT_OF_SALES
-              ? productStatusToString(status)
-              : '在庫なし'
+            status === ProductStatus.FOR_SALE
+              ? '在庫なし'
+              : productStatusToString(status)
           }}
         </p>
       </div>

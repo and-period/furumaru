@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { Product } from '~/types/api'
+import { ProductStatus, type Product } from '~/types/api'
 import { priceFormatter } from '~/lib/price'
+import { productStatusToString } from '~/lib/product'
 
 interface Props {
   product: Product
@@ -34,6 +35,13 @@ const hasStock = computed<boolean>(() => {
   return props.product.inventory > 0
 })
 
+const canAddCart = computed<boolean>(() => {
+  if (props.product.status === ProductStatus.FOR_SALE && hasStock.value) {
+    return true
+  }
+  return false
+})
+
 const handleClickAddCart = () => {
   emits('click:addCart', props.product.name, props.product.id, formData.value)
 }
@@ -48,17 +56,23 @@ const handleClickItem = () => {
 <template>
   <div class="flex gap-[10px]">
     <template v-if="thumbnailUrl">
-      <div class="relative">
+      <div class="relative aspect-square max-w-[80px]">
         <div
-          v-if="!hasStock"
-          class="absolute inset-0 flex items-center justify-center bg-black/50"
+          v-if="!canAddCart"
+          class="absolute inset-0 flex h-full w-full items-center justify-center bg-black/50"
         >
-          <p class="text-[14px] font-semibold text-white">在庫なし</p>
+          <p class="text-[14px] font-semibold text-white">
+            {{
+              product.status === ProductStatus.FOR_SALE
+                ? '在庫なし'
+                : productStatusToString(product.status)
+            }}
+          </p>
         </div>
         <img
           :src="thumbnailUrl"
-          class="h-20 w-20"
-          :class="{ 'hover:cursor-pointer hover:underline': hasStock }"
+          class="aspect-square h-full w-full"
+          :class="{ 'hover:cursor-pointer hover:underline': canAddCart }"
           @click="handleClickItem"
         />
       </div>
@@ -66,7 +80,7 @@ const handleClickItem = () => {
     <div class="flex flex-col justify-between">
       <div
         class="text-[12px] tracking-[1.2px]"
-        :class="{ 'hover:cursor-pointer hover:underline': hasStock }"
+        :class="{ 'hover:cursor-pointer hover:underline': canAddCart }"
         @click="handleClickItem"
       >
         {{ product.name }}
@@ -97,7 +111,7 @@ const handleClickItem = () => {
           </div>
           <button
             class="flex h-full bg-main px-4 py-1 text-white disabled:cursor-not-allowed disabled:bg-main/60"
-            :disabled="!hasStock"
+            :disabled="!canAddCart"
             @click.stop="handleClickAddCart"
           >
             カゴに入れる
