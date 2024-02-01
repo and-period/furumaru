@@ -101,8 +101,8 @@ func (s *service) AddCartItem(ctx context.Context, in *store.AddCartItemInput) e
 	if err != nil {
 		return internalError(err)
 	}
-	if !product.Public {
-		return fmt.Errorf("service: this product is not published: %w", exception.ErrForbidden)
+	if product.Status != entity.ProductStatusForSale {
+		return fmt.Errorf("service: this product is out of sale: %w", exception.ErrForbidden)
 	}
 	cart, err := s.getCart(ctx, in.SessionID)
 	if err != nil {
