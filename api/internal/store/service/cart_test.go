@@ -619,10 +619,10 @@ func TestAddCartItem(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "product is not published",
+			name: "product is out of sale",
 			setup: func(ctx context.Context, mocks *mocks) {
 				product := product("product-id", 1)
-				product.Public = false
+				product.Status = entity.ProductStatusOutOfSale
 				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
 			},
 			input: &store.AddCartItemInput{
