@@ -86,6 +86,7 @@ func TestLiveProduct(t *testing.T) {
 						{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
 					},
 				},
+				isSale: true,
 			},
 		},
 	}
@@ -224,6 +225,7 @@ func TestLiveProducts(t *testing.T) {
 							{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
 						},
 					},
+					isSale: true,
 				},
 			},
 		},
@@ -238,16 +240,48 @@ func TestLiveProducts(t *testing.T) {
 	}
 }
 
-func TestLiveProducts_Response(t *testing.T) {
+func TestLiveProducts_SortByIsSale(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name   string
-		lives  LiveProducts
-		expect []*response.LiveProduct
+		name     string
+		products LiveProducts
+		expect   LiveProducts
 	}{
 		{
 			name: "success",
-			lives: LiveProducts{
+			products: LiveProducts{
+				{LiveProduct: response.LiveProduct{ProductID: "product-id01"}, isSale: true},
+				{LiveProduct: response.LiveProduct{ProductID: "product-id02"}, isSale: false},
+				{LiveProduct: response.LiveProduct{ProductID: "product-id03"}, isSale: true},
+				{LiveProduct: response.LiveProduct{ProductID: "product-id04"}, isSale: false},
+			},
+			expect: []*LiveProduct{
+				{LiveProduct: response.LiveProduct{ProductID: "product-id01"}, isSale: true},
+				{LiveProduct: response.LiveProduct{ProductID: "product-id03"}, isSale: true},
+				{LiveProduct: response.LiveProduct{ProductID: "product-id02"}, isSale: false},
+				{LiveProduct: response.LiveProduct{ProductID: "product-id04"}, isSale: false},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.products.SortByIsSale())
+		})
+	}
+}
+
+func TestLiveProducts_Response(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		products LiveProducts
+		expect   []*response.LiveProduct
+	}{
+		{
+			name: "success",
+			products: LiveProducts{
 				{
 					LiveProduct: response.LiveProduct{
 						ProductID:    "product-id",
@@ -261,6 +295,7 @@ func TestLiveProducts_Response(t *testing.T) {
 							{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
 						},
 					},
+					isSale: true,
 				},
 			},
 			expect: []*response.LiveProduct{
@@ -283,7 +318,7 @@ func TestLiveProducts_Response(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.lives.Response())
+			assert.Equal(t, tt.expect, tt.products.Response())
 		})
 	}
 }
