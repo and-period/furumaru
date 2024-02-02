@@ -95,7 +95,7 @@ try {
     :customers="customers"
     :promotions="promotions"
     :table-items-per-page="pagination.itemsPerPage.value"
-    :table-items-length="totalItems"
+    :table-items-total="totalItems"
     @click:row="handleClickRow"
     @click:update-page="handleUpdateTablePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
