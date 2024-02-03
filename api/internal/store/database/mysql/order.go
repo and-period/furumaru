@@ -214,6 +214,7 @@ func (o *order) UpdateFulfillment(ctx context.Context, orderID, fulfillmentID st
 		}
 		stmt := tx.WithContext(ctx).
 			Table(orderFulfillmentTable).
+			Where("order_id = ?", orderID).
 			Where("id = ?", fulfillmentID)
 		if err := stmt.Updates(updates).Error; err != nil {
 			return err
