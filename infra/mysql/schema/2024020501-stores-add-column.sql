@@ -1,1 +1,1 @@
-ALTER TABLE `stores`.`orders` ADD COLUMN `status` INT DEFAULT NULL;
+ALTER TABLE `stores`.`orders` ADD COLUMN `status` INT NOT NULL;

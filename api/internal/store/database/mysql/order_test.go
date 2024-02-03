@@ -923,6 +923,61 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 				err: nil,
 			},
 		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				orderID:       "order-id",
+				fulfillmentID: "fulfillment-id",
+				params: &database.UpdateOrderFulfillmentParams{
+					Status:          entity.FulfillmentStatusFulfilled,
+					ShippingCarrier: entity.ShippingCarrierYamato,
+					TrackingNumber:  "tracking-number",
+					ShippedAt:       now(),
+				},
+			},
+			want: want{
+				err: database.ErrNotFound,
+			},
+		},
+		{
+			name: "already completed",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusCaptured, now().AddDate(0, 0, -1))
+			},
+			args: args{
+				orderID:       "order-id",
+				fulfillmentID: "fulfillment-id",
+				params: &database.UpdateOrderFulfillmentParams{
+					Status:          entity.FulfillmentStatusFulfilled,
+					ShippingCarrier: entity.ShippingCarrierYamato,
+					TrackingNumber:  "tracking-number",
+					ShippedAt:       now(),
+				},
+			},
+			want: want{
+				err: database.ErrFailedPrecondition,
+			},
+		},
+		{
+			name: "not latest data",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				create(t, "order-id", entity.PaymentStatusAuthorized, now().AddDate(0, 0, 1))
+			},
+			args: args{
+				orderID:       "order-id",
+				fulfillmentID: "fulfillment-id",
+				params: &database.UpdateOrderFulfillmentParams{
+					Status:          entity.FulfillmentStatusFulfilled,
+					ShippingCarrier: entity.ShippingCarrierYamato,
+					TrackingNumber:  "tracking-number",
+					ShippedAt:       now(),
+				},
+			},
+			want: want{
+				err: database.ErrFailedPrecondition,
+			},
+		},
 	}
 
 	for _, tt := range tests {
