@@ -89,11 +89,10 @@ type Order interface {
 	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
 	GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error)
 	Create(ctx context.Context, order *entity.Order) error
-	UpdatePaymentStatus(ctx context.Context, orderID string, params *UpdateOrderPaymentParams) error
-	UpdateFulfillment(ctx context.Context, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
+	UpdatePayment(ctx context.Context, orderID string, params *UpdateOrderPaymentParams) error
+	UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
 	Draft(ctx context.Context, orderID string, params *DraftOrderParams) error
 	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
-	Refund(ctx context.Context, orderID string, params *RefundOrderParams) error
 	Aggregate(ctx context.Context, params *AggregateOrdersParams) (entity.AggregatedOrders, error)
 	AggregateByPromotion(ctx context.Context, params *AggregateOrdersByPromotionParams) (entity.AggregatedOrderPromotions, error)
 }
@@ -106,22 +105,8 @@ type ListOrdersParams struct {
 }
 
 type UpdateOrderPaymentParams struct {
-	Status    entity.PaymentStatus
-	PaymentID string
-	IssuedAt  time.Time
-}
-
-type DraftOrderParams struct {
-	ShippingMessage string
-}
-
-type CompleteOrderParams struct {
-	ShippingMessage string
-	CompletedAt     time.Time
-}
-
-type RefundOrderParams struct {
 	Status       entity.PaymentStatus
+	PaymentID    string
 	RefundType   entity.RefundType
 	RefundTotal  int64
 	RefundReason string
@@ -133,6 +118,15 @@ type UpdateOrderFulfillmentParams struct {
 	ShippingCarrier entity.ShippingCarrier
 	TrackingNumber  string
 	ShippedAt       time.Time
+}
+
+type DraftOrderParams struct {
+	ShippingMessage string
+}
+
+type CompleteOrderParams struct {
+	ShippingMessage string
+	CompletedAt     time.Time
 }
 
 type AggregateOrdersParams struct {

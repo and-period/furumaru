@@ -137,7 +137,7 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 	return dbError(err)
 }
 
-func (o *order) UpdatePaymentStatus(ctx context.Context, orderID string, params *database.UpdateOrderPaymentParams) error {
+func (o *order) UpdatePayment(ctx context.Context, orderID string, params *database.UpdateOrderPaymentParams) error {
 	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
 		order, err := o.get(ctx, tx, orderID)
 		if err != nil {
@@ -160,11 +160,18 @@ func (o *order) UpdatePaymentStatus(ctx context.Context, orderID string, params 
 			updates["paid_at"] = params.IssuedAt
 		case entity.PaymentStatusCaptured:
 			updates["captured_at"] = params.IssuedAt
-		case entity.PaymentStatusCanceled:
-			updates["canceled_at"] = params.IssuedAt
-			updates["refund_type"] = entity.RefundTypeCanceled
 		case entity.PaymentStatusFailed:
 			updates["failed_at"] = params.IssuedAt
+		case entity.PaymentStatusCanceled:
+			updates["refund_type"] = params.RefundType
+			updates["refund_total"] = params.RefundTotal
+			updates["refund_reason"] = params.RefundReason
+			updates["canceled_at"] = params.IssuedAt
+		case entity.PaymentStatusRefunded:
+			updates["refund_type"] = params.RefundType
+			updates["refund_total"] = params.RefundTotal
+			updates["refund_reason"] = params.RefundReason
+			updates["refunded_at"] = params.IssuedAt
 		}
 		if params.PaymentID != "" {
 			updates["payment_id"] = params.PaymentID
@@ -173,31 +180,46 @@ func (o *order) UpdatePaymentStatus(ctx context.Context, orderID string, params 
 		stmt := o.db.DB.WithContext(ctx).
 			Table(orderPaymentTable).
 			Where("order_id = ?", orderID)
-
-		return stmt.Updates(updates).Error
+		if err := stmt.Updates(updates).Error; err != nil {
+			return err
+		}
+		return o.updateStatus(ctx, tx, order.ID)
 	})
 	return dbError(err)
 }
 
-func (o *order) UpdateFulfillment(ctx context.Context, fulfillmentID string, params *database.UpdateOrderFulfillmentParams) error {
-	updates := map[string]interface{}{
-		"status":     params.Status,
-		"updated_at": o.now(),
-	}
-	switch params.Status {
-	case entity.FulfillmentStatusFulfilled:
-		updates["shipping_carrier"] = params.ShippingCarrier
-		updates["tracking_number"] = params.TrackingNumber
-		updates["shipped_at"] = params.ShippedAt
-	case entity.FulfillmentStatusUnfulfilled:
-		updates["shipping_carrier"] = entity.ShippingCarrierUnknown
-		updates["tracking_number"] = nil
-		updates["shipped_at"] = nil
-	}
-	err := o.db.DB.WithContext(ctx).
-		Table(orderFulfillmentTable).
-		Where("id = ?", fulfillmentID).
-		Updates(updates).Error
+func (o *order) UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *database.UpdateOrderFulfillmentParams) error {
+	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
+		order, err := o.get(ctx, tx, orderID)
+		if err != nil {
+			return err
+		}
+		if order.IsCompleted() {
+			return fmt.Errorf("mysql: this order is already completed: %w", database.ErrFailedPrecondition)
+		}
+
+		updates := map[string]interface{}{
+			"status":     params.Status,
+			"updated_at": o.now(),
+		}
+		switch params.Status {
+		case entity.FulfillmentStatusFulfilled:
+			updates["shipping_carrier"] = params.ShippingCarrier
+			updates["tracking_number"] = params.TrackingNumber
+			updates["shipped_at"] = params.ShippedAt
+		case entity.FulfillmentStatusUnfulfilled:
+			updates["shipping_carrier"] = entity.ShippingCarrierUnknown
+			updates["tracking_number"] = nil
+			updates["shipped_at"] = nil
+		}
+		stmt := tx.WithContext(ctx).
+			Table(orderFulfillmentTable).
+			Where("id = ?", fulfillmentID)
+		if err := stmt.Updates(updates).Error; err != nil {
+			return err
+		}
+		return o.updateStatus(ctx, tx, order.ID)
+	})
 	return dbError(err)
 }
 
@@ -217,33 +239,13 @@ func (o *order) Complete(ctx context.Context, orderID string, params *database.C
 	now := o.now()
 	updates := map[string]interface{}{
 		"shipping_message": params.ShippingMessage,
+		"status":           entity.OrderStatusCompleted,
 		"completed_at":     now,
 		"updated_at":       now,
 	}
 	err := o.db.DB.WithContext(ctx).
 		Table(orderTable).
 		Where("id = ?", orderID).
-		Updates(updates).Error
-	return dbError(err)
-}
-
-func (o *order) Refund(ctx context.Context, orderID string, params *database.RefundOrderParams) error {
-	updates := map[string]interface{}{
-		"status":        params.Status,
-		"refund_type":   params.RefundType,
-		"refund_total":  params.RefundTotal,
-		"refund_reason": params.RefundReason,
-		"updated_at":    o.now(),
-	}
-	switch params.Status {
-	case entity.PaymentStatusCanceled:
-		updates["canceled_at"] = params.IssuedAt
-	case entity.PaymentStatusRefunded:
-		updates["refunded_at"] = params.IssuedAt
-	}
-	err := o.db.DB.WithContext(ctx).
-		Table(orderPaymentTable).
-		Where("order_id = ?", orderID).
 		Updates(updates).Error
 	return dbError(err)
 }
@@ -343,4 +345,44 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 
 	entity.Orders(orders).Fill(payments.MapByOrderID(), fulfillments.GroupByOrderID(), items.GroupByOrderID())
 	return nil
+}
+
+func (o *order) updateStatus(ctx context.Context, tx *gorm.DB, orderID string) error {
+	var (
+		order        *entity.Order
+		payment      *entity.OrderPayment
+		fulfillments entity.OrderFulfillments
+	)
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		stmt := o.db.Statement(ectx, tx, orderTable).Where("id = ?", orderID)
+		return stmt.First(&order).Error
+	})
+	eg.Go(func() error {
+		stmt := o.db.Statement(ectx, tx, orderPaymentTable).Where("order_id = ?", orderID)
+		return stmt.First(&payment).Error
+	})
+	eg.Go(func() error {
+		stmt := o.db.Statement(ectx, tx, orderFulfillmentTable).Where("order_id = ?", orderID)
+		return stmt.Find(&fulfillments).Error
+	})
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+	order.Fill(payment, fulfillments, entity.OrderItems{}) // 商品詳細は不要なため取得しない
+
+	status := order.OrderStatus()
+	if order.Status == status {
+		return nil // DBに登録されているステータスと差異がないため更新は不要
+	}
+
+	updates := map[string]interface{}{
+		"status":     status,
+		"updated_at": o.now(),
+	}
+	stmt := tx.WithContext(ctx).
+		Table(orderTable).
+		Where("id = ?", orderID)
+	return stmt.Updates(updates).Error
 }
