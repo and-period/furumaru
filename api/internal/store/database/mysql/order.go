@@ -177,7 +177,7 @@ func (o *order) UpdatePayment(ctx context.Context, orderID string, params *datab
 			updates["payment_id"] = params.PaymentID
 		}
 
-		stmt := o.db.DB.WithContext(ctx).
+		stmt := tx.WithContext(ctx).
 			Table(orderPaymentTable).
 			Where("order_id = ?", orderID)
 		if err := stmt.Updates(updates).Error; err != nil {
