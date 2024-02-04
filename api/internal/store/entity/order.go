@@ -8,6 +8,21 @@ import (
 	"gorm.io/gorm"
 )
 
+// OrderStatus - 注文ステータス
+type OrderStatus int32
+
+const (
+	OrderStatusUnknown   OrderStatus = 0
+	OrderStatusUnpaid    OrderStatus = 1 // 支払い待ち
+	OrderStatusWaiting   OrderStatus = 2 // 受注待ち
+	OrderStatusPreparing OrderStatus = 3 // 発送準備中
+	OrderStatusShipped   OrderStatus = 4 // 発送完了
+	OrderStatusCompleted OrderStatus = 5 // 完了
+	OrderStatusCanceled  OrderStatus = 6 // キャンセル
+	OrderStatusRefunded  OrderStatus = 7 // 返金
+	OrderStatusFailed    OrderStatus = 8 // 失敗
+)
+
 // Order - 注文履歴情報
 type Order struct {
 	OrderPayment      `gorm:"-"`
@@ -18,6 +33,7 @@ type Order struct {
 	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
 	PromotionID       string         `gorm:"default:null"`         // プロモーションID
 	ManagementID      int64          `gorm:""`                     // 管理番号
+	Status            OrderStatus    `gorm:""`                     // 注文ステータス
 	ShippingMessage   string         `gorm:"default:null"`         // 発送時のメッセージ
 	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
 	UpdatedAt         time.Time      `gorm:""`                     // 更新日時
@@ -96,6 +112,7 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 		UserID:            params.Customer.ID,
 		CoordinatorID:     params.CoordinatorID,
 		PromotionID:       promotionID,
+		Status:            OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
 		ShippingMessage:   "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}, nil
 }
@@ -106,6 +123,40 @@ func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, item
 	o.OrderItems = items
 }
 
+func (o *Order) SetPaymentStatus(status PaymentStatus) {
+	switch status {
+	case PaymentStatusPending:
+		o.Status = OrderStatusUnpaid
+	case PaymentStatusAuthorized:
+		o.Status = OrderStatusWaiting
+	case PaymentStatusCaptured:
+		o.Status = OrderStatusPreparing
+	case PaymentStatusCanceled:
+		o.Status = OrderStatusCanceled
+	case PaymentStatusRefunded:
+		o.Status = OrderStatusRefunded
+	case PaymentStatusFailed:
+		o.Status = OrderStatusFailed
+	default:
+		o.Status = OrderStatusUnknown
+	}
+}
+
+func (o *Order) SetFulfillmentStatus(fulfillmentID string, status FulfillmentStatus) {
+	for _, f := range o.OrderFulfillments {
+		if f.ID == fulfillmentID {
+			f.Status = status
+			break
+		}
+	}
+	if o.OrderFulfillments.Fulfilled() {
+		o.Status = OrderStatusShipped
+	} else {
+		o.Status = OrderStatusPreparing
+	}
+}
+
+// TODO: Order.Statusを利用して書き換える
 func (o *Order) Completed() bool {
 	if o == nil {
 		return false
@@ -118,6 +169,7 @@ func (o *Order) Completed() bool {
 		o.OrderPayment.Status == PaymentStatusFailed
 }
 
+// TODO: Order.Statusを利用して書き換える
 func (o *Order) Capturable() bool {
 	if o == nil {
 		return false
@@ -125,6 +177,7 @@ func (o *Order) Capturable() bool {
 	return o.OrderPayment.Status == PaymentStatusAuthorized
 }
 
+// TODO: Order.Statusを利用して書き換える
 func (o *Order) Preservable() bool {
 	if o == nil {
 		return false
@@ -132,6 +185,7 @@ func (o *Order) Preservable() bool {
 	return o.OrderPayment.Status == PaymentStatusCaptured && o.CompletedAt.IsZero()
 }
 
+// TODO: Order.Statusを利用して書き換える
 func (o *Order) Completable() bool {
 	if o == nil {
 		return false
@@ -142,6 +196,7 @@ func (o *Order) Completable() bool {
 	return o.OrderPayment.Status == PaymentStatusCaptured && o.CompletedAt.IsZero()
 }
 
+// TODO: Order.Statusを利用して書き換える
 func (o *Order) Cancelable() bool {
 	if o == nil {
 		return false
@@ -149,6 +204,7 @@ func (o *Order) Cancelable() bool {
 	return o.OrderPayment.Status == PaymentStatusPending || o.OrderPayment.Status == PaymentStatusAuthorized
 }
 
+// TODO: Order.Statusを利用して書き換える
 func (o *Order) Refundable() bool {
 	if o == nil {
 		return false

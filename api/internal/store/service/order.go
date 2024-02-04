@@ -175,7 +175,7 @@ func (s *service) UpdateOrderFulfillment(ctx context.Context, in *store.UpdateOr
 		TrackingNumber:  in.TrackingNumber,
 		ShippedAt:       s.now(),
 	}
-	err = s.db.Order.UpdateFulfillment(ctx, in.FulfillmentID, params)
+	err = s.db.Order.UpdateFulfillment(ctx, in.OrderID, in.FulfillmentID, params)
 	return internalError(err)
 }
 

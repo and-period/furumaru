@@ -1104,7 +1104,7 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.db.Order.EXPECT().UpdateFulfillment(ctx, "fulfillment-id", params).Return(nil)
+				mocks.db.Order.EXPECT().UpdateFulfillment(ctx, "order-id", "fulfillment-id", params).Return(nil)
 			},
 			input: &store.UpdateOrderFulfillmentInput{
 				OrderID:         "order-id",
@@ -1151,7 +1151,7 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 			name: "failed to update fulfillment",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
-				mocks.db.Order.EXPECT().UpdateFulfillment(ctx, "fulfillment-id", params).Return(assert.AnError)
+				mocks.db.Order.EXPECT().UpdateFulfillment(ctx, "order-id", "fulfillment-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateOrderFulfillmentInput{
 				OrderID:         "order-id",

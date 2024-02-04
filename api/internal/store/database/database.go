@@ -89,11 +89,11 @@ type Order interface {
 	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
 	GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error)
 	Create(ctx context.Context, order *entity.Order) error
-	UpdatePaymentStatus(ctx context.Context, orderID string, params *UpdateOrderPaymentParams) error
-	UpdateFulfillment(ctx context.Context, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
+	UpdatePayment(ctx context.Context, orderID string, params *UpdateOrderPaymentParams) error
+	UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *UpdateOrderFulfillmentParams) error
+	UpdateRefund(ctx context.Context, orderID string, params *UpdateOrderRefundParams) error
 	Draft(ctx context.Context, orderID string, params *DraftOrderParams) error
 	Complete(ctx context.Context, orderID string, params *CompleteOrderParams) error
-	Refund(ctx context.Context, orderID string, params *RefundOrderParams) error
 	Aggregate(ctx context.Context, params *AggregateOrdersParams) (entity.AggregatedOrders, error)
 	AggregateByPromotion(ctx context.Context, params *AggregateOrdersByPromotionParams) (entity.AggregatedOrderPromotions, error)
 }
@@ -111,16 +111,14 @@ type UpdateOrderPaymentParams struct {
 	IssuedAt  time.Time
 }
 
-type DraftOrderParams struct {
-	ShippingMessage string
+type UpdateOrderFulfillmentParams struct {
+	Status          entity.FulfillmentStatus
+	ShippingCarrier entity.ShippingCarrier
+	TrackingNumber  string
+	ShippedAt       time.Time
 }
 
-type CompleteOrderParams struct {
-	ShippingMessage string
-	CompletedAt     time.Time
-}
-
-type RefundOrderParams struct {
+type UpdateOrderRefundParams struct {
 	Status       entity.PaymentStatus
 	RefundType   entity.RefundType
 	RefundTotal  int64
@@ -128,11 +126,13 @@ type RefundOrderParams struct {
 	IssuedAt     time.Time
 }
 
-type UpdateOrderFulfillmentParams struct {
-	Status          entity.FulfillmentStatus
-	ShippingCarrier entity.ShippingCarrier
-	TrackingNumber  string
-	ShippedAt       time.Time
+type DraftOrderParams struct {
+	ShippingMessage string
+}
+
+type CompleteOrderParams struct {
+	ShippingMessage string
+	CompletedAt     time.Time
 }
 
 type AggregateOrdersParams struct {

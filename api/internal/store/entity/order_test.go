@@ -198,6 +198,7 @@ func TestOrder(t *testing.T) {
 				UserID:          "user-id",
 				CoordinatorID:   "coordinator-id",
 				PromotionID:     "",
+				Status:          OrderStatusUnpaid,
 				ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 			},
 		},
@@ -266,6 +267,111 @@ func TestOrder_Fill(t *testing.T) {
 			t.Parallel()
 			tt.order.Fill(tt.payment, tt.fulfillments, tt.items)
 			assert.Equal(t, tt.expect, tt.order)
+		})
+	}
+}
+
+func TestOrder_SetPaymentStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		status PaymentStatus
+		expect OrderStatus
+	}{
+		{
+			name:   "unpaid",
+			status: PaymentStatusPending,
+			expect: OrderStatusUnpaid,
+		},
+		{
+			name:   "waiting",
+			status: PaymentStatusAuthorized,
+			expect: OrderStatusWaiting,
+		},
+		{
+			name:   "preparing",
+			status: PaymentStatusCaptured,
+			expect: OrderStatusPreparing,
+		},
+		{
+			name:   "canceled",
+			status: PaymentStatusCanceled,
+			expect: OrderStatusCanceled,
+		},
+		{
+			name:   "refunded",
+			status: PaymentStatusRefunded,
+			expect: OrderStatusRefunded,
+		},
+		{
+			name:   "failed",
+			status: PaymentStatusFailed,
+			expect: OrderStatusFailed,
+		},
+		{
+			name:   "unknown",
+			status: PaymentStatusUnknown,
+			expect: OrderStatusUnknown,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			order := &Order{}
+			order.SetPaymentStatus(tt.status)
+			assert.Equal(t, tt.expect, order.Status)
+		})
+	}
+}
+
+func TestOrder_SetFulfillmentStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name          string
+		fulfillments  OrderFulfillments
+		fulfillmentID string
+		status        FulfillmentStatus
+		expect        OrderStatus
+	}{
+		{
+			name: "shipped",
+			fulfillments: OrderFulfillments{{
+				ID:     "fulfillment-id",
+				Status: FulfillmentStatusUnfulfilled,
+			}},
+			fulfillmentID: "fulfillment-id",
+			status:        FulfillmentStatusFulfilled,
+			expect:        OrderStatusShipped,
+		},
+		{
+			name: "preparing",
+			fulfillments: OrderFulfillments{{
+				ID:     "fulfillment-id",
+				Status: FulfillmentStatusUnfulfilled,
+			}},
+			fulfillmentID: "other-id",
+			status:        FulfillmentStatusFulfilled,
+			expect:        OrderStatusPreparing,
+		},
+		{
+			name: "unfulfilled",
+			fulfillments: OrderFulfillments{{
+				ID:     "fulfillment-id",
+				Status: FulfillmentStatusUnfulfilled,
+			}},
+			fulfillmentID: "fulfillment-id",
+			status:        FulfillmentStatusUnfulfilled,
+			expect:        OrderStatusPreparing,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			order := &Order{OrderFulfillments: tt.fulfillments}
+			order.SetFulfillmentStatus(tt.fulfillmentID, tt.status)
+			assert.Equal(t, tt.expect, order.Status)
 		})
 	}
 }
@@ -433,43 +539,6 @@ func TestOrder_EnableAction(t *testing.T) {
 			assert.Equal(t, tt.want.completable, tt.order.Completable())
 			assert.Equal(t, tt.want.cancelable, tt.order.Cancelable())
 			assert.Equal(t, tt.want.refundable, tt.order.Refundable())
-		})
-	}
-}
-
-func TestOrder_IsCanceled(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name   string
-		order  *Order
-		expect bool
-	}{
-		{
-			name: "canceled",
-			order: &Order{
-				ID:                "order-id",
-				OrderPayment:      OrderPayment{OrderID: "order-id", Status: PaymentStatusRefunded},
-				OrderFulfillments: OrderFulfillments{{OrderID: "order-id"}},
-				OrderItems:        OrderItems{{OrderID: "order-id", ProductRevisionID: 1}},
-			},
-			expect: true,
-		},
-		{
-			name: "not canceled",
-			order: &Order{
-				ID:                "order-id",
-				OrderPayment:      OrderPayment{OrderID: "order-id", Status: PaymentStatusPending},
-				OrderFulfillments: OrderFulfillments{{OrderID: "order-id"}},
-				OrderItems:        OrderItems{{OrderID: "order-id", ProductRevisionID: 1}},
-			},
-			expect: false,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tt.expect, tt.order.IsCanceled())
 		})
 	}
 }

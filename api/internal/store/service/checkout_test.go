@@ -31,6 +31,7 @@ func TestGetCheckoutState(t *testing.T) {
 			UserID:          "user-id",
 			PromotionID:     "",
 			CoordinatorID:   "coordinator-id",
+			Status:          entity.OrderStatusUnpaid,
 			ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 			CreatedAt:       now,
 			UpdatedAt:       now,
@@ -796,6 +797,7 @@ func checkoutmocks(
 		UserID:          "user-id",
 		CoordinatorID:   "coordinator-id",
 		PromotionID:     "promotion-id",
+		Status:          entity.OrderStatusUnpaid,
 		ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}
 
@@ -943,7 +945,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 		{
 			name: "success authorized",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(nil)
+				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
 				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(nil)
 			},
 			input: &store.NotifyPaymentCompletedInput{
@@ -962,7 +964,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 					PaymentID: "payment-id",
 					IssuedAt:  now,
 				}
-				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(nil)
+				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
 			},
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
@@ -981,7 +983,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 		{
 			name: "failed to update payment status",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(assert.AnError)
+				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
@@ -994,7 +996,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 		{
 			name: "already updated",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
 			},
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
@@ -1007,7 +1009,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 		{
 			name: "failed to notify order authorized",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePaymentStatus(ctx, "order-id", params).Return(nil)
+				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
 				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentCompletedInput{
@@ -1031,7 +1033,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 func TestNotifyPaymentRefunded(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
-	params := &database.RefundOrderParams{
+	params := &database.UpdateOrderRefundParams{
 		Status:       entity.PaymentStatusRefunded,
 		RefundType:   entity.RefundTypeRefunded,
 		RefundTotal:  1980,
@@ -1047,7 +1049,7 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Refund(ctx, "order-id", params).Return(nil)
+				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(nil)
 			},
 			input: &store.NotifyPaymentRefundedInput{
 				OrderID:  "order-id",
@@ -1068,7 +1070,7 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		{
 			name: "failed to update payment status",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().Refund(ctx, "order-id", params).Return(assert.AnError)
+				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentRefundedInput{
 				OrderID:  "order-id",
@@ -1079,6 +1081,21 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 				IssuedAt: now,
 			},
 			expect: exception.ErrInternal,
+		},
+		{
+			name: "already updated",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+			},
+			input: &store.NotifyPaymentRefundedInput{
+				OrderID:  "order-id",
+				Status:   entity.PaymentStatusRefunded,
+				Type:     entity.RefundTypeRefunded,
+				Total:    1980,
+				Reason:   "在庫不足のため。",
+				IssuedAt: now,
+			},
+			expect: nil,
 		},
 	}
 	for _, tt := range tests {
@@ -1292,6 +1309,7 @@ func TestCheckout(t *testing.T) {
 			UserID:          "user-id",
 			CoordinatorID:   "coordinator-id",
 			PromotionID:     "promotion-id",
+			Status:          entity.OrderStatusUnpaid,
 			ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 		}
 	}
