@@ -197,14 +197,14 @@ func (s *service) NotifyPaymentRefunded(ctx context.Context, in *store.NotifyPay
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	params := &database.UpdateOrderPaymentParams{
+	params := &database.UpdateOrderRefundParams{
 		Status:       in.Status,
 		RefundType:   in.Type,
 		RefundTotal:  in.Total,
 		RefundReason: in.Reason,
 		IssuedAt:     in.IssuedAt,
 	}
-	err := s.db.Order.UpdatePayment(ctx, in.OrderID, params)
+	err := s.db.Order.UpdateRefund(ctx, in.OrderID, params)
 	if errors.Is(err, database.ErrFailedPrecondition) {
 		s.logger.Warn("Order is already updated",
 			zap.String("orderId", in.OrderID), zap.Int32("status", int32(in.Status)), zap.Time("issuedAt", in.IssuedAt))

@@ -1033,7 +1033,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 func TestNotifyPaymentRefunded(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
-	params := &database.UpdateOrderPaymentParams{
+	params := &database.UpdateOrderRefundParams{
 		Status:       entity.PaymentStatusRefunded,
 		RefundType:   entity.RefundTypeRefunded,
 		RefundTotal:  1980,
@@ -1049,7 +1049,7 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
+				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(nil)
 			},
 			input: &store.NotifyPaymentRefundedInput{
 				OrderID:  "order-id",
@@ -1070,7 +1070,7 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		{
 			name: "failed to update payment status",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(assert.AnError)
+				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(assert.AnError)
 			},
 			input: &store.NotifyPaymentRefundedInput{
 				OrderID:  "order-id",
@@ -1085,7 +1085,7 @@ func TestNotifyPaymentRefunded(t *testing.T) {
 		{
 			name: "already updated",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
+				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
 			},
 			input: &store.NotifyPaymentRefundedInput{
 				OrderID:  "order-id",

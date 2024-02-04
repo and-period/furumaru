@@ -271,146 +271,107 @@ func TestOrder_Fill(t *testing.T) {
 	}
 }
 
-func TestOrder_OrderStatus(t *testing.T) {
+func TestOrder_SetPaymentStatus(t *testing.T) {
 	t.Parallel()
-	type want struct {
-		status    OrderStatus
-		completed bool
-	}
 	tests := []struct {
-		name  string
-		order *Order
-		want  want
+		name   string
+		status PaymentStatus
+		expect OrderStatus
 	}{
 		{
-			name:  "empty",
-			order: nil,
-			want: want{
-				status:    OrderStatusUnknown,
-				completed: false,
-			},
+			name:   "unpaid",
+			status: PaymentStatusPending,
+			expect: OrderStatusUnpaid,
 		},
 		{
-			name: "unpaid",
-			order: &Order{
-				OrderPayment:      OrderPayment{Status: PaymentStatusPending},
-				OrderFulfillments: OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
-			want: want{
-				status:    OrderStatusUnpaid,
-				completed: false,
-			},
+			name:   "waiting",
+			status: PaymentStatusAuthorized,
+			expect: OrderStatusWaiting,
 		},
 		{
-			name: "waiting",
-			order: &Order{
-				OrderPayment:      OrderPayment{Status: PaymentStatusAuthorized},
-				OrderFulfillments: OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
-			want: want{
-				status:    OrderStatusWaiting,
-				completed: false,
-			},
+			name:   "preparing",
+			status: PaymentStatusCaptured,
+			expect: OrderStatusPreparing,
 		},
 		{
-			name: "preparing",
-			order: &Order{
-				OrderPayment: OrderPayment{Status: PaymentStatusCaptured},
-				OrderFulfillments: OrderFulfillments{{
-					Status: FulfillmentStatusUnfulfilled,
-				}},
-				CompletedAt: time.Time{},
-			},
-			want: want{
-				status:    OrderStatusPreparing,
-				completed: false,
-			},
+			name:   "canceled",
+			status: PaymentStatusCanceled,
+			expect: OrderStatusCanceled,
 		},
 		{
-			name: "shipped",
-			order: &Order{
-				OrderPayment: OrderPayment{Status: PaymentStatusCaptured},
-				OrderFulfillments: OrderFulfillments{{
-					Status: FulfillmentStatusFulfilled,
-				}},
-				CompletedAt: time.Time{},
-			},
-			want: want{
-				status:    OrderStatusShipped,
-				completed: false,
-			},
+			name:   "refunded",
+			status: PaymentStatusRefunded,
+			expect: OrderStatusRefunded,
 		},
 		{
-			name: "completed",
-			order: &Order{
-				OrderPayment: OrderPayment{Status: PaymentStatusCaptured},
-				OrderFulfillments: OrderFulfillments{{
-					Status: FulfillmentStatusFulfilled,
-				}},
-				CompletedAt: time.Now(),
-			},
-			want: want{
-				status:    OrderStatusCompleted,
-				completed: true,
-			},
+			name:   "failed",
+			status: PaymentStatusFailed,
+			expect: OrderStatusFailed,
 		},
 		{
-			name: "canceled",
-			order: &Order{
-				OrderPayment:      OrderPayment{Status: PaymentStatusCanceled},
-				OrderFulfillments: OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
-			want: want{
-				status:    OrderStatusCanceled,
-				completed: true,
-			},
-		},
-		{
-			name: "refunded",
-			order: &Order{
-				OrderPayment:      OrderPayment{Status: PaymentStatusRefunded},
-				OrderFulfillments: OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
-			want: want{
-				status:    OrderStatusRefunded,
-				completed: true,
-			},
-		},
-		{
-			name: "failed",
-			order: &Order{
-				OrderPayment:      OrderPayment{Status: PaymentStatusFailed},
-				OrderFulfillments: OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
-			want: want{
-				status:    OrderStatusFailed,
-				completed: true,
-			},
-		},
-		{
-			name: "unknown",
-			order: &Order{
-				OrderPayment:      OrderPayment{Status: PaymentStatusUnknown},
-				OrderFulfillments: OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
-			want: want{
-				status:    OrderStatusUnknown,
-				completed: false,
-			},
+			name:   "unknown",
+			status: PaymentStatusUnknown,
+			expect: OrderStatusUnknown,
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.want.status, tt.order.OrderStatus())
-			assert.Equal(t, tt.want.completed, tt.order.Completed())
+			order := &Order{}
+			order.SetPaymentStatus(tt.status)
+			assert.Equal(t, tt.expect, order.Status)
+		})
+	}
+}
+
+func TestOrder_SetFulfillmentStatus(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name          string
+		fulfillments  OrderFulfillments
+		fulfillmentID string
+		status        FulfillmentStatus
+		expect        OrderStatus
+	}{
+		{
+			name: "shipped",
+			fulfillments: OrderFulfillments{{
+				ID:     "fulfillment-id",
+				Status: FulfillmentStatusUnfulfilled,
+			}},
+			fulfillmentID: "fulfillment-id",
+			status:        FulfillmentStatusFulfilled,
+			expect:        OrderStatusShipped,
+		},
+		{
+			name: "preparing",
+			fulfillments: OrderFulfillments{{
+				ID:     "fulfillment-id",
+				Status: FulfillmentStatusUnfulfilled,
+			}},
+			fulfillmentID: "other-id",
+			status:        FulfillmentStatusFulfilled,
+			expect:        OrderStatusPreparing,
+		},
+		{
+			name: "unfulfilled",
+			fulfillments: OrderFulfillments{{
+				ID:     "fulfillment-id",
+				Status: FulfillmentStatusUnfulfilled,
+			}},
+			fulfillmentID: "fulfillment-id",
+			status:        FulfillmentStatusUnfulfilled,
+			expect:        OrderStatusPreparing,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			order := &Order{OrderFulfillments: tt.fulfillments}
+			order.SetFulfillmentStatus(tt.fulfillmentID, tt.status)
+			assert.Equal(t, tt.expect, order.Status)
 		})
 	}
 }

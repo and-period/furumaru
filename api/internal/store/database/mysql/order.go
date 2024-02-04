@@ -162,16 +162,6 @@ func (o *order) UpdatePayment(ctx context.Context, orderID string, params *datab
 			updates["captured_at"] = params.IssuedAt
 		case entity.PaymentStatusFailed:
 			updates["failed_at"] = params.IssuedAt
-		case entity.PaymentStatusCanceled:
-			updates["refund_type"] = params.RefundType
-			updates["refund_total"] = params.RefundTotal
-			updates["refund_reason"] = params.RefundReason
-			updates["canceled_at"] = params.IssuedAt
-		case entity.PaymentStatusRefunded:
-			updates["refund_type"] = params.RefundType
-			updates["refund_total"] = params.RefundTotal
-			updates["refund_reason"] = params.RefundReason
-			updates["refunded_at"] = params.IssuedAt
 		}
 		if params.PaymentID != "" {
 			updates["payment_id"] = params.PaymentID
@@ -183,7 +173,9 @@ func (o *order) UpdatePayment(ctx context.Context, orderID string, params *datab
 		if err := stmt.Updates(updates).Error; err != nil {
 			return err
 		}
-		return o.updateStatus(ctx, tx, order.ID)
+
+		order.SetPaymentStatus(params.Status)
+		return o.updateStatus(ctx, tx, order.ID, order.Status)
 	})
 	return dbError(err)
 }
@@ -219,7 +211,47 @@ func (o *order) UpdateFulfillment(ctx context.Context, orderID, fulfillmentID st
 		if err := stmt.Updates(updates).Error; err != nil {
 			return err
 		}
-		return o.updateStatus(ctx, tx, order.ID)
+
+		order.SetFulfillmentStatus(fulfillmentID, params.Status)
+		return o.updateStatus(ctx, tx, order.ID, order.Status)
+	})
+	return dbError(err)
+}
+
+func (o *order) UpdateRefund(ctx context.Context, orderID string, params *database.UpdateOrderRefundParams) error {
+	err := o.db.Transaction(ctx, func(tx *gorm.DB) error {
+		order, err := o.get(ctx, tx, orderID)
+		if err != nil {
+			return err
+		}
+		updatedAt := order.OrderPayment.UpdatedAt.Truncate(time.Second)
+		if updatedAt.After(params.IssuedAt) {
+			return fmt.Errorf("mysql: this event is older than the latest data: %w", database.ErrFailedPrecondition)
+		}
+
+		updates := map[string]interface{}{
+			"status":        params.Status,
+			"refund_type":   params.RefundType,
+			"refund_total":  params.RefundTotal,
+			"refund_reason": params.RefundReason,
+			"updated_at":    o.now(),
+		}
+		switch params.Status {
+		case entity.PaymentStatusCanceled:
+			updates["canceled_at"] = params.IssuedAt
+		case entity.PaymentStatusRefunded:
+			updates["refunded_at"] = params.IssuedAt
+		}
+
+		stmt := tx.WithContext(ctx).
+			Table(orderPaymentTable).
+			Where("order_id = ?", orderID)
+		if err := stmt.Updates(updates).Error; err != nil {
+			return err
+		}
+
+		order.SetPaymentStatus(params.Status)
+		return o.updateStatus(ctx, tx, order.ID, order.Status)
 	})
 	return dbError(err)
 }
@@ -348,36 +380,7 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 	return nil
 }
 
-func (o *order) updateStatus(ctx context.Context, tx *gorm.DB, orderID string) error {
-	var (
-		order        *entity.Order
-		payment      *entity.OrderPayment
-		fulfillments entity.OrderFulfillments
-	)
-
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, orderTable).Where("id = ?", orderID)
-		return stmt.First(&order).Error
-	})
-	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, orderPaymentTable).Where("order_id = ?", orderID)
-		return stmt.First(&payment).Error
-	})
-	eg.Go(func() error {
-		stmt := o.db.Statement(ectx, tx, orderFulfillmentTable).Where("order_id = ?", orderID)
-		return stmt.Find(&fulfillments).Error
-	})
-	if err := eg.Wait(); err != nil {
-		return err
-	}
-	order.Fill(payment, fulfillments, entity.OrderItems{}) // 商品詳細は不要なため取得しない
-
-	status := order.OrderStatus()
-	if order.Status == status {
-		return nil // DBに登録されているステータスと差異がないため更新は不要
-	}
-
+func (o *order) updateStatus(ctx context.Context, tx *gorm.DB, orderID string, status entity.OrderStatus) error {
 	updates := map[string]interface{}{
 		"status":     status,
 		"updated_at": o.now(),

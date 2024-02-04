@@ -123,31 +123,36 @@ func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, item
 	o.OrderItems = items
 }
 
-func (o *Order) OrderStatus() OrderStatus {
-	if o == nil {
-		return OrderStatusUnknown
-	}
-	switch o.OrderPayment.Status {
+func (o *Order) SetPaymentStatus(status PaymentStatus) {
+	switch status {
 	case PaymentStatusPending:
-		return OrderStatusUnpaid
+		o.Status = OrderStatusUnpaid
 	case PaymentStatusAuthorized:
-		return OrderStatusWaiting
+		o.Status = OrderStatusWaiting
 	case PaymentStatusCaptured:
-		if !o.OrderFulfillments.Fulfilled() {
-			return OrderStatusPreparing
-		}
-		if o.CompletedAt.IsZero() {
-			return OrderStatusShipped
-		}
-		return OrderStatusCompleted
+		o.Status = OrderStatusPreparing
 	case PaymentStatusCanceled:
-		return OrderStatusCanceled
+		o.Status = OrderStatusCanceled
 	case PaymentStatusRefunded:
-		return OrderStatusRefunded
+		o.Status = OrderStatusRefunded
 	case PaymentStatusFailed:
-		return OrderStatusFailed
+		o.Status = OrderStatusFailed
 	default:
-		return OrderStatusUnknown
+		o.Status = OrderStatusUnknown
+	}
+}
+
+func (o *Order) SetFulfillmentStatus(fulfillmentID string, status FulfillmentStatus) {
+	for _, f := range o.OrderFulfillments {
+		if f.ID == fulfillmentID {
+			f.Status = status
+			break
+		}
+	}
+	if o.OrderFulfillments.Fulfilled() {
+		o.Status = OrderStatusShipped
+	} else {
+		o.Status = OrderStatusPreparing
 	}
 }
 
