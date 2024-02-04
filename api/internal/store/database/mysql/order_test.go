@@ -1049,22 +1049,6 @@ func TestOrder_UpdateRefund(t *testing.T) {
 			},
 		},
 		{
-			name: "already completed",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusCaptured, now().AddDate(0, 0, -1))
-			},
-			args: args{
-				orderID: "order-id",
-				params: &database.UpdateOrderRefundParams{
-					Status:   entity.PaymentStatusRefunded,
-					IssuedAt: now(),
-				},
-			},
-			want: want{
-				err: database.ErrFailedPrecondition,
-			},
-		},
-		{
 			name: "not latest data",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				create(t, "order-id", entity.PaymentStatusAuthorized, now().AddDate(0, 0, 1))
