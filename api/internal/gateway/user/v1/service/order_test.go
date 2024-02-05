@@ -14,87 +14,49 @@ func TestOrderStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name     string
-		order    *entity.Order
+		status   entity.OrderStatus
 		expect   OrderStatus
 		response int32
 	}{
 		{
-			name:     "empty",
-			order:    nil,
-			expect:   OrderStatusUnknown,
-			response: 0,
-		},
-		{
-			name: "unpaid",
-			order: &entity.Order{
-				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusPending},
-				OrderFulfillments: entity.OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
+			name:     "unpaid",
+			status:   entity.OrderStatusUnpaid,
 			expect:   OrderStatusUnpaid,
 			response: 1,
 		},
 		{
-			name: "preparing",
-			order: &entity.Order{
-				OrderPayment: entity.OrderPayment{Status: entity.PaymentStatusCaptured},
-				OrderFulfillments: entity.OrderFulfillments{{
-					Status: entity.FulfillmentStatusUnfulfilled,
-				}},
-				CompletedAt: time.Time{},
-			},
+			name:     "preparing",
+			status:   entity.OrderStatusPreparing,
 			expect:   OrderStatusPreparing,
 			response: 2,
 		},
 		{
-			name: "completed",
-			order: &entity.Order{
-				OrderPayment: entity.OrderPayment{Status: entity.PaymentStatusCaptured},
-				OrderFulfillments: entity.OrderFulfillments{{
-					Status: entity.FulfillmentStatusFulfilled,
-				}},
-				CompletedAt: time.Now(),
-			},
+			name:     "completed",
+			status:   entity.OrderStatusCompleted,
 			expect:   OrderStatusCompleted,
 			response: 3,
 		},
 		{
-			name: "canceled",
-			order: &entity.Order{
-				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusCanceled},
-				OrderFulfillments: entity.OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
+			name:     "canceled",
+			status:   entity.OrderStatusCanceled,
 			expect:   OrderStatusCanceled,
 			response: 4,
 		},
 		{
-			name: "refunded",
-			order: &entity.Order{
-				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusRefunded},
-				OrderFulfillments: entity.OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
+			name:     "refunded",
+			status:   entity.OrderStatusRefunded,
 			expect:   OrderStatusRefunded,
 			response: 5,
 		},
 		{
-			name: "failed",
-			order: &entity.Order{
-				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusFailed},
-				OrderFulfillments: entity.OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
+			name:     "failed",
+			status:   entity.OrderStatusFailed,
 			expect:   OrderStatusFailed,
 			response: 6,
 		},
 		{
-			name: "unknown",
-			order: &entity.Order{
-				OrderPayment:      entity.OrderPayment{Status: entity.PaymentStatusUnknown},
-				OrderFulfillments: entity.OrderFulfillments{},
-				CompletedAt:       time.Time{},
-			},
+			name:     "unknown",
+			status:   entity.OrderStatusUnknown,
 			expect:   OrderStatusUnknown,
 			response: 0,
 		},
@@ -103,7 +65,7 @@ func TestOrderStatus(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewOrderStatus(tt.order)
+			actual := NewOrderStatus(tt.status)
 			assert.Equal(t, tt.expect, actual)
 			assert.Equal(t, tt.response, actual.Response())
 		})
@@ -127,6 +89,7 @@ func TestOrder(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "promotion-id",
 				ManagementID:  1,
+				Status:        entity.OrderStatusPreparing,
 				OrderPayment: entity.OrderPayment{
 					OrderID:           "order-id",
 					AddressRevisionID: 1,
