@@ -89,6 +89,7 @@ func TestOrder(t *testing.T) {
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "promotion-id",
 				ManagementID:  1,
+				Status:        entity.OrderStatusPreparing,
 				OrderPayment: entity.OrderPayment{
 					OrderID:           "order-id",
 					AddressRevisionID: 1,
