@@ -427,10 +427,11 @@ type DeleteLiveInput struct {
 }
 
 type ListOrdersInput struct {
-	CoordinatorID string `validate:""`
-	UserID        string `validate:""`
-	Limit         int64  `validate:"required,max=200"`
-	Offset        int64  `validate:"min=0"`
+	CoordinatorID string               `validate:""`
+	UserID        string               `validate:""`
+	Statuses      []entity.OrderStatus `validate:""`
+	Limit         int64                `validate:"required,max=200"`
+	Offset        int64                `validate:"min=0"`
 }
 
 type GetOrderInput struct {

@@ -28,28 +28,23 @@ type Order struct {
 
 type Orders []*Order
 
-func NewOrderStatus(order *entity.Order) OrderStatus {
-	if order == nil {
-		return OrderStatusUnknown
-	}
-	switch order.OrderPayment.Status {
-	case entity.PaymentStatusPending:
+func NewOrderStatus(status entity.OrderStatus) OrderStatus {
+	switch status {
+	case entity.OrderStatusUnpaid:
 		return OrderStatusUnpaid
-	case entity.PaymentStatusAuthorized:
+	case entity.OrderStatusWaiting:
 		return OrderStatusWaiting
-	case entity.PaymentStatusCaptured:
-		if !order.OrderFulfillments.Fulfilled() {
-			return OrderStatusPreparing
-		}
-		if order.CompletedAt.IsZero() {
-			return OrderStatusShipped
-		}
+	case entity.OrderStatusPreparing:
+		return OrderStatusPreparing
+	case entity.OrderStatusShipped:
+		return OrderStatusShipped
+	case entity.OrderStatusCompleted:
 		return OrderStatusCompleted
-	case entity.PaymentStatusCanceled:
+	case entity.OrderStatusCanceled:
 		return OrderStatusCanceled
-	case entity.PaymentStatusRefunded:
+	case entity.OrderStatusRefunded:
 		return OrderStatusRefunded
-	case entity.PaymentStatusFailed:
+	case entity.OrderStatusFailed:
 		return OrderStatusFailed
 	default:
 		return OrderStatusUnknown
@@ -69,7 +64,7 @@ func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[in
 			PromotionID:     order.PromotionID,
 			ManagementID:    order.ManagementID,
 			ShippingMessage: order.ShippingMessage,
-			Status:          NewOrderStatus(order).Response(),
+			Status:          NewOrderStatus(order.Status).Response(),
 			Payment:         NewOrderPayment(&order.OrderPayment, addresses[order.OrderPayment.AddressRevisionID]).Response(),
 			Refund:          NewOrderRefund(&order.OrderPayment).Response(),
 			Fulfillments:    NewOrderFulfillments(order.OrderFulfillments, addresses).Response(),

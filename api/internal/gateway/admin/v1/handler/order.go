@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/store/entity"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -64,10 +64,16 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	statuses, err := h.newOrderFileters(ctx)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
 
 	in := &store.ListOrdersInput{
-		Limit:  limit,
-		Offset: offset,
+		Limit:    limit,
+		Offset:   offset,
+		Statuses: statuses,
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
@@ -126,6 +132,27 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		Total:        total,
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) newOrderFileters(ctx *gin.Context) ([]sentity.OrderStatus, error) {
+	params, err := util.GetQueryInt32s(ctx, "status")
+	if err != nil {
+		return nil, err
+	}
+	if len(params) == 0 {
+		res := []sentity.OrderStatus{
+			sentity.OrderStatusWaiting,   // 受注待ち
+			sentity.OrderStatusPreparing, // 発送準備中
+			sentity.OrderStatusShipped,   // 発送完了
+			sentity.OrderStatusCompleted, // 完了
+		}
+		return res, nil
+	}
+	res := make([]sentity.OrderStatus, len(params))
+	for i := range params {
+		res[i] = sentity.OrderStatus(params[i])
+	}
+	return res, nil
 }
 
 func (h *handler) GetOrder(ctx *gin.Context) {
@@ -256,7 +283,7 @@ func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
 	in := &store.UpdateOrderFulfillmentInput{
 		OrderID:         util.GetParam(ctx, "orderId"),
 		FulfillmentID:   util.GetParam(ctx, "fulfillmentId"),
-		ShippingCarrier: entity.ShippingCarrier(req.ShippingCarrier),
+		ShippingCarrier: sentity.ShippingCarrier(req.ShippingCarrier),
 		TrackingNumber:  req.TrackingNumber,
 	}
 	if err := h.store.UpdateOrderFulfillment(ctx, in); err != nil {

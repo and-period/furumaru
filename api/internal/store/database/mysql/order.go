@@ -41,6 +41,9 @@ func (p listOrdersParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.UserID != "" {
 		stmt = stmt.Where("user_id = ?", p.UserID)
 	}
+	if len(p.Statuses) > 0 {
+		stmt = stmt.Where("status IN (?)", p.Statuses)
+	}
 	stmt = stmt.Order("created_at DESC")
 	return stmt
 }

@@ -12760,10 +12760,11 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
+         * @param {number} [status] 注文ステータス ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListOrders: async (limit?: number, offset?: number, orders?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListOrders: async (limit?: number, offset?: number, orders?: string, status?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/orders`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12790,6 +12791,10 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
 
             if (orders !== undefined) {
                 localVarQueryParameter['orders'] = orders;
+            }
+
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
             }
 
 
@@ -12978,11 +12983,12 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
+         * @param {number} [status] 注文ステータス ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListOrders(limit?: number, offset?: number, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrdersResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListOrders(limit, offset, orders, options);
+        async v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrdersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListOrders(limit, offset, orders, status, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['OrderApi.v1ListOrders']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
@@ -13084,11 +13090,12 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
+         * @param {number} [status] 注文ステータス ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListOrders(limit?: number, offset?: number, orders?: string, options?: any): AxiosPromise<OrdersResponse> {
-            return localVarFp.v1ListOrders(limit, offset, orders, options).then((request) => request(axios, basePath));
+        v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, options?: any): AxiosPromise<OrdersResponse> {
+            return localVarFp.v1ListOrders(limit, offset, orders, status, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -13191,12 +13198,13 @@ export class OrderApi extends BaseAPI {
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
+     * @param {number} [status] 注文ステータス ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了) 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
      */
-    public v1ListOrders(limit?: number, offset?: number, orders?: string, options?: RawAxiosRequestConfig) {
-        return OrderApiFp(this.configuration).v1ListOrders(limit, offset, orders, options).then((request) => request(this.axios, this.basePath));
+    public v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, options?: RawAxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1ListOrders(limit, offset, orders, status, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
