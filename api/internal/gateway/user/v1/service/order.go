@@ -25,23 +25,19 @@ type Order struct {
 
 type Orders []*Order
 
-func NewOrderStatus(order *entity.Order) OrderStatus {
-	if order == nil {
-		return OrderStatusUnknown
-	}
-	switch order.OrderPayment.Status {
-	case entity.PaymentStatusPending:
+func NewOrderStatus(status entity.OrderStatus) OrderStatus {
+	switch status {
+	case entity.OrderStatusUnpaid:
 		return OrderStatusUnpaid
-	case entity.PaymentStatusAuthorized, entity.PaymentStatusCaptured:
-		if order.CompletedAt.IsZero() {
-			return OrderStatusPreparing
-		}
+	case entity.OrderStatusWaiting, entity.OrderStatusPreparing, entity.OrderStatusShipped:
+		return OrderStatusPreparing
+	case entity.OrderStatusCompleted:
 		return OrderStatusCompleted
-	case entity.PaymentStatusCanceled:
+	case entity.OrderStatusCanceled:
 		return OrderStatusCanceled
-	case entity.PaymentStatusRefunded:
+	case entity.OrderStatusRefunded:
 		return OrderStatusRefunded
-	case entity.PaymentStatusFailed:
+	case entity.OrderStatusFailed:
 		return OrderStatusFailed
 	default:
 		return OrderStatusUnknown
@@ -68,7 +64,7 @@ func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[in
 			ID:              order.ID,
 			CoordinatorID:   order.CoordinatorID,
 			PromotionID:     order.PromotionID,
-			Status:          NewOrderStatus(order).Response(),
+			Status:          NewOrderStatus(order.Status).Response(),
 			Payment:         NewOrderPayment(&order.OrderPayment).Response(),
 			Refund:          NewOrderRefund(&order.OrderPayment).Response(),
 			Fulfillments:    NewOrderFulfillments(order.OrderFulfillments).Response(),
