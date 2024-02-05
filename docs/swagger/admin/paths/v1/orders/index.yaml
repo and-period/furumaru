@@ -33,6 +33,15 @@ get:
       ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt,
     required: false
     example: 'orderedAt,-updatedAt'
+  - in: query
+    name: status
+    schema:
+      type: integer
+      format: int32
+    description: |
+      注文ステータス
+      ・複数指定時は`,`区切り
+      ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了)
   responses:
     200:
       description: 成功
