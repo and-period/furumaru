@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
+import type { BannerItem } from '~/types/props'
 
 const router = useRouter()
 
@@ -62,10 +63,18 @@ const handleClickLiveItem = (id: string) => {
   router.push(`/live/${id}`)
 }
 
-const banners: string[] = [
-  '/img/banner2.jpg',
-  '/img/banner.png',
-  '/img/banner3.png',
+const banners: BannerItem[] = [
+  {
+    imgSrc: '/img/banner2.jpg',
+    link: '/about',
+    isInternalLink: true,
+  },
+  { imgSrc: '/img/banner.png', link: '/about', isInternalLink: true },
+  {
+    imgSrc: '/img/banner3.png',
+    link: '/live/p6XURyWhSk2EerwWiYYzDU',
+    isInternalLink: true,
+  },
 ]
 
 const isOpen = ref<boolean>(false)
@@ -81,7 +90,7 @@ useSeoMeta({
 
 <template>
   <div>
-    <the-carousel :images="banners" />
+    <the-carousel :items="banners" />
 
     <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
