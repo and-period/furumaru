@@ -17,11 +17,14 @@ const bannerItems = computed(() => {
       src: item.imgSrc,
       link: item.link,
       isInternalLink: item.isInternalLink,
+      // activeはカルーセルの中心に表示される要素の場合にtrueになる
       active: i === activeIdx.value,
+      // leftContentはカルーセルの左側に表示される要素の場合にtrueになる
       leftContent:
         activeIdx.value === 0
           ? i === props.items.length - 1
           : i === activeIdx.value - 1,
+      // rightContentはカルーセルの右側に表示される要素の場合にtrueになる
       rightContent:
         activeIdx.value === props.items.length - 1
           ? i === 0
@@ -52,7 +55,7 @@ const handleClickItem = (
   isInternalLink: boolean,
 ) => {
   if (isActive) {
-    // アクティブな要素のclickイベントだけをハンドリングする
+    // カルーセルの中心に表示されるアクティブな要素のclickイベントだけをハンドリングする
     if (isInternalLink) {
       // 内部リンクは vue-routerで遷移させる
       router.push(link)
