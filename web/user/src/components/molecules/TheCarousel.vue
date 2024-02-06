@@ -58,7 +58,7 @@ const handleClickItem = (
       router.push(link)
     } else {
       // 外部リンクは新規タブで開く
-      window.open(link, '_blank')?.focus()
+      window.open(link, '_blank', 'noopener,noreferrer')?.focus()
     }
   }
 }
