@@ -56,7 +56,7 @@ const handleClickItem = () => {
 <template>
   <div class="flex gap-[10px]">
     <template v-if="thumbnailUrl">
-      <div class="relative aspect-square max-w-[80px]">
+      <div class="relative aspect-square h-[80px] w-[80px]">
         <div
           v-if="!canAddCart"
           class="absolute inset-0 flex h-full w-full items-center justify-center bg-black/50"
