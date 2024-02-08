@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (w *worker) reporter(ctx context.Context, payload *entity.WorkerPayload) error {
+func (w *worker) sendReport(ctx context.Context, payload *entity.WorkerPayload) error {
 	template, err := w.db.ReportTemplate.Get(ctx, payload.Report.TemplateID)
 	if err != nil {
 		return err

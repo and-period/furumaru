@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestReporter(t *testing.T) {
+func TestSendReport(t *testing.T) {
 	t.Parallel()
 
 	template := &entity.ReportTemplate{
@@ -103,7 +103,7 @@ func TestReporter(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.reporter(ctx, tt.payload)
+			err := worker.sendReport(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

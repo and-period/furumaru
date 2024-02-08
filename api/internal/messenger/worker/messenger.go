@@ -6,7 +6,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 )
 
-func (w *worker) messenger(ctx context.Context, payload *entity.WorkerPayload) error {
+func (w *worker) createMessages(ctx context.Context, payload *entity.WorkerPayload) error {
 	template, err := w.db.MessageTemplate.Get(ctx, payload.Message.TemplateID)
 	if err != nil {
 		return err

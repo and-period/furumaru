@@ -150,11 +150,8 @@ func TestWorker_Dispatch(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				queue := &entity.ReceivedQueue{Done: true}
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(queue, nil)
-			},
+			name:  "success",
+			setup: func(ctx context.Context, mocks *mocks) {},
 			record: events.SQSMessage{
 				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[]}`,
 			},
@@ -169,20 +166,20 @@ func TestWorker_Dispatch(t *testing.T) {
 		{
 			name: "failed to run with retry",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(nil, context.Canceled)
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any(), gomock.Any()).Return(nil, context.Canceled)
 			},
 			record: events.SQSMessage{
-				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[]}`,
+				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[], "email":{}}`,
 			},
 			expectErr: context.Canceled,
 		},
 		{
 			name: "failed to run without retry",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any()).Return(nil, assert.AnError)
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 			},
 			record: events.SQSMessage{
-				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[]}`,
+				Body: `{"queueId":"", "eventType":0, "userType":0, "userIds":[], "email":{}}`,
 			},
 			expectErr: nil,
 		},
@@ -257,14 +254,17 @@ func TestWorker_Run(t *testing.T) {
 		CreatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 		UpdatedAt:  jst.Date(2022, 7, 14, 18, 30, 0, 0),
 	}
-	queue := &entity.ReceivedQueue{
-		ID:        "queue-id",
-		EventType: entity.EventTypeUnknown,
-		UserType:  entity.UserTypeAdmin,
-		UserIDs:   []string{"user-id"},
-		Done:      false,
-		CreatedAt: jst.Date(2022, 7, 10, 18, 30, 0, 0),
-		UpdatedAt: jst.Date(2022, 7, 10, 18, 30, 0, 0),
+	queue := func(notifyType entity.NotifyType) *entity.ReceivedQueue {
+		return &entity.ReceivedQueue{
+			ID:         "queue-id",
+			NotifyType: notifyType,
+			EventType:  entity.EventTypeUnknown,
+			UserType:   entity.UserTypeAdmin,
+			UserIDs:    []string{"user-id"},
+			Done:       false,
+			CreatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			UpdatedAt:  jst.Date(2022, 7, 10, 18, 30, 0, 0),
+		}
 	}
 
 	tests := []struct {
@@ -276,8 +276,9 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "success to send mail",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
+				const notifyType = entity.NotifyTypeEmail
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue(notifyType), nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", notifyType, true).Return(nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), "admin-register", personalizations).Return(nil)
 			},
@@ -299,8 +300,9 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "success to send push",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
+				const notifyType = entity.NotifyTypePush
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue(notifyType), nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", notifyType, true).Return(nil)
 				mocks.db.PushTemplate.EXPECT().Get(gomock.Any(), entity.PushTemplateIDContact).Return(ptemplate, nil)
 				mocks.user.EXPECT().MultiGetAdminDevices(gomock.Any(), devicesIn).Return(devices, nil)
 				mocks.messaging.EXPECT().MultiSend(gomock.Any(), message, devices).Return(int64(1), int64(0), nil)
@@ -320,8 +322,9 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "success to message",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
+				const notifyType = entity.NotifyTypeMessage
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue(notifyType), nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", notifyType, true).Return(nil)
 				mocks.db.MessageTemplate.EXPECT().Get(gomock.Any(), entity.MessageTemplateIDNotificationLive).Return(mtemplate, nil)
 				mocks.db.Message.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(nil)
 			},
@@ -343,8 +346,9 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "success to report",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
+				const notifyType = entity.NotifyTypeReport
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue(notifyType), nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", notifyType, true).Return(nil)
 				mocks.db.ReportTemplate.EXPECT().Get(gomock.Any(), entity.ReportTemplateIDReceivedContact).Return(rtemplate, nil)
 				mocks.line.EXPECT().PushMessage(gomock.Any(), gomock.Any()).Return(nil)
 			},
@@ -362,8 +366,9 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "success already done",
 			setup: func(ctx context.Context, mocks *mocks) {
-				queue := &entity.ReceivedQueue{Done: true}
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				const notifyType = entity.NotifyTypeEmail
+				queue := &entity.ReceivedQueue{Done: true, NotifyType: notifyType}
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue, nil)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -378,11 +383,8 @@ func TestWorker_Run(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name: "success empty payload",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(nil)
-			},
+			name:  "success empty payload",
+			setup: func(ctx context.Context, mocks *mocks) {},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
 				EventType: entity.EventTypeUnknown,
@@ -395,7 +397,8 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "failed to get received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(nil, assert.AnError)
+				const notifyType = entity.NotifyTypeEmail
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
 				QueueID:   "queue-id",
@@ -412,7 +415,8 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "failed to send mail",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				const notifyType = entity.NotifyTypeEmail
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue(notifyType), nil)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
@@ -430,7 +434,8 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "failed to send push",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				const notifyType = entity.NotifyTypePush
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue(notifyType), nil)
 				mocks.user.EXPECT().MultiGetAdminDevices(gomock.Any(), devicesIn).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
@@ -448,7 +453,8 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "failed to create message",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
+				const notifyType = entity.NotifyTypeMessage
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue(notifyType), nil)
 				mocks.db.MessageTemplate.EXPECT().Get(gomock.Any(), entity.MessageTemplateIDNotificationLive).Return(nil, assert.AnError)
 			},
 			payload: &entity.WorkerPayload{
@@ -469,8 +475,9 @@ func TestWorker_Run(t *testing.T) {
 		{
 			name: "failed to update received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id").Return(queue, nil)
-				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", true).Return(assert.AnError)
+				const notifyType = entity.NotifyTypeEmail
+				mocks.db.ReceivedQueue.EXPECT().Get(ctx, "queue-id", notifyType).Return(queue(notifyType), nil)
+				mocks.db.ReceivedQueue.EXPECT().UpdateDone(ctx, "queue-id", notifyType, true).Return(assert.AnError)
 				mocks.user.EXPECT().MultiGetUsers(gomock.Any(), usersIn).Return(users, nil)
 				mocks.mailer.EXPECT().MultiSendFromInfo(gomock.Any(), "admin-register", personalizations).Return(nil)
 			},

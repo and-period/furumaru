@@ -31,12 +31,13 @@ func TestReceivedQueue_Get(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	q := testReceivedQueue("queue-id", now())
+	q := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
 	err = db.DB.Create(&q).Error
 	require.NoError(t, err)
 
 	type args struct {
-		queueID string
+		queueID    string
+		notifyType entity.NotifyType
 	}
 	type want struct {
 		queue *entity.ReceivedQueue
@@ -52,7 +53,8 @@ func TestReceivedQueue_Get(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				queueID: "queue-id",
+				queueID:    "queue-id",
+				notifyType: entity.NotifyTypeEmail,
 			},
 			want: want{
 				queue: q,
@@ -63,7 +65,8 @@ func TestReceivedQueue_Get(t *testing.T) {
 			name:  "not found",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				queueID: "other-id",
+				queueID:    "other-id",
+				notifyType: entity.NotifyTypeEmail,
 			},
 			want: want{
 				queue: nil,
@@ -82,7 +85,7 @@ func TestReceivedQueue_Get(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &receivedQueue{db: db, now: now}
-			actual, err := db.Get(ctx, tt.args.queueID)
+			actual, err := db.Get(ctx, tt.args.queueID, tt.args.notifyType)
 			assert.ErrorIs(t, err, tt.want.err)
 			assert.Equal(t, tt.want.queue, actual)
 		})
@@ -103,7 +106,7 @@ func TestReceivedQueue_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	q := testReceivedQueue("queue-id", now())
+	q := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
 
 	type args struct {
 		queue *entity.ReceivedQueue
@@ -153,7 +156,7 @@ func TestReceivedQueue_Create(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &receivedQueue{db: db, now: now}
-			err = db.Create(ctx, tt.args.queue)
+			err = db.MultiCreate(ctx, tt.args.queue)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
@@ -173,11 +176,12 @@ func TestReceivedQueue_UpdateDone(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	q := testReceivedQueue("queue-id", now())
+	q := testReceivedQueue("queue-id", entity.NotifyTypeEmail, now())
 
 	type args struct {
-		queueID string
-		done    bool
+		queueID    string
+		notifyType entity.NotifyType
+		done       bool
 	}
 	type want struct {
 		err error
@@ -215,21 +219,22 @@ func TestReceivedQueue_UpdateDone(t *testing.T) {
 			tt.setup(ctx, t, db)
 
 			db := &receivedQueue{db: db, now: now}
-			err = db.UpdateDone(ctx, tt.args.queueID, tt.args.done)
+			err = db.UpdateDone(ctx, tt.args.queueID, tt.args.notifyType, tt.args.done)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
 
-func testReceivedQueue(id string, now time.Time) *entity.ReceivedQueue {
+func testReceivedQueue(id string, typ entity.NotifyType, now time.Time) *entity.ReceivedQueue {
 	q := &entity.ReceivedQueue{
-		ID:        id,
-		EventType: entity.EventTypeUnknown,
-		UserType:  entity.UserTypeUser,
-		UserIDs:   []string{"user-id"},
-		Done:      false,
-		CreatedAt: now,
-		UpdatedAt: now,
+		ID:         id,
+		NotifyType: typ,
+		EventType:  entity.EventTypeUnknown,
+		UserType:   entity.UserTypeUser,
+		UserIDs:    []string{"user-id"},
+		Done:       false,
+		CreatedAt:  now,
+		UpdatedAt:  now,
 	}
 	_ = q.FillJSON()
 	return q

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMessenger(t *testing.T) {
+func TestCreateMessages(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 7, 21, 18, 30, 0, 0)
@@ -114,7 +114,7 @@ func TestMessenger(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testWorker(tt.setup, func(ctx context.Context, t *testing.T, worker *worker) {
-			err := worker.messenger(ctx, tt.payload)
+			err := worker.createMessages(ctx, tt.payload)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

@@ -147,9 +147,9 @@ type PushTemplate interface {
 }
 
 type ReceivedQueue interface {
-	Get(ctx context.Context, queueID string, fields ...string) (*entity.ReceivedQueue, error)
-	Create(ctx context.Context, queue *entity.ReceivedQueue) error
-	UpdateDone(ctx context.Context, queueID string, done bool) error
+	Get(ctx context.Context, queueID string, typ entity.NotifyType, fields ...string) (*entity.ReceivedQueue, error)
+	MultiCreate(ctx context.Context, queues ...*entity.ReceivedQueue) error
+	UpdateDone(ctx context.Context, queueID string, typ entity.NotifyType, done bool) error
 }
 
 type ReportTemplate interface {
