@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -139,48 +140,92 @@ func (w *worker) dispatch(ctx context.Context, record events.SQSMessage) error {
 }
 
 func (w *worker) run(ctx context.Context, payload *entity.WorkerPayload) error {
+	const types = 4
 	w.logger.Debug("Dispatch", zap.String("queueId", payload.QueueID), zap.Any("payload", payload))
-	queue, err := w.db.ReceivedQueue.Get(ctx, payload.QueueID)
+	var mu sync.Mutex
+	var errs error
+	w.waitGroup.Add(types)
+	go func() { // メール配信
+		defer w.waitGroup.Done()
+		if payload.Email == nil {
+			return
+		}
+		err := w.execute(ctx, entity.NotifyTypeEmail, payload, w.multiSendMail)
+		if err == nil {
+			return
+		}
+		w.logger.Error("Failed to multi send mail", zap.String("queueId", payload.QueueID), zap.Error(err))
+		mu.Lock()
+		errs = errors.Join(errs, err)
+		mu.Unlock()
+	}()
+	go func() { // メッセージ通知
+		defer w.waitGroup.Done()
+		if payload.Message == nil {
+			return
+		}
+		err := w.execute(ctx, entity.NotifyTypeMessage, payload, w.createMessages)
+		if err == nil {
+			return
+		}
+		w.logger.Error("Failed to create messages", zap.String("queueId", payload.QueueID), zap.Error(err))
+		mu.Lock()
+		errs = errors.Join(errs, err)
+		mu.Unlock()
+	}()
+	go func() { // プッシュ通知
+		defer w.waitGroup.Done()
+		if payload.Push == nil {
+			return
+		}
+		err := w.execute(ctx, entity.NotifyTypePush, payload, w.multiSendPush)
+		if err == nil {
+			return
+		}
+		w.logger.Error("Failed to multi send push", zap.String("queueId", payload.QueueID), zap.Error(err))
+		mu.Lock()
+		errs = errors.Join(errs, err)
+		mu.Unlock()
+	}()
+	go func() { // システムレポート
+		defer w.waitGroup.Done()
+		if payload.Report == nil {
+			return
+		}
+		err := w.execute(ctx, entity.NotifyTypeReport, payload, w.sendReport)
+		if err == nil {
+			return
+		}
+		w.logger.Error("Failed to send report", zap.String("queueId", payload.QueueID), zap.Error(err))
+		mu.Lock()
+		errs = errors.Join(errs, err)
+		mu.Unlock()
+	}()
+	w.waitGroup.Wait()
+	return errs
+}
+
+func (w *worker) execute(
+	ctx context.Context,
+	notifyType entity.NotifyType,
+	payload *entity.WorkerPayload,
+	sendFn func(context.Context, *entity.WorkerPayload) error,
+) error {
+	queue, err := w.db.ReceivedQueue.Get(ctx, payload.QueueID, notifyType)
 	if err != nil {
-		return err
+		return fmt.Errorf("worker: failed to get received queue: %w", err)
 	}
 	if queue.Done {
-		w.logger.Info("This queue is already done", zap.String("queueId", payload.QueueID))
+		w.logger.Info("This queue is already done", zap.String("queueId", payload.QueueID), zap.Int32("notifyType", int32(notifyType)))
 		return nil
 	}
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		// メール通知
-		if payload.Email == nil {
-			return nil
-		}
-		return w.multiSendMail(ectx, payload)
-	})
-	eg.Go(func() error {
-		// プッシュ通知
-		if payload.Push == nil {
-			return nil
-		}
-		return w.multiSendPush(ectx, payload)
-	})
-	eg.Go(func() error {
-		// メッセージ作成
-		if payload.Message == nil {
-			return nil
-		}
-		return w.messenger(ectx, payload)
-	})
-	eg.Go(func() error {
-		// システムレポート
-		if payload.Report == nil {
-			return nil
-		}
-		return w.reporter(ectx, payload)
-	})
-	if err := eg.Wait(); err != nil {
-		return err
+	if err := sendFn(ctx, payload); err != nil {
+		return fmt.Errorf("worker: failed to send function: %w", err)
 	}
-	return w.db.ReceivedQueue.UpdateDone(ctx, payload.QueueID, true)
+	if err := w.db.ReceivedQueue.UpdateDone(ctx, payload.QueueID, notifyType, true); err != nil {
+		return fmt.Errorf("worker: failed to update done: %w", err)
+	}
+	return nil
 }
 
 func (w *worker) isRetryable(err error) bool {

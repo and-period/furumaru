@@ -8,12 +8,12 @@ import (
 	"gorm.io/datatypes"
 )
 
-func TestReceivedQueue(t *testing.T) {
+func TestReceivedQueues(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		payload *WorkerPayload
-		expect  *ReceivedQueue
+		expect  ReceivedQueues
 	}{
 		{
 			name: "success",
@@ -26,13 +26,43 @@ func TestReceivedQueue(t *testing.T) {
 					TemplateID:    EmailTemplateIDAdminRegister,
 					Substitutions: map[string]interface{}{"パスワード": "!Qaz2wsx"},
 				},
+				Message: &MessageConfig{},
+				Push:    &PushConfig{},
+				Report:  &ReportConfig{},
 			},
-			expect: &ReceivedQueue{
-				ID:        "id",
-				EventType: EventTypeRegisterAdmin,
-				UserType:  UserTypeAdmin,
-				UserIDs:   []string{"admin-id"},
-				Done:      false,
+			expect: ReceivedQueues{
+				{
+					ID:         "id",
+					NotifyType: NotifyTypeEmail,
+					EventType:  EventTypeRegisterAdmin,
+					UserType:   UserTypeAdmin,
+					UserIDs:    []string{"admin-id"},
+					Done:       false,
+				},
+				{
+					ID:         "id",
+					NotifyType: NotifyTypeMessage,
+					EventType:  EventTypeRegisterAdmin,
+					UserType:   UserTypeAdmin,
+					UserIDs:    []string{"admin-id"},
+					Done:       false,
+				},
+				{
+					ID:         "id",
+					NotifyType: NotifyTypePush,
+					EventType:  EventTypeRegisterAdmin,
+					UserType:   UserTypeAdmin,
+					UserIDs:    []string{"admin-id"},
+					Done:       false,
+				},
+				{
+					ID:         "id",
+					NotifyType: NotifyTypeReport,
+					EventType:  EventTypeRegisterAdmin,
+					UserType:   UserTypeAdmin,
+					UserIDs:    []string{"admin-id"},
+					Done:       false,
+				},
 			},
 		},
 	}
@@ -40,40 +70,44 @@ func TestReceivedQueue(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := NewReceivedQueue(tt.payload)
+			actual := NewReceivedQueues(tt.payload)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }
 
-func TestReceivedQueue_Fill(t *testing.T) {
+func TestReceivedQueues_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		queue  *ReceivedQueue
-		expect *ReceivedQueue
+		queue  ReceivedQueues
+		expect ReceivedQueues
 		hasErr bool
 	}{
 		{
 			name: "success",
-			queue: &ReceivedQueue{
-				ID:          "id",
-				EventType:   EventTypeRegisterAdmin,
-				UserType:    UserTypeAdmin,
-				UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),
-				Done:        false,
-				CreatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
-				UpdatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			queue: ReceivedQueues{
+				{
+					ID:          "id",
+					EventType:   EventTypeRegisterAdmin,
+					UserType:    UserTypeAdmin,
+					UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),
+					Done:        false,
+					CreatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+					UpdatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				},
 			},
-			expect: &ReceivedQueue{
-				ID:          "id",
-				EventType:   EventTypeRegisterAdmin,
-				UserType:    UserTypeAdmin,
-				UserIDs:     []string{"admin-id"},
-				UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),
-				Done:        false,
-				CreatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
-				UpdatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			expect: ReceivedQueues{
+				{
+					ID:          "id",
+					EventType:   EventTypeRegisterAdmin,
+					UserType:    UserTypeAdmin,
+					UserIDs:     []string{"admin-id"},
+					UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),
+					Done:        false,
+					CreatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+					UpdatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				},
 			},
 			hasErr: false,
 		},
@@ -89,34 +123,38 @@ func TestReceivedQueue_Fill(t *testing.T) {
 	}
 }
 
-func TestReceivedQueue_FillJSON(t *testing.T) {
+func TestReceivedQueues_FillJSON(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
-		queue  *ReceivedQueue
-		expect *ReceivedQueue
+		queue  ReceivedQueues
+		expect ReceivedQueues
 		hasErr bool
 	}{
 		{
 			name: "success",
-			queue: &ReceivedQueue{
-				ID:        "id",
-				EventType: EventTypeRegisterAdmin,
-				UserType:  UserTypeAdmin,
-				UserIDs:   []string{"admin-id"},
-				Done:      false,
-				CreatedAt: jst.Date(2022, 7, 10, 18, 30, 0, 0),
-				UpdatedAt: jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			queue: ReceivedQueues{
+				{
+					ID:        "id",
+					EventType: EventTypeRegisterAdmin,
+					UserType:  UserTypeAdmin,
+					UserIDs:   []string{"admin-id"},
+					Done:      false,
+					CreatedAt: jst.Date(2022, 7, 10, 18, 30, 0, 0),
+					UpdatedAt: jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				},
 			},
-			expect: &ReceivedQueue{
-				ID:          "id",
-				EventType:   EventTypeRegisterAdmin,
-				UserType:    UserTypeAdmin,
-				UserIDs:     []string{"admin-id"},
-				UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),
-				Done:        false,
-				CreatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
-				UpdatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+			expect: ReceivedQueues{
+				{
+					ID:          "id",
+					EventType:   EventTypeRegisterAdmin,
+					UserType:    UserTypeAdmin,
+					UserIDs:     []string{"admin-id"},
+					UserIDsJSON: datatypes.JSON([]byte(`["admin-id"]`)),
+					Done:        false,
+					CreatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+					UpdatedAt:   jst.Date(2022, 7, 10, 18, 30, 0, 0),
+				},
 			},
 			hasErr: false,
 		},

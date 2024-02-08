@@ -338,8 +338,8 @@ func (s *service) sendMessage(ctx context.Context, payload *entity.WorkerPayload
 	if err != nil {
 		return err
 	}
-	queue := entity.NewReceivedQueue(payload)
-	if err := s.db.ReceivedQueue.Create(ctx, queue); err != nil {
+	queues := entity.NewReceivedQueues(payload)
+	if err := s.db.ReceivedQueue.MultiCreate(ctx, queues...); err != nil {
 		return err
 	}
 	if _, err := s.producer.SendMessage(ctx, buf); err != nil {

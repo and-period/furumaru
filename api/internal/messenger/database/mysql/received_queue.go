@@ -25,43 +25,47 @@ func newReceivedQueue(db *mysql.Client) database.ReceivedQueue {
 	}
 }
 
-func (q *receivedQueue) Get(ctx context.Context, queueID string, fields ...string) (*entity.ReceivedQueue, error) {
-	queue, err := q.get(ctx, q.db.DB, queueID, fields...)
+func (q *receivedQueue) Get(
+	ctx context.Context, queueID string, typ entity.NotifyType, fields ...string,
+) (*entity.ReceivedQueue, error) {
+	queue, err := q.get(ctx, q.db.DB, queueID, typ, fields...)
 	return queue, dbError(err)
 }
 
-func (q *receivedQueue) Create(ctx context.Context, queue *entity.ReceivedQueue) error {
-	if err := queue.FillJSON(); err != nil {
-		return err
+func (q *receivedQueue) MultiCreate(ctx context.Context, queues ...*entity.ReceivedQueue) error {
+	if err := entity.ReceivedQueues(queues).FillJSON(); err != nil {
+		return dbError(err)
 	}
-
-	now := q.now()
-	queue.CreatedAt, queue.UpdatedAt = now, now
-
-	err := q.db.DB.WithContext(ctx).Table(receivedQueueTable).Create(&queue).Error
+	for _, queue := range queues {
+		now := q.now()
+		queue.CreatedAt, queue.UpdatedAt = now, now
+	}
+	err := q.db.DB.WithContext(ctx).Table(receivedQueueTable).Create(&queues).Error
 	return dbError(err)
 }
 
-func (q *receivedQueue) UpdateDone(ctx context.Context, queueID string, done bool) error {
+func (q *receivedQueue) UpdateDone(ctx context.Context, queueID string, typ entity.NotifyType, done bool) error {
 	updates := map[string]interface{}{
 		"done":       done,
 		"updated_at": q.now(),
 	}
 	stmt := q.db.DB.WithContext(ctx).
 		Table(receivedQueueTable).
-		Where("id = ?", queueID)
+		Where("id = ?", queueID).
+		Where("notify_type = ?", typ)
 
 	err := stmt.Updates(updates).Error
 	return dbError(err)
 }
 
 func (q *receivedQueue) get(
-	ctx context.Context, tx *gorm.DB, queueID string, fields ...string,
+	ctx context.Context, tx *gorm.DB, queueID string, typ entity.NotifyType, fields ...string,
 ) (*entity.ReceivedQueue, error) {
 	var queue *entity.ReceivedQueue
 
 	err := q.db.Statement(ctx, tx, receivedQueueTable, fields...).
 		Where("id = ?", queueID).
+		Where("notify_type = ?", typ).
 		First(&queue).Error
 	if err != nil {
 		return nil, err
