@@ -706,7 +706,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 		{
 			name: "already completed",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
+				create(t, "order-id", entity.OrderStatusCompleted, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID: "order-id",
