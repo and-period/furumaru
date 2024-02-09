@@ -19,17 +19,20 @@ func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) GetPromotion(ctx *gin.Context) {
-	promotion, err := h.getPromotion(ctx, util.GetParam(ctx, "code"))
+	in := &store.GetPromotionByCodeInput{
+		PromotionCode: util.GetParam(ctx, "code"),
+	}
+	promotion, err := h.store.GetPromotionByCode(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	if !promotion.Enabled() {
+	if !promotion.IsEnabled() {
 		h.forbidden(ctx, errors.New("handler: this promotion is disabled"))
 		return
 	}
 	res := &response.PromotionResponse{
-		Promotion: promotion.Response(),
+		Promotion: service.NewPromotion(promotion).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
