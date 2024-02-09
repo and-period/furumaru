@@ -1136,7 +1136,7 @@ func TestUpdateOrderFulfillment(t *testing.T) {
 		{
 			name: "failed to completed",
 			setup: func(ctx context.Context, mocks *mocks) {
-				order := &entity.Order{CompletedAt: now}
+				order := &entity.Order{Status: entity.OrderStatusCompleted}
 				mocks.db.Order.EXPECT().Get(ctx, "order-id").Return(order, nil)
 			},
 			input: &store.UpdateOrderFulfillmentInput{

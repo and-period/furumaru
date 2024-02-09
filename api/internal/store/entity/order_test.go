@@ -376,6 +376,68 @@ func TestOrder_SetFulfillmentStatus(t *testing.T) {
 	}
 }
 
+func TestOrder_Completed(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		order  *Order
+		expect bool
+	}{
+		{
+			name:   "unpaid",
+			order:  &Order{Status: OrderStatusUnpaid},
+			expect: false,
+		},
+		{
+			name:   "waiting",
+			order:  &Order{Status: OrderStatusWaiting},
+			expect: false,
+		},
+		{
+			name:   "preparing",
+			order:  &Order{Status: OrderStatusPreparing},
+			expect: false,
+		},
+		{
+			name:   "shipped",
+			order:  &Order{Status: OrderStatusShipped},
+			expect: false,
+		},
+		{
+			name:   "completed",
+			order:  &Order{Status: OrderStatusCompleted},
+			expect: true,
+		},
+		{
+			name:   "canceled",
+			order:  &Order{Status: OrderStatusCanceled},
+			expect: true,
+		},
+		{
+			name:   "refunded",
+			order:  &Order{Status: OrderStatusRefunded},
+			expect: true,
+		},
+		{
+			name:   "failed",
+			order:  &Order{Status: OrderStatusFailed},
+			expect: true,
+		},
+		{
+			name:   "nil",
+			order:  nil,
+			expect: false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.order.Completed())
+		})
+	}
+}
+
 func TestOrder_EnableAction(t *testing.T) {
 	t.Parallel()
 	type want struct {

@@ -602,13 +602,13 @@ func TestOrder_UpdatePayment(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
+	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
 		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
+		order.Status = status
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
 		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
-		payment.Status = status
 		err = db.DB.Create(&payment).Error
 		require.NoError(t, err)
 
@@ -640,7 +640,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 		{
 			name: "success authorized",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID: "order-id",
@@ -657,7 +657,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 		{
 			name: "success captured",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusAuthorized, now().AddDate(0, 0, -1))
+				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID: "order-id",
@@ -674,7 +674,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 		{
 			name: "success failed",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID: "order-id",
@@ -706,7 +706,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 		{
 			name: "already completed",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusCaptured, now().AddDate(0, 0, -1))
+				create(t, "order-id", entity.OrderStatusCompleted, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID: "order-id",
@@ -723,7 +723,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 		{
 			name: "not latest data",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusAuthorized, now().AddDate(0, 0, 1))
+				create(t, "order-id", entity.OrderStatusUnpaid, now().AddDate(0, 0, 1))
 			},
 			args: args{
 				orderID: "order-id",
@@ -794,13 +794,13 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
+	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
 		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
+		order.Status = status
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
 		payment := testOrderPayment(orderID, 1, "transaction-id", "payment-id", now)
-		payment.Status = status
 		err = db.DB.Create(&payment).Error
 		require.NoError(t, err)
 
@@ -833,7 +833,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 		{
 			name: "success fulfilled",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusPending, now().AddDate(0, 0, -1))
+				create(t, "order-id", entity.OrderStatusPreparing, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID:       "order-id",
@@ -852,7 +852,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 		{
 			name: "success uunfulfilled",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusAuthorized, now().AddDate(0, 0, -1))
+				create(t, "order-id", entity.OrderStatusPreparing, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID:       "order-id",
@@ -888,7 +888,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 		{
 			name: "already completed",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				create(t, "order-id", entity.PaymentStatusCaptured, now().AddDate(0, 0, -1))
+				create(t, "order-id", entity.OrderStatusCompleted, now().AddDate(0, 0, -1))
 			},
 			args: args{
 				orderID:       "order-id",
