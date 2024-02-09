@@ -206,6 +206,7 @@ func TestUser(t *testing.T) {
 						LastnameKana:   "あんどどっと",
 						FirstnameKana:  "こうにゅうしゃ",
 						PostalCode:     "1000014",
+						Prefecture:     "東京都",
 						PrefectureCode: 13,
 						City:           "千代田区",
 						AddressLine1:   "永田町1-7-1",
