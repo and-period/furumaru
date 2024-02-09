@@ -1,0 +1,101 @@
+name: OpenAI Reviewer
+on:
+  pull_request:
+    types: [opened]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group:
+    ${{ github.repository }}-${{ github.event.number || github.head_ref ||
+    github.sha }}-${{ github.workflow }}-${{ github.event_name ==
+    'pull_request_review_comment' && 'pr_comment' || 'pr' }}
+  cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
+
+jobs:
+  review:
+    name: review
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+          ref: ${{github.event.pull_request.head.ref}}
+
+      # https://github.com/coderabbitai/ai-pr-reviewer/blob/main/action.yml
+      - uses: coderabbitai/ai-pr-reviewer@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          debug: false
+          language: ja-JP
+          review_simple_changes: false
+          review_comment_lgtm: false
+          openai_light_model: gpt-3.5-turbo
+          openai_heavy_model: gpt-3.5-turbo
+          openai_timeout_ms: 900000 # 15min
+          path_filters: |
+            !dist/**
+            !tmp/**
+            !**/*.csv
+            !**/*.tsv
+            !**/*.pdf
+            !**/*.docx
+            !**/*.xlsx
+            !**/*.pptx
+            !**/*.pb.go
+            !**/*.lock
+            !**/*.ttf
+            !**/*.mod
+            !**/*.sum
+            !**/*.jpeg
+            !**/*.jpg
+            !**/*.png
+            !**/*.gif
+            !**/*.bmp
+            !**/*.tiff
+            !**/*.webm
+            !**/*.woff
+            !**/*.woff2
+            !**/*.min.js
+            !**/*.min.js.map
+            !**/*.min.js.css
+          system_message: |
+            あなたは@coderabbitai（またはgithub-actions[bot]）であり、OpenAIによってトレーニングされた言語モデルです。
+            あなたの目的は、非常に経験豊富なソフトウェアエンジニアとして振る舞い、コード断片の徹底的なレビューを行い、
+            次のような重要な領域の改善のためのコードスニペットを提案することです:
+              - ロジック
+              - セキュリティ
+              - パフォーマンス
+              - データ競合
+              - 一貫性
+              - エラーハンドリング
+              - 可読性
+              - モジュール性
+              - 複雑性
+              - 最適化
+              - ベストプラクティス: DRY, SOLID, KISS
+            細かいコードスタイルの問題、不足しているコメント/ドキュメンテーションにはコメントしないでください。
+            重要な懸念事項を特定し解決し、意図的に細かい問題を無視して、総合的なコード品質を向上させることが求められています。
+          summarize: |
+            最終的な回答を `markdown` フォーマットで以下の内容で書いてください:
+              - *ウォークスルー*: 全体の変更内容を特定のファイルではなく、80単語以内で要約したものです。
+              - *変更点*: ファイルとその要約のMarkdown表です。類似の変更を加えられたファイルは一つの行にグループ化し、スペースを節約します。
+            この要約はGitHubのプルリクエストのコメントとして追加されるため、追加のコメントは避けてください。
+          summarize_release_notes: |
+            プルリクエストに対する簡潔なリリースノートを作成してください。
+            目的とユーザーへの影響に焦点を当て、次のように変更をカテゴリ分けしてください:
+              "New Feature", "Bug fix", "Documentation",
+              "Refactor", "Style", "Test", "Chore", "Revert"
+            例えば:
+              ```
+              - New Freature: UIに検索機能を追加しました
+              ```
+            のような箇条書きリストを提供してください。
+            レスポンスは50-100単語に制限し、コードの詳細は省略し、エンドユーザーに見える機能を強調してください。
