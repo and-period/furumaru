@@ -142,6 +142,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.productRoutes(v1)
 	h.coordinatorRoutes(v1)
 	h.producerRoutes(v1)
+	h.promotionRoutes(v1)
 	h.postalCodeRoutes(v1)
 	h.statusRoutes(v1)
 	// 要認証エンドポイント
