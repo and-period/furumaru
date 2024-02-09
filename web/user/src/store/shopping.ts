@@ -181,6 +181,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       coordinatorId: string,
       cartNumber?: number,
       prefecture?: number,
+      promotion?: string,
     ): Promise<string | undefined> {
       try {
         const authStore = useAuthStore()
@@ -188,6 +189,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
           coordinatorId,
           number: cartNumber,
           prefecture,
+          promotion,
         })
         this._calcCartResponseItem = res
         const requestId = res.requestId
