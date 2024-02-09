@@ -12,3 +12,7 @@ type Promotion struct {
 	StartAt      int64  `json:"startAt"`      // クーポン使用可能日時(開始)
 	EndAt        int64  `json:"endAt"`        // クーポン使用可能日時(終了)
 }
+
+type PromotionResponse struct {
+	Promotion *Promotion `json:"promotion"` // プロモーション情報
+}

@@ -97,6 +97,10 @@ func NewPromotion(promotion *entity.Promotion) *Promotion {
 	}
 }
 
+func (p *Promotion) Enabled() bool {
+	return PromotionStatus(p.Status) == PromotionStatusEnabled
+}
+
 func (p *Promotion) Response() *response.Promotion {
 	if p == nil {
 		return nil

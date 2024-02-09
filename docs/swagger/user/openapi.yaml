@@ -29,6 +29,8 @@ tags:
   description: 生産者関連
 - name: Product
   description: 商品関連
+- name: Promotion
+  description: プロモーション関連
 - name: Contact
   description: お問い合わせ関連
 - name: Status
@@ -107,6 +109,9 @@ paths:
     $ref: './paths/v1/products/index.yaml'
   /v1/products/{productId}:
     $ref: './paths/v1/products/_productId/index.yaml'
+  # Promotion
+  /v1/promotions/{code}:
+    $ref: './paths/v1/promotions/_code/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
@@ -273,6 +278,8 @@ components:
       $ref: './components/schemas/v1/product.response.yaml#/productResponse'
     v1ProductsResponse:
       $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
+    v1PromotionResponse:
+      $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
     v1PaymentSystemsResponse:
       $ref: './components/schemas/v1/status.response.yaml#/paymentSystemsResponse'
     v1TopCommonResponse:
