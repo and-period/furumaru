@@ -10,6 +10,7 @@ export * from './OrderApi';
 export * from './OtherApi';
 export * from './ProducerApi';
 export * from './ProductApi';
+export * from './PromotionApi';
 export * from './ScheduleApi';
 export * from './StatusApi';
 export * from './TopApi';
