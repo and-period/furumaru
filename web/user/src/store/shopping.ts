@@ -203,5 +203,20 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
       const res = await this.statusApiClient().v1ListPaymentSystems()
       this._paymentSystemStatus = res.systems
     },
+
+    /**
+     * 有効なプロモーションコードかを検証する
+     */
+    async verifyPromotionCode(promotionCode: string): Promise<boolean> {
+      try {
+        const authStore = useAuthStore()
+        await this.promotionApiClient(authStore.accessToken).v1GetPromotion({
+          code: promotionCode,
+        })
+        return true
+      } catch (_error) {
+        return false
+      }
+    },
   },
 })
