@@ -52,7 +52,7 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   const statusApiClient = (): StatusApi => apiClientFactory.create(StatusApi)
 
   // 注文履歴取得APIをStoreに定義
-  const orederApiClient = (token?: string): OrderApi =>
+  const orderApiClient = (token?: string): OrderApi =>
     apiClientFactory.create(OrderApi, token)
 
   store.authApiClient = authApiClient
@@ -64,7 +64,7 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   store.scheduleApiClient = scheduleApiClient
   store.coordinatorApiClient = coordinatorApiClient
   store.statusApiClient = statusApiClient
-  store.orderApiClient = orederApiClient
+  store.orderApiClient = orderApiClient
 }
 
 /**
