@@ -92,14 +92,14 @@ const handleClickBackCartButton = () => {
 }
 
 const handleSubmitNewAddressForm = async () => {
-  const registerdAddress = await registerAddress({
+  const registeredAddress = await registerAddress({
     ...formData.value,
     phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
   })
   router.push({
     path: '/v1/purchase/confirmation',
     query: {
-      id: registerdAddress.id,
+      id: registeredAddress.id,
       coordinatorId: coordinatorId.value,
       cartNumber: cartNumber.value,
       promotionCode: promotionCode.value,
@@ -224,7 +224,7 @@ useSeoMeta({
 <template>
   <div class="container mx-auto">
     <div
-      class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
+      class="text-main mt-[32px] text-center text-[20px] font-bold tracking-[2px]"
     >
       ご購入手続き
     </div>
@@ -240,14 +240,14 @@ useSeoMeta({
       class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"
     >
       <template v-if="addressesFetchState.isLoading">
-        <div class="absolute h-2 w-full animate-pulse bg-main"></div>
+        <div class="bg-main absolute h-2 w-full animate-pulse"></div>
       </template>
 
       <template v-else>
         <!-- 左側 -->
         <div class="row-span-1 self-start py-[24px] md:w-full md:py-10">
           <div
-            class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
+            class="text-main mb-6 text-left text-[16px] font-bold tracking-[1.6px]"
           >
             お客様情報
           </div>
@@ -262,7 +262,7 @@ useSeoMeta({
                   id="default-radio"
                   v-model="targetAddress"
                   type="radio"
-                  class="h-4 w-4 accent-main"
+                  class="accent-main h-4 w-4"
                   value="default"
                 />
                 <label for="default-radio">上記の住所にお届け</label>
@@ -272,7 +272,7 @@ useSeoMeta({
                   id="other-radio"
                   v-model="targetAddress"
                   type="radio"
-                  class="h-4 w-4 accent-main"
+                  class="accent-main h-4 w-4"
                   value="other"
                 />
                 <label for="other-radio">その他の住所にお届け</label>
@@ -280,7 +280,7 @@ useSeoMeta({
             </div>
             <template v-if="targetAddress === 'other'">
               <div
-                class="my-6 text-[16px] font-bold tracking-[1.6px] text-main"
+                class="text-main my-6 text-[16px] font-bold tracking-[1.6px]"
               >
                 お届け先情報
               </div>
@@ -306,7 +306,7 @@ useSeoMeta({
 
         <!-- 右側 -->
         <div
-          class="row-span-2 self-start bg-base px-[16px] py-[24px] text-main md:w-full md:p-10"
+          class="bg-base text-main row-span-2 self-start px-[16px] py-[24px] md:w-full md:p-10"
         >
           <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
             注文内容
@@ -360,7 +360,7 @@ useSeoMeta({
 
               <template v-if="validPromotion">
                 <div
-                  class="leading-[1.4px mt-4 flex justify-between rounded-lg border border-orange p-2 text-[12px] text-orange"
+                  class="leading-[1.4px border-orange text-orange mt-4 flex justify-between rounded-lg border p-2 text-[12px]"
                 >
                   <div class="flex items-center gap-1">
                     <svg
@@ -409,7 +409,7 @@ useSeoMeta({
                     />
                   </div>
                   <button
-                    class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
+                    class="bg-main whitespace-nowrap p-2 text-[14px] text-white md:text-[16px]"
                     @click="handleClickUsePromotionCodeButton"
                   >
                     適用する
@@ -424,7 +424,7 @@ useSeoMeta({
               </template>
 
               <div
-                class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
+                class="border-main mt-4 grid grid-cols-5 gap-y-4 border-y py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
               >
                 <div class="col-span-2 md:col-span-1">商品合計（税込）</div>
                 <div class="col-span-3 text-right md:col-span-1">
@@ -456,7 +456,7 @@ useSeoMeta({
           class="mt-[24px] flex w-full flex-col items-center gap-4 self-start md:flex-row md:justify-between"
         >
           <button
-            class="order-2 inline-flex w-full gap-2 text-left text-[12px] tracking-[1.2px] text-main md:order-1 md:max-w-max"
+            class="text-main order-2 inline-flex w-full gap-2 text-left text-[12px] tracking-[1.2px] md:order-1 md:max-w-max"
             @click="handleClickBackCartButton"
           >
             <the-left-arrow-icon class="h-4 w-4" />
@@ -466,7 +466,7 @@ useSeoMeta({
           <template v-if="defaultAddress && targetAddress === 'default'">
             <!-- 通常のボタンの場合 -->
             <button
-              class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
+              class="bg-main w-full p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
               @click="handleClickNextStepButton(defaultAddress.id)"
             >
               お支払方法の選択へ
@@ -475,7 +475,7 @@ useSeoMeta({
           <template v-else>
             <!-- フォーム要素の場合 -->
             <button
-              class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
+              class="bg-main w-full p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
               type="submit"
               form="new-address-form"
             >
