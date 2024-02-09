@@ -2,10 +2,31 @@ package handler
 
 import (
 	"context"
+	"errors"
+	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/gin-gonic/gin"
 )
+
+func (h *handler) GetPromotion(ctx *gin.Context) {
+	promotion, err := h.getPromotion(ctx, util.GetParam(ctx, "code"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if !promotion.Enabled() {
+		h.forbidden(ctx, errors.New("handler: this promotion is disabled"))
+		return
+	}
+	res := &response.PromotionResponse{
+		Promotion: promotion.Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
 
 func (h *handler) multiGetPromotion(ctx context.Context, promotionIDs []string) (service.Promotions, error) {
 	if len(promotionIDs) == 0 {
