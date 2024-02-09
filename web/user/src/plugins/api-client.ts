@@ -11,6 +11,7 @@ import {
   StatusApi,
   TopApi,
   OrderApi,
+  PromotionApi,
 } from '~/types/api'
 
 function apiClientInjector({ store }: PiniaPluginContext) {
@@ -55,6 +56,10 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   const orderApiClient = (token?: string): OrderApi =>
     apiClientFactory.create(OrderApi, token)
 
+  // クーポンコードのAPIをStoreに定義
+  const promotionApiClient = (token?: string): PromotionApi =>
+    apiClientFactory.create(PromotionApi, token)
+
   store.authApiClient = authApiClient
   store.topPageApiClient = topPageApiClient
   store.productApiClient = productApiClient
@@ -65,6 +70,7 @@ function apiClientInjector({ store }: PiniaPluginContext) {
   store.coordinatorApiClient = coordinatorApiClient
   store.statusApiClient = statusApiClient
   store.orderApiClient = orderApiClient
+  store.promotionApiClient = promotionApiClient
 }
 
 /**
