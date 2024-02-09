@@ -18,7 +18,7 @@ const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
 const { calcCartItemByCoordinatorId } = shoppingCartStore
 
-const targetddress = ref<string>('default')
+const targetAddress = ref<string>('default')
 const calcCartResponseItemState = ref<{
   isLoading: boolean
   hasError: boolean
@@ -173,7 +173,7 @@ useSeoMeta({
               <div class="flex items-center gap-2">
                 <input
                   id="default-radio"
-                  v-model="targetddress"
+                  v-model="targetAddress"
                   type="radio"
                   class="h-4 w-4 accent-main"
                   value="default"
@@ -183,7 +183,7 @@ useSeoMeta({
               <div class="flex items-center gap-2">
                 <input
                   id="other-radio"
-                  v-model="targetddress"
+                  v-model="targetAddress"
                   type="radio"
                   class="h-4 w-4 accent-main"
                   value="other"
@@ -191,7 +191,7 @@ useSeoMeta({
                 <label for="other-radio">その他の住所にお届け</label>
               </div>
             </div>
-            <template v-if="targetddress === 'other'">
+            <template v-if="targetAddress === 'other'">
               <div
                 class="my-6 text-[16px] font-bold tracking-[1.6px] text-main"
               >
@@ -326,7 +326,7 @@ useSeoMeta({
             買い物カゴへ戻る
           </button>
 
-          <template v-if="defaultAddress && targetddress === 'default'">
+          <template v-if="defaultAddress && targetAddress === 'default'">
             <!-- 通常のボタンの場合 -->
             <button
               class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
