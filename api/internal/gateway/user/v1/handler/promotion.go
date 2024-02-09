@@ -12,6 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (h *handler) promotionRoutes(rg *gin.RouterGroup) {
+	r := rg.Group("/promotions")
+
+	r.GET("/:code", h.GetPromotion)
+}
+
 func (h *handler) GetPromotion(ctx *gin.Context) {
 	promotion, err := h.getPromotion(ctx, util.GetParam(ctx, "code"))
 	if err != nil {
