@@ -21,6 +21,7 @@ func NewAddress(address *entity.Address) *Address {
 			LastnameKana:   address.LastnameKana,
 			FirstnameKana:  address.FirstnameKana,
 			PostalCode:     address.PostalCode,
+			Prefecture:     address.Prefecture,
 			PrefectureCode: address.PrefectureCode,
 			City:           address.City,
 			AddressLine1:   address.AddressLine1,
