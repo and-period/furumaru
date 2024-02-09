@@ -156,17 +156,16 @@ func (o *Order) SetFulfillmentStatus(fulfillmentID string, status FulfillmentSta
 	}
 }
 
-// TODO: Order.Statusを利用して書き換える
 func (o *Order) Completed() bool {
 	if o == nil {
 		return false
 	}
-	if !o.CompletedAt.IsZero() {
+	switch o.Status {
+	case OrderStatusCompleted, OrderStatusCanceled, OrderStatusRefunded, OrderStatusFailed:
 		return true
+	default:
+		return false
 	}
-	return o.OrderPayment.Status == PaymentStatusCanceled ||
-		o.OrderPayment.Status == PaymentStatusRefunded ||
-		o.OrderPayment.Status == PaymentStatusFailed
 }
 
 // TODO: Order.Statusを利用して書き換える

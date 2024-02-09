@@ -146,7 +146,7 @@ func (o *order) UpdatePayment(ctx context.Context, orderID string, params *datab
 		if err != nil {
 			return err
 		}
-		if order.IsCompleted() {
+		if order.Completed() {
 			return fmt.Errorf("mysql: this order is already completed: %w", database.ErrFailedPrecondition)
 		}
 		updatedAt := order.OrderPayment.UpdatedAt.Truncate(time.Second)
@@ -189,7 +189,7 @@ func (o *order) UpdateFulfillment(ctx context.Context, orderID, fulfillmentID st
 		if err != nil {
 			return err
 		}
-		if order.IsCompleted() {
+		if order.Completed() {
 			return fmt.Errorf("mysql: this order is already completed: %w", database.ErrFailedPrecondition)
 		}
 
