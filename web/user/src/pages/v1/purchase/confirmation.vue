@@ -41,6 +41,15 @@ const coordinatorId = computed<string>(() => {
   }
 })
 
+const promotionCode = computed<string | undefined>(() => {
+  const code = route.query.promotionCode
+  if (typeof code === 'string') {
+    return code
+  } else {
+    return undefined
+  }
+})
+
 const cartNumber = computed<number | undefined>(() => {
   const id = route.query.cartNumber
   const idNumber = Number(id)
@@ -149,6 +158,7 @@ onMounted(async () => {
     coordinatorId.value,
     cartNumber.value,
     address.value?.prefectureCode,
+    promotionCode.value,
   )
 
   checkoutFormData.value.requestId = calcCartResponseItem.value?.requestId ?? ''
