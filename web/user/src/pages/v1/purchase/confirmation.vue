@@ -23,6 +23,9 @@ const { checkout } = checkoutStore
 const route = useRoute()
 const router = useRouter()
 
+/**
+ * 配送先住所ID（クエリパラメータから算出）
+ */
 const addressId = computed<string>(() => {
   const id = route.query.id
   if (id) {
@@ -32,6 +35,9 @@ const addressId = computed<string>(() => {
   }
 })
 
+/**
+ * コーディネーターID（クエリパラメータから算出）
+ */
 const coordinatorId = computed<string>(() => {
   const id = route.query.coordinatorId
   if (id) {
@@ -41,6 +47,9 @@ const coordinatorId = computed<string>(() => {
   }
 })
 
+/**
+ * プロモーションコード（クエリパラメータから算出）
+ */
 const promotionCode = computed<string | undefined>(() => {
   const code = route.query.promotionCode
   if (typeof code === 'string') {
@@ -50,6 +59,9 @@ const promotionCode = computed<string | undefined>(() => {
   }
 })
 
+/**
+ * カート番号（クエリパラメータから算出）
+ */
 const cartNumber = computed<number | undefined>(() => {
   const id = route.query.cartNumber
   const idNumber = Number(id)
