@@ -52,5 +52,6 @@ defineExpose({ videoRef })
     class="aspect-video w-full bg-black"
     controls
     playsinline
+    autoPictureInPicture
   />
 </template>
