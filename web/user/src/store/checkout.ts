@@ -14,6 +14,11 @@ export const useCheckoutStore = defineStore('checkout', {
   },
 
   actions: {
+    /**
+     * チェックアウト処理を行うメソッド
+     * @param payload
+     * @returns
+     */
     async checkout(payload: CheckoutRequest): Promise<string> {
       this.checkoutState.isLoading = true
       try {
