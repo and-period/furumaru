@@ -14,8 +14,11 @@ const { fetchAddress } = addressStore
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem, availablePaymentSystem } =
   storeToRefs(shoppingCartStore)
-const { calcCartItemByCoordinatorId, fetchAvailablePaymentOptions } =
-  shoppingCartStore
+const {
+  calcCartItemByCoordinatorId,
+  fetchAvailablePaymentOptions,
+  verifyPromotionCode,
+} = shoppingCartStore
 
 const checkoutStore = useCheckoutStore()
 const { checkout } = checkoutStore
@@ -23,6 +26,9 @@ const { checkout } = checkoutStore
 const route = useRoute()
 const router = useRouter()
 
+/**
+ * 配送先住所ID（クエリパラメータから算出）
+ */
 const addressId = computed<string>(() => {
   const id = route.query.id
   if (id) {
@@ -32,6 +38,9 @@ const addressId = computed<string>(() => {
   }
 })
 
+/**
+ * コーディネーターID（クエリパラメータから算出）
+ */
 const coordinatorId = computed<string>(() => {
   const id = route.query.coordinatorId
   if (id) {
@@ -41,6 +50,9 @@ const coordinatorId = computed<string>(() => {
   }
 })
 
+/**
+ * プロモーションコード（クエリパラメータから算出）
+ */
 const promotionCode = computed<string | undefined>(() => {
   const code = route.query.promotionCode
   if (typeof code === 'string') {
@@ -50,6 +62,9 @@ const promotionCode = computed<string | undefined>(() => {
   }
 })
 
+/**
+ * カート番号（クエリパラメータから算出）
+ */
 const cartNumber = computed<number | undefined>(() => {
   const id = route.query.cartNumber
   const idNumber = Number(id)
@@ -101,6 +116,7 @@ const creditCardMonthValue = computed({
 })
 
 const checkoutError = ref<string>('')
+const validPromotionCode = ref<boolean>(false)
 
 const priceFormatter = (price: number) => {
   return new Intl.NumberFormat('ja-JP', {
@@ -113,6 +129,9 @@ const handleClickPreviousStepButton = () => {
   router.back()
 }
 
+/**
+ * チェックアウト処理を実行するメソッド
+ */
 const doCheckout = async () => {
   try {
     const url = await checkout({
@@ -141,6 +160,7 @@ const handleSubmitCreditCardForm = () => {
 }
 
 onMounted(async () => {
+  // 利用可能な支払い方法を取得
   fetchAvailablePaymentOptions().then(() => {
     if (availablePaymentSystem.value.length > 0) {
       checkoutFormData.value.paymentMethod =
@@ -148,22 +168,35 @@ onMounted(async () => {
     }
   })
 
+  // 住所情報を取得
   if (addressId.value) {
     checkoutFormData.value.billingAddressId = addressId.value
     checkoutFormData.value.shippingAddressId = addressId.value
     await fetchAddress(addressId.value)
   }
 
+  // プロモーションコードの有効性を確認
+  if (promotionCode.value) {
+    const result = await verifyPromotionCode(promotionCode.value)
+    if (result) {
+      validPromotionCode.value = result
+    } else {
+      console.log('無効なプロモーションコードが設定されています。')
+    }
+  }
+
   await calcCartItemByCoordinatorId(
     coordinatorId.value,
     cartNumber.value,
     address.value?.prefectureCode,
-    promotionCode.value,
+    validPromotionCode.value ? promotionCode.value : undefined,
   )
 
   checkoutFormData.value.requestId = calcCartResponseItem.value?.requestId ?? ''
   checkoutFormData.value.coordinatorId = coordinatorId.value
   checkoutFormData.value.total = calcCartResponseItem.value?.total ?? 0
+  checkoutFormData.value.promotionCode =
+    calcCartResponseItem.value?.promotion.code ?? ''
   checkoutFormData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
 })
 
