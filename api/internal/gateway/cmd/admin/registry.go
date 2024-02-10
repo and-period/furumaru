@@ -166,13 +166,24 @@ func (a *app) inject(ctx context.Context) error {
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
+		appName := fmt.Sprintf("%s-%s", a.AppName, a.Environment)
+		labels := map[string]string{
+			"app":     "furumaru",
+			"env":     a.Environment,
+			"service": a.AppName,
+			"type":    "backend",
+		}
 		newrelicApp, err := newrelic.NewApplication(
-			newrelic.ConfigAppName(a.AppName),
+			newrelic.ConfigAppName(appName),
 			newrelic.ConfigLicense(params.newRelicLicense),
+			newrelic.ConfigAppLogMetricsEnabled(true),
+			newrelic.ConfigAppLogForwardingEnabled(true),
+			newrelic.ConfigCustomInsightsEventsEnabled(true),
+			newrelic.ConfigAppLogEnabled(true),
 			newrelic.ConfigAppLogForwardingEnabled(true),
 			func(cfg *newrelic.Config) {
-				cfg.HostDisplayName = fmt.Sprintf("%s-%s", a.AppName, a.Environment)
-				cfg.Labels = map[string]string{"Environment": a.Environment}
+				cfg.HostDisplayName = appName
+				cfg.Labels = labels
 			},
 		)
 		if err != nil {
