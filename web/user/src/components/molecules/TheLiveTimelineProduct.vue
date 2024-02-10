@@ -61,7 +61,14 @@ const handleClickItem = () => {
           v-if="!canAddCart"
           class="absolute inset-0 flex h-full w-full items-center justify-center bg-black/50"
         >
-          <p class="text-[14px] font-semibold text-white">
+          <p
+            class="font-semibold text-white"
+            :class="
+              product.status === ProductStatus.PRESALE
+                ? 'text-[12px]'
+                : 'text-[14px]'
+            "
+          >
             {{
               product.status === ProductStatus.FOR_SALE
                 ? '在庫なし'
