@@ -141,9 +141,12 @@ func (a *app) inject(ctx context.Context) error {
 	// New Relicの設定
 	if params.newRelicLicense != "" {
 		newrelicApp, err := newrelic.NewApplication(
-			newrelic.ConfigAppName(a.AppName),
+			newrelic.ConfigAppName(fmt.Sprintf("%s-%s", a.AppName, a.Environment)),
 			newrelic.ConfigLicense(params.newRelicLicense),
+			newrelic.ConfigAppLogMetricsEnabled(true),
 			newrelic.ConfigAppLogForwardingEnabled(true),
+			newrelic.ConfigCustomInsightsEventsEnabled(true),
+			newrelic.ConfigAppLogEnabled(true),
 		)
 		if err != nil {
 			return fmt.Errorf("cmd: failed to create newrelic client: %w", err)
