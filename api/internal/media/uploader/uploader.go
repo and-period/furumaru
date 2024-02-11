@@ -60,9 +60,9 @@ func WithConcurrency(concurrency int64) Option {
 	}
 }
 
-func WithCacheDomain(domain string) Option {
+func WithCacheURL(cacheURL string) Option {
 	return func(opts *options) {
-		url, err := url.Parse(domain)
+		url, err := url.Parse(cacheURL)
 		if err != nil {
 			return
 		}
