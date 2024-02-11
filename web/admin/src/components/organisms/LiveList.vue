@@ -14,7 +14,7 @@ import {
   ScheduleStatus,
   type UpdateLiveRequest
 } from '~/types/api'
-import type { LiveTime } from '~/types/props'
+import type { DateTimeInput } from '~/types/props'
 import {
   CreateLiveValidationRules,
   TimeDataValidationRules,
@@ -138,31 +138,43 @@ const updateFormDataValue = computed({
   set: (formData: UpdateLiveRequest): void =>
     emits('update:update-form-data', formData)
 })
-const createTimeDataValue = computed({
-  get: (): LiveTime => ({
-    startDate: unix(props.createFormData?.startAt).format('YYYY-MM-DD'),
-    startTime: unix(props.createFormData?.startAt).format('HH:mm'),
-    endDate: unix(props.createFormData.endAt).format('YYYY-MM-DD'),
-    endTime: unix(props.createFormData.endAt).format('HH:mm')
+const createStartTimeDataValue = computed({
+  get: (): DateTimeInput => ({
+    date: unix(props.createFormData?.startAt).format('YYYY-MM-DD'),
+    time: unix(props.createFormData?.startAt).format('HH:mm')
   }),
-  set: (timeData: LiveTime): void => {
-    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`)
-    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`)
+  set: (timeData: DateTimeInput): void => {
+    const startAt = dayjs(`${timeData.date} ${timeData.time}`)
     createFormDataValue.value.startAt = startAt.unix()
+  }
+})
+const createEndTimeDataValue = computed({
+  get: (): DateTimeInput => ({
+    date: unix(props.createFormData?.endAt).format('YYYY-MM-DD'),
+    time: unix(props.createFormData?.endAt).format('HH:mm')
+  }),
+  set: (timeData: DateTimeInput): void => {
+    const endAt = dayjs(`${timeData.date} ${timeData.time}`)
     createFormDataValue.value.endAt = endAt.unix()
   }
 })
-const updateTimeDataValue = computed({
-  get: (): LiveTime => ({
-    startDate: unix(props.updateFormData?.startAt).format('YYYY-MM-DD'),
-    startTime: unix(props.updateFormData?.startAt).format('HH:mm'),
-    endDate: unix(props.updateFormData.endAt).format('YYYY-MM-DD'),
-    endTime: unix(props.updateFormData.endAt).format('HH:mm')
+const updateStartTimeDataValue = computed({
+  get: (): DateTimeInput => ({
+    date: unix(props.updateFormData?.startAt).format('YYYY-MM-DD'),
+    time: unix(props.updateFormData?.startAt).format('HH:mm')
   }),
-  set: (timeData: LiveTime): void => {
-    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`)
-    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`)
+  set: (timeData: DateTimeInput): void => {
+    const startAt = dayjs(`${timeData.date} ${timeData.time}`)
     updateFormDataValue.value.startAt = startAt.unix()
+  }
+})
+const updateEndTimeDataValue = computed({
+  get: (): DateTimeInput => ({
+    date: unix(props.updateFormData?.endAt).format('YYYY-MM-DD'),
+    time: unix(props.updateFormData?.endAt).format('HH:mm')
+  }),
+  set: (timeData: DateTimeInput): void => {
+    const endAt = dayjs(`${timeData.date} ${timeData.time}`)
     updateFormDataValue.value.endAt = endAt.unix()
   }
 })
@@ -175,25 +187,33 @@ const updateFormDataValidate = useVuelidate(
   UpdateLiveValidationRules,
   updateFormDataValue
 )
-const createTimeDataValidate = useVuelidate(
+const createStartTimeDataValidate = useVuelidate(
   TimeDataValidationRules,
-  createTimeDataValue
+  createStartTimeDataValue
 )
-const updateTimeDataValidate = useVuelidate(
+const createEndTimeDataValidate = useVuelidate(
   TimeDataValidationRules,
-  updateTimeDataValue
+  createEndTimeDataValue
+)
+const updateStartTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  updateStartTimeDataValue
+)
+const updateEndTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  updateEndTimeDataValue
 )
 
 const onChangeCreateStartAt = (): void => {
   const startAt = dayjs(
-    `${createTimeDataValue.value.startDate} ${createTimeDataValue.value.startTime}`
+    `${createStartTimeDataValue.value.date} ${createStartTimeDataValue.value.time}`
   )
   createFormDataValue.value.startAt = startAt.unix()
 }
 
 const onChangeCreateEndAt = (): void => {
   const endAt = dayjs(
-    `${createTimeDataValue.value.endDate} ${createTimeDataValue.value.endTime}`
+    `${createEndTimeDataValue.value.date} ${createEndTimeDataValue.value.time}`
   )
   createFormDataValue.value.endAt = endAt.unix()
 }
@@ -205,14 +225,14 @@ const onChangeCreateProducerId = (): void => {
 
 const onChangeUpdateStartAt = (): void => {
   const startAt = dayjs(
-    `${updateTimeDataValue.value.startDate} ${updateTimeDataValue.value.startTime}`
+    `${updateStartTimeDataValue.value.date} ${updateStartTimeDataValue.value.time}`
   )
   updateFormDataValue.value.startAt = startAt.unix()
 }
 
 const onChangeUpdateEndAt = (): void => {
   const endAt = dayjs(
-    `${updateTimeDataValue.value.endDate} ${updateTimeDataValue.value.endTime}`
+    `${updateEndTimeDataValue.value.date} ${updateEndTimeDataValue.value.time}`
   )
   updateFormDataValue.value.endAt = endAt.unix()
 }
@@ -311,8 +331,9 @@ const onClickCloseCreateDialog = (): void => {
 
 const onSubmitCreate = async (): Promise<void> => {
   const formDataValid = await createFormDataValidate.value.$validate()
-  const timeDataValid = await createTimeDataValidate.value.$validate()
-  if (!formDataValid || !timeDataValid) {
+  const startTimeDataValid = await createStartTimeDataValidate.value.$validate()
+  const endTimeDataValid = await createEndTimeDataValidate.value.$validate()
+  if (!formDataValid || !startTimeDataValid || !endTimeDataValid) {
     return
   }
 
@@ -329,8 +350,9 @@ const onClickCloseUpdateDialog = (): void => {
 
 const onSubmitUpdate = async (): Promise<void> => {
   const formDataValid = await updateFormDataValidate.value.$validate()
-  const timeDataValid = await updateTimeDataValidate.value.$validate()
-  if (!formDataValid || !timeDataValid) {
+  const startTimeDataValid = await updateStartTimeDataValidate.value.$validate()
+  const endTimeDataValid = await updateEndTimeDataValidate.value.$validate()
+  if (!formDataValid || !startTimeDataValid || !endTimeDataValid) {
     return
   }
 
@@ -354,9 +376,9 @@ const onSubmitDelete = (): void => {
         </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
-            v-model="createTimeDataValidate.startDate.$model"
+            v-model="createStartTimeDataValidate.date.$model"
             :error-messages="
-              getErrorMessage(createTimeDataValidate.startDate.$errors)
+              getErrorMessage(createStartTimeDataValidate.date.$errors)
             "
             type="date"
             variant="outlined"
@@ -365,9 +387,9 @@ const onSubmitDelete = (): void => {
             @update:model-value="onChangeCreateStartAt"
           />
           <v-text-field
-            v-model="createTimeDataValidate.startTime.$model"
+            v-model="createStartTimeDataValidate.time.$model"
             :error-messages="
-              getErrorMessage(createTimeDataValidate.startTime.$errors)
+              getErrorMessage(createStartTimeDataValidate.time.$errors)
             "
             type="time"
             variant="outlined"
@@ -380,9 +402,9 @@ const onSubmitDelete = (): void => {
         </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
-            v-model="createTimeDataValidate.endDate.$model"
+            v-model="createEndTimeDataValidate.date.$model"
             :error-messages="
-              getErrorMessage(createTimeDataValidate.endDate.$errors)
+              getErrorMessage(createEndTimeDataValidate.date.$errors)
             "
             type="date"
             variant="outlined"
@@ -391,9 +413,9 @@ const onSubmitDelete = (): void => {
             @update:model-value="onChangeCreateEndAt"
           />
           <v-text-field
-            v-model="createTimeDataValidate.endTime.$model"
+            v-model="createEndTimeDataValidate.time.$model"
             :error-messages="
-              getErrorMessage(createTimeDataValidate.endTime.$errors)
+              getErrorMessage(createEndTimeDataValidate.time.$errors)
             "
             type="time"
             variant="outlined"
@@ -485,9 +507,9 @@ const onSubmitDelete = (): void => {
         </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
-            v-model="updateTimeDataValidate.startDate.$model"
+            v-model="updateStartTimeDataValidate.date.$model"
             :error-messages="
-              getErrorMessage(updateTimeDataValidate.startDate.$errors)
+              getErrorMessage(updateStartTimeDataValidate.date.$errors)
             "
             type="date"
             variant="outlined"
@@ -496,9 +518,9 @@ const onSubmitDelete = (): void => {
             @update:model-value="onChangeUpdateStartAt"
           />
           <v-text-field
-            v-model="updateTimeDataValidate.startTime.$model"
+            v-model="updateStartTimeDataValidate.time.$model"
             :error-messages="
-              getErrorMessage(updateTimeDataValidate.startTime.$errors)
+              getErrorMessage(updateStartTimeDataValidate.time.$errors)
             "
             type="time"
             variant="outlined"
@@ -511,9 +533,9 @@ const onSubmitDelete = (): void => {
         </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
-            v-model="updateTimeDataValidate.endDate.$model"
+            v-model="updateEndTimeDataValidate.date.$model"
             :error-messages="
-              getErrorMessage(updateTimeDataValidate.endDate.$errors)
+              getErrorMessage(updateEndTimeDataValidate.date.$errors)
             "
             type="date"
             variant="outlined"
@@ -522,9 +544,9 @@ const onSubmitDelete = (): void => {
             @update:model-value="onChangeUpdateEndAt"
           />
           <v-text-field
-            v-model="updateTimeDataValidate.endTime.$model"
+            v-model="updateEndTimeDataValidate.time.$model"
             :error-messages="
-              getErrorMessage(updateTimeDataValidate.endTime.$errors)
+              getErrorMessage(updateEndTimeDataValidate.time.$errors)
             "
             type="time"
             variant="outlined"
