@@ -51,6 +51,7 @@ defineExpose({ videoRef })
     :src="videoSrc"
     class="aspect-video w-full bg-black"
     controls
+    controlsList="nodownload"
     playsinline
     autoPictureInPicture
   />
