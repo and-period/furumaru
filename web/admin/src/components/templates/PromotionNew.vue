@@ -5,7 +5,7 @@ import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
 import { type CreatePromotionRequest, DiscountType } from '~/types/api'
-import type { PromotionTime } from '~/types/props'
+import type { DateTimeInput } from '~/types/props'
 import { CreatePromotionValidationRules, TimeDataValidationRules } from '~/types/validations'
 
 const props = defineProps({
@@ -59,31 +59,38 @@ const formDataValue = computed({
   get: (): CreatePromotionRequest => props.formData,
   set: (val: CreatePromotionRequest) => emit('update:form-data', val)
 })
-const timeDataValue = computed({
-  get: (): PromotionTime => ({
-    startDate: unix(props.formData.startAt).format('YYYY-MM-DD'),
-    startTime: unix(props.formData.startAt).format('HH:mm'),
-    endDate: unix(props.formData.endAt).format('YYYY-MM-DD'),
-    endTime: unix(props.formData.endAt).format('HH:mm')
+const startTimeDataValue = computed({
+  get: (): DateTimeInput => ({
+    date: unix(props.formData.startAt).format('YYYY-MM-DD'),
+    time: unix(props.formData.startAt).format('HH:mm')
   }),
-  set: (timeData: PromotionTime): void => {
-    const startAt = dayjs(`${timeData.startDate} ${timeData.startTime}`)
-    const endAt = dayjs(`${timeData.endDate} ${timeData.endTime}`)
+  set: (timeData: DateTimeInput): void => {
+    const startAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.startAt = startAt.unix()
+  }
+})
+const endTimeDataValue = computed({
+  get: (): DateTimeInput => ({
+    date: unix(props.formData.endAt).format('YYYY-MM-DD'),
+    time: unix(props.formData.endAt).format('HH:mm')
+  }),
+  set: (timeData: DateTimeInput): void => {
+    const endAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.endAt = endAt.unix()
   }
 })
 
 const formDataValidate = useVuelidate(CreatePromotionValidationRules, formDataValue)
-const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
+const startTimeDataValidate = useVuelidate(TimeDataValidationRules, startTimeDataValue)
+const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataValue)
 
 const onChangeStartAt = (): void => {
-  const startAt = dayjs(`${timeDataValue.value.startDate} ${timeDataValue.value.startTime}`)
+  const startAt = dayjs(`${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`)
   formDataValue.value.startAt = startAt.unix()
 }
 
 const onChangeEndAt = (): void => {
-  const endAt = dayjs(`${timeDataValue.value.endDate} ${timeDataValue.value.endTime}`)
+  const endAt = dayjs(`${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`)
   formDataValue.value.endAt = endAt.unix()
 }
 
@@ -122,8 +129,9 @@ const getDiscountErrorMessage = (): string => {
 
 const onSubmit = async (): Promise<void> => {
   const formDataValid = await formDataValidate.value.$validate()
-  const timeDataValid = await timeDataValidate.value.$validate()
-  if (!formDataValid || !timeDataValid) {
+  const startTimeDataValid = await startTimeDataValidate.value.$validate()
+  const endTimeDataValid = await endTimeDataValidate.value.$validate()
+  if (!formDataValid || !startTimeDataValid || !endTimeDataValid) {
     return
   }
 
@@ -184,8 +192,8 @@ const onSubmit = async (): Promise<void> => {
         </p>
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
-            v-model="timeDataValidate.startDate.$model"
-            :error-messages="getErrorMessage(timeDataValidate.startDate.$errors)"
+            v-model="startTimeDataValidate.date.$model"
+            :error-messages="getErrorMessage(startTimeDataValidate.date.$errors)"
             type="date"
             variant="outlined"
             density="compact"
@@ -193,8 +201,8 @@ const onSubmit = async (): Promise<void> => {
             @update:model-value="onChangeStartAt"
           />
           <v-text-field
-            v-model="timeDataValidate.startTime.$model"
-            :error-messages="getErrorMessage(timeDataValidate.startTime.$errors)"
+            v-model="startTimeDataValidate.time.$model"
+            :error-messages="getErrorMessage(startTimeDataValidate.time.$errors)"
             type="time"
             variant="outlined"
             density="compact"
@@ -204,8 +212,8 @@ const onSubmit = async (): Promise<void> => {
             〜
           </p>
           <v-text-field
-            v-model="timeDataValidate.endDate.$model"
-            :error-messages="getErrorMessage(timeDataValidate.endDate.$errors)"
+            v-model="endTimeDataValidate.date.$model"
+            :error-messages="getErrorMessage(endTimeDataValidate.date.$errors)"
             type="date"
             variant="outlined"
             density="compact"
@@ -213,8 +221,8 @@ const onSubmit = async (): Promise<void> => {
             @update:model-value="onChangeEndAt"
           />
           <v-text-field
-            v-model="timeDataValidate.endTime.$model"
-            :error-messages="getErrorMessage(timeDataValidate.endTime.$errors)"
+            v-model="endTimeDataValidate.time.$model"
+            :error-messages="getErrorMessage(endTimeDataValidate.time.$errors)"
             type="time"
             variant="outlined"
             density="compact"

@@ -5,7 +5,7 @@ import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
 import { type CreateNotificationRequest, DiscountType, NotificationTarget, NotificationType, type Promotion } from '~/types/api'
-import type { NotificationTime } from '~/types/props'
+import type { DateTimeInput } from '~/types/props'
 import { TimeDataValidationRules } from '~/types/validations'
 import { CreateNotificationValidationRules } from '~/types/validations/notification'
 
@@ -71,12 +71,12 @@ const formDataValue = computed({
   set: (formData: CreateNotificationRequest) => emit('update:form-data', formData)
 })
 const timeDataValue = computed({
-  get: (): NotificationTime => ({
-    publishedDate: unix(props.formData.publishedAt).format('YYYY-MM-DD'),
-    publishedTime: unix(props.formData.publishedAt).format('HH:mm')
+  get: (): DateTimeInput => ({
+    date: unix(props.formData.publishedAt).format('YYYY-MM-DD'),
+    time: unix(props.formData.publishedAt).format('HH:mm')
   }),
-  set: (timeData: NotificationTime): void => {
-    const publishedAt = dayjs(`${timeData.publishedDate} ${timeData.publishedTime}`)
+  set: (timeData: DateTimeInput): void => {
+    const publishedAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.publishedAt = publishedAt.unix()
   }
 })
@@ -85,7 +85,7 @@ const formDataValidate = useVuelidate(CreateNotificationValidationRules, formDat
 const timeDataValidate = useVuelidate(TimeDataValidationRules, timeDataValue)
 
 const onChangePublishedAt = (): void => {
-  const publishedAt = dayjs(`${timeDataValue.value.publishedDate} ${timeDataValue.value.publishedTime}`)
+  const publishedAt = dayjs(`${timeDataValue.value.date} ${timeDataValue.value.time}`)
   formDataValue.value.publishedAt = publishedAt.unix()
 }
 
@@ -219,8 +219,8 @@ const onSubmit = async (): Promise<void> => {
         </p>
         <div class="d-flex align-center">
           <v-text-field
-            v-model="timeDataValidate.publishedDate.$model"
-            :error-messages="getErrorMessage(timeDataValidate.publishedDate.$errors)"
+            v-model="timeDataValidate.date.$model"
+            :error-messages="getErrorMessage(timeDataValidate.date.$errors)"
             type="date"
             class="mr-2"
             variant="outlined"
@@ -228,8 +228,8 @@ const onSubmit = async (): Promise<void> => {
             @update:model-value="onChangePublishedAt"
           />
           <v-text-field
-            v-model="timeDataValidate.publishedTime.$model"
-            :error-messages="getErrorMessage(timeDataValidate.publishedTime.$errors)"
+            v-model="timeDataValidate.time.$model"
+            :error-messages="getErrorMessage(timeDataValidate.time.$errors)"
             type="time"
             variant="outlined"
             density="compact"

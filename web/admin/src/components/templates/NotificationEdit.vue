@@ -4,8 +4,8 @@ import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 
 import { getErrorMessage } from '~/lib/validations'
-import { AdminRole, DiscountType, type Notification, NotificationStatus, NotificationTarget, NotificationType, type Promotion, type UpdateNotificationRequest } from '~/types/api'
-import type { NotificationTime } from '~/types/props'
+import { AdminRole, DiscountType, type Notification, NotificationStatus, NotificationTarget, NotificationType, type Promotion, type UpdateNotificationRequest, PromotionStatus } from '~/types/api'
+import type { DateTimeInput } from '~/types/props'
 import { TimeDataValidationRules } from '~/types/validations'
 import { UpdateNotificationValidationRules } from '~/types/validations/notification'
 
@@ -65,13 +65,16 @@ const props = defineProps({
       title: '',
       description: '',
       public: false,
+      status: PromotionStatus.UNKNOWN,
       discountType: DiscountType.UNKNOWN,
       discountRate: 0,
       code: '',
       startAt: 0,
       endAt: 0,
       createdAt: 0,
-      updatedAt: 0
+      updatedAt: 0,
+      usedAmount: 0,
+      usedCount: 0
     })
   }
 })
@@ -99,12 +102,12 @@ const formDataValue = computed({
   set: (formData: UpdateNotificationRequest) => emit('update:form-data', formData)
 })
 const timeDataValue = computed({
-  get: (): NotificationTime => ({
-    publishedDate: unix(props.formData.publishedAt).format('YYYY-MM-DD'),
-    publishedTime: unix(props.formData.publishedAt).format('HH:mm')
+  get: (): DateTimeInput => ({
+    date: unix(props.formData.publishedAt).format('YYYY-MM-DD'),
+    time: unix(props.formData.publishedAt).format('HH:mm')
   }),
-  set: (timeData: NotificationTime): void => {
-    const publishedAt = dayjs(`${timeData.publishedDate} ${timeData.publishedTime}`)
+  set: (timeData: DateTimeInput): void => {
+    const publishedAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.publishedAt = publishedAt.unix()
   }
 })
@@ -120,7 +123,7 @@ const isEditable = (): boolean => {
 }
 
 const onChangePublishedAt = (): void => {
-  const publishedAt = dayjs(`${timeDataValue.value.publishedDate} ${timeDataValue.value.publishedTime}`)
+  const publishedAt = dayjs(`${timeDataValue.value.date} ${timeDataValue.value.time}`)
   formDataValue.value.publishedAt = publishedAt.unix()
 }
 
@@ -230,8 +233,8 @@ const onSubmit = async (): Promise<void> => {
         </p>
         <div class="d-flex align-center">
           <v-text-field
-            v-model="timeDataValidate.publishedDate.$model"
-            :error-messages="getErrorMessage(timeDataValidate.publishedDate.$errors)"
+            v-model="timeDataValidate.date.$model"
+            :error-messages="getErrorMessage(timeDataValidate.date.$errors)"
             type="date"
             class="mr-2"
             variant="outlined"
@@ -239,8 +242,8 @@ const onSubmit = async (): Promise<void> => {
             @update:model-value="onChangePublishedAt"
           />
           <v-text-field
-            v-model="timeDataValidate.publishedTime.$model"
-            :error-messages="getErrorMessage(timeDataValidate.publishedTime.$errors)"
+            v-model="timeDataValidate.time.$model"
+            :error-messages="getErrorMessage(timeDataValidate.time.$errors)"
             type="time"
             variant="outlined"
             density="compact"
