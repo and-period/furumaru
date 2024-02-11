@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/url"
 	"sync"
 	"time"
 
@@ -36,11 +37,13 @@ type uploader struct {
 	tmp         storage.Bucket
 	storage     storage.Bucket
 	concurrency int64
+	storageURL  func() *url.URL
 }
 
 type options struct {
 	logger      *zap.Logger
 	concurrency int64
+	storageURL  *url.URL
 }
 
 type Option func(*options)
@@ -57,13 +60,29 @@ func WithConcurrency(concurrency int64) Option {
 	}
 }
 
+func WithCacheDomain(domain string) Option {
+	return func(opts *options) {
+		url, err := url.Parse(domain)
+		if err != nil {
+			return
+		}
+		opts.storageURL = url
+	}
+}
+
 func NewUploader(params *Params, opts ...Option) Uploader {
+	originURL, _ := params.Storage.GetHost()
 	dopts := &options{
 		logger:      zap.NewNop(),
 		concurrency: 1,
+		storageURL:  originURL,
 	}
 	for i := range opts {
 		opts[i](dopts)
+	}
+	storageURL := func() *url.URL {
+		url := *dopts.storageURL // copy
+		return &url
 	}
 	return &uploader{
 		now:         jst.Now,
@@ -73,6 +92,7 @@ func NewUploader(params *Params, opts ...Option) Uploader {
 		tmp:         params.Tmp,
 		storage:     params.Storage,
 		concurrency: dopts.concurrency,
+		storageURL:  storageURL,
 	}
 }
 
@@ -127,6 +147,7 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 		}
 	}()
 	u.logger.Debug("Dispatch", zap.Any("record", record))
+	// 画像のメタデータ取得
 	key := record.S3.Object.URLDecodedKey
 	metadata, err := u.tmp.GetMetadata(ctx, key)
 	if err != nil {
@@ -138,6 +159,7 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 		u.logger.Error("Failed to get upload event", zap.String("key", key), zap.Error(err))
 		return err
 	}
+	// バリデーション検証
 	reg, err := event.Reguration()
 	if err != nil {
 		u.logger.Error("Unknown regulation", zap.String("key", key), zap.Error(err))
@@ -149,13 +171,16 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 		event.SetResult(false, "", u.now())
 		return err
 	}
-	reference, err := u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key)
-	if err != nil {
+	// 参照用S3バケットへコピーする
+	if _, err := u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key); err != nil {
 		u.logger.Error("Failed to copy object", zap.String("key", key), zap.Error(err))
 		event.SetResult(false, "", u.now())
 		return err
 	}
-	event.SetResult(true, reference, u.now())
+	// 結果の保存
+	referenceURL := u.storageURL()
+	referenceURL.Path = key
+	event.SetResult(true, referenceURL.String(), u.now())
 	return nil
 }
 
