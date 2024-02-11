@@ -6291,6 +6291,12 @@ export type UploadStatus = typeof UploadStatus[keyof typeof UploadStatus];
  */
 export interface UploadUrlResponse {
     /**
+     * アップロード後の状態参照用キー
+     * @type {string}
+     * @memberof UploadUrlResponse
+     */
+    'key': string;
+    /**
      * 署名付きアップロードURL
      * @type {string}
      * @memberof UploadUrlResponse
@@ -13246,13 +13252,13 @@ export const OtherApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @summary ファイルアップロード状態取得
-         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {string} key 参照用のキー
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetUploadState: async (src: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'src' is not null or undefined
-            assertParamExists('v1GetUploadState', 'src', src)
+        v1GetUploadState: async (key: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'key' is not null or undefined
+            assertParamExists('v1GetUploadState', 'key', key)
             const localVarPath = `/v1/upload/state`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -13269,8 +13275,8 @@ export const OtherApiAxiosParamCreator = function (configuration?: Configuration
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (src !== undefined) {
-                localVarQueryParameter['src'] = src;
+            if (key !== undefined) {
+                localVarQueryParameter['key'] = key;
             }
 
 
@@ -13335,12 +13341,12 @@ export const OtherApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary ファイルアップロード状態取得
-         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {string} key 参照用のキー
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1GetUploadState(src: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadStateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetUploadState(src, options);
+        async v1GetUploadState(key: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadStateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetUploadState(key, options);
             const index = configuration?.serverIndex ?? 0;
             const operationBasePath = operationServerMap['OtherApi.v1GetUploadState']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
@@ -13371,12 +13377,12 @@ export const OtherApiFactory = function (configuration?: Configuration, basePath
         /**
          * 
          * @summary ファイルアップロード状態取得
-         * @param {string} src アップロード先ファイルURL(署名付きURL)
+         * @param {string} key 参照用のキー
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetUploadState(src: string, options?: any): AxiosPromise<UploadStateResponse> {
-            return localVarFp.v1GetUploadState(src, options).then((request) => request(axios, basePath));
+        v1GetUploadState(key: string, options?: any): AxiosPromise<UploadStateResponse> {
+            return localVarFp.v1GetUploadState(key, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -13401,13 +13407,13 @@ export class OtherApi extends BaseAPI {
     /**
      * 
      * @summary ファイルアップロード状態取得
-     * @param {string} src アップロード先ファイルURL(署名付きURL)
+     * @param {string} key 参照用のキー
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OtherApi
      */
-    public v1GetUploadState(src: string, options?: RawAxiosRequestConfig) {
-        return OtherApiFp(this.configuration).v1GetUploadState(src, options).then((request) => request(this.axios, this.basePath));
+    public v1GetUploadState(key: string, options?: RawAxiosRequestConfig) {
+        return OtherApiFp(this.configuration).v1GetUploadState(key, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

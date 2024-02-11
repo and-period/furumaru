@@ -1,13 +1,18 @@
 uploadUrlResponse:
   type: object
   properties:
+    key:
+      type: string
+      description: アップロード後の状態参照用キー
     url:
       type: string
       description: 署名付きアップロードURL
   required:
+  - key
   - url
   example:
-    url: 'https://and-period.jp/image.png'
+    key: 'dir/image.png'
+    url: 'https://and-period.jp/dir/image.png'
 uploadStateResponse:
   type: object
   properties:

@@ -167,7 +167,7 @@ export const useProductTypeStore = defineStore('productType', {
         }
         const res = await apiClient.productTypeApi().v1GetProductTypeIconUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }

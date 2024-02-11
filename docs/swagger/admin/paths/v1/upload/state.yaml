@@ -7,12 +7,12 @@ get:
   - bearerAuth: []
   parameters:
   - in: query
-    name: src
+    name: key
     schema:
       type: string
-    description: アップロード先ファイルURL(署名付きURL)
+    description: 参照用のキー
     required: true
-    example: 'http://example.com/media.png?query=test'
+    example: 'dir/media.png'
   responses:
     200:
       description: 成功

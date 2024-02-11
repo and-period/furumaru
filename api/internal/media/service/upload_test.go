@@ -42,7 +42,7 @@ func TestGetUploadEvent(t *testing.T) {
 					})
 			},
 			input: &media.GetUploadEventInput{
-				UploadURL: "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test",
+				Key: "dir/media.png",
 			},
 			expect: &entity.UploadEvent{
 				Key:          "dir/media.png",
@@ -70,7 +70,7 @@ func TestGetUploadEvent(t *testing.T) {
 				mocks.cache.EXPECT().Get(ctx, &entity.UploadEvent{Key: "dir/media.png"}).Return(assert.AnError)
 			},
 			input: &media.GetUploadEventInput{
-				UploadURL: "http://example-tmp.s3.ap-northeast-1.amazonaws.com/dir/media.png?query=test",
+				Key: "dir/media.png",
 			},
 			expect:    nil,
 			expectErr: exception.ErrInternal,

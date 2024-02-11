@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse, type RawAxiosRequestHeaders } from 'axios'
+import axios, { type RawAxiosRequestHeaders } from 'axios'
 
 import { apiClient } from '~/plugins/api-client'
 import { UploadStatus } from '~/types/api'
@@ -9,12 +9,12 @@ import { UploadStatus } from '~/types/api'
  * @param uploadUrl アップロード時に使用する署名付きURL
  * @returns 参照先URL
  */
-export async function fileUpload (file: File, uploadUrl: string): Promise<string> {
+export async function fileUpload (file: File, key: string, url: string): Promise<string> {
   // 署名付きURLを基にファイルをアップロード
-  await upload(file, uploadUrl)
+  await upload(file, url)
 
   // アップロード後のバリデーション結果を取得
-  return await getUploadResult(uploadUrl)
+  return await getUploadResult(key)
 }
 
 /**

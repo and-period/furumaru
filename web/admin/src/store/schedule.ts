@@ -116,7 +116,7 @@ export const useScheduleStore = defineStore('schedule', {
         }
         const res = await apiClient.scheduleApi().v1GetScheduleThumbnailUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -135,7 +135,7 @@ export const useScheduleStore = defineStore('schedule', {
         }
         const res = await apiClient.scheduleApi().v1GetScheduleImageUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -154,7 +154,7 @@ export const useScheduleStore = defineStore('schedule', {
         }
         const res = await apiClient.scheduleApi().v1GetScheduleOpeningVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }

@@ -121,7 +121,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorThumbnailUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -139,7 +139,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorHeaderUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -157,7 +157,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorPromotionVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -175,7 +175,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         }
         const res = await apiClient.coordinatorApi().v1GetCoordinatorBonusVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }

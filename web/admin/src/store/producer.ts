@@ -108,7 +108,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerThumbnailUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -127,7 +127,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerHeaderUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
@@ -146,7 +146,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerPromotionVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }
@@ -165,7 +165,7 @@ export const useProducerStore = defineStore('producer', {
         }
         const res = await apiClient.producerApi().v1GetProducerBonusVideoUploadUrl(body)
 
-        return await fileUpload(payload, res.data.url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err)
       }

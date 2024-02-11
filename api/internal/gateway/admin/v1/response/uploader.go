@@ -1,6 +1,7 @@
 package response
 
 type UploadURLResponse struct {
+	Key string `json:"key"` // アップロード後の状態参照用キー
 	URL string `json:"url"` // アップロード用の署名付きURL
 }
 

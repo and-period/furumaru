@@ -16,7 +16,7 @@ type GenerateBroadcastArchiveMP4UploadInput struct {
 }
 
 type GetUploadEventInput struct {
-	UploadURL string `validate:"required,url"`
+	Key string `validate:"required"`
 }
 
 type ResizeFileInput struct {
