@@ -29,6 +29,7 @@ type app struct {
 	AWSRegion        string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
 	S3Bucket         string `envconfig:"S3_BUCKET" default:""`
 	S3TmpBucket      string `envconfig:"S3_TMP_BUCKET" default:""`
+	CDNDomain        string `envconfig:"CDN_DOMAIN" default:""`
 }
 
 //nolint:revive

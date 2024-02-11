@@ -623,12 +623,14 @@ func generateUploadURLMocks(mocks *mocks, t *testing.T, path, ext string, err er
 }
 
 func TestGenerateUploadURL(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
 	tests := []struct {
 		name       string
 		setup      func(ctx context.Context, mocks *mocks)
 		input      *media.GenerateUploadURLInput
 		regulation *entity.Regulation
-		expect     string
+		expect     *entity.UploadEvent
 		expectErr  error
 	}{
 		{
@@ -641,15 +643,24 @@ func TestGenerateUploadURL(t *testing.T) {
 				FileType: "image/png",
 			},
 			regulation: entity.CoordinatorThumbnailRegulation,
-			expect:     "http://example.com",
-			expectErr:  nil,
+			expect: &entity.UploadEvent{
+				Key:       "", // ignore
+				Status:    entity.UploadStatusWaiting,
+				FileGroup: "coordinators/thumbnail",
+				FileType:  "image/png",
+				UploadURL: "http://example.com",
+				ExpiredAt: now.Add(defaultUploadEventTTL),
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			expectErr: nil,
 		},
 		{
 			name:       "invalid argument",
 			setup:      func(ctx context.Context, mocks *mocks) {},
 			input:      &media.GenerateUploadURLInput{},
 			regulation: entity.CoordinatorThumbnailRegulation,
-			expect:     "",
+			expect:     nil,
 			expectErr:  exception.ErrInvalidArgument,
 		},
 		{
@@ -659,7 +670,7 @@ func TestGenerateUploadURL(t *testing.T) {
 				FileType: "video/mp4",
 			},
 			regulation: entity.CoordinatorThumbnailRegulation,
-			expect:     "",
+			expect:     nil,
 			expectErr:  exception.ErrInvalidArgument,
 		},
 		{
@@ -671,7 +682,7 @@ func TestGenerateUploadURL(t *testing.T) {
 				FileType: "image/png",
 			},
 			regulation: entity.CoordinatorThumbnailRegulation,
-			expect:     "",
+			expect:     nil,
 			expectErr:  exception.ErrInternal,
 		},
 		{
@@ -684,7 +695,7 @@ func TestGenerateUploadURL(t *testing.T) {
 				FileType: "image/png",
 			},
 			regulation: entity.CoordinatorThumbnailRegulation,
-			expect:     "",
+			expect:     nil,
 			expectErr:  exception.ErrInternal,
 		},
 	}
@@ -693,7 +704,11 @@ func TestGenerateUploadURL(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			actual, err := service.generateUploadURL(ctx, tt.input, tt.regulation)
 			assert.ErrorIs(t, err, tt.expectErr)
+			if err != nil {
+				return
+			}
+			actual.Key = "" // ignore
 			assert.Equal(t, tt.expect, actual)
-		}))
+		}, withNow(now)))
 	}
 }
