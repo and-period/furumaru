@@ -33,8 +33,10 @@ func WithPasswordValidation(params *PasswordParams) Option {
 }
 
 const (
-	hiraganaString = "^[ぁ-ゔー]*$"
-	passwordString = "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$"
+	hiraganaString    = "^[ぁ-ゔー]*$"
+	passwordString    = "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$"
+	phoneNumberString = "^0\\d{1,4}-\\d{1,4}-\\d{4}$"
+	e164String        = "^\\+[1-9]?[0-9]{7,14}$"
 )
 
 //nolint:errcheck
@@ -49,11 +51,14 @@ func NewValidator(opts ...Option) Validator {
 
 	hiraganaRegex := regexp.MustCompile(hiraganaString, 0)
 	passwordRegex := compilePasswordRegex(dopts.password)
+	phoneNumberRegex := regexp.MustCompile(phoneNumberString, 0)
 
 	// hiragana - 正規表現を使用して平仮名のみであるかの検証
 	v.RegisterValidation("hiragana", validateHiragana(hiraganaRegex))
 	// password - 正規表現を利用してパスワードに使用不可な文字を含んでいないかの検証
 	v.RegisterValidation("password", validatePassword(passwordRegex))
+	// phone_number - 正規表現を利用して電話番号（ハイフンあり）の形式であるかの検証
+	v.RegisterValidation("phone_number", validatePhoneNumber(phoneNumberRegex))
 
 	return v
 }
@@ -68,6 +73,19 @@ func validateHiragana(regex *regexp.Regexp) func(fl validator.FieldLevel) bool {
 func validatePassword(regex *regexp.Regexp) func(fl validator.FieldLevel) bool {
 	return func(fl validator.FieldLevel) bool {
 		match, _ := regex.MatchString(fl.Field().String())
+		return match
+	}
+}
+
+func validatePhoneNumber(regex *regexp.Regexp) func(fl validator.FieldLevel) bool {
+	return func(fl validator.FieldLevel) bool {
+		match, _ := regex.MatchString(fl.Field().String())
+		if match {
+			return true
+		}
+		// TODO: フロントエンドの移行が完了し次第、後続処理は削除する
+		e164Regex := regexp.MustCompile(e164String, 0)
+		match, _ = e164Regex.MatchString(fl.Field().String())
 		return match
 	}
 }

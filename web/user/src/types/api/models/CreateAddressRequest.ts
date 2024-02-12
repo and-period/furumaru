@@ -81,7 +81,7 @@ export interface CreateAddressRequest {
      */
     addressLine2: string;
     /**
-     * 電話番号 (国際番号 + 電話番号)
+     * 電話番号 (ハイフンあり)
      * @type {string}
      * @memberof CreateAddressRequest
      */

@@ -10,9 +10,10 @@ func TestValidator(t *testing.T) {
 	t.Parallel()
 
 	type input struct {
-		Name     string `validate:"omitempty,max=4"`
-		Hiragana string `validate:"omitempty,hiragana"`
-		Password string `validate:"omitempty,password"`
+		Name        string `validate:"omitempty,max=4"`
+		Hiragana    string `validate:"omitempty,hiragana"`
+		Password    string `validate:"omitempty,password"`
+		PhoneNumber string `validate:"omitempty,phone_number"`
 	}
 	tests := []struct {
 		name   string
@@ -61,6 +62,27 @@ func TestValidator(t *testing.T) {
 				RequireUppercase: true,
 				RequireLowercase: true,
 			})},
+			hasErr: false,
+		},
+		{
+			name: "valid phone_number when mobile phone",
+			input: &input{
+				PhoneNumber: "090-1234-1234",
+			},
+			hasErr: false,
+		},
+		{
+			name: "valid phone_number when land phone",
+			input: &input{
+				PhoneNumber: "03-1234-1234",
+			},
+			hasErr: false,
+		},
+		{
+			name: "valid phone_number when e164",
+			input: &input{
+				PhoneNumber: "+819012341234",
+			},
 			hasErr: false,
 		},
 		{
@@ -150,6 +172,22 @@ func TestValidator(t *testing.T) {
 				RequireUppercase: false,
 				RequireLowercase: true,
 			})},
+			hasErr: true,
+		},
+		{
+			name: "invalid phone_number",
+			input: &input{
+				Password: "12345678",
+			},
+			opts:   []Option{},
+			hasErr: true,
+		},
+		{
+			name: "invalid phone_number without hyphen",
+			input: &input{
+				Password: "09012341234",
+			},
+			opts:   []Option{},
 			hasErr: true,
 		},
 	}

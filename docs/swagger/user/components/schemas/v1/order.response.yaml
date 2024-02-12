@@ -62,7 +62,7 @@ orderResponse:
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
-        phoneNumber: '+819012345678'
+        phoneNumber: '090-1234-1234'
       shippingAddress:
         id: 'kSByoE6FetnPs5Byk3a9Zx'
         lastname: '&.'
@@ -72,7 +72,7 @@ orderResponse:
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
-        phoneNumber: '+819012345678'
+        phoneNumber: '090-1234-1234'
     coordinator:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       storeName: '&.農園'
@@ -225,7 +225,7 @@ ordersResponse:
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
-        phoneNumber: '+819012345678'
+        phoneNumber: '090-1234-1234'
       shippingAddress:
         id: 'kSByoE6FetnPs5Byk3a9Zx'
         lastname: '&.'
@@ -235,7 +235,7 @@ ordersResponse:
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
-        phoneNumber: '+819012345678'
+        phoneNumber: '090-1234-1234'
     coordinators:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       storeName: '&.農園'
