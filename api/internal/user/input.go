@@ -427,7 +427,7 @@ type CreateAddressInput struct {
 	City           string `validate:"required,max=32"`
 	AddressLine1   string `validate:"required,max=64"`
 	AddressLine2   string `validate:"max=64"`
-	PhoneNumber    string `validate:"required,e164"`
+	PhoneNumber    string `validate:"required,phone_number"`
 	IsDefault      bool   `validate:""`
 }
 
@@ -443,7 +443,7 @@ type UpdateAddressInput struct {
 	City           string `validate:"required,max=32"`
 	AddressLine1   string `validate:"required,max=64"`
 	AddressLine2   string `validate:"max=64"`
-	PhoneNumber    string `validate:"required,e164"`
+	PhoneNumber    string `validate:"required,phone_number"`
 	IsDefault      bool   `validate:""`
 }
 

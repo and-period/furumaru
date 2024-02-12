@@ -274,7 +274,7 @@ func TestOrderPayment(t *testing.T) {
 					City:           "千代田区",
 					AddressLine1:   "永田町1-7-1",
 					AddressLine2:   "",
-					PhoneNumber:    "+819012345678",
+					PhoneNumber:    "090-1234-1234",
 				},
 				revisionID: 1,
 			},

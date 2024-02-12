@@ -45,7 +45,7 @@ orderResponse:
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
-        phoneNumber: '+819012345678'
+        phoneNumber: '090-1234-1234'
       refund:
         total: 0
         type: 2
@@ -70,7 +70,7 @@ orderResponse:
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
-        phoneNumber: '+819012345678'
+        phoneNumber: '090-1234-1234'
       items:
       - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
         productId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -245,7 +245,7 @@ ordersResponse:
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
-        phoneNumber: '+819012345678'
+        phoneNumber: '090-1234-1234'
       refund:
         total: 0
         type: 2
@@ -270,7 +270,7 @@ ordersResponse:
         city: '千代田区'
         addressLine1: '永田町1-7-1'
         addressLine2: ''
-        phoneNumber: '+819012345678'
+        phoneNumber: '090-1234-1234'
       items:
       - fulfillmentId: 'kSByoE6FetnPs5Byk3a9Zx'
         productId: 'kSByoE6FetnPs5Byk3a9Zx'

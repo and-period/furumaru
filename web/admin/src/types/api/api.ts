@@ -109,7 +109,7 @@ export interface Address {
      */
     'addressLine2': string;
     /**
-     * 電話番号 (国際番号 + 電話番号)
+     * 電話番号
      * @type {string}
      * @memberof Address
      */

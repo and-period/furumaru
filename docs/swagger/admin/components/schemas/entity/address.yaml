@@ -36,7 +36,7 @@ address:
       description: ビル名・号室など
     phoneNumber:
       type: string
-      description: 電話番号 (国際番号 + 電話番号)
+      description: 電話番号
   required:
   - addressId
   - lastname
@@ -62,4 +62,4 @@ address:
     city: '千代田区'
     addressLine1: '永田町1-7-1'
     addressLine2: ''
-    phoneNumber: '+819012345678'
+    phoneNumber: '090-1234-1234'
