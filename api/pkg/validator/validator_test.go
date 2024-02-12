@@ -177,7 +177,7 @@ func TestValidator(t *testing.T) {
 		{
 			name: "invalid phone_number",
 			input: &input{
-				Password: "12345678",
+				PhoneNumber: "12345678",
 			},
 			opts:   []Option{},
 			hasErr: true,
@@ -185,7 +185,7 @@ func TestValidator(t *testing.T) {
 		{
 			name: "invalid phone_number without hyphen",
 			input: &input{
-				Password: "09012341234",
+				PhoneNumber: "09012341234",
 			},
 			opts:   []Option{},
 			hasErr: true,
