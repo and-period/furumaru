@@ -69,13 +69,18 @@ func (a *Address) Name() string {
 	return strings.TrimSpace(str)
 }
 
+func (a *Address) NameKana() string {
+	str := strings.Join([]string{a.LastnameKana, a.FirstnameKana}, " ")
+	return strings.TrimSpace(str)
+}
+
 func (a *Address) FullPath() string {
 	str := strings.Join([]string{a.Prefecture, a.City, a.AddressLine1, a.AddressLine2}, " ")
 	return strings.TrimSpace(str)
 }
 
-func (a *Address) String() string {
-	str := strings.Join([]string{a.Prefecture, a.City, a.AddressLine1, a.AddressLine2}, " ")
+func (a *Address) ShortPath() string {
+	str := strings.Join([]string{a.Prefecture, a.City, a.AddressLine1}, " ")
 	return strings.TrimSpace(str)
 }
 
