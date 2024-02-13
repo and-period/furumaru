@@ -18,7 +18,10 @@ import (
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules")
 
-	r.GET("/:scheduleId", h.createBroadcastViewerLog, h.GetSchedule)
+	// TODO: メモリリークの原因切り分けのため、一時的にコメントアウト
+	// r.GET("/:scheduleId", h.createBroadcastViewerLog, h.GetSchedule)
+
+	r.GET("/:scheduleId", h.GetSchedule)
 }
 
 func (h *handler) GetSchedule(ctx *gin.Context) {

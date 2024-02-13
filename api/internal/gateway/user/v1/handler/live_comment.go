@@ -17,8 +17,12 @@ import (
 func (h *handler) liveCommentRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/comments")
 
-	r.GET("", h.createBroadcastViewerLog, h.ListLiveComments)
-	r.POST("", h.authentication, h.createBroadcastViewerLog, h.CreateLiveComment)
+	// TODO: メモリリークの原因切り分けのため、一時的にコメントアウト
+	// r.GET("", h.createBroadcastViewerLog, h.ListLiveComments)
+	// r.POST("", h.authentication, h.createBroadcastViewerLog, h.CreateLiveComment)
+
+	r.GET("", h.ListLiveComments)
+	r.POST("", h.authentication, h.CreateLiveComment)
 }
 
 func (h *handler) ListLiveComments(ctx *gin.Context) {
