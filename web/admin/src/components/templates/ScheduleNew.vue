@@ -209,6 +209,7 @@ const onSubmit = async (): Promise<void> => {
               :loading="loading"
               :accept="['image/png']"
               :img-url="formDataValue.thumbnailUrl"
+              :required-error-message="getErrorMessage(formDataValidate.thumbnailUrl.$errors)"
               :error="props.thumbnailUploadStatus.error"
               :message="props.thumbnailUploadStatus.message"
               @update:file="onChangeThumbnailFile"

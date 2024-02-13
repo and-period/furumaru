@@ -25,6 +25,10 @@ const props = defineProps({
   message: {
     type: String,
     default: ''
+  },
+  requiredErrorMessage: {
+    type: String,
+    default: ''
   }
 })
 
@@ -58,6 +62,7 @@ const onChangeFile = (): void => {
     <v-card
       :disabled="loading"
       :loading="loading"
+      :style="{ border: props.requiredErrorMessage !== '' ? '1px solid red' : '' }"
       class="text-center"
       role="button"
       flat
@@ -80,6 +85,9 @@ const onChangeFile = (): void => {
         </p>
       </v-card-text>
     </v-card>
+    <p v-show="props.requiredErrorMessage" class="text-red ma-0">
+      {{ props.requiredErrorMessage }}
+    </p>
     <p v-show="props.error" class="red--text ma-0">
       {{ props.message }}
     </p>
