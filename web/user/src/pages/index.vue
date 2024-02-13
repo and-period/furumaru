@@ -207,5 +207,10 @@ useSeoMeta({
         </div>
       </the-content-box>
     </div>
+    <div class="flex justify-center">
+      <a href="https://lin.ee/49SOeUC"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" class="md:h-[65px] h-14"></a>
+    </div>
+    <p class="mx-2 my-4 flex justify-center text-center text-[16px] md:text-[20px]">LINE友達追加すると、ふるマルの配信・クーポンなどのお得情報をGETできる！</p>
+
   </div>
 </template>
