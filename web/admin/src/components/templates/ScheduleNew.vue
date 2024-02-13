@@ -220,6 +220,7 @@ const onSubmit = async (): Promise<void> => {
               label="オープニング動画"
               :loading="loading"
               :video-url="formDataValue.openingVideoUrl"
+              :required-error-message="getErrorMessage(formDataValidate.openingVideoUrl.$errors)"
               :error="props.openingVideoUploadStatus.error"
               :message="props.openingVideoUploadStatus.message"
               @update:file="onChangeOpeningVideo"
