@@ -147,6 +147,69 @@ func TestAddress_Name(t *testing.T) {
 	}
 }
 
+func TestAddress_NameKana(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		address *Address
+		expect  string
+	}{
+		{
+			name: "success",
+			address: &Address{
+				ID:        "address-id",
+				UserID:    "user-id",
+				IsDefault: true,
+				AddressRevision: AddressRevision{
+					AddressID:      "address-id",
+					Lastname:       "&.",
+					Firstname:      "購入者",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "こうにゅうしゃ",
+					PostalCode:     "1000014",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "090-1234-1234",
+				},
+			},
+			expect: "あんどどっと こうにゅうしゃ",
+		},
+		{
+			name: "success only lastname",
+			address: &Address{
+				ID:        "address-id",
+				UserID:    "user-id",
+				IsDefault: true,
+				AddressRevision: AddressRevision{
+					AddressID:      "address-id",
+					Lastname:       "&.",
+					Firstname:      "",
+					LastnameKana:   "あんどどっと",
+					FirstnameKana:  "",
+					PostalCode:     "1000014",
+					Prefecture:     "東京都",
+					PrefectureCode: 13,
+					City:           "千代田区",
+					AddressLine1:   "永田町1-7-1",
+					AddressLine2:   "",
+					PhoneNumber:    "090-1234-1234",
+				},
+			},
+			expect: "あんどどっと",
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.address.NameKana())
+		})
+	}
+}
+
 func TestAddress_FullPath(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -187,7 +250,7 @@ func TestAddress_FullPath(t *testing.T) {
 	}
 }
 
-func TestAddress_String(t *testing.T) {
+func TestAddress_ShortPath(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -222,7 +285,7 @@ func TestAddress_String(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.address.String())
+			assert.Equal(t, tt.expect, tt.address.ShortPath())
 		})
 	}
 }
