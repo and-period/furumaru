@@ -419,7 +419,7 @@ useSeoMeta({
                 {{ calcCartResponseItem.coordinator.marcheName }}
               </p>
               <p>
-                発想地：{{
+                発送地：{{
                   `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
                 }}
               </p>
