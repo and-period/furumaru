@@ -19,6 +19,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/slack-go/slack"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -26,6 +27,7 @@ import (
 func (a *app) newRouter() *gin.Engine {
 	opts := make([]gin.HandlerFunc, 0)
 	opts = append(opts, nrgin.Middleware(a.newRelic))
+	opts = append(opts, otelgin.Middleware(a.AppName))
 	opts = append(opts, sentrygin.New(sentrygin.Options{}))
 	opts = append(opts, a.accessLogger())
 	opts = append(opts, cors.NewGinMiddleware())

@@ -39,6 +39,12 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rafaelhl/gorm-newrelic-telemetry-plugin/telemetry"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws"
+	"go.opentelemetry.io/contrib/propagators/aws/xray"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	oteltrace "go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -46,6 +52,7 @@ import (
 type params struct {
 	logger               *zap.Logger
 	waitGroup            *sync.WaitGroup
+	tracer               trace.Tracer
 	aws                  aws.Config
 	secret               secret.Client
 	storage              storage.Bucket
@@ -83,12 +90,29 @@ func (a *app) inject(ctx context.Context) error {
 		debugMode: a.LogLevel == "debug",
 	}
 
+	// OpenTelemetryの設定
+	// TODO: pkgへの切り出しとシャットダウン処理の追加
+	traceExporter, err := otlptracehttp.New(ctx, otlptracehttp.WithEndpoint("0.0.0.0:4318"))
+	if err != nil {
+		return fmt.Errorf("cmd: failed to create otlp trace exporter: %w", err)
+	}
+	idg := xray.NewIDGenerator()
+	tp := oteltrace.NewTracerProvider(
+		oteltrace.WithSampler(oteltrace.AlwaysSample()),
+		oteltrace.WithBatcher(traceExporter),
+		oteltrace.WithIDGenerator(idg),
+	)
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(xray.Propagator{})
+	params.tracer = otel.Tracer(a.AppName)
+
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
 	if err != nil {
 		return fmt.Errorf("cmd: failed to load aws config: %w", err)
 	}
 	params.aws = awscfg
+	otelaws.AppendMiddlewares(&params.aws.APIOptions)
 
 	// AWS Secrets Managerの設定
 	params.secret = secret.NewClient(awscfg)
@@ -258,6 +282,7 @@ func (a *app) inject(ctx context.Context) error {
 		v1.WithSentry(params.sentry),
 	)
 	a.logger = params.logger
+	a.tracer = params.tracer
 	a.debugMode = params.debugMode
 	a.waitGroup = params.waitGroup
 	a.slack = params.slack
