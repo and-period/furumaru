@@ -71,13 +71,7 @@ const handleSubmit = () => {
         required
       />
     </div>
-    <the-text-input
-      v-model="formDataValue.phoneNumber"
-      placeholder="電話番号"
-      :with-label="false"
-      type="tel"
-      required
-    />
+    <the-phone-number-input v-model="formDataValue.phoneNumber" required />
     <div class="flex items-center gap-4">
       <the-text-input
         v-model="formDataValue.postalCode"
