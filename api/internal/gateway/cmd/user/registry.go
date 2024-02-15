@@ -92,7 +92,10 @@ func (a *app) inject(ctx context.Context) error {
 
 	// OpenTelemetryの設定
 	// TODO: pkgへの切り出しとシャットダウン処理の追加
-	traceExporter, err := otlptracehttp.New(ctx)
+	traceExporter, err := otlptracehttp.New(ctx,
+		otlptracehttp.WithInsecure(),
+		otlptracehttp.WithEndpoint("0.0.0.0:4318"),
+	)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create otlp trace exporter: %w", err)
 	}
