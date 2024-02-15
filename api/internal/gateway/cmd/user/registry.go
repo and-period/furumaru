@@ -50,6 +50,7 @@ import (
 )
 
 type params struct {
+	serviceName          string
 	logger               *zap.Logger
 	waitGroup            *sync.WaitGroup
 	tracer               trace.Tracer
@@ -84,10 +85,11 @@ type params struct {
 //nolint:funlen
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
-		logger:    zap.NewNop(),
-		now:       jst.Now,
-		waitGroup: &sync.WaitGroup{},
-		debugMode: a.LogLevel == "debug",
+		serviceName: fmt.Sprintf("%s-%s", a.AppName, a.Environment),
+		logger:      zap.NewNop(),
+		now:         jst.Now,
+		waitGroup:   &sync.WaitGroup{},
+		debugMode:   a.LogLevel == "debug",
 	}
 
 	// OpenTelemetryの設定
@@ -107,7 +109,7 @@ func (a *app) inject(ctx context.Context) error {
 	)
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(xray.Propagator{})
-	params.tracer = otel.Tracer(a.AppName)
+	params.tracer = otel.Tracer(a.serviceName)
 
 	// AWS SDKの設定
 	awscfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithRegion(a.AWSRegion))
@@ -167,15 +169,14 @@ func (a *app) inject(ctx context.Context) error {
 
 	// New Relicの設定
 	if params.newRelicLicense != "" {
-		appName := fmt.Sprintf("%s-%s", a.AppName, a.Environment)
 		labels := map[string]string{
 			"app":     "furumaru",
 			"env":     a.Environment,
-			"service": a.AppName,
+			"service": params.serviceName,
 			"type":    "backend",
 		}
 		newrelicApp, err := newrelic.NewApplication(
-			newrelic.ConfigAppName(appName),
+			newrelic.ConfigAppName(params.serviceName),
 			newrelic.ConfigLicense(params.newRelicLicense),
 			newrelic.ConfigAppLogMetricsEnabled(true),
 			newrelic.ConfigAppLogForwardingEnabled(true),
@@ -183,7 +184,7 @@ func (a *app) inject(ctx context.Context) error {
 			newrelic.ConfigAppLogEnabled(true),
 			newrelic.ConfigAppLogForwardingEnabled(true),
 			func(cfg *newrelic.Config) {
-				cfg.HostDisplayName = appName
+				cfg.HostDisplayName = params.serviceName
 				cfg.Labels = labels
 			},
 		)
@@ -284,6 +285,7 @@ func (a *app) inject(ctx context.Context) error {
 		v1.WithLogger(params.logger),
 		v1.WithSentry(params.sentry),
 	)
+	a.serviceName = params.serviceName
 	a.logger = params.logger
 	a.tracer = params.tracer
 	a.debugMode = params.debugMode

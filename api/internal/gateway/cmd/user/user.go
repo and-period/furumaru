@@ -22,6 +22,7 @@ import (
 
 type app struct {
 	*cobra.Command
+	serviceName          string
 	debugMode            bool
 	logger               *zap.Logger
 	waitGroup            *sync.WaitGroup
@@ -103,7 +104,7 @@ func (a *app) run() error {
 	ms := http.NewMetricsServer(a.MetricsPort)
 
 	// Tracerの設定
-	ctx, span := a.tracer.Start(ctx, a.AppName)
+	ctx, span := a.tracer.Start(ctx, a.serviceName)
 	defer span.End()
 
 	// Serverの起動
