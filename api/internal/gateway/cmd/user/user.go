@@ -15,21 +15,18 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/spf13/cobra"
-	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
 type app struct {
 	*cobra.Command
-	serviceName          string
 	debugMode            bool
 	logger               *zap.Logger
 	waitGroup            *sync.WaitGroup
 	slack                slack.Client
 	newRelic             *newrelic.Application
 	v1                   v1.Handler
-	tracer               trace.Tracer
 	AppName              string `envconfig:"APP_NAME" default:"user-gateway"`
 	Environment          string `envconfig:"ENV" default:"none"`
 	Port                 int64  `envconfig:"PORT" default:"8080"`
@@ -102,10 +99,6 @@ func (a *app) run() error {
 
 	// Metrics Serverの設定
 	ms := http.NewMetricsServer(a.MetricsPort)
-
-	// Tracerの設定
-	ctx, span := a.tracer.Start(ctx, a.serviceName)
-	defer span.End()
 
 	// Serverの起動
 	eg, ectx := errgroup.WithContext(ctx)

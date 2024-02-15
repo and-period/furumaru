@@ -15,11 +15,11 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	ginzip "github.com/gin-contrib/gzip"
+	ginpprof "github.com/gin-contrib/pprof"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/slack-go/slack"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -27,7 +27,6 @@ import (
 func (a *app) newRouter() *gin.Engine {
 	opts := make([]gin.HandlerFunc, 0)
 	opts = append(opts, nrgin.Middleware(a.newRelic))
-	opts = append(opts, otelgin.Middleware(a.AppName))
 	opts = append(opts, sentrygin.New(sentrygin.Options{}))
 	opts = append(opts, a.accessLogger())
 	opts = append(opts, cors.NewGinMiddleware())
@@ -46,6 +45,7 @@ func (a *app) newRouter() *gin.Engine {
 	rt.NoRoute(func(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, "not found")
 	})
+	ginpprof.Register(rt)
 
 	return rt
 }
