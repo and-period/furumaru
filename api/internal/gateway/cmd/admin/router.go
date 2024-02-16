@@ -44,7 +44,11 @@ func (a *app) newRouter() *gin.Engine {
 		ctx.JSON(http.StatusOK, "ok")
 	})
 	rt.NoRoute(func(ctx *gin.Context) {
-		ctx.JSON(http.StatusNotFound, "not found")
+		res := &util.ErrorResponse{
+			Status:  http.StatusNotFound,
+			Message: http.StatusText(http.StatusNotFound),
+		}
+		ctx.JSON(http.StatusNotFound, res)
 	})
 	ginpprof.Register(rt)
 
