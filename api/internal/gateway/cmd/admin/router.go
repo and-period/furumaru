@@ -12,6 +12,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/pkg/cors"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	sentrygin "github.com/getsentry/sentry-go/gin"
 	ginzip "github.com/gin-contrib/gzip"
 	ginpprof "github.com/gin-contrib/pprof"
@@ -75,98 +76,20 @@ func (w *wrapResponseWriter) errorResponse() (*util.ErrorResponse, error) {
 }
 
 func (a *app) accessLogger() gin.HandlerFunc {
-	skipPaths := map[string]bool{
-		"/health": true,
-	}
-
 	return func(ctx *gin.Context) {
 		var req []byte
 		if a.enableDebugMode(ctx) {
 			req, _ = io.ReadAll(ctx.Request.Body)
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(req))
 		}
-
+		startAt := jst.Now()
 		w := &wrapResponseWriter{
 			ResponseWriter: ctx.Writer,
 			body:           bytes.NewBufferString(""),
 		}
+		defer a.writeAccessLog(ctx, req, w, startAt)
 		ctx.Writer = w
-
-		start := time.Now()
-		method := ctx.Request.Method
-		path := ctx.Request.URL.Path
 		ctx.Next()
-
-		if _, ok := skipPaths[path]; ok {
-			return
-		}
-
-		end := time.Now()
-		status := ctx.Writer.Status()
-
-		fields := []zapcore.Field{
-			zap.Int("status", status),
-			zap.String("method", method),
-			zap.String("path", path),
-			zap.String("query", ctx.Request.URL.RawQuery),
-			zap.String("ip", ctx.ClientIP()),
-			zap.String("userAgent", ctx.Request.UserAgent()),
-			zap.Int64("latency", end.Sub(start).Milliseconds()),
-			zap.String("requestedAt", start.Format(time.RFC3339Nano)),
-			zap.String("responsedAt", end.Format(time.RFC3339Nano)),
-			zap.String("userId", ctx.GetHeader("adminId")),
-		}
-		if a.enableDebugMode(ctx) {
-			str := strings.ReplaceAll(bytes.NewBuffer(req).String(), "\n", "")
-			fields = append(fields, zap.String("request", str))
-		}
-
-		// ~ 399
-		if status < 400 {
-			a.logger.Info(path, fields...)
-			return
-		}
-
-		res, err := w.errorResponse()
-		if err != nil {
-			a.logger.Error("Failed to parse http response", zap.Error(err))
-		}
-		fields = append(fields, zap.Any("response", res))
-
-		// 400 ~ 499
-		if status < 500 {
-			a.logger.Warn(path, fields...)
-			return
-		}
-
-		// 500 ~
-		fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
-		a.logger.Warn(path, fields...)
-
-		if a.slack == nil {
-			return
-		}
-
-		details, _ := json.Marshal(res)
-		params := &alertMessageParams{
-			title:   "ふるまる APIアラート",
-			appName: a.AppName,
-			env:     a.Environment,
-			status:  int64(status),
-			method:  method,
-			path:    path,
-			details: string(details),
-		}
-		msg := newAlertMessage(params)
-
-		a.waitGroup.Add(1)
-		go func(msg slack.MsgOption) {
-			defer a.waitGroup.Done()
-			err := a.slack.SendMessage(ctx, msg)
-			if err != nil {
-				a.logger.Error("Failed to alert message", zap.Error(err))
-			}
-		}(msg)
 	}
 }
 
@@ -176,6 +99,84 @@ func (a *app) enableDebugMode(ctx *gin.Context) bool {
 		return false
 	}
 	return strings.Contains(ctx.ContentType(), contentType)
+}
+
+func (a *app) writeAccessLog(ctx *gin.Context, req []byte, w *wrapResponseWriter, startAt time.Time) {
+	const msg = "Access log"
+	skipPaths := map[string]bool{
+		"/health": true,
+	}
+	if _, ok := skipPaths[ctx.FullPath()]; ok {
+		return
+	}
+
+	method := ctx.Request.Method
+	path := ctx.Request.URL.Path
+	endAt := jst.Now()
+	status := ctx.Writer.Status()
+
+	fields := []zapcore.Field{
+		zap.Int("status", status),
+		zap.String("method", method),
+		zap.String("path", path),
+		zap.String("query", ctx.Request.URL.RawQuery),
+		zap.String("route", ctx.FullPath()),
+		zap.String("ip", ctx.ClientIP()),
+		zap.String("userAgent", ctx.Request.UserAgent()),
+		zap.Int64("latency", endAt.Sub(startAt).Milliseconds()),
+		zap.String("requestedAt", startAt.Format(time.RFC3339Nano)),
+		zap.String("responsedAt", endAt.Format(time.RFC3339Nano)),
+		zap.String("userId", ctx.GetHeader("adminId")),
+	}
+	if a.enableDebugMode(ctx) {
+		str := strings.ReplaceAll(bytes.NewBuffer(req).String(), "\n", "")
+		fields = append(fields, zap.String("request", str))
+	}
+
+	// ~ 399
+	if status < 400 {
+		a.logger.Info(msg, fields...)
+		return
+	}
+
+	res, err := w.errorResponse()
+	if err != nil {
+		a.logger.Error("Failed to parse http response", zap.Error(err))
+	}
+	fields = append(fields, zap.Any("response", res))
+
+	// 400 ~ 499
+	if status < 500 {
+		a.logger.Warn(msg, fields...)
+		return
+	}
+
+	// 500 ~
+	fields = append(fields, zap.Strings("errors", ctx.Errors.Errors()))
+	a.logger.Warn(msg, fields...)
+
+	if a.slack == nil {
+		return
+	}
+
+	details, _ := json.Marshal(res)
+	params := &alertMessageParams{
+		title:   "ふるまる APIアラート",
+		appName: a.AppName,
+		env:     a.Environment,
+		status:  int64(status),
+		method:  method,
+		path:    path,
+		details: string(details),
+	}
+
+	a.waitGroup.Add(1)
+	go func(msg slack.MsgOption) {
+		defer a.waitGroup.Done()
+		if err := a.slack.SendMessage(ctx, msg); err != nil {
+			a.logger.Error("Failed to alert message", zap.Error(err))
+		}
+	}(newAlertMessage(params))
 }
 
 type alertMessageParams struct {

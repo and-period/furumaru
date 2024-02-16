@@ -208,7 +208,9 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
 			"app_name":   h.appName,
 			"env":        h.env,
 			"method":     ctx.Request.Method,
-			"path":       ctx.FullPath(),
+			"path":       ctx.Request.URL.Path,
+			"query":      ctx.Request.URL.RawQuery,
+			"route":      ctx.FullPath(),
 			"user_agent": ctx.Request.UserAgent(),
 		}),
 	}
