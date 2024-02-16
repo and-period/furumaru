@@ -30,11 +30,13 @@ const handleClick = () => {
     </div>
     <div class="mt-2 flex w-full flex-col gap-2">
       <div class="flex items-center justify-between text-sm">
-        <span class="rounded border-2 border-main px-2 font-bold text-main">
+        <span
+          class="rounded border border-main px-1 text-[10px] font-bold tracking-[10%] text-main"
+        >
           アーカイブ配信
         </span>
       </div>
-      <p class="line-clamp-3 break-words">
+      <p class="line-clamp-3 break-words text-[14px] tracking-[10%]">
         {{ title }}
       </p>
     </div>
