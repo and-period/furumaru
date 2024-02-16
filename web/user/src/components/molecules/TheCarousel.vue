@@ -103,4 +103,9 @@ const handleClickItem = (
       <the-right-arrow-icon />
     </the-icon-button>
   </div>
+
+  <div class="flex justify-center pt-8">
+      <a href="https://lin.ee/49SOeUC"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" class="h-[40px] md:h-[65px]"></a>
+    </div>
+    <p class="mt-4 flex justify-center text-center text-[16px] md:text-[20px]">お友達追加で20%オフクーポンプレゼント！</p>
 </template>
