@@ -153,7 +153,6 @@ func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	}
 	cli, err := mysql.NewClient(
 		params,
-		mysql.WithLogger(p.logger),
 		mysql.WithNow(p.now),
 		mysql.WithTLS(a.DBEnabledTLS),
 		mysql.WithLocation(location),

@@ -173,8 +173,9 @@ func (a *app) inject(ctx context.Context) error {
 			sentry.WithServerName(a.AppName),
 			sentry.WithEnvironment(a.Environment),
 			sentry.WithDSN(params.sentryDsn),
-			sentry.WithTrace(true),
 			sentry.WithBind(true),
+			sentry.WithTracesSampleRate(a.TraceSampleRate),
+			sentry.WithProfilesSampleRate(a.ProfileSampleRate),
 		)
 		if err != nil {
 			return fmt.Errorf("cmd: failed to create sentry client: %w", err)
@@ -361,7 +362,6 @@ func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	}
 	cli, err := mysql.NewClient(
 		params,
-		mysql.WithLogger(p.logger),
 		mysql.WithNow(p.now),
 		mysql.WithTLS(a.DBEnabledTLS),
 		mysql.WithLocation(location),

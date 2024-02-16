@@ -15,7 +15,21 @@ type options struct {
 type ClientOption func(*options)
 
 func buildOptions(opts ...ClientOption) *options {
-	beforeSendFn := func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
+	dopts := &options{
+		bind: false,
+		opts: sentry.ClientOptions{
+			ServerName:         "",
+			Environment:        "",
+			Debug:              false,
+			EnableTracing:      false,
+			TracesSampleRate:   0.0,
+			ProfilesSampleRate: 0.0,
+		},
+	}
+	for i := range opts {
+		opts[i](dopts)
+	}
+	dopts.opts.BeforeSend = func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
 		for i := range event.Exception {
 			exception := &event.Exception[i]
 			if !strings.Contains(exception.Type, "wrapError") {
@@ -29,28 +43,12 @@ func buildOptions(opts ...ClientOption) *options {
 		}
 		return event
 	}
-	tracesSamplerFn := sentry.TracesSampler(func(ctx sentry.SamplingContext) float64 {
+	dopts.opts.TracesSampler = sentry.TracesSampler(func(ctx sentry.SamplingContext) float64 {
 		if ctx.Span.Name == "GET /health" {
 			return 0.0
 		}
-		return 1.0
+		return dopts.opts.TracesSampleRate
 	})
-	dopts := &options{
-		bind: false,
-		opts: sentry.ClientOptions{
-			ServerName:         "",
-			Environment:        "",
-			Debug:              false,
-			EnableTracing:      false,
-			BeforeSend:         beforeSendFn,
-			TracesSampleRate:   1.0,
-			TracesSampler:      tracesSamplerFn,
-			ProfilesSampleRate: 1.0,
-		},
-	}
-	for i := range opts {
-		opts[i](dopts)
-	}
 	return dopts
 }
 
@@ -84,14 +82,11 @@ func WithDebug(debug bool) ClientOption {
 	}
 }
 
-func WithTrace(enable bool) ClientOption {
-	return func(o *options) {
-		o.opts.EnableTracing = enable
-	}
-}
-
 func WithTracesSampleRate(rate float64) ClientOption {
 	return func(o *options) {
+		if rate > 0.0 {
+			o.opts.EnableTracing = true
+		}
 		o.opts.TracesSampleRate = rate
 	}
 }
