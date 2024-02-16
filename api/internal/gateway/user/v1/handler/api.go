@@ -205,12 +205,15 @@ func (h *handler) reportError(ctx *gin.Context, err error, res *util.ErrorRespon
 		sentry.WithUser(&sentry.User{
 			ID:        h.getUserID(ctx),
 			IPAddress: ctx.ClientIP(),
+			Data:      map[string]string{"sessionId": h.getSessionID(ctx)},
 		}),
 		sentry.WithTags(map[string]string{
 			"app_name":   h.appName,
 			"env":        h.env,
 			"method":     ctx.Request.Method,
-			"path":       ctx.FullPath(),
+			"path":       ctx.Request.URL.Path,
+			"query":      ctx.Request.URL.RawQuery,
+			"route":      ctx.FullPath(),
 			"user_agent": ctx.Request.UserAgent(),
 		}),
 	}
