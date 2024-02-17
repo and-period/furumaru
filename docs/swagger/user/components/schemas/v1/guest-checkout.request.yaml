@@ -1,0 +1,134 @@
+guestCheckoutRequest:
+  type: object
+  properties:
+    requestId:
+      type: string
+      description: 支払いキー(重複判定用)
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    boxNumber:
+      type: integer
+      format: int64
+      description: 箱の通番（箱単位で購入する場合のみ）
+    promotionCode:
+      type: string
+      description: プロモーションコード（割引適用時のみ）
+    paymentMethod:
+      $ref: './../../../openapi.yaml#/components/schemas/paymentMethodType'
+    callbackUrl:
+      type: string
+      description: 決済ページからの遷移先URL
+    total:
+      type: integer
+      format: int64
+      description: 支払い合計金額（誤り検出用）
+    email:
+      type: string
+      description: 購入者メールアドレス
+    isSameAddress:
+      type: boolean
+      description: 配送先住所を請求先住所と同一にする
+    billingAddress:
+      description: 請求先住所
+      $ref: '#/guestCheckoutAddress'
+    shippingAddress:
+      description: 配送先住所（isSameAddressフラグがTRUEの場合は未使用）
+      $ref: '#/guestCheckoutAddress'
+  required:
+  - requestId
+  - coordinatorId
+  - boxNumber
+  - promotionCode
+  - paymentMethod
+  - callbackUrl
+  - total
+  - email
+  - isSameAddress
+  - shippingAddress
+  example:
+    requestId: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    boxNumber: 1
+    promotionCode: 'code1234'
+    paymentMethod: 2
+    callbackUrl: 'http://example.com/redirect-url'
+    total: 1980
+    email: 'test@example.com'
+    isSameAddress: false
+    billingAddress:
+      lastname: '&.'
+      firstname: '利用者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'りようしゃ'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '090-1234-1234'
+    shippingAddress:
+      lastname: '&.'
+      firstname: '利用者'
+      lastnameKana: 'あんどどっと'
+      firstnameKana: 'りようしゃ'
+      postalCode: '1000014'
+      prefectureCode: 13
+      city: '千代田区'
+      addressLine1: '永田町1-7-1'
+      addressLine2: ''
+      phoneNumber: '090-1234-1234'
+guestCheckoutAddress:
+  type: object
+  properties:
+    lastname:
+      type: string
+      description: 姓(16文字まで)
+    firstname:
+      type: string
+      description: 名(16文字まで)
+    lastnameKana:
+      type: string
+      description: 姓(かな)(ひらがな,32文字まで)
+    firstnameKana:
+      type: string
+      description: 名(かな)(ひらがな,32文字まで)
+    postalCode:
+      type: string
+      description: 郵便番号(ハイフンなし)
+    prefectureCode:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+    city:
+      type: string
+      description: 市区町村(32文字まで)
+    addressLine1:
+      type: string
+      description: 町名・番地(64文字まで)
+    addressLine2:
+      type: string
+      description: ビル名・号室など(64文字まで)
+    phoneNumber:
+      type: string
+      description: 電話番号 (ハイフンあり)
+  required:
+  - lastname
+  - firstname
+  - lastnameKana
+  - firstnameKana
+  - postalCode
+  - prefectureCode
+  - city
+  - addressLine1
+  - addressLine2
+  - phoneNumber
+  example:
+    lastname: '&.'
+    firstname: '利用者'
+    lastnameKana: 'あんどどっと'
+    firstnameKana: 'りようしゃ'
+    postalCode: '1000014'
+    prefectureCode: 13
+    city: '千代田区'
+    addressLine1: '永田町1-7-1'
+    addressLine2: ''
+    phoneNumber: '090-1234-1234'

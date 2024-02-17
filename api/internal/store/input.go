@@ -508,7 +508,8 @@ type RemoveCartItemInput struct {
 }
 
 type GetCheckoutStateInput struct {
-	UserID        string `validate:"required"`
+	UserID        string `validate:""`
+	SessionID     string `validate:"required_without=UserID"`
 	TransactionID string `validate:"required"`
 }
 

@@ -41,6 +41,7 @@ func TestOrder(t *testing.T) {
 			name: "success",
 			params: &NewOrderParams{
 				OrderID:       "order-id",
+				SessionID:     "session-id",
 				CoordinatorID: "coordinator-id",
 				Customer: &entity.User{
 					Member: entity.Member{
@@ -195,6 +196,7 @@ func TestOrder(t *testing.T) {
 					},
 				},
 				ID:              "order-id",
+				SessionID:       "session-id",
 				UserID:          "user-id",
 				CoordinatorID:   "coordinator-id",
 				PromotionID:     "",
@@ -239,6 +241,7 @@ func TestOrder_Fill(t *testing.T) {
 			name: "success",
 			order: &Order{
 				ID:            "order-id",
+				SessionID:     "session-id",
 				UserID:        "user-id",
 				CoordinatorID: "coordinator-id",
 				PromotionID:   "promotion-id",
@@ -250,6 +253,7 @@ func TestOrder_Fill(t *testing.T) {
 			items:        OrderItems{{OrderID: "order-id", ProductRevisionID: 1}},
 			expect: &Order{
 				ID:                "order-id",
+				SessionID:         "session-id",
 				UserID:            "user-id",
 				CoordinatorID:     "coordinator-id",
 				PromotionID:       "promotion-id",
