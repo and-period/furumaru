@@ -30,6 +30,7 @@ type Order struct {
 	OrderItems        `gorm:"-"`
 	ID                string         `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	UserID            string         `gorm:""`                     // ユーザーID
+	SessionID         string         `gorm:""`                     // 注文時セッションID
 	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
 	PromotionID       string         `gorm:"default:null"`         // プロモーションID
 	ManagementID      int64          `gorm:""`                     // 管理番号
@@ -65,6 +66,7 @@ type AggregatedOrderPromotions []*AggregatedOrderPromotion
 
 type NewOrderParams struct {
 	OrderID           string
+	SessionID         string
 	CoordinatorID     string
 	Customer          *entity.User
 	BillingAddress    *entity.Address
@@ -109,6 +111,7 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 		OrderFulfillments: fulfillments,
 		OrderItems:        items,
 		ID:                params.OrderID,
+		SessionID:         params.SessionID,
 		UserID:            params.Customer.ID,
 		CoordinatorID:     params.CoordinatorID,
 		PromotionID:       promotionID,

@@ -1,0 +1,24 @@
+guestCheckoutResponse:
+  type: object
+  properties:
+    url:
+      type: string
+      description: 支払いページへのリダイレクトURL
+  required:
+  - url
+  example:
+    url: 'http://example.com/redirect-url'
+guestCheckoutStateResponse:
+  type: object
+  properties:
+    orderId:
+      type: string
+      description: 注文履歴ID
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/orderStatus'
+  required:
+  - orderId
+  - status
+  example:
+    orderId: 'kSByoE6FetnPs5Byk3a9Zx'
+    status: 5

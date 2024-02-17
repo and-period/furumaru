@@ -88,6 +88,7 @@ type Order interface {
 	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
 	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
 	GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error)
+	GetByTransactionIDWithSessionID(ctx context.Context, sessionID, transactionID string) (*entity.Order, error)
 	Create(ctx context.Context, order *entity.Order) error
 	UpdatePayment(ctx context.Context, orderID string, params *UpdateOrderPaymentParams) error
 	UpdateFulfillment(ctx context.Context, orderID, fulfillmentID string, params *UpdateOrderFulfillmentParams) error

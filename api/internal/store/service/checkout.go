@@ -23,7 +23,15 @@ func (s *service) GetCheckoutState(ctx context.Context, in *store.GetCheckoutSta
 	if err := s.validator.Struct(in); err != nil {
 		return "", entity.PaymentStatusUnknown, internalError(err)
 	}
-	order, err := s.db.Order.GetByTransactionID(ctx, in.UserID, in.TransactionID)
+	var (
+		order *entity.Order
+		err   error
+	)
+	if in.UserID != "" {
+		order, err = s.db.Order.GetByTransactionID(ctx, in.UserID, in.TransactionID)
+	} else {
+		order, err = s.db.Order.GetByTransactionIDWithSessionID(ctx, in.SessionID, in.TransactionID)
+	}
 	if err != nil {
 		return "", entity.PaymentStatusUnknown, internalError(err)
 	}
@@ -310,6 +318,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	// 注文インスタンスの生成
 	oparams := &entity.NewOrderParams{
 		OrderID:           params.payload.RequestID,
+		SessionID:         params.payload.SessionID,
 		CoordinatorID:     params.payload.CoordinatorID,
 		Customer:          customer,
 		BillingAddress:    billingAddress,

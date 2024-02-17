@@ -28,6 +28,7 @@ func TestGetCheckoutState(t *testing.T) {
 	order := func(status entity.PaymentStatus) *entity.Order {
 		return &entity.Order{
 			ID:              "order-id",
+			SessionID:       "session-id",
 			UserID:          "user-id",
 			PromotionID:     "",
 			CoordinatorID:   "coordinator-id",
@@ -121,6 +122,20 @@ func TestGetCheckoutState(t *testing.T) {
 			},
 			input: &store.GetCheckoutStateInput{
 				UserID:        "user-id",
+				TransactionID: "transaction-id",
+			},
+			expectOrderID: "order-id",
+			expectStatus:  entity.PaymentStatusAuthorized,
+			expectErr:     nil,
+		},
+		{
+			name: "success with session id",
+			setup: func(ctx context.Context, mocks *mocks) {
+				order := order(entity.PaymentStatusAuthorized)
+				mocks.db.Order.EXPECT().GetByTransactionIDWithSessionID(ctx, "session-id", "transaction-id").Return(order, nil)
+			},
+			input: &store.GetCheckoutStateInput{
+				SessionID:     "session-id",
 				TransactionID: "transaction-id",
 			},
 			expectOrderID: "order-id",
@@ -794,6 +809,7 @@ func checkoutmocks(
 			},
 		},
 		ID:              "order-id",
+		SessionID:       "session-id",
 		UserID:          "user-id",
 		CoordinatorID:   "coordinator-id",
 		PromotionID:     "promotion-id",
@@ -1306,6 +1322,7 @@ func TestCheckout(t *testing.T) {
 				},
 			},
 			ID:              "order-id",
+			SessionID:       "session-id",
 			UserID:          "user-id",
 			CoordinatorID:   "coordinator-id",
 			PromotionID:     "promotion-id",

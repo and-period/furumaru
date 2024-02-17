@@ -15,21 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
-  CheckoutRequest,
-  CheckoutResponse,
-  CheckoutStateResponse,
   ErrorResponse,
   GuestCheckoutRequest,
   GuestCheckoutResponse,
   GuestCheckoutStateResponse,
 } from '../models/index';
 import {
-    CheckoutRequestFromJSON,
-    CheckoutRequestToJSON,
-    CheckoutResponseFromJSON,
-    CheckoutResponseToJSON,
-    CheckoutStateResponseFromJSON,
-    CheckoutStateResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     GuestCheckoutRequestFromJSON,
@@ -39,14 +30,6 @@ import {
     GuestCheckoutStateResponseFromJSON,
     GuestCheckoutStateResponseToJSON,
 } from '../models/index';
-
-export interface V1CheckoutRequest {
-    body: CheckoutRequest;
-}
-
-export interface V1GetCheckoutStateRequest {
-    transactionId: string;
-}
 
 export interface V1GetGuestCheckoutStateRequest {
     transactionId: string;
@@ -59,86 +42,7 @@ export interface V1GuestCheckoutRequest {
 /**
  * 
  */
-export class CheckoutApi extends runtime.BaseAPI {
-
-    /**
-     * 商品購入
-     */
-    async v1CheckoutRaw(requestParameters: V1CheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutResponse>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1Checkout.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/checkouts`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters.body as any,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * 商品購入
-     */
-    async v1Checkout(requestParameters: V1CheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
-        const response = await this.v1CheckoutRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * 注文情報の取得
-     */
-    async v1GetCheckoutStateRaw(requestParameters: V1GetCheckoutStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutStateResponse>> {
-        if (requestParameters.transactionId === null || requestParameters.transactionId === undefined) {
-            throw new runtime.RequiredError('transactionId','Required parameter requestParameters.transactionId was null or undefined when calling v1GetCheckoutState.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/checkouts/{transactionId}`.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters.transactionId))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutStateResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * 注文情報の取得
-     */
-    async v1GetCheckoutState(requestParameters: V1GetCheckoutStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutStateResponse> {
-        const response = await this.v1GetCheckoutStateRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
+export class GuestApi extends runtime.BaseAPI {
 
     /**
      * ゲスト注文情報の取得

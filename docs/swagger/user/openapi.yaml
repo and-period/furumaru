@@ -31,6 +31,8 @@ tags:
   description: 商品関連
 - name: Promotion
   description: プロモーション関連
+- name: Guest
+  description: ゲスト関連
 - name: Contact
   description: お問い合わせ関連
 - name: Status
@@ -112,6 +114,11 @@ paths:
   # Promotion
   /v1/promotions/{code}:
     $ref: './paths/v1/promotions/_code/index.yaml'
+  # Guest
+  /v1/guests/checkouts:
+    $ref: './paths/v1/guests/checkouts/index.yaml'
+  /v1/guests/checkouts/{transactionId}:
+    $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
@@ -237,6 +244,8 @@ components:
       $ref: './components/schemas/v1/checkout.request.yaml#/checkoutRequest'
     v1CreateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
+    v1GuestCheckoutRequest:
+      $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutRequest'
     v1CreateLiveCommentRequest:
       $ref: './components/schemas/v1/live-comment.request.yaml#/createLiveCommentRequest'
     # Response
@@ -262,6 +271,10 @@ components:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
     v1CoordinatorsResponse:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
+    v1GuestCheckoutResponse:
+      $ref: './components/schemas/v1/guest-checkout.response.yaml#/guestCheckoutResponse'
+    v1GuestCheckoutStateResponse:
+      $ref: './components/schemas/v1/guest-checkout.response.yaml#/guestCheckoutStateResponse'
     v1LiveCommentsResponse:
       $ref: './components/schemas/v1/live-comment.response.yaml#/liveCommentsResponse'
     v1OrderResponse:
