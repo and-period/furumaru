@@ -121,7 +121,7 @@ func (h *handler) UpdateProductTag(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteProductTag(ctx *gin.Context) {
@@ -133,7 +133,7 @@ func (h *handler) DeleteProductTag(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) multiGetProductTags(ctx context.Context, productTagIDs []string) (service.ProductTags, error) {

@@ -89,7 +89,7 @@ func (h *handler) SignOut(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) RefreshAuthToken(ctx *gin.Context) {
@@ -135,7 +135,7 @@ func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
@@ -159,7 +159,7 @@ func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
@@ -185,7 +185,7 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
@@ -203,7 +203,7 @@ func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ResetAuthPassword(ctx *gin.Context) {
@@ -224,7 +224,7 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) GetAuthUser(ctx *gin.Context) {
@@ -283,7 +283,7 @@ func (h *handler) DeleteAuth(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) CreateAuthWithOAuth(ctx *gin.Context) {
@@ -336,5 +336,5 @@ func (h *handler) VerifyAuth(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }

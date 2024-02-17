@@ -70,7 +70,7 @@ func (h *handler) UpdateDefaultShipping(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) newShippingRatesForUpdateDefault(in []*request.UpdateDefaultShippingRate) []*store.UpdateDefaultShippingRate {
@@ -131,7 +131,7 @@ func (h *handler) UpsertShipping(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) newShippingRatesForUpsert(in []*request.UpsertShippingRate) []*store.UpsertShippingRate {

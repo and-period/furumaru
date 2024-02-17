@@ -234,7 +234,7 @@ func (h *handler) UpdateNotifcation(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteNotification(ctx *gin.Context) {
@@ -246,5 +246,5 @@ func (h *handler) DeleteNotification(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }

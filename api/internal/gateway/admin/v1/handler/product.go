@@ -431,7 +431,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) newProductPoints(points ...string) []string {
@@ -454,7 +454,7 @@ func (h *handler) DeleteProduct(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) multiGetProducts(ctx context.Context, productIDs []string) (service.Products, error) {

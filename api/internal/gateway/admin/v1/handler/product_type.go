@@ -148,7 +148,7 @@ func (h *handler) UpdateProductType(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteProductType(ctx *gin.Context) {
@@ -160,7 +160,7 @@ func (h *handler) DeleteProductType(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) multiGetProductTypes(ctx context.Context, productTypeIDs []string) (service.ProductTypes, error) {

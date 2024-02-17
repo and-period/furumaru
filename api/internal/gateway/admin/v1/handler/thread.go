@@ -207,7 +207,7 @@ func (h *handler) UpdateThread(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteThread(ctx *gin.Context) {
@@ -219,5 +219,5 @@ func (h *handler) DeleteThread(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }

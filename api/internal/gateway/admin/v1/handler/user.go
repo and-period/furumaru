@@ -118,7 +118,7 @@ func (h *handler) DeleteUser(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ListUserOrders(ctx *gin.Context) {

@@ -190,7 +190,7 @@ func (h *handler) UpdateProducer(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteProducer(ctx *gin.Context) {
@@ -202,7 +202,7 @@ func (h *handler) DeleteProducer(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) multiGetProducers(ctx context.Context, producerIDs []string) (service.Producers, error) {

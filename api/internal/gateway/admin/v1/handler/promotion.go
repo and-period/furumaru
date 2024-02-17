@@ -170,7 +170,7 @@ func (h *handler) UpdatePromotion(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeletePromotion(ctx *gin.Context) {
@@ -182,7 +182,7 @@ func (h *handler) DeletePromotion(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) multiGetPromotions(ctx context.Context, promotionIDs []string) (service.Promotions, error) {

@@ -148,7 +148,7 @@ func (h *handler) AddCartItem(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) RemoveCartItem(ctx *gin.Context) {
@@ -166,5 +166,5 @@ func (h *handler) RemoveCartItem(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }

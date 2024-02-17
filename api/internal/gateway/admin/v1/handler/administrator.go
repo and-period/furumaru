@@ -121,7 +121,7 @@ func (h *handler) UpdateAdministrator(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) UpdateAdministratorEmail(ctx *gin.Context) {
@@ -140,7 +140,7 @@ func (h *handler) UpdateAdministratorEmail(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ResetAdministratorPassword(ctx *gin.Context) {
@@ -152,7 +152,7 @@ func (h *handler) ResetAdministratorPassword(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteAdministrator(ctx *gin.Context) {
@@ -164,7 +164,7 @@ func (h *handler) DeleteAdministrator(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) getAdministrator(ctx context.Context, administratorID string) (*service.Administrator, error) {

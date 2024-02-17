@@ -207,7 +207,7 @@ func (h *handler) UpdateLive(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteLive(ctx *gin.Context) {
@@ -218,7 +218,7 @@ func (h *handler) DeleteLive(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) getLive(ctx context.Context, liveID string) (*service.Live, error) {

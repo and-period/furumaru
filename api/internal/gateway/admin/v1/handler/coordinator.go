@@ -212,7 +212,7 @@ func (h *handler) UpdateCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
@@ -231,7 +231,7 @@ func (h *handler) UpdateCoordinatorEmail(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ResetCoordinatorPassword(ctx *gin.Context) {
@@ -243,7 +243,7 @@ func (h *handler) ResetCoordinatorPassword(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteCoordinator(ctx *gin.Context) {
@@ -255,7 +255,7 @@ func (h *handler) DeleteCoordinator(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) multiGetCoordinators(ctx context.Context, coordinatorIDs []string) (service.Coordinators, error) {

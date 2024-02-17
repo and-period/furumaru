@@ -184,7 +184,7 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ApproveSchedule(ctx *gin.Context) {
@@ -203,7 +203,7 @@ func (h *handler) ApproveSchedule(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) PublishSchedule(ctx *gin.Context) {
@@ -221,7 +221,7 @@ func (h *handler) PublishSchedule(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) getSchedule(ctx context.Context, scheduleID string) (*service.Schedule, error) {

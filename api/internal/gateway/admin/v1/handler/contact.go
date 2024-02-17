@@ -257,7 +257,7 @@ func (h *handler) UpdateContact(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteContact(ctx *gin.Context) {
@@ -269,7 +269,7 @@ func (h *handler) DeleteContact(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) getContact(ctx context.Context, contactID string) (*service.Contact, error) {

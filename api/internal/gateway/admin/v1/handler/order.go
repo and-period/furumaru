@@ -215,7 +215,7 @@ func (h *handler) DraftOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) CaptureOrder(ctx *gin.Context) {
@@ -226,7 +226,7 @@ func (h *handler) CaptureOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) CompleteOrder(ctx *gin.Context) {
@@ -243,7 +243,7 @@ func (h *handler) CompleteOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) CancelOrder(ctx *gin.Context) {
@@ -254,7 +254,7 @@ func (h *handler) CancelOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) RefundOrder(ctx *gin.Context) {
@@ -271,7 +271,7 @@ func (h *handler) RefundOrder(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
@@ -290,7 +290,7 @@ func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order, error) {

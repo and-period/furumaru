@@ -129,7 +129,7 @@ func (h *handler) UpdateAddress(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteAddress(ctx *gin.Context) {
@@ -141,7 +141,7 @@ func (h *handler) DeleteAddress(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) multiGetAddressesByRevision(ctx context.Context, revisionIDs []int64) (service.Addresses, error) {

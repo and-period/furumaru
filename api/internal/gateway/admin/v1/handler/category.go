@@ -121,7 +121,7 @@ func (h *handler) UpdateCategory(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteCategory(ctx *gin.Context) {
@@ -133,7 +133,7 @@ func (h *handler) DeleteCategory(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) multiGetCategories(ctx context.Context, categoryIDs []string) (service.Categories, error) {

@@ -47,7 +47,7 @@ func (h *handler) PauseBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) UnpauseBroadcast(ctx *gin.Context) {
@@ -58,7 +58,7 @@ func (h *handler) UnpauseBroadcast(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) UploadBroadcastArchive(ctx *gin.Context) {
@@ -75,7 +75,7 @@ func (h *handler) UploadBroadcastArchive(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ActivateBroadcastRTMP(ctx *gin.Context) {
@@ -86,7 +86,7 @@ func (h *handler) ActivateBroadcastRTMP(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ActivateBroadcastMP4(ctx *gin.Context) {
@@ -103,7 +103,7 @@ func (h *handler) ActivateBroadcastMP4(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) ActivateBroadcastStaticImage(ctx *gin.Context) {
@@ -114,7 +114,7 @@ func (h *handler) ActivateBroadcastStaticImage(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeactivateBroadcastStaticImage(ctx *gin.Context) {
@@ -125,5 +125,5 @@ func (h *handler) DeactivateBroadcastStaticImage(ctx *gin.Context) {
 		h.httpError(ctx, err)
 		return
 	}
-	ctx.JSON(http.StatusNoContent, gin.H{})
+	ctx.Status(http.StatusNoContent)
 }
