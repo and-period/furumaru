@@ -55,24 +55,25 @@ type Service interface {
 	UpdateProducerHeaders(ctx context.Context, in *UpdateProducerHeadersInput) error             // ヘッダー画像(リサイズ済み)更新
 	DeleteProducer(ctx context.Context, in *DeleteProducerInput) error                           // 退会
 	// 購入者
-	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)               // サインイン
-	SignOutUser(ctx context.Context, in *SignOutUserInput) error                                 // サインアウト
-	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)             // 認証情報取得
-	RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error)   // アクセストークン更新
-	ListUsers(ctx context.Context, in *ListUsersInput) (entity.Users, int64, error)              // 一覧取得
-	MultiGetUsers(ctx context.Context, in *MultiGetUsersInput) (entity.Users, error)             // 一覧取得(ID指定)
-	MultiGetUserDevices(ctx context.Context, in *MultiGetUserDevicesInput) ([]string, error)     // デバイストークン一覧取得
-	GetUser(ctx context.Context, in *GetUserInput) (*entity.User, error)                         // １件取得
-	CreateUser(ctx context.Context, in *CreateUserInput) (string, error)                         // 登録 (メールアドレス/SMS認証)
-	VerifyUser(ctx context.Context, in *VerifyUserInput) error                                   // 登録後の確認 (メールアドレス/SMS認証)
-	CreateUserWithOAuth(ctx context.Context, in *CreateUserWithOAuthInput) (*entity.User, error) // 登録 (OAuth認証)
-	UpdateUserEmail(ctx context.Context, in *UpdateUserEmailInput) error                         // メールアドレス更新
-	VerifyUserEmail(ctx context.Context, in *VerifyUserEmailInput) error                         // メールアドレス更新後の確認
-	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordInput) error                   // パスワード更新
-	ForgotUserPassword(ctx context.Context, in *ForgotUserPasswordInput) error                   // パスワードリセット (メール送信)
-	VerifyUserPassword(ctx context.Context, in *VerifyUserPasswordInput) error                   // パスワードリセット (パスワード更新)
-	UpdateUserThumbnails(ctx context.Context, in *UpdateUserThumbnailsInput) error               // サムネイル(リサイズ済み)更新
-	DeleteUser(ctx context.Context, in *DeleteUserInput) error                                   // 退会
+	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)             // サインイン
+	SignOutUser(ctx context.Context, in *SignOutUserInput) error                               // サインアウト
+	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)           // 認証情報取得
+	RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error) // アクセストークン更新
+	ListUsers(ctx context.Context, in *ListUsersInput) (entity.Users, int64, error)            // 一覧取得
+	MultiGetUsers(ctx context.Context, in *MultiGetUsersInput) (entity.Users, error)           // 一覧取得(ID指定)
+	MultiGetUserDevices(ctx context.Context, in *MultiGetUserDevicesInput) ([]string, error)   // デバイストークン一覧取得
+	GetUser(ctx context.Context, in *GetUserInput) (*entity.User, error)                       // １件取得
+	DeleteUser(ctx context.Context, in *DeleteUserInput) error                                 // 退会
+	// 会員
+	CreateMember(ctx context.Context, in *CreateMemberInput) (string, error)                         // 登録 (メールアドレス/SMS認証)
+	VerifyMember(ctx context.Context, in *VerifyMemberInput) error                                   // 登録後の確認 (メールアドレス/SMS認証)
+	CreateMemberWithOAuth(ctx context.Context, in *CreateMemberWithOAuthInput) (*entity.User, error) // 登録 (OAuth認証)
+	UpdateMemberEmail(ctx context.Context, in *UpdateMemberEmailInput) error                         // メールアドレス更新
+	VerifyMemberEmail(ctx context.Context, in *VerifyMemberEmailInput) error                         // メールアドレス更新後の確認
+	UpdateMemberPassword(ctx context.Context, in *UpdateMemberPasswordInput) error                   // パスワード更新
+	ForgotMemberPassword(ctx context.Context, in *ForgotMemberPasswordInput) error                   // パスワードリセット (メール送信)
+	VerifyMemberPassword(ctx context.Context, in *VerifyMemberPasswordInput) error                   // パスワードリセット (パスワード更新)
+	UpdateMemberThumbnails(ctx context.Context, in *UpdateMemberThumbnailsInput) error               // サムネイル(リサイズ済み)更新
 	// ゲスト
 	UpsertGuest(ctx context.Context, in *UpsertGuestInput) (*entity.User, error) // ゲスト登録・更新
 	// アドレス帳

@@ -24,12 +24,12 @@ func (r *resizer) userThumbnail(ctx context.Context, payload *entity.ResizerPayl
 	if err != nil {
 		return err
 	}
-	in := &user.UpdateUserThumbnailsInput{
+	in := &user.UpdateMemberThumbnailsInput{
 		UserID:     payload.TargetID,
 		Thumbnails: images,
 	}
 	updateFn := func() error {
-		return r.user.UpdateUserThumbnails(ctx, in)
+		return r.user.UpdateMemberThumbnails(ctx, in)
 	}
 	return r.notify(ctx, payload, updateFn)
 }

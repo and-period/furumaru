@@ -126,11 +126,11 @@ func (h *handler) UpdateAuthEmail(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.UpdateUserEmailInput{
+	in := &user.UpdateMemberEmailInput{
 		AccessToken: token,
 		Email:       req.Email,
 	}
-	if err := h.user.UpdateUserEmail(ctx, in); err != nil {
+	if err := h.user.UpdateMemberEmail(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
@@ -150,11 +150,11 @@ func (h *handler) VerifyAuthEmail(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.VerifyUserEmailInput{
+	in := &user.VerifyMemberEmailInput{
 		AccessToken: token,
 		VerifyCode:  req.VerifyCode,
 	}
-	if err := h.user.VerifyUserEmail(ctx, in); err != nil {
+	if err := h.user.VerifyMemberEmail(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
@@ -174,13 +174,13 @@ func (h *handler) UpdateAuthPassword(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.UpdateUserPasswordInput{
+	in := &user.UpdateMemberPasswordInput{
 		AccessToken:          token,
 		OldPassword:          req.OldPassword,
 		NewPassword:          req.NewPassword,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	if err := h.user.UpdateUserPassword(ctx, in); err != nil {
+	if err := h.user.UpdateMemberPassword(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
@@ -195,10 +195,10 @@ func (h *handler) ForgotAuthPassword(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.ForgotUserPasswordInput{
+	in := &user.ForgotMemberPasswordInput{
 		Email: req.Email,
 	}
-	if err := h.user.ForgotUserPassword(ctx, in); err != nil {
+	if err := h.user.ForgotMemberPassword(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
@@ -213,13 +213,13 @@ func (h *handler) ResetAuthPassword(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.VerifyUserPasswordInput{
+	in := &user.VerifyMemberPasswordInput{
 		Email:                req.Email,
 		VerifyCode:           req.VerifyCode,
 		NewPassword:          req.Password,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	if err := h.user.VerifyUserPassword(ctx, in); err != nil {
+	if err := h.user.VerifyMemberPassword(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
@@ -250,7 +250,7 @@ func (h *handler) CreateAuth(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.CreateUserInput{
+	in := &user.CreateMemberInput{
 		Username:             req.Username,
 		AccountID:            req.AccountID,
 		Lastname:             req.Lastname,
@@ -262,7 +262,7 @@ func (h *handler) CreateAuth(ctx *gin.Context) {
 		Password:             req.Password,
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
-	userID, err := h.user.CreateUser(ctx, in)
+	userID, err := h.user.CreateMember(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -298,7 +298,7 @@ func (h *handler) CreateAuthWithOAuth(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.CreateUserWithOAuthInput{
+	in := &user.CreateMemberWithOAuthInput{
 		AccessToken:   token,
 		Username:      req.Username,
 		AccountID:     req.AccountID,
@@ -308,7 +308,7 @@ func (h *handler) CreateAuthWithOAuth(ctx *gin.Context) {
 		FirstnameKana: req.FirstnameKana,
 		PhoneNumber:   req.PhoneNumber,
 	}
-	u, err := h.user.CreateUserWithOAuth(ctx, in)
+	u, err := h.user.CreateMemberWithOAuth(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -327,11 +327,11 @@ func (h *handler) VerifyAuth(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.VerifyUserInput{
+	in := &user.VerifyMemberInput{
 		UserID:     req.ID,
 		VerifyCode: req.VerifyCode,
 	}
-	if err := h.user.VerifyUser(ctx, in); err != nil {
+	if err := h.user.VerifyMember(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}

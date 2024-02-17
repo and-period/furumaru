@@ -35,8 +35,8 @@ func TestUserThumbnail(t *testing.T) {
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
 				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.user.EXPECT().
-					UpdateUserThumbnails(ctx, gomock.Any()).
-					DoAndReturn(func(ctx context.Context, in *user.UpdateUserThumbnailsInput) error {
+					UpdateMemberThumbnails(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, in *user.UpdateMemberThumbnailsInput) error {
 						assert.Equal(t, "target-id", in.UserID)
 						assert.ElementsMatch(t, thumbnails, in.Thumbnails)
 						return nil
@@ -106,7 +106,7 @@ func TestUserThumbnail(t *testing.T) {
 				url := "http://example.com/media/image_xxx.png"
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
 				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
-				mocks.user.EXPECT().UpdateUserThumbnails(ctx, gomock.Any()).Return(assert.AnError)
+				mocks.user.EXPECT().UpdateMemberThumbnails(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",

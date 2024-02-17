@@ -323,7 +323,11 @@ type GetUserInput struct {
 	UserID string `validate:"required"`
 }
 
-type CreateUserInput struct {
+type DeleteUserInput struct {
+	UserID string `validate:"required"`
+}
+
+type CreateMemberInput struct {
 	Username             string `validate:"required,max=32"`
 	AccountID            string `validate:"required,max=32"`
 	Lastname             string `validate:"required,max=16"`
@@ -336,12 +340,12 @@ type CreateUserInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=Password"`
 }
 
-type VerifyUserInput struct {
+type VerifyMemberInput struct {
 	UserID     string `validate:"required"`
 	VerifyCode string `validate:"required"`
 }
 
-type CreateUserWithOAuthInput struct {
+type CreateMemberWithOAuthInput struct {
 	AccessToken   string `validate:"required"`
 	Username      string `validate:"required,max=32"`
 	AccountID     string `validate:"required,max=32"`
@@ -352,41 +356,37 @@ type CreateUserWithOAuthInput struct {
 	PhoneNumber   string `validate:"required,e164"`
 }
 
-type UpdateUserEmailInput struct {
+type UpdateMemberEmailInput struct {
 	AccessToken string `validate:"required"`
 	Email       string `validate:"required,max=256,email"`
 }
 
-type VerifyUserEmailInput struct {
+type VerifyMemberEmailInput struct {
 	AccessToken string `validate:"required"`
 	VerifyCode  string `validate:"required"`
 }
 
-type UpdateUserPasswordInput struct {
+type UpdateMemberPasswordInput struct {
 	AccessToken          string `validate:"required"`
 	OldPassword          string `validate:"required"`
 	NewPassword          string `validate:"min=8,max=32,password"`
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
-type ForgotUserPasswordInput struct {
+type ForgotMemberPasswordInput struct {
 	Email string `validate:"required,max=256,email"`
 }
 
-type VerifyUserPasswordInput struct {
+type VerifyMemberPasswordInput struct {
 	Email                string `validate:"required,max=256,email"`
 	VerifyCode           string `validate:"required"`
 	NewPassword          string `validate:"min=8,max=32,password"`
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
-type UpdateUserThumbnailsInput struct {
+type UpdateMemberThumbnailsInput struct {
 	UserID     string        `validate:"required"`
 	Thumbnails common.Images `validate:""`
-}
-
-type DeleteUserInput struct {
-	UserID string `validate:"required"`
 }
 
 type UpsertGuestInput struct {
