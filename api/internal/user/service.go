@@ -73,6 +73,8 @@ type Service interface {
 	VerifyUserPassword(ctx context.Context, in *VerifyUserPasswordInput) error                   // パスワードリセット (パスワード更新)
 	UpdateUserThumbnails(ctx context.Context, in *UpdateUserThumbnailsInput) error               // サムネイル(リサイズ済み)更新
 	DeleteUser(ctx context.Context, in *DeleteUserInput) error                                   // 退会
+	// ゲスト
+	UpsertGuest(ctx context.Context, in *UpsertGuestInput) (*entity.User, error) // ゲスト登録・更新
 	// アドレス帳
 	ListAddresses(ctx context.Context, in *ListAddressesInput) (entity.Addresses, int64, error)                      // 一覧取得
 	ListDefaultAddresses(ctx context.Context, in *ListDefaultAddressesInput) (entity.Addresses, error)               // 一覧取得(デフォルト設定)

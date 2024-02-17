@@ -389,6 +389,14 @@ type DeleteUserInput struct {
 	UserID string `validate:"required"`
 }
 
+type UpsertGuestInput struct {
+	Lastname      string `validate:"required,max=16"`
+	Firstname     string `validate:"required,max=16"`
+	LastnameKana  string `validate:"required,max=32,hiragana"`
+	FirstnameKana string `validate:"required,max=32,hiragana"`
+	Email         string `validate:"required,max=256,email"`
+}
+
 type ListAddressesInput struct {
 	UserID string `validate:"required"`
 	Limit  int64  `validate:"min=1,max=200"`

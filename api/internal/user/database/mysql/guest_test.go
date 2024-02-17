@@ -41,7 +41,7 @@ func TestGuest_Delete(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				u := testGuestUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				u := testGuestUser("user-id", "test-user@and-period.jp", now())
 				err = db.DB.Create(&u).Error
 				require.NoError(t, err)
 				err = db.DB.Create(&u.Guest).Error
@@ -74,12 +74,11 @@ func TestGuest_Delete(t *testing.T) {
 	}
 }
 
-func testGuest(id, email, phoneNumber string, now time.Time) *entity.Guest {
+func testGuest(id, email string, now time.Time) *entity.Guest {
 	return &entity.Guest{
-		UserID:      id,
-		Email:       email,
-		PhoneNumber: phoneNumber,
-		CreatedAt:   now,
-		UpdatedAt:   now,
+		UserID:    id,
+		Email:     email,
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 }

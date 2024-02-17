@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -68,8 +67,11 @@ func NewUser(params *NewUserParams) *User {
 		member.PhoneNumber = params.PhoneNumber
 	} else {
 		guest.UserID = userID
+		guest.Lastname = params.Lastname
+		guest.Firstname = params.Firstname
+		guest.LastnameKana = params.LastnameKana
+		guest.FirstnameKana = params.FirstnameKana
 		guest.Email = params.Email
-		guest.PhoneNumber = params.PhoneNumber
 	}
 	return &User{
 		ID:         userID,
@@ -83,7 +85,7 @@ func (u *User) Name() string {
 	if !u.Registered {
 		return "ゲスト"
 	}
-	return strings.TrimSpace(strings.Join([]string{u.Lastname, u.Firstname}, " "))
+	return u.Member.Name()
 }
 
 func (u *User) Email() string {
@@ -91,13 +93,6 @@ func (u *User) Email() string {
 		return u.Member.Email
 	}
 	return u.Guest.Email
-}
-
-func (u *User) PhoneNumber() string {
-	if u.Registered {
-		return u.Member.PhoneNumber
-	}
-	return u.Guest.PhoneNumber
 }
 
 func (u *User) Fill(member *Member, guest *Guest) {
