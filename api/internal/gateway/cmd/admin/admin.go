@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"runtime"
 	"sync"
 	"syscall"
 	"time"
@@ -124,6 +125,13 @@ func (a *app) run() error {
 		return
 	})
 	a.logger.Info("Started server", zap.Int64("port", a.Port))
+	defer func() {
+		if r := recover(); r != nil {
+			stackTrace := make([]byte, 1024)
+			runtime.Stack(stackTrace, true)
+			a.logger.Error("Occurred panic", zap.Any("value", r), zap.String("stackTrace", string(stackTrace)))
+		}
+	}()
 
 	// シグナル検知設定
 	signalCh := make(chan os.Signal, 1)
