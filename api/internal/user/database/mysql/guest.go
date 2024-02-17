@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
+	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"gorm.io/gorm"
@@ -22,6 +23,45 @@ func newGuest(db *mysql.Client) database.Guest {
 		db:  db,
 		now: jst.Now,
 	}
+}
+
+func (g *guest) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Guest, error) {
+	var guest *entity.Guest
+
+	stmt := g.db.Statement(ctx, g.db.DB, guestTable, fields...).Where("email = ?", email)
+
+	if err := stmt.First(&guest).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return guest, nil
+}
+
+func (g *guest) Create(ctx context.Context, user *entity.User) error {
+	err := g.db.Transaction(ctx, func(tx *gorm.DB) error {
+		now := g.now()
+		user.CreatedAt, user.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(userTable).Create(&user).Error; err != nil {
+			return err
+		}
+		user.Guest.CreatedAt, user.Guest.UpdatedAt = now, now
+		return tx.WithContext(ctx).Table(guestTable).Create(&user.Guest).Error
+	})
+	return dbError(err)
+}
+
+func (g *guest) Update(ctx context.Context, userID string, params *database.UpdateGuestParams) error {
+	updates := map[string]interface{}{
+		"lastname":       params.Lastname,
+		"firstname":      params.Firstname,
+		"lastname_kana":  params.LastnameKana,
+		"firstname_kana": params.FirstnameKana,
+		"updated_at":     g.now(),
+	}
+	err := g.db.DB.WithContext(ctx).
+		Table(guestTable).
+		Where("user_id = ?", userID).
+		Updates(updates).Error
+	return dbError(err)
 }
 
 func (g *guest) Delete(ctx context.Context, userID string) error {
