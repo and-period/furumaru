@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"runtime"
 	"sync"
 	"syscall"
 	"time"
@@ -119,7 +120,9 @@ func (a *app) run() error {
 	a.logger.Info("Started server", zap.Int64("port", a.Port))
 	defer func() {
 		if r := recover(); r != nil {
-			a.logger.Error("Occurred panic", zap.Any("value", r))
+			stackTrace := make([]byte, 1024)
+			runtime.Stack(stackTrace, true)
+			a.logger.Error("Occurred panic", zap.Any("value", r), zap.String("stackTrace", string(stackTrace)))
 		}
 	}()
 
