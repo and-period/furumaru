@@ -117,6 +117,11 @@ func (a *app) run() error {
 		return
 	})
 	a.logger.Info("Started server", zap.Int64("port", a.Port))
+	defer func() {
+		if r := recover(); r != nil {
+			a.logger.Error("Occurred panic", zap.Any("value", r))
+		}
+	}()
 
 	// シグナル検知設定
 	signalCh := make(chan os.Signal, 1)
