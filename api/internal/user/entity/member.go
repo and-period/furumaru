@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
@@ -38,6 +39,11 @@ type Member struct {
 }
 
 type Members []*Member
+
+func (m *Member) Name() string {
+	str := strings.Join([]string{m.Lastname, m.Firstname}, " ")
+	return strings.TrimSpace(str)
+}
 
 func (m *Member) Fill() (err error) {
 	m.Thumbnails, err = common.NewImagesFromBytes(m.ThumbnailsJSON)

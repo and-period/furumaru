@@ -1290,11 +1290,10 @@ func TestDeleteUser(t *testing.T) {
 		Status:     entity.UserStatusGuest,
 		Registered: false,
 		Guest: entity.Guest{
-			UserID:      "user-id",
-			Email:       "test-user@and-period.jp",
-			PhoneNumber: "+810000000000",
-			CreatedAt:   now,
-			UpdatedAt:   now,
+			UserID:    "user-id",
+			Email:     "test-user@and-period.jp",
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 
