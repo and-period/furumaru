@@ -7,7 +7,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
-func (s *service) UpsertGuest(ctx context.Context, in *user.UpsertGuestInput) (*entity.User, error) {
+func (s *service) UpsertGuest(_ context.Context, in *user.UpsertGuestInput) (*entity.User, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
