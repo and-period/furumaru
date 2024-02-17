@@ -176,7 +176,7 @@ func (h *handler) GuestCheckout(ctx *gin.Context) {
 
 func (h *handler) GetGuestCheckoutState(ctx *gin.Context) {
 	in := &store.GetCheckoutStateInput{
-		UserID:        h.getSessionID(ctx),
+		SessionID:     h.getSessionID(ctx),
 		TransactionID: util.GetParam(ctx, "transactionId"),
 	}
 	orderID, status, err := h.store.GetCheckoutState(ctx, in)
