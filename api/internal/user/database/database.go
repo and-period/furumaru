@@ -148,7 +148,17 @@ type UpdateCoordinatorParams struct {
 }
 
 type Guest interface {
+	GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Guest, error)
+	Create(ctx context.Context, user *entity.User) error
+	Update(ctx context.Context, userID string, params *UpdateGuestParams) error
 	Delete(ctx context.Context, userID string) error
+}
+
+type UpdateGuestParams struct {
+	Lastname      string
+	Firstname     string
+	LastnameKana  string
+	FirstnameKana string
 }
 
 type Member interface {
