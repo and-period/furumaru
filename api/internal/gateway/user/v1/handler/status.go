@@ -22,7 +22,7 @@ func (h *handler) ListPaymentStatuses(ctx *gin.Context) {
 		entity.PaymentMethodTypeCash,
 		entity.PaymentMethodTypeCreditCard,
 		entity.PaymentMethodTypeKonbini,
-		entity.PaymentMethodTypeBankTranser,
+		entity.PaymentMethodTypeBankTransfer,
 		entity.PaymentMethodTypePayPay,
 		entity.PaymentMethodTypeLinePay,
 		entity.PaymentMethodTypeMerpay,

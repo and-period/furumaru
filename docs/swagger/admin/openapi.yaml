@@ -188,6 +188,8 @@ paths:
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
+  /v1/orders/-/export:
+    $ref: './paths/v1/orders/-/export.yaml'
   /v1/orders/{orderId}:
     $ref: './paths/v1/orders/_orderId/index.yaml'
   /v1/orders/{orderId}/draft:
@@ -265,6 +267,8 @@ components:
       $ref: './components/schemas/codes/admin.yaml#/adminStatus'
     broadcastStatus:
       $ref: './components/schemas/codes/broadcast.yaml#/broadcastStatus'
+    characterEncodingType:
+      $ref: './components/schemas/codes/common.yaml#/characterEncodingType'
     prefecture:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
     weekday:
@@ -463,6 +467,8 @@ components:
       $ref: './components/schemas/v1/order.request.yaml#/refundOrderRequest'
     v1UpdateOrderFulfillmentRequest:
       $ref: './components/schemas/v1/order.request.yaml#/updateOrderFulfillmentRequest'
+    v1ExportOrdersRequest:
+      $ref: './components/schemas/v1/order.request.yaml#/exportOrdersRequest'
     v1GetUploadUrlRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/getUploadUrlRequest'
     v1UploadCoordinatorThumbnailRequest:

@@ -82,6 +82,7 @@ type Service interface {
 	UpdateOrderFulfillment(ctx context.Context, in *UpdateOrderFulfillmentInput) error                                             // 注文配送情報更新
 	AggregateOrders(ctx context.Context, in *AggregateOrdersInput) (entity.AggregatedOrders, error)                                // 集計結果一覧取得
 	AggregateOrdersByPromotion(ctx context.Context, in *AggregateOrdersByPromotionInput) (entity.AggregatedOrderPromotions, error) // プロモーション利用履歴集計結果一覧取得
+	ExportOrders(ctx context.Context, in *ExportOrdersInput) ([]byte, error)                                                       // 注文履歴一覧CSV出力
 	// 買い物かご
 	GetCart(ctx context.Context, in *GetCartInput) (*entity.Cart, error)                                // 取得
 	CalcCart(ctx context.Context, in *CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) // 購入前の支払い情報取得

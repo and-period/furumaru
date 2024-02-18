@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -18,6 +20,7 @@ func (h *handler) orderRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/orders", h.authentication)
 
 	r.GET("", h.ListOrders)
+	r.POST("/-/export", h.filterAccessOrder, h.ExportOrders)
 	r.GET("/:orderId", h.filterAccessOrder, h.GetOrder)
 	r.POST("/:orderId/draft", h.filterAccessOrder, h.DraftOrder)
 	r.POST("/:orderId/capture", h.filterAccessOrder, h.CaptureOrder)
@@ -291,6 +294,34 @@ func (h *handler) UpdateOrderFulfillment(ctx *gin.Context) {
 		return
 	}
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) ExportOrders(ctx *gin.Context) {
+	req := &request.ExportOrdersRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &store.ExportOrdersInput{
+		ShippingCarrier: sentity.ShippingCarrier(req.ShippingCarrier),
+		EncodingType:    codes.CharacterEncodingType(req.CharacterEncodingType),
+	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
+	}
+	value, err := h.store.ExportOrders(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	filename := fmt.Sprintf("orders_%s.csv", h.now().Format("20060102150405"))
+	ctx.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
+	ctx.Writer.Header().Set("Content-Type", "text/csv")
+	if _, err := ctx.Writer.Write(value); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusOK)
 }
 
 func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order, error) {
