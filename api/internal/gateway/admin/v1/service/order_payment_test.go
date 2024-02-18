@@ -34,8 +34,8 @@ func TestPaymentMethodType(t *testing.T) {
 		},
 		{
 			name:       "bank transfer",
-			methodType: entity.PaymentMethodTypeBankTranser,
-			expect:     PaymentMethodTypeBankTranser,
+			methodType: entity.PaymentMethodTypeBankTransfer,
+			expect:     PaymentMethodTypeBankTransfer,
 		},
 		{
 			name:       "paypay",
@@ -101,8 +101,8 @@ func TestPaymentMethodType_StoreEntity(t *testing.T) {
 		},
 		{
 			name:       "bank transfer",
-			methodType: PaymentMethodTypeBankTranser,
-			expect:     entity.PaymentMethodTypeBankTranser,
+			methodType: PaymentMethodTypeBankTransfer,
+			expect:     entity.PaymentMethodTypeBankTransfer,
 		},
 		{
 			name:       "paypay",

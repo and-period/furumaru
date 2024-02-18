@@ -48,6 +48,17 @@ type NewShippingParams struct {
 	FreeShippingRates int64
 }
 
+func (t ShippingType) String() string {
+	switch t {
+	case ShippingTypeNormal:
+		return "常温・冷蔵便"
+	case ShippingTypeFrozen:
+		return "冷凍便"
+	default:
+		return ""
+	}
+}
+
 func NewShipping(params *NewShippingParams) *Shipping {
 	rparams := &NewShippingRevisionParams{
 		ShippingID:        params.CoordinatorID,

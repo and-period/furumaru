@@ -606,6 +606,26 @@ export interface CategoryResponse {
     'category': Category;
 }
 /**
+ * 文字コード種別
+ * @export
+ * @enum {string}
+ */
+
+export const CharacterEncodingType = {
+    /**
+    * UTF-8
+    */
+    UTF8: 0,
+    /**
+    * Shift-JIS
+    */
+    ShiftJIS: 1
+} as const;
+
+export type CharacterEncodingType = typeof CharacterEncodingType[keyof typeof CharacterEncodingType];
+
+
+/**
  * 
  * @export
  * @interface CompleteOrderRequest
@@ -2101,6 +2121,27 @@ export interface ErrorResponse {
      */
     'details': string;
 }
+/**
+ * 
+ * @export
+ * @interface ExportOrdersRequest
+ */
+export interface ExportOrdersRequest {
+    /**
+     * 
+     * @type {ShippingCarrier}
+     * @memberof ExportOrdersRequest
+     */
+    'shippingCarrier': ShippingCarrier;
+    /**
+     * 
+     * @type {CharacterEncodingType}
+     * @memberof ExportOrdersRequest
+     */
+    'characterEncodingType': CharacterEncodingType;
+}
+
+
 /**
  * 
  * @export
@@ -12724,6 +12765,46 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary 注文履歴のCSV出力
+         * @param {ExportOrdersRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ExportOrders: async (body: ExportOrdersRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1ExportOrders', 'body', body)
+            const localVarPath = `/v1/orders/-/export`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -12972,6 +13053,19 @@ export const OrderApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary 注文履歴のCSV出力
+         * @param {ExportOrdersRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ExportOrders(body: ExportOrdersRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ExportOrders(body, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['OrderApi.v1ExportOrders']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -13082,6 +13176,16 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @summary 注文履歴のCSV出力
+         * @param {ExportOrdersRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ExportOrders(body: ExportOrdersRequest, options?: any): AxiosPromise<string> {
+            return localVarFp.v1ExportOrders(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary 注文取得
          * @param {string} orderId 注文ID
          * @param {*} [options] Override http request option.
@@ -13184,6 +13288,18 @@ export class OrderApi extends BaseAPI {
      */
     public v1DraftOrder(orderId: string, body: DraftOrderRequest, options?: RawAxiosRequestConfig) {
         return OrderApiFp(this.configuration).v1DraftOrder(orderId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 注文履歴のCSV出力
+     * @param {ExportOrdersRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderApi
+     */
+    public v1ExportOrders(body: ExportOrdersRequest, options?: RawAxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1ExportOrders(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

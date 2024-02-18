@@ -93,7 +93,7 @@ func TestKomojuPaymentTypes(t *testing.T) {
 		},
 		{
 			name:       "bank transfer",
-			methodType: PaymentMethodTypeBankTranser,
+			methodType: PaymentMethodTypeBankTransfer,
 			expect:     []komoju.PaymentType{komoju.PaymentTypeBankTransfer},
 		},
 		{
@@ -133,6 +133,73 @@ func TestKomojuPaymentTypes(t *testing.T) {
 			t.Parallel()
 			actual := NewKomojuPaymentTypes(tt.methodType)
 			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestPaymentMethodType_String(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name       string
+		methodType PaymentMethodType
+		expect     string
+	}{
+		{
+			name:       "cash",
+			methodType: PaymentMethodTypeCash,
+			expect:     "代引支払い",
+		},
+		{
+			name:       "credit card",
+			methodType: PaymentMethodTypeCreditCard,
+			expect:     "クレジットカード決済",
+		},
+		{
+			name:       "konbini",
+			methodType: PaymentMethodTypeKonbini,
+			expect:     "コンビニ決済",
+		},
+		{
+			name:       "bank transfer",
+			methodType: PaymentMethodTypeBankTransfer,
+			expect:     "銀行振込決済",
+		},
+		{
+			name:       "paypay",
+			methodType: PaymentMethodTypePayPay,
+			expect:     "QR決済（PayPay）",
+		},
+		{
+			name:       "line pay",
+			methodType: PaymentMethodTypeLinePay,
+			expect:     "QR決済（LINE Pay）",
+		},
+		{
+			name:       "merpay",
+			methodType: PaymentMethodTypeMerpay,
+			expect:     "QR決済（メルペイ）",
+		},
+		{
+			name:       "rakuten pay",
+			methodType: PaymentMethodTypeRakutenPay,
+			expect:     "QR決済（楽天ペイ）",
+		},
+		{
+			name:       "au pay",
+			methodType: PaymentMethodTypeAUPay,
+			expect:     "QR決済（au PAY）",
+		},
+		{
+			name:       "unknown",
+			methodType: PaymentMethodTypeUnknown,
+			expect:     "",
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.methodType.String())
 		})
 	}
 }

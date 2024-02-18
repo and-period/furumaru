@@ -1,15 +1,23 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/store/exporter"
+	"github.com/and-period/furumaru/api/internal/store/exporter/general"
+	"github.com/and-period/furumaru/api/internal/store/exporter/yamato"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -205,4 +213,106 @@ func (s *service) AggregateOrdersByPromotion(
 	}
 	orders, err := s.db.Order.AggregateByPromotion(ctx, params)
 	return orders, internalError(err)
+}
+
+func (s *service) ExportOrders(ctx context.Context, in *store.ExportOrdersInput) ([]byte, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	params := &database.ListOrdersParams{
+		CoordinatorID: in.CoordinatorID,
+		Statuses:      []entity.OrderStatus{entity.OrderStatusPreparing},
+	}
+	orders, err := s.db.Order.List(ctx, params)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	var (
+		addresses uentity.Addresses
+		products  entity.Products
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		if len(orders) == 0 {
+			return
+		}
+		params := &user.MultiGetAddressesByRevisionInput{
+			AddressRevisionIDs: orders.AddressRevisionIDs(),
+		}
+		addresses, err = s.user.MultiGetAddressesByRevision(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		if len(orders) == 0 {
+			return
+		}
+		products, err = s.db.Product.MultiGetByRevision(ectx, orders.ProductRevisionIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, internalError(err)
+	}
+	payload := &exportOrdersParams{
+		orders:    orders,
+		addresses: addresses.MapByRevision(),
+		products:  products.MapByRevision(),
+	}
+	buf := &bytes.Buffer{}
+	switch in.ShippingCarrier {
+	case entity.ShippingCarrierYamato:
+		err = s.exportYamatoOrders(buf, payload)
+	case entity.ShippingCarrierSagawa:
+		err = fmt.Errorf("service: sagawa is unimplemented: %w", exception.ErrInvalidArgument)
+	default:
+		err = s.exportGeneralOrders(buf, payload)
+	}
+	if err != nil {
+		return nil, internalError(err)
+	}
+	return buf.Bytes(), nil
+}
+
+type exportOrdersParams struct {
+	encodingType codes.CharacterEncodingType
+	orders       entity.Orders
+	addresses    map[int64]*uentity.Address
+	products     map[int64]*entity.Product
+}
+
+func (s *service) exportGeneralOrders(writer io.Writer, payload *exportOrdersParams) error {
+	client := exporter.NewExporter(writer, payload.encodingType)
+	if err := client.WriteHeader(&general.Receipt{}); err != nil {
+		return err
+	}
+	params := &general.ReceiptsParams{
+		Orders:    payload.orders,
+		Addresses: payload.addresses,
+		Products:  payload.products,
+	}
+	receipts := general.NewReceipts(params)
+	for i := range receipts {
+		if err := client.WriteBody(receipts[i]); err != nil {
+			return err
+		}
+	}
+	return client.Flush()
+}
+
+func (s *service) exportYamatoOrders(writer io.Writer, payload *exportOrdersParams) error {
+	client := exporter.NewExporter(writer, payload.encodingType)
+	if err := client.WriteHeader(&yamato.Receipt{}); err != nil {
+		return err
+	}
+	params := &yamato.ReceiptsParams{
+		Orders:    payload.orders,
+		Addresses: payload.addresses,
+		Products:  payload.products,
+	}
+	receipts := yamato.NewReceipts(params)
+	for i := range receipts {
+		if err := client.WriteBody(receipts[i]); err != nil {
+			return err
+		}
+	}
+	return client.Flush()
 }

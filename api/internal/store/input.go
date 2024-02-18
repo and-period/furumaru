@@ -3,6 +3,7 @@ package store
 import (
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
@@ -481,6 +482,12 @@ type AggregateOrdersInput struct {
 type AggregateOrdersByPromotionInput struct {
 	CoordinatorID string   `validate:""`
 	PromotionIDs  []string `validate:"dive,required"`
+}
+
+type ExportOrdersInput struct {
+	CoordinatorID   string                      `validate:""`
+	ShippingCarrier entity.ShippingCarrier      `validate:"oneof=0 1 2"`
+	EncodingType    codes.CharacterEncodingType `validate:"oneof=0 1"`
 }
 
 type GetCartInput struct {

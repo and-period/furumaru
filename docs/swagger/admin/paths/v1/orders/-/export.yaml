@@ -1,0 +1,32 @@
+post:
+  summary: 注文履歴のCSV出力
+  operationId: v1ExportOrders
+  tags:
+  - Order
+  security:
+  - bearerAuth: []
+  parameters:
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../openapi.yaml#/components/schemas/v1ExportOrdersRequest'
+  responses:
+    204:
+      description: 成功
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+            example: attachment; filename=orders.csv
+      content:
+        text/csv:
+          schema:
+            type: string
+    403:
+      description: 操作の権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
