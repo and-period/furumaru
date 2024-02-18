@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 
+import type { AxiosResponse } from 'axios'
 import { fileUpload } from './helper'
 import { useCategoryStore } from './category'
 import { useCoordinatorStore } from './coordinator'
@@ -12,7 +13,8 @@ import type {
   ProductResponse,
   Product,
   UpdateProductRequest,
-  GetUploadUrlRequest
+  GetUploadUrlRequest,
+  UploadUrlResponse
 } from '~/types/api'
 
 export const useProductStore = defineStore('product', {
@@ -113,25 +115,25 @@ export const useProductStore = defineStore('product', {
     async uploadProductMedia (payload: File): Promise<string> {
       const contentType = payload.type
       try {
-        const url = await this.getProductMediaUploadUrl(contentType)
+        const res = await this.getProductMediaUploadUrl(contentType)
 
-        return await fileUpload(payload, url)
+        return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
-    async getProductMediaUploadUrl (contentType: string): Promise<string> {
+    async getProductMediaUploadUrl (contentType: string): Promise<AxiosResponse<UploadUrlResponse, any>> {
       const body: GetUploadUrlRequest = {
         fileType: contentType
       }
       if (contentType.includes('image/')) {
         const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
-        return res.data.url
+        return res
       }
       if (contentType.includes('video/')) {
         const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
-        return res.data.url
+        return res
       }
       throw new Error('不明なMINEタイプです。')
     },
