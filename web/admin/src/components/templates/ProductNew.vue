@@ -8,7 +8,7 @@ import { type Category, type CreateProductRequest, DeliveryType, Prefecture, typ
 import type { DateTimeInput } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
 import { type PrefecturesListItem, prefecturesList, type CityListItem, cityList } from '~/constants'
-import { CreateProductValidationRules, TimeDataValidationRules } from '~/types/validations'
+import { CreateProductValidationRules, NotSameTimeDataValidationRules, TimeDataValidationRules } from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -197,6 +197,7 @@ const thumbnailIndex = computed<number>({
 const formDataValidate = useVuelidate(CreateProductValidationRules, formDataValue)
 const startTimeDataValidate = useVuelidate(TimeDataValidationRules, startTimeDataValue)
 const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataValue)
+const notSameTimeValidate = useVuelidate(() => NotSameTimeDataValidationRules(props.formData.startAt, "販売開始日時"), formDataValue)
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`)
@@ -262,7 +263,8 @@ const onSubmit = async (): Promise<void> => {
   const formDataValid = await formDataValidate.value.$validate()
   const startTimeDataValid = await startTimeDataValidate.value.$validate()
   const endTimeDataValid = await endTimeDataValidate.value.$validate()
-  if (!formDataValid || !startTimeDataValid || !endTimeDataValid) {
+  const notSameTimeValid = await notSameTimeValidate.value.$validate()
+  if (!formDataValid || !startTimeDataValid || !endTimeDataValid || !notSameTimeValid) {
     return
   }
 
@@ -563,7 +565,7 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model="endTimeDataValidate.time.$model"
-              :error-messages="getErrorMessage(endTimeDataValidate.time.$errors)"
+              :error-messages="getErrorMessage(notSameTimeValidate.endAt.$errors)"
               type="time"
               variant="outlined"
               density="compact"
