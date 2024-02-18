@@ -437,14 +437,15 @@ func (a *app) newStoreService(
 		return nil, err
 	}
 	params := &storesrv.Params{
-		WaitGroup:  p.waitGroup,
-		Database:   storedb.NewDatabase(mysql),
-		Cache:      p.cache,
-		User:       user,
-		Messenger:  messenger,
-		Media:      media,
-		PostalCode: p.postalCode,
-		Komoju:     p.komoju,
+		WaitGroup:           p.waitGroup,
+		Database:            storedb.NewDatabase(mysql),
+		Cache:               p.cache,
+		User:                user,
+		Messenger:           messenger,
+		Media:               media,
+		PostalCode:          p.postalCode,
+		Komoju:              p.komoju,
+		CheckoutRedirectURL: a.CheckoutRedirectURL,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }
