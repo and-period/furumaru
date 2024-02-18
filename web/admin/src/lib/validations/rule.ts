@@ -116,6 +116,21 @@ const sameAs = (equalTo: unknown, otherName?: string) =>
   )
 
 /**
+ * 入力値が別のプロパティとの一致していないかのバリデーションルール
+ * @param notEqualTo
+ * @param otherName
+ * @returns
+ */
+const notSameAs = (notEqualTo: unknown, otherName?: string) =>
+  helpers.withMessage(
+    `${otherName}と違う値を入力してください`,
+    helpers.withParams(
+      { type: 'notSameAs', notEqualTo },
+      value => value !== notEqualTo
+    )
+  )
+
+/**
  * 配列の最小の長さのバリデーションルール（カスタム）
  * @param minLength 最小の要素数
  * @returns
@@ -158,6 +173,7 @@ export {
   minValue,
   maxValue,
   sameAs,
+  notSameAs,
   minLengthArray,
   maxLengthArray
 }
