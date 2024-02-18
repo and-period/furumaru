@@ -551,8 +551,10 @@ type CheckoutDetail struct {
 	PromotionCode     string `validate:"omitempty,len=8"`
 	BillingAddressID  string `validate:"required"`
 	ShippingAddressID string `validate:"required"`
-	CallbackURL       string `validate:"required,http_url"`
-	Total             int64  `validate:"required"`
+	// TODO: クライアント側修正が完了し次第、正しいバリデーションに変更
+	// CallbackURL       string `validate:"required,http_url"`
+	CallbackURL string `validate:"omitempty,http_url"`
+	Total       int64  `validate:"required"`
 }
 
 type MultiGetPaymentSystemsInput struct {

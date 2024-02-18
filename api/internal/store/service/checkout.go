@@ -236,6 +236,10 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		cart            *entity.Cart
 		promotion       *entity.Promotion
 	)
+	// TODO: クライアント側修正が完了し次第削除する
+	if params.payload.CallbackURL == "" {
+		params.payload.CallbackURL = s.checkoutRedirectURL
+	}
 	eg, ectx := errgroup.WithContext(ctx)
 	// ユーザーの取得
 	eg.Go(func() (err error) {

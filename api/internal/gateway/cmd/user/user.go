@@ -66,6 +66,7 @@ type app struct {
 	SlackSecretName      string  `envconfig:"SLACK_SECRET_NAME" default:""`
 	AminWebURL           string  `envconfig:"ADMIN_WEB_URL" default:""`
 	UserWebURL           string  `envconfig:"USER_WEB_URL" default:""`
+	CheckoutRedirectURL  string  `envconfig:"CHECKOUT_REDIRECT_URL" default:""` // TODO: クライアント側修正が完了し次第削除
 }
 
 //nolint:revive
