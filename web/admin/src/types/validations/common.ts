@@ -8,5 +8,5 @@ export const TimeDataValidationRules: ValidationArgs = {
 
 export const NotSameTimeDataValidationRules = (startAt: number, otherName?: string): ValidationArgs => ({
   startAt: { required },
-  endAt: { required, notSameas: notSameAs(startAt, otherName)}
+  endAt: { required, notSameas: notSameAs(startAt, otherName) }
 })

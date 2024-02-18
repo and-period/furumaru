@@ -197,7 +197,7 @@ const thumbnailIndex = computed<number>({
 const formDataValidate = useVuelidate(CreateProductValidationRules, formDataValue)
 const startTimeDataValidate = useVuelidate(TimeDataValidationRules, startTimeDataValue)
 const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataValue)
-const notSameTimeValidate = useVuelidate(() => NotSameTimeDataValidationRules(props.formData.startAt, "販売開始日時"), formDataValue)
+const notSameTimeValidate = useVuelidate(() => NotSameTimeDataValidationRules(props.formData.startAt, '販売開始日時'), formDataValue)
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(`${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`)
