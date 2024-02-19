@@ -14,6 +14,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/exporter"
 	"github.com/and-period/furumaru/api/internal/store/exporter/general"
+	"github.com/and-period/furumaru/api/internal/store/exporter/sagawa"
 	"github.com/and-period/furumaru/api/internal/store/exporter/yamato"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -262,7 +263,7 @@ func (s *service) ExportOrders(ctx context.Context, in *store.ExportOrdersInput)
 	case entity.ShippingCarrierYamato:
 		err = s.exportYamatoOrders(buf, payload)
 	case entity.ShippingCarrierSagawa:
-		err = fmt.Errorf("service: sagawa is unimplemented: %w", exception.ErrInvalidArgument)
+		err = s.exportSagawaOrders(buf, payload)
 	default:
 		err = s.exportGeneralOrders(buf, payload)
 	}
@@ -309,6 +310,25 @@ func (s *service) exportYamatoOrders(writer io.Writer, payload *exportOrdersPara
 		Products:  payload.products,
 	}
 	receipts := yamato.NewReceipts(params)
+	for i := range receipts {
+		if err := client.WriteBody(receipts[i]); err != nil {
+			return err
+		}
+	}
+	return client.Flush()
+}
+
+func (s *service) exportSagawaOrders(writer io.Writer, payload *exportOrdersParams) error {
+	client := exporter.NewExporter(writer, payload.encodingType)
+	if err := client.WriteHeader(&sagawa.Receipt{}); err != nil {
+		return err
+	}
+	params := &sagawa.ReceiptsParams{
+		Orders:    payload.orders,
+		Addresses: payload.addresses,
+		Products:  payload.products,
+	}
+	receipts := sagawa.NewReceipts(params)
 	for i := range receipts {
 		if err := client.WriteBody(receipts[i]); err != nil {
 			return err
