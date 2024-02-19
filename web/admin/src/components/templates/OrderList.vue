@@ -5,9 +5,12 @@ import { unix } from 'dayjs'
 
 import type { AlertType } from '~/lib/hooks'
 import {
+  CharacterEncodingType,
   OrderStatus,
   ShippingType,
+  ShippingCarrier,
   type Coordinator,
+  type ExportOrdersRequest,
   type Order,
   type Promotion,
   type User,
@@ -16,9 +19,6 @@ import {
 
 // TODO: API設計が決まり次第型定義の厳格化
 interface ImportFormData {
-  company: boolean
-}
-interface ExportFormData {
   company: boolean
 }
 
@@ -78,9 +78,10 @@ const props = defineProps({
     })
   },
   exportFormData: {
-    type: Object,
+    type: Object as PropType<ExportOrdersRequest>,
     default: () => ({
-      company: false
+      shippingCarrier: ShippingCarrier.UNKNOWN,
+      characterEncodingType: CharacterEncodingType.UTF8
     })
   }
 })
@@ -136,8 +137,13 @@ const headers: VDataTable['headers'] = [
   }
 ]
 const fulfillmentCompanies = [
-  { title: '佐川急便', value: '佐川急便' },
-  { title: 'ヤマト運輸', value: 'ヤマト運輸' }
+  { title: '指定なし', value: ShippingCarrier.UNKNOWN },
+  { title: '佐川急便', value: ShippingCarrier.SAGAWA },
+  { title: 'ヤマト運輸', value: ShippingCarrier.YAMATO }
+]
+const characterEncodingTypes = [
+  { title: 'UTF-8', value: CharacterEncodingType.UTF8 },
+  { title: 'Shift-JIS', value: CharacterEncodingType.ShiftJIS }
 ]
 
 const importDialogValue = computed({
@@ -153,8 +159,8 @@ const importFormDataValue = computed({
   set: (v: ImportFormData): void => emit('update:import-form-data', v)
 })
 const exportFormDataValue = computed({
-  get: (): ExportFormData => props.importFormData as ExportFormData,
-  set: (v: ExportFormData): void => emit('update:export-form-data', v)
+  get: (): ExportOrdersRequest => props.exportFormData,
+  set: (v: ExportOrdersRequest): void => emit('update:export-form-data', v)
 })
 
 const getCustomerName = (userId: string): string => {
@@ -321,14 +327,15 @@ const onSubmitExport = (): void => {
 
       <v-card-text>
         <v-select
-          v-model="exportFormDataValue.company"
+          v-model="exportFormDataValue.shippingCarrier"
           label="配送会社"
-          class="mr-2 ml-2"
           :items="fulfillmentCompanies"
-          item-title="title"
-          item-value="value"
         />
-        <v-file-input class="mr-2" label="CSVを選択" />
+        <v-select
+          v-model="exportFormDataValue.characterEncodingType"
+          label="文字エンコード種別"
+          :items="characterEncodingTypes"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -346,13 +353,13 @@ const onSubmitExport = (): void => {
     <v-card-title class="d-flex flex-row">
       注文
       <v-spacer />
-      <v-btn color="primary" variant="outlined" @click="toggleImportDialog">
+      <!-- <v-btn color="primary" variant="outlined" @click="toggleImportDialog">
         <v-icon start :icon="mdiImport" />
         Import
-      </v-btn>
+      </v-btn> -->
       <v-btn class="ml-4" color="secondary" variant="outlined" @click="toggleExportDialog">
         <v-icon start :icon="mdiExport" />
-        Export
+        エクスポート
       </v-btn>
     </v-card-title>
 
