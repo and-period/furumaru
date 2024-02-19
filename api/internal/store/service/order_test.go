@@ -1503,6 +1503,35 @@ func TestExportOrders(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name: "success sagawa with body",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
+				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierSagawa,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect: "お届け先コード取得区分,お届け先コード,お届け先電話番号,お届け先郵便番号,お届け先住所１,お届け先住所２,お届け先住所３,お届け先名称１,お届け先名称２,お客様管理番号,お客様コード,部署ご担当者コード,取得区分,部署ご担当者コード,部署ご担当者名称,荷送人電話番号,ご依頼主コード取得区分,ご依頼主コード,ご依頼主電話番号,ご依頼主郵便番号,ご依頼主住所１,ご依頼主住所２,ご依頼主名称１,ご依頼主名称２,荷姿,品名１,品名２,品名３,品名４,品名５,荷札荷姿,荷札品名1,荷札品名2,荷札品名3,荷札品名4,荷札品名5,荷札品名6,荷札品名7,荷札品名8,荷札品名9,荷札品名10,荷札品名11,出荷個数,スピード指定,クール便指定,配達日,配達指定時間帯,配達指定時間（時分）,代引金額,消費税,決済種別,保険金額,指定シール1,指定シール2,指定シール3,営業所受取,ＳＲＣ区分,営業所受取営業所コード,元着区分,メールアドレス,ご不在時連絡先,出荷日,お問い合せ送り状No.,出荷場印字区分,集約解除指定,編集1,編集2,編集3,編集4,編集5,編集6,編集7,編集8,編集9,編集10\n" +
+				",,090-1234-1234,1000014,東京都,千代田区 永田町1-7-1,,&.,購入者,order-id,user-id,,,,,,,090-1234-1234,1000014,東京都 千代田区 永田町1-7-1,,&.,購入者,,新鮮なじゃがいも,,,,,,,,,,,,,,,,,1,,001,,,,0,0,,0,,,,,,,,,,,,,,,,,,,,,,,\n",
+			expectErr: nil,
+		},
+		{
+			name: "success sagawa without body",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(entity.Orders{}, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierSagawa,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect:    "お届け先コード取得区分,お届け先コード,お届け先電話番号,お届け先郵便番号,お届け先住所１,お届け先住所２,お届け先住所３,お届け先名称１,お届け先名称２,お客様管理番号,お客様コード,部署ご担当者コード,取得区分,部署ご担当者コード,部署ご担当者名称,荷送人電話番号,ご依頼主コード取得区分,ご依頼主コード,ご依頼主電話番号,ご依頼主郵便番号,ご依頼主住所１,ご依頼主住所２,ご依頼主名称１,ご依頼主名称２,荷姿,品名１,品名２,品名３,品名４,品名５,荷札荷姿,荷札品名1,荷札品名2,荷札品名3,荷札品名4,荷札品名5,荷札品名6,荷札品名7,荷札品名8,荷札品名9,荷札品名10,荷札品名11,出荷個数,スピード指定,クール便指定,配達日,配達指定時間帯,配達指定時間（時分）,代引金額,消費税,決済種別,保険金額,指定シール1,指定シール2,指定シール3,営業所受取,ＳＲＣ区分,営業所受取営業所コード,元着区分,メールアドレス,ご不在時連絡先,出荷日,お問い合せ送り状No.,出荷場印字区分,集約解除指定,編集1,編集2,編集3,編集4,編集5,編集6,編集7,編集8,編集9,編集10\n",
+			expectErr: nil,
+		},
+		{
 			name:  "invalid argument",
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.ExportOrdersInput{
