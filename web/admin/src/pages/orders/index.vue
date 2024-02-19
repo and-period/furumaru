@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCoordinatorStore, useCustomerStore, useOrderStore, usePromotionStore } from '~/store'
+import { ShippingCarrier, type ExportOrdersRequest, CharacterEncodingType } from '~/types/api'
 
 const router = useRouter()
 const orderStore = useOrderStore()
@@ -25,8 +27,9 @@ const exportDialog = ref<boolean>(false)
 const importFormData = ref({
   company: ''
 })
-const exportFormData = ref({
-  company: ''
+const exportFormData = ref<ExportOrdersRequest>({
+  shippingCarrier: ShippingCarrier.UNKNOWN,
+  characterEncodingType: CharacterEncodingType.UTF8
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -67,9 +70,20 @@ const handleImport = (): void => {
   importDialog.value = false
 }
 
-const handleExport = (): void => {
-  // TODO: APIの実装が完了後に対応
-  console.log('debug', 'submit:export')
+const handleExport = async (): Promise<void> => {
+  try {
+    const data = await orderStore.exportOrders(exportFormData.value)
+    const a = document.createElement('a')
+    a.href = window.URL.createObjectURL(new Blob([data]))
+    a.setAttribute('download', `orders_${dayjs().format('YYYYMMDDhhmmss')}.csv`)
+    a.click()
+    a.remove()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
   exportDialog.value = false
 }
 

@@ -5,7 +5,7 @@ import { useCustomerStore } from './customer'
 import { usePromotionStore } from './promotion'
 import { useProductStore } from './product'
 import { apiClient } from '~/plugins/api-client'
-import type { CompleteOrderRequest, DraftOrderRequest, Order, RefundOrderRequest, UpdateOrderFulfillmentRequest } from '~/types/api'
+import type { CompleteOrderRequest, DraftOrderRequest, ExportOrdersRequest, Order, RefundOrderRequest, UpdateOrderFulfillmentRequest } from '~/types/api'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
@@ -139,6 +139,20 @@ export const useOrderStore = defineStore('order', {
     async updateFulfillment (orderId: string, fulfillmentId: string, payload: UpdateOrderFulfillmentRequest): Promise<void> {
       try {
         await apiClient.orderApi().v1UpdateOrderFulfillment(orderId, fulfillmentId, payload)
+      } catch (err) {
+        return this.errorHandler(err)
+      }
+    },
+
+    /**
+     * 注文履歴一覧を一括取得
+     * @param payload
+     * @returns
+     */
+    async exportOrders (payload: ExportOrdersRequest): Promise<string> {
+      try {
+        const res = await apiClient.orderApi().v1ExportOrders(payload)
+        return res.data
       } catch (err) {
         return this.errorHandler(err)
       }
