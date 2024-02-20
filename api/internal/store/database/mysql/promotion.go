@@ -30,7 +30,7 @@ type listPromotionsParams database.ListPromotionsParams
 
 func (p listPromotionsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Title != "" {
-		stmt = stmt.Where("MATCH (`title`) AGAINST (?)", p.Title)
+		stmt = stmt.Where("MATCH (`title`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Title)
 	}
 	for i := range p.Orders {
 		var value string

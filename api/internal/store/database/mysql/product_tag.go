@@ -30,7 +30,7 @@ type listProductTagsParams database.ListProductTagsParams
 
 func (p listProductTagsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
-		stmt = stmt.Where("MATCH (`name`) AGAINST (?)", p.Name)
+		stmt = stmt.Where("MATCH (`name`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
 	for i := range p.Orders {
 		var value string

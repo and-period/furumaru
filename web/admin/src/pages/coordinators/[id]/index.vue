@@ -245,7 +245,7 @@ const handleUpdateBonusVideo = (files: FileList): void => {
 
 const handleSearchProductType = async (name: string): Promise<void> => {
   try {
-    await productTypeStore.searchProductTypes(name)
+    await productTypeStore.searchProductTypes(name, '', coordinatorFormData.value.productTypeIds)
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
