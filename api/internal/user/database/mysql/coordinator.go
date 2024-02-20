@@ -32,7 +32,7 @@ type listCoordinatorsParams database.ListCoordinatorsParams
 
 func (p listCoordinatorsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
-		stmt = stmt.Where("MATCH(`username`, `marche_name`, `profile`) AGAINST (?)", p.Name)
+		stmt = stmt.Where("MATCH(`username`, `marche_name`, `profile`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
 	stmt = stmt.Order("updated_at DESC")
 	return stmt

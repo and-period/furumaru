@@ -34,7 +34,7 @@ type listProductsParams database.ListProductsParams
 
 func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
-		stmt = stmt.Where("MATCH (`name`, `description`) AGAINST (?)", p.Name)
+		stmt = stmt.Where("MATCH (`name`, `description`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
