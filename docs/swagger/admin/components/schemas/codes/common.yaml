@@ -1,3 +1,17 @@
+characterEncodingType:
+  type: integer
+  format: int32
+  description: 文字コード種別
+  nullable: false
+  enum:
+  - 0
+  - 1
+  x-enum-varnames:
+  - UTF8
+  - ShiftJIS
+  x-enum-descriptions:
+  - UTF-8
+  - Shift-JIS
 prefecture:
   type: integer
   format: int32

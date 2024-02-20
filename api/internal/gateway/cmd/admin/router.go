@@ -43,6 +43,9 @@ func (a *app) newRouter() *gin.Engine {
 	rt.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "ok")
 	})
+	rt.OPTIONS("/health", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, "ok")
+	})
 	rt.NoRoute(func(ctx *gin.Context) {
 		res := &util.ErrorResponse{
 			Status:  http.StatusNotFound,

@@ -10,16 +10,16 @@ import (
 type PaymentMethodType int32
 
 const (
-	PaymentMethodTypeUnknown     PaymentMethodType = 0
-	PaymentMethodTypeCash        PaymentMethodType = 1 // 代引支払い
-	PaymentMethodTypeCreditCard  PaymentMethodType = 2 // クレジットカード決済
-	PaymentMethodTypeKonbini     PaymentMethodType = 3 // コンビニ決済
-	PaymentMethodTypeBankTranser PaymentMethodType = 4 // 銀行振込決済
-	PaymentMethodTypePayPay      PaymentMethodType = 5 // QR決済（PayPay）
-	PaymentMethodTypeLinePay     PaymentMethodType = 6 // QR決済（LINE Pay）
-	PaymentMethodTypeMerpay      PaymentMethodType = 7 // QR決済（メルペイ）
-	PaymentMethodTypeRakutenPay  PaymentMethodType = 8 // QR決済（楽天ペイ）
-	PaymentMethodTypeAUPay       PaymentMethodType = 9 // QR決済（au PAY）
+	PaymentMethodTypeUnknown      PaymentMethodType = 0
+	PaymentMethodTypeCash         PaymentMethodType = 1 // 代引支払い
+	PaymentMethodTypeCreditCard   PaymentMethodType = 2 // クレジットカード決済
+	PaymentMethodTypeKonbini      PaymentMethodType = 3 // コンビニ決済
+	PaymentMethodTypeBankTransfer PaymentMethodType = 4 // 銀行振込決済
+	PaymentMethodTypePayPay       PaymentMethodType = 5 // QR決済（PayPay）
+	PaymentMethodTypeLinePay      PaymentMethodType = 6 // QR決済（LINE Pay）
+	PaymentMethodTypeMerpay       PaymentMethodType = 7 // QR決済（メルペイ）
+	PaymentMethodTypeRakutenPay   PaymentMethodType = 8 // QR決済（楽天ペイ）
+	PaymentMethodTypeAUPay        PaymentMethodType = 9 // QR決済（au PAY）
 )
 
 // PaymentStatus - 支払い状況
@@ -49,8 +49,8 @@ func NewPaymentMethodType(typ entity.PaymentMethodType) PaymentMethodType {
 		return PaymentMethodTypeCreditCard
 	case entity.PaymentMethodTypeKonbini:
 		return PaymentMethodTypeKonbini
-	case entity.PaymentMethodTypeBankTranser:
-		return PaymentMethodTypeBankTranser
+	case entity.PaymentMethodTypeBankTransfer:
+		return PaymentMethodTypeBankTransfer
 	case entity.PaymentMethodTypePayPay:
 		return PaymentMethodTypePayPay
 	case entity.PaymentMethodTypeLinePay:
@@ -74,8 +74,8 @@ func (t PaymentMethodType) StoreEntity() entity.PaymentMethodType {
 		return entity.PaymentMethodTypeCreditCard
 	case PaymentMethodTypeKonbini:
 		return entity.PaymentMethodTypeKonbini
-	case PaymentMethodTypeBankTranser:
-		return entity.PaymentMethodTypeBankTranser
+	case PaymentMethodTypeBankTransfer:
+		return entity.PaymentMethodTypeBankTransfer
 	case PaymentMethodTypePayPay:
 		return entity.PaymentMethodTypePayPay
 	case PaymentMethodTypeLinePay:

@@ -68,6 +68,19 @@ type NewOrderFulfillmentsParams struct {
 	Products map[string]*Product
 }
 
+func (s ShippingSize) String() string {
+	switch s {
+	case ShippingSize60:
+		return "60"
+	case ShippingSize80:
+		return "80"
+	case ShippingSize100:
+		return "100"
+	default:
+		return ""
+	}
+}
+
 func NewOrderFulfillment(params *NewOrderFulfillmentParams) *OrderFulfillment {
 	return &OrderFulfillment{
 		ID:                uuid.Base58Encode(uuid.New()),

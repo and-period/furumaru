@@ -42,3 +42,16 @@ updateOrderFulfillmentRequest:
   example:
     shippingCarrier: 1
     trackingNumber: 'tracking-number'
+exportOrdersRequest:
+  type: object
+  properties:
+    shippingCarrier:
+      $ref: './../../../openapi.yaml#/components/schemas/shippingCarrier'
+    characterEncodingType:
+      $ref: './../../../openapi.yaml#/components/schemas/characterEncodingType'
+  required:
+  - shippingCarrier
+  - characterEncodingType
+  example:
+    shippingCarrier: 1
+    characterEncodingType: 0

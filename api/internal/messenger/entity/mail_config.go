@@ -143,7 +143,7 @@ func newPaymentMethodName(typ sentity.PaymentMethodType) string {
 		return "クレジットカード決済"
 	case sentity.PaymentMethodTypeKonbini:
 		return "コンビニ決済"
-	case sentity.PaymentMethodTypeBankTranser:
+	case sentity.PaymentMethodTypeBankTransfer:
 		return "銀行振込決済"
 	case sentity.PaymentMethodTypePayPay:
 		return "QR決済（PayPay）"

@@ -4,12 +4,15 @@ import (
 	"context"
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -1303,6 +1306,291 @@ func TestAggregateOrdersByPromotion(t *testing.T) {
 			actual, err := service.AggregateOrdersByPromotion(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
+func TestExportOrders(t *testing.T) {
+	t.Parallel()
+	now := jst.Date(2024, 1, 23, 18, 30, 0, 0)
+	ordersParams := &database.ListOrdersParams{
+		CoordinatorID: "coordinator-id",
+		Statuses:      []entity.OrderStatus{entity.OrderStatusPreparing},
+	}
+	orders := entity.Orders{
+		{
+			ID:            "order-id",
+			UserID:        "user-id",
+			CoordinatorID: "coordinator-id",
+			PromotionID:   "promotion-id",
+			ManagementID:  1,
+			Status:        entity.OrderStatusPreparing,
+			OrderPayment: entity.OrderPayment{
+				OrderID:           "order-id",
+				AddressRevisionID: 1,
+				TransactionID:     "transaction-id",
+				Status:            entity.PaymentStatusCaptured,
+				MethodType:        entity.PaymentMethodTypeCreditCard,
+				Subtotal:          1980,
+				Discount:          0,
+				ShippingFee:       550,
+				Tax:               230,
+				Total:             2530,
+				RefundTotal:       0,
+				RefundType:        entity.RefundTypeNone,
+				RefundReason:      "",
+				OrderedAt:         now,
+				PaidAt:            now,
+				CreatedAt:         now,
+				UpdatedAt:         now,
+			},
+			OrderFulfillments: entity.OrderFulfillments{
+				{
+					ID:                "fulfillment-id",
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					TrackingNumber:    "",
+					Status:            entity.FulfillmentStatusFulfilled,
+					ShippingCarrier:   entity.ShippingCarrierUnknown,
+					ShippingType:      entity.ShippingTypeNormal,
+					BoxNumber:         1,
+					BoxSize:           entity.ShippingSize60,
+					CreatedAt:         now,
+					UpdatedAt:         now,
+				},
+			},
+			OrderItems: entity.OrderItems{
+				{
+					FulfillmentID:     "fulfillment-id",
+					OrderID:           "order-id",
+					ProductRevisionID: 1,
+					Quantity:          1,
+					CreatedAt:         now,
+					UpdatedAt:         now,
+				},
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+	addressesIn := &user.MultiGetAddressesByRevisionInput{
+		AddressRevisionIDs: []int64{1},
+	}
+	addresses := uentity.Addresses{
+		{
+			ID:        "address-id",
+			UserID:    "user-id",
+			IsDefault: true,
+			AddressRevision: uentity.AddressRevision{
+				ID:             1,
+				Lastname:       "&.",
+				Firstname:      "購入者",
+				LastnameKana:   "あんどどっと",
+				FirstnameKana:  "こうにゅうしゃ",
+				PostalCode:     "1000014",
+				Prefecture:     "東京都",
+				PrefectureCode: 13,
+				City:           "千代田区",
+				AddressLine1:   "永田町1-7-1",
+				AddressLine2:   "",
+				PhoneNumber:    "090-1234-1234",
+			},
+		},
+	}
+	products := entity.Products{
+		{
+			ID:              "product-id",
+			TypeID:          "type-id",
+			TagIDs:          []string{"tag-id"},
+			CoordinatorID:   "coordinator-id",
+			ProducerID:      "producer-id",
+			Name:            "新鮮なじゃがいも",
+			Description:     "新鮮なじゃがいもをお届けします。",
+			Public:          true,
+			Inventory:       100,
+			Weight:          100,
+			WeightUnit:      entity.WeightUnitGram,
+			Item:            1,
+			ItemUnit:        "袋",
+			ItemDescription: "1袋あたり100gのじゃがいも",
+			Media: entity.MultiProductMedia{
+				{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+				{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+			},
+			ExpirationDate:    7,
+			StorageMethodType: entity.StorageMethodTypeNormal,
+			DeliveryType:      entity.DeliveryTypeNormal,
+			Box60Rate:         50,
+			Box80Rate:         40,
+			Box100Rate:        30,
+			OriginPrefecture:  "滋賀県",
+			OriginCity:        "彦根市",
+			ProductRevision: entity.ProductRevision{
+				ID:        1,
+				ProductID: "product-id",
+				Price:     400,
+				Cost:      300,
+				CreatedAt: now,
+				UpdatedAt: now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *store.ExportOrdersInput
+		expect    string
+		expectErr error
+	}{
+		{
+			name: "success general with body",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
+				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierUnknown,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect: "注文管理番号,ユーザーID,コーディネータID,お届け希望日,お届け希望時間帯,お届け先名,お届け先名（かな）,お届け先電話番号,お届け先郵便番号,お届け先都道府県,お届け先市区町村,お届け先町名・番地,お届け先ビル名・号室など,ご依頼主名,ご依頼主名（かな）,ご依頼主電話番号,ご依頼主郵便番号,ご依頼主都道府県,ご依頼主市区町村,ご依頼主町名・番地,ご依頼主ビル名・号室など,商品コード1,商品名1,商品1数量,商品コード2,商品名2,商品2数量,商品コード3,商品名3,商品3数量,決済手段,商品金額,割引金額,配送手数料,合計金額,注文日時,配送方法,箱のサイズ\n" +
+				"order-id,user-id,coordinator-id,,,&. 購入者,あんどどっと こうにゅうしゃ,090-1234-1234,1000014,東京都,千代田区,永田町1-7-1,,&. 購入者,あんどどっと こうにゅうしゃ,090-1234-1234,1000014,東京都,千代田区,永田町1-7-1,,product-id,新鮮なじゃがいも,1,,,0,,,0,クレジットカード決済,1980,0,550,2530,2024-01-23 18:30:00,常温・冷蔵便,60\n",
+			expectErr: nil,
+		},
+		{
+			name: "success general without body",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(entity.Orders{}, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierUnknown,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect:    "注文管理番号,ユーザーID,コーディネータID,お届け希望日,お届け希望時間帯,お届け先名,お届け先名（かな）,お届け先電話番号,お届け先郵便番号,お届け先都道府県,お届け先市区町村,お届け先町名・番地,お届け先ビル名・号室など,ご依頼主名,ご依頼主名（かな）,ご依頼主電話番号,ご依頼主郵便番号,ご依頼主都道府県,ご依頼主市区町村,ご依頼主町名・番地,ご依頼主ビル名・号室など,商品コード1,商品名1,商品1数量,商品コード2,商品名2,商品2数量,商品コード3,商品名3,商品3数量,決済手段,商品金額,割引金額,配送手数料,合計金額,注文日時,配送方法,箱のサイズ\n",
+			expectErr: nil,
+		},
+		{
+			name: "success yamato with body",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
+				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierYamato,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect: "お客様管理番号,送り状種類,クール区分,伝票番号,出荷予定日,お届け予定日,配送時間帯,お届け先コード,お届け先電話番号,お届け先電話番号枝番,お届け先郵便番号,お届け先住所,お届け先アパートマンション名,お届け先会社・部門１,お届け先会社・部門２,お届け先名,お届け先名(ｶﾅ),敬称,ご依頼主コード,ご依頼主電話番号,ご依頼主電話番号枝番,ご依頼主郵便番号,ご依頼主住所,ご依頼主アパートマンション名,ご依頼主名,ご依頼主名(ｶﾅ),品名コード１,品名１,品名コード２,品名２,荷扱い１,荷扱い２,記事,ｺﾚｸﾄ代金引換額（税込),内消費税額等,止置き,営業所コード,発行枚数,個数口枠の印字,請求先顧客コード,請求先分類コード,運賃管理番号,クロネコwebコレクトデータ登録,クロネコwebコレクト加盟店番号,クロネコwebコレクト申込受付番号１,クロネコwebコレクト申込受付番号２,クロネコwebコレクト申込受付番号３,お届け予定ｅメール利用区分,お届け予定ｅメールe-mailアドレス,入力機種,お届け予定ｅメールメッセージ,お届け完了ｅメール利用区分,お届け完了ｅメールe-mailアドレス,お届け完了ｅメールメッセージ,クロネコ収納代行利用区分,予備,収納代行請求金額(税込),収納代行内消費税額等,収納代行請求先郵便番号,収納代行請求先住所,収納代行請求先住所（アパートマンション名）,収納代行請求先会社・部門名１,収納代行請求先会社・部門名２,収納代行請求先名(漢字),収納代行請求先名(カナ),収納代行問合せ先郵便番号,収納代行問合せ先住所,収納代行問合せ先住所（アパートマンション名）,収納代行問合せ先電話番号,収納代行管理番号,収納代行品名,収納代行備考,複数口くくりキー,検索キータイトル1,検索キー1,検索キータイトル2,検索キー2,検索キータイトル3,検索キー3,検索キータイトル4,検索キー4,検索キータイトル5,検索キー5,予備,予備,投函予定メール利用区分,投函予定メールe-mailアドレス,投函予定メールメッセージ,投函完了メール（お届け先宛）利用区分,投函予定メール（お届け先宛）e-mailアドレス,投函予定メール（お届け先宛）メッセージ,投函完了メール（ご依頼主宛）利用区分,投函予定メール（ご依頼主宛）e-mailアドレス,投函予定メール（ご依頼主宛）メッセージ\n" +
+				"order-id,0,0,,,,,1,090-1234-1234,,1000014,東京都 千代田区 永田町1-7-1,,,,&. 購入者,あんどどっと こうにゅうしゃ,様,1,090-1234-1234,,1000014,東京都 千代田区 永田町1-7-1,,&. 購入者,あんどどっと こうにゅうしゃ,product-id,新鮮なじゃがいも,,,,,,0,0,1,,1,,,,,0,,,,,0,,,,0,,,0,,0,0,,,,,,,,,,,,,,,,ふるマルユーザーID,user-id,ふるマル注文履歴ID,order-id,,,,,,,,,0,,,0,,,,,\n",
+			expectErr: nil,
+		},
+		{
+			name: "success yamato without body",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(entity.Orders{}, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierYamato,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect:    "お客様管理番号,送り状種類,クール区分,伝票番号,出荷予定日,お届け予定日,配送時間帯,お届け先コード,お届け先電話番号,お届け先電話番号枝番,お届け先郵便番号,お届け先住所,お届け先アパートマンション名,お届け先会社・部門１,お届け先会社・部門２,お届け先名,お届け先名(ｶﾅ),敬称,ご依頼主コード,ご依頼主電話番号,ご依頼主電話番号枝番,ご依頼主郵便番号,ご依頼主住所,ご依頼主アパートマンション名,ご依頼主名,ご依頼主名(ｶﾅ),品名コード１,品名１,品名コード２,品名２,荷扱い１,荷扱い２,記事,ｺﾚｸﾄ代金引換額（税込),内消費税額等,止置き,営業所コード,発行枚数,個数口枠の印字,請求先顧客コード,請求先分類コード,運賃管理番号,クロネコwebコレクトデータ登録,クロネコwebコレクト加盟店番号,クロネコwebコレクト申込受付番号１,クロネコwebコレクト申込受付番号２,クロネコwebコレクト申込受付番号３,お届け予定ｅメール利用区分,お届け予定ｅメールe-mailアドレス,入力機種,お届け予定ｅメールメッセージ,お届け完了ｅメール利用区分,お届け完了ｅメールe-mailアドレス,お届け完了ｅメールメッセージ,クロネコ収納代行利用区分,予備,収納代行請求金額(税込),収納代行内消費税額等,収納代行請求先郵便番号,収納代行請求先住所,収納代行請求先住所（アパートマンション名）,収納代行請求先会社・部門名１,収納代行請求先会社・部門名２,収納代行請求先名(漢字),収納代行請求先名(カナ),収納代行問合せ先郵便番号,収納代行問合せ先住所,収納代行問合せ先住所（アパートマンション名）,収納代行問合せ先電話番号,収納代行管理番号,収納代行品名,収納代行備考,複数口くくりキー,検索キータイトル1,検索キー1,検索キータイトル2,検索キー2,検索キータイトル3,検索キー3,検索キータイトル4,検索キー4,検索キータイトル5,検索キー5,予備,予備,投函予定メール利用区分,投函予定メールe-mailアドレス,投函予定メールメッセージ,投函完了メール（お届け先宛）利用区分,投函予定メール（お届け先宛）e-mailアドレス,投函予定メール（お届け先宛）メッセージ,投函完了メール（ご依頼主宛）利用区分,投函予定メール（ご依頼主宛）e-mailアドレス,投函予定メール（ご依頼主宛）メッセージ\n",
+			expectErr: nil,
+		},
+		{
+			name: "success sagawa with body",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
+				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierSagawa,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect: "お届け先コード取得区分,お届け先コード,お届け先電話番号,お届け先郵便番号,お届け先住所１,お届け先住所２,お届け先住所３,お届け先名称１,お届け先名称２,お客様管理番号,お客様コード,部署ご担当者コード,取得区分,部署ご担当者コード,部署ご担当者名称,荷送人電話番号,ご依頼主コード取得区分,ご依頼主コード,ご依頼主電話番号,ご依頼主郵便番号,ご依頼主住所１,ご依頼主住所２,ご依頼主名称１,ご依頼主名称２,荷姿,品名１,品名２,品名３,品名４,品名５,荷札荷姿,荷札品名1,荷札品名2,荷札品名3,荷札品名4,荷札品名5,荷札品名6,荷札品名7,荷札品名8,荷札品名9,荷札品名10,荷札品名11,出荷個数,スピード指定,クール便指定,配達日,配達指定時間帯,配達指定時間（時分）,代引金額,消費税,決済種別,保険金額,指定シール1,指定シール2,指定シール3,営業所受取,ＳＲＣ区分,営業所受取営業所コード,元着区分,メールアドレス,ご不在時連絡先,出荷日,お問い合せ送り状No.,出荷場印字区分,集約解除指定,編集1,編集2,編集3,編集4,編集5,編集6,編集7,編集8,編集9,編集10\n" +
+				",,090-1234-1234,1000014,東京都,千代田区 永田町1-7-1,,&.,購入者,order-id,user-id,,,,,,,090-1234-1234,1000014,東京都 千代田区 永田町1-7-1,,&.,購入者,,新鮮なじゃがいも,,,,,,,,,,,,,,,,,1,,001,,,,0,0,,0,,,,,,,,,,,,,,,,,,,,,,,\n",
+			expectErr: nil,
+		},
+		{
+			name: "success sagawa without body",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(entity.Orders{}, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierSagawa,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect:    "お届け先コード取得区分,お届け先コード,お届け先電話番号,お届け先郵便番号,お届け先住所１,お届け先住所２,お届け先住所３,お届け先名称１,お届け先名称２,お客様管理番号,お客様コード,部署ご担当者コード,取得区分,部署ご担当者コード,部署ご担当者名称,荷送人電話番号,ご依頼主コード取得区分,ご依頼主コード,ご依頼主電話番号,ご依頼主郵便番号,ご依頼主住所１,ご依頼主住所２,ご依頼主名称１,ご依頼主名称２,荷姿,品名１,品名２,品名３,品名４,品名５,荷札荷姿,荷札品名1,荷札品名2,荷札品名3,荷札品名4,荷札品名5,荷札品名6,荷札品名7,荷札品名8,荷札品名9,荷札品名10,荷札品名11,出荷個数,スピード指定,クール便指定,配達日,配達指定時間帯,配達指定時間（時分）,代引金額,消費税,決済種別,保険金額,指定シール1,指定シール2,指定シール3,営業所受取,ＳＲＣ区分,営業所受取営業所コード,元着区分,メールアドレス,ご不在時連絡先,出荷日,お問い合せ送り状No.,出荷場印字区分,集約解除指定,編集1,編集2,編集3,編集4,編集5,編集6,編集7,編集8,編集9,編集10\n",
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.ExportOrdersInput{
+				ShippingCarrier: -1,
+				EncodingType:    -1,
+			},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list orders",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(nil, assert.AnError)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierUnknown,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
+				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(nil, assert.AnError)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(addresses, nil)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierUnknown,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get addresses",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().List(ctx, ordersParams).Return(orders, nil)
+				mocks.db.Product.EXPECT().MultiGetByRevision(gomock.Any(), []int64{1}).Return(products, nil)
+				mocks.user.EXPECT().MultiGetAddressesByRevision(gomock.Any(), addressesIn).Return(nil, assert.AnError)
+			},
+			input: &store.ExportOrdersInput{
+				CoordinatorID:   "coordinator-id",
+				ShippingCarrier: entity.ShippingCarrierUnknown,
+				EncodingType:    codes.CharacterEncodingTypeUTF8,
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.ExportOrders(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, string(actual))
 		}))
 	}
 }

@@ -34,16 +34,16 @@ var (
 type PaymentMethodType int32
 
 const (
-	PaymentMethodTypeUnknown     PaymentMethodType = 0
-	PaymentMethodTypeCash        PaymentMethodType = 1 // 代引支払い
-	PaymentMethodTypeCreditCard  PaymentMethodType = 2 // クレジットカード決済
-	PaymentMethodTypeKonbini     PaymentMethodType = 3 // コンビニ決済
-	PaymentMethodTypeBankTranser PaymentMethodType = 4 // 銀行振込決済
-	PaymentMethodTypePayPay      PaymentMethodType = 5 // QR決済（PayPay）
-	PaymentMethodTypeLinePay     PaymentMethodType = 6 // QR決済（LINE Pay）
-	PaymentMethodTypeMerpay      PaymentMethodType = 7 // QR決済（メルペイ）
-	PaymentMethodTypeRakutenPay  PaymentMethodType = 8 // QR決済（楽天ペイ）
-	PaymentMethodTypeAUPay       PaymentMethodType = 9 // QR決済（au PAY）
+	PaymentMethodTypeUnknown      PaymentMethodType = 0
+	PaymentMethodTypeCash         PaymentMethodType = 1 // 代引支払い
+	PaymentMethodTypeCreditCard   PaymentMethodType = 2 // クレジットカード決済
+	PaymentMethodTypeKonbini      PaymentMethodType = 3 // コンビニ決済
+	PaymentMethodTypeBankTransfer PaymentMethodType = 4 // 銀行振込決済
+	PaymentMethodTypePayPay       PaymentMethodType = 5 // QR決済（PayPay）
+	PaymentMethodTypeLinePay      PaymentMethodType = 6 // QR決済（LINE Pay）
+	PaymentMethodTypeMerpay       PaymentMethodType = 7 // QR決済（メルペイ）
+	PaymentMethodTypeRakutenPay   PaymentMethodType = 8 // QR決済（楽天ペイ）
+	PaymentMethodTypeAUPay        PaymentMethodType = 9 // QR決済（au PAY）
 )
 
 // 注文キャンセル種別
@@ -121,7 +121,7 @@ func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
 		return []komoju.PaymentType{komoju.PaymentTypeCreditCard}
 	case PaymentMethodTypeKonbini:
 		return []komoju.PaymentType{komoju.PaymentTypeKonbini}
-	case PaymentMethodTypeBankTranser:
+	case PaymentMethodTypeBankTransfer:
 		return []komoju.PaymentType{komoju.PaymentTypeBankTransfer}
 	case PaymentMethodTypePayPay:
 		return []komoju.PaymentType{komoju.PaymentTypePayPay}
@@ -135,6 +135,31 @@ func NewKomojuPaymentTypes(methodType PaymentMethodType) []komoju.PaymentType {
 		return []komoju.PaymentType{komoju.PaymentTypeAUPay}
 	default:
 		return []komoju.PaymentType{}
+	}
+}
+
+func (t PaymentMethodType) String() string {
+	switch t {
+	case PaymentMethodTypeCash:
+		return "代引支払い"
+	case PaymentMethodTypeCreditCard:
+		return "クレジットカード決済"
+	case PaymentMethodTypeKonbini:
+		return "コンビニ決済"
+	case PaymentMethodTypeBankTransfer:
+		return "銀行振込決済"
+	case PaymentMethodTypePayPay:
+		return "QR決済（PayPay）"
+	case PaymentMethodTypeLinePay:
+		return "QR決済（LINE Pay）"
+	case PaymentMethodTypeMerpay:
+		return "QR決済（メルペイ）"
+	case PaymentMethodTypeRakutenPay:
+		return "QR決済（楽天ペイ）"
+	case PaymentMethodTypeAUPay:
+		return "QR決済（au PAY）"
+	default:
+		return ""
 	}
 }
 

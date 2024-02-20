@@ -9,6 +9,38 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestShippingType_String(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name         string
+		shippingType ShippingType
+		expect       string
+	}{
+		{
+			name:         "normal",
+			shippingType: ShippingTypeNormal,
+			expect:       "常温・冷蔵便",
+		},
+		{
+			name:         "frozen",
+			shippingType: ShippingTypeFrozen,
+			expect:       "冷凍便",
+		},
+		{
+			name:         "unknown",
+			shippingType: ShippingTypeUnknown,
+			expect:       "",
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.shippingType.String())
+		})
+	}
+}
+
 func TestShipping(t *testing.T) {
 	t.Parallel()
 	shikoku := []int32{

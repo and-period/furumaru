@@ -1,14 +1,15 @@
-package csv
+package yamato
 
 import (
 	"strconv"
 
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/store/exporter"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"golang.org/x/text/width"
 )
 
-var deliveryReceiptHeaders = []string{
+var receiptHeaders = []string{
 	"お客様管理番号",
 	"送り状種類",
 	"クール区分",
@@ -143,16 +144,16 @@ const (
 	DeliveryTimeFrameUntil17 DeliveryTimeFrame = "0017" // 午後5時まで
 )
 
-// DeliveryReceipt - ヤマト運輸送り状情報
+// Receipt - ヤマト運輸送り状情報
 // See: https://bmypage.kuroneko.co.jp/bmypage/pdf/new_exchange1.pdf
-type DeliveryReceipt struct {
+type Receipt struct {
 	OrderID                                string            // お客様管理番号
 	ServiceType                            ServiceType       // 送り状種類
 	ShippingType                           ShippingType      // クール区分
 	YamatoOrderID                          string            // 伝票番号
 	ExpectedShippingDate                   string            // 出荷予定日
 	ExpectedDeliveryDate                   string            // お届け予定日
-	DeliveryTypeFrame                      DeliveryTimeFrame // 配送時間帯
+	ExpectedDeliveryTimeFrame              DeliveryTimeFrame // 配送時間帯
 	DeliveryCode                           string            // お届け先コード
 	DeliveryPhoneNumber                    string            // お届け先電話番号
 	DeliveryPhoneNumberExtension           string            // お届け先電話番号枝番
@@ -181,7 +182,7 @@ type DeliveryReceipt struct {
 	Note                                   string            // 記事
 	WebCollectDeliveryAmount               int64             // ｺﾚｸﾄ代金引換額（税込)
 	WebCollectDeliveryTax                  int64             // 内消費税額等
-	BranchHoldType                         string            // 止置き
+	BranchHoldType                         int64             // 止置き
 	BranchCode                             string            // 営業所コード
 	IssuedQuantity                         int64             // 発行枚数
 	PrintingQuantity                       string            // 個数口枠の印字
@@ -242,17 +243,15 @@ type DeliveryReceipt struct {
 	MailDropCompletionClientEmailMessage   string            // 投函予定メール（ご依頼主宛）メッセージ
 }
 
-type DeliveryReceipts []*DeliveryReceipt
-
-type DeliveryReceiptParams struct {
-	Payment     *entity.OrderPayment
+type ReceiptParams struct {
+	Order       *entity.Order
 	Fulfillment *entity.OrderFulfillment
 	Items       entity.OrderItems
 	Addresses   map[int64]*uentity.Address
 	Products    map[int64]*entity.Product
 }
 
-type DeliveryReceiptsParams struct {
+type ReceiptsParams struct {
 	Orders    entity.Orders
 	Addresses map[int64]*uentity.Address
 	Products  map[int64]*entity.Product
@@ -269,29 +268,32 @@ func NewShippingType(typ entity.ShippingType) ShippingType {
 	}
 }
 
-func NewDeliveryReceipt(params *DeliveryReceiptParams) *DeliveryReceipt {
-	receipt := &DeliveryReceipt{}
+func NewReceipt(params *ReceiptParams) exporter.Receipt {
+	receipt := &Receipt{}
 	receipt.SetReceiptDetails(params.Fulfillment)
-	receipt.SetDeliveryDetails(params.Fulfillment, params.Addresses[params.Fulfillment.AddressRevisionID])
-	receipt.SetClientDetails(params.Payment, params.Addresses[params.Payment.AddressRevisionID])
+	receipt.SetDeliveryDetails(params.Addresses[params.Fulfillment.AddressRevisionID])
+	receipt.SetClientDetails(params.Addresses[params.Order.OrderPayment.AddressRevisionID])
 	receipt.SetProductDetails(params.Items, params.Products)
 	receipt.SetWebCollectDetails()
 	receipt.SetCollectionAgencyDetails()
 	receipt.SetDeliveryNotificationDetails()
 	receipt.SetMailDropNotificationDetails()
-	receipt.SetSearchDetails()
+	receipt.SetSearchDetails(params.Order)
 	return receipt
 }
 
-func (r *DeliveryReceipt) SetReceiptDetails(fulfillment *entity.OrderFulfillment) {
+func (r *Receipt) SetReceiptDetails(fulfillment *entity.OrderFulfillment) {
 	r.OrderID = fulfillment.OrderID
-	r.ServiceType = ServiceTypePrepayment
+	r.ServiceType = ServiceTypePrepayment // 0：発払い（支払い時に送料も含めているため）
 	r.ShippingType = NewShippingType(fulfillment.ShippingType)
-	r.YamatoOrderID = "" // データ入力用は空白を指定
+	r.YamatoOrderID = ""                                // データ入力用は空白を指定
+	r.ExpectedShippingDate = ""                         // TODO: 購入フローの改修時に対応
+	r.ExpectedDeliveryDate = ""                         // TODO: 購入フローの改修時に対応
+	r.ExpectedDeliveryTimeFrame = DeliveryTimeFrameNone // TODO: 購入フローの改修時に対応
 	r.Handling1 = ""
 	r.Handling2 = ""
 	r.Note = ""
-	r.BranchHoldType = ""
+	r.BranchHoldType = 1 // 1：利用する
 	r.BranchCode = ""
 	r.IssuedQuantity = 1
 	r.PrintingQuantity = ""
@@ -305,14 +307,11 @@ func (r *DeliveryReceipt) SetReceiptDetails(fulfillment *entity.OrderFulfillment
 	r.Reserve3 = ""
 }
 
-func (r *DeliveryReceipt) SetDeliveryDetails(fulfillment *entity.OrderFulfillment, address *uentity.Address) {
+func (r *Receipt) SetDeliveryDetails(address *uentity.Address) {
 	if address == nil {
 		return
 	}
-	r.ExpectedShippingDate = ""                 // TODO: 購入フローの改修時に対応
-	r.ExpectedDeliveryDate = ""                 // TODO: 購入フローの改修時に対応
-	r.DeliveryTypeFrame = DeliveryTimeFrameNone // TODO: 購入フローの改修時に対応
-	r.DeliveryCode = strconv.FormatInt(fulfillment.AddressRevisionID, 10)
+	r.DeliveryCode = strconv.FormatInt(address.AddressRevision.ID, 10)
 	r.DeliveryPhoneNumber = address.PhoneNumber
 	r.DeliveryPhoneNumberExtension = "" // 未使用のため空文字固定
 	r.DeliveryPostalCode = address.PostalCode
@@ -325,11 +324,11 @@ func (r *DeliveryReceipt) SetDeliveryDetails(fulfillment *entity.OrderFulfillmen
 	r.DeliveryNameHonorific = "様" // 敬称は「様」固定
 }
 
-func (r *DeliveryReceipt) SetClientDetails(payment *entity.OrderPayment, address *uentity.Address) {
+func (r *Receipt) SetClientDetails(address *uentity.Address) {
 	if address == nil {
 		return
 	}
-	r.ClientCode = strconv.FormatInt(payment.AddressRevisionID, 10)
+	r.ClientCode = strconv.FormatInt(address.AddressRevision.ID, 10)
 	r.ClientPhoneNumber = address.PhoneNumber
 	r.ClientPhoneNumberExtension = "" // 未使用のため空文字固定
 	r.ClientPostalCode = address.PostalCode
@@ -339,7 +338,7 @@ func (r *DeliveryReceipt) SetClientDetails(payment *entity.OrderPayment, address
 	r.ClientNameKana = width.Narrow.String(address.NameKana())
 }
 
-func (r *DeliveryReceipt) SetProductDetails(items entity.OrderItems, products map[int64]*entity.Product) {
+func (r *Receipt) SetProductDetails(items entity.OrderItems, products map[int64]*entity.Product) {
 	if len(items) < 1 {
 		return
 	}
@@ -360,7 +359,7 @@ func (r *DeliveryReceipt) SetProductDetails(items entity.OrderItems, products ma
 	r.Product2Name = product.Name
 }
 
-func (r *DeliveryReceipt) SetWebCollectDetails() {
+func (r *Receipt) SetWebCollectDetails() {
 	r.WebCollectDeliveryAmount = 0
 	r.WebCollectDeliveryTax = 0
 	r.WebCollectRegistration = 0
@@ -370,7 +369,7 @@ func (r *DeliveryReceipt) SetWebCollectDetails() {
 	r.WebCollectAcceptanceNumber3 = ""
 }
 
-func (r *DeliveryReceipt) SetCollectionAgencyDetails() {
+func (r *Receipt) SetCollectionAgencyDetails() {
 	r.CollectionAgencyUsage = 0 // 0：利用しない
 	r.CollectionAgencyBillingAmount = 0
 	r.CollectionAgencyBillingTax = 0
@@ -390,7 +389,7 @@ func (r *DeliveryReceipt) SetCollectionAgencyDetails() {
 	r.CollectionAgencyRemarks = ""
 }
 
-func (r *DeliveryReceipt) SetDeliveryNotificationDetails() {
+func (r *Receipt) SetDeliveryNotificationDetails() {
 	r.DeliveryNotificationEmailUsage = 0 // 0：利用しない
 	r.DeliveryNotificationEmail = ""
 	r.DeliveryNotificationEmailMessage = ""
@@ -399,7 +398,7 @@ func (r *DeliveryReceipt) SetDeliveryNotificationDetails() {
 	r.DeliveryCompletionEmailMessage = ""
 }
 
-func (r *DeliveryReceipt) SetMailDropNotificationDetails() {
+func (r *Receipt) SetMailDropNotificationDetails() {
 	r.MailDropNotificationEmailUsage = 0 // 0：利用しない
 	r.MailDropNotificationEmail = ""
 	r.MailDropNotificationEmailMessage = ""
@@ -411,11 +410,11 @@ func (r *DeliveryReceipt) SetMailDropNotificationDetails() {
 	r.MailDropCompletionClientEmailMessage = ""
 }
 
-func (r *DeliveryReceipt) SetSearchDetails() {
-	r.SearchKey1Title = ""
-	r.SearchKey1Value = ""
-	r.SearchKey2Title = ""
-	r.SearchKey2Value = ""
+func (r *Receipt) SetSearchDetails(order *entity.Order) {
+	r.SearchKey1Title = "ふるマルユーザーID"
+	r.SearchKey1Value = order.UserID
+	r.SearchKey2Title = "ふるマル注文履歴ID"
+	r.SearchKey2Value = order.ID
 	r.SearchKey3Title = ""
 	r.SearchKey3Value = ""
 	r.SearchKey4Title = ""
@@ -424,7 +423,11 @@ func (r *DeliveryReceipt) SetSearchDetails() {
 	r.SearchKey5Value = ""
 }
 
-func (r *DeliveryReceipt) Record() []string {
+func (r *Receipt) Header() []string {
+	return receiptHeaders
+}
+
+func (r *Receipt) Record() []string {
 	return []string{
 		r.OrderID,
 		strconv.FormatInt(int64(r.ServiceType), 10),
@@ -432,7 +435,7 @@ func (r *DeliveryReceipt) Record() []string {
 		r.YamatoOrderID,
 		r.ExpectedShippingDate,
 		r.ExpectedDeliveryDate,
-		string(r.DeliveryTypeFrame),
+		string(r.ExpectedDeliveryTimeFrame),
 		r.DeliveryCode,
 		r.DeliveryPhoneNumber,
 		r.DeliveryPhoneNumberExtension,
@@ -461,7 +464,7 @@ func (r *DeliveryReceipt) Record() []string {
 		r.Note,
 		strconv.FormatInt(r.WebCollectDeliveryAmount, 10),
 		strconv.FormatInt(r.WebCollectDeliveryTax, 10),
-		r.BranchHoldType,
+		strconv.FormatInt(r.BranchHoldType, 10),
 		r.BranchCode,
 		strconv.FormatInt(r.IssuedQuantity, 10),
 		r.PrintingQuantity,
@@ -523,19 +526,19 @@ func (r *DeliveryReceipt) Record() []string {
 	}
 }
 
-func NewDeliveryReceipts(params *DeliveryReceiptsParams) DeliveryReceipts {
-	res := make(DeliveryReceipts, 0, len(params.Orders))
+func NewReceipts(params *ReceiptsParams) []exporter.Receipt {
+	res := make([]exporter.Receipt, 0, len(params.Orders))
 	for _, order := range params.Orders {
 		itemsMap := order.OrderItems.GroupByFulfillmentID()
 		for _, fulfillment := range order.OrderFulfillments {
-			in := &DeliveryReceiptParams{
-				Payment:     &order.OrderPayment,
+			in := &ReceiptParams{
+				Order:       order,
 				Fulfillment: fulfillment,
 				Items:       itemsMap[fulfillment.ID],
 				Addresses:   params.Addresses,
 				Products:    params.Products,
 			}
-			res = append(res, NewDeliveryReceipt(in))
+			res = append(res, NewReceipt(in))
 		}
 	}
 	return res

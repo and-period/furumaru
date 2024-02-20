@@ -16,3 +16,8 @@ type UpdateOrderFulfillmentRequest struct {
 	ShippingCarrier int32  `json:"shippingCarrier,omitempty"` // 配送会社
 	TrackingNumber  string `json:"trackingNumber,omitempty"`  // 伝票番号
 }
+
+type ExportOrdersRequest struct {
+	ShippingCarrier       int32 `json:"shippingCarrier,omitempty"`       // 配送会社
+	CharacterEncodingType int32 `json:"characterEncodingType,omitempty"` // 文字コード種別
+}

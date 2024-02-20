@@ -35,7 +35,7 @@ func (p listProducersParams) stmt(stmt *gorm.DB) *gorm.DB {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
 	if p.Name != "" {
-		stmt = stmt.Where("MATCH (`username`, `profile`) AGAINST (?)", p.Name)
+		stmt = stmt.Where("MATCH (`username`, `profile`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
 	stmt = stmt.Order("updated_at DESC")
 	return stmt
