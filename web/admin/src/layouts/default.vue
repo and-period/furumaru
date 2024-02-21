@@ -48,7 +48,7 @@ const generalDrawers: NavigationDrawerItem[] = [
   {
     to: '/orders',
     icon: mdiOrderBoolAscendingVariant,
-    title: '注文',
+    title: '注文管理',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
@@ -63,34 +63,34 @@ const generalDrawers: NavigationDrawerItem[] = [
     title: 'ライブ配信',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
-  {
-    to: '/customers',
-    icon: mdiAccountDetails,
-    title: '顧客管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
-  },
-  {
-    to: '/contacts',
-    icon: mdiForum,
-    title: 'お問い合わせ管理',
-    roles: [AdminRole.ADMINISTRATOR]
-  },
+  // {
+  //   to: '/contacts',
+  //   icon: mdiForum,
+  //   title: 'お問い合わせ',
+  //   roles: [AdminRole.ADMINISTRATOR]
+  // },
   {
     to: '/notifications',
     icon: mdiBellRing,
-    title: 'お知らせ管理',
+    title: 'お知らせ情報',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/promotions',
     icon: mdiCash100,
-    title: 'セール情報管理',
+    title: 'セール情報',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   },
   {
     to: '/producers',
     icon: mdiAccount,
     title: '生産者管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+  },
+  {
+    to: '/customers',
+    icon: mdiAccountDetails,
+    title: '顧客管理',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   }
 ]
@@ -113,12 +113,6 @@ const settingDrawers: NavigationDrawerItem[] = [
     icon: mdiCog,
     title: 'バージョン情報',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
-  },
-  {
-    to: '/livestreaming',
-    icon: mdiAntenna,
-    title: '配信(テスト用)',
-    roles: [AdminRole.ADMINISTRATOR]
   }
 ]
 
