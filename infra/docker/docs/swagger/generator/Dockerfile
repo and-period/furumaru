@@ -10,4 +10,4 @@ RUN apk add --update \
   openjdk11-jre-headless \
   && rm -rf /var/cache/apk/*
 
-RUN yarn global add @openapitools/openapi-generator-cli@v2.7.0
+RUN yarn global add @openapitools/openapi-generator-cli@v2.9.0
