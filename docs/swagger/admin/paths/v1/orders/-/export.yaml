@@ -5,7 +5,6 @@ post:
   - Order
   security:
   - bearerAuth: []
-  parameters:
   requestBody:
     required: true
     content:
