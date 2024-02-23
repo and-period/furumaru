@@ -43,7 +43,6 @@ linters-settings:
     lines: 100
     statements: 50
   lll:
-    tabwidth: 2
     line-length: 140
 
 issues:

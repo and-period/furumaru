@@ -15,7 +15,7 @@ env:
   DB_PORT: 3306
   DB_USERNAME: root
   DB_PASSWORD: 12345678
-  GO_VERSION: 1.21.4
+  GO_VERSION: 1.22.0
 
 jobs:
   setup:

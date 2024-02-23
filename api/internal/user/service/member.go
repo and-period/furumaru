@@ -102,7 +102,7 @@ func (s *service) CreateMemberWithOAuth(
 		PhoneNumber:   in.PhoneNumber,
 	}
 	u := entity.NewUser(params)
-	auth := func(ctx context.Context) error {
+	auth := func(_ context.Context) error {
 		return nil // Cognitoへはすでに登録済みのため何もしない
 	}
 	if err := s.db.Member.Create(ctx, u, auth); err != nil {

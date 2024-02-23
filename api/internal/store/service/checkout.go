@@ -87,7 +87,7 @@ func (s *service) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayPayIn
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderPayPayParams{
 			SessionID: sessionID,
 		}
@@ -105,7 +105,7 @@ func (s *service) CheckoutLinePay(ctx context.Context, in *store.CheckoutLinePay
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderLinePayParams{
 			SessionID: sessionID,
 		}
@@ -123,7 +123,7 @@ func (s *service) CheckoutMerpay(ctx context.Context, in *store.CheckoutMerpayIn
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderMerpayParams{
 			SessionID: sessionID,
 		}
@@ -141,7 +141,7 @@ func (s *service) CheckoutRakutenPay(ctx context.Context, in *store.CheckoutRaku
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderRakutenPayParams{
 			SessionID: sessionID,
 		}
@@ -159,7 +159,7 @@ func (s *service) CheckoutAUPay(ctx context.Context, in *store.CheckoutAUPayInpu
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderAUPayParams{
 			SessionID: sessionID,
 		}

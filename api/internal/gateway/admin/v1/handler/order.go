@@ -39,7 +39,7 @@ func (h *handler) filterAccessOrder(ctx *gin.Context) {
 			}
 			return currentAdmin(ctx, order.CoordinatorID), nil
 		},
-		producer: func(ctx *gin.Context) (bool, error) {
+		producer: func(_ *gin.Context) (bool, error) {
 			// TODO: フィルタリング実装までは全て拒否
 			return false, nil
 		},
