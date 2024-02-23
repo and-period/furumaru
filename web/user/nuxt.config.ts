@@ -51,6 +51,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
+    'nuxt-gtag',
     [
       '@pinia/nuxt',
       {

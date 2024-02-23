@@ -8,7 +8,7 @@ on:
 env:
   SERVICE: docs
   TZ: 'Asia/Tokyo'
-  NODE_VERSION: 18.15.0
+  NODE_VERSION: 21.6.2
 
 jobs:
   setup:
