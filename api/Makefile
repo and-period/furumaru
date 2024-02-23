@@ -1,9 +1,9 @@
 .PHONY: help setup install mockgen protoc fmt vet lint test build
 
-AIR_VERSION := 1.45.0
-GOFUMPT_VERSION := 0.5.0
-GOLANGCI_VERSION := 1.55.2
-MOCKGEN_VERSION := 0.2.0
+AIR_VERSION := 1.50.0
+GOFUMPT_VERSION := 0.6.0
+GOLANGCI_VERSION := 1.56.2
+MOCKGEN_VERSION := 0.4.0
 
 LINT_PACKAGES := $(shell go list $(CURDIR)/... | grep -v -e "mock" -v -e "tmp")
 TEST_PACKAGES := $(shell go list $(CURDIR)/internal/... $(CURDIR)/pkg/...)
