@@ -29,7 +29,7 @@ func buildOptions(opts ...ClientOption) *options {
 	for i := range opts {
 		opts[i](dopts)
 	}
-	dopts.opts.BeforeSend = func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
+	dopts.opts.BeforeSend = func(event *sentry.Event, _ *sentry.EventHint) *sentry.Event {
 		for i := range event.Exception {
 			exception := &event.Exception[i]
 			if !strings.Contains(exception.Type, "wrapError") {
