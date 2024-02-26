@@ -70,7 +70,7 @@ const handelClickRemoveItemButton = (id: string) => {
         class="mt-8 bg-main p-[14px] text-[16px] text-white"
         @click="handleBuyButton"
       >
-        このマルシェのご購入手続きへ
+        この産地のご購入手続きへ
       </button>
     </div>
 
