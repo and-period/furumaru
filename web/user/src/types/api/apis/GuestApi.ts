@@ -15,12 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
+  CreateGuestLiveCommentRequest,
   ErrorResponse,
   GuestCheckoutRequest,
   GuestCheckoutResponse,
   GuestCheckoutStateResponse,
 } from '../models/index';
 import {
+    CreateGuestLiveCommentRequestFromJSON,
+    CreateGuestLiveCommentRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     GuestCheckoutRequestFromJSON,
@@ -30,6 +33,11 @@ import {
     GuestCheckoutStateResponseFromJSON,
     GuestCheckoutStateResponseToJSON,
 } from '../models/index';
+
+export interface V1CreateGuestLiveCommentRequest {
+    scheduleId: string;
+    body: CreateGuestLiveCommentRequest;
+}
 
 export interface V1GetGuestCheckoutStateRequest {
     transactionId: string;
@@ -43,6 +51,42 @@ export interface V1GuestCheckoutRequest {
  * 
  */
 export class GuestApi extends runtime.BaseAPI {
+
+    /**
+     * ライブ配信ゲストコメント投稿
+     */
+    async v1CreateGuestLiveCommentRaw(requestParameters: V1CreateGuestLiveCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.scheduleId === null || requestParameters.scheduleId === undefined) {
+            throw new runtime.RequiredError('scheduleId','Required parameter requestParameters.scheduleId was null or undefined when calling v1CreateGuestLiveComment.');
+        }
+
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateGuestLiveComment.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/v1/guests/schedules/{scheduleId}`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters.scheduleId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * ライブ配信ゲストコメント投稿
+     */
+    async v1CreateGuestLiveComment(requestParameters: V1CreateGuestLiveCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CreateGuestLiveCommentRaw(requestParameters, initOverrides);
+    }
 
     /**
      * ゲスト注文情報の取得

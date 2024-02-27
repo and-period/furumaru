@@ -33,6 +33,15 @@ func TestLiveComments(t *testing.T) {
 					UpdatedAt:   now,
 				},
 				{
+					ID:          "disabled-id",
+					BroadcastID: "broadcast-id",
+					UserID:      "user-id",
+					Content:     "こんにちは",
+					Disabled:    true,
+					CreatedAt:   now,
+					UpdatedAt:   now,
+				},
+				{
 					ID:          "unknown-id",
 					BroadcastID: "broadcast-id",
 					UserID:      "unknown-id",
@@ -77,6 +86,22 @@ func TestLiveComments(t *testing.T) {
 						Username:     "username",
 						AccountID:    "account-id",
 						ThumbnailURL: "http://example.com/thumbnail.png",
+						Thumbnails: []*response.Image{
+							{URL: "http://example.com/thumbnail_small.png", Size: int32(ImageSizeSmall)},
+							{URL: "http://example.com/thumbnail_medium.png", Size: int32(ImageSizeMedium)},
+							{URL: "http://example.com/thumbnail_large.png", Size: int32(ImageSizeLarge)},
+						},
+						Comment:     "こんにちは",
+						PublishedAt: now.Unix(),
+					},
+				},
+				{
+					LiveComment: response.LiveComment{
+						UserID:       "",
+						Username:     "",
+						AccountID:    "",
+						ThumbnailURL: "",
+						Thumbnails:   []*response.Image{},
 						Comment:      "こんにちは",
 						PublishedAt:  now.Unix(),
 					},

@@ -105,3 +105,8 @@ type CreateBroadcastCommentInput struct {
 	UserID     string `validate:"required"`
 	Content    string `validate:"required,max=200"`
 }
+
+type CreateBroadcastGuestCommentInput struct {
+	ScheduleID string `validate:"required"`
+	Content    string `validate:"required,max=200"`
+}

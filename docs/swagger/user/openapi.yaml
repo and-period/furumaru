@@ -119,6 +119,8 @@ paths:
     $ref: './paths/v1/guests/checkouts/index.yaml'
   /v1/guests/checkouts/{transactionId}:
     $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
+  /v1/guests/schedules/{scheduleId}:
+    $ref: './paths/v1/guests/schedules/_scheduleId/comments/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
@@ -246,6 +248,8 @@ components:
       $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
     v1GuestCheckoutRequest:
       $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutRequest'
+    v1CreateGuestLiveCommentRequest:
+      $ref: './components/schemas/v1/guest-live-comment.request.yaml#/createGuestLiveCommentRequest'
     v1CreateLiveCommentRequest:
       $ref: './components/schemas/v1/live-comment.request.yaml#/createLiveCommentRequest'
     # Response

@@ -13,16 +13,22 @@ type LiveComment struct {
 type LiveComments []*LiveComment
 
 func NewLiveComment(comment *mentity.BroadcastComment, user *uentity.User) *LiveComment {
-	return &LiveComment{
+	res := &LiveComment{
 		LiveComment: response.LiveComment{
-			UserID:       user.ID,
-			Username:     user.Username,
-			AccountID:    user.AccountID,
-			ThumbnailURL: user.ThumbnailURL,
-			Comment:      comment.Content,
-			PublishedAt:  comment.CreatedAt.Unix(),
+			Thumbnails:  []*response.Image{},
+			Comment:     comment.Content,
+			PublishedAt: comment.CreatedAt.Unix(),
 		},
 	}
+	if user == nil || user.Status != uentity.UserStatusVerified {
+		return res
+	}
+	res.UserID = user.ID
+	res.Username = user.Username
+	res.AccountID = user.AccountID
+	res.ThumbnailURL = user.ThumbnailURL
+	res.Thumbnails = NewImages(user.Thumbnails).Response()
+	return res
 }
 
 func (c *LiveComment) Response() *response.LiveComment {
@@ -32,11 +38,10 @@ func (c *LiveComment) Response() *response.LiveComment {
 func NewLiveComments(comments mentity.BroadcastComments, users map[string]*uentity.User) LiveComments {
 	res := make(LiveComments, 0, len(comments))
 	for _, comment := range comments {
-		u, ok := users[comment.UserID]
-		if !ok || u.Status != uentity.UserStatusVerified {
+		if comment.Disabled {
 			continue
 		}
-		res = append(res, NewLiveComment(comment, u))
+		res = append(res, NewLiveComment(comment, users[comment.UserID]))
 	}
 	return res
 }

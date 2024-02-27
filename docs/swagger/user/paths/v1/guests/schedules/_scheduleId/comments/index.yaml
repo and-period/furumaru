@@ -1,0 +1,43 @@
+post:
+  summary: ライブ配信ゲストコメント投稿
+  operationId: v1CreateGuestLiveComment
+  tags:
+  - Guest
+  - Schedule
+  security:
+  - cookieAuth: []
+  parameters:
+  - in: path
+    name: scheduleId
+    schema:
+      type: string
+    description: マルシェ開催スケジュールID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../../openapi.yaml#/components/schemas/v1CreateGuestLiveCommentRequest'
+  responses:
+    204:
+      description: 成功
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: マルシェ開催スケジュールが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    412:
+      description: ライブ配信時間外のためコメント投稿不可
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'

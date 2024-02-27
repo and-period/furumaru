@@ -43,7 +43,12 @@ func NewBroadcastComment(params *BroadcastCommentParams) *BroadcastComment {
 }
 
 func (cs BroadcastComments) UserIDs() []string {
-	return set.UniqBy(cs, func(c *BroadcastComment) string {
-		return c.UserID
-	})
+	set := set.NewEmpty[string](len(cs))
+	for i := range cs {
+		if cs[i].UserID == "" {
+			continue
+		}
+		set.Add(cs[i].UserID)
+	}
+	return set.Slice()
 }

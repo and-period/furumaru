@@ -57,6 +57,13 @@ func TestBroadcastComments_UserIDs(t *testing.T) {
 					Content:     "こんにちは",
 					Disabled:    false,
 				},
+				{
+					ID:          "comment-id",
+					BroadcastID: "broadcast-id",
+					UserID:      "",
+					Content:     "こんにちは",
+					Disabled:    false,
+				},
 			},
 			expect: []string{"user-id"},
 		},
