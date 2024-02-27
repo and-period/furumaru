@@ -25,6 +25,7 @@ export * from './CreateAuthRequest';
 export * from './CreateAuthResponse';
 export * from './CreateAuthWithOAuthRequest';
 export * from './CreateContactRequest';
+export * from './CreateGuestLiveCommentRequest';
 export * from './CreateLiveCommentRequest';
 export * from './DeliveryType';
 export * from './DiscountType';

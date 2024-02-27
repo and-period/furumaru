@@ -67,3 +67,25 @@ func (s *service) CreateBroadcastComment(ctx context.Context, in *media.CreateBr
 	}
 	return comment, nil
 }
+
+func (s *service) CreateBroadcastGuestComment(ctx context.Context, in *media.CreateBroadcastGuestCommentInput) (*entity.BroadcastComment, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	if broadcast.Status == entity.BroadcastStatusDisabled {
+		return nil, fmt.Errorf("service: broadcast is disabled: %w", exception.ErrFailedPrecondition)
+	}
+	params := &entity.BroadcastCommentParams{
+		BroadcastID: broadcast.ID,
+		Content:     in.Content,
+	}
+	comment := entity.NewBroadcastComment(params)
+	if err := s.db.BroadcastComment.Create(ctx, comment); err != nil {
+		return nil, internalError(err)
+	}
+	return comment, nil
+}

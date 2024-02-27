@@ -147,6 +147,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.statusRoutes(v1)
 	// ゲスト用エンドポイント
 	h.guestCheckoutRoutes(v1)
+	h.guestLiveCommentRoutes(v1)
 	// 要認証エンドポイント
 	h.addressRoutes(v1)
 	h.cartRoutes(v1)
@@ -239,29 +240,28 @@ func (h *handler) authentication(ctx *gin.Context) {
 	ctx.Next()
 }
 
-// TODO: メモリリークの原因切り分けのため、一時的にコメントアウト
-// func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
-// 	scheduleID := util.GetParam(ctx, "scheduleId")
-// 	if scheduleID == "" {
-// 		ctx.Next()
-// 		return // 開催スケジュールIDがない場合、ライブ配信と関係ないエンドポイントとなるためスキップ
-// 	}
-// 	in := &media.CreateBroadcastViewerLogInput{
-// 		ScheduleID: scheduleID,
-// 		SessionID:  h.getSessionID(ctx),
-// 		UserID:     h.getUserID(ctx),
-// 		UserAgent:  ctx.Request.UserAgent(),
-// 		ClientIP:   ctx.ClientIP(),
-// 	}
-// 	h.waitGroup.Add(1)
-// 	go func() {
-// 		defer h.waitGroup.Done()
-// 		if err := h.media.CreateBroadcastViewerLog(context.Background(), in); err != nil {
-// 			h.logger.Error("Failed to create broadcast viewer log", zap.Error(err))
-// 		}
-// 	}()
-// 	ctx.Next()
-// }
+func (h *handler) createBroadcastViewerLog(ctx *gin.Context) {
+	scheduleID := util.GetParam(ctx, "scheduleId")
+	if scheduleID == "" {
+		ctx.Next()
+		return // 開催スケジュールIDがない場合、ライブ配信と関係ないエンドポイントとなるためスキップ
+	}
+	in := &media.CreateBroadcastViewerLogInput{
+		ScheduleID: scheduleID,
+		SessionID:  h.getSessionID(ctx),
+		UserID:     h.getUserID(ctx),
+		UserAgent:  ctx.Request.UserAgent(),
+		ClientIP:   ctx.ClientIP(),
+	}
+	h.waitGroup.Add(1)
+	go func() {
+		defer h.waitGroup.Done()
+		if err := h.media.CreateBroadcastViewerLog(context.Background(), in); err != nil {
+			h.logger.Error("Failed to create broadcast viewer log", zap.Error(err))
+		}
+	}()
+	ctx.Next()
+}
 
 func (h *handler) setAuth(ctx *gin.Context) error {
 	token, err := util.GetAuthToken(ctx)

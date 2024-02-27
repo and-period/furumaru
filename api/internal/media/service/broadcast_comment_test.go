@@ -265,3 +265,93 @@ func TestCreateBroadcastComment(t *testing.T) {
 		}))
 	}
 }
+
+func TestCreateBroadcastGuestComment(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+	broadcast := &entity.Broadcast{
+		ID:            "broadcast-id",
+		ScheduleID:    "schedule-id",
+		CoordinatorID: "coordinator-id",
+		Status:        entity.BroadcastStatusIdle,
+		InputURL:      "rtmp://127.0.0.1:1935/app/instance",
+		OutputURL:     "http://example.com/index.m3u8",
+		CreatedAt:     now,
+		UpdatedAt:     now,
+	}
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.CreateBroadcastGuestCommentInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.BroadcastComment.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, comment *entity.BroadcastComment) error {
+						expect := &entity.BroadcastComment{
+							ID:          comment.ID, // ignore
+							BroadcastID: "broadcast-id",
+							UserID:      "",
+							Content:     "こんにちは",
+							Disabled:    false,
+						}
+						assert.Equal(t, expect, comment)
+						return nil
+					})
+			},
+			input: &media.CreateBroadcastGuestCommentInput{
+				ScheduleID: "schedule-id",
+				Content:    "こんにちは",
+			},
+			expectErr: nil,
+		},
+		{
+			name: "broadcast is disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.CreateBroadcastGuestCommentInput{
+				ScheduleID: "schedule-id",
+				Content:    "こんにちは",
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.CreateBroadcastGuestCommentInput{
+				ScheduleID: "schedule-id",
+				Content:    "こんにちは",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to create broadcast comment",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.db.BroadcastComment.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &media.CreateBroadcastGuestCommentInput{
+				ScheduleID: "schedule-id",
+				Content:    "こんにちは",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.CreateBroadcastGuestComment(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
