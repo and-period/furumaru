@@ -68,7 +68,9 @@ func (s *service) CreateBroadcastComment(ctx context.Context, in *media.CreateBr
 	return comment, nil
 }
 
-func (s *service) CreateBroadcastGuestComment(ctx context.Context, in *media.CreateBroadcastGuestCommentInput) (*entity.BroadcastComment, error) {
+func (s *service) CreateBroadcastGuestComment(
+	ctx context.Context, in *media.CreateBroadcastGuestCommentInput,
+) (*entity.BroadcastComment, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
