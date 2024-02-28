@@ -16,7 +16,7 @@ import type {
   GetUploadUrlRequest,
   UploadUrlResponse
 } from '~/types/api'
-import { PermissionError, ValidationError } from '~/types/exception'
+import { NotFoundError, PermissionError, ValidationError } from '~/types/exception'
 
 export const useProductStore = defineStore('product', {
   state: () => ({
@@ -171,7 +171,22 @@ export const useProductStore = defineStore('product', {
     async updateProduct (productId: string, payload: UpdateProductRequest) {
       try {
         await apiClient.productApi().v1UpdateProduct(productId, payload)
-      } catch (err) {
+      } catch (err: any) {
+        if (err.response.status === 400) {
+          return Promise.reject(
+            new ValidationError('必須項目が不足しているか、内容に誤りがあります')
+          )
+        }
+        if (err.response.status === 403) {
+          return Promise.reject(
+            new PermissionError('商品を更新する権限がありません')
+          )
+        }
+        if (err.response.status === 404) {
+          return Promise.reject(
+            new NotFoundError('対象の商品が存在しません')
+          )
+        }
         return this.errorHandler(err)
       }
     },
