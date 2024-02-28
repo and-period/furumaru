@@ -202,7 +202,17 @@ export const useProductStore = defineStore('product', {
         const index = this.products.findIndex(product => product.id === productId)
         this.products.splice(index, 1)
         this.totalItems--
-      } catch (err) {
+      } catch (err: any) {
+        if (err.response.status === 403) {
+          return Promise.reject(
+            new PermissionError('商品を削除する権限がありません')
+          )
+        }
+        if (err.response.status === 404) {
+          return Promise.reject(
+            new NotFoundError('対象の商品が存在しません')
+          )
+        }
         return this.errorHandler(err)
       }
     }
