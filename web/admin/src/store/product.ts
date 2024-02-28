@@ -16,6 +16,7 @@ import type {
   GetUploadUrlRequest,
   UploadUrlResponse
 } from '~/types/api'
+import { PermissionError, ValidationError } from '~/types/exception'
 
 export const useProductStore = defineStore('product', {
   state: () => ({
@@ -147,7 +148,17 @@ export const useProductStore = defineStore('product', {
           ...payload,
           inventory: Number(payload.inventory)
         })
-      } catch (err) {
+      } catch (err: any) {
+        if (err.response.status === 400) {
+          return Promise.reject(
+            new ValidationError('必須項目が不足しているか、内容に誤りがあります')
+          )
+        }
+        if (err.response.status === 403) {
+          return Promise.reject(
+            new PermissionError('商品を登録する権限がありません')
+          )
+        }
         return this.errorHandler(err)
       }
     },
