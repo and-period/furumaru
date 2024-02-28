@@ -139,12 +139,30 @@ export const useProductStore = defineStore('product', {
         fileType: contentType
       }
       if (contentType.includes('image/')) {
-        const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
-        return res
+        try {
+          const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
+          return res
+        } catch (err: any) {
+          if (err.response.status === 400) {
+            return Promise.reject(
+              new ValidationError('このファイルはアップロードできません。')
+            )
+          }
+          return this.errorHandler(err)
+        }
       }
       if (contentType.includes('video/')) {
-        const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
-        return res
+        try {
+          const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
+          return res
+        } catch (err: any) {
+          if (err.response.status === 400) {
+            return Promise.reject(
+              new ValidationError('このファイルはアップロードできません。')
+            )
+          }
+        return this.errorHandler(err)
+        }
       }
       throw new Error('不明なMINEタイプです。')
     },
