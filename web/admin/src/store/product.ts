@@ -105,14 +105,10 @@ export const useProductStore = defineStore('product', {
         return res.data
       } catch (err: any) {
         if (err.response.status === 403) {
-          return Promise.reject(
-            new PermissionError('商品を閲覧する権限がありません')
-          )
+          return this.errorHandler(err, { 403: '商品を閲覧する権限がありません' })
         }
         if (err.response.status === 404) {
-          return Promise.reject(
-            new NotFoundError('対象の商品が存在しません')
-          )
+          return this.errorHandler(err, { 404: '対象の商品が存在しません' })
         }
         return this.errorHandler(err)
       }
@@ -144,9 +140,7 @@ export const useProductStore = defineStore('product', {
           return res
         } catch (err: any) {
           if (err.response.status === 400) {
-            return Promise.reject(
-              new ValidationError('このファイルはアップロードできません。')
-            )
+            return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
           }
           return this.errorHandler(err)
         }
@@ -157,9 +151,7 @@ export const useProductStore = defineStore('product', {
           return res
         } catch (err: any) {
           if (err.response.status === 400) {
-            return Promise.reject(
-              new ValidationError('このファイルはアップロードできません。')
-            )
+            return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
           }
         return this.errorHandler(err)
         }
@@ -178,14 +170,10 @@ export const useProductStore = defineStore('product', {
         })
       } catch (err: any) {
         if (err.response.status === 400) {
-          return Promise.reject(
-            new ValidationError('必須項目が不足しているか、内容に誤りがあります')
-          )
+          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
         }
         if (err.response.status === 403) {
-          return Promise.reject(
-            new PermissionError('商品を登録する権限がありません')
-          )
+          return this.errorHandler(err, { 403: '商品を登録する権限がありません' })
         }
         return this.errorHandler(err)
       }
@@ -201,19 +189,13 @@ export const useProductStore = defineStore('product', {
         await apiClient.productApi().v1UpdateProduct(productId, payload)
       } catch (err: any) {
         if (err.response.status === 400) {
-          return Promise.reject(
-            new ValidationError('必須項目が不足しているか、内容に誤りがあります')
-          )
+          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
         }
         if (err.response.status === 403) {
-          return Promise.reject(
-            new PermissionError('商品を更新する権限がありません')
-          )
+          return this.errorHandler(err, { 403: '商品を更新する権限がありません' })
         }
         if (err.response.status === 404) {
-          return Promise.reject(
-            new NotFoundError('対象の商品が存在しません')
-          )
+          return this.errorHandler(err, { 404: '対象の商品が存在しません' })
         }
         return this.errorHandler(err)
       }
@@ -232,14 +214,10 @@ export const useProductStore = defineStore('product', {
         this.totalItems--
       } catch (err: any) {
         if (err.response.status === 403) {
-          return Promise.reject(
-            new PermissionError('商品を削除する権限がありません')
-          )
+          return this.errorHandler(err, { 403: '商品を削除する権限がありません' })
         }
         if (err.response.status === 404) {
-          return Promise.reject(
-            new NotFoundError('対象の商品が存在しません')
-          )
+          return this.errorHandler(err, { 404: '対象の商品が存在しません' })
         }
         return this.errorHandler(err)
       }
