@@ -103,7 +103,17 @@ export const useProductStore = defineStore('product', {
         productTypeStore.productTypes = [res.data.productType]
         productTagStore.productTags = res.data.productTags
         return res.data
-      } catch (err) {
+      } catch (err: any) {
+        if (err.response.status === 403) {
+          return Promise.reject(
+            new PermissionError('商品を閲覧する権限がありません')
+          )
+        }
+        if (err.response.status === 404) {
+          return Promise.reject(
+            new NotFoundError('対象の商品が存在しません')
+          )
+        }
         return this.errorHandler(err)
       }
     },
