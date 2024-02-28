@@ -153,7 +153,7 @@ export const useProductStore = defineStore('product', {
           if (err.response.status === 400) {
             return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
           }
-        return this.errorHandler(err)
+          return this.errorHandler(err)
         }
       }
       throw new Error('不明なMINEタイプです。')
