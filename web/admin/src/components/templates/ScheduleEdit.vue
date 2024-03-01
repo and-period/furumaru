@@ -10,6 +10,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  updatable: {
+    type: Boolean,
+    default: false
+  },
   isAlert: {
     type: Boolean,
     default: false
@@ -351,6 +355,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
       <organisms-schedule-show
         v-model:form-data="scheduleFormDataValue"
         :loading="loading"
+        :updatable="updatable"
         :schedule="schedule"
         :coordinators="coordinators"
         :thumbnail-upload-status="thumbnailUploadStatus"

@@ -11,6 +11,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  updatable: {
+    type: Boolean,
+    default: false
+  },
   formData: {
     type: Object as PropType<UpdateScheduleRequest>,
     default: (): UpdateScheduleRequest => ({
@@ -169,11 +173,13 @@ const onSubmit = async (): Promise<void> => {
           <v-card-text>
             <v-text-field
               v-model="formDataValidate.title.$model"
+              :readonly="!updatable"
               :error-messages="getErrorMessage(formDataValidate.title.$errors)"
               label="タイトル"
             />
             <v-textarea
               v-model="formDataValidate.description.$model"
+              :readonly="!updatable"
               :error-message="getErrorMessage(formDataValidate.description.$errors)"
               label="詳細"
               maxlength="2000"
@@ -234,6 +240,7 @@ const onSubmit = async (): Promise<void> => {
           <div class="d-flex flex-column flex-md-row justify-center">
             <v-text-field
               v-model="startTimeDataValidate.date.$model"
+              :readonly="!updatable"
               :error-messages="getErrorMessage(startTimeDataValidate.date.$errors)"
               type="date"
               variant="outlined"
@@ -243,6 +250,7 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model="startTimeDataValidate.time.$model"
+              :readonly="!updatable"
               :error-messages="getErrorMessage(startTimeDataValidate.time.$errors)"
               type="time"
               variant="outlined"
@@ -256,6 +264,7 @@ const onSubmit = async (): Promise<void> => {
           <div class="d-flex flex-column flex-md-row justify-center">
             <v-text-field
               v-model="endTimeDataValidate.date.$model"
+              :readonly="!updatable"
               :error-messages="getErrorMessage(endTimeDataValidate.date.$errors)"
               type="date"
               variant="outlined"
@@ -265,6 +274,7 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model="endTimeDataValidate.time.$model"
+              :readonly="!updatable"
               :error-messages="getErrorMessage(endTimeDataValidate.time.$errors)"
               type="time"
               variant="outlined"
@@ -277,7 +287,14 @@ const onSubmit = async (): Promise<void> => {
     </v-col>
   </v-row>
 
-  <v-btn block :loading="loading" variant="outlined" color="primary" @click="onSubmit">
+  <v-btn
+    v-if="updatable"
+    block
+    :loading="loading"
+    variant="outlined"
+    color="primary"
+    @click="onSubmit"
+  >
     更新
   </v-btn>
 </template>
