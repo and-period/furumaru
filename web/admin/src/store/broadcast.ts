@@ -59,7 +59,10 @@ export const useBroadcastStore = defineStore('broadcast', {
       try {
         await apiClient.broadcastApi().v1ActivateBroadcastStaticImage(scheduleId)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          404: '指定したマルシェの配信が見つかりません。',
+          412: 'マルシェの配信中ではないため、ふた絵を有効化できません。'
+        })
       }
     },
 
@@ -72,7 +75,10 @@ export const useBroadcastStore = defineStore('broadcast', {
       try {
         await apiClient.broadcastApi().v1DeactivateBroadcastStaticImage(scheduleId)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          404: '指定したマルシェの配信が見つかりません。',
+          412: 'マルシェの配信中ではないため、ふた絵を無効化できません。'
+        })
       }
     },
 
@@ -96,7 +102,10 @@ export const useBroadcastStore = defineStore('broadcast', {
         }
         await apiClient.broadcastApi().v1ActivateBroadcastMP4(scheduleId, req)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          404: '指定したマルシェの配信が見つかりません。',
+          412: 'マルシェの配信中ではないため、MP4に切り替えできません。'
+        })
       }
     },
 
@@ -109,7 +118,10 @@ export const useBroadcastStore = defineStore('broadcast', {
       try {
         await apiClient.broadcastApi().v1ActivateBroadcastRTMP(scheduleId)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          404: '指定したマルシェの配信が見つかりません。',
+          412: 'マルシェの配信中ではないため、RTMPに切り替えできません。'
+        })
       }
     },
 
@@ -133,7 +145,10 @@ export const useBroadcastStore = defineStore('broadcast', {
         }
         await apiClient.broadcastApi().v1UpdateBroadcastArchive(scheduleId, req)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          404: '指定したマルシェの配信が見つかりません。',
+          412: 'マルシェの配信が終了していないため、オンデマンド動画を差し替えできません。'
+        })
       }
     }
   }
