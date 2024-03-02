@@ -37,11 +37,8 @@ export const useAdministratorStore = defineStore('administrator', {
       try {
         const res = await apiClient.administratorApi().v1GetAdministrator(administratorId)
         this.administrator = res.data.administrator
-      } catch (err: any) {
-        if (err?.response?.status === 404) {
-          return this.errorHandler(err, { 404: '対象のシステム管理者が存在しません' })
-        }
-        return this.errorHandler(err)
+      } catch (err) {
+        return this.errorHandler(err, { 404: '対象のシステム管理者が存在しません' })
       }
     },
 
@@ -52,11 +49,11 @@ export const useAdministratorStore = defineStore('administrator', {
     async createAdministrator (payload: CreateAdministratorRequest): Promise<void> {
       try {
         await apiClient.administratorApi().v1CreateAdministrator(payload)
-      } catch (err: any) {
-        if (err?.response?.status === 400) {
-          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
-        }
-        return this.errorHandler(err, { 409: 'このメールアドレスはすでに登録されているため、登録できません。' })
+      } catch (err) {
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          409: 'このメールアドレスはすでに登録されているため、登録できません。'
+        })
       }
     },
 
@@ -68,14 +65,12 @@ export const useAdministratorStore = defineStore('administrator', {
     async updateAdministrator (administratorId: string, payload: UpdateAdministratorRequest): Promise<void> {
       try {
         await apiClient.administratorApi().v1UpdateAdministrator(administratorId, payload)
-      } catch (err: any) {
-        if (err?.response?.status === 400) {
-          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
-        }
-        if (err?.response?.status === 404) {
-          return this.errorHandler(err, { 404: '対象のシステム管理者が存在しません' })
-        }
-        return this.errorHandler(err, { 409: 'このメールアドレスはすでに登録されています。' })
+      } catch (err) {
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: '対象のシステム管理者が存在しません',
+          409: 'このメールアドレスはすでに登録されています。'
+        })
       }
     },
 
@@ -87,13 +82,10 @@ export const useAdministratorStore = defineStore('administrator', {
       try {
         await apiClient.administratorApi().v1DeleteAdministrator(administratorId)
       } catch (err: any) {
-        if (err?.response?.status === 400) {
-          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
-        }
-        if (err?.response?.status === 404) {
-          return this.errorHandler(err, { 404: '対象のシステム管理者が存在しません' })
-        }
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: '対象のシステム管理者が存在しません'
+        })
       }
     }
   }
