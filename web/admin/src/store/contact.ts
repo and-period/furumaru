@@ -32,7 +32,7 @@ export const useContactStore = defineStore('contact', {
     },
 
     /**
-     * お問い合わせの一覧を取得する非同期関数
+     * お問い合わせを取得する非同期関数
      * @param contactId お問い合わせID
      */
     async getContact (contactId: string): Promise<ContactResponse> {
@@ -41,7 +41,7 @@ export const useContactStore = defineStore('contact', {
         this.contact = res.data.contact
         return res.data
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象のお問い合わせが存在しません' })
       }
     },
 
@@ -49,7 +49,10 @@ export const useContactStore = defineStore('contact', {
       try {
         await apiClient.contactApi().v1UpdateContact(contactId, payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: '対象のお問い合わせが存在しません'
+        })
       }
     }
   }
