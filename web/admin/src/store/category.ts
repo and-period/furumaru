@@ -83,11 +83,11 @@ export const useCategoryStore = defineStore('category', {
       try {
         const res = await apiClient.categoryApi().v1CreateCategory(payload)
         this.categories.unshift(res.data.category)
-      } catch (err: any) {
-        if (err?.response?.status === 400) {
-          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
-        }
-        return this.errorHandler(err, { 409: 'このカテゴリー名はすでに登録されています。' })
+      } catch (err) {
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          409: 'このカテゴリー名はすでに登録されています。'
+        })
       }
     },
 
@@ -99,14 +99,12 @@ export const useCategoryStore = defineStore('category', {
     async updateCategory (categoryId: string, payload: UpdateCategoryRequest) {
       try {
         await apiClient.categoryApi().v1UpdateCategory(categoryId, payload)
-      } catch (err: any) {
-        if (err?.response?.status === 400) {
-          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
-        }
-        if (err?.response?.status === 404) {
-          return this.errorHandler(err, { 404: '対象のカテゴリーが存在しません' })
-        }
-        return this.errorHandler(err, { 409: 'このカテゴリー名はすでに登録されています。' })
+      } catch (err) {
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: '対象のカテゴリーが存在しません',
+          409: 'このカテゴリー名はすでに登録されています。'
+        })
       }
       this.fetchCategories()
     },
@@ -118,14 +116,11 @@ export const useCategoryStore = defineStore('category', {
     async deleteCategory (categoryId: string): Promise<void> {
       try {
         await apiClient.categoryApi().v1DeleteCategory(categoryId)
-      } catch (err: any) {
-        if (err?.response?.status === 404) {
-          return this.errorHandler(err, { 404: '対象のカテゴリーが存在しません' })
-        }
-        if (err?.response?.status === 412) {
-          return this.errorHandler(err, { 412: '品目と紐付いているため削除できません' })
-        }
-        return this.errorHandler(err)
+      } catch (err) {
+        return this.errorHandler(err, {
+          404: '対象のカテゴリーが存在しません',
+          412: '品目と紐付いているため削除できません'
+        })
       }
       this.fetchCategories()
     }
