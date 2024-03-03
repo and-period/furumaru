@@ -44,7 +44,7 @@ export const useScheduleStore = defineStore('schedule', {
         this.schedule = res.data.schedule
         coordinatorStore.coordinators.push(res.data.coordinator)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象の開催スケジュールが見つかりません。' })
       }
     },
 
@@ -57,7 +57,7 @@ export const useScheduleStore = defineStore('schedule', {
         const res = await apiClient.scheduleApi().v1CreateSchedule(payload)
         return res.data.schedule
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: '必須項目が不足しているか、入力内容に誤りがあります。' })
       }
     },
 
@@ -70,7 +70,10 @@ export const useScheduleStore = defineStore('schedule', {
       try {
         await apiClient.scheduleApi().v1UpdateSchedule(scheduleId, payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          404: '対象の開催スケジュールが見つかりません。'
+        })
       }
     },
 
@@ -84,7 +87,10 @@ export const useScheduleStore = defineStore('schedule', {
         const req: ApproveScheduleRequest = { approved: !schedule.approved }
         await apiClient.scheduleApi().v1ApproveSchedule(schedule.id, req)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          404: '対象の開催スケジュールが見つかりません。'
+        })
       }
     },
 
@@ -99,7 +105,10 @@ export const useScheduleStore = defineStore('schedule', {
         const req: PublishScheduleRequest = { public: published }
         await apiClient.scheduleApi().v1PublishSchedule(scheduleId, req)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          404: '対象の開催スケジュールが見つかりません。'
+        })
       }
     },
 
