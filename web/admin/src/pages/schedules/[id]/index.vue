@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
+import dayjs, { unix } from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useBroadcastStore, useCommonStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore } from '~/store'
@@ -107,6 +107,11 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 
 const isLoading = (): boolean => {
   return fetchState?.pending?.value || loading.value
+}
+
+const updatable = (): boolean => {
+  const startAt = unix(schedule.value.startAt)
+  return dayjs().isBefore(startAt)
 }
 
 const handleSearchProducer = async (name: string): Promise<void> => {
@@ -440,7 +445,7 @@ try {
 </script>
 
 <template>
-  <templates-schedule-show
+  <templates-schedule-edit
     v-model:selected-tab-item="selector"
     v-model:create-live-dialog="createLiveDialog"
     v-model:update-live-dialog="updateLiveDialog"
@@ -452,6 +457,7 @@ try {
     v-model:update-live-form-data="updateLiveFormData"
     v-model:mp4-form-data="mp4FormData"
     :loading="isLoading()"
+    :updatable="updatable()"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
