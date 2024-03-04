@@ -70,7 +70,7 @@ export const usePromotionStore = defineStore('promotion', {
         this.promotion = res.data.promotion
         return res.data
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象のセール情報が存在しません。' })
       }
     },
 
@@ -82,7 +82,10 @@ export const usePromotionStore = defineStore('promotion', {
       try {
         await apiClient.promotionApi().v1CreatePromotion(payload)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'このクーポンコードはすでに登録されています。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          409: 'このクーポンコードはすでに登録されています。'
+        })
       }
     },
 
@@ -95,7 +98,7 @@ export const usePromotionStore = defineStore('promotion', {
         await apiClient.promotionApi().v1DeletePromotion(promotionId)
         this.fetchPromotions()
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象のセール情報が存在しません。' })
       }
     },
 
@@ -108,7 +111,11 @@ export const usePromotionStore = defineStore('promotion', {
       try {
         await apiClient.promotionApi().v1UpdatePromotion(promotionId, payload)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'このクーポンコードはすでに登録されています。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          404: '対象のセール情報が存在しません。',
+          409: 'このクーポンコードはすでに登録されています。'
+        })
       }
     }
   }

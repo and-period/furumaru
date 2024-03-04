@@ -49,7 +49,7 @@ export const useNotificationStore = defineStore('notification', {
         adminStore.admin = res.data.admin
         return res.data.notification
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象のお知らせが存在しません' })
       }
     },
 
@@ -63,7 +63,7 @@ export const useNotificationStore = defineStore('notification', {
       try {
         await apiClient.notificationApi().v1CreateNotification(payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
       }
     },
 
@@ -75,7 +75,7 @@ export const useNotificationStore = defineStore('notification', {
       try {
         await apiClient.notificationApi().v1DeleteNotification(id)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象のお知らせが存在しません' })
       }
       this.fetchNotifications()
     },
@@ -92,7 +92,10 @@ export const useNotificationStore = defineStore('notification', {
       try {
         await apiClient.notificationApi().v1UpdateNotification(id, payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: '対象のお知らせが存在しません'
+        })
       }
     }
   }

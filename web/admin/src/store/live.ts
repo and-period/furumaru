@@ -28,7 +28,7 @@ export const useLiveStore = defineStore('live', {
         producerStore.producers = res.data.producers
         productStore.products = res.data.products
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: 'マルシェタイムテーブルが存在しません' })
       }
     },
 
@@ -44,7 +44,11 @@ export const useLiveStore = defineStore('live', {
 
         this.lives.push(res.data.live)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: 'マルシェタイムテーブルが存在しません',
+          412: '開催時間, 生産者が重複しています'
+        })
       }
     },
 
@@ -63,7 +67,11 @@ export const useLiveStore = defineStore('live', {
         const live = this.lives[index]
         this.lives.splice(index, 1, { ...live, ...payload })
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: 'マルシェ開催スケジュール, マルシェタイムテーブルが存在しません',
+          412: '開催時間, 生産者が重複しています'
+        })
       }
     },
 
@@ -80,7 +88,10 @@ export const useLiveStore = defineStore('live', {
         const index = this.lives.findIndex((live: Live): boolean => live.id === liveId)
         this.lives.splice(index, 1)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: 'マルシェ開催スケジュール, マルシェタイムテーブルが存在しません'
+        })
       }
     }
   }

@@ -104,13 +104,10 @@ export const useProductStore = defineStore('product', {
         productTagStore.productTags = res.data.productTags
         return res.data
       } catch (err: any) {
-        if (err.response.status === 403) {
-          return this.errorHandler(err, { 403: '商品を閲覧する権限がありません' })
-        }
-        if (err.response.status === 404) {
-          return this.errorHandler(err, { 404: '対象の商品が存在しません' })
-        }
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          403: '商品を閲覧する権限がありません',
+          404: '対象の商品が存在しません'
+        })
       }
     },
 
@@ -138,22 +135,16 @@ export const useProductStore = defineStore('product', {
         try {
           const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
           return res
-        } catch (err: any) {
-          if (err.response.status === 400) {
-            return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
-          }
-          return this.errorHandler(err)
+        } catch (err) {
+          return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
         }
       }
       if (contentType.includes('video/')) {
         try {
           const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
           return res
-        } catch (err: any) {
-          if (err.response.status === 400) {
-            return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
-          }
-          return this.errorHandler(err)
+        } catch (err) {
+          return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
         }
       }
       throw new Error('不明なMINEタイプです。')
@@ -168,14 +159,11 @@ export const useProductStore = defineStore('product', {
           ...payload,
           inventory: Number(payload.inventory)
         })
-      } catch (err: any) {
-        if (err.response.status === 400) {
-          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
-        }
-        if (err.response.status === 403) {
-          return this.errorHandler(err, { 403: '商品を登録する権限がありません' })
-        }
-        return this.errorHandler(err)
+      } catch (err) {
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          403: '商品を登録する権限がありません'
+        })
       }
     },
 
@@ -187,17 +175,12 @@ export const useProductStore = defineStore('product', {
     async updateProduct (productId: string, payload: UpdateProductRequest) {
       try {
         await apiClient.productApi().v1UpdateProduct(productId, payload)
-      } catch (err: any) {
-        if (err.response.status === 400) {
-          return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
-        }
-        if (err.response.status === 403) {
-          return this.errorHandler(err, { 403: '商品を更新する権限がありません' })
-        }
-        if (err.response.status === 404) {
-          return this.errorHandler(err, { 404: '対象の商品が存在しません' })
-        }
-        return this.errorHandler(err)
+      } catch (err) {
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          403: '商品を更新する権限がありません',
+          404: '対象の商品が存在しません'
+        })
       }
     },
 
@@ -212,14 +195,11 @@ export const useProductStore = defineStore('product', {
         const index = this.products.findIndex(product => product.id === productId)
         this.products.splice(index, 1)
         this.totalItems--
-      } catch (err: any) {
-        if (err.response.status === 403) {
-          return this.errorHandler(err, { 403: '商品を削除する権限がありません' })
-        }
-        if (err.response.status === 404) {
-          return this.errorHandler(err, { 404: '対象の商品が存在しません' })
-        }
-        return this.errorHandler(err)
+      } catch (err) {
+        return this.errorHandler(err, {
+          403: '商品を削除する権限がありません',
+          404: '対象の商品が存在しません'
+        })
       }
     }
   }
