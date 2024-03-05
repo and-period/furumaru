@@ -31,7 +31,7 @@ export const useShippingStore = defineStore('shipping', {
       try {
         await apiClient.shippingApi().v1UpdateDefaultShipping(payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: '必須項目が不足しているか、入力内容に誤りがあります。' })
       }
     },
 
@@ -45,7 +45,7 @@ export const useShippingStore = defineStore('shipping', {
         const res = await apiClient.shippingApi().v1GetShipping(coordinatorId)
         this.shipping = res.data.shipping
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
       }
     },
 
@@ -59,7 +59,10 @@ export const useShippingStore = defineStore('shipping', {
       try {
         await apiClient.shippingApi().v1UpsertShipping(coordinatorId, payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、入力内容に誤りがあります。',
+          404: '対象のコーディネーターが見つかりません。'
+        })
       }
     }
   }

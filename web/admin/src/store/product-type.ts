@@ -106,7 +106,10 @@ export const useProductTypeStore = defineStore('productType', {
         )
         this.productTypes.unshift(res.data.productType)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'この品目はすでに登録されているため、登録できません。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          409: '対象の品目名はすでに登録されているため、登録できません。'
+        })
       }
     },
 
@@ -129,7 +132,11 @@ export const useProductTypeStore = defineStore('productType', {
           payload
         )
       } catch (err) {
-        return this.errorHandler(err, { 409: 'この品目はすでに登録されているため、登録できません。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          404: '対象の商品種別または品目が存在しません。',
+          409: '対象の品目名はすでに登録されているため、登録できません。'
+        })
       }
     },
 
@@ -150,7 +157,7 @@ export const useProductTypeStore = defineStore('productType', {
         )
         this.fetchProductTypes()
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象の商品種別または品目が存在しません。' })
       }
     },
 

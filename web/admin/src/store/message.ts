@@ -60,7 +60,7 @@ export const useMessageStore = defineStore('message', {
           }
         })
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '対象のメッセージが存在しません' })
       }
     }
   }

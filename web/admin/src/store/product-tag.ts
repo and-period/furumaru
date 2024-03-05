@@ -64,7 +64,10 @@ export const useProductTagStore = defineStore('productTag', {
         const res = await apiClient.productTagApi().v1CreateProductTag(payload)
         this.productTags.unshift(res.data.productTag)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'この商品タグ名はすでに登録されています。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          409: 'この商品タグ名はすでに登録されています。'
+        })
       }
     },
 
@@ -77,7 +80,11 @@ export const useProductTagStore = defineStore('productTag', {
       try {
         await apiClient.productTagApi().v1UpdateProductTag(productTagId, payload)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'この商品タグ名はすでに登録されています。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります。',
+          404: 'この商品タグは存在しません。',
+          409: 'この商品タグ名はすでに登録されています。'
+        })
       }
     },
 
@@ -89,7 +96,7 @@ export const useProductTagStore = defineStore('productTag', {
       try {
         await apiClient.productTagApi().v1DeleteProductTag(productTagId)
       } catch (err) {
-        this.errorHandler(err)
+        this.errorHandler(err, { 404: 'この商品タグは存在しません。' })
       }
     }
   }

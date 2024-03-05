@@ -44,7 +44,10 @@ export const useCustomerStore = defineStore('customer', {
         this.customer = res.data.user
         addressStore.address = res.data.address
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          403: '購入者を閲覧する権限がありません',
+          404: '対象の購入者が存在しません'
+        })
       }
     },
 
@@ -73,7 +76,10 @@ export const useCustomerStore = defineStore('customer', {
       try {
         await apiClient.userApi().v1DeleteUser(customerId)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          403: '購入者を削除する権限がありません',
+          404: '対象の購入者が存在しません'
+        })
       }
     }
   }

@@ -79,7 +79,10 @@ export const useProducerStore = defineStore('producer', {
         coordinatorStore.coordinator = res.data.coordinator
         return res.data
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          403: '生産者の情報は閲覧権限がありません。',
+          404: 'この生産者は存在しません。'
+        })
       }
     },
 
@@ -91,7 +94,10 @@ export const useProducerStore = defineStore('producer', {
       try {
         await apiClient.producerApi().v1CreateProducer(payload)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'このメールアドレスはすでに登録されているため、登録できません。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          409: 'このメールアドレスはすでに登録されているため、登録できません。'
+        })
       }
     },
 
@@ -148,7 +154,7 @@ export const useProducerStore = defineStore('producer', {
 
         return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
@@ -167,7 +173,7 @@ export const useProducerStore = defineStore('producer', {
 
         return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
@@ -181,7 +187,10 @@ export const useProducerStore = defineStore('producer', {
       try {
         await apiClient.producerApi().v1UpdateProducer(producerId, payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          403: '生産者の情報を更新する権限がありません。',
+          404: 'この生産者は存在しません。'
+        })
       }
     },
 
@@ -194,7 +203,11 @@ export const useProducerStore = defineStore('producer', {
       try {
         await apiClient.producerApi().v1DeleteProducer(producerId)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          403: '生産者を削除する権限がありません。',
+          404: 'この生産者は存在しません。'
+        })
       }
     }
   }

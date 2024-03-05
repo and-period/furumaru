@@ -79,7 +79,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
         this.coordinator = res.data.coordinator
         productTypeStore.productTypes = res.data.productTypes
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: 'コーディネーター情報が見つかりません。' })
       }
     },
 
@@ -92,7 +92,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
         const res = await apiClient.coordinatorApi().v1CreateCoordinator(payload)
         return res.data
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          409: 'このメールアドレスはすでに登録されているため、登録できません。'
+        })
       }
     },
 
@@ -105,7 +108,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
       try {
         await apiClient.coordinatorApi().v1UpdateCoordinator(coordinatorId, payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、入力内容に誤りがあります。',
+          404: '対象のコーディネーターが存在しません'
+        })
       }
     },
 
@@ -123,7 +129,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
 
         return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
       }
     },
 
@@ -141,7 +147,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
 
         return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
       }
     },
 
@@ -159,7 +165,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
 
         return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
       }
     },
 
@@ -177,7 +183,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
 
         return await fileUpload(payload, res.data.key, res.data.url)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: 'ファイルのアップロードに失敗しました' })
       }
     },
 
@@ -190,7 +196,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
       try {
         await apiClient.coordinatorApi().v1DeleteCoordinator(id)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: '対象のコーディネーターが存在しません'
+        })
       }
       this.fetchCoordinators()
     }

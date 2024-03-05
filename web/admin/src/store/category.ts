@@ -84,7 +84,10 @@ export const useCategoryStore = defineStore('category', {
         const res = await apiClient.categoryApi().v1CreateCategory(payload)
         this.categories.unshift(res.data.category)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'このカテゴリー名はすでに登録されています。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          409: 'このカテゴリー名はすでに登録されています。'
+        })
       }
     },
 
@@ -97,7 +100,11 @@ export const useCategoryStore = defineStore('category', {
       try {
         await apiClient.categoryApi().v1UpdateCategory(categoryId, payload)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'このカテゴリー名はすでに登録されています。' })
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、内容に誤りがあります',
+          404: '対象のカテゴリーが存在しません',
+          409: 'このカテゴリー名はすでに登録されています。'
+        })
       }
       this.fetchCategories()
     },
@@ -110,7 +117,10 @@ export const useCategoryStore = defineStore('category', {
       try {
         await apiClient.categoryApi().v1DeleteCategory(categoryId)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          404: '対象のカテゴリーが存在しません',
+          412: '品目と紐付いているため削除できません'
+        })
       }
       this.fetchCategories()
     }

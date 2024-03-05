@@ -93,7 +93,7 @@ export const useAuthStore = defineStore('auth', {
         const res = await apiClient.authApi().v1GetAuthUser()
         this.user = res.data
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 401: 'ユーザー名またはパスワードが違います。' })
       }
     },
 
@@ -120,7 +120,10 @@ export const useAuthStore = defineStore('auth', {
       try {
         await apiClient.authApi().v1VerifyAuthEmail(payload)
       } catch (err) {
-        return this.errorHandler(err, { 409: 'このメールアドレスはすでに利用されているため使用できません。' })
+        return this.errorHandler(err, {
+          401: '認証エラーです。再度検証をしてみてください',
+          409: 'このメールアドレスはすでに利用されているため使用できません。'
+        })
       }
     },
 
@@ -132,7 +135,10 @@ export const useAuthStore = defineStore('auth', {
       try {
         await apiClient.authApi().v1UpdateAuthPassword(payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '入力内容に誤りがあります。',
+          401: '認証エラーです。再度試してみてください'
+        })
       }
     },
 
@@ -143,7 +149,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         await apiClient.authApi().v1ForgotAuthPassword(payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
       }
     },
 
@@ -155,7 +161,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         await apiClient.authApi().v1ResetAuthPassword(payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
       }
     },
 
@@ -170,7 +176,10 @@ export const useAuthStore = defineStore('auth', {
         const cookies = new Cookies()
         cookies.set('deviceToken', deviceToken, { secure: true })
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: 'デバイス情報の登録に失敗しました。',
+          401: '認証エラーです。再度ログインをしてください。'
+        })
       }
     },
 
@@ -190,7 +199,7 @@ export const useAuthStore = defineStore('auth', {
       } catch (err) {
         const cookies = new Cookies()
         cookies.remove('refreshToken')
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 401: '認証エラーです。再度ログインをしてください。' })
       }
     },
 
@@ -230,7 +239,7 @@ export const useAuthStore = defineStore('auth', {
         this.coordinator = res.data.coordinator
         productTypeStore.productTypes = res.data.productTypes
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: 'コーディネーター情報が見つかりません。' })
       }
     },
 
@@ -242,7 +251,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         await apiClient.authApi().v1UpdateAuthCoordinator(payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
       }
     },
 
@@ -256,7 +265,7 @@ export const useAuthStore = defineStore('auth', {
         const res = await apiClient.authApi().v1GetAuthShipping()
         this.shipping = res.data.shipping
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, { 404: '配送設定が見つかりません。' })
       }
     },
 
@@ -269,7 +278,10 @@ export const useAuthStore = defineStore('auth', {
       try {
         await apiClient.authApi().v1UpsertAuthShipping(payload)
       } catch (err) {
-        return this.errorHandler(err)
+        return this.errorHandler(err, {
+          400: '入力内容に誤りがあります。',
+          404: '指定した配送設定が見つかりません。'
+        })
       }
     },
 
