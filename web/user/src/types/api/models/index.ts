@@ -33,6 +33,7 @@ export * from './ErrorResponse';
 export * from './ForgotAuthPasswordRequest';
 export * from './FulfillmentStatus';
 export * from './GuestCheckoutAddress';
+export * from './GuestCheckoutCreditCard';
 export * from './GuestCheckoutRequest';
 export * from './GuestCheckoutResponse';
 export * from './GuestCheckoutStateResponse';
