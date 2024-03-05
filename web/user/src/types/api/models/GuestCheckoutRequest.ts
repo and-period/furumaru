@@ -19,6 +19,12 @@ import {
     GuestCheckoutAddressFromJSONTyped,
     GuestCheckoutAddressToJSON,
 } from './GuestCheckoutAddress';
+import type { GuestCheckoutCreditCard } from './GuestCheckoutCreditCard';
+import {
+    GuestCheckoutCreditCardFromJSON,
+    GuestCheckoutCreditCardFromJSONTyped,
+    GuestCheckoutCreditCardToJSON,
+} from './GuestCheckoutCreditCard';
 import type { PaymentMethodType } from './PaymentMethodType';
 import {
     PaymentMethodTypeFromJSON,
@@ -98,6 +104,12 @@ export interface GuestCheckoutRequest {
      * @memberof GuestCheckoutRequest
      */
     shippingAddress: GuestCheckoutAddress;
+    /**
+     * 
+     * @type {GuestCheckoutCreditCard}
+     * @memberof GuestCheckoutRequest
+     */
+    creditCard: GuestCheckoutCreditCard;
 }
 
 /**
@@ -115,6 +127,7 @@ export function instanceOfGuestCheckoutRequest(value: object): boolean {
     isInstance = isInstance && "email" in value;
     isInstance = isInstance && "isSameAddress" in value;
     isInstance = isInstance && "shippingAddress" in value;
+    isInstance = isInstance && "creditCard" in value;
 
     return isInstance;
 }
@@ -140,6 +153,7 @@ export function GuestCheckoutRequestFromJSONTyped(json: any, ignoreDiscriminator
         'isSameAddress': json['isSameAddress'],
         'billingAddress': !exists(json, 'billingAddress') ? undefined : GuestCheckoutAddressFromJSON(json['billingAddress']),
         'shippingAddress': GuestCheckoutAddressFromJSON(json['shippingAddress']),
+        'creditCard': GuestCheckoutCreditCardFromJSON(json['creditCard']),
     };
 }
 
@@ -163,6 +177,7 @@ export function GuestCheckoutRequestToJSON(value?: GuestCheckoutRequest | null):
         'isSameAddress': value.isSameAddress,
         'billingAddress': GuestCheckoutAddressToJSON(value.billingAddress),
         'shippingAddress': GuestCheckoutAddressToJSON(value.shippingAddress),
+        'creditCard': GuestCheckoutCreditCardToJSON(value.creditCard),
     };
 }
 
