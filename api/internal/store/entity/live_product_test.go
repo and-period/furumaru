@@ -2,6 +2,7 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -119,6 +120,42 @@ func TestLiveProducts_GroupByLiveID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, tt.products.GroupByLiveID())
+		})
+	}
+}
+
+func TestLiveProducts_SortByCreatedAt(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name     string
+		products LiveProducts
+		expect   LiveProducts
+	}{
+		{
+			name: "success",
+			products: LiveProducts{
+				{ProductID: "product-id01", CreatedAt: now},
+				{ProductID: "product-id02", CreatedAt: now.Add(-time.Minute)},
+				{ProductID: "product-id03", CreatedAt: now.Add(time.Minute)},
+				{ProductID: "product-id04", CreatedAt: now.Add(time.Hour)},
+				{ProductID: "product-id05", CreatedAt: now.Add(-time.Hour)},
+			},
+			expect: LiveProducts{
+				{ProductID: "product-id05", CreatedAt: now.Add(-time.Hour)},
+				{ProductID: "product-id02", CreatedAt: now.Add(-time.Minute)},
+				{ProductID: "product-id01", CreatedAt: now},
+				{ProductID: "product-id03", CreatedAt: now.Add(time.Minute)},
+				{ProductID: "product-id04", CreatedAt: now.Add(time.Hour)},
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.products.SortByCreatedAt()
+			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }
