@@ -8,22 +8,22 @@ interface Props {
   isLiveStreaming: boolean
   startAt: number
   marcheName: string
-  cordinatorId: string
-  cordinatorName: string
-  cordinatorImgSrc: string
-  cordinatorAddress: string
+  coordinatorId: string
+  coordinatorName: string
+  coordinatorImgSrc: string
+  coordinatorAddress: string
 }
 
 const props = defineProps<Props>()
 
 interface Emits {
-  (e: 'click:cordinator', id: string): void
+  (e: 'click:coordinator', id: string): void
 }
 
 const emits = defineEmits<Emits>()
 
-const handleCLickCorodinator = () => {
-  emits('click:cordinator', props.cordinatorId)
+const handleCLickCoordinator = () => {
+  emits('click:coordinator', props.coordinatorId)
 }
 
 const showDetail = ref<boolean>(false)
@@ -63,19 +63,19 @@ const handleClickShowDetailButton = () => {
     </p>
     <div class="mt-4 flex items-center gap-2">
       <img
-        :src="cordinatorImgSrc"
+        :src="coordinatorImgSrc"
         class="h-10 w-10 rounded-full hover:cursor-pointer"
-        :alt="`${cordinatorName}のプロフィール画像`"
-        @click="handleCLickCorodinator"
+        :alt="`${coordinatorName}のプロフィール画像`"
+        @click="handleCLickCoordinator"
       />
       <div class="text-[12px] tracking-[1.2px]">
-        <p class="mb-1">{{ marcheName }}/{{ cordinatorAddress }}</p>
+        <p class="mb-1">{{ marcheName }}/{{ coordinatorAddress }}</p>
         <p>
           コーディネーター：
           <span
             class="cursor-pointer hover:underline"
-            @click="handleCLickCorodinator"
-            >{{ cordinatorName }}</span
+            @click="handleCLickCoordinator"
+            >{{ coordinatorName }}</span
           >
         </p>
       </div>

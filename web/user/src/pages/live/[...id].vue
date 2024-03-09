@@ -66,7 +66,7 @@ const isArchive = computed<boolean>(() => {
 
 const liveRef = ref<{ videoRef: HTMLVideoElement | null }>({ videoRef: null })
 
-const livePlayserHeight = computed(() => {
+const livePlayerHeight = computed(() => {
   if (liveRef.value.videoRef) {
     if (liveRef.value.videoRef.offsetWidth >= 768) {
       return 0
@@ -76,8 +76,8 @@ const livePlayserHeight = computed(() => {
   return 0
 })
 
-const handleClickItem = (prodictId: string) => {
-  router.push(`/items/${prodictId}`)
+const handleClickItem = (productId: string) => {
+  router.push(`/items/${productId}`)
 }
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
@@ -88,7 +88,7 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
   })
 }
 
-const handleCLickCorodinator = (id: string) => {
+const handleCLickCoordinator = (id: string) => {
   router.push(`/coordinator/${id}`)
 }
 
@@ -123,7 +123,7 @@ useSeoMeta({
           :is-archive="isArchive"
           class="fixed z-[20] w-full md:static"
         />
-        <div :style="{ 'padding-top': `${livePlayserHeight}px` }">
+        <div :style="{ 'padding-top': `${livePlayerHeight}px` }">
           <the-live-description
             :title="schedule.schedule.title"
             :description="schedule.schedule.description"
@@ -131,11 +131,11 @@ useSeoMeta({
             :is-live-streaming="isLiveStreaming"
             :start-at="schedule.schedule.startAt"
             :marche-name="schedule.coordinator.marcheName"
-            :cordinator-id="schedule.coordinator.id"
-            :cordinator-name="schedule.coordinator.username"
-            :cordinator-img-src="schedule.coordinator.thumbnailUrl"
-            :cordinator-address="schedule.coordinator.city"
-            @click:cordinator="handleCLickCorodinator"
+            :coordinator-id="schedule.coordinator.id"
+            :coordinator-name="schedule.coordinator.username"
+            :coordinator-img-src="schedule.coordinator.thumbnailUrl"
+            :coordinator-address="schedule.coordinator.city"
+            @click:coordinator="handleCLickCoordinator"
           />
           <the-live-timeline
             class="mt-4"
