@@ -1,12 +1,20 @@
 <script setup lang="ts">
+import { useAuthStore } from '~/store/auth'
 import { useScheduleStore } from '~/store/schedule'
 import { useShoppingCartStore } from '~/store/shopping'
-import { ScheduleStatus, type ScheduleResponse } from '~/types/api'
+import {
+  ScheduleStatus,
+  type ScheduleResponse,
+  type LiveComment,
+} from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { LiveTimeLineItem } from '~/types/props/schedule'
 
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
+
 const scheduleStore = useScheduleStore()
-const { getSchedule } = scheduleStore
+const { getSchedule, postComment, getComments } = scheduleStore
 
 const shoppingCartStore = useShoppingCartStore()
 const { addCart } = shoppingCartStore
@@ -19,9 +27,19 @@ const route = useRoute()
 const isLoading = ref<boolean>(false)
 const schedule = ref<ScheduleResponse | undefined>(undefined)
 
+const comments = ref<LiveComment[]>([])
+const commentFormData = ref<string>('')
+
 const scheduleId = computed<string>(() => {
   return route.params.id as string
 })
+
+const handleSubmitComment = async () => {
+  await postComment(scheduleId.value, commentFormData.value)
+  commentFormData.value = ''
+  const res = await getComments(scheduleId.value)
+  comments.value = res.comments
+}
 
 const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
   if (schedule.value) {
@@ -76,6 +94,12 @@ const livePlayerHeight = computed(() => {
   return 0
 })
 
+const selectedTab = ref<'product' | 'comment'>('product')
+
+const clickTab = (tab: 'product' | 'comment') => {
+  selectedTab.value = tab
+}
+
 const handleClickItem = (productId: string) => {
   router.push(`/items/${productId}`)
 }
@@ -92,11 +116,29 @@ const handleCLickCoordinator = (id: string) => {
   router.push(`/coordinator/${id}`)
 }
 
+const fetchComments = async () => {
+  const res = await getComments(scheduleId.value)
+  comments.value = res.comments
+}
+
 useAsyncData(`schedule-${scheduleId.value}`, async () => {
   isLoading.value = true
-  const res = await getSchedule(scheduleId.value)
-  schedule.value = res
+  const scheduleRes = await getSchedule(scheduleId.value)
+  schedule.value = scheduleRes
   isLoading.value = false
+})
+
+onMounted(() => {
+  if (isLiveStreaming.value) {
+    fetchComments()
+    const interval = setInterval(() => {
+      fetchComments()
+    }, 5000)
+
+    onUnmounted(() => {
+      clearInterval(interval)
+    })
+  }
 })
 
 useSeoMeta({
@@ -137,12 +179,79 @@ useSeoMeta({
             :coordinator-address="schedule.coordinator.city"
             @click:coordinator="handleCLickCoordinator"
           />
-          <the-live-timeline
-            class="mt-4"
-            :items="liveTimeLineItems"
-            @click:item="handleClickItem"
-            @click:add-cart="handleClickAddCart"
-          />
+          <div class="mt-4 flex w-full flex-col rounded">
+            <div
+              class="grid w-full grid-cols-2 gap-2 text-[12px] font-bold text-main"
+            >
+              <button
+                class="rounded-t-xl p-4 text-center"
+                :class="{
+                  'bg-white': selectedTab === 'product',
+                  'bg-main text-white hover:bg-main/80':
+                    selectedTab !== 'product',
+                }"
+                @click="clickTab('product')"
+              >
+                このマルシェの商品
+              </button>
+              <button
+                class="rounded-t-xl p-4 text-center"
+                :class="{
+                  'bg-white': selectedTab === 'comment',
+                  'bg-main text-white hover:bg-main/80':
+                    selectedTab !== 'comment',
+                }"
+                @click="clickTab('comment')"
+              >
+                コメント
+              </button>
+            </div>
+            <template v-if="selectedTab === 'product'">
+              <the-live-timeline
+                :items="liveTimeLineItems"
+                @click:item="handleClickItem"
+                @click:add-cart="handleClickAddCart"
+              />
+            </template>
+            <template v-else>
+              <div class="flex flex-col bg-white p-4">
+                <the-live-comment-input-form
+                  v-if="isLiveStreaming"
+                  v-model="commentFormData"
+                  class="order-1 md:order-[0]"
+                  :is-authenticated="isAuthenticated"
+                  @submit="handleSubmitComment"
+                />
+                <div class="flex flex-col gap-4 py-8">
+                  <div v-if="comments.length === 0" class="text-typography">
+                    コメントがありません。
+                  </div>
+                  <div
+                    v-for="(item, i) in comments"
+                    :key="i"
+                    class="flex items-center gap-3"
+                  >
+                    <img
+                      :src="item.thumbnailUrl"
+                      class="h-8 w-8 rounded-full"
+                    />
+                    <div
+                      class="flex flex-row items-center gap-2 tracking-[10%] md:flex-col md:items-baseline md:gap-0"
+                    >
+                      <div
+                        class="whitespace-nowrap text-[14px] text-typography"
+                      >
+                        {{ item.username }}
+                      </div>
+                      <div class="line-clamp-2 text-main">
+                        {{ item.comment }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
     </template>
