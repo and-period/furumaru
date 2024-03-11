@@ -15,9 +15,6 @@ func (s *service) CreateBroadcastViewerLog(ctx context.Context, in *media.Create
 	if err != nil {
 		return internalError(err)
 	}
-	if broadcast.Status == entity.BroadcastStatusDisabled {
-		return nil // 視聴ログを書き込む必要がないため、後続処理はしない
-	}
 	params := &entity.BroadcastViewerLogParams{
 		BroadcastID: broadcast.ID,
 		SessionID:   in.SessionID,

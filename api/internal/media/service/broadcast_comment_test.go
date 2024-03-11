@@ -119,27 +119,6 @@ func TestListBroadcastComments(t *testing.T) {
 			expectErr:   exception.ErrInternal,
 		},
 		{
-			name: "archive is fixed",
-			setup: func(ctx context.Context, mocks *mocks) {
-				broadcast := &entity.Broadcast{ArchiveFixed: true}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-			},
-			input: &media.ListBroadcastCommentsInput{
-				ScheduleID:   "schedule-id",
-				CreatedAtGte: now.Add(-time.Hour),
-				CreatedAtLt:  now,
-				Limit:        20,
-				NextToken:    "next-token",
-				Orders: []*media.ListBroadcastCommentsOrder{{
-					Key:        entity.BroadcastCommentOrderByCreatedAt,
-					OrderByASC: false,
-				}},
-			},
-			expect:      entity.BroadcastComments{},
-			expectToken: "",
-			expectErr:   nil,
-		},
-		{
 			name: "failed to list broadcast comments",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
@@ -217,19 +196,6 @@ func TestCreateBroadcastComment(t *testing.T) {
 				Content:    "こんにちは",
 			},
 			expectErr: nil,
-		},
-		{
-			name: "broadcast is disabled",
-			setup: func(ctx context.Context, mocks *mocks) {
-				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-			},
-			input: &media.CreateBroadcastCommentInput{
-				ScheduleID: "schedule-id",
-				UserID:     "user-id",
-				Content:    "こんにちは",
-			},
-			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
 			name: "failed to get broadcast",
@@ -310,18 +276,6 @@ func TestCreateBroadcastGuestComment(t *testing.T) {
 				Content:    "こんにちは",
 			},
 			expectErr: nil,
-		},
-		{
-			name: "broadcast is disabled",
-			setup: func(ctx context.Context, mocks *mocks) {
-				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-			},
-			input: &media.CreateBroadcastGuestCommentInput{
-				ScheduleID: "schedule-id",
-				Content:    "こんにちは",
-			},
-			expectErr: exception.ErrFailedPrecondition,
 		},
 		{
 			name: "failed to get broadcast",

@@ -68,21 +68,6 @@ func TestCreateBrodcastViewerLog(t *testing.T) {
 			expect: exception.ErrInternal,
 		},
 		{
-			name: "broadcast is disabled",
-			setup: func(ctx context.Context, mocks *mocks) {
-				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusDisabled}
-				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
-			},
-			input: &media.CreateBroadcastViewerLogInput{
-				ScheduleID: "schedule-id",
-				SessionID:  "session-id",
-				UserID:     "user-id",
-				UserAgent:  "user-agent",
-				ClientIP:   "127.0.0.1",
-			},
-			expect: nil,
-		},
-		{
 			name: "failed to create broadacast viewer log",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
