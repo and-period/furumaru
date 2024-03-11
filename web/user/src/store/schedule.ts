@@ -23,17 +23,20 @@ export const useScheduleStore = defineStore('schedule', {
     async postComment(id: string, comment: string) {
       const authStore = useAuthStore()
       const { isAuthenticated, accessToken } = authStore
-
-      if (isAuthenticated) {
-        await this.scheduleApiClient(accessToken).v1CreateLiveComment({
-          scheduleId: id,
-          body: { comment },
-        })
-      } else {
-        await this.scheduleApiClient().v1CreateGuestLiveComment({
-          scheduleId: id,
-          body: { comment },
-        })
+      try {
+        if (isAuthenticated) {
+          await this.scheduleApiClient(accessToken).v1CreateLiveComment({
+            scheduleId: id,
+            body: { comment },
+          })
+        } else {
+          await this.scheduleApiClient().v1CreateGuestLiveComment({
+            scheduleId: id,
+            body: { comment },
+          })
+        }
+      } catch (e) {
+        return this.errorHandler(e)
       }
     },
   },

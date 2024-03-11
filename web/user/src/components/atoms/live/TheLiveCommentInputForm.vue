@@ -1,6 +1,7 @@
 <script setup lang="ts">
 interface Props {
   isAuthenticated: boolean
+  isSending: boolean
 }
 
 interface Emits {
@@ -25,7 +26,10 @@ const handleSubmit = () => {
 
 <template>
   <form class="flex w-full flex-col" @submit.prevent="handleSubmit">
-    <div class="flex w-full items-center gap-4">
+    <div
+      class="flex w-full items-center gap-4"
+      :class="{ 'animate-pulse': isSending }"
+    >
       <input
         v-model="modelValue"
         type="text"
@@ -35,7 +39,7 @@ const handleSubmit = () => {
       <button
         class="whitespace-nowrap rounded-lg bg-main px-4 py-2 text-white disabled:bg-main/50"
         type="submit"
-        :disabled="!canSubmit"
+        :disabled="!canSubmit || isSending"
       >
         送信
       </button>

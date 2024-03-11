@@ -29,16 +29,27 @@ const schedule = ref<ScheduleResponse | undefined>(undefined)
 
 const comments = ref<LiveComment[]>([])
 const commentFormData = ref<string>('')
+const commentIsSending = ref<boolean>(false)
 
 const scheduleId = computed<string>(() => {
   return route.params.id as string
 })
 
 const handleSubmitComment = async () => {
-  await postComment(scheduleId.value, commentFormData.value)
-  commentFormData.value = ''
-  const res = await getComments(scheduleId.value)
-  comments.value = res.comments
+  try {
+    commentIsSending.value = true
+    await postComment(scheduleId.value, commentFormData.value)
+    commentFormData.value = ''
+    const res = await getComments(scheduleId.value)
+    comments.value = res.comments
+  } catch (e) {
+    snackbarItems.value.push({
+      text: 'コメントの送信に失敗しました。',
+      isShow: true,
+    })
+  } finally {
+    commentIsSending.value = false
+  }
 }
 
 const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
@@ -138,6 +149,8 @@ onMounted(() => {
     onUnmounted(() => {
       clearInterval(interval)
     })
+  } else {
+    fetchComments()
   }
 })
 
@@ -216,10 +229,10 @@ useSeoMeta({
             <template v-else>
               <div class="flex flex-col bg-white p-4">
                 <the-live-comment-input-form
-                  v-if="isLiveStreaming"
                   v-model="commentFormData"
                   class="order-1 md:order-[0]"
                   :is-authenticated="isAuthenticated"
+                  :is-sending="commentIsSending"
                   @submit="handleSubmitComment"
                 />
                 <div class="flex flex-col gap-4 py-8">
@@ -232,7 +245,11 @@ useSeoMeta({
                     class="flex items-center gap-3"
                   >
                     <img
-                      :src="item.thumbnailUrl"
+                      :src="
+                        item.thumbnailUrl
+                          ? item.thumbnailUrl
+                          : '/img/furuneko.png'
+                      "
                       class="h-8 w-8 rounded-full"
                     />
                     <div
@@ -241,7 +258,7 @@ useSeoMeta({
                       <div
                         class="whitespace-nowrap text-[14px] text-typography"
                       >
-                        {{ item.username }}
+                        {{ item.username ? item.username : 'ゲスト' }}
                       </div>
                       <div class="line-clamp-2 text-main">
                         {{ item.comment }}
