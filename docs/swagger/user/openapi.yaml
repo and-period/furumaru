@@ -119,7 +119,7 @@ paths:
     $ref: './paths/v1/guests/checkouts/index.yaml'
   /v1/guests/checkouts/{transactionId}:
     $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
-  /v1/guests/schedules/{scheduleId}:
+  /v1/guests/schedules/{scheduleId}/comments:
     $ref: './paths/v1/guests/schedules/_scheduleId/comments/index.yaml'
   # Status
   /v1/statuses/payments:

@@ -96,9 +96,3 @@ post:
         application/json:
           schema:
             $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
-    412:
-      description: ライブ配信時間外のためコメント投稿不可
-      content:
-        application/json:
-          schema:
-            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

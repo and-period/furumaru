@@ -21,14 +21,8 @@ func (h *handler) CreateGuestLiveComment(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-
 	in := &media.CreateBroadcastGuestCommentInput{
-		ScheduleID: schedule.ID,
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
 		Content:    req.Comment,
 	}
 	if _, err := h.media.CreateBroadcastGuestComment(ctx, in); err != nil {

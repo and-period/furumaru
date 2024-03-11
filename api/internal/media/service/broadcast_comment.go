@@ -2,9 +2,7 @@ package service
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
@@ -20,10 +18,6 @@ func (s *service) ListBroadcastComments(
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
 	if err != nil {
 		return nil, "", internalError(err)
-	}
-	if broadcast.ArchiveFixed {
-		// 編集済みアーカイブ動画がアップロードされている場合、対応が取れないためコメントは返さなくする
-		return entity.BroadcastComments{}, "", nil
 	}
 	orders := make([]*database.ListBroadcastCommentsOrder, len(in.Orders))
 	for i := range in.Orders {
@@ -53,9 +47,6 @@ func (s *service) CreateBroadcastComment(ctx context.Context, in *media.CreateBr
 	if err != nil {
 		return nil, internalError(err)
 	}
-	if broadcast.Status == entity.BroadcastStatusDisabled {
-		return nil, fmt.Errorf("service: broadcast is disabled: %w", exception.ErrFailedPrecondition)
-	}
 	params := &entity.BroadcastCommentParams{
 		BroadcastID: broadcast.ID,
 		UserID:      in.UserID,
@@ -77,9 +68,6 @@ func (s *service) CreateBroadcastGuestComment(
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
 	if err != nil {
 		return nil, internalError(err)
-	}
-	if broadcast.Status == entity.BroadcastStatusDisabled {
-		return nil, fmt.Errorf("service: broadcast is disabled: %w", exception.ErrFailedPrecondition)
 	}
 	params := &entity.BroadcastCommentParams{
 		BroadcastID: broadcast.ID,
