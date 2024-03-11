@@ -3,6 +3,7 @@ import type {
   Address,
   AddressesResponse,
   CreateAddressRequest,
+  GuestCheckoutAddress,
   PostalCodeResponse,
 } from '~/types/api'
 
@@ -15,6 +16,7 @@ export const useAdressStore = defineStore('address', {
         isLoading: false,
       },
       addresses: [] as Address[],
+      guestAddress: undefined as GuestCheckoutAddress | undefined,
       addressesFetchState: {
         isLoading: false,
       },

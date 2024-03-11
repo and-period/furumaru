@@ -85,11 +85,11 @@ const handleClickBackCartButton = () => {
   router.push('/purchase')
 }
 
-const handleClickNextStepButton = (id: string) => {
+const handleClickNextStepButton = () => {
+  addressStore.guestAddress = formData.value
   router.push({
-    path: '/v1/purchase/confirmation',
+    path: '/v1/purchase/guest/confirmation',
     query: {
-      id,
       coordinatorId: coordinatorId.value,
       cartNumber: cartNumber.value,
       promotionCode: promotionCode.value,
@@ -389,11 +389,9 @@ useSeoMeta({
           </button>
 
           <div>
-            <!-- フォーム要素の場合 -->
             <button
               class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
-              type="submit"
-              form="new-address-form"
+              @click="handleClickNextStepButton()"
             >
               お支払方法の選択へ
             </button>
