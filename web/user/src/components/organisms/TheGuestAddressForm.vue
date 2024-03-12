@@ -5,6 +5,12 @@ import { prefecturesList } from '~/constants/prefectures'
 interface Props {
   formData: GuestCheckoutAddress
   formId: string
+  nameErrorMessage: string
+  nameKanaErrorMessage: string
+  postalCodeErrorMessage: string
+  phoneErrorMessage: string
+  cityErrorMessage: string
+  addressErrorMessage: string
 }
 
 const props = defineProps<Props>()
@@ -42,6 +48,7 @@ const handleSubmit = () => {
         v-model="formDataValue.lastname"
         placeholder="姓"
         :with-label="false"
+        :error-message="nameErrorMessage"
         type="text"
         name="lastname"
         required
@@ -50,6 +57,7 @@ const handleSubmit = () => {
         v-model="formDataValue.firstname"
         placeholder="名"
         :with-label="false"
+        :error-message="nameErrorMessage"
         name="firstName"
         type="text"
         required
@@ -60,6 +68,7 @@ const handleSubmit = () => {
         v-model="formDataValue.lastnameKana"
         placeholder="ふりがな(姓)"
         :with-label="false"
+        :error-message="nameKanaErrorMessage"
         type="text"
         required
       />
@@ -67,16 +76,22 @@ const handleSubmit = () => {
         v-model="formDataValue.firstnameKana"
         placeholder="ふりがな(名)"
         :with-label="false"
+        :error-message="nameKanaErrorMessage"
         type="text"
         required
       />
     </div>
-    <the-phone-number-input v-model="formDataValue.phoneNumber" required />
+    <the-phone-number-input
+      v-model="formDataValue.phoneNumber"
+      :error-message="phoneErrorMessage"
+      required
+    />
     <div class="flex items-center gap-4">
       <the-text-input
         v-model="formDataValue.postalCode"
         placeholder="郵便番号（ハイフンなし）"
         :with-label="false"
+        :error-message="postalCodeErrorMessage"
         type="text"
         name="postal-code"
         required
@@ -110,6 +125,7 @@ const handleSubmit = () => {
       v-model="formDataValue.city"
       placeholder="住所（市区町村)"
       :with-label="false"
+      :error-message="cityErrorMessage"
       name="address-line1"
       type="text"
       required
@@ -119,6 +135,7 @@ const handleSubmit = () => {
       v-model="formDataValue.addressLine1"
       placeholder="住所（それ以降）"
       :with-label="false"
+      :error-message="addressErrorMessage"
       name="address-line2"
       type="text"
     />

@@ -85,16 +85,94 @@ const handleClickBackCartButton = () => {
   router.push('/purchase')
 }
 
-const handleClickNextStepButton = () => {
-  addressStore.guestAddress = formData.value
-  router.push({
-    path: '/v1/purchase/guest/confirmation',
-    query: {
-      coordinatorId: coordinatorId.value,
-      cartNumber: cartNumber.value,
-      promotionCode: promotionCode.value,
-    },
-  })
+const hasError = ref<boolean>(false)
+const nameErrorMessage = ref<string>('')
+const nameKanaErrorMessage = ref<string>('')
+const phoneErrorMessage = ref<string>('')
+const postalCodeErrorMessage = ref<string>('')
+const cityErrorMessage = ref<string>('')
+const addressErrorMessage = ref<string>('')
+
+// 次のページに行く上で入力されていないと困るのでvalidationを追加
+const validate = () => {
+  hasError.value = false
+  nameErrorMessage.value = ''
+  phoneErrorMessage.value = ''
+  postalCodeErrorMessage.value = ''
+  cityErrorMessage.value = ''
+  addressErrorMessage.value = ''
+
+  if (formData.value.firstname === '' || formData.value.lastname === '') {
+    nameErrorMessage.value = '氏名を入力してください'
+    hasError.value = true
+  } else {
+    nameErrorMessage.value = ''
+  }
+
+  const isKana = (input: string): boolean => {
+    // ひらがなの正規表現
+    const kanaRegex = /^[\u3040-\u309F]+$/
+    return kanaRegex.test(input)
+}
+
+
+  if (formData.value.firstnameKana === '' || formData.value.lastnameKana === '') {
+    nameKanaErrorMessage.value = '氏名(かな)を入力してください'
+    hasError.value = true
+  } else if (!isKana(formData.value.firstnameKana) || !isKana(formData.value.lastnameKana)) {
+    nameKanaErrorMessage.value = '氏名(かな)を入力してください'
+    hasError.value = true
+  } else {
+    nameKanaErrorMessage.value = ''
+  }
+
+  const isValidJapanesePhoneNumber = (phoneNumber: string): boolean => {
+    const regex = /^0\d{1,4}-\d{1,4}-\d{3,4}$/
+    return regex.test(phoneNumber)
+  }
+
+  if (formData.value.phoneNumber === '' || !isValidJapanesePhoneNumber(formData.value.phoneNumber)) {
+    phoneErrorMessage.value = '電話番号を入力してください'
+    hasError.value = true
+  }
+
+  if (formData.value.postalCode === '') {
+    postalCodeErrorMessage.value = '郵便番号を入力してください'
+    hasError.value = true
+  }
+
+  if (formData.value.city === '') {
+    cityErrorMessage.value = '市区町村を入力してください'
+    hasError.value = true
+  }
+
+  if (formData.value.addressLine1 === '') {
+    addressErrorMessage.value = '住所を入力してください'
+    hasError.value = true
+  }
+
+  return hasError.value
+}
+
+const handleClickNextStepButton = async () => {
+  try {
+    if (validate()) {
+      return
+    }
+
+    addressStore.guestAddress = formData.value
+    router.push({
+      path: '/v1/purchase/guest/confirmation',
+      query: {
+        coordinatorId: coordinatorId.value,
+        cartNumber: cartNumber.value,
+        promotionCode: promotionCode.value,
+      },
+    })
+  } catch(error) {
+    return error
+  }
+
 }
 
 /**
@@ -222,10 +300,16 @@ useSeoMeta({
           </div>
 
           <the-guest-address-form
-              v-model:form-data="formData"
-              form-id="new-address-form"
-              @click:search-address-button="handleClickSearchAddressButton"
-            />
+            v-model:form-data="formData"
+            form-id="new-address-form"
+            :name-error-message="nameErrorMessage"
+            :name-kana-error-message="nameKanaErrorMessage"
+            :phone-error-message="phoneErrorMessage"
+            :postal-code-error-message="postalCodeErrorMessage"
+            :city-error-message="cityErrorMessage"
+            :address-error-message="addressErrorMessage"
+            @click:search-address-button="handleClickSearchAddressButton"
+          />
 
         </div>
 
