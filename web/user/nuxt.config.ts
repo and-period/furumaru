@@ -98,4 +98,12 @@ export default defineNuxtConfig({
     },
   },
   build: {},
+  vite: {
+    vue: {
+      script: {
+        defineModel: true,
+        propsDestructure: true,
+      },
+    },
+  },
 })
