@@ -5,7 +5,6 @@ post:
   - Guest
   - Checkout
   security:
-  - bearerAuth: []
   - cookieAuth: []
   requestBody:
     required: true
