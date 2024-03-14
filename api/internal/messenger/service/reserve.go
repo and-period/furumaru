@@ -16,7 +16,7 @@ import (
 func (s *service) ReserveStartLive(ctx context.Context, in *messenger.ReserveStartLiveInput) error {
 	const (
 		messageType = entity.ScheduleTypeStartLive
-		duration    = time.Hour // ライブ配信開始の１時間前通知
+		duration    = 10 * time.Minute // ライブ配信開始の10分前通知
 	)
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)

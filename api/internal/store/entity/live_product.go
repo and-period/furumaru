@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"sort"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
@@ -48,4 +49,11 @@ func (ps LiveProducts) GroupByLiveID() map[string]LiveProducts {
 		res[p.LiveID] = append(res[p.LiveID], p)
 	}
 	return res
+}
+
+func (ps LiveProducts) SortByCreatedAt() LiveProducts {
+	sort.SliceStable(ps, func(i, j int) bool {
+		return ps[i].CreatedAt.Before(ps[j].CreatedAt)
+	})
+	return ps
 }

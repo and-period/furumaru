@@ -35,6 +35,8 @@ guestCheckoutRequest:
     shippingAddress:
       description: 配送先住所（isSameAddressフラグがTRUEの場合は未使用）
       $ref: '#/guestCheckoutAddress'
+    creditCard:
+      $ref: '#/guestCheckoutCreditCard'
   required:
   - requestId
   - coordinatorId
@@ -46,6 +48,7 @@ guestCheckoutRequest:
   - email
   - isSameAddress
   - shippingAddress
+  - creditCard
   example:
     requestId: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -132,3 +135,35 @@ guestCheckoutAddress:
     addressLine1: '永田町1-7-1'
     addressLine2: ''
     phoneNumber: '090-1234-1234'
+guestCheckoutCreditCard:
+  type: object
+  properties:
+    name:
+      type: string
+      description: カード名義
+    number:
+      type: string
+      description: カード番号
+    month:
+      type: integer
+      format: int64
+      description: 有効期限（月）
+    year:
+      type: integer
+      format: int64
+      description: 有効期限（年）
+    verificationValue:
+      type: string
+      description: セキュリティコード
+  required:
+  - name
+  - number
+  - month
+  - year
+  - verificationValue
+  example:
+    name: 'AND TARO'
+    number: '4111111111111111'
+    month: 12
+    year: 2024
+    verificationValue: '123'

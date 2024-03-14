@@ -31,7 +31,7 @@ func TestReserveStartLive(t *testing.T) {
 		MessageID:   "schedule-id",
 		Status:      entity.ScheduleStatusWaiting,
 		Count:       0,
-		SentAt:      now,
+		SentAt:      now.Add(time.Hour - (10 * time.Minute)),
 		Deadline:    now.Add(time.Hour),
 	}
 	tests := []struct {
