@@ -236,7 +236,7 @@ watch(validPromotion, (newValue, oldValue) => {
     )
     // リロード対策で、クエリパラメータにクーポンコードを追加する
     router.push({
-      path: '/v1/purchase/address',
+      path: '/v1/purchase/guest/address',
       query: {
         coordinatorId: coordinatorId.value,
         cartNumber: cartNumber.value,
@@ -253,7 +253,7 @@ watch(validPromotion, (newValue, oldValue) => {
     )
     // クーポンコードが適用されている状態から、適用されていない状態に変わったときに、クエリパラメータからクーポンコードを削除する
     router.push({
-      path: '/v1/purchase/address',
+      path: '/v1/purchase/guest/address',
       query: {
         coordinatorId: coordinatorId.value,
         cartNumber: cartNumber.value,

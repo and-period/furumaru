@@ -218,5 +218,19 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         return false
       }
     },
+
+    /**
+     * 有効なプロモーションコードかを検証する(ゲスト用)
+     */
+      async verifyGuestPromotionCode(promotionCode: string): Promise<boolean> {
+        try {
+          await this.promotionApiClient().v1GetPromotion({
+            code: promotionCode,
+          })
+          return true
+        } catch (_error) {
+          return false
+        }
+      },
   },
 })
