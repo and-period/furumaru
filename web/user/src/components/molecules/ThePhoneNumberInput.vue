@@ -35,7 +35,6 @@ watch([tel1, tel2, tel3], () => {
  * errorMessageが渡されている場合はエラー状態にする
  */
  const hasError = computed(() => {
-  console.log(props.errorMessage)
   if (props.errorMessage !== '') {
     return true
   }

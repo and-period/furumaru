@@ -12,7 +12,7 @@ const addressStore = useAdressStore()
 const { searchAddressByPostalCode } = addressStore
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
-const { calcCartItemByCoordinatorId, verifyPromotionCode } = shoppingCartStore
+const { calcCartItemByCoordinatorId, verifyGuestPromotionCode } = shoppingCartStore
 
 const calcCartResponseItemState = ref<{
   isLoading: boolean
@@ -31,6 +31,10 @@ const formData = ref<GuestCheckoutAddress>({
   addressLine1: '',
   addressLine2: '',
   phoneNumber: '',
+})
+
+const formEmailData = ref({
+  email: '',
 })
 
 const promotionCodeFormValue = ref<string>('')
@@ -92,6 +96,7 @@ const phoneErrorMessage = ref<string>('')
 const postalCodeErrorMessage = ref<string>('')
 const cityErrorMessage = ref<string>('')
 const addressErrorMessage = ref<string>('')
+const emailErrorMessage = ref<string>('')
 
 // 次のページに行く上で入力されていないと困るのでvalidationを追加
 const validate = () => {
@@ -101,6 +106,7 @@ const validate = () => {
   postalCodeErrorMessage.value = ''
   cityErrorMessage.value = ''
   addressErrorMessage.value = ''
+  emailErrorMessage.value = ''
 
   if (formData.value.firstname === '' || formData.value.lastname === '') {
     nameErrorMessage.value = '氏名を入力してください'
@@ -151,6 +157,20 @@ const validate = () => {
     hasError.value = true
   }
 
+  const validateEmail = (email: string): boolean => {
+    // 正規表現を使用してメールアドレスをチェックする
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return regex.test(email)
+}
+
+if (formEmailData.value.email === '') {
+  emailErrorMessage.value = 'メールアドレスを入力してください'
+  hasError.value = true
+} else if (!validateEmail(formEmailData.value.email)) {
+  emailErrorMessage.value = '正しいメールアドレスを入力してください'
+  hasError.value = true
+}
+
   return hasError.value
 }
 
@@ -161,6 +181,7 @@ const handleClickNextStepButton = async () => {
     }
 
     addressStore.guestAddress = formData.value
+    addressStore.email = formEmailData.value.email
     router.push({
       path: '/v1/purchase/guest/confirmation',
       query: {
@@ -179,7 +200,7 @@ const handleClickNextStepButton = async () => {
  * クーポンコードを適用するボタンをクリックしたときの処理
  */
 const handleClickUsePromotionCodeButton = async () => {
-  const result = await verifyPromotionCode(promotionCodeFormValue.value)
+  const result = await verifyGuestPromotionCode(promotionCodeFormValue.value)
   if (result) {
     invalidPromotion.value = false
     validPromotion.value = true
@@ -301,6 +322,7 @@ useSeoMeta({
 
           <the-guest-address-form
             v-model:form-data="formData"
+            v-model:email="formEmailData.email"
             form-id="new-address-form"
             :name-error-message="nameErrorMessage"
             :name-kana-error-message="nameKanaErrorMessage"
@@ -308,6 +330,7 @@ useSeoMeta({
             :postal-code-error-message="postalCodeErrorMessage"
             :city-error-message="cityErrorMessage"
             :address-error-message="addressErrorMessage"
+            :email-error-message="emailErrorMessage"
             @click:search-address-button="handleClickSearchAddressButton"
           />
 

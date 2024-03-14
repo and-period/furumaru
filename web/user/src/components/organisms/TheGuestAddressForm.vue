@@ -11,6 +11,7 @@ interface Props {
   phoneErrorMessage: string
   cityErrorMessage: string
   addressErrorMessage: string
+  emailErrorMessage: string
 }
 
 const props = defineProps<Props>()
@@ -27,6 +28,8 @@ const formDataValue = computed({
   get: () => props.formData,
   set: (val: GuestCheckoutAddress) => emits('update:formData', val),
 })
+
+const email = defineModel<string>('email')
 
 const handleClickSearchAddressButton = () => {
   emits('click:searchAddressButton', props.formData.postalCode)
@@ -84,6 +87,14 @@ const handleSubmit = () => {
     <the-phone-number-input
       v-model="formDataValue.phoneNumber"
       :error-message="phoneErrorMessage"
+      required
+    />
+    <the-text-input
+      v-model="email"
+      placeholder="メールアドレス"
+      :with-label="false"
+      :error-message="emailErrorMessage"
+      type="text"
       required
     />
     <div class="flex items-center gap-4">
