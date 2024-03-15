@@ -4,12 +4,11 @@ import dayjs from 'dayjs'
 import { useAdressStore } from '~/store/address'
 import { useCheckoutStore } from '~/store/checkout'
 import { useShoppingCartStore } from '~/store/shopping'
-import type { CheckoutRequest, GuestCheckoutAddress } from '~/types/api'
+import type { GuestCheckoutAddress, GuestCheckoutRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const addressStore = useAdressStore()
 const { address, addressFetchState } = storeToRefs(addressStore)
-const { fetchAddress } = addressStore
 
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem, availablePaymentSystem } =
@@ -21,22 +20,10 @@ const {
 } = shoppingCartStore
 
 const checkoutStore = useCheckoutStore()
-const { checkout } = checkoutStore
+const { guestCheckout } = checkoutStore
 
 const route = useRoute()
 const router = useRouter()
-
-/**
- * 配送先住所ID（クエリパラメータから算出）
- */
-const addressId = computed<string>(() => {
-  const id = route.query.id
-  if (id) {
-    return String(id)
-  } else {
-    return ''
-  }
-})
 
 /**
  * コーディネーターID（クエリパラメータから算出）
@@ -78,17 +65,42 @@ const cartNumber = computed<number | undefined>(() => {
 })
 
 const guestAddress = addressStore.guestAddress as GuestCheckoutAddress
+const email = addressStore.email as string
 
-const checkoutFormData = ref<CheckoutRequest>({
+const checkoutFormData = ref<GuestCheckoutRequest>({
   requestId: '',
   coordinatorId: '',
   boxNumber: 0,
-  billingAddressId: '',
-  shippingAddressId: '',
   promotionCode: '',
   paymentMethod: 0,
   callbackUrl: '',
   total: 0,
+  email: '',
+  isSameAddress: true,
+  shippingAddress: {
+    lastname: '',
+    firstname: '',
+    lastnameKana: '',
+    firstnameKana: '',
+    postalCode: '',
+    prefectureCode: 0,
+    city: '',
+    addressLine1: '',
+    addressLine2: '',
+    phoneNumber: '',
+  },
+  billingAddress: {
+    lastname: '',
+    firstname: '',
+    lastnameKana: '',
+    firstnameKana: '',
+    postalCode: '',
+    prefectureCode: 0,
+    city: '',
+    addressLine1: '',
+    addressLine2: '',
+    phoneNumber: '',
+  },
   creditCard: {
     name: '',
     number: '',
@@ -97,6 +109,10 @@ const checkoutFormData = ref<CheckoutRequest>({
     verificationValue: '',
   },
 })
+
+checkoutFormData.value.email = email
+checkoutFormData.value.shippingAddress = guestAddress
+checkoutFormData.value.billingAddress = guestAddress
 
 const creditCardMonthValue = computed({
   get: () => {
@@ -136,9 +152,9 @@ const handleClickPreviousStepButton = () => {
  */
 const doCheckout = async () => {
   try {
-    const url = await checkout({
+    const url = await guestCheckout({
       ...checkoutFormData.value,
-      boxNumber: cartNumber.value ?? 0,
+      boxNumber: cartNumber.value??0,
     })
     console.log('debug', 'doCheckout', url)
     window.location.href = url
@@ -169,13 +185,6 @@ onMounted(async () => {
         availablePaymentSystem.value[0].methodType
     }
   })
-
-  // 住所情報を取得
-  if (addressId.value) {
-    checkoutFormData.value.billingAddressId = addressId.value
-    checkoutFormData.value.shippingAddressId = addressId.value
-    await fetchAddress(addressId.value)
-  }
 
   // プロモーションコードの有効性を確認
   if (promotionCode.value) {
