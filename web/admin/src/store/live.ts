@@ -33,6 +33,12 @@ export const useLiveStore = defineStore('live', {
     },
 
     /**
+     * ライブ配信コメント一覧を取得する非同期関数
+     * @param scheduleId 開催スケジュールID
+     */
+    async fetchLiveComments (scheduleId: string): Promise<void> {},
+
+    /**
      * ライブ配信スケジュールを登録する非同期関数
      * @param scheduleId 開催スケジュールID
      * @param payload
