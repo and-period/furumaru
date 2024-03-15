@@ -174,7 +174,7 @@ if (formEmailData.value.email === '') {
   return hasError.value
 }
 
-const handleClickNextStepButton = async () => {
+const handleClickNextStepButton = () => {
   try {
     if (validate()) {
       return
@@ -193,7 +193,6 @@ const handleClickNextStepButton = async () => {
   } catch(error) {
     return error
   }
-
 }
 
 /**
