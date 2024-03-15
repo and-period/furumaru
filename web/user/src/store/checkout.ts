@@ -1,5 +1,5 @@
 import { useAuthStore } from './auth'
-import type { CheckoutRequest, CheckoutStateResponse, GuestCheckoutRequest } from '~/types/api'
+import type { CheckoutRequest, CheckoutStateResponse, GuestCheckoutRequest, GuestCheckoutStateResponse } from '~/types/api'
 
 export const useCheckoutStore = defineStore('checkout', {
   state: () => {
@@ -71,5 +71,25 @@ export const useCheckoutStore = defineStore('checkout', {
         this.checkTransactionStatusState.isLoading = false
       }
     },
+
+    /**
+     * 注文情報の取得を行うメソッド (ゲスト用)
+     * @param payload
+     * @returns
+     */
+    async guestCheckTransactionStatus(
+      sessionId: string,
+    ): Promise<GuestCheckoutStateResponse> {
+      this.checkTransactionStatusState.isLoading = true
+      try {
+        const res = await this.checkoutApiClient().v1GetGuestCheckoutState({ transactionId: sessionId })
+        return res
+      } catch (error) {
+        return this.errorHandler(error)
+      } finally {
+        this.checkTransactionStatusState.isLoading = false
+      }
+    },
+
   },
 })
