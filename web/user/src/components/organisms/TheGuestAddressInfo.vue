@@ -11,7 +11,7 @@ const props = defineProps<Props>()
 
 const findPrefectureValueById = computed<string>(() => {
   const prefecture = prefecturesList.find(item => item.id === props.address.prefectureCode)
-  return prefecture?.text
+  return prefecture?.text ?? '未設定'
 })
 
 const displayName = computed<string>(() => {
@@ -20,7 +20,7 @@ const displayName = computed<string>(() => {
 
 const displayAddress = computed<string>(() => {
   return `〒 ${props.address.postalCode} ${findPrefectureValueById.value}${props.address.city}
-  ${props.address.addressLine1}${[props.address.addressLine2]}`
+  ${props.address.addressLine1}${props.address.addressLine2 ? ` ${props.address.addressLine2}` : ''}`
 })
 </script>
 
@@ -30,7 +30,7 @@ const displayAddress = computed<string>(() => {
     <dd class="col-span-2">{{ displayName }}</dd>
     <dt>電話番号</dt>
     <dd class="col-span-2">
-      {{ convertI18nToJapanesePhoneNumber(address.phoneNumber) }}
+      {{ convertI18nToJapanesePhoneNumber(props.address.phoneNumber) }}
     </dd>
     <dt>住所</dt>
     <dd class="col-span-2">{{ displayAddress }}</dd>
