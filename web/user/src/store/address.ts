@@ -17,7 +17,7 @@ export const useAdressStore = defineStore('address', {
       },
       addresses: [] as Address[],
       guestAddress: undefined as GuestCheckoutAddress | undefined,
-      email: undefined as string | undefined,
+      email: null as string | null,
       addressesFetchState: {
         isLoading: false,
       },

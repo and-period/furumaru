@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { useAdressStore } from '~/store/address'
 import { useCheckoutStore } from '~/store/checkout'
 import { useShoppingCartStore } from '~/store/shopping'
-import type { GuestCheckoutAddress, GuestCheckoutRequest } from '~/types/api'
+import type { GuestCheckoutRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const addressStore = useAdressStore()
@@ -64,8 +64,7 @@ const cartNumber = computed<number | undefined>(() => {
   return idNumber
 })
 
-const guestAddress = addressStore.guestAddress as GuestCheckoutAddress
-const email = addressStore.email as string
+const { email, guestAddress } = storeToRefs(addressStore)
 
 const checkoutFormData = ref<GuestCheckoutRequest>({
   requestId: '',
@@ -110,9 +109,6 @@ const checkoutFormData = ref<GuestCheckoutRequest>({
   },
 })
 
-checkoutFormData.value.email = email
-checkoutFormData.value.shippingAddress = guestAddress
-checkoutFormData.value.billingAddress = guestAddress
 
 const creditCardMonthValue = computed({
   get: () => {
@@ -207,6 +203,19 @@ onMounted(async () => {
   checkoutFormData.value.coordinatorId = coordinatorId.value
   checkoutFormData.value.total = calcCartResponseItem.value?.total ?? 0
   checkoutFormData.value.callbackUrl = `${window.location.origin}/v1/purchase/guest/complete`
+
+  if (email.value !== null) {
+    checkoutFormData.value.email = email.value
+  } else {
+    checkoutFormData.value.email = ''
+  }
+
+  if (guestAddress.value !== undefined) {
+    checkoutFormData.value.shippingAddress = guestAddress.value
+    checkoutFormData.value.billingAddress = guestAddress.value
+  } else {
+    checkoutFormData.value.email = ''
+  }
 
   if (calcCartResponseItem.value?.promotion) {
     checkoutFormData.value.promotionCode =

@@ -162,7 +162,7 @@ const hideV1App = false
       <p class="mb-[40px] text-[14px] tracking-[1.4px] mt-[40px]">
         アカウントを登録せずにご購入を希望される方はこちらからご利用ください。
       </p>
-      <the-submit-without-login-button type="button" @click="handleSubmitWithoutSignForm" >
+      <the-submit-without-login-button type="submit" @click="handleSubmitWithoutSignForm" >
         ログインせずに購入
       </the-submit-without-login-button>
     </div>

@@ -175,24 +175,20 @@ if (formEmailData.value.email === '') {
 }
 
 const handleClickNextStepButton = () => {
-  try {
-    if (validate()) {
-      return
-    }
-
-    addressStore.guestAddress = formData.value
-    addressStore.email = formEmailData.value.email
-    router.push({
-      path: '/v1/purchase/guest/confirmation',
-      query: {
-        coordinatorId: coordinatorId.value,
-        cartNumber: cartNumber.value,
-        promotionCode: promotionCode.value,
-      },
-    })
-  } catch(error) {
-    return error
+  if (validate()) {
+    return
   }
+
+  addressStore.guestAddress = formData.value
+  addressStore.email = formEmailData.value.email
+  router.push({
+    path: '/v1/purchase/guest/confirmation',
+    query: {
+      coordinatorId: coordinatorId.value,
+      cartNumber: cartNumber.value,
+      promotionCode: promotionCode.value,
+    },
+  })
 }
 
 /**
