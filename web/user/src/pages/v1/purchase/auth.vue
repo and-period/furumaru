@@ -87,6 +87,16 @@ const handleSubmitSignForm = async () => {
   }
 }
 
+const handleSubmitWithoutSignForm = () => {
+  router.push({
+      path: '/v1/purchase/guest/address',
+      query: {
+        coordinatorId: coordinatorId.value,
+        cartNumber: cartNumber.value,
+      },
+  })
+}
+
 useSeoMeta({
   title: 'ログイン',
 })
@@ -145,12 +155,16 @@ const hideV1App = false
       </h2>
       <p class="mb-[40px] text-[14px] tracking-[1.4px]">
         アカウントをご登録いただくと毎回のお届け先等の情報入力が不要になり、お買い物がもっと便利になります。
-        <br />
-        アカウント登録について詳しくはこちら
       </p>
       <the-submit-button type="button" @click="handleClickNewAccountButton">
         新規登録する
       </the-submit-button>
+      <p class="mb-[40px] text-[14px] tracking-[1.4px] mt-[40px]">
+        アカウントを登録せずにご購入を希望される方はこちらからご利用ください。
+      </p>
+      <the-submit-without-login-button type="submit" @click="handleSubmitWithoutSignForm" >
+        ログインせずに購入
+      </the-submit-without-login-button>
     </div>
   </div>
 </template>

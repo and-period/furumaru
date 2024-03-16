@@ -1,10 +1,18 @@
 <script setup lang="ts">
 interface Props {
   modelValue: string
-  required: boolean
+  required?: boolean
+  error?: boolean
+  errorMessage?: string
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  required: false,
+  withLabel: true,
+  error: false,
+  message: undefined,
+  errorMessage: '',
+})
 
 interface Emits {
   (e: 'update:modelValue', val: string): void
@@ -18,6 +26,31 @@ const tel3 = ref<string>('')
 
 watch([tel1, tel2, tel3], () => {
   emits('update:modelValue', `${tel1.value}-${tel2.value}-${tel3.value}`)
+})
+
+
+
+/**
+ * エラーの判定
+ * errorMessageが渡されている場合はエラー状態にする
+ */
+ const hasError = computed(() => {
+  if (props.errorMessage !== '') {
+    return true
+  }
+  return false
+})
+
+/**
+ * メッセージエリアに表示する文字列
+ * errorMessageを優先する
+ */
+ const viewMessage = computed(() => {
+  if (props.errorMessage !== '') {
+    return props.errorMessage
+  } else {
+    return props.message
+  }
 })
 </script>
 
@@ -52,5 +85,8 @@ watch([tel1, tel2, tel3], () => {
         required
       />
     </div>
+    <p :class="{ 'text-orange': hasError, 'text-left text-sm': true }">
+      {{ viewMessage }}
+    </p>
   </div>
 </template>
