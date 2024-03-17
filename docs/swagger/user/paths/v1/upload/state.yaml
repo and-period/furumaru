@@ -1,0 +1,28 @@
+get:
+  summary: ファイルアップロード状態取得
+  operationId: v1GetUploadState
+  tags:
+  - Other
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: query
+    name: key
+    schema:
+      type: string
+    description: 参照用のキー
+    required: true
+    example: 'dir/media.png'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1UploadStateResponse'
+    404:
+      description: アップロード結果が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'

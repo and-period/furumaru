@@ -154,6 +154,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.checkoutRoutes(v1)
 	h.orderRoutes(v1)
 	h.liveCommentRoutes(v1)
+	h.uploadRoutes(v1)
 }
 
 /**
