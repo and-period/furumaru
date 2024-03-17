@@ -176,7 +176,7 @@ func TestNewDSN(t *testing.T) {
 				allowNativePasswords: true,
 				maxAllowedPacket:     4194304, // 4MiB
 			},
-			expect: "root:12345678@tcp(127.0.0.1:3306)/test?parseTime=true&maxAllowedPacket=4194304&charset=utf8mb4",
+			expect: "root:12345678@tcp(127.0.0.1:3306)/test?collation=utf8mb4_general_ci&parseTime=true&maxAllowedPacket=4194304&charset=utf8mb4",
 		},
 		{
 			name: "success with options",
