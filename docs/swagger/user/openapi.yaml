@@ -128,6 +128,11 @@ paths:
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
+  # Upload
+  /v1/upload/state:
+    $ref: './paths/v1/upload/state.yaml'
+  /v1/upload/users/thumbnail:
+    $ref: './paths/v1/upload/users/thumbnail.yaml'
   # Other
   /v1/postal-codes/{postalCode}:
     $ref: './paths/v1/postal-codes/_postalCode.yaml'
@@ -178,6 +183,8 @@ components:
       $ref: './components/schemas/codes/schedule.yaml#/scheduleStatus'
     paymentSystemStatus:
       $ref: './components/schemas/codes/status.yaml#/paymentSystemStatus'
+    uploadStatus:
+      $ref: './components/schemas/codes/upload.yaml#/uploadStatus'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity
@@ -256,6 +263,8 @@ components:
       $ref: './components/schemas/v1/guest-live-comment.request.yaml#/createGuestLiveCommentRequest'
     v1CreateLiveCommentRequest:
       $ref: './components/schemas/v1/live-comment.request.yaml#/createLiveCommentRequest'
+    v1GetUploadUrlRequest:
+      $ref: './components/schemas/v1/upload.request.yaml#/getUploadUrlRequest'
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
@@ -311,3 +320,7 @@ components:
       $ref: './components/schemas/v1/top.response.yaml#/topCommonResponse'
     v1PostalCodeResponse:
       $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
+    v1UploadUrlResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadUrlResponse'
+    v1UploadStateResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadStateResponse'

@@ -216,9 +216,6 @@ paths:
     $ref: './paths/v1/payment-systems/index.yaml'
   /v1/payment-systems/{methodType}:
     $ref: './paths/v1/payment-systems/_methodType/index.yaml'
-  # Other
-  /v1/postal-codes/{postalCode}:
-    $ref: './paths/v1/postal-codes/_postalCode.yaml'
   # Upload
   /v1/upload/state:
     $ref: './paths/v1/upload/state.yaml'
@@ -254,6 +251,9 @@ paths:
     $ref: './paths/v1/upload/schedules/_scheduleId/broadcasts/archive.yaml'
   /v1/upload/schedules/-/broadcasts/live:
     $ref: './paths/v1/upload/schedules/-/broadcasts/live.yaml'
+  # Other
+  /v1/postal-codes/{postalCode}:
+    $ref: './paths/v1/postal-codes/_postalCode.yaml'
 components:
   securitySchemes:
     bearerAuth:
@@ -471,34 +471,6 @@ components:
       $ref: './components/schemas/v1/order.request.yaml#/exportOrdersRequest'
     v1GetUploadUrlRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/getUploadUrlRequest'
-    v1UploadCoordinatorThumbnailRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorThumbnailRequest'
-    v1UploadCoordinatorHeaderRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorHeaderRequest'
-    v1UploadCoordinatorPromotionVideoRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorPromotionVideoRequest'
-    v1UploadCoordinatorBonusVideoRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadCoordinatorBonusVideoRequest'
-    v1UploadProducerThumbnailRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerThumbnailRequest'
-    v1UploadProducerHeaderRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerHeaderRequest'
-    v1UploadProducerPromotionVideoRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerPromotionVideoRequest'
-    v1UploadProducerBonusVideoRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadProducerBonusVideoRequest'
-    v1UploadProductImageRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadProductImageRequest'
-    v1UploadProductVideoRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadProductVideoRequest'
-    v1UploadProductTypeIconRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadProductTypeIconRequest'
-    v1UploadScheduleThumbnailRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadScheduleThumbnailRequest'
-    v1UploadScheduleImageRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadScheduleImageRequest'
-    v1UploadScheduleOpeningVideoRequest:
-      $ref: './components/schemas/v1/upload.request.yaml#/uploadScheduleOpeningVideoRequest'
     # Response
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
@@ -586,7 +558,3 @@ components:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadUrlResponse'
     v1UploadStateResponse:
       $ref: './components/schemas/v1/upload.response.yaml#/uploadStateResponse'
-    v1UploadImageResponse:
-      $ref: './components/schemas/v1/upload.response.yaml#/uploadImageResponse'
-    v1UploadVideoResponse:
-      $ref: './components/schemas/v1/upload.response.yaml#/uploadVideoResponse'

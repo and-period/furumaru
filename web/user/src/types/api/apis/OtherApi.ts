@@ -17,13 +17,20 @@ import * as runtime from '../runtime';
 import type {
   ErrorResponse,
   PostalCodeResponse,
+  UploadStateResponse,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     PostalCodeResponseFromJSON,
     PostalCodeResponseToJSON,
+    UploadStateResponseFromJSON,
+    UploadStateResponseToJSON,
 } from '../models/index';
+
+export interface V1GetUploadStateRequest {
+    key: string;
+}
 
 export interface V1SearchPostalCodeRequest {
     postalCode: string;
@@ -33,6 +40,48 @@ export interface V1SearchPostalCodeRequest {
  * 
  */
 export class OtherApi extends runtime.BaseAPI {
+
+    /**
+     * ファイルアップロード状態取得
+     */
+    async v1GetUploadStateRaw(requestParameters: V1GetUploadStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadStateResponse>> {
+        if (requestParameters.key === null || requestParameters.key === undefined) {
+            throw new runtime.RequiredError('key','Required parameter requestParameters.key was null or undefined when calling v1GetUploadState.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.key !== undefined) {
+            queryParameters['key'] = requestParameters.key;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/upload/state`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UploadStateResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * ファイルアップロード状態取得
+     */
+    async v1GetUploadState(requestParameters: V1GetUploadStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadStateResponse> {
+        const response = await this.v1GetUploadStateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * 郵便番号情報検索
