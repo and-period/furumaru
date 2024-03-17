@@ -25,8 +25,10 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
-		params := &listLiveSummariesParams{}
-		lives, err = h.listLiveSummaries(ectx, params)
+		params := &listLiveSummariesParams{
+			noLimit: true,
+		}
+		lives, _, err = h.listLiveSummaries(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -34,7 +36,7 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 			limit:  defaultArchivesLimit,
 			offset: 0,
 		}
-		archives, err = h.listArchiveSummaries(ectx, params)
+		archives, _, err = h.listArchiveSummaries(ectx, params)
 		return
 	})
 	if err := eg.Wait(); err != nil {

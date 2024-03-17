@@ -92,6 +92,10 @@ paths:
   /v1/top/common:
     $ref: './paths/v1/top/common.yaml'
   # Schedule
+  /v1/schedules/lives:
+    $ref: './paths/v1/schedules/lives.yaml'
+  /v1/schedules/archives:
+    $ref: './paths/v1/schedules/archives.yaml'
   /v1/schedules/{scheduleId}:
     $ref: './paths/v1/schedules/_scheduleId/index.yaml'
   /v1/schedules/{scheduleId}/comments:
@@ -287,6 +291,10 @@ components:
       $ref: './components/schemas/v1/order.response.yaml#/ordersResponse'
     v1ScheduleResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
+    v1LiveSchedulesResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/liveSchedulesResponse'
+    v1ArchiveSchedulesResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/archiveSchedulesResponse'
     v1ProducerResponse:
       $ref: './components/schemas/v1/producer.response.yaml#/producerResponse'
     v1ProducersResponse:

@@ -4,8 +4,6 @@ get:
   tags:
   - Address
   - Other
-  security:
-  - bearerAuth: []
   parameters:
   - in: path
     name: postalCode

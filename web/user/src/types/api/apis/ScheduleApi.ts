@@ -15,13 +15,17 @@
 
 import * as runtime from '../runtime';
 import type {
+  ArchiveSchedulesResponse,
   CreateGuestLiveCommentRequest,
   CreateLiveCommentRequest,
   ErrorResponse,
   LiveCommentsResponse,
+  LiveSchedulesResponse,
   ScheduleResponse,
 } from '../models/index';
 import {
+    ArchiveSchedulesResponseFromJSON,
+    ArchiveSchedulesResponseToJSON,
     CreateGuestLiveCommentRequestFromJSON,
     CreateGuestLiveCommentRequestToJSON,
     CreateLiveCommentRequestFromJSON,
@@ -30,9 +34,18 @@ import {
     ErrorResponseToJSON,
     LiveCommentsResponseFromJSON,
     LiveCommentsResponseToJSON,
+    LiveSchedulesResponseFromJSON,
+    LiveSchedulesResponseToJSON,
     ScheduleResponseFromJSON,
     ScheduleResponseToJSON,
 } from '../models/index';
+
+export interface V1ArchiveSchedulesRequest {
+    limit?: number;
+    offset?: number;
+    coordinator?: string;
+    producer?: string;
+}
 
 export interface V1CreateGuestLiveCommentRequest {
     scheduleId: string;
@@ -57,10 +70,59 @@ export interface V1ListLiveCommentsRequest {
     orders?: string;
 }
 
+export interface V1LiveSchedulesRequest {
+    limit?: number;
+    offset?: number;
+    coordinator?: string;
+    producer?: string;
+}
+
 /**
  * 
  */
 export class ScheduleApi extends runtime.BaseAPI {
+
+    /**
+     * 過去のマルシェ一覧取得
+     */
+    async v1ArchiveSchedulesRaw(requestParameters: V1ArchiveSchedulesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ArchiveSchedulesResponse>> {
+        const queryParameters: any = {};
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
+
+        if (requestParameters.offset !== undefined) {
+            queryParameters['offset'] = requestParameters.offset;
+        }
+
+        if (requestParameters.coordinator !== undefined) {
+            queryParameters['coordinator'] = requestParameters.coordinator;
+        }
+
+        if (requestParameters.producer !== undefined) {
+            queryParameters['producer'] = requestParameters.producer;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/schedules/archives`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ArchiveSchedulesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 過去のマルシェ一覧取得
+     */
+    async v1ArchiveSchedules(requestParameters: V1ArchiveSchedulesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ArchiveSchedulesResponse> {
+        const response = await this.v1ArchiveSchedulesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * ライブ配信ゲストコメント投稿
@@ -219,6 +281,48 @@ export class ScheduleApi extends runtime.BaseAPI {
      */
     async v1ListLiveComments(requestParameters: V1ListLiveCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveCommentsResponse> {
         const response = await this.v1ListLiveCommentsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 配信中・配信予定のマルシェ一覧取得
+     */
+    async v1LiveSchedulesRaw(requestParameters: V1LiveSchedulesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveSchedulesResponse>> {
+        const queryParameters: any = {};
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
+
+        if (requestParameters.offset !== undefined) {
+            queryParameters['offset'] = requestParameters.offset;
+        }
+
+        if (requestParameters.coordinator !== undefined) {
+            queryParameters['coordinator'] = requestParameters.coordinator;
+        }
+
+        if (requestParameters.producer !== undefined) {
+            queryParameters['producer'] = requestParameters.producer;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/schedules/lives`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => LiveSchedulesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 配信中・配信予定のマルシェ一覧取得
+     */
+    async v1LiveSchedules(requestParameters: V1LiveSchedulesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LiveSchedulesResponse> {
+        const response = await this.v1LiveSchedulesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
