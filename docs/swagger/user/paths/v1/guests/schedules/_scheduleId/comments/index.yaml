@@ -4,8 +4,6 @@ post:
   tags:
   - Guest
   - Schedule
-  security:
-  - cookieAuth: []
   parameters:
   - in: path
     name: scheduleId

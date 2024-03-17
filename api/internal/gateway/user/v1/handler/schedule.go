@@ -18,7 +18,93 @@ import (
 func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules")
 
+	r.GET("/lives", h.ListLiveSchedules)
+	r.GET("/archives", h.ListArchiveSchedules)
 	r.GET("/:scheduleId", h.createBroadcastViewerLog, h.GetSchedule)
+}
+
+func (h *handler) ListLiveSchedules(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	params := &listLiveSummariesParams{
+		coordinatorID: util.GetQuery(ctx, "coordinator", ""),
+		producerID:    util.GetQuery(ctx, "producer", ""),
+		limit:         limit,
+		offset:        offset,
+	}
+	lives, total, err := h.listLiveSummaries(ctx, params)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	coordinators, err := h.multiGetCoordinators(ctx, lives.CoordinatorIDs())
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.LiveSchedulesResponse{
+		Lives:        lives.Response(),
+		Coordinators: coordinators.Response(),
+		Total:        total,
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) ListArchiveSchedules(ctx *gin.Context) {
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	params := &listArchiveSummariesParams{
+		coordinatorID: util.GetQuery(ctx, "coordinator", ""),
+		producerID:    util.GetQuery(ctx, "producer", ""),
+		limit:         limit,
+		offset:        offset,
+	}
+	archives, total, err := h.listArchiveSummaries(ctx, params)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	coordinators, err := h.multiGetCoordinators(ctx, archives.CoordinatorIDs())
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.ArchiveSchedulesResponse{
+		Archives:     archives.Response(),
+		Coordinators: coordinators.Response(),
+		Total:        total,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) GetSchedule(ctx *gin.Context) {

@@ -88,8 +88,9 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 	eg.Go(func() (err error) {
 		params := &listLiveSummariesParams{
 			coordinatorID: coordinator.ID,
+			noLimit:       true,
 		}
-		lives, err = h.listLiveSummaries(ectx, params)
+		lives, _, err = h.listLiveSummaries(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -97,7 +98,7 @@ func (h *handler) GetCoordinator(ctx *gin.Context) {
 			coordinatorID: coordinator.ID,
 			noLimit:       true,
 		}
-		archives, err = h.listArchiveSummaries(ectx, params)
+		archives, _, err = h.listArchiveSummaries(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {

@@ -71,8 +71,9 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 	eg.Go(func() (err error) {
 		params := &listLiveSummariesParams{
 			producerID: producer.ID,
+			noLimit:    true,
 		}
-		lives, err = h.listLiveSummaries(ectx, params)
+		lives, _, err = h.listLiveSummaries(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {
@@ -80,7 +81,7 @@ func (h *handler) GetProducer(ctx *gin.Context) {
 			coordinatorID: producer.ID,
 			noLimit:       true,
 		}
-		archives, err = h.listArchiveSummaries(ectx, params)
+		archives, _, err = h.listArchiveSummaries(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {
