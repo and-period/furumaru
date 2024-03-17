@@ -44,7 +44,7 @@ export interface V1ArchiveSchedulesRequest {
     limit?: number;
     offset?: number;
     coordinator?: string;
-    coordinator2?: string;
+    producer?: string;
 }
 
 export interface V1CreateGuestLiveCommentRequest {
@@ -74,7 +74,7 @@ export interface V1LiveSchedulesRequest {
     limit?: number;
     offset?: number;
     coordinator?: string;
-    coordinator2?: string;
+    producer?: string;
 }
 
 /**
@@ -100,8 +100,8 @@ export class ScheduleApi extends runtime.BaseAPI {
             queryParameters['coordinator'] = requestParameters.coordinator;
         }
 
-        if (requestParameters.coordinator2 !== undefined) {
-            queryParameters['coordinator'] = requestParameters.coordinator2;
+        if (requestParameters.producer !== undefined) {
+            queryParameters['producer'] = requestParameters.producer;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -302,8 +302,8 @@ export class ScheduleApi extends runtime.BaseAPI {
             queryParameters['coordinator'] = requestParameters.coordinator;
         }
 
-        if (requestParameters.coordinator2 !== undefined) {
-            queryParameters['coordinator'] = requestParameters.coordinator2;
+        if (requestParameters.producer !== undefined) {
+            queryParameters['producer'] = requestParameters.producer;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
