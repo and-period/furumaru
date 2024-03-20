@@ -15,7 +15,7 @@ type Enforcer interface {
 // NewEnforcer - 認可情報の検証用クライアントの生成
 func NewEnforcer(modelPath, policyPath string) (Enforcer, error) {
 	if modelPath == "" || policyPath == "" {
-		return nil, nil
+		return &casbin.Enforcer{}, nil
 	}
 	enforcer, err := casbin.NewEnforcer(modelPath, policyPath)
 	if err != nil {

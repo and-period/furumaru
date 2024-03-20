@@ -18,18 +18,18 @@ type app struct {
 	logger           *zap.Logger
 	waitGroup        *sync.WaitGroup
 	uploader         uploader.Uploader
-	AppName          string `envconfig:"APP_NAME" default:"media-uploader"`
-	Environment      string `envconfig:"ENV" default:"none"`
-	RunMethod        string `envconfig:"RUN_METHOD" default:"lambda"`
-	RunType          string `envconfig:"RUN_TYPE" default:""`
-	LogPath          string `envconfig:"LOG_PATH" default:""`
-	LogLevel         string `envconfig:"LOG_LEVEL" default:"info"`
-	SentryDsn        string `envconfig:"SENTRY_DSN" default:""`
-	SentrySecretName string `envconfig:"SENTRY_SECRET_NAME" default:""`
-	AWSRegion        string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
-	S3Bucket         string `envconfig:"S3_BUCKET" default:""`
-	S3TmpBucket      string `envconfig:"S3_TMP_BUCKET" default:""`
-	CDNURL           string `envconfig:"CDN_URL" default:""`
+	AppName          string `default:"media-uploader" envconfig:"APP_NAME"`
+	Environment      string `default:"none"           envconfig:"ENV"`
+	RunMethod        string `default:"lambda"         envconfig:"RUN_METHOD"`
+	RunType          string `default:""               envconfig:"RUN_TYPE"`
+	LogPath          string `default:""               envconfig:"LOG_PATH"`
+	LogLevel         string `default:"info"           envconfig:"LOG_LEVEL"`
+	SentryDsn        string `default:""               envconfig:"SENTRY_DSN"`
+	SentrySecretName string `default:""               envconfig:"SENTRY_SECRET_NAME"`
+	AWSRegion        string `default:"ap-northeast-1" envconfig:"AWS_REGION"`
+	S3Bucket         string `default:""               envconfig:"S3_BUCKET"`
+	S3TmpBucket      string `default:""               envconfig:"S3_TMP_BUCKET"`
+	CDNURL           string `default:""               envconfig:"CDN_URL"`
 }
 
 //nolint:revive

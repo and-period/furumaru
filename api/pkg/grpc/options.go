@@ -188,9 +188,9 @@ func getErrorDetails(err error) interface{} {
 	for _, detail := range s.Details() {
 		switch v := detail.(type) {
 		case *errdetails.LocalizedMessage:
-			return v.Message
+			return v.GetMessage()
 		case *errdetails.BadRequest:
-			return v.FieldViolations
+			return v.GetFieldViolations()
 		}
 	}
 

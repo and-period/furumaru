@@ -19,29 +19,29 @@ type app struct {
 	logger                  *zap.Logger
 	waitGroup               *sync.WaitGroup
 	job                     scheduler.Scheduler
-	AppName                 string `envconfig:"APP_NAME" default:"media-scheduler"`
-	Environment             string `envconfig:"ENV" default:"none"`
-	RunMethod               string `envconfig:"RUN_METHOD" default:"lambda"`
-	RunType                 string `envconfig:"RUN_TYPE" default:""`
-	LogPath                 string `envconfig:"LOG_PATH" default:""`
-	LogLevel                string `envconfig:"LOG_LEVEL" default:"info"`
-	DBSocket                string `envconfig:"DB_SOCKET" default:"tcp"`
-	DBHost                  string `envconfig:"DB_HOST" default:"127.0.0.1"`
-	DBPort                  string `envconfig:"DB_PORT" default:"3306"`
-	DBUsername              string `envconfig:"DB_USERNAME" default:"root"`
-	DBPassword              string `envconfig:"DB_PASSWORD" default:""`
-	DBTimeZone              string `envconfig:"DB_TIMEZONE" default:"Asia/Tokyo"`
-	DBEnabledTLS            bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
-	DBSecretName            string `envconfig:"DB_SECRET_NAME" default:""`
-	SentryDsn               string `envconfig:"SENTRY_DSN" default:""`
-	SentrySecretName        string `envconfig:"SENTRY_SECRET_NAME" default:""`
-	AWSRegion               string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
-	TargetDatetime          string `envconfig:"TARGET_DATETIME" default:""`
-	StepFunctionARN         string `envconfig:"STEP_FUNCTION_ARN" default:""`
-	ArchiveBucketName       string `envconfig:"ARCHIVE_BUCKET_NAME" default:""`
-	MediaConvertEndpoint    string `envconfig:"MEDIA_CONVERT_ENDPOINT" default:""`
-	MediaConvertRoleARN     string `envconfig:"MEDIA_CONVERT_ROLE_ARN" default:""`
-	MediaConvertJobTemplate string `envconfig:"MEDIA_CONVERT_JOB_TEMPLATE" default:""`
+	AppName                 string `default:"media-scheduler" envconfig:"APP_NAME"`
+	Environment             string `default:"none"            envconfig:"ENV"`
+	RunMethod               string `default:"lambda"          envconfig:"RUN_METHOD"`
+	RunType                 string `default:""                envconfig:"RUN_TYPE"`
+	LogPath                 string `default:""                envconfig:"LOG_PATH"`
+	LogLevel                string `default:"info"            envconfig:"LOG_LEVEL"`
+	DBSocket                string `default:"tcp"             envconfig:"DB_SOCKET"`
+	DBHost                  string `default:"127.0.0.1"       envconfig:"DB_HOST"`
+	DBPort                  string `default:"3306"            envconfig:"DB_PORT"`
+	DBUsername              string `default:"root"            envconfig:"DB_USERNAME"`
+	DBPassword              string `default:""                envconfig:"DB_PASSWORD"`
+	DBTimeZone              string `default:"Asia/Tokyo"      envconfig:"DB_TIMEZONE"`
+	DBEnabledTLS            bool   `default:"false"           envconfig:"DB_ENABLED_TLS"`
+	DBSecretName            string `default:""                envconfig:"DB_SECRET_NAME"`
+	SentryDsn               string `default:""                envconfig:"SENTRY_DSN"`
+	SentrySecretName        string `default:""                envconfig:"SENTRY_SECRET_NAME"`
+	AWSRegion               string `default:"ap-northeast-1"  envconfig:"AWS_REGION"`
+	TargetDatetime          string `default:""                envconfig:"TARGET_DATETIME"`
+	StepFunctionARN         string `default:""                envconfig:"STEP_FUNCTION_ARN"`
+	ArchiveBucketName       string `default:""                envconfig:"ARCHIVE_BUCKET_NAME"`
+	MediaConvertEndpoint    string `default:""                envconfig:"MEDIA_CONVERT_ENDPOINT"`
+	MediaConvertRoleARN     string `default:""                envconfig:"MEDIA_CONVERT_ROLE_ARN"`
+	MediaConvertJobTemplate string `default:""                envconfig:"MEDIA_CONVERT_JOB_TEMPLATE"`
 }
 
 //nolint:revive

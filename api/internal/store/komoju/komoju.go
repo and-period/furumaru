@@ -1,4 +1,3 @@
-//nolint:lll
 //go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=./../../../mock/store/$GOPACKAGE/$GOFILE
 package komoju
 

@@ -18,8 +18,9 @@ type httpServer struct {
 // NewHTTPServer - HTTPサーバーの生成
 func NewHTTPServer(handler http.Handler, port int64) Server {
 	s := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: handler,
+		Addr:              fmt.Sprintf(":%d", port),
+		Handler:           handler,
+		ReadHeaderTimeout: http.DefaultClient.Timeout,
 	}
 	return &httpServer{server: s}
 }

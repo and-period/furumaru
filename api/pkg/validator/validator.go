@@ -32,6 +32,7 @@ func WithPasswordValidation(params *PasswordParams) Option {
 	}
 }
 
+//nolint:gosec
 const (
 	hiraganaString    = "^[ぁ-ゔー]*$"
 	passwordString    = "^[a-zA-Z0-9_!@#$_%^&*.?()-=+]*$"

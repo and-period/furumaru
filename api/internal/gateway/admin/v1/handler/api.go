@@ -252,7 +252,6 @@ func (h *handler) authentication(ctx *gin.Context) {
 
 	enforce, err := h.enforcer.Enforce(role.String(), ctx.Request.URL.Path, ctx.Request.Method)
 	if err != nil {
-		fmt.Println("debug", err)
 		h.httpError(ctx, status.Error(codes.Internal, err.Error()))
 		return
 	}

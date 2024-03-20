@@ -18,8 +18,9 @@ func NewMetricsServer(port int64) Server {
 	mux.Handle("/metrics", promhttp.Handler())
 
 	s := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: mux,
+		Addr:              fmt.Sprintf(":%d", port),
+		Handler:           mux,
+		ReadHeaderTimeout: http.DefaultClient.Timeout,
 	}
 	return &metricsServer{server: s}
 }
