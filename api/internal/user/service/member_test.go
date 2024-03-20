@@ -873,6 +873,54 @@ func TestVerifyMemberPassword(t *testing.T) {
 	}
 }
 
+func TestUpdateMemberThumbnailURL(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateMemberThumbnailURLInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().UpdateThumbnailURL(ctx, "user-id", "http://example.com/thumbnail.png").Return(nil)
+			},
+			input: &user.UpdateMemberThumbnailURLInput{
+				UserID:       "user-id",
+				ThumbnailURL: "http://example.com/thumbnail.png",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateMemberThumbnailURLInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to change password",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().UpdateThumbnailURL(ctx, "user-id", "http://example.com/thumbnail.png").Return(assert.AnError)
+			},
+			input: &user.UpdateMemberThumbnailURLInput{
+				UserID:       "user-id",
+				ThumbnailURL: "http://example.com/thumbnail.png",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateMemberThumbnailURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
 func TestUpdateMemberThumbnails(t *testing.T) {
 	t.Parallel()
 

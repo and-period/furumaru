@@ -11,6 +11,8 @@ servers:
 tags:
 - name: Auth
   description: 認証関連
+- name: AuthUser
+  description: 購入者関連
 - name: Address
   description: アドレス帳関連
 - name: Cart
@@ -45,22 +47,25 @@ paths:
     $ref: './paths/v1/auth/index.yaml'
   /v1/auth/refresh-token:
     $ref: './paths/v1/auth/refresh-token.yaml'
-  /v1/auth/email:
-    $ref: './paths/v1/auth/email/index.yaml'
-  /v1/auth/email/verified:
-    $ref: './paths/v1/auth/email/verified.yaml'
   /v1/auth/password:
     $ref: './paths/v1/auth/password.yaml'
   /v1/auth/forgot-password:
     $ref: './paths/v1/auth/forgot-password/index.yaml'
   /v1/auth/forgot-password/verified:
     $ref: './paths/v1/auth/forgot-password/verified.yaml'
-  /v1/auth/user:
-    $ref: './paths/v1/auth/user/index.yaml'
-  /v1/auth/user/oauth:
-    $ref: './paths/v1/auth/user/oauth.yaml'
-  /v1/auth/user/verified:
-    $ref: './paths/v1/auth/user/verified.yaml'
+  # AuthUser
+  /v1/users/me:
+    $ref: './paths/v1/users/me/index.yaml'
+  /v1/users/me/verified:
+    $ref: './paths/v1/users/me/verified.yaml'
+  /v1/users/me/oauth:
+    $ref: './paths/v1/users/me/oauth.yaml'
+  /v1/users/me/thumbnail:
+    $ref: './paths/v1/users/me/thumbnail.yaml'
+  /v1/users/me/email:
+    $ref: './paths/v1/users/me/email/index.yaml'
+  /v1/users/me/email/verified:
+    $ref: './paths/v1/users/me/email/verified.yaml'
   # Address
   /v1/addresses:
     $ref: './paths/v1/addresses/index.yaml'
@@ -235,22 +240,24 @@ components:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
     v1RefreshAuthTokenRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/refreshAuthTokenRequest'
-    v1CreateAuthRequest:
-      $ref: './components/schemas/v1/auth.request.yaml#/createAuthRequest'
-    v1VerifyAuthRequest:
-      $ref: './components/schemas/v1/auth.request.yaml#/verifyAuthRequest'
-    v1CreateAuthWithOAuthRequest:
-      $ref: './components/schemas/v1/auth.request.yaml#/createAuthWithOAuthRequest'
-    v1UpdateAuthEmailRequest:
-      $ref: './components/schemas/v1/auth.request.yaml#/updateAuthEmailRequest'
-    v1VerifyAuthEmailRequest:
-      $ref: './components/schemas/v1/auth.request.yaml#/verifyAuthEmailRequest'
     v1UpdateAuthPasswordRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/updateAuthPasswordRequest'
     v1ForgotAuthPasswordRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/forgotAuthPasswordRequest'
     v1ResetAuthPasswordRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/resetAuthPasswordRequest'
+    v1CreateAuthUserRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/createAuthUserRequest'
+    v1VerifyAuthUserRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/verifyAuthUserRequest'
+    v1CreateAuthUserWithOAuthRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/createAuthUserWithOAuthRequest'
+    v1UpdateAuthUserEmailRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserEmailRequest'
+    v1VerifyAuthUserEmailRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/verifyAuthUserEmailRequest'
+    v1UpdateAuthUserThumbnailRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserThumbnailRequest'
     v1AddCartItemRequest:
       $ref: './components/schemas/v1/cart.request.yaml#/addCartItemRequest'
     v1CheckoutRequest:
@@ -269,9 +276,9 @@ components:
     v1AuthResponse:
       $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
     v1AuthUserResponse:
-      $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
-    v1CreateAuthResponse:
-      $ref: './components/schemas/v1/auth.response.yaml#/createAuthResponse'
+      $ref: './components/schemas/v1/auth-user.response.yaml#/authUserResponse'
+    v1CreateAuthUserResponse:
+      $ref: './components/schemas/v1/auth-user.response.yaml#/createAuthUserResponse'
     v1AddressResponse:
       $ref: './components/schemas/v1/address.response.yaml#/addressResponse'
     v1AddressesResponse:

@@ -16,32 +16,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface V1CreateAuthResponse
+ * @interface CreateAuthUserResponse
  */
-export interface V1CreateAuthResponse {
+export interface CreateAuthUserResponse {
     /**
      * 購入者ID
      * @type {string}
-     * @memberof V1CreateAuthResponse
+     * @memberof CreateAuthUserResponse
      */
     id: string;
 }
 
 /**
- * Check if a given object implements the V1CreateAuthResponse interface.
+ * Check if a given object implements the CreateAuthUserResponse interface.
  */
-export function instanceOfV1CreateAuthResponse(value: object): boolean {
+export function instanceOfCreateAuthUserResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "id" in value;
 
     return isInstance;
 }
 
-export function V1CreateAuthResponseFromJSON(json: any): V1CreateAuthResponse {
-    return V1CreateAuthResponseFromJSONTyped(json, false);
+export function CreateAuthUserResponseFromJSON(json: any): CreateAuthUserResponse {
+    return CreateAuthUserResponseFromJSONTyped(json, false);
 }
 
-export function V1CreateAuthResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): V1CreateAuthResponse {
+export function CreateAuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAuthUserResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -51,7 +51,7 @@ export function V1CreateAuthResponseFromJSONTyped(json: any, ignoreDiscriminator
     };
 }
 
-export function V1CreateAuthResponseToJSON(value?: V1CreateAuthResponse | null): any {
+export function CreateAuthUserResponseToJSON(value?: CreateAuthUserResponse | null): any {
     if (value === undefined) {
         return undefined;
     }

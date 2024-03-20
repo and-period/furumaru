@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { CreateAuthRequest } from '~/types/api'
+import type { CreateAuthUserRequest } from '~/types/api'
 import type { LinkItem } from '~/types/props'
 
 interface Props {
   pageName: string
   errorMessage: string
   buttonText: string
-  modelValue: CreateAuthRequest
+  modelValue: CreateAuthUserRequest
   telLabel: string
   telPlaceholder: string
   telErrorMessage: string
@@ -24,7 +24,7 @@ interface Props {
 
 interface Emits {
   (e: 'submit'): void
-  (e: 'update:modelValue', value: CreateAuthRequest): void
+  (e: 'update:modelValue', value: CreateAuthUserRequest): void
 }
 
 const props = defineProps<Props>()
@@ -32,7 +32,7 @@ const emits = defineEmits<Emits>()
 
 const formData = computed({
   get: () => props.modelValue,
-  set: (val: CreateAuthRequest) => emits('update:modelValue', val),
+  set: (val: CreateAuthUserRequest) => emits('update:modelValue', val),
 })
 
 const handleSubmit = () => {

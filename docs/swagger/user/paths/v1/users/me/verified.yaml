@@ -1,14 +1,14 @@
 post:
   summary: 購入者登録 - コード検証 (メール/SMS認証)
-  operationId: v1VerifyAuth
+  operationId: v1VerifyAuthUser
   tags:
-  - Auth
+  - AuthUser
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: './../../../../openapi.yaml#/components/schemas/v1VerifyAuthRequest'
+          $ref: './../../../../openapi.yaml#/components/schemas/v1VerifyAuthUserRequest'
   responses:
     204:
       description: 成功

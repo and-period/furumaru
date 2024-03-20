@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from '~/store/auth'
-import type { CreateAuthRequest } from '~/types/api'
+import type { CreateAuthUserRequest } from '~/types/api'
 import type { I18n } from '~/types/locales'
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/phone-number'
 import { ApiBaseError } from '~/types/exception'
@@ -53,7 +53,7 @@ const t = (str: keyof I18n['auth']['signUp']) => {
   return i18n.t(`auth.signUp.${str}`)
 }
 
-const formData = reactive<CreateAuthRequest>({
+const formData = reactive<CreateAuthUserRequest>({
   username: '',
   accountId: '',
   lastname: '',

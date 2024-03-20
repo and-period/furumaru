@@ -149,6 +149,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.guestCheckoutRoutes(v1)
 	h.guestLiveCommentRoutes(v1)
 	// 要認証エンドポイント
+	h.authUserRoutes(v1)
 	h.addressRoutes(v1)
 	h.cartRoutes(v1)
 	h.checkoutRoutes(v1)

@@ -205,6 +205,14 @@ func (s *service) VerifyMemberPassword(ctx context.Context, in *user.VerifyMembe
 	return internalError(err)
 }
 
+func (s *service) UpdateMemberThumbnailURL(ctx context.Context, in *user.UpdateMemberThumbnailURLInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	err := s.db.Member.UpdateThumbnailURL(ctx, in.UserID, in.ThumbnailURL)
+	return internalError(err)
+}
+
 func (s *service) UpdateMemberThumbnails(ctx context.Context, in *user.UpdateMemberThumbnailsInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)

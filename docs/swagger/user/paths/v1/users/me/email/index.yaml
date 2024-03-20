@@ -1,8 +1,8 @@
 patch:
   summary: メールアドレス更新
-  operationId: v1UpdateAuthEmail
+  operationId: v1UpdateAuthUserEmail
   tags:
-  - Auth
+  - AuthUser
   security:
   - bearerAuth: []
   requestBody:
@@ -10,7 +10,7 @@ patch:
     content:
       application/json:
         schema:
-          $ref: './../../../../openapi.yaml#/components/schemas/v1UpdateAuthEmailRequest'
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1UpdateAuthUserEmailRequest'
   responses:
     204:
       description: 成功
@@ -19,22 +19,22 @@ patch:
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
     401:
       description: 認証エラー
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
     409:
       description: すでに存在するメールアドレス
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
     412:
       description: 変更後のメールアドレスが変更前と同じ
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
