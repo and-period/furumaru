@@ -20,8 +20,10 @@ import type {
   CreateAuthUserResponse,
   CreateAuthUserWithOAuthRequest,
   ErrorResponse,
+  GetUploadUrlRequest,
   UpdateAuthUserEmailRequest,
   UpdateAuthUserThumbnailRequest,
+  UploadUrlResponse,
   VerifyAuthUserEmailRequest,
   VerifyAuthUserRequest,
 } from '../models/index';
@@ -36,10 +38,14 @@ import {
     CreateAuthUserWithOAuthRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    GetUploadUrlRequestFromJSON,
+    GetUploadUrlRequestToJSON,
     UpdateAuthUserEmailRequestFromJSON,
     UpdateAuthUserEmailRequestToJSON,
     UpdateAuthUserThumbnailRequestFromJSON,
     UpdateAuthUserThumbnailRequestToJSON,
+    UploadUrlResponseFromJSON,
+    UploadUrlResponseToJSON,
     VerifyAuthUserEmailRequestFromJSON,
     VerifyAuthUserEmailRequestToJSON,
     VerifyAuthUserRequestFromJSON,
@@ -52,6 +58,10 @@ export interface V1CreateAuthUserRequest {
 
 export interface V1CreateAuthUserWithOAuthRequest {
     body: CreateAuthUserWithOAuthRequest;
+}
+
+export interface V1GetUserThumbnailUploadUrlRequest {
+    body: GetUploadUrlRequest;
 }
 
 export interface V1UpdateAuthUserEmailRequest {
@@ -213,6 +223,47 @@ export class AuthUserApi extends runtime.BaseAPI {
      */
     async v1GetAuthUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
         const response = await this.v1GetAuthUserRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 購入者サムネイルアップロード用URL取得
+     */
+    async v1GetUserThumbnailUploadUrlRaw(requestParameters: V1GetUserThumbnailUploadUrlRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadUrlResponse>> {
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1GetUserThumbnailUploadUrl.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/upload/users/thumbnail`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UploadUrlResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 購入者サムネイルアップロード用URL取得
+     */
+    async v1GetUserThumbnailUploadUrl(requestParameters: V1GetUserThumbnailUploadUrlRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadUrlResponse> {
+        const response = await this.v1GetUserThumbnailUploadUrlRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
