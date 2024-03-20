@@ -1,8 +1,8 @@
 .PHONY: help setup build generate lint validate
 
-OPENAPITOOLS_VERSION := 2.9.0
+OPENAPITOOLS_VERSION := 2.13.1
 SWAGGER_CLI_VERSION  := 4.0.4
-SWAGGER_UI_VERSION   := 5.11.8
+SWAGGER_UI_VERSION   := 5.12.0
 
 ADMIN_INPUT_DIR       := admin
 ADMIN_OUTPUT_DOCS_DIR := ./../../tmp/data/swagger/admin/docs
