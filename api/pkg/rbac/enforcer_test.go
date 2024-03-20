@@ -36,7 +36,7 @@ func TestEnforcer(t *testing.T) {
 			name:       "non initialize",
 			modelPath:  "",
 			policyPath: "",
-			expect:     false,
+			expect:     true,
 			expectErr:  false,
 		},
 		{

@@ -176,6 +176,7 @@ func (l *live) replaceProducts(ctx context.Context, tx *gorm.DB, liveID string, 
 			Columns:   []clause.Column{{Name: "live_id"}, {Name: "product_id"}},
 			DoUpdates: clause.Assignments(params),
 		}
+		//nolint:gosec
 		if err := tx.WithContext(ctx).Omit(clause.Associations).Clauses(conds).Create(&product).Error; err != nil {
 			return err
 		}

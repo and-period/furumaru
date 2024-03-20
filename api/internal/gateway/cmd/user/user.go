@@ -28,45 +28,45 @@ type app struct {
 	slack                slack.Client
 	newRelic             *newrelic.Application
 	v1                   v1.Handler
-	AppName              string  `envconfig:"APP_NAME" default:"user-gateway"`
-	Environment          string  `envconfig:"ENV" default:"none"`
-	Port                 int64   `envconfig:"PORT" default:"8080"`
-	MetricsPort          int64   `envconfig:"METRICS_PORT" default:"9090"`
-	ShutdownDelaySec     int64   `envconfig:"SHUTDOWN_DELAY_SEC" default:"20"`
-	LogPath              string  `envconfig:"LOG_PATH" default:""`
-	LogLevel             string  `envconfig:"LOG_LEVEL" default:"info"`
-	TraceSampleRate      float64 `envconfig:"TRACE_SAMPLE_RATE" default:"0.0"`
-	ProfileSampleRate    float64 `envconfig:"PROFILE_SAMPLE_RATE" default:"0.0"`
-	DBSocket             string  `envconfig:"DB_SOCKET" default:"tcp"`
-	DBHost               string  `envconfig:"DB_HOST" default:"127.0.0.1"`
-	DBPort               string  `envconfig:"DB_PORT" default:"3306"`
-	DBUsername           string  `envconfig:"DB_USERNAME" default:"root"`
-	DBPassword           string  `envconfig:"DB_PASSWORD" default:""`
-	DBTimeZone           string  `envconfig:"DB_TIMEZONE" default:"Asia/Tokyo"`
-	DBEnabledTLS         bool    `envconfig:"DB_ENABLED_TLS" default:"false"`
-	DBSecretName         string  `envconfig:"DB_SECRET_NAME" default:""`
-	GinMode              string  `envconfig:"GIN_MODE" default:"release"`
-	NewRelicLicense      string  `envconfig:"NEW_RELIC_LICENSE" default:""`
-	NewRelicSecretName   string  `envconfig:"NEW_RELIC_SECRET_NAME" default:""`
-	SentryDsn            string  `envconfig:"SENTRY_DSN" default:""`
-	SentrySecretName     string  `envconfig:"SENTRY_SECRET_NAME" default:""`
-	AWSRegion            string  `envconfig:"AWS_REGION" default:"ap-northeast-1"`
-	S3Bucket             string  `envconfig:"S3_BUCKET" default:""`
-	S3TmpBucket          string  `envconfig:"S3_TMP_BUCKET" default:""`
-	CognitoUserPoolID    string  `envconfig:"COGNITO_USER_POOL_ID" default:""`
-	CognitoUserClientID  string  `envconfig:"COGNITO_USER_CLIENT_ID" default:""`
-	SQSQueueURL          string  `envconfig:"SQS_QUEUE_URL" default:""`
-	SQSMockEnabled       bool    `envconfig:"SQS_MOCK_ENABLED" default:"false"`
-	KomojuHost           string  `envconfig:"KOMOJU_HOST" default:""`
-	KomojuClientID       string  `envconfig:"KOMOJU_CLIENT_ID" default:""`
-	KomojuClientPassword string  `envconfig:"KOMOJU_CLIENT_PASSWORD" default:""`
-	KomojuSecretName     string  `envconfig:"KOMOJU_SECRET_NAME" default:""`
-	SlackAPIToken        string  `envconfig:"SLACK_API_TOKEN" default:""`
-	SlackChannelID       string  `envconfig:"SLACK_CHANNEL_ID" default:""`
-	SlackSecretName      string  `envconfig:"SLACK_SECRET_NAME" default:""`
-	AminWebURL           string  `envconfig:"ADMIN_WEB_URL" default:""`
-	UserWebURL           string  `envconfig:"USER_WEB_URL" default:""`
-	CheckoutRedirectURL  string  `envconfig:"CHECKOUT_REDIRECT_URL" default:""` // TODO: クライアント側修正が完了し次第削除
+	AppName              string  `default:"user-gateway"   envconfig:"APP_NAME"`
+	Environment          string  `default:"none"           envconfig:"ENV"`
+	Port                 int64   `default:"8080"           envconfig:"PORT"`
+	MetricsPort          int64   `default:"9090"           envconfig:"METRICS_PORT"`
+	ShutdownDelaySec     int64   `default:"20"             envconfig:"SHUTDOWN_DELAY_SEC"`
+	LogPath              string  `default:""               envconfig:"LOG_PATH"`
+	LogLevel             string  `default:"info"           envconfig:"LOG_LEVEL"`
+	TraceSampleRate      float64 `default:"0.0"            envconfig:"TRACE_SAMPLE_RATE"`
+	ProfileSampleRate    float64 `default:"0.0"            envconfig:"PROFILE_SAMPLE_RATE"`
+	DBSocket             string  `default:"tcp"            envconfig:"DB_SOCKET"`
+	DBHost               string  `default:"127.0.0.1"      envconfig:"DB_HOST"`
+	DBPort               string  `default:"3306"           envconfig:"DB_PORT"`
+	DBUsername           string  `default:"root"           envconfig:"DB_USERNAME"`
+	DBPassword           string  `default:""               envconfig:"DB_PASSWORD"`
+	DBTimeZone           string  `default:"Asia/Tokyo"     envconfig:"DB_TIMEZONE"`
+	DBEnabledTLS         bool    `default:"false"          envconfig:"DB_ENABLED_TLS"`
+	DBSecretName         string  `default:""               envconfig:"DB_SECRET_NAME"`
+	GinMode              string  `default:"release"        envconfig:"GIN_MODE"`
+	NewRelicLicense      string  `default:""               envconfig:"NEW_RELIC_LICENSE"`
+	NewRelicSecretName   string  `default:""               envconfig:"NEW_RELIC_SECRET_NAME"`
+	SentryDsn            string  `default:""               envconfig:"SENTRY_DSN"`
+	SentrySecretName     string  `default:""               envconfig:"SENTRY_SECRET_NAME"`
+	AWSRegion            string  `default:"ap-northeast-1" envconfig:"AWS_REGION"`
+	S3Bucket             string  `default:""               envconfig:"S3_BUCKET"`
+	S3TmpBucket          string  `default:""               envconfig:"S3_TMP_BUCKET"`
+	CognitoUserPoolID    string  `default:""               envconfig:"COGNITO_USER_POOL_ID"`
+	CognitoUserClientID  string  `default:""               envconfig:"COGNITO_USER_CLIENT_ID"`
+	SQSQueueURL          string  `default:""               envconfig:"SQS_QUEUE_URL"`
+	SQSMockEnabled       bool    `default:"false"          envconfig:"SQS_MOCK_ENABLED"`
+	KomojuHost           string  `default:""               envconfig:"KOMOJU_HOST"`
+	KomojuClientID       string  `default:""               envconfig:"KOMOJU_CLIENT_ID"`
+	KomojuClientPassword string  `default:""               envconfig:"KOMOJU_CLIENT_PASSWORD"`
+	KomojuSecretName     string  `default:""               envconfig:"KOMOJU_SECRET_NAME"`
+	SlackAPIToken        string  `default:""               envconfig:"SLACK_API_TOKEN"`
+	SlackChannelID       string  `default:""               envconfig:"SLACK_CHANNEL_ID"`
+	SlackSecretName      string  `default:""               envconfig:"SLACK_SECRET_NAME"`
+	AminWebURL           string  `default:""               envconfig:"ADMIN_WEB_URL"`
+	UserWebURL           string  `default:""               envconfig:"USER_WEB_URL"`
+	CheckoutRedirectURL  string  `default:""               envconfig:"CHECKOUT_REDIRECT_URL"` // TODO: クライアント側修正が完了し次第削除
 }
 
 //nolint:revive

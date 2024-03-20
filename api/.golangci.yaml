@@ -1,42 +1,63 @@
 run:
-  skip-dirs:
-  - bin
-  - hack
-  - mock
-  - proto
-  - third_party
-  - tmp
-  skip-files:
-  - '.*_test.go'
   timeout: 10m
 
 linters:
   disable-all: true
   enable:
+  - asasalint
+  - bidichk
   - bodyclose
+  - containedctx
+  - contextcheck
+  - decorder
   - dogsled
   - dupl
+  - dupword
   - errcheck
   - exportloopref
-  - gochecknoinits
-  - goconst
+  - forbidigo
+  - gci
+  - ginkgolinter
+  - gocheckcompilerdirectives
   - gocritic
-  - gocyclo
+  - gofumpt
   - goimports
+  - gomoddirectives
+  - gomodguard
+  - gosec
   - gosimple
   - govet
+  - grouper
   - ineffassign
   - lll
-  - misspell
+  - loggercheck
+  - maintidx
   - nakedret
+  - nestif
+  - nilnil
+  - noctx
+  - nolintlint
+  - prealloc
+  - promlinter
+  - protogetter
+  - reassign
   - revive
+  - rowserrcheck
+  - sloglint
+  - sqlclosecheck
   - staticcheck
   - stylecheck
+  - tagalign
+  - tenv
+  - testifylint
   - typecheck
   - unconvert
   - unparam
   - unused
+  - usestdlibvars
+  - wastedassign
   - whitespace
+  # - wrapcheck
 
 linters-settings:
   funlen:
@@ -52,7 +73,18 @@ issues:
   - lines are duplicate of
   - a blank import should be only in a main or test package, or have a comment justifying it
   - use strings.ReplaceAll method in
+  exclude-dirs:
+  - bin
+  - hack
+  - mock
+  - proto
+  - third_party
+  - tmp
+  exclude-files:
+  - '.*_test.go'
   exclude-rules:
   - path: _test\.go
     linters:
+    - errcheck
     - dupl
+    - gosec

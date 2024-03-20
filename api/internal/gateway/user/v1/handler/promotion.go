@@ -51,7 +51,6 @@ func (h *handler) multiGetPromotion(ctx context.Context, promotionIDs []string) 
 	return service.NewPromotions(promotions), nil
 }
 
-//nolint:unused
 func (h *handler) getPromotion(ctx context.Context, promotionID string) (*service.Promotion, error) {
 	in := &store.GetPromotionInput{
 		PromotionID: promotionID,

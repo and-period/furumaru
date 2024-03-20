@@ -1,4 +1,3 @@
-//nolint:lll
 //go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=./../../../mock/user/$GOPACKAGE/$GOFILE
 package database
 

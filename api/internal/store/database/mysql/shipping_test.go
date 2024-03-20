@@ -567,7 +567,7 @@ func testShippingRevision(revisionID int64, shippingID string, now time.Time) *e
 	return revision
 }
 
-func fillIgnoreShippingField(s *entity.Shipping, now time.Time) {
+func fillIgnoreShippingField(s *entity.Shipping, _ time.Time) {
 	if s == nil {
 		return
 	}

@@ -19,27 +19,27 @@ type app struct {
 	logger           *zap.Logger
 	waitGroup        *sync.WaitGroup
 	job              scheduler.Scheduler
-	AppName          string `envconfig:"APP_NAME" default:"messenger-scheduler"`
-	Environment      string `envconfig:"ENV" default:"none"`
-	RunMethod        string `envconfig:"RUN_METHOD" default:"lambda"`
-	LogPath          string `envconfig:"LOG_PATH" default:""`
-	LogLevel         string `envconfig:"LOG_LEVEL" default:"info"`
-	DBSocket         string `envconfig:"DB_SOCKET" default:"tcp"`
-	DBHost           string `envconfig:"DB_HOST" default:"127.0.0.1"`
-	DBPort           string `envconfig:"DB_PORT" default:"3306"`
-	DBUsername       string `envconfig:"DB_USERNAME" default:"root"`
-	DBPassword       string `envconfig:"DB_PASSWORD" default:""`
-	DBTimeZone       string `envconfig:"DB_TIMEZONE" default:"Asia/Tokyo"`
-	DBEnabledTLS     bool   `envconfig:"DB_ENABLED_TLS" default:"false"`
-	DBSecretName     string `envconfig:"DB_SECRET_NAME" default:""`
-	SentryDsn        string `envconfig:"SENTRY_DSN" default:""`
-	SentrySecretName string `envconfig:"SENTRY_SECRET_NAME" default:""`
-	AWSRegion        string `envconfig:"AWS_REGION" default:"ap-northeast-1"`
-	SQSQueueURL      string `envconfig:"SQS_QUEUE_URL" default:""`
-	SQSMockEnabled   bool   `envconfig:"SQS_MOCK_ENABLED" default:"false"`
-	AminWebURL       string `envconfig:"ADMIN_WEB_URL" default:""`
-	UserWebURL       string `envconfig:"USER_WEB_URL" default:""`
-	TargetDatetime   string `envconfig:"TARGET_DATETIME" default:""`
+	AppName          string `default:"messenger-scheduler" envconfig:"APP_NAME"`
+	Environment      string `default:"none"                envconfig:"ENV"`
+	RunMethod        string `default:"lambda"              envconfig:"RUN_METHOD"`
+	LogPath          string `default:""                    envconfig:"LOG_PATH"`
+	LogLevel         string `default:"info"                envconfig:"LOG_LEVEL"`
+	DBSocket         string `default:"tcp"                 envconfig:"DB_SOCKET"`
+	DBHost           string `default:"127.0.0.1"           envconfig:"DB_HOST"`
+	DBPort           string `default:"3306"                envconfig:"DB_PORT"`
+	DBUsername       string `default:"root"                envconfig:"DB_USERNAME"`
+	DBPassword       string `default:""                    envconfig:"DB_PASSWORD"`
+	DBTimeZone       string `default:"Asia/Tokyo"          envconfig:"DB_TIMEZONE"`
+	DBEnabledTLS     bool   `default:"false"               envconfig:"DB_ENABLED_TLS"`
+	DBSecretName     string `default:""                    envconfig:"DB_SECRET_NAME"`
+	SentryDsn        string `default:""                    envconfig:"SENTRY_DSN"`
+	SentrySecretName string `default:""                    envconfig:"SENTRY_SECRET_NAME"`
+	AWSRegion        string `default:"ap-northeast-1"      envconfig:"AWS_REGION"`
+	SQSQueueURL      string `default:""                    envconfig:"SQS_QUEUE_URL"`
+	SQSMockEnabled   bool   `default:"false"               envconfig:"SQS_MOCK_ENABLED"`
+	AminWebURL       string `default:""                    envconfig:"ADMIN_WEB_URL"`
+	UserWebURL       string `default:""                    envconfig:"USER_WEB_URL"`
+	TargetDatetime   string `default:""                    envconfig:"TARGET_DATETIME"`
 }
 
 //nolint:revive
