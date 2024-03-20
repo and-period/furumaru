@@ -2,7 +2,7 @@ get:
   summary: 購入者情報取得
   operationId: v1GetAuthUser
   tags:
-  - Auth
+  - AuthUser
   security:
   - bearerAuth: []
   responses:
@@ -20,22 +20,22 @@ get:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
 post:
   summary: 購入者登録 (メール/SMS認証)
-  operationId: v1CreateAuth
+  operationId: v1CreateAuthUser
   tags:
-  - Auth
+  - AuthUser
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: './../../../../openapi.yaml#/components/schemas/v1CreateAuthRequest'
+          $ref: './../../../../openapi.yaml#/components/schemas/v1CreateAuthUserRequest'
   responses:
     200:
       description: 成功
       content:
         application/json:
           schema:
-            $ref: './../../../../openapi.yaml#/components/schemas/v1CreateAuthResponse'
+            $ref: './../../../../openapi.yaml#/components/schemas/v1CreateAuthUserResponse'
     400:
       description: バリデーションエラー
       content:
@@ -56,9 +56,9 @@ post:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
 delete:
   summary: 購入者退会
-  operationId: v1DeleteAuth
+  operationId: v1DeleteAuthUser
   tags:
-  - Auth
+  - AuthUser
   security:
   - bearerAuth: []
   responses:

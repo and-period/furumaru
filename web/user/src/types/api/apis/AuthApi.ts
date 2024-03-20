@@ -16,33 +16,18 @@
 import * as runtime from '../runtime';
 import type {
   AuthResponse,
-  AuthUserResponse,
-  CreateAuthRequest,
-  CreateAuthResponse,
-  CreateAuthWithOAuthRequest,
   ErrorResponse,
   ForgotAuthPasswordRequest,
   GetUploadUrlRequest,
   RefreshAuthTokenRequest,
   ResetAuthPasswordRequest,
   SignInRequest,
-  UpdateAuthEmailRequest,
   UpdateAuthPasswordRequest,
   UploadUrlResponse,
-  VerifyAuthEmailRequest,
-  VerifyAuthRequest,
 } from '../models/index';
 import {
     AuthResponseFromJSON,
     AuthResponseToJSON,
-    AuthUserResponseFromJSON,
-    AuthUserResponseToJSON,
-    CreateAuthRequestFromJSON,
-    CreateAuthRequestToJSON,
-    CreateAuthResponseFromJSON,
-    CreateAuthResponseToJSON,
-    CreateAuthWithOAuthRequestFromJSON,
-    CreateAuthWithOAuthRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     ForgotAuthPasswordRequestFromJSON,
@@ -55,25 +40,11 @@ import {
     ResetAuthPasswordRequestToJSON,
     SignInRequestFromJSON,
     SignInRequestToJSON,
-    UpdateAuthEmailRequestFromJSON,
-    UpdateAuthEmailRequestToJSON,
     UpdateAuthPasswordRequestFromJSON,
     UpdateAuthPasswordRequestToJSON,
     UploadUrlResponseFromJSON,
     UploadUrlResponseToJSON,
-    VerifyAuthEmailRequestFromJSON,
-    VerifyAuthEmailRequestToJSON,
-    VerifyAuthRequestFromJSON,
-    VerifyAuthRequestToJSON,
 } from '../models/index';
-
-export interface V1CreateAuthRequest {
-    body: CreateAuthRequest;
-}
-
-export interface V1CreateAuthWithOAuthRequest {
-    body: CreateAuthWithOAuthRequest;
-}
 
 export interface V1ForgotAuthPasswordRequest {
     body: ForgotAuthPasswordRequest;
@@ -95,133 +66,14 @@ export interface V1SignInRequest {
     body: SignInRequest;
 }
 
-export interface V1UpdateAuthEmailRequest {
-    body: UpdateAuthEmailRequest;
-}
-
 export interface V1UpdateUserPasswordRequest {
     body: UpdateAuthPasswordRequest;
-}
-
-export interface V1VerifyAuthRequest {
-    body: VerifyAuthRequest;
-}
-
-export interface V1VerifyAuthEmailRequest {
-    body: VerifyAuthEmailRequest;
 }
 
 /**
  * 
  */
 export class AuthApi extends runtime.BaseAPI {
-
-    /**
-     * 購入者登録 (メール/SMS認証)
-     */
-    async v1CreateAuthRaw(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateAuthResponse>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateAuth.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        const response = await this.request({
-            path: `/v1/auth/user`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters.body as any,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CreateAuthResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * 購入者登録 (メール/SMS認証)
-     */
-    async v1CreateAuth(requestParameters: V1CreateAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateAuthResponse> {
-        const response = await this.v1CreateAuthRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * 購入者登録 (SNS認証)
-     */
-    async v1CreateAuthWithOAuthRaw(requestParameters: V1CreateAuthWithOAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateAuthWithOAuth.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/auth/user/oauth`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters.body as any,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * 購入者登録 (SNS認証)
-     */
-    async v1CreateAuthWithOAuth(requestParameters: V1CreateAuthWithOAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
-        const response = await this.v1CreateAuthWithOAuthRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * 購入者退会
-     */
-    async v1DeleteAuthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/auth/user`,
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * 購入者退会
-     */
-    async v1DeleteAuth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.v1DeleteAuthRaw(initOverrides);
-    }
 
     /**
      * パスワードリセット
@@ -286,40 +138,6 @@ export class AuthApi extends runtime.BaseAPI {
      */
     async v1GetAuth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthResponse> {
         const response = await this.v1GetAuthRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * 購入者情報取得
-     */
-    async v1GetAuthUserRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/auth/user`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * 購入者情報取得
-     */
-    async v1GetAuthUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthUserResponse> {
-        const response = await this.v1GetAuthUserRaw(initOverrides);
         return await response.value();
     }
 
@@ -512,46 +330,6 @@ export class AuthApi extends runtime.BaseAPI {
     }
 
     /**
-     * メールアドレス更新
-     */
-    async v1UpdateAuthEmailRaw(requestParameters: V1UpdateAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthEmail.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/auth/email`,
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters.body as any,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * メールアドレス更新
-     */
-    async v1UpdateAuthEmail(requestParameters: V1UpdateAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.v1UpdateAuthEmailRaw(requestParameters, initOverrides);
-    }
-
-    /**
      * パスワード更新
      */
     async v1UpdateUserPasswordRaw(requestParameters: V1UpdateUserPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -589,78 +367,6 @@ export class AuthApi extends runtime.BaseAPI {
      */
     async v1UpdateUserPassword(requestParameters: V1UpdateUserPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1UpdateUserPasswordRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * 購入者登録 - コード検証 (メール/SMS認証)
-     */
-    async v1VerifyAuthRaw(requestParameters: V1VerifyAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1VerifyAuth.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        const response = await this.request({
-            path: `/v1/auth/user/verified`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters.body as any,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * 購入者登録 - コード検証 (メール/SMS認証)
-     */
-    async v1VerifyAuth(requestParameters: V1VerifyAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.v1VerifyAuthRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * メールアドレス更新 - コード検証
-     */
-    async v1VerifyAuthEmailRaw(requestParameters: V1VerifyAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1VerifyAuthEmail.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/auth/email/verified`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters.body as any,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * メールアドレス更新 - コード検証
-     */
-    async v1VerifyAuthEmail(requestParameters: V1VerifyAuthEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.v1VerifyAuthEmailRaw(requestParameters, initOverrides);
     }
 
 }

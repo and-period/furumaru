@@ -2,6 +2,7 @@ import 'pinia'
 import {
   AddressApi,
   AuthApi,
+  AuthUserApi,
   CartApi,
   CheckoutApi,
   ProductApi,
@@ -28,6 +29,7 @@ declare module 'pinia' {
       customObject?: CustomErrorMessage,
     ) => Promise<never>
     authApiClient: (token?: string | undefined) => AuthApi
+    authUserApiClient: (token?: string | undefined) => AuthUserApi
     topPageApiClient: (token?: string | undefined) => TopApi
     productApiClient: (token?: string | undefined) => ProductApi
     cartApiClient: (token?: string) => CartApi

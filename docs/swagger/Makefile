@@ -24,7 +24,11 @@ setup: ## 環境構築
 		@openapitools/openapi-generator-cli@v${OPENAPITOOLS_VERSION} \
 		swagger-cli@v${SWAGGER_CLI_VERSION}
 
-build: build-admin build-user ## API仕様書の生成
+clean: ## 生成されたファイルを削除
+	rm -rf ${ADMIN_WEB_TYPES_DIR}
+	rm -rf ${USER_WEB_TYPES_DIR}
+
+build: clean build-admin build-user ## API仕様書の生成
 
 build-admin: ## API仕様書の生成(管理者関連)
 #	$(MAKE) generate TYPE=html2 INPUT_DIR=${ADMIN_INPUT_DIR} OUTPUT_DIR=${ADMIN_OUTPUT_DOCS_DIR}

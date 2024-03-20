@@ -2,7 +2,7 @@ post:
   summary: 購入者サムネイルアップロード用URL取得
   operationId: v1GetUserThumbnailUploadUrl
   tags:
-  - Auth
+  - AuthUser
   security:
   - bearerAuth: []
   requestBody:

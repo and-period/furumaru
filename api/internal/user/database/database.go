@@ -168,6 +168,7 @@ type Member interface {
 	Create(ctx context.Context, user *entity.User, auth func(ctx context.Context) error) error
 	UpdateVerified(ctx context.Context, userID string) error
 	UpdateEmail(ctx context.Context, userID, email string) error
+	UpdateThumbnailURL(ctx context.Context, userID, thumbnailURL string) error
 	UpdateThumbnails(ctx context.Context, userID string, thumbnails common.Images) error
 	Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error
 }

@@ -1,8 +1,8 @@
 post:
-  summary: メールアドレス更新 - コード検証
-  operationId: v1VerifyAuthEmail
+  summary: 購入者登録 (SNS認証)
+  operationId: v1CreateAuthUserWithOAuth
   tags:
-  - Auth
+  - AuthUser
   security:
   - bearerAuth: []
   requestBody:
@@ -10,18 +10,22 @@ post:
     content:
       application/json:
         schema:
-          $ref: './../../../../openapi.yaml#/components/schemas/v1VerifyAuthEmailRequest'
+          $ref: './../../../../openapi.yaml#/components/schemas/v1CreateAuthUserWithOAuthRequest'
   responses:
-    204:
+    200:
       description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1AuthUserResponse'
     400:
       description: バリデーションエラー
       content:
         application/json:
           schema:
             $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'
-    401:
-      description: 認証エラー
+    409:
+      description: すでに存在するアカウント
       content:
         application/json:
           schema:

@@ -1,0 +1,28 @@
+post:
+  summary: メールアドレス更新 - コード検証
+  operationId: v1VerifyAuthUserEmail
+  tags:
+  - AuthUser
+  security:
+  - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../openapi.yaml#/components/schemas/v1VerifyAuthUserEmailRequest'
+  responses:
+    204:
+      description: 成功
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+    401:
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'

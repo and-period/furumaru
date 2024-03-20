@@ -539,6 +539,69 @@ func TestUser_UpdateEmail(t *testing.T) {
 	}
 }
 
+func TestUser_UpdateThumbnailURL(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	type args struct {
+		userID       string
+		thumbnailURL string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				err = db.DB.Create(&u).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&u.Member).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				userID:       "user-id",
+				thumbnailURL: "http://example.com/thumbnail.png",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, memberTable, userTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, db)
+
+			db := &member{db: db, now: now}
+			err = db.UpdateThumbnailURL(ctx, tt.args.userID, tt.args.thumbnailURL)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
 func TestMember_UpdateThumbnails(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

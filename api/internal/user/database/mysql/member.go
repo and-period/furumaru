@@ -128,6 +128,18 @@ func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 	return dbError(err)
 }
 
+func (m *member) UpdateThumbnailURL(ctx context.Context, userID, thumbnailURL string) error {
+	params := map[string]interface{}{
+		"thumbnail_url": thumbnailURL,
+		"updated_at":    m.now(),
+	}
+	err := m.db.DB.WithContext(ctx).
+		Table(memberTable).
+		Where("user_id = ?", userID).
+		Updates(params).Error
+	return dbError(err)
+}
+
 func (m *member) UpdateThumbnails(ctx context.Context, userID string, thumbnails common.Images) error {
 	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		member, err := m.get(ctx, tx, userID, "thumbnail_url")

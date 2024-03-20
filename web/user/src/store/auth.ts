@@ -4,9 +4,10 @@ import dayjs from 'dayjs'
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import type {
   AuthUserResponse,
-  CreateAuthRequest,
+  CreateAuthUserRequest,
+  CreateAuthUserResponse,
   SignInRequest,
-  VerifyAuthRequest,
+  VerifyAuthUserRequest,
 } from '~/types/api'
 import { AuthError } from '~/types/exception'
 
@@ -52,9 +53,9 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async signUp(payload: CreateAuthRequest): Promise<AuthUserResponse> {
+    async signUp(payload: CreateAuthUserRequest): Promise<CreateAuthUserResponse> {
       try {
-        const res = await this.authApiClient().v1CreateAuth({ body: payload })
+        const res = await this.authUserApiClient().v1CreateAuthUser({ body: payload })
         return res
       } catch (error) {
         return this.errorHandler(error, {
@@ -63,16 +64,16 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async verifyAuth(payload: VerifyAuthRequest) {
+    async verifyAuth(payload: VerifyAuthUserRequest) {
       try {
-        await this.authApiClient().v1VerifyAuth({ body: payload })
+        await this.authUserApiClient().v1VerifyAuthUser({ body: payload })
       } catch (error) {
         return this.errorHandler(error)
       }
     },
 
     async fetchUserInfo() {
-      const res = await this.authApiClient(this.accessToken).v1GetAuthUser()
+      const res = await this.authUserApiClient(this.accessToken).v1GetAuthUser()
       this.user = res
     },
 
