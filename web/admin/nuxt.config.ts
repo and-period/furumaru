@@ -28,7 +28,7 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     '@nuxtjs/google-fonts',
     '@nuxtjs/stylelint-module',
-    ['@pinia/nuxt', { autoImports: ['defineStore'] }]
+    '@pinia/nuxt'
   ],
   googleFonts: {
     download: true,
@@ -52,6 +52,11 @@ export default defineNuxtConfig({
       FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID || '',
       FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || '',
       ENVIRONMENT: process.env.ENVIRONMENT || ''
+    }
+  },
+  devtools: {
+    timeline: {
+      enabled: true
     }
   }
 })
