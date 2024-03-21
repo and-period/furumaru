@@ -655,12 +655,10 @@ func TestUser_UpdateAccountID(t *testing.T) {
 				users[1] = testUser("account-id", "test-user02@and-period.jp", "+810000000002", now())
 				err = db.DB.Create(&users).Error
 				require.NoError(t, err)
-				members := make(entity.Members, 2)
 				for i := range users {
-					members[0] = &users[i].Member
+					err := db.DB.Create(&users[i].Member).Error
+					require.NoError(t, err)
 				}
-				err = db.DB.Create(&members).Error
-				require.NoError(t, err)
 			},
 			args: args{
 				userID:    "user-id",
