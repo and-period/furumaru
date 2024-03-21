@@ -25,7 +25,7 @@ func NewAuthUser(user *entity.User, notification *entity.UserNotification) *Auth
 		},
 	}
 	if notification != nil {
-		res.NotificationEnabled = !notification.EmailDisabled
+		res.NotificationEnabled = !notification.Disabled
 	}
 	return res
 }

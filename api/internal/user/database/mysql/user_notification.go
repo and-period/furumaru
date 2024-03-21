@@ -27,6 +27,15 @@ func newUserNotification(db *mysql.Client) database.UserNotification {
 	}
 }
 
+func (n *userNotification) MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.UserNotifications, error) {
+	var notifications entity.UserNotifications
+
+	stmt := n.db.Statement(ctx, n.db.DB, userNotificationTable, fields...).Where("user_id IN (?)", userIDs)
+
+	err := stmt.Find(&notifications).Error
+	return notifications, dbError(err)
+}
+
 func (n *userNotification) Get(ctx context.Context, userID string, fields ...string) (*entity.UserNotification, error) {
 	notification, err := n.get(ctx, n.db.DB, userID, fields...)
 	return notification, dbError(err)
@@ -37,8 +46,8 @@ func (n *userNotification) Upsert(ctx context.Context, notification *entity.User
 	notification.CreatedAt, notification.UpdatedAt = now, now
 
 	updates := map[string]interface{}{
-		"email_disabled": notification.EmailDisabled,
-		"updated_at":     now,
+		"disabled":   notification.Disabled,
+		"updated_at": now,
 	}
 	clauses := clause.OnConflict{
 		Columns:   []clause.Column{{Name: "user_id"}},
