@@ -9,8 +9,8 @@ type AuthUser struct {
 	response.AuthUser
 }
 
-func NewAuthUser(user *entity.User) *AuthUser {
-	return &AuthUser{
+func NewAuthUser(user *entity.User, notification *entity.UserNotification) *AuthUser {
+	res := &AuthUser{
 		AuthUser: response.AuthUser{
 			ID:            user.ID,
 			Username:      user.Member.Username,
@@ -24,6 +24,10 @@ func NewAuthUser(user *entity.User) *AuthUser {
 			Email:         user.Email(),
 		},
 	}
+	if notification != nil {
+		res.NotificationEnabled = !notification.EmailDisabled
+	}
+	return res
 }
 
 func (u *AuthUser) Response() *response.AuthUser {

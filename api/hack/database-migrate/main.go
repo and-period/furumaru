@@ -30,6 +30,7 @@ var (
 		"users",
 		"stores",
 		"messengers",
+		"media",
 	}
 	skipDDLs = []string{
 		"2022022301-setup.sql",

@@ -44,6 +44,10 @@ type UpdateAuthUserAccountIDRequest struct {
 	AccountID string `json:"accountId,omitempty"` // ユーザーID(検索名)
 }
 
+type UpdateAuthUserNotificationRequest struct {
+	Enabled bool `json:"enabled,omitempty"` // 通知の有効化設定
+}
+
 type UpdateAuthUserThumbnailRequest struct {
 	ThumbnailURL string `json:"thumbnailUrl,omitempty"` // サムネイルURL
 }

@@ -54,15 +54,17 @@ type Service interface {
 	UpdateProducerHeaders(ctx context.Context, in *UpdateProducerHeadersInput) error             // ヘッダー画像(リサイズ済み)更新
 	DeleteProducer(ctx context.Context, in *DeleteProducerInput) error                           // 退会
 	// 購入者
-	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)             // サインイン
-	SignOutUser(ctx context.Context, in *SignOutUserInput) error                               // サインアウト
-	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)           // 認証情報取得
-	RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error) // アクセストークン更新
-	ListUsers(ctx context.Context, in *ListUsersInput) (entity.Users, int64, error)            // 一覧取得
-	MultiGetUsers(ctx context.Context, in *MultiGetUsersInput) (entity.Users, error)           // 一覧取得(ID指定)
-	MultiGetUserDevices(ctx context.Context, in *MultiGetUserDevicesInput) ([]string, error)   // デバイストークン一覧取得
-	GetUser(ctx context.Context, in *GetUserInput) (*entity.User, error)                       // １件取得
-	DeleteUser(ctx context.Context, in *DeleteUserInput) error                                 // 退会
+	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)                           // サインイン
+	SignOutUser(ctx context.Context, in *SignOutUserInput) error                                             // サインアウト
+	GetUserAuth(ctx context.Context, in *GetUserAuthInput) (*entity.UserAuth, error)                         // 認証情報取得
+	RefreshUserToken(ctx context.Context, in *RefreshUserTokenInput) (*entity.UserAuth, error)               // アクセストークン更新
+	ListUsers(ctx context.Context, in *ListUsersInput) (entity.Users, int64, error)                          // 一覧取得
+	MultiGetUsers(ctx context.Context, in *MultiGetUsersInput) (entity.Users, error)                         // 一覧取得(ID指定)
+	MultiGetUserDevices(ctx context.Context, in *MultiGetUserDevicesInput) ([]string, error)                 // デバイストークン一覧取得
+	GetUser(ctx context.Context, in *GetUserInput) (*entity.User, error)                                     // １件取得
+	GetUserNotification(ctx context.Context, in *GetUserNotificationInput) (*entity.UserNotification, error) // 通知設定の取得
+	UpdateUserNotification(ctx context.Context, in *UpdateUserNotificationInput) error                       // 通知の有効化設定更新
+	DeleteUser(ctx context.Context, in *DeleteUserInput) error                                               // 退会
 	// 会員
 	CreateMember(ctx context.Context, in *CreateMemberInput) (string, error)                         // 登録 (メールアドレス/SMS認証)
 	VerifyMember(ctx context.Context, in *VerifyMemberInput) error                                   // 登録後の確認 (メールアドレス/SMS認証)

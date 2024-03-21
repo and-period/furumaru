@@ -75,6 +75,12 @@ export interface AuthUserResponse {
      */
     email: string;
     /**
+     * 通知設定
+     * @type {boolean}
+     * @memberof AuthUserResponse
+     */
+    notificationEnabled: boolean;
+    /**
      * サムネイルURL
      * @type {string}
      * @memberof AuthUserResponse
@@ -101,6 +107,7 @@ export function instanceOfAuthUserResponse(value: object): boolean {
     isInstance = isInstance && "lastnameKana" in value;
     isInstance = isInstance && "firstnameKana" in value;
     isInstance = isInstance && "email" in value;
+    isInstance = isInstance && "notificationEnabled" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
     isInstance = isInstance && "thumbnails" in value;
 
@@ -125,6 +132,7 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'lastnameKana': json['lastnameKana'],
         'firstnameKana': json['firstnameKana'],
         'email': json['email'],
+        'notificationEnabled': json['notificationEnabled'],
         'thumbnailUrl': json['thumbnailUrl'],
         'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
     };
@@ -147,6 +155,7 @@ export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
         'lastnameKana': value.lastnameKana,
         'firstnameKana': value.firstnameKana,
         'email': value.email,
+        'notificationEnabled': value.notificationEnabled,
         'thumbnailUrl': value.thumbnailUrl,
         'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
     };

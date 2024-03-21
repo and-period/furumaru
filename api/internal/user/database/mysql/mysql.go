@@ -13,14 +13,15 @@ import (
 
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		Address:       newAddress(db),
-		Admin:         newAdmin(db),
-		Administrator: newAdministrator(db),
-		Coordinator:   newCoordinator(db),
-		Guest:         newGuest(db),
-		Member:        newMember(db),
-		Producer:      newProducer(db),
-		User:          newUser(db),
+		Address:          newAddress(db),
+		Admin:            newAdmin(db),
+		Administrator:    newAdministrator(db),
+		Coordinator:      newCoordinator(db),
+		Guest:            newGuest(db),
+		Member:           newMember(db),
+		Producer:         newProducer(db),
+		User:             newUser(db),
+		UserNotification: newUserNotification(db),
 	}
 }
 

@@ -27,6 +27,7 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 	auth.POST("/email/verified", h.VerifyAuthUserEmail)
 	auth.PATCH("/username", h.UpdateAuthUserUsername)
 	auth.PATCH("/account-id", h.UpdateAuthUserAccountID)
+	auth.PATCH("/notification", h.UpdateAuthUserNotification)
 	auth.PATCH("/thumbnail", h.UpdateAuthUserThumbnail)
 }
 
@@ -34,13 +35,21 @@ func (h *handler) GetAuthUser(ctx *gin.Context) {
 	in := &user.GetUserInput{
 		UserID: h.getUserID(ctx),
 	}
-	user, err := h.user.GetUser(ctx, in)
+	uuser, err := h.user.GetUser(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	notificationIn := &user.GetUserNotificationInput{
+		UserID: uuser.ID,
+	}
+	notification, err := h.user.GetUserNotification(ctx, notificationIn)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 	res := &response.AuthUserResponse{
-		AuthUser: service.NewAuthUser(user).Response(),
+		AuthUser: service.NewAuthUser(uuser, notification).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -102,7 +111,7 @@ func (h *handler) CreateAuthUserWithOAuth(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	in := &user.CreateMemberWithOAuthInput{
+	userIn := &user.CreateMemberWithOAuthInput{
 		AccessToken:   token,
 		Username:      req.Username,
 		AccountID:     req.AccountID,
@@ -112,13 +121,21 @@ func (h *handler) CreateAuthUserWithOAuth(ctx *gin.Context) {
 		FirstnameKana: req.FirstnameKana,
 		PhoneNumber:   req.PhoneNumber,
 	}
-	user, err := h.user.CreateMemberWithOAuth(ctx, in)
+	uuser, err := h.user.CreateMemberWithOAuth(ctx, userIn)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	notificationIn := &user.GetUserNotificationInput{
+		UserID: uuser.ID,
+	}
+	notification, err := h.user.GetUserNotification(ctx, notificationIn)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 	res := &response.AuthUserResponse{
-		AuthUser: service.NewAuthUser(user).Response(),
+		AuthUser: service.NewAuthUser(uuser, notification).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -195,6 +212,23 @@ func (h *handler) UpdateAuthUserAccountID(ctx *gin.Context) {
 		AccountID: req.AccountID,
 	}
 	if err := h.user.UpdateMemberAccountID(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) UpdateAuthUserNotification(ctx *gin.Context) {
+	req := &request.UpdateAuthUserNotificationRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &user.UpdateUserNotificationInput{
+		UserID:  h.getUserID(ctx),
+		Enabled: req.Enabled,
+	}
+	if err := h.user.UpdateUserNotification(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}

@@ -31,14 +31,15 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Address       *mock_database.MockAddress
-	Admin         *mock_database.MockAdmin
-	Administrator *mock_database.MockAdministrator
-	Coordinator   *mock_database.MockCoordinator
-	Guest         *mock_database.MockGuest
-	Member        *mock_database.MockMember
-	Producer      *mock_database.MockProducer
-	User          *mock_database.MockUser
+	Address          *mock_database.MockAddress
+	Admin            *mock_database.MockAdmin
+	Administrator    *mock_database.MockAdministrator
+	Coordinator      *mock_database.MockCoordinator
+	Guest            *mock_database.MockGuest
+	Member           *mock_database.MockMember
+	Producer         *mock_database.MockProducer
+	User             *mock_database.MockUser
+	UserNotification *mock_database.MockUserNotification
 }
 
 type testOptions struct {
@@ -70,14 +71,15 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Address:       mock_database.NewMockAddress(ctrl),
-		Admin:         mock_database.NewMockAdmin(ctrl),
-		Administrator: mock_database.NewMockAdministrator(ctrl),
-		Coordinator:   mock_database.NewMockCoordinator(ctrl),
-		Guest:         mock_database.NewMockGuest(ctrl),
-		Member:        mock_database.NewMockMember(ctrl),
-		Producer:      mock_database.NewMockProducer(ctrl),
-		User:          mock_database.NewMockUser(ctrl),
+		Address:          mock_database.NewMockAddress(ctrl),
+		Admin:            mock_database.NewMockAdmin(ctrl),
+		Administrator:    mock_database.NewMockAdministrator(ctrl),
+		Coordinator:      mock_database.NewMockCoordinator(ctrl),
+		Guest:            mock_database.NewMockGuest(ctrl),
+		Member:           mock_database.NewMockMember(ctrl),
+		Producer:         mock_database.NewMockProducer(ctrl),
+		User:             mock_database.NewMockUser(ctrl),
+		UserNotification: mock_database.NewMockUserNotification(ctrl),
 	}
 }
 
@@ -91,14 +93,15 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
-			Address:       mocks.db.Address,
-			Admin:         mocks.db.Admin,
-			Administrator: mocks.db.Administrator,
-			Coordinator:   mocks.db.Coordinator,
-			Guest:         mocks.db.Guest,
-			Member:        mocks.db.Member,
-			Producer:      mocks.db.Producer,
-			User:          mocks.db.User,
+			Address:          mocks.db.Address,
+			Admin:            mocks.db.Admin,
+			Administrator:    mocks.db.Administrator,
+			Coordinator:      mocks.db.Coordinator,
+			Guest:            mocks.db.Guest,
+			Member:           mocks.db.Member,
+			Producer:         mocks.db.Producer,
+			User:             mocks.db.User,
+			UserNotification: mocks.db.UserNotification,
 		},
 		AdminAuth: mocks.adminAuth,
 		UserAuth:  mocks.userAuth,
