@@ -235,6 +235,7 @@ type ListUsersParams struct {
 }
 
 type UserNotification interface {
+	MultiGet(ctx context.Context, userIDs []string, fields ...string) (entity.UserNotifications, error)
 	Get(ctx context.Context, userID string, fields ...string) (*entity.UserNotification, error)
 	Upsert(ctx context.Context, notification *entity.UserNotification) error
 }

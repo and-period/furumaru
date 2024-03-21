@@ -47,10 +47,10 @@ func TestAuthUser(t *testing.T) {
 				},
 			},
 			notification: &entity.UserNotification{
-				UserID:        "user-id",
-				EmailDisabled: false,
-				CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UserID:    "user-id",
+				Disabled:  false,
+				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &AuthUser{
 				AuthUser: response.AuthUser{

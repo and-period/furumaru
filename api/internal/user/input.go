@@ -323,6 +323,14 @@ type GetUserInput struct {
 	UserID string `validate:"required"`
 }
 
+type DeleteUserInput struct {
+	UserID string `validate:"required"`
+}
+
+type MultiGetUserNotificationsInput struct {
+	UserIDs []string `validate:"dive,required"`
+}
+
 type GetUserNotificationInput struct {
 	UserID string `validate:"required"`
 }
@@ -330,10 +338,6 @@ type GetUserNotificationInput struct {
 type UpdateUserNotificationInput struct {
 	UserID  string `validate:"required"`
 	Enabled bool   `validate:""`
-}
-
-type DeleteUserInput struct {
-	UserID string `validate:"required"`
 }
 
 type CreateMemberInput struct {

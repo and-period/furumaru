@@ -11,14 +11,73 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestMultiGetUserNotifications(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	notifications := entity.UserNotifications{
+		{
+			UserID:    "user-id",
+			Disabled:  true,
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.MultiGetUserNotificationsInput
+		expect    entity.UserNotifications
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.UserNotification.EXPECT().MultiGet(ctx, []string{"user-id"}).Return(notifications, nil)
+			},
+			input: &user.MultiGetUserNotificationsInput{
+				UserIDs: []string{"user-id"},
+			},
+			expect:    notifications,
+			expectErr: nil,
+		},
+		{
+			name:  "invalid argument",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &user.MultiGetUserNotificationsInput{
+				UserIDs: []string{""},
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get notifications",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.UserNotification.EXPECT().MultiGet(ctx, []string{"user-id"}).Return(nil, assert.AnError)
+			},
+			input: &user.MultiGetUserNotificationsInput{
+				UserIDs: []string{"user-id"},
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, err := service.MultiGetUserNotifications(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+		}))
+	}
+}
+
 func TestGetUserNotification(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	notification := &entity.UserNotification{
-		UserID:        "user-id",
-		EmailDisabled: true,
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		UserID:    "user-id",
+		Disabled:  true,
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 	tests := []struct {
 		name      string
@@ -70,10 +129,10 @@ func TestUpdateUserNotification(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	notification := &entity.UserNotification{
-		UserID:        "user-id",
-		EmailDisabled: true,
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		UserID:    "user-id",
+		Disabled:  true,
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 	tests := []struct {
 		name      string
