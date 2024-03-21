@@ -93,6 +93,7 @@ export * from './UpdateAddressRequest';
 export * from './UpdateAuthPasswordRequest';
 export * from './UpdateAuthUserAccountIdRequest';
 export * from './UpdateAuthUserEmailRequest';
+export * from './UpdateAuthUserNotificationRequest';
 export * from './UpdateAuthUserThumbnailRequest';
 export * from './UpdateAuthUserUsernameRequest';
 export * from './UploadStateResponse';

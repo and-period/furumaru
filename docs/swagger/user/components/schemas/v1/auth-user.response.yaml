@@ -25,6 +25,9 @@ authUserResponse:
     email:
       type: string
       description: メールアドレス
+    notificationEnabled:
+      type: boolean
+      description: 通知設定
     thumbnailUrl:
       type: string
       description: サムネイルURL
@@ -42,6 +45,7 @@ authUserResponse:
   - lastnameKana
   - firstnameKana
   - email
+  - notificationEnabled
   - thumbnailUrl
   - thumbnails
   example:
@@ -53,6 +57,7 @@ authUserResponse:
     lastnameKana: 'あんどどっと'
     firstnameKana: 'りようしゃ'
     email: 'test-user@and-period.jp'
+    notificationEnabled: true
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
     thumbnails:
     - url: 'https://and-period.jp/thumbnail_240.png'

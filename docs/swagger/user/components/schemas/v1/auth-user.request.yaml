@@ -150,6 +150,16 @@ updateAuthUserAccountIdRequest:
   - accountId
   example:
     accountId: '12345678'
+updateAuthUserNotificationRequest:
+  type: object
+  properties:
+    enabled:
+      type: boolean
+      description: 通知設定
+  required:
+  - enabled
+  example:
+    enabled: true
 updateAuthUserThumbnailRequest:
   type: object
   properties:

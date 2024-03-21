@@ -57,13 +57,14 @@ func deleteAll(ctx context.Context) error {
 		adminTable,
 		guestTable,
 		memberTable,
+		userNotificationTable,
 		userTable,
 	}
-	if err := dbClient.DB.Exec("SET foreign_key_checks = 0").Error; err != nil {
+	if err := dbClient.DB.WithContext(ctx).Exec("SET foreign_key_checks = 0").Error; err != nil {
 		return err
 	}
 	defer func() {
-		if err := dbClient.DB.Exec("SET foreign_key_checks = 1").Error; err != nil {
+		if err := dbClient.DB.WithContext(ctx).Exec("SET foreign_key_checks = 1").Error; err != nil {
 			fmt.Printf("mysql: failed to delete all: %s", err.Error())
 		}
 	}()
@@ -73,7 +74,7 @@ func deleteAll(ctx context.Context) error {
 func delete(ctx context.Context, tables ...string) error {
 	for _, table := range tables {
 		sql := fmt.Sprintf("DELETE FROM %s", table)
-		if err := dbClient.DB.Exec(sql).Error; err != nil {
+		if err := dbClient.DB.WithContext(ctx).Exec(sql).Error; err != nil {
 			return err
 		}
 	}

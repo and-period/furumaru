@@ -22,14 +22,15 @@ var (
 )
 
 type Database struct {
-	Address       Address
-	Admin         Admin
-	Administrator Administrator
-	Coordinator   Coordinator
-	Guest         Guest
-	Member        Member
-	Producer      Producer
-	User          User
+	Address          Address
+	Admin            Admin
+	Administrator    Administrator
+	Coordinator      Coordinator
+	Guest            Guest
+	Member           Member
+	Producer         Producer
+	User             User
+	UserNotification UserNotification
 }
 
 /**
@@ -231,6 +232,11 @@ type ListUsersParams struct {
 	OnlyRegistered bool
 	OnlyVerified   bool
 	WithDeleted    bool
+}
+
+type UserNotification interface {
+	Get(ctx context.Context, userID string, fields ...string) (*entity.UserNotification, error)
+	Upsert(ctx context.Context, notification *entity.UserNotification) error
 }
 
 type Error struct {

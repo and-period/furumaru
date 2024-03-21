@@ -23,6 +23,7 @@ import type {
   GetUploadUrlRequest,
   UpdateAuthUserAccountIdRequest,
   UpdateAuthUserEmailRequest,
+  UpdateAuthUserNotificationRequest,
   UpdateAuthUserThumbnailRequest,
   UpdateAuthUserUsernameRequest,
   UploadUrlResponse,
@@ -46,6 +47,8 @@ import {
     UpdateAuthUserAccountIdRequestToJSON,
     UpdateAuthUserEmailRequestFromJSON,
     UpdateAuthUserEmailRequestToJSON,
+    UpdateAuthUserNotificationRequestFromJSON,
+    UpdateAuthUserNotificationRequestToJSON,
     UpdateAuthUserThumbnailRequestFromJSON,
     UpdateAuthUserThumbnailRequestToJSON,
     UpdateAuthUserUsernameRequestFromJSON,
@@ -76,6 +79,10 @@ export interface V1UpdateAuthUserAccountIdRequest {
 
 export interface V1UpdateAuthUserEmailRequest {
     body: UpdateAuthUserEmailRequest;
+}
+
+export interface V1UpdateAuthUserNotificationRequest {
+    body: UpdateAuthUserNotificationRequest;
 }
 
 export interface V1UpdateAuthUserThumbnailRequest {
@@ -359,6 +366,46 @@ export class AuthUserApi extends runtime.BaseAPI {
      */
     async v1UpdateAuthUserEmail(requestParameters: V1UpdateAuthUserEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1UpdateAuthUserEmailRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * 通知設定更新
+     */
+    async v1UpdateAuthUserNotificationRaw(requestParameters: V1UpdateAuthUserNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthUserNotification.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/users/me/notification`,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * 通知設定更新
+     */
+    async v1UpdateAuthUserNotification(requestParameters: V1UpdateAuthUserNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1UpdateAuthUserNotificationRaw(requestParameters, initOverrides);
     }
 
     /**
