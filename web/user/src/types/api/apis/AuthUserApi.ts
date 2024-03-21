@@ -21,8 +21,10 @@ import type {
   CreateAuthUserWithOAuthRequest,
   ErrorResponse,
   GetUploadUrlRequest,
+  UpdateAuthUserAccountIdRequest,
   UpdateAuthUserEmailRequest,
   UpdateAuthUserThumbnailRequest,
+  UpdateAuthUserUsernameRequest,
   UploadUrlResponse,
   VerifyAuthUserEmailRequest,
   VerifyAuthUserRequest,
@@ -40,10 +42,14 @@ import {
     ErrorResponseToJSON,
     GetUploadUrlRequestFromJSON,
     GetUploadUrlRequestToJSON,
+    UpdateAuthUserAccountIdRequestFromJSON,
+    UpdateAuthUserAccountIdRequestToJSON,
     UpdateAuthUserEmailRequestFromJSON,
     UpdateAuthUserEmailRequestToJSON,
     UpdateAuthUserThumbnailRequestFromJSON,
     UpdateAuthUserThumbnailRequestToJSON,
+    UpdateAuthUserUsernameRequestFromJSON,
+    UpdateAuthUserUsernameRequestToJSON,
     UploadUrlResponseFromJSON,
     UploadUrlResponseToJSON,
     VerifyAuthUserEmailRequestFromJSON,
@@ -64,12 +70,20 @@ export interface V1GetUserThumbnailUploadUrlRequest {
     body: GetUploadUrlRequest;
 }
 
+export interface V1UpdateAuthUserAccountIdRequest {
+    body: UpdateAuthUserAccountIdRequest;
+}
+
 export interface V1UpdateAuthUserEmailRequest {
     body: UpdateAuthUserEmailRequest;
 }
 
 export interface V1UpdateAuthUserThumbnailRequest {
     body: UpdateAuthUserThumbnailRequest;
+}
+
+export interface V1UpdateAuthUserUsernameRequest {
+    body: UpdateAuthUserUsernameRequest;
 }
 
 export interface V1VerifyAuthUserRequest {
@@ -268,6 +282,46 @@ export class AuthUserApi extends runtime.BaseAPI {
     }
 
     /**
+     * ユーザーID(検索用)更新
+     */
+    async v1UpdateAuthUserAccountIdRaw(requestParameters: V1UpdateAuthUserAccountIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthUserAccountId.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/users/me/account-id`,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * ユーザーID(検索用)更新
+     */
+    async v1UpdateAuthUserAccountId(requestParameters: V1UpdateAuthUserAccountIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1UpdateAuthUserAccountIdRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * メールアドレス更新
      */
     async v1UpdateAuthUserEmailRaw(requestParameters: V1UpdateAuthUserEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -345,6 +399,46 @@ export class AuthUserApi extends runtime.BaseAPI {
      */
     async v1UpdateAuthUserThumbnail(requestParameters: V1UpdateAuthUserThumbnailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.v1UpdateAuthUserThumbnailRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * ユーザー名(表示名)更新
+     */
+    async v1UpdateAuthUserUsernameRaw(requestParameters: V1UpdateAuthUserUsernameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthUserUsername.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/users/me/username`,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.body as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * ユーザー名(表示名)更新
+     */
+    async v1UpdateAuthUserUsername(requestParameters: V1UpdateAuthUserUsernameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1UpdateAuthUserUsernameRaw(requestParameters, initOverrides);
     }
 
     /**

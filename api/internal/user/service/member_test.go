@@ -873,6 +873,102 @@ func TestVerifyMemberPassword(t *testing.T) {
 	}
 }
 
+func TestUpdateMemberUsername(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateMemberUsernameInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().UpdateUsername(ctx, "user-id", "username").Return(nil)
+			},
+			input: &user.UpdateMemberUsernameInput{
+				UserID:   "user-id",
+				Username: "username",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateMemberUsernameInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update username",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().UpdateUsername(ctx, "user-id", "username").Return(assert.AnError)
+			},
+			input: &user.UpdateMemberUsernameInput{
+				UserID:   "user-id",
+				Username: "username",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateMemberUsername(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
+func TestUpdateMemberAccountID(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *user.UpdateMemberAccountIDInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().UpdateAccountID(ctx, "user-id", "account-id").Return(nil)
+			},
+			input: &user.UpdateMemberAccountIDInput{
+				UserID:    "user-id",
+				AccountID: "account-id",
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &user.UpdateMemberAccountIDInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update account id",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Member.EXPECT().UpdateAccountID(ctx, "user-id", "account-id").Return(assert.AnError)
+			},
+			input: &user.UpdateMemberAccountIDInput{
+				UserID:    "user-id",
+				AccountID: "account-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateMemberAccountID(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
+
 func TestUpdateMemberThumbnailURL(t *testing.T) {
 	t.Parallel()
 
@@ -900,7 +996,7 @@ func TestUpdateMemberThumbnailURL(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to change password",
+			name: "failed to update thumbnail url",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Member.EXPECT().UpdateThumbnailURL(ctx, "user-id", "http://example.com/thumbnail.png").Return(assert.AnError)
 			},

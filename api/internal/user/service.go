@@ -72,6 +72,8 @@ type Service interface {
 	UpdateMemberPassword(ctx context.Context, in *UpdateMemberPasswordInput) error                   // パスワード更新
 	ForgotMemberPassword(ctx context.Context, in *ForgotMemberPasswordInput) error                   // パスワードリセット (メール送信)
 	VerifyMemberPassword(ctx context.Context, in *VerifyMemberPasswordInput) error                   // パスワードリセット (パスワード更新)
+	UpdateMemberUsername(ctx context.Context, in *UpdateMemberUsernameInput) error                   // 表示名更新
+	UpdateMemberAccountID(ctx context.Context, in *UpdateMemberAccountIDInput) error                 // 検索名更新
 	UpdateMemberThumbnailURL(ctx context.Context, in *UpdateMemberThumbnailURLInput) error           // サムネイルURL更新
 	UpdateMemberThumbnails(ctx context.Context, in *UpdateMemberThumbnailsInput) error               // サムネイル(リサイズ済み)更新
 	// ゲスト

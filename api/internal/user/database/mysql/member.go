@@ -128,6 +128,30 @@ func (m *member) UpdateEmail(ctx context.Context, userID, email string) error {
 	return dbError(err)
 }
 
+func (m *member) UpdateUsername(ctx context.Context, userID, username string) error {
+	params := map[string]interface{}{
+		"username":   username,
+		"updated_at": m.now(),
+	}
+	err := m.db.DB.WithContext(ctx).
+		Table(memberTable).
+		Where("user_id = ?", userID).
+		Updates(params).Error
+	return dbError(err)
+}
+
+func (m *member) UpdateAccountID(ctx context.Context, userID, accountID string) error {
+	params := map[string]interface{}{
+		"account_id": accountID,
+		"updated_at": m.now(),
+	}
+	err := m.db.DB.WithContext(ctx).
+		Table(memberTable).
+		Where("user_id = ?", userID).
+		Updates(params).Error
+	return dbError(err)
+}
+
 func (m *member) UpdateThumbnailURL(ctx context.Context, userID, thumbnailURL string) error {
 	params := map[string]interface{}{
 		"thumbnail_url": thumbnailURL,
