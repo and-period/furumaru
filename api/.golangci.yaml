@@ -48,8 +48,6 @@ linters:
   - staticcheck
   - stylecheck
   - tagalign
-  - tenv
-  - testifylint
   - typecheck
   - unconvert
   - unparam

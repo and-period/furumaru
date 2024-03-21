@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/common"
+	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
@@ -535,6 +536,155 @@ func TestUser_UpdateEmail(t *testing.T) {
 			db := &member{db: db, now: now}
 			err = db.UpdateEmail(ctx, tt.args.userID, tt.args.email)
 			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestUser_UpdateUsername(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	type args struct {
+		userID   string
+		username string
+	}
+	type want struct {
+		hasErr bool
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				err = db.DB.Create(&u).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&u.Member).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				userID:   "user-id",
+				username: "username",
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, memberTable, userTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, db)
+
+			db := &member{db: db, now: now}
+			err = db.UpdateUsername(ctx, tt.args.userID, tt.args.username)
+			assert.Equal(t, tt.want.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestUser_UpdateAccountID(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	type args struct {
+		userID    string
+		accountID string
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				u := testUser("user-id", "test-user@and-period.jp", "+810000000000", now())
+				err = db.DB.Create(&u).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&u.Member).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				userID:    "user-id",
+				accountID: "account-id",
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name: "already exists",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				users := make(entity.Users, 2)
+				users[0] = testUser("user-id", "test-user01@and-period.jp", "+810000000001", now())
+				users[1] = testUser("account-id", "test-user02@and-period.jp", "+810000000002", now())
+				err = db.DB.Create(&users).Error
+				require.NoError(t, err)
+				members := make(entity.Members, 2)
+				for i := range users {
+					members[0] = &users[i].Member
+				}
+				err = db.DB.Create(&members).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				userID:    "user-id",
+				accountID: "account-id",
+			},
+			want: want{
+				err: database.ErrAlreadyExists,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, memberTable, userTable)
+			require.NoError(t, err)
+			tt.setup(ctx, t, db)
+
+			db := &member{db: db, now: now}
+			err = db.UpdateAccountID(ctx, tt.args.userID, tt.args.accountID)
+			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }

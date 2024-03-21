@@ -130,6 +130,26 @@ verifyAuthUserEmailRequest:
   - verifyCode
   example:
     verifyCode: '123456'
+updateAuthUserUsernameRequest:
+  type: object
+  properties:
+    username:
+      type: string
+      description: ユーザー名(表示用)(32文字まで)
+  required:
+  - username
+  example:
+    username: 'あんどぴりおど'
+updateAuthUserAccountIdRequest:
+  type: object
+  properties:
+    accountId:
+      type: string
+      description: ユーザーID(検索用)(32文字まで)
+  required:
+  - accountId
+  example:
+    accountId: '12345678'
 updateAuthUserThumbnailRequest:
   type: object
   properties:

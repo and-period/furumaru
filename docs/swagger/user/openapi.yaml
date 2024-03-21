@@ -60,6 +60,10 @@ paths:
     $ref: './paths/v1/users/me/verified.yaml'
   /v1/users/me/oauth:
     $ref: './paths/v1/users/me/oauth.yaml'
+  /v1/users/me/username:
+    $ref: './paths/v1/users/me/username.yaml'
+  /v1/users/me/account-id:
+    $ref: './paths/v1/users/me/account-id.yaml'
   /v1/users/me/thumbnail:
     $ref: './paths/v1/users/me/thumbnail.yaml'
   /v1/users/me/email:
@@ -256,6 +260,10 @@ components:
       $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserEmailRequest'
     v1VerifyAuthUserEmailRequest:
       $ref: './components/schemas/v1/auth-user.request.yaml#/verifyAuthUserEmailRequest'
+    v1UpdateAuthUserUsernameRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserUsernameRequest'
+    v1UpdateAuthUserAccountIdRequest:
+      $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserAccountIdRequest'
     v1UpdateAuthUserThumbnailRequest:
       $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserThumbnailRequest'
     v1AddCartItemRequest:

@@ -25,6 +25,8 @@ func (h *handler) authUserRoutes(rg *gin.RouterGroup) {
 	auth.DELETE("", h.DeleteAuthUser)
 	auth.PATCH("/email", h.UpdateAuthUserEmail)
 	auth.POST("/email/verified", h.VerifyAuthUserEmail)
+	auth.PATCH("/username", h.UpdateAuthUserUsername)
+	auth.PATCH("/account-id", h.UpdateAuthUserAccountID)
 	auth.PATCH("/thumbnail", h.UpdateAuthUserThumbnail)
 }
 
@@ -159,6 +161,40 @@ func (h *handler) VerifyAuthUserEmail(ctx *gin.Context) {
 		VerifyCode:  req.VerifyCode,
 	}
 	if err := h.user.VerifyMemberEmail(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) UpdateAuthUserUsername(ctx *gin.Context) {
+	req := &request.UpdateAuthUserUsernameRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &user.UpdateMemberUsernameInput{
+		UserID:   h.getUserID(ctx),
+		Username: req.Username,
+	}
+	if err := h.user.UpdateMemberUsername(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) UpdateAuthUserAccountID(ctx *gin.Context) {
+	req := &request.UpdateAuthUserAccountIDRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &user.UpdateMemberAccountIDInput{
+		UserID:    h.getUserID(ctx),
+		AccountID: req.AccountID,
+	}
+	if err := h.user.UpdateMemberAccountID(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}

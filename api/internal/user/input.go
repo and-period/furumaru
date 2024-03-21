@@ -384,6 +384,16 @@ type VerifyMemberPasswordInput struct {
 	PasswordConfirmation string `validate:"required,eqfield=NewPassword"`
 }
 
+type UpdateMemberUsernameInput struct {
+	UserID   string `validate:"required"`
+	Username string `validate:"required,max=32"`
+}
+
+type UpdateMemberAccountIDInput struct {
+	UserID    string `validate:"required"`
+	AccountID string `validate:"required,max=32"`
+}
+
 type UpdateMemberThumbnailURLInput struct {
 	UserID       string `validate:"required"`
 	ThumbnailURL string `validate:"required,url"`
