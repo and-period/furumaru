@@ -383,17 +383,33 @@ func (s *service) sendAll(
 
 func (s *service) sendAllUsers(ctx context.Context, payload *entity.WorkerPayload) error {
 	listFn := func(limit, offset int64) ([]string, int64, error) {
-		in := &user.ListUsersInput{
+		usersIn := &user.ListUsersInput{
 			Limit:          limit,
 			Offset:         offset,
 			OnlyRegistered: true,
 			OnlyVerified:   true,
 		}
-		users, total, err := s.user.ListUsers(ctx, in)
+		users, total, err := s.user.ListUsers(ctx, usersIn)
 		if err != nil || len(users) == 0 {
 			return nil, 0, err
 		}
-		return users.IDs(), total, nil
+		notificationsIn := &user.MultiGetUserNotificationsInput{
+			UserIDs: users.IDs(),
+		}
+		notifications, err := s.user.MultiGetUserNotifications(ctx, notificationsIn)
+		if err != nil || len(notifications) == 0 {
+			return nil, 0, err
+		}
+		notificationMap := notifications.MapByUserID()
+		userIDs := make([]string, 0, len(users))
+		for _, user := range users {
+			notification := notificationMap[user.ID]
+			if !notification.Enabled() {
+				continue
+			}
+			userIDs = append(userIDs, user.ID)
+		}
+		return userIDs, total, nil
 	}
 	return s.sendAll(ctx, payload, entity.UserTypeUser, listFn)
 }
