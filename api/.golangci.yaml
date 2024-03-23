@@ -78,9 +78,9 @@ issues:
   - third_party
   - tmp
   exclude-files:
-  - '.*_test.go'
+  - '.*_test\.go'
   exclude-rules:
-  - path: _test\.go
+  - path: '_test\.go'
     linters:
     - errcheck
     - dupl

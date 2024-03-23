@@ -65,6 +65,15 @@ func TestNotifyStartLive(t *testing.T) {
 		OnlyVerified:   true,
 	}
 	users := uentity.Users{{ID: "user-id"}}
+	notificationsIn := &user.MultiGetUserNotificationsInput{
+		UserIDs: []string{"user-id"},
+	}
+	notifications := uentity.UserNotifications{
+		{
+			UserID:   "user-id",
+			Disabled: false,
+		},
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -77,6 +86,7 @@ func TestNotifyStartLive(t *testing.T) {
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
+				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), notificationsIn).Return(notifications, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().
 					SendMessage(gomock.Any(), gomock.Any()).
@@ -161,11 +171,25 @@ func TestNotifyStartLive(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
+			name: "failed to multi get user notifications",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
+				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), notificationsIn).Return(nil, assert.AnError)
+			},
+			input: &messenger.NotifyStartLiveInput{
+				ScheduleID: "schedule-id",
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to create received queue",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
+				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), notificationsIn).Return(notifications, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &messenger.NotifyStartLiveInput{
@@ -179,6 +203,7 @@ func TestNotifyStartLive(t *testing.T) {
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.user.EXPECT().GetCoordinator(ctx, coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), usersIn).Return(users, int64(1), nil)
+				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), notificationsIn).Return(notifications, nil)
 				mocks.db.ReceivedQueue.EXPECT().MultiCreate(gomock.Any(), gomock.Any()).Return(nil)
 				mocks.producer.EXPECT().SendMessage(gomock.Any(), gomock.Any()).Return("", assert.AnError)
 			},
@@ -921,7 +946,15 @@ func TestNotifyNotification(t *testing.T) {
 	users := uentity.Users{{ID: "user-id"}}
 	coordinators := uentity.Coordinators{{AdminID: "admin-id"}}
 	producers := uentity.Producers{}
-
+	unotificationsIn := &user.MultiGetUserNotificationsInput{
+		UserIDs: []string{"user-id"},
+	}
+	unotifications := uentity.UserNotifications{
+		{
+			UserID:   "user-id",
+			Disabled: false,
+		},
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -934,6 +967,7 @@ func TestNotifyNotification(t *testing.T) {
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
 				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(users, int64(1), nil)
+				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), unotificationsIn).Return(unotifications, nil)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(coordinators, int64(1), nil)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(producers, int64(0), nil)
 				mocks.db.ReceivedQueue.EXPECT().
@@ -1084,9 +1118,11 @@ func TestNotifyNotification(t *testing.T) {
 		{
 			name: "failed to notify admin notification",
 			setup: func(ctx context.Context, mocks *mocks) {
+				unotifications := uentity.UserNotifications{{UserID: "user-id", Disabled: true}}
 				mocks.db.Notification.EXPECT().Get(ctx, "notification-id").Return(notification, nil)
 				mocks.user.EXPECT().GetAdmin(ctx, adminIn).Return(admin, nil)
-				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(uentity.Users{}, int64(0), nil)
+				mocks.user.EXPECT().ListUsers(gomock.Any(), gomock.Any()).Return(users, int64(1), nil)
+				mocks.user.EXPECT().MultiGetUserNotifications(gomock.Any(), unotificationsIn).Return(unotifications, nil)
 				mocks.user.EXPECT().ListCoordinators(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 				mocks.user.EXPECT().ListProducers(gomock.Any(), gomock.Any()).Return(nil, int64(0), assert.AnError)
 			},
