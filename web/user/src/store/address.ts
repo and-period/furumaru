@@ -7,7 +7,7 @@ import type {
   PostalCodeResponse,
 } from '~/types/api'
 
-export const useAdressStore = defineStore('address', {
+export const useAddressStore = defineStore('address', {
   state: () => {
     return {
       total: 0,

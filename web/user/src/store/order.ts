@@ -27,7 +27,7 @@ export const useOrderStore = defineStore('order', {
     /**
      * 注文履歴を取得する非同期関数
      */
-    async fetchOrderHsitoryList(limit: number = 20, offset: number = 0) {
+    async fetchOrderHistoryList(limit: number = 20, offset: number = 0) {
       try {
         this.fetchState.isLoading = true
         const authStore = useAuthStore()

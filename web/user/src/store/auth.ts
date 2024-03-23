@@ -53,9 +53,13 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async signUp(payload: CreateAuthUserRequest): Promise<CreateAuthUserResponse> {
+    async signUp(
+      payload: CreateAuthUserRequest,
+    ): Promise<CreateAuthUserResponse> {
       try {
-        const res = await this.authUserApiClient().v1CreateAuthUser({ body: payload })
+        const res = await this.authUserApiClient().v1CreateAuthUser({
+          body: payload,
+        })
         return res
       } catch (error) {
         return this.errorHandler(error, {

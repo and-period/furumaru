@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import type { CreateAddressRequest } from '~/types/api'
-import { useAdressStore } from '~/store/address'
+import { useAddressStore } from '~/store/address'
 import { useShoppingCartStore } from '~/store/shopping'
 import { ApiBaseError } from '~/types/exception'
 
 const route = useRoute()
 const router = useRouter()
 
-const addressStore = useAdressStore()
+const addressStore = useAddressStore()
 const { addressesFetchState, defaultAddress } = storeToRefs(addressStore)
 const { fetchAddresses, searchAddressByPostalCode, registerAddress } =
   addressStore

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import dayjs from 'dayjs'
-import { useAdressStore } from '~/store/address'
+import { useAddressStore } from '~/store/address'
 import { useCheckoutStore } from '~/store/checkout'
 import { useShoppingCartStore } from '~/store/shopping'
 import type { GuestCheckoutRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
-const addressStore = useAdressStore()
+const addressStore = useAddressStore()
 const { address, addressFetchState } = storeToRefs(addressStore)
 
 const shoppingCartStore = useShoppingCartStore()
@@ -109,7 +109,6 @@ const checkoutFormData = ref<GuestCheckoutRequest>({
   },
 })
 
-
 const creditCardMonthValue = computed({
   get: () => {
     if (checkoutFormData.value.creditCard.month === 0) {
@@ -150,7 +149,7 @@ const doCheckout = async () => {
   try {
     const url = await guestCheckout({
       ...checkoutFormData.value,
-      boxNumber: cartNumber.value??0,
+      boxNumber: cartNumber.value ?? 0,
     })
     console.log('debug', 'doCheckout', url)
     window.location.href = url
