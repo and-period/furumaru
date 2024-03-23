@@ -262,11 +262,11 @@ definePageMeta({
       </div>
       <div class="flex flex-col">
         <template v-if="fetchState.isLoading"> </template>
-        <template v-else>
+        <div class="divide-y divide-main border-y border-main">
           <div
             v-for="order in orderHistories"
             :key="order.id"
-            class="flex flex-col border-y border-main py-4 [&_dt]:text-typography"
+            class="flex flex-col py-4 [&_dt]:text-typography"
           >
             <div class="flex items-center justify-between tracking-[10%]">
               <div>
@@ -343,7 +343,7 @@ definePageMeta({
             </div>
             <div class="mt-2 text-right text-[14px]"></div>
           </div>
-        </template>
+        </div>
       </div>
       <template v-if="orderHistories.length > 0">
         <!-- ページネーション -->
