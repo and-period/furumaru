@@ -29,7 +29,7 @@ declare module 'pinia' {
       customObject?: CustomErrorMessage,
     ) => Promise<never>
     authApiClient: (token?: string | undefined) => AuthApi
-    authApiClient: (token?: string | undefined) => AuthUserApi
+    authUserApiClient: (token?: string | undefined) => AuthUserApi
     topPageApiClient: (token?: string | undefined) => TopApi
     productApiClient: (token?: string | undefined) => ProductApi
     cartApiClient: (token?: string) => CartApi
