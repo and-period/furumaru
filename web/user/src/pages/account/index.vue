@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import dayjs from 'dayjs'
-import { useAdressStore } from '~/store/address'
+import { useAddressStore } from '~/store/address'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/phone-number'
 import { useAuthStore } from '~/store/auth'
 import { useOrderStore } from '~/store/order'
@@ -15,7 +15,7 @@ import type { OrderStatus } from '~/types/api'
 const router = useRouter()
 const route = useRoute()
 
-const addressStore = useAdressStore()
+const addressStore = useAddressStore()
 const { addresses } = storeToRefs(addressStore)
 const { fetchAddresses } = addressStore
 
@@ -24,7 +24,7 @@ const { user } = storeToRefs(authStore)
 const { fetchUserInfo, logout } = authStore
 
 const orderStore = useOrderStore()
-const { fetchOrderHsitoryList } = orderStore
+const { fetchOrderHistoryList } = orderStore
 const { orderHistories, total, fetchState } = storeToRefs(orderStore)
 
 // 1ページ当たりに表示する注文履歴数
@@ -97,7 +97,7 @@ const handleChangeAddressPage = (page: number) => {
 }
 
 watch(currentOrderPage, () => {
-  fetchOrderHsitoryList(
+  fetchOrderHistoryList(
     orderPagination.value.limit,
     orderPagination.value.offset,
   )
@@ -114,7 +114,7 @@ await useAsyncData('account', () => {
       addressPagination.value.limit,
       addressPagination.value.offset,
     ),
-    fetchOrderHsitoryList(
+    fetchOrderHistoryList(
       orderPagination.value.limit,
       orderPagination.value.offset,
     ),

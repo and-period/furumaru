@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import dayjs from 'dayjs'
-import { useAdressStore } from '~/store/address'
+import { useAddressStore } from '~/store/address'
 import { useCheckoutStore } from '~/store/checkout'
 import { useShoppingCartStore } from '~/store/shopping'
 import type { CheckoutRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
-const addressStore = useAdressStore()
+const addressStore = useAddressStore()
 const { address, addressFetchState } = storeToRefs(addressStore)
 const { fetchAddress } = addressStore
 
