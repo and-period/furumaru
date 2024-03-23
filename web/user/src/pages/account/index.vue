@@ -5,12 +5,8 @@ import { useAddressStore } from '~/store/address'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/phone-number'
 import { useAuthStore } from '~/store/auth'
 import { useOrderStore } from '~/store/order'
-import {
-  getOrderStatusString,
-  getOperationResultFromOrderStatus,
-} from '~/lib/order'
+import { getOrderStatusString } from '~/lib/order'
 import { priceFormatter } from '~/lib/price'
-import type { OrderStatus } from '~/types/api'
 
 const router = useRouter()
 const route = useRoute()
@@ -124,20 +120,6 @@ await useAsyncData('account', () => {
 const handleClickLogout = async () => {
   await logout()
   router.push('/')
-}
-
-const getClassNameFromOrderStatus = (status: OrderStatus) => {
-  const operationResult = getOperationResultFromOrderStatus(status)
-  switch (operationResult) {
-    case 'success':
-      return 'bg-green'
-    case 'failed':
-      return 'bg-red-700'
-    case 'canceled':
-      return 'bg-yellow-600'
-    default:
-      return ''
-  }
 }
 
 useSeoMeta({
