@@ -47,7 +47,6 @@ export const useAuthStore = defineStore('auth', {
         this.setExpiredAt(res.expiresIn)
         await this.fetchUserInfo()
       } catch (error) {
-        console.log('error', error)
         return this.errorHandler(error, {
           401: this.i18n.t('auth.signIn.authErrorMessage'),
         })
@@ -78,7 +77,6 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async fetchUserInfo() {
-      console.log('fetchUserInfo')
       const res = await this.authUserApiClient(this.accessToken).v1GetAuthUser()
       this.user = res
     },
