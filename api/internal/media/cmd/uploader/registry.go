@@ -82,7 +82,12 @@ func (a *app) inject(ctx context.Context) error {
 		Tmp:       params.tmpStorage,
 		Cache:     params.cache,
 	}
-	a.uploader = uploader.NewUploader(uploaderParams, uploader.WithLogger(params.logger), uploader.WithCacheURL(a.CDNURL))
+	uploaderOpts := []uploader.Option{
+		uploader.WithLogger(params.logger),
+		uploader.WithStorageURL(a.CDNURL),
+		uploader.WithCacheTTL(a.CDNCacheTTL),
+	}
+	a.uploader = uploader.NewUploader(uploaderParams, uploaderOpts...)
 	a.logger = params.logger
 	a.waitGroup = params.waitGroup
 	return nil
