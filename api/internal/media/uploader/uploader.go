@@ -38,12 +38,14 @@ type uploader struct {
 	storage     storage.Bucket
 	concurrency int64
 	storageURL  func() *url.URL
+	ttl         time.Duration
 }
 
 type options struct {
 	logger      *zap.Logger
 	concurrency int64
 	storageURL  *url.URL
+	ttl         time.Duration
 }
 
 type Option func(*options)
@@ -60,9 +62,9 @@ func WithConcurrency(concurrency int64) Option {
 	}
 }
 
-func WithCacheURL(cacheURL string) Option {
+func WithStorageURL(storageURL string) Option {
 	return func(opts *options) {
-		url, err := url.Parse(cacheURL)
+		url, err := url.Parse(storageURL)
 		if err != nil {
 			return
 		}
@@ -70,12 +72,19 @@ func WithCacheURL(cacheURL string) Option {
 	}
 }
 
+func WithCacheTTL(ttl time.Duration) Option {
+	return func(opts *options) {
+		opts.ttl = ttl
+	}
+}
+
 func NewUploader(params *Params, opts ...Option) Uploader {
-	originURL, _ := params.Storage.GetHost()
+	defaultURL, _ := params.Storage.GetHost()
 	dopts := &options{
 		logger:      zap.NewNop(),
 		concurrency: 1,
-		storageURL:  originURL,
+		storageURL:  defaultURL,
+		ttl:         5 * time.Minute,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -93,6 +102,7 @@ func NewUploader(params *Params, opts ...Option) Uploader {
 		storage:     params.Storage,
 		concurrency: dopts.concurrency,
 		storageURL:  storageURL,
+		ttl:         dopts.ttl,
 	}
 }
 
@@ -172,7 +182,11 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 		return err
 	}
 	// 参照用S3バケットへコピーする
-	if _, err := u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key); err != nil {
+	md := map[string]string{
+		"Content-Type":  metadata.ContentType,
+		"Cache-Control": "max-age=" + u.ttl.String(),
+	}
+	if _, err := u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key, md); err != nil {
 		u.logger.Error("Failed to copy object", zap.String("key", key), zap.Error(err))
 		event.SetResult(false, "", u.now())
 		return err
