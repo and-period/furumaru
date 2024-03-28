@@ -12,7 +12,8 @@ const shoppingCartStore = useShoppingCartStore()
 
 const { fetchProducts } = productStore
 const { addCart } = shoppingCartStore
-const { productsFetchState, products } = storeToRefs(productStore)
+const { productsFetchState, products, totalProductsCount } =
+  storeToRefs(productStore)
 
 const handleClick = (id: string) => {
   router.push(`/items/${id}`)
@@ -49,7 +50,7 @@ const pagination = computed<{
   offset: number
   pageArray: number[]
 }>(() => {
-  const totalPage = Math.ceil(products.value.length / pagePerItems.value)
+  const totalPage = Math.ceil(totalProductsCount.value / pagePerItems.value)
   const pageArray = Array.from({ length: totalPage }, (_, i) => i + 1)
 
   return {
@@ -67,6 +68,10 @@ const handleClickPage = (page: number) => {
     },
   })
 }
+
+watch(currentPage, () => {
+  fetchProducts(pagePerItems.value, pagination.value.offset)
+})
 
 useAsyncData('products', () => {
   return fetchProducts(pagePerItems.value, pagination.value.offset)
