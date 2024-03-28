@@ -55,6 +55,10 @@ export const useProductStore = defineStore('product', {
   },
 
   getters: {
+    totalProductsCount(state) {
+      return state.productsResponse.total
+    },
+
     products(state) {
       return state.productsResponse.products.map((product) => {
         return {
