@@ -30,14 +30,15 @@ func (s *service) ListProducts(ctx context.Context, in *store.ListProductsInput)
 		}
 	}
 	params := &database.ListProductsParams{
-		Name:          in.Name,
-		CoordinatorID: in.CoordinatorID,
-		ProducerID:    in.ProducerID,
-		ProducerIDs:   in.ProducerIDs,
-		OnlyPublished: in.OnlyPublished,
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
-		Orders:        orders,
+		Name:           in.Name,
+		CoordinatorID:  in.CoordinatorID,
+		ProducerID:     in.ProducerID,
+		ProducerIDs:    in.ProducerIDs,
+		OnlyPublished:  in.OnlyPublished,
+		ExcludeDeleted: in.ExcludeDeleted,
+		Limit:          int(in.Limit),
+		Offset:         int(in.Offset),
+		Orders:         orders,
 	}
 	if in.ExcludeOutOfSale {
 		params.EndAtGte = s.now()

@@ -57,19 +57,21 @@ func (p listProductsParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if !p.EndAtGte.IsZero() {
 		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
 	}
+	if !p.ExcludeDeleted {
+		stmt = stmt.Unscoped()
+	}
 	for i := range p.Orders {
 		var value string
 		if p.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", p.Orders[i].Key)
+			value = fmt.Sprintf("%s ASC", p.Orders[i].Key)
 		} else {
-			value = fmt.Sprintf("`%s` DESC", p.Orders[i].Key)
+			value = fmt.Sprintf("%s DESC", p.Orders[i].Key)
 		}
 		stmt = stmt.Order(value)
 	}
 	if len(p.Orders) == 0 {
 		stmt = stmt.Order("start_at DESC")
 	}
-	stmt = stmt.Unscoped()
 	return stmt
 }
 

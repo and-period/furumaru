@@ -9,6 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -42,6 +43,12 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		Offset:           offset,
 		OnlyPublished:    true,
 		ExcludeOutOfSale: true,
+		ExcludeDeleted:   true,
+		Orders: []*store.ListProductsOrder{
+			// 売り切れでないもの順 && 公開日時が新しいもの順
+			{Key: entity.ProductOrderBySoldOut, OrderByASC: true},
+			{Key: entity.ProductOrderByStartAt, OrderByASC: false},
+		},
 	}
 	products, total, err := h.store.ListProducts(ctx, in)
 	if err != nil {
