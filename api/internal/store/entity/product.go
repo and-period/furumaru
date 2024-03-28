@@ -61,10 +61,12 @@ type ProductOrderBy string
 
 const (
 	ProductOrderByName             ProductOrderBy = "name"
+	ProductOrderBySoldOut          ProductOrderBy = "CASE WHEN (quantity = 0) THEN 1 ELSE 0 END"
 	ProductOrderByPublic           ProductOrderBy = "public"
 	ProductOrderByInventory        ProductOrderBy = "inventory"
 	ProductOrderByOriginPrefecture ProductOrderBy = "origin_prefecture"
 	ProductOrderByOriginCity       ProductOrderBy = "origin_city"
+	ProductOrderByStartAt          ProductOrderBy = "start_at"
 	ProductOrderByCreatedAt        ProductOrderBy = "created_at"
 	ProductOrderByUpdatedAt        ProductOrderBy = "updated_at"
 )
