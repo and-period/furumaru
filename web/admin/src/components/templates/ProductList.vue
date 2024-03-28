@@ -109,11 +109,6 @@ const headers: VDataTable['headers'] = [
     sortable: false
   },
   {
-    title: '原産地',
-    key: 'originPrefectureCode',
-    sortable: false
-  },
-  {
     title: '生産者名',
     key: 'producerName',
     sortable: false
@@ -136,10 +131,7 @@ const isRegisterable = (): boolean => {
   return props.role === AdminRole.COORDINATOR
 }
 
-const isDeletable = (product?: Product): boolean => {
-  if (!product || product.status === ProductStatus.ARCHIVED) {
-    return false
-  }
+const isDeletable = (): boolean => {
   const targets: AdminRole[] = [
     AdminRole.ADMINISTRATOR,
     AdminRole.COORDINATOR
@@ -221,11 +213,6 @@ const getStatusColor = (status: ProductStatus): string => {
 
 const getInventoryColor = (inventory: number): string => {
   return inventory > 0 ? '' : 'text-error'
-}
-
-const getPrefecture = (prefecture: Prefecture): string => {
-  const pref = prefecturesList.find((val: PrefecturesListItem): boolean => prefecture === val.value)
-  return pref?.text || ''
 }
 
 const toggleDeleteDialog = (product?: Product): void => {
@@ -323,9 +310,6 @@ const onClickDelete = (): void => {
         </template>
         <template #[`item.producerName`]="{ item }">
           {{ getProducerName(item.producerId) }}
-        </template>
-        <template #[`item.originPrefectureCode`]="{ item }">
-          {{ getPrefecture(item.originPrefectureCode) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn v-show="isDeletable()" variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item)">
