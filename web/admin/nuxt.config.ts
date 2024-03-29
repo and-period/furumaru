@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     '~/plugins/axios',
     '~/plugins/firebase',
     '~/plugins/google-analytics',
+    '~/plugins/sentry.client',
     '~/plugins/vuetify',
     '~/plugins/api-client'
   ],
@@ -51,7 +52,8 @@ export default defineNuxtConfig({
       FIREBASE_APP_ID: process.env.FIREBASE_APP_ID || '',
       FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID || '',
       FIREBASE_VAPID_KEY: process.env.FIREBASE_VAPID_KEY || '',
-      ENVIRONMENT: process.env.ENVIRONMENT || ''
+      ENVIRONMENT: process.env.ENVIRONMENT || '',
+      SENTRY_DSN: process.env.SENTRY_DSN || ''
     }
   },
   devtools: {
