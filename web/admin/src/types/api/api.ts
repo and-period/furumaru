@@ -6382,6 +6382,18 @@ export interface User {
      */
     'phoneNumber': string;
     /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof User
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorThumbnailsInner>}
+     * @memberof User
+     */
+    'thumbnails': Array<CoordinatorThumbnailsInner>;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof User
