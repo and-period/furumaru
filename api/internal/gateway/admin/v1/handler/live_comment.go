@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
@@ -17,6 +18,24 @@ func (h *handler) liveCommentRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/schedules/:scheduleId/comments")
 
 	r.GET("", h.ListLiveComments)
+	r.PATCH("/:commentId", h.filterAccessLiveComment, h.UpdateLiveComment)
+}
+
+func (h *handler) filterAccessLiveComment(ctx *gin.Context) {
+	params := &filterAccessParams{
+		coordinator: func(ctx *gin.Context) (bool, error) {
+			schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
+			if err != nil {
+				return false, err
+			}
+			return currentAdmin(ctx, schedule.CoordinatorID), nil
+		},
+	}
+	if err := filterAccess(ctx, params); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Next()
 }
 
 func (h *handler) ListLiveComments(ctx *gin.Context) {
@@ -99,4 +118,21 @@ func (h *handler) newLiveCommentOrders(ctx *gin.Context) ([]*media.ListBroadcast
 		}
 	}
 	return res, nil
+}
+
+func (h *handler) UpdateLiveComment(ctx *gin.Context) {
+	req := &request.UpdateLiveCommentRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &media.UpdateBroadcastCommentInput{
+		CommentID: util.GetParam(ctx, "commentId"),
+		Disabled:  req.Disabled,
+	}
+	if err := h.media.UpdateBroadcastComment(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
 }

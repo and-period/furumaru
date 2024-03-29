@@ -176,6 +176,8 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/lives/_liveId/index.yaml'
   /v1/schedules/{scheduleId}/comments:
     $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
+  /v1/schedules/{scheduleId}/comments/{commentId}:
+    $ref: './paths/v1/schedules/_scheduleId/comments/_commentId/index.yaml'
   # Broadcast
   /v1/schedules/{scheduleId}/broadcasts:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/index.yaml'
@@ -463,6 +465,8 @@ components:
       $ref: './components/schemas/v1/live.request.yaml#/createLiveRequest'
     v1UpdateLiveRequest:
       $ref: './components/schemas/v1/live.request.yaml#/updateLiveRequest'
+    v1UpdateLiveCommentRequest:
+      $ref: './components/schemas/v1/live-comment.request.yaml#/updateLiveCommentRequest'
     v1DraftOrderRequest:
       $ref: './components/schemas/v1/order.request.yaml#/draftOrderRequest'
     v1CompleteOrderRequest:

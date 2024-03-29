@@ -5613,6 +5613,19 @@ export interface UpdateDefaultShippingRequest {
 /**
  * 
  * @export
+ * @interface UpdateLiveCommentRequest
+ */
+export interface UpdateLiveCommentRequest {
+    /**
+     * コメントの無効化
+     * @type {boolean}
+     * @memberof UpdateLiveCommentRequest
+     */
+    'disabled': boolean;
+}
+/**
+ * 
+ * @export
  * @interface UpdateLiveRequest
  */
 export interface UpdateLiveRequest {
@@ -16512,6 +16525,50 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary ライブ配信コメント更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} commentId コメントID
+         * @param {UpdateLiveCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateLiveComment: async (scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1UpdateLiveComment', 'scheduleId', scheduleId)
+            // verify required parameter 'commentId' is not null or undefined
+            assertParamExists('v1UpdateLiveComment', 'commentId', commentId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateLiveComment', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}/comments/{commentId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)))
+                .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {UpdateScheduleRequest} body 
@@ -16691,6 +16748,21 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary ライブ配信コメント更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} commentId コメントID
+         * @param {UpdateLiveCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateLiveComment(scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateLiveComment(scheduleId, commentId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1UpdateLiveComment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール更新
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {UpdateScheduleRequest} body 
@@ -16810,6 +16882,18 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          */
         v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1PublishSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary ライブ配信コメント更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} commentId コメントID
+         * @param {UpdateLiveCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateLiveComment(scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateLiveComment(scheduleId, commentId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -16946,6 +17030,20 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: RawAxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1PublishSchedule(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary ライブ配信コメント更新
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {string} commentId コメントID
+     * @param {UpdateLiveCommentRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1UpdateLiveComment(scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1UpdateLiveComment(scheduleId, commentId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
