@@ -1,0 +1,62 @@
+get:
+  summary: ライブ配信コメント取得
+  operationId: v1ListLiveComments
+  tags:
+  - Schedule
+  parameters:
+  - in: path
+    name: scheduleId
+    schema:
+      type: string
+    description: マルシェ開催スケジュールID
+    required: true
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: limit
+    schema:
+      type: integer
+      format: int64
+    description: 取得上限数(max:200)
+    required: false
+    example: 20
+  - in: query
+    name: next
+    schema:
+      type: string
+    description: 取得開始位置
+    required: false
+    example: '1640962800'
+  - in: query
+    name: start
+    schema:
+      type: integer
+      format: int64
+    description: 取得範囲(開始時間:unixtime)
+    required: false
+    example: 1640962800
+  - in: query
+    name: end
+    schema:
+      type: integer
+      format: int64
+    description: 取得範囲(終了時間:unixtime)
+    required: false
+    example: 1640962800
+  - in: query
+    name: orders
+    schema:
+      type: string
+    description: |
+      ソート
+      ・複数指定時は`,`区切り
+      ・降順の場合はprefixに`-`をつける
+      ・指定可能フィールド:publishedAt（デフォルト:-publishedAt）
+    required: false
+    example: '-publishedAt'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../openapi.yaml#/components/schemas/v1LiveCommentsResponse'

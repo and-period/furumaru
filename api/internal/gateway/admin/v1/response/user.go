@@ -2,19 +2,21 @@ package response
 
 // User - 購入者情報
 type User struct {
-	ID            string `json:"id"`            // 購入者ID
-	Status        int32  `json:"status"`        // 購入者ステータス
-	Registered    bool   `json:"registered"`    // 会員登録フラグ
-	Username      string `json:"username"`      // ユーザー名（表示名）
-	AccountID     string `json:"accountId"`     // ユーザー名（検索用）
-	Lastname      string `json:"lastname"`      // 氏名（姓）
-	Firstname     string `json:"firstname"`     // 氏名（名）
-	LastnameKana  string `json:"lastnameKana"`  // 氏名(姓:かな)
-	FirstnameKana string `json:"firstnameKana"` // 氏名(名:かな)
-	Email         string `json:"email"`         // メールアドレス
-	PhoneNumber   string `json:"phoneNumber"`   // 電話番号
-	CreatedAt     int64  `json:"createdAt"`     // 登録日時
-	UpdatedAt     int64  `json:"updateAt"`      // 更新日時
+	ID            string   `json:"id"`            // 購入者ID
+	Status        int32    `json:"status"`        // 購入者ステータス
+	Registered    bool     `json:"registered"`    // 会員登録フラグ
+	Username      string   `json:"username"`      // ユーザー名（表示名）
+	AccountID     string   `json:"accountId"`     // ユーザー名（検索用）
+	Lastname      string   `json:"lastname"`      // 氏名（姓）
+	Firstname     string   `json:"firstname"`     // 氏名（名）
+	LastnameKana  string   `json:"lastnameKana"`  // 氏名(姓:かな)
+	FirstnameKana string   `json:"firstnameKana"` // 氏名(名:かな)
+	Email         string   `json:"email"`         // メールアドレス
+	PhoneNumber   string   `json:"phoneNumber"`   // 電話番号
+	ThumbnailURL  string   `json:"thumbnailUrl"`  // サムネイルURL
+	Thumbnails    []*Image `json:"thumbnails"`    // リサイズ済みサムネイル
+	CreatedAt     int64    `json:"createdAt"`     // 登録日時
+	UpdatedAt     int64    `json:"updateAt"`      // 更新日時
 }
 
 // UserToList - 購入者一覧情報

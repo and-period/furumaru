@@ -136,6 +136,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.contactReadRoutes(v1)
 	h.coordinatorRoutes(v1)
 	h.liveRoutes(v1)
+	h.liveCommentRoutes(v1)
 	h.messageRoutes(v1)
 	h.notificationRoutes(v1)
 	h.orderRoutes(v1)
