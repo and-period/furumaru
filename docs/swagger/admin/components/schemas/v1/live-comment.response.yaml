@@ -8,7 +8,7 @@ liveCommentsResponse:
         $ref: './../../../openapi.yaml#/components/schemas/liveComment'
     nextToken:
       type: string
-      descripiton: 次の取得位置
+      description: 次の取得位置
   required:
   - comments
   - nextToken

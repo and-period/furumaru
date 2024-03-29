@@ -33,7 +33,7 @@ export interface LiveCommentsResponse {
      */
     comments: Array<LiveComment>;
     /**
-     * 
+     * 次の取得位置
      * @type {string}
      * @memberof LiveCommentsResponse
      */
