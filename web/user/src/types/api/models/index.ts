@@ -42,6 +42,7 @@ export * from './GuestCheckoutStateResponse';
 export * from './ImageSize';
 export * from './Live';
 export * from './LiveComment';
+export * from './LiveCommentThumbnailsInner';
 export * from './LiveCommentsResponse';
 export * from './LiveProduct';
 export * from './LiveSchedulesResponse';

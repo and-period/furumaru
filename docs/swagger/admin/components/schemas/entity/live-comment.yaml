@@ -1,6 +1,9 @@
 liveComment:
   type: object
   properties:
+    id:
+      type: string
+      description: コメントID
     userId:
       type: string
       description: ユーザーID
@@ -30,19 +33,25 @@ liveComment:
     comment:
       type: string
       description: コメント
+    disabled:
+      type: boolean
+      description: コメント無効化フラグ
     publishedAt:
       type: integer
       format: int64
       description: 投稿日時
   required:
+  - id
   - userId
   - username
   - accountId
   - thumbnailUrl
   - thumbnails
   - comment
+  - disabled
   - publishedAt
   example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
     userId: 'kSByoE6FetnPs5Byk3a9Zx'
     username: 'ふるマル 太郎'
     accountId: 'account-id'
@@ -55,4 +64,5 @@ liveComment:
     - url: 'https://and-period.jp/thumbnail_900.png'
       size: 3
     comment: 'こんにちは'
+    disabled: false
     publishedAt: 1640962800

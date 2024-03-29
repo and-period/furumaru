@@ -3,6 +3,7 @@ package service
 import (
 	"testing"
 
+	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -88,9 +89,13 @@ func TestUser(t *testing.T) {
 					Email:         "test-user@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					VerifiedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					Thumbnails: []*common.Image{{
+						URL:  "https://and-period.jp/thumbnail.png",
+						Size: common.ImageSizeMedium,
+					}},
+					CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					VerifiedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -127,8 +132,13 @@ func TestUser(t *testing.T) {
 					FirstnameKana: "こうにゅうしゃ",
 					Email:         "test-user@and-period.jp",
 					PhoneNumber:   "+819012345678",
-					CreatedAt:     1640962800,
-					UpdatedAt:     1640962800,
+					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
+					Thumbnails: []*response.Image{{
+						URL:  "https://and-period.jp/thumbnail.png",
+						Size: int32(ImageSizeMedium),
+					}},
+					CreatedAt: 1640962800,
+					UpdatedAt: 1640962800,
 				},
 				address: Address{
 					Address: response.Address{
@@ -191,7 +201,7 @@ func TestUser(t *testing.T) {
 					ID:            "user-id",
 					Status:        int32(UserStatusGuest),
 					Registered:    false,
-					Username:      "",
+					Username:      "ゲスト",
 					AccountID:     "",
 					Lastname:      "&.",
 					Firstname:     "ゲスト",
@@ -199,6 +209,7 @@ func TestUser(t *testing.T) {
 					FirstnameKana: "げすと",
 					Email:         "test-user@and-period.jp",
 					PhoneNumber:   "090-1234-1234",
+					Thumbnails:    []*response.Image{},
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
 				},
