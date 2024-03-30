@@ -28,8 +28,8 @@ runs:
     uses: actions/cache@v4
     with:
       path: |
-        ${{ inputs.working-directory }}/.cache/go-build
-        ${{ inputs.working-directory }}/go/pkg/mod
+        ~/.cache/go-build
+        ~/go/pkg/mod
       key: ${{ inputs.service }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
   - name: Download modules

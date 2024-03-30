@@ -31,17 +31,17 @@ runs:
     working-directory: ${{ inputs.working-directory }}
     run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-  - name: Cache yarn dependencies
-    id: yarn-cache
-    uses: actions/cache@v4
-    with:
-      path: |
-        **/node_modules
-        ${{ steps.yarn-cache-dir-path.outputs.dir }}
-      key: ${{ inputs.service }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+  # - name: Cache yarn dependencies
+  #   id: yarn-cache
+  #   uses: actions/cache@v4
+  #   with:
+  #     path: |
+  #       **/node_modules
+  #       ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #     key: ${{ inputs.service }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
   - name: Install
-    if: steps.yarn-cache.outputs.cache-hit != 'true'
+    # if: steps.yarn-cache.outputs.cache-hit != 'true'
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: yarn --check-files --frozen-lockfile --non-interactive
