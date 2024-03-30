@@ -27,7 +27,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: '.github/actions/setup-node'
+    - uses: .github/actions/setup-node
       with:
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
@@ -48,7 +48,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: '.github/actions/setup-node'
+    - uses: .github/actions/setup-node
       with:
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
@@ -72,10 +72,14 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: '.github/actions/setup-node'
+    - uses: .github/actions/setup-node
       with:
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
+
+    - name: Postinstall
+      shell: bash
+      run: yarn postinstall
 
     - name: Build
       run: yarn build
@@ -96,10 +100,14 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: '.github/actions/setup-node'
+    - uses: .github/actions/setup-node
       with:
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
+
+    - name: Postinstall
+      shell: bash
+      run: yarn postinstall
 
     - name: Test
       run: yarn coverage

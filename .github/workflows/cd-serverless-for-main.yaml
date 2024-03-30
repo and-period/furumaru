@@ -33,12 +33,12 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: '.github/actions/setup-aws'
+    - uses: .github/actions/setup-aws
       with:
         role-to-assume: ${{ env.AWS_ROLE_ARN }}
         aws-region: ${{ env.AWS_REGION }}
 
-    - uses: '.github/actions/setup-node'
+    - uses: .github/actions/setup-node
       with:
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}

@@ -35,13 +35,13 @@ jobs:
   get_image_tag:
     name: get image tag
     secrets: inherit
-    uses: './.github/workflows/_get_tag_version.yaml'
+    uses: ./.github/workflows/_get_tag_version.yaml
 
   build_and_push:
     name: build and push
     needs: get_image_tag
     secrets: inherit
-    uses: './.github/workflows/_build_and_push.yaml'
+    uses: ./.github/workflows/_build_and_push.yaml
     with:
       ecr-repository: ${{ env.ECR_REPOSITORY }}
       ecr-registry: ${{ env.ECR_REGISTRY }}
@@ -52,7 +52,7 @@ jobs:
   deploy_admin:
     name: deploy admin
     needs: build_and_push
-    uses: '.github/workflows/_backend_deploy_ecr.yaml'
+    uses: .github/workflows/_backend_deploy_ecr.yaml
     with:
       ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
       ecs-task-definition: ${{ env.ECS_TASK_DEFINITION_ADMIN }}
@@ -63,7 +63,7 @@ jobs:
   deploy_user:
     name: deploy user
     needs: build_and_push
-    uses: '.github/workflows/_backend_deploy_ecr.yaml'
+    uses: .github/workflows/_backend_deploy_ecr.yaml
     with:
       ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
       ecs-task-definition: ${{ env.ECS_TASK_DEFINITION_USER }}

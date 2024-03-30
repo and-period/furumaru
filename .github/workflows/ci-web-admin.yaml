@@ -27,7 +27,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: '.github/actions/setup-node'
+    - uses: .github/actions/setup-node
       with:
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
@@ -48,7 +48,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: '.github/actions/setup-node'
+    - uses: .github/actions/setup-node
       with:
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
@@ -72,41 +72,49 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: '.github/actions/setup-node'
+    - uses: .github/actions/setup-node
       with:
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
+    - name: Postinstall
+      shell: bash
+      run: yarn postinstall
+
     - name: Build
       run: yarn build
 
-  # test:
-  #   name: test
-  #   needs: setup
-  #   runs-on: ${{ matrix.os }}
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: ./web/admin
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest]
-
-  #   steps:
-  #   - name: Check out code
-  #     uses: actions/checkout@v4
-
-  #   - uses: '.github/actions/setup-node'
-  #     with:
-  #       node-version: ${{ env.NODE_VERSION }}
-  #       service: ${{ env.SERVICE }}
-
-  #   - name: Test
-  #     run: yarn test
-
-  #   - uses: codecov/codecov-action@v3
-  #     with:
-  #       token: ${{ secrets.CODECOV_TOKEN }}
-  #       fail_ci_if_error: true
-  #       flags: admin-web
-  #       verbose: true
+#   test:
+#     name: test
+#     needs: setup
+#     runs-on: ${{ matrix.os }}
+#     defaults:
+#       run:
+#         shell: bash
+#         working-directory: ./web/admin
+#     strategy:
+#       matrix:
+#         os: [ubuntu-latest]
+#
+#     steps:
+#     - name: Check out code
+#       uses: actions/checkout@v4
+#
+#     - uses: .github/actions/setup-node
+#       with:
+#         node-version: ${{ env.NODE_VERSION }}
+#         service: ${{ env.SERVICE }}
+#
+#     - name: Postinstall
+#       shell: bash
+#       run: yarn postinstall
+#
+#     - name: Test
+#       run: yarn test
+#
+#     - uses: codecov/codecov-action@v3
+#       with:
+#         token: ${{ secrets.CODECOV_TOKEN }}
+#         fail_ci_if_error: true
+#         flags: admin-web
+#         verbose: true
