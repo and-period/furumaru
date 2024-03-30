@@ -2,6 +2,10 @@ name: setup golang
 description: 'Setup Golang and cache go modules'
 
 inputs:
+  working-directory:
+    description: '作業ディレクトリ'
+    required: false
+    default: '.'
   go-version:
     description: 'Golangのバージョン'
     required: true
@@ -20,8 +24,9 @@ runs:
       go-version: ${{ inputs.go-version }}
 
   - name: Cache go modules
-    uses: actions/cache@v4
     id: modules-cache
+    uses: actions/cache@v4
+    working-directory: ${{ inputs.working-directory }}
     with:
       path: |
         ~/.cache/go-build
@@ -31,4 +36,5 @@ runs:
   - name: Download modules
     if: steps.modules-cache.outputs.cache-hit != 'true'
     shell: bash
+    working-directory: ${{ inputs.working-directory }}
     run: go mod download

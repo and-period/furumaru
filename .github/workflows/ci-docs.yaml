@@ -29,6 +29,7 @@ jobs:
 
     - uses: ./.github/actions/setup-node
       with:
+        working-directory: ./docs/swagger
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
@@ -53,6 +54,7 @@ jobs:
 
     - uses: ./.github/actions/setup-node
       with:
+        working-directory: ./docs/swagger
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
@@ -80,6 +82,7 @@ jobs:
 
     - uses: ./.github/actions/setup-node
       with:
+        working-directory: ./docs/swagger
         node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 

@@ -36,6 +36,7 @@ jobs:
 
     - uses: ./.github/actions/setup-go
       with:
+        working-directory: ./api
         go-version: ${{ env.GO_VERSION }}
         service: ${{ env.SERVICE }}
 
@@ -56,6 +57,7 @@ jobs:
 
     - uses: ./.github/actions/setup-go
       with:
+        working-directory: ./api
         go-version: ${{ env.GO_VERSION }}
         service: ${{ env.SERVICE }}
 
@@ -92,6 +94,7 @@ jobs:
 
     - uses: ./.github/actions/setup-go
       with:
+        working-directory: ./api
         go-version: ${{ env.GO_VERSION }}
         service: ${{ env.SERVICE }}
 
@@ -122,6 +125,7 @@ jobs:
 
     - uses: ./.github/actions/setup-go
       with:
+        working-directory: ./api
         go-version: ${{ env.GO_VERSION }}
         service: ${{ env.SERVICE }}
 
