@@ -1,4 +1,4 @@
-import { createVuetify } from 'vuetify/lib/framework.mjs'
+import { createVuetify } from 'vuetify'
 import { md3 } from 'vuetify/blueprints'
 import { ja } from 'vuetify/locale'
 import * as components from 'vuetify/components'
