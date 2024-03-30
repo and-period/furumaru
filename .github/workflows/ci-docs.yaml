@@ -2,6 +2,7 @@ name: '[Docs] Build and Test'
 on:
   push:
     paths:
+    - '.github/actions/setup-node/**'
     - '.github/workflows/ci-docs.yaml'
     - 'docs/swagger/**'
 
@@ -20,37 +21,20 @@ jobs:
         working-directory: ./docs/swagger
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v4
+    - uses: ./.github/actions/setup-node
       with:
+        working-directory: ./docs/swagger
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-    - uses: actions/cache@v4
-      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-      with:
-        path: |
-          **/node_modules
-          ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        service: ${{ env.SERVICE }}
 
     - name: Setup
       run: make setup
-
-    - name: Install
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: yarn --check-files --frozen-lockfile --non-interactive
 
   lint:
     name: lint
@@ -62,37 +46,20 @@ jobs:
         working-directory: ./docs/swagger
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v4
+    - uses: ./.github/actions/setup-node
       with:
+        working-directory: ./docs/swagger
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-    - uses: actions/cache@v4
-      id: yarn-cache
-      with:
-        path: |
-          **/node_modules
-          ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        service: ${{ env.SERVICE }}
 
     - name: Setup
       run: make setup
-
-    - name: Install
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: yarn --check-files --frozen-lockfile --non-interactive
 
     - name: Lint
       run: yarn lint
@@ -107,37 +74,20 @@ jobs:
         working-directory: ./docs/swagger
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v4
+    - uses: ./.github/actions/setup-node
       with:
+        working-directory: ./docs/swagger
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-    - uses: actions/cache@v4
-      id: yarn-cache
-      with:
-        path: |
-          **/node_modules
-          ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ env.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        service: ${{ env.SERVICE }}
 
     - name: Setup
       run: make setup
-
-    - name: Install
-      if: steps.yarn-cache.outputs.cache-hit != 'true'
-      run: yarn --check-files --frozen-lockfile --non-interactive
 
     - name: Build
       run: yarn generate
@@ -152,7 +102,7 @@ jobs:
         working-directory: .
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
