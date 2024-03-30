@@ -2,6 +2,7 @@ name: '[Frontend] Build and Test (Admin Web)'
 on:
   push:
     paths:
+    - '.github/actions/setup-node/**'
     - '.github/workflows/ci-web-admin.yaml'
     - 'web/admin/**'
     - 'infra/docker/web/admin/**'

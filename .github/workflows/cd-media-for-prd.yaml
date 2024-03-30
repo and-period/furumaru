@@ -4,6 +4,7 @@ on:
     tags:
     - 'v*'
     paths:
+    - '.github/actions/setup-aws/**'
     - '.github/workflows/cd-media-for-prd.yaml'
     - 'api/config/media/**'
     - 'api/internal/media/**'

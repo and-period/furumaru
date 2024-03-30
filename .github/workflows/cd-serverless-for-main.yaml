@@ -4,6 +4,7 @@ on:
     branches:
     - 'main'
     paths:
+    - '.github/actions/setup-aws/**'
     - '.github/workflows/cd-serverless-for-main.yaml'
     - 'infra/serverless/**'
 

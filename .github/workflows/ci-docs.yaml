@@ -2,6 +2,7 @@ name: '[Docs] Build and Test'
 on:
   push:
     paths:
+    - '.github/actions/setup-node/**'
     - '.github/workflows/ci-docs.yaml'
     - 'docs/swagger/**'
 
