@@ -30,7 +30,7 @@ on:
         required: false
         default: 'latest'
     outputs:
-      image-uri:
+      ecr-image-uri:
         description: 'ECRイメージURI'
         value: ${{ jobs.build_and_push.outputs.ecr-image-uri }}
 
