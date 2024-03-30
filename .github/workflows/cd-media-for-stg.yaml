@@ -45,7 +45,7 @@ jobs:
 
     - uses: ./.github/actions/setup-aws
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
@@ -80,7 +80,7 @@ jobs:
 
     - uses: ./.github/actions/setup-aws
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
@@ -111,7 +111,7 @@ jobs:
 
     - uses: ./.github/actions/setup-aws
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
@@ -142,7 +142,7 @@ jobs:
 
     - uses: ./.github/actions/setup-aws
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
@@ -173,7 +173,7 @@ jobs:
 
     - uses: ./.github/actions/setup-aws
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
@@ -204,7 +204,7 @@ jobs:
 
     - uses: ./.github/actions/setup-aws
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
