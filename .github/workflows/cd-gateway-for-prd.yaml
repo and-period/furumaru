@@ -16,17 +16,6 @@ on:
 
 env:
   TZ: 'Asia/Tokyo'
-  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_GATEWAY }}
-  ECS_CLUSTER: ${{ secrets.PRD_ECS_CLUSTER }}
-  ECS_SERVICE_ADMIN: admin
-  ECS_SERVICE_USER: user
-  ECS_CONTAINER_ADMIN: server
-  ECS_CONTAINER_USER: server
-  ECS_TASK_DEFINITION_ADMIN: ${{ secrets.PRD_ECS_TASK_DEFINITION_ADMIN }}
-  ECS_TASK_DEFINITION_USER: ${{ secrets.PRD_ECS_TASK_DEFINITION_USER }}
-  IMAGE_PATH: ./infra/docker/api/Dockerfile
-  SERVICE: gateway
 
 permissions:
   id-token: write
@@ -44,10 +33,10 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/_backend_build_and_push.yaml
     with:
-      ecr-repository: ${{ env.ECR_REPOSITORY }}
-      ecr-registry: ${{ env.ECR_REGISTRY }}
-      service: ${{ env.SERVICE }}
-      image-path: ${{ env.IMAGE_PATH }}
+      ecr-repository: ${{ secrets.ECR_REPOSITORY_GATEWAY }}
+      ecr-registry: ${{ secrets.ECR_REGISTRY }}
+      service: gateway
+      image-path: ./infra/docker/api/Dockerfile
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
 
   deploy_admin:
@@ -56,10 +45,10 @@ jobs:
     uses: ./.github/workflows/_backend_deploy_ecr.yaml
     with:
       ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
-      ecs-task-definition: ${{ env.ECS_TASK_DEFINITION_ADMIN }}
-      ecs-cluster-name: ${{ env.ECS_CLUSTER }}
-      ecs-service-name: ${{ env.ECS_SERVICE_ADMIN }}
-      ecs-container-name: ${{ env.ECS_CONTAINER_ADMIN }}
+      ecs-task-definition: ${{ secrets.PRD_ECS_TASK_DEFINITION_ADMIN }}
+      ecs-cluster-name: ${{ secrets.PRD_ECS_CLUSTER }}
+      ecs-service-name: admin
+      ecs-container-name: server
 
   deploy_user:
     name: deploy user
@@ -67,7 +56,7 @@ jobs:
     uses: ./.github/workflows/_backend_deploy_ecr.yaml
     with:
       ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
-      ecs-task-definition: ${{ env.ECS_TASK_DEFINITION_USER }}
-      ecs-cluster-name: ${{ env.ECS_CLUSTER }}
-      ecs-service-name: ${{ env.ECS_SERVICE_USER }}
-      ecs-container-name: ${{ env.ECS_CONTAINER_USER }}
+      ecs-task-definition: ${{ secrets.PRD_ECS_TASK_DEFINITION_USER }}
+      ecs-cluster-name: ${{ secrets.PRD_ECS_CLUSTER }}
+      ecs-service-name: user
+      ecs-container-name: server
