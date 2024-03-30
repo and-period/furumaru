@@ -1,0 +1,67 @@
+name: backend deploy ecr
+
+on:
+  workflow_call:
+    inputs:
+      ecr-imaga-uri:
+        description: 'ECRイメージURI'
+        type: string
+        required: true
+      ecs-task-definition:
+        description: 'ECSタスク定義名'
+        type: string
+        required: true
+      ecs-cluster-name:
+        description: 'ECSクラスタ名'
+        type: string
+        required: true
+      ecs-service-name:
+        description: 'ECSサービス名'
+        type: string
+        required: true
+      ecs-container-name:
+        description: 'ECSコンテナ名'
+        type: string
+        required: true
+
+jobs:
+  deploy_ecr:
+    name: deploy ecr
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - uses: '.github/actions/setup-aws'
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Fetch task definition
+      run: |
+        aws ecs describe-task-definition --region ${AWS_REGION} --task-definition ${ECS_TASK_DEFINITION} | \
+          jq '.taskDefinition | del(.compatibilities, .registeredAt, .registeredBy, .requiresAttributes, .revision, .status, .taskDefinitionArn)' \
+          > ./task-definition.json
+      env:
+        ECS_TASK_DEFINITION: ${{ inputs.ecs-task-definition }}
+
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ./task-definition.json
+        container-name: ${{ inputs.ecs-container-name }}
+        image: ${{ inputs.ecr-image-uri }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        cluster: ${{ inputs.ecs-cluster-name }}
+        service: ${{ inputs.ecs-service-name }}
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        wait-for-service-stability: true

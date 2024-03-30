@@ -33,130 +33,35 @@ permissions:
 
 jobs:
   build_and_push:
-    name: deploy and push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
-      run: |
-        docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
-        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
-        docker push -a ${ECR_REPOSITORY_URL}
+    name: build and push
+    needs: get_image_tag
+    secrets: inherit
+    uses: './.github/workflows/_build_and_push.yaml'
+    with:
+      ecr-repository: ${{ env.ECR_REPOSITORY }}
+      ecr-registry: ${{ env.ECR_REGISTRY }}
+      service: ${{ env.SERVICE }}
+      image-path: ${{ env.IMAGE_PATH }}
+      image-tag: latest
 
   deploy_admin:
     name: deploy admin
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Fetch task definition
-      run: |
-        aws ecs describe-task-definition --region ${AWS_REGION} --task-definition ${ECS_TASK_DEFINITION_ADMIN} | \
-          jq '.taskDefinition | del(.compatibilities, .registeredAt, .registeredBy, .requiresAttributes, .revision, .status, .taskDefinitionArn)' \
-          > ./admin-task-definition.json
-
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ./admin-task-definition.json
-        container-name: ${{ env.ECS_CONTAINER_ADMIN }}
-        image: ${{ env.ECR_REPOSITORY_URL }}:latest
-
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        cluster: ${{ env.ECS_CLUSTER }}
-        service: ${{ env.ECS_SERVICE_ADMIN }}
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        wait-for-service-stability: true
+    uses: '.github/workflows/_backend_deploy_ecr.yaml'
+    with:
+      ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
+      ecs-task-definition: ${{ env.ECS_TASK_DEFINITION_ADMIN }}
+      ecs-cluster-name: ${{ env.ECS_CLUSTER }}
+      ecs-service-name: ${{ env.ECS_SERVICE_ADMIN }}
+      ecs-container-name: ${{ env.ECS_CONTAINER_ADMIN }}
 
   deploy_user:
     name: deploy user
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Fetch task definition
-      run: |
-        aws ecs describe-task-definition --region ${AWS_REGION} --task-definition ${ECS_TASK_DEFINITION_USER} | \
-          jq '.taskDefinition | del(.compatibilities, .registeredAt, .registeredBy, .requiresAttributes, .revision, .status, .taskDefinitionArn)' \
-          > ./user-task-definition.json
-
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ./user-task-definition.json
-        container-name: ${{ env.ECS_CONTAINER_USER }}
-        image: ${{ env.ECR_REPOSITORY_URL }}:latest
-
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        cluster: ${{ env.ECS_CLUSTER }}
-        service: ${{ env.ECS_SERVICE_USER }}
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        wait-for-service-stability: true
+    uses: '.github/workflows/_backend_deploy_ecr.yaml'
+    with:
+      ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
+      ecs-task-definition: ${{ env.ECS_TASK_DEFINITION_USER }}
+      ecs-cluster-name: ${{ env.ECS_CLUSTER }}
+      ecs-service-name: ${{ env.ECS_SERVICE_USER }}
+      ecs-container-name: ${{ env.ECS_CONTAINER_USER }}

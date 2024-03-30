@@ -1,0 +1,85 @@
+name: backend build and push
+
+on:
+  workflow_call:
+    inputs:
+      ecr-registry:
+        description: 'ECRレジストリ名'
+        type: string
+        required: true
+      ecr-repository:
+        description: 'ECRリポジトリ名'
+        type: string
+        required: true
+      image-path:
+        description: 'Dockerfileのパス'
+        type: string
+        required: true
+      image-tag:
+        description: 'ECRイメージタグ'
+        type: string
+        required: false
+        default: 'latest'
+      service:
+        description: 'サービス名'
+        type: string
+        required: true
+    outputs:
+      image-uri:
+        description: 'ECRイメージURI'
+        type: string
+        value: ${{ jobs.build_and_push.outputs.ecr-image-uri }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build_and_push:
+    name: build and push
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./api
+
+    outputs:
+      ecr-image-uri: ${{ steps.set-output.outputs.ecr-image-uri }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - uses: '.github/actions/setup-aws'
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Set ECR_REPOSITORY_URL
+      run: |
+        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
+      env:
+        ECR_REGISTRY: ${{ inputs.ecr-registry }}
+        ECR_REPOSITORY: ${{ inputs.ecr-repository }}
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      run: |
+        docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
+        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+        docker push -a ${ECR_REPOSITORY_URL}
+      env:
+        SERVICE: ${{ inputs.service }}
+        IMAGE_PATH: ${{ inputs.image-path }}
+        ECR_IMAGE_TAG: ${{ inputs.image-tag }}
+
+    - name: Set output
+      id: set-output
+      run: |
+        echo "ecr-image-uri=${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" >> $GITHUB_OUTPUT
+      env:
+        ECR_IMAGE_TAG: ${{ inputs.image-tag }}

@@ -35,11 +35,16 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+
+    - uses: '.github/actions/setup-aws'
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Set ECR_IMAGE_TAG
       run: |
@@ -48,12 +53,6 @@ jobs:
     - name: Set ECR_REPOSITORY_URL
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -75,11 +74,16 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+
+    - uses: '.github/actions/setup-aws'
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Set ECR_IMAGE_TAG
       run: |
@@ -88,12 +92,6 @@ jobs:
     - name: Set ECR_REPOSITORY_URL
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
 
     - name: Deploy AWS Lambda function
       run: |
@@ -111,11 +109,16 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
+
+    - uses: '.github/actions/setup-aws'
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
 
     - name: Set ECR_IMAGE_TAG
       run: |
@@ -124,12 +127,6 @@ jobs:
     - name: Set ECR_REPOSITORY_URL
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
 
     - name: Deploy AWS Lambda function
       run: |

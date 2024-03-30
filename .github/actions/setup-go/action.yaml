@@ -1,0 +1,33 @@
+name: setup golang
+description: 'Setup Golang and cache go modules'
+
+inputs:
+  go-version:
+    description: 'Golangのバージョン'
+    required: true
+    default: '1.22.1'
+  service:
+    description: 'サービス名'
+    required: true
+    default: 'backend'
+
+runs:
+  using: composite
+  steps:
+  - name: Use Golang ${{ inputs.GO_VERSION }}
+    uses: actions/setup-go@v5
+    with:
+      go-version: ${{ inputs.GO_VERSION }}
+
+  - uses: actions/cache@v4
+    id: modules-cache
+    with:
+      path: |
+        ~/.cache/go-build
+        ~/go/pkg/mod
+      key: ${{ inputs.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+  - name: Download modules
+    if: steps.modules-cache.outputs.cache-hit != 'true'
+    shell: bash
+    run: go mod download

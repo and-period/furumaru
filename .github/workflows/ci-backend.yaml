@@ -27,28 +27,16 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Use Golang ${{ env.GO_VERSION }}
-      uses: actions/setup-go@v5
+    - uses: '.github/actions/setup-go'
       with:
         go-version: ${{ env.GO_VERSION }}
-
-    - uses: actions/cache@v4
-      id: modules-cache
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
-    - name: Download modules
-      if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
+        service: ${{ env.SERVICE }}
 
   lint:
     name: lint
@@ -59,16 +47,16 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Use Golang ${{ env.GO_VERSION }}
-      uses: actions/setup-go@v5
+    - uses: '.github/actions/setup-go'
       with:
         go-version: ${{ env.GO_VERSION }}
+        service: ${{ env.SERVICE }}
 
     - name: Setup
       run: make setup
@@ -95,28 +83,16 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Use Golang ${{ env.GO_VERSION }}
-      uses: actions/setup-go@v5
+    - uses: '.github/actions/setup-go'
       with:
         go-version: ${{ env.GO_VERSION }}
-
-    - uses: actions/cache@v4
-      id: modules-cache
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
-    - name: Download modules
-      if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
+        service: ${{ env.SERVICE }}
 
     - name: Build gateway
       run: make build SERVICE=gateway
@@ -137,16 +113,16 @@ jobs:
         working-directory: ./api
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Use Golang ${{ env.GO_VERSION }}
-      uses: actions/setup-go@v5
+    - uses: '.github/actions/setup-go'
       with:
         go-version: ${{ env.GO_VERSION }}
+        service: ${{ env.SERVICE }}
 
     - name: Start MySQL container
       working-directory: .
@@ -167,18 +143,6 @@ jobs:
           count=$(expr $count + 1)
         done
         echo 'mysql is up - executing command'
-
-    - uses: actions/cache@v4
-      id: modules-cache
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ env.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
-    - name: Download modules
-      if: steps.modules-cache.outputs.cache-hit != 'true'
-      run: go mod download
 
     - name: Setup
       run: make setup
