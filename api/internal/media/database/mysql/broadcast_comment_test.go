@@ -193,6 +193,74 @@ func TestBroadcastComment_Create(t *testing.T) {
 	}
 }
 
+func TestBroadcastComment_Update(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&broadcast).Error
+	require.NoError(t, err)
+
+	type args struct {
+		commentID string
+		params    *database.UpdateBroadcastCommentParams
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				comment := testBroadcastComment("comment-id", "broadcast-id", "user-id", now())
+				err = db.DB.Create(&comment).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				commentID: "comment-id",
+				params: &database.UpdateBroadcastCommentParams{
+					Disabled: true,
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, broadcastCommentTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &broadcastComment{db: db, now: now}
+			err = db.Update(ctx, tt.args.commentID, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
 func testBroadcastComment(commentID, broadcastID, userID string, now time.Time) *entity.BroadcastComment {
 	return &entity.BroadcastComment{
 		ID:          commentID,

@@ -309,3 +309,52 @@ func TestCreateBroadcastGuestComment(t *testing.T) {
 		}))
 	}
 }
+
+func TestUpdateBroadcastComment(t *testing.T) {
+	t.Parallel()
+	params := &database.UpdateBroadcastCommentParams{
+		Disabled: true,
+	}
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.UpdateBroadcastCommentInput
+		expectErr error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.BroadcastComment.EXPECT().Update(ctx, "comment-id", params).Return(nil)
+			},
+			input: &media.UpdateBroadcastCommentInput{
+				CommentID: "comment-id",
+				Disabled:  true,
+			},
+			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.UpdateBroadcastCommentInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update broadcast comment",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.BroadcastComment.EXPECT().Update(ctx, "comment-id", params).Return(assert.AnError)
+			},
+			input: &media.UpdateBroadcastCommentInput{
+				CommentID: "comment-id",
+				Disabled:  true,
+			},
+			expectErr: exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.UpdateBroadcastComment(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}
