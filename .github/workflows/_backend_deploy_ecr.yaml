@@ -52,6 +52,7 @@ jobs:
           jq '.taskDefinition | del(.compatibilities, .registeredAt, .registeredBy, .requiresAttributes, .revision, .status, .taskDefinitionArn)' \
           > ./task-definition.json
       env:
+        AWS_REGION: ${{ secrets.aws-region }}
         ECS_TASK_DEFINITION: ${{ secrets.ecs-task-definition }}
 
     - name: Fill in the new image ID in the Amazon ECS task definition

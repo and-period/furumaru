@@ -46,7 +46,7 @@ jobs:
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_ecr.yaml
     with:
-      ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
+      ecr-image-uri: ${{ needs.build_and_push.outputs.ecr-image-uri }}
       ecs-service-name: admin
       ecs-container-name: server
     secrets:
@@ -60,7 +60,7 @@ jobs:
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_ecr.yaml
     with:
-      ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
+      ecr-image-uri: ${{ needs.build_and_push.outputs.ecr-image-uri }}
       ecs-service-name: user
       ecs-container-name: server
     secrets:
