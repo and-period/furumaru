@@ -6,11 +6,12 @@ interface VersionInfo {
   buildDate: string;
 }
 const versionFilePath = path.resolve(__dirname, '..', 'version.json')
+const packageJson = require('../package.json')
 
 const currentDate = new Date().toISOString()
 
 const versionFile: VersionInfo = {
-  version: process.env.RELEASE_VERSION || 'latest',
+  version: packageJson.version,
   buildDate: currentDate
 }
 
