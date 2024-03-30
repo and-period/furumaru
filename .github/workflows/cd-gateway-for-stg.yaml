@@ -45,7 +45,7 @@ jobs:
   deploy_admin:
     name: deploy admin
     needs: build_and_push
-    uses: .github/workflows/_backend_deploy_ecr.yaml
+    uses: ./.github/workflows/_backend_deploy_ecr.yaml
     with:
       ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
       ecs-task-definition: ${{ env.ECS_TASK_DEFINITION_ADMIN }}
@@ -56,7 +56,7 @@ jobs:
   deploy_user:
     name: deploy user
     needs: build_and_push
-    uses: .github/workflows/_backend_deploy_ecr.yaml
+    uses: ./.github/workflows/_backend_deploy_ecr.yaml
     with:
       ecr-image-uri: ${{ needs.build_and_push.outputs.image-uri }}
       ecs-task-definition: ${{ env.ECS_TASK_DEFINITION_USER }}
