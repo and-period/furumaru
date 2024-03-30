@@ -14,10 +14,10 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Use Golang ${{ inputs.GO_VERSION }}
+  - name: Use Golang ${{ inputs.go-version }}
     uses: actions/setup-go@v5
     with:
-      go-version: ${{ inputs.GO_VERSION }}
+      go-version: ${{ inputs.go-version }}
 
   - name: Cache go modules
     uses: actions/cache@v4
@@ -26,7 +26,7 @@ runs:
       path: |
         ~/.cache/go-build
         ~/go/pkg/mod
-      key: ${{ inputs.SERVICE }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      key: ${{ inputs.service }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
   - name: Download modules
     if: steps.modules-cache.outputs.cache-hit != 'true'

@@ -14,10 +14,10 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Use Node.js ${{ inputs.NODE_VERSION }}
+  - name: Use Node.js ${{ inputs.node-version }}
     uses: actions/setup-node@v4
     with:
-      node-version: ${{ inputs.NODE_VERSION }}
+      node-version: ${{ inputs.node-version }}
       cache: 'yarn'
       cache-dependency-path: '**/yarn.lock'
 
@@ -33,7 +33,7 @@ runs:
       path: |
         **/node_modules
         ${{ steps.yarn-cache-dir-path.outputs.dir }}
-      key: ${{ inputs.SERVICE }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      key: ${{ inputs.service }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
   - name: Install
     if: steps.yarn-cache.outputs.cache-hit != 'true'

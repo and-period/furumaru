@@ -15,5 +15,5 @@ runs:
   - name: Configure AWS credentials from IAM Role
     uses: aws-actions/configure-aws-credentials@v4
     with:
-      role-to-assume: ${{ inputs.AWS_ROLE_ARN }}
-      aws-region: ${{ inputs.AWS_REGION }}
+      role-to-assume: ${{ inputs.aws-role-arn }}
+      aws-region: ${{ inputs.aws-region }}

@@ -10,8 +10,6 @@ on:
 
 env:
   TZ: 'Asia/Tokyo'
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   APP_ID: ${{ secrets.PRD_AMPLIFY_ADMIN_APP_ID }}
   BRANCH_NAME: main
 
@@ -37,8 +35,8 @@ jobs:
 
     - uses: .github/actions/setup-aws
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Deploy to Amplify
       run: |

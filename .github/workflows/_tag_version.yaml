@@ -27,4 +27,8 @@ jobs:
     - name: Set tag version
       id: set-tag-version
       run: |
+        if [[ ! "$GITHUB_REF" =~ refs/tags/v[0-9]+(\.[0-9]+)* ]]; then
+          echo "Error: GITHUB_REF does not match the expected format (refs/tags/vX.Y.Z)."
+          exit 1
+        fi
         echo "tag-version=${GITHUB_REF##*/v}" >> $GITHUB_OUTPUT

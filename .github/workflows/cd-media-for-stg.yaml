@@ -13,8 +13,6 @@ on:
 
 env:
   TZ: 'Asia/Tokyo'
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_MEDIA }}
   LAMBDA_FUNCTION_UPLOADER: ${{ secrets.STG_LAMBDA_FUNCTION_MEDIA_UPLOADER }}
@@ -46,8 +44,8 @@ jobs:
 
     - uses: .github/actions/setup-aws
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
       run: |
@@ -81,8 +79,8 @@ jobs:
 
     - uses: .github/actions/setup-aws
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
       run: |
@@ -112,8 +110,8 @@ jobs:
 
     - uses: .github/actions/setup-aws
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
       run: |
@@ -143,8 +141,8 @@ jobs:
 
     - uses: .github/actions/setup-aws
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
       run: |
@@ -174,8 +172,8 @@ jobs:
 
     - uses: .github/actions/setup-aws
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
       run: |
@@ -205,8 +203,8 @@ jobs:
 
     - uses: .github/actions/setup-aws
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set ECR_REPOSITORY_URL
       run: |
