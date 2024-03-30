@@ -3,7 +3,6 @@ on:
     outputs:
       tag-version:
         description: 'タグバージョン'
-        type: string
         value: ${{ jobs.get_tag_version.outputs.tag-version }}
 
 permissions:

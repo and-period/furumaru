@@ -32,7 +32,6 @@ on:
     outputs:
       image-uri:
         description: 'ECRイメージURI'
-        type: string
         value: ${{ jobs.build_and_push.outputs.ecr-image-uri }}
 
 permissions:
