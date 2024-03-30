@@ -42,7 +42,7 @@ jobs:
     name: build and push
     needs: get_image_tag
     secrets: inherit
-    uses: ./.github/workflows/_build_and_push.yaml
+    uses: ./.github/workflows/_backend_build_and_push.yaml
     with:
       ecr-repository: ${{ env.ECR_REPOSITORY }}
       ecr-registry: ${{ env.ECR_REGISTRY }}
