@@ -55,6 +55,12 @@ jobs:
         AWS_REGION: ${{ secrets.aws-region }}
         ECS_TASK_DEFINITION: ${{ secrets.ecs-task-definition }}
 
+    # TODO: 削除
+    - name: Show debug
+      run: echo "IMAGE=${ECR_IMAGE_URI}"
+      env:
+        ECR_IMAGE_URI: ${{ inputs.ecr-image-uri }}
+
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
