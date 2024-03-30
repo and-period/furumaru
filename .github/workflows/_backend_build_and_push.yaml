@@ -45,7 +45,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./api
 
     outputs:
       ecr-image-uri: ${{ steps.set-output.outputs.ecr-image-uri }}

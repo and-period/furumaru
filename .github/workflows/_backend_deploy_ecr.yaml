@@ -36,7 +36,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./api
 
     steps:
     - name: Check out code
