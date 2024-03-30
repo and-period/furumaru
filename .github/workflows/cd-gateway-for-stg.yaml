@@ -23,7 +23,6 @@ permissions:
 jobs:
   build_and_push:
     name: build and push
-    needs: get_image_tag
     uses: ./.github/workflows/_backend_build_and_push.yaml
     with:
       service: gateway
@@ -44,6 +43,8 @@ jobs:
       ecs-service-name: user
       ecs-container-name: server
     secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws_region: ${{ secrets.AWS_REGION }}
       ecs-cluster-name: ${{ secrets.STG_ECS_CLUSTER }}
       ecs-task-definition: ${{ secrets.STG_ECS_TASK_DEFINITION_ADMIN }}
 
@@ -56,5 +57,7 @@ jobs:
       ecs-service-name: admin
       ecs-container-name: server
     secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws_region: ${{ secrets.AWS_REGION }}
       ecs-cluster-name: ${{ secrets.STG_ECS_CLUSTER }}
       ecs-task-definition: ${{ secrets.STG_ECS_TASK_DEFINITION_USER }}
