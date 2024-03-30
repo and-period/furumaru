@@ -2,13 +2,22 @@ name: backend build and push
 
 on:
   workflow_call:
-    inputs:
+    secrets:
+      aws-role-arn:
+        description: 'IAM Role ARN'
+        required: true
+      aws-region:
+        description: 'AWS Region'
+        required: true
       ecr-registry:
         description: 'ECRレジストリ名'
-        type: string
         required: true
       ecr-repository:
         description: 'ECRリポジトリ名'
+        required: true
+    inputs:
+      service:
+        description: 'サービス名'
         type: string
         required: true
       image-path:
@@ -20,10 +29,6 @@ on:
         type: string
         required: false
         default: 'latest'
-      service:
-        description: 'サービス名'
-        type: string
-        required: true
     outputs:
       image-uri:
         description: 'ECRイメージURI'
@@ -52,8 +57,8 @@ jobs:
 
     - uses: ./.github/actions/setup-aws
       with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-role-arn: ${{ secrets.aws-role-arn }}
+        aws-region: ${{ secrets.aws-region }}
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -63,8 +68,8 @@ jobs:
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
       env:
-        ECR_REGISTRY: ${{ inputs.ecr-registry }}
-        ECR_REPOSITORY: ${{ inputs.ecr-repository }}
+        ECR_REGISTRY: ${{ secrets.ecr-registry }}
+        ECR_REPOSITORY: ${{ secrets.ecr-repository }}
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
