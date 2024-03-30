@@ -26,11 +26,10 @@ runs:
   - name: Cache go modules
     id: modules-cache
     uses: actions/cache@v4
-    working-directory: ${{ inputs.working-directory }}
     with:
       path: |
-        ~/.cache/go-build
-        ~/go/pkg/mod
+        ${{ inputs.working-directory }}/.cache/go-build
+        ${{ inputs.working-directory }}/go/pkg/mod
       key: ${{ inputs.service }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
   - name: Download modules
