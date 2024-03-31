@@ -82,10 +82,14 @@ jobs:
 
     - name: Set output
       id: set-output
-      run: |
-        ECR_IMAGE_URI=$(echo -n "${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" | base64)
-        echo "encoded-image-uri=${ECR_IMAGE_URI}" >> $GITHUB_OUTPUT
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { ECR_REPOSITORY_URL, ECR_IMAGE_TAG } = process.env;
+          const imageUri=`${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}`;
+          core.setOutput('encoded-image-uri', Buffer.from(imageUri).toString('base64'));
       env:
+        ECR_REPOSITORY_URL: ${{ env.ECR_REPOSITORY_URL }}
         ECR_IMAGE_TAG: ${{ inputs.image-tag }}
 
     # TODO: 削除
