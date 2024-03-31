@@ -5,10 +5,9 @@ on:
     - 'main'
     paths:
     - '.github/actions/**'
-    - '.github/workflows/cd-gateway-for-stg.yaml'
+    - '.github/workflows/cd-media-for-stg.yaml'
     - '.github/workflows/_backend_build_and_push.yaml'
     - '.github/workflows/_backend_deploy_lambda.yaml'
-    - '.github/workflows/cd-media-for-stg.yaml'
     - 'api/config/media/**'
     - 'api/internal/media/**'
     - 'api/pkg/**'
