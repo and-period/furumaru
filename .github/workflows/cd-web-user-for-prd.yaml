@@ -34,7 +34,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: .github/actions/setup-aws
+    - uses: ./.github/actions/setup-aws
       with:
         aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}

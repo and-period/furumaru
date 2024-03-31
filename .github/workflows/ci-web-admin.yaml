@@ -28,7 +28,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: .github/actions/setup-node
+    - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/admin
         node-version: ${{ env.NODE_VERSION }}
@@ -50,7 +50,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: .github/actions/setup-node
+    - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/admin
         node-version: ${{ env.NODE_VERSION }}
@@ -75,7 +75,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: .github/actions/setup-node
+    - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/admin
         node-version: ${{ env.NODE_VERSION }}
@@ -104,7 +104,7 @@ jobs:
 #     - name: Check out code
 #       uses: actions/checkout@v4
 #
-#     - uses: .github/actions/setup-node
+#     - uses: ./.github/actions/setup-node
 #       with:
 #         working-directory: ./web/admin
 #         node-version: ${{ env.NODE_VERSION }}

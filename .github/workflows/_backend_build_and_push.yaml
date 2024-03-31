@@ -47,7 +47,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup AWS
-      uses: .github/actions/setup-aws
+      uses: ./.github/actions/setup-aws
       with:
         aws-role-arn: ${{ secrets.aws-role-arn }}
         aws-region: ${{ secrets.aws-region }}
@@ -58,7 +58,7 @@ jobs:
 
     - name: Get ECR repository and image url
       id: get-ecr-url
-      uses: .github/actions/generate-ecr-url
+      uses: ./.github/actions/generate-ecr-url
       with:
         ecr-registry: ${{ secrets.ecr-registry }}
         ecr-repository: ${{ secrets.ecr-repository }}
