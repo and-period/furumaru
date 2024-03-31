@@ -10,8 +10,7 @@ inputs:
     required: true
   image-tag:
     description: 'ECRイメージタグ'
-    required: false
-    default: 'latest'
+    required: true
 outputs:
   ecr-image-url:
     description: 'ECRイメージURL'

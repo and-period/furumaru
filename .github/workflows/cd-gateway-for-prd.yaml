@@ -49,7 +49,7 @@ jobs:
     with:
       ecs-service-name: admin
       ecs-container-name: server
-      encoded-image-uri: ${{ needs.build_and_push.outputs.encoded-image-uri }}
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -65,7 +65,7 @@ jobs:
     with:
       ecs-service-name: user
       ecs-container-name: server
-      encoded-image-uri: ${{ needs.build_and_push.outputs.encoded-image-uri }}
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}

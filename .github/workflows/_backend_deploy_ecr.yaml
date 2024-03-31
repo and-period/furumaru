@@ -30,10 +30,11 @@ on:
         description: 'ECSコンテナ名'
         type: string
         required: true
-      encoded-image-uri:
-        description: 'ECRイメージURI（Bae64エンコード）'
+      image-tag:
+        description: 'ECRイメージタグ'
         type: string
-        required: true
+        required: false
+        default: 'latest'
 
 jobs:
   deploy_ecr:
