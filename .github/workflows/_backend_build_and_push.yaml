@@ -58,7 +58,7 @@ jobs:
 
     - name: Get ECR repository and image url
       id: get-ecr-url
-      uses: ./.github/actions/generate-ecr-uri
+      uses: ./.github/actions/generate-ecr-url
       with:
         ecr-registry: ${{ secrets.ecr-registry }}
         ecr-repository: ${{ secrets.ecr-repository }}
