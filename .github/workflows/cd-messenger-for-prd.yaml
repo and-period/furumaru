@@ -25,12 +25,13 @@ permissions:
 jobs:
   get_image_tag:
     name: get image tag
-    secrets: inherit
     uses: ./.github/workflows/_tag_version.yaml
+    secrets: inherit
 
   build_and_push:
     name: build and push
-    needs: get_image_tag
+    needs:
+    - get_image_tag
     uses: ./.github/workflows/_build_and_push.yaml
     with:
       service: messenger
@@ -44,7 +45,9 @@ jobs:
 
   deploy_scheduler:
     name: deploy scheduler
-    needs: build_and_push
+    needs:
+    - get_image_tag
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
     with:
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
@@ -57,7 +60,9 @@ jobs:
 
   deploy_worker:
     name: deploy worker
-    needs: build_and_push
+    needs:
+    - get_image_tag
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
     with:
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}

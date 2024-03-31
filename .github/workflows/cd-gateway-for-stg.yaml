@@ -37,7 +37,8 @@ jobs:
 
   deploy_admin:
     name: deploy admin
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
     with:
       ecs-service-name: admin
@@ -52,7 +53,8 @@ jobs:
 
   deploy_user:
     name: deploy user
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
     with:
       ecs-service-name: user

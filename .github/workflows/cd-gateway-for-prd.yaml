@@ -25,12 +25,13 @@ permissions:
 jobs:
   get_image_tag:
     name: get image tag
-    secrets: inherit
     uses: ./.github/workflows/_tag_version.yaml
+    secrets: inherit
 
   build_and_push:
     name: build and push
-    needs: get_image_tag
+    needs:
+    - get_image_tag
     uses: ./.github/workflows/_build_and_push.yaml
     with:
       service: gateway
@@ -44,7 +45,9 @@ jobs:
 
   deploy_admin:
     name: deploy admin
-    needs: build_and_push
+    needs:
+    - get_image_tag
+    - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
     with:
       ecs-service-name: admin
@@ -60,7 +63,9 @@ jobs:
 
   deploy_user:
     name: deploy user
-    needs: build_and_push
+    needs:
+    - get_image_tag
+    - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
     with:
       ecs-service-name: user
