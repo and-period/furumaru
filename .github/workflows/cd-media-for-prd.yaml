@@ -26,7 +26,7 @@ jobs:
   get_image_tag:
     name: get image tag
     secrets: inherit
-    uses: ./.github/workflows/_get_tag_version.yaml
+    uses: ./.github/workflows/_tag_version.yaml
 
   build_and_push:
     name: build and push
