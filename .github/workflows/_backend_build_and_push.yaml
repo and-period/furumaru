@@ -71,10 +71,10 @@ jobs:
       env:
         SERVICE: ${{ inputs.service }}
         IMAGE_PATH: ${{ inputs.image-path }}
-        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-repository-url }}
-        ECR_IMAGE_TAG: ${{ inputs.image-tag }}
+        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}
+        ECR_IMAGE_TAG: ${{ steps.get-ecr-url.outputs.ecr-image-tag }}
 
     - name: Push image to Amazon ECR
       run: docker push -a ${ECR_REPOSITORY_URL}
       env:
-        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-repository-url }}
+        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}

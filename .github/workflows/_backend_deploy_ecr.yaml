@@ -76,7 +76,7 @@ jobs:
       with:
         task-definition: ./task-definition.json
         container-name: ${{ inputs.ecs-container-name }}
-        image: ${{ steps.get-ecr-url.outputs.ecr-repository-url }}:${{ inputs.image-tag }}
+        image: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
