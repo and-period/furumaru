@@ -39,8 +39,6 @@ jobs:
     name: deploy uploader
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_lambda.yaml
-    with:
-      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -52,8 +50,6 @@ jobs:
     name: deploy resizer
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_lambda.yaml
-    with:
-      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -65,8 +61,6 @@ jobs:
     name: deploy start scheduler
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_lambda.yaml
-    with:
-      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -78,8 +72,6 @@ jobs:
     name: deploy close scheduler
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_lambda.yaml
-    with:
-      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -91,8 +83,6 @@ jobs:
     name: deploy start updater
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_lambda.yaml
-    with:
-      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
