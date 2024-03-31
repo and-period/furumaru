@@ -1,0 +1,34 @@
+name: generate ecr url
+description: 'ECRリポジトリ・イメージURLを生成する'
+
+inputs:
+  ecr-registry:
+    description: 'ECRレジストリ名'
+    required: true
+  ecr-repository:
+    description: 'ECRリポジトリ名'
+    required: true
+  image-tag:
+    description: 'ECRイメージタグ'
+    required: true
+outputs:
+  ecr-image-url:
+    description: 'ECRイメージURL'
+    value: ${{ steps.set-output.outputs.ecr-image-url }}
+  ecr-image-tag:
+    description: 'ECRイメージタグ'
+    value: ${{ steps.set-output.outputs.ecr-image-tag }}
+
+runs:
+  using: composite
+  steps:
+  - name: Set output
+    id: set-output
+    shell: bash
+    run: |
+      echo "ecr-image-url=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_OUTPUT
+      echo "ecr-image-tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+    env:
+      ECR_REGISTRY: ${{ inputs.ecr-registry }}
+      ECR_REPOSITORY: ${{ inputs.ecr-repository }}
+      IMAGE_TAG: ${{ inputs.image-tag }}

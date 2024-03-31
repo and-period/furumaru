@@ -1,4 +1,4 @@
-name: backend deploy ecr
+name: deploy ecs
 
 on:
   workflow_call:
@@ -8,6 +8,12 @@ on:
         required: true
       aws-region:
         description: 'AWS Region'
+        required: true
+      ecr-registry:
+        description: 'ECRレジストリ名'
+        required: true
+      ecr-repository:
+        description: 'ECRリポジトリ名'
         required: true
       ecs-cluster-name:
         description: 'ECSクラスタ名'
@@ -24,14 +30,15 @@ on:
         description: 'ECSコンテナ名'
         type: string
         required: true
-      encoded-image-uri:
-        description: 'ECRイメージURI（Bae64エンコード）'
+      image-tag:
+        description: 'ECRイメージタグ'
         type: string
-        required: true
+        required: false
+        default: 'latest'
 
 jobs:
-  deploy_ecr:
-    name: deploy ecr
+  deploy_ecs:
+    name: deploy ecs
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -41,18 +48,19 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: ./.github/actions/setup-aws
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
       with:
         aws-role-arn: ${{ secrets.aws-role-arn }}
         aws-region: ${{ secrets.aws-region }}
 
-    - name: Decode the base64-encoded ECR image URI
-      id: decode-image-uri
-      run: |
-        ECR_IMAGE_URI=$(echo -n "${ENCODED_IMAGE_URI}" | base64 --decode)
-        echo "ECR_IMAGE_URI=${ECR_IMAGE_URI}" >> $GITHUB_ENV
-      env:
-        ENCODED_IMAGE_URI: ${{ inputs.encoded-image-uri }}
+    - name: Get ECR repository and image url
+      id: get-ecr-url
+      uses: ./.github/actions/generate-ecr-url
+      with:
+        ecr-registry: ${{ secrets.ecr-registry }}
+        ecr-repository: ${{ secrets.ecr-repository }}
+        image-tag: ${{ inputs.image-tag }}
 
     - name: Fetch task definition
       run: |
@@ -69,7 +77,7 @@ jobs:
       with:
         task-definition: ./task-definition.json
         container-name: ${{ inputs.ecs-container-name }}
-        image: ${{ env.ECR_IMAGE_URI }}
+        image: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1

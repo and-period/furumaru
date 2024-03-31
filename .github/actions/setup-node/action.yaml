@@ -1,5 +1,5 @@
 name: setup node
-description: 'Setup Node.js and cache yarn dependencies'
+description: 'Node.jsのセットアップ'
 
 inputs:
   working-directory:
