@@ -92,7 +92,7 @@ jobs:
     - name: Debug
       run: |
         echo "ECR_IMAGE_URI=${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}"
-        echo "ENCODED_IMAGE_URI=$("echo -n "${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" | base64)"
+        echo "ENCODED_IMAGE_URI=$(echo -n "${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" | base64)"
         echo "OUTPUT_IMAGE_URI=${ENCODED_IMAGE_URI}"
       env:
         ECR_IMAGE_TAG: ${{ inputs.image-tag }}
