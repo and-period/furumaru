@@ -87,6 +87,8 @@ jobs:
         script: |
           const { ECR_REPOSITORY_URL, ECR_IMAGE_TAG } = process.env;
           const imageUri=`${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}`;
+          console.log('imageUri', imageUri);
+          console.log('encodedUri', Buffer.from(imageUri).toString('base64'));
           core.setOutput('encoded-image-uri', Buffer.from(imageUri).toString('base64'));
       env:
         ECR_REPOSITORY_URL: ${{ env.ECR_REPOSITORY_URL }}
