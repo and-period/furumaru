@@ -290,6 +290,7 @@ func TestCreateSchedule(t *testing.T) {
 							ImageURL:        "https://and-period.jp/image.png",
 							OpeningVideoURL: "https://ane-period.jp/opening-video.mp4",
 							Public:          true,
+							Approved:        true,
 							StartAt:         jst.Date(2022, 1, 2, 18, 30, 0, 0),
 							EndAt:           jst.Date(2022, 1, 3, 18, 30, 0, 0),
 						}
