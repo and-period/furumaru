@@ -37,7 +37,8 @@ jobs:
 
   deploy_scheduler:
     name: deploy scheduler
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
@@ -48,7 +49,8 @@ jobs:
 
   deploy_worker:
     name: deploy worker
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
 
     secrets:

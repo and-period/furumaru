@@ -37,7 +37,8 @@ jobs:
 
   deploy_uploader:
     name: deploy uploader
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
@@ -48,7 +49,8 @@ jobs:
 
   deploy_resizer:
     name: deploy resizer
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
@@ -59,7 +61,8 @@ jobs:
 
   deploy_start_scheduler:
     name: deploy start scheduler
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
@@ -70,7 +73,8 @@ jobs:
 
   deploy_close_scheduler:
     name: deploy close scheduler
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
@@ -81,7 +85,8 @@ jobs:
 
   deploy_start_updater:
     name: deploy start updater
-    needs: build_and_push
+    needs:
+    - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
