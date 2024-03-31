@@ -4,6 +4,7 @@ on:
     branches:
     - 'main'
     paths:
+    - '.github/actions/**'
     - '.github/workflows/cd-gateway-for-stg.yaml'
     - '.github/workflows/_backend_build_and_push.yaml'
     - '.github/workflows/_backend_deploy_ecr.yaml'

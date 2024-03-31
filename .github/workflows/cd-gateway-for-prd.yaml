@@ -4,6 +4,7 @@ on:
     tags:
     - 'v*'
     paths:
+    - '.github/actions/**'
     - '.github/workflows/cd-gateway-for-prd.yaml'
     - '.github/workflows/_backend_build_and_push.yaml'
     - '.github/workflows/_backend_deploy_ecr.yaml'
