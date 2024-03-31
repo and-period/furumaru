@@ -98,10 +98,10 @@ export default defineNuxtConfig({
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
       ENVIRONMENT: process.env.ENVIRONMENT || '',
       SENTRY_DSN: process.env.SENTRY_DSN || '',
-      SENTRY_TRACES_SAMPLE_RATE: process.env.SENTRY_TRACES_SAMPLE_RATE || '0.5',
-      SENTRY_PROFILES_SAMPLE_RATE: process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.5',
-      SENTRY_REPLAYS_SESSION_SAMPLE_RATE: process.env.SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.2',
-      SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0'
+      SENTRY_TRACES_SAMPLE_RATE: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.5'),
+      SENTRY_PROFILES_SAMPLE_RATE: parseFloat(process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.5'),
+      SENTRY_REPLAYS_SESSION_SAMPLE_RATE: parseFloat(process.env.SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.2'),
+      SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: parseFloat(process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0')
     },
   },
   build: {},
