@@ -5,6 +5,7 @@ on:
     - 'main'
     paths:
     - '.github/actions/setup-aws/**'
+    - '.github/actions/setup-node/**'
     - '.github/workflows/cd-serverless-for-main.yaml'
     - 'infra/serverless/**'
 

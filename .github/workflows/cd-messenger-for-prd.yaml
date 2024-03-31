@@ -4,7 +4,10 @@ on:
     tags:
     - 'v*'
     paths:
-    - '.github/actions/setup-aws/**'
+    - '.github/actions/**'
+    - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_deploy_lambda.yaml'
+    - '.github/workflows/_get_tag_version.yaml'
     - '.github/workflows/cd-messenger-for-prd.yaml'
     - 'api/config/messenger/**'
     - 'api/internal/messenger/**'
@@ -14,122 +17,53 @@ on:
 
 env:
   TZ: 'Asia/Tokyo'
-  ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
-  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY_MESSENGER }}
-  LAMBDA_FUNCTION_SCHEDULER: ${{ vars.PRD_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
-  LAMBDA_FUNCTION_WORKER: ${{ vars.PRD_LAMBDA_FUNCTION_MESSENGER_WORKER }}
-  IMAGE_PATH: ./infra/docker/api/Dockerfile
-  SERVICE: messenger
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
+  get_image_tag:
+    name: get image tag
+    secrets: inherit
+    uses: ./.github/workflows/_get_tag_version.yaml
+
   build_and_push:
     name: build and push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_IMAGE_TAG
-      run: |
-        echo "ECR_IMAGE_TAG=${GITHUB_REF##*/v}" >> $GITHUB_ENV
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
-      run: |
-        docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
-        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
-        docker push -a ${ECR_REPOSITORY_URL}
+    needs: get_image_tag
+    uses: ./.github/workflows/_build_and_push.yaml
+    with:
+      service: messenger
+      image-path: ./infra/docker/api/Dockerfile
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
 
   deploy_scheduler:
     name: deploy scheduler
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_IMAGE_TAG
-      run: |
-        echo "ECR_IMAGE_TAG=${GITHUB_REF##*/v}" >> $GITHUB_ENV
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Deploy AWS Lambda function
-      run: |
-        aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_SCHEDULER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
-        | jq '. | del(.Environment)'
+    uses: ./.github/workflows/_deploy_lambda.yaml
+    with:
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
+      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
 
   deploy_worker:
     name: deploy worker
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_IMAGE_TAG
-      run: |
-        echo "ECR_IMAGE_TAG=${GITHUB_REF##*/v}" >> $GITHUB_ENV
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Deploy AWS Lambda function
-      run: |
-        aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_WORKER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
-        | jq '. | del(.Environment)'
+    uses: ./.github/workflows/_deploy_lambda.yaml
+    with:
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
+      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MESSENGER_WORKER }}

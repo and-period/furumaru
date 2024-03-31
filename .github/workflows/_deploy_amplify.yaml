@@ -1,0 +1,56 @@
+name: web deploy
+
+on:
+  workflow_call:
+    secrets:
+      aws-role-arn:
+        description: 'IAM Role ARN'
+        required: true
+      aws-region:
+        description: 'AWS Region'
+        required: true
+      app-id:
+        description: 'AmplifyアプリID'
+        required: true
+    inputs:
+      branch-name:
+        description: 'ブランチ名'
+        type: string
+        required: false
+        default: 'main'
+      working-directory:
+        description: '作業ディレクトリ'
+        type: string
+        required: false
+        default: '.'
+
+jobs:
+  deploy_amplify:
+    name: deploy amplify
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.aws-role-arn }}
+        aws-region: ${{ secrets.aws-region }}
+
+    - name: Deploy to Amplify
+      run: |
+        aws amplify start-job \
+          --app-id=${APP_ID} \
+          --region=${AWS_REGION} \
+          --job-type RELEASE \
+          --branch-name=${BRANCH_NAME}
+      env:
+        APP_ID: ${{ secrets.app-id }}
+        AWS_REGION: ${{ secrets.aws-region }}
+        BRANCH_NAME: ${{ inputs.branch-name }}
