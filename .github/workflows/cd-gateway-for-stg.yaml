@@ -7,7 +7,7 @@ on:
     - '.github/actions/**'
     - '.github/workflows/cd-gateway-for-stg.yaml'
     - '.github/workflows/_backend_build_and_push.yaml'
-    - '.github/workflows/_backend_deploy_ecr.yaml'
+    - '.github/workflows/_backend_deploy_ecs.yaml'
     - 'api/config/gateway/**'
     - 'api/internal/**'
     - 'api/pkg/**'
@@ -38,7 +38,7 @@ jobs:
   deploy_admin:
     name: deploy admin
     needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_ecr.yaml
+    uses: ./.github/workflows/_backend_deploy_ecs.yaml
     with:
       ecs-service-name: user
       ecs-container-name: server
@@ -53,7 +53,7 @@ jobs:
   deploy_user:
     name: deploy user
     needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_ecr.yaml
+    uses: ./.github/workflows/_backend_deploy_ecs.yaml
     with:
       ecs-service-name: admin
       ecs-container-name: server

@@ -1,0 +1,63 @@
+name: backend deploy ecr
+
+on:
+  workflow_call:
+    secrets:
+      aws-role-arn:
+        description: 'IAM Role ARN'
+        required: true
+      aws-region:
+        description: 'AWS Region'
+        required: true
+      ecr-registry:
+        description: 'ECRレジストリ名'
+        required: true
+      ecr-repository:
+        description: 'ECRリポジトリ名'
+        required: true
+      lambda-function-name:
+        description: 'Lambda関数名'
+        required: true
+    inputs:
+      image-tag:
+        description: 'ECRイメージタグ'
+        type: string
+        required: false
+        default: 'latest'
+
+jobs:
+  deploy_ecr:
+    name: deploy ecr
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.aws-role-arn }}
+        aws-region: ${{ secrets.aws-region }}
+
+    - name: Get ECR repository and image url
+      id: get-ecr-url
+      uses: ./.github/actions/generate-ecr-url
+      with:
+        ecr-registry: ${{ secrets.ecr-registry }}
+        ecr-repository: ${{ secrets.ecr-repository }}
+        image-tag: ${{ inputs.image-tag }}
+
+    - name: Deploy AWS Lambda function
+      run: |
+        aws lambda update-function-code \
+          --function-name="${LAMBDA_FUNCTION_NAME}" \
+          --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
+        | jq '. | del(.Environment)'
+      env:
+        LAMBDA_FUNCTION_NAME: ${{ secrets.lambda-function-name }}
+        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}
+        ECR_IMAGE_TAG: ${{ steps.get-ecr-url.outputs.ecr-image-tag }}

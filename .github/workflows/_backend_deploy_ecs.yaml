@@ -1,4 +1,4 @@
-name: backend deploy ecr
+name: backend deploy ecs
 
 on:
   workflow_call:
@@ -37,8 +37,8 @@ on:
         default: 'latest'
 
 jobs:
-  deploy_ecr:
-    name: deploy ecr
+  deploy_ecs:
+    name: deploy ecs
     runs-on: ubuntu-latest
     defaults:
       run:

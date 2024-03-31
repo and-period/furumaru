@@ -4,7 +4,10 @@ on:
     branches:
     - 'main'
     paths:
-    - '.github/actions/setup-aws/**'
+    - '.github/actions/**'
+    - '.github/workflows/cd-gateway-for-stg.yaml'
+    - '.github/workflows/_backend_build_and_push.yaml'
+    - '.github/workflows/_backend_deploy_lambda.yaml'
     - '.github/workflows/cd-media-for-stg.yaml'
     - 'api/config/media/**'
     - 'api/internal/media/**'
@@ -14,15 +17,6 @@ on:
 
 env:
   TZ: 'Asia/Tokyo'
-  ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
-  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY_MEDIA }}
-  LAMBDA_FUNCTION_UPLOADER: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_UPLOADER }}
-  LAMBDA_FUNCTION_RESIZER: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_RESIZER }}
-  LAMBDA_FUNCTION_START_SCHEDULER: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
-  LAMBDA_FUNCTION_CLOSE_SCHEDULER: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
-  LAMBDA_FUNCTION_START_UPDATER: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_START_UPDATER }}
-  IMAGE_PATH: ./infra/docker/api/Dockerfile
-  SERVICE: media
 
 permissions:
   id-token: write
@@ -31,189 +25,79 @@ permissions:
 jobs:
   build_and_push:
     name: build and push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
-      run: |
-        docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
-        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:latest
-        docker push -a ${ECR_REPOSITORY_URL}
+    needs: get_image_tag
+    uses: ./.github/workflows/_backend_build_and_push.yaml
+    with:
+      service: media
+      image-path: ./infra/docker/api/Dockerfile
+      image-tag: latest
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
 
   deploy_uploader:
     name: deploy uploader
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Deploy AWS Lambda function
-      run: |
-        aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_UPLOADER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:latest" \
-        | jq '. | del(.Environment)'
+    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    with:
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_UPLOADER }}
 
   deploy_resizer:
     name: deploy resizer
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Deploy AWS Lambda function
-      run: |
-        aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_RESIZER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:latest" \
-        | jq '. | del(.Environment)'
+    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    with:
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_RESIZER }}
 
   deploy_start_scheduler:
     name: deploy start scheduler
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Deploy AWS Lambda function
-      run: |
-        aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_START_SCHEDULER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:latest" \
-        | jq '. | del(.Environment)'
+    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    with:
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
 
   deploy_close_scheduler:
     name: deploy close scheduler
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Deploy AWS Lambda function
-      run: |
-        aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_CLOSE_SCHEDULER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:latest" \
-        | jq '. | del(.Environment)'
+    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    with:
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
 
   deploy_start_updater:
     name: deploy start updater
     needs: build_and_push
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Deploy AWS Lambda function
-      run: |
-        aws lambda update-function-code \
-          --function-name="${LAMBDA_FUNCTION_START_UPDATER}" \
-          --image-uri="${ECR_REPOSITORY_URL}:latest" \
-        | jq '. | del(.Environment)'
+    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    with:
+      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_START_UPDATER }}
