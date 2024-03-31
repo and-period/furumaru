@@ -87,3 +87,11 @@ jobs:
         echo "encoded-image-uri=${ECR_IMAGE_URI}" >> $GITHUB_OUTPUT
       env:
         ECR_IMAGE_TAG: ${{ inputs.image-tag }}
+
+    # TODO: 削除
+    - name: Debug
+      run: |
+        echo "ECR_IMAGE_URI=${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}"
+        echo "ENCODED_IMAGE_URI=${ENCODED_IMAGE_URI}"
+      env:
+        ENCODED_IMAGE_URI: ${{ steps.set-output.outputs.encoded-image-uri }}
