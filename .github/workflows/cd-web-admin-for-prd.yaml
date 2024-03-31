@@ -11,7 +11,7 @@ on:
 
 env:
   TZ: 'Asia/Tokyo'
-  APP_ID: ${{ secrets.PRD_AMPLIFY_ADMIN_APP_ID }}
+  APP_ID: ${{ vars.PRD_AMPLIFY_ADMIN_APP_ID }}
   BRANCH_NAME: main
 
 permissions:
