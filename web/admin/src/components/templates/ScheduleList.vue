@@ -61,6 +61,7 @@ const emit = defineEmits<{
   (e: 'click:add'): void
   (e: 'click:delete', scheduleId: string): void
   (e: 'click:approval', scheduleId: string): void
+  (e: 'click:published', scheduleId: string): void
   (e: 'update:delete-dialog', v: boolean): void
 }>()
 
@@ -106,10 +107,6 @@ const deleteDialogValue = computed({
 
 const isRegisterable = (): boolean => {
   return props.role === AdminRole.COORDINATOR
-}
-
-const isApprovable = (): boolean => {
-  return props.role === AdminRole.ADMINISTRATOR
 }
 
 const getCoordinatorName = (coordinatorId: string): string => {
@@ -172,8 +169,8 @@ const getTerm = (schedule: Schedule): string => {
   return `${getDay(schedule.startAt)} ~ ${getDay(schedule.endAt)}`
 }
 
-const getApproval = (schedule: Schedule): string => {
-  return schedule.approved ? '取り消し' : '承認する'
+const getPublished = (schedule: Schedule): string => {
+  return schedule.public ? '非公開にする' : '公開する'
 }
 
 const onClickUpdatePage = (page: number): void => {
@@ -205,8 +202,8 @@ const onClickDelete = (): void => {
   emit('click:delete', selectedItem?.value?.id || '')
 }
 
-const onClickApproval = (scheduleId: string): void => {
-  emit('click:approval', scheduleId)
+const onClickPublished = (scheduleId: string): void => {
+  emit('click:published', scheduleId)
 }
 </script>
 
@@ -269,15 +266,14 @@ const onClickApproval = (scheduleId: string): void => {
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
-            v-show="isApprovable()"
             variant="outlined"
             class="mr-2"
             color="primary"
             size="small"
-            @click.stop="onClickApproval(item.id)"
+            @click.stop="onClickPublished(item.id)"
           >
             <v-icon size="small" :icon="mdiPencil" />
-            {{ getApproval(item) }}
+            {{ getPublished(item) }}
           </v-btn>
           <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickOpenDeleteDialog(item)">
             <v-icon size="small" :icon="mdiDelete" />

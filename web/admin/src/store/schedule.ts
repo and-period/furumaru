@@ -79,13 +79,22 @@ export const useScheduleStore = defineStore('schedule', {
 
     /**
      * マルシェ開催スケジュールの承認/却下をする非同期関数
-     * @param schedule スケジュール
+     * @param scheduleId スケジュールID
+     * @param approved 承認フラグ
      * @returns
      */
-    async approveSchedule (schedule: Schedule): Promise<void> {
+    async approveSchedule (scheduleId: string, approved: boolean): Promise<void> {
       try {
-        const req: ApproveScheduleRequest = { approved: !schedule.approved }
-        await apiClient.scheduleApi().v1ApproveSchedule(schedule.id, req)
+        const req: ApproveScheduleRequest = { approved }
+        await apiClient.scheduleApi().v1ApproveSchedule(scheduleId, req)
+
+        // データの更新
+        const index = this.schedules.findIndex(schedule => schedule.id === scheduleId)
+        if (index === -1) {
+          return
+        }
+        const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
+        this.schedules.splice(index, 1, res.data.schedule)
       } catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
@@ -104,6 +113,14 @@ export const useScheduleStore = defineStore('schedule', {
       try {
         const req: PublishScheduleRequest = { public: published }
         await apiClient.scheduleApi().v1PublishSchedule(scheduleId, req)
+
+        // データの更新
+        const index = this.schedules.findIndex(schedule => schedule.id === scheduleId)
+        if (index === -1) {
+          return
+        }
+        const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
+        this.schedules.splice(index, 1, res.data.schedule)
       } catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
