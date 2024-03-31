@@ -28,6 +28,7 @@ jobs:
     with:
       service: messenger
       image-path: ./infra/docker/api/Dockerfile
+      image-tag: latest
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -38,8 +39,6 @@ jobs:
     name: deploy scheduler
     needs: build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-    with:
-      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -51,8 +50,7 @@ jobs:
     name: deploy worker
     needs: build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-    with:
-      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
+
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
