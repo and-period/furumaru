@@ -5,10 +5,10 @@ on:
     - 'v*'
     paths:
     - '.github/actions/**'
-    - '.github/workflows/cd-gateway-for-prd.yaml'
-    - '.github/workflows/_backend_build_and_push.yaml'
-    - '.github/workflows/_backend_deploy_ecs.yaml'
+    - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_deploy_ecs.yaml'
     - '.github/workflows/_get_tag_version.yaml'
+    - '.github/workflows/cd-gateway-for-prd.yaml'
     - 'api/config/gateway/**'
     - 'api/internal/**'
     - 'api/pkg/**'
@@ -31,7 +31,7 @@ jobs:
   build_and_push:
     name: build and push
     needs: get_image_tag
-    uses: ./.github/workflows/_backend_build_and_push.yaml
+    uses: ./.github/workflows/_build_and_push.yaml
     with:
       service: gateway
       image-path: ./infra/docker/api/Dockerfile
@@ -45,7 +45,7 @@ jobs:
   deploy_admin:
     name: deploy admin
     needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_ecs.yaml
+    uses: ./.github/workflows/_deploy_ecs.yaml
     with:
       ecs-service-name: admin
       ecs-container-name: server
@@ -61,7 +61,7 @@ jobs:
   deploy_user:
     name: deploy user
     needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_ecs.yaml
+    uses: ./.github/workflows/_deploy_ecs.yaml
     with:
       ecs-service-name: user
       ecs-container-name: server

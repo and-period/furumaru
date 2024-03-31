@@ -1,4 +1,4 @@
-name: backend deploy ecr
+name: deploy lambda
 
 on:
   workflow_call:
