@@ -25,8 +25,8 @@ const startAtString = computed(() => {
   return unix(props.startAt).format('HH:mm')
 })
 
-const handleClickItem = (prodictId: string) => {
-  emits('click:item', prodictId)
+const handleClickItem = (productId: string) => {
+  emits('click:item', productId)
 }
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
