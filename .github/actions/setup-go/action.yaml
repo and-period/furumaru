@@ -1,5 +1,5 @@
 name: setup golang
-description: 'Setup Golang and cache go modules'
+description: 'Golangのセットアップ'
 
 inputs:
   working-directory:

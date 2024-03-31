@@ -45,6 +45,8 @@ jobs:
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_GATEWAY }}
       ecs-cluster-name: ${{ vars.STG_ECS_CLUSTER }}
       ecs-task-definition: ${{ vars.STG_ECS_TASK_DEFINITION_ADMIN }}
 
@@ -59,5 +61,7 @@ jobs:
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_GATEWAY }}
       ecs-cluster-name: ${{ vars.STG_ECS_CLUSTER }}
       ecs-task-definition: ${{ vars.STG_ECS_TASK_DEFINITION_USER }}

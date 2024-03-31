@@ -1,5 +1,5 @@
 name: setup aws
-description: 'Setup AWS credentials from IAM Role'
+description: 'AWSのセットアップ'
 
 inputs:
   aws-role-arn:

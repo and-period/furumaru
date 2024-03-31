@@ -29,10 +29,6 @@ on:
         type: string
         required: false
         default: 'latest'
-    outputs:
-      encoded-image-uri:
-        description: 'ECRイメージURI（Bae64エンコード）'
-        value: ${{ jobs.build_and_push.outputs.encoded-image-uri }}
 
 permissions:
   id-token: write
@@ -46,14 +42,12 @@ jobs:
       run:
         shell: bash
 
-    outputs:
-      encoded-image-uri: ${{ steps.set-output.outputs.encoded-image-uri }}
-
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - uses: ./.github/actions/setup-aws
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
       with:
         aws-role-arn: ${{ secrets.aws-role-arn }}
         aws-region: ${{ secrets.aws-region }}
@@ -62,44 +56,25 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Set ECR_REPOSITORY_URL
-      run: |
-        echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-      env:
-        ECR_REGISTRY: ${{ secrets.ecr-registry }}
-        ECR_REPOSITORY: ${{ secrets.ecr-repository }}
+    - name: Get ECR repository and image url
+      id: get-ecr-url
+      uses: ./.github/actions/generate-ecr-image-uri
+      with:
+        ecr-registry: ${{ secrets.ecr-registry }}
+        ecr-repository: ${{ secrets.ecr-repository }}
+        image-tag: ${{ inputs.image-tag }}
 
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
+    - name: Build image
       run: |
         docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
-        docker push -a ${ECR_REPOSITORY_URL}
       env:
         SERVICE: ${{ inputs.service }}
         IMAGE_PATH: ${{ inputs.image-path }}
+        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-repository-url }}
         ECR_IMAGE_TAG: ${{ inputs.image-tag }}
 
-    - name: Set output
-      id: set-output
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const { ECR_REPOSITORY_URL, ECR_IMAGE_TAG } = process.env;
-          const imageUri=`${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}`;
-          console.log('imageUri', imageUri);
-          console.log('encodedUri', Buffer.from(imageUri).toString('base64'));
-          core.setOutput('encoded-image-uri', Buffer.from(imageUri).toString('base64'));
+    - name: Push image to Amazon ECR
+      run: docker push -a ${ECR_REPOSITORY_URL}
       env:
-        ECR_REPOSITORY_URL: ${{ env.ECR_REPOSITORY_URL }}
-        ECR_IMAGE_TAG: ${{ inputs.image-tag }}
-
-    # TODO: 削除
-    - name: Debug
-      run: |
-        echo "ECR_IMAGE_URI=${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}"
-        echo "ENCODED_IMAGE_URI=$(echo -n "${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" | base64)"
-        echo "OUTPUT_IMAGE_URI=${ENCODED_IMAGE_URI}"
-      env:
-        ECR_IMAGE_TAG: ${{ inputs.image-tag }}
-        ENCODED_IMAGE_URI: ${{ steps.set-output.outputs.encoded-image-uri }}
+        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-repository-url }}
