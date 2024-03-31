@@ -75,6 +75,7 @@ type UploadBroadcastArchiveParams struct {
 type BroadcastComment interface {
 	List(ctx context.Context, params *ListBroadcastCommentsParams, fields ...string) (entity.BroadcastComments, string, error)
 	Create(ctx context.Context, comment *entity.BroadcastComment) error
+	Update(ctx context.Context, commentID string, params *UpdateBroadcastCommentParams) error
 }
 
 type ListBroadcastCommentsParams struct {
@@ -90,6 +91,10 @@ type ListBroadcastCommentsParams struct {
 type ListBroadcastCommentsOrder struct {
 	Key        entity.BroadcastCommentOrderBy
 	OrderByASC bool
+}
+
+type UpdateBroadcastCommentParams struct {
+	Disabled bool
 }
 
 type BroadcastViewerLog interface {

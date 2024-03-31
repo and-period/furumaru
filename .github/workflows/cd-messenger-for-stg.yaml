@@ -4,6 +4,7 @@ on:
     branches:
     - 'main'
     paths:
+    - '.github/actions/setup-aws/**'
     - '.github/workflows/cd-messenger-for-stg.yaml'
     - 'api/config/messenger/**'
     - 'api/internal/messenger/**'
@@ -13,12 +14,10 @@ on:
 
 env:
   TZ: 'Asia/Tokyo'
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_MESSENGER }}
-  LAMBDA_FUNCTION_SCHEDULER: ${{ secrets.STG_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
-  LAMBDA_FUNCTION_WORKER: ${{ secrets.STG_LAMBDA_FUNCTION_MESSENGER_WORKER }}
+  ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY_MESSENGER }}
+  LAMBDA_FUNCTION_SCHEDULER: ${{ vars.STG_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
+  LAMBDA_FUNCTION_WORKER: ${{ vars.STG_LAMBDA_FUNCTION_MESSENGER_WORKER }}
   IMAGE_PATH: ./infra/docker/api/Dockerfile
   SERVICE: messenger
 
@@ -35,21 +34,20 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
+    - uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
     - name: Set ECR_REPOSITORY_URL
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -71,21 +69,20 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
+    - uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
     - name: Set ECR_REPOSITORY_URL
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
 
     - name: Deploy AWS Lambda function
       run: |
@@ -103,21 +100,20 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
+    - uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
     - name: Set ECR_REPOSITORY_URL
       run: |
         echo "ECR_REPOSITORY_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}" >> $GITHUB_ENV
-
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
 
     - name: Deploy AWS Lambda function
       run: |

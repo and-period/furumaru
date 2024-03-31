@@ -79,3 +79,14 @@ func (s *service) CreateBroadcastGuestComment(
 	}
 	return comment, nil
 }
+
+func (s *service) UpdateBroadcastComment(ctx context.Context, in *media.UpdateBroadcastCommentInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	params := &database.UpdateBroadcastCommentParams{
+		Disabled: in.Disabled,
+	}
+	err := s.db.BroadcastComment.Update(ctx, in.CommentID, params)
+	return internalError(err)
+}

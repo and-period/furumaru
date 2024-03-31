@@ -79,11 +79,12 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 	}
 
 	in := &store.ListProductsInput{
-		Name:       util.GetQuery(ctx, "name", ""),
-		ProducerID: util.GetQuery(ctx, "producerId", ""),
-		Limit:      limit,
-		Offset:     offset,
-		Orders:     orders,
+		Name:           util.GetQuery(ctx, "name", ""),
+		ProducerID:     util.GetQuery(ctx, "producerId", ""),
+		ExcludeDeleted: true,
+		Limit:          limit,
+		Offset:         offset,
+		Orders:         orders,
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))

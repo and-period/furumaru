@@ -174,6 +174,10 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/lives/index.yaml'
   /v1/schedules/{scheduleId}/lives/{liveId}:
     $ref: './paths/v1/schedules/_scheduleId/lives/_liveId/index.yaml'
+  /v1/schedules/{scheduleId}/comments:
+    $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
+  /v1/schedules/{scheduleId}/comments/{commentId}:
+    $ref: './paths/v1/schedules/_scheduleId/comments/_commentId/index.yaml'
   # Broadcast
   /v1/schedules/{scheduleId}/broadcasts:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/index.yaml'
@@ -342,6 +346,8 @@ components:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
     live:
       $ref: './components/schemas/entity/live.yaml#/live'
+    liveComment:
+      $ref: './components/schemas/entity/live-comment.yaml#/liveComment'
     message:
       $ref: './components/schemas/entity/message.yaml#/message'
     notification:
@@ -459,6 +465,8 @@ components:
       $ref: './components/schemas/v1/live.request.yaml#/createLiveRequest'
     v1UpdateLiveRequest:
       $ref: './components/schemas/v1/live.request.yaml#/updateLiveRequest'
+    v1UpdateLiveCommentRequest:
+      $ref: './components/schemas/v1/live-comment.request.yaml#/updateLiveCommentRequest'
     v1DraftOrderRequest:
       $ref: './components/schemas/v1/order.request.yaml#/draftOrderRequest'
     v1CompleteOrderRequest:
@@ -540,6 +548,8 @@ components:
       $ref: './components/schemas/v1/live.response.yaml#/liveResponse'
     v1LivesResponse:
       $ref: './components/schemas/v1/live.response.yaml#/livesResponse'
+    v1LiveCommentsResponse:
+      $ref: './components/schemas/v1/live-comment.response.yaml#/liveCommentsResponse'
     v1BroadcastResponse:
       $ref: './components/schemas/v1/broadcast.response.yaml#/broadcastResponse'
     v1OrderResponse:

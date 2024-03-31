@@ -1,0 +1,47 @@
+name: setup node
+description: 'Node.jsのセットアップ'
+
+inputs:
+  working-directory:
+    description: '作業ディレクトリ'
+    required: false
+    default: '.'
+  node-version:
+    description: 'Node.jsのバージョン'
+    required: true
+    default: '20.11.1'
+  service:
+    description: 'サービス名'
+    required: true
+    default: 'web'
+
+runs:
+  using: composite
+  steps:
+  - name: Use Node.js ${{ inputs.node-version }}
+    uses: actions/setup-node@v4
+    with:
+      node-version: ${{ inputs.node-version }}
+      cache: 'yarn'
+      cache-dependency-path: '**/yarn.lock'
+
+  - name: Get yarn cache directory path
+    id: yarn-cache-dir-path
+    shell: bash
+    working-directory: ${{ inputs.working-directory }}
+    run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+  # - name: Cache yarn dependencies
+  #   id: yarn-cache
+  #   uses: actions/cache@v4
+  #   with:
+  #     path: |
+  #       **/node_modules
+  #       ${{ steps.yarn-cache-dir-path.outputs.dir }}
+  #     key: ${{ inputs.service }}-${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+  - name: Install
+    # if: steps.yarn-cache.outputs.cache-hit != 'true'
+    shell: bash
+    working-directory: ${{ inputs.working-directory }}
+    run: yarn --check-files --frozen-lockfile --non-interactive

@@ -4,15 +4,14 @@ on:
     tags:
     - 'v*'
     paths:
+    - '.github/actions/setup-aws/**'
     - '.github/workflows/cd-web-user-for-prd.yaml'
     - 'web/user/**'
     - 'infra/docker/web/uer/**'
 
 env:
   TZ: 'Asia/Tokyo'
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-  APP_ID: ${{ secrets.PRD_AMPLIFY_USER_APP_ID }}
+  APP_ID: ${{ vars.PRD_AMPLIFY_USER_APP_ID }}
   BRANCH_NAME: main
 
 permissions:
@@ -29,17 +28,16 @@ jobs:
         working-directory: ./web/user
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Configure AWS credentials from IAM Role
-      uses: aws-actions/configure-aws-credentials@v4
+    - uses: ./.github/actions/setup-aws
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        aws-region: ${{ env.AWS_REGION }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Deploy to Amplify
       run: |

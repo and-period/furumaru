@@ -17,7 +17,7 @@ jobs:
         shell: bash
     strategy:
       matrix:
-        os: [ubuntu-latest] # exclude: macos-latest, windows-latest
+        os: [ubuntu-latest]
 
     steps:
     - name: Check out code
@@ -25,7 +25,7 @@ jobs:
 
     - name: Dependabot metadata
       id: dependabot-metadata
-      uses: dependabot/fetch-metadata@v1
+      uses: dependabot/fetch-metadata@v2
       with:
         github-token: '${{ secrets.GITHUB_TOKEN }}'
 

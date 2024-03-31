@@ -2284,6 +2284,86 @@ export interface Live {
 /**
  * 
  * @export
+ * @interface LiveComment
+ */
+export interface LiveComment {
+    /**
+     * コメントID
+     * @type {string}
+     * @memberof LiveComment
+     */
+    'id': string;
+    /**
+     * ユーザーID
+     * @type {string}
+     * @memberof LiveComment
+     */
+    'userId': string;
+    /**
+     * ユーザー名
+     * @type {string}
+     * @memberof LiveComment
+     */
+    'username': string;
+    /**
+     * アカウントID
+     * @type {string}
+     * @memberof LiveComment
+     */
+    'accountId': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof LiveComment
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorThumbnailsInner>}
+     * @memberof LiveComment
+     */
+    'thumbnails': Array<CoordinatorThumbnailsInner>;
+    /**
+     * コメント
+     * @type {string}
+     * @memberof LiveComment
+     */
+    'comment': string;
+    /**
+     * コメント無効化フラグ
+     * @type {boolean}
+     * @memberof LiveComment
+     */
+    'disabled': boolean;
+    /**
+     * 投稿日時
+     * @type {number}
+     * @memberof LiveComment
+     */
+    'publishedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface LiveCommentsResponse
+ */
+export interface LiveCommentsResponse {
+    /**
+     * コメント一覧
+     * @type {Array<LiveComment>}
+     * @memberof LiveCommentsResponse
+     */
+    'comments': Array<LiveComment>;
+    /**
+     * 次の取得位置
+     * @type {string}
+     * @memberof LiveCommentsResponse
+     */
+    'nextToken': string;
+}
+/**
+ * 
+ * @export
  * @interface LiveResponse
  */
 export interface LiveResponse {
@@ -5533,6 +5613,19 @@ export interface UpdateDefaultShippingRequest {
 /**
  * 
  * @export
+ * @interface UpdateLiveCommentRequest
+ */
+export interface UpdateLiveCommentRequest {
+    /**
+     * コメントの無効化
+     * @type {boolean}
+     * @memberof UpdateLiveCommentRequest
+     */
+    'disabled': boolean;
+}
+/**
+ * 
+ * @export
  * @interface UpdateLiveRequest
  */
 export interface UpdateLiveRequest {
@@ -6301,6 +6394,18 @@ export interface User {
      * @memberof User
      */
     'phoneNumber': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof User
+     */
+    'thumbnailUrl': string;
+    /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<CoordinatorThumbnailsInner>}
+     * @memberof User
+     */
+    'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
      * 登録日時 (unixtime)
      * @type {number}
@@ -16273,6 +16378,65 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary ライブ配信コメント取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListLiveComments: async (scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1ListLiveComments', 'scheduleId', scheduleId)
+            const localVarPath = `/v1/schedules/{scheduleId}/comments`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (next !== undefined) {
+                localVarQueryParameter['next'] = next;
+            }
+
+            if (start !== undefined) {
+                localVarQueryParameter['start'] = start;
+            }
+
+            if (end !== undefined) {
+                localVarQueryParameter['end'] = end;
+            }
+
+            if (orders !== undefined) {
+                localVarQueryParameter['orders'] = orders;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -16344,6 +16508,50 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
             // authentication bearerAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary ライブ配信コメント更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} commentId コメントID
+         * @param {UpdateLiveCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateLiveComment: async (scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1UpdateLiveComment', 'scheduleId', scheduleId)
+            // verify required parameter 'commentId' is not null or undefined
+            assertParamExists('v1UpdateLiveComment', 'commentId', commentId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateLiveComment', 'body', body)
+            const localVarPath = `/v1/schedules/{scheduleId}/comments/{commentId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)))
+                .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
 
     
@@ -16494,6 +16702,24 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary ライブ配信コメント取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveCommentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListLiveComments(scheduleId, limit, next, start, end, orders, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1ListLiveComments']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -16518,6 +16744,21 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1PublishSchedule(scheduleId, body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1PublishSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary ライブ配信コメント更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} commentId コメントID
+         * @param {UpdateLiveCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateLiveComment(scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateLiveComment(scheduleId, commentId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1UpdateLiveComment']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -16607,6 +16848,21 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary ライブ配信コメント取得
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: any): AxiosPromise<LiveCommentsResponse> {
+            return localVarFp.v1ListLiveComments(scheduleId, limit, next, start, end, orders, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -16626,6 +16882,18 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          */
         v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: any): AxiosPromise<object> {
             return localVarFp.v1PublishSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary ライブ配信コメント更新
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {string} commentId コメントID
+         * @param {UpdateLiveCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateLiveComment(scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options?: any): AxiosPromise<object> {
+            return localVarFp.v1UpdateLiveComment(scheduleId, commentId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -16723,6 +16991,23 @@ export class ScheduleApi extends BaseAPI {
 
     /**
      * 
+     * @summary ライブ配信コメント取得
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {string} [next] 取得開始位置
+     * @param {number} [start] 取得範囲(開始時間:unixtime)
+     * @param {number} [end] 取得範囲(終了時間:unixtime)
+     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1ListLiveComments(scheduleId, limit, next, start, end, orders, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary マルシェ開催スケジュール一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
@@ -16745,6 +17030,20 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: RawAxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1PublishSchedule(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary ライブ配信コメント更新
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {string} commentId コメントID
+     * @param {UpdateLiveCommentRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1UpdateLiveComment(scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1UpdateLiveComment(scheduleId, commentId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

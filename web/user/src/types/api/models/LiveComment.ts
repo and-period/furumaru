@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { LiveCommentThumbnailsInner } from './LiveCommentThumbnailsInner';
+import {
+    LiveCommentThumbnailsInnerFromJSON,
+    LiveCommentThumbnailsInnerFromJSONTyped,
+    LiveCommentThumbnailsInnerToJSON,
+} from './LiveCommentThumbnailsInner';
+
 /**
  * 
  * @export
@@ -44,6 +51,12 @@ export interface LiveComment {
      */
     thumbnailUrl: string;
     /**
+     * リサイズ済みサムネイルURL一覧
+     * @type {Array<LiveCommentThumbnailsInner>}
+     * @memberof LiveComment
+     */
+    thumbnails: Array<LiveCommentThumbnailsInner>;
+    /**
      * コメント
      * @type {string}
      * @memberof LiveComment
@@ -66,6 +79,7 @@ export function instanceOfLiveComment(value: object): boolean {
     isInstance = isInstance && "username" in value;
     isInstance = isInstance && "accountId" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
+    isInstance = isInstance && "thumbnails" in value;
     isInstance = isInstance && "comment" in value;
     isInstance = isInstance && "publishedAt" in value;
 
@@ -86,6 +100,7 @@ export function LiveCommentFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'username': json['username'],
         'accountId': json['accountId'],
         'thumbnailUrl': json['thumbnailUrl'],
+        'thumbnails': ((json['thumbnails'] as Array<any>).map(LiveCommentThumbnailsInnerFromJSON)),
         'comment': json['comment'],
         'publishedAt': json['publishedAt'],
     };
@@ -104,6 +119,7 @@ export function LiveCommentToJSON(value?: LiveComment | null): any {
         'username': value.username,
         'accountId': value.accountId,
         'thumbnailUrl': value.thumbnailUrl,
+        'thumbnails': ((value.thumbnails as Array<any>).map(LiveCommentThumbnailsInnerToJSON)),
         'comment': value.comment,
         'publishedAt': value.publishedAt,
     };

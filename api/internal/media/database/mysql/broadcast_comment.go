@@ -84,3 +84,12 @@ func (c *broadcastComment) Create(ctx context.Context, comment *entity.Broadcast
 	err := c.db.DB.WithContext(ctx).Table(broadcastCommentTable).Create(&comment).Error
 	return dbError(err)
 }
+
+func (c *broadcastComment) Update(ctx context.Context, commentID string, params *database.UpdateBroadcastCommentParams) error {
+	values := map[string]interface{}{
+		"disabled":   params.Disabled,
+		"updated_at": c.now(),
+	}
+	err := c.db.DB.WithContext(ctx).Table(broadcastCommentTable).Where("id = ?", commentID).Updates(values).Error
+	return dbError(err)
+}

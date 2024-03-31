@@ -1,0 +1,80 @@
+name: backend build and push
+
+on:
+  workflow_call:
+    secrets:
+      aws-role-arn:
+        description: 'IAM Role ARN'
+        required: true
+      aws-region:
+        description: 'AWS Region'
+        required: true
+      ecr-registry:
+        description: 'ECRレジストリ名'
+        required: true
+      ecr-repository:
+        description: 'ECRリポジトリ名'
+        required: true
+    inputs:
+      service:
+        description: 'サービス名'
+        type: string
+        required: true
+      image-path:
+        description: 'Dockerfileのパス'
+        type: string
+        required: true
+      image-tag:
+        description: 'ECRイメージタグ'
+        type: string
+        required: false
+        default: 'latest'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build_and_push:
+    name: build and push
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.aws-role-arn }}
+        aws-region: ${{ secrets.aws-region }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Get ECR repository and image url
+      id: get-ecr-url
+      uses: ./.github/actions/generate-ecr-url
+      with:
+        ecr-registry: ${{ secrets.ecr-registry }}
+        ecr-repository: ${{ secrets.ecr-repository }}
+        image-tag: ${{ inputs.image-tag }}
+
+    - name: Build image
+      run: |
+        docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
+        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
+      env:
+        SERVICE: ${{ inputs.service }}
+        IMAGE_PATH: ${{ inputs.image-path }}
+        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}
+        ECR_IMAGE_TAG: ${{ steps.get-ecr-url.outputs.ecr-image-tag }}
+
+    - name: Push image to Amazon ECR
+      run: docker push -a ${ECR_REPOSITORY_URL}
+      env:
+        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}

@@ -1,0 +1,19 @@
+name: setup aws
+description: 'AWSのセットアップ'
+
+inputs:
+  aws-role-arn:
+    description: 'IAM Role ARN'
+    required: true
+  aws-region:
+    description: 'AWS Region'
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - name: Configure AWS credentials from IAM Role
+    uses: aws-actions/configure-aws-credentials@v4
+    with:
+      role-to-assume: ${{ inputs.aws-role-arn }}
+      aws-region: ${{ inputs.aws-region }}

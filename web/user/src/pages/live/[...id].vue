@@ -140,18 +140,14 @@ useAsyncData(`schedule-${scheduleId.value}`, async () => {
 })
 
 onMounted(() => {
-  if (isLiveStreaming.value) {
+  fetchComments()
+  const interval = setInterval(() => {
     fetchComments()
-    const interval = setInterval(() => {
-      fetchComments()
-    }, 5000)
+  }, 3000)
 
-    onUnmounted(() => {
-      clearInterval(interval)
-    })
-  } else {
-    fetchComments()
-  }
+  onUnmounted(() => {
+    clearInterval(interval)
+  })
 })
 
 useSeoMeta({
