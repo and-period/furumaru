@@ -4,45 +4,27 @@ on:
     tags:
     - 'v*'
     paths:
-    - '.github/actions/setup-aws/**'
+    - '.github/actions/**'
+    - '.github/workflows/_deploy_amplify.yaml'
     - '.github/workflows/cd-web-admin-for-prd.yaml'
     - 'web/admin/**'
     - 'infra/docker/web/admin/**'
 
 env:
   TZ: 'Asia/Tokyo'
-  APP_ID: ${{ vars.PRD_AMPLIFY_ADMIN_APP_ID }}
-  BRANCH_NAME: main
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  setup:
-    name: build_and_deploy
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./web/admin
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-
-    - uses: ./.github/actions/setup-aws
-      with:
-        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Deploy to Amplify
-      run: |
-        aws amplify start-job \
-          --app-id=${APP_ID} \
-          --region=${AWS_REGION} \
-          --job-type RELEASE \
-          --branch-name=${BRANCH_NAME}
+  deploy:
+    name: deploy
+    uses: ./.github/workflows/_deploy_amplify.yaml
+    with:
+      branch-name: main
+      working-directory: ./web/admin
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      app-id: ${{ vars.PRD_AMPLIFY_ADMIN_APP_ID }}

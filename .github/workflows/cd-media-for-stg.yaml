@@ -5,9 +5,9 @@ on:
     - 'main'
     paths:
     - '.github/actions/**'
+    - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_deploy_lambda.yaml'
     - '.github/workflows/cd-media-for-stg.yaml'
-    - '.github/workflows/_backend_build_and_push.yaml'
-    - '.github/workflows/_backend_deploy_lambda.yaml'
     - 'api/config/media/**'
     - 'api/internal/media/**'
     - 'api/pkg/**'
@@ -24,7 +24,7 @@ permissions:
 jobs:
   build_and_push:
     name: build and push
-    uses: ./.github/workflows/_backend_build_and_push.yaml
+    uses: ./.github/workflows/_build_and_push.yaml
     with:
       service: media
       image-path: ./infra/docker/api/Dockerfile
@@ -37,8 +37,9 @@ jobs:
 
   deploy_uploader:
     name: deploy uploader
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -48,8 +49,9 @@ jobs:
 
   deploy_resizer:
     name: deploy resizer
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -59,8 +61,9 @@ jobs:
 
   deploy_start_scheduler:
     name: deploy start scheduler
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -70,8 +73,9 @@ jobs:
 
   deploy_close_scheduler:
     name: deploy close scheduler
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
@@ -81,8 +85,9 @@ jobs:
 
   deploy_start_updater:
     name: deploy start updater
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}

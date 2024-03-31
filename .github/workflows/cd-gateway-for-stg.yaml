@@ -5,9 +5,9 @@ on:
     - 'main'
     paths:
     - '.github/actions/**'
+    - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_deploy_ecs.yaml'
     - '.github/workflows/cd-gateway-for-stg.yaml'
-    - '.github/workflows/_backend_build_and_push.yaml'
-    - '.github/workflows/_backend_deploy_ecs.yaml'
     - 'api/config/gateway/**'
     - 'api/internal/**'
     - 'api/pkg/**'
@@ -24,7 +24,7 @@ permissions:
 jobs:
   build_and_push:
     name: build and push
-    uses: ./.github/workflows/_backend_build_and_push.yaml
+    uses: ./.github/workflows/_build_and_push.yaml
     with:
       service: gateway
       image-path: ./infra/docker/api/Dockerfile
@@ -37,10 +37,11 @@ jobs:
 
   deploy_admin:
     name: deploy admin
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_ecs.yaml
+    needs:
+    - build_and_push
+    uses: ./.github/workflows/_deploy_ecs.yaml
     with:
-      ecs-service-name: user
+      ecs-service-name: admin
       ecs-container-name: server
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
@@ -52,10 +53,11 @@ jobs:
 
   deploy_user:
     name: deploy user
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_ecs.yaml
+    needs:
+    - build_and_push
+    uses: ./.github/workflows/_deploy_ecs.yaml
     with:
-      ecs-service-name: admin
+      ecs-service-name: user
       ecs-container-name: server
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}

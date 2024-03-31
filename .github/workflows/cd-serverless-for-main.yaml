@@ -5,6 +5,7 @@ on:
     - 'main'
     paths:
     - '.github/actions/setup-aws/**'
+    - '.github/actions/setup-node/**'
     - '.github/workflows/cd-serverless-for-main.yaml'
     - 'infra/serverless/**'
 
@@ -12,6 +13,10 @@ env:
   TZ: 'Asia/Tokyo'
   SERVICE: serverless
   NODE_VERSION: 20.11.1
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build_and_deploy:
@@ -24,9 +29,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
     - name: Check out code

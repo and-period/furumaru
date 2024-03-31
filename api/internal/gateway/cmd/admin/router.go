@@ -40,10 +40,12 @@ func (a *app) newRouter() *gin.Engine {
 	a.komoju.Routes(rt.Group(""))
 
 	// other routes
-	rt.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, "ok")
-	})
-	rt.OPTIONS("/health", func(ctx *gin.Context) {
+	healthMethods := []string{
+		http.MethodGet,
+		http.MethodHead,
+		http.MethodOptions,
+	}
+	rt.Match(healthMethods, "/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "ok")
 	})
 	rt.NoRoute(func(ctx *gin.Context) {

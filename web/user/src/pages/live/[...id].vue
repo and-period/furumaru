@@ -61,9 +61,11 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
           (p) => p.id === live.producerId,
         )
         // 商品のマッピング
-        const products = live.productIds.map((id) => {
-          return schedule.value?.products.find((p) => p.id === id)
-        })
+        const products = live.productIds
+          .map((id) => {
+            return schedule.value?.products.find((p) => p.id === id)
+          })
+          .filter((p) => p !== undefined)
         // コーディネーターのマッピング
         return {
           ...live,

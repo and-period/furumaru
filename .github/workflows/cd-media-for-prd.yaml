@@ -5,10 +5,10 @@ on:
     - 'v*'
     paths:
     - '.github/actions/**'
-    - '.github/workflows/cd-media-for-prd.yaml'
-    - '.github/workflows/_backend_build_and_push.yaml'
-    - '.github/workflows/_backend_deploy_lambda.yaml'
+    - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_deploy_lambda.yaml'
     - '.github/workflows/_get_tag_version.yaml'
+    - '.github/workflows/cd-media-for-prd.yaml'
     - 'api/config/media/**'
     - 'api/internal/media/**'
     - 'api/pkg/**'
@@ -25,13 +25,14 @@ permissions:
 jobs:
   get_image_tag:
     name: get image tag
+    uses: ./.github/workflows/_tag_version.yaml
     secrets: inherit
-    uses: ./.github/workflows/_get_tag_version.yaml
 
   build_and_push:
     name: build and push
-    needs: get_image_tag
-    uses: ./.github/workflows/_backend_build_and_push.yaml
+    needs:
+    - get_image_tag
+    uses: ./.github/workflows/_build_and_push.yaml
     with:
       service: media
       image-path: ./infra/docker/api/Dockerfile
@@ -44,8 +45,10 @@ jobs:
 
   deploy_uploader:
     name: deploy uploader
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - get_image_tag
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     with:
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
@@ -57,8 +60,10 @@ jobs:
 
   deploy_resizer:
     name: deploy resizer
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - get_image_tag
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     with:
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
@@ -70,8 +75,10 @@ jobs:
 
   deploy_start_scheduler:
     name: deploy start scheduler
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - get_image_tag
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     with:
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
@@ -83,8 +90,10 @@ jobs:
 
   deploy_close_scheduler:
     name: deploy close scheduler
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - get_image_tag
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     with:
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
@@ -96,8 +105,10 @@ jobs:
 
   deploy_start_updater:
     name: deploy start updater
-    needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_lambda.yaml
+    needs:
+    - get_image_tag
+    - build_and_push
+    uses: ./.github/workflows/_deploy_lambda.yaml
     with:
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
     secrets:
