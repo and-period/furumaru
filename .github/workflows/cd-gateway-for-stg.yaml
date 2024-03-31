@@ -24,7 +24,7 @@ permissions:
 jobs:
   build_and_push:
     name: build and push
-    uses: ./.github/workflows/_backend_build_and_push.yaml
+    uses: .github/workflows/_backend_build_and_push.yaml
     with:
       service: gateway
       image-path: ./infra/docker/api/Dockerfile
@@ -38,7 +38,7 @@ jobs:
   deploy_admin:
     name: deploy admin
     needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_ecr.yaml
+    uses: .github/workflows/_backend_deploy_ecr.yaml
     with:
       ecs-service-name: user
       ecs-container-name: server
@@ -54,7 +54,7 @@ jobs:
   deploy_user:
     name: deploy user
     needs: build_and_push
-    uses: ./.github/workflows/_backend_deploy_ecr.yaml
+    uses: .github/workflows/_backend_deploy_ecr.yaml
     with:
       ecs-service-name: admin
       ecs-container-name: server
