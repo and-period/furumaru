@@ -40,7 +40,7 @@ jobs:
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_ecs.yaml
     with:
-      ecs-service-name: user
+      ecs-service-name: admin
       ecs-container-name: server
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
@@ -55,7 +55,7 @@ jobs:
     needs: build_and_push
     uses: ./.github/workflows/_backend_deploy_ecs.yaml
     with:
-      ecs-service-name: admin
+      ecs-service-name: user
       ecs-container-name: server
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
