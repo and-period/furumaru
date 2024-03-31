@@ -30,9 +30,9 @@ on:
         required: false
         default: 'latest'
     outputs:
-      ecr-image-uri:
-        description: 'ECRイメージURI'
-        value: ${{ jobs.build_and_push.outputs.ecr-image-uri }}
+      encoded-image-uri:
+        description: 'ECRイメージURI（Bae64エンコード）'
+        value: ${{ jobs.build_and_push.outputs.encoded-image-uri }}
 
 permissions:
   id-token: write
@@ -47,7 +47,7 @@ jobs:
         shell: bash
 
     outputs:
-      ecr-image-uri: ${{ steps.set-output.outputs.ecr-image-uri }}
+      encoded-image-uri: ${{ steps.set-output.outputs.encoded-image-uri }}
 
     steps:
     - name: Check out code
@@ -83,10 +83,7 @@ jobs:
     - name: Set output
       id: set-output
       run: |
-        echo "ecr-image-uri=${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" >> $GITHUB_OUTPUT
+        ECR_IMAGE_URI=$(echo -n "${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" | base64)
+        echo "encoded-image-uri=${ECR_IMAGE_URI}" >> $GITHUB_OUTPUT
       env:
         ECR_IMAGE_TAG: ${{ inputs.image-tag }}
-
-    - name: Show debug
-      run: |
-        echo "IMAGE_URI=${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}"
