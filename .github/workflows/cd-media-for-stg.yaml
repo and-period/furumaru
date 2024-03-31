@@ -24,7 +24,6 @@ permissions:
 jobs:
   build_and_push:
     name: build and push
-    needs: get_image_tag
     uses: ./.github/workflows/_backend_build_and_push.yaml
     with:
       service: media
