@@ -1,4 +1,4 @@
-name: web deploy
+name: deploy amplify
 
 on:
   workflow_call:
