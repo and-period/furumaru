@@ -156,7 +156,7 @@ definePageMeta({
                       />
                     </template>
                     <template v-else>
-                      <the-account-icon class="h-14 w-14" />
+                      <the-account-icon class="h-14 w-14" color="white" />
                     </template>
                   </dd>
                 </div>
