@@ -11,6 +11,7 @@ export interface I18n {
       topLinkText: string
       searchItemLinkText: string
       allItemLinkText: string
+      allMarcheLinkText: string
       aboutLinkText: string
 
       cartMenuMessage: string

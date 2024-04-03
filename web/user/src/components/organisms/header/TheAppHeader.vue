@@ -85,11 +85,11 @@ const SP_MENU_ITEMS = computed(() => [
     text: 'すべての商品',
     to: '/items',
   },
-  // {
-  //   icon: 'flag',
-  //   text: 'すべてのマルシェ',
-  //   to: '',
-  // },
+  {
+    icon: 'flag',
+    text: 'すべてのマルシェ',
+    to: '/marches',
+  },
   {
     icon: 'furumaru',
     text: 'ふるマルについて',
