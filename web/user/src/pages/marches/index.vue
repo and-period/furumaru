@@ -76,7 +76,7 @@ useSeoMeta({
     </div>
   <hr class="mt-[40px]" />
   <div
-    class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5"
+    class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-3 xl:grid-cols-4"
   >
     <template v-if="archivesFetchState.isLoading">
       <div
