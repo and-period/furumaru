@@ -20,8 +20,8 @@ const formData = ref<CreateScheduleRequest>({
   title: '',
   description: '',
   thumbnailUrl: '',
-  imageUrl: '',
-  openingVideoUrl: '',
+  imageUrl: 'https://furumaru.s3.ap-northeast-1.amazonaws.com/asset/furumaru_waiting.png',
+  openingVideoUrl: 'https://furumaru.s3.ap-northeast-1.amazonaws.com/asset/furumaru_opening.mp4',
   public: true, // 公開状態で作成する(承認フラグで公開かの出し分けを実施)
   startAt: dayjs().unix(),
   endAt: dayjs().unix()

@@ -71,7 +71,9 @@ const onChangeFile = (): void => {
       <v-card-text>
         <div class="mb-4">
           <v-avatar v-if="props.videoUrl === ''" size="80" :icon="mdiPlus" />
-          <video v-else id="wrapper" muted autoplay :src="props.videoUrl" />
+          <v-responsive v-else max-height="300" aspect-ratio="16 / 9">
+            <video id="wrapper" muted autoplay :src="props.videoUrl" />
+          </v-responsive>
         </div>
         <input
           ref="inputRef"
