@@ -2,6 +2,7 @@
 import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import { defineStore, acceptHMRUpdate } from 'pinia'
+import { fileUpload } from './helpter'
 import type {
   AuthUserResponse,
   CreateAuthUserRequest,
@@ -128,32 +129,24 @@ export const useAuthStore = defineStore('auth', {
     },
 
     /**
-     * TODO: 未実装
      * サムネイル変更
      * @param file
      * @returns
      */
-    async updateThumbnail(file: File): Promise<string> {
+    async updateThumbnail(file: File) {
       const mimeType = file.type
 
-      console.debug('mimeType', mimeType)
-      console.log('アップロード先URL取得')
-      const { url } = await this.authUserApiClient(
+      const { key, url: uploadUrl } = await this.authUserApiClient(
         this.accessToken,
       ).v1GetUserThumbnailUploadUrl({
         body: { fileType: mimeType },
       })
 
-      console.log('アップロード先URL', url)
-      fetch(url, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': mimeType,
-        },
-      })
+      const url = await fileUpload(file, key, uploadUrl, this.accessToken)
 
-      return url
+      this.authUserApiClient(this.accessToken).v1UpdateAuthUserThumbnail({
+        body: { thumbnailUrl: url },
+      })
     },
 
     /**

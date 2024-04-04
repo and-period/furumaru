@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
 
+const router = useRouter()
 const { user, updateThumbnail } = useAuthStore()
 
 const formData = ref<File | null>(null)
@@ -24,6 +25,7 @@ const handleSubmit = async () => {
   console.log('submit')
   if (formData.value) {
     await updateThumbnail(formData.value)
+    router.push('/account/edit/complete?from=thumbnail')
   }
 }
 </script>
@@ -46,11 +48,12 @@ const handleSubmit = async () => {
                 v-if="user.thumbnailUrl"
                 :src="user.thumbnailUrl"
                 alt="サムネイル"
+                class="h-[120px] w-[120px] rounded-full"
               />
               <the-account-icon
                 v-else
                 color="white"
-                class="h-[120px] w-[120px]"
+                class="h-[120px] w-[120px] rounded-full"
               />
             </template>
           </div>
