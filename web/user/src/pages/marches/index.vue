@@ -7,7 +7,7 @@ const router = useRouter()
 
 const liveStore = useLiveStore()
 
-const { fetchArchves } = useLiveStore()
+const { fetchArchives } = useLiveStore()
 const { archivesFetchState, archiveResponse, totalArchivesCount } = storeToRefs(liveStore)
 
 // 1ページ当たりに表示するマルシェ数
@@ -48,11 +48,11 @@ const handleClickLiveItem = (id: string) => {
 }
 
 watch(currentPage, () => {
-  fetchArchves(pagePerItems.value, pagination.value.offset)
+  fetchArchives(pagePerItems.value, pagination.value.offset)
 })
 
 useAsyncData('products', () => {
-  return fetchArchves(pagePerItems.value, pagination.value.offset)
+  return fetchArchives(pagePerItems.value, pagination.value.offset)
 })
 
 useSeoMeta({
