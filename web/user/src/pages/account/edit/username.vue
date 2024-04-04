@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
 
-const { user } = useAuthStore()
+const router = useRouter()
+const { user, updateUsername } = useAuthStore()
 
 const formData = ref<string>('')
 
 if (user) {
   formData.value = user.username
+}
+
+const handleSubmit = async () => {
+  if (formData.value === '') {
+    return
+  }
+  await updateUsername(formData.value)
+  router.push('/account/edit/complete?from=username')
 }
 </script>
 
@@ -14,7 +23,7 @@ if (user) {
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
       <the-account-edit-card title="ユーザー名の変更" class="mt-6">
-        <div class="flex w-full flex-col gap-6">
+        <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
           <div class="my-10 flex w-full justify-center">
             <the-text-input
               v-model="formData"
@@ -22,6 +31,8 @@ if (user) {
               class="w-full"
               type="text"
               placeholder="ユーザー名"
+              required
+              :max-length="32"
             />
           </div>
 
@@ -43,7 +54,7 @@ if (user) {
               マイページに戻る
             </nuxt-link>
           </div>
-        </div>
+        </form>
       </the-account-edit-card>
     </template>
 

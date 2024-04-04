@@ -12,6 +12,7 @@ interface Props {
   name?: string
   id?: string
   pattern?: string
+  maxLength?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -69,6 +70,7 @@ const viewMessage = computed(() => {
         :required="required"
         :type="type"
         :pattern="pattern"
+        :maxlength="maxLength"
         :class="{
           'block w-full appearance-none rounded-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none': true,
           'border-b-2 border-orange': hasError,
