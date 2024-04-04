@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
 
-const { user } = useAuthStore()
+const { user, updateNotificationEnabled } = useAuthStore()
 
+const router = useRouter()
 const formData = ref<boolean>(false)
 
 if (user) {
   formData.value = user.notificationEnabled
+}
+
+const handleSubmit = async () => {
+  await updateNotificationEnabled(formData.value)
+  router.push('/account/edit/complete?from=notification')
 }
 </script>
 
@@ -14,7 +20,7 @@ if (user) {
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
       <the-account-edit-card title="メール受信の変更" class="mt-6">
-        <div class="flex w-full flex-col gap-6">
+        <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
           <div class="my-10 flex w-full flex-col justify-center gap-14">
             <div>
               <p class="mb-4">メールアドレス</p>
@@ -41,7 +47,7 @@ if (user) {
                   type="radio"
                   name="notification"
                   class="h-4 w-4 accent-main"
-                  :value="true"
+                  :value="false"
                 />
                 <label for="false"> メール配信を停止する </label>
               </div>
@@ -66,7 +72,7 @@ if (user) {
               マイページに戻る
             </nuxt-link>
           </div>
-        </div>
+        </form>
       </the-account-edit-card>
     </template>
 
