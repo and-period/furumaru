@@ -14,10 +14,10 @@ import (
 )
 
 func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/upload", h.authentication)
+	r := rg.Group("/upload")
 
 	r.GET("/state", h.GetUploadState)
-	r.POST("/users/thumbnail", h.CreateUserThumbnailURL)
+	r.POST("/users/thumbnail", h.authentication, h.CreateUserThumbnailURL)
 }
 
 func (h *handler) GetUploadState(ctx *gin.Context) {

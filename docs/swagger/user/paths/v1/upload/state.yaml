@@ -3,8 +3,6 @@ get:
   operationId: v1GetUploadState
   tags:
   - Other
-  security:
-  - bearerAuth: []
   parameters:
   - in: query
     name: key
