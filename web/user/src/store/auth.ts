@@ -125,6 +125,97 @@ export const useAuthStore = defineStore('auth', {
     setExpiredAt(expiredAt: number) {
       this.expiredAt = dayjs().add(expiredAt, 'second')
     },
+
+    /**
+     * TODO: 未実装
+     * サムネイル変更
+     * @param file
+     * @returns
+     */
+    async updateThumbnail(file: File): Promise<string> {
+      const mimeType = file.type
+
+      console.debug('mimeType', mimeType)
+      console.log('アップロード先URL取得')
+      const { url } = await this.authUserApiClient(
+        this.accessToken,
+      ).v1GetUserThumbnailUploadUrl({
+        body: { fileType: mimeType },
+      })
+
+      console.log('アップロード先URL', url)
+      fetch(url, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': mimeType,
+        },
+      })
+
+      return url
+    },
+
+    /**
+     * ユーザー名変更
+     * @param username
+     * @returns
+     */
+    async updateUsername(username: string) {
+      try {
+        await this.authUserApiClient(this.accessToken).v1UpdateAuthUserUsername(
+          {
+            body: { username },
+          },
+        )
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * アカウントID（ユーザーID）変更
+     * @param accountId
+     */
+    async updateAccountId(accountId: string) {
+      try {
+        await this.authUserApiClient(
+          this.accessToken,
+        ).v1UpdateAuthUserAccountId({
+          body: { accountId },
+        })
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * メールアドレス更新
+     * @param email
+     */
+    async updateEmail(email: string) {
+      try {
+        await this.authUserApiClient(this.accessToken).v1UpdateAuthUserEmail({
+          body: { email },
+        })
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * メール通知設定
+     * @param enabled
+     * @returns
+     */
+    async updateNotificationEnabled(enabled: boolean) {
+      try {
+        await this.authUserApiClient(
+          this.accessToken,
+        ).v1UpdateAuthUserNotification({ body: { enabled } })
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
   },
 })
 
