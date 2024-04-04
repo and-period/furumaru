@@ -15,16 +15,16 @@ export const useLiveStore = defineStore('live', {
     async fetchArchives(limit = 20, offset = 0): Promise<void> {
       this.archivesFetchState.isLoading = true
         try {
-        const response: ArchiveSchedulesResponse =
-          await this.scheduleApiClient().v1ArchiveSchedules({
-            limit,
-            offset
-          })
-        this.archiveResponse = response
-        this.archivesFetchState.isLoading = false
+          const response: ArchiveSchedulesResponse =
+            await this.scheduleApiClient().v1ArchiveSchedules({
+              limit,
+              offset
+            })
+          this.archiveResponse = response
         } catch(error) {
-          this.archivesFetchState.isLoading = false
           return this.errorHandler(error)
+        } finally {
+          this.archivesFetchState.isLoading = false
         }
     }
   },
