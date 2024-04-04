@@ -238,7 +238,7 @@ definePageMeta({
                   </dd>
                 </div>
                 <nuxt-link
-                  to="/account/edit/email"
+                  to="/account/edit/notification"
                   class="whitespace-nowrap bg-main px-4 py-1 text-white"
                 >
                   変更

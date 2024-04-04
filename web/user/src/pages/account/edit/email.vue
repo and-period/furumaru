@@ -4,24 +4,25 @@ import { useAuthStore } from '~/store/auth'
 const { user } = useAuthStore()
 
 const formData = ref<string>('')
-
-if (user) {
-  formData.value = user.accountId
-}
 </script>
 
 <template>
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
-      <the-account-edit-card title="ユーザーIDの変更" class="mt-6">
+      <the-account-edit-card title="メールアドレスの変更" class="mt-6">
         <div class="flex w-full flex-col gap-6">
-          <div class="my-10 flex w-full justify-center">
+          <div class="my-10 flex w-full flex-col justify-center gap-14">
+            <div>
+              <p class="mb-4">現在のメールアドレス</p>
+              <p>{{ user.email }}</p>
+            </div>
+
             <the-text-input
               v-model="formData"
-              label="ユーザーID"
+              label="新しいメールアドレス"
               class="w-full"
-              type="text"
-              placeholder="ユーザーID"
+              type="email"
+              placeholder="新しいメールアドレス"
             />
           </div>
 
