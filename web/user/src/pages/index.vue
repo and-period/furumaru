@@ -63,6 +63,10 @@ const handleClickLiveItem = (id: string) => {
   router.push(`/live/${id}`)
 }
 
+const handleClickLiveMore = () => {
+  router.push(`/marches`)
+}
+
 const banners: BannerItem[] = [
   {
     imgSrc: '/img/banner2.jpg',
@@ -180,7 +184,7 @@ useSeoMeta({
         </div>
 
         <div class="mb-4 mt-10 flex w-full justify-center">
-          <button class="w-60 bg-main py-2 text-white">一覧を見る</button>
+          <button class="w-60 bg-main py-2 text-white" @click="handleClickLiveMore">一覧を見る</button>
         </div>
       </the-content-box>
 

@@ -383,6 +383,7 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 	params := &mediasrv.Params{
 		WaitGroup: p.waitGroup,
 		Database:  mediadb.NewDatabase(mysql),
+		Cache:     p.cache,
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
 	}

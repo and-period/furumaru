@@ -159,7 +159,7 @@ const hideV1App = false
       <the-submit-button type="button" @click="handleClickNewAccountButton">
         新規登録する
       </the-submit-button>
-      <p class="mb-[40px] text-[14px] tracking-[1.4px] mt-[40px]">
+      <p class="my-[40px] text-[14px] tracking-[1.4px]">
         アカウントを登録せずにご購入を希望される方はこちらからご利用ください。
       </p>
       <the-submit-without-login-button type="submit" @click="handleSubmitWithoutSignForm" >

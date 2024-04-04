@@ -68,7 +68,7 @@ func NewSchedule(params *NewScheduleParams) *Schedule {
 		ImageURL:        params.ImageURL,
 		OpeningVideoURL: params.OpeningVideoURL,
 		Public:          params.Public,
-		Approved:        false,
+		Approved:        true, // デフォルトは承認済みにしておく
 		ApprovedAdminID: "",
 		StartAt:         params.StartAt,
 		EndAt:           params.EndAt,

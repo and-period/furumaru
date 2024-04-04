@@ -63,7 +63,28 @@ const handleClickApproval = async (scheduleId: string): Promise<void> => {
     if (!schedule) {
       throw new Error(`failed to find schedule. scheduleId=${scheduleId}`)
     }
-    await scheduleStore.approveSchedule(schedule)
+    await scheduleStore.approveSchedule(scheduleId, !schedule.approved)
+    commonStore.addSnackbar({
+      message: `${schedule.title}を更新しました。`,
+      color: 'info'
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const handleClickPublished = async (scheduleId: string): Promise<void> => {
+  try {
+    const schedule = schedules.value.find((schedule: Schedule): boolean => {
+      return schedule.id === scheduleId
+    })
+    if (!schedule) {
+      throw new Error(`failed to find schedule. scheduleId=${scheduleId}`)
+    }
+    await scheduleStore.publishSchedule(scheduleId, !schedule.public)
     commonStore.addSnackbar({
       message: `${schedule.title}を更新しました。`,
       color: 'info'
@@ -103,6 +124,7 @@ try {
     @click:add="handleClickAdd"
     @click:delete="handleClickDelete"
     @click:approval="handleClickApproval"
+    @click:published="handleClickPublished"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
   />
