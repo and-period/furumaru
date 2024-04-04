@@ -71,7 +71,7 @@ const onChangeFile = (): void => {
       <v-card-text>
         <div class="mb-4">
           <v-avatar v-if="props.imgUrl === ''" size="80" :icon="mdiPlus" />
-          <v-img v-else :max-height="240" max-width="100%" contain :src="props.imgUrl" />
+          <v-img v-else :max-height="300" aspect-ratio="16/9" :src="props.imgUrl" />
         </div>
         <input
           ref="inputRef"
