@@ -1,6 +1,12 @@
 <script setup lang="ts">
 interface Props {
-  page?: 'username' | 'email' | 'password' | 'thumbnail' | 'notification'
+  page?:
+    | 'username'
+    | 'email'
+    | 'password'
+    | 'thumbnail'
+    | 'notification'
+    | 'accountId'
 }
 
 const props = defineProps<Props>()
@@ -9,6 +15,8 @@ const message = computed(() => {
   switch (props.page) {
     case 'username':
       return 'ユーザー名を変更しました。'
+    case 'accountId':
+      return 'ユーザーIDを変更しました。'
     case 'email':
       return 'メールアドレスを変更しました。'
     case 'password':
