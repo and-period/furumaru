@@ -18,6 +18,10 @@ const handleSubmit = async () => {
     errorMessage.value = error.message
   }
 }
+
+useSeoMeta({
+  title: 'メールアドレスの変更',
+})
 </script>
 
 <template>

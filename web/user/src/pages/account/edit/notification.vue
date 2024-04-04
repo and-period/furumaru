@@ -14,6 +14,10 @@ const handleSubmit = async () => {
   await updateNotificationEnabled(formData.value)
   router.push('/account/edit/complete?from=notification')
 }
+
+useSeoMeta({
+  title: 'メール受信の変更',
+})
 </script>
 
 <template>

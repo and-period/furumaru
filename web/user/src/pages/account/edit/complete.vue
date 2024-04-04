@@ -4,6 +4,10 @@ const route = useRoute()
 const page = computed(() => {
   return route.query.from
 })
+
+useSeoMeta({
+  title: 'アカウント更新完了',
+})
 </script>
 
 <template>

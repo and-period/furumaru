@@ -28,6 +28,10 @@ const handleSubmit = async () => {
     router.push('/account/edit/complete?from=thumbnail')
   }
 }
+
+useSeoMeta({
+  title: 'プロフィール写真の変更',
+})
 </script>
 
 <template>

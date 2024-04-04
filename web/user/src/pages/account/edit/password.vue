@@ -29,6 +29,10 @@ const handleSubmit = async () => {
     console.error(error)
   }
 }
+
+useSeoMeta({
+  title: 'パスワードの変更',
+})
 </script>
 
 <template>

@@ -17,6 +17,10 @@ const handleSubmit = async () => {
   await updateAccountId(formData.value)
   router.push('/account/edit/complete?from=accountId')
 }
+
+useSeoMeta({
+  title: 'ユーザーIDの変更',
+})
 </script>
 
 <template>
@@ -24,7 +28,7 @@ const handleSubmit = async () => {
     <template v-if="user">
       <the-account-edit-card title="ユーザーIDの変更" class="mt-6">
         <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
-          <div class="my-10 flex w-full justify-center">
+          <div class="my-10 flex w-full flex-col justify-center gap-2">
             <the-text-input
               v-model="formData"
               required
@@ -34,6 +38,10 @@ const handleSubmit = async () => {
               placeholder="ユーザーID"
               :max-length="32"
             />
+            <p>4文字以上32文字以下の必要があります。</p>
+            <p>
+              使用可能な文字列は半角英数字とハイフン（-）、アンダースコア（_）です。
+            </p>
           </div>
 
           <div class="flex w-full flex-col gap-4">

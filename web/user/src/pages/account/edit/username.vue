@@ -17,6 +17,10 @@ const handleSubmit = async () => {
   await updateUsername(formData.value)
   router.push('/account/edit/complete?from=username')
 }
+
+useSeoMeta({
+  title: 'ユーザー名の変更',
+})
 </script>
 
 <template>
