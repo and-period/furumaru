@@ -55,6 +55,11 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
     active: route.path === localePath('/items'),
   },
   {
+    text: ht('allMarcheLinkText'),
+    to: localePath('/marches'),
+    active: route.path === localePath('/marches'),
+  },
+  {
     text: ht('aboutLinkText'),
     to: localePath('/about'),
     active: route.path === localePath('/about'),
