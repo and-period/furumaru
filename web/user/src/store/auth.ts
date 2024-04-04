@@ -7,6 +7,7 @@ import type {
   CreateAuthUserRequest,
   CreateAuthUserResponse,
   SignInRequest,
+  UpdateAuthPasswordRequest,
   VerifyAuthUserRequest,
 } from '~/types/api'
 import { AuthError } from '~/types/exception'
@@ -182,6 +183,21 @@ export const useAuthStore = defineStore('auth', {
           this.accessToken,
         ).v1UpdateAuthUserAccountId({
           body: { accountId },
+        })
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * パスワード変更
+     * @param payload
+     * @returns
+     */
+    async updatePassword(payload: UpdateAuthPasswordRequest) {
+      try {
+        await this.authApiClient(this.accessToken).v1UpdateUserPassword({
+          body: payload,
         })
       } catch (error) {
         return this.errorHandler(error)
