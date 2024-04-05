@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
+import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
 const { user, updateThumbnail } = useAuthStore()
 
+const errorMessage = ref<string>('')
+const isLoading = ref<boolean>(false)
 const formData = ref<File | null>(null)
 
 const previewUrl = computed(() => {
@@ -22,10 +25,23 @@ const handleFileChange = (e: Event) => {
 }
 
 const handleSubmit = async () => {
-  console.log('submit')
-  if (formData.value) {
-    await updateThumbnail(formData.value)
-    router.push('/account/edit/complete?from=thumbnail')
+  try {
+    if (formData.value) {
+      errorMessage.value = ''
+      isLoading.value = true
+      await updateThumbnail(formData.value)
+      router.push('/account/edit/complete?from=thumbnail')
+    } else {
+      errorMessage.value = 'ファイルを選択してください。'
+    }
+  } catch (error) {
+    if (error instanceof ApiBaseError) {
+      errorMessage.value = error.message
+      return
+    }
+    errorMessage.value = 'アップロードに失敗しました。'
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -38,6 +54,10 @@ useSeoMeta({
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
       <the-account-edit-card title="プロフィール写真の変更" class="mt-6">
+        <the-alert v-if="errorMessage" class="mt-4 w-full">
+          {{ errorMessage }}
+        </the-alert>
+
         <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
           <div class="mt-10 flex justify-center">
             <template v-if="previewUrl">
@@ -80,7 +100,12 @@ useSeoMeta({
           </div>
 
           <div class="flex w-full flex-col gap-4">
-            <button class="w-ful bg-main px-4 py-2 text-white" type="submit">
+            <button
+              class="w-ful flex items-center justify-center gap-2 bg-main px-4 py-2 text-white disabled:cursor-wait"
+              type="submit"
+              :disabled="isLoading"
+            >
+              <the-loading-icon v-if="isLoading" />
               保存する
             </button>
             <nuxt-link

@@ -152,7 +152,7 @@ definePageMeta({
                       <img
                         :src="user.thumbnailUrl"
                         :alt="`${user.username}のプロフィール写真`"
-                        class="h-14 w-14"
+                        class="h-14 w-14 rounded-full"
                       />
                     </template>
                     <template v-else>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
+import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
 const { user, updateEmail } = useAuthStore()
@@ -15,7 +16,11 @@ const handleSubmit = async () => {
     await updateEmail(formData.value)
     router.push('/account/edit/complete?from=email')
   } catch (error) {
-    errorMessage.value = error.message
+    if (error instanceof ApiBaseError) {
+      errorMessage.value = error.message
+    } else {
+      errorMessage.value = 'メールアドレスの変更に失敗しました。'
+    }
   }
 }
 
