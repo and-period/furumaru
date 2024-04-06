@@ -218,7 +218,14 @@ definePageMeta({
                     {{ user.email }}
                   </dd>
                 </div>
+                <!-- 一時的に選択不可能にする -->
+                <button
+                  class="cursor-not-allowed bg-main/70 px-2 py-1 text-white"
+                >
+                  準備中
+                </button>
                 <nuxt-link
+                  v-if="false"
                   to="/account/edit/email"
                   class="whitespace-nowrap bg-main px-4 py-1 text-white"
                 >
