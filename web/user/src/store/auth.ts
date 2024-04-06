@@ -193,7 +193,9 @@ export const useAuthStore = defineStore('auth', {
           body: payload,
         })
       } catch (error) {
-        return this.errorHandler(error)
+        return this.errorHandler(error, {
+          401: '現在のパスワードが正しくありません。',
+        })
       }
     },
 
