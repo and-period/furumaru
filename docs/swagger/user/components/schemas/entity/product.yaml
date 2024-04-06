@@ -37,6 +37,7 @@ product:
     thumbnails:
       type: array
       description: リサイズ済みサムネイルURL一覧
+      deprecated: true
       items:
         $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
     media:
@@ -53,6 +54,7 @@ product:
           images:
             type: array
             description: リサイズ済み画像URL一覧
+            deprecated: true
             items:
               type: object
               properties:

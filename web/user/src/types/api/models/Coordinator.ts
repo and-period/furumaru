@@ -84,6 +84,7 @@ export interface Coordinator {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
      * @memberof Coordinator
+     * @deprecated
      */
     thumbnails: Array<Thumbnail>;
     /**
@@ -96,6 +97,7 @@ export interface Coordinator {
      * リサイズ済みヘッダー画像URL一覧
      * @type {Array<CoordinatorHeadersInner>}
      * @memberof Coordinator
+     * @deprecated
      */
     headers: Array<CoordinatorHeadersInner>;
     /**

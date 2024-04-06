@@ -114,6 +114,7 @@ export interface Product {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
      * @memberof Product
+     * @deprecated
      */
     thumbnails: Array<Thumbnail>;
     /**

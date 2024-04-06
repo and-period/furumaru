@@ -54,6 +54,7 @@ export interface ArchiveSummary {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
      * @memberof ArchiveSummary
+     * @deprecated
      */
     thumbnails: Array<Thumbnail>;
 }

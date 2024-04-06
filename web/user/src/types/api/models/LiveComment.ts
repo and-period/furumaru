@@ -54,6 +54,7 @@ export interface LiveComment {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<LiveCommentThumbnailsInner>}
      * @memberof LiveComment
+     * @deprecated
      */
     thumbnails: Array<LiveCommentThumbnailsInner>;
     /**
