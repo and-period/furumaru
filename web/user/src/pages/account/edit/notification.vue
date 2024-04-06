@@ -1,18 +1,30 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
+import { ApiBaseError } from '~/types/exception'
 
 const { user, updateNotificationEnabled } = useAuthStore()
 
 const router = useRouter()
 const formData = ref<boolean>(false)
 
+const errorMessage = ref<string>('')
+
 if (user) {
   formData.value = user.notificationEnabled
 }
 
 const handleSubmit = async () => {
-  await updateNotificationEnabled(formData.value)
-  router.push('/account/edit/complete?from=notification')
+  try {
+    errorMessage.value = ''
+    await updateNotificationEnabled(formData.value)
+    router.push('/account/edit/complete?from=notification')
+  } catch (error) {
+    if (error instanceof ApiBaseError) {
+      errorMessage.value = error.message
+    } else {
+      errorMessage.value = 'メール受信設定の変更に失敗しました。'
+    }
+  }
 }
 
 useSeoMeta({
@@ -24,6 +36,10 @@ useSeoMeta({
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
       <the-account-edit-card title="メール受信の変更" class="mt-6">
+        <the-alert v-if="errorMessage" class="mt-4 w-full">
+          {{ errorMessage }}
+        </the-alert>
+
         <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
           <div class="my-10 flex w-full flex-col justify-center gap-14">
             <div>
@@ -59,7 +75,9 @@ useSeoMeta({
           </div>
 
           <div class="flex w-full flex-col gap-4">
-            <button class="w-ful bg-main px-4 py-2 text-white">変更する</button>
+            <button class="w-full bg-main px-4 py-2 text-white">
+              変更する
+            </button>
             <nuxt-link
               class="border border-main px-4 py-2 text-center text-main"
               to="/account"
