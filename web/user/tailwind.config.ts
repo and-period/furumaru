@@ -21,6 +21,8 @@ export default <Partial<Config>>{
         'apple-red': '#E74C3C',
         facebook: '#1877F2',
         line: '#06C755',
+        success: '#66bb6a',
+        error: '#f44336',
       },
       screens: {
         sm: '640px',

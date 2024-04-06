@@ -6,12 +6,31 @@ const { user, updateAccountId } = useAuthStore()
 
 const formData = ref<string>('')
 
+const helperTexts = computed(() => {
+  return [
+    {
+      type: 'length',
+      text: '4文字以上32文字以下の必要があります。',
+      hasError: formData.value.length < 4 || formData.value.length > 32,
+    },
+    {
+      type: 'character',
+      text: '使用可能な文字列は半角英数字とハイフン（-）、アンダースコア（_）です。',
+      hasError: !/^[a-zA-Z0-9_-]*$/.test(formData.value),
+    },
+  ]
+})
+
+const hasError = computed(() => {
+  return helperTexts.value.some((helperText) => helperText.hasError)
+})
+
 if (user) {
   formData.value = user.accountId
 }
 
 const handleSubmit = async () => {
-  if (formData.value === '') {
+  if (hasError.value) {
     return
   }
   await updateAccountId(formData.value)
@@ -38,10 +57,27 @@ useSeoMeta({
               placeholder="ユーザーID"
               :max-length="32"
             />
-            <p>4文字以上32文字以下の必要があります。</p>
-            <p>
-              使用可能な文字列は半角英数字とハイフン（-）、アンダースコア（_）です。
-            </p>
+            <ul class="flex flex-col gap-2">
+              <li
+                v-for="helperText in helperTexts"
+                :key="helperText.type"
+                class="grid grid-cols-12"
+              >
+                <the-check-icon
+                  class="h-3 w-3"
+                  :class="{
+                    'text-success': !helperText.hasError,
+                    'text-error': helperText.hasError,
+                  }"
+                />
+                <p
+                  class="col-span-10"
+                  :class="{ 'text-error': helperText.hasError }"
+                >
+                  {{ helperText.text }}
+                </p>
+              </li>
+            </ul>
           </div>
 
           <div class="flex w-full flex-col gap-4">
