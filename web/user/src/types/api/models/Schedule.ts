@@ -72,6 +72,7 @@ export interface Schedule {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
      * @memberof Schedule
+     * @deprecated
      */
     thumbnails: Array<Thumbnail>;
     /**

@@ -48,6 +48,7 @@ export interface ProductType {
      * リサイズ済みアイコンURL一覧
      * @type {Array<ProductTypeIconsInner>}
      * @memberof ProductType
+     * @deprecated
      */
     icons: Array<ProductTypeIconsInner>;
     /**

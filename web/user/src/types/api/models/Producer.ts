@@ -66,6 +66,7 @@ export interface Producer {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
      * @memberof Producer
+     * @deprecated
      */
     thumbnails: Array<Thumbnail>;
     /**
@@ -78,6 +79,7 @@ export interface Producer {
      * リサイズ済みヘッダー画像URL一覧
      * @type {Array<CoordinatorHeadersInner>}
      * @memberof Producer
+     * @deprecated
      */
     headers: Array<CoordinatorHeadersInner>;
     /**

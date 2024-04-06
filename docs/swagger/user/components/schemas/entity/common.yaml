@@ -4,6 +4,7 @@ thumbnail:
     url:
       type: string
       description: リサイズ済みサムネイルURL
+      deprecated: true
     size:
       $ref: './../../../openapi.yaml#/components/schemas/imageSize'
   required:

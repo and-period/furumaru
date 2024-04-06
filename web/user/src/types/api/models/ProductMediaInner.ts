@@ -42,6 +42,7 @@ export interface ProductMediaInner {
      * リサイズ済み画像URL一覧
      * @type {Array<ProductMediaInnerImagesInner>}
      * @memberof ProductMediaInner
+     * @deprecated
      */
     images: Array<ProductMediaInnerImagesInner>;
 }

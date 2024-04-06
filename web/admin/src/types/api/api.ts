@@ -1034,6 +1034,7 @@ export interface Coordinator {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof Coordinator
+     * @deprecated
      */
     'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
@@ -1046,6 +1047,7 @@ export interface Coordinator {
      * リサイズ済みヘッダー画像URL一覧
      * @type {Array<CoordinatorHeadersInner>}
      * @memberof Coordinator
+     * @deprecated
      */
     'headers': Array<CoordinatorHeadersInner>;
     /**
@@ -2321,6 +2323,7 @@ export interface LiveComment {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof LiveComment
+     * @deprecated
      */
     'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
@@ -3807,6 +3810,7 @@ export interface Producer {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof Producer
+     * @deprecated
      */
     'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
@@ -3819,6 +3823,7 @@ export interface Producer {
      * リサイズ済みヘッダー画像URL一覧
      * @type {Array<CoordinatorHeadersInner>}
      * @memberof Producer
+     * @deprecated
      */
     'headers': Array<CoordinatorHeadersInner>;
     /**
@@ -4127,6 +4132,7 @@ export interface ProductMediaInner {
      * リサイズ済み画像URL一覧
      * @type {Array<ProductMediaInnerImagesInner>}
      * @memberof ProductMediaInner
+     * @deprecated
      */
     'images': Array<ProductMediaInnerImagesInner>;
 }
@@ -4321,6 +4327,7 @@ export interface ProductType {
      * リサイズ済みアイコンURL一覧
      * @type {Array<ProductTypeIconsInner>}
      * @memberof ProductType
+     * @deprecated
      */
     'icons': Array<ProductTypeIconsInner>;
     /**
@@ -4742,6 +4749,7 @@ export interface Schedule {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof Schedule
+     * @deprecated
      */
     'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
@@ -6404,6 +6412,7 @@ export interface User {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<CoordinatorThumbnailsInner>}
      * @memberof User
+     * @deprecated
      */
     'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**

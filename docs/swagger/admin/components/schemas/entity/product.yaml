@@ -48,6 +48,7 @@ product:
           images:
             type: array
             description: リサイズ済み画像URL一覧
+            deprecated: true
             items:
               type: object
               properties:

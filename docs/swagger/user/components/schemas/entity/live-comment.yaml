@@ -16,6 +16,7 @@ liveComment:
     thumbnails:
       type: array
       description: リサイズ済みサムネイルURL一覧
+      deprecated: true
       items:
         type: object
         properties:

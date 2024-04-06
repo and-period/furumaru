@@ -72,6 +72,7 @@ export interface LiveSummary {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
      * @memberof LiveSummary
+     * @deprecated
      */
     thumbnails: Array<Thumbnail>;
     /**

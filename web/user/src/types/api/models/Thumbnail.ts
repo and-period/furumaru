@@ -30,6 +30,7 @@ export interface Thumbnail {
      * リサイズ済みサムネイルURL
      * @type {string}
      * @memberof Thumbnail
+     * @deprecated
      */
     url: string;
     /**

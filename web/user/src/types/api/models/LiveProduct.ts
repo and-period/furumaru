@@ -60,6 +60,7 @@ export interface LiveProduct {
      * リサイズ済みサムネイルURL一覧
      * @type {Array<Thumbnail>}
      * @memberof LiveProduct
+     * @deprecated
      */
     thumbnails: Array<Thumbnail>;
 }

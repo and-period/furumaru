@@ -22,6 +22,7 @@ schedule:
     thumbnails:
       type: array
       description: リサイズ済みサムネイルURL一覧
+      deprecated: true
       items:
         $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
     distributionUrl:
