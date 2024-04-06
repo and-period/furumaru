@@ -38,7 +38,12 @@ const handleClickLogoutButton = () => {
 <template>
   <the-dropdown-with-icon ref="dropdownRef">
     <template #icon>
-      <the-account-icon />
+      <template v-if="user && user.thumbnailUrl">
+        <img :src="user.thumbnailUrl" class="block h-7 w-7 rounded-full" />
+      </template>
+      <template v-else>
+        <the-account-icon />
+      </template>
     </template>
     <template #content>
       <div

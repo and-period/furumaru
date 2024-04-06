@@ -3,7 +3,7 @@ import { useAuthStore } from '~/store/auth'
 import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
-const { user, updateThumbnail } = useAuthStore()
+const { user, updateThumbnail, fetchUserInfo } = useAuthStore()
 
 const errorMessage = ref<string>('')
 const isLoading = ref<boolean>(false)
@@ -30,6 +30,7 @@ const handleSubmit = async () => {
       errorMessage.value = ''
       isLoading.value = true
       await updateThumbnail(formData.value)
+      fetchUserInfo()
       router.push('/account/edit/complete?from=thumbnail')
     } else {
       errorMessage.value = 'ファイルを選択してください。'
@@ -113,15 +114,6 @@ useSeoMeta({
               to="/account"
             >
               キャンセル
-            </nuxt-link>
-          </div>
-          <div class="text-center">
-            <nuxt-link
-              to="/account"
-              class="inline-flex items-center gap-1 text-[12px]"
-            >
-              <TheLeftArrowIcon class="h-3 w-3" />
-              マイページに戻る
             </nuxt-link>
           </div>
         </form>

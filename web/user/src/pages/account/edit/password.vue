@@ -128,7 +128,7 @@ useSeoMeta({
             </ul>
           </div>
 
-          <div class="my-4 text-center">
+          <div v-if="false" class="my-4 text-center">
             <nuxt-link to="/account/edit/id" class="underline">
               パスワードをお忘れの場合
             </nuxt-link>
@@ -143,15 +143,6 @@ useSeoMeta({
               to="/account"
             >
               キャンセル
-            </nuxt-link>
-          </div>
-          <div class="text-center">
-            <nuxt-link
-              to="/account"
-              class="inline-flex items-center gap-1 text-[12px]"
-            >
-              <TheLeftArrowIcon class="h-3 w-3" />
-              マイページに戻る
             </nuxt-link>
           </div>
         </form>

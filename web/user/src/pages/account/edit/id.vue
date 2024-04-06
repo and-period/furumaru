@@ -99,15 +99,6 @@ useSeoMeta({
               キャンセル
             </nuxt-link>
           </div>
-          <div class="text-center">
-            <nuxt-link
-              to="/account"
-              class="inline-flex items-center gap-1 text-[12px]"
-            >
-              <TheLeftArrowIcon class="h-3 w-3" />
-              マイページに戻る
-            </nuxt-link>
-          </div>
         </form>
       </the-account-edit-card>
     </template>
