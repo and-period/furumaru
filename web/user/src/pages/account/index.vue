@@ -144,30 +144,112 @@ definePageMeta({
             <dl
               class="divide-y divide-dashed divide-typography border-y border-dashed border-typography [&>div]:py-4 [&_dt]:text-typography"
             >
-              <div class="sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>表示名</dt>
-                <dd class="sm:col-span-2">
-                  {{ user.username }}
-                </dd>
+              <div class="flex items-center">
+                <div class="grow items-center sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>プロフィール写真</dt>
+                  <dd class="sm:col-span-2">
+                    <template v-if="user.thumbnailUrl">
+                      <img
+                        :src="user.thumbnailUrl"
+                        :alt="`${user.username}のプロフィール写真`"
+                        class="h-14 w-14 rounded-full"
+                      />
+                    </template>
+                    <template v-else>
+                      <the-account-icon class="h-14 w-14" color="white" />
+                    </template>
+                  </dd>
+                </div>
+                <nuxt-link
+                  to="/account/edit/thumbnail"
+                  class="whitespace-nowrap bg-main px-4 py-1 text-white"
+                >
+                  変更
+                </nuxt-link>
               </div>
-              <div class="sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>氏名（ふりがな）</dt>
-                <dd class="sm:col-span-2">
-                  {{ `${user.lastname} ${user.firstname}` }}
-                  {{ `（${user.lastnameKana} ${user.firstnameKana}）` }}
-                </dd>
+
+              <div class="flex items-center">
+                <div class="grow sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>ユーザー名</dt>
+                  <dd class="sm:col-span-2">
+                    {{ user.username }}
+                  </dd>
+                </div>
+                <nuxt-link
+                  to="/account/edit/username"
+                  class="whitespace-nowrap bg-main px-4 py-1 text-white"
+                >
+                  変更
+                </nuxt-link>
               </div>
-              <div class="sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>アカウントID</dt>
-                <dd class="sm:col-span-2">
-                  {{ user.accountId }}
-                </dd>
+
+              <div class="flex items-center">
+                <div class="grow sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>ユーザーID</dt>
+                  <dd class="sm:col-span-2">
+                    {{ user.accountId }}
+                  </dd>
+                </div>
+                <nuxt-link
+                  to="/account/edit/id"
+                  class="whitespace-nowrap bg-main px-4 py-1 text-white"
+                >
+                  変更
+                </nuxt-link>
               </div>
-              <div class="sm:grid sm:grid-cols-3 sm:gap-4">
-                <dt>メールアドレス</dt>
-                <dd class="sm:col-span-2">
-                  {{ user.email }}
-                </dd>
+
+              <div class="flex items-center">
+                <div class="grow sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>パスワード</dt>
+                  <dd class="sm:col-span-2">********</dd>
+                </div>
+                <nuxt-link
+                  to="/account/edit/password"
+                  class="whitespace-nowrap bg-main px-4 py-1 text-white"
+                >
+                  変更
+                </nuxt-link>
+              </div>
+
+              <div class="flex items-center">
+                <div class="grow sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>メールアドレス</dt>
+                  <dd class="sm:col-span-2">
+                    {{ user.email }}
+                  </dd>
+                </div>
+                <!-- 一時的に選択不可能にする -->
+                <button
+                  class="cursor-not-allowed bg-main/70 px-2 py-1 text-white"
+                >
+                  準備中
+                </button>
+                <nuxt-link
+                  v-if="false"
+                  to="/account/edit/email"
+                  class="whitespace-nowrap bg-main px-4 py-1 text-white"
+                >
+                  変更
+                </nuxt-link>
+              </div>
+
+              <div class="flex items-center">
+                <div class="grow sm:grid sm:grid-cols-3 sm:gap-4">
+                  <dt>メール配信</dt>
+                  <dd class="sm:col-span-2">
+                    {{
+                      user.notificationEnabled
+                        ? 'お知らせメールを受け取る'
+                        : 'お知らせメールを受け取らない'
+                    }}
+                  </dd>
+                </div>
+                <nuxt-link
+                  to="/account/edit/notification"
+                  class="whitespace-nowrap bg-main px-4 py-1 text-white"
+                >
+                  変更
+                </nuxt-link>
               </div>
             </dl>
           </template>

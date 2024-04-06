@@ -49,10 +49,18 @@ const handleClickLogoutButton = () => {
           {{ item.text }}
         </p>
         <div class="mb-8 px-4">
-          <img
-            src="~/assets/img/account.png"
-            class="block h-[40px] w-[40px] rounded-full"
-          />
+          <template v-if="user.thumbnailUrl">
+            <img
+              :src="user.thumbnailUrl"
+              class="block h-[40px] w-[40px] rounded-full"
+            />
+          </template>
+          <template v-else>
+            <img
+              src="~/assets/img/account.png"
+              class="block h-[40px] w-[40px] rounded-full"
+            />
+          </template>
           <div class="mt-4 font-bold">
             <template v-if="user.username"> {{ user.username }} 様 </template>
             <template v-else> ユーザー名が未設定です </template>

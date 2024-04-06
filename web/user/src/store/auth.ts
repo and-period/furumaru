@@ -2,11 +2,13 @@
 import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import { defineStore, acceptHMRUpdate } from 'pinia'
+import { fileUpload } from './helpter'
 import type {
   AuthUserResponse,
   CreateAuthUserRequest,
   CreateAuthUserResponse,
   SignInRequest,
+  UpdateAuthPasswordRequest,
   VerifyAuthUserRequest,
 } from '~/types/api'
 import { AuthError } from '~/types/exception'
@@ -124,6 +126,106 @@ export const useAuthStore = defineStore('auth', {
 
     setExpiredAt(expiredAt: number) {
       this.expiredAt = dayjs().add(expiredAt, 'second')
+    },
+
+    /**
+     * サムネイル変更
+     * @param file
+     * @returns
+     */
+    async updateThumbnail(file: File) {
+      const mimeType = file.type
+
+      const { key, url: uploadUrl } = await this.authUserApiClient(
+        this.accessToken,
+      ).v1GetUserThumbnailUploadUrl({
+        body: { fileType: mimeType },
+      })
+
+      const url = await fileUpload(file, key, uploadUrl, this.accessToken)
+
+      this.authUserApiClient(this.accessToken).v1UpdateAuthUserThumbnail({
+        body: { thumbnailUrl: url },
+      })
+    },
+
+    /**
+     * ユーザー名変更
+     * @param username
+     * @returns
+     */
+    async updateUsername(username: string) {
+      try {
+        await this.authUserApiClient(this.accessToken).v1UpdateAuthUserUsername(
+          {
+            body: { username },
+          },
+        )
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * アカウントID（ユーザーID）変更
+     * @param accountId
+     */
+    async updateAccountId(accountId: string) {
+      try {
+        await this.authUserApiClient(
+          this.accessToken,
+        ).v1UpdateAuthUserAccountId({
+          body: { accountId },
+        })
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * パスワード変更
+     * @param payload
+     * @returns
+     */
+    async updatePassword(payload: UpdateAuthPasswordRequest) {
+      try {
+        await this.authApiClient(this.accessToken).v1UpdateUserPassword({
+          body: payload,
+        })
+      } catch (error) {
+        return this.errorHandler(error, {
+          401: '現在のパスワードが正しくありません。',
+        })
+      }
+    },
+
+    /**
+     * メールアドレス更新
+     * @param email
+     */
+    async updateEmail(email: string) {
+      try {
+        await this.authUserApiClient(this.accessToken).v1UpdateAuthUserEmail({
+          body: { email },
+        })
+      } catch (error) {
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * メール通知設定
+     * @param enabled
+     * @returns
+     */
+    async updateNotificationEnabled(enabled: boolean) {
+      try {
+        await this.authUserApiClient(
+          this.accessToken,
+        ).v1UpdateAuthUserNotification({ body: { enabled } })
+      } catch (error) {
+        return this.errorHandler(error)
+      }
     },
   },
 })

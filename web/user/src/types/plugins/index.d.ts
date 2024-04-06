@@ -40,6 +40,7 @@ declare module 'pinia' {
     statusApiClient: () => StatusApi
     orderApiClient: (token?: string) => OrderApi
     promotionApiClient: (token?: string) => PromotionApi
+    otherApiClient: (token?: string) => OtherApi
     i18n: VueI18
   }
 }
