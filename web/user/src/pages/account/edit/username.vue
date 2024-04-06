@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth'
+import { ApiBaseError } from '~/types/exception'
 
 const router = useRouter()
 const { user, updateUsername } = useAuthStore()
 
 const formData = ref<string>('')
+const errorMessage = ref<string>('')
 
 if (user) {
   formData.value = user.username
@@ -14,8 +16,16 @@ const handleSubmit = async () => {
   if (formData.value === '') {
     return
   }
-  await updateUsername(formData.value)
-  router.push('/account/edit/complete?from=username')
+  try {
+    await updateUsername(formData.value)
+    router.push('/account/edit/complete?from=username')
+  } catch (error) {
+    if (error instanceof ApiBaseError) {
+      errorMessage.value = error.message
+    } else {
+      errorMessage.value = 'ユーザー名の変更に失敗しました。'
+    }
+  }
 }
 
 useSeoMeta({
@@ -27,6 +37,10 @@ useSeoMeta({
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
       <the-account-edit-card title="ユーザー名の変更" class="mt-6">
+        <the-alert v-if="errorMessage" class="mt-4 w-full">
+          {{ errorMessage }}
+        </the-alert>
+
         <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
           <div class="my-10 flex w-full justify-center">
             <the-text-input
