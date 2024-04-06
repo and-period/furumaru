@@ -38,6 +38,10 @@ useSeoMeta({
           {{ errorMessage }}
         </the-alert>
 
+        <the-alert class="mt-4 w-full">
+          この機能は現在準備中で使用できません。
+        </the-alert>
+
         <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
           <div class="my-10 flex w-full flex-col justify-center gap-14">
             <div>
@@ -56,7 +60,11 @@ useSeoMeta({
           </div>
 
           <div class="flex w-full flex-col gap-4">
-            <button class="w-ful bg-main px-4 py-2 text-white" type="submit">
+            <button
+              class="w-ful bg-main px-4 py-2 text-white disabled:bg-main/70"
+              type="submit"
+              disabled
+            >
               変更する
             </button>
             <nuxt-link
