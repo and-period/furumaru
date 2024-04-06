@@ -21,6 +21,10 @@ const helperTexts = computed(() => {
   ]
 })
 
+const showValidation = computed(() => {
+  return formData.value.length !== 0
+})
+
 const hasError = computed(() => {
   return helperTexts.value.some((helperText) => helperText.hasError)
 })
@@ -57,6 +61,7 @@ useSeoMeta({
               placeholder="ユーザーID"
               :max-length="32"
             />
+
             <ul class="flex flex-col gap-2">
               <li
                 v-for="helperText in helperTexts"
@@ -66,13 +71,16 @@ useSeoMeta({
                 <the-check-icon
                   class="h-3 w-3"
                   :class="{
-                    'text-success': !helperText.hasError,
-                    'text-error': helperText.hasError,
+                    'text-typography': !showValidation,
+                    'text-success': showValidation && !helperText.hasError,
+                    'text-error': showValidation && helperText.hasError,
                   }"
                 />
                 <p
                   class="col-span-10"
-                  :class="{ 'text-error': helperText.hasError }"
+                  :class="{
+                    'text-error': showValidation && helperText.hasError,
+                  }"
                 >
                   {{ helperText.text }}
                 </p>

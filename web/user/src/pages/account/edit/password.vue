@@ -13,14 +13,44 @@ const formData = ref<UpdateAuthPasswordRequest>({
   passwordConfirmation: '',
 })
 
+const helperTexts = computed(() => {
+  return [
+    {
+      type: 'length',
+      text: '8文字以上32文字以下の必要があります。',
+      hasError:
+        formData.value.newPassword.length < 8 ||
+        formData.value.newPassword.length > 32,
+    },
+    {
+      type: 'character',
+      text: '英小文字、数字をそれぞれ1文字以上含む必要があります。',
+      hasError: !/^(?=.*?[a-z])(?=.*?\d).+$/.test(formData.value.newPassword),
+    },
+    {
+      type: 'confirmation',
+      text: '新しいパスワード（確認用）には新しいパスワードと同じ値を入力してください。',
+      hasError:
+        formData.value.newPassword !== formData.value.passwordConfirmation,
+    },
+  ]
+})
+
+const hasError = computed(() => {
+  return helperTexts.value.some((helperText) => helperText.hasError)
+})
+
+const showValidation = computed(() => {
+  return formData.value.newPassword.length !== 0
+})
+
 const handleSubmit = async () => {
+  if (hasError.value) {
+    return
+  }
   try {
-    if (formData.value.newPassword !== formData.value.passwordConfirmation) {
-      alert('新しいパスワードと新しいパスワード（確認用）が一致しません')
-    } else {
-      await updatePassword(formData.value)
-      router.push('/account/edit/complete?from=password')
-    }
+    await updatePassword(formData.value)
+    router.push('/account/edit/complete?from=password')
   } catch (error) {
     if (error instanceof ApiBaseError) {
       errorMessage.value = error.message
@@ -39,7 +69,9 @@ useSeoMeta({
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
       <the-account-edit-card title="パスワードの変更" class="mt-6">
-        <the-alert v-if="errorMessage">{{ errorMessage }}</the-alert>
+        <the-alert v-if="errorMessage" class="mt-4">{{
+          errorMessage
+        }}</the-alert>
 
         <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
           <div class="mt-10 flex w-full flex-col justify-center gap-4">
@@ -69,6 +101,31 @@ useSeoMeta({
               placeholder="新しいパスワード（確認用）"
               required
             />
+
+            <ul class="flex flex-col gap-2">
+              <li
+                v-for="helperText in helperTexts"
+                :key="helperText.type"
+                class="grid grid-cols-12"
+              >
+                <the-check-icon
+                  class="h-3 w-3"
+                  :class="{
+                    ' text-typography': !showValidation,
+                    'text-success': showValidation && !helperText.hasError,
+                    'text-error': showValidation && helperText.hasError,
+                  }"
+                />
+                <p
+                  class="col-span-10"
+                  :class="{
+                    'text-error': showValidation && helperText.hasError,
+                  }"
+                >
+                  {{ helperText.text }}
+                </p>
+              </li>
+            </ul>
           </div>
 
           <div class="my-4 text-center">
