@@ -61,26 +61,17 @@ useSeoMeta({
 
           <div class="flex w-full flex-col gap-4">
             <button
-              class="w-ful bg-main px-4 py-2 text-white disabled:bg-main/70"
+              class="w-ful bg-main disabled:bg-main/70 px-4 py-2 text-white"
               type="submit"
               disabled
             >
               変更する
             </button>
             <nuxt-link
-              class="border border-main px-4 py-2 text-center text-main"
+              class="border-main text-main border px-4 py-2 text-center"
               to="/account"
             >
               キャンセル
-            </nuxt-link>
-          </div>
-          <div class="text-center">
-            <nuxt-link
-              to="/account"
-              class="inline-flex items-center gap-1 text-[12px]"
-            >
-              <TheLeftArrowIcon class="h-3 w-3" />
-              マイページに戻る
             </nuxt-link>
           </div>
         </form>
