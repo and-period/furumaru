@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/internal/user/codes"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -71,6 +72,7 @@ func NewService(params *Params, opts ...Option) user.Service {
 			RequireUppercase: false,
 			RequireLowercase: true,
 		}),
+		validator.WithCustomValidation(codes.RegisterValidations),
 	}
 	return &service{
 		now:         jst.Now,

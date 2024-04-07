@@ -342,7 +342,7 @@ type UpdateUserNotificationInput struct {
 
 type CreateMemberInput struct {
 	Username             string `validate:"required,max=32"`
-	AccountID            string `validate:"required,max=32"`
+	AccountID            string `validate:"required,max=32,account_id"`
 	Lastname             string `validate:"required,max=16"`
 	Firstname            string `validate:"required,max=16"`
 	LastnameKana         string `validate:"required,max=32,hiragana"`
@@ -361,7 +361,7 @@ type VerifyMemberInput struct {
 type CreateMemberWithOAuthInput struct {
 	AccessToken   string `validate:"required"`
 	Username      string `validate:"required,max=32"`
-	AccountID     string `validate:"required,max=32"`
+	AccountID     string `validate:"required,max=32,account_id"`
 	Lastname      string `validate:"required,max=16"`
 	Firstname     string `validate:"required,max=16"`
 	LastnameKana  string `validate:"required,max=32,hiragana"`
@@ -404,7 +404,7 @@ type UpdateMemberUsernameInput struct {
 
 type UpdateMemberAccountIDInput struct {
 	UserID    string `validate:"required"`
-	AccountID string `validate:"required,max=32"`
+	AccountID string `validate:"required,max=32,account_id"`
 }
 
 type UpdateMemberThumbnailURLInput struct {

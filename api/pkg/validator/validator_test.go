@@ -3,6 +3,7 @@ package validator
 import (
 	"testing"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -195,6 +196,54 @@ func TestValidator(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			validator := NewValidator(tt.opts...)
+			err := validator.Struct(tt.input)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestValidator_CustomValidation(t *testing.T) {
+	t.Parallel()
+	type input struct {
+		Custom string `validate:"omitempty,custom"`
+	}
+	tests := []struct {
+		name   string
+		input  *input
+		custom func(v *validator.Validate) error
+		hasErr bool
+	}{
+		{
+			name: "valid custom validation",
+			input: &input{
+				Custom: "12345678",
+			},
+			custom: func(v *validator.Validate) error {
+				fn := func(fl validator.FieldLevel) bool {
+					return fl.Field().String() == "12345678"
+				}
+				return v.RegisterValidation("custom", fn)
+			},
+			hasErr: false,
+		},
+		{
+			name: "invalid custom validation",
+			input: &input{
+				Custom: "87654321",
+			},
+			custom: func(v *validator.Validate) error {
+				fn := func(fl validator.FieldLevel) bool {
+					return fl.Field().String() == "12345678"
+				}
+				return v.RegisterValidation("custom", fn)
+			},
+			hasErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			validator := NewValidator(WithCustomValidation(tt.custom))
 			err := validator.Struct(tt.input)
 			assert.Equal(t, tt.hasErr, err != nil, err)
 		})
