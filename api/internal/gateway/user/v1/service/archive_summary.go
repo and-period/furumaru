@@ -18,6 +18,8 @@ func NewArchiveSummary(schedule *entity.Schedule) *ArchiveSummary {
 			ScheduleID:    schedule.ID,
 			CoordinatorID: schedule.CoordinatorID,
 			Title:         schedule.Title,
+			StartAt:       schedule.StartAt.Unix(),
+			EndAt:         schedule.EndAt.Unix(),
 			ThumbnailURL:  schedule.ThumbnailURL,
 			Thumbnails:    NewImages(schedule.Thumbnails).Response(),
 		},

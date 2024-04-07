@@ -45,6 +45,18 @@ export interface ArchiveSummary {
      */
     title: string;
     /**
+     * マルシェ開始日時 (unixtime)
+     * @type {number}
+     * @memberof ArchiveSummary
+     */
+    startAt: number;
+    /**
+     * マルシェ終了日時 (unixtime)
+     * @type {number}
+     * @memberof ArchiveSummary
+     */
+    endAt: number;
+    /**
      * サムネイルURL
      * @type {string}
      * @memberof ArchiveSummary
@@ -67,6 +79,8 @@ export function instanceOfArchiveSummary(value: object): boolean {
     isInstance = isInstance && "scheduleId" in value;
     isInstance = isInstance && "coordinatorId" in value;
     isInstance = isInstance && "title" in value;
+    isInstance = isInstance && "startAt" in value;
+    isInstance = isInstance && "endAt" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
     isInstance = isInstance && "thumbnails" in value;
 
@@ -86,6 +100,8 @@ export function ArchiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: bool
         'scheduleId': json['scheduleId'],
         'coordinatorId': json['coordinatorId'],
         'title': json['title'],
+        'startAt': json['startAt'],
+        'endAt': json['endAt'],
         'thumbnailUrl': json['thumbnailUrl'],
         'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
     };
@@ -103,6 +119,8 @@ export function ArchiveSummaryToJSON(value?: ArchiveSummary | null): any {
         'scheduleId': value.scheduleId,
         'coordinatorId': value.coordinatorId,
         'title': value.title,
+        'startAt': value.startAt,
+        'endAt': value.endAt,
         'thumbnailUrl': value.thumbnailUrl,
         'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
     };
