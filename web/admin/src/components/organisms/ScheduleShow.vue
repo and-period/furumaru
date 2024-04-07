@@ -209,7 +209,6 @@ const onSubmit = async (): Promise<void> => {
                 <molecules-image-select-form
                   label="待機中の画像"
                   :loading="loading"
-                  :accept="['image/png']"
                   :img-url="formDataValue.imageUrl"
                   :error="props.imageUploadStatus.error"
                   :message="props.imageUploadStatus.message"

@@ -207,7 +207,6 @@ const onSubmit = async (): Promise<void> => {
             <molecules-image-select-form
               label="サムネイル画像"
               :loading="loading"
-              :accept="['image/png']"
               :img-url="formDataValue.thumbnailUrl"
               :validation-error-message="getErrorMessage(formDataValidate.thumbnailUrl.$errors)"
               :error="props.thumbnailUploadStatus.error"
@@ -230,7 +229,6 @@ const onSubmit = async (): Promise<void> => {
             <molecules-image-select-form
               label="待機中の画像"
               :loading="loading"
-              :accept="['image/png']"
               :img-url="formDataValue.imageUrl"
               :validation-error-message="getErrorMessage(formDataValidate.imageUrl.$errors)"
               :error="props.imageUploadStatus.error"
