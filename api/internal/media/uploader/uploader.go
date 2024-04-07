@@ -194,6 +194,18 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 	// 結果の保存
 	referenceURL := u.storageURL()
 	referenceURL.Path = key
+	if !reg.ShouldConvert(metadata.ContentType) {
+		event.SetResult(true, referenceURL.String(), u.now())
+		return nil
+	}
+	// ファイル変換が必要な場合は変換して保存
+	convertedKey, err := u.uploadConvetFile(ctx, event, reg)
+	if err != nil {
+		u.logger.Error("Failed to convert file", zap.String("key", key), zap.Error(err))
+		event.SetResult(false, "", u.now())
+		return err
+	}
+	referenceURL.Path = convertedKey // 参照先としては変換後のファイルを指定
 	event.SetResult(true, referenceURL.String(), u.now())
 	return nil
 }

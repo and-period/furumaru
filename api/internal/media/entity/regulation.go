@@ -40,10 +40,19 @@ const (
 	ScheduleOpeningVideoPath      = "schedules/opening-video"      // 開催スケジュールオープニング動画
 )
 
+// ConvertType - ファイルの変換種別
+type ConvertType int32
+
+const (
+	ConvertTypeNone      ConvertType = iota // 変換不要
+	ConvertTypeJPEGToPNG                    // 画像の変換(JPEG -> PNG)
+)
+
 // Regulation - ファイルアップロード制約
 type Regulation struct {
 	MaxSize int64            // ファイルサイズ上限
 	Formats *set.Set[string] // ファイル形式
+	Convert ConvertType      // ファイル変換が必要な場合の変換種別
 	dir     string           // 保管先ディレクトリPath
 }
 
@@ -132,7 +141,8 @@ var (
 	}
 	ScheduleImageRegulation = &Regulation{
 		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png"),
+		Formats: set.New("image/png", "image/jpeg"),
+		Convert: ConvertTypeJPEGToPNG, // MediaLiveの仕様に合わせてPNG形式に変換
 		dir:     ScheduleImagePath,
 	}
 	ScheduleOpeningVideoRegulation = &Regulation{
@@ -193,5 +203,16 @@ func (r *Regulation) GetFileExtension(contentType string) (string, error) {
 		return "mp4", nil
 	default:
 		return "", ErrUnknownContentType
+	}
+}
+
+func (r *Regulation) ShouldConvert(contentType string) bool {
+	switch r.Convert {
+	case ConvertTypeJPEGToPNG:
+		return contentType == "image/jpeg"
+	case ConvertTypeNone:
+		return false
+	default:
+		return false
 	}
 }
