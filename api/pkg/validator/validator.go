@@ -14,6 +14,7 @@ type Validator interface {
 
 type options struct {
 	password *PasswordParams
+	custom   func(v *validator.Validate) error
 }
 
 type Option func(opts *options)
@@ -29,6 +30,12 @@ type PasswordParams struct {
 func WithPasswordValidation(params *PasswordParams) Option {
 	return func(opts *options) {
 		opts.password = params
+	}
+}
+
+func WithCustomValidation(fn func(v *validator.Validate) error) Option {
+	return func(opts *options) {
+		opts.custom = fn
 	}
 }
 
@@ -60,6 +67,11 @@ func NewValidator(opts ...Option) Validator {
 	v.RegisterValidation("password", validatePassword(passwordRegex))
 	// phone_number - 正規表現を利用して電話番号（ハイフンあり）の形式であるかの検証
 	v.RegisterValidation("phone_number", validatePhoneNumber(phoneNumberRegex))
+
+	// カスタムバリデーション
+	if dopts.custom != nil {
+		dopts.custom(v)
+	}
 
 	return v
 }
