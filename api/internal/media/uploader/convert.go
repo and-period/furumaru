@@ -15,6 +15,8 @@ import (
 
 func (u *uploader) uploadConvetFile(ctx context.Context, event *entity.UploadEvent, reguration *entity.Regulation) (string, error) {
 	if reguration.Convert == entity.ConvertTypeNone {
+		u.logger.Debug("No need to convert", zap.String("key", event.Key))
+		return event.Key, nil // 変換不要
 	}
 	switch reguration.Convert {
 	case entity.ConvertTypeJPEGToPNG:
