@@ -196,9 +196,9 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 		return nil
 	}
 	// ファイル変換が必要な場合は変換して保存
-	convertedKey, err := u.uploadConvetFile(ctx, event, reg)
+	convertedKey, err := u.uploadConvertFile(ctx, event, reg)
 	if err != nil {
-		u.logger.Error("Failed to convert file", zap.String("key", key), zap.Error(err))
+		u.logger.Error("Failed to upload convert file", zap.String("key", key), zap.Error(err))
 		event.SetResult(false, "", u.now())
 		return err
 	}

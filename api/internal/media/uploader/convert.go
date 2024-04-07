@@ -13,16 +13,16 @@ import (
 	"go.uber.org/zap"
 )
 
-func (u *uploader) uploadConvetFile(ctx context.Context, event *entity.UploadEvent, reguration *entity.Regulation) (string, error) {
-	if reguration.ConversionType == entity.ConversionTypeNone {
+func (u *uploader) uploadConvertFile(ctx context.Context, event *entity.UploadEvent, reg *entity.Regulation) (string, error) {
+	if reg.ConversionType == entity.ConversionTypeNone {
 		u.logger.Debug("No need to convert", zap.String("key", event.Key))
 		return event.Key, nil // 変換不要
 	}
-	switch reguration.ConversionType {
+	switch reg.ConversionType {
 	case entity.ConversionTypeJPEGToPNG:
 		return u.convertJPEGToPNG(ctx, event)
 	default:
-		u.logger.Warn("Unsupported convert type", zap.String("key", event.Key), zap.Int32("conversionType", int32(reguration.ConversionType)))
+		u.logger.Warn("Unsupported convert type", zap.String("key", event.Key), zap.Int32("conversionType", int32(reg.ConversionType)))
 		return event.Key, nil // 変換できないファイルに対してはエラーにせず元ファイルをそのまま利用する
 	}
 }
@@ -51,5 +51,5 @@ func (u *uploader) convertJPEGToPNG(ctx context.Context, event *entity.UploadEve
 
 func (u *uploader) replaceExt(filePath, ext string) string {
 	current := filepath.Ext(filePath)
-	return strings.Replace(filePath, current, ext, 1)
+	return strings.TrimSuffix(filePath, current) + ext
 }
