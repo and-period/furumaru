@@ -105,6 +105,9 @@ export default defineNuxtConfig({
     },
   },
   build: {},
+  nitro: {
+    plugins: ['~/server/plugins/sentry'],
+  },
   vite: {
     vue: {
       script: {

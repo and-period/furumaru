@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
+    "@sentry/node": "^7.109.0",
+    "@sentry/vue": "^7.109.0",
     "@tailwindcss/typography": "^0.5.10",
     "@types/markdown-it": "^13.0.2",
     "axios": "^1.2.2",
@@ -39,7 +41,6 @@
     "@nuxtjs/stylelint-module": "^4.1.0",
     "@nuxtjs/tailwindcss": "^6.2.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
-    "@sentry/vue": "^7.109.0",
     "@types/hls.js": "^1.0.0",
     "@vitest/coverage-c8": "^0.28.5",
     "@vue/test-utils": "^2.2.6",
