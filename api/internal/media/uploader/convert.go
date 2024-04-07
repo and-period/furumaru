@@ -14,16 +14,16 @@ import (
 )
 
 func (u *uploader) uploadConvetFile(ctx context.Context, event *entity.UploadEvent, reguration *entity.Regulation) (string, error) {
-	if reguration.Convert == entity.ConvertTypeNone {
+	if reguration.ConversionType == entity.ConversionTypeNone {
 		u.logger.Debug("No need to convert", zap.String("key", event.Key))
 		return event.Key, nil // 変換不要
 	}
-	switch reguration.Convert {
-	case entity.ConvertTypeJPEGToPNG:
+	switch reguration.ConversionType {
+	case entity.ConversionTypeJPEGToPNG:
 		return u.convertJPEGToPNG(ctx, event)
 	default:
-		u.logger.Warn("Unsupported convert type", zap.String("key", event.Key), zap.Int32("convertType", int32(reguration.Convert)))
-		return event.Key, nil // 変換できないファイルに対してはエラーにせず、元ファイルをそのまま利用する
+		u.logger.Warn("Unsupported convert type", zap.String("key", event.Key), zap.Int32("conversionType", int32(reguration.ConversionType)))
+		return event.Key, nil // 変換できないファイルに対してはエラーにせず元ファイルをそのまま利用する
 	}
 }
 
@@ -40,9 +40,10 @@ func (u *uploader) convertJPEGToPNG(ctx context.Context, event *entity.UploadEve
 	if err := png.Encode(buf, img); err != nil {
 		return "", fmt.Errorf("uploader: failed to encode image: %w", err)
 	}
-	const extension = ".png"
+	const extension, contentType = ".png", "image/png"
 	key := u.replaceExt(event.Key, extension)
-	if _, err := u.storage.Upload(ctx, key, buf); err != nil {
+	md := u.newObjectMetadata(contentType)
+	if _, err := u.storage.Upload(ctx, key, buf, md); err != nil {
 		return "", fmt.Errorf("uploader: failed to upload file: %w", err)
 	}
 	return key, nil

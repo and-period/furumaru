@@ -48,12 +48,14 @@ type resizer struct {
 	store       store.Service
 	concurrency int64
 	maxRetries  int64
+	ttl         time.Duration
 }
 
 type options struct {
 	logger      *zap.Logger
 	concurrency int64
 	maxRetries  int64
+	ttl         time.Duration
 }
 
 type Option func(*options)
@@ -76,11 +78,18 @@ func WithMaxRetires(maxRetries int64) Option {
 	}
 }
 
+func WithCacheTTL(ttl time.Duration) Option {
+	return func(opts *options) {
+		opts.ttl = ttl
+	}
+}
+
 func NewResizer(params *Params, opts ...Option) Resizer {
 	dopts := &options{
 		logger:      zap.NewNop(),
 		concurrency: 1,
 		maxRetries:  3,
+		ttl:         5 * time.Minute,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -93,6 +102,7 @@ func NewResizer(params *Params, opts ...Option) Resizer {
 		user:        params.User,
 		store:       params.Store,
 		concurrency: dopts.concurrency,
+		ttl:         dopts.ttl,
 	}
 }
 

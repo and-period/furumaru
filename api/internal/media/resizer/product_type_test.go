@@ -33,7 +33,7 @@ func TestProductTypeIcon(t *testing.T) {
 					{URL: url, Size: common.ImageSizeLarge},
 				}
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.store.EXPECT().
 					UpdateProductTypeIcons(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, in *store.UpdateProductTypeIconsInput) error {
@@ -90,7 +90,7 @@ func TestProductTypeIcon(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
@@ -105,7 +105,7 @@ func TestProductTypeIcon(t *testing.T) {
 				file := testImageFile(t)
 				url := "http://example.com/media/image_xxx.png"
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.store.EXPECT().UpdateProductTypeIcons(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.ResizerPayload{

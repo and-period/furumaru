@@ -120,7 +120,7 @@ func TestRegulation_ShouldConvert(t *testing.T) {
 		{
 			name: "none",
 			regulation: &Regulation{
-				Convert: ConvertTypeNone,
+				ConversionType: ConversionTypeNone,
 			},
 			contentType: "image/jpeg",
 			expect:      false,
@@ -128,7 +128,7 @@ func TestRegulation_ShouldConvert(t *testing.T) {
 		{
 			name: "jpeg to png should convert",
 			regulation: &Regulation{
-				Convert: ConvertTypeJPEGToPNG,
+				ConversionType: ConversionTypeJPEGToPNG,
 			},
 			contentType: "image/jpeg",
 			expect:      true,
@@ -136,7 +136,7 @@ func TestRegulation_ShouldConvert(t *testing.T) {
 		{
 			name: "jpeg to png should not convert",
 			regulation: &Regulation{
-				Convert: ConvertTypeJPEGToPNG,
+				ConversionType: ConversionTypeJPEGToPNG,
 			},
 			contentType: "image/png",
 			expect:      false,
@@ -144,7 +144,7 @@ func TestRegulation_ShouldConvert(t *testing.T) {
 		{
 			name: "unknown",
 			regulation: &Regulation{
-				Convert: -1,
+				ConversionType: -1,
 			},
 			contentType: "image/jpeg",
 			expect:      false,

@@ -182,10 +182,7 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 		return err
 	}
 	// 参照用S3バケットへコピーする
-	md := map[string]string{
-		"Content-Type":  metadata.ContentType,
-		"Cache-Control": "max-age=" + u.ttl.String(),
-	}
+	md := u.newObjectMetadata(metadata.ContentType)
 	if _, err := u.storage.Copy(ctx, u.tmp.GetBucketName(), key, key, md); err != nil {
 		u.logger.Error("Failed to copy object", zap.String("key", key), zap.Error(err))
 		event.SetResult(false, "", u.now())
@@ -208,6 +205,13 @@ func (u *uploader) run(ctx context.Context, record *events.S3EventRecord) error 
 	referenceURL.Path = convertedKey // 参照先としては変換後のファイルを指定
 	event.SetResult(true, referenceURL.String(), u.now())
 	return nil
+}
+
+func (u *uploader) newObjectMetadata(contentType string) map[string]string {
+	return map[string]string{
+		"Content-Type":  contentType,
+		"Cache-Control": "max-age=" + u.ttl.String(),
+	}
 }
 
 func (u *uploader) isRetryable(err error) bool {

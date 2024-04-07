@@ -45,7 +45,7 @@ func TestProductMedia(t *testing.T) {
 						require.NotEmpty(t, file)
 						return file, nil
 					}).Times(2)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.store.EXPECT().
 					UpdateProductMedia(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, in *store.UpdateProductMediaInput) error {
@@ -104,7 +104,7 @@ func TestProductMedia(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(gomock.Any(), "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
@@ -119,7 +119,7 @@ func TestProductMedia(t *testing.T) {
 				file := testImageFile(t)
 				url := "http://example.com/media/image_xxx.png"
 				mocks.storage.EXPECT().Download(gomock.Any(), "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.store.EXPECT().UpdateProductMedia(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.ResizerPayload{

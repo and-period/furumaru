@@ -40,20 +40,20 @@ const (
 	ScheduleOpeningVideoPath      = "schedules/opening-video"      // 開催スケジュールオープニング動画
 )
 
-// ConvertType - ファイルの変換種別
-type ConvertType int32
+// ConversionType - ファイルの変換種別
+type ConversionType int32
 
 const (
-	ConvertTypeNone      ConvertType = iota // 変換不要
-	ConvertTypeJPEGToPNG                    // 画像の変換(JPEG -> PNG)
+	ConversionTypeNone      ConversionType = iota // 変換不要
+	ConversionTypeJPEGToPNG                       // 画像の変換(JPEG -> PNG)
 )
 
 // Regulation - ファイルアップロード制約
 type Regulation struct {
-	MaxSize int64            // ファイルサイズ上限
-	Formats *set.Set[string] // ファイル形式
-	Convert ConvertType      // ファイル変換が必要な場合の変換種別
-	dir     string           // 保管先ディレクトリPath
+	MaxSize        int64            // ファイルサイズ上限
+	Formats        *set.Set[string] // ファイル形式
+	ConversionType ConversionType   // ファイル変換が必要な場合の変換種別
+	dir            string           // 保管先ディレクトリPath
 }
 
 var (
@@ -140,10 +140,10 @@ var (
 		dir:     ScheduleThumbnailPath,
 	}
 	ScheduleImageRegulation = &Regulation{
-		MaxSize: 10 << 20, // 10MB
-		Formats: set.New("image/png", "image/jpeg"),
-		Convert: ConvertTypeJPEGToPNG, // MediaLiveの仕様に合わせてPNG形式に変換
-		dir:     ScheduleImagePath,
+		MaxSize:        10 << 20, // 10MB
+		Formats:        set.New("image/png", "image/jpeg"),
+		ConversionType: ConversionTypeJPEGToPNG, // MediaLiveの仕様に合わせてPNG形式に変換
+		dir:            ScheduleImagePath,
 	}
 	ScheduleOpeningVideoRegulation = &Regulation{
 		MaxSize: 200 << 20, // 200MB
@@ -207,10 +207,10 @@ func (r *Regulation) GetFileExtension(contentType string) (string, error) {
 }
 
 func (r *Regulation) ShouldConvert(contentType string) bool {
-	switch r.Convert {
-	case ConvertTypeJPEGToPNG:
+	switch r.ConversionType {
+	case ConversionTypeJPEGToPNG:
 		return contentType == "image/jpeg"
-	case ConvertTypeNone:
+	case ConversionTypeNone:
 		return false
 	default:
 		return false

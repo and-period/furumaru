@@ -51,7 +51,7 @@ type Bucket interface {
 	// S3 Bucketからオブジェクトを取得とByte型へ変換
 	DownloadAndReadAll(ctx context.Context, url string) ([]byte, error)
 	// S3 Bucketへオブジェクトをアップロード
-	Upload(ctx context.Context, path string, body io.Reader) (string, error)
+	Upload(ctx context.Context, path string, body io.Reader, metadata map[string]string) (string, error)
 	// S3 Bucketへ他バケットからオブジェクトをコピーする
 	Copy(ctx context.Context, srcBucket, srcKey, dstKey string, metadata map[string]string) (string, error)
 	// S3 Bucket URLが自身のバケット用URLかの判定
@@ -232,11 +232,12 @@ func (b *bucket) DownloadAndReadAll(ctx context.Context, url string) ([]byte, er
 	return io.ReadAll(out.Body)
 }
 
-func (b *bucket) Upload(ctx context.Context, path string, body io.Reader) (string, error) {
+func (b *bucket) Upload(ctx context.Context, path string, body io.Reader, metadata map[string]string) (string, error) {
 	in := &s3.PutObjectInput{
-		Bucket: b.name,
-		Key:    aws.String(path),
-		Body:   body,
+		Bucket:   b.name,
+		Key:      aws.String(path),
+		Body:     body,
+		Metadata: metadata,
 	}
 	_, err := b.s3.PutObject(ctx, in)
 	if err != nil {

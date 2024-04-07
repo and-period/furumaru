@@ -33,7 +33,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 					{URL: url, Size: common.ImageSizeLarge},
 				}
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.user.EXPECT().
 					UpdateCoordinatorThumbnails(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, in *user.UpdateCoordinatorThumbnailsInput) error {
@@ -90,7 +90,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
@@ -105,7 +105,7 @@ func TestCoordinatorThumbnail(t *testing.T) {
 				file := testImageFile(t)
 				url := "http://example.com/media/image_xxx.png"
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.user.EXPECT().UpdateCoordinatorThumbnails(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.ResizerPayload{
@@ -147,7 +147,7 @@ func TestCoordinatorHeader(t *testing.T) {
 					{URL: url, Size: common.ImageSizeLarge},
 				}
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.user.EXPECT().
 					UpdateCoordinatorHeaders(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, in *user.UpdateCoordinatorHeadersInput) error {
@@ -203,7 +203,7 @@ func TestCoordinatorHeader(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
 			},
 			payload: &entity.ResizerPayload{
 				TargetID: "target-id",
@@ -218,7 +218,7 @@ func TestCoordinatorHeader(t *testing.T) {
 				file := testImageFile(t)
 				url := "http://example.com/media/image_xxx.png"
 				mocks.storage.EXPECT().Download(ctx, "http://example.com/media/image.png").Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(url, nil).Times(3)
 				mocks.user.EXPECT().UpdateCoordinatorHeaders(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			payload: &entity.ResizerPayload{

@@ -36,7 +36,10 @@ func (r *resizer) uploadImages(
 			if err != nil {
 				return err
 			}
-			url, err := r.storage.Upload(ectx, path, image)
+			md := map[string]string{
+				"Cache-Control": "max-age=" + r.ttl.String(),
+			}
+			url, err := r.storage.Upload(ectx, path, image, md)
 			if err != nil {
 				return err
 			}
