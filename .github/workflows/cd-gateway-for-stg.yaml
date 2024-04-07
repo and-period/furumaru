@@ -26,7 +26,6 @@ jobs:
     name: build and push
     uses: ./.github/workflows/_build_and_push.yaml
     with:
-      environment: stg
       service: gateway
       image-path: ./infra/docker/api/Dockerfile
       image-tag: latest
