@@ -95,7 +95,7 @@ func (a *app) inject(ctx context.Context) error {
 		User:      userService,
 		Store:     storeService,
 	}
-	a.resizer = resizer.NewResizer(resizerParams, resizer.WithLogger(params.logger))
+	a.resizer = resizer.NewResizer(resizerParams, resizer.WithLogger(params.logger), resizer.WithCacheTTL(a.CDNCacheTTL))
 	a.logger = params.logger
 	a.waitGroup = params.waitGroup
 	return nil

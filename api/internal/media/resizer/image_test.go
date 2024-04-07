@@ -29,8 +29,8 @@ func TestUploadImages(t *testing.T) {
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.storage.EXPECT().
-					Upload(gomock.Any(), gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, path string, body io.Reader) (string, error) {
+					Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+					DoAndReturn(func(ctx context.Context, path string, body io.Reader, md map[string]string) (string, error) {
 						expect := []string{
 							"media/image_240.png",
 							"media/image_675.png",
@@ -82,7 +82,7 @@ func TestUploadImages(t *testing.T) {
 		{
 			name: "failed to upload",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", assert.AnError).AnyTimes()
 			},
 			originURL: "http://example.com/media/image.png",
 			images: map[common.ImageSize]io.Reader{

@@ -1,20 +1,11 @@
 package entity
 
 import (
-	"bytes"
-	"fmt"
-	"io"
-	"mime/multipart"
-	"net/textproto"
-	"os"
-	"path/filepath"
 	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestRegulation_Validate(t *testing.T) {
@@ -118,59 +109,52 @@ func TestRegulation_GetObjectKey(t *testing.T) {
 	}
 }
 
-func testImageFile(t *testing.T) (io.Reader, *multipart.FileHeader) {
-	const filename, format = "and-period.png", "image"
-
-	buf := &bytes.Buffer{}
-	writer := multipart.NewWriter(buf)
-	defer writer.Close()
-
-	filepath := testFilePath(t, filename)
-	file, err := os.Open(filepath)
-	require.NoError(t, err, err)
-
-	header := textproto.MIMEHeader{}
-	header.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, format, filename))
-	header.Set("Content-Type", "multipart/form-data")
-	part := &multipart.FileHeader{
-		Filename: filepath,
-		Header:   header,
-		Size:     3 << 20, // 3MB
+func TestRegulation_ShouldConvert(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name        string
+		regulation  *Regulation
+		contentType string
+		expect      bool
+	}{
+		{
+			name: "none",
+			regulation: &Regulation{
+				ConversionType: ConversionTypeNone,
+			},
+			contentType: "image/jpeg",
+			expect:      false,
+		},
+		{
+			name: "jpeg to png should convert",
+			regulation: &Regulation{
+				ConversionType: ConversionTypeJPEGToPNG,
+			},
+			contentType: "image/jpeg",
+			expect:      true,
+		},
+		{
+			name: "jpeg to png should not convert",
+			regulation: &Regulation{
+				ConversionType: ConversionTypeJPEGToPNG,
+			},
+			contentType: "image/png",
+			expect:      false,
+		},
+		{
+			name: "unknown",
+			regulation: &Regulation{
+				ConversionType: -1,
+			},
+			contentType: "image/jpeg",
+			expect:      false,
+		},
 	}
-
-	return file, part
-}
-
-func testVideoFile(t *testing.T) (io.Reader, *multipart.FileHeader) {
-	const filename, format = "and-period.mp4", "video"
-
-	buf := &bytes.Buffer{}
-	writer := multipart.NewWriter(buf)
-	defer writer.Close()
-
-	filepath := testFilePath(t, filename)
-	file, err := os.Open(filepath)
-	require.NoError(t, err, err)
-
-	header := textproto.MIMEHeader{}
-	header.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, format, filename))
-	header.Set("Content-Type", "multipart/form-data")
-	part := &multipart.FileHeader{
-		Filename: filepath,
-		Header:   header,
-		Size:     10 << 20, // 10MB
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.regulation.ShouldConvert(tt.contentType)
+			assert.Equal(t, tt.expect, actual)
+		})
 	}
-
-	return file, part
-}
-
-func testFilePath(t *testing.T, filename string) string {
-	dir, err := os.Getwd()
-	assert.NoError(t, err)
-
-	strs := strings.Split(dir, "api/internal")
-	if len(strs) == 0 {
-		t.Fatal("test: invalid file path")
-	}
-	return filepath.Join(strs[0], "/api/tmp", filename)
 }

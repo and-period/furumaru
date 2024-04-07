@@ -178,7 +178,7 @@ func TestResizer_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
 				mocks.user.EXPECT().UpdateCoordinatorThumbnails(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{
@@ -193,7 +193,7 @@ func TestResizer_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
 				mocks.user.EXPECT().UpdateCoordinatorHeaders(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{
@@ -208,7 +208,7 @@ func TestResizer_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
 				mocks.user.EXPECT().UpdateProducerThumbnails(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{
@@ -223,7 +223,7 @@ func TestResizer_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
 				mocks.user.EXPECT().UpdateProducerHeaders(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{
@@ -238,7 +238,7 @@ func TestResizer_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(gomock.Any(), gomock.Any()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
 				mocks.store.EXPECT().UpdateProductMedia(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{
@@ -253,7 +253,7 @@ func TestResizer_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
 				mocks.store.EXPECT().UpdateProductTypeIcons(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{
@@ -268,7 +268,7 @@ func TestResizer_Run(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				file := testImageFile(t)
 				mocks.storage.EXPECT().Download(ctx, gomock.Any()).Return(file, nil)
-				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
+				mocks.storage.EXPECT().Upload(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return("", nil).AnyTimes()
 				mocks.store.EXPECT().UpdateScheduleThumbnails(ctx, gomock.Any()).Return(nil)
 			},
 			payload: &entity.ResizerPayload{

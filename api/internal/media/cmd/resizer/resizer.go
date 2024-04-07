@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/resizer"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -18,23 +19,24 @@ type app struct {
 	logger           *zap.Logger
 	waitGroup        *sync.WaitGroup
 	resizer          resizer.Resizer
-	AppName          string `default:"media-resizer"  envconfig:"APP_NAME"`
-	Environment      string `default:"none"           envconfig:"ENV"`
-	RunMethod        string `default:"lambda"         envconfig:"RUN_METHOD"`
-	LogPath          string `default:""               envconfig:"LOG_PATH"`
-	LogLevel         string `default:"info"           envconfig:"LOG_LEVEL"`
-	DBSocket         string `default:"tcp"            envconfig:"DB_SOCKET"`
-	DBHost           string `default:"127.0.0.1"      envconfig:"DB_HOST"`
-	DBPort           string `default:"3306"           envconfig:"DB_PORT"`
-	DBUsername       string `default:"root"           envconfig:"DB_USERNAME"`
-	DBPassword       string `default:""               envconfig:"DB_PASSWORD"`
-	DBTimeZone       string `default:"Asia/Tokyo"     envconfig:"DB_TIMEZONE"`
-	DBEnabledTLS     bool   `default:"false"          envconfig:"DB_ENABLED_TLS"`
-	DBSecretName     string `default:""               envconfig:"DB_SECRET_NAME"`
-	SentryDsn        string `default:""               envconfig:"SENTRY_DSN"`
-	SentrySecretName string `default:""               envconfig:"SENTRY_SECRET_NAME"`
-	AWSRegion        string `default:"ap-northeast-1" envconfig:"AWS_REGION"`
-	S3Bucket         string `default:""               envconfig:"S3_BUCKET"`
+	AppName          string        `default:"media-resizer"  envconfig:"APP_NAME"`
+	Environment      string        `default:"none"           envconfig:"ENV"`
+	RunMethod        string        `default:"lambda"         envconfig:"RUN_METHOD"`
+	LogPath          string        `default:""               envconfig:"LOG_PATH"`
+	LogLevel         string        `default:"info"           envconfig:"LOG_LEVEL"`
+	DBSocket         string        `default:"tcp"            envconfig:"DB_SOCKET"`
+	DBHost           string        `default:"127.0.0.1"      envconfig:"DB_HOST"`
+	DBPort           string        `default:"3306"           envconfig:"DB_PORT"`
+	DBUsername       string        `default:"root"           envconfig:"DB_USERNAME"`
+	DBPassword       string        `default:""               envconfig:"DB_PASSWORD"`
+	DBTimeZone       string        `default:"Asia/Tokyo"     envconfig:"DB_TIMEZONE"`
+	DBEnabledTLS     bool          `default:"false"          envconfig:"DB_ENABLED_TLS"`
+	DBSecretName     string        `default:""               envconfig:"DB_SECRET_NAME"`
+	SentryDsn        string        `default:""               envconfig:"SENTRY_DSN"`
+	SentrySecretName string        `default:""               envconfig:"SENTRY_SECRET_NAME"`
+	AWSRegion        string        `default:"ap-northeast-1" envconfig:"AWS_REGION"`
+	S3Bucket         string        `default:""               envconfig:"S3_BUCKET"`
+	CDNCacheTTL      time.Duration `default:"5m"             envconfig:"CDN_CACHE_TTL"`
 }
 
 //nolint:revive
