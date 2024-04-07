@@ -22,10 +22,6 @@ on:
         description: 'ECSタスク定義名'
         required: true
     inputs:
-      environment:
-        description: '環境名'
-        type: string
-        required: true
       ecs-service-name:
         description: 'ECSサービス名'
         type: string
@@ -44,7 +40,6 @@ jobs:
   deploy_ecs:
     name: deploy ecs
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     defaults:
       run:
         shell: bash

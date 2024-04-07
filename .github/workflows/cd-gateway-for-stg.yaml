@@ -41,7 +41,6 @@ jobs:
     - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
     with:
-      environment: stg
       ecs-service-name: admin
       ecs-container-name: server
     secrets:
@@ -49,8 +48,8 @@ jobs:
       aws-region: ${{ secrets.AWS_REGION }}
       ecr-registry: ${{ vars.ECR_REGISTRY }}
       ecr-repository: ${{ vars.ECR_REPOSITORY_GATEWAY }}
-      ecs-cluster-name: ${{ vars.ECS_CLUSTER }}
-      ecs-task-definition: ${{ vars.ECS_TASK_DEFINITION_ADMIN }}
+      ecs-cluster-name: ${{ vars.STG_ECS_CLUSTER }}
+      ecs-task-definition: ${{ vars.STG_ECS_TASK_DEFINITION_ADMIN }}
 
   deploy_user:
     name: deploy user
