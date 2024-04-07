@@ -185,7 +185,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
   <v-dialog v-model="pauseDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h7">
-        本当に一時停止しますか？
+        本当に停止しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
@@ -193,7 +193,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
           閉じる
         </v-btn>
         <v-btn :loading="loading" color="error" variant="outlined" @click="onSubmitPause">
-          一時停止
+          停止
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -330,10 +330,10 @@ const onSubmitUploadArchiveMp4 = (): void => {
                 ライブ配信の操作
               </v-list-item-subtitle>
               <v-btn block variant="outlined" color="primary" class="mt-2" @click="onClickPause">
-                一時停止する
+                停止する
               </v-btn>
               <v-btn block variant="outlined" color="secondary" class="mt-2" @click="onSubmitUnpause">
-                一時停止を解除する
+                停止を解除する
               </v-btn>
             </v-list-item>
 
