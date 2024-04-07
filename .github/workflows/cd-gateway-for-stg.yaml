@@ -58,6 +58,7 @@ jobs:
     - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
     with:
+      environment: stg
       ecs-service-name: user
       ecs-container-name: server
     secrets:
