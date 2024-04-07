@@ -16,10 +16,6 @@ on:
         description: 'ECRリポジトリ名'
         required: true
     inputs:
-      environment:
-        description: '環境名'
-        type: string
-        required: true
       service:
         description: 'サービス名'
         type: string
@@ -41,7 +37,6 @@ permissions:
 jobs:
   build_and_push:
     name: build and push
-    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     defaults:
       run:
