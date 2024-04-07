@@ -47,6 +47,8 @@ func TestArchiveSummary(t *testing.T) {
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
 					Title:         "スケジュールタイトル",
+					StartAt:       1638284400,
+					EndAt:         1643641200,
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -81,6 +83,8 @@ func TestArchiveSummary_Response(t *testing.T) {
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
 					Title:         "スケジュールタイトル",
+					StartAt:       1638284400,
+					EndAt:         1643641200,
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -93,6 +97,8 @@ func TestArchiveSummary_Response(t *testing.T) {
 				ScheduleID:    "schedule-id",
 				CoordinatorID: "coordinator-id",
 				Title:         "スケジュールタイトル",
+				StartAt:       1638284400,
+				EndAt:         1643641200,
 				ThumbnailURL:  "https://example.com/thumbnail.png",
 				Thumbnails: []*response.Image{
 					{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -151,6 +157,8 @@ func TestArchiveSummaries(t *testing.T) {
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "スケジュールタイトル",
+						StartAt:       1638284400,
+						EndAt:         1643641200,
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -187,6 +195,8 @@ func TestArchiveSummaries_CoordinatorIDs(t *testing.T) {
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "スケジュールタイトル",
+						StartAt:       1638284400,
+						EndAt:         1643641200,
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -223,6 +233,8 @@ func TestArchiveSummaries_Response(t *testing.T) {
 						ScheduleID:    "schedule-id",
 						CoordinatorID: "coordinator-id",
 						Title:         "スケジュールタイトル",
+						StartAt:       1638284400,
+						EndAt:         1643641200,
 						ThumbnailURL:  "https://example.com/thumbnail.png",
 						Thumbnails: []*response.Image{
 							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
@@ -237,6 +249,8 @@ func TestArchiveSummaries_Response(t *testing.T) {
 					ScheduleID:    "schedule-id",
 					CoordinatorID: "coordinator-id",
 					Title:         "スケジュールタイトル",
+					StartAt:       1638284400,
+					EndAt:         1643641200,
 					ThumbnailURL:  "https://example.com/thumbnail.png",
 					Thumbnails: []*response.Image{
 						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},

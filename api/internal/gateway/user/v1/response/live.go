@@ -38,6 +38,8 @@ type ArchiveSummary struct {
 	ScheduleID    string   `json:"scheduleId"`    // 開催スケジュールID
 	CoordinatorID string   `json:"coordinatorId"` // コーディネータID
 	Title         string   `json:"title"`         // タイトル
+	StartAt       int64    `json:"startAt"`       // 開催開始日時
+	EndAt         int64    `json:"endAt"`         // 開催終了日時
 	ThumbnailURL  string   `json:"thumbnailUrl"`  // サムネイルURL
 	Thumbnails    []*Image `json:"thumbnails"`    // サムネイル一覧(リサイズ済み)
 }
