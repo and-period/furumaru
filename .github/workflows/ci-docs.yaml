@@ -9,7 +9,6 @@ on:
 env:
   SERVICE: docs
   TZ: 'Asia/Tokyo'
-  NODE_VERSION: 20.11.1
 
 jobs:
   setup:
@@ -30,7 +29,6 @@ jobs:
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./docs/swagger
-        node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
     - name: Setup
@@ -55,7 +53,6 @@ jobs:
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./docs/swagger
-        node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
     - name: Setup
@@ -83,7 +80,6 @@ jobs:
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./docs/swagger
-        node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
     - name: Setup

@@ -6,10 +6,6 @@ inputs:
     description: '作業ディレクトリ'
     required: false
     default: '.'
-  node-version:
-    description: 'Node.jsのバージョン'
-    required: true
-    default: '20.11.1'
   service:
     description: 'サービス名'
     required: true
@@ -18,10 +14,18 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Use Node.js ${{ inputs.node-version }}
+  - name: Node Version
+    id: set-version
+    shell: bash
+    working-directory: ${{ inputs.working-directory }}
+    run: |
+      NODE_VERSION=$(cat .tool-versions | grep -E '^nodejs [1-9.]+$' | awk '{print substr($0, index($0, " ") + 1)}')
+      echo "node-version=${NODE_VERSION}" >> $GITHUB_OUTPUT
+
+  - name: Setup Node.js
     uses: actions/setup-node@v4
     with:
-      node-version: ${{ inputs.node-version }}
+      node-version: ${{ steps.set-version.outputs.node-version }}
       cache: 'yarn'
       cache-dependency-path: '**/yarn.lock'
 
