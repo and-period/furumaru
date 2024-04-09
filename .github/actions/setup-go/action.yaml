@@ -19,7 +19,7 @@ runs:
     shell: bash
     working-directory: ${{ inputs.working-directory }}
     run: |
-      GO_VERSION=$(cat .tool-versions | grep -E '^golang [1-9.]+$' | awk '{print substr($0, index($0, " ") + 1)}')
+      GO_VERSION=$(cat .tool-versions | grep -E '^golang [0-9.]+$' | awk '{print substr($0, index($0, " ") + 1)}')
       echo "go-version=${GO_VERSION}" >> $GITHUB_OUTPUT
 
   - name: Setup Golang
