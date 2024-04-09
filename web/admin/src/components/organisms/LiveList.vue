@@ -472,7 +472,7 @@ const onSubmitDelete = (): void => {
         </v-autocomplete>
         <v-textarea
           v-model="createFormDataValidate.comment.$model"
-          :error-message="
+          :error-messages="
             getErrorMessage(createFormDataValidate.comment.$errors)
           "
           label="概要"
@@ -598,7 +598,7 @@ const onSubmitDelete = (): void => {
         </v-autocomplete>
         <v-textarea
           v-model="updateFormDataValidate.comment.$model"
-          :error-message="
+          :error-messages="
             getErrorMessage(updateFormDataValidate.comment.$errors)
           "
           label="概要"
