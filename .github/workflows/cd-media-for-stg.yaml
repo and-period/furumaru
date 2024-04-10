@@ -34,6 +34,9 @@ jobs:
       lambda-function-name-start-scheduler: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
       lambda-function-name-close-scheduler: ${{ vars.LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
       lambda-function-name-start-updater: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_UPDATER }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
 
   build_and_push:
     name: build and push

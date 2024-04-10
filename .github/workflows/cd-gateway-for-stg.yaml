@@ -32,6 +32,9 @@ jobs:
       ecs-cluster-name: ${{ vars.ECS_CLUSTER }}
       ecs-task-definition-admin: ${{ vars.ECS_TASK_DEFINITION_ADMIN }}
       ecs-task-definition-user: ${{ vars.ECS_TASK_DEFINITION_USER }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
 
   build_and_push:
     name: build and push
