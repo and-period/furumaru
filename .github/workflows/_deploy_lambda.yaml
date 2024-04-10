@@ -26,8 +26,8 @@ on:
         default: 'latest'
 
 jobs:
-  deploy_ecr:
-    name: deploy ecr
+  deploy_lambda:
+    name: deploy lambda
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     defaults:
