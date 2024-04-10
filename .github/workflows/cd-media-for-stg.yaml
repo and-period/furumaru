@@ -63,7 +63,7 @@ jobs:
       environment: stg
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
-      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_UPLOADER }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-uploader }}
 
   deploy_resizer:
     name: deploy resizer
@@ -76,7 +76,7 @@ jobs:
       environment: stg
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
-      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_RESIZER }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-resizer }}
 
   deploy_start_scheduler:
     name: deploy start scheduler
@@ -89,7 +89,7 @@ jobs:
       environment: stg
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
-      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-start-scheduler }}
 
   deploy_close_scheduler:
     name: deploy close scheduler
@@ -102,7 +102,7 @@ jobs:
       environment: stg
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
-      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-close-scheduler }}
 
   deploy_start_updater:
     name: deploy start updater
@@ -115,4 +115,4 @@ jobs:
       environment: stg
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
-      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_START_UPDATER }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-start-updater }}

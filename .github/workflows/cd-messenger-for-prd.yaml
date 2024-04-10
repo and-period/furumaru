@@ -23,6 +23,19 @@ permissions:
   contents: read
 
 jobs:
+  set_output:
+    name: set output
+    environment: prd
+    runs-on: ubuntu-latest
+    outputs:
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
+      lambda-function-name-scheduler: ${{ vars.LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
+      lambda-function-name-worker: ${{ vars.LAMBDA_FUNCTION_MESSENGER_WORKER }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
   get_image_tag:
     name: get image tag
     uses: ./.github/workflows/_tag_version.yaml
@@ -31,44 +44,44 @@ jobs:
   build_and_push:
     name: build and push
     needs:
+    - set_output
     - get_image_tag
     uses: ./.github/workflows/_build_and_push.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       service: messenger
       image-path: ./infra/docker/api/Dockerfile
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
 
   deploy_scheduler:
     name: deploy scheduler
     needs:
+    - set_output
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-scheduler }}
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
-      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
 
   deploy_worker:
     name: deploy worker
     needs:
+    - set_output
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-worker }}
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
-      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MESSENGER_WORKER }}

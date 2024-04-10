@@ -23,6 +23,22 @@ permissions:
   contents: read
 
 jobs:
+  set_output:
+    name: set output
+    environment: prd
+    runs-on: ubuntu-latest
+    outputs:
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+      lambda-function-name-uploader: ${{ vars.LAMBDA_FUNCTION_MEDIA_UPLOADER }}
+      lambda-function-name-resizer: ${{ vars.LAMBDA_FUNCTION_MEDIA_RESIZER }}
+      lambda-function-name-start-scheduler: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
+      lambda-function-name-close-scheduler: ${{ vars.LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
+      lambda-function-name-start-updater: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_UPDATER }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
   get_image_tag:
     name: get image tag
     uses: ./.github/workflows/_tag_version.yaml
@@ -31,17 +47,17 @@ jobs:
   build_and_push:
     name: build and push
     needs:
+    - set_output
     - get_image_tag
     uses: ./.github/workflows/_build_and_push.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       service: media
       image-path: ./infra/docker/api/Dockerfile
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
 
   deploy_uploader:
     name: deploy uploader
@@ -49,14 +65,13 @@ jobs:
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-uploader }}
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
-      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MEDIA_UPLOADER }}
 
   deploy_resizer:
     name: deploy resizer
@@ -64,14 +79,13 @@ jobs:
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-resizer }}
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
-      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MEDIA_RESIZER }}
 
   deploy_start_scheduler:
     name: deploy start scheduler
@@ -79,14 +93,13 @@ jobs:
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-start-scheduler }}
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
-      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
 
   deploy_close_scheduler:
     name: deploy close scheduler
@@ -94,14 +107,13 @@ jobs:
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-close-scheduler }}
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
-      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
 
   deploy_start_updater:
     name: deploy start updater
@@ -109,11 +121,10 @@ jobs:
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
+    secrets: inherit
     with:
+      environment: prd
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-start-updater }}
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
-      lambda-function-name: ${{ vars.PRD_LAMBDA_FUNCTION_MEDIA_START_UPDATER }}

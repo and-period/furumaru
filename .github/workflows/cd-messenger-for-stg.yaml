@@ -60,7 +60,7 @@ jobs:
       environment: stg
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
-      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-scheduler }}
 
   deploy_worker:
     name: deploy worker
@@ -73,5 +73,5 @@ jobs:
       environment: stg
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
-      lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MESSENGER_WORKER }}
+      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-worker }}
 
