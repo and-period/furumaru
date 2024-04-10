@@ -10,7 +10,6 @@ on:
 env:
   SERVICE: user-web
   TZ: 'Asia/Tokyo'
-  NODE_VERSION: 18.19.1
 
 jobs:
   setup:
@@ -31,7 +30,6 @@ jobs:
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/user
-        node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
   lint:
@@ -53,7 +51,6 @@ jobs:
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/user
-        node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
     - name: Lint
@@ -78,7 +75,6 @@ jobs:
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/user
-        node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
     - name: Postinstall
@@ -107,7 +103,6 @@ jobs:
     - uses: ./.github/actions/setup-node
       with:
         working-directory: ./web/user
-        node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
     - name: Postinstall

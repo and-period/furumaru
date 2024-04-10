@@ -12,7 +12,6 @@ on:
 env:
   TZ: 'Asia/Tokyo'
   SERVICE: serverless
-  NODE_VERSION: 20.11.1
 
 permissions:
   id-token: write
@@ -41,7 +40,6 @@ jobs:
 
     - uses: ./.github/actions/setup-node
       with:
-        node-version: ${{ env.NODE_VERSION }}
         service: ${{ env.SERVICE }}
 
     - name: install sls

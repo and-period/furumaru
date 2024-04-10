@@ -6,10 +6,6 @@ inputs:
     description: '作業ディレクトリ'
     required: false
     default: '.'
-  go-version:
-    description: 'Golangのバージョン'
-    required: true
-    default: '1.22.1'
   service:
     description: 'サービス名'
     required: true
@@ -18,10 +14,18 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Use Golang ${{ inputs.go-version }}
+  - name: Golang Version
+    id: set-version
+    shell: bash
+    working-directory: ${{ inputs.working-directory }}
+    run: |
+      GO_VERSION=$(cat .tool-versions | grep -E '^golang [0-9.]+$' | awk '{print substr($0, index($0, " ") + 1)}')
+      echo "go-version=${GO_VERSION}" >> $GITHUB_OUTPUT
+
+  - name: Setup Golang
     uses: actions/setup-go@v5
     with:
-      go-version: ${{ inputs.go-version }}
+      go-version: ${{ steps.set-version.outputs.go-version }}
 
   - name: Cache go modules
     id: modules-cache
