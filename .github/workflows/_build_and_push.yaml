@@ -2,20 +2,19 @@ name: build and push
 
 on:
   workflow_call:
-    secrets:
-      aws-role-arn:
-        description: 'IAM Role ARN'
-        required: true
-      aws-region:
-        description: 'AWS Region'
+    inputs:
+      environment:
+        description: '環境名'
+        type: string
         required: true
       ecr-registry:
         description: 'ECRレジストリ名'
+        type: string
         required: true
       ecr-repository:
         description: 'ECRリポジトリ名'
+        type: string
         required: true
-    inputs:
       service:
         description: 'サービス名'
         type: string
@@ -37,6 +36,7 @@ permissions:
 jobs:
   build_and_push:
     name: build and push
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -49,8 +49,8 @@ jobs:
     - name: Setup AWS
       uses: ./.github/actions/setup-aws
       with:
-        aws-role-arn: ${{ secrets.aws-role-arn }}
-        aws-region: ${{ secrets.aws-region }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -60,8 +60,8 @@ jobs:
       id: get-ecr-url
       uses: ./.github/actions/generate-ecr-url
       with:
-        ecr-registry: ${{ secrets.ecr-registry }}
-        ecr-repository: ${{ secrets.ecr-repository }}
+        ecr-registry: ${{ inputs.ecr-registry }}
+        ecr-repository: ${{ inputs.ecr-repository }}
         image-tag: ${{ inputs.image-tag }}
 
     - name: Build image

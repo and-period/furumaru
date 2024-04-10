@@ -22,41 +22,53 @@ permissions:
   contents: read
 
 jobs:
+  set_output:
+    name: set output
+    environment: stg
+    runs-on: ubuntu-latest
+    outputs:
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
+      lambda-function-name-scheduler: ${{ vars.LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
+      lambda-function-name-worker: ${{ vars.LAMBDA_FUNCTION_MESSENGER_WORKER }}
+
   build_and_push:
     name: build and push
+    needs:
+    - set_output
     uses: ./.github/workflows/_build_and_push.yaml
+    secrets: inherit
     with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       service: messenger
       image-path: ./infra/docker/api/Dockerfile
       image-tag: latest
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
 
   deploy_scheduler:
     name: deploy scheduler
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MESSENGER_SCHEDULER }}
 
   deploy_worker:
     name: deploy worker
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MESSENGER }}
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MESSENGER_WORKER }}
 

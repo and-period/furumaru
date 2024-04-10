@@ -22,47 +22,59 @@ permissions:
   contents: read
 
 jobs:
+  set_output:
+    name: set output
+    environment: stg
+    runs-on: ubuntu-latest
+    outputs:
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_GATEWAY }}
+      ecs-cluster-name: ${{ vars.ECS_CLUSTER }}
+      ecs-task-definition-admin: ${{ vars.ECS_TASK_DEFINITION_ADMIN }}
+      ecs-task-definition-user: ${{ vars.ECS_TASK_DEFINITION_USER }}
+
   build_and_push:
     name: build and push
+    needs:
+    - set_output
     uses: ./.github/workflows/_build_and_push.yaml
+    secrets: inherit
     with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       service: gateway
       image-path: ./infra/docker/api/Dockerfile
       image-tag: latest
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_GATEWAY }}
 
   deploy_admin:
     name: deploy admin
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
+    secrets: inherit
     with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      ecs-cluster-name: ${{ needs.set_output.outputs.ecs-cluster-name }}
+      ecs-task-definition: ${{ needs.set_output.outputs.ecs-task-definition-admin }}
       ecs-service-name: admin
       ecs-container-name: server
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_GATEWAY }}
-      ecs-cluster-name: ${{ vars.STG_ECS_CLUSTER }}
-      ecs-task-definition: ${{ vars.STG_ECS_TASK_DEFINITION_ADMIN }}
 
   deploy_user:
     name: deploy user
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
+    secrets: inherit
     with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
+      ecs-cluster-name: ${{ needs.set_output.outputs.ecs-cluster-name }}
+      ecs-task-definition: ${{ needs.set_output.outputs.ecs-task-definition-user }}
       ecs-service-name: user
       ecs-container-name: server
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_GATEWAY }}
-      ecs-cluster-name: ${{ vars.STG_ECS_CLUSTER }}
-      ecs-task-definition: ${{ vars.STG_ECS_TASK_DEFINITION_USER }}

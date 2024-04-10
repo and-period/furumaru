@@ -2,26 +2,27 @@ name: deploy ecs
 
 on:
   workflow_call:
-    secrets:
-      aws-role-arn:
-        description: 'IAM Role ARN'
-        required: true
-      aws-region:
-        description: 'AWS Region'
+    inputs:
+      environment:
+        description: '環境名'
+        type: string
         required: true
       ecr-registry:
         description: 'ECRレジストリ名'
+        type: string
         required: true
       ecr-repository:
         description: 'ECRリポジトリ名'
+        type: string
         required: true
       ecs-cluster-name:
         description: 'ECSクラスタ名'
+        type: string
         required: true
       ecs-task-definition:
         description: 'ECSタスク定義名'
+        type: string
         required: true
-    inputs:
       ecs-service-name:
         description: 'ECSサービス名'
         type: string
@@ -39,6 +40,7 @@ on:
 jobs:
   deploy_ecs:
     name: deploy ecs
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -51,15 +53,15 @@ jobs:
     - name: Setup AWS
       uses: ./.github/actions/setup-aws
       with:
-        aws-role-arn: ${{ secrets.aws-role-arn }}
-        aws-region: ${{ secrets.aws-region }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Get ECR repository and image url
       id: get-ecr-url
       uses: ./.github/actions/generate-ecr-url
       with:
-        ecr-registry: ${{ secrets.ecr-registry }}
-        ecr-repository: ${{ secrets.ecr-repository }}
+        ecr-registry: ${{ inputs.ecr-registry }}
+        ecr-repository: ${{ inputs.ecr-repository }}
         image-tag: ${{ inputs.image-tag }}
 
     - name: Fetch task definition
@@ -68,8 +70,8 @@ jobs:
           jq '.taskDefinition | del(.compatibilities, .registeredAt, .registeredBy, .requiresAttributes, .revision, .status, .taskDefinitionArn)' \
           > ./task-definition.json
       env:
-        AWS_REGION: ${{ secrets.aws-region }}
-        ECS_TASK_DEFINITION: ${{ secrets.ecs-task-definition }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        ECS_TASK_DEFINITION: ${{ inputs.ecs-task-definition }}
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
@@ -82,7 +84,7 @@ jobs:
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        cluster: ${{ secrets.ecs-cluster-name }}
+        cluster: ${{ inputs.ecs-cluster-name }}
         service: ${{ inputs.ecs-service-name }}
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         wait-for-service-stability: true

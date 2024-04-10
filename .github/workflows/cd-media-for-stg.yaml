@@ -22,75 +22,94 @@ permissions:
   contents: read
 
 jobs:
+  set_output:
+    name: set output
+    environment: stg
+    runs-on: ubuntu-latest
+    outputs:
+      ecr-registry: ${{ vars.ECR_REGISTRY }}
+      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+      lambda-function-name-uploader: ${{ vars.LAMBDA_FUNCTION_MEDIA_UPLOADER }}
+      lambda-function-name-resizer: ${{ vars.LAMBDA_FUNCTION_MEDIA_RESIZER }}
+      lambda-function-name-start-scheduler: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
+      lambda-function-name-close-scheduler: ${{ vars.LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
+      lambda-function-name-start-updater: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_UPDATER }}
+
   build_and_push:
     name: build and push
+    needs:
+    - set_output
     uses: ./.github/workflows/_build_and_push.yaml
+    secrets: inherit
     with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       service: media
       image-path: ./infra/docker/api/Dockerfile
       image-tag: latest
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
 
   deploy_uploader:
     name: deploy uploader
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_UPLOADER }}
 
   deploy_resizer:
     name: deploy resizer
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_RESIZER }}
 
   deploy_start_scheduler:
     name: deploy start scheduler
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
 
   deploy_close_scheduler:
     name: deploy close scheduler
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
 
   deploy_start_updater:
     name: deploy start updater
     needs:
+    - set_output
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      ecr-registry: ${{ vars.ECR_REGISTRY }}
-      ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
+    secrets: inherit
+    with:
+      environment: stg
+      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
+      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       lambda-function-name: ${{ vars.STG_LAMBDA_FUNCTION_MEDIA_START_UPDATER }}

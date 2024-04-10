@@ -2,23 +2,23 @@ name: deploy lambda
 
 on:
   workflow_call:
-    secrets:
-      aws-role-arn:
-        description: 'IAM Role ARN'
-        required: true
-      aws-region:
-        description: 'AWS Region'
+    inputs:
+      environment:
+        description: '環境名'
+        type: string
         required: true
       ecr-registry:
         description: 'ECRレジストリ名'
+        type: string
         required: true
       ecr-repository:
         description: 'ECRリポジトリ名'
+        type: string
         required: true
       lambda-function-name:
         description: 'Lambda関数名'
+        type: string
         required: true
-    inputs:
       image-tag:
         description: 'ECRイメージタグ'
         type: string
@@ -28,6 +28,7 @@ on:
 jobs:
   deploy_ecr:
     name: deploy ecr
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -40,24 +41,26 @@ jobs:
     - name: Setup AWS
       uses: ./.github/actions/setup-aws
       with:
-        aws-role-arn: ${{ secrets.aws-role-arn }}
-        aws-region: ${{ secrets.aws-region }}
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Get ECR repository and image url
       id: get-ecr-url
       uses: ./.github/actions/generate-ecr-url
       with:
-        ecr-registry: ${{ secrets.ecr-registry }}
-        ecr-repository: ${{ secrets.ecr-repository }}
+        ecr-registry: ${{ inputs.ecr-registry }}
+        ecr-repository: ${{ inputs.ecr-repository }}
         image-tag: ${{ inputs.image-tag }}
 
     - name: Deploy AWS Lambda function
       run: |
         aws lambda update-function-code \
+          --region ${AWS_REGION} \
           --function-name="${LAMBDA_FUNCTION_NAME}" \
           --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
         | jq '. | del(.Environment)'
       env:
-        LAMBDA_FUNCTION_NAME: ${{ secrets.lambda-function-name }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        LAMBDA_FUNCTION_NAME: ${{ inputs.lambda-function-name }}
         ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}
         ECR_IMAGE_TAG: ${{ steps.get-ecr-url.outputs.ecr-image-tag }}
