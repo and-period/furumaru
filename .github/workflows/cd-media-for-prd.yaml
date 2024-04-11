@@ -62,6 +62,7 @@ jobs:
   deploy_uploader:
     name: deploy uploader
     needs:
+    - set_output
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
@@ -76,6 +77,7 @@ jobs:
   deploy_resizer:
     name: deploy resizer
     needs:
+    - set_output
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
@@ -90,6 +92,7 @@ jobs:
   deploy_start_scheduler:
     name: deploy start scheduler
     needs:
+    - set_output
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
@@ -104,6 +107,7 @@ jobs:
   deploy_close_scheduler:
     name: deploy close scheduler
     needs:
+    - set_output
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml
@@ -118,6 +122,7 @@ jobs:
   deploy_start_updater:
     name: deploy start updater
     needs:
+    - set_output
     - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_lambda.yaml

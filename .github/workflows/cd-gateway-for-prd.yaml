@@ -61,6 +61,7 @@ jobs:
     name: deploy admin
     needs:
     - set_output
+    - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
     secrets: inherit
@@ -78,6 +79,7 @@ jobs:
     name: deploy user
     needs:
     - set_output
+    - get_image_tag
     - build_and_push
     uses: ./.github/workflows/_deploy_ecs.yaml
     secrets: inherit
