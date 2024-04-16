@@ -112,18 +112,20 @@ jobs:
 
     - name: Get CloudFront distribution config
       id: get-cloudfront-config
-      run: |
-        echo "current=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | jq '.DistributionConfig')" >> $GITHUB_OUTPUT
-        echo "etag=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | jq -r '.ETag')" >> $GITHUB_OUTPUT
+      run: echo "etag=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | jq -r '.ETag')" >> $GITHUB_OUTPUT
+      env:
+        CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+
+    - name: Fetch CloudFront distribution config
+      run: aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | jq '.DistributionConfig' > ./config.json
       env:
         CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
 
     - name: Update CloudFront distribution
       run: |
-        echo ${CLOUDFRONT_CONFIG} | jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_ARN}\"" > ./config.json
+        cat ./config.json | jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_ARN}\"" > ./config.json
         aws cloudfront update-distribution --id ${CLOUDFRONT_DISTRIBUTION_ID} --distribution-config file://config.json --if-match ${ETCLOUDFRONT_ETAGAG} | jq .
       env:
         CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
-        CLOUDFRONT_CONFIG: ${{ steps.get-cloudfront-config.outputs.current }}
         CLOUDFRONT_ETAG: ${{ steps.get-cloudfront-config.outputs.etag }}
         ORIGIN_RESPONSE_ARN: ${{ needs.cloudfront_origin_response.outputs.lambda-arn }}
