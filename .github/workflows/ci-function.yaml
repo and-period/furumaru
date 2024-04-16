@@ -55,7 +55,7 @@ jobs:
         node-version: ${{ steps.setup.outputs.node-version }}
 
     - name: Setup
-      run: npm install --omit=dev
+      run: npm install
 
     - name: Lint
       run: npm run lint
