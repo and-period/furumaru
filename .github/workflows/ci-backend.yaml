@@ -6,7 +6,6 @@ on:
     - '.github/workflows/ci-backend.yaml'
     - 'api/**'
     - 'infra/docker/api/**'
-    - 'infra/kubernetes/**'
     - 'infra/mysql/**'
 
 env:

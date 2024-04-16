@@ -1,0 +1,136 @@
+name: '[Function] Deploy for stg'
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - '.github/workflows/cd-func-for-stg.yaml'
+    - 'func/**'
+    - 'infra/docker/func/**'
+
+env:
+  TZ: 'Asia/Tokyo'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  setup:
+    name: setup
+    environment: stg
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func
+
+    outputs:
+      node-version: ${{ steps.set-version.outputs.node-version }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Node Version
+      id: set-version
+      run: |
+        NODE_VERSION=$(cat .tool-versions | grep -E '^nodejs [0-9.]+$' | awk '{print substr($0, index($0, " ") + 1)}')
+        echo "node-version=${NODE_VERSION}" >> $GITHUB_OUTPUT
+
+  cloudfront_origin_response:
+    name: cloudfront origin response
+    environment: stg
+    needs:
+    - setup
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func/cloudfront_origin_response
+
+    outputs:
+      lambda-arn: ${{ steps.set-output.outputs.lambda-arn }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: us-east-1 # Lambda@Edge is only available in us-east-1
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ steps.setup.outputs.node-version }}
+
+    - name: Install dependencies
+      run: npm install --omit=dev
+
+    - name: Build function
+      run: ./bin/build.sh
+
+    - name: Upload build artifact
+      run: aws s3 cp ./dist/app.zip s3://${LAMBDA_FUNCTION_S3_BUCKET}/${LAMBDA_FUNCTION_S3_KEY_CLOUDFRONT_ORIGIN_RESPONSE}
+      env:
+        LAMBDA_FUNCTION_S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
+        LAMBDA_FUNCTION_S3_KEY_CLOUDFRONT_ORIGIN_RESPONSE: ${{ vars.LAMBDA_FUNCTION_S3_KEY_CLOUDFRONT_ORIGIN_RESPONSE }}
+
+    - name: Update function
+      run: aws lambda update-function-code --function-name ${LAMBDA_FUNCTION} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY}
+      env:
+        LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
+        S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
+        S3_KEY: ${{ vars.LAMBDA_FUNCTION_S3_KEY_CLOUDFRONT_ORIGIN_RESPONSE }}
+
+    - name: Publish function version
+      run: aws lambda publish-version --function-name ${LAMBDA_FUNCTION} --description $(date +%F_%T)
+      env:
+        LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
+
+    - name: Set output
+      id: set-output
+      run: echo "lambda-arn=$(aws lambda list-versions-by-function --function-name ${LAMBDA_FUNCTION} | jq -r '.Versions[-1].FunctionArn')" >> $GITHUB_OUTPUT
+      env:
+        LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
+
+  udpate_cloudfront_distribution:
+    name: update cloudfront distribution
+    environment: stg
+    needs:
+    - cloudfront_origin_response
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: us-east-1 # CloudFront is only available in us-east-1
+
+    - name: Get CloudFront distribution config
+      id: get-cloudfront-config
+      run: |
+        echo "current=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | jq '.DistributionConfig')" >> $GITHUB_OUTPUT
+        echo "etag=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | jq -r '.ETag')" >> $GITHUB_OUTPUT
+      env:
+        CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+
+    - name: Update CloudFront distribution
+      run: |
+        echo '${CLOUDFRONT_CONFIG}' | jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_ARN}\"" > config.json
+        aws cloudfront update-distribution --id ${CLOUDFRONT_DISTRIBUTION_ID} --distribution-config file://config.json --if-match ${ETCLOUDFRONT_ETAGAG}
+      env:
+        CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        CLOUDFRONT_CONFIG: ${{ steps.get-cloudfront-config.outputs.current }}
+        CLOUDFRONT_ETAG: ${{ steps.get-cloudfront-config.outputs.etag }}
+        ORIGIN_RESPONSE_ARN: ${{ needs.cloudfront_origin_response.outputs.lambda-arn }}

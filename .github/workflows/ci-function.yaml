@@ -1,0 +1,64 @@
+name: '[Function] Build and Test'
+on:
+  push:
+    paths:
+    - '.github/workflows/ci-function.yaml'
+    - 'func/**'
+    - 'infra/docker/func/**'
+
+env:
+  TZ: 'Asia/Tokyo'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  setup:
+    name: setup
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func
+
+    outputs:
+      node-version: ${{ steps.set-version.outputs.node-version }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Node Version
+      id: set-version
+      run: |
+        NODE_VERSION=$(cat .tool-versions | grep -E '^nodejs [0-9.]+$' | awk '{print substr($0, index($0, " ") + 1)}')
+        echo "node-version=${NODE_VERSION}" >> $GITHUB_OUTPUT
+
+  cloudfront_origin_response:
+    name: cloudfront origin response
+    needs:
+    - setup
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func/cloudfront_origin_response
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ steps.setup.outputs.node-version }}
+
+    - name: Setup
+      run: npm install --omit=dev
+
+    - name: Lint
+      run: npm run lint
+
+    - name: Build
+      run: npm run build

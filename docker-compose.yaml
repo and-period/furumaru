@@ -150,6 +150,17 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=12345678
 
+  function_node_builder:
+    container_name: function_node_builder
+    platform: linux/amd64
+    build:
+      context: ./infra/docker/func/node
+      dockerfile: Dockerfile
+    working_dir: /var/func
+    volumes:
+      - ./func:/var/func:cached
+      - ./tmp/data/func:/tmp/data/func:cached
+
   swagger_generator:
     container_name: swagger_generator
     build:
