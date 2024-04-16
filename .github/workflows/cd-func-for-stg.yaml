@@ -120,7 +120,7 @@ jobs:
 
     - name: Update CloudFront distribution
       run: |
-        echo '${CLOUDFRONT_CONFIG}' | jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_ARN}\"" > config.json
+        echo ${CLOUDFRONT_CONFIG} | jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_ARN}\"" > ./config.json
         aws cloudfront update-distribution --id ${CLOUDFRONT_DISTRIBUTION_ID} --distribution-config file://config.json --if-match ${ETCLOUDFRONT_ETAGAG} | jq .
       env:
         CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
