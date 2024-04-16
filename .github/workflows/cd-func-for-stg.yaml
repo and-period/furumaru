@@ -47,7 +47,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./func/cloudfront_origin_response
+        working-directory: ./func/cloudfront-origin-response
 
     outputs:
       lambda-arn: ${{ steps.set-output.outputs.lambda-arn }}
@@ -71,25 +71,18 @@ jobs:
       run: npm install --omit=dev
 
     - name: Build function
-      run: ./bin/build.sh
+      run: make build
 
-    - name: Upload build artifact
-      run: aws s3 cp ./dist/app.zip s3://${LAMBDA_FUNCTION_S3_BUCKET}/${LAMBDA_FUNCTION_S3_KEY_CLOUDFRONT_ORIGIN_RESPONSE}
+    - name: Upload build artifact to s3 bucket
+      run: BUCKET_NAME=${LAMBDA_FUNCTION_S3_BUCKET} make push
       env:
         LAMBDA_FUNCTION_S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
-        LAMBDA_FUNCTION_S3_KEY_CLOUDFRONT_ORIGIN_RESPONSE: ${{ vars.LAMBDA_FUNCTION_S3_KEY_CLOUDFRONT_ORIGIN_RESPONSE }}
 
-    - name: Update function
-      run: aws lambda update-function-code --function-name ${LAMBDA_FUNCTION} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY}
+    - name: Update lambda function
+      run: FUNCTION_NAME=${LAMBDA_FUNCTION} BUCKET_NAME=${S3_BUCKET} make deploy
       env:
         LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
         S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
-        S3_KEY: ${{ vars.LAMBDA_FUNCTION_S3_KEY_CLOUDFRONT_ORIGIN_RESPONSE }}
-
-    - name: Publish function version
-      run: aws lambda publish-version --function-name ${LAMBDA_FUNCTION} --description $(date +%F_%T)
-      env:
-        LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
 
     - name: Set output
       id: set-output

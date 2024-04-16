@@ -12,7 +12,7 @@ mkdir -p ./dist
 ### build
 npm run build
 
-mv ./app.js ./dist/index.js
+mv ./app.js ./dist/index.js || { echo "Error moving app.js to dist/index.js"; exit 1; }
 cp -r ./node_modules ./dist/
 
 ### remove dev dependencies

@@ -43,7 +43,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./func/cloudfront_origin_response
+        working-directory: ./func/cloudfront-origin-response
 
     steps:
     - name: Check out code
