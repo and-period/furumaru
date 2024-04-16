@@ -68,7 +68,7 @@ jobs:
         node-version: ${{ steps.setup.outputs.node-version }}
 
     - name: Install dependencies
-      run: npm install --omit=dev
+      run: npm install
 
     - name: Build function
       run: make build
