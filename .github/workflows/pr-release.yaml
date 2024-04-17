@@ -1,0 +1,27 @@
+name: Create Release Pull Request
+on:
+  push:
+    branches:
+    - main
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  create_release_pull_request:
+    name: create release pull request
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Create Release Pull Request
+      uses: Songmu/tagpr@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
