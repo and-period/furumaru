@@ -99,6 +99,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ./func
 
     steps:
     - name: Check out code
@@ -110,23 +111,8 @@ jobs:
         aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: us-east-1 # CloudFront is only available in us-east-1
 
-    - name: Get CloudFront distribution config
-      id: get-cloudfront-config
-      run: echo "etag=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | jq -r '.ETag')" >> $GITHUB_OUTPUT
+    - name: Update Cloud Function
+      run: ./bin/update-cloudfront-distribution.sh
       env:
         CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
-
-    - name: Fetch CloudFront distribution config
-      run: |
-        aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | jq '.DistributionConfig' > ./config.json
-        cat ./config.json | jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_ARN}\"" > ./config.json
-      env:
-        CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
-        ORIGIN_RESPONSE_ARN: ${{ needs.cloudfront_origin_response.outputs.lambda-arn }}
-
-    - name: Update CloudFront distribution
-      run: aws cloudfront update-distribution --id ${CLOUDFRONT_DISTRIBUTION_ID} --if-match ${CLOUDFRONT_ETAG} --distribution-config file://config.json
-      env:
-        CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
-        CLOUDFRONT_ETAG: ${{ steps.get-cloudfront-config.outputs.etag }}
         ORIGIN_RESPONSE_ARN: ${{ needs.cloudfront_origin_response.outputs.lambda-arn }}
