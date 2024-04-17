@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
-    "@sentry/vue": "^7.109.0",
+    "@sentry/vue": "^7.110.1",
     "@tiptap/pm": "^2.3.0",
     "@tiptap/starter-kit": "^2.3.0",
     "@tiptap/vue-3": "^2.3.0",
@@ -26,12 +26,12 @@
     "@vuelidate/validators": "^2.0.4",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",
-    "firebase": "^10.10.0",
-    "hls.js": "^1.5.7",
+    "firebase": "^10.11.0",
+    "hls.js": "^1.5.8",
     "nuxt": "^3.11.2",
-    "sass": "^1.74.1",
+    "sass": "^1.75.0",
     "universal-cookie": "^7.1.4",
-    "vuetify": "^3.5.15"
+    "vuetify": "^3.5.16"
   },
   "devDependencies": {
     "@mdi/js": "^7.2.96",
