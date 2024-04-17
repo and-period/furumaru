@@ -13,7 +13,5 @@ aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | \
   jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_ARN}\"" \
   > ./config.json
 
-ls -la
-
 # Update the CloudFront distribution with the new Lambda@Edge function
 aws cloudfront update-distribution --id ${CLOUDFRONT_DISTRIBUTION_ID} --if-match ${CLOUDFRONT_ETAG} --distribution-config file://config.json

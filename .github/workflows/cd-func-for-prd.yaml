@@ -1,0 +1,118 @@
+name: '[Function] Deploy for prd'
+on:
+  push:
+    tags:
+    - 'v*'
+    paths:
+    - '.github/workflows/cd-func-for-prd.yaml'
+    - 'func/**'
+    - 'infra/docker/func/**'
+
+env:
+  TZ: 'Asia/Tokyo'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  setup:
+    name: setup
+    environment: prd
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func
+
+    outputs:
+      node-version: ${{ steps.set-version.outputs.node-version }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Node Version
+      id: set-version
+      run: |
+        NODE_VERSION=$(cat .tool-versions | grep -E '^nodejs [0-9.]+$' | awk '{print substr($0, index($0, " ") + 1)}')
+        echo "node-version=${NODE_VERSION}" >> $GITHUB_OUTPUT
+
+  cloudfront_origin_response:
+    name: cloudfront origin response
+    environment: prd
+    needs:
+    - setup
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func/cloudfront-origin-response
+
+    outputs:
+      lambda-arn: ${{ steps.set-output.outputs.lambda-arn }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: us-east-1 # Lambda@Edge is only available in us-east-1
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ steps.setup.outputs.node-version }}
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build function
+      run: make build
+
+    - name: Upload build artifact to s3 bucket
+      run: BUCKET_NAME=${LAMBDA_FUNCTION_S3_BUCKET} make push
+      env:
+        LAMBDA_FUNCTION_S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
+
+    - name: Update lambda function
+      run: FUNCTION_NAME=${LAMBDA_FUNCTION} BUCKET_NAME=${S3_BUCKET} make deploy
+      env:
+        LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
+        S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
+
+    - name: Set output
+      id: set-output
+      run: echo "lambda-arn=$(aws lambda list-versions-by-function --function-name ${LAMBDA_FUNCTION} | jq -r '.Versions[-1].FunctionArn')" >> $GITHUB_OUTPUT
+      env:
+        LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
+
+  udpate_cloudfront_distribution:
+    name: update cloudfront distribution
+    environment: prd
+    needs:
+    - cloudfront_origin_response
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: us-east-1 # CloudFront is only available in us-east-1
+
+    - name: Update Cloud Function
+      run: ./bin/update-cloudfront-distribution.sh
+      env:
+        CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        ORIGIN_RESPONSE_ARN: ${{ needs.cloudfront_origin_response.outputs.lambda-arn }}
