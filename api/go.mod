@@ -3,16 +3,16 @@ module github.com/and-period/furumaru/api
 go 1.22
 
 require (
-	firebase.google.com/go/v4 v4.13.0
+	firebase.google.com/go/v4 v4.14.0
 	github.com/aws/aws-lambda-go v1.46.0
 	github.com/aws/aws-sdk-go-v2 v1.26.1
 	github.com/aws/aws-sdk-go-v2/config v1.27.11
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.11
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.13.13
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.36.3
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.36.5
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.31.1
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.53.0
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.50.0
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.51.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.53.1
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.28.6
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.26.4
@@ -42,7 +42,7 @@ require (
 	github.com/rs/cors/wrapper/gin v0.0.0-20240228164225-8d33ca4794ea
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.14.0+incompatible
-	github.com/shopspring/decimal v1.3.1
+	github.com/shopspring/decimal v1.4.0
 	github.com/slack-go/slack v0.12.5
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
@@ -51,8 +51,8 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/image v0.15.0
 	golang.org/x/sync v0.7.0
-	google.golang.org/api v0.172.0
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237
+	google.golang.org/api v0.173.0
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240325203815-454cdb8f5daa
 	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.33.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -63,9 +63,13 @@ require (
 )
 
 require (
+	github.com/cloudwego/base64x v0.1.0 // indirect
+	github.com/cloudwego/iasm v0.0.9 // indirect
+)
+
+require (
 	cloud.google.com/go v0.112.2 // indirect
-	cloud.google.com/go/compute v1.25.1 // indirect
-	cloud.google.com/go/compute/metadata v0.2.3 // indirect
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	cloud.google.com/go/firestore v1.15.0 // indirect
 	cloud.google.com/go/iam v1.1.7 // indirect
 	cloud.google.com/go/longrunning v0.5.6 // indirect
@@ -90,11 +94,9 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.28.6 // indirect
 	github.com/aws/smithy-go v1.20.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bytedance/sonic v1.11.3 // indirect
+	github.com/bytedance/sonic v1.11.4 // indirect
 	github.com/casbin/govaluate v1.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
-	github.com/chenzhuoyu/iasm v0.9.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
@@ -121,10 +123,10 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/pelletier/go-toml/v2 v2.2.0 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.52.2 // indirect
+	github.com/prometheus/common v0.52.3 // indirect
 	github.com/prometheus/procfs v0.13.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
@@ -141,7 +143,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/oauth2 v0.19.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0
