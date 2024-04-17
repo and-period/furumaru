@@ -1,0 +1,114 @@
+{
+  "CallerReference": "117f7a90-dfd6-4c38-a600-567226521c0f",
+  "Aliases": {
+    "Quantity": 1,
+    "Items": [
+      "assets.furumaru-stg.and-period.work"
+    ]
+  },
+  "DefaultRootObject": "",
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "furumaru-stg.s3.ap-northeast-1.amazonaws.com",
+        "DomainName": "furumaru-stg.s3.ap-northeast-1.amazonaws.com",
+        "OriginPath": "",
+        "CustomHeaders": {
+          "Quantity": 0
+        },
+        "S3OriginConfig": {
+          "OriginAccessIdentity": ""
+        },
+        "ConnectionAttempts": 3,
+        "ConnectionTimeout": 10,
+        "OriginShield": {
+          "Enabled": false
+        },
+        "OriginAccessControlId": ""
+      }
+    ]
+  },
+  "OriginGroups": {
+    "Quantity": 0
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "furumaru-stg.s3.ap-northeast-1.amazonaws.com",
+    "TrustedSigners": {
+      "Enabled": false,
+      "Quantity": 0
+    },
+    "TrustedKeyGroups": {
+      "Enabled": false,
+      "Quantity": 0
+    },
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": {
+      "Quantity": 3,
+      "Items": [
+        "HEAD",
+        "GET",
+        "OPTIONS"
+      ],
+      "CachedMethods": {
+        "Quantity": 3,
+        "Items": [
+          "HEAD",
+          "GET",
+          "OPTIONS"
+        ]
+      }
+    },
+    "SmoothStreaming": false,
+    "Compress": true,
+    "LambdaFunctionAssociations": {
+      "Quantity": 1,
+      "Items": [
+        {
+          "LambdaFunctionARN": "arn:aws:lambda:us-east-1:386661535629:function:furumaru-cloudfront-origin-response-stg:2",
+          "EventType": "origin-response",
+          "IncludeBody": false
+        }
+      ]
+    },
+    "FunctionAssociations": {
+      "Quantity": 0
+    },
+    "FieldLevelEncryptionId": "",
+    "CachePolicyId": "1aff46e4-55af-4080-b213-24417a81b2df"
+  },
+  "CacheBehaviors": {
+    "Quantity": 0
+  },
+  "CustomErrorResponses": {
+    "Quantity": 0
+  },
+  "Comment": "ふるマル検証用S3バケット",
+  "Logging": {
+    "Enabled": false,
+    "IncludeCookies": false,
+    "Bucket": "",
+    "Prefix": ""
+  },
+  "PriceClass": "PriceClass_All",
+  "Enabled": true,
+  "ViewerCertificate": {
+    "CloudFrontDefaultCertificate": false,
+    "ACMCertificateArn": "arn:aws:acm:us-east-1:386661535629:certificate/f282d737-f044-4c7b-b9b0-6f902e550e7e",
+    "SSLSupportMethod": "sni-only",
+    "MinimumProtocolVersion": "TLSv1.2_2021",
+    "Certificate": "arn:aws:acm:us-east-1:386661535629:certificate/f282d737-f044-4c7b-b9b0-6f902e550e7e",
+    "CertificateSource": "acm"
+  },
+  "Restrictions": {
+    "GeoRestriction": {
+      "RestrictionType": "none",
+      "Quantity": 0
+    }
+  },
+  "WebACLId": "",
+  "HttpVersion": "http2",
+  "IsIPV6Enabled": true,
+  "ContinuousDeploymentPolicyId": "",
+  "Staging": false
+}
