@@ -125,10 +125,7 @@ jobs:
         ORIGIN_RESPONSE_ARN: ${{ needs.cloudfront_origin_response.outputs.lambda-arn }}
 
     - name: Update CloudFront distribution
-      run: |
-        pwd
-        ls -a
-        aws cloudfront update-distribution --id ${CLOUDFRONT_DISTRIBUTION_ID} --distribution-config file://config.json --if-match ${CLOUDFRONT_ETAG} | jq .
+      run: aws cloudfront update-distribution --id ${CLOUDFRONT_DISTRIBUTION_ID} --if-match ${CLOUDFRONT_ETAG} --distribution-config file://config.json | jq .
       env:
         CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
         CLOUDFRONT_ETAG: ${{ steps.get-cloudfront-config.outputs.etag }}
