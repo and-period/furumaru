@@ -14,7 +14,7 @@ CLOUDFRONT_ETAG=$(aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTR
 # Edit the CloudFront distribution configuration to include the new Lambda@Edge function
 aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | \
   jq '.DistributionConfig' | \
-  jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_LATEST_ARN}\"" | \
+  jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_LATEST_ARN}\"" \
   > ./config.json
 
 ls -la
