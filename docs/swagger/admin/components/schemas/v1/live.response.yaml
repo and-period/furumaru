@@ -44,21 +44,7 @@ liveResponse:
       addressLine2: ''
       profile: '紹介文です。'
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
       instagramId: 'instagram-id'
@@ -78,16 +64,8 @@ liveResponse:
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true
-        images:
-        - url: 'https://and-period.jp/thumbnail_240.png'
-          size: 1
-        - url: 'https://and-period.jp/thumbnail_675.png'
-          size: 2
-        - url: 'https://and-period.jp/thumbnail_900.png'
-          size: 3
       - url: 'https://and-period.jp/thumbnail02.png'
         isThumbnail: false
-        images: []
       price: 2500
       cost: 200
       inventory: 30
@@ -167,21 +145,7 @@ livesResponse:
       addressLine2: ''
       profile: '紹介文です。'
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       bonusVideoUrl: 'https://and-period.jp/bonus.mp4'
       instagramId: 'instagram-id'
@@ -201,16 +165,8 @@ livesResponse:
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true
-        images:
-        - url: 'https://and-period.jp/thumbnail_240.png'
-          size: 1
-        - url: 'https://and-period.jp/thumbnail_675.png'
-          size: 2
-        - url: 'https://and-period.jp/thumbnail_900.png'
-          size: 3
       - url: 'https://and-period.jp/thumbnail02.png'
         isThumbnail: false
-        images: []
       price: 2500
       cost: 200
       inventory: 30

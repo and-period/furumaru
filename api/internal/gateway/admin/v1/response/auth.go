@@ -12,12 +12,11 @@ type Auth struct {
 
 // AuthUser - ログイン中管理者情報
 type AuthUser struct {
-	AdminID      string   `json:"id"`           // 管理者ID
-	Role         int32    `json:"role"`         // 権限
-	Username     string   `json:"username"`     // 表示名
-	Email        string   `json:"email"`        // メールアドレス
-	ThumbnailURL string   `json:"thumbnailUrl"` // サムネイルURL
-	Thumbnails   []*Image `json:"thumbnails"`   // サムネイルURL(リサイズ済み)一覧
+	AdminID      string `json:"id"`           // 管理者ID
+	Role         int32  `json:"role"`         // 権限
+	Username     string `json:"username"`     // 表示名
+	Email        string `json:"email"`        // メールアドレス
+	ThumbnailURL string `json:"thumbnailUrl"` // サムネイルURL
 }
 
 type AuthResponse struct {

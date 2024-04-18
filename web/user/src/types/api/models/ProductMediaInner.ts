@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { ProductMediaInnerImagesInner } from './ProductMediaInnerImagesInner';
-import {
-    ProductMediaInnerImagesInnerFromJSON,
-    ProductMediaInnerImagesInnerFromJSONTyped,
-    ProductMediaInnerImagesInnerToJSON,
-} from './ProductMediaInnerImagesInner';
-
 /**
  * 
  * @export
@@ -38,13 +31,6 @@ export interface ProductMediaInner {
      * @memberof ProductMediaInner
      */
     isThumbnail: boolean;
-    /**
-     * リサイズ済み画像URL一覧
-     * @type {Array<ProductMediaInnerImagesInner>}
-     * @memberof ProductMediaInner
-     * @deprecated
-     */
-    images: Array<ProductMediaInnerImagesInner>;
 }
 
 /**
@@ -54,7 +40,6 @@ export function instanceOfProductMediaInner(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "url" in value;
     isInstance = isInstance && "isThumbnail" in value;
-    isInstance = isInstance && "images" in value;
 
     return isInstance;
 }
@@ -71,7 +56,6 @@ export function ProductMediaInnerFromJSONTyped(json: any, ignoreDiscriminator: b
         
         'url': json['url'],
         'isThumbnail': json['isThumbnail'],
-        'images': ((json['images'] as Array<any>).map(ProductMediaInnerImagesInnerFromJSON)),
     };
 }
 
@@ -86,7 +70,6 @@ export function ProductMediaInnerToJSON(value?: ProductMediaInner | null): any {
         
         'url': value.url,
         'isThumbnail': value.isThumbnail,
-        'images': ((value.images as Array<any>).map(ProductMediaInnerImagesInnerToJSON)),
     };
 }
 

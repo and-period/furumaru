@@ -21,7 +21,6 @@ func NewArchiveSummary(schedule *entity.Schedule) *ArchiveSummary {
 			StartAt:       schedule.StartAt.Unix(),
 			EndAt:         schedule.EndAt.Unix(),
 			ThumbnailURL:  schedule.ThumbnailURL,
-			Thumbnails:    NewImages(schedule.Thumbnails).Response(),
 		},
 	}
 }

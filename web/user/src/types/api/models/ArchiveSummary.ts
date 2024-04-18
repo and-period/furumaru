@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Thumbnail } from './Thumbnail';
-import {
-    ThumbnailFromJSON,
-    ThumbnailFromJSONTyped,
-    ThumbnailToJSON,
-} from './Thumbnail';
-
 /**
  * 過去のマルシェ情報
  * @export
@@ -62,13 +55,6 @@ export interface ArchiveSummary {
      * @memberof ArchiveSummary
      */
     thumbnailUrl: string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<Thumbnail>}
-     * @memberof ArchiveSummary
-     * @deprecated
-     */
-    thumbnails: Array<Thumbnail>;
 }
 
 /**
@@ -82,7 +68,6 @@ export function instanceOfArchiveSummary(value: object): boolean {
     isInstance = isInstance && "startAt" in value;
     isInstance = isInstance && "endAt" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "thumbnails" in value;
 
     return isInstance;
 }
@@ -103,7 +88,6 @@ export function ArchiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: bool
         'startAt': json['startAt'],
         'endAt': json['endAt'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
     };
 }
 
@@ -122,7 +106,6 @@ export function ArchiveSummaryToJSON(value?: ArchiveSummary | null): any {
         'startAt': value.startAt,
         'endAt': value.endAt,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
     };
 }
 

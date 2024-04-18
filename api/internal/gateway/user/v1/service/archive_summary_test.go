@@ -50,11 +50,6 @@ func TestArchiveSummary(t *testing.T) {
 					StartAt:       1638284400,
 					EndAt:         1643641200,
 					ThumbnailURL:  "https://example.com/thumbnail.png",
-					Thumbnails: []*response.Image{
-						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-					},
 				},
 			},
 		},
@@ -86,11 +81,6 @@ func TestArchiveSummary_Response(t *testing.T) {
 					StartAt:       1638284400,
 					EndAt:         1643641200,
 					ThumbnailURL:  "https://example.com/thumbnail.png",
-					Thumbnails: []*response.Image{
-						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-					},
 				},
 			},
 			expect: &response.ArchiveSummary{
@@ -100,11 +90,6 @@ func TestArchiveSummary_Response(t *testing.T) {
 				StartAt:       1638284400,
 				EndAt:         1643641200,
 				ThumbnailURL:  "https://example.com/thumbnail.png",
-				Thumbnails: []*response.Image{
-					{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-					{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-					{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-				},
 			},
 		},
 	}
@@ -160,11 +145,6 @@ func TestArchiveSummaries(t *testing.T) {
 						StartAt:       1638284400,
 						EndAt:         1643641200,
 						ThumbnailURL:  "https://example.com/thumbnail.png",
-						Thumbnails: []*response.Image{
-							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-						},
 					},
 				},
 			},
@@ -198,11 +178,6 @@ func TestArchiveSummaries_CoordinatorIDs(t *testing.T) {
 						StartAt:       1638284400,
 						EndAt:         1643641200,
 						ThumbnailURL:  "https://example.com/thumbnail.png",
-						Thumbnails: []*response.Image{
-							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-						},
 					},
 				},
 			},
@@ -236,11 +211,6 @@ func TestArchiveSummaries_Response(t *testing.T) {
 						StartAt:       1638284400,
 						EndAt:         1643641200,
 						ThumbnailURL:  "https://example.com/thumbnail.png",
-						Thumbnails: []*response.Image{
-							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-						},
 					},
 				},
 			},
@@ -252,11 +222,6 @@ func TestArchiveSummaries_Response(t *testing.T) {
 					StartAt:       1638284400,
 					EndAt:         1643641200,
 					ThumbnailURL:  "https://example.com/thumbnail.png",
-					Thumbnails: []*response.Image{
-						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-					},
 				},
 			},
 		},

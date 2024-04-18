@@ -133,12 +133,8 @@ func TestUser(t *testing.T) {
 					Email:         "test-user@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Thumbnails: []*response.Image{{
-						URL:  "https://and-period.jp/thumbnail.png",
-						Size: int32(ImageSizeMedium),
-					}},
-					CreatedAt: 1640962800,
-					UpdatedAt: 1640962800,
+					CreatedAt:     1640962800,
+					UpdatedAt:     1640962800,
 				},
 				address: Address{
 					Address: response.Address{
@@ -209,7 +205,6 @@ func TestUser(t *testing.T) {
 					FirstnameKana: "げすと",
 					Email:         "test-user@and-period.jp",
 					PhoneNumber:   "090-1234-1234",
-					Thumbnails:    []*response.Image{},
 					CreatedAt:     1640962800,
 					UpdatedAt:     1640962800,
 				},
@@ -458,12 +453,8 @@ func TestUsers(t *testing.T) {
 						Email:         "test-user@and-period.jp",
 						PhoneNumber:   "+819012345678",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Thumbnails: []*response.Image{{
-							URL:  "https://and-period.jp/thumbnail.png",
-							Size: int32(ImageSizeMedium),
-						}},
-						CreatedAt: 1640962800,
-						UpdatedAt: 1640962800,
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
 					},
 					address: Address{
 						Address: response.Address{

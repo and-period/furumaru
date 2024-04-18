@@ -43,21 +43,7 @@ coordinatorResponse:
       productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
       businessDays: [1,2,3,4,5]
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
@@ -68,13 +54,6 @@ coordinatorResponse:
       status: 2
       title: '&.マルシェ'
       thumbnailUrl: 'https://example.com/thumbnail.png'
-      thumbnails:
-      - url: 'https://example.com/thumbnail_240.png'
-        size: 1
-      - url: 'https://example.com/thumbnail_675.png'
-        size: 2
-      - url: 'https://example.com/thumbnail_900.png'
-        size: 3
       startAt: 1640962800
       endAt: 1640962800
       products:
@@ -83,35 +62,14 @@ coordinatorResponse:
         price: 1980
         inventory: 30
         thumbnailUrl: 'https://example.com/thumbnail.png'
-        thumbnails:
-        - url: 'https://example.com/thumbnail_240.png'
-          size: 1
-        - url: 'https://example.com/thumbnail_675.png'
-          size: 2
-        - url: 'https://example.com/thumbnail_900.png'
-          size: 3
     archives:
     - scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
       title: '&.マルシェ'
       thumbnailUrl: 'https://example.com/thumbnail.png'
-      thumbnails:
-      - url: 'https://example.com/thumbnail_240.png'
-        size: 1
-      - url: 'https://example.com/thumbnail_675.png'
-        size: 2
-      - url: 'https://example.com/thumbnail_900.png'
-        size: 3
     productTypes:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
       iconUrl: 'https://and-period.jp/icon.png'
-      icons:
-      - url: 'https://and-period.jp/icon_240.png'
-        size: 1
-      - url: 'https://and-period.jp/icon_675.png'
-        size: 2
-      - url: 'https://and-period.jp/icon_900.png'
-        size: 3
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     producers:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -119,21 +77,7 @@ coordinatorResponse:
       username: '&.農園'
       profile: '紹介文です。'
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
@@ -151,16 +95,8 @@ coordinatorResponse:
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true
-        images:
-        - url: 'https://and-period.jp/thumbnail_240.png'
-          size: 1
-        - url: 'https://and-period.jp/thumbnail_675.png'
-          size: 2
-        - url: 'https://and-period.jp/thumbnail_900.png'
-          size: 3
       - url: 'https://and-period.jp/thumbnail02.png'
         isThumbnail: false
-        images: []
       price: 2500
       inventory: 30
       weight: 2.5
@@ -208,21 +144,7 @@ coordinatorsResponse:
       productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
       businessDays: [1,2,3,4,5]
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
@@ -232,12 +154,5 @@ coordinatorsResponse:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
       iconUrl: 'https://and-period.jp/icon.png'
-      icons:
-      - url: 'https://and-period.jp/icon_240.png'
-        size: 1
-      - url: 'https://and-period.jp/icon_675.png'
-        size: 2
-      - url: 'https://and-period.jp/icon_900.png'
-        size: 3
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     total: 1

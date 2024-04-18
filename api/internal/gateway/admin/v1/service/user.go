@@ -75,7 +75,6 @@ func newMemberUser(user *uentity.User, address *uentity.Address) *User {
 			Email:         user.Member.Email,
 			PhoneNumber:   user.Member.PhoneNumber,
 			ThumbnailURL:  user.Member.ThumbnailURL,
-			Thumbnails:    NewImages(user.Member.Thumbnails).Response(),
 			CreatedAt:     jst.Unix(user.CreatedAt),
 			UpdatedAt:     jst.Unix(user.UpdatedAt),
 		},
@@ -97,7 +96,6 @@ func newGuestUser(user *uentity.User, address *uentity.Address) *User {
 			FirstnameKana: user.Guest.FirstnameKana,
 			Email:         user.Guest.Email,
 			PhoneNumber:   address.PhoneNumber, // 保持していないためアドレス帳の情報を使用
-			Thumbnails:    []*response.Image{},
 			CreatedAt:     user.CreatedAt.Unix(),
 			UpdatedAt:     user.UpdatedAt.Unix(),
 		},

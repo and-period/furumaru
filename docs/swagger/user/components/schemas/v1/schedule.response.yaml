@@ -34,13 +34,6 @@ scheduleResponse:
       title: 'スケジュールタイトル'
       description: 'スケジュールの説明'
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       distributionUrl: 'https://and-period.jp/video.mp4'
       startAt: 1640962800
       endAt: 1640962800
@@ -50,21 +43,7 @@ scheduleResponse:
       profile: '紹介文です。'
       productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
@@ -84,21 +63,7 @@ scheduleResponse:
       username: '&.農園'
       profile: '紹介文です。'
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
@@ -117,16 +82,8 @@ scheduleResponse:
       media:
       - url: 'https://and-period.jp/thumbnail01.png'
         isThumbnail: true
-        images:
-        - url: 'https://and-period.jp/thumbnail_240.png'
-          size: 1
-        - url: 'https://and-period.jp/thumbnail_675.png'
-          size: 2
-        - url: 'https://and-period.jp/thumbnail_900.png'
-          size: 3
       - url: 'https://and-period.jp/thumbnail02.png'
         isThumbnail: false
-        images: []
       price: 2500
       inventory: 30
       weight: 2.5
@@ -172,13 +129,6 @@ liveSchedulesResponse:
       status: 2
       title: '&.マルシェ'
       thumbnailUrl: 'https://example.com/thumbnail.png'
-      thumbnails:
-      - url: 'https://example.com/thumbnail_240.png'
-        size: 1
-      - url: 'https://example.com/thumbnail_675.png'
-        size: 2
-      - url: 'https://example.com/thumbnail_900.png'
-        size: 3
       startAt: 1640962800
       endAt: 1640962800
       products:
@@ -187,13 +137,6 @@ liveSchedulesResponse:
         price: 1980
         inventory: 30
         thumbnailUrl: 'https://example.com/thumbnail.png'
-        thumbnails:
-        - url: 'https://example.com/thumbnail_240.png'
-          size: 1
-        - url: 'https://example.com/thumbnail_675.png'
-          size: 2
-        - url: 'https://example.com/thumbnail_900.png'
-          size: 3
     coordinators:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       marcheName: '&.マルシェ'
@@ -202,21 +145,7 @@ liveSchedulesResponse:
       productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
       businessDays: [1,2,3,4,5]
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'
@@ -249,13 +178,6 @@ archiveSchedulesResponse:
     - scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
       title: '&.マルシェ'
       thumbnailUrl: 'https://example.com/thumbnail.png'
-      thumbnails:
-      - url: 'https://example.com/thumbnail_240.png'
-        size: 1
-      - url: 'https://example.com/thumbnail_675.png'
-        size: 2
-      - url: 'https://example.com/thumbnail_900.png'
-        size: 3
     coordinators:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       marcheName: '&.マルシェ'
@@ -264,21 +186,7 @@ archiveSchedulesResponse:
       productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
       businessDays: [1,2,3,4,5]
       thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-      thumbnails:
-      - url: 'https://and-period.jp/thumbnail_240.png'
-        size: 1
-      - url: 'https://and-period.jp/thumbnail_675.png'
-        size: 2
-      - url: 'https://and-period.jp/thumbnail_900.png'
-        size: 3
       headerUrl: 'https://and-period.jp/header.png'
-      headers:
-      - url: 'https://and-period.jp/header_240.png'
-        size: 1
-      - url: 'https://and-period.jp/header_675.png'
-        size: 2
-      - url: 'https://and-period.jp/header_900.png'
-        size: 3
       promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
       instagramId: 'instagram-id'
       facebookId: 'facebook-id'

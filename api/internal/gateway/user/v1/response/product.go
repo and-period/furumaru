@@ -16,7 +16,6 @@ type Product struct {
 	ItemUnit          string          `json:"itemUnit"`          // 数量単位
 	ItemDescription   string          `json:"itemDescription"`   // 数量単位説明
 	ThumbnailURL      string          `json:"thumbnailUrl"`      // サムネイルURL
-	Thumbnails        []*Image        `json:"thumbnails"`        // リサイズ済みサムネイル
 	Media             []*ProductMedia `json:"media"`             // メディア一覧
 	Price             int64           `json:"price"`             // 販売価格(税込)
 	ExpirationDate    int64           `json:"expirationDate"`    // 賞味期限(単位:日)
@@ -36,9 +35,8 @@ type Product struct {
 
 // ProductMedia - 商品メディア情報
 type ProductMedia struct {
-	URL         string   `json:"url"`         // メディアURL
-	IsThumbnail bool     `json:"isThumbnail"` // サムネイルとして使用
-	Images      []*Image `json:"images"`      // リサイズ済み画像一覧
+	URL         string `json:"url"`         // メディアURL
+	IsThumbnail bool   `json:"isThumbnail"` // サムネイルとして使用
 }
 
 type ProductResponse struct {

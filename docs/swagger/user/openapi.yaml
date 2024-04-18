@@ -162,8 +162,6 @@ components:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
     weekday:
       $ref: './components/schemas/codes/common.yaml#/weekday'
-    imageSize:
-      $ref: './components/schemas/codes/image.yaml#/imageSize'
     orderStatus:
       $ref: './components/schemas/codes/order.yaml#/orderStatus'
     fulfillmentStatus:
@@ -207,8 +205,6 @@ components:
       $ref: './components/schemas/entity/cart.yaml#/cartItem'
     category:
       $ref: './components/schemas/entity/category.yaml#/category'
-    thumbnail:
-      $ref: './components/schemas/entity/common.yaml#/thumbnail'
     coordinator:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
     live:

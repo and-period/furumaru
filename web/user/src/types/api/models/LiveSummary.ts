@@ -25,12 +25,6 @@ import {
     ScheduleStatusFromJSONTyped,
     ScheduleStatusToJSON,
 } from './ScheduleStatus';
-import type { Thumbnail } from './Thumbnail';
-import {
-    ThumbnailFromJSON,
-    ThumbnailFromJSONTyped,
-    ThumbnailToJSON,
-} from './Thumbnail';
 
 /**
  * 開催中・開催予定のマルシェ情報
@@ -69,13 +63,6 @@ export interface LiveSummary {
      */
     thumbnailUrl: string;
     /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<Thumbnail>}
-     * @memberof LiveSummary
-     * @deprecated
-     */
-    thumbnails: Array<Thumbnail>;
-    /**
      * マルシェ開始日時 (unixtime)
      * @type {number}
      * @memberof LiveSummary
@@ -105,7 +92,6 @@ export function instanceOfLiveSummary(value: object): boolean {
     isInstance = isInstance && "status" in value;
     isInstance = isInstance && "title" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "thumbnails" in value;
     isInstance = isInstance && "startAt" in value;
     isInstance = isInstance && "endAt" in value;
     isInstance = isInstance && "products" in value;
@@ -128,7 +114,6 @@ export function LiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'status': ScheduleStatusFromJSON(json['status']),
         'title': json['title'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
         'startAt': json['startAt'],
         'endAt': json['endAt'],
         'products': ((json['products'] as Array<any>).map(LiveProductFromJSON)),
@@ -149,7 +134,6 @@ export function LiveSummaryToJSON(value?: LiveSummary | null): any {
         'status': ScheduleStatusToJSON(value.status),
         'title': value.title,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
         'startAt': value.startAt,
         'endAt': value.endAt,
         'products': ((value.products as Array<any>).map(LiveProductToJSON)),

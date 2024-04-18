@@ -150,7 +150,6 @@ func NewProduct(product *entity.Product) *Product {
 			ItemUnit:          product.ItemUnit,
 			ItemDescription:   product.ItemDescription,
 			ThumbnailURL:      product.ThumbnailURL,
-			Thumbnails:        NewImages(product.Thumbnails).Response(),
 			Media:             NewMultiProductMedia(product.Media).Response(),
 			Price:             product.Price,
 			ExpirationDate:    product.ExpirationDate,
@@ -226,7 +225,6 @@ func NewProductMedia(media *entity.ProductMedia) *ProductMedia {
 		ProductMedia: response.ProductMedia{
 			URL:         media.URL,
 			IsThumbnail: media.IsThumbnail,
-			Images:      NewImages(media.Images).Response(),
 		},
 	}
 }
