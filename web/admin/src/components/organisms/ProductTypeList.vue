@@ -181,7 +181,7 @@ const getIcons = (productType: ProductType): string => {
   if (!productType.icons) {
     return ''
   }
-  return getResizedImages(productType.icons)
+  return getResizedImages(productType.iconUrl)
 }
 
 const onClickNew = (): void => {

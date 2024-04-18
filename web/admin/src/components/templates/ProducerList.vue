@@ -118,10 +118,10 @@ const producerName = (producer?: Producer): string => {
 }
 
 const getImages = (producer: Producer): string => {
-  if (!producer.thumbnails) {
+  if (!producer.thumbnailUrl) {
     return ''
   }
-  return getResizedImages(producer.thumbnails)
+  return getResizedImages(producer.thumbnailUrl)
 }
 
 const onClickOpenDeleteDialog = (producer: Producer): void => {

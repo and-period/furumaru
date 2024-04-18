@@ -174,7 +174,7 @@ const getResizedThumbnails = (media: ProductMediaInner[]): string => {
   if (!thumbnail) {
     return ''
   }
-  return getResizedImages(thumbnail.images)
+  return getResizedImages(thumbnail.url)
 }
 
 const getStatus = (status: ProductStatus): string => {

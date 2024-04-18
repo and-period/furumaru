@@ -121,10 +121,10 @@ const getThumbnail = (schedule: Schedule): string => {
 }
 
 const getResizedThumbnails = (schedule: Schedule): string => {
-  if (!schedule.thumbnails) {
+  if (!schedule.thumbnailUrl) {
     return ''
   }
-  return getResizedImages(schedule.thumbnails)
+  return getResizedImages(schedule.thumbnailUrl)
 }
 
 const getStatus = (status: ScheduleStatus): string => {

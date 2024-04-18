@@ -285,10 +285,10 @@ const getProducerThumbnailUrl = (live: Live): string => {
 
 const getProducerThumbnails = (live: Live): string => {
   const producer = getProducer(live)
-  if (!producer?.thumbnails) {
+  if (!producer?.thumbnailUrl) {
     return ''
   }
-  return getResizedImages(producer.thumbnails)
+  return getResizedImages(producer.thumbnailUrl)
 }
 
 const getProductInventoryColor = (product: Product): string => {
@@ -306,7 +306,7 @@ const getProductThumbnails = (product: Product): string => {
   const thumbnail = product.media?.find((media: ProductMediaInner) => {
     return media.isThumbnail
   })
-  return thumbnail ? getResizedImages(thumbnail.images) : ''
+  return thumbnail ? getResizedImages(thumbnail.url) : ''
 }
 
 const onSearchProducer = (name: string): void => {

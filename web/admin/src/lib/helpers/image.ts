@@ -1,22 +1,17 @@
-import { ImageSize } from '~/types/api'
-
-interface Image {
-  size: ImageSize
-  url: string
+interface ImageSize {
+  query: string
+  size: string
 }
 
-export function getResizedImages<T extends Image> (images: T[]): string {
-  const strs: string[] = images.map((img: T): string => {
-    switch (img.size) {
-      case ImageSize.SMALL:
-        return `${img.url} 1x`
-      case ImageSize.MEDIUM:
-        return `${img.url} 2x`
-      case ImageSize.LARGE:
-        return `${img.url} 3x`
-      default:
-        return img.url
-    }
+const sizes: ImageSize[] = [
+  { query: 'width=320&format=webp', size: '1x' },
+  { query: 'width=640&format=webp', size: '2x' },
+  { query: 'width=960&format=webp', size: '3x' }
+]
+
+export function getResizedImages<T extends string> (image: T): string {
+  const urls: string[] = sizes.map((size: ImageSize): string => {
+    return image ? `${image}?${size.query} ${size.size}` : ''
   })
-  return strs.join(', ')
+  return urls.join(', ')
 }
