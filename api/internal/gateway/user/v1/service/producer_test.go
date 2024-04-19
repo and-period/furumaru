@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -30,21 +29,11 @@ func TestProducer(t *testing.T) {
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-producer@and-period.jp",
 				},
-				AdminID:       "producer-id",
-				CoordinatorID: "coordinator-id",
-				Username:      "&.農園",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Thumbnails: common.Images{
-					{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-				},
-				HeaderURL: "https://and-period.jp/header.png",
-				Headers: common.Images{
-					{URL: "https://and-period.jp/header_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
-				},
+				AdminID:        "producer-id",
+				CoordinatorID:  "coordinator-id",
+				Username:       "&.農園",
+				ThumbnailURL:   "https://and-period.jp/thumbnail.png",
+				HeaderURL:      "https://and-period.jp/header.png",
 				PhoneNumber:    "+819012345678",
 				PostalCode:     "1000014",
 				Prefecture:     "東京都",
@@ -136,21 +125,11 @@ func TestProducers(t *testing.T) {
 						FirstnameKana: "かんりしゃ",
 						Email:         "test-producer01@and-period.jp",
 					},
-					AdminID:       "producer-id01",
-					CoordinatorID: "coordinator-id",
-					Username:      "&.農園",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Thumbnails: common.Images{
-						{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-					},
-					HeaderURL: "https://and-period.jp/header.png",
-					Headers: common.Images{
-						{URL: "https://and-period.jp/header_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
-					},
+					AdminID:        "producer-id01",
+					CoordinatorID:  "coordinator-id",
+					Username:       "&.農園",
+					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
+					HeaderURL:      "https://and-period.jp/header.png",
 					PhoneNumber:    "+819012345678",
 					PostalCode:     "1000014",
 					Prefecture:     "東京都",

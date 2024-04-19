@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
@@ -91,7 +90,6 @@ type Product struct {
 	ItemUnit              string            `gorm:""`                                       // 数量単位
 	ItemDescription       string            `gorm:""`                                       // 数量単位説明
 	ThumbnailURL          string            `gorm:"-"`                                      // サムネイルURL
-	Thumbnails            common.Images     `gorm:"-"`                                      // リサイズ済サムネイル一覧
 	Media                 MultiProductMedia `gorm:"-"`                                      // メディア一覧
 	MediaJSON             datatypes.JSON    `gorm:"default:null;column:media"`              // メディア一覧(JSON)
 	ExpirationDate        int64             `gorm:""`                                       // 賞味期限(単位:日)
@@ -116,9 +114,8 @@ type Products []*Product
 
 // ProductMedia - 商品メディア情報
 type ProductMedia struct {
-	URL         string        `json:"url"`         // メディアURL
-	IsThumbnail bool          `json:"isThumbnail"` // サムネイルとして使用
-	Images      common.Images `json:"images"`      // リサイズ済み画像一覧
+	URL         string `json:"url"`         // メディアURL
+	IsThumbnail bool   `json:"isThumbnail"` // サムネイルとして使用
 }
 
 type MultiProductMedia []*ProductMedia
@@ -256,7 +253,6 @@ func (p *Product) SetThumbnail() {
 			continue
 		}
 		p.ThumbnailURL = media.URL
-		p.Thumbnails = media.Images
 	}
 }
 
@@ -454,10 +450,6 @@ func NewProductMedia(url string, isThumbnail bool) *ProductMedia {
 		URL:         url,
 		IsThumbnail: isThumbnail,
 	}
-}
-
-func (m *ProductMedia) SetImages(images common.Images) {
-	m.Images = images
 }
 
 func (m MultiProductMedia) MapByURL() map[string]*ProductMedia {

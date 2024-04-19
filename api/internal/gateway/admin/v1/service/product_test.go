@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -512,20 +511,10 @@ func TestProducts(t *testing.T) {
 						{
 							URL:         "https://and-period.jp/thumbnail01.png",
 							IsThumbnail: true,
-							Images: common.Images{
-								{URL: "https://and-period.jp/thumbnail01_240.png", Size: common.ImageSizeSmall},
-								{URL: "https://and-period.jp/thumbnail01_675.png", Size: common.ImageSizeMedium},
-								{URL: "https://and-period.jp/thumbnail01_900.png", Size: common.ImageSizeLarge},
-							},
 						},
 						{
 							URL:         "https://and-period.jp/thumbnail02.png",
 							IsThumbnail: false,
-							Images: common.Images{
-								{URL: "https://and-period.jp/thumbnail02_240.png", Size: common.ImageSizeSmall},
-								{URL: "https://and-period.jp/thumbnail02_675.png", Size: common.ImageSizeMedium},
-								{URL: "https://and-period.jp/thumbnail02_900.png", Size: common.ImageSizeLarge},
-							},
 						},
 					},
 					DeliveryType:         entity.DeliveryTypeNormal,
@@ -1022,11 +1011,6 @@ func TestProductMedia(t *testing.T) {
 			media: &entity.ProductMedia{
 				URL:         "https://and-period.jp/thumbnail01.png",
 				IsThumbnail: true,
-				Images: common.Images{
-					{URL: "https://and-period.jp/thumbnail01_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/thumbnail01_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/thumbnail01_900.png", Size: common.ImageSizeLarge},
-				},
 			},
 			expect: &ProductMedia{
 				ProductMedia: response.ProductMedia{
@@ -1088,11 +1072,6 @@ func TestMultiProductMedia(t *testing.T) {
 				{
 					URL:         "https://and-period.jp/thumbnail01.png",
 					IsThumbnail: true,
-					Images: common.Images{
-						{URL: "https://and-period.jp/thumbnail01_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/thumbnail01_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/thumbnail01_900.png", Size: common.ImageSizeLarge},
-					},
 				},
 				{
 					URL:         "https://and-period.jp/thumbnail02.png",

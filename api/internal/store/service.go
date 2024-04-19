@@ -22,7 +22,6 @@ type Service interface {
 	GetProductType(ctx context.Context, in *GetProductTypeInput) (*entity.ProductType, error)             // １件取得
 	CreateProductType(ctx context.Context, in *CreateProductTypeInput) (*entity.ProductType, error)       // 登録
 	UpdateProductType(ctx context.Context, in *UpdateProductTypeInput) error                              // 更新
-	UpdateProductTypeIcons(ctx context.Context, in *UpdateProductTypeIconsInput) error                    // アイコン画像(リサイズ済み)更新
 	DeleteProductType(ctx context.Context, in *DeleteProductTypeInput) error                              // 削除
 	// 商品タグ
 	ListProductTags(ctx context.Context, in *ListProductTagsInput) (entity.ProductTags, int64, error)  // 一覧取得
@@ -45,7 +44,6 @@ type Service interface {
 	GetProduct(ctx context.Context, in *GetProductInput) (*entity.Product, error)                                 // １件取得
 	CreateProduct(ctx context.Context, in *CreateProductInput) (*entity.Product, error)                           // 登録
 	UpdateProduct(ctx context.Context, in *UpdateProductInput) error                                              // 更新
-	UpdateProductMedia(ctx context.Context, in *UpdateProductMediaInput) error                                    // 画像(リサイズ済み)更新
 	DeleteProduct(ctx context.Context, in *DeleteProductInput) error                                              // 削除
 	// プロモーション
 	ListPromotions(ctx context.Context, in *ListPromotionsInput) (entity.Promotions, int64, error)  // 一覧取得
@@ -61,7 +59,6 @@ type Service interface {
 	GetSchedule(ctx context.Context, in *GetScheduleInput) (*entity.Schedule, error)             // １件取得
 	CreateSchedule(ctx context.Context, in *CreateScheduleInput) (*entity.Schedule, error)       // 登録
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleInput) error                           // 更新
-	UpdateScheduleThumbnails(ctx context.Context, in *UpdateScheduleThumbnailsInput) error       // サムネイル画像(リサイズ済み)更新
 	ApproveSchedule(ctx context.Context, in *ApproveScheduleInput) error                         // 承認
 	PublishSchedule(ctx context.Context, in *PublishScheduleInput) error                         // 公開
 	// マルシェタイムテーブル

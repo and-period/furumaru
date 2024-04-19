@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -38,20 +37,10 @@ func TestLiveProduct(t *testing.T) {
 					{
 						URL:         "https://example.com/thumbnail01.png",
 						IsThumbnail: true,
-						Images: common.Images{
-							{URL: "https://example.com/thumbnail01_240.png", Size: common.ImageSizeSmall},
-							{URL: "https://example.com/thumbnail01_675.png", Size: common.ImageSizeMedium},
-							{URL: "https://example.com/thumbnail01_900.png", Size: common.ImageSizeLarge},
-						},
 					},
 					{
 						URL:         "https://example.com/thumbnail02.png",
 						IsThumbnail: false,
-						Images: common.Images{
-							{URL: "https://example.com/thumbnail02_240.png", Size: common.ImageSizeSmall},
-							{URL: "https://example.com/thumbnail02_675.png", Size: common.ImageSizeMedium},
-							{URL: "https://example.com/thumbnail02_900.png", Size: common.ImageSizeLarge},
-						},
 					},
 				},
 				DeliveryType:     entity.DeliveryTypeNormal,
@@ -160,20 +149,10 @@ func TestLiveProducts(t *testing.T) {
 						{
 							URL:         "https://example.com/thumbnail01.png",
 							IsThumbnail: true,
-							Images: common.Images{
-								{URL: "https://example.com/thumbnail01_240.png", Size: common.ImageSizeSmall},
-								{URL: "https://example.com/thumbnail01_675.png", Size: common.ImageSizeMedium},
-								{URL: "https://example.com/thumbnail01_900.png", Size: common.ImageSizeLarge},
-							},
 						},
 						{
 							URL:         "https://example.com/thumbnail02.png",
 							IsThumbnail: false,
-							Images: common.Images{
-								{URL: "https://example.com/thumbnail02_240.png", Size: common.ImageSizeSmall},
-								{URL: "https://example.com/thumbnail02_675.png", Size: common.ImageSizeMedium},
-								{URL: "https://example.com/thumbnail02_900.png", Size: common.ImageSizeLarge},
-							},
 						},
 					},
 					DeliveryType:     entity.DeliveryTypeNormal,

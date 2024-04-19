@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"gorm.io/datatypes"
 )
@@ -21,11 +20,7 @@ type Coordinator struct {
 	ProductTypeIDs     []string       `gorm:"-"`                                    // 取り扱い品目ID一覧
 	ProductTypeIDsJSON datatypes.JSON `gorm:"default:null;column:product_type_ids"` // 取り扱い品目ID一覧(JSON)
 	ThumbnailURL       string         `gorm:""`                                     // サムネイルURL
-	Thumbnails         common.Images  `gorm:"-"`                                    // サムネイル一覧(リサイズ済み)
-	ThumbnailsJSON     datatypes.JSON `gorm:"default:null;column:thumbnails"`       // サムネイル一覧(JSON)
 	HeaderURL          string         `gorm:""`                                     // ヘッダー画像URL
-	Headers            common.Images  `gorm:"-"`                                    // ヘッダー画像一覧(リサイズ済み)
-	HeadersJSON        datatypes.JSON `gorm:"default:null;column:headers"`          // ヘッダー画像一覧(JSON)
 	PromotionVideoURL  string         `gorm:""`                                     // 紹介動画URL
 	BonusVideoURL      string         `gorm:""`                                     // 購入特典動画URL
 	InstagramID        string         `gorm:""`                                     // SNS(Instagram)アカウント名
@@ -95,14 +90,6 @@ func NewCoordinator(params *NewCoordinatorParams) (*Coordinator, error) {
 }
 
 func (c *Coordinator) Fill(admin *Admin) (err error) {
-	c.Thumbnails, err = common.NewImagesFromBytes(c.ThumbnailsJSON)
-	if err != nil {
-		return err
-	}
-	c.Headers, err = common.NewImagesFromBytes(c.HeadersJSON)
-	if err != nil {
-		return err
-	}
 	c.ProductTypeIDs, err = c.unmarshalProductTypeIDs()
 	if err != nil {
 		return err

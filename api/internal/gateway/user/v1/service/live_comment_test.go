@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
@@ -66,14 +65,9 @@ func TestLiveComments(t *testing.T) {
 						Email:         "test@example.com",
 						PhoneNumber:   "+819012345678",
 						ThumbnailURL:  "http://example.com/thumbnail.png",
-						Thumbnails: common.Images{
-							{URL: "http://example.com/thumbnail_small.png", Size: common.ImageSizeSmall},
-							{URL: "http://example.com/thumbnail_medium.png", Size: common.ImageSizeMedium},
-							{URL: "http://example.com/thumbnail_large.png", Size: common.ImageSizeLarge},
-						},
-						CreatedAt:  now,
-						UpdatedAt:  now,
-						VerifiedAt: now,
+						CreatedAt:     now,
+						UpdatedAt:     now,
+						VerifiedAt:    now,
 					},
 					Guest:      uentity.Guest{},
 					ID:         "user-id",

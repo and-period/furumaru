@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -83,17 +82,12 @@ func TestSchedule(t *testing.T) {
 		{
 			name: "success 開催前",
 			schedule: &sentity.Schedule{
-				ID:            "schedule-id",
-				CoordinatorID: "coordinator-id",
-				Status:        sentity.ScheduleStatusWaiting,
-				Title:         "スケジュールタイトル",
-				Description:   "スケジュールの詳細です。",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Thumbnails: common.Images{
-					{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-				},
+				ID:              "schedule-id",
+				CoordinatorID:   "coordinator-id",
+				Status:          sentity.ScheduleStatusWaiting,
+				Title:           "スケジュールタイトル",
+				Description:     "スケジュールの詳細です。",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 				Public:          true,
@@ -122,17 +116,12 @@ func TestSchedule(t *testing.T) {
 		{
 			name: "success 開催中",
 			schedule: &sentity.Schedule{
-				ID:            "schedule-id",
-				CoordinatorID: "coordinator-id",
-				Status:        sentity.ScheduleStatusLive,
-				Title:         "スケジュールタイトル",
-				Description:   "スケジュールの詳細です。",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Thumbnails: common.Images{
-					{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-				},
+				ID:              "schedule-id",
+				CoordinatorID:   "coordinator-id",
+				Status:          sentity.ScheduleStatusLive,
+				Title:           "スケジュールタイトル",
+				Description:     "スケジュールの詳細です。",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 				Public:          true,
@@ -169,17 +158,12 @@ func TestSchedule(t *testing.T) {
 		{
 			name: "success 開催後",
 			schedule: &sentity.Schedule{
-				ID:            "schedule-id",
-				CoordinatorID: "coordinator-id",
-				Status:        sentity.ScheduleStatusClosed,
-				Title:         "スケジュールタイトル",
-				Description:   "スケジュールの詳細です。",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Thumbnails: common.Images{
-					{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-				},
+				ID:              "schedule-id",
+				CoordinatorID:   "coordinator-id",
+				Status:          sentity.ScheduleStatusClosed,
+				Title:           "スケジュールタイトル",
+				Description:     "スケジュールの詳細です。",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 				Public:          true,
@@ -279,17 +263,12 @@ func TestSchedules(t *testing.T) {
 			name: "success",
 			schedules: sentity.Schedules{
 				{
-					ID:            "schedule-id",
-					CoordinatorID: "coordinator-id",
-					Status:        sentity.ScheduleStatusLive,
-					Title:         "スケジュールタイトル",
-					Description:   "スケジュールの詳細です。",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Thumbnails: common.Images{
-						{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-					},
+					ID:              "schedule-id",
+					CoordinatorID:   "coordinator-id",
+					Status:          sentity.ScheduleStatusLive,
+					Title:           "スケジュールタイトル",
+					Description:     "スケジュールの詳細です。",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					ImageURL:        "https://and-period.jp/image.png",
 					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 					Public:          true,

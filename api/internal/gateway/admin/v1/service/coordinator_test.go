@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -32,23 +31,13 @@ func TestCoordinator(t *testing.T) {
 					FirstnameKana: "かんりしゃ",
 					Email:         "test-coordinator@and-period.jp",
 				},
-				AdminID:        "coordinator-id",
-				MarcheName:     "&.マルシェ",
-				Username:       "&.農園",
-				Profile:        "紹介文です。",
-				ProductTypeIDs: []string{"product-type-ids"},
-				ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-				Thumbnails: common.Images{
-					{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-				},
-				HeaderURL: "https://and-period.jp/header.png",
-				Headers: common.Images{
-					{URL: "https://and-period.jp/header_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
-				},
+				AdminID:           "coordinator-id",
+				MarcheName:        "&.マルシェ",
+				Username:          "&.農園",
+				Profile:           "紹介文です。",
+				ProductTypeIDs:    []string{"product-type-ids"},
+				ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+				HeaderURL:         "https://and-period.jp/header.png",
 				PromotionVideoURL: "https://and-period.jp/promotion.mp4",
 				BonusVideoURL:     "https://and-period.jp/bonus.mp4",
 				InstagramID:       "instagram-id",
@@ -195,23 +184,13 @@ func TestCoordinators(t *testing.T) {
 						FirstnameKana: "かんりしゃ",
 						Email:         "test-coordinator01@and-period.jp",
 					},
-					AdminID:        "coordinator-id01",
-					MarcheName:     "&.マルシェ",
-					Username:       "&.農園",
-					Profile:        "紹介文です。",
-					ProductTypeIDs: []string{"product-type-ids"},
-					ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-					Thumbnails: common.Images{
-						{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-					},
-					HeaderURL: "https://and-period.jp/header.png",
-					Headers: common.Images{
-						{URL: "https://and-period.jp/header_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/header_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/header_900.png", Size: common.ImageSizeLarge},
-					},
+					AdminID:           "coordinator-id01",
+					MarcheName:        "&.マルシェ",
+					Username:          "&.農園",
+					Profile:           "紹介文です。",
+					ProductTypeIDs:    []string{"product-type-ids"},
+					ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+					HeaderURL:         "https://and-period.jp/header.png",
 					PromotionVideoURL: "https://and-period.jp/promotion.mp4",
 					BonusVideoURL:     "https://and-period.jp/bonus.mp4",
 					InstagramID:       "instagram-id",

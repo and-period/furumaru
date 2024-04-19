@@ -2,8 +2,6 @@ package user
 
 import (
 	"time"
-
-	"github.com/and-period/furumaru/api/internal/common"
 )
 
 type SignInAdminInput struct {
@@ -183,16 +181,6 @@ type UpdateCoordinatorEmailInput struct {
 	Email         string `validate:"required,max=256,email"`
 }
 
-type UpdateCoordinatorThumbnailsInput struct {
-	CoordinatorID string        `validate:"required"`
-	Thumbnails    common.Images `validate:""`
-}
-
-type UpdateCoordinatorHeadersInput struct {
-	CoordinatorID string        `validate:"required"`
-	Headers       common.Images `validate:""`
-}
-
 type ResetCoordinatorPasswordInput struct {
 	CoordinatorID string `validate:"required"`
 }
@@ -270,16 +258,6 @@ type UpdateProducerInput struct {
 	City              string `validate:"max=32"`
 	AddressLine1      string `validate:"max=64"`
 	AddressLine2      string `validate:"max=64"`
-}
-
-type UpdateProducerThumbnailsInput struct {
-	ProducerID string        `validate:"required"`
-	Thumbnails common.Images `validate:""`
-}
-
-type UpdateProducerHeadersInput struct {
-	ProducerID string        `validate:"required"`
-	Headers    common.Images `validate:""`
 }
 
 type DeleteProducerInput struct {
@@ -410,11 +388,6 @@ type UpdateMemberAccountIDInput struct {
 type UpdateMemberThumbnailURLInput struct {
 	UserID       string `validate:"required"`
 	ThumbnailURL string `validate:"required,url"`
-}
-
-type UpdateMemberThumbnailsInput struct {
-	UserID     string        `validate:"required"`
-	Thumbnails common.Images `validate:""`
 }
 
 type UpsertGuestInput struct {

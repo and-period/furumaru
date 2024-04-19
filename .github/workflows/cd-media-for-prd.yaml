@@ -31,7 +31,6 @@ jobs:
       ecr-registry: ${{ vars.ECR_REGISTRY }}
       ecr-repository: ${{ vars.ECR_REPOSITORY_MEDIA }}
       lambda-function-name-uploader: ${{ vars.LAMBDA_FUNCTION_MEDIA_UPLOADER }}
-      lambda-function-name-resizer: ${{ vars.LAMBDA_FUNCTION_MEDIA_RESIZER }}
       lambda-function-name-start-scheduler: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_SCHEDULER }}
       lambda-function-name-close-scheduler: ${{ vars.LAMBDA_FUNCTION_MEDIA_CLOSE_SCHEDULER }}
       lambda-function-name-start-updater: ${{ vars.LAMBDA_FUNCTION_MEDIA_START_UPDATER }}
@@ -72,21 +71,6 @@ jobs:
       ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
       ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
       lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-uploader }}
-      image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
-
-  deploy_resizer:
-    name: deploy resizer
-    needs:
-    - set_output
-    - get_image_tag
-    - build_and_push
-    uses: ./.github/workflows/_deploy_lambda.yaml
-    secrets: inherit
-    with:
-      environment: prd
-      ecr-registry: ${{ needs.set_output.outputs.ecr-registry }}
-      ecr-repository: ${{ needs.set_output.outputs.ecr-repository }}
-      lambda-function-name: ${{ needs.set_output.outputs.lambda-function-name-resizer }}
       image-tag: ${{ needs.get_image_tag.outputs.tag-version }}
 
   deploy_start_scheduler:

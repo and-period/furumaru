@@ -2,15 +2,12 @@ package mysql
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -42,9 +39,6 @@ func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ..
 	if err := stmt.First(&member).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := member.Fill(); err != nil {
-		return nil, dbError(err)
-	}
 	return member, nil
 }
 
@@ -56,9 +50,6 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 		Where("provider_type = ?", entity.ProviderTypeEmail)
 
 	if err := stmt.First(&member).Error; err != nil {
-		return nil, dbError(err)
-	}
-	if err := member.Fill(); err != nil {
 		return nil, dbError(err)
 	}
 	return member, nil
@@ -164,34 +155,6 @@ func (m *member) UpdateThumbnailURL(ctx context.Context, userID, thumbnailURL st
 	return dbError(err)
 }
 
-func (m *member) UpdateThumbnails(ctx context.Context, userID string, thumbnails common.Images) error {
-	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
-		member, err := m.get(ctx, tx, userID, "thumbnail_url")
-		if err != nil {
-			return err
-		}
-		if member.ThumbnailURL == "" {
-			return fmt.Errorf("database: thumbnail url is empty: %w", database.ErrFailedPrecondition)
-		}
-
-		buf, err := thumbnails.Marshal()
-		if err != nil {
-			return err
-		}
-		params := map[string]interface{}{
-			"thumbnails": datatypes.JSON(buf),
-			"updated_at": m.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(memberTable).
-			Where("user_id = ?", userID).
-			Updates(params).Error
-		return err
-	})
-	return dbError(err)
-}
-
 func (m *member) Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error {
 	err := m.db.Transaction(ctx, func(tx *gorm.DB) error {
 		now := m.now()
@@ -227,11 +190,6 @@ func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...
 
 	stmt := m.db.Statement(ctx, tx, memberTable, fields...).Unscoped().Where("user_id = ?", userID)
 
-	if err := stmt.First(&member).Error; err != nil {
-		return nil, err
-	}
-	if err := member.Fill(); err != nil {
-		return nil, dbError(err)
-	}
-	return member, nil
+	err := stmt.First(&member).Error
+	return member, err
 }

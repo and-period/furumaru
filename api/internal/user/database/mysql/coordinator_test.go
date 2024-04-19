@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -653,246 +652,6 @@ func TestCoordinator_Update(t *testing.T) {
 	}
 }
 
-func TestCoordinator_UpdateThumbnails(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	type args struct {
-		coordinatorID string
-		thumbnails    common.Images
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				coordinator := testCoordinator("admin-id", now())
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				coordinatorID: "admin-id",
-				thumbnails: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/thumbnail_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/thumbnail_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/thumbnail_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				coordinatorID: "admin-id",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed precondition for thumbnail url is empty",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				coordinator := testCoordinator("admin-id", now())
-				coordinator.ThumbnailURL = ""
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				coordinatorID: "admin-id",
-				thumbnails: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/thumbnail_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/thumbnail_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/thumbnail_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, coordinatorTable, adminTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &coordinator{db: db, now: now}
-			err = db.UpdateThumbnails(ctx, tt.args.coordinatorID, tt.args.thumbnails)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
-func TestCoordinator_UpdateHeaders(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	type args struct {
-		coordinatorID string
-		headers       common.Images
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				coordinator := testCoordinator("admin-id", now())
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				coordinatorID: "admin-id",
-				headers: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/header_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/header_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/header_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				coordinatorID: "admin-id",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed precondition for header url is empty",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				coordinator := testCoordinator("admin-id", now())
-				coordinator.HeaderURL = ""
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				coordinatorID: "admin-id",
-				headers: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/header_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/header_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/header_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, coordinatorTable, adminTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &coordinator{db: db, now: now}
-			err = db.UpdateHeaders(ctx, tt.args.coordinatorID, tt.args.headers)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
 func TestCoordinator_Delete(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -1048,9 +807,7 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 		Profile:           "紹介文です。",
 		ProductTypeIDs:    []string{"product-type-id"},
 		ThumbnailURL:      "https://and-period.jp/thumbnail.png",
-		Thumbnails:        common.Images{},
 		HeaderURL:         "https://and-period.jp/header.png",
-		Headers:           common.Images{},
 		PromotionVideoURL: "https://and-period.jp/promotion.mp4",
 		BonusVideoURL:     "https://and-period.jp/bonus.mp4",
 		InstagramID:       "instagram-id",
@@ -1070,12 +827,8 @@ func testCoordinator(id string, now time.Time) *entity.Coordinator {
 }
 
 func fillCoordinatorJSON(c *entity.Coordinator) {
-	thumbnails, _ := json.Marshal(c.Thumbnails)
-	headers, _ := json.Marshal(c.Headers)
 	businessDays, _ := json.Marshal(c.BusinessDays)
 	productTypes, _ := json.Marshal(c.ProductTypeIDs)
-	c.ThumbnailsJSON = datatypes.JSON(thumbnails)
-	c.HeadersJSON = datatypes.JSON(headers)
 	c.BusinessDaysJSON = datatypes.JSON(businessDays)
 	c.ProductTypeIDsJSON = datatypes.JSON(productTypes)
 }

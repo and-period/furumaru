@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -213,62 +211,6 @@ func (c *coordinator) Update(ctx context.Context, coordinatorID string, params *
 			Table(coordinatorTable).
 			Where("admin_id = ?", coordinatorID).
 			Updates(coordinatorParams).Error
-		return err
-	})
-	return dbError(err)
-}
-
-func (c *coordinator) UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error {
-	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		coordinator, err := c.get(ctx, tx, coordinatorID, "thumbnail_url")
-		if err != nil {
-			return err
-		}
-		if coordinator.ThumbnailURL == "" {
-			return fmt.Errorf("database: thumbnail url is empty: %w", database.ErrFailedPrecondition)
-		}
-
-		buf, err := thumbnails.Marshal()
-		if err != nil {
-			return err
-		}
-		params := map[string]interface{}{
-			"thumbnails": datatypes.JSON(buf),
-			"updated_at": c.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(coordinatorTable).
-			Where("admin_id = ?", coordinatorID).
-			Updates(params).Error
-		return err
-	})
-	return dbError(err)
-}
-
-func (c *coordinator) UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error {
-	err := c.db.Transaction(ctx, func(tx *gorm.DB) error {
-		coordinator, err := c.get(ctx, tx, coordinatorID, "header_url")
-		if err != nil {
-			return err
-		}
-		if coordinator.HeaderURL == "" {
-			return fmt.Errorf("database: header url is empty: %w", database.ErrFailedPrecondition)
-		}
-
-		buf, err := headers.Marshal()
-		if err != nil {
-			return err
-		}
-		params := map[string]interface{}{
-			"headers":    datatypes.JSON(buf),
-			"updated_at": c.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(coordinatorTable).
-			Where("admin_id = ?", coordinatorID).
-			Updates(params).Error
 		return err
 	})
 	return dbError(err)

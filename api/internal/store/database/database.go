@@ -6,7 +6,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
@@ -160,7 +159,6 @@ type Product interface {
 	Get(ctx context.Context, productID string, fields ...string) (*entity.Product, error)
 	Create(ctx context.Context, product *entity.Product) error
 	Update(ctx context.Context, productID string, params *UpdateProductParams) error
-	UpdateMedia(ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool) error
 	DecreaseInventory(ctx context.Context, revisionID, quantity int64) error
 	Delete(ctx context.Context, productID string) error
 }
@@ -242,7 +240,6 @@ type ProductType interface {
 	Get(ctx context.Context, productTypeID string, fields ...string) (*entity.ProductType, error)
 	Create(ctx context.Context, productType *entity.ProductType) error
 	Update(ctx context.Context, productTypeID, name, iconURL string) error
-	UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error
 	Delete(ctx context.Context, productTypeID string) error
 }
 
@@ -302,7 +299,6 @@ type Schedule interface {
 	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
 	Create(ctx context.Context, schedule *entity.Schedule) error
 	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
-	UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error
 	Approve(ctx context.Context, scheduleID string, params *ApproveScheduleParams) error
 	Publish(ctx context.Context, scheduleID string, public bool) error
 }

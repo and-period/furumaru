@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -76,9 +74,6 @@ func (t *productType) List(
 	if err := stmt.Find(&productTypes).Error; err != nil {
 		return nil, dbError(err)
 	}
-	if err := productTypes.Fill(); err != nil {
-		return nil, dbError(err)
-	}
 	return productTypes, nil
 }
 
@@ -98,9 +93,6 @@ func (t *productType) MultiGet(
 		Where("id IN (?)", productTypeIDs)
 
 	if err := stmt.Find(&productTypes).Error; err != nil {
-		return nil, dbError(err)
-	}
-	if err := productTypes.Fill(); err != nil {
 		return nil, dbError(err)
 	}
 	return productTypes, nil
@@ -133,34 +125,6 @@ func (t *productType) Update(ctx context.Context, productTypeID, name, iconURL s
 	return dbError(err)
 }
 
-func (t *productType) UpdateIcons(ctx context.Context, productTypeID string, icons common.Images) error {
-	err := t.db.Transaction(ctx, func(tx *gorm.DB) error {
-		productType, err := t.get(ctx, tx, productTypeID, "icon_url")
-		if err != nil {
-			return err
-		}
-		if productType.IconURL == "" {
-			return fmt.Errorf("database: icon url is empty: %w", database.ErrFailedPrecondition)
-		}
-
-		buf, err := icons.Marshal()
-		if err != nil {
-			return err
-		}
-		params := map[string]interface{}{
-			"icons":      datatypes.JSON(buf),
-			"updated_at": t.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(productTypeTable).
-			Where("id = ?", productTypeID).
-			Updates(params).Error
-		return err
-	})
-	return dbError(err)
-}
-
 func (t *productType) Delete(ctx context.Context, productTypeID string) error {
 	stmt := t.db.DB.WithContext(ctx).
 		Table(productTypeTable).
@@ -178,11 +142,6 @@ func (t *productType) get(
 	stmt := t.db.Statement(ctx, tx, productTypeTable, fields...).
 		Where("id = ?", productTypeID)
 
-	if err := stmt.First(&productType).Error; err != nil {
-		return nil, err
-	}
-	if err := productType.Fill(); err != nil {
-		return nil, err
-	}
-	return productType, nil
+	err := stmt.First(&productType).Error
+	return productType, err
 }

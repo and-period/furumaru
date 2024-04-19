@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -24,13 +23,8 @@ func TestProductType(t *testing.T) {
 				CategoryID: "category-id",
 				Name:       "じゃがいも",
 				IconURL:    "https://and-period.jp/icon.png",
-				Icons: common.Images{
-					{URL: "https://and-period.jp/icon_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/icon_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/icon_900.png", Size: common.ImageSizeLarge},
-				},
-				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
-				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
+				UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
 			},
 			expect: &ProductType{
 				ProductType: response.ProductType{

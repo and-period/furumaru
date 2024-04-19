@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -273,22 +272,10 @@ func TestProduct_Fill(t *testing.T) {
 				},
 				TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 				ThumbnailURL: "https://and-period.jp/thumbnail.png",
-				Thumbnails: common.Images{
-					{
-						URL:  "https://and-period.jp/thumbnail_240.png",
-						Size: common.ImageSizeSmall,
-					},
-				},
 				Media: MultiProductMedia{
 					{
 						URL:         "https://and-period.jp/thumbnail.png",
 						IsThumbnail: true,
-						Images: common.Images{
-							{
-								URL:  "https://and-period.jp/thumbnail_240.png",
-								Size: common.ImageSizeSmall,
-							},
-						},
 					},
 				},
 				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
@@ -447,12 +434,6 @@ func TestProduct_FillJSON(t *testing.T) {
 					{
 						URL:         "https://and-period.jp/thumbnail.png",
 						IsThumbnail: true,
-						Images: common.Images{
-							{
-								URL:  "https://and-period.jp/thumbnail_240.png",
-								Size: common.ImageSizeSmall,
-							},
-						},
 					},
 				},
 				RecommendedPoints: []string{
@@ -472,12 +453,6 @@ func TestProduct_FillJSON(t *testing.T) {
 					{
 						URL:         "https://and-period.jp/thumbnail.png",
 						IsThumbnail: true,
-						Images: common.Images{
-							{
-								URL:  "https://and-period.jp/thumbnail_240.png",
-								Size: common.ImageSizeSmall,
-							},
-						},
 					},
 				},
 				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
@@ -554,22 +529,10 @@ func TestProducts_Fill(t *testing.T) {
 					},
 					TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 					ThumbnailURL: "https://and-period.jp/thumbnail.png",
-					Thumbnails: common.Images{
-						{
-							URL:  "https://and-period.jp/thumbnail_240.png",
-							Size: common.ImageSizeSmall,
-						},
-					},
 					Media: MultiProductMedia{
 						{
 							URL:         "https://and-period.jp/thumbnail.png",
 							IsThumbnail: true,
-							Images: common.Images{
-								{
-									URL:  "https://and-period.jp/thumbnail_240.png",
-									Size: common.ImageSizeSmall,
-								},
-							},
 						},
 					},
 					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
@@ -598,22 +561,10 @@ func TestProducts_Fill(t *testing.T) {
 					},
 					TagIDsJSON:   datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
 					ThumbnailURL: "https://and-period.jp/thumbnail.png",
-					Thumbnails: common.Images{
-						{
-							URL:  "https://and-period.jp/thumbnail_240.png",
-							Size: common.ImageSizeSmall,
-						},
-					},
 					Media: MultiProductMedia{
 						{
 							URL:         "https://and-period.jp/thumbnail.png",
 							IsThumbnail: true,
-							Images: common.Images{
-								{
-									URL:  "https://and-period.jp/thumbnail_240.png",
-									Size: common.ImageSizeSmall,
-								},
-							},
 						},
 					},
 					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
@@ -1488,44 +1439,6 @@ func TestProductMedia(t *testing.T) {
 			t.Parallel()
 			actual := NewProductMedia(tt.url, tt.isThumbnail)
 			assert.Equal(t, tt.expect, actual)
-		})
-	}
-}
-
-func TestProductMedia_SetImages(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name   string
-		images common.Images
-		media  *ProductMedia
-		expect *ProductMedia
-	}{
-		{
-			name: "success",
-			images: common.Images{
-				{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-			},
-			media: &ProductMedia{
-				URL:         "http://example.com/media.png",
-				IsThumbnail: true,
-			},
-			expect: &ProductMedia{
-				URL:         "http://example.com/media.png",
-				IsThumbnail: true,
-				Images: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			tt.media.SetImages(tt.images)
-			assert.Equal(t, tt.expect, tt.media)
 		})
 	}
 }

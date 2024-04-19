@@ -3,7 +3,6 @@ package entity
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -193,8 +192,6 @@ func TestProducer_Fill(t *testing.T) {
 			producer: &Producer{
 				AdminID:        "admin-id",
 				PrefectureCode: 13,
-				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 			},
 			admin: &Admin{
 				ID:        "admin-id",
@@ -204,14 +201,6 @@ func TestProducer_Fill(t *testing.T) {
 				AdminID:        "admin-id",
 				Prefecture:     "東京都",
 				PrefectureCode: 13,
-				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				Thumbnails: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-				HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				Headers: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
@@ -229,9 +218,7 @@ func TestProducer_Fill(t *testing.T) {
 				CognitoID: "cognito-id",
 			},
 			expect: &Producer{
-				AdminID:    "admin-id",
-				Thumbnails: common.Images{},
-				Headers:    common.Images{},
+				AdminID: "admin-id",
 				Admin: Admin{
 					ID:        "admin-id",
 					CognitoID: "cognito-id",
@@ -357,14 +344,10 @@ func TestProducers_Fill(t *testing.T) {
 				{
 					AdminID:        "admin-id01",
 					PrefectureCode: 13,
-					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 				},
 				{
 					AdminID:        "admin-id02",
 					PrefectureCode: 13,
-					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					HeadersJSON:    []byte(`[{"url":"http://example.com/media.png","size":1}]`),
 				},
 			},
 			admins: map[string]*Admin{
@@ -379,14 +362,6 @@ func TestProducers_Fill(t *testing.T) {
 					AdminID:        "admin-id01",
 					Prefecture:     "東京都",
 					PrefectureCode: 13,
-					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					Thumbnails: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-					},
-					HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					Headers: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-					},
 					Admin: Admin{
 						ID:        "admin-id01",
 						CognitoID: "cognito-id",
@@ -397,14 +372,6 @@ func TestProducers_Fill(t *testing.T) {
 					AdminID:        "admin-id02",
 					Prefecture:     "東京都",
 					PrefectureCode: 13,
-					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					Thumbnails: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-					},
-					HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					Headers: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-					},
 					Admin: Admin{
 						ID:   "admin-id02",
 						Role: AdminRoleProducer,

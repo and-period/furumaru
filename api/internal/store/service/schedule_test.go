@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -485,69 +484,6 @@ func TestUpdateSchedule(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
-		}))
-	}
-}
-
-func TestUpdateScheduleThumbnails(t *testing.T) {
-	t.Parallel()
-
-	thumbnails := common.Images{
-		{
-			Size: common.ImageSizeSmall,
-			URL:  "https://and-period.jp/thumbnail_240.png",
-		},
-		{
-			Size: common.ImageSizeMedium,
-			URL:  "https://and-period.jp/thumbnail_675.png",
-		},
-		{
-			Size: common.ImageSizeLarge,
-			URL:  "https://and-period.jp/thumbnail_900.png",
-		},
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.UpdateScheduleThumbnailsInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().UpdateThumbnails(ctx, "schedule-id", thumbnails).Return(nil)
-			},
-			input: &store.UpdateScheduleThumbnailsInput{
-				ScheduleID: "schedule-id",
-				Thumbnails: thumbnails,
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.UpdateScheduleThumbnailsInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to update thumbnails",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Schedule.EXPECT().UpdateThumbnails(ctx, "schedule-id", thumbnails).Return(assert.AnError)
-			},
-			input: &store.UpdateScheduleThumbnailsInput{
-				ScheduleID: "schedule-id",
-				Thumbnails: thumbnails,
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateScheduleThumbnails(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}
 }

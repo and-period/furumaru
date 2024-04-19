@@ -9,7 +9,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -225,36 +224,6 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 
 		revision.CreatedAt, revision.UpdatedAt = now, now
 		return tx.WithContext(ctx).Table(productRevisionTable).Create(&revision).Error
-	})
-	return dbError(err)
-}
-
-func (p *product) UpdateMedia(
-	ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool,
-) error {
-	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		product, err := p.get(ctx, tx, productID, "id", "media")
-		if err != nil {
-			return err
-		}
-		if exists := set(product.Media); !exists {
-			return fmt.Errorf("database: media is non-existent: %w", database.ErrFailedPrecondition)
-		}
-
-		buf, err := product.Media.Marshal()
-		if err != nil {
-			return err
-		}
-		params := map[string]interface{}{
-			"media":      datatypes.JSON(buf),
-			"updated_at": p.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(productTable).
-			Where("id = ?", productID).
-			Updates(params).Error
-		return err
 	})
 	return dbError(err)
 }

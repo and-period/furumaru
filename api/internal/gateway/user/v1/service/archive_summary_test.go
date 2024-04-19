@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -21,17 +20,12 @@ func TestArchiveSummary(t *testing.T) {
 		{
 			name: "success",
 			schedule: &entity.Schedule{
-				ID:            "schedule-id",
-				CoordinatorID: "coordinator-id",
-				Status:        entity.ScheduleStatusClosed,
-				Title:         "スケジュールタイトル",
-				Description:   "スケジュールの詳細です。",
-				ThumbnailURL:  "https://example.com/thumbnail.png",
-				Thumbnails: common.Images{
-					{URL: "https://example.com/thumbnail_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://example.com/thumbnail_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://example.com/thumbnail_900.png", Size: common.ImageSizeLarge},
-				},
+				ID:              "schedule-id",
+				CoordinatorID:   "coordinator-id",
+				Status:          entity.ScheduleStatusClosed,
+				Title:           "スケジュールタイトル",
+				Description:     "スケジュールの詳細です。",
+				ThumbnailURL:    "https://example.com/thumbnail.png",
 				ImageURL:        "https://example.com/image.png",
 				OpeningVideoURL: "https://example.com/opening-video.mp4",
 				Public:          true,
@@ -114,17 +108,12 @@ func TestArchiveSummaries(t *testing.T) {
 			name: "success",
 			schedules: entity.Schedules{
 				{
-					ID:            "schedule-id",
-					CoordinatorID: "coordinator-id",
-					Status:        entity.ScheduleStatusClosed,
-					Title:         "スケジュールタイトル",
-					Description:   "スケジュールの詳細です。",
-					ThumbnailURL:  "https://example.com/thumbnail.png",
-					Thumbnails: common.Images{
-						{URL: "https://example.com/thumbnail_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://example.com/thumbnail_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://example.com/thumbnail_900.png", Size: common.ImageSizeLarge},
-					},
+					ID:              "schedule-id",
+					CoordinatorID:   "coordinator-id",
+					Status:          entity.ScheduleStatusClosed,
+					Title:           "スケジュールタイトル",
+					Description:     "スケジュールの詳細です。",
+					ThumbnailURL:    "https://example.com/thumbnail.png",
 					ImageURL:        "https://example.com/image.png",
 					OpeningVideoURL: "https://example.com/opening-video.mp4",
 					Public:          true,

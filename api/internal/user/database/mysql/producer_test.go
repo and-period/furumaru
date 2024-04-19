@@ -2,18 +2,15 @@ package mysql
 
 import (
 	"context"
-	"encoding/json"
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -718,270 +715,6 @@ func TestProducer_Update(t *testing.T) {
 	}
 }
 
-func TestProducer_UpdateThumbnails(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	type args struct {
-		producerID string
-		thumbnails common.Images
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", now())
-				err = db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				producerID: "admin-id",
-				thumbnails: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/thumbnail_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/thumbnail_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/thumbnail_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				producerID: "admin-id",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed precondition for thumbnail url is empty",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", now())
-				p.ThumbnailURL = ""
-				err = db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				producerID: "admin-id",
-				thumbnails: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/thumbnail_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/thumbnail_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/thumbnail_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, producerTable, adminTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &producer{db: db, now: now}
-			err = db.UpdateThumbnails(ctx, tt.args.producerID, tt.args.thumbnails)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
-func TestProducer_UpdateHeaders(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	type args struct {
-		ProducerID string
-		headers    common.Images
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", now())
-				err = db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				ProducerID: "admin-id",
-				headers: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/header_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/header_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/header_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				ProducerID: "admin-id",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed precondition for header url is empty",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				coordinator := testCoordinator("coordinator-id", now())
-				coordinator.Admin = *testAdmin("coordinator-id", "coordinator-id", "test-coordinator@and-period.jp", now())
-				err = db.DB.Create(&coordinator.Admin).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&coordinator).Error
-				require.NoError(t, err)
-				admin := testAdmin("admin-id", "cognito-id", "test-admin01@and-period.jp", now())
-				err = db.DB.Create(&admin).Error
-				require.NoError(t, err)
-				p := testProducer("admin-id", "coordinator-id", now())
-				p.HeaderURL = ""
-				err = db.DB.Create(&p).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				ProducerID: "admin-id",
-				headers: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/header_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/header_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/header_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, producerTable, adminTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &producer{db: db, now: now}
-			err = db.UpdateHeaders(ctx, tt.args.ProducerID, tt.args.headers)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
 func TestProducer_Delete(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -1167,14 +900,12 @@ func TestProducer_AggregateByCoordinatorID(t *testing.T) {
 }
 
 func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
-	p := &entity.Producer{
+	return &entity.Producer{
 		AdminID:           id,
 		CoordinatorID:     coordinatorID,
 		Username:          "&.農園",
 		ThumbnailURL:      "https://and-period.jp/thumbnail.png",
-		Thumbnails:        common.Images{},
 		HeaderURL:         "https://and-period.jp/header.png",
-		Headers:           common.Images{},
 		PromotionVideoURL: "https://and-period.jp/promotion.mp4",
 		BonusVideoURL:     "https://and-period.jp/bonus.mp4",
 		InstagramID:       "instagram-id",
@@ -1189,13 +920,4 @@ func testProducer(id, coordinatorID string, now time.Time) *entity.Producer {
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
-	fillProducerJSON(p)
-	return p
-}
-
-func fillProducerJSON(p *entity.Producer) {
-	thumbnails, _ := json.Marshal(p.Thumbnails)
-	headers, _ := json.Marshal(p.Headers)
-	p.ThumbnailsJSON = datatypes.JSON(thumbnails)
-	p.HeadersJSON = datatypes.JSON(headers)
 }

@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -112,10 +110,6 @@ func (s *schedule) Get(ctx context.Context, scheduleID string, fields ...string)
 }
 
 func (s *schedule) Create(ctx context.Context, schedule *entity.Schedule) error {
-	if err := schedule.FillJSON(); err != nil {
-		return err
-	}
-
 	now := s.now()
 	schedule.CreatedAt, schedule.UpdatedAt = now, now
 
@@ -148,34 +142,6 @@ func (s *schedule) Update(ctx context.Context, scheduleID string, params *databa
 			Table(scheduleTable).
 			Where("id = ?", scheduleID).
 			Updates(update).Error
-		return err
-	})
-	return dbError(err)
-}
-
-func (s *schedule) UpdateThumbnails(ctx context.Context, scheduleID string, thumbnails common.Images) error {
-	err := s.db.Transaction(ctx, func(tx *gorm.DB) error {
-		schedule, err := s.get(ctx, tx, scheduleID, "thumbnail_url")
-		if err != nil {
-			return err
-		}
-		if schedule.ThumbnailURL == "" {
-			return fmt.Errorf("database: thumbnail url is empty: %w", database.ErrFailedPrecondition)
-		}
-
-		buf, err := thumbnails.Marshal()
-		if err != nil {
-			return err
-		}
-		params := map[string]interface{}{
-			"thumbnails": datatypes.JSON(buf),
-			"updated_at": s.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(scheduleTable).
-			Where("id = ?", scheduleID).
-			Updates(params).Error
 		return err
 	})
 	return dbError(err)

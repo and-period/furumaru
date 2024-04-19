@@ -211,22 +211,6 @@ func (s *service) UpdateCoordinatorEmail(ctx context.Context, in *user.UpdateCoo
 	return internalError(err)
 }
 
-func (s *service) UpdateCoordinatorThumbnails(ctx context.Context, in *user.UpdateCoordinatorThumbnailsInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	err := s.db.Coordinator.UpdateThumbnails(ctx, in.CoordinatorID, in.Thumbnails)
-	return internalError(err)
-}
-
-func (s *service) UpdateCoordinatorHeaders(ctx context.Context, in *user.UpdateCoordinatorHeadersInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	err := s.db.Coordinator.UpdateHeaders(ctx, in.CoordinatorID, in.Headers)
-	return internalError(err)
-}
-
 func (s *service) ResetCoordinatorPassword(ctx context.Context, in *user.ResetCoordinatorPasswordInput) error {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {

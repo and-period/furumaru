@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -68,17 +67,12 @@ func TestSchedule(t *testing.T) {
 		{
 			name: "success",
 			schedule: &entity.Schedule{
-				ID:            "schedule-id",
-				CoordinatorID: "coordinator-id",
-				Status:        entity.ScheduleStatusLive,
-				Title:         "スケジュールタイトル",
-				Description:   "スケジュールの詳細です。",
-				ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-				Thumbnails: common.Images{
-					{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-					{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-					{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-				},
+				ID:              "schedule-id",
+				CoordinatorID:   "coordinator-id",
+				Status:          entity.ScheduleStatusLive,
+				Title:           "スケジュールタイトル",
+				Description:     "スケジュールの詳細です。",
+				ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 				ImageURL:        "https://and-period.jp/image.png",
 				OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 				Public:          true,
@@ -184,17 +178,12 @@ func TestSchedules(t *testing.T) {
 			name: "success",
 			schedules: entity.Schedules{
 				{
-					ID:            "schedule-id",
-					CoordinatorID: "coordinator-id",
-					Status:        entity.ScheduleStatusLive,
-					Title:         "スケジュールタイトル",
-					Description:   "スケジュールの詳細です。",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Thumbnails: common.Images{
-						{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-					},
+					ID:              "schedule-id",
+					CoordinatorID:   "coordinator-id",
+					Status:          entity.ScheduleStatusLive,
+					Title:           "スケジュールタイトル",
+					Description:     "スケジュールの詳細です。",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					ImageURL:        "https://and-period.jp/image.png",
 					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 					Public:          true,

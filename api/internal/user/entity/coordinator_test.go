@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
 )
@@ -146,8 +145,6 @@ func TestCoordinator_Fill(t *testing.T) {
 				AdminID:            "admin-id",
 				PrefectureCode:     13,
 				ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
-				ThumbnailsJSON:     datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
-				HeadersJSON:        datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
 				BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
 			},
 			admin: &Admin{
@@ -161,14 +158,6 @@ func TestCoordinator_Fill(t *testing.T) {
 				ProductTypeIDsJSON: []byte(`["product-type-id"]`),
 				ProductTypeIDs: []string{
 					"product-type-id",
-				},
-				ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				Thumbnails: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-				},
-				HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-				Headers: common.Images{
-					{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
 				},
 				BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 				BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
@@ -191,8 +180,6 @@ func TestCoordinator_Fill(t *testing.T) {
 			expect: &Coordinator{
 				AdminID:        "admin-id",
 				ProductTypeIDs: []string{},
-				Thumbnails:     common.Images{},
-				Headers:        common.Images{},
 				BusinessDays:   []time.Weekday{},
 				Admin: Admin{
 					ID:        "admin-id",
@@ -295,16 +282,12 @@ func TestCoordinators_Fill(t *testing.T) {
 					AdminID:            "admin-id01",
 					PrefectureCode:     13,
 					ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
-					ThumbnailsJSON:     datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
-					HeadersJSON:        datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
 					BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
 				},
 				{
 					AdminID:            "admin-id02",
 					PrefectureCode:     13,
 					ProductTypeIDsJSON: datatypes.JSON([]byte(`["product-type-id"]`)),
-					ThumbnailsJSON:     datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
-					HeadersJSON:        datatypes.JSON([]byte(`[{"url":"http://example.com/media.png","size":1}]`)),
 					BusinessDaysJSON:   datatypes.JSON([]byte(`[1,3,5]`)),
 				},
 			},
@@ -324,14 +307,6 @@ func TestCoordinators_Fill(t *testing.T) {
 					ProductTypeIDs: []string{
 						"product-type-id",
 					},
-					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					Thumbnails: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-					},
-					HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					Headers: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-					},
 					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
 					Admin: Admin{
@@ -347,14 +322,6 @@ func TestCoordinators_Fill(t *testing.T) {
 					ProductTypeIDsJSON: []byte(`["product-type-id"]`),
 					ProductTypeIDs: []string{
 						"product-type-id",
-					},
-					ThumbnailsJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					Thumbnails: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
-					},
-					HeadersJSON: []byte(`[{"url":"http://example.com/media.png","size":1}]`),
-					Headers: common.Images{
-						{Size: common.ImageSizeSmall, URL: "http://example.com/media.png"},
 					},
 					BusinessDays:     []time.Weekday{time.Monday, time.Wednesday, time.Friday},
 					BusinessDaysJSON: datatypes.JSON([]byte(`[1,3,5]`)),
