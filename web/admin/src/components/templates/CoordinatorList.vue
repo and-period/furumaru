@@ -139,10 +139,10 @@ const coordinatorName = (coordinator?: Coordinator): string => {
 }
 
 const getImages = (coordinator: Coordinator): string => {
-  if (!coordinator.thumbnails) {
+  if (!coordinator.thumbnailUrl) {
     return ''
   }
-  return getResizedImages(coordinator.thumbnails)
+  return getResizedImages(coordinator.thumbnailUrl)
 }
 
 const onClickUpdatePage = (page: number): void => {
