@@ -74,12 +74,12 @@ jobs:
       run: make build
 
     - name: Upload build artifact to s3 bucket
-      run: BUCKET_NAME=${LAMBDA_FUNCTION_S3_BUCKET} make push
+      run: S3_BUCKET_NAME=${LAMBDA_FUNCTION_S3_BUCKET} make push
       env:
         LAMBDA_FUNCTION_S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
 
     - name: Update lambda function
-      run: FUNCTION_NAME=${LAMBDA_FUNCTION} BUCKET_NAME=${S3_BUCKET} make deploy
+      run: FUNCTION_NAME=${LAMBDA_FUNCTION} S3_BUCKET_NAME=${S3_BUCKET} make deploy
       env:
         LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
         S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
@@ -109,7 +109,7 @@ jobs:
       uses: ./.github/actions/setup-aws
       with:
         aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: us-east-1 # CloudFront is only available in us-east-1
+        aws-region: us-east-1
 
     - name: Update Cloud Function
       run: ./bin/update-cloudfront-distribution.sh
