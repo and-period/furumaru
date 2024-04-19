@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.10.4](https://github.com/and-period/furumaru/compare/v1.10.3...v1.10.4) - 2024-04-19
+- chore(deps): bump the dependencies group in /api with 11 updates by @dependabot in https://github.com/and-period/furumaru/pull/2152
+- chore(deps): bump the dependencies group in /web/admin with 52 updates by @dependabot in https://github.com/and-period/furumaru/pull/2151
+- fix(admin): リサイズ画像をCDN側で作成するように by @taba2424 in https://github.com/and-period/furumaru/pull/2156
+- fix(api): リサイズ済み画像一覧を返さないように by @taba2424 in https://github.com/and-period/furumaru/pull/2157
+- fix(media): リサイズ処理が実行されないように by @taba2424 in https://github.com/and-period/furumaru/pull/2158
+
 ## [v1.10.3](https://github.com/and-period/furumaru/compare/v1.10.2...v1.10.3) - 2024-04-17
 - feat(func): オリジンレスポンスの処理関数を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2150
 - feat(workflow): リリースPRの自動化 by @taba2424 in https://github.com/and-period/furumaru/pull/2153
