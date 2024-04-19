@@ -1,4 +1,4 @@
-name: Create Release Pull Request
+name: 'Automatically Release'
 on:
   push:
     branches:
@@ -10,8 +10,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  create_release_pull_request:
-    name: create release pull request
+  release:
+    name: release
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -21,9 +21,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
       with:
-        token: ${{ secrets.PAT }}
+        # token: ${{ secrets.PAT }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create Release Pull Request
+    - name: Create and Update Release Pull Request and Tag
       uses: Songmu/tagpr@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
+        # GITHUB_TOKEN: ${{ secrets.PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
