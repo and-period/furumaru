@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.3](https://github.com/and-period/furumaru/compare/v1.11.2...v1.11.3) - 2024-04-19
+- Revert "fix(workflow): リリースタグ作成ジョブでPATを使わないように (#2161)" by @taba2424 in https://github.com/and-period/furumaru/pull/2163
+
 ## [v1.11.2](https://github.com/and-period/furumaru/compare/v1.11.1...v1.11.2) - 2024-04-19
 - fix(workflow): リリースタグ作成ジョブでPATを使わないように by @taba2424 in https://github.com/and-period/furumaru/pull/2161
 
