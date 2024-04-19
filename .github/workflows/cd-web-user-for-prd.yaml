@@ -1,9 +1,14 @@
 name: '[Frontend] Deploy User Web for prd'
 on:
-  workflow_run:
-    workflows: ['Create Release Pull Request']
-    types:
-    - completed
+  push:
+    tags:
+    - 'v*'
+    paths:
+    - '.github/actions/**'
+    - '.github/workflows/_deploy_amplify.yaml'
+    - '.github/workflows/cd-web-user-for-prd.yaml'
+    - 'web/user/**'
+    - 'infra/docker/web/uer/**'
 
 env:
   TZ: 'Asia/Tokyo'

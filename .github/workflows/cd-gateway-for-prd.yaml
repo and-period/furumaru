@@ -1,9 +1,19 @@
 name: '[Backend] Deploy Gateway for prd'
 on:
-  workflow_run:
-    workflows: ['Create Release Pull Request']
-    types:
-    - completed
+  push:
+    tags:
+    - 'v*'
+    paths:
+    - '.github/actions/**'
+    - '.github/workflows/_build_and_push.yaml'
+    - '.github/workflows/_deploy_ecs.yaml'
+    - '.github/workflows/_get_tag_version.yaml'
+    - '.github/workflows/cd-gateway-for-prd.yaml'
+    - 'api/config/gateway/**'
+    - 'api/internal/**'
+    - 'api/pkg/**'
+    - 'api/go.mod'
+    - 'infra/docker/api/**'
 
 env:
   TZ: 'Asia/Tokyo'
