@@ -109,7 +109,7 @@ jobs:
       uses: ./.github/actions/setup-aws
       with:
         aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: us-east-1 # CloudFront is only available in us-east-1
+        aws-region: us-east-1
 
     - name: Update Cloud Function
       run: ./bin/update-cloudfront-distribution.sh
