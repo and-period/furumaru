@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.11.5](https://github.com/and-period/furumaru/compare/v1.11.4...v1.11.5) - 2024-04-19
+- fix(workflow): OpenAIのレビュー対象からcalmato-devを削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2167
+- fix(api): リサイズ済み画像を保持しないように by @taba2424 in https://github.com/and-period/furumaru/pull/2169
+
 ## [v1.11.4](https://github.com/and-period/furumaru/compare/v1.11.3...v1.11.4) - 2024-04-19
 - fix(workflow): チェックアウト時にもトークン指定をする by @taba2424 in https://github.com/and-period/furumaru/pull/2165
 
