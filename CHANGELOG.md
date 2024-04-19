@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.1](https://github.com/and-period/furumaru/compare/v1.11.0...v1.11.1) - 2024-04-19
+- fix(workflow): リリースタグ作成ジョブでPATを使うように by @taba2424 in https://github.com/and-period/furumaru/pull/2159
+
 ## [v1.10.4](https://github.com/and-period/furumaru/compare/v1.10.3...v1.10.4) - 2024-04-19
 - chore(deps): bump the dependencies group in /api with 11 updates by @dependabot in https://github.com/and-period/furumaru/pull/2152
 - chore(deps): bump the dependencies group in /web/admin with 52 updates by @dependabot in https://github.com/and-period/furumaru/pull/2151
