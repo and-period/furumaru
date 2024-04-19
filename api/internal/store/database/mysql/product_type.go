@@ -142,6 +142,8 @@ func (t *productType) get(
 	stmt := t.db.Statement(ctx, tx, productTypeTable, fields...).
 		Where("id = ?", productTypeID)
 
-	err := stmt.First(&productType).Error
-	return productType, err
+	if err := stmt.First(&productType).Error; err != nil {
+		return nil, err
+	}
+	return productType, nil
 }

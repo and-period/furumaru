@@ -249,7 +249,7 @@ func TestProduct_Fill(t *testing.T) {
 				ID:                    "product-id",
 				Name:                  "&.農園のみかん",
 				TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-				MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+				MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
 				OriginPrefectureCode:  25,
 				Public:                true,
@@ -278,7 +278,7 @@ func TestProduct_Fill(t *testing.T) {
 						IsThumbnail: true,
 					},
 				},
-				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
 				RecommendedPoints: []string{
 					"ポイント1",
 					"ポイント2",
@@ -455,7 +455,7 @@ func TestProduct_FillJSON(t *testing.T) {
 						IsThumbnail: true,
 					},
 				},
-				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+				MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
 				RecommendedPoints: []string{
 					"ポイント1",
 					"ポイント2",
@@ -495,7 +495,7 @@ func TestProducts_Fill(t *testing.T) {
 					Name:                  "&.農園のみかん",
 					Public:                false,
 					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
 					OriginPrefectureCode:  25,
 				},
@@ -504,7 +504,7 @@ func TestProducts_Fill(t *testing.T) {
 					Name:                  "&.農園のみかん",
 					Public:                false,
 					TagIDsJSON:            datatypes.JSON([]byte(`["tag-id01","tag-id02"]`)),
-					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+					MediaJSON:             datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
 					OriginPrefectureCode:  25,
 				},
@@ -535,7 +535,7 @@ func TestProducts_Fill(t *testing.T) {
 							IsThumbnail: true,
 						},
 					},
-					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
 					RecommendedPoints: []string{
 						"ポイント1",
 						"ポイント2",
@@ -567,7 +567,7 @@ func TestProducts_Fill(t *testing.T) {
 							IsThumbnail: true,
 						},
 					},
-					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":[{"url":"https://and-period.jp/thumbnail_240.png","size":1}]}]`)),
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`)),
 					RecommendedPoints: []string{
 						"ポイント1",
 						"ポイント2",
@@ -588,7 +588,7 @@ func TestProducts_Fill(t *testing.T) {
 			t.Parallel()
 			err := tt.products.Fill(tt.revisions, now)
 			assert.Equal(t, tt.hasErr, err != nil, err)
-			assert.ElementsMatch(t, tt.expect, tt.products)
+			assert.Equal(t, tt.expect, tt.products)
 		})
 	}
 }
@@ -1536,7 +1536,7 @@ func TestMultiProductMedia_Marshal(t *testing.T) {
 					IsThumbnail: true,
 				},
 			},
-			expect: []byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true,"images":null}]`),
+			expect: []byte(`[{"url":"https://and-period.jp/thumbnail.png","isThumbnail":true}]`),
 			hasErr: false,
 		},
 		{

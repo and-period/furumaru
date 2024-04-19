@@ -190,6 +190,8 @@ func (m *member) get(ctx context.Context, tx *gorm.DB, userID string, fields ...
 
 	stmt := m.db.Statement(ctx, tx, memberTable, fields...).Unscoped().Where("user_id = ?", userID)
 
-	err := stmt.First(&member).Error
-	return member, err
+	if err := stmt.First(&member).Error; err != nil {
+		return nil, err
+	}
+	return member, nil
 }
