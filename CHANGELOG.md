@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.4](https://github.com/and-period/furumaru/compare/v1.11.3...v1.11.4) - 2024-04-19
+- fix(workflow): チェックアウト時にもトークン指定をする by @taba2424 in https://github.com/and-period/furumaru/pull/2165
+
 ## [v1.11.3](https://github.com/and-period/furumaru/compare/v1.11.2...v1.11.3) - 2024-04-19
 - Revert "fix(workflow): リリースタグ作成ジョブでPATを使わないように (#2161)" by @taba2424 in https://github.com/and-period/furumaru/pull/2163
 
