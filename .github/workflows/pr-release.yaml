@@ -21,11 +21,9 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
       with:
-        # token: ${{ secrets.PAT }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PAT }}
 
     - name: Create and Update Release Pull Request and Tag
       uses: Songmu/tagpr@v1
       env:
-        # GITHUB_TOKEN: ${{ secrets.PAT }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}
