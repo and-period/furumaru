@@ -441,7 +441,7 @@ const getResizedThumbnails = (productId: string): string => {
   if (!thumbnail) {
     return ''
   }
-  return getResizedImages(thumbnail.images)
+  return getResizedImages(thumbnail.url)
 }
 
 /**

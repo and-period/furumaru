@@ -117,10 +117,10 @@ const settingDrawers: NavigationDrawerItem[] = [
 ]
 
 const getImages = (): string => {
-  if (!user.value?.thumbnails) {
+  if (!user.value?.thumbnailUrl) {
     return ''
   }
-  return getResizedImages(user.value.thumbnails)
+  return getResizedImages(user.value.thumbnailUrl)
 }
 
 const getGeneralDrawers = (): NavigationDrawerItem[] => {
