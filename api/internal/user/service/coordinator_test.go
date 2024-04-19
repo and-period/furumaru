@@ -407,8 +407,6 @@ func TestCreateCoordinator(t *testing.T) {
 						return nil
 					})
 				mocks.messenger.EXPECT().NotifyRegisterAdmin(gomock.Any(), gomock.Any()).Return(assert.AnError)
-				mocks.media.EXPECT().ResizeCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
-				mocks.media.EXPECT().ResizeCoordinatorHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateCoordinatorInput{
 				Lastname:       "&.",
@@ -592,37 +590,6 @@ func TestCreateCoordinator(t *testing.T) {
 func TestUpdateCoordinator(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
-	coordinator := &entity.Coordinator{
-		Admin: entity.Admin{
-			ID:            "admin-id",
-			Role:          entity.AdminRoleCoordinator,
-			Status:        entity.AdminStatusActivated,
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			Email:         "test-admin@and-period.jp",
-		},
-		AdminID:        "admin-id",
-		PhoneNumber:    "+819012345678",
-		Username:       "&.農園",
-		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-		Thumbnails:     common.Images{},
-		HeaderURL:      "https://and-period.jp/header.png",
-		Headers:        common.Images{},
-		InstagramID:    "instagram-account",
-		FacebookID:     "facebook-account",
-		PostalCode:     "1000014",
-		Prefecture:     "東京都",
-		PrefectureCode: 13,
-		City:           "千代田区",
-		AddressLine1:   "永田町1-7-1",
-		AddressLine2:   "",
-		BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
 	productTypesIn := &store.MultiGetProductTypesInput{
 		ProductTypeIDs: []string{"product-type-id"},
 	}
@@ -666,11 +633,8 @@ func TestUpdateCoordinator(t *testing.T) {
 				params := *params
 				params.ThumbnailURL = "https://tmp.and-period.jp/thumbnail.png"
 				params.HeaderURL = "https://tmp.and-period.jp/header.png"
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(productTypes, nil)
 				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", &params).Return(nil)
-				mocks.media.EXPECT().ResizeCoordinatorThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
-				mocks.media.EXPECT().ResizeCoordinatorHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.UpdateCoordinatorInput{
 				CoordinatorID:  "coordinator-id",
@@ -730,38 +694,8 @@ func TestUpdateCoordinator(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get coordinator",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(nil, assert.AnError)
-			},
-			input: &user.UpdateCoordinatorInput{
-				CoordinatorID:  "coordinator-id",
-				Lastname:       "&.",
-				Firstname:      "スタッフ",
-				LastnameKana:   "あんどぴりおど",
-				FirstnameKana:  "すたっふ",
-				MarcheName:     "&.株式会社マルシェ",
-				Username:       "&.農園",
-				Profile:        "紹介文です。",
-				ProductTypeIDs: []string{"product-type-id"},
-				ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-				HeaderURL:      "https://and-period.jp/header.png",
-				InstagramID:    "instagram-id",
-				FacebookID:     "facebook-id",
-				PhoneNumber:    "+819012345678",
-				PostalCode:     "1000014",
-				PrefectureCode: 13,
-				City:           "千代田区",
-				AddressLine1:   "永田町1-7-1",
-				AddressLine2:   "",
-				BusinessDays:   []time.Weekday{time.Monday, time.Wednesday, time.Friday},
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
 			name: "failed to multi get product types",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(nil, assert.AnError)
 			},
 			input: &user.UpdateCoordinatorInput{
@@ -791,7 +725,6 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "failed to unmatch product types length",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(sentity.ProductTypes{}, nil)
 			},
 			input: &user.UpdateCoordinatorInput{
@@ -821,7 +754,6 @@ func TestUpdateCoordinator(t *testing.T) {
 		{
 			name: "failed to update coordinator",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().Get(ctx, "coordinator-id").Return(coordinator, nil)
 				mocks.store.EXPECT().MultiGetProductTypes(ctx, productTypesIn).Return(productTypes, nil)
 				mocks.db.Coordinator.EXPECT().Update(ctx, "coordinator-id", params).Return(assert.AnError)
 			},

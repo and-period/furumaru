@@ -297,7 +297,6 @@ func TestCreateSchedule(t *testing.T) {
 						assert.Equal(t, expect, schedule)
 						return nil
 					})
-				mocks.media.EXPECT().ResizeScheduleThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
 				mocks.media.EXPECT().CreateBroadcast(gomock.Any(), gomock.Any()).Return(nil, assert.AnError)
 				mocks.messenger.EXPECT().ReserveStartLive(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
@@ -424,7 +423,6 @@ func TestUpdateSchedule(t *testing.T) {
 				params.ThumbnailURL = "https://tmp.and-period.jp/thumbnail.png"
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
 				mocks.db.Schedule.EXPECT().Update(ctx, "schedule-id", &params).Return(nil)
-				mocks.media.EXPECT().ResizeScheduleThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
 				mocks.messenger.EXPECT().ReserveStartLive(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.UpdateScheduleInput{

@@ -420,8 +420,6 @@ func TestCreateProducer(t *testing.T) {
 						assert.Equal(t, expectProducer, producer)
 						return nil
 					})
-				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
-				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.CreateProducerInput{
 				CoordinatorID:  "coordinator-id",
@@ -570,37 +568,6 @@ func TestCreateProducer(t *testing.T) {
 func TestUpdateProducer(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
-	producer := &entity.Producer{
-		Admin: entity.Admin{
-			ID:            "admin-id",
-			Role:          entity.AdminRoleProducer,
-			Status:        entity.AdminStatusActivated,
-			Lastname:      "&.",
-			Firstname:     "スタッフ",
-			LastnameKana:  "あんどぴりおど",
-			FirstnameKana: "すたっふ",
-			Email:         "test-admin@and-period.jp",
-		},
-		AdminID:        "admin-id",
-		CoordinatorID:  "coordinator-id",
-		Username:       "&.農園",
-		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-		Thumbnails:     common.Images{},
-		HeaderURL:      "https://and-period.jp/header.png",
-		Headers:        common.Images{},
-		InstagramID:    "instagram-account",
-		FacebookID:     "facebook-account",
-		PhoneNumber:    "+819012345678",
-		PostalCode:     "1000014",
-		Prefecture:     "東京都",
-		PrefectureCode: 13,
-		City:           "千代田区",
-		AddressLine1:   "永田町1-7-1",
-		AddressLine2:   "",
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
 	params := &database.UpdateProducerParams{
 		Lastname:       "&.",
 		Firstname:      "スタッフ",
@@ -632,10 +599,7 @@ func TestUpdateProducer(t *testing.T) {
 				params := *params
 				params.ThumbnailURL = "https://tmp.and-period.jp/thumbnail.png"
 				params.HeaderURL = "https://tmp.and-period.jp/header.png"
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
 				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", &params).Return(nil)
-				mocks.media.EXPECT().ResizeProducerThumbnail(gomock.Any(), gomock.Any()).Return(assert.AnError)
-				mocks.media.EXPECT().ResizeProducerHeader(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &user.UpdateProducerInput{
 				ProducerID:     "producer-id",
@@ -689,35 +653,8 @@ func TestUpdateProducer(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get producer",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(nil, assert.AnError)
-			},
-			input: &user.UpdateProducerInput{
-				ProducerID:     "producer-id",
-				Lastname:       "&.",
-				Firstname:      "スタッフ",
-				LastnameKana:   "あんどぴりおど",
-				FirstnameKana:  "すたっふ",
-				Username:       "&.農園",
-				ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-				HeaderURL:      "https://and-period.jp/header.png",
-				InstagramID:    "instagram-account",
-				FacebookID:     "facebook-account",
-				Email:          "test-admin@and-period.jp",
-				PhoneNumber:    "+819012345678",
-				PostalCode:     "1000014",
-				PrefectureCode: 13,
-				City:           "千代田区",
-				AddressLine1:   "永田町1-7-1",
-				AddressLine2:   "",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
 			name: "failed to update producer",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Producer.EXPECT().Get(ctx, "producer-id").Return(producer, nil)
 				mocks.db.Producer.EXPECT().Update(ctx, "producer-id", params).Return(assert.AnError)
 			},
 			input: &user.UpdateProducerInput{

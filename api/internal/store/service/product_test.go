@@ -6,7 +6,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -466,12 +465,6 @@ func TestCreateProduct(t *testing.T) {
 	producer := &uentity.Producer{
 		AdminID: "producer-id",
 	}
-	resizeIn := &media.ResizeFileInput{
-		URLs: []string{
-			"https://and-period.jp/thumbnail01.png",
-			"https://and-period.jp/thumbnail02.png",
-		},
-	}
 
 	tests := []struct {
 		name      string
@@ -525,13 +518,6 @@ func TestCreateProduct(t *testing.T) {
 						}
 						assert.Equal(t, expect, product)
 						return nil
-					})
-				mocks.media.EXPECT().
-					ResizeProductMedia(gomock.Any(), gomock.Any()).
-					DoAndReturn(func(ctx context.Context, in *media.ResizeFileInput) error {
-						resizeIn.TargetID = in.TargetID // ignore
-						assert.Equal(t, resizeIn, in)
-						return assert.AnError
 					})
 			},
 			input: &store.CreateProductInput{
@@ -860,10 +846,6 @@ func TestUpdateProduct(t *testing.T) {
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
-	resizeIn := &media.ResizeFileInput{
-		TargetID: "product-id",
-		URLs:     []string{"https://and-period.jp/thumbnail02.png"},
-	}
 
 	tests := []struct {
 		name      string
@@ -910,7 +892,6 @@ func TestUpdateProduct(t *testing.T) {
 						assert.Equal(t, expect, params)
 						return nil
 					})
-				mocks.media.EXPECT().ResizeProductMedia(gomock.Any(), resizeIn).Return(assert.AnError)
 			},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",

@@ -275,7 +275,6 @@ func TestCreateProductType(t *testing.T) {
 						assert.Equal(t, expect, productType)
 						return nil
 					})
-				mocks.media.EXPECT().ResizeProductTypeIcon(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateProductTypeInput{
 				Name:       "じゃがいも",
@@ -316,16 +315,6 @@ func TestCreateProductType(t *testing.T) {
 func TestUpdateProductType(t *testing.T) {
 	t.Parallel()
 
-	now := jst.Date(2022, 5, 2, 18, 30, 0, 0)
-	productType := &entity.ProductType{
-		ID:         "product-type-id",
-		Name:       "じゃがいも",
-		IconURL:    "https://and-period.jp/icon.png",
-		CategoryID: "category-id",
-		CreatedAt:  now,
-		UpdatedAt:  now,
-	}
-
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -335,9 +324,7 @@ func TestUpdateProductType(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Get(ctx, "product-type-id").Return(productType, nil)
 				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも", "https://tmp.and-period.jp/icon.png").Return(nil)
-				mocks.media.EXPECT().ResizeProductTypeIcon(gomock.Any(), gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.UpdateProductTypeInput{
 				ProductTypeID: "product-type-id",
@@ -353,21 +340,8 @@ func TestUpdateProductType(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get product type",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Get(ctx, "product-type-id").Return(nil, assert.AnError)
-			},
-			input: &store.UpdateProductTypeInput{
-				ProductTypeID: "product-type-id",
-				Name:          "さつまいも",
-				IconURL:       "https://and-period.jp/icon.png",
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
 			name: "failed to update",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().Get(ctx, "product-type-id").Return(productType, nil)
 				mocks.db.ProductType.EXPECT().Update(ctx, "product-type-id", "さつまいも", "https://and-period.jp/icon.png").Return(assert.AnError)
 			},
 			input: &store.UpdateProductTypeInput{
