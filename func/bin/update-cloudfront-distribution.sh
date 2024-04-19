@@ -18,7 +18,7 @@ aws cloudfront get-distribution-config --id ${CLOUDFRONT_DISTRIBUTION_ID} | \
   jq "(.DefaultCacheBehavior.LambdaFunctionAssociations.Items[] | select(.EventType == \"origin-response\") | .LambdaFunctionARN) |= \"${ORIGIN_RESPONSE_ARN}\"" \
   > ./config.json
 
-if [ ! -s ./config.json ]; then
+if [ -z ./config.json ]; then
   echo "Failed to update the Lambda@Edge function in the CloudFront distribution"
   exit 1
 fi
