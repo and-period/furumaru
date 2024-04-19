@@ -32,31 +32,23 @@ type Service interface {
 	UpdateBroadcastComment(ctx context.Context, in *UpdateBroadcastCommentInput) error                                       // ライブコメント更新
 	// コーディネータ
 	GetCoordinatorThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)      // サムネイル画像アップロード用URLの生成
-	ResizeCoordinatorThumbnail(ctx context.Context, in *ResizeFileInput) error                                          // サムネイル画像リサイズ
 	GetCoordinatorHeaderUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)         // ヘッダー画像アップロード用URLの生成
-	ResizeCoordinatorHeader(ctx context.Context, in *ResizeFileInput) error                                             // ヘッダー画像リサイズ
 	GetCoordinatorPromotionVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // 紹介映像アップロード用URLの生成
 	GetCoordinatorBonusVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)     // 購入特典映像アップロード用URLの生成
 	// 生産者
 	GetProducerThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)      // サムネイル画像アップロード用URLの生成
-	ResizeProducerThumbnail(ctx context.Context, in *ResizeFileInput) error                                          // サムネイル画像リサイズ
 	GetProducerHeaderUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)         // ヘッダー画像アップロード用URLの生成
-	ResizeProducerHeader(ctx context.Context, in *ResizeFileInput) error                                             // ヘッダー画像リサイズ
 	GetProducerPromotionVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // 紹介映像アップロード用URLの生成
 	GetProducerBonusVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)     // 購入特典映像アップロード用URLの生成
 	// 購入者
 	GetUserThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // サムネイル画像アップロード用URLの生成
-	ResizeUserThumbnail(ctx context.Context, in *ResizeFileInput) error                                     // サムネイル画像リサイズ
 	// 商品
 	GetProductMediaImageUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // メディア(画像)アップロード用URLの生成
 	GetProductMediaVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // メディア(映像)アップロード用URLの生成
-	ResizeProductMedia(ctx context.Context, in *ResizeFileInput) error                                          // メディアリサイズ
 	// 品目
 	GetProductTypeIconUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // アイコン画像アップロード用URLの生成
-	ResizeProductTypeIcon(ctx context.Context, in *ResizeFileInput) error                                     // アイコン画像リサイズ
 	// 開催スケジュール
 	GetScheduleThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)    // アイコン画像アップロード用URLの生成
-	ResizeScheduleThumbnail(ctx context.Context, in *ResizeFileInput) error                                        // サムネイル画像リサイズ
 	GetScheduleImageUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)        // 蓋絵画像アップロード用URLの生成
 	GetScheduleOpeningVideoUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // オープニング動画アップロード用URLの生成
 }

@@ -96,11 +96,7 @@ func (s *service) CreateSchedule(ctx context.Context, in *store.CreateScheduleIn
 	if err := s.db.Schedule.Create(ctx, schedule); err != nil {
 		return nil, internalError(err)
 	}
-	s.waitGroup.Add(3)
-	go func() {
-		defer s.waitGroup.Done()
-		s.resizeSchedule(context.Background(), schedule.ID, in.ThumbnailURL)
-	}()
+	s.waitGroup.Add(2)
 	go func() {
 		defer s.waitGroup.Done()
 		const maxRetries = 5
@@ -150,15 +146,7 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 	if err := s.db.Schedule.Update(ctx, in.ScheduleID, params); err != nil {
 		return internalError(err)
 	}
-	s.waitGroup.Add(2)
-	go func() {
-		defer s.waitGroup.Done()
-		var thumbnailURL string
-		if schedule.ThumbnailURL != in.ThumbnailURL {
-			thumbnailURL = in.ThumbnailURL
-		}
-		s.resizeSchedule(context.Background(), schedule.ID, thumbnailURL)
-	}()
+	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		in := &messenger.ReserveStartLiveInput{
@@ -207,19 +195,4 @@ func (s *service) PublishSchedule(ctx context.Context, in *store.PublishSchedule
 	}
 	err := s.db.Schedule.Publish(ctx, in.ScheduleID, in.Public)
 	return internalError(err)
-}
-
-func (s *service) resizeSchedule(ctx context.Context, scheduleID, thumbnailURL string) {
-	if thumbnailURL == "" {
-		return
-	}
-	in := &media.ResizeFileInput{
-		TargetID: scheduleID,
-		URLs:     []string{thumbnailURL},
-	}
-	if err := s.media.ResizeScheduleThumbnail(ctx, in); err != nil {
-		s.logger.Error("Failed to resize schedule thumbnail",
-			zap.String("scheduleId", scheduleID), zap.Error(err),
-		)
-	}
 }

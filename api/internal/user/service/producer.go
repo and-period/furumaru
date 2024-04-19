@@ -7,11 +7,9 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -124,12 +122,6 @@ func (s *service) CreateProducer(ctx context.Context, in *user.CreateProducerInp
 	if err := s.db.Producer.Create(ctx, producer, auth); err != nil {
 		return nil, internalError(err)
 	}
-	s.logger.Debug("Create producer", zap.String("producerId", producer.ID))
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		s.resizeProducer(context.Background(), producer.ID, in.ThumbnailURL, in.HeaderURL)
-	}()
 	return producer, nil
 }
 
@@ -141,10 +133,6 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 		if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
 			return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
 		}
-	}
-	producer, err := s.db.Producer.Get(ctx, in.ProducerID)
-	if err != nil {
-		return internalError(err)
 	}
 	params := &database.UpdateProducerParams{
 		Lastname:          in.Lastname,
@@ -170,18 +158,6 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 	if err := s.db.Producer.Update(ctx, in.ProducerID, params); err != nil {
 		return internalError(err)
 	}
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		var thumbnailURL, headerURL string
-		if producer.ThumbnailURL != in.ThumbnailURL {
-			thumbnailURL = in.ThumbnailURL
-		}
-		if producer.HeaderURL != in.HeaderURL {
-			headerURL = in.HeaderURL
-		}
-		s.resizeProducer(context.Background(), producer.ID, thumbnailURL, headerURL)
-	}()
 	return nil
 }
 
@@ -210,38 +186,4 @@ func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInp
 	}
 	err := s.db.Producer.Delete(ctx, in.ProducerID, auth)
 	return internalError(err)
-}
-
-func (s *service) resizeProducer(ctx context.Context, producerID, thumbnailURL, headerURL string) {
-	s.waitGroup.Add(2)
-	go func() {
-		defer s.waitGroup.Done()
-		if thumbnailURL == "" {
-			return
-		}
-		in := &media.ResizeFileInput{
-			TargetID: producerID,
-			URLs:     []string{thumbnailURL},
-		}
-		if err := s.media.ResizeProducerThumbnail(ctx, in); err != nil {
-			s.logger.Error("Failed to resize producer thumbnail",
-				zap.String("producerId", producerID), zap.Error(err),
-			)
-		}
-	}()
-	go func() {
-		defer s.waitGroup.Done()
-		if headerURL == "" {
-			return
-		}
-		in := &media.ResizeFileInput{
-			TargetID: producerID,
-			URLs:     []string{headerURL},
-		}
-		if err := s.media.ResizeProducerHeader(ctx, in); err != nil {
-			s.logger.Error("Failed to resize producer header",
-				zap.String("producerId", producerID), zap.Error(err),
-			)
-		}
-	}()
 }

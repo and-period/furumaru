@@ -6,7 +6,6 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -139,11 +138,7 @@ func (s *service) CreateCoordinator(
 		return nil, internalError(err)
 	}
 	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
-	s.waitGroup.Add(2)
-	go func() {
-		defer s.waitGroup.Done()
-		s.resizeCoordinator(context.Background(), coordinator.ID, in.ThumbnailURL, in.HeaderURL)
-	}()
+	s.waitGroup.Add(1)
 	go func() {
 		defer s.waitGroup.Done()
 		err := s.notifyRegisterAdmin(context.Background(), coordinator.ID, password)
@@ -160,10 +155,6 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 	}
 	if _, err := codes.ToPrefectureJapanese(in.PrefectureCode); err != nil {
 		return fmt.Errorf("service: invalid prefecture code: %w: %s", exception.ErrInvalidArgument, err.Error())
-	}
-	coordinator, err := s.db.Coordinator.Get(ctx, in.CoordinatorID)
-	if err != nil {
-		return internalError(err)
 	}
 	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
 	if err != nil {
@@ -198,18 +189,6 @@ func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordina
 	if err := s.db.Coordinator.Update(ctx, in.CoordinatorID, params); err != nil {
 		return internalError(err)
 	}
-	s.waitGroup.Add(1)
-	go func() {
-		defer s.waitGroup.Done()
-		var thumbnailURL, headerURL string
-		if coordinator.ThumbnailURL != in.ThumbnailURL {
-			thumbnailURL = in.ThumbnailURL
-		}
-		if coordinator.HeaderURL != in.HeaderURL {
-			headerURL = in.HeaderURL
-		}
-		s.resizeCoordinator(context.Background(), coordinator.ID, thumbnailURL, headerURL)
-	}()
 	return nil
 }
 
@@ -316,38 +295,4 @@ func (s *service) multiGetProductTypes(ctx context.Context, productTypeIDs []str
 		ProductTypeIDs: productTypeIDs,
 	}
 	return s.store.MultiGetProductTypes(ctx, in)
-}
-
-func (s *service) resizeCoordinator(ctx context.Context, coordinatorID, thumbnailURL, headerURL string) {
-	s.waitGroup.Add(2)
-	go func() {
-		defer s.waitGroup.Done()
-		if thumbnailURL == "" {
-			return
-		}
-		in := &media.ResizeFileInput{
-			TargetID: coordinatorID,
-			URLs:     []string{thumbnailURL},
-		}
-		if err := s.media.ResizeCoordinatorThumbnail(ctx, in); err != nil {
-			s.logger.Error("Failed to resize coordinator thumbnail",
-				zap.String("coordinatorId", coordinatorID), zap.Error(err),
-			)
-		}
-	}()
-	go func() {
-		defer s.waitGroup.Done()
-		if headerURL == "" {
-			return
-		}
-		in := &media.ResizeFileInput{
-			TargetID: coordinatorID,
-			URLs:     []string{headerURL},
-		}
-		if err := s.media.ResizeCoordinatorHeader(ctx, in); err != nil {
-			s.logger.Error("Failed to resize coordinator header",
-				zap.String("coordinatorId", coordinatorID), zap.Error(err),
-			)
-		}
-	}()
 }
