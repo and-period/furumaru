@@ -1,19 +1,9 @@
 name: '[Backend] Deploy Media for prd'
 on:
-  push:
-    tags:
-    - 'v*'
-    paths:
-    - '.github/actions/**'
-    - '.github/workflows/_build_and_push.yaml'
-    - '.github/workflows/_deploy_lambda.yaml'
-    - '.github/workflows/_get_tag_version.yaml'
-    - '.github/workflows/cd-media-for-prd.yaml'
-    - 'api/config/media/**'
-    - 'api/internal/media/**'
-    - 'api/pkg/**'
-    - 'api/go.mod'
-    - 'infra/docker/api/**'
+  workflow_run:
+    workflows: ['Create Release Pull Request']
+    types:
+    - completed
 
 env:
   TZ: 'Asia/Tokyo'

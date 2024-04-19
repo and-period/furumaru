@@ -1,12 +1,9 @@
 name: '[Function] Deploy for prd'
 on:
-  push:
-    tags:
-    - 'v*'
-    paths:
-    - '.github/workflows/cd-func-for-prd.yaml'
-    - 'func/**'
-    - 'infra/docker/func/**'
+  workflow_run:
+    workflows: ['Create Release Pull Request']
+    types:
+    - completed
 
 env:
   TZ: 'Asia/Tokyo'
