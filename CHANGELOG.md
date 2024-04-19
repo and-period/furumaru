@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.11.8](https://github.com/and-period/furumaru/compare/v1.11.7...v1.11.8) - 2024-04-19
+
 ## [v1.11.7](https://github.com/and-period/furumaru/compare/v1.11.6...v1.11.7) - 2024-04-19
 - fix(workflow): Lambda@Edgeのデプロイフローを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2172
 
