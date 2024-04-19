@@ -1,14 +1,9 @@
 name: '[Frontend] Deploy Admin Web for prd'
 on:
-  push:
-    tags:
-    - 'v*'
-    paths:
-    - '.github/actions/**'
-    - '.github/workflows/_deploy_amplify.yaml'
-    - '.github/workflows/cd-web-admin-for-prd.yaml'
-    - 'web/admin/**'
-    - 'infra/docker/web/admin/**'
+  workflow_run:
+    workflows: ['Create Release Pull Request']
+    types:
+    - completed
 
 env:
   TZ: 'Asia/Tokyo'
