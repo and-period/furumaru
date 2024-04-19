@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -166,17 +165,9 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 	if _, err := codes.ToPrefectureJapanese(in.OriginPrefectureCode); err != nil {
 		return fmt.Errorf("service: invalid prefecture: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
-	product, err := s.db.Product.Get(ctx, in.ProductID)
-	if err != nil {
-		return internalError(err)
-	}
-	currentMedia := product.Media.MapByURL()
 	media := make(entity.MultiProductMedia, len(in.Media))
 	for i, m := range in.Media {
 		media[i] = entity.NewProductMedia(m.URL, m.IsThumbnail)
-		if images, ok := currentMedia[m.URL]; ok {
-			media[i].SetImages(images.Images)
-		}
 	}
 	if err := media.Validate(); err != nil {
 		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
@@ -212,29 +203,6 @@ func (s *service) UpdateProduct(ctx context.Context, in *store.UpdateProductInpu
 		return internalError(err)
 	}
 	return nil
-}
-
-func (s *service) UpdateProductMedia(ctx context.Context, in *store.UpdateProductMediaInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	resized := make(map[string]common.Images, len(in.Images))
-	for _, image := range in.Images {
-		resized[image.OriginURL] = image.Images
-	}
-	setFn := func(media entity.MultiProductMedia) (exists bool) {
-		for i := range media {
-			images, ok := resized[media[i].URL]
-			if !ok {
-				continue
-			}
-			exists = true
-			media[i].SetImages(images)
-		}
-		return
-	}
-	err := s.db.Product.UpdateMedia(ctx, in.ProductID, setFn)
-	return internalError(err)
 }
 
 func (s *service) DeleteProduct(ctx context.Context, in *store.DeleteProductInput) error {

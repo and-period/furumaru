@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
@@ -640,124 +639,6 @@ func TestProduct_Update(t *testing.T) {
 	}
 }
 
-func TestProduct_UpdateMedia(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	category := testCategory("category-id", "野菜", now())
-	err = db.DB.Create(&category).Error
-	require.NoError(t, err)
-	productType := testProductType("type-id", "category-id", "野菜", now())
-	err = db.DB.Create(&productType).Error
-	require.NoError(t, err)
-	productTag := testProductTag("tag-id", "贈答品", now())
-	err = db.DB.Create(&productTag).Error
-	require.NoError(t, err)
-
-	type args struct {
-		productID string
-		set       func(media entity.MultiProductMedia) bool
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"product-id"}, 1, now())
-				err = db.DB.Create(&product).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				productID: "product-id",
-				set: func(media entity.MultiProductMedia) (exists bool) {
-					resized := map[string]common.Images{
-						"https://and-period.jp/thumbnail01.png": {{
-							Size: common.ImageSizeSmall,
-							URL:  "https://and-period.jp/thumbnail01_240.png",
-						}},
-					}
-					for i := range media {
-						images, ok := resized[media[i].URL]
-						if !ok {
-							continue
-						}
-						exists = true
-						media[i].Images = images
-					}
-					return
-				},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				productID: "product-id",
-				set:       func(media entity.MultiProductMedia) bool { return false },
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "media is non existent",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				product := testProduct("product-id", "type-id", "category-id", "coordinator-id", "producer-id", []string{"tag-id"}, 1, now())
-				err = db.DB.Create(&product).Error
-				require.NoError(t, err)
-				err = db.DB.Create(&product.ProductRevision).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				productID: "product-id",
-				set:       func(media entity.MultiProductMedia) bool { return false },
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, productRevisionTable, productTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &product{db: db, now: now}
-			err = db.UpdateMedia(ctx, tt.args.productID, tt.args.set)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
 func TestProduct_DescreaseInventory(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -968,25 +849,14 @@ func testProduct(productID, typeID, categoryID, coordinatorID, producerID string
 		ItemUnit:        "袋",
 		ItemDescription: "1袋あたり100gのじゃがいも",
 		ThumbnailURL:    "https://and-period.jp/thumbnail01.png",
-		Thumbnails: common.Images{
-			{
-				URL:  "https://and-period/jp/thumbnail_240.png",
-				Size: common.ImageSizeSmall,
-			},
-		},
 		Media: entity.MultiProductMedia{
 			{
 				URL:         "https://and-period.jp/thumbnail01.png",
 				IsThumbnail: true,
-				Images: common.Images{{
-					URL:  "https://and-period/jp/thumbnail_240.png",
-					Size: common.ImageSizeSmall,
-				}},
 			},
 			{
 				URL:         "https://and-period.jp/thumbnail02.png",
 				IsThumbnail: false,
-				Images:      common.Images{},
 			},
 		},
 		ExpirationDate:       7,

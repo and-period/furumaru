@@ -38,8 +38,6 @@ type Service interface {
 	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)                // 登録
 	UpdateCoordinator(ctx context.Context, in *UpdateCoordinatorInput) error                                       // 更新
 	UpdateCoordinatorEmail(ctx context.Context, in *UpdateCoordinatorEmailInput) error                             // メールアドレス更新
-	UpdateCoordinatorThumbnails(ctx context.Context, in *UpdateCoordinatorThumbnailsInput) error                   // サムネイル(リサイズ済み)更新
-	UpdateCoordinatorHeaders(ctx context.Context, in *UpdateCoordinatorHeadersInput) error                         // ヘッダー画像(リサイズ済み)更新
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error                         // パスワードリセット
 	RemoveCoordinatorProductType(ctx context.Context, in *RemoveCoordinatorProductTypeInput) error                 // 品目削除によるデータ変更
 	AggregateRealatedProducers(ctx context.Context, in *AggregateRealatedProducersInput) (map[string]int64, error) // 担当生産者数の取得
@@ -50,8 +48,6 @@ type Service interface {
 	GetProducer(ctx context.Context, in *GetProducerInput) (*entity.Producer, error)             // １件取得
 	CreateProducer(ctx context.Context, in *CreateProducerInput) (*entity.Producer, error)       // 登録
 	UpdateProducer(ctx context.Context, in *UpdateProducerInput) error                           // 更新
-	UpdateProducerThumbnails(ctx context.Context, in *UpdateProducerThumbnailsInput) error       // サムネイル(リサイズ済み)更新
-	UpdateProducerHeaders(ctx context.Context, in *UpdateProducerHeadersInput) error             // ヘッダー画像(リサイズ済み)更新
 	DeleteProducer(ctx context.Context, in *DeleteProducerInput) error                           // 退会
 	// 購入者
 	SignInUser(ctx context.Context, in *SignInUserInput) (*entity.UserAuth, error)             // サインイン
@@ -79,7 +75,6 @@ type Service interface {
 	UpdateMemberUsername(ctx context.Context, in *UpdateMemberUsernameInput) error                   // 表示名更新
 	UpdateMemberAccountID(ctx context.Context, in *UpdateMemberAccountIDInput) error                 // 検索名更新
 	UpdateMemberThumbnailURL(ctx context.Context, in *UpdateMemberThumbnailURLInput) error           // サムネイルURL更新
-	UpdateMemberThumbnails(ctx context.Context, in *UpdateMemberThumbnailsInput) error               // サムネイル(リサイズ済み)更新
 	// ゲスト
 	UpsertGuest(ctx context.Context, in *UpsertGuestInput) (string, error) // ゲスト登録・更新
 	// アドレス帳

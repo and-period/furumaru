@@ -2,15 +2,12 @@ package mysql
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/database"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -198,62 +195,6 @@ func (p *producer) Update(ctx context.Context, producerID string, params *databa
 			Table(producerTable).
 			Where("admin_id = ?", producerID).
 			Updates(producerParams).Error
-		return err
-	})
-	return dbError(err)
-}
-
-func (p *producer) UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error {
-	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		producer, err := p.get(ctx, tx, producerID, "thumbnail_url")
-		if err != nil {
-			return err
-		}
-		if producer.ThumbnailURL == "" {
-			return fmt.Errorf("database: thumbnail url is empty: %w", database.ErrFailedPrecondition)
-		}
-
-		buf, err := thumbnails.Marshal()
-		if err != nil {
-			return err
-		}
-		params := map[string]interface{}{
-			"thumbnails": datatypes.JSON(buf),
-			"updated_at": p.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(producerTable).
-			Where("admin_id = ?", producerID).
-			Updates(params).Error
-		return err
-	})
-	return dbError(err)
-}
-
-func (p *producer) UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error {
-	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
-		producer, err := p.get(ctx, tx, producerID, "header_url")
-		if err != nil {
-			return err
-		}
-		if producer.HeaderURL == "" {
-			return fmt.Errorf("database: header url is empty: %w", database.ErrFailedPrecondition)
-		}
-
-		buf, err := headers.Marshal()
-		if err != nil {
-			return err
-		}
-		params := map[string]interface{}{
-			"headers":    datatypes.JSON(buf),
-			"updated_at": p.now(),
-		}
-
-		err = tx.WithContext(ctx).
-			Table(producerTable).
-			Where("admin_id = ?", producerID).
-			Updates(params).Error
 		return err
 	})
 	return dbError(err)

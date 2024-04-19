@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
@@ -42,9 +41,7 @@ func TestListCoordinators(t *testing.T) {
 			PhoneNumber:    "+819012345678",
 			Username:       "&.農園",
 			ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-			Thumbnails:     common.Images{},
 			HeaderURL:      "https://and-period.jp/header.png",
-			Headers:        common.Images{},
 			InstagramID:    "instagram-account",
 			FacebookID:     "facebook-account",
 			PostalCode:     "1000014",
@@ -150,9 +147,7 @@ func TestMultiGetCoordinators(t *testing.T) {
 			PhoneNumber:    "+819012345678",
 			Username:       "&.農園",
 			ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-			Thumbnails:     common.Images{},
 			HeaderURL:      "https://and-period.jp/header.png",
-			Headers:        common.Images{},
 			InstagramID:    "instagram-account",
 			FacebookID:     "facebook-account",
 			PostalCode:     "1000014",
@@ -260,9 +255,7 @@ func TestGetCoordinator(t *testing.T) {
 		PhoneNumber:    "+819012345678",
 		Username:       "&.農園",
 		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-		Thumbnails:     common.Images{},
 		HeaderURL:      "https://and-period.jp/header.png",
-		Headers:        common.Images{},
 		InstagramID:    "instagram-account",
 		FacebookID:     "facebook-account",
 		PostalCode:     "1000014",
@@ -812,9 +805,7 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 		PhoneNumber:    "+819012345678",
 		Username:       "&.農園",
 		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-		Thumbnails:     common.Images{},
 		HeaderURL:      "https://and-period.jp/header.png",
-		Headers:        common.Images{},
 		InstagramID:    "instagram-account",
 		FacebookID:     "facebook-account",
 		PostalCode:     "1000014",
@@ -903,132 +894,6 @@ func TestUpdateCoordinatorEmail(t *testing.T) {
 	}
 }
 
-func TestUpdateCoordinatorThumbnails(t *testing.T) {
-	t.Parallel()
-
-	thumbnails := common.Images{
-		{
-			Size: common.ImageSizeSmall,
-			URL:  "https://and-period.jp/thumbnail_240.png",
-		},
-		{
-			Size: common.ImageSizeMedium,
-			URL:  "https://and-period.jp/thumbnail_675.png",
-		},
-		{
-			Size: common.ImageSizeLarge,
-			URL:  "https://and-period.jp/thumbnail_900.png",
-		},
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.UpdateCoordinatorThumbnailsInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().UpdateThumbnails(ctx, "coordinator-id", thumbnails).Return(nil)
-			},
-			input: &user.UpdateCoordinatorThumbnailsInput{
-				CoordinatorID: "coordinator-id",
-				Thumbnails:    thumbnails,
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.UpdateCoordinatorThumbnailsInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to update thumbnails",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().UpdateThumbnails(ctx, "coordinator-id", thumbnails).Return(assert.AnError)
-			},
-			input: &user.UpdateCoordinatorThumbnailsInput{
-				CoordinatorID: "coordinator-id",
-				Thumbnails:    thumbnails,
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateCoordinatorThumbnails(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestUpdateCoordinatorHeaders(t *testing.T) {
-	t.Parallel()
-
-	headers := common.Images{
-		{
-			Size: common.ImageSizeSmall,
-			URL:  "https://and-period.jp/header_240.png",
-		},
-		{
-			Size: common.ImageSizeMedium,
-			URL:  "https://and-period.jp/header_675.png",
-		},
-		{
-			Size: common.ImageSizeLarge,
-			URL:  "https://and-period.jp/header_900.png",
-		},
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *user.UpdateCoordinatorHeadersInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().UpdateHeaders(ctx, "coordinator-id", headers).Return(nil)
-			},
-			input: &user.UpdateCoordinatorHeadersInput{
-				CoordinatorID: "coordinator-id",
-				Headers:       headers,
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &user.UpdateCoordinatorHeadersInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to update headers",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Coordinator.EXPECT().UpdateHeaders(ctx, "coordinator-id", headers).Return(assert.AnError)
-			},
-			input: &user.UpdateCoordinatorHeadersInput{
-				CoordinatorID: "coordinator-id",
-				Headers:       headers,
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateCoordinatorHeaders(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
 func TestResetCoordinatorPassword(t *testing.T) {
 	t.Parallel()
 
@@ -1048,9 +913,7 @@ func TestResetCoordinatorPassword(t *testing.T) {
 		PhoneNumber:    "+819012345678",
 		Username:       "&.農園",
 		ThumbnailURL:   "https://and-period.jp/thumbnail.png",
-		Thumbnails:     common.Images{},
 		HeaderURL:      "https://and-period.jp/header.png",
-		Headers:        common.Images{},
 		InstagramID:    "instagram-account",
 		FacebookID:     "facebook-account",
 		PostalCode:     "1000014",

@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -357,69 +356,6 @@ func TestUpdateProductType(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProductType(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestUpdateProductTypeIcons(t *testing.T) {
-	t.Parallel()
-
-	icons := common.Images{
-		{
-			Size: common.ImageSizeSmall,
-			URL:  "https://and-period.jp/icon_240.png",
-		},
-		{
-			Size: common.ImageSizeMedium,
-			URL:  "https://and-period.jp/icon_675.png",
-		},
-		{
-			Size: common.ImageSizeLarge,
-			URL:  "https://and-period.jp/icon_900.png",
-		},
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.UpdateProductTypeIconsInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().UpdateIcons(ctx, "product-type-id", icons).Return(nil)
-			},
-			input: &store.UpdateProductTypeIconsInput{
-				ProductTypeID: "product-type-id",
-				Icons:         icons,
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.UpdateProductTypeIconsInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to update icons",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.ProductType.EXPECT().UpdateIcons(ctx, "product-type-id", icons).Return(assert.AnError)
-			},
-			input: &store.UpdateProductTypeIconsInput{
-				ProductTypeID: "product-type-id",
-				Icons:         icons,
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateProductTypeIcons(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

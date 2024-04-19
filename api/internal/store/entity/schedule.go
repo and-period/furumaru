@@ -3,10 +3,8 @@ package entity
 import (
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -24,23 +22,21 @@ const (
 
 // Schedule - 開催スケジュール
 type Schedule struct {
-	ID              string         `gorm:"primaryKey;<-:create"`           // テンプレートID
-	CoordinatorID   string         `gorm:""`                               // コーディネータID
-	Status          ScheduleStatus `gorm:"-"`                              // 開催状況
-	Title           string         `gorm:""`                               // タイトル
-	Description     string         `gorm:""`                               // 説明
-	ThumbnailURL    string         `gorm:""`                               // サムネイルURL
-	Thumbnails      common.Images  `gorm:"-"`                              // サムネイル一覧(リサイズ済み)
-	ThumbnailsJSON  datatypes.JSON `gorm:"default:null;column:thumbnails"` // サムネイル一覧(JSON)
-	ImageURL        string         `gorm:""`                               // ふた絵URL
-	OpeningVideoURL string         `gorm:""`                               // オープニング動画URL
-	Public          bool           `gorm:""`                               // 公開フラグ
-	Approved        bool           `gorm:""`                               // 承認フラグ
-	ApprovedAdminID string         `gorm:""`                               // 承認した管理者ID
-	StartAt         time.Time      `gorm:""`                               // 開催開始日時
-	EndAt           time.Time      `gorm:""`                               // 開催終了日時
-	CreatedAt       time.Time      `gorm:"<-:create"`                      // 登録日時
-	UpdatedAt       time.Time      `gorm:""`                               // 更新日時
+	ID              string         `gorm:"primaryKey;<-:create"` // テンプレートID
+	CoordinatorID   string         `gorm:""`                     // コーディネータID
+	Status          ScheduleStatus `gorm:"-"`                    // 開催状況
+	Title           string         `gorm:""`                     // タイトル
+	Description     string         `gorm:""`                     // 説明
+	ThumbnailURL    string         `gorm:""`                     // サムネイルURL
+	ImageURL        string         `gorm:""`                     // ふた絵URL
+	OpeningVideoURL string         `gorm:""`                     // オープニング動画URL
+	Public          bool           `gorm:""`                     // 公開フラグ
+	Approved        bool           `gorm:""`                     // 承認フラグ
+	ApprovedAdminID string         `gorm:""`                     // 承認した管理者ID
+	StartAt         time.Time      `gorm:""`                     // 開催開始日時
+	EndAt           time.Time      `gorm:""`                     // 開催終了日時
+	CreatedAt       time.Time      `gorm:"<-:create"`            // 登録日時
+	UpdatedAt       time.Time      `gorm:""`                     // 更新日時
 	DeletedAt       gorm.DeletedAt `gorm:"default:null"`
 }
 
@@ -76,11 +72,6 @@ func NewSchedule(params *NewScheduleParams) *Schedule {
 }
 
 func (s *Schedule) Fill(now time.Time) error {
-	thumbnails, err := common.NewImagesFromBytes(s.ThumbnailsJSON)
-	if err != nil {
-		return err
-	}
-	s.Thumbnails = thumbnails
 	s.SetStatus(now)
 	return nil
 }
@@ -105,15 +96,6 @@ func (s *Schedule) Published() bool {
 		return false
 	}
 	return s.Public && s.Approved
-}
-
-func (s *Schedule) FillJSON() error {
-	thumbnails, err := s.Thumbnails.Marshal()
-	if err != nil {
-		return err
-	}
-	s.ThumbnailsJSON = thumbnails
-	return nil
 }
 
 func (ss Schedules) Fill(now time.Time) error {

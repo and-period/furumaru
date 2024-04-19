@@ -161,22 +161,6 @@ func (s *service) UpdateProducer(ctx context.Context, in *user.UpdateProducerInp
 	return nil
 }
 
-func (s *service) UpdateProducerThumbnails(ctx context.Context, in *user.UpdateProducerThumbnailsInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	err := s.db.Producer.UpdateThumbnails(ctx, in.ProducerID, in.Thumbnails)
-	return internalError(err)
-}
-
-func (s *service) UpdateProducerHeaders(ctx context.Context, in *user.UpdateProducerHeadersInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	err := s.db.Producer.UpdateHeaders(ctx, in.ProducerID, in.Headers)
-	return internalError(err)
-}
-
 func (s *service) DeleteProducer(ctx context.Context, in *user.DeleteProducerInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)

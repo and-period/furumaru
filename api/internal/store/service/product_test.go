@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -806,46 +805,6 @@ func TestUpdateProduct(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
-	product := &entity.Product{
-		ID:              "product-id",
-		TypeID:          "type-id",
-		TagIDs:          []string{"tag-id"},
-		CoordinatorID:   "coordinator-id",
-		ProducerID:      "producer-id",
-		Name:            "新鮮なじゃがいも",
-		Description:     "新鮮なじゃがいもをお届けします。",
-		Public:          true,
-		Inventory:       100,
-		Weight:          100,
-		WeightUnit:      entity.WeightUnitGram,
-		Item:            1,
-		ItemUnit:        "袋",
-		ItemDescription: "1袋あたり100gのじゃがいも",
-		Media: entity.MultiProductMedia{
-			{URL: "https://and-period.jp/thumbnail00.png", IsThumbnail: true},
-			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: false},
-		},
-		ExpirationDate:    7,
-		StorageMethodType: entity.StorageMethodTypeNormal,
-		DeliveryType:      entity.DeliveryTypeNormal,
-		Box60Rate:         50,
-		Box80Rate:         40,
-		Box100Rate:        30,
-		OriginPrefecture:  "滋賀県",
-		OriginCity:        "彦根市",
-		StartAt:           now.AddDate(0, -1, 0),
-		EndAt:             now.AddDate(0, 1, 0),
-		ProductRevision: entity.ProductRevision{
-			ID:        1,
-			ProductID: "product-id",
-			Price:     400,
-			Cost:      300,
-			CreatedAt: now,
-			UpdatedAt: now,
-		},
-		CreatedAt: now,
-		UpdatedAt: now,
-	}
 
 	tests := []struct {
 		name      string
@@ -856,7 +815,6 @@ func TestUpdateProduct(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
 				mocks.db.Product.EXPECT().
 					Update(ctx, "product-id", gomock.Any()).
 					DoAndReturn(func(ctx context.Context, productID string, params *database.UpdateProductParams) error {
@@ -926,72 +884,6 @@ func TestUpdateProduct(t *testing.T) {
 			expectErr: nil,
 		},
 		{
-			name: "success without media",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
-				mocks.db.Product.EXPECT().
-					Update(ctx, "product-id", gomock.Any()).
-					DoAndReturn(func(ctx context.Context, productID string, params *database.UpdateProductParams) error {
-						expect := &database.UpdateProductParams{
-							TypeID:               "product-type-id",
-							TagIDs:               []string{"product-tag-id"},
-							Name:                 "新鮮なじゃがいも",
-							Description:          "新鮮なじゃがいもをお届けします。",
-							Public:               true,
-							Inventory:            100,
-							Weight:               100,
-							WeightUnit:           entity.WeightUnitGram,
-							Item:                 1,
-							ItemUnit:             "袋",
-							ItemDescription:      "1袋あたり100gのじゃがいも",
-							Media:                entity.MultiProductMedia{},
-							Price:                400,
-							Cost:                 300,
-							ExpirationDate:       7,
-							StorageMethodType:    entity.StorageMethodTypeNormal,
-							DeliveryType:         entity.DeliveryTypeNormal,
-							Box60Rate:            50,
-							Box80Rate:            40,
-							Box100Rate:           30,
-							OriginPrefectureCode: 25,
-							OriginCity:           "彦根市",
-							StartAt:              now.AddDate(0, -1, 0),
-							EndAt:                now.AddDate(0, 1, 0),
-						}
-						assert.Equal(t, expect, params)
-						return nil
-					})
-			},
-			input: &store.UpdateProductInput{
-				ProductID:            "product-id",
-				TypeID:               "product-type-id",
-				TagIDs:               []string{"product-tag-id"},
-				Name:                 "新鮮なじゃがいも",
-				Description:          "新鮮なじゃがいもをお届けします。",
-				Public:               true,
-				Inventory:            100,
-				Weight:               100,
-				WeightUnit:           entity.WeightUnitGram,
-				Item:                 1,
-				ItemUnit:             "袋",
-				ItemDescription:      "1袋あたり100gのじゃがいも",
-				Media:                []*store.UpdateProductMedia{},
-				Price:                400,
-				Cost:                 300,
-				ExpirationDate:       7,
-				StorageMethodType:    entity.StorageMethodTypeNormal,
-				DeliveryType:         entity.DeliveryTypeNormal,
-				Box60Rate:            50,
-				Box80Rate:            40,
-				Box100Rate:           30,
-				OriginPrefectureCode: 25,
-				OriginCity:           "彦根市",
-				StartAt:              now.AddDate(0, -1, 0),
-				EndAt:                now.AddDate(0, 1, 0),
-			},
-			expectErr: nil,
-		},
-		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateProductInput{},
@@ -1033,10 +925,8 @@ func TestUpdateProduct(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "invalid media format",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
-			},
+			name:  "invalid media format",
+			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.UpdateProductInput{
 				ProductID:       "product-id",
 				TypeID:          "product-type-id",
@@ -1070,46 +960,8 @@ func TestUpdateProduct(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get product",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(nil, assert.AnError)
-			},
-			input: &store.UpdateProductInput{
-				ProductID:       "product-id",
-				TypeID:          "product-type-id",
-				TagIDs:          []string{"product-tag-id"},
-				Name:            "新鮮なじゃがいも",
-				Description:     "新鮮なじゃがいもをお届けします。",
-				Public:          true,
-				Inventory:       100,
-				Weight:          100,
-				WeightUnit:      entity.WeightUnitGram,
-				Item:            1,
-				ItemUnit:        "袋",
-				ItemDescription: "1袋あたり100gのじゃがいも",
-				Media: []*store.UpdateProductMedia{
-					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
-				},
-				Price:                400,
-				Cost:                 300,
-				ExpirationDate:       7,
-				StorageMethodType:    entity.StorageMethodTypeNormal,
-				DeliveryType:         entity.DeliveryTypeNormal,
-				Box60Rate:            50,
-				Box80Rate:            40,
-				Box100Rate:           30,
-				OriginPrefectureCode: 25,
-				OriginCity:           "彦根市",
-				StartAt:              now.AddDate(0, -1, 0),
-				EndAt:                now.AddDate(0, 1, 0),
-			},
-			expectErr: exception.ErrInternal,
-		},
-		{
 			name: "failed to update product",
 			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().Get(ctx, "product-id").Return(product, nil)
 				mocks.db.Product.EXPECT().Update(ctx, "product-id", gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.UpdateProductInput{
@@ -1150,86 +1002,6 @@ func TestUpdateProduct(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateProduct(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expectErr)
-		}))
-	}
-}
-
-func TestUpdateProductMedia(t *testing.T) {
-	t.Parallel()
-
-	images := common.Images{
-		{
-			Size: common.ImageSizeSmall,
-			URL:  "http://example.com/media/image_240.png",
-		},
-	}
-
-	tests := []struct {
-		name      string
-		setup     func(ctx context.Context, mocks *mocks)
-		input     *store.UpdateProductMediaInput
-		expectErr error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().
-					UpdateMedia(ctx, "product-id", gomock.Any()).
-					DoAndReturn(func(ctx context.Context, productID string, set func(media entity.MultiProductMedia) bool) error {
-						media := entity.MultiProductMedia{
-							{URL: "http://example.com/media/image01.png", IsThumbnail: true},
-							{URL: "http://example.com/media/image02.png", IsThumbnail: true},
-						}
-						expect := entity.MultiProductMedia{
-							{URL: "http://example.com/media/image01.png", IsThumbnail: true, Images: images},
-							{URL: "http://example.com/media/image02.png", IsThumbnail: true},
-						}
-						exists := set(media)
-						assert.Equal(t, expect, media)
-						assert.True(t, exists)
-						return nil
-					})
-			},
-			input: &store.UpdateProductMediaInput{
-				ProductID: "product-id",
-				Images: []*store.UpdateProductMediaImage{
-					{
-						OriginURL: "http://example.com/media/image01.png",
-						Images:    images,
-					},
-				},
-			},
-			expectErr: nil,
-		},
-		{
-			name:      "invalid argument",
-			setup:     func(ctx context.Context, mocks *mocks) {},
-			input:     &store.UpdateProductMediaInput{},
-			expectErr: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to update media",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Product.EXPECT().UpdateMedia(ctx, "product-id", gomock.Any()).Return(assert.AnError)
-			},
-			input: &store.UpdateProductMediaInput{
-				ProductID: "product-id",
-				Images: []*store.UpdateProductMediaImage{
-					{
-						OriginURL: "http://example.com/media/image.png",
-						Images:    images,
-					},
-				},
-			},
-			expectErr: exception.ErrInternal,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.UpdateProductMedia(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 		}))
 	}

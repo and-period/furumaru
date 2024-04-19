@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
@@ -38,12 +37,7 @@ func TestAuthUser(t *testing.T) {
 					Email:         "test@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Thumbnails: common.Images{
-						{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-					},
-					VerifiedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					VerifiedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
 			notification: &entity.UserNotification{
@@ -86,12 +80,7 @@ func TestAuthUser(t *testing.T) {
 					Email:         "test@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Thumbnails: common.Images{
-						{URL: "https://and-period.jp/thumbnail_240.png", Size: common.ImageSizeSmall},
-						{URL: "https://and-period.jp/thumbnail_675.png", Size: common.ImageSizeMedium},
-						{URL: "https://and-period.jp/thumbnail_900.png", Size: common.ImageSizeLarge},
-					},
-					VerifiedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					VerifiedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 			},
 			notification: nil,

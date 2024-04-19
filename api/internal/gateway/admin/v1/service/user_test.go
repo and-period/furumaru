@@ -3,7 +3,6 @@ package service
 import (
 	"testing"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user/entity"
@@ -89,13 +88,9 @@ func TestUser(t *testing.T) {
 					Email:         "test-user@and-period.jp",
 					PhoneNumber:   "+819012345678",
 					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Thumbnails: []*common.Image{{
-						URL:  "https://and-period.jp/thumbnail.png",
-						Size: common.ImageSizeMedium,
-					}},
-					CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-					VerifiedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+					VerifiedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				},
 				CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 				UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
@@ -405,13 +400,9 @@ func TestUsers(t *testing.T) {
 						Email:         "test-user@and-period.jp",
 						PhoneNumber:   "+819012345678",
 						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Thumbnails: []*common.Image{{
-							URL:  "https://and-period.jp/thumbnail.png",
-							Size: common.ImageSizeMedium,
-						}},
-						CreatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-						UpdatedAt:  jst.Date(2022, 1, 1, 0, 0, 0, 0),
-						VerifiedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						CreatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						UpdatedAt:     jst.Date(2022, 1, 1, 0, 0, 0, 0),
+						VerifiedAt:    jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					},
 					CreatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),
 					UpdatedAt: jst.Date(2022, 1, 1, 0, 0, 0, 0),

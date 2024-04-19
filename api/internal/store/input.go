@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
@@ -72,11 +71,6 @@ type UpdateProductTypeInput struct {
 	ProductTypeID string `validate:"required"`
 	Name          string `validate:"required,max=32"`
 	IconURL       string `validate:"required"`
-}
-
-type UpdateProductTypeIconsInput struct {
-	ProductTypeID string        `validate:"required"`
-	Icons         common.Images `validate:""`
 }
 
 type DeleteProductTypeInput struct {
@@ -265,16 +259,6 @@ type UpdateProductMedia struct {
 	IsThumbnail bool   `validate:""`
 }
 
-type UpdateProductMediaInput struct {
-	ProductID string                     `validate:"required"`
-	Images    []*UpdateProductMediaImage `validate:"unique=OriginURL,dive,required"`
-}
-
-type UpdateProductMediaImage struct {
-	OriginURL string        `validate:"required"`
-	Images    common.Images `validate:""`
-}
-
 type DeleteProductInput struct {
 	ProductID string `validate:"required"`
 }
@@ -376,11 +360,6 @@ type UpdateScheduleInput struct {
 	OpeningVideoURL string    `validate:"url"`
 	StartAt         time.Time `validate:"required"`
 	EndAt           time.Time `validate:"required,gtfield=StartAt"`
-}
-
-type UpdateScheduleThumbnailsInput struct {
-	ScheduleID string        `validate:"required"`
-	Thumbnails common.Images `validate:""`
 }
 
 type ApproveScheduleInput struct {

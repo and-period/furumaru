@@ -2,18 +2,15 @@ package mysql
 
 import (
 	"context"
-	"encoding/json"
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gorm.io/datatypes"
 )
 
 func TestProductType(t *testing.T) {
@@ -494,126 +491,6 @@ func TestProductType_Update(t *testing.T) {
 	}
 }
 
-func TestProductType_UpdateIcons(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	db := dbClient
-	now := func() time.Time {
-		return current
-	}
-
-	err := deleteAll(ctx)
-	require.NoError(t, err)
-
-	type args struct {
-		productTypeID string
-		icons         common.Images
-	}
-	type want struct {
-		hasErr bool
-	}
-	tests := []struct {
-		name  string
-		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
-		args  args
-		want  want
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				category := testCategory("category-id", "野菜", now())
-				err := db.DB.Create(&category).Error
-				require.NoError(t, err)
-				productType := testProductType("product-id", "category-id", "じゃがいも", now())
-				err = db.DB.Create(&productType).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				productTypeID: "product-id",
-				icons: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/icon_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/icon_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/icon_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: false,
-			},
-		},
-		{
-			name:  "failed to not found",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
-			args: args{
-				productTypeID: "product-id",
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-		{
-			name: "failed to empty icon url",
-			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				category := testCategory("category-id", "野菜", now())
-				err := db.DB.Create(&category).Error
-				require.NoError(t, err)
-				productType := testProductType("product-id", "category-id", "じゃがいも", now())
-				productType.IconURL = ""
-				err = db.DB.Create(&productType).Error
-				require.NoError(t, err)
-			},
-			args: args{
-				productTypeID: "product-id",
-				icons: common.Images{
-					{
-						Size: common.ImageSizeSmall,
-						URL:  "https://and-period.jp/icon_240.png",
-					},
-					{
-						Size: common.ImageSizeMedium,
-						URL:  "https://and-period.jp/icon_675.png",
-					},
-					{
-						Size: common.ImageSizeLarge,
-						URL:  "https://and-period.jp/icon_900.png",
-					},
-				},
-			},
-			want: want{
-				hasErr: true,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, cancel := context.WithCancel(context.Background())
-			defer cancel()
-
-			err := delete(ctx, productTypeTable, categoryTable)
-			require.NoError(t, err)
-
-			tt.setup(ctx, t, db)
-
-			db := &productType{db: db, now: now}
-			err = db.UpdateIcons(ctx, tt.args.productTypeID, tt.args.icons)
-			assert.Equal(t, tt.want.hasErr, err != nil, err)
-		})
-	}
-}
-
 func TestProductType_Delete(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -682,16 +559,9 @@ func testProductType(id, categoryID, name string, now time.Time) *entity.Product
 		ID:         id,
 		Name:       name,
 		IconURL:    "https://and-period.jp/icon.png",
-		Icons:      common.Images{},
 		CategoryID: categoryID,
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}
-	fillProductTypeJSON(t)
 	return t
-}
-
-func fillProductTypeJSON(t *entity.ProductType) {
-	icons, _ := json.Marshal(t.Icons)
-	t.IconsJSON = datatypes.JSON(icons)
 }

@@ -1,16 +1,8 @@
 package service
 
 import (
-	"bytes"
 	"context"
-	"fmt"
-	"io"
-	"mime/multipart"
-	"net/textproto"
 	"net/url"
-	"os"
-	"path/filepath"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -35,7 +27,6 @@ import (
 var (
 	tmpURL     = "http://tmp.and-period.jp"
 	storageURL = "http://and-period.jp"
-	unknownURL = "http://example.com"
 )
 
 type mocks struct {
@@ -142,63 +133,6 @@ func testService(
 		testFunc(ctx, t, srv)
 		srv.waitGroup.Wait()
 	}
-}
-
-func testImageFile(t *testing.T) (io.Reader, *multipart.FileHeader) {
-	const filename, format = "and-period.png", "image"
-
-	buf := &bytes.Buffer{}
-	writer := multipart.NewWriter(buf)
-	defer writer.Close()
-
-	filepath := testFilePath(t, filename)
-	file, err := os.Open(filepath)
-	require.NoError(t, err, err)
-
-	header := textproto.MIMEHeader{}
-	header.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, format, filename))
-	header.Set("Content-Type", "multipart/form-data")
-	part := &multipart.FileHeader{
-		Filename: filepath,
-		Header:   header,
-		Size:     3 << 20, // 3MB
-	}
-
-	return file, part
-}
-
-func testVideoFile(t *testing.T) (io.Reader, *multipart.FileHeader) {
-	const filename, format = "and-period.mp4", "video"
-
-	buf := &bytes.Buffer{}
-	writer := multipart.NewWriter(buf)
-	defer writer.Close()
-
-	filepath := testFilePath(t, filename)
-	file, err := os.Open(filepath)
-	require.NoError(t, err, err)
-
-	header := textproto.MIMEHeader{}
-	header.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, format, filename))
-	header.Set("Content-Type", "multipart/form-data")
-	part := &multipart.FileHeader{
-		Filename: filepath,
-		Header:   header,
-		Size:     10 << 20, // 10MB
-	}
-
-	return file, part
-}
-
-func testFilePath(t *testing.T, filename string) string {
-	dir, err := os.Getwd()
-	assert.NoError(t, err)
-
-	strs := strings.Split(dir, "api/internal")
-	if len(strs) == 0 {
-		t.Fatal("test: invalid file path")
-	}
-	return filepath.Join(strs[0], "/api/tmp", filename)
 }
 
 func TestService(t *testing.T) {

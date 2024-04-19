@@ -228,11 +228,3 @@ func (s *service) UpdateMemberThumbnailURL(ctx context.Context, in *user.UpdateM
 	err := s.db.Member.UpdateThumbnailURL(ctx, in.UserID, in.ThumbnailURL)
 	return internalError(err)
 }
-
-func (s *service) UpdateMemberThumbnails(ctx context.Context, in *user.UpdateMemberThumbnailsInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	err := s.db.Member.UpdateThumbnails(ctx, in.UserID, in.Thumbnails)
-	return internalError(err)
-}

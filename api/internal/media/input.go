@@ -19,11 +19,6 @@ type GetUploadEventInput struct {
 	Key string `validate:"required"`
 }
 
-type ResizeFileInput struct {
-	TargetID string   `validate:"required"`
-	URLs     []string `validate:"min=1,dive,required,url"`
-}
-
 type ListBroadcastsInput struct {
 	ScheduleIDs   []string               `validate:"dive,required"`
 	CoordinatorID string                 `validate:""`

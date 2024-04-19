@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
@@ -33,7 +32,6 @@ func TestNotifyStartLive(t *testing.T) {
 		Title:           "マルシェタイトル",
 		Description:     "マルシェ詳細",
 		ThumbnailURL:    "",
-		Thumbnails:      common.Images{},
 		ImageURL:        "",
 		OpeningVideoURL: "",
 		Public:          true,

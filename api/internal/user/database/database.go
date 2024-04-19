@@ -6,7 +6,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/and-period/furumaru/api/internal/common"
 	"github.com/and-period/furumaru/api/internal/user/entity"
 )
 
@@ -111,8 +110,6 @@ type Coordinator interface {
 	GetWithDeleted(ctx context.Context, coordinatorID string, fields ...string) (*entity.Coordinator, error)
 	Create(ctx context.Context, coordinator *entity.Coordinator, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, coordinatorID string, params *UpdateCoordinatorParams) error
-	UpdateThumbnails(ctx context.Context, coordinatorID string, thumbnails common.Images) error
-	UpdateHeaders(ctx context.Context, coordinatorID string, headers common.Images) error
 	Delete(ctx context.Context, coordinatorID string, auth func(ctx context.Context) error) error
 	RemoveProductTypeID(ctx context.Context, productTypeID string) error
 }
@@ -171,7 +168,6 @@ type Member interface {
 	UpdateUsername(ctx context.Context, userID, username string) error
 	UpdateAccountID(ctx context.Context, userID, accountID string) error
 	UpdateThumbnailURL(ctx context.Context, userID, thumbnailURL string) error
-	UpdateThumbnails(ctx context.Context, userID string, thumbnails common.Images) error
 	Delete(ctx context.Context, userID string, auth func(ctx context.Context) error) error
 }
 
@@ -184,8 +180,6 @@ type Producer interface {
 	GetWithDeleted(ctx context.Context, producerID string, fields ...string) (*entity.Producer, error)
 	Create(ctx context.Context, producer *entity.Producer, auth func(ctx context.Context) error) error
 	Update(ctx context.Context, producerID string, params *UpdateProducerParams) error
-	UpdateThumbnails(ctx context.Context, producerID string, thumbnails common.Images) error
-	UpdateHeaders(ctx context.Context, producerID string, headers common.Images) error
 	Delete(ctx context.Context, producerID string, auth func(ctx context.Context) error) error
 	AggregateByCoordinatorID(ctx context.Context, coordinatorIDs []string) (map[string]int64, error)
 }

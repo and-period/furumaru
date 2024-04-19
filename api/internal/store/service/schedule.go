@@ -159,14 +159,6 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 	return nil
 }
 
-func (s *service) UpdateScheduleThumbnails(ctx context.Context, in *store.UpdateScheduleThumbnailsInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	err := s.db.Schedule.UpdateThumbnails(ctx, in.ScheduleID, in.Thumbnails)
-	return internalError(err)
-}
-
 func (s *service) ApproveSchedule(ctx context.Context, in *store.ApproveScheduleInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
