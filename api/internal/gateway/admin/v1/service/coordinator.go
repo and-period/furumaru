@@ -25,9 +25,7 @@ func NewCoordinator(coordinator *entity.Coordinator) *Coordinator {
 			Profile:           coordinator.Profile,
 			ProductTypeIDs:    coordinator.ProductTypeIDs,
 			ThumbnailURL:      coordinator.ThumbnailURL,
-			Thumbnails:        NewImages(coordinator.Thumbnails).Response(),
 			HeaderURL:         coordinator.HeaderURL,
-			Headers:           NewImages(coordinator.Headers).Response(),
 			PromotionVideoURL: coordinator.PromotionVideoURL,
 			BonusVideoURL:     coordinator.BonusVideoURL,
 			InstagramID:       coordinator.InstagramID,
@@ -55,7 +53,6 @@ func (c *Coordinator) AuthUser() *AuthUser {
 			Username:     c.Username,
 			Email:        c.Email,
 			ThumbnailURL: c.ThumbnailURL,
-			Thumbnails:   c.Thumbnails,
 		},
 	}
 }

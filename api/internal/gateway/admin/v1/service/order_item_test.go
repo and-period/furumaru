@@ -47,12 +47,10 @@ func TestOrderItem(t *testing.T) {
 						{
 							URL:         "https://and-period.jp/thumbnail01.png",
 							IsThumbnail: true,
-							Images:      []*response.Image{},
 						},
 						{
 							URL:         "https://and-period.jp/thumbnail02.png",
 							IsThumbnail: false,
-							Images:      []*response.Image{},
 						},
 					},
 					Price:                400,
@@ -170,12 +168,10 @@ func TestOrderItems(t *testing.T) {
 							{
 								URL:         "https://and-period.jp/thumbnail01.png",
 								IsThumbnail: true,
-								Images:      []*response.Image{},
 							},
 							{
 								URL:         "https://and-period.jp/thumbnail02.png",
 								IsThumbnail: false,
-								Images:      []*response.Image{},
 							},
 						},
 						Price:                400,

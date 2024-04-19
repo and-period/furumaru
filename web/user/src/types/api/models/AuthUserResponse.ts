@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Thumbnail } from './Thumbnail';
-import {
-    ThumbnailFromJSON,
-    ThumbnailFromJSONTyped,
-    ThumbnailToJSON,
-} from './Thumbnail';
-
 /**
  * 
  * @export
@@ -86,12 +79,6 @@ export interface AuthUserResponse {
      * @memberof AuthUserResponse
      */
     thumbnailUrl: string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<Thumbnail>}
-     * @memberof AuthUserResponse
-     */
-    thumbnails: Array<Thumbnail>;
 }
 
 /**
@@ -109,7 +96,6 @@ export function instanceOfAuthUserResponse(value: object): boolean {
     isInstance = isInstance && "email" in value;
     isInstance = isInstance && "notificationEnabled" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "thumbnails" in value;
 
     return isInstance;
 }
@@ -134,7 +120,6 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'email': json['email'],
         'notificationEnabled': json['notificationEnabled'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
     };
 }
 
@@ -157,7 +142,6 @@ export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
         'email': value.email,
         'notificationEnabled': value.notificationEnabled,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
     };
 }
 

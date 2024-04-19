@@ -13,13 +13,6 @@ productTypeResponse:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
       iconUrl: 'https://and-period.jp/icon.png'
-      icons:
-      - url: 'https://and-period.jp/icon_240.png'
-        size: 1
-      - url: 'https://and-period.jp/icon_675.png'
-        size: 2
-      - url: 'https://and-period.jp/icon_900.png'
-        size: 3
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
       createdAt: 1640962800
       updatedAt: 1640962800
@@ -54,20 +47,12 @@ productTypesResponse:
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'じゃがいも'
       iconUrl: 'https://and-period.jp/icon.png'
-      icons:
-      - url: 'https://and-period.jp/icon_240.png'
-        size: 1
-      - url: 'https://and-period.jp/icon_675.png'
-        size: 2
-      - url: 'https://and-period.jp/icon_900.png'
-        size: 3
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
       createdAt: 1640962800
       updatedAt: 1640962800
     - id: 'kSByoE6FetnPs5Byk3a9Zx'
       name: 'りんご'
       iconUrl: 'https://and-period.jp/icon.png'
-      icons: []
       categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
       createdAt: 1640962800
       updatedAt: 1640962800

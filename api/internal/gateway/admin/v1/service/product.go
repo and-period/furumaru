@@ -291,7 +291,6 @@ func NewProductMedia(media *entity.ProductMedia) *ProductMedia {
 		ProductMedia: response.ProductMedia{
 			URL:         media.URL,
 			IsThumbnail: media.IsThumbnail,
-			Images:      NewImages(media.Images).Response(),
 		},
 	}
 }

@@ -11,21 +11,6 @@ productType:
     iconUrl:
       type: string
       description: アイコンURL
-    icons:
-      type: array
-      description: リサイズ済みアイコンURL一覧
-      deprecated: true
-      items:
-        type: object
-        properties:
-          url:
-            type: string
-            description: リサイズ済みアイコンURL
-          size:
-            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-        required:
-        - url
-        - size
     categoryId:
       type: string
       description: 商品種別ID
@@ -41,7 +26,6 @@ productType:
   - id
   - name
   - iconUrl
-  - icons
   - categoryId
   - createdAt
   - updatedAt
@@ -49,13 +33,6 @@ productType:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     name: 'じゃがいも'
     iconUrl: 'https://and-period.jp/icon.png'
-    icons:
-    - url: 'https://and-period.jp/icon_240.png'
-      size: 1
-    - url: 'https://and-period.jp/icon_675.png'
-      size: 2
-    - url: 'https://and-period.jp/icon_900.png'
-      size: 3
     categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
     createdAt: 1640962800
     updatedAt: 1640962800

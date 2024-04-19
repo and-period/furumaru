@@ -16,12 +16,6 @@ topLive:
     thumbnailUrl:
       type: string
       description: サムネイルURL
-    thumbnails:
-      type: array
-      description: リサイズ済みサムネイルURL一覧
-      deprecated: true
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
     startAt:
       type: integer
       format: int64
@@ -53,26 +47,18 @@ topLive:
           thumbnailUrl:
             type: string
             description: サムネイルURL
-          thumbnails:
-            type: array
-            description: リサイズ済みサムネイルURL一覧
-            deprecated: true
-            items:
-              $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
         required:
         - id
         - name
         - price
         - inventory
         - thumbnailUrl
-        - thumbnails
   required:
   - scheduleId
   - coordinatorId
   - status
   - title
   - thumbnailUrl
-  - thumbnails
   - startAt
   - endAt
   - products
@@ -82,13 +68,6 @@ topLive:
     status: 2
     title: '&.マルシェ'
     thumbnailUrl: 'https://example.com/thumbnail.png'
-    thumbnails:
-    - url: 'https://example.com/thumbnail_240.png'
-      size: 1
-    - url: 'https://example.com/thumbnail_675.png'
-      size: 2
-    - url: 'https://example.com/thumbnail_900.png'
-      size: 3
     startAt: 1640962800
     endAt: 1640962800
     products:
@@ -97,13 +76,6 @@ topLive:
       price: 1980
       inventory: 30
       thumbnailUrl: 'https://example.com/thumbnail.png'
-      thumbnails:
-      - url: 'https://example.com/thumbnail_240.png'
-        size: 1
-      - url: 'https://example.com/thumbnail_675.png'
-        size: 2
-      - url: 'https://example.com/thumbnail_900.png'
-        size: 3
 topArchive:
   type: object
   description: 過去のマルシェ情報
@@ -120,27 +92,13 @@ topArchive:
     thumbnailUrl:
       type: string
       description: サムネイルURL
-    thumbnails:
-      type: array
-      description: リサイズ済みサムネイルURL一覧
-      deprecated: true
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
   required:
   - scheduleId
   - coordinatorId
   - title
   - thumbnailUrl
-  - thumbnails
   example:
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     title: '&.マルシェ'
     thumbnailUrl: 'https://example.com/thumbnail.png'
-    thumbnails:
-    - url: 'https://example.com/thumbnail_240.png'
-      size: 1
-    - url: 'https://example.com/thumbnail_675.png'
-      size: 2
-    - url: 'https://example.com/thumbnail_900.png'
-      size: 3

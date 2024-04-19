@@ -53,7 +53,6 @@ func NewSchedule(schedule *sentity.Schedule, broadcast *mentity.Broadcast) *Sche
 			Title:           schedule.Title,
 			Description:     schedule.Description,
 			ThumbnailURL:    schedule.ThumbnailURL,
-			Thumbnails:      NewImages(schedule.Thumbnails).Response(),
 			DistributionURL: distributionURL,
 			StartAt:         schedule.StartAt.Unix(),
 			EndAt:           schedule.EndAt.Unix(),

@@ -57,12 +57,6 @@ liveSummary:
     thumbnailUrl:
       type: string
       description: サムネイルURL
-    thumbnails:
-      type: array
-      description: リサイズ済みサムネイルURL一覧
-      deprecated: true
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
     startAt:
       type: integer
       format: int64
@@ -82,7 +76,6 @@ liveSummary:
   - status
   - title
   - thumbnailUrl
-  - thumbnails
   - startAt
   - endAt
   - products
@@ -92,13 +85,6 @@ liveSummary:
     status: 2
     title: '&.マルシェ'
     thumbnailUrl: 'https://example.com/thumbnail.png'
-    thumbnails:
-    - url: 'https://example.com/thumbnail_240.png'
-      size: 1
-    - url: 'https://example.com/thumbnail_675.png'
-      size: 2
-    - url: 'https://example.com/thumbnail_900.png'
-      size: 3
     startAt: 1640962800
     endAt: 1640962800
     products:
@@ -107,13 +93,6 @@ liveSummary:
       price: 1980
       inventory: 30
       thumbnailUrl: 'https://example.com/thumbnail.png'
-      thumbnails:
-      - url: 'https://example.com/thumbnail_240.png'
-        size: 1
-      - url: 'https://example.com/thumbnail_675.png'
-        size: 2
-      - url: 'https://example.com/thumbnail_900.png'
-        size: 3
 liveProduct:
   type: object
   description: マルシェに関連づく商品情報
@@ -135,32 +114,18 @@ liveProduct:
     thumbnailUrl:
       type: string
       description: サムネイルURL
-    thumbnails:
-      type: array
-      description: リサイズ済みサムネイルURL一覧
-      deprecated: true
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
   required:
   - id
   - name
   - price
   - inventory
   - thumbnailUrl
-  - thumbnails
   example:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     name: '芽が出たじゃがいも'
     price: 1980
     inventory: 30
     thumbnailUrl: 'https://example.com/thumbnail.png'
-    thumbnails:
-    - url: 'https://example.com/thumbnail_240.png'
-      size: 1
-    - url: 'https://example.com/thumbnail_675.png'
-      size: 2
-    - url: 'https://example.com/thumbnail_900.png'
-      size: 3
 archiveSummary:
   type: object
   description: 過去のマルシェ情報
@@ -185,12 +150,6 @@ archiveSummary:
     thumbnailUrl:
       type: string
       description: サムネイルURL
-    thumbnails:
-      type: array
-      description: リサイズ済みサムネイルURL一覧
-      deprecated: true
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
   required:
   - scheduleId
   - coordinatorId
@@ -198,7 +157,6 @@ archiveSummary:
   - startAt
   - endAt
   - thumbnailUrl
-  - thumbnails
   example:
     scheduleId: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -206,10 +164,3 @@ archiveSummary:
     startAt: 1640962800
     endAt: 1640962800
     thumbnailUrl: 'https://example.com/thumbnail.png'
-    thumbnails:
-    - url: 'https://example.com/thumbnail_240.png'
-      size: 1
-    - url: 'https://example.com/thumbnail_675.png'
-      size: 2
-    - url: 'https://example.com/thumbnail_900.png'
-      size: 3

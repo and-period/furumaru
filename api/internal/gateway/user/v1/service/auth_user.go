@@ -16,7 +16,6 @@ func NewAuthUser(user *entity.User, notification *entity.UserNotification) *Auth
 			Username:      user.Member.Username,
 			AccountID:     user.Member.AccountID,
 			ThumbnailURL:  user.Member.ThumbnailURL,
-			Thumbnails:    NewImages(user.Member.Thumbnails).Response(),
 			Lastname:      user.Member.Lastname,
 			Firstname:     user.Member.Firstname,
 			LastnameKana:  user.Member.LastnameKana,

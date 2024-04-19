@@ -91,17 +91,12 @@ func TestSchedule(t *testing.T) {
 			},
 			expect: &Schedule{
 				Schedule: response.Schedule{
-					ID:            "schedule-id",
-					CoordinatorID: "coordinator-id",
-					Status:        ScheduleStatusLive.Response(),
-					Title:         "スケジュールタイトル",
-					Description:   "スケジュールの詳細です。",
-					ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-					Thumbnails: []*response.Image{
-						{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-						{URL: "https://and-period.jp/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-						{URL: "https://and-period.jp/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-					},
+					ID:              "schedule-id",
+					CoordinatorID:   "coordinator-id",
+					Status:          ScheduleStatusLive.Response(),
+					Title:           "スケジュールタイトル",
+					Description:     "スケジュールの詳細です。",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 					ImageURL:        "https://and-period.jp/image.png",
 					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 					Public:          true,
@@ -214,17 +209,12 @@ func TestSchedules(t *testing.T) {
 			expect: Schedules{
 				{
 					Schedule: response.Schedule{
-						ID:            "schedule-id",
-						CoordinatorID: "coordinator-id",
-						Status:        ScheduleStatusLive.Response(),
-						Title:         "スケジュールタイトル",
-						Description:   "スケジュールの詳細です。",
-						ThumbnailURL:  "https://and-period.jp/thumbnail.png",
-						Thumbnails: []*response.Image{
-							{URL: "https://and-period.jp/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-							{URL: "https://and-period.jp/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-							{URL: "https://and-period.jp/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-						},
+						ID:              "schedule-id",
+						CoordinatorID:   "coordinator-id",
+						Status:          ScheduleStatusLive.Response(),
+						Title:           "スケジュールタイトル",
+						Description:     "スケジュールの詳細です。",
+						ThumbnailURL:    "https://and-period.jp/thumbnail.png",
 						ImageURL:        "https://and-period.jp/image.png",
 						OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
 						Public:          true,

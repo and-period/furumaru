@@ -281,8 +281,6 @@ components:
       $ref: './components/schemas/codes/contact.yaml#/contactUserType'
     contactStatus:
       $ref: './components/schemas/codes/contact.yaml#/contactStatus'
-    imageSize:
-      $ref: './components/schemas/codes/image.yaml#/imageSize'
     messageType:
       $ref: './components/schemas/codes/message.yaml#/messageType'
     notificationStatus:

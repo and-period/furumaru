@@ -105,13 +105,8 @@ func TestLiveSummary(t *testing.T) {
 					Status:        int32(ScheduleStatusLive),
 					Title:         "スケジュールタイトル",
 					ThumbnailURL:  "https://example.com/thumbnail.png",
-					Thumbnails: []*response.Image{
-						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-					},
-					StartAt: 1638284400,
-					EndAt:   1643641200,
+					StartAt:       1638284400,
+					EndAt:         1643641200,
 					Products: []*response.LiveProduct{
 						{
 							ProductID:    "product-id",
@@ -119,11 +114,6 @@ func TestLiveSummary(t *testing.T) {
 							Price:        400,
 							Inventory:    100,
 							ThumbnailURL: "https://example.com/thumbnail01.png",
-							Thumbnails: []*response.Image{
-								{URL: "https://example.com/thumbnail01_240.png", Size: int32(ImageSizeSmall)},
-								{URL: "https://example.com/thumbnail01_675.png", Size: int32(ImageSizeMedium)},
-								{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
-							},
 						},
 					},
 				},
@@ -156,13 +146,8 @@ func TestLiveSummary_Response(t *testing.T) {
 					Status:        int32(ScheduleStatusLive),
 					Title:         "スケジュールタイトル",
 					ThumbnailURL:  "https://example.com/thumbnail.png",
-					Thumbnails: []*response.Image{
-						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-					},
-					StartAt: 1638284400,
-					EndAt:   1643641200,
+					StartAt:       1638284400,
+					EndAt:         1643641200,
 					Products: []*response.LiveProduct{
 						{
 							ProductID:    "product-id",
@@ -170,11 +155,6 @@ func TestLiveSummary_Response(t *testing.T) {
 							Price:        400,
 							Inventory:    100,
 							ThumbnailURL: "https://example.com/thumbnail01.png",
-							Thumbnails: []*response.Image{
-								{URL: "https://example.com/thumbnail01_240.png", Size: int32(ImageSizeSmall)},
-								{URL: "https://example.com/thumbnail01_675.png", Size: int32(ImageSizeMedium)},
-								{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
-							},
 						},
 					},
 				},
@@ -185,13 +165,8 @@ func TestLiveSummary_Response(t *testing.T) {
 				Status:        int32(ScheduleStatusLive),
 				Title:         "スケジュールタイトル",
 				ThumbnailURL:  "https://example.com/thumbnail.png",
-				Thumbnails: []*response.Image{
-					{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-					{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-					{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-				},
-				StartAt: 1638284400,
-				EndAt:   1643641200,
+				StartAt:       1638284400,
+				EndAt:         1643641200,
 				Products: []*response.LiveProduct{
 					{
 						ProductID:    "product-id",
@@ -199,11 +174,6 @@ func TestLiveSummary_Response(t *testing.T) {
 						Price:        400,
 						Inventory:    100,
 						ThumbnailURL: "https://example.com/thumbnail01.png",
-						Thumbnails: []*response.Image{
-							{URL: "https://example.com/thumbnail01_240.png", Size: int32(ImageSizeSmall)},
-							{URL: "https://example.com/thumbnail01_675.png", Size: int32(ImageSizeMedium)},
-							{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
-						},
 					},
 				},
 			},
@@ -330,13 +300,8 @@ func TestLiveSummaries(t *testing.T) {
 						Status:        int32(ScheduleStatusLive),
 						Title:         "スケジュールタイトル",
 						ThumbnailURL:  "https://example.com/thumbnail.png",
-						Thumbnails: []*response.Image{
-							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-						},
-						StartAt: 1638284400,
-						EndAt:   1643641200,
+						StartAt:       1638284400,
+						EndAt:         1643641200,
 						Products: []*response.LiveProduct{
 							{
 								ProductID:    "product-id",
@@ -344,11 +309,6 @@ func TestLiveSummaries(t *testing.T) {
 								Price:        400,
 								Inventory:    100,
 								ThumbnailURL: "https://example.com/thumbnail01.png",
-								Thumbnails: []*response.Image{
-									{URL: "https://example.com/thumbnail01_240.png", Size: int32(ImageSizeSmall)},
-									{URL: "https://example.com/thumbnail01_675.png", Size: int32(ImageSizeMedium)},
-									{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
-								},
 							},
 						},
 					},
@@ -383,13 +343,8 @@ func TestLiveSummaries_CoordinatorIDs(t *testing.T) {
 						Status:        int32(ScheduleStatusLive),
 						Title:         "スケジュールタイトル",
 						ThumbnailURL:  "https://example.com/thumbnail.png",
-						Thumbnails: []*response.Image{
-							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-						},
-						StartAt: 1638284400,
-						EndAt:   1643641200,
+						StartAt:       1638284400,
+						EndAt:         1643641200,
 						Products: []*response.LiveProduct{
 							{
 								ProductID:    "product-id",
@@ -397,11 +352,6 @@ func TestLiveSummaries_CoordinatorIDs(t *testing.T) {
 								Price:        400,
 								Inventory:    100,
 								ThumbnailURL: "https://example.com/thumbnail01.png",
-								Thumbnails: []*response.Image{
-									{URL: "https://example.com/thumbnail01_240.png", Size: int32(ImageSizeSmall)},
-									{URL: "https://example.com/thumbnail01_675.png", Size: int32(ImageSizeMedium)},
-									{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
-								},
 							},
 						},
 					},
@@ -436,13 +386,8 @@ func TestLiveSummaries_Response(t *testing.T) {
 						Status:        int32(ScheduleStatusLive),
 						Title:         "スケジュールタイトル",
 						ThumbnailURL:  "https://example.com/thumbnail.png",
-						Thumbnails: []*response.Image{
-							{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-							{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-							{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-						},
-						StartAt: 1638284400,
-						EndAt:   1643641200,
+						StartAt:       1638284400,
+						EndAt:         1643641200,
 						Products: []*response.LiveProduct{
 							{
 								ProductID:    "product-id",
@@ -450,11 +395,6 @@ func TestLiveSummaries_Response(t *testing.T) {
 								Price:        400,
 								Inventory:    100,
 								ThumbnailURL: "https://example.com/thumbnail01.png",
-								Thumbnails: []*response.Image{
-									{URL: "https://example.com/thumbnail01_240.png", Size: int32(ImageSizeSmall)},
-									{URL: "https://example.com/thumbnail01_675.png", Size: int32(ImageSizeMedium)},
-									{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
-								},
 							},
 						},
 					},
@@ -467,13 +407,8 @@ func TestLiveSummaries_Response(t *testing.T) {
 					Status:        int32(ScheduleStatusLive),
 					Title:         "スケジュールタイトル",
 					ThumbnailURL:  "https://example.com/thumbnail.png",
-					Thumbnails: []*response.Image{
-						{URL: "https://example.com/thumbnail_240.png", Size: int32(ImageSizeSmall)},
-						{URL: "https://example.com/thumbnail_675.png", Size: int32(ImageSizeMedium)},
-						{URL: "https://example.com/thumbnail_900.png", Size: int32(ImageSizeLarge)},
-					},
-					StartAt: 1638284400,
-					EndAt:   1643641200,
+					StartAt:       1638284400,
+					EndAt:         1643641200,
 					Products: []*response.LiveProduct{
 						{
 							ProductID:    "product-id",
@@ -481,11 +416,6 @@ func TestLiveSummaries_Response(t *testing.T) {
 							Price:        400,
 							Inventory:    100,
 							ThumbnailURL: "https://example.com/thumbnail01.png",
-							Thumbnails: []*response.Image{
-								{URL: "https://example.com/thumbnail01_240.png", Size: int32(ImageSizeSmall)},
-								{URL: "https://example.com/thumbnail01_675.png", Size: int32(ImageSizeMedium)},
-								{URL: "https://example.com/thumbnail01_900.png", Size: int32(ImageSizeLarge)},
-							},
 						},
 					},
 				},

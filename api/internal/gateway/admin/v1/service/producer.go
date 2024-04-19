@@ -26,9 +26,7 @@ func NewProducer(producer *entity.Producer) *Producer {
 			Username:          producer.Username,
 			Profile:           producer.Profile,
 			ThumbnailURL:      producer.ThumbnailURL,
-			Thumbnails:        NewImages(producer.Thumbnails).Response(),
 			HeaderURL:         producer.HeaderURL,
-			Headers:           NewImages(producer.Headers).Response(),
 			PromotionVideoURL: producer.PromotionVideoURL,
 			BonusVideoURL:     producer.BonusVideoURL,
 			InstagramID:       producer.InstagramID,
@@ -54,7 +52,6 @@ func (p *Producer) AuthUser() *AuthUser {
 			Username:     p.Username,
 			Email:        p.Email,
 			ThumbnailURL: p.ThumbnailURL,
-			Thumbnails:   p.Thumbnails,
 		},
 	}
 }

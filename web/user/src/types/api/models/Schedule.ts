@@ -19,12 +19,6 @@ import {
     ScheduleStatusFromJSONTyped,
     ScheduleStatusToJSON,
 } from './ScheduleStatus';
-import type { Thumbnail } from './Thumbnail';
-import {
-    ThumbnailFromJSON,
-    ThumbnailFromJSONTyped,
-    ThumbnailToJSON,
-} from './Thumbnail';
 
 /**
  * マルシェ開催スケジュール情報
@@ -69,13 +63,6 @@ export interface Schedule {
      */
     thumbnailUrl: string;
     /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<Thumbnail>}
-     * @memberof Schedule
-     * @deprecated
-     */
-    thumbnails: Array<Thumbnail>;
-    /**
      * 映像配信URL
      * @type {string}
      * @memberof Schedule
@@ -106,7 +93,6 @@ export function instanceOfSchedule(value: object): boolean {
     isInstance = isInstance && "title" in value;
     isInstance = isInstance && "description" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "thumbnails" in value;
     isInstance = isInstance && "distributionUrl" in value;
     isInstance = isInstance && "startAt" in value;
     isInstance = isInstance && "endAt" in value;
@@ -130,7 +116,6 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'title': json['title'],
         'description': json['description'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
         'distributionUrl': json['distributionUrl'],
         'startAt': json['startAt'],
         'endAt': json['endAt'],
@@ -152,7 +137,6 @@ export function ScheduleToJSON(value?: Schedule | null): any {
         'title': value.title,
         'description': value.description,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
         'distributionUrl': value.distributionUrl,
         'startAt': value.startAt,
         'endAt': value.endAt,

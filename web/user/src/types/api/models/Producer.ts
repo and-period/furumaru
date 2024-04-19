@@ -13,19 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { CoordinatorHeadersInner } from './CoordinatorHeadersInner';
-import {
-    CoordinatorHeadersInnerFromJSON,
-    CoordinatorHeadersInnerFromJSONTyped,
-    CoordinatorHeadersInnerToJSON,
-} from './CoordinatorHeadersInner';
-import type { Thumbnail } from './Thumbnail';
-import {
-    ThumbnailFromJSON,
-    ThumbnailFromJSONTyped,
-    ThumbnailToJSON,
-} from './Thumbnail';
-
 /**
  * 生産者情報
  * @export
@@ -63,25 +50,11 @@ export interface Producer {
      */
     thumbnailUrl: string;
     /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<Thumbnail>}
-     * @memberof Producer
-     * @deprecated
-     */
-    thumbnails: Array<Thumbnail>;
-    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof Producer
      */
     headerUrl: string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorHeadersInner>}
-     * @memberof Producer
-     * @deprecated
-     */
-    headers: Array<CoordinatorHeadersInner>;
     /**
      * 紹介動画URL
      * @type {string}
@@ -124,9 +97,7 @@ export function instanceOfProducer(value: object): boolean {
     isInstance = isInstance && "username" in value;
     isInstance = isInstance && "profile" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "thumbnails" in value;
     isInstance = isInstance && "headerUrl" in value;
-    isInstance = isInstance && "headers" in value;
     isInstance = isInstance && "promotionVideoUrl" in value;
     isInstance = isInstance && "instagramId" in value;
     isInstance = isInstance && "facebookId" in value;
@@ -151,9 +122,7 @@ export function ProducerFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'username': json['username'],
         'profile': json['profile'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
         'headerUrl': json['headerUrl'],
-        'headers': ((json['headers'] as Array<any>).map(CoordinatorHeadersInnerFromJSON)),
         'promotionVideoUrl': json['promotionVideoUrl'],
         'instagramId': json['instagramId'],
         'facebookId': json['facebookId'],
@@ -176,9 +145,7 @@ export function ProducerToJSON(value?: Producer | null): any {
         'username': value.username,
         'profile': value.profile,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
         'headerUrl': value.headerUrl,
-        'headers': ((value.headers as Array<any>).map(CoordinatorHeadersInnerToJSON)),
         'promotionVideoUrl': value.promotionVideoUrl,
         'instagramId': value.instagramId,
         'facebookId': value.facebookId,

@@ -431,12 +431,6 @@ export interface AuthUserResponse {
      * @memberof AuthUserResponse
      */
     'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
-     * @memberof AuthUserResponse
-     */
-    'thumbnails': Array<CoordinatorThumbnailsInner>;
 }
 
 
@@ -1031,25 +1025,11 @@ export interface Coordinator {
      */
     'thumbnailUrl': string;
     /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
-     * @memberof Coordinator
-     * @deprecated
-     */
-    'thumbnails': Array<CoordinatorThumbnailsInner>;
-    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof Coordinator
      */
     'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorHeadersInner>}
-     * @memberof Coordinator
-     * @deprecated
-     */
-    'headers': Array<CoordinatorHeadersInner>;
     /**
      * 紹介動画URL
      * @type {string}
@@ -1098,27 +1078,6 @@ export interface Coordinator {
 /**
  * 
  * @export
- * @interface CoordinatorHeadersInner
- */
-export interface CoordinatorHeadersInner {
-    /**
-     * リサイズ済みヘッダー画像URL
-     * @type {string}
-     * @memberof CoordinatorHeadersInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof CoordinatorHeadersInner
-     */
-    'size': ImageSize;
-}
-
-
-/**
- * 
- * @export
  * @interface CoordinatorResponse
  */
 export interface CoordinatorResponse {
@@ -1135,27 +1094,6 @@ export interface CoordinatorResponse {
      */
     'productTypes': Array<ProductType>;
 }
-/**
- * 
- * @export
- * @interface CoordinatorThumbnailsInner
- */
-export interface CoordinatorThumbnailsInner {
-    /**
-     * リサイズ済みサムネイルURL
-     * @type {string}
-     * @memberof CoordinatorThumbnailsInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof CoordinatorThumbnailsInner
-     */
-    'size': ImageSize;
-}
-
-
 /**
  * 
  * @export
@@ -1706,10 +1644,10 @@ export interface CreateProductRequest {
     'productTagIds': Array<string>;
     /**
      * メディア一覧(8つまで)
-     * @type {Array<CreateProductRequestMediaInner>}
+     * @type {Array<ProductMediaInner>}
      * @memberof CreateProductRequest
      */
-    'media': Array<CreateProductRequestMediaInner>;
+    'media': Array<ProductMediaInner>;
     /**
      * 販売価格(税込:0以上)
      * @type {number}
@@ -1827,25 +1765,6 @@ export interface CreateProductRequest {
 }
 
 
-/**
- * 
- * @export
- * @interface CreateProductRequestMediaInner
- */
-export interface CreateProductRequestMediaInner {
-    /**
-     * メディアURL
-     * @type {string}
-     * @memberof CreateProductRequestMediaInner
-     */
-    'url': string;
-    /**
-     * サムネイルとして使用(1つまで)
-     * @type {boolean}
-     * @memberof CreateProductRequestMediaInner
-     */
-    'isThumbnail': boolean;
-}
 /**
  * 
  * @export
@@ -2195,34 +2114,6 @@ export interface GetUploadUrlRequest {
     'fileType': string;
 }
 /**
- * 画像サイズ
- * @export
- * @enum {string}
- */
-
-export const ImageSize = {
-    /**
-    * 不明
-    */
-    UNKNOWN: 0,
-    /**
-    * 小:240px
-    */
-    SMALL: 1,
-    /**
-    * 中:675px
-    */
-    MEDIUM: 2,
-    /**
-    * 高:900px
-    */
-    LARGE: 3
-} as const;
-
-export type ImageSize = typeof ImageSize[keyof typeof ImageSize];
-
-
-/**
  * マルシェタイムテーブル情報
  * @export
  * @interface Live
@@ -2319,13 +2210,6 @@ export interface LiveComment {
      * @memberof LiveComment
      */
     'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
-     * @memberof LiveComment
-     * @deprecated
-     */
-    'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
      * コメント
      * @type {string}
@@ -3807,25 +3691,11 @@ export interface Producer {
      */
     'thumbnailUrl': string;
     /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
-     * @memberof Producer
-     * @deprecated
-     */
-    'thumbnails': Array<CoordinatorThumbnailsInner>;
-    /**
      * ヘッダー画像URL
      * @type {string}
      * @memberof Producer
      */
     'headerUrl': string;
-    /**
-     * リサイズ済みヘッダー画像URL一覧
-     * @type {Array<CoordinatorHeadersInner>}
-     * @memberof Producer
-     * @deprecated
-     */
-    'headers': Array<CoordinatorHeadersInner>;
     /**
      * 紹介動画URL
      * @type {string}
@@ -4128,35 +3998,7 @@ export interface ProductMediaInner {
      * @memberof ProductMediaInner
      */
     'isThumbnail': boolean;
-    /**
-     * リサイズ済み画像URL一覧
-     * @type {Array<ProductMediaInnerImagesInner>}
-     * @memberof ProductMediaInner
-     * @deprecated
-     */
-    'images': Array<ProductMediaInnerImagesInner>;
 }
-/**
- * 
- * @export
- * @interface ProductMediaInnerImagesInner
- */
-export interface ProductMediaInnerImagesInner {
-    /**
-     * リサイズ済み画像URL
-     * @type {string}
-     * @memberof ProductMediaInnerImagesInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof ProductMediaInnerImagesInner
-     */
-    'size': ImageSize;
-}
-
-
 /**
  * 
  * @export
@@ -4324,13 +4166,6 @@ export interface ProductType {
      */
     'iconUrl': string;
     /**
-     * リサイズ済みアイコンURL一覧
-     * @type {Array<ProductTypeIconsInner>}
-     * @memberof ProductType
-     * @deprecated
-     */
-    'icons': Array<ProductTypeIconsInner>;
-    /**
      * 商品種別ID
      * @type {string}
      * @memberof ProductType
@@ -4349,27 +4184,6 @@ export interface ProductType {
      */
     'updatedAt': number;
 }
-/**
- * 
- * @export
- * @interface ProductTypeIconsInner
- */
-export interface ProductTypeIconsInner {
-    /**
-     * リサイズ済みアイコンURL
-     * @type {string}
-     * @memberof ProductTypeIconsInner
-     */
-    'url': string;
-    /**
-     * 
-     * @type {ImageSize}
-     * @memberof ProductTypeIconsInner
-     */
-    'size': ImageSize;
-}
-
-
 /**
  * 
  * @export
@@ -4745,13 +4559,6 @@ export interface Schedule {
      * @memberof Schedule
      */
     'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
-     * @memberof Schedule
-     * @deprecated
-     */
-    'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
      * ふた絵URL
      * @type {string}
@@ -5896,10 +5703,10 @@ export interface UpdateProductRequest {
     'productTagIds': Array<string>;
     /**
      * メディア一覧(8つまで)
-     * @type {Array<CreateProductRequestMediaInner>}
+     * @type {Array<ProductMediaInner>}
      * @memberof UpdateProductRequest
      */
-    'media': Array<CreateProductRequestMediaInner>;
+    'media': Array<ProductMediaInner>;
     /**
      * 販売価格(税込:0以上)
      * @type {number}
@@ -6408,13 +6215,6 @@ export interface User {
      * @memberof User
      */
     'thumbnailUrl': string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<CoordinatorThumbnailsInner>}
-     * @memberof User
-     * @deprecated
-     */
-    'thumbnails': Array<CoordinatorThumbnailsInner>;
     /**
      * 登録日時 (unixtime)
      * @type {number}

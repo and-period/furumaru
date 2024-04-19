@@ -17,7 +17,6 @@ type LiveProducts []*LiveProduct
 func NewLiveProduct(product *entity.Product) *LiveProduct {
 	var (
 		thumbnailURL string
-		thumbnails   Images
 		isSale       bool
 	)
 	for _, media := range product.Media {
@@ -25,7 +24,6 @@ func NewLiveProduct(product *entity.Product) *LiveProduct {
 			continue
 		}
 		thumbnailURL = media.URL
-		thumbnails = NewImages(media.Images)
 		break
 	}
 	if product.Status == entity.ProductStatusForSale && product.Inventory > 0 {
@@ -38,7 +36,6 @@ func NewLiveProduct(product *entity.Product) *LiveProduct {
 			Price:        product.Price,
 			Inventory:    product.Inventory,
 			ThumbnailURL: thumbnailURL,
-			Thumbnails:   thumbnails.Response(),
 		},
 		isSale: isSale,
 	}

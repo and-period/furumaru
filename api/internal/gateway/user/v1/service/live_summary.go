@@ -20,7 +20,6 @@ func NewLiveSummary(schedule *entity.Schedule, products entity.Products) *LiveSu
 			Status:        NewScheduleStatus(schedule.Status, false).Response(),
 			Title:         schedule.Title,
 			ThumbnailURL:  schedule.ThumbnailURL,
-			Thumbnails:    NewImages(schedule.Thumbnails).Response(),
 			StartAt:       schedule.StartAt.Unix(),
 			EndAt:         schedule.EndAt.Unix(),
 			Products:      NewLiveProducts(products).Response(),

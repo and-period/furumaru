@@ -15,7 +15,6 @@ type LiveComments []*LiveComment
 func NewLiveComment(comment *mentity.BroadcastComment, user *uentity.User) *LiveComment {
 	res := &LiveComment{
 		LiveComment: response.LiveComment{
-			Thumbnails:  []*response.Image{},
 			Comment:     comment.Content,
 			PublishedAt: comment.CreatedAt.Unix(),
 		},
@@ -27,7 +26,6 @@ func NewLiveComment(comment *mentity.BroadcastComment, user *uentity.User) *Live
 	res.Username = user.Username
 	res.AccountID = user.AccountID
 	res.ThumbnailURL = user.ThumbnailURL
-	res.Thumbnails = NewImages(user.Thumbnails).Response()
 	return res
 }
 

@@ -17,30 +17,9 @@ producer:
     thumbnailUrl:
       type: string
       description: サムネイルURL
-    thumbnails:
-      type: array
-      description: リサイズ済みサムネイルURL一覧
-      deprecated: true
-      items:
-        $ref: './../../../openapi.yaml#/components/schemas/thumbnail'
     headerUrl:
       type: string
       description: ヘッダー画像URL
-    headers:
-      type: array
-      description: リサイズ済みヘッダー画像URL一覧
-      deprecated: true
-      items:
-        type: object
-        properties:
-          url:
-            type: string
-            description: リサイズ済みヘッダー画像URL
-          size:
-            $ref: './../../../openapi.yaml#/components/schemas/imageSize'
-        required:
-        - url
-        - size
     promotionVideoUrl:
       type: string
       description: 紹介動画URL
@@ -63,9 +42,7 @@ producer:
   - profile
   - promotionVideoUrl
   - thumbnailUrl
-  - thumbnails
   - headerUrl
-  - headers
   - instagramId
   - facebookId
   - prefecture
@@ -76,21 +53,7 @@ producer:
     username: '&.農園'
     profile: '紹介文です。'
     thumbnailUrl: 'https://and-period.jp/thumbnail.png'
-    thumbnails:
-    - url: 'https://and-period.jp/thumbnail_240.png'
-      size: 1
-    - url: 'https://and-period.jp/thumbnail_675.png'
-      size: 2
-    - url: 'https://and-period.jp/thumbnail_900.png'
-      size: 3
     headerUrl: 'https://and-period.jp/header.png'
-    headers:
-    - url: 'https://and-period.jp/header_240.png'
-      size: 1
-    - url: 'https://and-period.jp/header_675.png'
-      size: 2
-    - url: 'https://and-period.jp/header_900.png'
-      size: 3
     promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
     instagramId: 'instagram-id'
     facebookId: 'facebook-id'

@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Thumbnail } from './Thumbnail';
-import {
-    ThumbnailFromJSON,
-    ThumbnailFromJSONTyped,
-    ThumbnailToJSON,
-} from './Thumbnail';
-
 /**
  * マルシェに関連づく商品情報
  * @export
@@ -56,13 +49,6 @@ export interface LiveProduct {
      * @memberof LiveProduct
      */
     thumbnailUrl: string;
-    /**
-     * リサイズ済みサムネイルURL一覧
-     * @type {Array<Thumbnail>}
-     * @memberof LiveProduct
-     * @deprecated
-     */
-    thumbnails: Array<Thumbnail>;
 }
 
 /**
@@ -75,7 +61,6 @@ export function instanceOfLiveProduct(value: object): boolean {
     isInstance = isInstance && "price" in value;
     isInstance = isInstance && "inventory" in value;
     isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "thumbnails" in value;
 
     return isInstance;
 }
@@ -95,7 +80,6 @@ export function LiveProductFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'price': json['price'],
         'inventory': json['inventory'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'thumbnails': ((json['thumbnails'] as Array<any>).map(ThumbnailFromJSON)),
     };
 }
 
@@ -113,7 +97,6 @@ export function LiveProductToJSON(value?: LiveProduct | null): any {
         'price': value.price,
         'inventory': value.inventory,
         'thumbnailUrl': value.thumbnailUrl,
-        'thumbnails': ((value.thumbnails as Array<any>).map(ThumbnailToJSON)),
     };
 }
 
