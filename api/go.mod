@@ -49,7 +49,6 @@ require (
 	github.com/stripe/stripe-go/v73 v73.16.0
 	go.uber.org/mock v0.4.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/image v0.15.0
 	golang.org/x/sync v0.7.0
 	google.golang.org/api v0.173.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240325203815-454cdb8f5daa
