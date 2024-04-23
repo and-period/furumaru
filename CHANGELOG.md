@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.10](https://github.com/and-period/furumaru/compare/v1.11.9...v1.11.10) - 2024-04-23
+- fix(func): オリジンレスポンスの処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2176
+
 ## [v1.11.9](https://github.com/and-period/furumaru/compare/v1.11.8...v1.11.9) - 2024-04-23
 
 ## [v1.11.8](https://github.com/and-period/furumaru/compare/v1.11.7...v1.11.8) - 2024-04-19
