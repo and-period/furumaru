@@ -27,15 +27,14 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
   const response: CloudFrontResponse = event.Records[0].cf.response;
   console.log('received event', JSON.stringify(event));
 
-  // キャッシュTTLの上書き
-  response.headers = {
-    ...response.headers,
-    'cache-control': [{ key: 'Cache-Control', value: cacheControl }],
-  };
-
   // 画像変換が必要かの検証
   const request: CloudFrontRequest = event.Records[0].cf.request;
   if (request.querystring === '') {
+    // キャッシュTTLの上書き
+    response.headers = {
+      ...response.headers,
+      'cache-control': [{ key: 'Cache-Control', value: cacheControl }],
+    };
     return response;
   }
 
@@ -50,9 +49,9 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
   const params = querystring.parse(request.querystring);
   const details: FileDetails = getFileDetails(request.uri, params);
   if (!details.convertable) {
+    console.log('this image is not convertable', { details });
     return response;
   }
-
   console.log('received to convertable image', { details });
 
   // S3から画像を取得して画像の加工処理
