@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.11.9](https://github.com/and-period/furumaru/compare/v1.11.8...v1.11.9) - 2024-04-23
+
 ## [v1.11.8](https://github.com/and-period/furumaru/compare/v1.11.7...v1.11.8) - 2024-04-19
 
 ## [v1.11.7](https://github.com/and-period/furumaru/compare/v1.11.6...v1.11.7) - 2024-04-19
