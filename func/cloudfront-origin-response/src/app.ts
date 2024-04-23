@@ -27,8 +27,11 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
   const response: CloudFrontResponse = event.Records[0].cf.response;
   console.log('received event', JSON.stringify(event));
 
-  response.status = '200';
-  response.statusDescription = 'OK';
+  // キャッシュTTLの上書き
+  response.headers = {
+    ...response.headers,
+    'cache-control': [{ key: 'Cache-Control', value: cacheControl }],
+  };
 
   // 画像変換が必要かの検証
   const request: CloudFrontRequest = event.Records[0].cf.request;
