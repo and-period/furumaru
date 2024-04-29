@@ -196,6 +196,7 @@ const handleClickNextStepButton = () => {
       coordinatorId: coordinatorId.value,
       cartNumber: cartNumber.value,
       promotionCode: promotionCode.value,
+      prefectureCode: formData.value.prefectureCode,
     },
   })
 }

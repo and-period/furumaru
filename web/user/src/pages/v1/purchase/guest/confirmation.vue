@@ -8,7 +8,7 @@ import type { GuestCheckoutRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const addressStore = useAddressStore()
-const { address, addressFetchState } = storeToRefs(addressStore)
+const { addressFetchState } = storeToRefs(addressStore)
 
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem, availablePaymentSystem } =
@@ -34,6 +34,18 @@ const coordinatorId = computed<string>(() => {
     return String(id)
   } else {
     return ''
+  }
+})
+
+/**
+ * 都道府県コード（クエリパラメータから算出）
+ */
+  const prefectureCode = computed<number>(() => {
+  const code = route.query.prefectureCode
+  if (code) {
+    return code
+  } else {
+    return null
   }
 })
 
@@ -194,7 +206,7 @@ onMounted(async () => {
   await calcCartItemByCoordinatorId(
     coordinatorId.value,
     cartNumber.value,
-    address.value?.prefectureCode,
+    prefectureCode.value,
     validPromotionCode.value ? promotionCode.value : undefined,
   )
 
