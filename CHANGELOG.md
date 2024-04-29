@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.11](https://github.com/and-period/furumaru/compare/v1.11.10...v1.11.11) - 2024-04-29
+- Fix: fixed guest puchse by @hamachans in https://github.com/and-period/furumaru/pull/2180
+
 ## [v1.11.10](https://github.com/and-period/furumaru/compare/v1.11.9...v1.11.10) - 2024-04-23
 - fix(func): オリジンレスポンスの処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2176
 
