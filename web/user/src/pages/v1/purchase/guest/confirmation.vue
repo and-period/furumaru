@@ -40,7 +40,7 @@ const coordinatorId = computed<string>(() => {
 /**
  * 都道府県コード（クエリパラメータから算出）
  */
-  const prefectureCode = computed<number>(() => {
+const prefectureCode = computed<number | null>(() => {
   const code = route.query.prefectureCode
   if (code) {
     return code
@@ -203,12 +203,14 @@ onMounted(async () => {
     }
   }
 
-  await calcCartItemByCoordinatorId(
-    coordinatorId.value,
-    cartNumber.value,
-    prefectureCode.value,
-    validPromotionCode.value ? promotionCode.value : undefined,
-  )
+  if (prefectureCode.value !== null) {
+    await calcCartItemByCoordinatorId(
+      coordinatorId.value,
+      cartNumber.value,
+      prefectureCode.value,
+      validPromotionCode.value ? promotionCode.value : undefined,
+    )
+  }
 
   checkoutFormData.value.requestId = calcCartResponseItem.value?.requestId ?? ''
   checkoutFormData.value.coordinatorId = coordinatorId.value
@@ -248,6 +250,11 @@ useSeoMeta({
     <the-alert v-if="checkoutError" class="mt-4 bg-white" type="error">{{
       checkoutError
     }}</the-alert>
+
+    <the-alert v-if="prefectureCode === null" class="mt-4 bg-white" type="error">{{
+      '都道府県が指定されていません。住所を再度入力してください。'
+    }}</the-alert>
+
 
     <div
       class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"
