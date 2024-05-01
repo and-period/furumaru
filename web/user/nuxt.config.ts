@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import en from './src/locales/en_us.json'
 import ja from './src/locales/ja_jp.json'
 
@@ -115,5 +116,15 @@ export default defineNuxtConfig({
         propsDestructure: true,
       },
     },
+    build: {
+      sourcemap: true
+    },
+    plugins: [
+      sentryVitePlugin({
+        org: process.env.SENTRY_ORGANIZATION,
+        project: process.env.SENTRY_PROJECT,
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+      })
+    ]
   },
 })

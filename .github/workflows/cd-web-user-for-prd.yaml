@@ -18,13 +18,30 @@ permissions:
   contents: read
 
 jobs:
+  set_output:
+    name: set output
+    environment: prd
+    runs-on: ubuntu-latest
+    outputs:
+      amplify-app-id: ${{ vars.AMPLIFY_USER_APP_ID }}
+      sentry-organization: ${{ vars.SENTRY_ORGANIZATION }}
+      sentry-project: ${{ vars.SENTRY_PROJECT_USER_WEB }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
   deploy:
     name: deploy
+    needs:
+    - set_output
     uses: ./.github/workflows/_deploy_amplify.yaml
     with:
       branch-name: main
       working-directory: ./web/user
+      sentry-organization: ${{ needs.set_output.outputs.sentry-organization }}
+      sentry-project: ${{ needs.set_output.outputs.sentry-project }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
-      app-id: ${{ vars.PRD_AMPLIFY_USER_APP_ID }}
+      app-id: ${{ needs.set_output.outputs.amplify-app-id }}
+      sentry-auth-token: ${{ secrets.SENTRY_AUTH_TOKEN }}

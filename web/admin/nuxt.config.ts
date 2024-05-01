@@ -1,3 +1,5 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin'
+
 export default defineNuxtConfig({
   ssr: false,
   srcDir: 'src',
@@ -64,5 +66,17 @@ export default defineNuxtConfig({
     timeline: {
       enabled: true
     }
+  },
+  vite: {
+    build: {
+      sourcemap: true
+    },
+    plugins: [
+      sentryVitePlugin({
+        org: process.env.SENTRY_ORGANIZATION,
+        project: process.env.SENTRY_PROJECT,
+        authToken: process.env.SENTRY_AUTH_TOKEN
+      })
+    ]
   }
 })
