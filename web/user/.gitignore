@@ -96,3 +96,6 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Sentry Config File
+.env.sentry-build-plugin
