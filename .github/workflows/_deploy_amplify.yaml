@@ -12,9 +12,6 @@ on:
       app-id:
         description: 'AmplifyアプリID'
         required: true
-      sentry-auth-token:
-        description: 'Sentry認証トークン'
-        required: true
     inputs:
       branch-name:
         description: 'ブランチ名'
@@ -26,16 +23,6 @@ on:
         type: string
         required: false
         default: '.'
-      sentry-organization:
-        description: 'Sentry組織'
-        type: string
-        required: false
-        default: ''
-      sentry-project:
-        description: 'Sentryプロジェクト'
-        type: string
-        required: false
-        default: ''
 
 jobs:
   deploy_amplify:
@@ -67,6 +54,3 @@ jobs:
         APP_ID: ${{ secrets.app-id }}
         AWS_REGION: ${{ secrets.aws-region }}
         BRANCH_NAME: ${{ inputs.branch-name }}
-        SENTRY_AUTH_TOKEN: ${{ secrets.sentry-auth-token }}
-        SENTRY_ORGANIZATION: ${{ inputs.sentry-organization }}
-        SENTRY_PROJECT: ${{ inputs.sentry-project }}

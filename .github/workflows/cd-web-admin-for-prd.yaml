@@ -24,8 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       amplify-app-id: ${{ vars.AMPLIFY_ADMIN_APP_ID }}
-      sentry-organization: ${{ vars.SENTRY_ORGANIZATION }}
-      sentry-project: ${{ vars.SENTRY_PROJECT_ADMIN_WEB }}
     steps:
     - name: Check out code
       uses: actions/checkout@v4
@@ -38,10 +36,7 @@ jobs:
     with:
       branch-name: main
       working-directory: ./web/admin
-      sentry-organization: ${{ needs.set_output.outputs.sentry-organization }}
-      sentry-project: ${{ needs.set_output.outputs.sentry-project }}
     secrets:
       aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
       aws-region: ${{ secrets.AWS_REGION }}
       app-id: ${{ needs.set_output.outputs.amplify-app-id }}
-      sentry-auth-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
