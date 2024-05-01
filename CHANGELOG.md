@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.11.12](https://github.com/and-period/furumaru/compare/v1.11.11...v1.11.12) - 2024-05-01
+- chore(deps): bump the dependencies group across 1 directory with 23 updates by @dependabot in https://github.com/and-period/furumaru/pull/2182
+- feat(web): Sentryの設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2184
+
 ## [v1.11.11](https://github.com/and-period/furumaru/compare/v1.11.10...v1.11.11) - 2024-04-29
 - Fix: fixed guest puchse by @hamachans in https://github.com/and-period/furumaru/pull/2180
 
