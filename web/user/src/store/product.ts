@@ -34,14 +34,19 @@ export const useProductStore = defineStore('product', {
 
   actions: {
     async fetchProducts(limit = 20, offset = 0): Promise<void> {
-      this.productsFetchState.isLoading = true
-      const response: ProductsResponse =
-        await this.productApiClient().v1ListProducts({
-          limit,
-          offset,
-        })
-      this.productsResponse = response
-      this.productsFetchState.isLoading = false
+      try {
+        this.productsFetchState.isLoading = true
+        const response: ProductsResponse =
+          await this.productApiClient().v1ListProducts({
+            limit,
+            offset,
+          })
+        this.productsResponse = response
+      } catch (error) {
+        return this.errorHandler(error)
+      } finally {
+        this.productsFetchState.isLoading = false
+      }
     },
 
     async fetchProduct(id: string): Promise<void> {
