@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
+import { ProductStatus } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 
 const route = useRoute()
@@ -38,9 +39,12 @@ const priceString = computed<string>(() => {
   }
 })
 
-const hasStock = computed<boolean>(() => {
+const canAddCart = computed<boolean>(() => {
   if (product.value) {
-    return product.value.inventory > 0
+    return (
+      product.value.status === ProductStatus.FOR_SALE &&
+      product.value.inventory > 0
+    )
   } else {
     return false
   }
@@ -245,7 +249,7 @@ useSeoMeta({
 
         <button
           class="mt-2 w-full bg-main py-4 text-center text-white disabled:cursor-not-allowed disabled:bg-main/60 md:mt-8"
-          :disabled="!hasStock"
+          :disabled="!canAddCart"
           @click="handleClickAddCartButton"
         >
           買い物カゴに入れる
