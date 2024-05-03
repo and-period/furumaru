@@ -12,8 +12,7 @@ const shoppingCartStore = useShoppingCartStore()
 
 const { fetchProducts } = productStore
 const { addCart } = shoppingCartStore
-const { productsFetchState, products, totalProductsCount } =
-  storeToRefs(productStore)
+const { products, totalProductsCount } = storeToRefs(productStore)
 
 const handleClick = (id: string) => {
   router.push(`/items/${id}`)
@@ -73,7 +72,7 @@ watch(currentPage, () => {
   fetchProducts(pagePerItems.value, pagination.value.offset)
 })
 
-useAsyncData('products', () => {
+const { status } = useAsyncData('products', () => {
   return fetchProducts(pagePerItems.value, pagination.value.offset)
 })
 
@@ -130,7 +129,7 @@ const hideV1App = false
       <div
         class="mx-auto mt-[24px] grid max-w-[1440px] grid-cols-2 gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-4 xl:grid-cols-5"
       >
-        <template v-if="productsFetchState.isLoading">
+        <template v-if="status === 'pending'">
           <div
             v-for="i in [1, 2, 3, 4, 5]"
             :key="i"
