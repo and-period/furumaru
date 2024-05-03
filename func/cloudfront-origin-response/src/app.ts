@@ -179,6 +179,9 @@ function isConvertableOptions(opts: ConvertOptions): boolean {
   if (opts.format) {
     return true;
   }
+  if (opts.blur) {
+    return true;
+  }
   return false;
 }
 
