@@ -50,10 +50,13 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
     >
       <div class="col-span-1 flex items-center gap-2 md:flex-col">
         <div class="flex w-[80px] flex-col items-center">
-          <img
+          <nuxt-img
             v-if="thumbnailUrl"
             :src="thumbnailUrl"
+            provider="cloudFront"
             class="mb-2 h-[48px] w-[48px] rounded-full"
+            width="48px"
+            height="48px"
           />
           <p
             v-if="username"

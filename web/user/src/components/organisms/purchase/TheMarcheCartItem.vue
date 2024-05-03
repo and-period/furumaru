@@ -106,9 +106,12 @@ const handelClickRemoveItemButton = (id: string) => {
             class="hidden grid-cols-5 items-center border-b py-2 md:grid"
           >
             <div class="col-span-2 flex gap-4">
-              <img
+              <nuxt-img
+                provider="cloudFront"
                 :src="item.product.thumbnail.url"
                 class="block h-16 w-16"
+                height="64px"
+                width="64px"
                 :alt="`${item.product.name}のサムネイル画像`"
               />
               {{ item.product.name }}
@@ -137,9 +140,12 @@ const handelClickRemoveItemButton = (id: string) => {
             :key="j"
             class="flex gap-3 border-b py-2 md:hidden"
           >
-            <img
+            <nuxt-img
+              provider="cloudFront"
               :src="item.product.thumbnail.url"
               class="block h-16 w-16"
+              width="64px"
+              height="64px"
               :alt="`${item.product.name}のサムネイル画像`"
             />
             <div class="flex grow flex-col justify-between">

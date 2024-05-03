@@ -61,8 +61,10 @@ useSeoMeta({
       <div class="rounded bg-white p-4">
         <div class="flex flex-col gap-4 sm:grid sm:grid-cols-3 md:grid-cols-4">
           <div class="flex items-center justify-center sm:aspect-square">
-            <img
+            <nuxt-img
+              provider="cloudFront"
               class="block max-w-[80px] rounded-full"
+              width="80px"
               :src="orderHistory.coordinator?.thumbnailUrl"
               :alt="`${orderHistory.coordinator?.username}のサムネイル`"
             />
@@ -150,7 +152,10 @@ useSeoMeta({
             class="md-text-[16px] flex grid-cols-5 flex-col gap-2 border-b py-2 text-[14px] md:grid md:items-center"
           >
             <div class="col-span-2 flex gap-4">
-              <img
+              <nuxt-img
+                provider="cloudFront"
+                width="64px"
+                height="64px"
                 class="aspect-square h-16 w-16 object-contain"
                 :src="item.product.thumbnailUrl"
                 :alt="`${item.product.name}のサムネイル画像`"

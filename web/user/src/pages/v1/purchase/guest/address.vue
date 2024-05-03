@@ -372,8 +372,11 @@ useSeoMeta({
                 class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
               >
                 <template v-if="item.product">
-                  <img
+                  <nuxt-img
                     v-if="item.product.thumbnail"
+                    width="56px"
+                    height="56px"
+                    provider="cloudFront"
                     :src="item.product.thumbnail.url"
                     :alt="`${item.product.name}の画像`"
                     class="block aspect-square h-[56px] w-[56px]"

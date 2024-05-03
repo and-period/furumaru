@@ -242,7 +242,10 @@ useSeoMeta({
                     :key="i"
                     class="flex items-center gap-3"
                   >
-                    <img
+                    <nuxt-img
+                      provider="cloudFront"
+                      width="32px"
+                      height="32px"
                       :src="
                         item.thumbnailUrl
                           ? item.thumbnailUrl

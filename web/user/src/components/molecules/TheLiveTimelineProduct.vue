@@ -76,8 +76,11 @@ const handleClickItem = () => {
             }}
           </p>
         </div>
-        <img
+        <nuxt-img
           :src="thumbnailUrl"
+          provider="cloudFront"
+          width="80px"
+          height="80px"
           class="aspect-square h-full w-full"
           :class="{ 'hover:cursor-pointer hover:underline': canAddCart }"
           @click="handleClickItem"

@@ -22,7 +22,9 @@ const handleClick = () => {
 <template>
   <div class="text-main" @click="handleClick">
     <div class="flex justify-center">
-      <img
+      <nuxt-img
+        provider="cloudFront"
+        fill="cover"
         class="aspect-video w-full object-cover"
         :width="width"
         :src="imgSrc"

@@ -54,10 +54,13 @@ const handleClick = () => {
       </div>
 
       <div class="relative">
-        <img
+        <nuxt-img
+          provider="cloudFront"
           :src="imgSrc"
           :alt="`live-${title}-thumbnail`"
           class="aspect-video w-full object-cover"
+          fit="cover"
+          sizes="320px md:368px"
         />
         <div
           v-if="!isLiveStreaming(isLiveStatus)"
@@ -73,8 +76,10 @@ const handleClick = () => {
             <span
               :class="{
                 'rounded px-2 font-bold': true,
-                'border-2 border-orange bg-white text-orange': isLiveStreaming(isLiveStatus),
-                'border-2 border-main text-main': !isLiveStreaming(isLiveStatus),
+                'border-2 border-orange bg-white text-orange':
+                  isLiveStreaming(isLiveStatus),
+                'border-2 border-main text-main':
+                  !isLiveStreaming(isLiveStatus),
               }"
             >
               {{ isLiveStreaming(isLiveStatus) ? '配信中' : '配信予定' }}
@@ -101,9 +106,12 @@ const handleClick = () => {
               <p class="mb-1">{{ marcheName }}/{{ address }}</p>
               <p class="tracking-[1.3px]">コーディネーター：{{ cnName }}</p>
             </div>
-            <img
+            <nuxt-img
+              provider="cloudFront"
               :src="cnImgSrc"
               :alt="`${cnName}のーアバター画像`"
+              width="40"
+              height="40"
               class="h-10 w-10 rounded-full"
             />
           </div>
