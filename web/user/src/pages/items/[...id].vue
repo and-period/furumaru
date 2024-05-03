@@ -136,7 +136,9 @@ useSeoMeta({
     >
       <div class="mx-auto w-full max-w-[500px]">
         <div class="flex aspect-square h-full w-full justify-center">
-          <img
+          <nuxt-img
+            provider="cloudFront"
+            fill="contain"
             class="block h-full w-full object-contain"
             :src="
               selectedMediaIndex === -1
@@ -149,9 +151,11 @@ useSeoMeta({
         <div
           class="hidden-scrollbar mt-2 grid w-full grid-flow-col justify-start gap-2 overflow-x-scroll"
         >
-          <img
+          <nuxt-img
             v-for="(m, i) in product.media"
             :key="i"
+            width="72px"
+            provider="cloudFront"
             :src="m.url"
             :alt="`${product.name}の画像_${i}`"
             class="aspect-square w-[72px] cursor-pointer"
@@ -317,7 +321,9 @@ useSeoMeta({
           <div
             class="flex min-w-max flex-col items-center justify-center gap-4 md:flex-row"
           >
-            <img
+            <nuxt-img
+              provider="cloudFront"
+              sizes="96px md:120px"
               :src="product.producer.thumbnailUrl"
               :alt="`${product.producer.username}`"
               class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px]"

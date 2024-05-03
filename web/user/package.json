@@ -17,6 +17,7 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
+    "@nuxt/image": "^1.6.0",
     "@pinia/nuxt": "^0.5.1",
     "@sentry/node": "^7.109.0",
     "@sentry/vue": "^7.109.0",
@@ -41,8 +42,8 @@
     "@nuxtjs/stylelint-module": "^4.1.0",
     "@nuxtjs/tailwindcss": "^6.2.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
-    "@types/hls.js": "^1.0.0",
     "@sentry/vite-plugin": "^2.16.1",
+    "@types/hls.js": "^1.0.0",
     "@vitest/coverage-c8": "^0.28.5",
     "@vue/test-utils": "^2.2.6",
     "eslint": "^8.53.0",

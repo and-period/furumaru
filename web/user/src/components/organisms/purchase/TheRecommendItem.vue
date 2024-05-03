@@ -17,7 +17,14 @@ const priceString = computed(() => {
 
 <template>
   <div class="flex gap-x-[10px] bg-white p-2">
-    <img :src="imgSrc" class="h-20 w-20" :alt="`${name}のサムネイル`" />
+    <nuxt-img
+      :src="imgSrc"
+      class="h-20 w-20"
+      :alt="`${name}のサムネイル`"
+      provider="cloudFront"
+      width="80px"
+      height="80px"
+    />
     <div
       class="flex w-full flex-col justify-between text-[12px] tracking-[1.2px]"
     >

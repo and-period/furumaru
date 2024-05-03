@@ -78,9 +78,12 @@ const handleClickAddCartButton = () => {
         class="w-full cursor-pointer"
         @click="handleClickItem"
       >
-        <img
+        <nuxt-img
+          provider="cloudFront"
           :src="thumbnail.url"
           :alt="`${name}のサムネイル画像`"
+          fit="cover"
+          sizes="180px md:250px"
           class="aspect-square w-full"
         />
       </picture>
@@ -148,7 +151,10 @@ const handleClickAddCartButton = () => {
       </div>
 
       <div class="flex items-center gap-x-4">
-        <img
+        <nuxt-img
+          provider="cloudFront"
+          width="64px"
+          hidden="64px"
           :src="coordinator.thumbnailUrl"
           :alt="`${coordinator.username}のサムネイル画像`"
           class="block aspect-square h-14 w-14 rounded-full"

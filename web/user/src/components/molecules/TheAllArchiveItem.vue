@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface Props {
   id: string
   title: string
@@ -22,7 +21,10 @@ const handleClick = () => {
 <template>
   <div @click="handleClick">
     <div class="flex justify-center">
-      <img
+      <nuxt-img
+        provider="cloudFront"
+        fit="cover"
+        height="208px"
         class="aspect-video max-h-[208px] cursor-pointer object-cover"
         :src="imgSrc"
         :alt="`live-${title}-thumbnail`"

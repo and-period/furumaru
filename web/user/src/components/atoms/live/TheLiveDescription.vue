@@ -62,7 +62,10 @@ const handleClickShowDetailButton = () => {
       {{ title }}
     </p>
     <div class="mt-4 flex items-center gap-2">
-      <img
+      <nuxt-img
+        width="40"
+        height="40"
+        provider="cloudFront"
         :src="coordinatorImgSrc"
         class="h-10 w-10 rounded-full hover:cursor-pointer"
         :alt="`${coordinatorName}のプロフィール画像`"

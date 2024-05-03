@@ -38,7 +38,14 @@ const handleRemoveButton = () => {
     </p>
 
     <div class="flex gap-x-3 text-sm">
-      <img :src="imgSrc" :alt="name" class="aspect-square h-[72px] w-[72px]" />
+      <nuxt-img
+        provider="cloudFront"
+        :src="imgSrc"
+        :alt="name"
+        width="72px"
+        height="72px"
+        class="aspect-square h-[72px] w-[72px]"
+      />
       <div class="flex grow flex-col">
         <div class="flex grow items-start">
           <div class="inline-flex">

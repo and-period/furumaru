@@ -48,10 +48,9 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
   },
-  plugins: [
-    '~/plugins/sentry.client',
-  ],
+  plugins: ['~/plugins/sentry.client'],
   modules: [
+    '@nuxt/image',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
     'nuxt-gtag',
@@ -66,6 +65,14 @@ export default defineNuxtConfig({
     ],
     '@pinia-plugin-persistedstate/nuxt',
   ],
+  image: {
+    providers: {
+      cloudFront: {
+        name: 'cloudFront',
+        provider: '~/provider/cloud-front.ts',
+      },
+    },
+  },
   i18n: {
     defaultLocale: 'ja',
     locales: [
@@ -99,10 +106,18 @@ export default defineNuxtConfig({
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
       ENVIRONMENT: process.env.ENVIRONMENT || '',
       SENTRY_DSN: process.env.SENTRY_DSN || '',
-      SENTRY_TRACES_SAMPLE_RATE: parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.5'),
-      SENTRY_PROFILES_SAMPLE_RATE: parseFloat(process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.5'),
-      SENTRY_REPLAYS_SESSION_SAMPLE_RATE: parseFloat(process.env.SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.2'),
-      SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: parseFloat(process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0')
+      SENTRY_TRACES_SAMPLE_RATE: parseFloat(
+        process.env.SENTRY_TRACES_SAMPLE_RATE || '0.5',
+      ),
+      SENTRY_PROFILES_SAMPLE_RATE: parseFloat(
+        process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.5',
+      ),
+      SENTRY_REPLAYS_SESSION_SAMPLE_RATE: parseFloat(
+        process.env.SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.2',
+      ),
+      SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: parseFloat(
+        process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0',
+      ),
     },
   },
   build: {},
@@ -117,14 +132,14 @@ export default defineNuxtConfig({
       },
     },
     build: {
-      sourcemap: true
+      sourcemap: true,
     },
     plugins: [
       sentryVitePlugin({
         org: process.env.SENTRY_ORGANIZATION,
         project: process.env.SENTRY_PROJECT,
         authToken: process.env.SENTRY_AUTH_TOKEN,
-      })
-    ]
+      }),
+    ],
   },
 })

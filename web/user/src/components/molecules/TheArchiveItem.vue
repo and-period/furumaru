@@ -22,10 +22,13 @@ const handleClick = () => {
 <template>
   <div class="w-full text-main" @click="handleClick">
     <div class="w-full">
-      <img
+      <nuxt-img
+        provider="cloudFront"
         class="h-[208px] w-full object-cover"
         :src="imgSrc"
         :alt="`archive-${title}-thumbnail`"
+        fit="cover"
+        height="208px"
       />
     </div>
     <div class="mt-2 flex w-full flex-col gap-2">

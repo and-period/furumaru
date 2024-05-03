@@ -69,9 +69,12 @@ useSeoMeta({
               />
             </template>
             <template v-else>
-              <img
+              <nuxt-img
                 v-if="user.thumbnailUrl"
                 :src="user.thumbnailUrl"
+                width="120px"
+                height="120px"
+                provider="cloudFront"
                 alt="サムネイル"
                 class="h-[120px] w-[120px] rounded-full"
               />

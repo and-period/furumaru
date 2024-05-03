@@ -50,7 +50,8 @@ const handleClickItem = () => {
         :class="{ 'hover:cursor-pointer': hasStock }"
         @click="handleClickItem"
       >
-        <img
+        <nuxt-img
+          provider="cloudFront"
           :src="thumbnail.url"
           :alt="`${name}のサムネイル画像`"
           class="aspect-square w-full"

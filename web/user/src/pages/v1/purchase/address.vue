@@ -332,10 +332,13 @@ useSeoMeta({
                   class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
                 >
                   <template v-if="item.product">
-                    <img
+                    <nuxt-img
                       v-if="item.product.thumbnail"
+                      provider="cloudFront"
                       :src="item.product.thumbnail.url"
                       :alt="`${item.product.name}の画像`"
+                      width="56px"
+                      height="56px"
                       class="block aspect-square h-[56px] w-[56px]"
                     />
                     <div class="col-span-3 pl-[24px] md:pl-0">
