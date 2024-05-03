@@ -39,6 +39,7 @@ const handleRemoveButton = () => {
 
     <div class="flex gap-x-3 text-sm">
       <nuxt-img
+        provider="cloudFront"
         :src="imgSrc"
         :alt="name"
         width="72px"
