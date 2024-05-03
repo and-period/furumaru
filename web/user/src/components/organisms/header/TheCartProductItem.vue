@@ -43,7 +43,7 @@ const handleRemoveButton = () => {
         :src="imgSrc"
         :alt="name"
         width="72px"
-        hidden="72px"
+        height="72px"
         class="aspect-square h-[72px] w-[72px]"
       />
       <div class="flex grow flex-col">
