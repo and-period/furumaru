@@ -205,7 +205,7 @@ const submitDelete = (): void => {
       <v-card-text>
         <v-text-field
           v-model="newValidate.name.$model"
-          :error-message="getErrorMessage(newValidate.name.$errors)"
+          :error-messages="getErrorMessage(newValidate.name.$errors)"
           class="mx-4"
           label="商品タグ名"
         />
@@ -230,7 +230,7 @@ const submitDelete = (): void => {
       <v-card-text>
         <v-text-field
           v-model="editValidate.name.$model"
-          :error-message="getErrorMessage(editValidate.name.$errors)"
+          :error-messages="getErrorMessage(editValidate.name.$errors)"
           class="mx-4"
           label="商品タグ名"
         />

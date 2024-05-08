@@ -180,7 +180,7 @@ const onSubmit = async (): Promise<void> => {
             <v-textarea
               v-model="formDataValidate.description.$model"
               :readonly="!updatable"
-              :error-message="getErrorMessage(formDataValidate.description.$errors)"
+              :error-messages="getErrorMessage(formDataValidate.description.$errors)"
               label="詳細"
               maxlength="2000"
             />
