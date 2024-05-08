@@ -9,11 +9,12 @@ const (
 
 // CreatePayload - 配信リソース作成リクエスト
 type CreatePayload struct {
-	ScheduleID   string                `json:"ScheduleId"`
-	ChannelInput *CreateChannelPayload `json:"ChannelInput"`
-	MP4Input     *CreateMp4Payload     `json:"MP4Input"`
-	RtmpInput    *CreateRtmpPayload    `json:"RtmpInput"`
-	ArchiveInput *CreateArchivePayload `json:"ArchiveInput"`
+	ScheduleID  string                     `json:"ScheduleId"`
+	Channel     *CreateChannelPayload      `json:"ChannelInput"`
+	MP4Input    *CreateMp4InputPayload     `json:"MP4Input"`
+	RtmpInput   *CreateRtmpInputPayload    `json:"RtmpInput"`
+	RtmpOutputs []*CreateRtmpOutputPayload `json:"RtmpOutputs"`
+	Archive     *CreateArchivePayload      `json:"ArchiveInput"`
 }
 
 // CreateChannelPayload - 配信リソース(MediaLive チャンネル)
@@ -23,14 +24,21 @@ type CreateChannelPayload struct {
 	InputLossImageSlateURI string `json:"InputLossImageSlateUri"`
 }
 
-// CreateMp4Payload - 配信リソース(MediaLive MP4インプット)
-type CreateMp4Payload struct {
+// CreateMp4InputPayload - 配信リソース(MediaLive MP4インプット)
+type CreateMp4InputPayload struct {
 	InputURL string `json:"InputUrl"`
 }
 
-// CreateRtmpPayload - 配信リソース(MediaLive プッシュRTMPインプット)
-type CreateRtmpPayload struct {
+// CreateRtmpInputPayload - 配信リソース(MediaLive プッシュRTMPインプット)
+type CreateRtmpInputPayload struct {
 	StreamName string `json:"StreamName"`
+}
+
+// CreateRtmpOutputPayload - 配信リソース(MediaLive プッシュRTMPアウトプット)
+type CreateRtmpOutputPayload struct {
+	Name      string `json:"Name"`
+	StreamURL string `json:"StreamUrl"`
+	StreamKey string `json:"StreamKey"`
 }
 
 // CreateArchivePayload - 配信リソース(MediaLive アーカイブグループ)

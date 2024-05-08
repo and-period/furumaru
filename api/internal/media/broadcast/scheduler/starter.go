@@ -200,20 +200,29 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 					zap.String("scheduleId", schedule.ID), zap.Int("status", int(broadcast.Status)))
 				return nil // リソース未作成の場合のみ、作成処理を進める
 			}
+			rtmpOutputs := make([]*CreateRtmpOutputPayload, 0, 1) // youtube への配信のみ
+			if broadcast.YoutubeStreamURL != "" && broadcast.YoutubeStreamKey != "" {
+				rtmpOutputs = append(rtmpOutputs, &CreateRtmpOutputPayload{
+					Name:      "youtube",
+					StreamURL: broadcast.YoutubeStreamURL,
+					StreamKey: broadcast.YoutubeStreamKey,
+				})
+			}
 			payload := &CreatePayload{
 				ScheduleID: broadcast.ScheduleID,
-				ChannelInput: &CreateChannelPayload{
+				Channel: &CreateChannelPayload{
 					Name:                   fmt.Sprintf("%s-%s", s.env, schedule.ID),
 					StartTime:              schedule.StartAt.Format(time.RFC3339),
 					InputLossImageSlateURI: schedule.ImageURL,
 				},
-				MP4Input: &CreateMp4Payload{
+				MP4Input: &CreateMp4InputPayload{
 					InputURL: dynamicMP4InputURL,
 				},
-				RtmpInput: &CreateRtmpPayload{
+				RtmpInput: &CreateRtmpInputPayload{
 					StreamName: streamName,
 				},
-				ArchiveInput: &CreateArchivePayload{
+				RtmpOutputs: rtmpOutputs,
+				Archive: &CreateArchivePayload{
 					BucketName: s.bucketName,
 					Path:       newArchiveHLSPath(schedule.ID),
 				},
