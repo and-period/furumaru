@@ -54,6 +54,7 @@ type Broadcast struct {
 	MediaStoreContainerArn    string          `gorm:"default:null"`         // MediaStoreコンテナARN
 	YoutubeStreamURL          string          `gorm:"default:null"`         // YouTube配信URL
 	YoutubeStreamKey          string          `gorm:"default:null"`         // YouTubeストリームキー
+	YoutubeBackupURL          string          `gorm:"default:null"`         // YouTubeバックアップURL
 	CreatedAt                 time.Time       `gorm:"<-:create"`            // 登録日時
 	UpdatedAt                 time.Time       `gorm:""`                     // 更新日時
 }

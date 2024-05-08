@@ -39,6 +39,8 @@ type CreateRtmpOutputPayload struct {
 	Name      string `json:"Name"`
 	StreamURL string `json:"StreamUrl"`
 	StreamKey string `json:"StreamKey"`
+	BackupURL string `json:"BackupUrl"`
+	BackupKey string `json:"BackupKey"`
 }
 
 // CreateArchivePayload - 配信リソース(MediaLive アーカイブグループ)

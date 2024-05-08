@@ -202,11 +202,16 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 			}
 			rtmpOutputs := make([]*CreateRtmpOutputPayload, 0, 1) // youtube への配信のみ
 			if broadcast.YoutubeStreamURL != "" && broadcast.YoutubeStreamKey != "" {
-				rtmpOutputs = append(rtmpOutputs, &CreateRtmpOutputPayload{
+				payload := &CreateRtmpOutputPayload{
 					Name:      "youtube",
 					StreamURL: broadcast.YoutubeStreamURL,
 					StreamKey: broadcast.YoutubeStreamKey,
-				})
+				}
+				if broadcast.YoutubeBackupURL != "" {
+					payload.BackupURL = broadcast.YoutubeBackupURL
+					payload.BackupKey = broadcast.YoutubeStreamKey
+				}
+				rtmpOutputs = append(rtmpOutputs, payload)
 			}
 			payload := &CreatePayload{
 				ScheduleID: broadcast.ScheduleID,
