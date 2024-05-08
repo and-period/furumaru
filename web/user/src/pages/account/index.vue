@@ -218,7 +218,7 @@ definePageMeta({
                     {{ user.email }}
                   </dd>
                 </div>
-                <!-- 一時的に選択不可能にする -->
+                <!-- 一時的に選択不可能にする
                 <button
                   class="cursor-not-allowed bg-main/70 px-2 py-1 text-white"
                 >
@@ -231,6 +231,7 @@ definePageMeta({
                 >
                   変更
                 </nuxt-link>
+              -->
               </div>
 
               <div class="flex items-center">
