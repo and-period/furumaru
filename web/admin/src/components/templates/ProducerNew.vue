@@ -262,7 +262,7 @@ const onClickSearchAddress = (): void => {
           v-model:city="formDataValue.city"
           v-model:address-line1="formDataValue.addressLine1"
           v-model:address-line2="formDataValue.addressLine2"
-          :error-message="props.searchErrorMessage"
+          :error-messages="props.searchErrorMessage"
           :loading="props.searchLoading"
           @click:search="onClickSearchAddress"
         />

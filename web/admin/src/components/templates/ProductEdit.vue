@@ -342,7 +342,7 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-textarea
               v-model="formDataValidate.description.$model"
-              :error-message="getErrorMessage(formDataValidate.description.$errors)"
+              :error-messages="getErrorMessage(formDataValidate.description.$errors)"
               label="商品説明"
               maxlength="2000"
             />

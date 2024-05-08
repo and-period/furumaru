@@ -8,7 +8,7 @@ interface Props {
   addressLine1: string;
   addressLine2: string;
   loading: boolean;
-  errorMessage: string;
+  errorMessages: string;
 }
 
 const props = defineProps<Props>()
@@ -56,8 +56,8 @@ const handleSearch = () => {
         label="郵便番号"
         class="mr-4"
         :loading="props.loading"
-        :messages="props.errorMessage"
-        :error="props.errorMessage !== ''"
+        :messages="props.errorMessages"
+        :error="props.errorMessages !== ''"
         @keydown.enter="handleSearch"
       />
       <v-btn
