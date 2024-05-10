@@ -25,14 +25,17 @@ import (
 const defaultUploadEventTTL = 12 * time.Hour // 12hours
 
 type Params struct {
-	WaitGroup *sync.WaitGroup
-	Database  *database.Database
-	Cache     dynamodb.Client
-	MediaLive medialive.MediaLive
-	Tmp       storage.Bucket
-	Storage   storage.Bucket
-	Producer  sqs.Producer
-	Store     store.Service
+	WaitGroup          *sync.WaitGroup
+	Database           *database.Database
+	Cache              dynamodb.Client
+	MediaLive          medialive.MediaLive
+	Tmp                storage.Bucket
+	Storage            storage.Bucket
+	Producer           sqs.Producer
+	Store              store.Service
+	GoogleClientID     string
+	GoogleClientSecret string
+	AdminWebURL        *url.URL
 }
 
 type service struct {
@@ -98,21 +101,28 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		url := *surl // copy
 		return &url
 	}
+	adminWebURL := func() *url.URL {
+		url := *params.AdminWebURL // copy
+		return &url
+	}
 	return &service{
-		logger:         dopts.logger,
-		waitGroup:      params.WaitGroup,
-		validator:      validator.NewValidator(),
-		db:             params.Database,
-		cache:          params.Cache,
-		media:          params.MediaLive,
-		tmp:            params.Tmp,
-		tmpURL:         tmpURL,
-		storage:        params.Storage,
-		storageURL:     storageURL,
-		producer:       params.Producer,
-		store:          params.Store,
-		now:            jst.Now,
-		uploadEventTTL: dopts.uploadEventTTL,
+		logger:             dopts.logger,
+		waitGroup:          params.WaitGroup,
+		validator:          validator.NewValidator(),
+		db:                 params.Database,
+		cache:              params.Cache,
+		media:              params.MediaLive,
+		tmp:                params.Tmp,
+		tmpURL:             tmpURL,
+		storage:            params.Storage,
+		storageURL:         storageURL,
+		producer:           params.Producer,
+		store:              params.Store,
+		now:                jst.Now,
+		uploadEventTTL:     dopts.uploadEventTTL,
+		googleClientID:     params.GoogleClientID,
+		googleClientSecret: params.GoogleClientSecret,
+		adminWebURL:        adminWebURL,
 	}, nil
 }
 

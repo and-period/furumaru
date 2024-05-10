@@ -79,6 +79,8 @@ type params struct {
 	sentryDsn            string
 	komojuClientID       string
 	komojuClientPassword string
+	googleClientID       string
+	googleClientSecret   string
 }
 
 //nolint:funlen
@@ -379,6 +381,20 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		p.komojuClientPassword = secrets["clientPassword"]
 		return nil
 	})
+	eg.Go(func() error {
+		// Google API認証情報の取得
+		if a.GoogleClientSecret == "" {
+			p.googleClientID = a.GoogleClientID
+			p.googleClientSecret = a.GoogleClientSecret
+		}
+		secrets, err := p.secret.Get(ectx, a.GoogleSecretName)
+		if err != nil {
+			return err
+		}
+		p.googleClientID = secrets["clientId"]
+		p.googleClientSecret = secrets["clientSecret"]
+		return nil
+	})
 	return eg.Wait()
 }
 
@@ -420,14 +436,17 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 		return nil, err
 	}
 	params := &mediasrv.Params{
-		WaitGroup: p.waitGroup,
-		Database:  mediadb.NewDatabase(mysql),
-		Cache:     p.cache,
-		MediaLive: p.medialive,
-		Storage:   p.storage,
-		Tmp:       p.tmpStorage,
-		Producer:  p.mediaQueue,
-		Store:     store,
+		WaitGroup:          p.waitGroup,
+		Database:           mediadb.NewDatabase(mysql),
+		Cache:              p.cache,
+		MediaLive:          p.medialive,
+		Storage:            p.storage,
+		Tmp:                p.tmpStorage,
+		Producer:           p.mediaQueue,
+		Store:              store,
+		GoogleClientID:     p.googleClientID,
+		GoogleClientSecret: p.googleClientSecret,
+		AdminWebURL:        p.adminWebURL,
 	}
 	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
 }
