@@ -36,20 +36,23 @@ type Params struct {
 }
 
 type service struct {
-	logger         *zap.Logger
-	waitGroup      *sync.WaitGroup
-	validator      validator.Validator
-	db             *database.Database
-	cache          dynamodb.Client
-	tmp            storage.Bucket
-	storage        storage.Bucket
-	tmpURL         func() *url.URL
-	storageURL     func() *url.URL
-	producer       sqs.Producer
-	store          store.Service
-	media          medialive.MediaLive
-	now            func() time.Time
-	uploadEventTTL time.Duration
+	logger             *zap.Logger
+	waitGroup          *sync.WaitGroup
+	validator          validator.Validator
+	db                 *database.Database
+	cache              dynamodb.Client
+	tmp                storage.Bucket
+	storage            storage.Bucket
+	tmpURL             func() *url.URL
+	storageURL         func() *url.URL
+	producer           sqs.Producer
+	store              store.Service
+	media              medialive.MediaLive
+	now                func() time.Time
+	uploadEventTTL     time.Duration
+	googleClientID     string
+	googleClientSecret string
+	adminWebURL        func() *url.URL
 }
 
 type options struct {

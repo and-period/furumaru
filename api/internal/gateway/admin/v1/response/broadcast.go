@@ -15,3 +15,7 @@ type Broadcast struct {
 type BroadcastResponse struct {
 	Broadcast *Broadcast `json:"broadcast"` // ライブ配信情報
 }
+
+type AuthYoutubeBroadcastResponse struct {
+	URL string `json:"url"` // 認証URL
+}

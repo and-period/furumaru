@@ -386,6 +386,49 @@ func TestBroadcast_Update(t *testing.T) {
 			},
 		},
 		{
+			name: "success archive",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
+				err = db.DB.Create(&broadcast).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				broadcastID: "broadcast-id",
+				params: &database.UpdateBroadcastParams{
+					Status: entity.BroadcastStatusActive,
+					UploadBroadcastArchiveParams: &database.UploadBroadcastArchiveParams{
+						ArchiveURL:   "http://example.com/master.mp4",
+						ArchiveFixed: true,
+					},
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
+			name: "success youtube",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
+				err = db.DB.Create(&broadcast).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				broadcastID: "broadcast-id",
+				params: &database.UpdateBroadcastParams{
+					Status: entity.BroadcastStatusActive,
+					UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
+						YoutubeStreamURL: "rtmp://a.rtmp.youtube.com/live2",
+						YoutubeStreamKey: "stream-key",
+						YoutubeBackupURL: "rtmp://b.rtmp.youtube.com/live2?backup=1",
+					},
+				},
+			},
+			want: want{
+				err: nil,
+			},
+		},
+		{
 			name: "success disable",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
 				broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
