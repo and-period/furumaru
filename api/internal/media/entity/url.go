@@ -14,9 +14,14 @@ func NewAdminURLMaker(url *url.URL) *AdminURLMaker {
 }
 
 func (m *AdminURLMaker) AuthYoutubeCallback(scheduleID string) string {
-	// e.g.) /schedules/:scheduleId/broadcasts/youtube
-	paths := []string{"schedules", scheduleID, "broadcasts", "youtube"}
+	// e.g.) /auth/youtube/callback
+	paths := []string{"auth", "youtube", "callback"}
 	webURL := *m.url // copy
 	webURL.Path = strings.Join(paths, "/")
+
+	query := webURL.Query()
+	query.Set("schedule-id", scheduleID)
+
+	webURL.RawQuery = query.Encode()
 	return webURL.String()
 }

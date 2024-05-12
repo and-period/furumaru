@@ -14,5 +14,5 @@ func TestAdminURLMaker(t *testing.T) {
 	require.NoError(t, err)
 	maker := NewAdminURLMaker(webURL)
 	res := maker.AuthYoutubeCallback("schedule-id")
-	assert.Equal(t, "http://example.com/schedules/schedule-id/broadcasts/youtube", res)
+	assert.Equal(t, "http://example.com/auth/youtube/callback?schedule-id=schedule-id", res)
 }
