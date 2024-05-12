@@ -7,3 +7,7 @@ type UpdateBroadcastArchiveRequest struct {
 type ActivateBroadcastMP4Request struct {
 	InputURL string `json:"inputUrl,omitempty"` // 配信動画URL
 }
+
+type CreateYoutubeBroadcastRequest struct {
+	AuthCode string `json:"authCode,omitempty"` // 認証コード
+}

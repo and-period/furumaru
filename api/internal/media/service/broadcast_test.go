@@ -860,3 +860,56 @@ func TestDeactivateBroadcastStaticImage(t *testing.T) {
 		}))
 	}
 }
+
+func TestAuthYoutubeBroadcast(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.AuthYoutubeBroadcastInput
+		expect    string
+		expectErr error
+	}{
+		// TODO: 成功ケースは後ほど実装
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.AuthYoutubeBroadcastInput{},
+			expect:    "",
+			expectErr: exception.ErrInvalidArgument,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			authURL, err := service.AuthYoutubeBroadcast(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, authURL)
+		}))
+	}
+}
+
+func TestCreateYoutubeBroadcast(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		setup     func(ctx context.Context, mocks *mocks)
+		input     *media.CreateYoutubeBroadcastInput
+		expectErr error
+	}{
+		// TODO: 成功ケースは後ほど実装
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.CreateYoutubeBroadcastInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.CreateYoutubeBroadcast(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+		}))
+	}
+}

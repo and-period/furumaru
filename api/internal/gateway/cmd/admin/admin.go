@@ -66,6 +66,9 @@ type app struct {
 	KomojuClientID       string  `default:""               envconfig:"KOMOJU_CLIENT_ID"`
 	KomojuClientPassword string  `default:""               envconfig:"KOMOJU_CLIENT_PASSWORD"`
 	KomojuSecretName     string  `default:""               envconfig:"KOMOJU_SECRET_NAME"`
+	GoogleClientID       string  `default:""               envconfig:"GOOGLE_CLIENT_ID"`
+	GoogleClientSecret   string  `default:""               envconfig:"GOOGLE_CLIENT_SECRET"`
+	GoogleSecretName     string  `default:""               envconfig:"GOOGLE_SECRET_NAME"`
 	AminWebURL           string  `default:""               envconfig:"ADMIN_WEB_URL"`
 	UserWebURL           string  `default:""               envconfig:"USER_WEB_URL"`
 	SlackAPIToken        string  `default:""               envconfig:"SLACK_API_TOKEN"`
