@@ -255,8 +255,13 @@ func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutub
 	if broadcast.Status != entity.BroadcastStatusDisabled {
 		return "", fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
 	}
-	config := s.newYoutubeBroadcastConfig(broadcast.ScheduleID)
-	return config.AuthCodeURL("state", oauth2.AccessTypeOffline), nil
+	config := s.newYoutubeBroadcastConfig()
+	opts := []oauth2.AuthCodeOption{
+		oauth2.AccessTypeOffline,
+		oauth2.ApprovalForce,
+		oauth2.SetAuthURLParam("schedule_id", broadcast.ScheduleID),
+	}
+	return config.AuthCodeURL(in.State, opts...), nil
 }
 
 func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYoutubeBroadcastInput) error {
@@ -265,7 +270,8 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	}
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
 	if err != nil {
-		return internalError(err)
+		return fmt.Errorf("service: failed to get broadcast: %s: %w", err.Error(), exception.ErrInternal)
+		// return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusDisabled {
 		return fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
@@ -278,15 +284,16 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 		return internalError(err)
 	}
 	// TODO: youtubeクライアントを作成する(動作検証のため、いったん雑に実装)
-	config := s.newYoutubeBroadcastConfig(broadcast.ScheduleID)
+	config := s.newYoutubeBroadcastConfig()
 	token, err := config.Exchange(ctx, in.AuthCode)
 	if err != nil {
-		return fmt.Errorf("service: failed to exchange token: %w", exception.ErrForbidden)
+		return fmt.Errorf("service: failed to exchange token: %s: %w", err.Error(), exception.ErrForbidden)
 	}
 	source := config.TokenSource(ctx, token)
 	service, err := youtube.NewService(ctx, option.WithTokenSource(source))
 	if err != nil {
-		return internalError(err)
+		return fmt.Errorf("service: failed to create youtube service: %s: %w", err.Error(), exception.ErrInternal)
+		// return internalError(err)
 	}
 	youtubeIn := &youtube.LiveBroadcast{
 		Snippet: &youtube.LiveBroadcastSnippet{
@@ -306,11 +313,13 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	part := []string{"id", "snippet", "contentDetails", "status"}
 	youtubeOut, err := service.LiveBroadcasts.Insert(part, youtubeIn).Do()
 	if err != nil {
-		return internalError(err)
+		return fmt.Errorf("service: failed to insert broadcast: %s: %w", err.Error(), exception.ErrInternal)
+		// return internalError(err)
 	}
 	streamOut, err := service.LiveStreams.List([]string{"id", "snippet", "cdn"}).Id(youtubeOut.Id).Context(ctx).Do()
 	if err != nil {
-		return internalError(err)
+		return fmt.Errorf("service: failed to list streams: %s: %w", err.Error(), exception.ErrInternal)
+		// return internalError(err)
 	}
 	if len(streamOut.Items) == 0 {
 		return fmt.Errorf("service: list streams is empty: %w", exception.ErrInternal)
@@ -324,12 +333,12 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	return internalError(err)
 }
 
-func (s *service) newYoutubeBroadcastConfig(scheduleID string) *oauth2.Config {
+func (s *service) newYoutubeBroadcastConfig() *oauth2.Config {
 	return &oauth2.Config{
 		ClientID:     s.googleClientID,
 		ClientSecret: s.googleClientSecret,
 		Endpoint:     google.Endpoint,
 		Scopes:       []string{youtube.YoutubeScope},
-		RedirectURL:  entity.NewAdminURLMaker(s.adminWebURL()).AuthYoutubeCallback(scheduleID),
+		RedirectURL:  entity.NewAdminURLMaker(s.adminWebURL()).AuthYoutubeCallback(),
 	}
 }
