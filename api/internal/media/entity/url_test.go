@@ -13,6 +13,6 @@ func TestAdminURLMaker(t *testing.T) {
 	webURL, err := url.Parse("http://example.com")
 	require.NoError(t, err)
 	maker := NewAdminURLMaker(webURL)
-	res := maker.AuthYoutubeCallback("schedule-id")
-	assert.Equal(t, "http://example.com/auth/youtube/callback?schedule-id=schedule-id", res)
+	res := maker.AuthYoutubeCallback()
+	assert.Equal(t, "http://example.com/auth/youtube/callback", res)
 }

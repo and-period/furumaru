@@ -133,8 +133,14 @@ func (h *handler) DeactivateBroadcastStaticImage(ctx *gin.Context) {
 }
 
 func (h *handler) AuthYoutubeBroadcast(ctx *gin.Context) {
+	req := &request.AuthYoutubeBroadcastRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
 	in := &media.AuthYoutubeBroadcastInput{
 		ScheduleID: util.GetParam(ctx, "scheduleId"),
+		State:      req.State,
 	}
 	authURL, err := h.media.AuthYoutubeBroadcast(ctx, in)
 	if err != nil {
@@ -154,8 +160,8 @@ func (h *handler) CreateYoutubeBroadcast(ctx *gin.Context) {
 		return
 	}
 	in := &media.CreateYoutubeBroadcastInput{
-		AuthCode:   req.AuthCode,
 		ScheduleID: util.GetParam(ctx, "scheduleId"),
+		AuthCode:   req.AuthCode,
 	}
 	if err := h.media.CreateYoutubeBroadcast(ctx, in); err != nil {
 		h.httpError(ctx, err)
