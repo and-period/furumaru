@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
+	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"golang.org/x/sync/errgroup"
@@ -290,6 +291,7 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 		return fmt.Errorf("service: failed to exchange token: %s: %w", err.Error(), exception.ErrForbidden)
 	}
 	source := config.TokenSource(ctx, token)
+	s.logger.Debug("youtube broadcast token", zap.Any("token", token), zap.Any("source", source))
 	service, err := youtube.NewService(ctx, option.WithTokenSource(source))
 	if err != nil {
 		return fmt.Errorf("service: failed to create youtube service: %s: %w", err.Error(), exception.ErrInternal)
