@@ -290,9 +290,10 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	if err != nil {
 		return fmt.Errorf("service: failed to exchange token: %s: %w", err.Error(), exception.ErrForbidden)
 	}
-	source := config.TokenSource(ctx, token)
-	s.logger.Debug("youtube broadcast token", zap.Any("token", token), zap.Any("source", source))
-	service, err := youtube.NewService(ctx, option.WithTokenSource(source))
+	client := config.Client(ctx, token)
+	// source := config.TokenSource(ctx, token)
+	s.logger.Debug("youtube broadcast token", zap.Any("token", token))
+	service, err := youtube.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		return fmt.Errorf("service: failed to create youtube service: %s: %w", err.Error(), exception.ErrInternal)
 		// return internalError(err)
