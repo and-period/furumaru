@@ -189,6 +189,10 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/rtmp.yaml'
   /v1/schedules/{scheduleId}/broadcasts/mp4:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/mp4.yaml'
+  /v1/schedules/{scheduleId}/broadcasts/youtube:
+    $ref: './paths/v1/schedules/_scheduleId/broadcasts/youtube/index.yaml'
+  /v1/schedules/{scheduleId}/broadcasts/youtube/auth:
+    $ref: './paths/v1/schedules/_scheduleId/broadcasts/youtube/auth.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
@@ -397,6 +401,10 @@ components:
       $ref: './components/schemas/v1/broadcast.request.yaml#/updateBroadcastArchiveRequest'
     v1ActivateBroadcastMP4Request:
       $ref: './components/schemas/v1/broadcast.request.yaml#/activateBroadcastMP4Request'
+    v1AuthYoutubeBroadcastRequest:
+      $ref: './components/schemas/v1/broadcast.request.yaml#/authYoutubeBroadcastRequest'
+    v1CreateYoutubeBroadcastRequest:
+      $ref: './components/schemas/v1/broadcast.request.yaml#/createYoutubeBroadcastRequest'
     v1CreateAdministratorRequest:
       $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
     v1UpdateAdministratorRequest:
@@ -550,6 +558,8 @@ components:
       $ref: './components/schemas/v1/live-comment.response.yaml#/liveCommentsResponse'
     v1BroadcastResponse:
       $ref: './components/schemas/v1/broadcast.response.yaml#/broadcastResponse'
+    v1AuthYoutubeBroadcastResponse:
+      $ref: './components/schemas/v1/broadcast.response.yaml#/authYoutubeBroadcastResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1OrdersResponse:

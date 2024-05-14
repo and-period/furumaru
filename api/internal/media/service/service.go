@@ -18,6 +18,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/and-period/furumaru/api/pkg/validator"
+	"github.com/and-period/furumaru/api/pkg/youtube"
 	govalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 )
@@ -25,37 +26,33 @@ import (
 const defaultUploadEventTTL = 12 * time.Hour // 12hours
 
 type Params struct {
-	WaitGroup          *sync.WaitGroup
-	Database           *database.Database
-	Cache              dynamodb.Client
-	MediaLive          medialive.MediaLive
-	Tmp                storage.Bucket
-	Storage            storage.Bucket
-	Producer           sqs.Producer
-	Store              store.Service
-	GoogleClientID     string
-	GoogleClientSecret string
-	AdminWebURL        *url.URL
+	WaitGroup *sync.WaitGroup
+	Database  *database.Database
+	Cache     dynamodb.Client
+	MediaLive medialive.MediaLive
+	Tmp       storage.Bucket
+	Storage   storage.Bucket
+	Producer  sqs.Producer
+	Store     store.Service
+	YouTube   youtube.YouTube
 }
 
 type service struct {
-	logger             *zap.Logger
-	waitGroup          *sync.WaitGroup
-	validator          validator.Validator
-	db                 *database.Database
-	cache              dynamodb.Client
-	tmp                storage.Bucket
-	storage            storage.Bucket
-	tmpURL             func() *url.URL
-	storageURL         func() *url.URL
-	producer           sqs.Producer
-	store              store.Service
-	media              medialive.MediaLive
-	now                func() time.Time
-	uploadEventTTL     time.Duration
-	googleClientID     string
-	googleClientSecret string
-	adminWebURL        func() *url.URL
+	logger         *zap.Logger
+	waitGroup      *sync.WaitGroup
+	validator      validator.Validator
+	db             *database.Database
+	cache          dynamodb.Client
+	tmp            storage.Bucket
+	storage        storage.Bucket
+	tmpURL         func() *url.URL
+	storageURL     func() *url.URL
+	producer       sqs.Producer
+	store          store.Service
+	media          medialive.MediaLive
+	youtube        youtube.YouTube
+	now            func() time.Time
+	uploadEventTTL time.Duration
 }
 
 type options struct {
@@ -101,28 +98,22 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		url := *surl // copy
 		return &url
 	}
-	adminWebURL := func() *url.URL {
-		url := *params.AdminWebURL // copy
-		return &url
-	}
 	return &service{
-		logger:             dopts.logger,
-		waitGroup:          params.WaitGroup,
-		validator:          validator.NewValidator(),
-		db:                 params.Database,
-		cache:              params.Cache,
-		media:              params.MediaLive,
-		tmp:                params.Tmp,
-		tmpURL:             tmpURL,
-		storage:            params.Storage,
-		storageURL:         storageURL,
-		producer:           params.Producer,
-		store:              params.Store,
-		now:                jst.Now,
-		uploadEventTTL:     dopts.uploadEventTTL,
-		googleClientID:     params.GoogleClientID,
-		googleClientSecret: params.GoogleClientSecret,
-		adminWebURL:        adminWebURL,
+		logger:         dopts.logger,
+		waitGroup:      params.WaitGroup,
+		validator:      validator.NewValidator(),
+		db:             params.Database,
+		cache:          params.Cache,
+		media:          params.MediaLive,
+		tmp:            params.Tmp,
+		tmpURL:         tmpURL,
+		storage:        params.Storage,
+		storageURL:     storageURL,
+		producer:       params.Producer,
+		store:          params.Store,
+		youtube:        params.YouTube,
+		now:            jst.Now,
+		uploadEventTTL: dopts.uploadEventTTL,
 	}, nil
 }
 
@@ -180,6 +171,25 @@ func storageError(err error) error {
 		return exception.ErrInvalidArgument
 	case errors.Is(err, storage.ErrNotFound):
 		return exception.ErrNotFound
+	default:
+		return nil
+	}
+}
+
+func youtubeError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, youtube.ErrBadRequest):
+		return exception.ErrInvalidArgument
+	case errors.Is(err, youtube.ErrUnauthorized):
+		return exception.ErrUnauthenticated
+	case errors.Is(err, youtube.ErrForbidden):
+		return exception.ErrForbidden
+	case errors.Is(err, youtube.ErrTooManyRequests):
+		return exception.ErrResourceExhausted
 	default:
 		return nil
 	}

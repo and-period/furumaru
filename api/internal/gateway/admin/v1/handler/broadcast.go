@@ -24,8 +24,8 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r.POST("/mp4", h.ActivateBroadcastMP4)
 
 	// 認証不要なAPI（外部APIとの連携依頼用）
-	r.POST("/youtube/auth", h.AuthYoutubeBroadcast)
-	r.POST("/youtube", h.CreateYoutubeBroadcast)
+	rg.POST("/youtube/auth", h.AuthYoutubeBroadcast)
+	rg.POST("/youtube", h.CreateYoutubeBroadcast)
 }
 
 func (h *handler) GetBroadcast(ctx *gin.Context) {

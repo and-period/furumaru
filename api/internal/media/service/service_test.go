@@ -14,6 +14,7 @@ import (
 	mock_medialive "github.com/and-period/furumaru/api/mock/pkg/medialive"
 	mock_sqs "github.com/and-period/furumaru/api/mock/pkg/sqs"
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
+	mock_youtube "github.com/and-period/furumaru/api/mock/pkg/youtube"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/storage"
@@ -30,13 +31,16 @@ var (
 )
 
 type mocks struct {
-	db       *dbMocks
-	cache    *mock_dynamodb.MockClient
-	store    *mock_store.MockService
-	tmp      *mock_storage.MockBucket
-	storage  *mock_storage.MockBucket
-	producer *mock_sqs.MockProducer
-	media    *mock_medialive.MockMediaLive
+	db             *dbMocks
+	cache          *mock_dynamodb.MockClient
+	store          *mock_store.MockService
+	tmp            *mock_storage.MockBucket
+	storage        *mock_storage.MockBucket
+	producer       *mock_sqs.MockProducer
+	media          *mock_medialive.MockMediaLive
+	youtube        *mock_youtube.MockYouTube
+	youtubeService *mock_youtube.MockService
+	youtubeAuth    *mock_youtube.MockAuth
 }
 
 type dbMocks struct {
@@ -63,13 +67,16 @@ type testCaller func(ctx context.Context, t *testing.T, service *service)
 
 func newMocks(ctrl *gomock.Controller) *mocks {
 	return &mocks{
-		db:       newDBMocks(ctrl),
-		cache:    mock_dynamodb.NewMockClient(ctrl),
-		store:    mock_store.NewMockService(ctrl),
-		tmp:      mock_storage.NewMockBucket(ctrl),
-		storage:  mock_storage.NewMockBucket(ctrl),
-		producer: mock_sqs.NewMockProducer(ctrl),
-		media:    mock_medialive.NewMockMediaLive(ctrl),
+		db:             newDBMocks(ctrl),
+		cache:          mock_dynamodb.NewMockClient(ctrl),
+		store:          mock_store.NewMockService(ctrl),
+		tmp:            mock_storage.NewMockBucket(ctrl),
+		storage:        mock_storage.NewMockBucket(ctrl),
+		producer:       mock_sqs.NewMockProducer(ctrl),
+		media:          mock_medialive.NewMockMediaLive(ctrl),
+		youtube:        mock_youtube.NewMockYouTube(ctrl),
+		youtubeService: mock_youtube.NewMockService(ctrl),
+		youtubeAuth:    mock_youtube.NewMockAuth(ctrl),
 	}
 }
 
@@ -101,6 +108,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Storage:   mocks.storage,
 		Producer:  mocks.producer,
 		MediaLive: mocks.media,
+		YouTube:   mocks.youtube,
 	}
 	tmpHost, _ := url.Parse(tmpURL)
 	storageHost, _ := url.Parse(storageURL)

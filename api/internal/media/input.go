@@ -81,6 +81,7 @@ type AuthYoutubeBroadcastInput struct {
 type CreateYoutubeBroadcastInput struct {
 	ScheduleID string `validate:"required"`
 	AuthCode   string `validate:"required"`
+	Public     bool   `validate:""`
 }
 
 type CreateBroadcastViewerLogInput struct {

@@ -14,8 +14,10 @@ import (
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
+	"github.com/and-period/furumaru/api/pkg/youtube"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	gyoutube "google.golang.org/api/youtube/v3"
 )
 
 func TestListBroadcasts(t *testing.T) {
@@ -863,6 +865,19 @@ func TestDeactivateBroadcastStaticImage(t *testing.T) {
 
 func TestAuthYoutubeBroadcast(t *testing.T) {
 	t.Parallel()
+	now := time.Now()
+	broadcast := &entity.Broadcast{
+		ID:         "broadcast-id",
+		ScheduleID: "schedule-id",
+		Status:     entity.BroadcastStatusDisabled,
+	}
+	scheduleIn := &store.GetScheduleInput{
+		ScheduleID: "schedule-id",
+	}
+	schedule := &sentity.Schedule{
+		ID:     "schedule-id",
+		Status: sentity.ScheduleStatusWaiting,
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -870,13 +885,79 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 		expect    string
 		expectErr error
 	}{
-		// TODO: 成功ケースは後ほど実装
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.youtube.EXPECT().NewAuth().Return(mocks.youtubeAuth)
+				mocks.youtubeAuth.EXPECT().AuthCodeURL("state").Return("https://example.com/auth")
+			},
+			input: &media.AuthYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				State:      "state",
+			},
+			expect:    "https://example.com/auth",
+			expectErr: nil,
+		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.AuthYoutubeBroadcastInput{},
 			expect:    "",
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.AuthYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				State:      "state",
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is not disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.AuthYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				State:      "state",
+			},
+			expect:    "",
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to get schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(nil, assert.AnError)
+			},
+			input: &media.AuthYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				State:      "state",
+			},
+			expect:    "",
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "schedule is not waiting",
+			setup: func(ctx context.Context, mocks *mocks) {
+				schedule := &sentity.Schedule{Status: sentity.ScheduleStatusInProgress}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+			},
+			input: &media.AuthYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				State:      "state",
+			},
+			expect:    "",
+			expectErr: exception.ErrFailedPrecondition,
 		},
 	}
 	for _, tt := range tests {
@@ -885,24 +966,201 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 			authURL, err := service.AuthYoutubeBroadcast(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.Equal(t, tt.expect, authURL)
-		}))
+		}, withNow(now)))
 	}
 }
 
 func TestCreateYoutubeBroadcast(t *testing.T) {
 	t.Parallel()
+	now := time.Now()
+	broadcast := &entity.Broadcast{
+		ID:         "broadcast-id",
+		ScheduleID: "schedule-id",
+		Status:     entity.BroadcastStatusDisabled,
+	}
+	scheduleIn := &store.GetScheduleInput{
+		ScheduleID: "schedule-id",
+	}
+	schedule := &sentity.Schedule{
+		ID:          "schedule-id",
+		Title:       "配信テスト",
+		Description: "配信テストの説明です。",
+		StartAt:     now.AddDate(0, 0, 1),
+		EndAt:       now.AddDate(0, 0, 2),
+		Status:      sentity.ScheduleStatusWaiting,
+	}
+	createParams := &youtube.CreateLiveBroadcastParams{
+		Title:       "配信テスト",
+		Description: "配信テストの説明です。",
+		StartAt:     now.AddDate(0, 0, 1),
+		EndAt:       now.AddDate(0, 0, 2),
+		Public:      true,
+	}
+	liveBroadcast := &gyoutube.LiveBroadcast{
+		Id: "live-broadcast-id",
+		ContentDetails: &gyoutube.LiveBroadcastContentDetails{
+			BoundStreamId: "stream-id",
+		},
+	}
+	liveStream := &gyoutube.LiveStream{
+		Id: "stream-id",
+		Cdn: &gyoutube.CdnSettings{
+			IngestionInfo: &gyoutube.IngestionInfo{
+				StreamName:             "stream-name",
+				IngestionAddress:       "rtmp://example.com",
+				BackupIngestionAddress: "rtmp://backup.example.com",
+			},
+		},
+	}
+	updateParams := &database.UpdateBroadcastParams{
+		UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
+			YoutubeStreamURL: "rtmp://example.com",
+			YoutubeStreamKey: "stream-name",
+			YoutubeBackupURL: "rtmp://backup.example.com",
+		},
+	}
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
 		input     *media.CreateYoutubeBroadcastInput
 		expectErr error
 	}{
-		// TODO: 成功ケースは後ほど実装
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.youtube.EXPECT().NewService(ctx, "auth-code").Return(mocks.youtubeService, nil)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, createParams).Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().GetLiveStream(ctx, "stream-id").Return(liveStream, nil)
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", updateParams).Return(nil)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: nil,
+		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.CreateYoutubeBroadcastInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is not disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &entity.Broadcast{Status: entity.BroadcastStatusActive}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to get schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(nil, assert.AnError)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "schedule is not waiting",
+			setup: func(ctx context.Context, mocks *mocks) {
+				schedule := &sentity.Schedule{Status: sentity.ScheduleStatusInProgress}
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to create youtube service",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.youtube.EXPECT().NewService(ctx, "auth-code").Return(nil, assert.AnError)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get youtube live broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.youtube.EXPECT().NewService(ctx, "auth-code").Return(mocks.youtubeService, nil)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, createParams).Return(nil, assert.AnError)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to get youtube live stream",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.youtube.EXPECT().NewService(ctx, "auth-code").Return(mocks.youtubeService, nil)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, createParams).Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().GetLiveStream(ctx, "stream-id").Return(nil, assert.AnError)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to update broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.youtube.EXPECT().NewService(ctx, "auth-code").Return(mocks.youtubeService, nil)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, createParams).Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().GetLiveStream(ctx, "stream-id").Return(liveStream, nil)
+				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", updateParams).Return(assert.AnError)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				ScheduleID: "schedule-id",
+				AuthCode:   "auth-code",
+				Public:     true,
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {
@@ -910,6 +1168,6 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.CreateYoutubeBroadcast(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-		}))
+		}, withNow(now)))
 	}
 }

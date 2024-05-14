@@ -18,3 +18,23 @@ activateBroadcastMP4Request:
   - archiveUrl
   example:
     archiveUrl: 'http://example.com/live.mp4'
+authYoutubeBroadcastRequest:
+  type: object
+  properties:
+    state:
+      type: string
+      description: クライアントの状態コード（CSRF対策）
+  required:
+  - state
+  example:
+    state: 'state'
+createYoutubeBroadcastRequest:
+  type: object
+  properties:
+    authCode:
+      type: string
+      description: クライアントの認証用コード（YouTube APIの認証コード）
+  required:
+  - authCode
+  example:
+    authCode: 'auth-code'
