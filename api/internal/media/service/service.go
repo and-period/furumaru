@@ -17,13 +17,17 @@ import (
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"github.com/and-period/furumaru/api/pkg/validator"
 	"github.com/and-period/furumaru/api/pkg/youtube"
 	govalidator "github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 )
 
-const defaultUploadEventTTL = 12 * time.Hour // 12hours
+const (
+	defaultUploadEventTTL = 12 * time.Hour     // 12hours
+	defaultAuthYoutubeTTL = 3 * 24 * time.Hour // 3days
+)
 
 type Params struct {
 	WaitGroup *sync.WaitGroup
@@ -52,12 +56,15 @@ type service struct {
 	media          medialive.MediaLive
 	youtube        youtube.YouTube
 	now            func() time.Time
+	generateID     func() string
 	uploadEventTTL time.Duration
+	authYoutubeTTL time.Duration
 }
 
 type options struct {
 	logger         *zap.Logger
 	uploadEventTTL time.Duration
+	authYoutubeTTL time.Duration
 }
 
 type Option func(*options)
@@ -74,10 +81,17 @@ func WithUploadEventTTL(ttl time.Duration) Option {
 	}
 }
 
+func WithAuthYoutubeTTL(ttl time.Duration) Option {
+	return func(opts *options) {
+		opts.authYoutubeTTL = ttl
+	}
+}
+
 func NewService(params *Params, opts ...Option) (media.Service, error) {
 	dopts := &options{
 		logger:         zap.NewNop(),
 		uploadEventTTL: defaultUploadEventTTL,
+		authYoutubeTTL: defaultAuthYoutubeTTL,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -99,21 +113,25 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		return &url
 	}
 	return &service{
-		logger:         dopts.logger,
-		waitGroup:      params.WaitGroup,
-		validator:      validator.NewValidator(),
-		db:             params.Database,
-		cache:          params.Cache,
-		media:          params.MediaLive,
-		tmp:            params.Tmp,
-		tmpURL:         tmpURL,
-		storage:        params.Storage,
-		storageURL:     storageURL,
-		producer:       params.Producer,
-		store:          params.Store,
-		youtube:        params.YouTube,
-		now:            jst.Now,
+		logger:     dopts.logger,
+		waitGroup:  params.WaitGroup,
+		validator:  validator.NewValidator(),
+		db:         params.Database,
+		cache:      params.Cache,
+		media:      params.MediaLive,
+		tmp:        params.Tmp,
+		tmpURL:     tmpURL,
+		storage:    params.Storage,
+		storageURL: storageURL,
+		producer:   params.Producer,
+		store:      params.Store,
+		youtube:    params.YouTube,
+		now:        jst.Now,
+		generateID: func() string {
+			return uuid.Base58Encode(uuid.New())
+		},
 		uploadEventTTL: dopts.uploadEventTTL,
+		authYoutubeTTL: dopts.authYoutubeTTL,
 	}, nil
 }
 

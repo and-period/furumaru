@@ -21,20 +21,30 @@ activateBroadcastMP4Request:
 authYoutubeBroadcastRequest:
   type: object
   properties:
-    state:
+    googleAccount:
       type: string
-      description: クライアントの状態コード（CSRF対策）
+      description: 連携先Googleアカウント
   required:
-  - state
+  - googleAccount
   example:
-    state: 'state'
+    googleAccount: 'google-account'
 createYoutubeBroadcastRequest:
   type: object
   properties:
+    state:
+      type: string
+      description: Google認証後に取得したstate
     authCode:
       type: string
-      description: クライアントの認証用コード（YouTube APIの認証コード）
+      description: Google認証後に取得したcode
+    public:
+      type: boolean
+      description: YouTubeの公開設定
   required:
+  - state
   - authCode
+  - public
   example:
+    state: 'state'
     authCode: 'auth-code'
+    public: true

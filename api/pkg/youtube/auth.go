@@ -9,6 +9,9 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"google.golang.org/api/googleapi"
+	gauth "google.golang.org/api/oauth2/v2"
+	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
 )
 
@@ -22,7 +25,7 @@ func (c *client) NewAuth() Auth {
 		ClientID:     c.clientID,
 		ClientSecret: c.clientSecret,
 		Endpoint:     google.Endpoint,
-		Scopes:       []string{youtube.YoutubeScope},
+		Scopes:       []string{"openid", "email", "profile", youtube.YoutubeScope},
 		RedirectURL:  c.authCallbackURL,
 	}
 	return &auth{
@@ -31,7 +34,7 @@ func (c *client) NewAuth() Auth {
 	}
 }
 
-func (a *auth) AuthCodeURL(state string) string {
+func (a *auth) GetAuthCodeURL(state string) string {
 	opts := []oauth2.AuthCodeOption{
 		oauth2.AccessTypeOffline,
 		oauth2.ApprovalForce,
@@ -39,25 +42,65 @@ func (a *auth) AuthCodeURL(state string) string {
 	return a.Config.AuthCodeURL(state, opts...)
 }
 
-func (a *auth) Exchange(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
+func (a *auth) GetToken(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
 	token, err := a.Config.Exchange(ctx, code, opts...)
-	if err == nil {
-		return token, nil
+	if err != nil {
+		return nil, a.internalError(err)
 	}
-	a.logger.Error("failed to exchange token", zap.Error(err))
+	if !token.Valid() {
+		return nil, fmt.Errorf("%w: token is invalid", ErrUnauthorized)
+	}
+	return token, nil
+}
 
-	var e *oauth2.RetrieveError
-	if !errors.As(err, &e) {
-		return nil, fmt.Errorf("%w: %s", ErrUnknown, err.Error())
+func (a *auth) GetTokenInfo(ctx context.Context, token *oauth2.Token) (*gauth.Tokeninfo, error) {
+	client := a.Config.Client(ctx, token)
+	service, err := gauth.NewService(ctx, option.WithHTTPClient(client))
+	if err != nil {
+		return nil, a.internalError(err)
 	}
-	switch e.Response.StatusCode {
-	case http.StatusBadRequest:
-		return nil, fmt.Errorf("%w: %s", ErrBadRequest, e.Error())
-	case http.StatusUnauthorized:
-		return nil, fmt.Errorf("%w: %s", ErrUnauthorized, e.Error())
-	case http.StatusForbidden:
-		return nil, fmt.Errorf("%w: %s", ErrForbidden, e.Error())
-	default:
-		return nil, fmt.Errorf("%w: %s", ErrUnknown, e.Error())
+	user, err := service.Tokeninfo().AccessToken(token.AccessToken).Context(ctx).Do()
+	if err != nil {
+		return nil, a.internalError(err)
 	}
+	return user, nil
+}
+
+func (a *auth) internalError(err error) error {
+	if err == nil {
+		return nil
+	}
+	a.logger.Error("Failed to oauth2 api", zap.Error(err))
+
+	code := ErrUnknown
+
+	var e *googleapi.Error
+	if errors.As(err, &e) {
+		switch e.Code {
+		case http.StatusBadRequest:
+			code = ErrBadRequest
+		case http.StatusUnauthorized:
+			code = ErrUnauthorized
+		case http.StatusForbidden:
+			code = ErrForbidden
+		case http.StatusTooManyRequests:
+			code = ErrTooManyRequests
+		}
+		return fmt.Errorf("%w: %s", code, e.Error())
+	}
+
+	var ae *oauth2.RetrieveError
+	if errors.As(err, &ae) {
+		switch ae.Response.StatusCode {
+		case http.StatusBadRequest:
+			code = ErrBadRequest
+		case http.StatusUnauthorized:
+			code = ErrUnauthorized
+		case http.StatusForbidden:
+			code = ErrForbidden
+		}
+		return fmt.Errorf("%w: %s", code, ae.Error())
+	}
+
+	return fmt.Errorf("%w: %s", code, err.Error())
 }

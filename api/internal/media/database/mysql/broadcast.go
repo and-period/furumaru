@@ -127,6 +127,7 @@ func (b *broadcast) Update(ctx context.Context, broadcastID string, params *data
 		updates["archive_fixed"] = params.ArchiveFixed
 	}
 	if params.UpsertYoutubeBroadcastParams != nil {
+		updates["youtube_account"] = params.YoutubeAccount
 		updates["youtube_stream_key"] = params.YoutubeStreamKey
 		updates["youtube_stream_url"] = params.YoutubeStreamURL
 		updates["youtube_backup_url"] = params.YoutubeBackupURL

@@ -8,6 +8,7 @@ import (
 
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
+	gauth "google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/youtube/v3"
 )
 
@@ -23,19 +24,20 @@ var (
 )
 
 type YouTube interface {
-	NewService(ctx context.Context, code string) (Service, error)
 	NewAuth() Auth
+	NewService(ctx context.Context, token *oauth2.Token) (Service, error)
+}
+
+type Auth interface {
+	Client(ctx context.Context, t *oauth2.Token) *http.Client
+	GetAuthCodeURL(state string) string
+	GetToken(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error)
+	GetTokenInfo(ctx context.Context, token *oauth2.Token) (*gauth.Tokeninfo, error)
 }
 
 type Service interface {
 	CreateLiveBroadcast(ctx context.Context, params *CreateLiveBroadcastParams) (*youtube.LiveBroadcast, error) // ライブ配信作成
 	GetLiveStream(ctx context.Context, streamID string) (*youtube.LiveStream, error)                            // ライブ配信先設定取得
-}
-
-type Auth interface {
-	AuthCodeURL(state string) string
-	Exchange(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error)
-	Client(ctx context.Context, t *oauth2.Token) *http.Client
 }
 
 type Params struct {

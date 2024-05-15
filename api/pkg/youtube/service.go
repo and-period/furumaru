@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"go.uber.org/zap"
+	"golang.org/x/oauth2"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
@@ -29,13 +30,9 @@ type service struct {
 	livePublished bool
 }
 
-func (c *client) NewService(ctx context.Context, code string) (Service, error) {
-	auth := c.NewAuth()
-	token, err := auth.Exchange(ctx, code)
-	if err != nil {
-		return nil, err
-	}
-	srv, err := youtube.NewService(ctx, option.WithHTTPClient(auth.Client(ctx, token)))
+func (c *client) NewService(ctx context.Context, token *oauth2.Token) (Service, error) {
+	httpClient := c.NewAuth().Client(ctx, token)
+	srv, err := youtube.NewService(ctx, option.WithHTTPClient(httpClient))
 	if err != nil {
 		return nil, err
 	}

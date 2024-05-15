@@ -18,6 +18,7 @@ import (
 	mock_store "github.com/and-period/furumaru/api/mock/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/storage"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -50,7 +51,8 @@ type dbMocks struct {
 }
 
 type testOptions struct {
-	now func() time.Time
+	now  func() time.Time
+	uuid func() string
 }
 
 type testOption func(opts *testOptions)
@@ -59,6 +61,14 @@ func withNow(now time.Time) testOption {
 	return func(opts *testOptions) {
 		opts.now = func() time.Time {
 			return now
+		}
+	}
+}
+
+func withUUID(uuid string) testOption {
+	return func(opts *testOptions) {
+		opts.uuid = func() string {
+			return uuid
 		}
 	}
 }
@@ -90,7 +100,8 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 
 func newService(mocks *mocks, opts ...testOption) *service {
 	dopts := &testOptions{
-		now: jst.Now,
+		now:  jst.Now,
+		uuid: uuid.New,
 	}
 	for i := range opts {
 		opts[i](dopts)
@@ -118,6 +129,9 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	service := srv.(*service)
 	service.now = func() time.Time {
 		return dopts.now()
+	}
+	service.generateID = func() string {
+		return dopts.uuid()
 	}
 	return service
 }

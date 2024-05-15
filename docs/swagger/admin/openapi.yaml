@@ -189,10 +189,10 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/rtmp.yaml'
   /v1/schedules/{scheduleId}/broadcasts/mp4:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/mp4.yaml'
-  /v1/schedules/{scheduleId}/broadcasts/youtube:
-    $ref: './paths/v1/schedules/_scheduleId/broadcasts/youtube/index.yaml'
   /v1/schedules/{scheduleId}/broadcasts/youtube/auth:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/youtube/auth.yaml'
+  /v1/schedules/-/broadcasts/youtube:
+    $ref: './paths/v1/schedules/-/broadcasts/youtube/index.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'

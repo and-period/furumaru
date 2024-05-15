@@ -263,14 +263,42 @@ func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutub
 	if schedule.Status != sentity.ScheduleStatusWaiting {
 		return "", fmt.Errorf("service: this schedule is not waiting: %w", exception.ErrFailedPrecondition)
 	}
-	return s.youtube.NewAuth().AuthCodeURL(in.State), nil
+	sessionID := s.generateID()
+	params := &entity.BroadcastAuthParams{
+		SessionID:  sessionID,
+		Account:    in.GoogleAccount,
+		ScheduleID: in.ScheduleID,
+		Now:        s.now(),
+		TTL:        s.authYoutubeTTL,
+	}
+	auth := entity.NewYouTubeBroadcastAuth(params)
+	if err := s.cache.Insert(ctx, auth); err != nil {
+		return "", internalError(err)
+	}
+	return s.youtube.NewAuth().GetAuthCodeURL(sessionID), nil
 }
 
 func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYoutubeBroadcastInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	authClient := s.youtube.NewAuth()
+	token, err := authClient.GetToken(ctx, in.AuthCode)
+	if err != nil {
+		return internalError(err)
+	}
+	user, err := authClient.GetTokenInfo(ctx, token)
+	if err != nil {
+		return internalError(err)
+	}
+	auth := &entity.BroadcastAuth{SessionID: in.State}
+	if err := s.cache.Get(ctx, auth); err != nil {
+		return internalError(err)
+	}
+	if !auth.ValidYouTubeAuth(user.Email) {
+		return fmt.Errorf("service: invalid youtube auth: %w", exception.ErrUnauthenticated)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, auth.ScheduleID)
 	if err != nil {
 		return internalError(err)
 	}
@@ -278,7 +306,7 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 		return fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
 	}
 	scheduleIn := &store.GetScheduleInput{
-		ScheduleID: in.ScheduleID,
+		ScheduleID: broadcast.ScheduleID,
 	}
 	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
 	if err != nil {
@@ -287,7 +315,7 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	if schedule.Status != sentity.ScheduleStatusWaiting {
 		return fmt.Errorf("service: this schedule is not waiting: %w", exception.ErrFailedPrecondition)
 	}
-	service, err := s.youtube.NewService(ctx, in.AuthCode)
+	service, err := s.youtube.NewService(ctx, token)
 	if err != nil {
 		return internalError(err)
 	}
@@ -307,6 +335,7 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 		return internalError(err)
 	}
 	params := &database.UpdateBroadcastParams{UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
+		YoutubeAccount:   user.Email,
 		YoutubeStreamURL: stream.Cdn.IngestionInfo.IngestionAddress,
 		YoutubeStreamKey: stream.Cdn.IngestionInfo.StreamName,
 		YoutubeBackupURL: stream.Cdn.IngestionInfo.BackupIngestionAddress,

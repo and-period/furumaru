@@ -74,14 +74,14 @@ type DeactivateBroadcastStaticImageInput struct {
 }
 
 type AuthYoutubeBroadcastInput struct {
-	ScheduleID string `validate:"required"`
-	State      string `validate:"required"`
+	ScheduleID    string `validate:"required"`
+	GoogleAccount string `validate:"required"`
 }
 
 type CreateYoutubeBroadcastInput struct {
-	ScheduleID string `validate:"required"`
-	AuthCode   string `validate:"required"`
-	Public     bool   `validate:""`
+	State    string `validate:"required"`
+	AuthCode string `validate:"required"`
+	Public   bool   `validate:""`
 }
 
 type CreateBroadcastViewerLogInput struct {

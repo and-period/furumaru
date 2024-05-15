@@ -441,11 +441,11 @@ export interface AuthUserResponse {
  */
 export interface AuthYoutubeBroadcastRequest {
     /**
-     * クライアントの状態コード（CSRF対策）
+     * 連携先Googleアカウント
      * @type {string}
      * @memberof AuthYoutubeBroadcastRequest
      */
-    'state': string;
+    'googleAccount': string;
 }
 /**
  * 
@@ -1981,11 +1981,23 @@ export interface CreateThreadRequest {
  */
 export interface CreateYoutubeBroadcastRequest {
     /**
-     * クライアントの認証用コード（YouTube APIの認証コード）
+     * Google認証後に取得したstate
+     * @type {string}
+     * @memberof CreateYoutubeBroadcastRequest
+     */
+    'state': string;
+    /**
+     * Google認証後に取得したcode
      * @type {string}
      * @memberof CreateYoutubeBroadcastRequest
      */
     'authCode': string;
+    /**
+     * YouTubeの公開設定
+     * @type {boolean}
+     * @memberof CreateYoutubeBroadcastRequest
+     */
+    'public': boolean;
 }
 /**
  * 配送方法
@@ -8522,18 +8534,14 @@ export const BroadcastApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @summary マルシェライブ配信のYoutube連携
-         * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {CreateYoutubeBroadcastRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateYoutubeBroadcast: async (scheduleId: string, body: CreateYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'scheduleId' is not null or undefined
-            assertParamExists('v1CreateYoutubeBroadcast', 'scheduleId', scheduleId)
+        v1CreateYoutubeBroadcast: async (body: CreateYoutubeBroadcastRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'body' is not null or undefined
             assertParamExists('v1CreateYoutubeBroadcast', 'body', body)
-            const localVarPath = `/v1/schedules/{scheduleId}/broadcasts/youtube`
-                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            const localVarPath = `/v1/schedules/-/broadcasts/youtube`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8910,13 +8918,12 @@ export const BroadcastApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary マルシェライブ配信のYoutube連携
-         * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {CreateYoutubeBroadcastRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1CreateYoutubeBroadcast(scheduleId: string, body: CreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateYoutubeBroadcast(scheduleId, body, options);
+        async v1CreateYoutubeBroadcast(body: CreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateYoutubeBroadcast(body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BroadcastApi.v1CreateYoutubeBroadcast']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -9069,13 +9076,12 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
         /**
          * 
          * @summary マルシェライブ配信のYoutube連携
-         * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {CreateYoutubeBroadcastRequest} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateYoutubeBroadcast(scheduleId: string, body: CreateYoutubeBroadcastRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.v1CreateYoutubeBroadcast(scheduleId, body, options).then((request) => request(axios, basePath));
+        v1CreateYoutubeBroadcast(body: CreateYoutubeBroadcastRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.v1CreateYoutubeBroadcast(body, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9212,14 +9218,13 @@ export class BroadcastApi extends BaseAPI {
     /**
      * 
      * @summary マルシェライブ配信のYoutube連携
-     * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {CreateYoutubeBroadcastRequest} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BroadcastApi
      */
-    public v1CreateYoutubeBroadcast(scheduleId: string, body: CreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
-        return BroadcastApiFp(this.configuration).v1CreateYoutubeBroadcast(scheduleId, body, options).then((request) => request(this.axios, this.basePath));
+    public v1CreateYoutubeBroadcast(body: CreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig) {
+        return BroadcastApiFp(this.configuration).v1CreateYoutubeBroadcast(body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

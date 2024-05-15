@@ -5,14 +5,6 @@ post:
   - Broadcast
   security:
   - bearerAuth: []
-  parameters:
-  - in: path
-    name: scheduleId
-    schema:
-      type: string
-    description: マルシェ開催スケジュールID
-    required: true
-    example: "schedule-id"
   requestBody:
     required: true
     content:

@@ -74,6 +74,7 @@ type UploadBroadcastArchiveParams struct {
 }
 
 type UpsertYoutubeBroadcastParams struct {
+	YoutubeAccount   string
 	YoutubeStreamURL string
 	YoutubeStreamKey string
 	YoutubeBackupURL string
