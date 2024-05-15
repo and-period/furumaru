@@ -19,6 +19,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+	"github.com/and-period/furumaru/api/pkg/youtube"
 	govalidator "github.com/go-playground/validator/v10"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -220,6 +221,26 @@ func TestInternalError(t *testing.T) {
 			name:   "storage not found",
 			err:    storage.ErrNotFound,
 			expect: exception.ErrNotFound,
+		},
+		{
+			name:   "youtube invalid argument",
+			err:    youtube.ErrBadRequest,
+			expect: exception.ErrInvalidArgument,
+		},
+		{
+			name:   "youtube unauthorized",
+			err:    youtube.ErrUnauthorized,
+			expect: exception.ErrUnauthenticated,
+		},
+		{
+			name:   "youtube forbidden",
+			err:    youtube.ErrForbidden,
+			expect: exception.ErrForbidden,
+		},
+		{
+			name:   "youtube too many requests",
+			err:    youtube.ErrTooManyRequests,
+			expect: exception.ErrResourceExhausted,
 		},
 		{
 			name:   "context canceled",

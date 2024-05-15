@@ -983,8 +983,8 @@ func TestAuthYoutubeBroadcast(t *testing.T) {
 				ScheduleID:    "schedule-id",
 				GoogleAccount: "test@example.com",
 			},
-			expect:    "https://example.com/auth",
-			expectErr: nil,
+			expect:    "",
+			expectErr: exception.ErrInternal,
 		},
 	}
 	for _, tt := range tests {

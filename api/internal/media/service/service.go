@@ -149,6 +149,9 @@ func internalError(err error) error {
 	if e := storageError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
 	}
+	if e := youtubeError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
 
 	switch {
 	case errors.Is(err, context.Canceled):
