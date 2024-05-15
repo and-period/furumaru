@@ -418,6 +418,7 @@ func TestBroadcast_Update(t *testing.T) {
 				params: &database.UpdateBroadcastParams{
 					Status: entity.BroadcastStatusActive,
 					UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
+						YoutubeAccount:   "test@example.com",
 						YoutubeStreamURL: "rtmp://a.rtmp.youtube.com/live2",
 						YoutubeStreamKey: "stream-key",
 						YoutubeBackupURL: "rtmp://b.rtmp.youtube.com/live2?backup=1",

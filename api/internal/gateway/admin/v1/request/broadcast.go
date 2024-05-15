@@ -9,9 +9,11 @@ type ActivateBroadcastMP4Request struct {
 }
 
 type AuthYoutubeBroadcastRequest struct {
-	State string `json:"state,omitempty"` // クライアントの認証用コード
+	GoogleAccount string `json:"googleAccount,omitempty"` // 連携先Googleアカウント
 }
 
 type CreateYoutubeBroadcastRequest struct {
-	AuthCode string `json:"authCode,omitempty"` // 認証コード
+	State    string `json:"state,omitempty"`    // Google認証時に取得したstate
+	AuthCode string `json:"authCode,omitempty"` // Google認証時に取得したcode
+	Public   bool   `json:"public,omitempty"`   // 公開設定
 }

@@ -18,3 +18,33 @@ activateBroadcastMP4Request:
   - archiveUrl
   example:
     archiveUrl: 'http://example.com/live.mp4'
+authYoutubeBroadcastRequest:
+  type: object
+  properties:
+    googleAccount:
+      type: string
+      description: 連携先Googleアカウント
+  required:
+  - googleAccount
+  example:
+    googleAccount: 'google-account'
+createYoutubeBroadcastRequest:
+  type: object
+  properties:
+    state:
+      type: string
+      description: Google認証後に取得したstate
+    authCode:
+      type: string
+      description: Google認証後に取得したcode
+    public:
+      type: boolean
+      description: YouTubeの公開設定
+  required:
+  - state
+  - authCode
+  - public
+  example:
+    state: 'state'
+    authCode: 'auth-code'
+    public: true

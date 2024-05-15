@@ -38,6 +38,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/slack"
 	"github.com/and-period/furumaru/api/pkg/sqs"
 	"github.com/and-period/furumaru/api/pkg/storage"
+	"github.com/and-period/furumaru/api/pkg/youtube"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -60,6 +61,7 @@ type params struct {
 	messengerQueue       sqs.Producer
 	mediaQueue           sqs.Producer
 	medialive            medialive.MediaLive
+	youtube              youtube.YouTube
 	slack                slack.Client
 	newRelic             *newrelic.Application
 	sentry               sentry.Client
@@ -83,7 +85,7 @@ type params struct {
 	googleClientSecret   string
 }
 
-//nolint:funlen
+//nolint:funlen,maintidx
 func (a *app) inject(ctx context.Context) error {
 	params := &params{
 		logger:    zap.NewNop(),
@@ -244,7 +246,7 @@ func (a *app) inject(ctx context.Context) error {
 	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(params.logger))
 
 	// WebURLの設定
-	adminWebURL, err := url.Parse(a.AminWebURL)
+	adminWebURL, err := url.Parse(a.AdminWebURL)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to parse admin web url: %w", err)
 	}
@@ -254,6 +256,14 @@ func (a *app) inject(ctx context.Context) error {
 		return fmt.Errorf("cmd: failed to parse user web url: %w", err)
 	}
 	params.userWebURL = userWebURL
+
+	// YouTubeの設定
+	youtubeParams := &youtube.Params{
+		ClientID:        params.googleClientID,
+		ClientSecret:    params.googleClientSecret,
+		AuthCallbackURL: a.YoutubeAuthCallbackURL,
+	}
+	params.youtube = youtube.NewClient(youtubeParams, youtube.WithLogger(params.logger))
 
 	// Serviceの設定
 	mediaService, err := a.newMediaService(params)
@@ -436,17 +446,15 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 		return nil, err
 	}
 	params := &mediasrv.Params{
-		WaitGroup:          p.waitGroup,
-		Database:           mediadb.NewDatabase(mysql),
-		Cache:              p.cache,
-		MediaLive:          p.medialive,
-		Storage:            p.storage,
-		Tmp:                p.tmpStorage,
-		Producer:           p.mediaQueue,
-		Store:              store,
-		GoogleClientID:     p.googleClientID,
-		GoogleClientSecret: p.googleClientSecret,
-		AdminWebURL:        p.adminWebURL,
+		WaitGroup: p.waitGroup,
+		Database:  mediadb.NewDatabase(mysql),
+		Cache:     p.cache,
+		MediaLive: p.medialive,
+		YouTube:   p.youtube,
+		Storage:   p.storage,
+		Tmp:       p.tmpStorage,
+		Producer:  p.mediaQueue,
+		Store:     store,
 	}
 	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))
 }

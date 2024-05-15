@@ -10,14 +10,11 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
-	"go.uber.org/zap"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
+	"github.com/and-period/furumaru/api/pkg/youtube"
 	"golang.org/x/sync/errgroup"
-	"google.golang.org/api/option"
-	"google.golang.org/api/youtube/v3"
 )
 
 func (s *service) ListBroadcasts(ctx context.Context, in *media.ListBroadcastsInput) (entity.Broadcasts, int64, error) {
@@ -256,92 +253,93 @@ func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutub
 	if broadcast.Status != entity.BroadcastStatusDisabled {
 		return "", fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
 	}
-	config := s.newYoutubeBroadcastConfig()
-	opts := []oauth2.AuthCodeOption{
-		oauth2.AccessTypeOffline,
-		oauth2.ApprovalForce,
-		oauth2.SetAuthURLParam("schedule_id", broadcast.ScheduleID),
+	scheduleIn := &store.GetScheduleInput{
+		ScheduleID: broadcast.ScheduleID,
 	}
-	return config.AuthCodeURL(in.State, opts...), nil
+	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
+	if err != nil {
+		return "", internalError(err)
+	}
+	if schedule.Status != sentity.ScheduleStatusWaiting {
+		return "", fmt.Errorf("service: this schedule is not waiting: %w", exception.ErrFailedPrecondition)
+	}
+	sessionID := s.generateID()
+	params := &entity.BroadcastAuthParams{
+		SessionID:  sessionID,
+		Account:    in.GoogleAccount,
+		ScheduleID: in.ScheduleID,
+		Now:        s.now(),
+		TTL:        s.authYoutubeTTL,
+	}
+	auth := entity.NewYouTubeBroadcastAuth(params)
+	if err := s.cache.Insert(ctx, auth); err != nil {
+		return "", internalError(err)
+	}
+	return s.youtube.NewAuth().GetAuthCodeURL(sessionID), nil
 }
 
 func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYoutubeBroadcastInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
+	authClient := s.youtube.NewAuth()
+	token, err := authClient.GetToken(ctx, in.AuthCode)
 	if err != nil {
-		return fmt.Errorf("service: failed to get broadcast: %s: %w", err.Error(), exception.ErrInternal)
-		// return internalError(err)
+		return internalError(err)
+	}
+	user, err := authClient.GetTokenInfo(ctx, token)
+	if err != nil {
+		return internalError(err)
+	}
+	auth := &entity.BroadcastAuth{SessionID: in.State}
+	if err := s.cache.Get(ctx, auth); err != nil {
+		return internalError(err)
+	}
+	if !auth.ValidYouTubeAuth(user.Email) {
+		return fmt.Errorf("service: invalid youtube auth: %w", exception.ErrUnauthenticated)
+	}
+	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, auth.ScheduleID)
+	if err != nil {
+		return internalError(err)
 	}
 	if broadcast.Status != entity.BroadcastStatusDisabled {
 		return fmt.Errorf("service: this broadcast is not disabled: %w", exception.ErrFailedPrecondition)
 	}
 	scheduleIn := &store.GetScheduleInput{
-		ScheduleID: in.ScheduleID,
+		ScheduleID: broadcast.ScheduleID,
 	}
 	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
 	if err != nil {
 		return internalError(err)
 	}
-	// TODO: youtubeクライアントを作成する(動作検証のため、いったん雑に実装)
-	config := s.newYoutubeBroadcastConfig()
-	token, err := config.Exchange(ctx, in.AuthCode)
+	if schedule.Status != sentity.ScheduleStatusWaiting {
+		return fmt.Errorf("service: this schedule is not waiting: %w", exception.ErrFailedPrecondition)
+	}
+	service, err := s.youtube.NewService(ctx, token)
 	if err != nil {
-		return fmt.Errorf("service: failed to exchange token: %s: %w", err.Error(), exception.ErrForbidden)
+		return internalError(err)
 	}
-	client := config.Client(ctx, token)
-	// source := config.TokenSource(ctx, token)
-	s.logger.Debug("youtube broadcast token", zap.Any("token", token))
-	service, err := youtube.NewService(ctx, option.WithHTTPClient(client))
+	youtubeIn := &youtube.CreateLiveBroadcastParams{
+		Title:       schedule.Title,
+		Description: schedule.Description,
+		StartAt:     schedule.StartAt,
+		EndAt:       schedule.EndAt,
+		Public:      in.Public,
+	}
+	liveBroadcast, err := service.CreateLiveBroadcast(ctx, youtubeIn)
 	if err != nil {
-		return fmt.Errorf("service: failed to create youtube service: %s: %w", err.Error(), exception.ErrInternal)
-		// return internalError(err)
+		return internalError(err)
 	}
-	youtubeIn := &youtube.LiveBroadcast{
-		Snippet: &youtube.LiveBroadcastSnippet{
-			Title:              schedule.Title,
-			Description:        schedule.Description,
-			ScheduledStartTime: schedule.StartAt.Format(time.RFC3339),
-			ScheduledEndTime:   schedule.EndAt.Format(time.RFC3339),
-		},
-		Status: &youtube.LiveBroadcastStatus{
-			PrivacyStatus: "unlisted",
-		},
-		ContentDetails: &youtube.LiveBroadcastContentDetails{
-			EnableAutoStart: false,
-			EnableAutoStop:  true,
-		},
-	}
-	part := []string{"id", "snippet", "contentDetails", "status"}
-	youtubeOut, err := service.LiveBroadcasts.Insert(part, youtubeIn).Do()
+	stream, err := service.GetLiveStream(ctx, liveBroadcast.ContentDetails.BoundStreamId)
 	if err != nil {
-		return fmt.Errorf("service: failed to insert broadcast: %s: %w", err.Error(), exception.ErrInternal)
-		// return internalError(err)
-	}
-	streamOut, err := service.LiveStreams.List([]string{"id", "snippet", "cdn"}).Id(youtubeOut.Id).Context(ctx).Do()
-	if err != nil {
-		return fmt.Errorf("service: failed to list streams: %s: %w", err.Error(), exception.ErrInternal)
-		// return internalError(err)
-	}
-	if len(streamOut.Items) == 0 {
-		return fmt.Errorf("service: list streams is empty: %w", exception.ErrInternal)
+		return internalError(err)
 	}
 	params := &database.UpdateBroadcastParams{UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
-		YoutubeStreamURL: streamOut.Items[0].Cdn.IngestionInfo.IngestionAddress,
-		YoutubeStreamKey: streamOut.Items[0].Cdn.IngestionInfo.StreamName,
-		YoutubeBackupURL: streamOut.Items[0].Cdn.IngestionInfo.BackupIngestionAddress,
+		YoutubeAccount:   user.Email,
+		YoutubeStreamURL: stream.Cdn.IngestionInfo.IngestionAddress,
+		YoutubeStreamKey: stream.Cdn.IngestionInfo.StreamName,
+		YoutubeBackupURL: stream.Cdn.IngestionInfo.BackupIngestionAddress,
 	}}
 	err = s.db.Broadcast.Update(ctx, broadcast.ID, params)
 	return internalError(err)
-}
-
-func (s *service) newYoutubeBroadcastConfig() *oauth2.Config {
-	return &oauth2.Config{
-		ClientID:     s.googleClientID,
-		ClientSecret: s.googleClientSecret,
-		Endpoint:     google.Endpoint,
-		Scopes:       []string{youtube.YoutubeScope},
-		RedirectURL:  entity.NewAdminURLMaker(s.adminWebURL()).AuthYoutubeCallback(),
-	}
 }

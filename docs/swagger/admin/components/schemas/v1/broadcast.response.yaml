@@ -15,3 +15,13 @@ broadcastResponse:
       archiveUrl: 'http://example.com/index.mp4'
       createdAt: 1640962800
       updatedAt: 1640962800
+authYoutubeBroadcastResponse:
+  type: object
+  properties:
+    url:
+      type: string
+      description: YouTubeの認証URL
+  required:
+  - url
+  example:
+    url: 'https://example.com/auth'

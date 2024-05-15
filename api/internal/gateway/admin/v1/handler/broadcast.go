@@ -22,10 +22,10 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/static-image", h.DeactivateBroadcastStaticImage)
 	r.POST("/rtmp", h.ActivateBroadcastRTMP)
 	r.POST("/mp4", h.ActivateBroadcastMP4)
+	rg.POST("/youtube/auth", h.AuthYoutubeBroadcast)
 
 	// 認証不要なAPI（外部APIとの連携依頼用）
-	r.POST("/youtube/auth", h.AuthYoutubeBroadcast)
-	r.POST("/youtube", h.CreateYoutubeBroadcast)
+	rg.POST("/schedules/-/broadcasts/youtube", h.CreateYoutubeBroadcast)
 }
 
 func (h *handler) GetBroadcast(ctx *gin.Context) {
@@ -139,8 +139,8 @@ func (h *handler) AuthYoutubeBroadcast(ctx *gin.Context) {
 		return
 	}
 	in := &media.AuthYoutubeBroadcastInput{
-		ScheduleID: util.GetParam(ctx, "scheduleId"),
-		State:      req.State,
+		ScheduleID:    util.GetParam(ctx, "scheduleId"),
+		GoogleAccount: req.GoogleAccount,
 	}
 	authURL, err := h.media.AuthYoutubeBroadcast(ctx, in)
 	if err != nil {
@@ -160,8 +160,9 @@ func (h *handler) CreateYoutubeBroadcast(ctx *gin.Context) {
 		return
 	}
 	in := &media.CreateYoutubeBroadcastInput{
-		ScheduleID: util.GetParam(ctx, "scheduleId"),
-		AuthCode:   req.AuthCode,
+		State:    req.State,
+		AuthCode: req.AuthCode,
+		Public:   req.Public,
 	}
 	if err := h.media.CreateYoutubeBroadcast(ctx, in); err != nil {
 		h.httpError(ctx, err)
