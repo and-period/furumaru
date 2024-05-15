@@ -13,7 +13,7 @@ type AuthYoutubeBroadcastRequest struct {
 }
 
 type CreateYoutubeBroadcastRequest struct {
-	State    string `json:"state,omitempty"`    // 
-	AuthCode string `json:"authCode,omitempty"` // 認証コード
+	State    string `json:"state,omitempty"`    // Google認証時に取得したstate
+	AuthCode string `json:"authCode,omitempty"` // Google認証時に取得したcode
 	Public   bool   `json:"public,omitempty"`   // 公開設定
 }
