@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import { fileUpload } from './helper'
 import { apiClient } from '~/plugins/api-client'
-import type { ActivateBroadcastMP4Request, AuthYoutubeBroadcastRequest, Broadcast, GetUploadUrlRequest, UpdateBroadcastArchiveRequest } from '~/types/api'
+import type { ActivateBroadcastMP4Request, AuthYoutubeBroadcastRequest, Broadcast, CreateYoutubeBroadcastRequest, GetUploadUrlRequest, UpdateBroadcastArchiveRequest } from '~/types/api'
 
 export const useBroadcastStore = defineStore('broadcast', {
   state: () => ({
@@ -164,6 +164,24 @@ export const useBroadcastStore = defineStore('broadcast', {
         return res.data.url
       } catch (err) {
         return this.errorHandler(err, {
+          404: '指定したマルシェの配信が見つかりません。',
+          412: 'マルシェの配信が開始しているため、YouTube認証を行えません。'
+        })
+      }
+    },
+
+    /**
+     * YouTube連携を行う非同期関数
+     * @param payload YouTube連携情報
+     * @returns
+     */
+    async connectYouTube (payload: CreateYoutubeBroadcastRequest): Promise<void> {
+      try {
+        await apiClient.broadcastApi().v1CreateYoutubeBroadcast(payload)
+      } catch (err) {
+        return this.errorHandler(err, {
+          401: 'YouTubeの認証情報に誤りがあります。再度認証を行ってください。',
+          403: 'YouTubeの認証情報に誤りがあります。再度認証を行ってください。',
           404: '指定したマルシェの配信が見つかりません。',
           412: 'マルシェの配信が開始しているため、YouTube認証を行えません。'
         })
