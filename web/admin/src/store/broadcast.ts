@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import { fileUpload } from './helper'
 import { apiClient } from '~/plugins/api-client'
-import type { ActivateBroadcastMP4Request, Broadcast, GetUploadUrlRequest, UpdateBroadcastArchiveRequest } from '~/types/api'
+import type { ActivateBroadcastMP4Request, AuthYoutubeBroadcastRequest, Broadcast, GetUploadUrlRequest, UpdateBroadcastArchiveRequest } from '~/types/api'
 
 export const useBroadcastStore = defineStore('broadcast', {
   state: () => ({
@@ -148,6 +148,24 @@ export const useBroadcastStore = defineStore('broadcast', {
         return this.errorHandler(err, {
           404: '指定したマルシェの配信が見つかりません。',
           412: 'マルシェの配信が終了していないため、オンデマンド動画を差し替えできません。'
+        })
+      }
+    },
+
+    /**
+     * YouTube認証を行う非同期関数
+     * @param scheduleId マルシェ開催スケジュールID
+     * @param payload YouTube認証情報
+     * @returns
+     */
+    async authYouTube (scheduleId: string, payload: AuthYoutubeBroadcastRequest): Promise<string> {
+      try {
+        const res = await apiClient.broadcastApi().v1AuthYoutubeBroadcast(scheduleId, payload)
+        return res.data.url
+      } catch (err) {
+        return this.errorHandler(err, {
+          404: '指定したマルシェの配信が見つかりません。',
+          412: 'マルシェの配信が開始しているため、YouTube認証を行えません。'
         })
       }
     }

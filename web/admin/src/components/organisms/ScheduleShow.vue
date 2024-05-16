@@ -36,7 +36,6 @@ const props = defineProps({
       description: '',
       status: ScheduleStatus.UNKNOWN,
       thumbnailUrl: '',
-      thumbnails: [],
       imageUrl: '',
       openingVideoUrl: '',
       public: false,
