@@ -36,8 +36,11 @@ type Auth interface {
 }
 
 type Service interface {
+	GetLiveBroadcast(ctx context.Context, broadcastID string) (*youtube.LiveBroadcast, error)                   // ライブ配信情報取得
 	CreateLiveBroadcast(ctx context.Context, params *CreateLiveBroadcastParams) (*youtube.LiveBroadcast, error) // ライブ配信作成
+	BindLiveBroadcast(ctx context.Context, broadcastID, streamID string) error                                  // ライブ配信とライブストリームを紐付け
 	GetLiveStream(ctx context.Context, streamID string) (*youtube.LiveStream, error)                            // ライブ配信先設定取得
+	CreateLiveStream(ctx context.Context, params *CreateLiveStreamParams) (*youtube.LiveStream, error)          // ライブストリーム作成
 }
 
 type Params struct {

@@ -319,26 +319,34 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	if err != nil {
 		return internalError(err)
 	}
-	youtubeIn := &youtube.CreateLiveBroadcastParams{
+	broadcastIn := &youtube.CreateLiveBroadcastParams{
 		Title:       schedule.Title,
 		Description: schedule.Description,
 		StartAt:     schedule.StartAt,
 		EndAt:       schedule.EndAt,
 		Public:      in.Public,
 	}
-	liveBroadcast, err := service.CreateLiveBroadcast(ctx, youtubeIn)
+	liveBroadcast, err := service.CreateLiveBroadcast(ctx, broadcastIn)
 	if err != nil {
 		return internalError(err)
 	}
-	stream, err := service.GetLiveStream(ctx, liveBroadcast.ContentDetails.BoundStreamId)
+	streamIn := &youtube.CreateLiveStreamParams{
+		Title: schedule.Title,
+	}
+	stream, err := service.CreateLiveStream(ctx, streamIn)
 	if err != nil {
+		return internalError(err)
+	}
+	if err := service.BindLiveBroadcast(ctx, liveBroadcast.Id, stream.Id); err != nil {
 		return internalError(err)
 	}
 	params := &database.UpdateBroadcastParams{UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
-		YoutubeAccount:   user.Email,
-		YoutubeStreamURL: stream.Cdn.IngestionInfo.IngestionAddress,
-		YoutubeStreamKey: stream.Cdn.IngestionInfo.StreamName,
-		YoutubeBackupURL: stream.Cdn.IngestionInfo.BackupIngestionAddress,
+		YoutubeAccount:     user.Email,
+		YoutubeBroadcastID: liveBroadcast.Id,
+		YoutubeStreamID:    stream.Id,
+		YoutubeStreamURL:   stream.Cdn.IngestionInfo.IngestionAddress,
+		YoutubeStreamKey:   stream.Cdn.IngestionInfo.StreamName,
+		YoutubeBackupURL:   stream.Cdn.IngestionInfo.BackupIngestionAddress,
 	}}
 	err = s.db.Broadcast.Update(ctx, broadcast.ID, params)
 	return internalError(err)

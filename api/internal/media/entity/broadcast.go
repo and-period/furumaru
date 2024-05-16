@@ -53,6 +53,8 @@ type Broadcast struct {
 	MediaLiveMP4InputName     string          `gorm:"default:null"`         // MediaLiveインプット名(MP4)
 	MediaStoreContainerArn    string          `gorm:"default:null"`         // MediaStoreコンテナARN
 	YoutubeAccount            string          `gorm:"default:null"`         // YouTubeアカウント
+	YoutubeBroadcastID        string          `gorm:"default:null"`         // YouTube配信ID
+	YoutubeStreamID           string          `gorm:"default:null"`         // YouTubeストリームID
 	YoutubeStreamURL          string          `gorm:"default:null"`         // YouTube配信URL
 	YoutubeStreamKey          string          `gorm:"default:null"`         // YouTubeストリームキー
 	YoutubeBackupURL          string          `gorm:"default:null"`         // YouTubeバックアップURL
