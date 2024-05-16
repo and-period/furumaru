@@ -1,5 +1,25 @@
 # Changelog
 
+## [v1.11.13](https://github.com/and-period/furumaru/compare/v1.11.12...v1.11.13) - 2024-05-16
+- fix:すべての商品画面のローディング状態に使うステータスをuseAsyncDataの返り値にする by @wf-yamaday in https://github.com/and-period/furumaru/pull/2187
+- fix(workflow): OpenAIによるレビューを削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2191
+- fix(func): ブラー指定のみでも画像加工されるように by @taba2424 in https://github.com/and-period/furumaru/pull/2190
+- fix: 買い物カゴに入れるボタンの参照する状態変数を修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2188
+- Nuxt/Imageの導入 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2192
+- feat(media): youtube配信用の情報をDB管理できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2193
+- chore(deps): bump the dependencies group in /api with 23 updates by @dependabot in https://github.com/and-period/furumaru/pull/2194
+- chore(deps): bump json-parse-even-better-errors from 3.0.1 to 3.0.2 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2195
+- feat(media): youtube配信先のバックアップURL追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2196
+- fix(admin): バリデーション周りのタイポ修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2197
+- マルシェ一覧のレイアウトの修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2198
+- feat(media): youtube配信用のAPIを定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2201
+- fix(media): youtube認証時のリダイレクトURLを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2202
+- fix(media): youtube認証時のリダイレクトURLを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2203
+- feat(media): youtube配信APIのデバッグログ追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2204
+- Feat/media/add debug log by @taba2424 in https://github.com/and-period/furumaru/pull/2205
+- chore(deps): bump the dependencies group in /api with 24 updates by @dependabot in https://github.com/and-period/furumaru/pull/2207
+- feat(media): youtube配信との連携 by @taba2424 in https://github.com/and-period/furumaru/pull/2206
+
 ## [v1.11.12](https://github.com/and-period/furumaru/compare/v1.11.11...v1.11.12) - 2024-05-01
 - chore(deps): bump the dependencies group across 1 directory with 23 updates by @dependabot in https://github.com/and-period/furumaru/pull/2182
 - feat(web): Sentryの設定を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2184
