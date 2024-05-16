@@ -22,7 +22,7 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/static-image", h.DeactivateBroadcastStaticImage)
 	r.POST("/rtmp", h.ActivateBroadcastRTMP)
 	r.POST("/mp4", h.ActivateBroadcastMP4)
-	rg.POST("/youtube/auth", h.AuthYoutubeBroadcast)
+	r.POST("/youtube/auth", h.AuthYoutubeBroadcast)
 
 	// 認証不要なAPI（外部APIとの連携依頼用）
 	rg.POST("/schedules/-/broadcasts/youtube", h.CreateYoutubeBroadcast)
