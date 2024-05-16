@@ -4,7 +4,7 @@ import Cookies from 'universal-cookie'
 import { useAuthStore } from '~/store'
 
 export default defineNuxtRouteMiddleware(async (to, _) => {
-  const publicPages = ['/signin', '/recover']
+  const publicPages = ['/signin', '/recover', '/auth/youtube/callback', '/auth/youtube/complete']
   if (publicPages.includes(to.path)) {
     return
   }
