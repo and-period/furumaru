@@ -1,9 +1,13 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
+
+const youtubeAdminURL = "https://studio.youtube.com/video/%s/livestreaming"
 
 // BroadcastStatus - ライブ配信状況
 type BroadcastStatus int32
@@ -42,18 +46,23 @@ func (s BroadcastStatus) Response() int32 {
 }
 
 func NewBroadcast(broadcast *entity.Broadcast) *Broadcast {
-	return &Broadcast{
+	res := &Broadcast{
 		Broadcast: response.Broadcast{
-			ID:         broadcast.ID,
-			ScheduleID: broadcast.ScheduleID,
-			Status:     NewBroadcastStatus(broadcast.Status).Response(),
-			InputURL:   broadcast.InputURL,
-			OutputURL:  broadcast.OutputURL,
-			ArchiveURL: broadcast.ArchiveURL,
-			CreatedAt:  broadcast.CreatedAt.Unix(),
-			UpdatedAt:  broadcast.CreatedAt.Unix(),
+			ID:             broadcast.ID,
+			ScheduleID:     broadcast.ScheduleID,
+			Status:         NewBroadcastStatus(broadcast.Status).Response(),
+			InputURL:       broadcast.InputURL,
+			OutputURL:      broadcast.OutputURL,
+			ArchiveURL:     broadcast.ArchiveURL,
+			YouTubeAccount: broadcast.YoutubeAccount,
+			CreatedAt:      broadcast.CreatedAt.Unix(),
+			UpdatedAt:      broadcast.CreatedAt.Unix(),
 		},
 	}
+	if broadcast.YoutubeBroadcastID != "" {
+		res.YouTubeAdminURL = fmt.Sprintf(youtubeAdminURL, broadcast.YoutubeBroadcastID)
+	}
+	return res
 }
 
 func (b *Broadcast) Response() *response.Broadcast {
