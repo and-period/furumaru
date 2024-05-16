@@ -92,14 +92,8 @@ func (s *service) CreateLiveBroadcast(ctx context.Context, params *CreateLiveBro
 }
 
 func (s *service) BindLiveBroadcast(ctx context.Context, broadcastID, streamID string) error {
-	in := &youtube.LiveBroadcast{
-		Id: broadcastID,
-		ContentDetails: &youtube.LiveBroadcastContentDetails{
-			BoundStreamId: streamID,
-		},
-	}
 	part := []string{"id", "snippet", "contentDetails", "status"}
-	_, err := s.service.LiveBroadcasts.Update(part, in).Context(ctx).Do()
+	_, err := s.service.LiveBroadcasts.Bind(broadcastID, part).StreamId(streamID).Context(ctx).Do()
 	if err != nil {
 		return s.internalError(err)
 	}
