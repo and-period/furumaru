@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import type { AlertType } from '~/lib/hooks'
-import { type Broadcast, BroadcastStatus, type Coordinator, type CreateLiveRequest, type Live, type Product, type Schedule, ScheduleStatus, type UpdateLiveRequest, type UpdateScheduleRequest, type Producer } from '~/types/api'
+import { type Broadcast, BroadcastStatus, type Coordinator, type CreateLiveRequest, type Live, type Product, type Schedule, ScheduleStatus, type UpdateLiveRequest, type UpdateScheduleRequest, type Producer, type AuthYoutubeBroadcastRequest } from '~/types/api'
 import type{ ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
@@ -85,6 +85,12 @@ const props = defineProps({
     type: Object as PropType<File[] | undefined>,
     default: (): File[] | undefined => undefined
   },
+  authYoutubeFormData: {
+    type: Object as PropType<AuthYoutubeBroadcastRequest>,
+    default: (): AuthYoutubeBroadcastRequest => ({
+      googleAccount: ''
+    })
+  },
   schedule: {
     type: Object as PropType<Schedule>,
     default: (): Schedule => ({
@@ -94,7 +100,6 @@ const props = defineProps({
       description: '',
       status: ScheduleStatus.UNKNOWN,
       thumbnailUrl: '',
-      thumbnails: [],
       imageUrl: '',
       openingVideoUrl: '',
       public: false,
@@ -132,6 +137,8 @@ const props = defineProps({
       inputUrl: '',
       outputUrl: '',
       archiveUrl: '',
+      youtubeAccount: '',
+      youtubeAdminUrl: '',
       createdAt: 0,
       updatedAt: 0
     })
@@ -147,6 +154,10 @@ const props = defineProps({
   products: {
     type: Array<Product>,
     default: () => []
+  },
+  authYoutubeUrl: {
+    type: String,
+    default: ''
   },
   video: {
     type: Object as PropType<HTMLVideoElement | undefined>,
@@ -180,6 +191,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
+  (e: 'click:link-youtube'): void
   (e: 'click:new-live'): void
   (e: 'click:edit-live', liveId: string): void
   (e: 'update:pause-dialog', v: boolean): void
@@ -191,6 +203,7 @@ const emit = defineEmits<{
   (e: 'update:update-live-dialog', v: boolean): void
   (e: 'update:create-live-form-data', formData: CreateLiveRequest): void
   (e: 'update:update-live-form-data', formData: UpdateLiveRequest): void
+  (e: 'update:auth-youtube-form-data', formData: AuthYoutubeBroadcastRequest): void
   (e: 'update:mp4-form-data', formData?: File[]): void
   (e: 'update:thumbnail', files: FileList): void
   (e: 'update:image', files: FileList): void
@@ -257,6 +270,14 @@ const mp4FormDataValue = computed({
   get: (): File[] | undefined => props.mp4FormData,
   set: (formData?: File[]): void => emit('update:mp4-form-data', formData)
 })
+const authYoutubeFormDataValue = computed({
+  get: (): AuthYoutubeBroadcastRequest => props.authYoutubeFormData,
+  set: (formData: AuthYoutubeBroadcastRequest): void => emit('update:auth-youtube-form-data', formData)
+})
+
+const onClickLinkYouTube = (): void => {
+  emit('click:link-youtube')
+}
 
 const onClickNewLive = (): void => {
   emit('click:new-live')
@@ -397,9 +418,12 @@ const onSubmitUploadArchiveMp4 = (): void => {
         v-model:live-mp4-dialog="liveMp4DialogValue"
         v-model:archive-mp4-dialog="archiveMp4DialogValue"
         v-model:mp4-form-data="mp4FormDataValue"
+        v-model:auth-youtube-form-data="authYoutubeFormDataValue"
         :loading="loading"
         :selected-tab-item="selectedTabItem"
         :broadcast="broadcast"
+        :auth-youtube-url="authYoutubeUrl"
+        @click:link-youtube="onClickLinkYouTube"
         @click:activate-static-image="onSubmitActivateStaticImage"
         @click:deactivate-static-image="onSubmitDeactivateStaticImage"
         @submit:pause="onSubmitPause"

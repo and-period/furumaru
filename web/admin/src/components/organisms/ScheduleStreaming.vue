@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { mdiPaperclip } from '@mdi/js'
 import Hls from 'hls.js'
-import { type Broadcast, BroadcastStatus } from '~/types/api'
+import { type Broadcast, BroadcastStatus, type AuthYoutubeBroadcastRequest } from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -24,6 +24,12 @@ const props = defineProps({
     type: Object as PropType<File[] | undefined>,
     default: (): File[] | undefined => undefined
   },
+  authYoutubeFormData: {
+    type: Object as PropType<AuthYoutubeBroadcastRequest>,
+    default: (): AuthYoutubeBroadcastRequest => ({
+      googleAccount: ''
+    })
+  },
   selectedTabItem: {
     type: String,
     default: 'schedule'
@@ -37,18 +43,26 @@ const props = defineProps({
       inputUrl: '',
       outputUrl: '',
       archiveUrl: '',
+      youtubeAccount: '',
+      youtubeAdminUrl: '',
       createdAt: 0,
       updatedAt: 0
     })
+  },
+  authYoutubeUrl: {
+    type: String,
+    default: ''
   }
 })
 
 const emit = defineEmits<{
   (e: 'update:broadcast', broadcast: Broadcast): void
   (e: 'update:mp4-form-data', file: File[] | undefined): void
+  (e: 'update:auth-youtube-form-data', formData: AuthYoutubeBroadcastRequest): void
   (e: 'update:pause-dialog', toggle: boolean): void
   (e: 'update:live-mp4-dialog', toggle: boolean): void
   (e: 'update:archive-mp4-dialog', toggle: boolean): void
+  (e: 'click:link-youtube'): void
   (e: 'click:activate-static-image'): void
   (e: 'click:deactivate-static-image'): void
   (e: 'submit:pause'): void
@@ -88,6 +102,14 @@ const mp4FormDataValue = computed({
   get: (): File[] | undefined => props.mp4FormData,
   set: (formData: File[] | undefined): void => emit('update:mp4-form-data', formData)
 })
+const authYoutubeFormDataValue = computed({
+  get: (): AuthYoutubeBroadcastRequest => props.authYoutubeFormData,
+  set: (formData: AuthYoutubeBroadcastRequest): void => emit('update:auth-youtube-form-data', formData)
+})
+const authYoutubeUrlValue = computed({
+  get: (): string => props.authYoutubeUrl,
+  set: (url: string): void => console.log(url)
+})
 
 watch((): string => props.selectedTabItem, (): void => {
   if (props.selectedTabItem !== 'streaming') {
@@ -124,6 +146,10 @@ const onClickVideo = (): void => {
     video.src = src
     video.play()
   }
+}
+
+const onClickLinkYouTube = (): void => {
+  emit('click:link-youtube')
 }
 
 const onClickPause = (): void => {
@@ -285,6 +311,42 @@ const onSubmitUploadArchiveMp4 = (): void => {
               映像の更新
             </v-btn>
           </v-container>
+        </v-card-text>
+      </v-card>
+
+      <v-card class="mt-4">
+        <v-card-text>
+          <v-list>
+            <v-list-item v-if="broadcastValue.youtubeAccount === ''" class="px-0">
+              <template v-if="authYoutubeUrlValue === ''">
+                <v-text-field
+                  v-model="authYoutubeFormDataValue.googleAccount"
+                  label="YouTube 連携先アカウント"
+                />
+                <v-btn block variant="outlined" color="primary" @click="onClickLinkYouTube">
+                  連携する
+                </v-btn>
+              </template>
+              <v-text-field
+                v-else
+                v-model="authYoutubeUrlValue"
+                label="YouTube 連携用URL"
+                readonly
+              />
+            </v-list-item>
+            <v-list-item v-else>
+              <v-text-field
+                v-model="broadcastValue.youtubeAccount"
+                label="YouTube 連携先アカウント"
+                readonly
+              />
+              <v-text-field
+                v-model="broadcastValue.youtubeAdminUrl"
+                label="YouTube 配信管理画面URL"
+                readonly
+              />
+            </v-list-item>
+          </v-list>
         </v-card-text>
       </v-card>
     </v-col>

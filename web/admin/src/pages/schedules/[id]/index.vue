@@ -3,7 +3,7 @@ import dayjs, { unix } from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
 import { useBroadcastStore, useCommonStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore } from '~/store'
-import type { CreateLiveRequest, Live, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
+import type { AuthYoutubeBroadcastRequest, CreateLiveRequest, Live, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
@@ -41,6 +41,7 @@ const initialLive: Live = {
 const loading = ref<boolean>(false)
 const selector = ref<string>(tab ?? 'schedule')
 const selectedLive = ref<Live>({ ...initialLive })
+const authYoutubeUrl = ref<string>('')
 const createLiveDialog = ref<boolean>(false)
 const updateLiveDialog = ref<boolean>(false)
 const pauseDialog = ref<boolean>(false)
@@ -69,6 +70,9 @@ const updateLiveFormData = ref<UpdateLiveRequest>({
   endAt: dayjs().unix()
 })
 const mp4FormData = ref<File[] | undefined>()
+const authYoutubeFormData = ref<AuthYoutubeBroadcastRequest>({
+  googleAccount: ''
+})
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
   message: ''
@@ -198,6 +202,26 @@ const handleUploadOpeningVideo = (files: FileList): void => {
     .finally(() => {
       loading.value = false
     })
+}
+
+const handleClickLinkYouTube = async (): Promise<void> => {
+  try {
+    loading.value = true
+    const authUrl: string = await broadcastStore.authYouTube(scheduleId, authYoutubeFormData.value)
+    authYoutubeUrl.value = authUrl
+
+    commonStore.addSnackbar({
+      message: 'YouTubeと連携用のURLを発行しました。',
+      color: 'info'
+    })
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleClickNewLive = (): void => {
@@ -456,6 +480,7 @@ try {
     v-model:create-live-form-data="createLiveFormData"
     v-model:update-live-form-data="updateLiveFormData"
     v-model:mp4-form-data="mp4FormData"
+    v-model:auth-youtube-form-data="authYoutubeFormData"
     :loading="isLoading()"
     :updatable="updatable()"
     :is-alert="isShow"
@@ -468,9 +493,11 @@ try {
     :coordinators="coordinators"
     :producers="producers"
     :products="products"
+    :auth-youtube-url="authYoutubeUrl"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :image-upload-status="imageUploadStatus"
     :opening-video-upload-status="openingVideoUploadStatus"
+    @click:link-youtube="handleClickLinkYouTube"
     @click:new-live="handleClickNewLive"
     @click:edit-live="handleClickEditLive"
     @update:thumbnail="handleUploadThumbnail"
