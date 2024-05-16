@@ -1037,7 +1037,7 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 		EndAt:       now.AddDate(0, 0, 2),
 		Status:      sentity.ScheduleStatusWaiting,
 	}
-	createParams := &youtube.CreateLiveBroadcastParams{
+	broadcastParams := &youtube.CreateLiveBroadcastParams{
 		Title:       "配信テスト",
 		Description: "配信テストの説明です。",
 		StartAt:     now.AddDate(0, 0, 1),
@@ -1050,9 +1050,18 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 			BoundStreamId: "stream-id",
 		},
 	}
+	streamParams := &youtube.CreateLiveStreamParams{
+		Title: "配信テスト",
+	}
 	liveStream := &gyoutube.LiveStream{
 		Id: "stream-id",
+		Snippet: &gyoutube.LiveStreamSnippet{
+			Title: "配信テスト",
+		},
 		Cdn: &gyoutube.CdnSettings{
+			IngestionType: "rtmp",
+			FrameRate:     "variable",
+			Resolution:    "variable",
 			IngestionInfo: &gyoutube.IngestionInfo{
 				StreamName:             "stream-name",
 				IngestionAddress:       "rtmp://example.com",
@@ -1062,10 +1071,12 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 	}
 	updateParams := &database.UpdateBroadcastParams{
 		UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
-			YoutubeAccount:   "test@example.com",
-			YoutubeStreamURL: "rtmp://example.com",
-			YoutubeStreamKey: "stream-name",
-			YoutubeBackupURL: "rtmp://backup.example.com",
+			YoutubeAccount:     "test@example.com",
+			YoutubeBroadcastID: "live-broadcast-id",
+			YoutubeStreamID:    "stream-id",
+			YoutubeStreamURL:   "rtmp://example.com",
+			YoutubeStreamKey:   "stream-name",
+			YoutubeBackupURL:   "rtmp://backup.example.com",
 		},
 	}
 	tests := []struct {
@@ -1095,8 +1106,9 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, createParams).Return(liveBroadcast, nil)
-				mocks.youtubeService.EXPECT().GetLiveStream(ctx, "stream-id").Return(liveStream, nil)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().CreateLiveStream(ctx, streamParams).Return(liveStream, nil)
+				mocks.youtubeService.EXPECT().BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").Return(nil)
 				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", updateParams).Return(nil)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
@@ -1331,7 +1343,7 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, createParams).Return(nil, assert.AnError)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(nil, assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
 				State:    "session-id",
@@ -1361,8 +1373,40 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, createParams).Return(liveBroadcast, nil)
-				mocks.youtubeService.EXPECT().GetLiveStream(ctx, "stream-id").Return(nil, assert.AnError)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().CreateLiveStream(ctx, streamParams).Return(nil, assert.AnError)
+			},
+			input: &media.CreateYoutubeBroadcastInput{
+				State:    "session-id",
+				AuthCode: "auth-code",
+				Public:   true,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to bind live broadcast and stream",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.youtube.EXPECT().NewAuth().Return(mocks.youtubeAuth)
+				mocks.youtubeAuth.EXPECT().GetToken(ctx, "auth-code").Return(token, nil)
+				mocks.youtubeAuth.EXPECT().GetTokenInfo(ctx, token).Return(tokenInfo, nil)
+				mocks.cache.EXPECT().Get(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, key *entity.BroadcastAuth) error {
+						assert.Equal(t, auth.SessionID, key.SessionID)
+						key.SessionID = auth.SessionID
+						key.Type = auth.Type
+						key.Account = auth.Account
+						key.ScheduleID = auth.ScheduleID
+						key.ExpiredAt = auth.ExpiredAt
+						key.CreatedAt = auth.CreatedAt
+						key.UpdatedAt = auth.UpdatedAt
+						return nil
+					})
+				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
+				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
+				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().CreateLiveStream(ctx, streamParams).Return(liveStream, nil)
+				mocks.youtubeService.EXPECT().BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").Return(assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{
 				State:    "session-id",
@@ -1392,8 +1436,9 @@ func TestCreateYoutubeBroadcast(t *testing.T) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(broadcast, nil)
 				mocks.store.EXPECT().GetSchedule(ctx, scheduleIn).Return(schedule, nil)
 				mocks.youtube.EXPECT().NewService(ctx, token).Return(mocks.youtubeService, nil)
-				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, createParams).Return(liveBroadcast, nil)
-				mocks.youtubeService.EXPECT().GetLiveStream(ctx, "stream-id").Return(liveStream, nil)
+				mocks.youtubeService.EXPECT().CreateLiveBroadcast(ctx, broadcastParams).Return(liveBroadcast, nil)
+				mocks.youtubeService.EXPECT().CreateLiveStream(ctx, streamParams).Return(liveStream, nil)
+				mocks.youtubeService.EXPECT().BindLiveBroadcast(ctx, "live-broadcast-id", "stream-id").Return(nil)
 				mocks.db.Broadcast.EXPECT().Update(ctx, "broadcast-id", updateParams).Return(assert.AnError)
 			},
 			input: &media.CreateYoutubeBroadcastInput{

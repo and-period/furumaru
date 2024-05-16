@@ -74,10 +74,12 @@ type UploadBroadcastArchiveParams struct {
 }
 
 type UpsertYoutubeBroadcastParams struct {
-	YoutubeAccount   string
-	YoutubeStreamURL string
-	YoutubeStreamKey string
-	YoutubeBackupURL string
+	YoutubeAccount     string
+	YoutubeBroadcastID string
+	YoutubeStreamID    string
+	YoutubeStreamURL   string
+	YoutubeStreamKey   string
+	YoutubeBackupURL   string
 }
 
 type BroadcastComment interface {

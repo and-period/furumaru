@@ -24,6 +24,12 @@ type CreateLiveBroadcastParams struct {
 	Public      bool      // 配信を公開設定（true:公開,false:限定公開）
 }
 
+// CreateLiveStreamParams - ライブストリーム作成パラメータ
+// @see - https://developers.google.com/youtube/v3/live/docs/liveStreams/insert?hl=ja
+type CreateLiveStreamParams struct {
+	Title string // ライブ配信タイトル
+}
+
 type service struct {
 	service       *youtube.Service
 	logger        *zap.Logger
@@ -40,6 +46,18 @@ func (c *client) NewService(ctx context.Context, token *oauth2.Token) (Service, 
 		service: srv,
 		logger:  c.logger,
 	}, nil
+}
+
+func (s *service) GetLiveBroadcast(ctx context.Context, broadcastID string) (*youtube.LiveBroadcast, error) {
+	part := []string{"id", "snippet", "contentDetails", "status"}
+	out, err := s.service.LiveBroadcasts.List(part).Id(broadcastID).Context(ctx).Do()
+	if err != nil {
+		return nil, s.internalError(err)
+	}
+	if len(out.Items) == 0 {
+		return nil, fmt.Errorf("youtube: live broadcast not found: %w", ErrNotFound)
+	}
+	return out.Items[0], nil
 }
 
 func (s *service) CreateLiveBroadcast(ctx context.Context, params *CreateLiveBroadcastParams) (*youtube.LiveBroadcast, error) {
@@ -73,6 +91,21 @@ func (s *service) CreateLiveBroadcast(ctx context.Context, params *CreateLiveBro
 	return res, nil
 }
 
+func (s *service) BindLiveBroadcast(ctx context.Context, broadcastID, streamID string) error {
+	in := &youtube.LiveBroadcast{
+		Id: broadcastID,
+		ContentDetails: &youtube.LiveBroadcastContentDetails{
+			BoundStreamId: streamID,
+		},
+	}
+	part := []string{"id", "snippet", "contentDetails", "status"}
+	_, err := s.service.LiveBroadcasts.Update(part, in).Context(ctx).Do()
+	if err != nil {
+		return s.internalError(err)
+	}
+	return nil
+}
+
 func (s *service) GetLiveStream(ctx context.Context, streamID string) (*youtube.LiveStream, error) {
 	part := []string{"id", "snippet", "cdn"}
 	out, err := s.service.LiveStreams.List(part).Id(streamID).Context(ctx).Do()
@@ -80,9 +113,28 @@ func (s *service) GetLiveStream(ctx context.Context, streamID string) (*youtube.
 		return nil, s.internalError(err)
 	}
 	if len(out.Items) == 0 {
-		return nil, ErrNotFound
+		return nil, fmt.Errorf("youtube: live stream not found: %w", ErrNotFound)
 	}
 	return out.Items[0], nil
+}
+
+func (s *service) CreateLiveStream(ctx context.Context, params *CreateLiveStreamParams) (*youtube.LiveStream, error) {
+	in := &youtube.LiveStream{
+		Snippet: &youtube.LiveStreamSnippet{
+			Title: params.Title,
+		},
+		Cdn: &youtube.CdnSettings{
+			FrameRate:     "variable",
+			Resolution:    "variable",
+			IngestionType: "rtmp",
+		},
+	}
+	part := []string{"id", "snippet", "cdn", "status"}
+	res, err := s.service.LiveStreams.Insert(part, in).Context(ctx).Do()
+	if err != nil {
+		return nil, s.internalError(err)
+	}
+	return res, nil
 }
 
 func (s *service) internalError(err error) error {
