@@ -503,6 +503,18 @@ export interface Broadcast {
      */
     'archiveUrl': string;
     /**
+     * YouTubeアカウントID
+     * @type {string}
+     * @memberof Broadcast
+     */
+    'youtubeAccount': string;
+    /**
+     * YouTube管理画面URL
+     * @type {string}
+     * @memberof Broadcast
+     */
+    'youtubeAdminUrl': string;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof Broadcast

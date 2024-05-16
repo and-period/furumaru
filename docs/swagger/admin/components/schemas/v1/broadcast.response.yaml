@@ -13,6 +13,8 @@ broadcastResponse:
       inputUrl: 'rtmp://127.0.0.1:1935/app/instance'
       outputUrl: 'http://example.com/index.m3u8'
       archiveUrl: 'http://example.com/index.mp4'
+      youtubeAccount: 'UC9kMz1e3J1JGZz1bFv1Jn1g'
+      youtubeAdminUrl: 'https://studio.youtube.com/video/live-broadcast-id/livestreaming'
       createdAt: 1640962800
       updatedAt: 1640962800
 authYoutubeBroadcastResponse:
