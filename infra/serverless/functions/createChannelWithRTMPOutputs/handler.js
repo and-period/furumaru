@@ -23,25 +23,25 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
   const RTMPOutputs = params.RTMPOutputs;
   const RTMPOutputGroup = require('./RTMPOutputGroup.json');
   if (RTMPOutputs.length > 0) {
-    for (let i = 0; i < RTMPOutputs.length; i++) {
+    RTMPOutputs.forEach((output, i) => {
       defaultSettings.Destinations.push({
         "Id": `RTMP${i}`,
         "Settings": [
           {
-            "StreamName": RTMPOutputs[i].StreamKey,
-            "Url": RTMPOutputs[i].StreamUrl
+            "StreamName": output.StreamKey,
+            "Url": output.StreamUrl
           }
         ]
       });
-    }
-    for (let i = 0; i < RTMPOutputs.length; i++) {
+    });
+    RTMPOutputs.forEach((output, i) => {
       RTMPOutputGroup.Outputs.push(
         {
           "AudioDescriptionNames": [
             "オーディオ"
           ],
           "CaptionDescriptionNames": [],
-          "OutputName": RTMPOutputs[i].Name,
+          "OutputName": output.Name,
           "OutputSettings": {
             "RtmpOutputSettings": {
               "CertificateMode": "VERIFY_AUTHENTICITY",
@@ -55,7 +55,7 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
           "VideoDescriptionName": "動画"
         }
       );
-    }
+    });
   }
   defaultSettings.EncoderSettings.OutputGroups.push(RTMPOutputGroup);
   console.log(defaultSettings);
