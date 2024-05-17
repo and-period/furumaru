@@ -64,7 +64,7 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
     console.log(data);
     return data;
   } catch (err) {
-    console.log(err);
+    console.error(`Error creating channel: ${err.message}`, err);
     return err;
   }
 }
