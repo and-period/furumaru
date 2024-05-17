@@ -1,0 +1,15 @@
+{
+  "OutputGroupSettings": {
+    "RtmpGroupSettings": {
+      "AdMarkers": [],
+      "AuthenticationScheme": "COMMON",
+      "CacheFullBehavior": "DISCONNECT_IMMEDIATELY",
+      "CacheLength": 30,
+      "CaptionData": "ALL",
+      "IncludeFillerNalUnits": "AUTO",
+      "InputLossAction": "EMIT_OUTPUT",
+      "RestartDelay": 15
+    }
+  },
+  "Outputs": []
+}
