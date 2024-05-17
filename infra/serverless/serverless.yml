@@ -110,6 +110,11 @@ resources:
                     - '*'
                 - Effect: Allow
                   Action:
+                    - mediaLive:CreateChannel
+                  Resource:
+                    - '*'
+                - Effect: Allow
+                  Action:
                     - mediaStore:DescribeContainer
                     - mediaStore:ListItems
                     - mediaStore:DeleteObject
@@ -123,7 +128,11 @@ resources:
                     - cloudFront:DeleteDistribution
                   Resource:
                     - '*'
-
+                - Effect: Allow
+                  Action:
+                    - iam:PassRole
+                  Resource:
+                    - '*'
 functions:
   extractMediaStoreDomain:
     role: lambdaRole
@@ -138,6 +147,11 @@ functions:
   getExistsChannelIndex:
     role: lambdaRole
     handler: functions/getExistsChannelIndex/handler.getExistsChannelIndex
+    memorySize: 128
+    timeout: 10
+  createChannelWithRTMPOutputs:
+    role: lambdaRole
+    handler: functions/createChannelWithRTMPOutputs/handler.createChannelWithRTMPOutputs
     memorySize: 128
     timeout: 10
   disableDistribution:
@@ -338,7 +352,8 @@ stepFunctions:
                     Comment: ライブ配信 - チャンネルを作成
                     InputPath: $
                     ResultPath: $[0].ChannelResult
-                    Resource: arn:aws:states:::aws-sdk:medialive:createChannel
+                    Resource: 
+                      Fn::GetAtt: [createChannelWithRTMPOutputs, Arn]
                     Parameters:
                       Name.$: $[0].ChannelInput.Name
                       RoleArn: arn:aws:iam::${self:provider.account}:role/MediaLiveAccessRole
@@ -350,10 +365,6 @@ stepFunctions:
                           InputAttachmentName.$: $[1].MP4Result.Input.Name
                           InputSettings:
                             SourceEndBehavior: LOOP
-                      InputSpecification:
-                        Codec: AVC
-                        MaximumBitrate: MAX_20_MBPS
-                        Resolution: UHD
                       Destinations:
                         - Id: MediaStore
                           Settings:
@@ -370,174 +381,7 @@ stepFunctions:
                             InputLossImageColor: "3a3a3a"
                             InputLossImageSlate:
                               Uri.$: $[0].ChannelInput.InputLossImageSlateUri
-                        TimecodeConfig:
-                          Source: EMBEDDED
-                        AudioDescriptions:
-                          - Name: オーディオ
-                            AudioSelectorName: Default
-                        VideoDescriptions:
-                          - CodecSettings:
-                              H264Settings:
-                                AdaptiveQuantization: AUTO
-                                AfdSignaling: NONE
-                                Bitrate: 20000000
-                                ColorMetadata: INSERT
-                                EntropyEncoding: CABAC
-                                FlickerAq: ENABLED
-                                ForceFieldPictures: DISABLED
-                                FramerateControl: SPECIFIED
-                                FramerateDenominator: 1
-                                FramerateNumerator: 30
-                                GopBReference: DISABLED
-                                GopClosedCadence: 1
-                                GopSize: 90
-                                GopSizeUnits: FRAMES
-                                Level: H264_LEVEL_AUTO
-                                LookAheadRateControl: MEDIUM
-                                NumRefFrames: 1
-                                ParControl: INITIALIZE_FROM_SOURCE
-                                Profile: MAIN
-                                RateControlMode: CBR
-                                ScanType: PROGRESSIVE
-                                SceneChangeDetect: ENABLED
-                                SpatialAq: ENABLED
-                                SubgopLength: FIXED
-                                Syntax: DEFAULT
-                                TemporalAq: ENABLED
-                                TimecodeInsertion: DISABLED
-                            Height: 1080
-                            Name: 動画
-                            RespondToAfd: NONE
-                            ScalingBehavior: DEFAULT
-                            Sharpness: 50
-                            Width: 1920
-                        OutputGroups:
-                          - Name: MediaStore
-                            OutputGroupSettings:
-                              HlsGroupSettings:
-                                AdMarkers: []
-                                CaptionLanguageMappings: []
-                                CaptionLanguageSetting: OMIT
-                                ClientCache: ENABLED
-                                CodecSpecification: RFC_4281
-                                Destination:
-                                  DestinationRefId: MediaStore
-                                DirectoryStructure: SINGLE_DIRECTORY
-                                DiscontinuityTags: INSERT
-                                HlsCdnSettings:
-                                  HlsMediaStoreSettings:
-                                    ConnectionRetryInterval: 1
-                                    FilecacheDuration: 300
-                                    MediaStoreStorageClass: TEMPORAL
-                                    NumRetries: 10
-                                    RestartDelay: 15
-                                HlsId3SegmentTagging: DISABLED
-                                IFrameOnlyPlaylists: DISABLED
-                                IncompleteSegmentBehavior: AUTO
-                                IndexNSegments: 60
-                                InputLossAction: EMIT_OUTPUT
-                                IvInManifest: INCLUDE
-                                IvSource: FOLLOWS_SEGMENT_NUMBER
-                                KeepSegments: 126
-                                ManifestCompression: NONE
-                                ManifestDurationFormat: FLOATING_POINT
-                                Mode: LIVE
-                                OutputSelection: MANIFESTS_AND_SEGMENTS
-                                ProgramDateTime: EXCLUDE
-                                ProgramDateTimeClock: INITIALIZE_FROM_OUTPUT_TIMECODE
-                                ProgramDateTimePeriod: 600
-                                RedundantManifest: DISABLED
-                                SegmentLength: 2
-                                SegmentationMode: USE_SEGMENT_DURATION
-                                SegmentsPerSubdirectory: 10000
-                                StreamInfResolution: INCLUDE
-                                TimedMetadataId3Frame: PRIV
-                                TimedMetadataId3Period: 10
-                                TsFileMode: SEGMENTED_FILES
-                            Outputs:
-                              - OutputName.$: States.UUID()
-                                OutputSettings:
-                                  HlsOutputSettings:
-                                    H265PackagingType: HVC1
-                                    HlsSettings:
-                                      StandardHlsSettings:
-                                        AudioRenditionSets: program_audio
-                                        M3u8Settings:
-                                          AudioFramesPerPes: 4
-                                          AudioPids: "492-498"
-                                          NielsenId3Behavior: NO_PASSTHROUGH
-                                          PcrControl: PCR_EVERY_PES_PACKET
-                                          PmtPid: "480"
-                                          ProgramNum: 1
-                                          Scte35Behavior: NO_PASSTHROUGH
-                                          Scte35Pid: "500"
-                                          TimedMetadataBehavior: NO_PASSTHROUGH
-                                          TimedMetadataPid: "502"
-                                          VideoPid: "481"
-                                    NameModifier: "_1"
-                                AudioDescriptionNames:
-                                  - オーディオ
-                                CaptionDescriptionNames: []
-                                VideoDescriptionName: 動画
-                          - OutputGroupSettings:
-                              HlsGroupSettings:
-                                AdMarkers: []
-                                CaptionLanguageMappings: []
-                                CaptionLanguageSetting: OMIT
-                                ClientCache: ENABLED
-                                CodecSpecification: RFC_4281
-                                Destination:
-                                  DestinationRefId: S3
-                                DirectoryStructure: SINGLE_DIRECTORY
-                                DiscontinuityTags: INSERT
-                                HlsId3SegmentTagging: DISABLED
-                                IFrameOnlyPlaylists: DISABLED
-                                IncompleteSegmentBehavior: AUTO
-                                IndexNSegments: 10
-                                InputLossAction: EMIT_OUTPUT
-                                IvInManifest: INCLUDE
-                                IvSource: FOLLOWS_SEGMENT_NUMBER
-                                KeepSegments: 21
-                                ManifestCompression: NONE
-                                ManifestDurationFormat: FLOATING_POINT
-                                Mode: VOD
-                                OutputSelection: MANIFESTS_AND_SEGMENTS
-                                ProgramDateTime: EXCLUDE
-                                ProgramDateTimeClock: INITIALIZE_FROM_OUTPUT_TIMECODE
-                                ProgramDateTimePeriod: 600
-                                RedundantManifest: DISABLED
-                                SegmentLength: 10
-                                SegmentationMode: USE_SEGMENT_DURATION
-                                SegmentsPerSubdirectory: 10000
-                                StreamInfResolution: INCLUDE
-                                TimedMetadataId3Frame: PRIV
-                                TimedMetadataId3Period: 10
-                                TsFileMode: SEGMENTED_FILES
-                            Outputs:
-                              - OutputName.$: States.UUID()
-                                OutputSettings:
-                                  HlsOutputSettings:
-                                    H265PackagingType: HVC1
-                                    HlsSettings:
-                                      StandardHlsSettings:
-                                        AudioRenditionSets: program_audio
-                                        M3u8Settings:
-                                          AudioFramesPerPes: 4
-                                          AudioPids: "492-498"
-                                          NielsenId3Behavior: NO_PASSTHROUGH
-                                          PcrControl: PCR_EVERY_PES_PACKET
-                                          PmtPid: "480"
-                                          ProgramNum: 1
-                                          Scte35Behavior: NO_PASSTHROUGH
-                                          Scte35Pid: "500"
-                                          TimedMetadataBehavior: NO_PASSTHROUGH
-                                          TimedMetadataPid: "502"
-                                          VideoPid: "481"
-                                    NameModifier: "_$rv$"
-                                AudioDescriptionNames:
-                                  - オーディオ
-                                CaptionDescriptionNames: []
-                                VideoDescriptionName: 動画
+                      RTMPOutputs.$: $[0].RtmpOutputs
                     End: true
               - StartAt: CreateOriginAccessControl
                 States:

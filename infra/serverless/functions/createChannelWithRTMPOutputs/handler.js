@@ -4,22 +4,61 @@ const defaultSettings = require('./default.json')
 const uuid = require('uuid');
 
 module.exports.createChannelWithRTMPOutputs = async (event) => {
-  console.log(event);
-  const settings = event;
-  console.log(settings)
+  const params = event;
+  console.log(params)
 
-  defaultSettings.Name = settings.Name;
-  defaultSettings.RoleArn = settings.RoleArn;
-  defaultSettings.InputAttachments = settings.InputAttachments;
-  defaultSettings.Destinations = settings.Destinations;
-  defaultSettings.EncoderSettings.GrobalConfiguration = settings.GrobalConfiguration;
+  // Defaultの設定を作成
+  defaultSettings.Name = params.Name;
+  defaultSettings.RoleArn = params.RoleArn;
+  defaultSettings.InputAttachments = params.InputAttachments;
+  defaultSettings.Destinations = params.Destinations;
+  defaultSettings.EncoderSettings.GlobalConfiguration = params.GlobalConfiguration;
 
   defaultSettings.EncoderSettings.OutputGroups.forEach((outputGroup) => {
     outputGroup.Outputs.forEach((output) => {
       output.OutputName = uuid.v4();
     });
   });
-  console.log(defaultSettings)
+
+  const RTMPOutputs = params.RTMPOutputs;
+  const RTMPOutputGroup = require('./RTMPOutputGroup.json');
+  if (RTMPOutputs.length > 0) {
+    for (let i = 0; i < RTMPOutputs.length; i++) {
+      defaultSettings.Destinations.push({
+        "Id": `RTMP${i}`,
+        "Settings": [
+          {
+            "StreamName": RTMPOutputs[i].StreamKey,
+            "Url": RTMPOutputs[i].StreamUrl
+          }
+        ]
+      });
+    }
+    for (let i = 0; i < RTMPOutputs.length; i++) {
+      RTMPOutputGroup.Outputs.push(
+        {
+          "AudioDescriptionNames": [
+            "オーディオ"
+          ],
+          "CaptionDescriptionNames": [],
+          "OutputName": RTMPOutputs[i].Name,
+          "OutputSettings": {
+            "RtmpOutputSettings": {
+              "CertificateMode": "VERIFY_AUTHENTICITY",
+              "ConnectionRetryInterval": 2,
+              "Destination": {
+                "DestinationRefId": `RTMP${i}`
+              },
+              "NumRetries": 10
+            }
+          },
+          "VideoDescriptionName": "動画"
+        }
+      );
+    }
+  }
+  defaultSettings.EncoderSettings.OutputGroups.push(RTMPOutputGroup);
+  console.log(defaultSettings);
   try {
     const data = await medialive.createChannel(defaultSettings).promise();
     console.log(data);
