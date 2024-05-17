@@ -7,14 +7,14 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
   const params = event;
   console.log(params)
 
-  // Defaultの設定を作成
-  defaultSettings.Name = params.Name;
-  defaultSettings.RoleArn = params.RoleArn;
-  defaultSettings.InputAttachments = params.InputAttachments;
-  defaultSettings.Destinations = params.Destinations;
-  defaultSettings.EncoderSettings.GlobalConfiguration = params.GlobalConfiguration;
+  const settings = JSON.parse(JSON.stringify(defaultSettings));
+  settings.Name = params.Name;
+  settings.RoleArn = params.RoleArn;
+  settings.InputAttachments = params.InputAttachments;
+  settings.Destinations = params.Destinations;
+  settings.EncoderSettings.GlobalConfiguration = params.GlobalConfiguration;
 
-  defaultSettings.EncoderSettings.OutputGroups.forEach((outputGroup) => {
+  settings.EncoderSettings.OutputGroups.forEach((outputGroup) => {
     outputGroup.Outputs.forEach((output) => {
       output.OutputName = uuid.v4();
     });
@@ -24,7 +24,7 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
   const RTMPOutputGroup = require('./RTMPOutputGroup.json');
   if (RTMPOutputs.length > 0) {
     RTMPOutputs.forEach((output, i) => {
-      defaultSettings.Destinations.push({
+      settings.Destinations.push({
         "Id": `RTMP${i}`,
         "Settings": [
           {
@@ -57,10 +57,10 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
       );
     });
   }
-  defaultSettings.EncoderSettings.OutputGroups.push(RTMPOutputGroup);
-  console.log(defaultSettings);
+  settings.EncoderSettings.OutputGroups.push(RTMPOutputGroup);
+  console.log(settings);
   try {
-    const data = await medialive.createChannel(defaultSettings).promise();
+    const data = await medialive.createChannel(settings).promise();
     console.log(data);
     return data;
   } catch (err) {
