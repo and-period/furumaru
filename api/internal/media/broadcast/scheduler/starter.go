@@ -200,19 +200,6 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 					zap.String("scheduleId", schedule.ID), zap.Int("status", int(broadcast.Status)))
 				return nil // リソース未作成の場合のみ、作成処理を進める
 			}
-			rtmpOutputs := make([]*CreateRtmpOutputPayload, 0, 1) // youtube への配信のみ
-			if broadcast.YoutubeStreamURL != "" && broadcast.YoutubeStreamKey != "" {
-				payload := &CreateRtmpOutputPayload{
-					Name:      "youtube",
-					StreamURL: broadcast.YoutubeStreamURL,
-					StreamKey: broadcast.YoutubeStreamKey,
-				}
-				if broadcast.YoutubeBackupURL != "" {
-					payload.BackupURL = broadcast.YoutubeBackupURL
-					payload.BackupKey = broadcast.YoutubeStreamKey
-				}
-				rtmpOutputs = append(rtmpOutputs, payload)
-			}
 			payload := &CreatePayload{
 				ScheduleID: broadcast.ScheduleID,
 				Channel: &CreateChannelPayload{
@@ -226,7 +213,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 				RtmpInput: &CreateRtmpInputPayload{
 					StreamName: streamName,
 				},
-				RtmpOutputs: rtmpOutputs,
+				RtmpOutputs: s.createRtmpOuputPayload(broadcast),
 				Archive: &CreateArchivePayload{
 					BucketName: s.bucketName,
 					Path:       newArchiveHLSPath(schedule.ID),
@@ -245,4 +232,30 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 		})
 	}
 	return eg.Wait()
+}
+
+// createRtmpOuputPayload - 配信リソース(MediaLive RTMP Pushアウトプット)
+func (s *starter) createRtmpOuputPayload(broadcast *entity.Broadcast) []*CreateRtmpOutputPayload {
+	outputs := make([]*CreateRtmpOutputPayload, 0, 2)
+	// YouTube配信設定
+	if broadcast.YoutubeStreamKey != "" {
+		if broadcast.YoutubeStreamURL != "" {
+			payload := &CreateRtmpOutputPayload{
+				Name:      "youtube",
+				StreamURL: broadcast.YoutubeStreamURL,
+				StreamKey: broadcast.YoutubeStreamKey,
+			}
+			outputs = append(outputs, payload)
+		}
+		// MediaLive側をシングルパイプライン設定で作成しているため、バックアップ配信は不要
+		// if broadcast.YoutubeBackupURL != "" {
+		// 	payload := &CreateRtmpOutputPayload{
+		// 		Name:      "youtube-backup",
+		// 		StreamURL: broadcast.YoutubeBackupURL,
+		// 		StreamKey: broadcast.YoutubeStreamKey,
+		// 	}
+		// 	outputs = append(outputs, payload)
+		// }
+	}
+	return outputs
 }
