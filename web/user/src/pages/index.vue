@@ -123,7 +123,7 @@ useSeoMeta({
           </div>
           <div class="my-4 grid w-full justify-center md:mt-10 md:flex md:gap-x-16">
             <button class="w-60 bg-main py-2 text-white " @click="handleClickAllArchive">過去のライブ配信はこちら</button>
-            <button class="w-60 bg-main py-2 text-white md:mt-0 mt-4" @click="handleClickAllItem">購入できる商品一覧はこちら</button>
+            <button class="mt-4 w-60 bg-main py-2 text-white md:mt-0" @click="handleClickAllItem">購入できる商品一覧はこちら</button>
           </div>
         </template>
         <template v-if="lives.length > 0">
