@@ -119,7 +119,7 @@ useSeoMeta({
           </div>
           <div class="mt-8 text-center text-[14px] text-main md:text-[16px]">
             <p>ただいま配信中・配信予定のマルシェはありません。</p>
-            <p class="md:mt-4">次回の更新をお楽しみに。</p>
+            <p class="md:mt-4">次回の更新をお楽しみに!</p>
           </div>
           <div class="my-4 grid w-full justify-center md:mt-10 md:flex md:gap-x-16">
             <button class="w-60 bg-main py-2 text-white " @click="handleClickAllArchive">過去のライブ配信はこちら</button>
