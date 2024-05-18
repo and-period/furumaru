@@ -87,6 +87,14 @@ const handleClickMoreViewButton = () => {
   isOpen.value = !isOpen.value
 }
 
+const handleClickAllArchive = () => {
+  router.push(`/marches`)
+}
+
+const handleClickAllItem = () => {
+  router.push(`/items`)
+}
+
 useSeoMeta({
   title: 'トップページ',
 })
@@ -96,14 +104,27 @@ useSeoMeta({
   <div>
     <the-carousel :items="banners" />
 
-    <div class="mb-[72px] mt-[76px] flex flex-col gap-y-16">
+    <div class="mb-[72px] mt-8 flex flex-col gap-y-16 md:mt-[76px]">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
         <template v-if="isInItLoading"> </template>
         <template v-if="lives.length === 0">
-          <p class="text-center text-main">
-            ただいまライブは開催されていません。
-            新しいライブが開催されるまでお待ちください。
-          </p>
+          <div class="flex justify-center">
+            <img
+              src="~/assets/img/furuneko-sleep.png"
+              alt="furuneko sleep"
+              width="120"
+              height="136"
+              class="block"
+            />
+          </div>
+          <div class="mt-8 text-center text-[14px] text-main md:text-[16px]">
+            <p>ただいま配信中・配信予定のマルシェはありません。</p>
+            <p class="md:mt-4">次回の更新をお楽しみに。</p>
+          </div>
+          <div class="my-4 grid w-full justify-center md:mt-10 md:flex md:gap-x-16">
+            <button class="w-60 bg-main py-2 text-white " @click="handleClickAllArchive">過去のライブ配信はこちら</button>
+            <button class="w-60 bg-main py-2 text-white md:mt-0 mt-4" @click="handleClickAllItem">購入できる商品一覧はこちら</button>
+          </div>
         </template>
         <template v-if="lives.length > 0">
           <div
@@ -211,10 +232,5 @@ useSeoMeta({
         </div>
       </the-content-box>
     </div>
-    <div class="flex justify-center">
-      <a href="https://lin.ee/49SOeUC"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" class="h-[40px] md:h-[65px]"></a>
-    </div>
-    <p class="mx-2 my-4 flex justify-center text-center text-[16px] md:text-[20px]">LINE友達追加すると、ふるマルの配信・クーポンなどのお得情報をGETできる！</p>
-
   </div>
 </template>
