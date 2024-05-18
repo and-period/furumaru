@@ -40,7 +40,7 @@ jobs:
 
     - uses: ./.github/actions/setup-node
       with:
-        wrking-directory: ./infra/serverless
+        working-directory: ./infra/serverless
         service: ${{ env.SERVICE }}
 
     - name: install sls
