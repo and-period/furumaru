@@ -535,7 +535,7 @@ func TestDeleteSchedule(t *testing.T) {
 			expect: nil,
 		},
 		{
-			name: "faield to get schedule",
+			name: "failed to get schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(nil, assert.AnError)
 			},
@@ -545,7 +545,7 @@ func TestDeleteSchedule(t *testing.T) {
 			expect: exception.ErrInternal,
 		},
 		{
-			name: "faield to get broadcast",
+			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
 				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(nil, assert.AnError)
@@ -568,7 +568,7 @@ func TestDeleteSchedule(t *testing.T) {
 			expect: exception.ErrFailedPrecondition,
 		},
 		{
-			name: "faield to delete schedule",
+			name: "failed to delete schedule",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
 				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(broadcast, nil)
