@@ -37,6 +37,8 @@ const handleSubmit = async () => {
   <div>
     <h1>Youtube Callback</h1>
     <v-text-field v-model="formData.public" label="公開範囲" />
-    <v-btn @click="handleSubmit">Submit</v-btn>
+    <v-btn @click="handleSubmit">
+      Submit
+    </v-btn>
   </div>
 </template>

@@ -2,8 +2,21 @@
 import dayjs from 'dayjs'
 import { VTabs } from 'vuetify/lib/components/index.mjs'
 import type { AlertType } from '~/lib/hooks'
-import { type Broadcast, BroadcastStatus, type Coordinator, type CreateLiveRequest, type Live, type Product, type Schedule, ScheduleStatus, type UpdateLiveRequest, type UpdateScheduleRequest, type Producer, type AuthYoutubeBroadcastRequest } from '~/types/api'
-import type{ ImageUploadStatus } from '~/types/props'
+import {
+  type Broadcast,
+  BroadcastStatus,
+  type Coordinator,
+  type CreateLiveRequest,
+  type Live,
+  type Product,
+  type Schedule,
+  ScheduleStatus,
+  type UpdateLiveRequest,
+  type UpdateScheduleRequest,
+  type Producer,
+  type AuthYoutubeBroadcastRequest
+} from '~/types/api'
+import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
   loading: {
@@ -161,7 +174,7 @@ const props = defineProps({
   },
   video: {
     type: Object as PropType<HTMLVideoElement | undefined>,
-    default: (): HTMLVideoElement | undefined => (undefined)
+    default: (): HTMLVideoElement | undefined => undefined
   },
   selectedTabItem: {
     type: String,
@@ -191,37 +204,40 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click:link-youtube'): void
-  (e: 'click:new-live'): void
-  (e: 'click:edit-live', liveId: string): void
-  (e: 'update:pause-dialog', v: boolean): void
-  (e: 'update:live-mp4-dialog', v: boolean): void
-  (e: 'update:archive-mp4-dialog', v: boolean): void
-  (e: 'update:selected-tab-item', item: string): void
-  (e: 'update:schedule-form-data', formData: UpdateScheduleRequest): void
-  (e: 'update:create-live-dialog', v: boolean): void
-  (e: 'update:update-live-dialog', v: boolean): void
-  (e: 'update:create-live-form-data', formData: CreateLiveRequest): void
-  (e: 'update:update-live-form-data', formData: UpdateLiveRequest): void
-  (e: 'update:auth-youtube-form-data', formData: AuthYoutubeBroadcastRequest): void
-  (e: 'update:mp4-form-data', formData?: File[]): void
-  (e: 'update:thumbnail', files: FileList): void
-  (e: 'update:image', files: FileList): void
-  (e: 'update:opening-video', files: FileList): void
-  (e: 'update:public', publish: boolean): void
-  (e: 'search:producer', name: string): void
-  (e: 'search:product', producerId: string, name: string): void
-  (e: 'submit:schedule'): void
-  (e: 'submit:create-live'): void
-  (e: 'submit:update-live'): void
-  (e: 'submit:delete-live'): void
-  (e: 'submit:pause'): void
-  (e: 'submit:unpause'): void
-  (e: 'submit:activate-static-image'): void
-  (e: 'submit:deactivate-static-image'): void
-  (e: 'submit:change-input-mp4'): void
-  (e: 'submit:change-input-rtmp'): void
-  (e: 'submit:upload-archive-mp4'): void
+  (e: 'click:link-youtube'): void;
+  (e: 'click:new-live'): void;
+  (e: 'click:edit-live', liveId: string): void;
+  (e: 'update:pause-dialog', v: boolean): void;
+  (e: 'update:live-mp4-dialog', v: boolean): void;
+  (e: 'update:archive-mp4-dialog', v: boolean): void;
+  (e: 'update:selected-tab-item', item: string): void;
+  (e: 'update:schedule-form-data', formData: UpdateScheduleRequest): void;
+  (e: 'update:create-live-dialog', v: boolean): void;
+  (e: 'update:update-live-dialog', v: boolean): void;
+  (e: 'update:create-live-form-data', formData: CreateLiveRequest): void;
+  (e: 'update:update-live-form-data', formData: UpdateLiveRequest): void;
+  (
+    e: 'update:auth-youtube-form-data',
+    formData: AuthYoutubeBroadcastRequest,
+  ): void;
+  (e: 'update:mp4-form-data', formData?: File[]): void;
+  (e: 'update:thumbnail', files: FileList): void;
+  (e: 'update:image', files: FileList): void;
+  (e: 'update:opening-video', files: FileList): void;
+  (e: 'update:public', publish: boolean): void;
+  (e: 'search:producer', name: string): void;
+  (e: 'search:product', producerId: string, name: string): void;
+  (e: 'submit:schedule'): void;
+  (e: 'submit:create-live'): void;
+  (e: 'submit:update-live'): void;
+  (e: 'submit:delete-live'): void;
+  (e: 'submit:pause'): void;
+  (e: 'submit:unpause'): void;
+  (e: 'submit:activate-static-image'): void;
+  (e: 'submit:deactivate-static-image'): void;
+  (e: 'submit:change-input-mp4'): void;
+  (e: 'submit:change-input-rtmp'): void;
+  (e: 'submit:upload-archive-mp4'): void;
 }>()
 
 const tabs: VTabs[] = [
@@ -236,7 +252,8 @@ const selectedTabItemValue = computed({
 })
 const scheduleFormDataValue = computed({
   get: (): UpdateScheduleRequest => props.scheduleFormData,
-  set: (formData: UpdateScheduleRequest): void => emit('update:schedule-form-data', formData)
+  set: (formData: UpdateScheduleRequest): void =>
+    emit('update:schedule-form-data', formData)
 })
 const createLiveDialogValue = computed({
   get: (): boolean => props.createLiveDialog,
@@ -260,11 +277,13 @@ const archiveMp4DialogValue = computed({
 })
 const createLiveFormDataValue = computed({
   get: (): CreateLiveRequest => props.createLiveFormData,
-  set: (formData: CreateLiveRequest): void => emit('update:create-live-form-data', formData)
+  set: (formData: CreateLiveRequest): void =>
+    emit('update:create-live-form-data', formData)
 })
 const updateLiveFormDataValue = computed({
   get: (): UpdateLiveRequest => props.updateLiveFormData,
-  set: (formData: UpdateLiveRequest): void => emit('update:update-live-form-data', formData)
+  set: (formData: UpdateLiveRequest): void =>
+    emit('update:update-live-form-data', formData)
 })
 const mp4FormDataValue = computed({
   get: (): File[] | undefined => props.mp4FormData,
@@ -272,7 +291,8 @@ const mp4FormDataValue = computed({
 })
 const authYoutubeFormDataValue = computed({
   get: (): AuthYoutubeBroadcastRequest => props.authYoutubeFormData,
-  set: (formData: AuthYoutubeBroadcastRequest): void => emit('update:auth-youtube-form-data', formData)
+  set: (formData: AuthYoutubeBroadcastRequest): void =>
+    emit('update:auth-youtube-form-data', formData)
 })
 
 const onClickLinkYouTube = (): void => {
@@ -357,81 +377,86 @@ const onSubmitUploadArchiveMp4 = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    class="mb-4"
+    v-text="props.alertText"
+  />
 
   <v-card class="mb-4">
     <v-card-title>ライブ配信詳細</v-card-title>
 
     <v-card-text>
-      <v-tabs v-model="selectedTabItemValue" grow color="dark">
+      <v-tabs v-model="selectedTabItemValue" grow>
         <v-tab v-for="item in tabs" :key="item.value" :value="item.value">
           {{ item.name }}
         </v-tab>
       </v-tabs>
+
+      <v-window v-model="selectedTabItemValue" class="py-4">
+        <v-window-item value="schedule">
+          <organisms-schedule-show
+            v-model:form-data="scheduleFormDataValue"
+            :loading="loading"
+            :updatable="updatable"
+            :schedule="schedule"
+            :coordinators="coordinators"
+            :thumbnail-upload-status="thumbnailUploadStatus"
+            :image-upload-status="imageUploadStatus"
+            :opening-video-upload-status="openingVideoUploadStatus"
+            @update:thumbnail="onChangeThumbnailFile"
+            @update:image="onChangeImageFile"
+            @update:opening-video="onChangeOpeningVideo"
+            @update:public="onChangePublic"
+            @submit="onSubmitSchedule"
+          />
+        </v-window-item>
+
+        <v-window-item value="lives">
+          <organisms-live-list
+            v-model:create-dialog="createLiveDialogValue"
+            v-model:update-dialog="updateLiveDialogValue"
+            v-model:create-form-data="createLiveFormDataValue"
+            v-model:update-form-data="updateLiveFormDataValue"
+            :loading="loading"
+            :live="live"
+            :lives="lives"
+            :schedule="schedule"
+            :producers="producers"
+            :products="products"
+            @click:new="onClickNewLive"
+            @click:edit="onClickEditLive"
+            @search:producer="onSearchProducer"
+            @search:product="onSearchProduct"
+            @submit:create="onSubmitCreateLive"
+            @submit:update="onSubmitUpdateLive"
+            @submit:delete="onSubmitDeleteLive"
+          />
+        </v-window-item>
+
+        <v-window-item value="streaming">
+          <organisms-schedule-streaming
+            v-model:pause-dialog="pauseDialogValue"
+            v-model:live-mp4-dialog="liveMp4DialogValue"
+            v-model:archive-mp4-dialog="archiveMp4DialogValue"
+            v-model:mp4-form-data="mp4FormDataValue"
+            v-model:auth-youtube-form-data="authYoutubeFormDataValue"
+            :loading="loading"
+            :selected-tab-item="selectedTabItem"
+            :broadcast="broadcast"
+            :auth-youtube-url="authYoutubeUrl"
+            @click:link-youtube="onClickLinkYouTube"
+            @click:activate-static-image="onSubmitActivateStaticImage"
+            @click:deactivate-static-image="onSubmitDeactivateStaticImage"
+            @submit:pause="onSubmitPause"
+            @submit:unpause="onSubmitUnpause"
+            @submit:change-input-mp4="onSubmitChangeMp4Input"
+            @submit:change-input-rtmp="onSubmitChangeRtmpInput"
+            @submit:upload-archive-mp4="onSubmitUploadArchiveMp4"
+          />
+        </v-window-item>
+      </v-window>
     </v-card-text>
   </v-card>
-
-  <v-window v-model="selectedTabItemValue">
-    <v-window-item value="schedule">
-      <organisms-schedule-show
-        v-model:form-data="scheduleFormDataValue"
-        :loading="loading"
-        :updatable="updatable"
-        :schedule="schedule"
-        :coordinators="coordinators"
-        :thumbnail-upload-status="thumbnailUploadStatus"
-        :image-upload-status="imageUploadStatus"
-        :opening-video-upload-status="openingVideoUploadStatus"
-        @update:thumbnail="onChangeThumbnailFile"
-        @update:image="onChangeImageFile"
-        @update:opening-video="onChangeOpeningVideo"
-        @update:public="onChangePublic"
-        @submit="onSubmitSchedule"
-      />
-    </v-window-item>
-
-    <v-window-item value="lives">
-      <organisms-live-list
-        v-model:create-dialog="createLiveDialogValue"
-        v-model:update-dialog="updateLiveDialogValue"
-        v-model:create-form-data="createLiveFormDataValue"
-        v-model:update-form-data="updateLiveFormDataValue"
-        :loading="loading"
-        :live="live"
-        :lives="lives"
-        :schedule="schedule"
-        :producers="producers"
-        :products="products"
-        @click:new="onClickNewLive"
-        @click:edit="onClickEditLive"
-        @search:producer="onSearchProducer"
-        @search:product="onSearchProduct"
-        @submit:create="onSubmitCreateLive"
-        @submit:update="onSubmitUpdateLive"
-        @submit:delete="onSubmitDeleteLive"
-      />
-    </v-window-item>
-
-    <v-window-item value="streaming">
-      <organisms-schedule-streaming
-        v-model:pause-dialog="pauseDialogValue"
-        v-model:live-mp4-dialog="liveMp4DialogValue"
-        v-model:archive-mp4-dialog="archiveMp4DialogValue"
-        v-model:mp4-form-data="mp4FormDataValue"
-        v-model:auth-youtube-form-data="authYoutubeFormDataValue"
-        :loading="loading"
-        :selected-tab-item="selectedTabItem"
-        :broadcast="broadcast"
-        :auth-youtube-url="authYoutubeUrl"
-        @click:link-youtube="onClickLinkYouTube"
-        @click:activate-static-image="onSubmitActivateStaticImage"
-        @click:deactivate-static-image="onSubmitDeactivateStaticImage"
-        @submit:pause="onSubmitPause"
-        @submit:unpause="onSubmitUnpause"
-        @submit:change-input-mp4="onSubmitChangeMp4Input"
-        @submit:change-input-rtmp="onSubmitChangeRtmpInput"
-        @submit:upload-archive-mp4="onSubmitUploadArchiveMp4"
-      />
-    </v-window-item>
-  </v-window>
 </template>

@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { mdiPaperclip } from '@mdi/js'
 import Hls from 'hls.js'
-import { type Broadcast, BroadcastStatus, type AuthYoutubeBroadcastRequest } from '~/types/api'
+import {
+  type Broadcast,
+  BroadcastStatus,
+  type AuthYoutubeBroadcastRequest
+} from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -56,20 +60,23 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:broadcast', broadcast: Broadcast): void
-  (e: 'update:mp4-form-data', file: File[] | undefined): void
-  (e: 'update:auth-youtube-form-data', formData: AuthYoutubeBroadcastRequest): void
-  (e: 'update:pause-dialog', toggle: boolean): void
-  (e: 'update:live-mp4-dialog', toggle: boolean): void
-  (e: 'update:archive-mp4-dialog', toggle: boolean): void
-  (e: 'click:link-youtube'): void
-  (e: 'click:activate-static-image'): void
-  (e: 'click:deactivate-static-image'): void
-  (e: 'submit:pause'): void
-  (e: 'submit:unpause'): void
-  (e: 'submit:change-input-mp4'): void
-  (e: 'submit:change-input-rtmp'): void
-  (e: 'submit:upload-archive-mp4'): void
+  (e: 'update:broadcast', broadcast: Broadcast): void;
+  (e: 'update:mp4-form-data', file: File[] | undefined): void;
+  (
+    e: 'update:auth-youtube-form-data',
+    formData: AuthYoutubeBroadcastRequest,
+  ): void;
+  (e: 'update:pause-dialog', toggle: boolean): void;
+  (e: 'update:live-mp4-dialog', toggle: boolean): void;
+  (e: 'update:archive-mp4-dialog', toggle: boolean): void;
+  (e: 'click:link-youtube'): void;
+  (e: 'click:activate-static-image'): void;
+  (e: 'click:deactivate-static-image'): void;
+  (e: 'submit:pause'): void;
+  (e: 'submit:unpause'): void;
+  (e: 'submit:change-input-mp4'): void;
+  (e: 'submit:change-input-rtmp'): void;
+  (e: 'submit:upload-archive-mp4'): void;
 }>()
 
 const statuses = [
@@ -100,23 +107,28 @@ const liveMp4DialogValue = computed({
 })
 const mp4FormDataValue = computed({
   get: (): File[] | undefined => props.mp4FormData,
-  set: (formData: File[] | undefined): void => emit('update:mp4-form-data', formData)
+  set: (formData: File[] | undefined): void =>
+    emit('update:mp4-form-data', formData)
 })
 const authYoutubeFormDataValue = computed({
   get: (): AuthYoutubeBroadcastRequest => props.authYoutubeFormData,
-  set: (formData: AuthYoutubeBroadcastRequest): void => emit('update:auth-youtube-form-data', formData)
+  set: (formData: AuthYoutubeBroadcastRequest): void =>
+    emit('update:auth-youtube-form-data', formData)
 })
 const authYoutubeUrlValue = computed({
   get: (): string => props.authYoutubeUrl,
   set: (url: string): void => console.log(url)
 })
 
-watch((): string => props.selectedTabItem, (): void => {
-  if (props.selectedTabItem !== 'streaming') {
-    return
+watch(
+  (): string => props.selectedTabItem,
+  (): void => {
+    if (props.selectedTabItem !== 'streaming') {
+      return
+    }
+    onClickVideo()
   }
-  onClickVideo()
-})
+)
 
 const isLive = (): boolean => {
   return props.broadcast?.status === BroadcastStatus.ACTIVE
@@ -218,7 +230,12 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-btn color="info" variant="text" @click="onClosePauseDialog">
           閉じる
         </v-btn>
-        <v-btn :loading="loading" color="error" variant="outlined" @click="onSubmitPause">
+        <v-btn
+          :loading="loading"
+          color="error"
+          variant="outlined"
+          @click="onSubmitPause"
+        >
           停止
         </v-btn>
       </v-card-actions>
@@ -254,7 +271,12 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-btn color="error" variant="text" @click="onCloseArchiveMp4Dialog">
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitUploadArchiveMp4">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onSubmitUploadArchiveMp4"
+        >
           送信
         </v-btn>
       </v-card-actions>
@@ -290,7 +312,12 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-btn color="error" variant="text" @click="onCloseLiveMp4Dialog">
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitChangeMp4Input">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onSubmitChangeMp4Input"
+        >
           送信
         </v-btn>
       </v-card-actions>
@@ -316,37 +343,46 @@ const onSubmitUploadArchiveMp4 = (): void => {
 
       <v-card class="mt-4">
         <v-card-text>
-          <v-list>
-            <v-list-item v-if="broadcastValue.youtubeAccount === ''" class="px-0">
+          <div class="my-4">
+            <div v-if="broadcastValue.youtubeAccount === ''" class="px-0">
               <template v-if="authYoutubeUrlValue === ''">
                 <v-text-field
                   v-model="authYoutubeFormDataValue.googleAccount"
+                  variant="outlined"
                   label="YouTube 連携先アカウント"
                 />
-                <v-btn block variant="outlined" color="primary" @click="onClickLinkYouTube">
+                <v-btn
+                  block
+                  variant="outlined"
+                  color="primary"
+                  @click="onClickLinkYouTube"
+                >
                   連携する
                 </v-btn>
               </template>
               <v-text-field
                 v-else
                 v-model="authYoutubeUrlValue"
+                variant="outlined"
                 label="YouTube 連携用URL"
                 readonly
               />
-            </v-list-item>
-            <v-list-item v-else>
+            </div>
+            <div v-else>
               <v-text-field
                 v-model="broadcastValue.youtubeAccount"
+                variant="outlined"
                 label="YouTube 連携先アカウント"
                 readonly
               />
               <v-text-field
                 v-model="broadcastValue.youtubeAdminUrl"
+                variant="outlined"
                 label="YouTube 配信管理画面URL"
                 readonly
               />
-            </v-list-item>
-          </v-list>
+            </div>
+          </div>
         </v-card-text>
       </v-card>
     </v-col>
@@ -360,7 +396,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
             :items="statuses"
             item-title="title"
             item-value="value"
-            variant="plain"
+            variant="outlined"
             readonly
           />
           <v-text-field
@@ -368,18 +404,21 @@ const onSubmitUploadArchiveMp4 = (): void => {
             v-model="broadcastValue.inputUrl"
             label="配信エンドポイント：入力側"
             readonly
+            variant="outlined"
           />
           <v-text-field
             v-show="isLive()"
             v-model="broadcastValue.outputUrl"
             label="配信エンドポイント：出力側"
             readonly
+            variant="outlined"
           />
           <v-text-field
             v-show="isVOD()"
             v-model="broadcastValue.archiveUrl"
             label="オンデマンド配信URL"
             readonly
+            variant="outlined"
           />
         </v-card-text>
       </v-card>
@@ -388,13 +427,23 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-card-text>
           <v-list>
             <v-list-item class="px-0">
-              <v-list-item-subtitle>
-                ライブ配信の操作
-              </v-list-item-subtitle>
-              <v-btn block variant="outlined" color="primary" class="mt-2" @click="onClickPause">
+              <v-list-item-subtitle> ライブ配信の操作 </v-list-item-subtitle>
+              <v-btn
+                block
+                variant="outlined"
+                color="primary"
+                class="mt-2"
+                @click="onClickPause"
+              >
                 停止する
               </v-btn>
-              <v-btn block variant="outlined" color="secondary" class="mt-2" @click="onSubmitUnpause">
+              <v-btn
+                block
+                variant="outlined"
+                color="secondary"
+                class="mt-2"
+                @click="onSubmitUnpause"
+              >
                 停止を解除する
               </v-btn>
             </v-list-item>
@@ -403,22 +452,44 @@ const onSubmitUploadArchiveMp4 = (): void => {
               <v-list-item-subtitle>
                 入力チャンネルの設定
               </v-list-item-subtitle>
-              <v-btn block variant="outlined" color="primary" class="mt-2" @click="onSubmitChangeRtmpInput">
+              <v-btn
+                block
+                variant="outlined"
+                color="primary"
+                class="mt-2"
+                @click="onSubmitChangeRtmpInput"
+              >
                 RTMP配信に切り替え
               </v-btn>
-              <v-btn block variant="outlined" color="secondary" class="mt-2" @click="onClickChangeMp4Input">
+              <v-btn
+                block
+                variant="outlined"
+                color="secondary"
+                class="mt-2"
+                @click="onClickChangeMp4Input"
+              >
                 MP4配信に切り替え
               </v-btn>
             </v-list-item>
 
             <v-list-item class="px-0 mt-4">
-              <v-list-item-subtitle>
-                ふた絵の表示設定
-              </v-list-item-subtitle>
-              <v-btn block variant="outlined" color="primary" class="mt-2" @click="onClickActivateStaticImage">
+              <v-list-item-subtitle> ふた絵の表示設定 </v-list-item-subtitle>
+              <v-btn
+                block
+                variant="outlined"
+                color="primary"
+                class="mt-2"
+                @click="onClickActivateStaticImage"
+              >
                 有効化
               </v-btn>
-              <v-btn block variant="outlined" color="secondary" class="mt-2" @click="onClickDeactivateStaticImage">
+              <v-btn
+                block
+                variant="outlined"
+                color="secondary"
+                class="mt-2"
+                @click="onClickDeactivateStaticImage"
+              >
                 無効化
               </v-btn>
             </v-list-item>
@@ -433,7 +504,13 @@ const onSubmitUploadArchiveMp4 = (): void => {
               <v-list-item-subtitle>
                 オンデマンド配信の設定
               </v-list-item-subtitle>
-              <v-btn block variant="outlined" color="secondary" class="mt-2" @click="onClickUploadArchiveMp4">
+              <v-btn
+                block
+                variant="outlined"
+                color="secondary"
+                class="mt-2"
+                @click="onClickUploadArchiveMp4"
+              >
                 アップロード
               </v-btn>
             </v-list-item>

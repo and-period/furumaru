@@ -5,7 +5,12 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import { type Coordinator, ScheduleStatus, type Schedule, AdminRole } from '~/types/api'
+import {
+  type Coordinator,
+  ScheduleStatus,
+  type Schedule,
+  AdminRole
+} from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -55,14 +60,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click:update-page', page: number): void
-  (e: 'click:update-items-per-page', page: number): void
-  (e: 'click:row', scheduleId: string): void
-  (e: 'click:add'): void
-  (e: 'click:delete', scheduleId: string): void
-  (e: 'click:approval', scheduleId: string): void
-  (e: 'click:published', scheduleId: string): void
-  (e: 'update:delete-dialog', v: boolean): void
+  (e: 'click:update-page', page: number): void;
+  (e: 'click:update-items-per-page', page: number): void;
+  (e: 'click:row', scheduleId: string): void;
+  (e: 'click:add'): void;
+  (e: 'click:delete', scheduleId: string): void;
+  (e: 'click:approval', scheduleId: string): void;
+  (e: 'click:published', scheduleId: string): void;
+  (e: 'update:delete-dialog', v: boolean): void;
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -110,9 +115,11 @@ const isRegisterable = (): boolean => {
 }
 
 const getCoordinatorName = (coordinatorId: string): string => {
-  const coordinator = props.coordinators.find((coordinator: Coordinator): boolean => {
-    return coordinator.id === coordinatorId
-  })
+  const coordinator = props.coordinators.find(
+    (coordinator: Coordinator): boolean => {
+      return coordinator.id === coordinatorId
+    }
+  )
   return coordinator ? coordinator.username : ''
 }
 
@@ -208,19 +215,28 @@ const onClickPublished = (scheduleId: string): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h7">
-        {{ selectedItem?.title || '' }}を本当に削除しますか？
+        {{ selectedItem?.title || "" }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
         <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onClickDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
@@ -230,12 +246,19 @@ const onClickPublished = (scheduleId: string): void => {
   <v-card class="mt-4" flat>
     <v-card-title class="d-flex flex-row">
       ライブ配信管理
+    </v-card-title>
+    <div class="w-100 d-flex px-6">
       <v-spacer />
-      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
+      <v-btn
+        v-show="isRegisterable()"
+        variant="outlined"
+        color="primary"
+        @click="onClickAdd"
+      >
         <v-icon start :icon="mdiPlus" />
         ライブ配信登録
       </v-btn>
-    </v-card-title>
+    </div>
 
     <v-card-text>
       <v-data-table-server
@@ -248,10 +271,16 @@ const onClickPublished = (scheduleId: string): void => {
         no-data-text="登録されているスケジュールがありません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, { item }:any) => onClickRow(item.id)"
+        @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
-          <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item)" :srcset="getResizedThumbnails(item)" />
+          <v-img
+            aspect-ratio="1/1"
+            :max-height="56"
+            :max-width="80"
+            :src="getThumbnail(item)"
+            :srcset="getResizedThumbnails(item)"
+          />
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.status)">
@@ -275,7 +304,12 @@ const onClickPublished = (scheduleId: string): void => {
             <v-icon size="small" :icon="mdiPencil" />
             {{ getPublished(item) }}
           </v-btn>
-          <v-btn variant="outlined" color="primary" size="small" @click.stop="onClickOpenDeleteDialog(item)">
+          <v-btn
+            variant="outlined"
+            color="primary"
+            size="small"
+            @click.stop="onClickOpenDeleteDialog(item)"
+          >
             <v-icon size="small" :icon="mdiDelete" />
             削除
           </v-btn>

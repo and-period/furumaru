@@ -1,4 +1,9 @@
-@use "vuetify/styles";
+$font: "BIZ UDPGothic", sans-serif;
+
+@use "vuetify/styles" with (
+  $body-font-family: $font,
+  $heading-font-family: $font,
+);
 
 .v-data-table {
   white-space: nowrap;
