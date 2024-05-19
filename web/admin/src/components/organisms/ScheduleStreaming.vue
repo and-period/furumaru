@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { mdiPaperclip } from '@mdi/js'
+import { mdiPaperclip, mdiContentCopy } from '@mdi/js'
 import Hls from 'hls.js'
 import {
   type Broadcast,
@@ -217,6 +217,10 @@ const onSubmitChangeRtmpInput = (): void => {
 const onSubmitUploadArchiveMp4 = (): void => {
   emit('submit:upload-archive-mp4')
 }
+
+const handleClickCopyAuthYoutubeUrl = (url: string) => {
+  navigator.clipboard.writeText(url)
+}
 </script>
 
 <template>
@@ -360,13 +364,18 @@ const onSubmitUploadArchiveMp4 = (): void => {
                   連携する
                 </v-btn>
               </template>
-              <v-text-field
-                v-else
-                v-model="authYoutubeUrlValue"
-                variant="outlined"
-                label="YouTube 連携用URL"
-                readonly
-              />
+              <template v-else>
+                <v-text-field
+                  v-model="authYoutubeUrlValue"
+                  variant="outlined"
+                  label="YouTube 連携用URL"
+                  readonly
+                  :append-icon="mdiContentCopy"
+                  @click:append="
+                    handleClickCopyAuthYoutubeUrl(authYoutubeUrlValue)
+                  "
+                />
+              </template>
             </div>
             <div v-else>
               <v-text-field
