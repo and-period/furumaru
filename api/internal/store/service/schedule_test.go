@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/media"
+	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -483,6 +485,106 @@ func TestUpdateSchedule(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			err := service.UpdateSchedule(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestDeleteSchedule(t *testing.T) {
+	t.Parallel()
+
+	now := time.Date(2022, time.January, 3, 18, 30, 0, 0, time.UTC)
+	schedule := &entity.Schedule{
+		ID:            "schedule-id",
+		CoordinatorID: "coordinator-id",
+		Title:         "タイトル",
+		Description:   "説明",
+		ThumbnailURL:  "https://and-period.jp/thumbnail01.png",
+		StartAt:       now,
+		EndAt:         now,
+		CreatedAt:     now,
+		UpdatedAt:     now,
+	}
+	broadcastIn := &media.GetBroadcastByScheduleIDInput{
+		ScheduleID: "schedule-id",
+	}
+	broadcast := &mentity.Broadcast{
+		ID:         "broadcast-id",
+		ScheduleID: "schedule-id",
+		Status:     mentity.BroadcastStatusDisabled,
+		CreatedAt:  now,
+		UpdatedAt:  now,
+	}
+
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *store.DeleteScheduleInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
+				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(broadcast, nil)
+				mocks.db.Schedule.EXPECT().Delete(ctx, "schedule-id").Return(nil)
+			},
+			input: &store.DeleteScheduleInput{
+				ScheduleID: "schedule-id",
+			},
+			expect: nil,
+		},
+		{
+			name: "failed to get schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(nil, assert.AnError)
+			},
+			input: &store.DeleteScheduleInput{
+				ScheduleID: "schedule-id",
+			},
+			expect: exception.ErrInternal,
+		},
+		{
+			name: "failed to get broadcast",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
+				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(nil, assert.AnError)
+			},
+			input: &store.DeleteScheduleInput{
+				ScheduleID: "schedule-id",
+			},
+			expect: exception.ErrInternal,
+		},
+		{
+			name: "broadcast is not disabled",
+			setup: func(ctx context.Context, mocks *mocks) {
+				broadcast := &mentity.Broadcast{Status: mentity.BroadcastStatusActive}
+				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
+				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(broadcast, nil)
+			},
+			input: &store.DeleteScheduleInput{
+				ScheduleID: "schedule-id",
+			},
+			expect: exception.ErrFailedPrecondition,
+		},
+		{
+			name: "failed to delete schedule",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Schedule.EXPECT().Get(ctx, "schedule-id").Return(schedule, nil)
+				mocks.media.EXPECT().GetBroadcastByScheduleID(ctx, broadcastIn).Return(broadcast, nil)
+				mocks.db.Schedule.EXPECT().Delete(ctx, "schedule-id").Return(assert.AnError)
+			},
+			input: &store.DeleteScheduleInput{
+				ScheduleID: "schedule-id",
+			},
+			expect: exception.ErrInternal,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			err := service.DeleteSchedule(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}

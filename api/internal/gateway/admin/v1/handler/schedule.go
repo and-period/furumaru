@@ -22,6 +22,7 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r.POST("", h.CreateSchedule)
 	r.GET("/:scheduleId", h.filterAccessSchedule, h.GetSchedule)
 	r.PATCH("/:scheduleId", h.filterAccessSchedule, h.UpdateSchedule)
+	r.DELETE("/:scheduleId", h.filterAccessSchedule, h.DeleteSchedule)
 	r.PATCH("/:scheduleId/approval", h.filterAccessSchedule, h.ApproveSchedule)
 	r.PATCH("/:scheduleId/publish", h.filterAccessSchedule, h.PublishSchedule)
 }
@@ -181,6 +182,17 @@ func (h *handler) UpdateSchedule(ctx *gin.Context) {
 		EndAt:           jst.ParseFromUnix(req.EndAt),
 	}
 	if err := h.store.UpdateSchedule(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) DeleteSchedule(ctx *gin.Context) {
+	in := &store.DeleteScheduleInput{
+		ScheduleID: util.GetParam(ctx, "scheduleId"),
+	}
+	if err := h.store.DeleteSchedule(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}

@@ -78,6 +78,22 @@ export const useScheduleStore = defineStore('schedule', {
     },
 
     /**
+     * マルシェ開催スケジュールを削除する非同期関数
+     * @param scheduleId スケジュールID
+     * @returns
+     */
+    async deleteSchedule (scheduleId: string): Promise<void> {
+      try {
+        await apiClient.scheduleApi().v1DeleteSchedule(scheduleId)
+      } catch (err) {
+        return this.errorHandler(err, {
+          404: '対象の開催スケジュールが見つかりません。',
+          412: 'ライブ配信中のため削除できません。'
+        })
+      }
+    },
+
+    /**
      * マルシェ開催スケジュールの承認/却下をする非同期関数
      * @param scheduleId スケジュールID
      * @param approved 承認フラグ

@@ -16249,6 +16249,44 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール削除
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteSchedule: async (scheduleId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'scheduleId' is not null or undefined
+            assertParamExists('v1DeleteSchedule', 'scheduleId', scheduleId)
+            const localVarPath = `/v1/schedules/{scheduleId}`
+                .replace(`{${"scheduleId"}}`, encodeURIComponent(String(scheduleId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -16679,6 +16717,19 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール削除
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteSchedule(scheduleId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteSchedule(scheduleId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1DeleteSchedule']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -16837,6 +16888,16 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary マルシェ開催スケジュール削除
+         * @param {string} scheduleId マルシェ開催スケジュールID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteSchedule(scheduleId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.v1DeleteSchedule(scheduleId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary マルシェ開催スケジュール取得
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {*} [options] Override http request option.
@@ -16968,6 +17029,18 @@ export class ScheduleApi extends BaseAPI {
      */
     public v1CreateSchedule(body: CreateScheduleRequest, options?: RawAxiosRequestConfig) {
         return ScheduleApiFp(this.configuration).v1CreateSchedule(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary マルシェ開催スケジュール削除
+     * @param {string} scheduleId マルシェ開催スケジュールID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ScheduleApi
+     */
+    public v1DeleteSchedule(scheduleId: string, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1DeleteSchedule(scheduleId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

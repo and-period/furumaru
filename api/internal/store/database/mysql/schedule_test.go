@@ -462,6 +462,66 @@ func TestSchedule_Update(t *testing.T) {
 	}
 }
 
+func TestSchedule_Delete(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	type args struct {
+		scheduleID string
+	}
+	type want struct {
+		err error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				schedule := testSchedule("schedule-id", "coordinator-id", now())
+				err = db.DB.Create(&schedule).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				scheduleID: "schedule-id",
+			},
+			want: want{
+				err: nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			err := delete(ctx, scheduleTable)
+			require.NoError(t, err)
+
+			tt.setup(ctx, t, db)
+
+			db := &schedule{db: db, now: now}
+			err = db.Delete(ctx, tt.args.scheduleID)
+			assert.ErrorIs(t, err, tt.want.err)
+		})
+	}
+}
+
 func TestSchedule_Approve(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
