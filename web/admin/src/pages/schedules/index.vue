@@ -99,6 +99,7 @@ const handleClickPublished = async (scheduleId: string): Promise<void> => {
 
 const handleClickDelete = async (scheduleId: string): Promise<void> => {
   try {
+    loading.value = true
     const schedule = schedules.value.find((schedule: Schedule): boolean => {
       return schedule.id === scheduleId
     })
@@ -110,12 +111,15 @@ const handleClickDelete = async (scheduleId: string): Promise<void> => {
       message: `${schedule.title}を削除しました。`,
       color: 'info'
     })
+    deleteDialog.value = false
     fetchState.execute()
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
+  } finally {
+    loading.value = false
   }
 }
 
