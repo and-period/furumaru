@@ -73,6 +73,7 @@ p, schedule_list, /v1/schedules, GET, allow
 p, schedule_get, /v1/schedules/*, GET, allow
 p, schedule_create, /v1/schedules, POST, allow
 p, schedule_update, /v1/schedules/*, PATCH, allow
+p, schedule_delete, /v1/schedules/*, DELETE, allow
 p, schedule_uploader, /v1/upload/schedules/*, POST, allow
 p, shipping_get, /v1/coordinators/*/shippings, GET, allow
 p, shipping_upsert, /v1/coordinators/*/shippings, PATCH, allow
@@ -164,6 +165,7 @@ g, administrator, schedule_list
 g, administrator, schedule_get
 g, administrator, schedule_create
 g, administrator, schedule_update
+g, administrator, schedule_delete
 g, administrator, schedule_uploader
 g, administrator, shipping_get
 g, administrator, shipping_upsert
@@ -229,6 +231,7 @@ g, coordinator, schedule_list
 g, coordinator, schedule_get
 g, coordinator, schedule_create
 g, coordinator, schedule_update
+g, coordinator, schedule_schedule
 g, coordinator, schedule_uploader
 g, coordinator, shipping_get
 g, coordinator, shipping_upsert
