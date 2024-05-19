@@ -1,6 +1,6 @@
 import { createVuetify } from 'vuetify'
 import { md3 } from 'vuetify/blueprints'
-import { ja } from 'vuetify/locale'
+import { ja, ro } from 'vuetify/locale'
 import * as components from 'vuetify/components'
 import * as labs from 'vuetify/labs/components'
 import * as directives from 'vuetify/directives'
@@ -45,6 +45,11 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
       VCard: {
         elevation: 0
+      },
+      VTab: {
+        VBtn: {
+          rounded: '0'
+        }
       },
       VBtnToggle: {
         rounded: '0',

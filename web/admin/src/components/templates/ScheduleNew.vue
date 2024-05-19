@@ -5,7 +5,10 @@ import type { AlertType } from '~/lib/hooks'
 import { getErrorMessage } from '~/lib/validations'
 import type { CreateScheduleRequest } from '~/types/api'
 import type { DateTimeInput, ImageUploadStatus } from '~/types/props'
-import { CreateScheduleValidationRules, TimeDataValidationRules } from '~/types/validations'
+import {
+  CreateScheduleValidationRules,
+  TimeDataValidationRules
+} from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -62,16 +65,17 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'update:form-data', formData: CreateScheduleRequest): void
-  (e: 'update:thumbnail', files: FileList): void
-  (e: 'update:image', files: FileList): void
-  (e: 'update:opening-video', files: FileList): void
-  (e: 'submit'): void
+  (e: 'update:form-data', formData: CreateScheduleRequest): void;
+  (e: 'update:thumbnail', files: FileList): void;
+  (e: 'update:image', files: FileList): void;
+  (e: 'update:opening-video', files: FileList): void;
+  (e: 'submit'): void;
 }>()
 
 const formDataValue = computed({
   get: (): CreateScheduleRequest => props.formData,
-  set: (formData: CreateScheduleRequest): void => emit('update:form-data', formData)
+  set: (formData: CreateScheduleRequest): void =>
+    emit('update:form-data', formData)
 })
 const startTimeDataValue = computed({
   get: (): DateTimeInput => ({
@@ -94,17 +98,30 @@ const endTimeDataValue = computed({
   }
 })
 
-const formDataValidate = useVuelidate(CreateScheduleValidationRules, formDataValue)
-const startTimeDataValidate = useVuelidate(TimeDataValidationRules, startTimeDataValue)
-const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataValue)
+const formDataValidate = useVuelidate(
+  CreateScheduleValidationRules,
+  formDataValue
+)
+const startTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  startTimeDataValue
+)
+const endTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  endTimeDataValue
+)
 
 const onChangeStartAt = (): void => {
-  const startAt = dayjs(`${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`)
+  const startAt = dayjs(
+    `${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`
+  )
   formDataValue.value.startAt = startAt.unix()
 }
 
 const onChangeEndAt = (): void => {
-  const endAt = dayjs(`${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`)
+  const endAt = dayjs(
+    `${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`
+  )
   formDataValue.value.endAt = endAt.unix()
 }
 
@@ -142,7 +159,11 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card>
     <v-card-title>ライブ配信登録</v-card-title>
@@ -153,6 +174,7 @@ const onSubmit = async (): Promise<void> => {
           v-model="formDataValidate.title.$model"
           :error-messages="getErrorMessage(formDataValidate.title.$errors)"
           label="タイトル"
+          variant="outlined"
         />
         <p class="text-subtitle-2 text-grey py-2">
           開催期間
@@ -160,7 +182,9 @@ const onSubmit = async (): Promise<void> => {
         <div class="d-flex flex-column flex-md-row justify-center">
           <v-text-field
             v-model="startTimeDataValidate.date.$model"
-            :error-messages="getErrorMessage(startTimeDataValidate.date.$errors)"
+            :error-messages="
+              getErrorMessage(startTimeDataValidate.date.$errors)
+            "
             type="date"
             variant="outlined"
             density="compact"
@@ -169,7 +193,9 @@ const onSubmit = async (): Promise<void> => {
           />
           <v-text-field
             v-model="startTimeDataValidate.time.$model"
-            :error-messages="getErrorMessage(startTimeDataValidate.time.$errors)"
+            :error-messages="
+              getErrorMessage(startTimeDataValidate.time.$errors)
+            "
             type="time"
             variant="outlined"
             density="compact"
@@ -198,17 +224,22 @@ const onSubmit = async (): Promise<void> => {
         </div>
         <v-textarea
           v-model="formDataValidate.description.$model"
-          :error-messages="getErrorMessage(formDataValidate.description.$errors)"
+          :error-messages="
+            getErrorMessage(formDataValidate.description.$errors)
+          "
           label="詳細"
           maxlength="2000"
+          variant="outlined"
         />
-        <v-row>
+        <v-row class="mt-4">
           <v-col cols="12" sm="12" md="4">
             <molecules-image-select-form
               label="サムネイル画像"
               :loading="loading"
               :img-url="formDataValue.thumbnailUrl"
-              :validation-error-message="getErrorMessage(formDataValidate.thumbnailUrl.$errors)"
+              :validation-error-message="
+                getErrorMessage(formDataValidate.thumbnailUrl.$errors)
+              "
               :error="props.thumbnailUploadStatus.error"
               :message="props.thumbnailUploadStatus.message"
               @update:file="onChangeThumbnailFile"
@@ -219,7 +250,9 @@ const onSubmit = async (): Promise<void> => {
               label="オープニング動画"
               :loading="loading"
               :video-url="formDataValue.openingVideoUrl"
-              :validation-error-message="getErrorMessage(formDataValidate.openingVideoUrl.$errors)"
+              :validation-error-message="
+                getErrorMessage(formDataValidate.openingVideoUrl.$errors)
+              "
               :error="props.openingVideoUploadStatus.error"
               :message="props.openingVideoUploadStatus.message"
               @update:file="onChangeOpeningVideo"
@@ -230,7 +263,9 @@ const onSubmit = async (): Promise<void> => {
               label="待機中の画像"
               :loading="loading"
               :img-url="formDataValue.imageUrl"
-              :validation-error-message="getErrorMessage(formDataValidate.imageUrl.$errors)"
+              :validation-error-message="
+                getErrorMessage(formDataValidate.imageUrl.$errors)
+              "
               :error="props.imageUploadStatus.error"
               :message="props.imageUploadStatus.message"
               @update:file="onChangeImageFile"
@@ -240,7 +275,13 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="props.loading" variant="outlined" color="primary" type="submit">
+        <v-btn
+          block
+          :loading="props.loading"
+          variant="outlined"
+          color="primary"
+          type="submit"
+        >
           登録
         </v-btn>
       </v-card-actions>
