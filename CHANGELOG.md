@@ -1,5 +1,21 @@
 # Changelog
 
+## [v1.11.14](https://github.com/and-period/furumaru/compare/v1.11.13...v1.11.14) - 2024-05-19
+- fix(media): YouTube配信の登録処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2208
+- fix(media): YouTube配信とストリーム設定の関連付け処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2210
+- feat(gateway): YouTube配信用のレスポンスを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2211
+- feat(admin): YouTube配信周りの導線づくり by @taba2424 in https://github.com/and-period/furumaru/pull/2212
+- Fix: Disabled email change button by @hamachans in https://github.com/and-period/furumaru/pull/2200
+- feat(admin): YouTube配信周りの導線づくり by @taba2424 in https://github.com/and-period/furumaru/pull/2213
+- fix(media): StepFunctionsへ渡すRTMPプッシュの情報を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2215
+- feat(serverless): RTMP出力をできるようにチャンネル作成処理を変更 by @sea-kai in https://github.com/and-period/furumaru/pull/2214
+- fix(serverless): .tool-versionsの追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2216
+- Add: added icon if live is nothing by @hamachans in https://github.com/and-period/furumaru/pull/2217
+- feat(admin): ライブ配信削除機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2218
+- fix(gateway): ライブ配信削除APIの権限設定 by @taba2424 in https://github.com/and-period/furumaru/pull/2219
+- fix(admin): ライブ配信削除後、モーダルが非表示になるように by @taba2424 in https://github.com/and-period/furumaru/pull/2220
+- Fix/web/admin/live UI by @wf-yamaday in https://github.com/and-period/furumaru/pull/2221
+
 ## [v1.11.13](https://github.com/and-period/furumaru/compare/v1.11.12...v1.11.13) - 2024-05-16
 - fix:すべての商品画面のローディング状態に使うステータスをuseAsyncDataの返り値にする by @wf-yamaday in https://github.com/and-period/furumaru/pull/2187
 - fix(workflow): OpenAIによるレビューを削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2191
