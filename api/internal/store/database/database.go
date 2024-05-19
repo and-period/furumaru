@@ -299,6 +299,7 @@ type Schedule interface {
 	Get(ctx context.Context, scheduleID string, fields ...string) (*entity.Schedule, error)
 	Create(ctx context.Context, schedule *entity.Schedule) error
 	Update(ctx context.Context, scheduleID string, params *UpdateScheduleParams) error
+	Delete(ctx context.Context, scheduleID string) error
 	Approve(ctx context.Context, scheduleID string, params *ApproveScheduleParams) error
 	Publish(ctx context.Context, scheduleID string, public bool) error
 }

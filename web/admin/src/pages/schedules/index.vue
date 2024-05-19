@@ -97,8 +97,26 @@ const handleClickPublished = async (scheduleId: string): Promise<void> => {
   }
 }
 
-const handleClickDelete = (): void => {
-  console.log('debug', 'click:delete-schedule')
+const handleClickDelete = async (scheduleId: string): Promise<void> => {
+  try {
+    const schedule = schedules.value.find((schedule: Schedule): boolean => {
+      return schedule.id === scheduleId
+    })
+    if (!schedule) {
+      throw new Error(`failed to find schedule. scheduleId=${scheduleId}`)
+    }
+    await scheduleStore.deleteSchedule(scheduleId)
+    commonStore.addSnackbar({
+      message: `${schedule.title}を削除しました。`,
+      color: 'info'
+    })
+    fetchState.execute()
+  } catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
 }
 
 try {

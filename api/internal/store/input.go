@@ -362,6 +362,10 @@ type UpdateScheduleInput struct {
 	EndAt           time.Time `validate:"required,gtfield=StartAt"`
 }
 
+type DeleteScheduleInput struct {
+	ScheduleID string `validate:"required"`
+}
+
 type ApproveScheduleInput struct {
 	ScheduleID string `validate:"required"`
 	AdminID    string `validate:"required"`

@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
+	mentity "github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -157,6 +158,28 @@ func (s *service) UpdateSchedule(ctx context.Context, in *store.UpdateScheduleIn
 		}
 	}()
 	return nil
+}
+
+func (s *service) DeleteSchedule(ctx context.Context, in *store.DeleteScheduleInput) error {
+	if err := s.validator.Struct(in); err != nil {
+		return internalError(err)
+	}
+	schedule, err := s.db.Schedule.Get(ctx, in.ScheduleID)
+	if err != nil {
+		return internalError(err)
+	}
+	broadcastIn := &media.GetBroadcastByScheduleIDInput{
+		ScheduleID: schedule.ID,
+	}
+	broadcast, err := s.media.GetBroadcastByScheduleID(ctx, broadcastIn)
+	if err != nil && !errors.Is(err, exception.ErrNotFound) {
+		return internalError(err)
+	}
+	if broadcast != nil && broadcast.Status != mentity.BroadcastStatusDisabled {
+		return fmt.Errorf("api: invalid request: broadcast is not disabled: %w", exception.ErrFailedPrecondition)
+	}
+	err = s.db.Schedule.Delete(ctx, in.ScheduleID)
+	return internalError(err)
 }
 
 func (s *service) ApproveSchedule(ctx context.Context, in *store.ApproveScheduleInput) error {

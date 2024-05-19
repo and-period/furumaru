@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"errors"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/messenger/entity"
 	"github.com/and-period/furumaru/api/internal/store"
@@ -24,7 +26,7 @@ func (s *service) NotifyStartLive(ctx context.Context, in *messenger.NotifyStart
 		ScheduleID: in.ScheduleID,
 	}
 	schedule, err := s.store.GetSchedule(ctx, scheduleIn)
-	if err != nil {
+	if err != nil && !errors.Is(err, exception.ErrNotFound) {
 		return internalError(err)
 	}
 	if !schedule.Published() {

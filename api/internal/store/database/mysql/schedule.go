@@ -147,6 +147,14 @@ func (s *schedule) Update(ctx context.Context, scheduleID string, params *databa
 	return dbError(err)
 }
 
+func (s *schedule) Delete(ctx context.Context, scheduleID string) error {
+	err := s.db.DB.WithContext(ctx).
+		Table(scheduleTable).
+		Where("id = ?", scheduleID).
+		Delete(&entity.Schedule{}).Error
+	return dbError(err)
+}
+
 func (s *schedule) Approve(ctx context.Context, scheduleID string, params *database.ApproveScheduleParams) error {
 	var approvedAdminID *string
 	if params.Approved {

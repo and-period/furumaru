@@ -59,6 +59,7 @@ type Service interface {
 	GetSchedule(ctx context.Context, in *GetScheduleInput) (*entity.Schedule, error)             // １件取得
 	CreateSchedule(ctx context.Context, in *CreateScheduleInput) (*entity.Schedule, error)       // 登録
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleInput) error                           // 更新
+	DeleteSchedule(ctx context.Context, in *DeleteScheduleInput) error                           // 削除
 	ApproveSchedule(ctx context.Context, in *ApproveScheduleInput) error                         // 承認
 	PublishSchedule(ctx context.Context, in *PublishScheduleInput) error                         // 公開
 	// マルシェタイムテーブル
