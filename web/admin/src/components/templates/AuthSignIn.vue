@@ -86,4 +86,18 @@ const onSubmit = (): void => {
       </v-card-actions>
     </v-form>
   </v-card>
+  <v-container class="text-right">
+    <v-row>
+      <v-col cols="12" sm="1" md="12">
+        <nuxt-link class="text-body-2" to="/privacy">
+          プライバシーポリシー
+        </nuxt-link>
+      </v-col>
+      <v-col cols="12" sm="1" md="12">
+        <nuxt-link class="text-body-2" to="/legal-notice">
+          特商取引法に基づく表記
+        </nuxt-link>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
