@@ -3,7 +3,7 @@
     <v-main>
       <v-container>
         <v-card>
-          <v-card-text class="markdown-content"v-html="legalNoticeMarkdown"  />
+          <v-card-text class="markdown-content"v-html="legalNoticeMarkdown" />
         </v-card>
       </v-container>
     </v-main>
