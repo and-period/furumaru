@@ -10,7 +10,7 @@
 
 ## ホームページ
 
-[https://www.and-period.co.jp/](https://www.and-period.co.jp/)
+[support@and-period.co.jp](mailto:support@and-period.co.jp)
 
 ## 所在地
 

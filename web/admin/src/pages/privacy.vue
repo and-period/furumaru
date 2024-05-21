@@ -3,7 +3,7 @@
     <v-main>
       <v-container>
         <v-card>
-          <v-card-text v-html="privacyPolicyMarkdown" class="markdown-content"></v-card-text>
+          <v-card-text class="markdown-content" v-html="privacyPolicyMarkdown" />
         </v-card>
       </v-container>
     </v-main>
