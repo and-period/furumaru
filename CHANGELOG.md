@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.11.15](https://github.com/and-period/furumaru/compare/v1.11.14...v1.11.15) - 2024-05-22
+- Add: added privacy in admin page by @hamachans in https://github.com/and-period/furumaru/pull/2222
+- fix: fixed markdwon by @hamachans in https://github.com/and-period/furumaru/pull/2226
+- feat(serverless): originAccessControlの削除処理を追加 by @sea-kai in https://github.com/and-period/furumaru/pull/2224
+
 ## [v1.11.14](https://github.com/and-period/furumaru/compare/v1.11.13...v1.11.14) - 2024-05-19
 - fix(media): YouTube配信の登録処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2208
 - fix(media): YouTube配信とストリーム設定の関連付け処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2210
