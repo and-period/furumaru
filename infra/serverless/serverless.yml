@@ -70,7 +70,9 @@ resources:
                     - cloudFront:CreateDistribution
                     - cloudFront:GetDistribution
                     - cloudFront:GetDistributionConfig
+                    - cloudFront:GetOriginAccessControl
                     - cloudFront:DeleteDistribution
+                    - cloudFront:DeleteOriginAccessControl
                     - iam:PassRole
                     - states:StartExecution
                     - states:DescribeExecution
@@ -710,10 +712,29 @@ stepFunctions:
             Type: Task
             Comment: CloudFrontのディストリビューションを削除
             InputPath: $
+            ResultPath: $.DeleteDistributionResult
             Resource: arn:aws:states:::aws-sdk:cloudfront:deleteDistribution
             Parameters:
               Id.$: $.DistributionId
               IfMatch.$: $.DistributionStatus.ETag
+            Next: GetOriginAccessControl
+          GetOriginAccessControl:
+            Type: Task
+            Comment: CloudFrontのOriginAccessControlを取得
+            InputPath: $
+            ResultPath: $.GetOriginAccessControlResult
+            Resource: arn:aws:states:::aws-sdk:cloudfront:getOriginAccessControl
+            Parameters:
+              Id.$: $.DistributionStatus.Distribution.DistributionConfig.Origins.Items[0].OriginAccessControlId
+            Next: DeleteOriginAccessControl
+          DeleteOriginAccessControl:
+            Type: Task
+            Comment: CloudFrontのOriginAccessControlを削除
+            InputPath: $
+            Resource: arn:aws:states:::aws-sdk:cloudfront:deleteOriginAccessControl
+            Parameters:
+              Id.$: $.DistributionStatus.Distribution.DistributionConfig.Origins.Items[0].OriginAccessControlId
+              IfMatch.$: $.GetOriginAccessControlResult.ETag
             Next: Finish
           Finish:
             Type: Pass
