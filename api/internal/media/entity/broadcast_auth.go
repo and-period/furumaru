@@ -50,9 +50,9 @@ func (a *BroadcastAuth) PrimaryKey() map[string]interface{} {
 	}
 }
 
-func (a *BroadcastAuth) ValidYouTubeAuth(email string) bool {
+func (a *BroadcastAuth) ValidYouTubeAuth(userID string) bool {
 	if a == nil {
 		return false
 	}
-	return a.Type == BroadcastAuthTypeYouTube && a.Account == email
+	return a.Type == BroadcastAuthTypeYouTube && a.Account == userID
 }

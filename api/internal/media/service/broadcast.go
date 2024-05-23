@@ -295,7 +295,7 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	if err := s.cache.Get(ctx, auth); err != nil {
 		return internalError(err)
 	}
-	if !auth.ValidYouTubeAuth(user.Email) {
+	if !auth.ValidYouTubeAuth(user.UserId) {
 		return fmt.Errorf("service: invalid youtube auth: %w", exception.ErrUnauthenticated)
 	}
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, auth.ScheduleID)
