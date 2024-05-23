@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.11.16](https://github.com/and-period/furumaru/compare/v1.11.15...v1.11.16) - 2024-05-23
+
 ## [v1.11.15](https://github.com/and-period/furumaru/compare/v1.11.14...v1.11.15) - 2024-05-22
 - Add: added privacy in admin page by @hamachans in https://github.com/and-period/furumaru/pull/2222
 - fix: fixed markdwon by @hamachans in https://github.com/and-period/furumaru/pull/2226
