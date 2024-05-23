@@ -14,6 +14,7 @@ import (
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/youtube"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -291,13 +292,24 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	if err != nil {
 		return internalError(err)
 	}
+	s.logger.Debug("service: get token info", zap.Any("user", user))
+	service, err := s.youtube.NewService(ctx, token)
+	if err != nil {
+		return internalError(err)
+	}
 	auth := &entity.BroadcastAuth{SessionID: in.State}
 	if err := s.cache.Get(ctx, auth); err != nil {
 		return internalError(err)
 	}
-	if !auth.ValidYouTubeAuth(user.UserId) {
-		return fmt.Errorf("service: invalid youtube auth: %w", exception.ErrUnauthenticated)
+	s.logger.Debug("service: get broadcast auth", zap.Any("auth", auth))
+	channel, err := service.GetChannnelByHandle(ctx, auth.Account)
+	if err != nil {
+		return internalError(err)
 	}
+	s.logger.Debug("service: get channel", zap.Any("channel", channel))
+	// if !auth.ValidYouTubeAuth(user.UserId) {
+	// 	return fmt.Errorf("service: invalid youtube auth: %w", exception.ErrUnauthenticated)
+	// }
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, auth.ScheduleID)
 	if err != nil {
 		return internalError(err)
@@ -314,10 +326,6 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	}
 	if schedule.Status != sentity.ScheduleStatusWaiting {
 		return fmt.Errorf("service: this schedule is not waiting: %w", exception.ErrFailedPrecondition)
-	}
-	service, err := s.youtube.NewService(ctx, token)
-	if err != nil {
-		return internalError(err)
 	}
 	broadcastIn := &youtube.CreateLiveBroadcastParams{
 		Title:       schedule.Title,

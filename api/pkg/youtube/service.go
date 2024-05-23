@@ -48,6 +48,18 @@ func (c *client) NewService(ctx context.Context, token *oauth2.Token) (Service, 
 	}, nil
 }
 
+func (s *service) GetChannnelByHandle(ctx context.Context, handle string) (*youtube.Channel, error) {
+	part := []string{"id", "snippet", "contentDetails"}
+	out, err := s.service.Channels.List(part).ForHandle(handle).Context(ctx).Do()
+	if err != nil {
+		return nil, s.internalError(err)
+	}
+	if len(out.Items) == 0 {
+		return nil, fmt.Errorf("youtube: channel not found: %w", ErrNotFound)
+	}
+	return out.Items[0], nil
+}
+
 func (s *service) GetLiveBroadcast(ctx context.Context, broadcastID string) (*youtube.LiveBroadcast, error) {
 	part := []string{"id", "snippet", "contentDetails", "status"}
 	out, err := s.service.LiveBroadcasts.List(part).Id(broadcastID).Context(ctx).Do()
