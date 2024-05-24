@@ -17,6 +17,21 @@ broadcastResponse:
       youtubeAdminUrl: 'https://studio.youtube.com/video/live-broadcast-id/livestreaming'
       createdAt: 1640962800
       updatedAt: 1640962800
+guestBroadcastResponse:
+  type: object
+  properties:
+    broadcast:
+      $ref: './../../../openapi.yaml#/components/schemas/guestBroadcast'
+  required:
+  - broadcast
+  example:
+    broadcast:
+      title: 'タイトル'
+      description: '説明'
+      startAt: 1640962800
+      endAt: 1640962800
+      coordinatorMarche: 'マルシェ名'
+      coordinatorName: '名前'
 authYoutubeBroadcastResponse:
   type: object
   properties:

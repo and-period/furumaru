@@ -71,7 +71,7 @@ const updateLiveFormData = ref<UpdateLiveRequest>({
 })
 const mp4FormData = ref<File[] | undefined>()
 const authYoutubeFormData = ref<AuthYoutubeBroadcastRequest>({
-  googleAccount: ''
+  youtubeHandle: ''
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,

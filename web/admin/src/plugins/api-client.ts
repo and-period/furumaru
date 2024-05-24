@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios'
 import { client } from './axios'
-import { AddressApi, AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, LiveApi, MessageApi, NotificationApi, OrderApi, OtherApi, PaymentSystemApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, UserApi } from '~/types/api'
+import { AddressApi, AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, OtherApi, PaymentSystemApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, UserApi } from '~/types/api'
 
 // eslint-disable-next-line import/no-mutable-exports, no-use-before-define
 let apiClient: ApiClient
@@ -98,6 +98,10 @@ export class ApiClient {
 
   otherApi () {
     return new OtherApi(this.config, this.basePath, this.instance)
+  }
+
+  guestApi () {
+    return new GuestApi(this.config, this.basePath, this.instance)
   }
 }
 

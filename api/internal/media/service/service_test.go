@@ -40,7 +40,7 @@ type mocks struct {
 	storage        *mock_storage.MockBucket
 	producer       *mock_sqs.MockProducer
 	media          *mock_medialive.MockMediaLive
-	youtube        *mock_youtube.MockYouTube
+	youtube        *mock_youtube.MockYoutube
 	youtubeService *mock_youtube.MockService
 	youtubeAuth    *mock_youtube.MockAuth
 }
@@ -85,7 +85,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		storage:        mock_storage.NewMockBucket(ctrl),
 		producer:       mock_sqs.NewMockProducer(ctrl),
 		media:          mock_medialive.NewMockMediaLive(ctrl),
-		youtube:        mock_youtube.NewMockYouTube(ctrl),
+		youtube:        mock_youtube.NewMockYoutube(ctrl),
 		youtubeService: mock_youtube.NewMockService(ctrl),
 		youtubeAuth:    mock_youtube.NewMockAuth(ctrl),
 	}
@@ -120,7 +120,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		Storage:   mocks.storage,
 		Producer:  mocks.producer,
 		MediaLive: mocks.media,
-		YouTube:   mocks.youtube,
+		Youtube:   mocks.youtube,
 	}
 	tmpHost, _ := url.Parse(tmpURL)
 	storageHost, _ := url.Parse(storageURL)

@@ -38,7 +38,7 @@ type Params struct {
 	Storage   storage.Bucket
 	Producer  sqs.Producer
 	Store     store.Service
-	YouTube   youtube.YouTube
+	Youtube   youtube.Youtube
 }
 
 type service struct {
@@ -54,7 +54,7 @@ type service struct {
 	producer       sqs.Producer
 	store          store.Service
 	media          medialive.MediaLive
-	youtube        youtube.YouTube
+	youtube        youtube.Youtube
 	now            func() time.Time
 	generateID     func() string
 	uploadEventTTL time.Duration
@@ -125,7 +125,7 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		storageURL: storageURL,
 		producer:   params.Producer,
 		store:      params.Store,
-		youtube:    params.YouTube,
+		youtube:    params.Youtube,
 		now:        jst.Now,
 		generateID: func() string {
 			return uuid.Base58Encode(uuid.New())
@@ -146,6 +146,9 @@ func internalError(err error) error {
 	if e := dbError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
 	}
+	if e := cacheError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
 	if e := storageError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
 	}
@@ -160,6 +163,25 @@ func internalError(err error) error {
 		return fmt.Errorf("%w: %s", exception.ErrDeadlineExceeded, err.Error())
 	default:
 		return fmt.Errorf("%w: %s", exception.ErrInternal, err.Error())
+	}
+}
+
+func cacheError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, dynamodb.ErrNotFound):
+		return exception.ErrNotFound
+	case errors.Is(err, dynamodb.ErrAlreadyExists):
+		return exception.ErrAlreadyExists
+	case errors.Is(err, dynamodb.ErrResourceExhausted), errors.Is(err, dynamodb.ErrOutOfRange):
+		return exception.ErrResourceExhausted
+	case errors.Is(err, dynamodb.ErrAborted), errors.Is(err, dynamodb.ErrCanceled):
+		return exception.ErrCanceled
+	default:
+		return nil
 	}
 }
 

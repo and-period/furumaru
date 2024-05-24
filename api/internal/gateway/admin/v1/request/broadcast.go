@@ -9,11 +9,16 @@ type ActivateBroadcastMP4Request struct {
 }
 
 type AuthYoutubeBroadcastRequest struct {
-	GoogleAccount string `json:"googleAccount,omitempty"` // 連携先Googleアカウント
+	YoutubeHandle string `json:"youtubeHandle,omitempty"` // 連携先Youtubeアカウント
+}
+
+type CallbackAuthYoutubeBroadcastRequest struct {
+	State    string `json:"state,omitempty"`    // Google認証時に取得したstate
+	AuthCode string `json:"authCode,omitempty"` // Google認証時に取得したcode
 }
 
 type CreateYoutubeBroadcastRequest struct {
-	State    string `json:"state,omitempty"`    // Google認証時に取得したstate
-	AuthCode string `json:"authCode,omitempty"` // Google認証時に取得したcode
-	Public   bool   `json:"public,omitempty"`   // 公開設定
+	Title       string `json:"title,omitempty"`       // ライブ配信タイトル
+	Description string `json:"description,omitempty"` // ライブ配信説明
+	Public      bool   `json:"public,omitempty"`      // 公開設定
 }

@@ -52,12 +52,12 @@ type Broadcast struct {
 	MediaLiveMP4InputArn      string          `gorm:"default:null"`         // MediaLiveインプットARN(MP4)
 	MediaLiveMP4InputName     string          `gorm:"default:null"`         // MediaLiveインプット名(MP4)
 	MediaStoreContainerArn    string          `gorm:"default:null"`         // MediaStoreコンテナARN
-	YoutubeAccount            string          `gorm:"default:null"`         // YouTubeアカウント
-	YoutubeBroadcastID        string          `gorm:"default:null"`         // YouTube配信ID
-	YoutubeStreamID           string          `gorm:"default:null"`         // YouTubeストリームID
-	YoutubeStreamURL          string          `gorm:"default:null"`         // YouTube配信URL
-	YoutubeStreamKey          string          `gorm:"default:null"`         // YouTubeストリームキー
-	YoutubeBackupURL          string          `gorm:"default:null"`         // YouTubeバックアップURL
+	YoutubeAccount            string          `gorm:"default:null"`         // Youtubeアカウント
+	YoutubeBroadcastID        string          `gorm:"default:null"`         // Youtube配信ID
+	YoutubeStreamID           string          `gorm:"default:null"`         // YoutubeストリームID
+	YoutubeStreamURL          string          `gorm:"default:null"`         // Youtube配信URL
+	YoutubeStreamKey          string          `gorm:"default:null"`         // Youtubeストリームキー
+	YoutubeBackupURL          string          `gorm:"default:null"`         // YoutubeバックアップURL
 	CreatedAt                 time.Time       `gorm:"<-:create"`            // 登録日時
 	UpdatedAt                 time.Time       `gorm:""`                     // 更新日時
 }

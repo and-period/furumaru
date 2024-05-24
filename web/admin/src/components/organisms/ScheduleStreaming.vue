@@ -31,7 +31,7 @@ const props = defineProps({
   authYoutubeFormData: {
     type: Object as PropType<AuthYoutubeBroadcastRequest>,
     default: (): AuthYoutubeBroadcastRequest => ({
-      googleAccount: ''
+      youtubeHandle: ''
     })
   },
   selectedTabItem: {
@@ -351,9 +351,10 @@ const handleClickCopyAuthYoutubeUrl = (url: string) => {
             <div v-if="broadcastValue.youtubeAccount === ''" class="px-0">
               <template v-if="authYoutubeUrlValue === ''">
                 <v-text-field
-                  v-model="authYoutubeFormDataValue.googleAccount"
+                  v-model="authYoutubeFormDataValue.youtubeHandle"
                   variant="outlined"
-                  label="YouTube 連携先アカウント"
+                  label="YouTube 連携先ハンドル名"
+                  placeholder="@から始まるハンドル名（@含めて入力してください）"
                 />
                 <v-btn
                   block
@@ -368,7 +369,7 @@ const handleClickCopyAuthYoutubeUrl = (url: string) => {
                 <v-text-field
                   v-model="authYoutubeUrlValue"
                   variant="outlined"
-                  label="YouTube 連携用URL"
+                  label="YouTube 連携用URL（配信者へ以下のURLを連携してください）"
                   readonly
                   :append-icon="mdiContentCopy"
                   @click:append="
@@ -381,7 +382,12 @@ const handleClickCopyAuthYoutubeUrl = (url: string) => {
               <v-text-field
                 v-model="broadcastValue.youtubeAccount"
                 variant="outlined"
-                label="YouTube 連携先アカウント"
+                label="YouTube 連携先ハンドル名"
+                readonly
+              />
+              <v-text-field
+                variant="outlined"
+                label="YouTube 配信視聴画面URL"
                 readonly
               />
               <v-text-field

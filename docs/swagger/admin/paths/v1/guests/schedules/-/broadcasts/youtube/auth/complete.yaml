@@ -1,0 +1,37 @@
+post:
+  summary: マルシェライブ配信のYoutube認証後処理
+  operationId: v1CallbackAuthYoutubeBroadcast
+  tags:
+  - Guest
+  - Broadcast
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../../../../../openapi.yaml#/components/schemas/v1CallbackAuthYoutubeBroadcastRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../../../openapi.yaml#/components/schemas/v1GuestBroadcastResponse'
+    401:
+      description: Youtube APIの認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: Youtube APIの権限エラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../../../openapi.yaml#/components/schemas/errorResponse'
+    404:
+      description: マルシェライブ配信が存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../../../../../openapi.yaml#/components/schemas/errorResponse'

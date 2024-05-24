@@ -237,7 +237,7 @@ func (s *starter) createChannel(ctx context.Context, target time.Time) error {
 // createRtmpOuputPayload - 配信リソース(MediaLive RTMP Pushアウトプット)
 func (s *starter) createRtmpOuputPayload(broadcast *entity.Broadcast) []*CreateRtmpOutputPayload {
 	outputs := make([]*CreateRtmpOutputPayload, 0, 2)
-	// YouTube配信設定
+	// Youtube配信設定
 	if broadcast.YoutubeStreamKey != "" {
 		if broadcast.YoutubeStreamURL != "" {
 			payload := &CreateRtmpOutputPayload{

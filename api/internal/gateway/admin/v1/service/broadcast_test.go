@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/media/entity"
@@ -84,8 +85,8 @@ func TestBroadcast(t *testing.T) {
 					InputURL:        "rtmp://127.0.0.1:1935/app/instance",
 					OutputURL:       "http://example.com/index.m3u8",
 					ArchiveURL:      "http://example.com/index.mp4",
-					YouTubeAccount:  "youtube-account",
-					YouTubeAdminURL: "https://studio.youtube.com/video/youtube-broadcast-id/livestreaming",
+					YoutubeAccount:  "youtube-account",
+					YoutubeAdminURL: "https://studio.youtube.com/video/youtube-broadcast-id/livestreaming",
 					CreatedAt:       1640962800,
 					UpdatedAt:       1640962800,
 				},
@@ -143,6 +144,83 @@ func TestBroadcasts(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			assert.Equal(t, tt.expect, NewBroadcasts(tt.broadcasts))
+		})
+	}
+}
+
+func TestGuestBroadcast(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name        string
+		schedule    *Schedule
+		coordinator *Coordinator
+		expect      *GuestBroadcast
+	}{
+		{
+			name: "success",
+			schedule: &Schedule{
+				Schedule: response.Schedule{
+					ID:              "schedule-id",
+					CoordinatorID:   "coordinator-id",
+					Status:          ScheduleStatusLive.Response(),
+					Title:           "スケジュールタイトル",
+					Description:     "スケジュールの詳細です。",
+					ThumbnailURL:    "https://and-period.jp/thumbnail.png",
+					ImageURL:        "https://and-period.jp/image.png",
+					OpeningVideoURL: "https://and-period.jp/opening-video.mp4",
+					Public:          true,
+					Approved:        true,
+					StartAt:         1638284400,
+					EndAt:           1643641200,
+					CreatedAt:       1640962800,
+					UpdatedAt:       1640962800,
+				},
+			},
+			coordinator: &Coordinator{
+				Coordinator: response.Coordinator{
+					ID:                "coordinator-id",
+					Status:            int32(AdminStatusActivated),
+					Lastname:          "&.",
+					Firstname:         "管理者",
+					LastnameKana:      "あんどどっと",
+					FirstnameKana:     "かんりしゃ",
+					MarcheName:        "&.マルシェ",
+					Username:          "&.農園",
+					Profile:           "紹介文です。",
+					ProductTypeIDs:    []string{"product-type-ids"},
+					ThumbnailURL:      "https://and-period.jp/thumbnail.png",
+					HeaderURL:         "https://and-period.jp/header.png",
+					PromotionVideoURL: "https://and-period.jp/promotion.mp4",
+					BonusVideoURL:     "https://and-period.jp/bonus.mp4",
+					InstagramID:       "instagram-id",
+					FacebookID:        "facebook-id",
+					Email:             "test-coordinator@and-period.jp",
+					PhoneNumber:       "+819012345678",
+					PostalCode:        "1000014",
+					PrefectureCode:    13,
+					City:              "千代田区",
+					BusinessDays:      []time.Weekday{time.Monday, time.Wednesday, time.Friday},
+					CreatedAt:         1640962800,
+					UpdatedAt:         1640962800,
+				},
+			},
+			expect: &GuestBroadcast{
+				GuestBroadcast: response.GuestBroadcast{
+					Title:             "スケジュールタイトル",
+					Description:       "スケジュールの詳細です。",
+					StartAt:           1638284400,
+					EndAt:             1643641200,
+					CoordinatorMarche: "&.マルシェ",
+					CoordinatorName:   "&.農園",
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewGuestBroadcast(tt.schedule, tt.coordinator)
+			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }

@@ -26,6 +26,10 @@ type Broadcast struct {
 
 type Broadcasts []*Broadcast
 
+type GuestBroadcast struct {
+	response.GuestBroadcast
+}
+
 func NewBroadcastStatus(status entity.BroadcastStatus) BroadcastStatus {
 	switch status {
 	case entity.BroadcastStatusDisabled:
@@ -54,13 +58,13 @@ func NewBroadcast(broadcast *entity.Broadcast) *Broadcast {
 			InputURL:       broadcast.InputURL,
 			OutputURL:      broadcast.OutputURL,
 			ArchiveURL:     broadcast.ArchiveURL,
-			YouTubeAccount: broadcast.YoutubeAccount,
+			YoutubeAccount: broadcast.YoutubeAccount,
 			CreatedAt:      broadcast.CreatedAt.Unix(),
 			UpdatedAt:      broadcast.CreatedAt.Unix(),
 		},
 	}
 	if broadcast.YoutubeBroadcastID != "" {
-		res.YouTubeAdminURL = fmt.Sprintf(youtubeAdminURL, broadcast.YoutubeBroadcastID)
+		res.YoutubeAdminURL = fmt.Sprintf(youtubeAdminURL, broadcast.YoutubeBroadcastID)
 	}
 	return res
 }
@@ -86,4 +90,21 @@ func (bs Broadcasts) Response() []*response.Broadcast {
 		res[i] = bs[i].Response()
 	}
 	return res
+}
+
+func NewGuestBroadcast(schedule *Schedule, coordinator *Coordinator) *GuestBroadcast {
+	return &GuestBroadcast{
+		response.GuestBroadcast{
+			Title:             schedule.Title,
+			Description:       schedule.Description,
+			StartAt:           schedule.StartAt,
+			EndAt:             schedule.EndAt,
+			CoordinatorMarche: coordinator.MarcheName,
+			CoordinatorName:   coordinator.Username,
+		},
+	}
+}
+
+func (b *GuestBroadcast) Response() *response.GuestBroadcast {
+	return &b.GuestBroadcast
 }

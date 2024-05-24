@@ -23,7 +23,7 @@ var (
 	ErrUnknown         = fmt.Errorf("youtube: unknown error")
 )
 
-type YouTube interface {
+type Youtube interface {
 	NewAuth() Auth
 	NewService(ctx context.Context, token *oauth2.Token) (Service, error)
 }
@@ -36,6 +36,7 @@ type Auth interface {
 }
 
 type Service interface {
+	ListChannels(ctx context.Context) ([]*youtube.Channel, error)                                               // チャンネル一覧取得
 	GetChannnelByHandle(ctx context.Context, handle string) (*youtube.Channel, error)                           // チャンネル情報取得
 	GetLiveBroadcast(ctx context.Context, broadcastID string) (*youtube.LiveBroadcast, error)                   // ライブ配信情報取得
 	CreateLiveBroadcast(ctx context.Context, params *CreateLiveBroadcastParams) (*youtube.LiveBroadcast, error) // ライブ配信作成
@@ -69,7 +70,7 @@ func WithLogger(logger *zap.Logger) Option {
 	}
 }
 
-func NewClient(params *Params, opts ...Option) YouTube {
+func NewClient(params *Params, opts ...Option) Youtube {
 	dopts := &options{
 		logger: zap.NewNop(),
 	}

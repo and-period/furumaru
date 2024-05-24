@@ -1,12 +1,23 @@
 package entity
 
-import "time"
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"time"
+
+	"golang.org/x/oauth2"
+	"google.golang.org/api/youtube/v3"
+)
+
+var errInvalidBroadcastToken = errors.New("entity: invalid broadcast token")
 
 // BroadcastAuthType - ライブ配信連携認証種別
 type BroadcastAuthType string
 
 const (
-	BroadcastAuthTypeYouTube BroadcastAuthType = "youtube" // YouTube認証
+	BroadcastAuthTypeYoutube BroadcastAuthType = "youtube" // Youtube認証
 )
 
 // BroadcastAuth - ライブ配信連携認証情報
@@ -15,6 +26,7 @@ type BroadcastAuth struct {
 	Type       BroadcastAuthType `dynamodbav:"type"`                // 認証種別
 	Account    string            `dynamodbav:"account"`             // アカウント
 	ScheduleID string            `dynamodbav:"schedule_id"`         // スケジュールID
+	Token      []byte            `dynamodbav:"token"`               // 認証トークン
 	ExpiredAt  time.Time         `dynamodbav:"expired_at,unixtime"` // 有効期限
 	CreatedAt  time.Time         `dynamodbav:"created_at"`          // 登録日時
 	UpdatedAt  time.Time         `dynamodbav:"updated_at"`          // 更新日時
@@ -28,10 +40,10 @@ type BroadcastAuthParams struct {
 	TTL        time.Duration
 }
 
-func NewYouTubeBroadcastAuth(params *BroadcastAuthParams) *BroadcastAuth {
+func NewYoutubeBroadcastAuth(params *BroadcastAuthParams) *BroadcastAuth {
 	return &BroadcastAuth{
 		SessionID:  params.SessionID,
-		Type:       BroadcastAuthTypeYouTube,
+		Type:       BroadcastAuthTypeYoutube,
 		Account:    params.Account,
 		ScheduleID: params.ScheduleID,
 		ExpiredAt:  params.Now.Add(params.TTL),
@@ -50,9 +62,37 @@ func (a *BroadcastAuth) PrimaryKey() map[string]interface{} {
 	}
 }
 
-func (a *BroadcastAuth) ValidYouTubeAuth(userID string) bool {
-	if a == nil {
+func (a *BroadcastAuth) SetToken(token *oauth2.Token) error {
+	buf := &bytes.Buffer{}
+	if err := json.NewEncoder(buf).Encode(token); err != nil {
+		return err
+	}
+	a.Token = buf.Bytes()
+	return nil
+}
+
+func (a *BroadcastAuth) GetToken() (*oauth2.Token, error) {
+	if a == nil || a.Token == nil {
+		return nil, fmt.Errorf("entity: broadcast auth token is empty: %w", errInvalidBroadcastToken)
+	}
+	token := &oauth2.Token{}
+	if err := json.Unmarshal(a.Token, token); err != nil {
+		return nil, err
+	}
+	if !token.Valid() {
+		return nil, fmt.Errorf("entity: broadcast auth token is invalid: %w", errInvalidBroadcastToken)
+	}
+	return token, nil
+}
+
+func (a *BroadcastAuth) ValidYoutubeAuth(channels []*youtube.Channel) bool {
+	if a == nil || a.Type != BroadcastAuthTypeYoutube {
 		return false
 	}
-	return a.Type == BroadcastAuthTypeYouTube && a.Account == userID
+	for _, channel := range channels {
+		if channel.Snippet.CustomUrl == a.Account {
+			return true
+		}
+	}
+	return false
 }
