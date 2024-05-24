@@ -353,7 +353,8 @@ const handleClickCopyAuthYoutubeUrl = (url: string) => {
                 <v-text-field
                   v-model="authYoutubeFormDataValue.youtubeHandle"
                   variant="outlined"
-                  label="YouTube 連携先アカウント"
+                  label="YouTube 連携先ハンドル名"
+                  placeholder="@から始まるハンドル名（@含めて入力してください）"
                 />
                 <v-btn
                   block
@@ -368,7 +369,7 @@ const handleClickCopyAuthYoutubeUrl = (url: string) => {
                 <v-text-field
                   v-model="authYoutubeUrlValue"
                   variant="outlined"
-                  label="YouTube 連携用URL"
+                  label="YouTube 連携用URL（配信者へ以下のURLを連携してください）"
                   readonly
                   :append-icon="mdiContentCopy"
                   @click:append="
@@ -382,7 +383,11 @@ const handleClickCopyAuthYoutubeUrl = (url: string) => {
                 v-model="broadcastValue.youtubeAccount"
                 variant="outlined"
                 label="YouTube 連携先ハンドル名"
-                placeholder="@から始まるハンドル名（@含めて入力してください）"
+                readonly
+              />
+              <v-text-field
+                variant="outlined"
+                label="YouTube 配信視聴画面URL"
                 readonly
               />
               <v-text-field
