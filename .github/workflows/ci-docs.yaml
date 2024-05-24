@@ -108,6 +108,11 @@ jobs:
       run: |
         docker compose run --rm swagger_generator yarn
 
+    - name: Setup some systems
+      run: |
+        cd ./web/admin && yarn && cd -
+        cd ./web/user && yarn && cd-
+
     - name: Build
       run: make swagger
 
