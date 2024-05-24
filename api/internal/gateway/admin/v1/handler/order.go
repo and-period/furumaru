@@ -20,7 +20,7 @@ func (h *handler) orderRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/orders", h.authentication)
 
 	r.GET("", h.ListOrders)
-	r.POST("/-/export", h.filterAccessOrder, h.ExportOrders)
+	r.POST("/-/export", h.ExportOrders)
 	r.GET("/:orderId", h.filterAccessOrder, h.GetOrder)
 	r.POST("/:orderId/draft", h.filterAccessOrder, h.DraftOrder)
 	r.POST("/:orderId/capture", h.filterAccessOrder, h.CaptureOrder)
