@@ -151,6 +151,7 @@ const props = defineProps({
       outputUrl: '',
       archiveUrl: '',
       youtubeAccount: '',
+      youtubeViewerUrl: '',
       youtubeAdminUrl: '',
       createdAt: 0,
       updatedAt: 0

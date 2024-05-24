@@ -7,7 +7,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 )
 
-const youtubeAdminURL = "https://studio.youtube.com/video/%s/livestreaming"
+const (
+	YoutubeViewerURL = "https://youtube.com/live/%s"
+	youtubeAdminURL  = "https://studio.youtube.com/video/%s/livestreaming"
+)
 
 // BroadcastStatus - ライブ配信状況
 type BroadcastStatus int32
@@ -64,6 +67,7 @@ func NewBroadcast(broadcast *entity.Broadcast) *Broadcast {
 		},
 	}
 	if broadcast.YoutubeBroadcastID != "" {
+		res.YoutubeViewerURL = fmt.Sprintf(YoutubeViewerURL, broadcast.YoutubeBroadcastID)
 		res.YoutubeAdminURL = fmt.Sprintf(youtubeAdminURL, broadcast.YoutubeBroadcastID)
 	}
 	return res
