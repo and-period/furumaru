@@ -44,7 +44,7 @@ const fetchBroadcast = async () => {
   }
 }
 
-const handleConnect = async () => {
+const connectYoutube = async () => {
   const req: CallbackAuthYoutubeBroadcastRequest = {
     state,
     authCode: code
@@ -52,7 +52,6 @@ const handleConnect = async () => {
   try {
     loading.value = true
     await broadcastStore.connectYouTube(req)
-    router.push('/auth/youtube/complete')
   } catch (err) {
     if (err instanceof Error) {
       show(err.message)
@@ -80,7 +79,7 @@ const handleSubmit = async () => {
 
 try {
   if (state && code) {
-    await handleConnect()
+    await connectYoutube()
   } else {
     await fetchBroadcast()
   }
