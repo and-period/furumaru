@@ -509,6 +509,12 @@ export interface Broadcast {
      */
     'youtubeAccount': string;
     /**
+     * YouTube視聴画面URL
+     * @type {string}
+     * @memberof Broadcast
+     */
+    'youtubeViewerUrl': string;
+    /**
      * YouTube管理画面URL
      * @type {string}
      * @memberof Broadcast

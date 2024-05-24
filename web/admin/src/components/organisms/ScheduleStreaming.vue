@@ -48,6 +48,7 @@ const props = defineProps({
       outputUrl: '',
       archiveUrl: '',
       youtubeAccount: '',
+      youtubeViewerUrl: '',
       youtubeAdminUrl: '',
       createdAt: 0,
       updatedAt: 0
@@ -218,7 +219,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
   emit('submit:upload-archive-mp4')
 }
 
-const handleClickCopyAuthYoutubeUrl = (url: string) => {
+const onClickCopyUrl = (url: string) => {
   navigator.clipboard.writeText(url)
 }
 </script>
@@ -372,9 +373,7 @@ const handleClickCopyAuthYoutubeUrl = (url: string) => {
                   label="YouTube 連携用URL（配信者へ以下のURLを連携してください）"
                   readonly
                   :append-icon="mdiContentCopy"
-                  @click:append="
-                    handleClickCopyAuthYoutubeUrl(authYoutubeUrlValue)
-                  "
+                  @click:append="onClickCopyUrl(authYoutubeUrlValue)"
                 />
               </template>
             </div>
@@ -386,15 +385,20 @@ const handleClickCopyAuthYoutubeUrl = (url: string) => {
                 readonly
               />
               <v-text-field
+                v-model="broadcastValue.youtubeViewerUrl"
                 variant="outlined"
                 label="YouTube 配信視聴画面URL"
                 readonly
+                :append-icon="mdiContentCopy"
+                @click:append="onClickCopyUrl(broadcast.youtubeViewerUrl)"
               />
               <v-text-field
                 v-model="broadcastValue.youtubeAdminUrl"
                 variant="outlined"
                 label="YouTube 配信管理画面URL"
                 readonly
+                :append-icon="mdiContentCopy"
+                @click:append="onClickCopyUrl(broadcast.youtubeAdminUrl)"
               />
             </div>
           </div>

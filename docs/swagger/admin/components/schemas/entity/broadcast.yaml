@@ -22,6 +22,9 @@ broadcast:
     youtubeAccount:
       type: string
       description: YouTubeアカウントID
+    youtubeViewerUrl:
+      type: string
+      description: YouTube視聴画面URL
     youtubeAdminUrl:
       type: string
       description: YouTube管理画面URL
@@ -41,6 +44,7 @@ broadcast:
   - outputUrl
   - archiveUrl
   - youtubeAccount
+  - youtubeViewerUrl
   - youtubeAdminUrl
   - createdAt
   - updatedAt
@@ -52,6 +56,7 @@ broadcast:
     outputUrl: 'http://example.com/index.m3u8'
     archiveUrl: 'http://example.com/index.mp4'
     youtubeAccount: 'UC9kMz1e3J1JGZz1bFv1Jn1g'
+    youtubeViewerUrl: 'https://youtube.com/live/live-broadcast-id'
     youtubeAdminUrl: 'https://studio.youtube.com/video/live-broadcast-id/livestreaming'
     createdAt: 1640962800
     updatedAt: 1640962800
