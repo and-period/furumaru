@@ -101,7 +101,7 @@ const props = defineProps({
   authYoutubeFormData: {
     type: Object as PropType<AuthYoutubeBroadcastRequest>,
     default: (): AuthYoutubeBroadcastRequest => ({
-      googleAccount: ''
+      youtubeHandle: ''
     })
   },
   schedule: {

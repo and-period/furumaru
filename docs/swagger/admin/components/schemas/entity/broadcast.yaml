@@ -55,3 +55,41 @@ broadcast:
     youtubeAdminUrl: 'https://studio.youtube.com/video/live-broadcast-id/livestreaming'
     createdAt: 1640962800
     updatedAt: 1640962800
+guestBroadcast:
+  type: object
+  description: ゲスト用マルシェライブ配信情報
+  properties:
+    title:
+      type: string
+      description: タイトル
+    description:
+      type: string
+      description: 説明
+    startAt:
+      type: integer
+      format: int64
+      description: ライブ開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: ライブ終了日時 (unixtime)
+    coordinatorMarche:
+      type: string
+      description: 配信担当者のマルシェ名
+    coordinatorName:
+      type: string
+      description: 配信担当者の名前
+  required:
+  - title
+  - description
+  - startAt
+  - endAt
+  - coordinatorMarche
+  - coordinatorName
+  example:
+    title: 'タイトル'
+    description: '説明'
+    startAt: 1640962800
+    endAt: 1640962800
+    coordinatorMarche: 'マルシェ名'
+    coordinatorName: '名前'

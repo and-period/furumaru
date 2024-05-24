@@ -191,8 +191,12 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/mp4.yaml'
   /v1/schedules/{scheduleId}/broadcasts/youtube/auth:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/youtube/auth.yaml'
-  /v1/schedules/-/broadcasts/youtube:
-    $ref: './paths/v1/schedules/-/broadcasts/youtube/index.yaml'
+  /v1/guests/schedules/-/broadcasts:
+    $ref: './paths/v1/guests/schedules/-/broadcasts/index.yaml'
+  /v1/guests/schedules/-/broadcasts/youtube:
+    $ref: './paths/v1/guests/schedules/-/broadcasts/youtube/index.yaml'
+  /v1/guests/schedules/-/broadcasts/youtube/auth/complete:
+    $ref: './paths/v1/guests/schedules/-/broadcasts/youtube/auth/complete.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
@@ -267,6 +271,10 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_id
   schemas:
     # Common
     adminRole:
@@ -338,6 +346,8 @@ components:
       $ref: './components/schemas/entity/administrator.yaml#/administrator'
     broadcast:
       $ref: './components/schemas/entity/broadcast.yaml#/broadcast'
+    guestBroadcast:
+      $ref: './components/schemas/entity/broadcast.yaml#/guestBroadcast'
     category:
       $ref: './components/schemas/entity/category.yaml#/category'
     contactCategory:
@@ -403,6 +413,8 @@ components:
       $ref: './components/schemas/v1/broadcast.request.yaml#/activateBroadcastMP4Request'
     v1AuthYoutubeBroadcastRequest:
       $ref: './components/schemas/v1/broadcast.request.yaml#/authYoutubeBroadcastRequest'
+    v1CallbackAuthYoutubeBroadcastRequest:
+      $ref: './components/schemas/v1/broadcast.request.yaml#/callbackAuthYoutubeBroadcastRequest'
     v1CreateYoutubeBroadcastRequest:
       $ref: './components/schemas/v1/broadcast.request.yaml#/createYoutubeBroadcastRequest'
     v1CreateAdministratorRequest:
@@ -558,6 +570,8 @@ components:
       $ref: './components/schemas/v1/live-comment.response.yaml#/liveCommentsResponse'
     v1BroadcastResponse:
       $ref: './components/schemas/v1/broadcast.response.yaml#/broadcastResponse'
+    v1GuestBroadcastResponse:
+      $ref: './components/schemas/v1/broadcast.response.yaml#/guestBroadcastResponse'
     v1AuthYoutubeBroadcastResponse:
       $ref: './components/schemas/v1/broadcast.response.yaml#/authYoutubeBroadcastResponse'
     v1OrderResponse:

@@ -2,11 +2,12 @@ import { defineStore } from 'pinia'
 
 import { fileUpload } from './helper'
 import { apiClient } from '~/plugins/api-client'
-import type { ActivateBroadcastMP4Request, AuthYoutubeBroadcastRequest, Broadcast, CreateYoutubeBroadcastRequest, GetUploadUrlRequest, UpdateBroadcastArchiveRequest } from '~/types/api'
+import type { ActivateBroadcastMP4Request, AuthYoutubeBroadcastRequest, Broadcast, CallbackAuthYoutubeBroadcastRequest, CreateYoutubeBroadcastRequest, GetUploadUrlRequest, GuestBroadcast, UpdateBroadcastArchiveRequest } from '~/types/api'
 
 export const useBroadcastStore = defineStore('broadcast', {
   state: () => ({
-    broadcast: {} as Broadcast
+    broadcast: {} as Broadcast,
+    guestBroadcast: {} as GuestBroadcast
   }),
 
   actions: {
@@ -153,6 +154,23 @@ export const useBroadcastStore = defineStore('broadcast', {
     },
 
     /**
+     * ゲスト用のライブ配信情報を取得する非同期関数
+     * @returns
+     */
+    async getGuestBroadcast (): Promise<void> {
+      try {
+        const res = await apiClient.broadcastApi().v1GuestGetBroadcast()
+        this.guestBroadcast = res.data.broadcast
+      } catch (err) {
+        return this.errorHandler(err, {
+          401: '認証情報に誤りがあります。再度認証を行ってください。',
+          403: '認証情報に誤りがあります。再度認証を行ってください。',
+          404: '指定したマルシェの配信が見つかりません。'
+        })
+      }
+    },
+
+    /**
      * YouTube認証を行う非同期関数
      * @param scheduleId マルシェ開催スケジュールID
      * @param payload YouTube認証情報
@@ -175,7 +193,26 @@ export const useBroadcastStore = defineStore('broadcast', {
      * @param payload YouTube連携情報
      * @returns
      */
-    async connectYouTube (payload: CreateYoutubeBroadcastRequest): Promise<void> {
+    async connectYouTube (payload: CallbackAuthYoutubeBroadcastRequest): Promise<void> {
+      try {
+        const res = await apiClient.broadcastApi().v1CallbackAuthYoutubeBroadcast(payload)
+        this.guestBroadcast = res.data.broadcast
+      } catch (err) {
+        return this.errorHandler(err, {
+          401: 'YouTubeの認証情報に誤りがあります。再度認証を行ってください。',
+          403: 'YouTubeの認証情報に誤りがあります。再度認証を行ってください。',
+          404: '指定したマルシェの配信が見つかりません。',
+          412: 'マルシェの配信が開始しているため、YouTube認証を行えません。'
+        })
+      }
+    },
+
+    /**
+     * YouTube配信の登録を行う非同期関数
+     * @param payload YouTube配信情報
+     * @returns
+     */
+    async createYoutubeLive (payload: CreateYoutubeBroadcastRequest): Promise<void> {
       try {
         await apiClient.broadcastApi().v1CreateYoutubeBroadcast(payload)
       } catch (err) {

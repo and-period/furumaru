@@ -48,6 +48,15 @@ func (c *client) NewService(ctx context.Context, token *oauth2.Token) (Service, 
 	}, nil
 }
 
+func (s *service) ListChannels(ctx context.Context) ([]*youtube.Channel, error) {
+	part := []string{"id", "snippet", "contentDetails"}
+	out, err := s.service.Channels.List(part).Mine(true).Context(ctx).Do()
+	if err != nil {
+		return nil, s.internalError(err)
+	}
+	return out.Items, nil
+}
+
 func (s *service) GetChannnelByHandle(ctx context.Context, handle string) (*youtube.Channel, error) {
 	part := []string{"id", "snippet", "contentDetails"}
 	out, err := s.service.Channels.List(part).ForHandle(handle).Context(ctx).Do()

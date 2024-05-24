@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"sync"
@@ -26,7 +27,15 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var errInvalidOrderKey = errors.New("handler: invalid order key")
+const (
+	sessionKey = "session_id"
+	sessionTTL = 24 * 60 * 60 // 1 day
+)
+
+var (
+	errInvalidOrderKey = errors.New("handler: invalid order key")
+	errInvalidSession  = errors.New("handler: invalid session")
+)
 
 /**
  * ###############################################
@@ -153,6 +162,9 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.threadRoutes(v1)
 	h.uploadRoutes(v1)
 	h.userRoutes(v1)
+
+	// 認証が不要なエンドポイント
+	h.guestBroadcastRoutes(v1)
 }
 
 /**
@@ -282,6 +294,19 @@ func getRole(ctx *gin.Context) service.AdminRole {
 
 func currentAdmin(ctx *gin.Context, adminID string) bool {
 	return getAdminID(ctx) == adminID
+}
+
+func (h *handler) getSessionID(ctx *gin.Context) (string, error) {
+	sessionID, err := ctx.Cookie(sessionKey)
+	if err != nil || sessionID == "" {
+		return "", errInvalidSession
+	}
+	return sessionID, nil
+}
+
+func (h *handler) setSessionID(ctx *gin.Context, sessionID string) {
+	ctx.SetSameSite(http.SameSiteNoneMode)
+	ctx.SetCookie(sessionKey, sessionID, sessionTTL, "/", "", true, true)
 }
 
 type filterAccessParams struct {

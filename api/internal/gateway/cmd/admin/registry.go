@@ -61,7 +61,7 @@ type params struct {
 	messengerQueue       sqs.Producer
 	mediaQueue           sqs.Producer
 	medialive            medialive.MediaLive
-	youtube              youtube.YouTube
+	youtube              youtube.Youtube
 	slack                slack.Client
 	newRelic             *newrelic.Application
 	sentry               sentry.Client
@@ -257,7 +257,7 @@ func (a *app) inject(ctx context.Context) error {
 	}
 	params.userWebURL = userWebURL
 
-	// YouTubeの設定
+	// Youtubeの設定
 	youtubeParams := &youtube.Params{
 		ClientID:        params.googleClientID,
 		ClientSecret:    params.googleClientSecret,
@@ -450,7 +450,7 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 		Database:  mediadb.NewDatabase(mysql),
 		Cache:     p.cache,
 		MediaLive: p.medialive,
-		YouTube:   p.youtube,
+		Youtube:   p.youtube,
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
 		Producer:  p.mediaQueue,

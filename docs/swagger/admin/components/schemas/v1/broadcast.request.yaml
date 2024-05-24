@@ -21,14 +21,14 @@ activateBroadcastMP4Request:
 authYoutubeBroadcastRequest:
   type: object
   properties:
-    googleAccount:
+    youtubeHandle:
       type: string
-      description: 連携先Googleアカウント
+      description: 連携するYouTubeアカウントのハンドル名
   required:
-  - googleAccount
+  - youtubeHandle
   example:
-    googleAccount: 'google-account'
-createYoutubeBroadcastRequest:
+    youtubeHandle: '@handle'
+callbackAuthYoutubeBroadcastRequest:
   type: object
   properties:
     state:
@@ -37,14 +37,29 @@ createYoutubeBroadcastRequest:
     authCode:
       type: string
       description: Google認証後に取得したcode
-    public:
-      type: boolean
-      description: YouTubeの公開設定
   required:
   - state
   - authCode
-  - public
   example:
     state: 'state'
     authCode: 'auth-code'
+createYoutubeBroadcastRequest:
+  type: object
+  properties:
+    title:
+      type: string
+      description: YouTubeのタイトル(100文字まで)
+    description:
+      type: string
+      description: YouTubeの説明(1000文字まで)
+    public:
+      type: boolean
+      description: YouTubeの公開設定(true:公開,false:限定公開)
+  required:
+  - title
+  - description
+  - public
+  example:
+    title: 'タイトル'
+    description: '説明'
     public: true

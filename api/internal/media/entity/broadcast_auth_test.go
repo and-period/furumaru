@@ -5,6 +5,9 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2"
+	"google.golang.org/api/youtube/v3"
 )
 
 func TestBroadcastAuth(t *testing.T) {
@@ -18,7 +21,7 @@ func TestBroadcastAuth(t *testing.T) {
 	}{
 		{
 			name:   "success youtube",
-			target: NewYouTubeBroadcastAuth,
+			target: NewYoutubeBroadcastAuth,
 			params: &BroadcastAuthParams{
 				SessionID:  "session-id",
 				Account:    "account",
@@ -28,7 +31,7 @@ func TestBroadcastAuth(t *testing.T) {
 			},
 			expect: &BroadcastAuth{
 				SessionID:  "session-id",
-				Type:       BroadcastAuthTypeYouTube,
+				Type:       BroadcastAuthTypeYoutube,
 				Account:    "account",
 				ScheduleID: "schedule-id",
 				ExpiredAt:  now.Add(1 * time.Hour),
@@ -51,40 +54,176 @@ func TestBroadcastAuth(t *testing.T) {
 	}
 }
 
-func TestBroadcastAuth_ValidYouTubeAuth(t *testing.T) {
+func TestBroadcastAuth_SetToken(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
 		name   string
 		auth   *BroadcastAuth
-		email  string
-		expect bool
+		token  *oauth2.Token
+		hasErr bool
 	}{
 		{
 			name: "success",
 			auth: &BroadcastAuth{
 				SessionID:  "session-id",
-				Type:       BroadcastAuthTypeYouTube,
+				Type:       BroadcastAuthTypeYoutube,
+				Account:    "account",
+				ScheduleID: "schedule-id",
+				ExpiredAt:  now,
+				CreatedAt:  now,
+				UpdatedAt:  now,
+			},
+			token: &oauth2.Token{
+				AccessToken:  "access-token",
+				TokenType:    "Bearer",
+				RefreshToken: "refresh-token",
+				Expiry:       now.AddDate(0, 0, 1),
+			},
+			hasErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.auth.SetToken(tt.token)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+		})
+	}
+}
+
+func TestBroadcastAuth_GetToken(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name   string
+		auth   *BroadcastAuth
+		token  *oauth2.Token
+		hasErr bool
+	}{
+		{
+			name: "success",
+			auth: &BroadcastAuth{
+				SessionID:  "session-id",
+				Type:       BroadcastAuthTypeYoutube,
+				Account:    "account",
+				ScheduleID: "schedule-id",
+				ExpiredAt:  now,
+				CreatedAt:  now,
+				UpdatedAt:  now,
+			},
+			token: &oauth2.Token{
+				AccessToken:  "access-token",
+				TokenType:    "Bearer",
+				RefreshToken: "refresh-token",
+				Expiry:       now.AddDate(0, 0, 1),
+			},
+			hasErr: false,
+		},
+		{
+			name: "empty",
+			auth: &BroadcastAuth{
+				SessionID:  "session-id",
+				Type:       BroadcastAuthTypeYoutube,
+				Account:    "account",
+				ScheduleID: "schedule-id",
+				ExpiredAt:  now,
+				CreatedAt:  now,
+				UpdatedAt:  now,
+			},
+			token:  nil,
+			hasErr: true,
+		},
+		{
+			name: "invalid token",
+			auth: &BroadcastAuth{
+				SessionID:  "session-id",
+				Type:       BroadcastAuthTypeYoutube,
+				Account:    "account",
+				ScheduleID: "schedule-id",
+				ExpiredAt:  now,
+				CreatedAt:  now,
+				UpdatedAt:  now,
+			},
+			token: &oauth2.Token{
+				AccessToken:  "access-token",
+				TokenType:    "Bearer",
+				RefreshToken: "refresh-token",
+				Expiry:       now.AddDate(0, 0, -1),
+			},
+			hasErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.auth.SetToken(tt.token)
+			require.NoError(t, err)
+			tt.auth.SetToken(tt.token)
+			token, err := tt.auth.GetToken()
+			if tt.hasErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, tt.token, token)
+		})
+	}
+}
+
+func TestBroadcastAuth_ValidYoutubeAuth(t *testing.T) {
+	t.Parallel()
+	now := time.Now()
+	tests := []struct {
+		name     string
+		auth     *BroadcastAuth
+		channels []*youtube.Channel
+		expect   bool
+	}{
+		{
+			name: "success",
+			auth: &BroadcastAuth{
+				SessionID:  "session-id",
+				Type:       BroadcastAuthTypeYoutube,
+				Account:    "@handle",
+				ScheduleID: "schedule-id",
+				ExpiredAt:  now,
+				CreatedAt:  now,
+				UpdatedAt:  now,
+			},
+			channels: []*youtube.Channel{
+				{
+					Id:      "channel-id",
+					Snippet: &youtube.ChannelSnippet{CustomUrl: "@handle"},
+				},
+			},
+			expect: true,
+		},
+		{
+			name: "invalid",
+			auth: &BroadcastAuth{
+				SessionID:  "session-id",
+				Type:       BroadcastAuthTypeYoutube,
 				Account:    "test@example.com",
 				ScheduleID: "schedule-id",
 				ExpiredAt:  now,
 				CreatedAt:  now,
 				UpdatedAt:  now,
 			},
-			email:  "test@example.com",
-			expect: true,
+			channels: []*youtube.Channel{},
+			expect:   false,
 		},
 		{
-			name:   "empty",
-			auth:   nil,
-			email:  "test@example.com",
-			expect: false,
+			name:     "empty",
+			auth:     nil,
+			channels: []*youtube.Channel{},
+			expect:   false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := tt.auth.ValidYouTubeAuth(tt.email)
+			actual := tt.auth.ValidYoutubeAuth(tt.channels)
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

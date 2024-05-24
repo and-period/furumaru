@@ -23,9 +23,14 @@ func (h *handler) broadcastRoutes(rg *gin.RouterGroup) {
 	r.POST("/rtmp", h.ActivateBroadcastRTMP)
 	r.POST("/mp4", h.ActivateBroadcastMP4)
 	r.POST("/youtube/auth", h.AuthYoutubeBroadcast)
+}
 
-	// 認証不要なAPI（外部APIとの連携依頼用）
-	rg.POST("/schedules/-/broadcasts/youtube", h.CreateYoutubeBroadcast)
+func (h *handler) guestBroadcastRoutes(rg *gin.RouterGroup) {
+	r := rg.Group("/guests/schedules/-/broadcasts")
+
+	r.GET("", h.GetGuestBroadcast)
+	r.POST("/youtube", h.CreateYoutubeBroadcast)
+	r.POST("/youtube/auth/complete", h.CallbackAuthYoutubeBroadcast)
 }
 
 func (h *handler) GetBroadcast(ctx *gin.Context) {
@@ -132,6 +137,36 @@ func (h *handler) DeactivateBroadcastStaticImage(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+func (h *handler) GetGuestBroadcast(ctx *gin.Context) {
+	sessionID, err := h.getSessionID(ctx)
+	if err != nil {
+		h.unauthorized(ctx, err)
+		return
+	}
+	in := &media.GetBroadcastAuthInput{
+		SessionID: sessionID,
+	}
+	auth, err := h.media.GetBroadcastAuth(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	schedule, err := h.getSchedule(ctx, auth.ScheduleID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	coordinator, err := h.getCoordinator(ctx, schedule.CoordinatorID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.GuestBroadcastResponse{
+		Broadcast: service.NewGuestBroadcast(schedule, coordinator).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
 func (h *handler) AuthYoutubeBroadcast(ctx *gin.Context) {
 	req := &request.AuthYoutubeBroadcastRequest{}
 	if err := ctx.BindJSON(req); err != nil {
@@ -140,7 +175,7 @@ func (h *handler) AuthYoutubeBroadcast(ctx *gin.Context) {
 	}
 	in := &media.AuthYoutubeBroadcastInput{
 		ScheduleID:    util.GetParam(ctx, "scheduleId"),
-		GoogleAccount: req.GoogleAccount,
+		YoutubeHandle: req.YoutubeHandle,
 	}
 	authURL, err := h.media.AuthYoutubeBroadcast(ctx, in)
 	if err != nil {
@@ -153,16 +188,54 @@ func (h *handler) AuthYoutubeBroadcast(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+func (h *handler) CallbackAuthYoutubeBroadcast(ctx *gin.Context) {
+	req := &request.CallbackAuthYoutubeBroadcastRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	in := &media.AuthYoutubeBroadcastEventInput{
+		State:    req.State,
+		AuthCode: req.AuthCode,
+	}
+	auth, err := h.media.AuthYoutubeBroadcastEvent(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	h.setSessionID(ctx, auth.SessionID)
+	schedule, err := h.getSchedule(ctx, auth.ScheduleID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	coordinator, err := h.getCoordinator(ctx, schedule.CoordinatorID)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	res := &response.GuestBroadcastResponse{
+		Broadcast: service.NewGuestBroadcast(schedule, coordinator).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
 func (h *handler) CreateYoutubeBroadcast(ctx *gin.Context) {
 	req := &request.CreateYoutubeBroadcastRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
 	}
+	sessionID, err := h.getSessionID(ctx)
+	if err != nil {
+		h.unauthorized(ctx, err)
+		return
+	}
 	in := &media.CreateYoutubeBroadcastInput{
-		State:    req.State,
-		AuthCode: req.AuthCode,
-		Public:   req.Public,
+		SessionID:   sessionID,
+		Title:       req.Title,
+		Description: req.Description,
+		Public:      req.Public,
 	}
 	if err := h.media.CreateYoutubeBroadcast(ctx, in); err != nil {
 		h.httpError(ctx, err)

@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -11,10 +13,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/internal/store"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
 	"github.com/and-period/furumaru/api/pkg/youtube"
-	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -243,9 +245,27 @@ func (s *service) DeactivateBroadcastStaticImage(ctx context.Context, in *media.
 	return internalError(err)
 }
 
+func (s *service) GetBroadcastAuth(ctx context.Context, in *media.GetBroadcastAuthInput) (*entity.BroadcastAuth, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	auth := &entity.BroadcastAuth{SessionID: in.SessionID}
+	err := s.cache.Get(ctx, auth)
+	if errors.Is(err, dynamodb.ErrNotFound) {
+		return nil, fmt.Errorf("service: invalid session: %w", exception.ErrUnauthenticated)
+	}
+	if err != nil {
+		return nil, internalError(err)
+	}
+	return auth, nil
+}
+
 func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutubeBroadcastInput) (string, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
+	}
+	if !strings.HasPrefix(in.YoutubeHandle, "@") {
+		return "", fmt.Errorf("service: invalid youtube handle: %w", exception.ErrInvalidArgument)
 	}
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, in.ScheduleID)
 	if err != nil {
@@ -267,49 +287,73 @@ func (s *service) AuthYoutubeBroadcast(ctx context.Context, in *media.AuthYoutub
 	sessionID := s.generateID()
 	params := &entity.BroadcastAuthParams{
 		SessionID:  sessionID,
-		Account:    in.GoogleAccount,
+		Account:    in.YoutubeHandle,
 		ScheduleID: in.ScheduleID,
 		Now:        s.now(),
 		TTL:        s.authYoutubeTTL,
 	}
-	auth := entity.NewYouTubeBroadcastAuth(params)
+	auth := entity.NewYoutubeBroadcastAuth(params)
 	if err := s.cache.Insert(ctx, auth); err != nil {
 		return "", internalError(err)
 	}
 	return s.youtube.NewAuth().GetAuthCodeURL(sessionID), nil
 }
 
+func (s *service) AuthYoutubeBroadcastEvent(ctx context.Context, in *media.AuthYoutubeBroadcastEventInput) (*entity.BroadcastAuth, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	auth := &entity.BroadcastAuth{SessionID: in.State}
+	err := s.cache.Get(ctx, auth)
+	if errors.Is(err, dynamodb.ErrNotFound) {
+		return nil, fmt.Errorf("service: invalid session: %w", exception.ErrUnauthenticated)
+	}
+	if err != nil {
+		return nil, internalError(err)
+	}
+	token, err := s.youtube.NewAuth().GetToken(ctx, in.AuthCode)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	if !token.Valid() {
+		return nil, fmt.Errorf("service: invalid youtube token: %w", exception.ErrUnauthenticated)
+	}
+	service, err := s.youtube.NewService(ctx, token)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	channels, err := service.ListChannels(ctx)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	if !auth.ValidYoutubeAuth(channels) {
+		return nil, fmt.Errorf("service: invalid youtube auth: %w", exception.ErrForbidden)
+	}
+	if err := auth.SetToken(token); err != nil {
+		return nil, internalError(err)
+	}
+	if err := s.cache.Insert(ctx, auth); err != nil {
+		return nil, internalError(err)
+	}
+	return auth, nil
+}
+
 func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYoutubeBroadcastInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	authClient := s.youtube.NewAuth()
-	token, err := authClient.GetToken(ctx, in.AuthCode)
+	auth := &entity.BroadcastAuth{SessionID: in.SessionID}
+	err := s.cache.Get(ctx, auth)
+	if errors.Is(err, dynamodb.ErrNotFound) {
+		return fmt.Errorf("service: invalid session: %w", exception.ErrUnauthenticated)
+	}
 	if err != nil {
 		return internalError(err)
 	}
-	user, err := authClient.GetTokenInfo(ctx, token)
+	token, err := auth.GetToken()
 	if err != nil {
-		return internalError(err)
+		return fmt.Errorf("service: invalid youtube token. err=%s: %w", err.Error(), exception.ErrUnauthenticated)
 	}
-	s.logger.Debug("service: get token info", zap.Any("user", user))
-	service, err := s.youtube.NewService(ctx, token)
-	if err != nil {
-		return internalError(err)
-	}
-	auth := &entity.BroadcastAuth{SessionID: in.State}
-	if err := s.cache.Get(ctx, auth); err != nil {
-		return internalError(err)
-	}
-	s.logger.Debug("service: get broadcast auth", zap.Any("auth", auth))
-	channel, err := service.GetChannnelByHandle(ctx, auth.Account)
-	if err != nil {
-		return internalError(err)
-	}
-	s.logger.Debug("service: get channel", zap.Any("channel", channel))
-	// if !auth.ValidYouTubeAuth(user.UserId) {
-	// 	return fmt.Errorf("service: invalid youtube auth: %w", exception.ErrUnauthenticated)
-	// }
 	broadcast, err := s.db.Broadcast.GetByScheduleID(ctx, auth.ScheduleID)
 	if err != nil {
 		return internalError(err)
@@ -327,14 +371,18 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 	if schedule.Status != sentity.ScheduleStatusWaiting {
 		return fmt.Errorf("service: this schedule is not waiting: %w", exception.ErrFailedPrecondition)
 	}
-	broadcastIn := &youtube.CreateLiveBroadcastParams{
-		Title:       schedule.Title,
-		Description: schedule.Description,
+	service, err := s.youtube.NewService(ctx, token)
+	if err != nil {
+		return internalError(err)
+	}
+	youtubeIn := &youtube.CreateLiveBroadcastParams{
+		Title:       in.Title,
+		Description: in.Description,
+		Public:      in.Public,
 		StartAt:     schedule.StartAt,
 		EndAt:       schedule.EndAt,
-		Public:      in.Public,
 	}
-	liveBroadcast, err := service.CreateLiveBroadcast(ctx, broadcastIn)
+	liveBroadcast, err := service.CreateLiveBroadcast(ctx, youtubeIn)
 	if err != nil {
 		return internalError(err)
 	}
@@ -349,7 +397,7 @@ func (s *service) CreateYoutubeBroadcast(ctx context.Context, in *media.CreateYo
 		return internalError(err)
 	}
 	params := &database.UpdateBroadcastParams{UpsertYoutubeBroadcastParams: &database.UpsertYoutubeBroadcastParams{
-		YoutubeAccount:     user.Email,
+		YoutubeAccount:     auth.Account,
 		YoutubeBroadcastID: liveBroadcast.Id,
 		YoutubeStreamID:    stream.Id,
 		YoutubeStreamURL:   stream.Cdn.IngestionInfo.IngestionAddress,

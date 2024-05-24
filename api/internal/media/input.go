@@ -73,15 +73,25 @@ type DeactivateBroadcastStaticImageInput struct {
 	ScheduleID string `validate:"required"`
 }
 
+type GetBroadcastAuthInput struct {
+	SessionID string `validate:"required"`
+}
+
 type AuthYoutubeBroadcastInput struct {
 	ScheduleID    string `validate:"required"`
-	GoogleAccount string `validate:"required"`
+	YoutubeHandle string `validate:"required"`
+}
+
+type AuthYoutubeBroadcastEventInput struct {
+	State    string `validate:"required"`
+	AuthCode string `validate:"required"`
 }
 
 type CreateYoutubeBroadcastInput struct {
-	State    string `validate:"required"`
-	AuthCode string `validate:"required"`
-	Public   bool   `validate:""`
+	SessionID   string `validate:"required"`
+	Title       string `validate:"required,max=100"`
+	Description string `validate:"required,max=1000"`
+	Public      bool   `validate:""`
 }
 
 type CreateBroadcastViewerLogInput struct {
