@@ -56,8 +56,8 @@ module.exports.createChannelWithRTMPOutputs = async (event) => {
         }
       );
     });
+    settings.EncoderSettings.OutputGroups.push(RTMPOutputGroup);
   }
-  settings.EncoderSettings.OutputGroups.push(RTMPOutputGroup);
   console.log(settings);
   try {
     const data = await medialive.createChannel(settings).promise();
