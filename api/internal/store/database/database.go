@@ -83,6 +83,7 @@ type UpdateLiveParams struct {
 
 type Order interface {
 	List(ctx context.Context, params *ListOrdersParams, fields ...string) (entity.Orders, error)
+	ListUserIDs(ctx context.Context, params *ListOrdersParams) ([]string, int64, error)
 	Count(ctx context.Context, params *ListOrdersParams) (int64, error)
 	Get(ctx context.Context, orderID string, fields ...string) (*entity.Order, error)
 	GetByTransactionID(ctx context.Context, userID, transactionID string) (*entity.Order, error)

@@ -53,6 +53,19 @@ func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (en
 	return orders, total, nil
 }
 
+func (s *service) ListOrderUserIDs(ctx context.Context, in *store.ListOrderUserIDsInput) ([]string, int64, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, 0, internalError(err)
+	}
+	params := &database.ListOrdersParams{
+		CoordinatorID: in.CoordinatorID,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
+	}
+	userIDs, total, err := s.db.Order.ListUserIDs(ctx, params)
+	return userIDs, total, internalError(err)
+}
+
 func (s *service) GetOrder(ctx context.Context, in *store.GetOrderInput) (*entity.Order, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)

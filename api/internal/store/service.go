@@ -70,6 +70,7 @@ type Service interface {
 	DeleteLive(ctx context.Context, in *DeleteLiveInput) error                      // 削除
 	// 注文履歴
 	ListOrders(ctx context.Context, in *ListOrdersInput) (entity.Orders, int64, error)                                             // 一覧取得
+	ListOrderUserIDs(ctx context.Context, in *ListOrderUserIDsInput) ([]string, int64, error)                                      // 注文したユーザーID一覧取得
 	GetOrder(ctx context.Context, in *GetOrderInput) (*entity.Order, error)                                                        // １件取得
 	GetOrderByTransactionID(ctx context.Context, in *GetOrderByTransactionIDInput) (*entity.Order, error)                          // １件取得(決済トランザクションID指定)
 	CaptureOrder(ctx context.Context, in *CaptureOrderInput) error                                                                 // 注文確定

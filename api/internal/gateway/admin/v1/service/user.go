@@ -5,6 +5,7 @@ import (
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 // UserStatus - 購入者の状態
@@ -120,6 +121,12 @@ func NewUsers(users uentity.Users, addresses map[string]*uentity.Address) Users 
 		res[i] = NewUser(u, addresses[u.ID])
 	}
 	return res
+}
+
+func (us Users) IDs() []string {
+	return set.UniqBy(us, func(u *User) string {
+		return u.ID
+	})
 }
 
 func (us Users) Map() map[string]*User {
