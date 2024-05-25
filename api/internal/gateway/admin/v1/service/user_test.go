@@ -476,6 +476,60 @@ func TestUsers(t *testing.T) {
 	}
 }
 
+func TestUsers_IDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		users  Users
+		expect []string
+	}{
+		{
+			name: "success",
+			users: Users{
+				{
+					User: response.User{
+						ID:            "user-id",
+						Status:        int32(UserStatusGuest),
+						Registered:    false,
+						Username:      "",
+						AccountID:     "",
+						Lastname:      "&.",
+						Firstname:     "購入者",
+						LastnameKana:  "あんどどっと",
+						FirstnameKana: "こうにゅうしゃ",
+						Email:         "test-user@and-period.jp",
+						PhoneNumber:   "+819012345678",
+						CreatedAt:     1640962800,
+						UpdatedAt:     1640962800,
+					},
+					address: Address{
+						Address: response.Address{
+							Lastname:       "&.",
+							Firstname:      "購入者",
+							LastnameKana:   "あんどどっと",
+							FirstnameKana:  "こうにゅうしゃ",
+							PostalCode:     "1000014",
+							PrefectureCode: 13,
+							City:           "千代田区",
+							AddressLine1:   "永田町1-7-1",
+							AddressLine2:   "",
+							PhoneNumber:    "090-1234-1234",
+						},
+						revisionID: 1,
+					},
+				},
+			},
+			expect: []string{"user-id"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.ElementsMatch(t, tt.expect, tt.users.IDs())
+		})
+	}
+}
+
 func TestUsers_Map(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

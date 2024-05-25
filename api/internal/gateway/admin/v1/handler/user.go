@@ -43,14 +43,59 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 
-	in := &user.ListUsersInput{
-		Limit:       limit,
-		Offset:      offset,
-		WithDeleted: true,
-	}
-	users, total, err := h.user.ListUsers(ctx, in)
-	if err != nil {
-		h.httpError(ctx, err)
+	var (
+		users service.Users
+		total int64
+	)
+	switch getRole(ctx) {
+	case service.AdminRoleAdministrator:
+		// 管理者の場合、すべての購入者情報を取得する
+		usersIn := &user.ListUsersInput{
+			Limit:       limit,
+			Offset:      offset,
+			WithDeleted: true,
+		}
+		var us uentity.Users
+		us, total, err = h.user.ListUsers(ctx, usersIn)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		if len(us) == 0 {
+			break
+		}
+		addressesIn := &user.ListDefaultAddressesInput{
+			UserIDs: us.IDs(),
+		}
+		addresses, err := h.user.ListDefaultAddresses(ctx, addressesIn)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		users = service.NewUsers(us, addresses.MapByUserID())
+	case service.AdminRoleCoordinator:
+		// コーディネータの場合、注文した購入者のみを取得する
+		in := &store.ListOrderUserIDsInput{
+			CoordinatorID: getAdminID(ctx),
+			Limit:         limit,
+			Offset:        offset,
+		}
+		var userIDs []string
+		userIDs, total, err = h.store.ListOrderUserIDs(ctx, in)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		if len(userIDs) == 0 {
+			break
+		}
+		users, err = h.multiGetUsers(ctx, userIDs)
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+	default:
+		h.forbidden(ctx, errors.New("handler: forbidden"))
 		return
 	}
 	if len(users) == 0 {
@@ -61,37 +106,20 @@ func (h *handler) ListUsers(ctx *gin.Context) {
 		return
 	}
 
-	var (
-		orders    sentity.AggregatedOrders
-		addresses uentity.Addresses
-	)
-	userIDs := users.IDs()
-	eg, ectx := errgroup.WithContext(ctx)
-	eg.Go(func() (err error) {
-		in := &store.AggregateOrdersInput{
-			UserIDs: userIDs,
-		}
-		if getRole(ctx) == service.AdminRoleCoordinator {
-			in.CoordinatorID = getAdminID(ctx)
-		}
-		orders, err = h.store.AggregateOrders(ectx, in)
-		return
-	})
-	eg.Go(func() (err error) {
-		in := &user.ListDefaultAddressesInput{
-			UserIDs: userIDs,
-		}
-		addresses, err = h.user.ListDefaultAddresses(ectx, in)
-		return
-	})
-	if err := eg.Wait(); err != nil {
+	in := &store.AggregateOrdersInput{
+		UserIDs: users.IDs(),
+	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
+	}
+	orders, err := h.store.AggregateOrders(ctx, in)
+	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
-	susers := service.NewUsers(users, addresses.MapByUserID())
 	res := &response.UsersResponse{
-		Users: service.NewUsersToList(susers, orders.Map()).Response(),
+		Users: service.NewUsersToList(users, orders.Map()).Response(),
 		Total: total,
 	}
 	ctx.JSON(http.StatusOK, res)

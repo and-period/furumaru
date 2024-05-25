@@ -76,6 +76,28 @@ func (o *order) List(ctx context.Context, params *database.ListOrdersParams, fie
 	return orders, nil
 }
 
+func (o *order) ListUserIDs(ctx context.Context, params *database.ListOrdersParams) ([]string, int64, error) {
+	var userIDs []string
+	var total int64
+
+	p := listOrdersParams(*params)
+
+	stmt := o.db.Statement(ctx, o.db.DB, orderTable, "DISTINCT(user_id)")
+	stmt = p.stmt(stmt)
+	stmt = p.pagination(stmt)
+	if err := stmt.Find(&userIDs).Error; err != nil {
+		return nil, 0, dbError(err)
+	}
+
+	stmt = o.db.Statement(ctx, o.db.DB, orderTable, "COUNT(DISTINCT(user_id))")
+	stmt = p.stmt(stmt)
+	if err := stmt.Count(&total).Error; err != nil {
+		return nil, 0, dbError(err)
+	}
+
+	return userIDs, total, nil
+}
+
 func (o *order) Count(ctx context.Context, params *database.ListOrdersParams) (int64, error) {
 	p := listOrdersParams(*params)
 

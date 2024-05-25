@@ -159,6 +159,68 @@ func TestListOrders(t *testing.T) {
 	}
 }
 
+func TestListOrderUserIDs(t *testing.T) {
+	t.Parallel()
+	params := &database.ListOrdersParams{
+		CoordinatorID: "coordinator-id",
+		Limit:         30,
+		Offset:        0,
+	}
+	tests := []struct {
+		name        string
+		setup       func(ctx context.Context, mocks *mocks)
+		input       *store.ListOrderUserIDsInput
+		expect      []string
+		expectTotal int64
+		expectErr   error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().ListUserIDs(ctx, params).Return([]string{"user-id"}, int64(1), nil)
+			},
+			input: &store.ListOrderUserIDsInput{
+				CoordinatorID: "coordinator-id",
+				Limit:         30,
+				Offset:        0,
+			},
+			expect:      []string{"user-id"},
+			expectTotal: 1,
+			expectErr:   nil,
+		},
+		{
+			name:        "invalid argument",
+			setup:       func(ctx context.Context, mocks *mocks) {},
+			input:       &store.ListOrderUserIDsInput{},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list user ids",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Order.EXPECT().ListUserIDs(ctx, params).Return(nil, int64(0), assert.AnError)
+			},
+			input: &store.ListOrderUserIDsInput{
+				CoordinatorID: "coordinator-id",
+				Limit:         30,
+				Offset:        0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			actual, total, err := service.ListOrderUserIDs(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expectErr)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, tt.expectTotal, total)
+		}))
+	}
+}
+
 func TestGetOrder(t *testing.T) {
 	t.Parallel()
 
