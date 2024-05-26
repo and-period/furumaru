@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.11.17](https://github.com/and-period/furumaru/compare/v1.11.16...v1.11.17) - 2024-05-25
+- fix(media): YouTubeとの連携処理を見直し by @taba2424 in https://github.com/and-period/furumaru/pull/2229
+- fix(admin): Google認証後の処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2231
+- feat(admin): YouTube視聴URLの追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2232
+- fix(admin): 権限管理周りの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2233
+- fix(serverless): RTMPOutputが空の際の挙動を修正 by @sea-kai in https://github.com/and-period/furumaru/pull/2227
+- fix(gateway): コーディネータがユーザー一覧を取得するときの挙動を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2234
+
 ## [v1.11.16](https://github.com/and-period/furumaru/compare/v1.11.15...v1.11.16) - 2024-05-23
 
 ## [v1.11.15](https://github.com/and-period/furumaru/compare/v1.11.14...v1.11.15) - 2024-05-22
