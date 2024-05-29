@@ -8,3 +8,15 @@ $font: "BIZ UDPGothic", sans-serif;
 .v-data-table {
   white-space: nowrap;
 }
+
+.v-field:has(input[required]) .v-label {
+  padding-inline-end: 10px;
+}
+
+.v-field:has(input[required]) .v-label::after {
+  position: absolute;
+  content: "*";
+  color: rgb( 221, 44, 0);
+  top: 0;
+  inset-inline-end: 0; /* to support also RTL direction */
+}
