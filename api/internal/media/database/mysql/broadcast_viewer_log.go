@@ -54,6 +54,6 @@ func (l *broadcastViewerLog) Aggregate(
 	}
 	stmt = stmt.Group("broadcast_id, timestamp").Order("timestamp ASC")
 
-	err := stmt.Find(&logs).Error
+	err := stmt.Scan(&logs).Error
 	return logs, dbError(err)
 }
