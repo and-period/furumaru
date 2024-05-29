@@ -4,7 +4,12 @@ import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { AdminRole, DiscountType, PromotionStatus, type Promotion } from '~/types/api'
+import {
+  AdminRole,
+  DiscountType,
+  PromotionStatus,
+  type Promotion
+} from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -50,13 +55,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (e: 'click:update-page', page: number): void
-  (e: 'click:update-items-per-page', page: number): void
-  (e: 'click:row', notificationId: string): void
-  (e: 'click:add'): void
-  (e: 'click:delete', notificationId: string): void
-  (e: 'update:delete-dialog', v: boolean): void
-  (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
+  (e: 'click:update-page', page: number): void;
+  (e: 'click:update-items-per-page', page: number): void;
+  (e: 'click:row', notificationId: string): void;
+  (e: 'click:add'): void;
+  (e: 'click:delete', notificationId: string): void;
+  (e: 'update:delete-dialog', v: boolean): void;
+  (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void;
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -112,7 +117,10 @@ const isEditable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR
 }
 
-const getDiscount = (discountType: DiscountType, discountRate: number): string => {
+const getDiscount = (
+  discountType: DiscountType,
+  discountRate: number
+): string => {
   switch (discountType) {
     case DiscountType.AMOUNT:
       return '￥' + discountRate.toLocaleString()
@@ -198,19 +206,28 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-dialog v-model="deleteDialogValue" width="500">
     <v-card>
       <v-card-title class="text-h7">
-        {{ selectedItem?.title || '' }}を本当に削除しますか？
+        {{ selectedItem?.title || "" }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
         <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onClickDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
@@ -221,7 +238,12 @@ const onClickDelete = (): void => {
     <v-card-title class="d-flex flex-row">
       セール情報
       <v-spacer />
-      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
+      <v-btn
+        v-show="isRegisterable()"
+        variant="outlined"
+        color="primary"
+        @click="onClickAdd"
+      >
         <v-icon start :icon="mdiPlus" />
         セール情報登録
       </v-btn>
@@ -242,7 +264,7 @@ const onClickDelete = (): void => {
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
         @update:sort-desc="onClickUpdateSortBy"
-        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
+        @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.title`]="{ item }">
           {{ item.title }}
