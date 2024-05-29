@@ -7,60 +7,60 @@ import type { ImageUploadStatus } from '~/types/props'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   selectedTabItem: {
     type: String,
-    default: 'categories'
+    default: 'categories',
   },
   // Category
   createCategoryDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   updateCategoryDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   deleteCategoryDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   createCategoryFormData: {
     type: Object as PropType<CreateCategoryRequest>,
     default: (): CreateCategoryRequest => ({
-      name: ''
-    })
+      name: '',
+    }),
   },
   updateCategoryFormData: {
     type: Object as PropType<UpdateCategoryRequest>,
     default: (): UpdateCategoryRequest => ({
-      name: ''
-    })
+      name: '',
+    }),
   },
   categoryTableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   categoryTableItemsTotal: {
     type: Number,
-    default: 0
+    default: 0,
   },
   category: {
     type: Object as PropType<Category>,
@@ -68,61 +68,61 @@ const props = defineProps({
       id: '',
       name: '',
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   categories: {
     type: Array<Category>,
-    default: () => []
+    default: () => [],
   },
   // ProductType
   createProductTypeDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   updateProductTypeDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   deleteProductTypeDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   createProductTypeFormData: {
     type: Object as PropType<CreateProductTypeRequest>,
     default: () => ({
       name: '',
-      iconUrl: ''
-    })
+      iconUrl: '',
+    }),
   },
   updateProductTypeFormData: {
     type: Object as PropType<UpdateProductTypeRequest>,
     default: () => ({
       name: '',
-      iconUrl: ''
-    })
+      iconUrl: '',
+    }),
   },
   createProductTypeIconUploadStatus: {
     type: Object as PropType<ImageUploadStatus>,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   updateProductTypeIconUploadStatus: {
     type: Object as PropType<ImageUploadStatus>,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   productTypeTableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   productTypeTableItemsTotal: {
     type: Number,
-    default: 0
+    default: 0,
   },
   productType: {
     type: Object as PropType<ProductType>,
@@ -133,13 +133,13 @@ const props = defineProps({
       iconUrl: '',
       icons: [],
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   productTypes: {
     type: Array<ProductType>,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 const emits = defineEmits<{
@@ -177,52 +177,52 @@ const emits = defineEmits<{
 
 const tabs: VTabs[] = [
   { name: 'カテゴリー', value: 'categories' },
-  { name: '品目', value: 'productTypes' }
+  { name: '品目', value: 'productTypes' },
 ]
 
 const selectedTabItemValue = computed({
   get: (): string => props.selectedTabItem,
-  set: (item: string): void => emits('update:selected-tab-item', item)
+  set: (item: string): void => emits('update:selected-tab-item', item),
 })
 const createCategoryDialogValue = computed({
   get: (): boolean => props.createCategoryDialog,
-  set: (v: boolean): void => emits('update:create-category-dialog', v)
+  set: (v: boolean): void => emits('update:create-category-dialog', v),
 })
 const updateCategoryDialogValue = computed({
   get: (): boolean => props.updateCategoryDialog,
-  set: (v: boolean): void => emits('update:update-category-dialog', v)
+  set: (v: boolean): void => emits('update:update-category-dialog', v),
 })
 const deleteCategoryDialogValue = computed({
   get: (): boolean => props.deleteCategoryDialog,
-  set: (v: boolean): void => emits('update:delete-category-dialog', v)
+  set: (v: boolean): void => emits('update:delete-category-dialog', v),
 })
 const createCategoryFormDataValue = computed({
   get: (): CreateCategoryRequest => props.createCategoryFormData,
-  set: (formData: CreateCategoryRequest): void => emits('update:create-category-form-data', formData)
+  set: (formData: CreateCategoryRequest): void => emits('update:create-category-form-data', formData),
 })
 const updateCategoryFormDataValue = computed({
   get: (): UpdateCategoryRequest => props.updateCategoryFormData,
-  set: (formData: UpdateCategoryRequest): void => emits('update:update-category-form-data', formData)
+  set: (formData: UpdateCategoryRequest): void => emits('update:update-category-form-data', formData),
 })
 const createProductTypeDialogValue = computed({
   get: (): boolean => props.createProductTypeDialog,
-  set: (v: boolean): void => emits('update:create-product-type-dialog', v)
+  set: (v: boolean): void => emits('update:create-product-type-dialog', v),
 })
 const updateProductTypeDialogValue = computed({
   get: (): boolean => props.updateProductTypeDialog,
-  set: (v: boolean): void => emits('update:update-product-type-dialog', v)
+  set: (v: boolean): void => emits('update:update-product-type-dialog', v),
 })
 const deleteProductTypeDialogValue = computed({
   get: (): boolean => props.deleteProductTypeDialog,
-  set: (v: boolean): void => emits('update:delete-product-type-dialog', v)
+  set: (v: boolean): void => emits('update:delete-product-type-dialog', v),
 })
 const createProductTypeFormDataValue = computed({
   get: (): CreateProductTypeRequest => props.createProductTypeFormData,
-  set: (formData: CreateProductTypeRequest): void => emits('update:create-product-type-form-data', formData)
+  set: (formData: CreateProductTypeRequest): void => emits('update:create-product-type-form-data', formData),
 })
 const updateProductTypeFormDataValue = computed({
   get: (): UpdateProductTypeRequest => props.updateProductTypeFormData,
-  set: (formData: UpdateProductTypeRequest): void => emits('update:update-product-type-form-data', formData)
+  set: (formData: UpdateProductTypeRequest): void => emits('update:update-product-type-form-data', formData),
 })
 
 const onClickNewCategory = (): void => {
@@ -303,7 +303,11 @@ const onSubmitDeleteProductType = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card>
     <v-card-title class="d-flex flex-row">
@@ -311,8 +315,16 @@ const onSubmitDeleteProductType = (): void => {
     </v-card-title>
 
     <v-card-text>
-      <v-tabs v-model="selectedTabItemValue" grow color="dark">
-        <v-tab v-for="item in tabs" :key="item.value" :value="item.value">
+      <v-tabs
+        v-model="selectedTabItemValue"
+        grow
+        color="dark"
+      >
+        <v-tab
+          v-for="item in tabs"
+          :key="item.value"
+          :value="item.value"
+        >
           {{ item.name }}
         </v-tab>
       </v-tabs>

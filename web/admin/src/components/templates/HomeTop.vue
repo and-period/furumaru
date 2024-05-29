@@ -2,16 +2,16 @@
 const deliveries = [
   {
     title: '受注待ち',
-    value: 'xx'
+    value: 'xx',
   },
   {
     title: '発送対応中',
-    value: 'yy'
+    value: 'yy',
   },
   {
     title: '発送連絡待ち',
-    value: 'xx'
-  }
+    value: 'xx',
+  },
 ]
 </script>
 
@@ -23,7 +23,11 @@ const deliveries = [
           <v-card-title class="mb-2">
             注文状況
           </v-card-title>
-          <v-card-text v-for="summary in deliveries" :key="summary.title" class="d-flex py-2">
+          <v-card-text
+            v-for="summary in deliveries"
+            :key="summary.title"
+            class="d-flex py-2"
+          >
             <div class="me-auto">
               {{ summary.title }}
             </div>

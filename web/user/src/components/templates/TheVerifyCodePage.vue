@@ -33,7 +33,10 @@ const handleSubmit = () => {
         {{ pageName }}
       </the-card-title>
       <the-card-content>
-        <the-alert v-show="errorMessage" class="mb-2">
+        <the-alert
+          v-show="errorMessage"
+          class="mb-2"
+        >
           {{ errorMessage }}
         </the-alert>
 

@@ -18,10 +18,12 @@ const handleSubmit = async () => {
     errorMessage.value = ''
     await updateNotificationEnabled(formData.value)
     router.push('/account/edit/complete?from=notification')
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof ApiBaseError) {
       errorMessage.value = error.message
-    } else {
+    }
+    else {
       errorMessage.value = 'メール受信設定の変更に失敗しました。'
     }
   }
@@ -35,15 +37,26 @@ useSeoMeta({
 <template>
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
-      <the-account-edit-card title="メール受信の変更" class="mt-6">
-        <the-alert v-if="errorMessage" class="mt-4 w-full">
+      <the-account-edit-card
+        title="メール受信の変更"
+        class="mt-6"
+      >
+        <the-alert
+          v-if="errorMessage"
+          class="mt-4 w-full"
+        >
           {{ errorMessage }}
         </the-alert>
 
-        <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
+        <form
+          class="flex w-full flex-col gap-6"
+          @submit.prevent="handleSubmit"
+        >
           <div class="my-10 flex w-full flex-col justify-center gap-14">
             <div>
-              <p class="mb-4">メールアドレス</p>
+              <p class="mb-4">
+                メールアドレス
+              </p>
               <p>{{ user.email }}</p>
             </div>
 
@@ -56,7 +69,7 @@ useSeoMeta({
                   name="notification"
                   class="h-4 w-4 accent-main"
                   :value="true"
-                />
+                >
                 <label for="true"> お知らせメールを受け取る </label>
               </div>
 
@@ -68,7 +81,7 @@ useSeoMeta({
                   name="notification"
                   class="h-4 w-4 accent-main"
                   :value="false"
-                />
+                >
                 <label for="false"> メール配信を停止する </label>
               </div>
             </div>

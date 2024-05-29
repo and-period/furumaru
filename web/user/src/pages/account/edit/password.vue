@@ -19,8 +19,8 @@ const helperTexts = computed(() => {
       type: 'length',
       text: '8文字以上32文字以下の必要があります。',
       hasError:
-        formData.value.newPassword.length < 8 ||
-        formData.value.newPassword.length > 32,
+        formData.value.newPassword.length < 8
+        || formData.value.newPassword.length > 32,
     },
     {
       type: 'character',
@@ -37,7 +37,7 @@ const helperTexts = computed(() => {
 })
 
 const hasError = computed(() => {
-  return helperTexts.value.some((helperText) => helperText.hasError)
+  return helperTexts.value.some(helperText => helperText.hasError)
 })
 
 const showValidation = computed(() => {
@@ -51,7 +51,8 @@ const handleSubmit = async () => {
   try {
     await updatePassword(formData.value)
     router.push('/account/edit/complete?from=password')
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof ApiBaseError) {
       errorMessage.value = error.message
       return
@@ -68,12 +69,23 @@ useSeoMeta({
 <template>
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
-      <the-account-edit-card title="パスワードの変更" class="mt-6">
-        <the-alert v-if="errorMessage" class="mt-4">{{
-          errorMessage
-        }}</the-alert>
+      <the-account-edit-card
+        title="パスワードの変更"
+        class="mt-6"
+      >
+        <the-alert
+          v-if="errorMessage"
+          class="mt-4"
+        >
+          {{
+            errorMessage
+          }}
+        </the-alert>
 
-        <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
+        <form
+          class="flex w-full flex-col gap-6"
+          @submit.prevent="handleSubmit"
+        >
           <div class="mt-10 flex w-full flex-col justify-center gap-4">
             <the-text-input
               v-model="formData.oldPassword"
@@ -128,14 +140,23 @@ useSeoMeta({
             </ul>
           </div>
 
-          <div v-if="false" class="my-4 text-center">
-            <nuxt-link to="/account/edit/id" class="underline">
+          <div
+            v-if="false"
+            class="my-4 text-center"
+          >
+            <nuxt-link
+              to="/account/edit/id"
+              class="underline"
+            >
               パスワードをお忘れの場合
             </nuxt-link>
           </div>
 
           <div class="flex w-full flex-col gap-4">
-            <button class="w-ful bg-main px-4 py-2 text-white" type="submit">
+            <button
+              class="w-ful bg-main px-4 py-2 text-white"
+              type="submit"
+            >
               変更する
             </button>
             <nuxt-link

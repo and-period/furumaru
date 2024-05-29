@@ -7,9 +7,9 @@ useHead({
       key: 'newRelic',
       src: `/new-relic/${config.public.ENVIRONMENT}.js`,
       defer: true,
-      type: 'text/javascript'
-    }
-  ]
+      type: 'text/javascript',
+    },
+  ],
 })
 </script>
 

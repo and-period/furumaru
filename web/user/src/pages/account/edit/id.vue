@@ -26,7 +26,7 @@ const showValidation = computed(() => {
 })
 
 const hasError = computed(() => {
-  return helperTexts.value.some((helperText) => helperText.hasError)
+  return helperTexts.value.some(helperText => helperText.hasError)
 })
 
 if (user) {
@@ -49,8 +49,14 @@ useSeoMeta({
 <template>
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
-      <the-account-edit-card title="ユーザーIDの変更" class="mt-6">
-        <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
+      <the-account-edit-card
+        title="ユーザーIDの変更"
+        class="mt-6"
+      >
+        <form
+          class="flex w-full flex-col gap-6"
+          @submit.prevent="handleSubmit"
+        >
           <div class="my-10 flex w-full flex-col justify-center gap-2">
             <the-text-input
               v-model="formData"
@@ -89,7 +95,10 @@ useSeoMeta({
           </div>
 
           <div class="flex w-full flex-col gap-4">
-            <button class="w-ful bg-main px-4 py-2 text-white" type="submit">
+            <button
+              class="w-ful bg-main px-4 py-2 text-white"
+              type="submit"
+            >
               変更する
             </button>
             <nuxt-link

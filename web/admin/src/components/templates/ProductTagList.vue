@@ -11,64 +11,64 @@ import { CreateProductTagValidationRules, UpdateProductTagValidationRules } from
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   newDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   editDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   sortBy: {
     type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
+    default: 0,
   },
   productTags: {
     type: Array<ProductTag>,
-    default: () => []
+    default: () => [],
   },
   newFormData: {
     type: Object as PropType<CreateProductTagRequest>,
     default: (): CreateProductTagRequest => ({
-      name: ''
-    })
+      name: '',
+    }),
   },
   editFormData: {
     type: Object as PropType<UpdateProductTagRequest>,
     default: (): UpdateProductTagRequest => ({
-      name: ''
-    })
-  }
+      name: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -88,38 +88,38 @@ const emit = defineEmits<{
 const headers: VDataTable['headers'] = [
   {
     title: '商品タグ',
-    key: 'name'
+    key: 'name',
   },
   {
     title: '',
     key: 'actions',
     width: 200,
     align: 'end',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const selectedItem = ref<ProductTag>()
 
 const newDialogValue = computed({
   get: (): boolean => props.newDialog,
-  set: (toggle: boolean): void => emit('update:new-dialog', toggle)
+  set: (toggle: boolean): void => emit('update:new-dialog', toggle),
 })
 const editDialogValue = computed({
   get: (): boolean => props.editDialog,
-  set: (toggle: boolean): void => emit('update:edit-dialog', toggle)
+  set: (toggle: boolean): void => emit('update:edit-dialog', toggle),
 })
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (toggle: boolean): void => emit('update:delete-dialog', toggle)
+  set: (toggle: boolean): void => emit('update:delete-dialog', toggle),
 })
 const newFormDataValue = computed({
   get: (): CreateProductTagRequest => props.newFormData,
-  set: (formData: CreateProductTagRequest): void => emit('update:new-form-data', formData)
+  set: (formData: CreateProductTagRequest): void => emit('update:new-form-data', formData),
 })
 const editFormDataValue = computed({
   get: (): UpdateProductTagRequest => props.editFormData,
-  set: (formData: UpdateProductTagRequest): void => emit('update:edit-form-data', formData)
+  set: (formData: UpdateProductTagRequest): void => emit('update:edit-form-data', formData),
 })
 
 const newValidate = useVuelidate<CreateProductTagRequest>(CreateProductTagValidationRules, newFormDataValue)
@@ -195,9 +195,16 @@ const submitDelete = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="newDialogValue" width="500">
+  <v-dialog
+    v-model="newDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         商品タグ登録
@@ -212,17 +219,29 @@ const submitDelete = (): void => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseNewDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseNewDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="submitCreate">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="submitCreate"
+        >
           登録
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="editDialogValue" width="500">
+  <v-dialog
+    v-model="editDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         商品タグ編集
@@ -237,39 +256,71 @@ const submitDelete = (): void => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseEditDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseEditDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="submitUpdate">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="submitUpdate"
+        >
           更新
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title>
         {{ selectedItem?.name || '' }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseDeleteDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="submitDelete">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="submitDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       商品タグ管理
       <v-spacer />
-      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
-        <v-icon start :icon="mdiPlus" />
+      <v-btn
+        v-show="isRegisterable()"
+        variant="outlined"
+        color="primary"
+        @click="onClickAdd"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         商品タグ登録
       </v-btn>
     </v-card-title>
@@ -296,11 +347,23 @@ const submitDelete = (): void => {
             size="small"
             @click="onClickEdit(item)"
           >
-            <v-icon size="small" :icon="mdiPencil" />
+            <v-icon
+              size="small"
+              :icon="mdiPencil"
+            />
             編集
           </v-btn>
-          <v-btn v-show="isEditable()" variant="outlined" color="primary" size="small" @click="onClickDelete(item)">
-            <v-icon size="small" :icon="mdiDelete" />
+          <v-btn
+            v-show="isEditable()"
+            variant="outlined"
+            color="primary"
+            size="small"
+            @click="onClickDelete(item)"
+          >
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
             削除
           </v-btn>
         </template>

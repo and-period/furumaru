@@ -7,12 +7,12 @@ export const CreateNotificationValidationRules: ValidationArgs = {
   title: { maxLength: maxLength(128) },
   body: { required, maxLength: maxLength(2000) },
   note: { maxLength: maxLength(2000) },
-  targets: { maxLengthArray: maxLengthArray(4) }
+  targets: { maxLengthArray: maxLengthArray(4) },
 }
 
 export const UpdateNotificationValidationRules: ValidationArgs = {
   title: { maxLength: maxLength(128) },
   body: { required, maxLength: maxLength(2000) },
   note: { maxLength: maxLength(2000) },
-  targets: { maxLengthArray: maxLengthArray(4) }
+  targets: { maxLengthArray: maxLengthArray(4) },
 }

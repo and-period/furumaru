@@ -13,7 +13,8 @@ const loginRequired = computed<boolean>(() => {
   const required = route.query.required
   if (required) {
     return Boolean(required)
-  } else {
+  }
+  else {
     return false
   }
 })
@@ -22,7 +23,8 @@ const fromNewAccounet = computed<boolean>(() => {
   const fromNewAccounetParam = route.query.from_new_accounet
   if (fromNewAccounetParam) {
     return Boolean(fromNewAccounetParam)
-  } else {
+  }
+  else {
     return false
   }
 })
@@ -31,7 +33,8 @@ const coordinatorId = computed<string>(() => {
   const id = route.query.coordinatorId
   if (id) {
     return String(id)
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -79,7 +82,8 @@ const handleSubmitSignForm = async () => {
         cartNumber: cartNumber.value,
       },
     })
-  } catch (error) {
+  }
+  catch (error) {
     authErrorState.value.hasError = true
     if (error instanceof ApiBaseError) {
       authErrorState.value.errorMessage = error.message
@@ -89,11 +93,11 @@ const handleSubmitSignForm = async () => {
 
 const handleSubmitWithoutSignForm = () => {
   router.push({
-      path: '/v1/purchase/guest/address',
-      query: {
-        coordinatorId: coordinatorId.value,
-        cartNumber: cartNumber.value,
-      },
+    path: '/v1/purchase/guest/address',
+    query: {
+      coordinatorId: coordinatorId.value,
+      cartNumber: cartNumber.value,
+    },
   })
 }
 
@@ -105,7 +109,10 @@ const hideV1App = false
 </script>
 
 <template>
-  <div v-if="loginRequired" class="px-4">
+  <div
+    v-if="loginRequired"
+    class="px-4"
+  >
     <the-alert
       class="mx-auto my-4 w-full bg-white p-4 lg:w-[768px] xl:w-[1024px]"
     >
@@ -113,7 +120,10 @@ const hideV1App = false
     </the-alert>
   </div>
 
-  <div v-if="fromNewAccounet" class="px-4">
+  <div
+    v-if="fromNewAccounet"
+    class="px-4"
+  >
     <the-alert
       class="mx-auto my-4 w-full bg-white p-4 lg:w-[768px] xl:w-[1024px]"
     >
@@ -130,9 +140,14 @@ const hideV1App = false
       <h2 class="mb-[40px] text-center text-[16px] font-bold">
         アカウントをお持ちの方
       </h2>
-      <the-alert v-if="authErrorState.hasError" class="mb-4">{{
-        authErrorState.errorMessage
-      }}</the-alert>
+      <the-alert
+        v-if="authErrorState.hasError"
+        class="mb-4"
+      >
+        {{
+          authErrorState.errorMessage
+        }}
+      </the-alert>
       <the-sign-in-form
         v-model="formData"
         button-text="ログインして購入"
@@ -142,7 +157,10 @@ const hideV1App = false
         username-placeholder="メールアドレス"
         @submit="handleSubmitSignForm"
       />
-      <div v-if="hideV1App" class="mt-[24px] text-center text-[14px] underline">
+      <div
+        v-if="hideV1App"
+        class="mt-[24px] text-center text-[14px] underline"
+      >
         パスワードをお忘れの方はこちら
       </div>
     </div>
@@ -156,13 +174,19 @@ const hideV1App = false
       <p class="mb-[40px] text-[14px] tracking-[1.4px]">
         アカウントをご登録いただくと毎回のお届け先等の情報入力が不要になり、お買い物がもっと便利になります。
       </p>
-      <the-submit-button type="button" @click="handleClickNewAccountButton">
+      <the-submit-button
+        type="button"
+        @click="handleClickNewAccountButton"
+      >
         新規登録する
       </the-submit-button>
       <p class="my-[40px] text-[14px] tracking-[1.4px]">
         アカウントを登録せずにご購入を希望される方はこちらからご利用ください。
       </p>
-      <the-submit-without-login-button type="submit" @click="handleSubmitWithoutSignForm" >
+      <the-submit-without-login-button
+        type="submit"
+        @click="handleSubmitWithoutSignForm"
+      >
         ログインせずに購入
       </the-submit-without-login-button>
     </div>

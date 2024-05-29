@@ -12,7 +12,7 @@ export interface Snackbar extends AddSnackbarPayload {
 
 export const useCommonStore = defineStore('common', {
   state: () => ({
-    snackbars: [] as Snackbar[]
+    snackbars: [] as Snackbar[],
   }),
 
   actions: {
@@ -20,11 +20,11 @@ export const useCommonStore = defineStore('common', {
      * スナックバーを表示する関数
      * @param snackbar スナックバーの情報
      */
-    addSnackbar (snackbar: AddSnackbarPayload): void {
+    addSnackbar(snackbar: AddSnackbarPayload): void {
       this.snackbars.push({
         isOpen: true,
         ...snackbar,
-        timeout: snackbar.color === 'error' ? -1 : 5000
+        timeout: snackbar.color === 'error' ? -1 : 5000,
       })
     },
 
@@ -32,8 +32,8 @@ export const useCommonStore = defineStore('common', {
      * スナックバーを削除する関数
      * @param index 削除するスナックバーのindex
      */
-    hideSnackbar (index: number): void {
+    hideSnackbar(index: number): void {
       this.snackbars.splice(index, 1)
-    }
-  }
+    },
+  },
 })

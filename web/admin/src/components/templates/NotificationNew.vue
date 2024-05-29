@@ -12,19 +12,19 @@ import { CreateNotificationValidationRules } from '~/types/validations/notificat
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object,
@@ -35,13 +35,13 @@ const props = defineProps({
       body: '',
       note: '',
       publishedAt: dayjs().unix(),
-      promotionId: ''
-    })
+      promotionId: '',
+    }),
   },
   promotions: {
     type: Array<Promotion>,
-    default: (): Promotion[] => []
-  }
+    default: (): Promotion[] => [],
+  },
 })
 
 const emit = defineEmits<{
@@ -55,30 +55,30 @@ const typeList = [
   { title: 'システム関連', value: NotificationType.SYSTEM },
   { title: 'ライブ関連', value: NotificationType.LIVE },
   { title: 'セール関連', value: NotificationType.PROMOTION },
-  { title: 'その他', value: NotificationType.OTHER }
+  { title: 'その他', value: NotificationType.OTHER },
 ]
 const targetList = [
   { title: 'ユーザー', value: NotificationTarget.USERS },
   { title: '生産者', value: NotificationTarget.PRODUCERS },
   { title: 'コーディネーター', value: NotificationTarget.COORDINATORS },
-  { title: '管理者', value: NotificationTarget.ADMINISTRATORS }
+  { title: '管理者', value: NotificationTarget.ADMINISTRATORS },
 ]
 
 const selectedPromotion = ref<Promotion>()
 
 const formDataValue = computed({
   get: (): CreateNotificationRequest => props.formData as CreateNotificationRequest,
-  set: (formData: CreateNotificationRequest) => emit('update:form-data', formData)
+  set: (formData: CreateNotificationRequest) => emit('update:form-data', formData),
 })
 const timeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.publishedAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.publishedAt).format('HH:mm')
+    time: unix(props.formData.publishedAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const publishedAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.publishedAt = publishedAt.unix()
-  }
+  },
 })
 
 const formDataValidate = useVuelidate(CreateNotificationValidationRules, formDataValue)
@@ -148,7 +148,11 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card>
     <v-card-title>お知らせ登録</v-card-title>
@@ -253,7 +257,13 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
+        <v-btn
+          block
+          :loading="loading"
+          variant="outlined"
+          color="primary"
+          type="submit"
+        >
           登録
         </v-btn>
       </v-card-actions>

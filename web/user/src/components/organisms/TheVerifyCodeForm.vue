@@ -25,7 +25,10 @@ const handleSubmit = () => {
 <template>
   <form @submit.prevent="handleSubmit">
     <the-stack>
-      <the-pincode-input v-model="codeValue" class="mb-4" />
+      <the-pincode-input
+        v-model="codeValue"
+        class="mb-4"
+      />
       <the-submit-button>{{ buttonText }}</the-submit-button>
     </the-stack>
   </form>

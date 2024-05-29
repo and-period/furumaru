@@ -1,6 +1,6 @@
 import 'pinia'
 
-import { CustomErrorMessage } from '~/plugins/api-error-handler'
+import type { CustomErrorMessage } from '~/plugins/api-error-handler'
 import { useAuthStore } from '~/store'
 
 declare module 'vue/types/vue' {

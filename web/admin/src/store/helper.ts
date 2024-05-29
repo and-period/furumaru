@@ -9,7 +9,7 @@ import { UploadStatus } from '~/types/api'
  * @param uploadUrl アップロード時に使用する署名付きURL
  * @returns 参照先URL
  */
-export async function fileUpload (file: File, key: string, url: string): Promise<string> {
+export async function fileUpload(file: File, key: string, url: string): Promise<string> {
   // 署名付きURLを基にファイルをアップロード
   await upload(file, url)
 
@@ -22,7 +22,7 @@ export async function fileUpload (file: File, key: string, url: string): Promise
  * @param ms 待機する時間（ミリ秒）
  * @returns
  */
-function sleep (ms: number): Promise<void> {
+function sleep(ms: number): Promise<void> {
   return new Promise((resolve: any) => setTimeout(resolve, ms))
 }
 
@@ -32,9 +32,9 @@ function sleep (ms: number): Promise<void> {
  * @param uploadUrl アップロード時に使用する署名付きURL
  * @returns
  */
-async function upload (file: File, uploadUrl: string): Promise<void> {
+async function upload(file: File, uploadUrl: string): Promise<void> {
   const headers: RawAxiosRequestHeaders = {
-    'Content-Type': file.type
+    'Content-Type': file.type,
   }
   await axios.put(uploadUrl, file, { headers })
 }
@@ -44,7 +44,7 @@ async function upload (file: File, uploadUrl: string): Promise<void> {
  * @param uploadUrl アップロード先URL
  * @returns ファイルの参照先URL
  */
-async function getUploadResult (uploadUrl: string): Promise<string> {
+async function getUploadResult(uploadUrl: string): Promise<string> {
   while (true) {
     // アップロード処理が、サーバー側では非同期実行となるため
     await sleep(200)

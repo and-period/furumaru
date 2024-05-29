@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import dayjs, { Dayjs } from 'dayjs'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 
 const props = defineProps({
   version: {
     type: String,
-    default: ''
+    default: '',
   },
   builtAt: {
     type: Object as PropType<Dayjs>,
-    default: () => dayjs()
-  }
+    default: () => dayjs(),
+  },
 })
 
 const formattedBuiltAt = computed(() => {

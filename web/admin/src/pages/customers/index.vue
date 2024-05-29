@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useCustomerStore } from '~/store/customer'
@@ -25,7 +25,8 @@ watch(pagination.itemsPerPage, () => {
 const fetchUsers = async (): Promise<void> => {
   try {
     await customerStore.fetchCustomers(pagination.itemsPerPage.value, pagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -48,7 +49,8 @@ const handleClickEdit = (customerId: string): void => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

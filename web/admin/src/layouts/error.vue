@@ -1,21 +1,21 @@
 <script setup>
 definePageMeta({
   name: 'EmptyLayout',
-  layout: 'empty'
+  layout: 'empty',
 })
 
 const props = defineProps({
   error: {
     type: Object,
-    default: null
-  }
+    default: null,
+  },
 })
 
 const pageNotFound = ref<string>('404 Not Found')
 const otherError = ref<string>('An error occurred')
 
 useHead({
-  title: props.error?.statusCode === 404 ? pageNotFound : otherError
+  title: props.error?.statusCode === 404 ? pageNotFound : otherError,
 })
 </script>
 

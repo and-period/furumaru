@@ -1,4 +1,4 @@
-import { ErrorObject } from '@vuelidate/core'
+import type { ErrorObject } from '@vuelidate/core'
 
 /**
  * バリデーションオブジェクトから指定したキーのエラーメッセージを取得する関数

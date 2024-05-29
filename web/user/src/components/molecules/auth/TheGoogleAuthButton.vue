@@ -22,7 +22,7 @@ const handleClick = (): void => {
       width="24"
       alt="google icon"
       class="block"
-    />
+    >
     <p class="w-full text-center">
       {{ buttonText }}
     </p>

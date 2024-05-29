@@ -5,13 +5,13 @@ import type {
   CategoriesResponse,
   Category,
   CreateCategoryRequest,
-  UpdateCategoryRequest
+  UpdateCategoryRequest,
 } from '~/types/api'
 
 export const useCategoryStore = defineStore('category', {
   state: () => ({
     categories: [] as Category[],
-    total: 0
+    total: 0,
   }),
 
   actions: {
@@ -21,12 +21,13 @@ export const useCategoryStore = defineStore('category', {
      * @param offset 取得開始位置
      * @param orders ソートキー
      */
-    async fetchCategories (limit = 20, offset = 0, orders = []): Promise<void> {
+    async fetchCategories(limit = 20, offset = 0, orders = []): Promise<void> {
       try {
         const res = await listCategories(limit, offset, '', orders)
         this.categories = res.categories
         this.total = res.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -36,7 +37,7 @@ export const useCategoryStore = defineStore('category', {
      * @param name カテゴリ名(あいまい検索)
      * @param categoryIds stateの更新時に残しておく必要があるカテゴリ情報
      */
-    async searchCategories (name = '', categoryIds: string[] = []): Promise<void> {
+    async searchCategories(name = '', categoryIds: string[] = []): Promise<void> {
       try {
         const res = await listCategories(undefined, undefined, name, [])
         const categories: Category[] = []
@@ -54,7 +55,8 @@ export const useCategoryStore = defineStore('category', {
         })
         this.categories = categories
         this.total = res.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -65,12 +67,13 @@ export const useCategoryStore = defineStore('category', {
      * @param offset 取得開始位置
      * @param orders ソートキー
      */
-    async moreCategories (limit = 20, offset = 0, orders = []): Promise<void> {
+    async moreCategories(limit = 20, offset = 0, orders = []): Promise<void> {
       try {
         const res = await listCategories(limit, offset, '', orders)
         this.categories.push(...res.categories)
         this.total = res.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -79,14 +82,15 @@ export const useCategoryStore = defineStore('category', {
      * カテゴリを新規登録する非同期関数
      * @param payload
      */
-    async createCategory (payload: CreateCategoryRequest): Promise<void> {
+    async createCategory(payload: CreateCategoryRequest): Promise<void> {
       try {
         const res = await apiClient.categoryApi().v1CreateCategory(payload)
         this.categories.unshift(res.data.category)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
-          409: 'このカテゴリー名はすでに登録されています。'
+          409: 'このカテゴリー名はすでに登録されています。',
         })
       }
     },
@@ -96,14 +100,15 @@ export const useCategoryStore = defineStore('category', {
      * @param categoryId カテゴリID
      * @param payload
      */
-    async updateCategory (categoryId: string, payload: UpdateCategoryRequest) {
+    async updateCategory(categoryId: string, payload: UpdateCategoryRequest) {
       try {
         await apiClient.categoryApi().v1UpdateCategory(categoryId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
           404: '対象のカテゴリーが存在しません',
-          409: 'このカテゴリー名はすでに登録されています。'
+          409: 'このカテゴリー名はすでに登録されています。',
         })
       }
       this.fetchCategories()
@@ -113,21 +118,22 @@ export const useCategoryStore = defineStore('category', {
      * カテゴリを削除する非同期関数
      * @param categoryId カテゴリID
      */
-    async deleteCategory (categoryId: string): Promise<void> {
+    async deleteCategory(categoryId: string): Promise<void> {
       try {
         await apiClient.categoryApi().v1DeleteCategory(categoryId)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           404: '対象のカテゴリーが存在しません',
-          412: '品目と紐付いているため削除できません'
+          412: '品目と紐付いているため削除できません',
         })
       }
       this.fetchCategories()
-    }
-  }
+    },
+  },
 })
 
-async function listCategories (limit = 20, offset = 0, name = '', orders: string[] = []): Promise<CategoriesResponse> {
+async function listCategories(limit = 20, offset = 0, name = '', orders: string[] = []): Promise<CategoriesResponse> {
   const res = await apiClient.categoryApi().v1ListCategories(limit, offset, name, orders.join(','))
   return { ...res.data }
 }

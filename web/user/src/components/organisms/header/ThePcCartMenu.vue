@@ -49,7 +49,10 @@ const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
           v-if="!cartIsEmpty"
           class="absolute right-[2px] top-[-2px] inline-flex h-[8px] w-[8px] rounded-full bg-orange"
         />
-        <the-cart-icon id="header-cart-icon" fill="#604C3F" />
+        <the-cart-icon
+          id="header-cart-icon"
+          fill="#604C3F"
+        />
       </div>
     </template>
     <template #content>
@@ -57,7 +60,7 @@ const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
         class="flex max-h-[calc(100vh_-_150px)] flex-col gap-y-4 overflow-auto p-4 leading-8"
       >
         <p v-html="cartMenuMessage" />
-        <hr class="border-main" />
+        <hr class="border-main">
         <div>
           合計金額:
           <p
@@ -77,7 +80,10 @@ const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
           現在のカゴの数: {{ cartItems.length }}
           <p>
             買い物カゴごとに送料がかかります。 詳しくは
-            <nuxt-link href="/legal-notice" class="underline">
+            <nuxt-link
+              href="/legal-notice"
+              class="underline"
+            >
               こちら
             </nuxt-link>
             からご確認ください。

@@ -3,9 +3,9 @@
  * @param n
  * @returns
  */
-export function moneyFormat (n: number): string {
+export function moneyFormat(n: number): string {
   return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
-    currency: 'JPY'
+    currency: 'JPY',
   }).format(n)
 }

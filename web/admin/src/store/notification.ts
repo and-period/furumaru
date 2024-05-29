@@ -5,14 +5,14 @@ import { apiClient } from '~/plugins/api-client'
 import type {
   CreateNotificationRequest,
   Notification,
-  UpdateNotificationRequest
+  UpdateNotificationRequest,
 } from '~/types/api'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
     notification: {} as Notification,
     notifications: [] as Notification[],
-    totalItems: 0
+    totalItems: 0,
   }),
   actions: {
     /**
@@ -22,7 +22,7 @@ export const useNotificationStore = defineStore('notification', {
      * @param orders ソートキー
      * @returns
      */
-    async fetchNotifications (limit = 20, offset = 0, orders = []): Promise<void> {
+    async fetchNotifications(limit = 20, offset = 0, orders = []): Promise<void> {
       try {
         const res = await apiClient.notificationApi().v1ListNotifications(limit, offset, undefined, undefined, orders.join(''))
 
@@ -30,7 +30,8 @@ export const useNotificationStore = defineStore('notification', {
         this.notifications = res.data.notifications
         this.totalItems = res.data.total
         adminStore.admins = res.data.admins
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -40,7 +41,7 @@ export const useNotificationStore = defineStore('notification', {
      * @param id お知らせID
      * @returns お知らせ情報
      */
-    async getNotification (id: string): Promise<Notification> {
+    async getNotification(id: string): Promise<Notification> {
       try {
         const res = await apiClient.notificationApi().v1GetNotification(id)
 
@@ -48,7 +49,8 @@ export const useNotificationStore = defineStore('notification', {
         this.notification = res.data.notification
         adminStore.admin = res.data.admin
         return res.data.notification
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '対象のお知らせが存在しません' })
       }
     },
@@ -57,12 +59,13 @@ export const useNotificationStore = defineStore('notification', {
      * お知らせを登録する非同期関数
      * @param payload
      */
-    async createNotification (
-      payload: CreateNotificationRequest
+    async createNotification(
+      payload: CreateNotificationRequest,
     ): Promise<void> {
       try {
         await apiClient.notificationApi().v1CreateNotification(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: '必須項目が不足しているか、内容に誤りがあります' })
       }
     },
@@ -71,10 +74,11 @@ export const useNotificationStore = defineStore('notification', {
      * お知らせを削除する非同期関数
      * @param id お知らせID
      */
-    async deleteNotification (id: string): Promise<void> {
+    async deleteNotification(id: string): Promise<void> {
       try {
         await apiClient.notificationApi().v1DeleteNotification(id)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '対象のお知らせが存在しません' })
       }
       this.fetchNotifications()
@@ -85,18 +89,19 @@ export const useNotificationStore = defineStore('notification', {
      * @param id セールID
      * @param payload
      */
-    async updateNotification (
+    async updateNotification(
       id: string,
-      payload: UpdateNotificationRequest
+      payload: UpdateNotificationRequest,
     ): Promise<void> {
       try {
         await apiClient.notificationApi().v1UpdateNotification(id, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
-          404: '対象のお知らせが存在しません'
+          404: '対象のお知らせが存在しません',
         })
       }
-    }
-  }
+    },
+  },
 })

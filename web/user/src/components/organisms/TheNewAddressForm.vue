@@ -71,7 +71,10 @@ const handleSubmit = () => {
         required
       />
     </div>
-    <the-phone-number-input v-model="formDataValue.phoneNumber" required />
+    <the-phone-number-input
+      v-model="formDataValue.phoneNumber"
+      required
+    />
     <div class="flex items-center gap-4">
       <the-text-input
         v-model="formDataValue.postalCode"
@@ -96,7 +99,12 @@ const handleSubmit = () => {
       }"
       required
     >
-      <option disabled value="0">都道府県</option>
+      <option
+        disabled
+        value="0"
+      >
+        都道府県
+      </option>
       <option
         v-for="prefecture in prefecturesList"
         :key="prefecture.id"
@@ -136,7 +144,7 @@ const handleSubmit = () => {
         v-model="formDataValue.isDefault"
         type="checkbox"
         class="h-4 w-4 rounded accent-main"
-      />
+      >
       <label for="isDefault">この住所を基本の配送先に指定する</label>
     </div>
   </form>

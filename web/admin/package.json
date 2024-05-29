@@ -10,10 +10,10 @@
     "generate": "nuxt generate",
     "postinstall": "nuxt prepare && yarn sw:build",
     "typecheck": "nuxt typecheck",
-    "lint:js": "eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
+    "lint:js": "eslint .",
     "lint:style": "stylelint \"**/*.{css,scss,sass,html,vue}\" --ignore-path .gitignore",
     "lint": "yarn lint:js && yarn lint:style",
-    "lintfix": "yarn lint:js --fix && yarn lint:style --fix",
+    "format": "yarn lint:js --fix && yarn lint:style --fix",
     "sw:build": "node src/sw/firebase-messaging-sw.ts"
   },
   "dependencies": {
@@ -37,12 +37,13 @@
   "devDependencies": {
     "@mdi/js": "^7.2.96",
     "@nuxt/devtools": "^1.1.4",
+    "@nuxt/eslint": "^0.3.13",
     "@nuxt/types": "^2.17.3",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/stylelint-module": "^5.2.0",
     "@sentry/vite-plugin": "^2.16.1",
-    "eslint": "^8.57.0",
+    "eslint": "^9.3.0",
     "postcss-html": "^1.6.0",
     "prettier": "^3.2.5",
     "raw-loader": "^4.0.2",

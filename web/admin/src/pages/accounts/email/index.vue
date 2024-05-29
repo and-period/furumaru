@@ -10,7 +10,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 
 const loading = ref<boolean>(false)
 const formData = ref<UpdateAuthEmailRequest>({
-  email: ''
+  email: '',
 })
 
 const handleSubmit = async (): Promise<void> => {
@@ -19,18 +19,20 @@ const handleSubmit = async (): Promise<void> => {
     await authStore.updateEmail(formData.value)
     commonStore.addSnackbar({
       message: '認証コードを送信しました。',
-      color: 'info'
+      color: 'info',
     })
     router.push({
       name: 'accounts-email-verification',
-      params: { email: formData.value.email }
+      params: { email: formData.value.email },
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

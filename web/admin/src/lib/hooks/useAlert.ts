@@ -1,6 +1,6 @@
 export type AlertType = 'success' | 'info' | 'warning' | 'error'
 
-export function useAlert (alertType: AlertType) {
+export function useAlert(alertType: AlertType) {
   const isShow = ref<boolean>(false)
   const alertText = ref<string>('')
 
@@ -20,6 +20,6 @@ export function useAlert (alertType: AlertType) {
     isShow,
     alertText,
     show,
-    hide
+    hide,
   }
 }

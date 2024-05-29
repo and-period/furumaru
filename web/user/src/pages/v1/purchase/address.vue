@@ -10,8 +10,8 @@ const router = useRouter()
 
 const addressStore = useAddressStore()
 const { addressesFetchState, defaultAddress } = storeToRefs(addressStore)
-const { fetchAddresses, searchAddressByPostalCode, registerAddress } =
-  addressStore
+const { fetchAddresses, searchAddressByPostalCode, registerAddress }
+  = addressStore
 
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
@@ -46,7 +46,8 @@ const coordinatorId = computed<string>(() => {
   const id = route.query.coordinatorId
   if (id) {
     return String(id)
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -67,7 +68,8 @@ const promotionCode = computed<string | undefined>(() => {
   const code = route.query.promotionCode
   if (typeof code === 'string') {
     return code
-  } else {
+  }
+  else {
     return undefined
   }
 })
@@ -123,7 +125,8 @@ const handleClickUsePromotionCodeButton = async () => {
   if (result) {
     invalidPromotion.value = false
     validPromotion.value = true
-  } else {
+  }
+  else {
     invalidPromotion.value = true
     validPromotion.value = false
   }
@@ -199,15 +202,18 @@ onMounted(async () => {
     if (promotionCode.value) {
       validPromotion.value = true
     }
-  } catch (error) {
+  }
+  catch (error) {
     calcCartResponseItemState.value.hasError = true
     if (error instanceof ApiBaseError) {
       calcCartResponseItemState.value.errorMessage = error.message
-    } else {
-      calcCartResponseItemState.value.errorMessage =
-        '不明なエラーが発生しました。'
     }
-  } finally {
+    else {
+      calcCartResponseItemState.value.errorMessage
+        = '不明なエラーが発生しました。'
+    }
+  }
+  finally {
     calcCartResponseItemState.value.isLoading = false
   }
 })
@@ -236,7 +242,7 @@ useSeoMeta({
       class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"
     >
       <template v-if="addressesFetchState.isLoading">
-        <div class="absolute h-2 w-full animate-pulse bg-main"></div>
+        <div class="absolute h-2 w-full animate-pulse bg-main" />
       </template>
 
       <template v-else>
@@ -251,7 +257,7 @@ useSeoMeta({
           <!-- デフォルトの住所が登録されている場合 -->
           <template v-if="defaultAddress">
             <the-address-info :address="defaultAddress" />
-            <hr class="my-[20px]" />
+            <hr class="my-[20px]">
             <div class="flex flex-col gap-4">
               <div class="flex items-center gap-2">
                 <input
@@ -260,7 +266,7 @@ useSeoMeta({
                   type="radio"
                   class="h-4 w-4 accent-main"
                   value="default"
-                />
+                >
                 <label for="default-radio">上記の住所にお届け</label>
               </div>
               <div class="flex items-center gap-2">
@@ -270,7 +276,7 @@ useSeoMeta({
                   type="radio"
                   class="h-4 w-4 accent-main"
                   value="other"
-                />
+                >
                 <label for="other-radio">その他の住所にお届け</label>
               </div>
             </div>
@@ -405,7 +411,7 @@ useSeoMeta({
                       type="text"
                       class="w-full border border-gray-300 bg-gray-50 p-2.5 text-[14px] md:text-[16px]"
                       placeholder="クーポンコード"
-                    />
+                    >
                   </div>
                   <button
                     class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
@@ -425,15 +431,21 @@ useSeoMeta({
               <div
                 class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
               >
-                <div class="col-span-2 md:col-span-1">商品合計（税込）</div>
+                <div class="col-span-2 md:col-span-1">
+                  商品合計（税込）
+                </div>
                 <div class="col-span-3 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.subtotal) }}
                 </div>
-                <div class="col-span-2 md:col-span-1">クーポン利用</div>
+                <div class="col-span-2 md:col-span-1">
+                  クーポン利用
+                </div>
                 <div class="col-span-3 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.discount) }}
                 </div>
-                <div class="col-span-2 md:col-span-1">送料（税込）</div>
+                <div class="col-span-2 md:col-span-1">
+                  送料（税込）
+                </div>
                 <div class="col-span-3 text-right md:col-span-1">
                   次ページで計算されます
                 </div>

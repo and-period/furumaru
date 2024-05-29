@@ -25,7 +25,8 @@ watch(pagination.itemsPerPage, (): void => {
 const fetchAdministrators = async (): Promise<void> => {
   try {
     await administratorStore.fetchAdministrators(pagination.itemsPerPage.value, pagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -52,14 +53,16 @@ const handleClickDelete = async (administratorId: string): Promise<void> => {
     await administratorStore.deleteAdministrator(administratorId)
     commonStore.addSnackbar({
       message: '管理者情報の削除が完了しました。',
-      color: 'info'
+      color: 'info',
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     deleteDialog.value = false
     loading.value = false
   }
@@ -71,7 +74,8 @@ const handleClickRow = (administratorId: string): void => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

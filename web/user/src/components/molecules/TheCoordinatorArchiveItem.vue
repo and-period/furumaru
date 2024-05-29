@@ -20,7 +20,10 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div class="text-main" @click="handleClick">
+  <div
+    class="text-main"
+    @click="handleClick"
+  >
     <div class="flex justify-center">
       <nuxt-img
         provider="cloudFront"

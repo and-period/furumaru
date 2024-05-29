@@ -15,16 +15,24 @@ defineProps<Props>()
     </div>
     <div class="bg-green py-5 text-white">
       <the-stack class="gap-y-4">
-        <p class="text-lg font-bold tracking-widest">Follow us !</p>
+        <p class="text-lg font-bold tracking-widest">
+          Follow us !
+        </p>
 
         <div class="flex justify-center gap-x-3">
-          <a href="https://www.instagram.com/furusato_marche" class="block">
+          <a
+            href="https://www.instagram.com/furusato_marche"
+            class="block"
+          >
             <the-instagram-icon
               id="footer-instagram-icon"
               class="inline h-5 w-5"
             />
           </a>
-          <a href="https://twitter.com/furusato_marche" class="block">
+          <a
+            href="https://twitter.com/furusato_marche"
+            class="block"
+          >
             <the-x-icon
               id="footer-facebook-icon"
               class="inline h-5 w-5"
@@ -35,7 +43,10 @@ defineProps<Props>()
         <ul
           class="mt-4 flex list-none flex-col justify-center gap-4 md:flex-row md:gap-10"
         >
-          <li v-for="(item, i) in menuItems" :key="i">
+          <li
+            v-for="(item, i) in menuItems"
+            :key="i"
+          >
             <nuxt-link :to="item.to">
               {{ item.text }}
             </nuxt-link>

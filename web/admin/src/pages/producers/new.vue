@@ -36,23 +36,23 @@ const formData = ref<CreateProducerRequest>({
   promotionVideoUrl: '',
   bonusVideoUrl: '',
   instagramId: '',
-  facebookId: ''
+  facebookId: '',
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const headerUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const promotionVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 
 const isLoading = (): boolean => {
@@ -65,24 +65,26 @@ const handleSubmit = async (): Promise<void> => {
     const req: CreateProducerRequest = {
       ...formData.value,
       coordinatorId: auth.value?.adminId || '',
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
     }
     await producerStore.createProducer(req)
     commonStore.addSnackbar({
       message: `${formData.value.username}を作成しました。`,
-      color: 'info'
+      color: 'info',
     })
     router.push('/producers')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -172,11 +174,13 @@ const handleSearchAddress = async (): Promise<void> => {
       ...formData.value,
       prefectureCode: res.prefecture,
       city: res.city,
-      addressLine1: res.town
+      addressLine1: res.town,
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

@@ -12,7 +12,7 @@ const loading = ref<boolean>(false)
 const formData = ref<UpdateAuthPasswordRequest>({
   oldPassword: '',
   newPassword: '',
-  passwordConfirmation: ''
+  passwordConfirmation: '',
 })
 
 const handleSubmit = async (): Promise<void> => {
@@ -21,15 +21,17 @@ const handleSubmit = async (): Promise<void> => {
     await authStore.updatePassword(formData.value)
     commonStore.addSnackbar({
       message: 'パスワードを更新しました。',
-      color: 'info'
+      color: 'info',
     })
     router.push('/')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

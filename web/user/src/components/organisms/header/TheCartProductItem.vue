@@ -56,7 +56,11 @@ const handleRemoveButton = () => {
           </div>
         </div>
         <div class="text-right">
-          <button type="button" class="underline" @click="handleRemoveButton">
+          <button
+            type="button"
+            class="underline"
+            @click="handleRemoveButton"
+          >
             削除
           </button>
         </div>

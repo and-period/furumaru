@@ -9,44 +9,44 @@ import { AdminRole, DiscountType, PromotionStatus, type Promotion } from '~/type
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   sortBy: {
     type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
+    default: () => [],
   },
   promotions: {
     type: Array<Promotion>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
@@ -63,45 +63,45 @@ const headers: VDataTable['headers'] = [
   {
     title: 'タイトル',
     key: 'title',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ステータス',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '割引コード',
     key: 'code',
-    sortable: false
+    sortable: false,
   },
   {
     title: '割引額',
     key: 'discount',
-    sortable: false
+    sortable: false,
   },
   {
     title: '使用期間',
     key: 'term',
-    sortable: false
+    sortable: false,
   },
   {
     title: '使用回数',
     key: 'usedCount',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const selectedItem = ref<Promotion>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (val: boolean): void => emit('update:delete-dialog', val)
+  set: (val: boolean): void => emit('update:delete-dialog', val),
 })
 
 const isRegisterable = (): boolean => {
@@ -198,31 +198,58 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h7">
         {{ selectedItem?.title || '' }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseDeleteDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onClickDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       セール情報
       <v-spacer />
-      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
-        <v-icon start :icon="mdiPlus" />
+      <v-btn
+        v-show="isRegisterable()"
+        variant="outlined"
+        color="primary"
+        @click="onClickAdd"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         セール情報登録
       </v-btn>
     </v-card-title>
@@ -242,13 +269,16 @@ const onClickDelete = (): void => {
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
         @update:sort-desc="onClickUpdateSortBy"
-        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
+        @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.title`]="{ item }">
           {{ item.title }}
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.status)">
+          <v-chip
+            size="small"
+            :color="getStatusColor(item.status)"
+          >
             {{ getStatus(item.status) }}
           </v-chip>
         </template>
@@ -269,7 +299,10 @@ const onClickDelete = (): void => {
             variant="outlined"
             @click.stop="onClickOpenDeleteDialog(item)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
             削除
           </v-btn>
         </template>

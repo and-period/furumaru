@@ -11,23 +11,23 @@ import { TimeDataValidationRules, UpdatePromotionValidationRules } from '~/types
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<UpdatePromotionRequest>,
@@ -39,8 +39,8 @@ const props = defineProps({
       discountRate: 0,
       code: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix()
-    })
+      endAt: dayjs().unix(),
+    }),
   },
   promotion: {
     type: Object as PropType<Promotion>,
@@ -58,9 +58,9 @@ const props = defineProps({
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,
-      updatedAt: 0
-    })
-  }
+      updatedAt: 0,
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -72,36 +72,36 @@ const emit = defineEmits<{
 const discountMethodList = [
   { method: '円', value: DiscountType.AMOUNT },
   { method: '%', value: DiscountType.RATE },
-  { method: '送料無料', value: DiscountType.FREE_SHIPPING }
+  { method: '送料無料', value: DiscountType.FREE_SHIPPING },
 ]
 
 const formDataValue = computed({
   get: (): UpdatePromotionRequest => props.formData,
-  set: (formData: UpdatePromotionRequest) => emit('update:form-data', formData)
+  set: (formData: UpdatePromotionRequest) => emit('update:form-data', formData),
 })
 const startTimeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.startAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.startAt).format('HH:mm')
+    time: unix(props.formData.startAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const startAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.startAt = startAt.unix()
-  }
+  },
 })
 const endTimeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.endAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.endAt).format('HH:mm')
+    time: unix(props.formData.endAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const endAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.endAt = endAt.unix()
-  }
+  },
 })
 const promotionValue = computed({
   get: (): Promotion => props.promotion,
-  set: (promotion: Promotion): void => emit('update:promotion', promotion)
+  set: (promotion: Promotion): void => emit('update:promotion', promotion),
 })
 
 const formDataValidate = useVuelidate(UpdatePromotionValidationRules, formDataValue)
@@ -236,7 +236,11 @@ const onSubmit = async (): Promise<void> => {
             @update:model-value="onChangeEndAt"
           />
         </div>
-        <v-switch v-model="formDataValue.public" label="クーポンを有効にする" color="primary" />
+        <v-switch
+          v-model="formDataValue.public"
+          label="クーポンを有効にする"
+          color="primary"
+        />
       </v-card-text>
 
       <v-card-actions>

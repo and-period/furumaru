@@ -129,7 +129,10 @@ const handleClickAddCartButton = () => {
         class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white disabled:cursor-not-allowed disabled:bg-main/60 lg:px-4 xl:text-[14px]"
         @click="handleClickAddCartButton"
       >
-        <the-cart-icon id="add-cart-icon" class="mr-1 h-2 w-2 lg:h-4 lg:w-4" />
+        <the-cart-icon
+          id="add-cart-icon"
+          class="mr-1 h-2 w-2 lg:h-4 lg:w-4"
+        />
         カゴに入れる
       </button>
     </div>
@@ -173,7 +176,9 @@ const handleClickAddCartButton = () => {
             </p>
           </div>
           <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
-            <p class="whitespace-nowrap">取扱元:</p>
+            <p class="whitespace-nowrap">
+              取扱元:
+            </p>
             <p class="text-[12px] md:text-[14px]">
               {{ coordinator.username }}
             </p>

@@ -6,6 +6,12 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="5" cy="5" r="4.5" fill="#F48D26" stroke="#F9F6EA" />
+    <circle
+      cx="5"
+      cy="5"
+      r="4.5"
+      fill="#F48D26"
+      stroke="#F9F6EA"
+    />
   </svg>
 </template>

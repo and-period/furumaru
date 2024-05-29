@@ -78,7 +78,7 @@ export const useAddressStore = defineStore('address', {
 
   getters: {
     defaultAddress(): Address | undefined {
-      return this.addresses.find((address) => address.isDefault)
+      return this.addresses.find(address => address.isDefault)
     },
   },
 })

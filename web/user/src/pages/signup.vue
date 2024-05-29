@@ -21,7 +21,8 @@ const redirectToPurchase = computed<boolean>(() => {
   const redirectToPurchaseParam = route.query.redirect_to_purchase
   if (redirectToPurchaseParam) {
     return Boolean(redirectToPurchaseParam)
-  } else {
+  }
+  else {
     return false
   }
 })
@@ -31,7 +32,8 @@ const coordinatorId = computed<string>(() => {
   const id = route.query.coordinatorId
   if (id) {
     return String(id)
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -110,7 +112,8 @@ const handleSubmit = async () => {
         cartNumber: cartNumber.value,
       },
     })
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof ApiBaseError) {
       apiErrorMessage.value = error.message
     }

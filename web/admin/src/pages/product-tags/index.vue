@@ -21,10 +21,10 @@ const newDialog = ref<boolean>(false)
 const editDialog = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const newFormData = ref<CreateProductTagRequest>({
-  name: ''
+  name: '',
 })
 const editFormData = ref<UpdateProductTagRequest>({
-  name: ''
+  name: '',
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -52,7 +52,8 @@ const fetchProductTags = async (): Promise<void> => {
     }) || []
 
     await productTagStore.fetchProductTags(pagination.itemsPerPage.value, pagination.offset.value, orders)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -75,15 +76,17 @@ const handleCreate = async (): Promise<void> => {
     await productTagStore.createProductTag(newFormData.value)
     commonStore.addSnackbar({
       message: '商品タグを追加しました。',
-      color: 'info'
+      color: 'info',
     })
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     newDialog.value = false
     loading.value = false
   }
@@ -95,15 +98,17 @@ const handleUpdate = async (productTagId: string): Promise<void> => {
     await productTagStore.updateProductTag(productTagId, editFormData.value)
     commonStore.addSnackbar({
       message: '商品タグを更新しました。',
-      color: 'info'
+      color: 'info',
     })
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     editDialog.value = false
     loading.value = false
   }
@@ -115,15 +120,17 @@ const handleDelete = async (productTagId: string): Promise<void> => {
     await productTagStore.deleteProductTag(productTagId)
     commonStore.addSnackbar({
       message: '商品タグを削除しました。',
-      color: 'info'
+      color: 'info',
     })
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     deleteDialog.value = false
     loading.value = false
   }
@@ -131,7 +138,8 @@ const handleDelete = async (productTagId: string): Promise<void> => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

@@ -16,7 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     logEvent(analytics, 'page_view', {
       page_location: location.hostname,
       page_path: to.fullPath,
-      page_title: to.name || 'admin'
+      page_title: to.name || 'admin',
     })
   })
 })

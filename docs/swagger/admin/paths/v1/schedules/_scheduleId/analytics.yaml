@@ -1,0 +1,51 @@
+get:
+  summary: マルシェ分析情報取得
+  operationId: v1AnalyzeSchedule
+  tags:
+  - Schedule
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: path
+    name: scheduleId
+    schema:
+      type: string
+    description: マルシェ開催スケジュールID
+    required: true
+    example: "schedule-id"
+  - in: query
+    name: startAt
+    schema:
+      type: integer
+      format: int64
+    description: 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+    required: false
+    example: 1640962800
+  - in: query
+    name: endAt
+    schema:
+      type: integer
+      format: int64
+    description: 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+    required: false
+    example: 1640962800
+  - in: query
+    name: interval
+    schema:
+      $ref: './../../../../openapi.yaml#/components/schemas/broadcastViewerLogInterval'
+    description: 集計間隔 (未指定の場合は1分間隔)
+    required: false
+    example: minute
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1AnalyzeScheduleResponse'
+    404:
+      description: 開催スケジュールが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

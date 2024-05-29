@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { convertI18nToJapanesePhoneNumber } from '~/lib/phone-number'
-import type { GuestCheckoutAddress} from '~/types/api';
+import type { GuestCheckoutAddress } from '~/types/api'
 import { prefecturesList } from '~/constants/prefectures'
 
 interface Props {
@@ -27,12 +27,16 @@ const displayAddress = computed<string>(() => {
 <template>
   <dl class="grid grid-cols-3 gap-2 text-[14px] tracking-[1.4px]">
     <dt>氏名</dt>
-    <dd class="col-span-2">{{ displayName }}</dd>
+    <dd class="col-span-2">
+      {{ displayName }}
+    </dd>
     <dt>電話番号</dt>
     <dd class="col-span-2">
       {{ convertI18nToJapanesePhoneNumber(props.address.phoneNumber) }}
     </dd>
     <dt>住所</dt>
-    <dd class="col-span-2">{{ displayAddress }}</dd>
+    <dd class="col-span-2">
+      {{ displayAddress }}
+    </dd>
   </dl>
 </template>

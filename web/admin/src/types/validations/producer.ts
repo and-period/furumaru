@@ -11,7 +11,7 @@ export const CreateProducerValidationRules: ValidationArgs = {
   email: { email },
   phoneNumber: { tel },
   instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) }
+  facebookId: { maxLength: maxLength(50) },
 }
 
 export const UpdateProducerValidationRules: ValidationArgs = {
@@ -24,5 +24,5 @@ export const UpdateProducerValidationRules: ValidationArgs = {
   email: { email },
   phoneNumber: { tel },
   instagramId: { maxLength: maxLength(30) },
-  facebookId: { maxLength: maxLength(50) }
+  facebookId: { maxLength: maxLength(50) },
 }

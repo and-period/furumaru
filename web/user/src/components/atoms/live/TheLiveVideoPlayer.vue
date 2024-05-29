@@ -25,7 +25,8 @@ onMounted(() => {
       hls.value.loadSource(src)
       hls.value.attachMedia(video)
       videoRef.value.play()
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    }
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src
       video.play()
     }

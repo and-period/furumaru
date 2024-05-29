@@ -29,9 +29,11 @@ export const useCheckoutStore = defineStore('checkout', {
           body: payload,
         })
         return res.url
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
-      } finally {
+      }
+      finally {
         this.checkoutState.isLoading = false
       }
     },
@@ -45,12 +47,14 @@ export const useCheckoutStore = defineStore('checkout', {
       this.checkoutState.isLoading = true
       try {
         const res = await this.checkoutApiClient().v1GuestCheckout({
-          body: payload
+          body: payload,
         })
         return res.url
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
-      } finally {
+      }
+      finally {
         this.checkoutState.isLoading = false
       }
     },
@@ -65,9 +69,11 @@ export const useCheckoutStore = defineStore('checkout', {
           authStore.accessToken,
         ).v1GetCheckoutState({ transactionId: sessionId })
         return res
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
-      } finally {
+      }
+      finally {
         this.checkTransactionStatusState.isLoading = false
       }
     },
@@ -84,9 +90,11 @@ export const useCheckoutStore = defineStore('checkout', {
       try {
         const res = await this.checkoutApiClient().v1GetGuestCheckoutState({ transactionId: sessionId })
         return res
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
-      } finally {
+      }
+      finally {
         this.checkTransactionStatusState.isLoading = false
       }
     },

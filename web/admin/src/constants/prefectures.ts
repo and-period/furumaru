@@ -56,5 +56,5 @@ export const prefecturesList: PrefecturesListItem[] = [
   { id: 44, text: '大分県', value: Prefecture.OITA },
   { id: 45, text: '宮崎県', value: Prefecture.MIYAZAKI },
   { id: 46, text: '鹿児島県', value: Prefecture.KAGOSHIMA },
-  { id: 47, text: '沖縄県', value: Prefecture.OKINAWA }
+  { id: 47, text: '沖縄県', value: Prefecture.OKINAWA },
 ]

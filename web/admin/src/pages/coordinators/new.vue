@@ -39,23 +39,23 @@ const formData = ref<CreateCoordinatorRequest>({
   bonusVideoUrl: '',
   instagramId: '',
   facebookId: '',
-  businessDays: []
+  businessDays: [],
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const headerUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const promotionVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -71,20 +71,22 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = true
     const req: CreateCoordinatorRequest = {
       ...formData.value,
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
     }
     await coordinatorStore.createCoordinator(req)
     router.push('/coordinators')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -168,7 +170,8 @@ const handleUpdateBonusVideo = (files: FileList): void => {
 const handleSearchProductType = async (name: string): Promise<void> => {
   try {
     await productTypeStore.searchProductTypes(name, '', formData.value.productTypeIds)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -185,18 +188,21 @@ const handleSearchAddress = async (): Promise<void> => {
       ...formData.value,
       prefectureCode: res.prefecture,
       city: res.city,
-      addressLine1: res.town
+      addressLine1: res.town,
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

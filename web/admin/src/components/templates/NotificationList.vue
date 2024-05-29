@@ -4,53 +4,53 @@ import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { type Admin, AdminRole, type Notification, NotificationStatus, NotificationTarget, NotificationType } from '~/types/api'
+import type { NotificationTarget, type Admin, AdminRole, type Notification, NotificationStatus, NotificationType } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   notifications: {
     type: Array<Notification>,
-    default: () => []
+    default: () => [],
   },
   admins: {
     type: Array<Admin>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
+    default: 0,
   },
   tableSortBy: {
     type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 const emit = defineEmits<{
@@ -67,45 +67,45 @@ const headers: VDataTable['headers'] = [
   {
     title: 'カテゴリ',
     key: 'type',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'タイトル',
     key: 'title',
-    sortable: false
+    sortable: false,
   },
   {
     title: '状態',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '投稿範囲',
     key: 'targets',
-    sortable: false
+    sortable: false,
   },
   {
     title: '投稿日時',
     key: 'publishedAt',
-    sortable: false
+    sortable: false,
   },
   {
     title: '作成者',
     key: 'createdBy',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const selectedItem = ref<Notification>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (val: boolean): void => emit('update:delete-dialog', val)
+  set: (val: boolean): void => emit('update:delete-dialog', val),
 })
 
 const isRegisterable = (): boolean => {
@@ -220,29 +220,52 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h7">
         {{ selectedItem?.title || '' }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseDeleteDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" :loading="loading" @click="onClickDelete">
+        <v-btn
+          color="primary"
+          variant="outlined"
+          :loading="loading"
+          @click="onClickDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       お知らせ管理
       <v-spacer />
-      <v-btn v-show="isRegisterable()" color="primary" variant="outlined" @click="onClickAdd">
-        <v-icon start :icon="mdiPlus" />
+      <v-btn
+        v-show="isRegisterable()"
+        color="primary"
+        variant="outlined"
+        @click="onClickAdd"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         お知らせ登録
       </v-btn>
     </v-card-title>
@@ -268,7 +291,10 @@ const onClickDelete = (): void => {
           {{ getType(item.type) }}
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.status)">
+          <v-chip
+            size="small"
+            :color="getStatusColor(item.status)"
+          >
             {{ getStatus(item.status) }}
           </v-chip>
         </template>
@@ -289,7 +315,10 @@ const onClickDelete = (): void => {
             size="small"
             @click.stop="onClickOpenDeleteDialog(item)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
             削除
           </v-btn>
         </template>

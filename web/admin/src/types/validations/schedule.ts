@@ -6,10 +6,10 @@ export const CreateScheduleValidationRules: ValidationArgs = {
   description: { required, maxLength: maxLength(2000) },
   thumbnailUrl: { required },
   openingVideoUrl: { required },
-  imageUrl: { required }
+  imageUrl: { required },
 }
 
 export const UpdateScheduleValidationRules: ValidationArgs = {
   title: { required, maxLength: maxLength(64) },
-  description: { required, maxLength: maxLength(2000) }
+  description: { required, maxLength: maxLength(2000) },
 }

@@ -16,7 +16,7 @@ const formData = ref<CreateAdministratorRequest>({
   lastnameKana: '',
   firstnameKana: '',
   email: '',
-  phoneNumber: ''
+  phoneNumber: '',
 })
 
 const handleSubmit = async (): Promise<void> => {
@@ -24,20 +24,22 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = true
     const req: CreateAdministratorRequest = {
       ...formData.value,
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
     }
     await administratorStore.createAdministrator(req)
     commonStore.addSnackbar({
       message: `${formData.value.lastname} ${formData.value.firstname}を作成しました。`,
-      color: 'info'
+      color: 'info',
     })
     router.push('/administrators')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

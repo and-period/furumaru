@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { apiClient } from '~/plugins/api-client'
-import { Prefecture } from '~/types/api'
+import type { Prefecture } from '~/types/api'
 
 export interface SearchAddress {
   prefecture: Prefecture
@@ -17,7 +17,7 @@ export interface UseSearchAddress {
 /**
  * 郵便場号から住所を取得するカスタムフック
  */
-export function useSearchAddress (): UseSearchAddress {
+export function useSearchAddress(): UseSearchAddress {
   const loading = ref<boolean>(false)
   const errorMessage = ref<string>('')
 
@@ -29,9 +29,10 @@ export function useSearchAddress (): UseSearchAddress {
       return {
         prefecture: res.data.prefectureCode as Prefecture,
         city: res.data.city,
-        town: res.data.town
+        town: res.data.town,
       }
-    } catch (err) {
+    }
+    catch (err) {
       if (!axios.isAxiosError(err)) {
         errorMessage.value = '不明なエラーが発生しました。お手数ですがご自身で入力してください。'
         throw err
@@ -50,7 +51,8 @@ export function useSearchAddress (): UseSearchAddress {
       }
       errorMessage.value = msg
       throw err
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -58,6 +60,6 @@ export function useSearchAddress (): UseSearchAddress {
   return {
     loading,
     errorMessage,
-    searchAddressByPostalCode
+    searchAddressByPostalCode,
   }
 }

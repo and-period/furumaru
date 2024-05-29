@@ -25,6 +25,14 @@ type GuestBroadcast struct {
 	EndAt             int64  `json:"endAt"`             // ライブ配信終了日時
 }
 
+// BroadcastViewerLog - ライブ配信視聴ログ解析情報
+type BroadcastViewerLog struct {
+	BroadcastID string `json:"broadcastId"` // ライブ配信ID
+	StartAt     int64  `json:"startAt"`     // 集計開始日時
+	EndAt       int64  `json:"endAt"`       // 集計終了日時
+	Total       int64  `json:"total"`       // 合計視聴者数
+}
+
 type BroadcastResponse struct {
 	Broadcast *Broadcast `json:"broadcast"` // ライブ配信情報
 }

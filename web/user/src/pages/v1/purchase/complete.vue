@@ -20,7 +20,8 @@ const sessionId = computed<string>(() => {
   console.log('debug', 'sessionId', id)
   if (id) {
     return String(id)
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -30,7 +31,8 @@ const checkoutStatus = ref<CheckoutStateResponse | undefined>(undefined)
 const operationResult = computed<string>(() => {
   if (checkoutStatus.value) {
     return getOperationResultFromOrderStatus(checkoutStatus.value.status)
-  } else {
+  }
+  else {
     return 'unknown'
   }
 })
@@ -49,14 +51,16 @@ onMounted(async () => {
     try {
       isLoading.value = true
       checkoutStatus.value = await checkTransactionStatus(sessionId.value)
-    } catch (error) {
+    }
+    catch (error) {
       hasError.value = true
       if (error instanceof ApiBaseError) {
         errorMessage.value = error.message
         return
       }
       errorMessage.value = ''
-    } finally {
+    }
+    finally {
       isLoading.value = false
     }
   }
@@ -85,7 +89,10 @@ useSeoMeta({
 
 <template>
   <template v-if="isLoading">
-    <div class="flex justify-center" aria-label="読み込み中">
+    <div
+      class="flex justify-center"
+      aria-label="読み込み中"
+    >
       <div
         class="h-20 w-20 animate-spin rounded-full border-4 border-main border-t-transparent"
       />
@@ -109,18 +116,20 @@ useSeoMeta({
               <p>ご注文ありがとうございます！</p>
               <p>ご購入手続きが完了しました。</p>
             </div>
-            <img src="/img/purchase/complete.svg" />
+            <img src="/img/purchase/complete.svg">
           </div>
         </div>
         <div class="mt-[40px] block md:hidden">
           <div class="flex justify-center">
-            <img src="/img/purchase/complete.svg" />
+            <img src="/img/purchase/complete.svg">
           </div>
           <div class="text-[16px] font-bold tracking-[1.6px]">
             <p class="mt-[40px] flex justify-center">
               ご注文ありがとうございます！
             </p>
-            <p class="mt-2 flex justify-center">ご購入手続きが完了しました。</p>
+            <p class="mt-2 flex justify-center">
+              ご購入手続きが完了しました。
+            </p>
           </div>
         </div>
 

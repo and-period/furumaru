@@ -3,7 +3,10 @@
     <v-main>
       <v-container>
         <v-card>
-          <v-card-text class="markdown-content" v-html="legalNoticeMarkdown" />
+          <v-card-text
+            class="markdown-content"
+            v-html="legalNoticeMarkdown"
+          />
         </v-card>
       </v-container>
     </v-main>
@@ -15,25 +18,25 @@ import { marked } from 'marked'
 
 export default {
   name: 'App',
-  data () {
+  data() {
     return {
-      legalNoticeMarkdown: ''
+      legalNoticeMarkdown: '',
     }
   },
-  mounted () {
+  mounted() {
     this.loadMarkdown()
   },
   methods: {
-    async loadMarkdown () {
+    async loadMarkdown() {
       const response = await fetch('/_content/legalPolicy.md')
       const markdownText = await response.text()
       this.legalNoticeMarkdown = marked(markdownText)
-    }
-  }
+    },
+  },
 }
 
 definePageMeta({
-  layout: 'empty'
+  layout: 'empty',
 })
 </script>
 

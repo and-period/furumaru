@@ -10,28 +10,28 @@ import { UpdateAuthPasswordValidationRules } from '~/types/validations'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<UpdateAuthPasswordRequest>,
     default: () => ({
       oldPassword: '',
       newPassword: '',
-      passwordConfirmation: ''
-    })
-  }
+      passwordConfirmation: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -42,7 +42,7 @@ const emit = defineEmits<{
 const rules = computed<ValidationArgs>(() => UpdateAuthPasswordValidationRules(props.formData.newPassword))
 const formDataValue = computed({
   get: (): UpdateAuthPasswordRequest => props.formData,
-  set: (formData: UpdateAuthPasswordRequest): void => emit('update:form-data', formData)
+  set: (formData: UpdateAuthPasswordRequest): void => emit('update:form-data', formData),
 })
 
 const validate = useVuelidate(rules, formDataValue)
@@ -74,7 +74,11 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card>
     <v-card-title>パスワード変更</v-card-title>
@@ -112,7 +116,13 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn :loading="loading" block type="submit" color="primary" variant="outlined">
+        <v-btn
+          :loading="loading"
+          block
+          type="submit"
+          color="primary"
+          variant="outlined"
+        >
           更新
         </v-btn>
       </v-card-actions>

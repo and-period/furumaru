@@ -10,56 +10,56 @@ import { type Product, type ProductMediaInner, Prefecture, ProductStatus, type C
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   categories: {
     type: Array<Category>,
-    default: () => []
+    default: () => [],
   },
   producers: {
     type: Array<Producer>,
-    default: () => []
+    default: () => [],
   },
   products: {
     type: Array<Product>,
-    default: () => []
+    default: () => [],
   },
   productTags: {
     type: Array<ProductTag>,
-    default: () => []
+    default: () => [],
   },
   productTypes: {
     type: Array<ProductType>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
@@ -76,55 +76,55 @@ const headers: VDataTable['headers'] = [
     title: '',
     key: 'media',
     width: 80,
-    sortable: false
+    sortable: false,
   },
   {
     title: '商品名',
     key: 'name',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ステータス',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '価格',
     key: 'price',
-    sortable: false
+    sortable: false,
   },
   {
     title: '在庫',
     key: 'inventory',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ジャンル',
     key: 'categoryName',
-    sortable: false
+    sortable: false,
   },
   {
     title: '品目',
     key: 'productTypeName',
-    sortable: false
+    sortable: false,
   },
   {
     title: '生産者名',
     key: 'producerName',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const selectedItem = ref<Product>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (val: boolean): void => emit('update:delete-dialog', val)
+  set: (val: boolean): void => emit('update:delete-dialog', val),
 })
 
 const isRegisterable = (): boolean => {
@@ -134,7 +134,7 @@ const isRegisterable = (): boolean => {
 const isDeletable = (): boolean => {
   const targets: AdminRole[] = [
     AdminRole.ADMINISTRATOR,
-    AdminRole.COORDINATOR
+    AdminRole.COORDINATOR,
   ]
   return targets.includes(props.role)
 }
@@ -244,31 +244,58 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-text class="text-h7">
         {{ selectedItem?.name }}を本当に削除しますか？
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="toggleDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="toggleDeleteDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onClickDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       商品管理
       <v-spacer />
-      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickNew">
-        <v-icon start :icon="mdiPlus" />
+      <v-btn
+        v-show="isRegisterable()"
+        variant="outlined"
+        color="primary"
+        @click="onClickNew"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         商品登録
       </v-btn>
     </v-card-title>
@@ -287,7 +314,13 @@ const onClickDelete = (): void => {
         @click:row="(_: any, { item }:any) => onClickShow(item.id)"
       >
         <template #[`item.media`]="{ item }">
-          <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.media)" :srcset="getResizedThumbnails(item.media)" />
+          <v-img
+            aspect-ratio="1/1"
+            :max-height="56"
+            :max-width="80"
+            :src="getThumbnail(item.media)"
+            :srcset="getResizedThumbnails(item.media)"
+          />
         </template>
         <template #[`item.status`]="{ item }">
           <v-chip :color="getStatusColor(item.status)">
@@ -312,8 +345,17 @@ const onClickDelete = (): void => {
           {{ getProducerName(item.producerId) }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn v-show="isDeletable()" variant="outlined" color="primary" size="small" @click.stop="toggleDeleteDialog(item)">
-            <v-icon size="small" :icon="mdiDelete" />
+          <v-btn
+            v-show="isDeletable()"
+            variant="outlined"
+            color="primary"
+            size="small"
+            @click.stop="toggleDeleteDialog(item)"
+          >
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
             削除
           </v-btn>
         </template>

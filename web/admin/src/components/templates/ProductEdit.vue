@@ -13,23 +13,23 @@ import { TimeDataValidationRules, UpdateProductValidationRules } from '~/types/v
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   formData: {
     type: Object as PropType<UpdateProductRequest>,
@@ -58,8 +58,8 @@ const props = defineProps({
       originPrefectureCode: Prefecture.HOKKAIDO,
       originCity: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix()
-    })
+      endAt: dayjs().unix(),
+    }),
   },
   product: {
     type: Object as PropType<Product>,
@@ -95,29 +95,29 @@ const props = defineProps({
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   selectedCategoryId: {
     type: String,
-    default: null
+    default: null,
   },
   producers: {
     type: Array<Producer>,
-    default: () => []
+    default: () => [],
   },
   categories: {
     type: Array<Category>,
-    default: () => []
+    default: () => [],
   },
   productTypes: {
     type: Array<ProductType>,
-    default: () => []
+    default: () => [],
   },
   productTags: {
     type: Array<ProductTag>,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 const emit = defineEmits<{
@@ -132,7 +132,7 @@ const emit = defineEmits<{
 
 const statuses = [
   { title: '公開', value: true },
-  { title: '下書き', value: false }
+  { title: '下書き', value: false },
 ]
 const productStatuses = [
   { title: '予約販売', value: ProductStatus.PRESALE },
@@ -140,44 +140,44 @@ const productStatuses = [
   { title: '販売期間外', value: ProductStatus.OUT_OF_SALES },
   { title: '非公開', value: ProductStatus.PRIVATE },
   { title: 'アーカイブ済み', value: ProductStatus.ARCHIVED },
-  { title: '不明', value: ProductStatus.UNKNOWN }
+  { title: '不明', value: ProductStatus.UNKNOWN },
 ]
 const storageMethodTypes = [
   { title: '常温保存', value: StorageMethodType.NORMAL },
   { title: '冷暗所保存', value: StorageMethodType.COOL_DARK_PLACE },
   { title: '冷蔵保存', value: StorageMethodType.REFRIGERATED },
-  { title: '冷凍保存', value: StorageMethodType.FROZEN }
+  { title: '冷凍保存', value: StorageMethodType.FROZEN },
 ]
 const deliveryTypes = [
   { title: '通常便', value: DeliveryType.NORMAL },
   { title: '冷蔵便', value: DeliveryType.REFRIGERATED },
-  { title: '冷凍便', value: DeliveryType.FROZEN }
+  { title: '冷凍便', value: DeliveryType.FROZEN },
 ]
 const itemUnits = ['個', '瓶']
 
 const formDataValue = computed({
   get: (): UpdateProductRequest => props.formData,
-  set: (v: UpdateProductRequest): void => emit('update:form-data', v)
+  set: (v: UpdateProductRequest): void => emit('update:form-data', v),
 })
 const startTimeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.startAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.startAt).format('HH:mm')
+    time: unix(props.formData.startAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const startAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.startAt = startAt.unix()
-  }
+  },
 })
 const endTimeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.endAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.endAt).format('HH:mm')
+    time: unix(props.formData.endAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const endAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.endAt = endAt.unix()
-  }
+  },
 })
 const productStatus = computed<ProductStatus>(() => {
   if (!formDataValue.value.public) {
@@ -199,7 +199,7 @@ const productStatus = computed<ProductStatus>(() => {
 })
 const selectedCategoryIdValue = computed({
   get: (): string => props.selectedCategoryId || '',
-  set: (categoryId: string): void => emit('update:selected-category-id', categoryId)
+  set: (categoryId: string): void => emit('update:selected-category-id', categoryId),
 })
 const cityListItems = computed(() => {
   const selectedPrefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
@@ -221,16 +221,17 @@ const thumbnailIndex = computed<number>({
         if (i === index) {
           return {
             ...item,
-            isThumbnail: true
+            isThumbnail: true,
           }
-        } else {
+        }
+        else {
           return {
             ...item,
-            isThumbnail: false
+            isThumbnail: false,
           }
         }
       })
-  }
+  },
 })
 const producerIdValue = computed(() => props.product.producerId)
 
@@ -244,7 +245,7 @@ const isUpdatable = (): boolean => {
   }
   const targets: AdminRole[] = [
     AdminRole.ADMINISTRATOR,
-    AdminRole.COORDINATOR
+    AdminRole.COORDINATOR,
   ]
   return targets.includes(props.role)
 }
@@ -318,12 +319,23 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-row>
-    <v-col sm="12" md="12" lg="8">
+    <v-col
+      sm="12"
+      md="12"
+      lg="8"
+    >
       <div class="mb-4">
-        <v-card elevation="0" class="mb-4">
+        <v-card
+          elevation="0"
+          class="mb-4"
+        >
           <v-card-title>基本情報</v-card-title>
           <v-card-text>
             <v-select
@@ -350,7 +362,10 @@ const onSubmit = async (): Promise<void> => {
 
           <v-card-subtitle>商品画像登録</v-card-subtitle>
           <v-card-text>
-            <v-radio-group v-model="thumbnailIndex" :error-messages="getErrorMessage(formDataValidate.media.$errors)">
+            <v-radio-group
+              v-model="thumbnailIndex"
+              :error-messages="getErrorMessage(formDataValidate.media.$errors)"
+            >
               <v-row>
                 <v-col
                   v-for="(img, i) in formDataValue.media"
@@ -362,7 +377,7 @@ const onSubmit = async (): Promise<void> => {
                     rounded
                     variant="outlined"
                     width="100%"
-                    :class="{'thumbnail-border': img.isThumbnail }"
+                    :class="{ 'thumbnail-border': img.isThumbnail }"
                     @click="onClickThumbnail(i)"
                   >
                     <v-img
@@ -370,15 +385,27 @@ const onSubmit = async (): Promise<void> => {
                       aspect-ratio="1"
                     >
                       <div class="d-flex col">
-                        <v-radio :value="i" color="primary" />
-                        <v-btn :icon="mdiClose" color="error" variant="text" size="small" @click="onDeleteThumbnail(i)" />
+                        <v-radio
+                          :value="i"
+                          color="primary"
+                        />
+                        <v-btn
+                          :icon="mdiClose"
+                          color="error"
+                          variant="text"
+                          size="small"
+                          @click="onDeleteThumbnail(i)"
+                        />
                       </div>
                     </v-img>
                   </v-card>
                 </v-col>
               </v-row>
             </v-radio-group>
-            <p v-show="formDataValue.media.length > 0" class="mt-2">
+            <p
+              v-show="formDataValue.media.length > 0"
+              class="mt-2"
+            >
               ※ check された商品画像がサムネイルになります
             </p>
             <div class="mb-2">
@@ -422,7 +449,10 @@ const onSubmit = async (): Promise<void> => {
           </v-card-text>
         </v-card>
 
-        <v-card elevation="0" class="mb-4">
+        <v-card
+          elevation="0"
+          class="mb-4"
+        >
           <v-card-title>価格設定</v-card-title>
           <v-card-text>
             <v-text-field
@@ -471,7 +501,10 @@ const onSubmit = async (): Promise<void> => {
           </v-card-text>
         </v-card>
 
-        <v-card elevation="0" class="mb-4">
+        <v-card
+          elevation="0"
+          class="mb-4"
+        >
           <v-card-title>在庫設定</v-card-title>
           <v-card-text>
             <v-row>
@@ -505,7 +538,10 @@ const onSubmit = async (): Promise<void> => {
           </v-card-text>
         </v-card>
 
-        <v-card elevation="0" class="mb-4">
+        <v-card
+          elevation="0"
+          class="mb-4"
+        >
           <v-card-title>配送設定</v-card-title>
           <v-card-text>
             <v-select
@@ -528,8 +564,14 @@ const onSubmit = async (): Promise<void> => {
                 占有率
               </v-col>
             </v-row>
-            <v-row v-for="(size, i) in [60, 80, 100]" :key="i">
-              <v-col cols="3" align-self="center">
+            <v-row
+              v-for="(size, i) in [60, 80, 100]"
+              :key="i"
+            >
+              <v-col
+                cols="3"
+                align-self="center"
+              >
                 <p class="mb-0 mx-6 text-h6">
                   {{ size }}
                 </p>
@@ -551,8 +593,15 @@ const onSubmit = async (): Promise<void> => {
       </div>
     </v-col>
 
-    <v-col sm="12" md="12" lg="4">
-      <v-card elevation="0" class="mb-4">
+    <v-col
+      sm="12"
+      md="12"
+      lg="4"
+    >
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-title>販売設定</v-card-title>
         <v-card-text>
           <v-select
@@ -617,7 +666,10 @@ const onSubmit = async (): Promise<void> => {
         </v-card-text>
       </v-card>
 
-      <v-card elevation="0" class="mb-4">
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-title>詳細情報</v-card-title>
         <v-card-text>
           <v-autocomplete
@@ -675,8 +727,17 @@ const onSubmit = async (): Promise<void> => {
     </v-col>
   </v-row>
 
-  <v-btn v-show="isUpdatable()" :loading="loading" block variant="outlined" @click="onSubmit">
-    <v-icon start :icon="mdiPlus" />
+  <v-btn
+    v-show="isUpdatable()"
+    :loading="loading"
+    block
+    variant="outlined"
+    @click="onSubmit"
+  >
+    <v-icon
+      start
+      :icon="mdiPlus"
+    />
     更新
   </v-btn>
 </template>

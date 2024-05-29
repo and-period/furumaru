@@ -27,7 +27,8 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
   try {
     // AccessTokenの更新
     await store.getAuthByRefreshToken(refreshToken)
-  } catch (err) {
+  }
+  catch (err) {
     console.log('failed to refresh auth token', err)
     return navigateTo('/signin')
   }

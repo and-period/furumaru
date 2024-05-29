@@ -16,8 +16,8 @@ export const useTopPageStore = defineStore('top-page', {
 
   actions: {
     async getHomeContent() {
-      const response: TopCommonResponse =
-        await this.topPageApiClient().v1TopCommon()
+      const response: TopCommonResponse
+        = await this.topPageApiClient().v1TopCommon()
 
       this._coordinators = response.coordinators
       this._lives = response.lives
@@ -32,7 +32,7 @@ export const useTopPageStore = defineStore('top-page', {
           return {
             ...live,
             coordinator: state._coordinators.find(
-              (c) => c.id === live.coordinatorId,
+              c => c.id === live.coordinatorId,
             ),
           }
         }),

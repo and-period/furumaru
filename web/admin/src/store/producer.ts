@@ -8,14 +8,14 @@ import type {
   GetUploadUrlRequest,
   ProducerResponse,
   Producer,
-  UpdateProducerRequest
+  UpdateProducerRequest,
 } from '~/types/api'
 
 export const useProducerStore = defineStore('producer', {
   state: () => ({
     producer: {} as Producer,
     producers: [] as Producer[],
-    totalItems: 0
+    totalItems: 0,
   }),
 
   actions: {
@@ -24,7 +24,7 @@ export const useProducerStore = defineStore('producer', {
      * @param limit 取得上限数
      * @param offset 取得開始位置
      */
-    async fetchProducers (limit = 20, offset = 0, options = ''): Promise<void> {
+    async fetchProducers(limit = 20, offset = 0, options = ''): Promise<void> {
       try {
         const res = await apiClient.producerApi().v1ListProducers(limit, offset, options)
 
@@ -32,7 +32,8 @@ export const useProducerStore = defineStore('producer', {
         this.producers = res.data.producers
         this.totalItems = res.data.total
         coordinatorStore.coordinators = res.data.coordinators
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -42,7 +43,7 @@ export const useProducerStore = defineStore('producer', {
      * @param name 生産者名(あいまい検索)
      * @param producerIds stateの更新時に残しておく必要がある生産者情報
      */
-    async searchProducers (name = '', producerIds: string[] = []): Promise<void> {
+    async searchProducers(name = '', producerIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.producerApi().v1ListProducers(undefined, undefined, name)
         const producers: Producer[] = []
@@ -60,7 +61,8 @@ export const useProducerStore = defineStore('producer', {
         })
         this.producers = producers
         this.totalItems = res.data.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -70,7 +72,7 @@ export const useProducerStore = defineStore('producer', {
      * @param producerId 生産者ID
      * @returns 生産者の情報
      */
-    async getProducer (producerId: string): Promise<ProducerResponse> {
+    async getProducer(producerId: string): Promise<ProducerResponse> {
       try {
         const res = await apiClient.producerApi().v1GetProducer(producerId)
 
@@ -78,10 +80,11 @@ export const useProducerStore = defineStore('producer', {
         this.producer = res.data.producer
         coordinatorStore.coordinator = res.data.coordinator
         return res.data
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '生産者の情報は閲覧権限がありません。',
-          404: 'この生産者は存在しません。'
+          404: 'この生産者は存在しません。',
         })
       }
     },
@@ -90,13 +93,14 @@ export const useProducerStore = defineStore('producer', {
      * 生産者を新規登録する非同期関数
      * @param payload
      */
-    async createProducer (payload: CreateProducerRequest): Promise<void> {
+    async createProducer(payload: CreateProducerRequest): Promise<void> {
       try {
         await apiClient.producerApi().v1CreateProducer(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
-          409: 'このメールアドレスはすでに登録されているため、登録できません。'
+          409: 'このメールアドレスはすでに登録されているため、登録できません。',
         })
       }
     },
@@ -106,16 +110,17 @@ export const useProducerStore = defineStore('producer', {
      * @param payload サムネイル画像のファイルオブジェクト
      * @returns アップロード後のサムネイル画像のパスを含んだオブジェクト
      */
-    async uploadProducerThumbnail (payload: File): Promise<string> {
+    async uploadProducerThumbnail(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: contentType,
         }
         const res = await apiClient.producerApi().v1GetProducerThumbnailUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
@@ -125,16 +130,17 @@ export const useProducerStore = defineStore('producer', {
      * @param payload ヘッダー画像のファイルオブジェクト
      * @returns アップロード後のヘッダー画像のパスを含んだオブジェクト
      */
-    async uploadProducerHeader (payload: File): Promise<string> {
+    async uploadProducerHeader(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: contentType,
         }
         const res = await apiClient.producerApi().v1GetProducerHeaderUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
@@ -144,16 +150,17 @@ export const useProducerStore = defineStore('producer', {
      * @param payload 紹介画像
      * @returns アップロードされた動画のURI
      */
-    async uploadProducerPromotionVideo (payload: File): Promise<string> {
+    async uploadProducerPromotionVideo(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: contentType,
         }
         const res = await apiClient.producerApi().v1GetProducerPromotionVideoUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
@@ -163,16 +170,17 @@ export const useProducerStore = defineStore('producer', {
      * @param payload サンキュー画像
      * @returns アップロードされた動画のURI
      */
-    async uploadProducerBonusVideo (payload: File): Promise<string> {
+    async uploadProducerBonusVideo(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: contentType,
         }
         const res = await apiClient.producerApi().v1GetProducerBonusVideoUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
@@ -183,13 +191,14 @@ export const useProducerStore = defineStore('producer', {
      * @param payload
      * @returns
      */
-    async updateProducer (producerId: string, payload: UpdateProducerRequest) {
+    async updateProducer(producerId: string, payload: UpdateProducerRequest) {
       try {
         await apiClient.producerApi().v1UpdateProducer(producerId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '生産者の情報を更新する権限がありません。',
-          404: 'この生産者は存在しません。'
+          404: 'この生産者は存在しません。',
         })
       }
     },
@@ -199,16 +208,17 @@ export const useProducerStore = defineStore('producer', {
      * @param producerId 削除する生産者のID
      * @returns
      */
-    async deleteProducer (producerId: string) {
+    async deleteProducer(producerId: string) {
       try {
         await apiClient.producerApi().v1DeleteProducer(producerId)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
           403: '生産者を削除する権限がありません。',
-          404: 'この生産者は存在しません。'
+          404: 'この生産者は存在しません。',
         })
       }
-    }
-  }
+    },
+  },
 })

@@ -1,8 +1,8 @@
 export interface RecommendMock {
-  id: string;
-  name: string;
-  inventory: number;
-  price: number;
+  id: string
+  name: string
+  inventory: number
+  price: number
   imgSrc: string
   address: string
   cnName: string
@@ -18,7 +18,7 @@ export const MOCK_RECOMMEND_ITEMS: RecommendMock[] = [
     imgSrc: '/img/recommend/1.png',
     address: '大崎上島マルシェ\n広島県 豊田郡 大崎上島町',
     cnName: '藤中 拓弥',
-    cnImgSrc: '/img/recommend/cn.png'
+    cnImgSrc: '/img/recommend/cn.png',
   },
   {
     id: '2',
@@ -28,7 +28,7 @@ export const MOCK_RECOMMEND_ITEMS: RecommendMock[] = [
     imgSrc: '/img/recommend/2.png',
     address: '大崎上島マルシェ\n広島県 豊田郡 大崎上島町',
     cnName: '藤中 拓弥',
-    cnImgSrc: '/img/recommend/cn.png'
+    cnImgSrc: '/img/recommend/cn.png',
   },
   {
     id: '3',
@@ -38,7 +38,7 @@ export const MOCK_RECOMMEND_ITEMS: RecommendMock[] = [
     imgSrc: '/img/recommend/3.png',
     address: '大崎上島マルシェ\n広島県 豊田郡 大崎上島町',
     cnName: '藤中 拓弥',
-    cnImgSrc: '/img/recommend/cn.png'
+    cnImgSrc: '/img/recommend/cn.png',
   },
   {
     id: '4',
@@ -48,7 +48,7 @@ export const MOCK_RECOMMEND_ITEMS: RecommendMock[] = [
     imgSrc: '/img/recommend/4.png',
     address: '大崎上島マルシェ\n広島県 豊田郡 大崎上島町',
     cnName: '藤中 拓弥',
-    cnImgSrc: '/img/recommend/cn.png'
+    cnImgSrc: '/img/recommend/cn.png',
   },
   {
     id: '5',
@@ -58,6 +58,6 @@ export const MOCK_RECOMMEND_ITEMS: RecommendMock[] = [
     imgSrc: '/img/recommend/5.png',
     address: '大崎上島マルシェ\n広島県 豊田郡 大崎上島町',
     cnName: '藤中 拓弥',
-    cnImgSrc: '/img/recommend/cn.png'
-  }
+    cnImgSrc: '/img/recommend/cn.png',
+  },
 ]

@@ -7,25 +7,25 @@ import type { CreateScheduleRequest } from '~/types/api'
 import type { DateTimeInput, ImageUploadStatus } from '~/types/props'
 import {
   CreateScheduleValidationRules,
-  TimeDataValidationRules
+  TimeDataValidationRules,
 } from '~/types/validations'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<CreateScheduleRequest>,
@@ -38,89 +38,89 @@ const props = defineProps({
       openingVideoUrl: '',
       public: false,
       startAt: dayjs().unix(),
-      endAt: dayjs().unix()
-    })
+      endAt: dayjs().unix(),
+    }),
   },
   thumbnailUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   imageUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   openingVideoUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
-  }
+      message: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
-  (e: 'update:form-data', formData: CreateScheduleRequest): void;
-  (e: 'update:thumbnail', files: FileList): void;
-  (e: 'update:image', files: FileList): void;
-  (e: 'update:opening-video', files: FileList): void;
-  (e: 'submit'): void;
+  (e: 'update:form-data', formData: CreateScheduleRequest): void
+  (e: 'update:thumbnail', files: FileList): void
+  (e: 'update:image', files: FileList): void
+  (e: 'update:opening-video', files: FileList): void
+  (e: 'submit'): void
 }>()
 
 const formDataValue = computed({
   get: (): CreateScheduleRequest => props.formData,
   set: (formData: CreateScheduleRequest): void =>
-    emit('update:form-data', formData)
+    emit('update:form-data', formData),
 })
 const startTimeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.startAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.startAt).format('HH:mm')
+    time: unix(props.formData.startAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const startAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.startAt = startAt.unix()
-  }
+  },
 })
 const endTimeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.endAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.endAt).format('HH:mm')
+    time: unix(props.formData.endAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const endAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.endAt = endAt.unix()
-  }
+  },
 })
 
 const formDataValidate = useVuelidate(
   CreateScheduleValidationRules,
-  formDataValue
+  formDataValue,
 )
 const startTimeDataValidate = useVuelidate(
   TimeDataValidationRules,
-  startTimeDataValue
+  startTimeDataValue,
 )
 const endTimeDataValidate = useVuelidate(
   TimeDataValidationRules,
-  endTimeDataValue
+  endTimeDataValue,
 )
 
 const onChangeStartAt = (): void => {
   const startAt = dayjs(
-    `${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`
+    `${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`,
   )
   formDataValue.value.startAt = startAt.unix()
 }
 
 const onChangeEndAt = (): void => {
   const endAt = dayjs(
-    `${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`
+    `${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`,
   )
   formDataValue.value.endAt = endAt.unix()
 }
@@ -232,7 +232,11 @@ const onSubmit = async (): Promise<void> => {
           variant="outlined"
         />
         <v-row class="mt-4">
-          <v-col cols="12" sm="12" md="4">
+          <v-col
+            cols="12"
+            sm="12"
+            md="4"
+          >
             <molecules-image-select-form
               label="サムネイル画像"
               :loading="loading"
@@ -245,7 +249,11 @@ const onSubmit = async (): Promise<void> => {
               @update:file="onChangeThumbnailFile"
             />
           </v-col>
-          <v-col cols="12" sm="12" md="4">
+          <v-col
+            cols="12"
+            sm="12"
+            md="4"
+          >
             <molecules-video-select-form
               label="オープニング動画"
               :loading="loading"
@@ -258,7 +266,11 @@ const onSubmit = async (): Promise<void> => {
               @update:file="onChangeOpeningVideo"
             />
           </v-col>
-          <v-col cols="12" sm="12" md="4">
+          <v-col
+            cols="12"
+            sm="12"
+            md="4"
+          >
             <molecules-image-select-form
               label="待機中の画像"
               :loading="loading"

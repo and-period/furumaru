@@ -10,19 +10,19 @@ import { ResetAuthPasswordValidationRules } from '~/types/validations'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<ResetAuthPasswordRequest>,
@@ -30,9 +30,9 @@ const props = defineProps({
       email: '',
       verifyCode: '',
       password: '',
-      passwordConfirmation: ''
-    })
-  }
+      passwordConfirmation: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -47,7 +47,7 @@ const showPasswordConfirmation = ref<boolean>(false)
 const rules = computed<ValidationArgs>(() => ResetAuthPasswordValidationRules(props.formData.password))
 const formDataValue = computed({
   get: (): ResetAuthPasswordRequest => props.formData,
-  set: (v: ResetAuthPasswordRequest): void => emit('update:form-data', v)
+  set: (v: ResetAuthPasswordRequest): void => emit('update:form-data', v),
 })
 
 const validate = useVuelidate(rules, formDataValue)
@@ -75,9 +75,16 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" :text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    :text="props.alertText"
+  />
 
-  <atoms-app-logo-with-title :width="450" class="mx-auto py-8" />
+  <atoms-app-logo-with-title
+    :width="450"
+    class="mx-auto py-8"
+  />
 
   <v-card>
     <v-card-title>パスワードリセット</v-card-title>
@@ -115,10 +122,19 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="outlined" @click="onClickCancel">
+        <v-btn
+          color="error"
+          variant="outlined"
+          @click="onClickCancel"
+        >
           サインイン画面にもどる
         </v-btn>
-        <v-btn :loading="loading" type="submit" color="primary" variant="outlined">
+        <v-btn
+          :loading="loading"
+          type="submit"
+          color="primary"
+          variant="outlined"
+        >
           パスワードを更新する
         </v-btn>
       </v-card-actions>

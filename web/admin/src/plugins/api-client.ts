@@ -2,7 +2,6 @@ import type { AxiosInstance } from 'axios'
 import { client } from './axios'
 import { AddressApi, AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, OtherApi, PaymentSystemApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, UserApi } from '~/types/api'
 
-// eslint-disable-next-line import/no-mutable-exports, no-use-before-define
 let apiClient: ApiClient
 
 export class ApiClient {
@@ -10,97 +9,97 @@ export class ApiClient {
   config: Configuration
   instance: AxiosInstance
 
-  constructor (basePath: string) {
+  constructor(basePath: string) {
     this.basePath = basePath
     this.config = new Configuration()
     this.instance = client
   }
 
-  addressApi () {
+  addressApi() {
     return new AddressApi(this.config, this.basePath, this.instance)
   }
 
-  administratorApi () {
+  administratorApi() {
     return new AdministratorApi(this.config, this.basePath, this.instance)
   }
 
-  authApi () {
+  authApi() {
     return new AuthApi(this.config, this.basePath, this.instance)
   }
 
-  broadcastApi () {
+  broadcastApi() {
     return new BroadcastApi(this.config, this.basePath, this.instance)
   }
 
-  categoryApi () {
+  categoryApi() {
     return new CategoryApi(this.config, this.basePath, this.instance)
   }
 
-  contactApi () {
+  contactApi() {
     return new ContactApi(this.config, this.basePath, this.instance)
   }
 
-  coordinatorApi () {
+  coordinatorApi() {
     return new CoordinatorApi(this.config, this.basePath, this.instance)
   }
 
-  liveApi () {
+  liveApi() {
     return new LiveApi(this.config, this.basePath, this.instance)
   }
 
-  messageApi () {
+  messageApi() {
     return new MessageApi(this.config, this.basePath, this.instance)
   }
 
-  notificationApi () {
+  notificationApi() {
     return new NotificationApi(this.config, this.basePath, this.instance)
   }
 
-  orderApi () {
+  orderApi() {
     return new OrderApi(this.config, this.basePath, this.instance)
   }
 
-  paymentSystemApi () {
+  paymentSystemApi() {
     return new PaymentSystemApi(this.config, this.basePath, this.instance)
   }
 
-  producerApi () {
+  producerApi() {
     return new ProducerApi(this.config, this.basePath, this.instance)
   }
 
-  productApi () {
+  productApi() {
     return new ProductApi(this.config, this.basePath, this.instance)
   }
 
-  productTagApi () {
+  productTagApi() {
     return new ProductTagApi(this.config, this.basePath, this.instance)
   }
 
-  productTypeApi () {
+  productTypeApi() {
     return new ProductTypeApi(this.config, this.basePath, this.instance)
   }
 
-  promotionApi () {
+  promotionApi() {
     return new PromotionApi(this.config, this.basePath, this.instance)
   }
 
-  scheduleApi () {
+  scheduleApi() {
     return new ScheduleApi(this.config, this.basePath, this.instance)
   }
 
-  shippingApi () {
+  shippingApi() {
     return new ShippingApi(this.config, this.basePath, this.instance)
   }
 
-  userApi () {
+  userApi() {
     return new UserApi(this.config, this.basePath, this.instance)
   }
 
-  otherApi () {
+  otherApi() {
     return new OtherApi(this.config, this.basePath, this.instance)
   }
 
-  guestApi () {
+  guestApi() {
     return new GuestApi(this.config, this.basePath, this.instance)
   }
 }

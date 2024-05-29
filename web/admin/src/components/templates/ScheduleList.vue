@@ -9,105 +9,105 @@ import {
   type Coordinator,
   ScheduleStatus,
   type Schedule,
-  AdminRole
+  AdminRole,
 } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   sortBy: {
     type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
+    default: () => [],
   },
   coordinators: {
     type: Array<Coordinator>,
-    default: () => []
+    default: () => [],
   },
   schedules: {
     type: Array<Schedule>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
-  (e: 'click:update-page', page: number): void;
-  (e: 'click:update-items-per-page', page: number): void;
-  (e: 'click:row', scheduleId: string): void;
-  (e: 'click:add'): void;
-  (e: 'click:delete', scheduleId: string): void;
-  (e: 'click:approval', scheduleId: string): void;
-  (e: 'click:published', scheduleId: string): void;
-  (e: 'update:delete-dialog', v: boolean): void;
+  (e: 'click:update-page', page: number): void
+  (e: 'click:update-items-per-page', page: number): void
+  (e: 'click:row', scheduleId: string): void
+  (e: 'click:add'): void
+  (e: 'click:delete', scheduleId: string): void
+  (e: 'click:approval', scheduleId: string): void
+  (e: 'click:published', scheduleId: string): void
+  (e: 'update:delete-dialog', v: boolean): void
 }>()
 
 const headers: VDataTable['headers'] = [
   {
     title: '',
     key: 'thumbnail',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'マルシェ名',
     key: 'title',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'コーディネーター名',
     key: 'coordinatorName',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ステータス',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '開催期間',
     key: 'term',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const selectedItem = ref<Schedule>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (val: boolean): void => emit('update:delete-dialog', val)
+  set: (val: boolean): void => emit('update:delete-dialog', val),
 })
 
 const isRegisterable = (): boolean => {
@@ -118,7 +118,7 @@ const getCoordinatorName = (coordinatorId: string): string => {
   const coordinator = props.coordinators.find(
     (coordinator: Coordinator): boolean => {
       return coordinator.id === coordinatorId
-    }
+    },
   )
   return coordinator ? coordinator.username : ''
 }
@@ -221,14 +221,21 @@ const onClickPublished = (scheduleId: string): void => {
     v-text="props.alertText"
   />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h7">
         {{ selectedItem?.title || "" }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseDeleteDialog"
+        >
           キャンセル
         </v-btn>
         <v-btn
@@ -243,7 +250,10 @@ const onClickPublished = (scheduleId: string): void => {
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       ライブ配信管理
     </v-card-title>
@@ -255,7 +265,10 @@ const onClickPublished = (scheduleId: string): void => {
         color="primary"
         @click="onClickAdd"
       >
-        <v-icon start :icon="mdiPlus" />
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         ライブ配信登録
       </v-btn>
     </div>
@@ -301,7 +314,10 @@ const onClickPublished = (scheduleId: string): void => {
             size="small"
             @click.stop="onClickPublished(item.id)"
           >
-            <v-icon size="small" :icon="mdiPencil" />
+            <v-icon
+              size="small"
+              :icon="mdiPencil"
+            />
             {{ getPublished(item) }}
           </v-btn>
           <v-btn
@@ -310,7 +326,10 @@ const onClickPublished = (scheduleId: string): void => {
             size="small"
             @click.stop="onClickOpenDeleteDialog(item)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
             削除
           </v-btn>
         </template>

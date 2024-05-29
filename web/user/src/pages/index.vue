@@ -105,8 +105,11 @@ useSeoMeta({
     <the-carousel :items="banners" />
 
     <div class="mb-[72px] mt-8 flex flex-col gap-y-16 md:mt-[76px]">
-      <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
-        <template v-if="isInItLoading"> </template>
+      <the-content-box
+        title="live"
+        sub-title="配信中・配信予定のマルシェ"
+      >
+        <template v-if="isInItLoading" />
         <template v-if="lives.length === 0">
           <div class="flex justify-center">
             <img
@@ -115,15 +118,27 @@ useSeoMeta({
               width="120"
               height="136"
               class="block"
-            />
+            >
           </div>
           <div class="mt-8 text-center text-[14px] text-main md:text-[16px]">
             <p>ただいま配信中・配信予定のマルシェはありません。</p>
-            <p class="md:mt-4">次回の更新をお楽しみに!</p>
+            <p class="md:mt-4">
+              次回の更新をお楽しみに!
+            </p>
           </div>
           <div class="my-4 grid w-full justify-center md:mt-10 md:flex md:gap-x-16">
-            <button class="w-60 bg-main py-2 text-white " @click="handleClickAllArchive">過去のライブ配信はこちら</button>
-            <button class="mt-4 w-60 bg-main py-2 text-white md:mt-0" @click="handleClickAllItem">購入できる商品一覧はこちら</button>
+            <button
+              class="w-60 bg-main py-2 text-white "
+              @click="handleClickAllArchive"
+            >
+              過去のライブ配信はこちら
+            </button>
+            <button
+              class="mt-4 w-60 bg-main py-2 text-white md:mt-0"
+              @click="handleClickAllItem"
+            >
+              購入できる商品一覧はこちら
+            </button>
           </div>
         </template>
         <template v-if="lives.length > 0">
@@ -154,22 +169,34 @@ useSeoMeta({
               />
             </transition-group>
           </div>
-          <div v-if="false" class="mb-4 mt-10 flex w-full justify-center">
+          <div
+            v-if="false"
+            class="mb-4 mt-10 flex w-full justify-center"
+          >
             <button
               class="relative w-60 bg-main py-2 text-white"
               @click="handleClickMoreViewButton"
             >
               もっと見る
               <div class="absolute bottom-3.5 right-4">
-                <the-up-arrow-icon v-show="isOpen" fill="white" />
-                <the-down-arrow-icon v-show="!isOpen" fill="white" />
+                <the-up-arrow-icon
+                  v-show="isOpen"
+                  fill="white"
+                />
+                <the-down-arrow-icon
+                  v-show="!isOpen"
+                  fill="white"
+                />
               </div>
             </button>
           </div>
         </template>
       </the-content-box>
 
-      <the-content-box title="archive" sub-title="過去のマルシェ">
+      <the-content-box
+        title="archive"
+        sub-title="過去のマルシェ"
+      >
         <div class="relative mx-auto flex max-w-[1440px]">
           <div class="absolute left-4 flex h-[208px] items-center">
             <the-icon-button
@@ -205,7 +232,12 @@ useSeoMeta({
         </div>
 
         <div class="mb-4 mt-10 flex w-full justify-center">
-          <button class="w-60 bg-main py-2 text-white" @click="handleClickLiveMore">一覧を見る</button>
+          <button
+            class="w-60 bg-main py-2 text-white"
+            @click="handleClickLiveMore"
+          >
+            一覧を見る
+          </button>
         </div>
       </the-content-box>
 

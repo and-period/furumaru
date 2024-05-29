@@ -8,19 +8,19 @@ import type { ContactResponse, ContactStatus, UpdateContactRequest } from '~/typ
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   contact: {
     type: Object as PropType<ContactResponse>,
@@ -34,16 +34,16 @@ const props = defineProps({
       status: ContactStatus.UNKNOWN,
       note: '',
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   formData: {
     type: Object as PropType<UpdateContactRequest>,
     default: () => ({
       status: ContactStatus.UNKNOWN,
-      note: ''
-    })
-  }
+      note: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -57,16 +57,16 @@ const statuses = [
   { title: '進行中', value: ContactStatus.INPROGRESS },
   { title: '完了', value: ContactStatus.DONE },
   { title: '対応不要', value: ContactStatus.DISCARD },
-  { title: '不明', value: ContactStatus.UNKNOWN }
+  { title: '不明', value: ContactStatus.UNKNOWN },
 ]
 
 const rules = computed(() => ({
   status: {},
-  note: { maxLength: maxLength(2000) }
+  note: { maxLength: maxLength(2000) },
 }))
 const formDataValue = computed({
   get: (): UpdateContactRequest => props.formData,
-  set: (v: UpdateContactRequest): void => emit('update:form-data', v)
+  set: (v: UpdateContactRequest): void => emit('update:form-data', v),
 })
 const contactValue = computed((): ContactResponse => {
   return props.contact
@@ -88,7 +88,11 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card elevation="0">
     <v-card-title>お問合せ管理</v-card-title>
@@ -142,7 +146,12 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn :loading="loading" block variant="outlined" color="primary">
+        <v-btn
+          :loading="loading"
+          block
+          variant="outlined"
+          color="primary"
+        >
           更新
         </v-btn>
       </v-card-actions>

@@ -1,13 +1,22 @@
 <template>
-  <btn class="menu-btn" variant="outlined" @click="handleClick">
+  <btn
+    class="menu-btn"
+    variant="outlined"
+    @click="handleClick"
+  >
     <img
       v-if="props.imgSrc"
       class="profile-img"
       alt="profile img"
       :src="props.imgSrc"
       width="24"
-    />
-    <icon v-else color="grey"> mdi-account-circle </icon>
+    >
+    <icon
+      v-else
+      color="grey"
+    >
+      mdi-account-circle
+    </icon>
   </btn>
 </template>
 

@@ -28,3 +28,7 @@ type SchedulesResponse struct {
 	Coordinators []*Coordinator `json:"coordinators"` // コーディネータ一覧
 	Total        int64          `json:"total"`        // 合計数
 }
+
+type AnalyzeScheduleResponse struct {
+	ViewerLogs []*BroadcastViewerLog `json:"viewerLogs"` // 視聴者数ログ
+}

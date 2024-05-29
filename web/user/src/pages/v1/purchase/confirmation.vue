@@ -12,8 +12,8 @@ const { address, addressFetchState } = storeToRefs(addressStore)
 const { fetchAddress } = addressStore
 
 const shoppingCartStore = useShoppingCartStore()
-const { calcCartResponseItem, availablePaymentSystem } =
-  storeToRefs(shoppingCartStore)
+const { calcCartResponseItem, availablePaymentSystem }
+  = storeToRefs(shoppingCartStore)
 const {
   calcCartItemByCoordinatorId,
   fetchAvailablePaymentOptions,
@@ -33,7 +33,8 @@ const addressId = computed<string>(() => {
   const id = route.query.id
   if (id) {
     return String(id)
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -45,7 +46,8 @@ const coordinatorId = computed<string>(() => {
   const id = route.query.coordinatorId
   if (id) {
     return String(id)
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -57,7 +59,8 @@ const promotionCode = computed<string | undefined>(() => {
   const code = route.query.promotionCode
   if (typeof code === 'string') {
     return code
-  } else {
+  }
+  else {
     return undefined
   }
 })
@@ -103,7 +106,8 @@ const creditCardMonthValue = computed({
     }
     if (checkoutFormData.value.creditCard.month < 10) {
       return `0${checkoutFormData.value.creditCard.month}`
-    } else {
+    }
+    else {
       return String(checkoutFormData.value.creditCard.month)
     }
   },
@@ -140,7 +144,8 @@ const doCheckout = async () => {
     })
     console.log('debug', 'doCheckout', url)
     window.location.href = url
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof ApiBaseError) {
       checkoutError.value = error.message
     }
@@ -163,8 +168,8 @@ onMounted(async () => {
   // 利用可能な支払い方法を取得
   fetchAvailablePaymentOptions().then(() => {
     if (availablePaymentSystem.value.length > 0) {
-      checkoutFormData.value.paymentMethod =
-        availablePaymentSystem.value[0].methodType
+      checkoutFormData.value.paymentMethod
+        = availablePaymentSystem.value[0].methodType
     }
   })
 
@@ -180,7 +185,8 @@ onMounted(async () => {
     const result = await verifyPromotionCode(promotionCode.value)
     if (result) {
       validPromotionCode.value = result
-    } else {
+    }
+    else {
       console.log('無効なプロモーションコードが設定されています。')
     }
   }
@@ -198,8 +204,8 @@ onMounted(async () => {
   checkoutFormData.value.callbackUrl = `${window.location.origin}/v1/purchase/complete`
 
   if (calcCartResponseItem.value?.promotion) {
-    checkoutFormData.value.promotionCode =
-      calcCartResponseItem.value.promotion.code
+    checkoutFormData.value.promotionCode
+      = calcCartResponseItem.value.promotion.code
   }
 })
 
@@ -214,15 +220,21 @@ useSeoMeta({
       ご購入手続き
     </div>
 
-    <the-alert v-if="checkoutError" class="mt-4 bg-white" type="error">{{
-      checkoutError
-    }}</the-alert>
+    <the-alert
+      v-if="checkoutError"
+      class="mt-4 bg-white"
+      type="error"
+    >
+      {{
+        checkoutError
+      }}
+    </the-alert>
 
     <div
       class="relative my-10 gap-x-[80px] bg-white px-6 py-10 md:mx-0 md:grid md:grid-cols-2 md:grid-rows-[auto_auto] md:px-[80px]"
     >
       <template v-if="addressFetchState.isLoading">
-        <div class="absolute h-2 w-full animate-pulse bg-main"></div>
+        <div class="absolute h-2 w-full animate-pulse bg-main" />
       </template>
 
       <template v-else>
@@ -233,9 +245,15 @@ useSeoMeta({
           >
             お客様情報
           </div>
-          <the-address-info v-if="address" :address="address" />
+          <the-address-info
+            v-if="address"
+            :address="address"
+          />
           <div class="pt-4 text-right tracking-[1.4px]">
-            <a href="#" class="underline">変更</a>
+            <a
+              href="#"
+              class="underline"
+            >変更</a>
           </div>
 
           <div class="items-center border-b py-2" />
@@ -250,7 +268,10 @@ useSeoMeta({
               上記の住所にお届け
             </div>
             <div class="pt-4 text-right tracking-[1.4px]">
-              <a href="#" class="underline">変更</a>
+              <a
+                href="#"
+                class="underline"
+              >変更</a>
             </div>
           </div>
 
@@ -277,7 +298,7 @@ useSeoMeta({
                       class="check:before:border-main relative float-left mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-main checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:bg-main checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-main checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                       type="radio"
                       :value="p.methodType"
-                    />
+                    >
                     <label
                       class="pl-2 text-[14px] text-main"
                       :for="String(p.methodType)"
@@ -294,22 +315,22 @@ useSeoMeta({
                         src="~/assets/img/cc/visa.png"
                         alt="visa icon"
                         class="h-full"
-                      />
+                      >
                       <img
                         src="~/assets/img/cc/jcb.png"
                         alt="jcb icon"
                         class="h-full"
-                      />
+                      >
                       <img
                         src="~/assets/img/cc/amex.png"
                         alt="amex icon"
                         class="h-full"
-                      />
+                      >
                       <img
                         src="~/assets/img/cc/master.png"
                         alt="master icon"
                         class="h-full"
-                      />
+                      >
                     </div>
                   </template>
                 </div>
@@ -339,22 +360,22 @@ useSeoMeta({
                     src="~/assets/img/cc/visa.png"
                     alt="visa icon"
                     class="h-full"
-                  />
+                  >
                   <img
                     src="~/assets/img/cc/jcb.png"
                     alt="jcb icon"
                     class="h-full"
-                  />
+                  >
                   <img
                     src="~/assets/img/cc/amex.png"
                     alt="amex icon"
                     class="h-full"
-                  />
+                  >
                   <img
                     src="~/assets/img/cc/master.png"
                     alt="master icon"
                     class="h-full"
-                  />
+                  >
                 </div>
               </div>
               <the-text-input
@@ -371,7 +392,12 @@ useSeoMeta({
                   v-model="creditCardMonthValue"
                   class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
                 >
-                  <option :value="0" disabled>有効期限 (月)</option>
+                  <option
+                    :value="0"
+                    disabled
+                  >
+                    有効期限 (月)
+                  </option>
                   <option
                     v-for="i in 12"
                     :key="i"
@@ -385,7 +411,12 @@ useSeoMeta({
                   v-model="checkoutFormData.creditCard.year"
                   class="mb-1 block w-full appearance-none rounded-none border-b border-main bg-transparent px-1 py-2 text-inherit focus:outline-none"
                 >
-                  <option value="0" disabled>有効期限 (年)</option>
+                  <option
+                    value="0"
+                    disabled
+                  >
+                    有効期限 (年)
+                  </option>
                   <option
                     v-for="i in 11"
                     :key="i"
@@ -445,7 +476,7 @@ useSeoMeta({
                       :src="item.product.thumbnailUrl"
                       :alt="`${item.product.name}の画像`"
                       class="block aspect-square h-[56px] w-[56px]"
-                    />
+                    >
                     <div class="col-span-3 pl-[24px] md:pl-0">
                       <div>{{ item.product?.name }}</div>
                       <div
@@ -465,15 +496,21 @@ useSeoMeta({
               <div
                 class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
               >
-                <div class="col-span-3 md:col-span-1">商品合計（税込み）</div>
+                <div class="col-span-3 md:col-span-1">
+                  商品合計（税込み）
+                </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.subtotal) }}
                 </div>
-                <div class="col-span-3 md:col-span-1">クーポン利用</div>
+                <div class="col-span-3 md:col-span-1">
+                  クーポン利用
+                </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.discount) }}
                 </div>
-                <div class="col-span-3 md:col-span-1">送料（合計）</div>
+                <div class="col-span-3 md:col-span-1">
+                  送料（合計）
+                </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.shippingFee) }}
                 </div>

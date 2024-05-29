@@ -22,7 +22,7 @@ const {
   totalOrderCount,
   totalPaymentCount,
   totalProductAmount,
-  totalPaymentAmount
+  totalPaymentAmount,
 } = storeToRefs(customerStore)
 
 const loading = ref<boolean>(false)
@@ -39,7 +39,8 @@ watch(pagination.itemsPerPage, (): void => {
 const fetchCustomerOrders = async (): Promise<void> => {
   try {
     await customerStore.fetchCustomerOrders(customerId, pagination.itemsPerPage.value, pagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -62,15 +63,17 @@ const handleDelete = async (): Promise<void> => {
     await customerStore.deleteCustomer(customerId)
     commonStore.addSnackbar({
       color: 'info',
-      message: '顧客の削除が完了しました。'
+      message: '顧客の削除が完了しました。',
     })
     router.push('/customers')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -82,7 +85,8 @@ const handleClickRow = (orderId: string) => {
 try {
   await customerStore.getCustomer(customerId)
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

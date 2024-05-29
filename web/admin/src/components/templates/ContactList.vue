@@ -7,36 +7,36 @@ import { ContactStatus, type ContactsResponse } from '~/types/api'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   sortBy: {
     type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
+    default: () => [],
   },
   contacts: {
     type: Array<ContactsResponse>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
@@ -49,16 +49,16 @@ const emit = defineEmits<{
 const headers: VDataTable['headers'] = [
   {
     title: '件名',
-    key: 'title'
+    key: 'title',
   },
   {
     title: 'メールアドレス',
-    key: 'email'
+    key: 'email',
   },
   {
     title: 'ステータス',
-    key: 'status'
-  }
+    key: 'status',
+  },
 ]
 
 const getStatusColor = (status: ContactStatus): string => {
@@ -109,7 +109,11 @@ const onClickRow = (contactId: string): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card>
     <v-card-title>お問い合わせ管理</v-card-title>
@@ -127,10 +131,13 @@ const onClickRow = (contactId: string): void => {
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
         @update:sort-by="onClickUpdateSortBy"
-        @click:row="(_:any, {item}: any) => onClickRow(item.id)"
+        @click:row="(_:any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.status`]="{ item }">
-          <v-chip :color="getStatusColor(item.status)" size="small">
+          <v-chip
+            :color="getStatusColor(item.status)"
+            size="small"
+          >
             {{ getStatus(item.status) }}
           </v-chip>
         </template>

@@ -24,7 +24,10 @@ defineProps<Props>()
           d="M231.625 38.4922H90.5262V113.082H231.625V38.4922Z"
           fill="#C9BC9C"
         />
-        <path d="M179.368 168V165.387H38.2699V168H179.368Z" fill="#C9BC9C" />
+        <path
+          d="M179.368 168V165.387H38.2699V168H179.368Z"
+          fill="#C9BC9C"
+        />
         <path
           d="M35.6603 168.014H38.2699L38.2699 90.4891H35.6603L35.6603 168.014Z"
           fill="#C9BC9C"
@@ -60,14 +63,21 @@ defineProps<Props>()
       </g>
       <defs>
         <clipPath id="clip0_626_1610">
-          <rect width="254.545" height="168" fill="white" />
+          <rect
+            width="254.545"
+            height="168"
+            fill="white"
+          />
         </clipPath>
       </defs>
     </svg>
 
     <div class="absolute bottom-[4px] left-[41px]">
       <div class="relative">
-        <the-melon-item v-show="useRate > 0" class="absolute bottom-0 z-10" />
+        <the-melon-item
+          v-show="useRate > 0"
+          class="absolute bottom-0 z-10"
+        />
         <the-melon-item
           v-show="useRate > 8.3"
           class="absolute bottom-[32px] left-[32px]"

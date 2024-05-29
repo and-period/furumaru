@@ -36,15 +36,17 @@ export const useProductStore = defineStore('product', {
     async fetchProducts(limit = 20, offset = 0): Promise<void> {
       try {
         this.productsFetchState.isLoading = true
-        const response: ProductsResponse =
-          await this.productApiClient().v1ListProducts({
+        const response: ProductsResponse
+          = await this.productApiClient().v1ListProducts({
             limit,
             offset,
           })
         this.productsResponse = response
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
-      } finally {
+      }
+      finally {
         this.productsFetchState.isLoading = false
       }
     },
@@ -71,27 +73,27 @@ export const useProductStore = defineStore('product', {
           // 在庫があるかのフラグ
           hasStock: product.inventory > 0,
           // サムネイル画像のマッピング
-          thumbnail: product.media.find((m) => m.isThumbnail),
+          thumbnail: product.media.find(m => m.isThumbnail),
           // 生産者情報をマッピング
           producer: state.productsResponse.producers.find(
-            (producer) => producer.id === product.producerId,
+            producer => producer.id === product.producerId,
           ),
           // 商品タイプをマッピング
           productType: state.productsResponse.productTypes.find(
-            (productType) => productType.id === product.productTypeId,
+            productType => productType.id === product.productTypeId,
           ),
           // コーディネーター情報をマッピング
           coordinator: state.productsResponse.coordinators.find(
-            (coordinator) => coordinator.id === product.coordinatorId,
+            coordinator => coordinator.id === product.coordinatorId,
           ),
           // カテゴリ情報をマッピング
           category: state.productsResponse.categories.find(
-            (category) => category.id === product.categoryId,
+            category => category.id === product.categoryId,
           ),
           // 商品タグをマッピング
-          productTags: product.productTagIds.map((id) =>
+          productTags: product.productTagIds.map(id =>
             state.productsResponse.productTags.find(
-              (productTag) => productTag.id === id,
+              productTag => productTag.id === id,
             ),
           ),
         }
@@ -105,16 +107,16 @@ export const useProductStore = defineStore('product', {
         hasStock: state.productResponse.product?.inventory > 0,
         // サムネイル画像のマッピング
         thumbnail: state.productResponse.product?.media.find(
-          (m) => m.isThumbnail,
+          m => m.isThumbnail,
         ),
         // 生産者情報をマッピング
         producer: state.productResponse.producer,
         // コーディネーター情報をマッピング
         coordinator: state.productResponse.coordinator,
         // 商品タグをマッピング
-        productTags: state.productResponse.product?.productTagIds.map((id) =>
+        productTags: state.productResponse.product?.productTagIds.map(id =>
           state.productResponse.productTags.find(
-            (productTag) => productTag.id === id,
+            productTag => productTag.id === id,
           ),
         ),
       }

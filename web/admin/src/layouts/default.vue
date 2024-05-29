@@ -11,7 +11,7 @@ import {
   mdiCash100,
   mdiAccount,
   mdiCog,
-  mdiBell
+  mdiBell,
 } from '@mdi/js'
 import { storeToRefs } from 'pinia'
 import { getResizedImages } from '~/lib/helpers'
@@ -19,10 +19,10 @@ import { useAuthStore, useCommonStore, useMessageStore } from '~/store'
 import { AdminRole } from '~/types/api'
 
 interface NavigationDrawerItem {
-  to: string;
-  icon: string;
-  title: string;
-  roles?: AdminRole[];
+  to: string
+  icon: string
+  title: string
+  roles?: AdminRole[]
 }
 
 const drawer = ref<boolean>(true)
@@ -41,7 +41,7 @@ const hasUnread = computed<boolean>(() => messageStore.hasUnread)
 const homeDrawer: NavigationDrawerItem = {
   to: '/',
   icon: mdiHome,
-  title: 'ホーム'
+  title: 'ホーム',
 }
 
 const generalDrawers: NavigationDrawerItem[] = [
@@ -49,19 +49,19 @@ const generalDrawers: NavigationDrawerItem[] = [
     to: '/orders',
     icon: mdiOrderBoolAscendingVariant,
     title: '注文管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
     to: '/products',
     icon: mdiCart,
     title: '商品管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
     to: '/schedules',
     icon: mdiAntenna,
     title: 'ライブ配信',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   // {
   //   to: '/contacts',
@@ -73,26 +73,26 @@ const generalDrawers: NavigationDrawerItem[] = [
     to: '/notifications',
     icon: mdiBellRing,
     title: 'お知らせ情報',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
     to: '/promotions',
     icon: mdiCash100,
     title: 'セール情報',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
     to: '/producers',
     icon: mdiAccount,
     title: '生産者管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
     to: '/customers',
     icon: mdiAccountDetails,
     title: '顧客管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
-  }
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
 ]
 
 const settingDrawers: NavigationDrawerItem[] = [
@@ -100,20 +100,20 @@ const settingDrawers: NavigationDrawerItem[] = [
     to: '/accounts',
     icon: mdiAccount,
     title: 'マイページ',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
     to: '/system',
     icon: mdiCog,
     title: 'システム設定',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
     to: '/version',
     icon: mdiCog,
     title: 'バージョン情報',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
-  }
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
 ]
 
 const getImages = (): string => {
@@ -155,7 +155,10 @@ const calcStyle = (i: number) => {
     <v-app-bar color="primary">
       <template #prepend>
         <v-app-bar-nav-icon @click="handleClickNavIcon">
-          <v-icon :icon="mdiMenu" color="white" />
+          <v-icon
+            :icon="mdiMenu"
+            color="white"
+          />
         </v-app-bar-nav-icon>
       </template>
       <v-toolbar-title>
@@ -164,9 +167,20 @@ const calcStyle = (i: number) => {
         </nuxt-link>
       </v-toolbar-title>
       <template #append>
-        <v-btn icon @click="handleClickMessage">
-          <v-badge v-model="hasUnread" color="info" dot floating>
-            <v-icon :icon="mdiBell" color="white" />
+        <v-btn
+          icon
+          @click="handleClickMessage"
+        >
+          <v-badge
+            v-model="hasUnread"
+            color="info"
+            dot
+            floating
+          >
+            <v-icon
+              :icon="mdiBell"
+              color="white"
+            />
           </v-badge>
         </v-btn>
       </template>
@@ -177,9 +191,16 @@ const calcStyle = (i: number) => {
         <v-list-item exact>
           <template #prepend>
             <v-avatar v-if="user?.thumbnailUrl">
-              <v-img cover :src="user?.thumbnailUrl" :srcset="getImages()" />
+              <v-img
+                cover
+                :src="user?.thumbnailUrl"
+                :srcset="getImages()"
+              />
             </v-avatar>
-            <v-icon v-else :icon="mdiAccount" />
+            <v-icon
+              v-else
+              :icon="mdiAccount"
+            />
           </template>
 
           <div>{{ user?.username || "" }}</div>

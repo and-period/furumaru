@@ -131,3 +131,19 @@ schedulesResponse:
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 2
+analyzeScheduleResponse:
+  type: object
+  properties:
+    viewerLogs:
+      type: array
+      description: 視聴者ログ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/broadcastViewerLog'
+  required:
+  - viewerLogs
+  example:
+    viewerLogs:
+    - broadcastId: 'kSByoE6FetnPs5Byk3a9Zx'
+      startAt: 1640962800
+      endAt: 1640962800
+      total: 100

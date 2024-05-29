@@ -140,5 +140,5 @@ export const MOCK_USER_INFOMATION: PurcahseUserInformationMock = {
   name: '故里 まるしぇ（フルサト マルシェ）',
   phoneNumber: '090-1234-5678',
   email: 'furumaru@gmai.com',
-  address: '〒 725-0200　広島県豊田郡大崎上島町123'
+  address: '〒 725-0200　広島県豊田郡大崎上島町123',
 }

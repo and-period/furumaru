@@ -10,27 +10,27 @@ import { type UserOrder, type User, Prefecture, PaymentStatus, UserStatus, Admin
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   customer: {
     type: Object as PropType<User>,
@@ -47,8 +47,8 @@ const props = defineProps({
       email: '',
       phoneNumber: '',
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   address: {
     type: Object as PropType<Address>,
@@ -64,33 +64,33 @@ const props = defineProps({
       city: '',
       addressLine1: '',
       addressLine2: '',
-      phoneNumber: ''
-    })
+      phoneNumber: '',
+    }),
   },
   orders: {
     type: Array<UserOrder>,
-    default: () => []
+    default: () => [],
   },
   totalOrderCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   totalPaymentCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   totalProductAmount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   totalPaymentAmount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
-  }
+    default: 20,
+  },
 })
 
 const emit = defineEmits<{
@@ -105,52 +105,52 @@ const headers: VDataTable['headers'] = [
   {
     title: '注文日時',
     key: 'orderedAt',
-    sortable: false
+    sortable: false,
   },
   {
     title: '支払い日時',
     key: 'paidAt',
-    sortable: false
+    sortable: false,
   },
   {
     title: '支払い状況',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '支払い合計金額',
     key: 'total',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const activities = [
   {
     eventType: 'notification',
     detail: '注文(#1000)の発想が完了しました。',
-    createdAt: '2023/04/12 10:34'
+    createdAt: '2023/04/12 10:34',
   },
   {
     eventType: 'notification',
     detail: '注文(#1000)の発送済みメールを送りました。',
-    createdAt: '2023/04/10 10:34'
+    createdAt: '2023/04/10 10:34',
   },
   {
     eventType: 'comment',
     username: 'ふるマル管理者',
     detail: '発送準備をコーディネーターに依頼済み',
-    createdAt: '2023/04/06 12:00'
+    createdAt: '2023/04/06 12:00',
   },
   {
     eventType: 'notification',
     detail: '注文(#1000)の支払い完了メールを送りました。',
-    createdAt: '2023/04/05 10:34'
-  }
+    createdAt: '2023/04/05 10:34',
+  },
 ]
 
 const deleteDialogValue = computed({
   get: () => props.deleteDialog,
-  set: (val: boolean) => emit('update:delete-dialog', val)
+  set: (val: boolean) => emit('update:delete-dialog', val),
 })
 
 const isEditable = (): boolean => {
@@ -233,7 +233,7 @@ const getPaymentStatus = (status: PaymentStatus): string => {
   }
 }
 
-const getPaymentStatusColor = (status:PaymentStatus): string => {
+const getPaymentStatusColor = (status: PaymentStatus): string => {
   switch (status) {
     case PaymentStatus.UNPAID:
       return 'secondary'
@@ -290,19 +290,35 @@ const onSubmitDelete = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title>
         {{ getName() }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseDeleteDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitDelete">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onSubmitDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
@@ -310,14 +326,24 @@ const onSubmitDelete = (): void => {
   </v-dialog>
 
   <v-row>
-    <v-col sm="12" md="12" lg="4" order-lg="2">
+    <v-col
+      sm="12"
+      md="12"
+      lg="4"
+      order-lg="2"
+    >
       <v-card elevation="0">
         <v-card-title class="d-flex flex-row align-center mx-4 mt-2">
           顧客情報
           <v-spacer />
           <v-menu v-show="isEditable()">
             <template #activator="{ props: item }">
-              <v-btn variant="plain" size="small" :icon="mdiDotsVertical" v-bind="item" />
+              <v-btn
+                variant="plain"
+                size="small"
+                :icon="mdiDotsVertical"
+                v-bind="item"
+              />
             </template>
             <v-list>
               <v-list-item @click="onClickOpenDeleteDialog">
@@ -341,7 +367,10 @@ const onSubmitDelete = (): void => {
               </v-list-item-subtitle>
               <div>
                 ステータス：
-                <v-chip size="small" :color="getCustomerStatusColor()">
+                <v-chip
+                  size="small"
+                  :color="getCustomerStatusColor()"
+                >
                   {{ getCustomerStatus() }}
                 </v-chip>
               </div>
@@ -373,8 +402,16 @@ const onSubmitDelete = (): void => {
       </v-card>
     </v-col>
 
-    <v-col sm="12" md="12" lg="8" order-lg="1">
-      <v-card elevation="0" class="mb-4">
+    <v-col
+      sm="12"
+      md="12"
+      lg="8"
+      order-lg="1"
+    >
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-title class="mx-4 mt-2">
           購入情報
         </v-card-title>
@@ -400,7 +437,10 @@ const onSubmitDelete = (): void => {
           </v-row>
         </v-card-text>
       </v-card>
-      <v-card elevation="0" class="mb-4">
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-text>
           <v-data-table-server
             :headers="headers"
@@ -438,9 +478,21 @@ const onSubmitDelete = (): void => {
         </h4>
         <v-divider />
 
-        <v-timeline side="end" density="compact">
-          <template v-for="(activity, i) in activities" :key="i">
-            <v-timeline-item v-if="activity.eventType === 'notification'" class="mb-4" dot-color="grey" size="small" max-width="75vw">
+        <v-timeline
+          side="end"
+          density="compact"
+        >
+          <template
+            v-for="(activity, i) in activities"
+            :key="i"
+          >
+            <v-timeline-item
+              v-if="activity.eventType === 'notification'"
+              class="mb-4"
+              dot-color="grey"
+              size="small"
+              max-width="75vw"
+            >
               <div class="d-flex flex-column flex-lg-row justify-space-between flex-grow-1">
                 <div>{{ activity.detail }}</div>
                 <div class="flex-shrink-0 text-grey">
@@ -448,7 +500,13 @@ const onSubmitDelete = (): void => {
                 </div>
               </div>
             </v-timeline-item>
-            <v-timeline-item v-if="activity.eventType === 'comment'" class="mb-4" dot-color="grey" size="small" max-width="75vw">
+            <v-timeline-item
+              v-if="activity.eventType === 'comment'"
+              class="mb-4"
+              dot-color="grey"
+              size="small"
+              max-width="75vw"
+            >
               <template #icon>
                 <v-avatar image="https://i.pravatar.cc/64" />
               </template>

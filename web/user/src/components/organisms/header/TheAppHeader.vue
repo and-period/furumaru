@@ -124,14 +124,21 @@ const handleClickLogoutButton = () => {
       </the-icon-button>
     </div>
 
-    <nuxt-link :to="homePath" class="flex h-full" @click="closeSpMenu">
+    <nuxt-link
+      :to="homePath"
+      class="flex h-full"
+      @click="closeSpMenu"
+    >
       <the-marche-logo class="m-0 max-h-full max-w-full items-center" />
     </nuxt-link>
 
     <div class="flex items-center text-main">
       <nav class="mr-16 hidden xl:block">
         <ul class="flex list-none gap-x-10">
-          <li v-for="(item, i) in menuItems" :key="i">
+          <li
+            v-for="(item, i) in menuItems"
+            :key="i"
+          >
             <nuxt-link
               :class="{ 'border-b border-main pb-1': item.active }"
               :to="item.to"
@@ -198,7 +205,10 @@ const handleClickLogoutButton = () => {
           @click="handleClickMenuItem"
         >
           <div class="col-span-1 flex justify-center">
-            <the-icon-wrapper :icon="item.icon" class="h-6 w-6" />
+            <the-icon-wrapper
+              :icon="item.icon"
+              class="h-6 w-6"
+            />
           </div>
           <div class="col-span-10 pl-4">
             {{ item.text }}
@@ -211,10 +221,16 @@ const handleClickLogoutButton = () => {
 
       <div class="my-12 flex justify-center gap-x-3">
         <the-icon-button>
-          <the-instagram-icon id="header-instagram-icon" fill="#604C3F" />
+          <the-instagram-icon
+            id="header-instagram-icon"
+            fill="#604C3F"
+          />
         </the-icon-button>
         <the-icon-button>
-          <the-facebook-icon id="header-facebook-icon" fill="#604C3F" />
+          <the-facebook-icon
+            id="header-facebook-icon"
+            fill="#604C3F"
+          />
         </the-icon-button>
       </div>
 

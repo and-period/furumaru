@@ -32,16 +32,19 @@ const handleSubmit = async () => {
       await updateThumbnail(formData.value)
       fetchUserInfo()
       router.push('/account/edit/complete?from=thumbnail')
-    } else {
+    }
+    else {
       errorMessage.value = 'ファイルを選択してください。'
     }
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof ApiBaseError) {
       errorMessage.value = error.message
       return
     }
     errorMessage.value = 'アップロードに失敗しました。'
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -54,19 +57,28 @@ useSeoMeta({
 <template>
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
-      <the-account-edit-card title="プロフィール写真の変更" class="mt-6">
-        <the-alert v-if="errorMessage" class="mt-4 w-full">
+      <the-account-edit-card
+        title="プロフィール写真の変更"
+        class="mt-6"
+      >
+        <the-alert
+          v-if="errorMessage"
+          class="mt-4 w-full"
+        >
           {{ errorMessage }}
         </the-alert>
 
-        <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
+        <form
+          class="flex w-full flex-col gap-6"
+          @submit.prevent="handleSubmit"
+        >
           <div class="mt-10 flex justify-center">
             <template v-if="previewUrl">
               <img
                 :src="previewUrl"
                 alt="サムネイル"
                 class="h-[120px] w-[120px] rounded-full"
-              />
+              >
             </template>
             <template v-else>
               <nuxt-img
@@ -87,7 +99,10 @@ useSeoMeta({
           </div>
 
           <div class="text-center">
-            <label for="profile" class="cursor-pointer underline">
+            <label
+              for="profile"
+              class="cursor-pointer underline"
+            >
               {{
                 user.thumbnailUrl
                   ? 'プロフィール写真を変更'
@@ -100,7 +115,7 @@ useSeoMeta({
               class="hidden"
               accept="image/*"
               @change="handleFileChange"
-            />
+            >
           </div>
 
           <div class="flex w-full flex-col gap-4">

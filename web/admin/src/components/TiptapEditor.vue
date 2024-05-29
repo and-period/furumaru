@@ -7,16 +7,16 @@ import { useEditor, EditorContent } from '@tiptap/vue-3'
 const props = defineProps({
   label: {
     type: String,
-    default: ''
+    default: '',
   },
   modelValue: {
     type: String,
-    default: ''
+    default: '',
   },
   errorMessage: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emits = defineEmits<{
@@ -30,7 +30,7 @@ const editor = useEditor({
     if (editor.value) {
       emits('update:modelValue', editor.value.getHTML())
     }
-  }
+  },
 })
 
 const fontSize = [
@@ -40,35 +40,35 @@ const fontSize = [
   { text: '見出し「3」', value: 3 },
   { text: '見出し「4」', value: 4 },
   { text: '見出し「5」', value: 5 },
-  { text: '見出し「6」', value: 6 }
+  { text: '見出し「6」', value: 6 },
 ]
 
 const menus = [
   {
     label: 'bold',
     icon: mdiFormatBold,
-    onClick: () => editor.value?.chain().focus().toggleBold().run()
+    onClick: () => editor.value?.chain().focus().toggleBold().run(),
   },
   {
     label: 'italic',
     icon: mdiFormatItalic,
-    onClick: () => editor.value?.chain().focus().toggleItalic().run()
+    onClick: () => editor.value?.chain().focus().toggleItalic().run(),
   },
   {
     label: 'strike',
     icon: mdiFormatStrikethrough,
-    onClick: () => editor.value?.chain().focus().toggleStrike().run()
+    onClick: () => editor.value?.chain().focus().toggleStrike().run(),
   },
   {
     label: 'code',
     icon: mdiCodeTags,
-    onClick: () => editor.value?.chain().focus().toggleCode().run()
+    onClick: () => editor.value?.chain().focus().toggleCode().run(),
   },
   {
     label: 'codeBlock',
     icon: mdiCodeNotEqualVariant,
-    onClick: () => editor.value?.chain().focus().toggleCodeBlock().run()
-  }
+    onClick: () => editor.value?.chain().focus().toggleCodeBlock().run(),
+  },
 ]
 
 const activeMenus = computed<number[]>(() => {
@@ -83,15 +83,20 @@ const activeStyle = computed(() => {
   }
   if (editor.value.isActive('heading', { level: 1 })) {
     return 1
-  } else if (editor.value.isActive('heading', { level: 2 })) {
+  }
+  else if (editor.value.isActive('heading', { level: 2 })) {
     return 2
-  } else if (editor.value.isActive('heading', { level: 3 })) {
+  }
+  else if (editor.value.isActive('heading', { level: 3 })) {
     return 3
-  } else if (editor.value.isActive('heading', { level: 4 })) {
+  }
+  else if (editor.value.isActive('heading', { level: 4 })) {
     return 4
-  } else if (editor.value.isActive('heading', { level: 5 })) {
+  }
+  else if (editor.value.isActive('heading', { level: 5 })) {
     return 5
-  } else if (editor.value.isActive('heading', { level: 6 })) {
+  }
+  else if (editor.value.isActive('heading', { level: 6 })) {
     return 6
   }
   return 0
@@ -116,7 +121,10 @@ const handleChangeTextStyle = (level: number): void => {
     <p :class="errorMessage && 'text-error'">
       {{ label }}
     </p>
-    <div class="d-flex flex-column gap pa-2 editor-menu" :class="errorMessage && 'error'">
+    <div
+      class="d-flex flex-column gap pa-2 editor-menu"
+      :class="errorMessage && 'error'"
+    >
       <div class="d-flex align-center gap">
         <v-btn-toggle>
           <v-btn @click="editor?.chain().focus().undo().run()">
@@ -138,8 +146,15 @@ const handleChangeTextStyle = (level: number): void => {
           @update:model-value="handleChangeTextStyle"
         />
 
-        <v-btn-toggle v-model="activeMenus" multiple>
-          <v-btn v-for="(menu, i) in menus" :key="i" @click="menu.onClick">
+        <v-btn-toggle
+          v-model="activeMenus"
+          multiple
+        >
+          <v-btn
+            v-for="(menu, i) in menus"
+            :key="i"
+            @click="menu.onClick"
+          >
             <v-icon>{{ menu.icon }}</v-icon>
           </v-btn>
         </v-btn-toggle>
@@ -170,15 +185,21 @@ const handleChangeTextStyle = (level: number): void => {
         </v-btn-toggle>
       </div>
     </div>
-    <editor-content class="editor" :class="errorMessage && 'error'" :editor="editor" />
-    <div v-show="errorMessage" class="text-error text-caption mt-1">
+    <editor-content
+      class="editor"
+      :class="errorMessage && 'error'"
+      :editor="editor"
+    />
+    <div
+      v-show="errorMessage"
+      class="text-error text-caption mt-1"
+    >
       {{ errorMessage }}
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-
 $border-color: rgb(224,224,224);
 $border-color-error: rgb(var(--v-theme-error));
 $background-color-editor-menu: #F5F5F5;

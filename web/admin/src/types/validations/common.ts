@@ -3,10 +3,10 @@ import { required, notSameAs } from '~/lib/validations'
 
 export const TimeDataValidationRules: ValidationArgs = {
   date: { required },
-  time: { required }
+  time: { required },
 }
 
 export const NotSameTimeDataValidationRules = (startAt: number, otherName?: string): ValidationArgs => ({
   startAt: { required },
-  endAt: { required, notSameas: notSameAs(startAt, otherName) }
+  endAt: { required, notSameas: notSameAs(startAt, otherName) },
 })

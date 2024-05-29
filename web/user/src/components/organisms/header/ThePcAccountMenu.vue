@@ -39,7 +39,10 @@ const handleClickLogoutButton = () => {
   <the-dropdown-with-icon ref="dropdownRef">
     <template #icon>
       <template v-if="user && user.thumbnailUrl">
-        <img :src="user.thumbnailUrl" class="block h-7 w-7 rounded-full" />
+        <img
+          :src="user.thumbnailUrl"
+          class="block h-7 w-7 rounded-full"
+        >
       </template>
       <template v-else>
         <the-account-icon />
@@ -50,7 +53,10 @@ const handleClickLogoutButton = () => {
         v-if="isAuthenticated && user"
         class="flex flex-col text-[14px] tracking-[1.4px]"
       >
-        <p v-for="(item, i) in authenticatedMenuItems" :key="i">
+        <p
+          v-for="(item, i) in authenticatedMenuItems"
+          :key="i"
+        >
           {{ item.text }}
         </p>
         <div class="mb-8 px-4">
@@ -58,17 +64,21 @@ const handleClickLogoutButton = () => {
             <img
               :src="user.thumbnailUrl"
               class="block h-[40px] w-[40px] rounded-full"
-            />
+            >
           </template>
           <template v-else>
             <img
               src="~/assets/img/account.png"
               class="block h-[40px] w-[40px] rounded-full"
-            />
+            >
           </template>
           <div class="mt-4 font-bold">
-            <template v-if="user.username"> {{ user.username }} 様 </template>
-            <template v-else> ユーザー名が未設定です </template>
+            <template v-if="user.username">
+              {{ user.username }} 様
+            </template>
+            <template v-else>
+              ユーザー名が未設定です
+            </template>
           </div>
         </div>
 
@@ -86,7 +96,10 @@ const handleClickLogoutButton = () => {
           ログアウト
         </button>
       </div>
-      <div v-else class="flex flex-col">
+      <div
+        v-else
+        class="flex flex-col"
+      >
         <nuxt-link
           v-for="(item, i) in noAuthenticatedMenuItems"
           :key="i"

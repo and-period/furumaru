@@ -14,7 +14,7 @@ import {
   type Order,
   type Promotion,
   type User,
-  type OrderFulfillment
+  type OrderFulfillment,
 } from '~/types/api'
 
 // TODO: API設計が決まり次第型定義の厳格化
@@ -25,65 +25,65 @@ interface ImportFormData {
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   importDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   exportDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   orders: {
     type: Array<Order>,
-    default: () => []
+    default: () => [],
   },
   coordinators: {
     type: Array<Coordinator>,
-    default: () => []
+    default: () => [],
   },
   customers: {
     type: Array<User>,
-    default: () => []
+    default: () => [],
   },
   promotions: {
     type: Array<Promotion>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
+    default: 0,
   },
   importFormData: {
     type: Object,
     default: () => ({
-      company: false
-    })
+      company: false,
+    }),
   },
   exportFormData: {
     type: Object as PropType<ExportOrdersRequest>,
     default: () => ({
       shippingCarrier: ShippingCarrier.UNKNOWN,
-      characterEncodingType: CharacterEncodingType.UTF8
-    })
-  }
+      characterEncodingType: CharacterEncodingType.UTF8,
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -103,64 +103,64 @@ const headers: VDataTable['headers'] = [
   {
     title: '注文No.',
     key: 'managementId',
-    sortable: false
+    sortable: false,
   },
   {
     title: '注文者',
     key: 'userId',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ステータス',
     key: 'payment.status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '購入日時',
     key: 'payment.orderedAt',
-    sortable: false
+    sortable: false,
   },
   {
     title: '購入金額',
     key: 'payment.total',
-    sortable: false
+    sortable: false,
   },
   {
     title: '配送方法',
     key: 'shippingTypes',
-    sortable: false
+    sortable: false,
   },
   {
     title: '伝票番号',
     key: 'trackingNumbers',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 const fulfillmentCompanies = [
   { title: '指定なし', value: ShippingCarrier.UNKNOWN },
   { title: '佐川急便', value: ShippingCarrier.SAGAWA },
-  { title: 'ヤマト運輸', value: ShippingCarrier.YAMATO }
+  { title: 'ヤマト運輸', value: ShippingCarrier.YAMATO },
 ]
 const characterEncodingTypes = [
   { title: 'UTF-8', value: CharacterEncodingType.UTF8 },
-  { title: 'Shift-JIS', value: CharacterEncodingType.ShiftJIS }
+  { title: 'Shift-JIS', value: CharacterEncodingType.ShiftJIS },
 ]
 
 const importDialogValue = computed({
   get: (): boolean => props.importDialog,
-  set: (v: boolean): void => emit('update:import-dialog', v)
+  set: (v: boolean): void => emit('update:import-dialog', v),
 })
 const exportDialogValue = computed({
   get: (): boolean => props.exportDialog,
-  set: (v: boolean): void => emit('update:export-dialog', v)
+  set: (v: boolean): void => emit('update:export-dialog', v),
 })
 const importFormDataValue = computed({
   get: (): ImportFormData => props.importFormData as ImportFormData,
-  set: (v: ImportFormData): void => emit('update:import-form-data', v)
+  set: (v: ImportFormData): void => emit('update:import-form-data', v),
 })
 const exportFormDataValue = computed({
   get: (): ExportOrdersRequest => props.exportFormData,
-  set: (v: ExportOrdersRequest): void => emit('update:export-form-data', v)
+  set: (v: ExportOrdersRequest): void => emit('update:export-form-data', v),
 })
 
 const getCustomerName = (userId: string): string => {
@@ -288,9 +288,16 @@ const onSubmitExport = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="importDialogValue" width="500">
+  <v-dialog
+    v-model="importDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         ファイルの取り込み
@@ -305,21 +312,36 @@ const onSubmitExport = (): void => {
           item-title="title"
           item-value="value"
         />
-        <v-file-input class="mr-2" label="CSVを選択" />
+        <v-file-input
+          class="mr-2"
+          label="CSVを選択"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="toggleImportDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="toggleImportDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" :loading="loading" @click="onSubmitImport">
+        <v-btn
+          color="primary"
+          variant="outlined"
+          :loading="loading"
+          @click="onSubmitImport"
+        >
           登録
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="exportDialogValue" width="500">
+  <v-dialog
+    v-model="exportDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h6 primaryLight">
         ファイルの出力
@@ -339,17 +361,29 @@ const onSubmitExport = (): void => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="toggleExportDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="toggleExportDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" :loading="loading" @click="onSubmitExport">
+        <v-btn
+          color="primary"
+          variant="outlined"
+          :loading="loading"
+          @click="onSubmitExport"
+        >
           登録
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       注文
       <v-spacer />
@@ -357,8 +391,16 @@ const onSubmitExport = (): void => {
         <v-icon start :icon="mdiImport" />
         Import
       </v-btn> -->
-      <v-btn class="ml-4" color="secondary" variant="outlined" @click="toggleExportDialog">
-        <v-icon start :icon="mdiExport" />
+      <v-btn
+        class="ml-4"
+        color="secondary"
+        variant="outlined"
+        @click="toggleExportDialog"
+      >
+        <v-icon
+          start
+          :icon="mdiExport"
+        />
         エクスポート
       </v-btn>
     </v-card-title>
@@ -374,13 +416,16 @@ const onSubmitExport = (): void => {
         no-data-text="表示する注文がありません"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
+        @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.userId`]="{ item }">
           {{ getCustomerName(item.userId) }}
         </template>
         <template #[`item.payment.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item)">
+          <v-chip
+            size="small"
+            :color="getStatusColor(item)"
+          >
             {{ getStatus(item) }}
           </v-chip>
         </template>

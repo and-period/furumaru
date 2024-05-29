@@ -23,10 +23,11 @@ const inventoryCountAboveTen = computed<boolean>(() => {
 })
 
 const thumbnailUrl = computed<string>(() => {
-  const thumbnail = props.product.media.find((m) => m.isThumbnail)
+  const thumbnail = props.product.media.find(m => m.isThumbnail)
   if (thumbnail) {
     return thumbnail.url
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -108,12 +109,20 @@ const handleClickItem = () => {
               class="h-full border-[1px] border-main px-2"
             >
               <template v-if="inventoryCountAboveTen">
-                <option v-for="i in 10" :key="i" :value="i">
+                <option
+                  v-for="i in 10"
+                  :key="i"
+                  :value="i"
+                >
                   {{ i }}
                 </option>
               </template>
               <template v-else>
-                <option v-for="i in product.inventory" :key="i" :value="i">
+                <option
+                  v-for="i in product.inventory"
+                  :key="i"
+                  :value="i"
+                >
                   {{ i }}
                 </option>
               </template>
