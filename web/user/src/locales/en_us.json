@@ -64,6 +64,9 @@
     }
   },
   "base": {
+    "top": {
+      "lineCouponText": "Add a friend on LINE and get a 20% off coupon!"
+    },
     "about": {
       "leadSentence": "Find wonderful taste",
       "description": "Furumaru is a live commerce platform.",

@@ -3,12 +3,19 @@ import { storeToRefs } from 'pinia'
 import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
 import type { BannerItem } from '~/types/props'
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
 
 const router = useRouter()
 
 const topPageStore = useTopPageStore()
 const { archives, lives } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
+
+const lt = (str: keyof I18n['base']['top']) => {
+  return i18n.t(`base.top.${str}`)
+}
 
 const isInItLoading = ref<boolean>(false)
 
@@ -102,7 +109,10 @@ useSeoMeta({
 
 <template>
   <div>
-    <the-carousel :items="banners" />
+    <the-carousel
+      :items="banners"
+      :line-coupon-text="lt('lineCouponText')"
+    />
 
     <div class="mb-[72px] mt-8 flex flex-col gap-y-16 md:mt-[76px]">
       <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">

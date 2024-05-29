@@ -74,6 +74,10 @@ export interface I18n {
   };
 
   base: {
+    top: {
+      lineCouponText: string
+    };
+
     about: {
       leadSentence: string
       description: string
