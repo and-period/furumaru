@@ -4,7 +4,8 @@ import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import type { NotificationTarget, type Admin, AdminRole, type Notification, NotificationStatus, NotificationType } from '~/types/api'
+import type { Admin, Notification, NotificationTarget } from '~/types/api'
+import { AdminRole, NotificationStatus, NotificationType } from '~/types/api'
 
 const props = defineProps({
   loading: {
