@@ -4,8 +4,8 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { paymentsList, type PaymentListItem } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
-import { PaymentMethodType, PaymentSystemStatus} from '~/types/api'
-import type { PaymentSystem } from '~/types/api'
+import { PaymentSystemStatus } from '~/types/api'
+import type { PaymentMethodType, PaymentSystem } from '~/types/api'
 
 const props = defineProps({
   loading: {
