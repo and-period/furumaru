@@ -2,7 +2,14 @@
 import { storeToRefs } from 'pinia'
 
 import { useAlert, usePagination } from '~/lib/hooks'
-import { useAuthStore, useCategoryStore, useProducerStore, useProductStore, useProductTagStore, useProductTypeStore } from '~/store'
+import {
+  useAuthStore,
+  useCategoryStore,
+  useProducerStore,
+  useProductStore,
+  useProductTagStore,
+  useProductTypeStore,
+} from '~/store'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -23,6 +30,7 @@ const { productTypes } = storeToRefs(productTypeStore)
 
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
+const selectedItemId = ref<string>('')
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   await fetchProducts()
@@ -34,7 +42,10 @@ watch(pagination.itemsPerPage, (): void => {
 
 const fetchProducts = async (): Promise<void> => {
   try {
-    await productStore.fetchProducts(pagination.itemsPerPage.value, pagination.offset.value)
+    await productStore.fetchProducts(
+      pagination.itemsPerPage.value,
+      pagination.offset.value,
+    )
   }
   catch (err) {
     if (err instanceof Error) {
@@ -59,6 +70,12 @@ const handleClickShow = (productId: string): void => {
 
 const handleClickNew = (): void => {
   router.push('/products/new')
+}
+
+const handleClickCopyItem = (): void => {
+  if (selectedItemId.value !== '') {
+    router.push(`/products/new?from=${selectedItemId.value}`)
+  }
 }
 
 const handleClickDelete = async (productId: string): Promise<void> => {
@@ -89,6 +106,7 @@ catch (err) {
 <template>
   <templates-product-list
     v-model:delete-dialog="deleteDialog"
+    v-model:selected-item-id="selectedItemId"
     :loading="isLoading()"
     :role="role"
     :is-alert="isShow"
@@ -106,5 +124,6 @@ catch (err) {
     @click:delete="handleClickDelete"
     @click:update-page="handleUpdatePage"
     @click:update-items-per-page="pagination.handleUpdateItemsPerPage"
+    @click:copy-item="handleClickCopyItem"
   />
 </template>

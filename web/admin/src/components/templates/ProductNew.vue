@@ -4,11 +4,31 @@ import useVuelidate from '@vuelidate/core'
 
 import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
-import { type Category, type CreateProductRequest, DeliveryType, Prefecture, type Producer, ProductStatus, type ProductTag, type ProductType, StorageMethodType, Weekday } from '~/types/api'
+import {
+  type Category,
+  type CreateProductRequest,
+  DeliveryType,
+  Prefecture,
+  type Producer,
+  ProductStatus,
+  type ProductTag,
+  type ProductType,
+  StorageMethodType,
+  Weekday,
+} from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
-import { type PrefecturesListItem, prefecturesList, type CityListItem, cityList } from '~/constants'
-import { CreateProductValidationRules, NotSameTimeDataValidationRules, TimeDataValidationRules } from '~/types/validations'
+import {
+  type PrefecturesListItem,
+  prefecturesList,
+  type CityListItem,
+  cityList,
+} from '~/constants'
+import {
+  CreateProductValidationRules,
+  NotSameTimeDataValidationRules,
+  TimeDataValidationRules,
+} from '~/types/validations'
 
 const props = defineProps({
   loading: {
@@ -118,7 +138,8 @@ const itemUnits = ['個', '瓶']
 
 const formDataValue = computed({
   get: (): CreateProductRequest => props.formData,
-  set: (formData: CreateProductRequest): void => emit('update:form-data', formData),
+  set: (formData: CreateProductRequest): void =>
+    emit('update:form-data', formData),
 })
 const startTimeDataValue = computed({
   get: (): DateTimeInput => ({
@@ -160,16 +181,21 @@ const productStatus = computed<ProductStatus>(() => {
 })
 const selectedCategoryIdValue = computed({
   get: (): string => props.selectedCategoryId || '',
-  set: (categoryId: string): void => emit('update:selected-category-id', categoryId),
+  set: (categoryId: string): void =>
+    emit('update:selected-category-id', categoryId),
 })
 const cityListItems = computed(() => {
-  const selectedPrefecture = prefecturesList.find((prefecture: PrefecturesListItem): boolean => {
-    return props.formData.originPrefectureCode === prefecture.value
-  })
+  const selectedPrefecture = prefecturesList.find(
+    (prefecture: PrefecturesListItem): boolean => {
+      return props.formData.originPrefectureCode === prefecture.value
+    },
+  )
   if (!selectedPrefecture) {
     return []
   }
-  return cityList.filter((city: CityListItem): boolean => city.prefId === selectedPrefecture.id)
+  return cityList.filter(
+    (city: CityListItem): boolean => city.prefId === selectedPrefecture.id,
+  )
 })
 const thumbnailIndex = computed<number>({
   get: (): number => props.formData.media.findIndex(item => item.isThumbnail),
@@ -177,36 +203,51 @@ const thumbnailIndex = computed<number>({
     if (formDataValue.value.media.length <= index) {
       return
     }
-    formDataValue.value.media = formDataValue.value.media
-      .map((item, i) => {
-        if (i === index) {
-          return {
-            ...item,
-            isThumbnail: true,
-          }
+    formDataValue.value.media = formDataValue.value.media.map((item, i) => {
+      if (i === index) {
+        return {
+          ...item,
+          isThumbnail: true,
         }
-        else {
-          return {
-            ...item,
-            isThumbnail: false,
-          }
+      }
+      else {
+        return {
+          ...item,
+          isThumbnail: false,
         }
-      })
+      }
+    })
   },
 })
 
-const formDataValidate = useVuelidate(CreateProductValidationRules, formDataValue)
-const startTimeDataValidate = useVuelidate(TimeDataValidationRules, startTimeDataValue)
-const endTimeDataValidate = useVuelidate(TimeDataValidationRules, endTimeDataValue)
-const notSameTimeValidate = useVuelidate(() => NotSameTimeDataValidationRules(props.formData.startAt, '販売開始日時'), formDataValue)
+const formDataValidate = useVuelidate(
+  CreateProductValidationRules,
+  formDataValue,
+)
+const startTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  startTimeDataValue,
+)
+const endTimeDataValidate = useVuelidate(
+  TimeDataValidationRules,
+  endTimeDataValue,
+)
+const notSameTimeValidate = useVuelidate(
+  () => NotSameTimeDataValidationRules(props.formData.startAt, '販売開始日時'),
+  formDataValue,
+)
 
 const onChangeStartAt = (): void => {
-  const startAt = dayjs(`${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`)
+  const startAt = dayjs(
+    `${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`,
+  )
   formDataValue.value.startAt = startAt.unix()
 }
 
 const onChangeEndAt = (): void => {
-  const endAt = dayjs(`${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`)
+  const endAt = dayjs(
+    `${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`,
+  )
   formDataValue.value.endAt = endAt.unix()
 }
 
@@ -215,7 +256,9 @@ const getCommission = (): number => {
 }
 
 const getBenefits = (): number => {
-  return formDataValue.value.price - (formDataValue.value.cost + getCommission())
+  return (
+    formDataValue.value.price - (formDataValue.value.cost + getCommission())
+  )
 }
 
 const onChangeSearchProducer = (name: string): void => {
@@ -253,9 +296,11 @@ const onDeleteThumbnail = (i: number): void => {
   }
 
   const media = targetItem.isThumbnail
-    ? props.formData.media.filter((_, index) => index !== i).map((item, i) => {
-      return i === 0 ? { ...item, isThumbnail: true } : item
-    })
+    ? props.formData.media
+      .filter((_, index) => index !== i)
+      .map((item, i) => {
+        return i === 0 ? { ...item, isThumbnail: true } : item
+      })
     : props.formData.media.filter((_, index) => index !== i)
   formDataValue.value.media = media
 }
@@ -265,7 +310,12 @@ const onSubmit = async (): Promise<void> => {
   const startTimeDataValid = await startTimeDataValidate.value.$validate()
   const endTimeDataValid = await endTimeDataValidate.value.$validate()
   const notSameTimeValid = await notSameTimeValidate.value.$validate()
-  if (!formDataValid || !startTimeDataValid || !endTimeDataValid || !notSameTimeValid) {
+  if (
+    !formDataValid
+    || !startTimeDataValid
+    || !endTimeDataValid
+    || !notSameTimeValid
+  ) {
     return
   }
 
@@ -277,6 +327,7 @@ const onSubmit = async (): Promise<void> => {
   <v-alert
     v-show="props.isAlert"
     :type="props.alertType"
+    class="mb-2"
     v-text="props.alertText"
   />
 
@@ -297,7 +348,9 @@ const onSubmit = async (): Promise<void> => {
           <v-card-text>
             <v-autocomplete
               v-model="formDataValidate.producerId.$model"
-              :error-messages="getErrorMessage(formDataValidate.producerId.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.producerId.$errors)
+              "
               label="生産者名"
               :items="producers"
               item-title="username"
@@ -312,7 +365,9 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-textarea
               v-model="formDataValidate.description.$model"
-              :error-messages="getErrorMessage(formDataValidate.description.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.description.$errors)
+              "
               label="商品説明"
               maxlength="2000"
             />
@@ -377,22 +432,30 @@ const onSubmit = async (): Promise<void> => {
           <v-card-text>
             <v-text-field
               v-model="formDataValidate.recommendedPoint1.$model"
-              :error-messages="getErrorMessage(formDataValidate.recommendedPoint1.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.recommendedPoint1.$errors)
+              "
               label="おすすめポイント1"
             />
             <v-text-field
               v-model="formDataValidate.recommendedPoint2.$model"
-              :error-messages="getErrorMessage(formDataValidate.recommendedPoint2.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.recommendedPoint2.$errors)
+              "
               label="おすすめポイント2"
             />
             <v-text-field
               v-model="formDataValidate.recommendedPoint3.$model"
-              :error-messages="getErrorMessage(formDataValidate.recommendedPoint3.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.recommendedPoint3.$errors)
+              "
               label="おすすめポイント3"
             />
             <v-text-field
               v-model.number="formDataValidate.expirationDate.$model"
-              :error-messages="getErrorMessage(formDataValidate.expirationDate.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.expirationDate.$errors)
+              "
               label="賞味期限"
               type="number"
               min="0"
@@ -400,7 +463,9 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-select
               v-model="formDataValidate.storageMethodType.$model"
-              :error-messages="getErrorMessage(formDataValidate.storageMethodType.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.storageMethodType.$errors)
+              "
               label="保存方法"
               :items="storageMethodTypes"
             />
@@ -469,7 +534,9 @@ const onSubmit = async (): Promise<void> => {
               <v-col cols="9">
                 <v-text-field
                   v-model.number="formDataValidate.inventory.$model"
-                  :error-messages="getErrorMessage(formDataValidate.inventory.$errors)"
+                  :error-messages="
+                    getErrorMessage(formDataValidate.inventory.$errors)
+                  "
                   label="在庫数"
                   type="number"
                   min="0"
@@ -478,7 +545,9 @@ const onSubmit = async (): Promise<void> => {
               <v-col cols="3">
                 <v-combobox
                   v-model="formDataValidate.itemUnit.$model"
-                  :error-messages="getErrorMessage(formDataValidate.itemUnit.$errors)"
+                  :error-messages="
+                    getErrorMessage(formDataValidate.itemUnit.$errors)
+                  "
                   label="単位"
                   :items="itemUnits"
                 />
@@ -488,7 +557,9 @@ const onSubmit = async (): Promise<void> => {
             <div class="d-flex align-center">
               <v-text-field
                 v-model="formDataValidate.itemDescription.$model"
-                :error-messages="getErrorMessage(formDataValidate.itemDescription.$errors)"
+                :error-messages="
+                  getErrorMessage(formDataValidate.itemDescription.$errors)
+                "
                 label="内容説明(発送時に使用)"
                 placeholder="1個あたり、3kg程のみかんが入っています。(40~50個)"
               />
@@ -504,7 +575,9 @@ const onSubmit = async (): Promise<void> => {
           <v-card-text>
             <v-select
               v-model="formDataValidate.deliveryType.$model"
-              :error-messages="getErrorMessage(formDataValidate.deliveryType.$errors)"
+              :error-messages="
+                getErrorMessage(formDataValidate.deliveryType.$errors)
+              "
               label="配送種別"
               :items="deliveryTypes"
             />
@@ -537,7 +610,9 @@ const onSubmit = async (): Promise<void> => {
               <v-col cols="9">
                 <v-text-field
                   v-model.number="formDataValidate[`box${size}Rate`].$model"
-                  :error-messages="getErrorMessage(formDataValidate[`box${size}Rate`].$errors)"
+                  :error-messages="
+                    getErrorMessage(formDataValidate[`box${size}Rate`].$errors)
+                  "
                   label="占有率"
                   type="number"
                   min="0"
@@ -583,7 +658,9 @@ const onSubmit = async (): Promise<void> => {
           <div class="d-flex flex-column flex-md-row justify-center">
             <v-text-field
               v-model="startTimeDataValidate.date.$model"
-              :error-messages="getErrorMessage(startTimeDataValidate.date.$errors)"
+              :error-messages="
+                getErrorMessage(startTimeDataValidate.date.$errors)
+              "
               type="date"
               variant="outlined"
               density="compact"
@@ -592,7 +669,9 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model="startTimeDataValidate.time.$model"
-              :error-messages="getErrorMessage(startTimeDataValidate.time.$errors)"
+              :error-messages="
+                getErrorMessage(startTimeDataValidate.time.$errors)
+              "
               type="time"
               variant="outlined"
               density="compact"
@@ -605,7 +684,9 @@ const onSubmit = async (): Promise<void> => {
           <div class="d-flex flex-column flex-md-row justify-center">
             <v-text-field
               v-model="endTimeDataValidate.date.$model"
-              :error-messages="getErrorMessage(endTimeDataValidate.date.$errors)"
+              :error-messages="
+                getErrorMessage(endTimeDataValidate.date.$errors)
+              "
               type="date"
               variant="outlined"
               density="compact"
@@ -614,7 +695,9 @@ const onSubmit = async (): Promise<void> => {
             />
             <v-text-field
               v-model="endTimeDataValidate.time.$model"
-              :error-messages="getErrorMessage(notSameTimeValidate.endAt.$errors)"
+              :error-messages="
+                getErrorMessage(notSameTimeValidate.endAt.$errors)
+              "
               type="time"
               variant="outlined"
               density="compact"
@@ -641,7 +724,9 @@ const onSubmit = async (): Promise<void> => {
           />
           <v-autocomplete
             v-model="formDataValidate.productTypeId.$model"
-            :error-messages="getErrorMessage(formDataValidate.productTypeId.$errors)"
+            :error-messages="
+              getErrorMessage(formDataValidate.productTypeId.$errors)
+            "
             label="品目"
             :items="productTypes"
             item-title="name"
@@ -652,7 +737,9 @@ const onSubmit = async (): Promise<void> => {
           />
           <v-autocomplete
             v-model="formDataValidate.originPrefectureCode.$model"
-            :error-messages="getErrorMessage(formDataValidate.originPrefectureCode.$errors)"
+            :error-messages="
+              getErrorMessage(formDataValidate.originPrefectureCode.$errors)
+            "
             label="原産地（都道府県）"
             :items="prefecturesList"
             item-title="text"
@@ -660,7 +747,9 @@ const onSubmit = async (): Promise<void> => {
           />
           <v-autocomplete
             v-model="formDataValidate.originCity.$model"
-            :error-messages="getErrorMessage(formDataValidate.originCity.$errors)"
+            :error-messages="
+              getErrorMessage(formDataValidate.originCity.$errors)
+            "
             :items="cityListItems"
             item-title="text"
             item-value="text"
@@ -670,7 +759,9 @@ const onSubmit = async (): Promise<void> => {
           <v-autocomplete
             v-model="formDataValidate.productTagIds.$model"
             label="商品タグ"
-            :error-messages="getErrorMessage(formDataValidate.productTagIds.$errors)"
+            :error-messages="
+              getErrorMessage(formDataValidate.productTagIds.$errors)
+            "
             :items="productTags"
             item-title="name"
             item-value="id"
@@ -703,6 +794,6 @@ const onSubmit = async (): Promise<void> => {
 .thumbnail-border {
   border: 2px;
   border-style: solid;
-  border-color: rgb(var(--v-theme-secondary));;
+  border-color: rgb(var(--v-theme-secondary));
 }
 </style>

@@ -1,13 +1,25 @@
 <script lang="ts" setup>
-import { mdiDelete, mdiPlus } from '@mdi/js'
+import { mdiDelete, mdiPlus, mdiContentCopy } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
-import { type PrefecturesListItem, prefecturesList } from '~/constants'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
-import { type Product, type ProductMediaInner, Prefecture, ProductStatus, type Category, type ProductTag, type ProductType, type Producer, AdminRole } from '~/types/api'
+import {
+  type Product,
+  type ProductMediaInner,
+  ProductStatus,
+  type Category,
+  type ProductTag,
+  type ProductType,
+  type Producer,
+  AdminRole,
+} from '~/types/api'
 
 const props = defineProps({
+  selectedItemId: {
+    type: String,
+    default: '',
+  },
   loading: {
     type: Boolean,
     default: false,
@@ -67,8 +79,10 @@ const emit = defineEmits<{
   (e: 'click:update-items-per-page', page: number): void
   (e: 'click:show', productId: string): void
   (e: 'click:new'): void
+  (e: 'click:copyItem'): void
   (e: 'click:delete', productId: string): void
   (e: 'update:delete-dialog', v: boolean): void
+  (e: 'update:selectedItemId', v: string): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -120,6 +134,15 @@ const headers: VDataTable['headers'] = [
   },
 ]
 
+const handleUpdateSelectItemId = (itemIds: string[]): void => {
+  if (itemIds.length === 0) {
+    emit('update:selectedItemId', '')
+  }
+  else {
+    emit('update:selectedItemId', itemIds[0])
+  }
+}
+
 const selectedItem = ref<Product>()
 
 const deleteDialogValue = computed({
@@ -132,10 +155,7 @@ const isRegisterable = (): boolean => {
 }
 
 const isDeletable = (): boolean => {
-  const targets: AdminRole[] = [
-    AdminRole.ADMINISTRATOR,
-    AdminRole.COORDINATOR,
-  ]
+  const targets: AdminRole[] = [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR]
   return targets.includes(props.role)
 }
 
@@ -147,9 +167,11 @@ const getCategoryName = (categoryId: string): string => {
 }
 
 const getProductTypeName = (productTypeId: string): string => {
-  const productType = props.productTypes.find((productType: ProductType): boolean => {
-    return productType.id === productTypeId
-  })
+  const productType = props.productTypes.find(
+    (productType: ProductType): boolean => {
+      return productType.id === productTypeId
+    },
+  )
   return productType ? productType.name : ''
 }
 
@@ -241,6 +263,10 @@ const onClickNew = (): void => {
 const onClickDelete = (): void => {
   emit('click:delete', selectedItem?.value?.id || '')
 }
+
+const onClickCopyItem = (): void => {
+  emit('click:copyItem')
+}
 </script>
 
 <template>
@@ -285,7 +311,28 @@ const onClickDelete = (): void => {
   >
     <v-card-title class="d-flex flex-row">
       商品管理
+    </v-card-title>
+
+    <div class="d-flex w-100 px-6 ga-2">
       <v-spacer />
+      <v-btn
+        variant="outlined"
+        color="secondary"
+        @click="onClickCopyItem"
+      >
+        <v-icon
+          start
+          :icon="mdiContentCopy"
+        />
+        商品複製
+        <v-tooltip
+          v-if="selectedItemId === ''"
+          activator="parent"
+          location="bottom"
+        >
+          コピー元の商品をチェックする必要があります。
+        </v-tooltip>
+      </v-btn>
       <v-btn
         v-show="isRegisterable()"
         variant="outlined"
@@ -298,7 +345,7 @@ const onClickDelete = (): void => {
         />
         商品登録
       </v-btn>
-    </v-card-title>
+    </div>
 
     <v-card-text>
       <v-data-table-server
@@ -308,10 +355,13 @@ const onClickDelete = (): void => {
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         hover
+        select-strategy="single"
+        show-select
         no-data-text="登録されている商品がありません。"
+        @update:model-value="handleUpdateSelectItemId"
         @update:page="onUpdatePage"
         @update:items-per-page="onUpdateItemsPerPage"
-        @click:row="(_: any, { item }:any) => onClickShow(item.id)"
+        @click:row="(_: any, { item }: any) => onClickShow(item.id)"
       >
         <template #[`item.media`]="{ item }">
           <v-img

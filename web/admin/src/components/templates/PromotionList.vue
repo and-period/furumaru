@@ -4,7 +4,12 @@ import { unix } from 'dayjs'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import type { AlertType } from '~/lib/hooks'
-import { AdminRole, DiscountType, PromotionStatus, type Promotion } from '~/types/api'
+import {
+  AdminRole,
+  DiscountType,
+  PromotionStatus,
+  type Promotion,
+} from '~/types/api'
 
 const props = defineProps({
   loading: {
@@ -112,7 +117,10 @@ const isEditable = (): boolean => {
   return props.role === AdminRole.ADMINISTRATOR
 }
 
-const getDiscount = (discountType: DiscountType, discountRate: number): string => {
+const getDiscount = (
+  discountType: DiscountType,
+  discountRate: number,
+): string => {
   switch (discountType) {
     case DiscountType.AMOUNT:
       return '￥' + discountRate.toLocaleString()
@@ -210,7 +218,7 @@ const onClickDelete = (): void => {
   >
     <v-card>
       <v-card-title class="text-h7">
-        {{ selectedItem?.title || '' }}を本当に削除しますか？
+        {{ selectedItem?.title || "" }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />

@@ -11,8 +11,15 @@ import {
   useProductTagStore,
   useProductTypeStore,
 } from '~/store'
-import { type CreateProductRequest, type CreateProductRequestMediaInner, DeliveryType, Prefecture, StorageMethodType } from '~/types/api'
+import {
+  type CreateProductRequest,
+  type CreateProductRequestMediaInner,
+  DeliveryType,
+  Prefecture,
+  StorageMethodType,
+} from '~/types/api'
 
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const categoryStore = useCategoryStore()
@@ -27,6 +34,16 @@ const { categories } = storeToRefs(categoryStore)
 const { producers } = storeToRefs(producerStore)
 const { productTags } = storeToRefs(productTagStore)
 const { productTypes } = storeToRefs(productTypeStore)
+
+const copyFromProductId = computed(() => {
+  const fromId = route.query.from as string
+  if (fromId) {
+    return fromId
+  }
+  else {
+    return ''
+  }
+})
 
 const loading = ref<boolean>(false)
 const selectedCategoryId = ref<string>()
@@ -60,7 +77,58 @@ const formData = ref<CreateProductRequest>({
   endAt: dayjs().unix(),
 })
 
+const fetchAndSetFormDataByCopyFromProduct = async (productId: string) => {
+  try {
+    const sourceProduct = await productStore.getProduct(
+      copyFromProductId.value,
+    )
+    formData.value.name = `${sourceProduct.product.name}のコピー`
+    formData.value.description = sourceProduct.product.description
+    formData.value.public = sourceProduct.product.public
+    formData.value.coordinatorId = sourceProduct.product.coordinatorId
+    formData.value.producerId = sourceProduct.product.producerId
+    formData.value.productTypeId = sourceProduct.product.productTypeId
+    formData.value.productTagIds = sourceProduct.product.productTagIds
+    formData.value.price = sourceProduct.product.price
+    formData.value.cost = sourceProduct.product.cost
+    formData.value.inventory = sourceProduct.product.inventory
+    formData.value.weight = sourceProduct.product.weight
+    formData.value.itemUnit = sourceProduct.product.itemUnit
+    formData.value.itemDescription = sourceProduct.product.itemDescription
+    formData.value.deliveryType = sourceProduct.product.deliveryType
+    formData.value.recommendedPoint1 = sourceProduct.product.recommendedPoint1
+    formData.value.recommendedPoint2 = sourceProduct.product.recommendedPoint2
+    formData.value.recommendedPoint3 = sourceProduct.product.recommendedPoint3
+    formData.value.expirationDate = sourceProduct.product.expirationDate
+    formData.value.storageMethodType = sourceProduct.product.storageMethodType
+    formData.value.box60Rate = sourceProduct.product.box60Rate
+    formData.value.box80Rate = sourceProduct.product.box80Rate
+    formData.value.box100Rate = sourceProduct.product.box100Rate
+    formData.value.originPrefectureCode
+      = sourceProduct.product.originPrefectureCode
+    formData.value.originCity = sourceProduct.product.originCity
+    formData.value.startAt = sourceProduct.product.startAt
+    formData.value.endAt = sourceProduct.product.endAt
+    formData.value.media = sourceProduct.product.media.map(
+      (item): CreateProductRequestMediaInner => ({
+        url: item.url,
+        isThumbnail: item.isThumbnail,
+      }),
+    )
+    selectedCategoryId.value = sourceProduct.product.categoryId
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(`複製元の商品を取得できませんでした。${err.message}`)
+    }
+    console.log(err)
+  }
+}
+
 const fetchState = useAsyncData(async (): Promise<void> => {
+  if (copyFromProductId.value) {
+    fetchAndSetFormDataByCopyFromProduct(copyFromProductId.value)
+  }
   await Promise.all([
     categoryStore.fetchCategories(),
     producerStore.fetchProducers(20, 0, ''),
@@ -69,7 +137,9 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 })
 
 watch(selectedCategoryId, (newValue?: string, oldValue?: string): void => {
-  productTypeStore.fetchProductTypesByCategoryId(selectedCategoryId.value || '')
+  productTypeStore.fetchProductTypesByCategoryId(
+    selectedCategoryId.value || '',
+  )
   if (newValue === oldValue) {
     return
   }
@@ -94,7 +164,9 @@ const handleSearchProducer = async (name: string): Promise<void> => {
 
 const handleSearchCategory = async (name: string): Promise<void> => {
   try {
-    const categoryIds: string[] = selectedCategoryId.value ? [selectedCategoryId.value] : []
+    const categoryIds: string[] = selectedCategoryId.value
+      ? [selectedCategoryId.value]
+      : []
     await categoryStore.searchCategories(name, categoryIds)
   }
   catch (err) {
@@ -107,8 +179,14 @@ const handleSearchCategory = async (name: string): Promise<void> => {
 
 const handleSearchProductType = async (name: string): Promise<void> => {
   try {
-    const productTypeIds: string[] = formData.value.productTypeId ? [formData.value.productTypeId] : []
-    await productTypeStore.searchProductTypes(name, selectedCategoryId.value, productTypeIds)
+    const productTypeIds: string[] = formData.value.productTypeId
+      ? [formData.value.productTypeId]
+      : []
+    await productTypeStore.searchProductTypes(
+      name,
+      selectedCategoryId.value,
+      productTypeIds,
+    )
   }
   catch (err) {
     if (err instanceof Error) {
@@ -150,10 +228,12 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
   if (thumbnailItem) {
     return
   }
-  formData.value.media = formData.value.media.map((item, i): CreateProductRequestMediaInner => ({
-    ...item,
-    isThumbnail: i === 0,
-  }))
+  formData.value.media = formData.value.media.map(
+    (item, i): CreateProductRequestMediaInner => ({
+      ...item,
+      isThumbnail: i === 0,
+    }),
+  )
 }
 
 const handleSubmit = async (): Promise<void> => {
