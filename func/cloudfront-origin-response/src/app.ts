@@ -171,6 +171,12 @@ function isConvertableExtension(extension: string): boolean {
   return ['jpg', 'jpeg', 'png', 'svg', 'webp'].includes(extension);
 }
 
+// フィット種別が利用可能なものかを判定
+function isConvertableFitType(fit: string): boolean {
+  console.log(`received fit='${fit}'`);
+  return ['cover', 'contain', 'fill', 'inside', 'outside'].includes(fit);
+}
+
 // クエリパラメータを基に画像のリサイズが必要かを判定
 function isConvertableOptions(opts: ConvertOptions): boolean {
   if (opts.width || opts.height) {
@@ -190,23 +196,23 @@ function getImageOptions(params: querystring.ParsedUrlQuery): ConvertOptions {
   const { width, height, format, fit, blur, dpr } = params;
 
   const options: ConvertOptions = {};
-  if (width || Number(width) > 0) {
+  if (width && Number(width) > 0) {
     options.width = Number(width);
   }
-  if (height || Number(height) > 0) {
+  if (height && Number(height) > 0) {
     options.height = Number(height);
   }
-  if (dpr || Number(dpr) > 0) {
+  if (dpr && Number(dpr) > 0) {
     options.width = options.width && options.width * Number(dpr);
     options.height = options.height && options.height * Number(dpr);
   }
-  if (format || isConvertableExtension(String(format))) {
+  if (format && isConvertableExtension(String(format))) {
     options.format = format as ImageFormat;
   }
-  if (fit || ['cover', 'contain', 'fill', 'inside', 'outside'].includes(String(fit))) {
+  if (fit && isConvertableFitType(String(fit))) {
     options.fit = fit as ImageFitType;
   }
-  if (blur || (Number(params.blur) >= 0.3 && Number(params.blur) <= 1000)) {
+  if (blur && Number(blur) >= 0.3 && Number(blur) <= 1000) {
     options.blur = Number(blur);
   }
   return options;
