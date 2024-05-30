@@ -185,7 +185,7 @@ const hideV1App = false
         type="submit"
         @click="handleSubmitWithoutSignForm"
       >
-        ログインせずに購入
+        ゲストとして購入
       </the-submit-without-login-button>
     </div>
   </div>
