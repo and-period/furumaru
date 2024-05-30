@@ -57,6 +57,7 @@ const handleClickAddCart = (name: string, id: string, quantity: number) => {
             class="mb-2 h-[48px] w-[48px] rounded-full"
             width="48px"
             height="48px"
+            format="webp"
           />
           <p
             v-if="username"

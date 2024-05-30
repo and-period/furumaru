@@ -84,6 +84,7 @@ const handleClickAddCartButton = () => {
           :alt="`${name}のサムネイル画像`"
           fit="cover"
           sizes="180px md:250px"
+          format="webp"
           class="aspect-square w-full"
         />
       </picture>
@@ -158,6 +159,7 @@ const handleClickAddCartButton = () => {
           provider="cloudFront"
           width="64px"
           hidden="64px"
+          format="webp"
           :src="coordinator.thumbnailUrl"
           :alt="`${coordinator.username}のサムネイル画像`"
           class="block aspect-square h-14 w-14 rounded-full"

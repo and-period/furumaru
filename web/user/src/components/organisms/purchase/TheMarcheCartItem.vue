@@ -118,6 +118,7 @@ const handelClickRemoveItemButton = (id: string) => {
                 class="block h-16 w-16"
                 height="64px"
                 width="64px"
+                format="webp"
                 :alt="`${item.product.name}のサムネイル画像`"
               />
               {{ item.product.name }}
@@ -152,6 +153,7 @@ const handelClickRemoveItemButton = (id: string) => {
               class="block h-16 w-16"
               width="64px"
               height="64px"
+              format="webp"
               :alt="`${item.product.name}のサムネイル画像`"
             />
             <div class="flex grow flex-col justify-between">
