@@ -30,7 +30,7 @@ get:
     required: false
     example: 1640962800
   - in: query
-    name: interval
+    name: viewerLogInterval
     schema:
       $ref: './../../../../openapi.yaml#/components/schemas/broadcastViewerLogInterval'
     description: 集計間隔 (未指定の場合は1分間隔)
