@@ -161,7 +161,7 @@ const hideV1App = false
         <p
           class="mt-4 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
         >
-        アカウントお持ちでない方はこちら
+          アカウントお持ちでない方はこちら
         </p>
       </button>
       <div
