@@ -16689,11 +16689,11 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
          * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
-         * @param {BroadcastViewerLogInterval} [interval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {BroadcastViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AnalyzeSchedule: async (scheduleId: string, startAt?: number, endAt?: number, interval?: BroadcastViewerLogInterval, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1AnalyzeSchedule: async (scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: BroadcastViewerLogInterval, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1AnalyzeSchedule', 'scheduleId', scheduleId)
             const localVarPath = `/v1/schedules/{scheduleId}/analytics`
@@ -16721,8 +16721,8 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
                 localVarQueryParameter['endAt'] = endAt;
             }
 
-            if (interval !== undefined) {
-                localVarQueryParameter['interval'] = interval;
+            if (viewerLogInterval !== undefined) {
+                localVarQueryParameter['viewerLogInterval'] = viewerLogInterval;
             }
 
 
@@ -17267,12 +17267,12 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
          * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
-         * @param {BroadcastViewerLogInterval} [interval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {BroadcastViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1AnalyzeSchedule(scheduleId: string, startAt?: number, endAt?: number, interval?: BroadcastViewerLogInterval, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AnalyzeScheduleResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AnalyzeSchedule(scheduleId, startAt, endAt, interval, options);
+        async v1AnalyzeSchedule(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: BroadcastViewerLogInterval, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AnalyzeScheduleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AnalyzeSchedule(scheduleId, startAt, endAt, viewerLogInterval, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1AnalyzeSchedule']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -17460,12 +17460,12 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {string} scheduleId マルシェ開催スケジュールID
          * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
          * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
-         * @param {BroadcastViewerLogInterval} [interval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {BroadcastViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AnalyzeSchedule(scheduleId: string, startAt?: number, endAt?: number, interval?: BroadcastViewerLogInterval, options?: any): AxiosPromise<AnalyzeScheduleResponse> {
-            return localVarFp.v1AnalyzeSchedule(scheduleId, startAt, endAt, interval, options).then((request) => request(axios, basePath));
+        v1AnalyzeSchedule(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: BroadcastViewerLogInterval, options?: any): AxiosPromise<AnalyzeScheduleResponse> {
+            return localVarFp.v1AnalyzeSchedule(scheduleId, startAt, endAt, viewerLogInterval, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -17614,13 +17614,13 @@ export class ScheduleApi extends BaseAPI {
      * @param {string} scheduleId マルシェ開催スケジュールID
      * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
      * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
-     * @param {BroadcastViewerLogInterval} [interval] 集計間隔 (未指定の場合は1分間隔)
+     * @param {BroadcastViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ScheduleApi
      */
-    public v1AnalyzeSchedule(scheduleId: string, startAt?: number, endAt?: number, interval?: BroadcastViewerLogInterval, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1AnalyzeSchedule(scheduleId, startAt, endAt, interval, options).then((request) => request(this.axios, this.basePath));
+    public v1AnalyzeSchedule(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: BroadcastViewerLogInterval, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1AnalyzeSchedule(scheduleId, startAt, endAt, viewerLogInterval, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
