@@ -92,6 +92,14 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 			h.httpError(ctx, err)
 			return
 		}
+		// 生産者が紐づかない場合、商品が存在しないためアーリーリターンする
+		if len(producers) == 0 {
+			res := &response.ProductsResponse{
+				Products: []*response.Product{},
+			}
+			ctx.JSON(http.StatusOK, res)
+			return
+		}
 		in.ProducerIDs = producers.IDs()
 	}
 	products, total, err := h.store.ListProducts(ctx, in)
