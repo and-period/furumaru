@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import dayjs, { unix } from 'dayjs'
+import dayjs from 'dayjs'
 
 interface Props {
   id: string | undefined
@@ -19,7 +19,7 @@ interface Emits {
 const emits = defineEmits<Emits>()
 
 const time = computed(() => {
-  const startAt = unix(props.startAt)
+  const startAt = dayjs.unix(props.startAt)
   const current = dayjs()
   const diff = current.diff(startAt)
 
