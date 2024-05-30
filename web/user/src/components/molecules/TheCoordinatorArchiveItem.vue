@@ -28,7 +28,6 @@ const handleClick = () => {
       <nuxt-img
         provider="cloudFront"
         fit="cover"
-        format="webp"
         class="aspect-video w-full object-cover"
         :width="width"
         :src="imgSrc"

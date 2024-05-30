@@ -345,7 +345,6 @@ useSeoMeta({
                       :alt="`${item.product.name}の画像`"
                       width="56px"
                       height="56px"
-                      format="webp"
                       class="block aspect-square h-[56px] w-[56px]"
                     />
                     <div class="col-span-3 pl-[24px] md:pl-0">
