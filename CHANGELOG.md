@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.21](https://github.com/and-period/furumaru/compare/v1.11.20...v1.11.21) - 2024-05-30
+- fix(user): dayjsのインポート箇所のエラー修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2250
+
 ## [v1.11.20](https://github.com/and-period/furumaru/compare/v1.11.19...v1.11.20) - 2024-05-30
 - Fix/revert by @taba2424 in https://github.com/and-period/furumaru/pull/2248
 
