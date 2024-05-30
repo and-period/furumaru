@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.11.18](https://github.com/and-period/furumaru/compare/v1.11.17...v1.11.18) - 2024-05-30
+- 商品複製機能の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2235
+- feat(api): ライブ配信分析用APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2239
+- chore(deps): bump the dependencies group in /api with 42 updates by @dependabot in https://github.com/and-period/furumaru/pull/2237
+- chore(deps): bump the dependencies group in /docs/swagger with 3 updates by @dependabot in https://github.com/and-period/furumaru/pull/2225
+- YouTube連携のcallback画面と完了画面のUI作成 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2238
+- fix(gateway): 生産者が紐づかない場合の商品一覧取得APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2240
+- fix(func): 画像リサイズ処理の引数取得処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2241
+
 ## [v1.11.17](https://github.com/and-period/furumaru/compare/v1.11.16...v1.11.17) - 2024-05-25
 - fix(media): YouTubeとの連携処理を見直し by @taba2424 in https://github.com/and-period/furumaru/pull/2229
 - fix(admin): Google認証後の処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2231
