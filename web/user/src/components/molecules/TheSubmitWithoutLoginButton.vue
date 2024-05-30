@@ -1,7 +1,7 @@
 <script lang="ts" setup></script>
 
 <template>
-  <the-button class="w-full border border-main text-main">
+  <the-button class="w-full bg-main text-white">
     <slot />
   </the-button>
 </template>
