@@ -24,6 +24,7 @@ const priceString = computed(() => {
       provider="cloudFront"
       width="80px"
       height="80px"
+      format="webp"
     />
     <div
       class="flex w-full flex-col justify-between text-[12px] tracking-[1.2px]"

@@ -43,6 +43,7 @@ const handleClick = () => {
         provider="cloudFront"
         height="208px"
         fit="cover"
+        format="webp"
         class="aspect-video max-h-[208px] cursor-pointer object-cover"
         :src="imgSrc"
         :alt="`live-${title}-thumbnail`"

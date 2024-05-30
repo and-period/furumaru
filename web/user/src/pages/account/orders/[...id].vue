@@ -65,6 +65,7 @@ useSeoMeta({
               provider="cloudFront"
               class="block max-w-[80px] rounded-full"
               width="80px"
+              format="webp"
               :src="orderHistory.coordinator?.thumbnailUrl"
               :alt="`${orderHistory.coordinator?.username}のサムネイル`"
             />
@@ -167,6 +168,7 @@ useSeoMeta({
                 provider="cloudFront"
                 width="64px"
                 height="64px"
+                format="webp"
                 class="aspect-square h-16 w-16 object-contain"
                 :src="item.product.thumbnailUrl"
                 :alt="`${item.product.name}のサムネイル画像`"

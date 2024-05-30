@@ -64,6 +64,7 @@ const handleClick = () => {
           class="aspect-video w-full object-cover"
           fit="cover"
           sizes="320px md:368px"
+          format="webp"
         />
         <div
           v-if="!isLiveStreaming(isLiveStatus)"
@@ -119,6 +120,7 @@ const handleClick = () => {
               :alt="`${cnName}のーアバター画像`"
               width="40"
               height="40"
+              format="webp"
               class="h-10 w-10 rounded-full"
             />
           </div>

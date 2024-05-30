@@ -86,6 +86,7 @@ useSeoMeta({
                 :src="user.thumbnailUrl"
                 width="120px"
                 height="120px"
+                format="webp"
                 provider="cloudFront"
                 alt="サムネイル"
                 class="h-[120px] w-[120px] rounded-full"

@@ -82,6 +82,7 @@ const handleClickItem = () => {
           provider="cloudFront"
           width="80px"
           height="80px"
+          format="webp"
           class="aspect-square h-full w-full"
           :class="{ 'hover:cursor-pointer hover:underline': canAddCart }"
           @click="handleClickItem"
