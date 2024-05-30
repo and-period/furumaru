@@ -8,12 +8,12 @@ import type { Producer } from '~/types/api'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   tableFooterProps: {
     type: Object,
-    default: () => {}
-  }
+    default: () => {},
+  },
 })
 
 const emit = defineEmits<{
@@ -35,29 +35,29 @@ const totalItems = computed(() => {
 const producerHeaders: VDataTable['headers'] = [
   {
     title: 'サムネイル',
-    key: 'thumbnailUrl'
+    key: 'thumbnailUrl',
   },
   {
     title: '生産者名',
-    key: 'name'
+    key: 'name',
   },
   {
     title: '店舗名',
-    key: 'storeName'
+    key: 'storeName',
   },
   {
     title: 'Email',
-    key: 'email'
+    key: 'email',
   },
   {
     title: '電話番号',
-    key: 'phoneNumber'
+    key: 'phoneNumber',
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const handleUpdateItemsPerPage = (page: number) => {
@@ -96,7 +96,10 @@ const handleEdit = (item: Producer) => {
             :src="item.thumbnailUrl"
             :alt="`${item.storeName}-profile`"
           >
-          <v-icon v-else :icon="mdiAccount" />
+          <v-icon
+            v-else
+            :icon="mdiAccount"
+          />
         </v-avatar>
       </template>
       <template #[`item.name`]="{ item }">
@@ -106,8 +109,16 @@ const handleEdit = (item: Producer) => {
         {{ convertPhone(item.phoneNumber) }}
       </template>
       <template #[`item.actions`]="{ item }">
-        <v-btn variant="outlined" color="primary" size="small" @click="handleEdit(item)">
-          <v-icon size="small" :icon="mdiPencil" />
+        <v-btn
+          variant="outlined"
+          color="primary"
+          size="small"
+          @click="handleEdit(item)"
+        >
+          <v-icon
+            size="small"
+            :icon="mdiPencil"
+          />
           編集
         </v-btn>
       </template>

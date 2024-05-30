@@ -40,7 +40,8 @@ const fetchContacts = async (): Promise<void> => {
     }) || []
 
     await contactStore.fetchContacts(pagination.itemsPerPage.value, pagination.offset.value, orders)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -63,7 +64,8 @@ const handleClickRow = (contactId: string): void => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

@@ -2,45 +2,45 @@
 import { prefecturesList } from '~/constants'
 
 interface Props {
-  postalCode: string;
-  prefecture: number;
-  city: string;
-  addressLine1: string;
-  addressLine2: string;
-  loading: boolean;
-  errorMessages: string;
+  postalCode: string
+  prefecture: number
+  city: string
+  addressLine1: string
+  addressLine2: string
+  loading: boolean
+  errorMessages: string
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  (e: 'update:postalCode', postalCode: string): void;
-  (e: 'update:prefecture', prefecture: number): void;
-  (e: 'update:city', city: string): void;
-  (e: 'update:addressLine1', address: string): void;
-  (e: 'update:addressLine2', address: string): void;
-  (e: 'click:search'): void;
+  (e: 'update:postalCode', postalCode: string): void
+  (e: 'update:prefecture', prefecture: number): void
+  (e: 'update:city', city: string): void
+  (e: 'update:addressLine1', address: string): void
+  (e: 'update:addressLine2', address: string): void
+  (e: 'click:search'): void
 }>()
 
 const postalCodeValue = computed({
   get: (): string => props.postalCode,
-  set: (val: string) => emit('update:postalCode', val)
+  set: (val: string) => emit('update:postalCode', val),
 })
 const prefectureValue = computed({
   get: (): number => props.prefecture,
-  set: (val: number) => emit('update:prefecture', val)
+  set: (val: number) => emit('update:prefecture', val),
 })
 const cityValue = computed({
   get: (): string => props.city,
-  set: (val: string) => emit('update:city', val)
+  set: (val: string) => emit('update:city', val),
 })
 const addressLine1Value = computed({
   get: (): string => props.addressLine1,
-  set: (val: string) => emit('update:addressLine1', val)
+  set: (val: string) => emit('update:addressLine1', val),
 })
 const addressLine2Value = computed({
   get: (): string => props.addressLine2,
-  set: (val: string) => emit('update:addressLine2', val)
+  set: (val: string) => emit('update:addressLine2', val),
 })
 
 const handleSearch = () => {
@@ -88,6 +88,9 @@ const handleSearch = () => {
       label="町名・番地"
       :loading="props.loading"
     />
-    <v-text-field v-model="addressLine2Value" label="ビル名・号室（任意）" />
+    <v-text-field
+      v-model="addressLine2Value"
+      label="ビル名・号室（任意）"
+    />
   </div>
 </template>

@@ -3,7 +3,10 @@
     <v-main>
       <v-container>
         <v-card>
-          <v-card-text class="markdown-content" v-html="privacyPolicyMarkdown" />
+          <v-card-text
+            class="markdown-content"
+            v-html="privacyPolicyMarkdown"
+          />
         </v-card>
       </v-container>
     </v-main>
@@ -15,25 +18,25 @@ import { marked } from 'marked'
 
 export default {
   name: 'App',
-  data () {
+  data() {
     return {
-      privacyPolicyMarkdown: ''
+      privacyPolicyMarkdown: '',
     }
   },
-  mounted () {
+  mounted() {
     this.loadMarkdown()
   },
   methods: {
-    async loadMarkdown () {
+    async loadMarkdown() {
       const response = await fetch('/_content/privacyPolicy.md')
       const markdownText = await response.text()
       this.privacyPolicyMarkdown = marked(markdownText)
-    }
-  }
+    },
+  },
 }
 
 definePageMeta({
-  layout: 'empty'
+  layout: 'empty',
 })
 </script>
 

@@ -28,13 +28,11 @@ watch([tel1, tel2, tel3], () => {
   emits('update:modelValue', `${tel1.value}-${tel2.value}-${tel3.value}`)
 })
 
-
-
 /**
  * エラーの判定
  * errorMessageが渡されている場合はエラー状態にする
  */
- const hasError = computed(() => {
+const hasError = computed(() => {
   if (props.errorMessage !== '') {
     return true
   }
@@ -45,10 +43,11 @@ watch([tel1, tel2, tel3], () => {
  * メッセージエリアに表示する文字列
  * errorMessageを優先する
  */
- const viewMessage = computed(() => {
+const viewMessage = computed(() => {
   if (props.errorMessage !== '') {
     return props.errorMessage
-  } else {
+  }
+  else {
     return props.message
   }
 })
@@ -65,7 +64,7 @@ watch([tel1, tel2, tel3], () => {
         placeholder="000"
         class="col-span-3 block appearance-none rounded-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none"
         required
-      />
+      >
       -
       <input
         v-model="tel2"
@@ -74,7 +73,7 @@ watch([tel1, tel2, tel3], () => {
         placeholder="0000"
         class="col-span-3 appearance-none rounded-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none"
         required
-      />
+      >
       -
       <input
         v-model="tel3"
@@ -83,7 +82,7 @@ watch([tel1, tel2, tel3], () => {
         placeholder="0000"
         class="col-span-3 appearance-none rounded-none border-b border-main bg-transparent px-2 leading-10 outline-none ring-0 focus:outline-none"
         required
-      />
+      >
     </div>
     <p :class="{ 'text-orange': hasError, 'text-left text-sm': true }">
       {{ viewMessage }}

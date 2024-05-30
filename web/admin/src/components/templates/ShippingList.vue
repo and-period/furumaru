@@ -9,44 +9,44 @@ import { AdminRole, type Coordinator, type Shipping } from '~/types/api'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   shippings: {
     type: Array<Shipping>,
-    default: () => []
+    default: () => [],
   },
   coordinators: {
     type: Array<Coordinator>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
@@ -63,33 +63,33 @@ const headers: VDataTable['headers'] = [
   {
     title: '名前',
     key: 'name',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'コーディネーター名',
     key: 'coordinatorId',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'デフォルト設定',
     key: 'isDefault',
-    sortable: false
+    sortable: false,
   },
   {
     title: '更新日時',
     key: 'updatedAt',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (v: boolean): void => emit('update:delete-dialog', v)
+  set: (v: boolean): void => emit('update:delete-dialog', v),
 })
 
 const isRegisterable = (): boolean => {
@@ -141,31 +141,58 @@ const onSubmitDelete = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title>
         本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseDeleteDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="props.loading" color="primary" variant="outlined" @click="onSubmitDelete">
+        <v-btn
+          :loading="props.loading"
+          color="primary"
+          variant="outlined"
+          @click="onSubmitDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       配送設定一覧
       <v-spacer />
-      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
-        <v-icon start :icon="mdiPlus" />
+      <v-btn
+        v-show="isRegisterable()"
+        variant="outlined"
+        color="primary"
+        @click="onClickAdd"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         配送情報登録
       </v-btn>
     </v-card-title>
@@ -181,13 +208,16 @@ const onSubmitDelete = (): void => {
         no-data-text="登録されている配送設定がありません"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_: any, {item}: any) => onClickRow(item.id)"
+        @click:row="(_: any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.coordinatorId`]="{ item }">
           {{ getCoordinatorName(item.coordinatorId) }}
         </template>
         <template #[`item.isDefault`]="{ item }">
-          <v-chip size="small" :color="getIsDefaultColor(item.isDefault)">
+          <v-chip
+            size="small"
+            :color="getIsDefaultColor(item.isDefault)"
+          >
             {{ getIsDefault(item.isDefault) }}
           </v-chip>
         </template>
@@ -201,7 +231,10 @@ const onSubmitDelete = (): void => {
             variant="outlined"
             @click.stop="onClickDelete(item)"
           >
-            <v-icon size="small" :icon="mdiDelete" />削除
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />削除
           </v-btn>
         </template>
       </v-data-table-server>

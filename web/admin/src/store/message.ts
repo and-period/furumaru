@@ -8,7 +8,7 @@ export const useMessageStore = defineStore('message', {
     message: {} as Message,
     messages: [] as Message[],
     total: 0,
-    hasUnread: false
+    hasUnread: false,
   }),
 
   actions: {
@@ -19,10 +19,10 @@ export const useMessageStore = defineStore('message', {
      * @param orders ソートキー
      * @returns
      */
-    async fetchMessages (
+    async fetchMessages(
       limit = 20,
       offset = 0,
-      orders: string[] = []
+      orders: string[] = [],
     ): Promise<void> {
       try {
         if (orders.length === 0) {
@@ -31,14 +31,15 @@ export const useMessageStore = defineStore('message', {
         const res = await apiClient.messageApi().v1ListMessages(
           limit,
           offset,
-          orders.join(',')
+          orders.join(','),
         )
         const { messages, total }: MessagesResponse = res.data
 
         this.messages = messages
         this.total = total
         this.hasUnread = messages.some((message): boolean => !message.read)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -48,7 +49,7 @@ export const useMessageStore = defineStore('message', {
      * @param messageId メッセージID
      * @returns
      */
-    async fetchMessage (messageId = ''): Promise<void> {
+    async fetchMessage(messageId = ''): Promise<void> {
       try {
         const res = await apiClient.messageApi().v1GetMessage(messageId)
         const message = res.data.message || {}
@@ -59,9 +60,10 @@ export const useMessageStore = defineStore('message', {
             this.messages[i].read = true
           }
         })
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '対象のメッセージが存在しません' })
       }
-    }
-  }
+    },
+  },
 })

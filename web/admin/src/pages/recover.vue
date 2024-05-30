@@ -4,7 +4,7 @@ import { useAuthStore, useCommonStore } from '~/store'
 import type { ForgotAuthPasswordRequest, ResetAuthPasswordRequest } from '~/types/api'
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'auth',
 })
 
 const router = useRouter()
@@ -18,7 +18,7 @@ const formData = ref<ResetAuthPasswordRequest>({
   email: '',
   verifyCode: '',
   password: '',
-  passwordConfirmation: ''
+  passwordConfirmation: '',
 })
 
 const handleClickCancel = (): void => {
@@ -29,20 +29,22 @@ const handleSendEmail = async (): Promise<void> => {
   try {
     loading.value = true
     const req: ForgotAuthPasswordRequest = {
-      email: formData.value.email
+      email: formData.value.email,
     }
     await authStore.forgotPassword(req)
     commonStore.addSnackbar({
       message: 'パスワードリセット用のメールをしました。',
-      color: 'info'
+      color: 'info',
     })
     sentEmail.value = true
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -53,15 +55,17 @@ const handleResetPassword = async (): Promise<void> => {
     await authStore.resetPassword(formData.value)
     commonStore.addSnackbar({
       message: 'パスワードをリセットしました。',
-      color: 'info'
+      color: 'info',
     })
     router.push('/signin')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

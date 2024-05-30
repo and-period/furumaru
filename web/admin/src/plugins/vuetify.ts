@@ -1,6 +1,6 @@
 import { createVuetify } from 'vuetify'
 import { md3 } from 'vuetify/blueprints'
-import { ja, ro } from 'vuetify/locale'
+import { ja } from 'vuetify/locale'
 import * as components from 'vuetify/components'
 import * as labs from 'vuetify/labs/components'
 import * as directives from 'vuetify/directives'
@@ -12,44 +12,44 @@ export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     locale: {
       locale: 'ja',
-      messages: { ja }
+      messages: { ja },
     },
     blueprint: md3,
     components: {
       ...labs,
-      ...components
+      ...components,
     },
     directives,
     icons: {
       defaultSet: 'mdi',
       aliases,
       sets: {
-        mdi
-      }
+        mdi,
+      },
     },
     defaults: {
       VAutocomplete: {
-        variant: 'underlined'
+        variant: 'underlined',
       },
       VTextarea: {
-        variant: 'underlined'
+        variant: 'underlined',
       },
       VTextField: {
-        variant: 'underlined'
+        variant: 'underlined',
       },
       VSelect: {
-        variant: 'underlined'
+        variant: 'underlined',
       },
       VCombobox: {
-        variant: 'underlined'
+        variant: 'underlined',
       },
       VCard: {
-        elevation: 0
+        elevation: 0,
       },
       VTab: {
         VBtn: {
-          rounded: '0'
-        }
+          rounded: '0',
+        },
       },
       VBtnToggle: {
         rounded: '0',
@@ -57,9 +57,9 @@ export default defineNuxtPlugin((nuxtApp) => {
         variant: 'outlined',
         divided: true,
         VBtn: {
-          size: 'small'
-        }
-      }
+          size: 'small',
+        },
+      },
     },
     theme: {
       defaultTheme: 'light',
@@ -75,8 +75,8 @@ export default defineNuxtPlugin((nuxtApp) => {
             warning: colors.amber.base,
             error: colors.deepOrange.accent4,
             unknown: colors.grey.darken2,
-            success: colors.green.accent3
-          }
+            success: colors.green.accent3,
+          },
         },
         dark: {
           dark: true,
@@ -87,11 +87,11 @@ export default defineNuxtPlugin((nuxtApp) => {
             info: colors.teal.lighten1,
             warning: colors.amber.base,
             error: colors.deepOrange.accent4,
-            success: colors.green.accent3
-          }
-        }
-      }
-    }
+            success: colors.green.accent3,
+          },
+        },
+      },
+    },
   })
 
   nuxtApp.vueApp.use(vuetify)

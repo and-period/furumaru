@@ -36,7 +36,8 @@ const bannerItems = computed(() => {
 const handleClickLeftArrowButton = () => {
   if (activeIdx.value === 0) {
     activeIdx.value = props.items.length - 1
-  } else {
+  }
+  else {
     activeIdx.value = activeIdx.value - 1
   }
 }
@@ -44,7 +45,8 @@ const handleClickLeftArrowButton = () => {
 const handleClickRightArrowButton = () => {
   if (activeIdx.value === props.items.length - 1) {
     activeIdx.value = 0
-  } else {
+  }
+  else {
     activeIdx.value = activeIdx.value + 1
   }
 }
@@ -59,7 +61,8 @@ const handleClickItem = (
     if (isInternalLink) {
       // 内部リンクは vue-routerで遷移させる
       router.push(link)
-    } else {
+    }
+    else {
       // 外部リンクは新規タブで開く
       window.open(link, '_blank', 'noopener,noreferrer')?.focus()
     }
@@ -105,7 +108,13 @@ const handleClickItem = (
   </div>
 
   <div class="flex justify-center pt-8">
-      <a href="https://lin.ee/49SOeUC"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" class="h-[40px] md:h-[65px]"></a>
-    </div>
-    <p class="mt-4 flex justify-center text-center text-[16px] md:text-[20px]">お友達追加で20%オフクーポンプレゼント！</p>
+    <a href="https://lin.ee/49SOeUC"><img
+      src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
+      alt="友だち追加"
+      class="h-[40px] md:h-[65px]"
+    ></a>
+  </div>
+  <p class="mt-4 flex justify-center text-center text-[16px] md:text-[20px]">
+    お友達追加で20%オフクーポンプレゼント！
+  </p>
 </template>

@@ -10,44 +10,44 @@ import { AdminRole, type Coordinator, type Producer } from '~/types/api'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   producers: {
     type: Array<Producer>,
-    default: () => []
+    default: () => [],
   },
   coordinators: {
     type: Array<Coordinator>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
@@ -63,40 +63,40 @@ const headers: VDataTable['headers'] = [
   {
     title: '',
     key: 'thumbnail',
-    sortable: false
+    sortable: false,
   },
   {
     title: '生産者名',
     key: 'username',
-    sortable: false
+    sortable: false,
   },
   {
     title: '担当コーディネーター名',
     key: 'coordinatorName',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'メールアドレス',
     key: 'email',
-    sortable: false
+    sortable: false,
   },
   {
     title: '電話番号',
     key: 'phoneNumber',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const selectedItem = ref<Producer>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (val: boolean): void => emit('update:delete-dialog', val)
+  set: (val: boolean): void => emit('update:delete-dialog', val),
 })
 
 const isRegisterable = (): boolean => {
@@ -155,31 +155,58 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title>
         {{ producerName(selectedItem) }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseDeleteDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn color="primary" variant="outlined" :loading="loading" @click="onClickDelete">
+        <v-btn
+          color="primary"
+          variant="outlined"
+          :loading="loading"
+          @click="onClickDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       生産者管理
       <v-spacer />
-      <v-btn v-show="isRegisterable()" variant="outlined" color="primary" @click="onClickAdd">
-        <v-icon start :icon="mdiPlus" />
+      <v-btn
+        v-show="isRegisterable()"
+        variant="outlined"
+        color="primary"
+        @click="onClickAdd"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         生産者登録
       </v-btn>
     </v-card-title>
@@ -205,7 +232,10 @@ const onClickDelete = (): void => {
               :src="item.thumbnailUrl"
               :srcset="getImages(item)"
             />
-            <v-icon v-else :icon="mdiAccount" />
+            <v-icon
+              v-else
+              :icon="mdiAccount"
+            />
           </v-avatar>
         </template>
         <template #[`item.coordinatorName`]="{ item }">
@@ -221,7 +251,10 @@ const onClickDelete = (): void => {
             variant="outlined"
             @click.stop="onClickOpenDeleteDialog(item)"
           >
-            <v-icon size="small" :icon="mdiDelete" />削除
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />削除
           </v-btn>
         </template>
       </v-data-table-server>

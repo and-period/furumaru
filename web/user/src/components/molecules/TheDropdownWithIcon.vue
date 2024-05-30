@@ -37,7 +37,10 @@ defineExpose<Expose>({
 </script>
 
 <template>
-  <div ref="dropdownArea" class="relative">
+  <div
+    ref="dropdownArea"
+    class="relative"
+  >
     <the-icon-button @click="handleIconClick">
       <slot name="icon" />
     </the-icon-button>

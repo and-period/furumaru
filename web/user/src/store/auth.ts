@@ -48,7 +48,8 @@ export const useAuthStore = defineStore('auth', {
         this.refreshToken = res.refreshToken
         this.setExpiredAt(res.expiresIn)
         await this.fetchUserInfo()
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error, {
           401: this.i18n.t('auth.signIn.authErrorMessage'),
         })
@@ -63,7 +64,8 @@ export const useAuthStore = defineStore('auth', {
           body: payload,
         })
         return res
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error, {
           409: '指定したメールアドレスはご利用できません。',
         })
@@ -73,7 +75,8 @@ export const useAuthStore = defineStore('auth', {
     async verifyAuth(payload: VerifyAuthUserRequest) {
       try {
         await this.authUserApiClient().v1VerifyAuthUser({ body: payload })
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
       }
     },
@@ -96,9 +99,11 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       try {
         await this.authApiClient(this.accessToken).v1SignOut()
-      } catch (error) {
+      }
+      catch (error) {
         this.errorHandler(error)
-      } finally {
+      }
+      finally {
         // stateを初期状態にリセット
         this.resetState()
       }
@@ -119,7 +124,8 @@ export const useAuthStore = defineStore('auth', {
         this.accessToken = res.accessToken
         this.refreshToken = res.refreshToken
         this.setExpiredAt(res.expiresIn)
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
       }
     },
@@ -161,7 +167,8 @@ export const useAuthStore = defineStore('auth', {
             body: { username },
           },
         )
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
       }
     },
@@ -177,7 +184,8 @@ export const useAuthStore = defineStore('auth', {
         ).v1UpdateAuthUserAccountId({
           body: { accountId },
         })
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
       }
     },
@@ -192,7 +200,8 @@ export const useAuthStore = defineStore('auth', {
         await this.authApiClient(this.accessToken).v1UpdateUserPassword({
           body: payload,
         })
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error, {
           401: '現在のパスワードが正しくありません。',
         })
@@ -208,7 +217,8 @@ export const useAuthStore = defineStore('auth', {
         await this.authUserApiClient(this.accessToken).v1UpdateAuthUserEmail({
           body: { email },
         })
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
       }
     },
@@ -223,7 +233,8 @@ export const useAuthStore = defineStore('auth', {
         await this.authUserApiClient(
           this.accessToken,
         ).v1UpdateAuthUserNotification({ body: { enabled } })
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
       }
     },

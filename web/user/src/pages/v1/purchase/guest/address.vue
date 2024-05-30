@@ -12,8 +12,8 @@ const addressStore = useAddressStore()
 const { searchAddressByPostalCode } = addressStore
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
-const { calcCartItemByCoordinatorId, verifyGuestPromotionCode } =
-  shoppingCartStore
+const { calcCartItemByCoordinatorId, verifyGuestPromotionCode }
+  = shoppingCartStore
 
 const calcCartResponseItemState = ref<{
   isLoading: boolean
@@ -46,7 +46,8 @@ const coordinatorId = computed<string>(() => {
   const id = route.query.coordinatorId
   if (id) {
     return String(id)
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -67,7 +68,8 @@ const promotionCode = computed<string | undefined>(() => {
   const code = route.query.promotionCode
   if (typeof code === 'string') {
     return code
-  } else {
+  }
+  else {
     return undefined
   }
 })
@@ -112,7 +114,8 @@ const validate = () => {
   if (formData.value.firstname === '' || formData.value.lastname === '') {
     nameErrorMessage.value = '氏名を入力してください'
     hasError.value = true
-  } else {
+  }
+  else {
     nameErrorMessage.value = ''
   }
 
@@ -123,18 +126,20 @@ const validate = () => {
   }
 
   if (
-    formData.value.firstnameKana === '' ||
-    formData.value.lastnameKana === ''
+    formData.value.firstnameKana === ''
+    || formData.value.lastnameKana === ''
   ) {
     nameKanaErrorMessage.value = '氏名(かな)を入力してください'
     hasError.value = true
-  } else if (
-    !isKana(formData.value.firstnameKana) ||
-    !isKana(formData.value.lastnameKana)
+  }
+  else if (
+    !isKana(formData.value.firstnameKana)
+    || !isKana(formData.value.lastnameKana)
   ) {
     nameKanaErrorMessage.value = '氏名(かな)を入力してください'
     hasError.value = true
-  } else {
+  }
+  else {
     nameKanaErrorMessage.value = ''
   }
 
@@ -144,8 +149,8 @@ const validate = () => {
   }
 
   if (
-    formData.value.phoneNumber === '' ||
-    !isValidJapanesePhoneNumber(formData.value.phoneNumber)
+    formData.value.phoneNumber === ''
+    || !isValidJapanesePhoneNumber(formData.value.phoneNumber)
   ) {
     phoneErrorMessage.value = '電話番号を入力してください'
     hasError.value = true
@@ -175,7 +180,8 @@ const validate = () => {
   if (formEmailData.value.email === '') {
     emailErrorMessage.value = 'メールアドレスを入力してください'
     hasError.value = true
-  } else if (!validateEmail(formEmailData.value.email)) {
+  }
+  else if (!validateEmail(formEmailData.value.email)) {
     emailErrorMessage.value = '正しいメールアドレスを入力してください'
     hasError.value = true
   }
@@ -209,7 +215,8 @@ const handleClickUsePromotionCodeButton = async () => {
   if (result) {
     invalidPromotion.value = false
     validPromotion.value = true
-  } else {
+  }
+  else {
     invalidPromotion.value = true
     validPromotion.value = false
   }
@@ -281,15 +288,18 @@ onMounted(async () => {
     if (promotionCode.value) {
       validPromotion.value = true
     }
-  } catch (error) {
+  }
+  catch (error) {
     calcCartResponseItemState.value.hasError = true
     if (error instanceof ApiBaseError) {
       calcCartResponseItemState.value.errorMessage = error.message
-    } else {
-      calcCartResponseItemState.value.errorMessage =
-        '不明なエラーが発生しました。'
     }
-  } finally {
+    else {
+      calcCartResponseItemState.value.errorMessage
+        = '不明なエラーが発生しました。'
+    }
+  }
+  finally {
     calcCartResponseItemState.value.isLoading = false
   }
 })
@@ -445,7 +455,7 @@ useSeoMeta({
                     type="text"
                     class="w-full border border-gray-300 bg-gray-50 p-2.5 text-[14px] md:text-[16px]"
                     placeholder="クーポンコード"
-                  />
+                  >
                 </div>
                 <button
                   class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
@@ -465,15 +475,21 @@ useSeoMeta({
             <div
               class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
             >
-              <div class="col-span-2 md:col-span-1">商品合計（税込）</div>
+              <div class="col-span-2 md:col-span-1">
+                商品合計（税込）
+              </div>
               <div class="col-span-3 text-right md:col-span-1">
                 {{ priceFormatter(calcCartResponseItem.subtotal) }}
               </div>
-              <div class="col-span-2 md:col-span-1">クーポン利用</div>
+              <div class="col-span-2 md:col-span-1">
+                クーポン利用
+              </div>
               <div class="col-span-3 text-right md:col-span-1">
                 {{ priceFormatter(calcCartResponseItem.discount) }}
               </div>
-              <div class="col-span-2 md:col-span-1">送料（税込）</div>
+              <div class="col-span-2 md:col-span-1">
+                送料（税込）
+              </div>
               <div class="col-span-3 text-right md:col-span-1">
                 次ページで計算されます
               </div>

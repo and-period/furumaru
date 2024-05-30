@@ -4,7 +4,7 @@ import { useAuthStore } from '~/store'
 import type { SignInRequest } from '~/types/api'
 
 definePageMeta({
-  layout: 'auth'
+  layout: 'auth',
 })
 
 const router = useRouter()
@@ -14,7 +14,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 const loading = ref<boolean>(false)
 const formData = reactive<SignInRequest>({
   username: '',
-  password: ''
+  password: '',
 })
 
 const handleSubmit = async () => {
@@ -22,12 +22,14 @@ const handleSubmit = async () => {
     loading.value = true
     const path = await authStore.signIn(formData)
     router.push(path)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

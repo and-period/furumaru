@@ -19,7 +19,8 @@ const formattedStartAt = computed(() => {
 const isLiveStreaming = (status: ScheduleStatus) => {
   if (status === ScheduleStatus.LIVE || status === ScheduleStatus.CLOSED) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }

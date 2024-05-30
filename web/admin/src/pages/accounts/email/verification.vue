@@ -14,7 +14,7 @@ const email = route.params.email as string
 
 const loading = ref<boolean>(false)
 const formData = ref<VerifyAuthEmailRequest>({
-  verifyCode: ''
+  verifyCode: '',
 })
 
 watch(formData.value, (): void => {
@@ -31,14 +31,16 @@ const handleClickResendEmail = async (): Promise<void> => {
     await authStore.updateEmail(req)
     commonStore.addSnackbar({
       message: '認証コードを送信しました。',
-      color: 'info'
+      color: 'info',
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -49,15 +51,17 @@ const handleSubmit = async (): Promise<void> => {
     await authStore.verifyEmail(formData.value)
     commonStore.addSnackbar({
       message: 'メールアドレスが変更されました。',
-      color: 'info'
+      color: 'info',
     })
     router.push('/')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     formData.value.verifyCode = ''
     loading.value = false
   }

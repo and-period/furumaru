@@ -4,39 +4,39 @@ import Hls from 'hls.js'
 import {
   type Broadcast,
   BroadcastStatus,
-  type AuthYoutubeBroadcastRequest
+  type AuthYoutubeBroadcastRequest,
 } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   pauseDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   liveMp4Dialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   archiveMp4Dialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   mp4FormData: {
     type: Object as PropType<File[] | undefined>,
-    default: (): File[] | undefined => undefined
+    default: (): File[] | undefined => undefined,
   },
   authYoutubeFormData: {
     type: Object as PropType<AuthYoutubeBroadcastRequest>,
     default: (): AuthYoutubeBroadcastRequest => ({
-      youtubeHandle: ''
-    })
+      youtubeHandle: '',
+    }),
   },
   selectedTabItem: {
     type: String,
-    default: 'schedule'
+    default: 'schedule',
   },
   broadcast: {
     type: Object as PropType<Broadcast>,
@@ -51,33 +51,33 @@ const props = defineProps({
       youtubeViewerUrl: '',
       youtubeAdminUrl: '',
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   authYoutubeUrl: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits<{
-  (e: 'update:broadcast', broadcast: Broadcast): void;
-  (e: 'update:mp4-form-data', file: File[] | undefined): void;
+  (e: 'update:broadcast', broadcast: Broadcast): void
+  (e: 'update:mp4-form-data', file: File[] | undefined): void
   (
     e: 'update:auth-youtube-form-data',
     formData: AuthYoutubeBroadcastRequest,
-  ): void;
-  (e: 'update:pause-dialog', toggle: boolean): void;
-  (e: 'update:live-mp4-dialog', toggle: boolean): void;
-  (e: 'update:archive-mp4-dialog', toggle: boolean): void;
-  (e: 'click:link-youtube'): void;
-  (e: 'click:activate-static-image'): void;
-  (e: 'click:deactivate-static-image'): void;
-  (e: 'submit:pause'): void;
-  (e: 'submit:unpause'): void;
-  (e: 'submit:change-input-mp4'): void;
-  (e: 'submit:change-input-rtmp'): void;
-  (e: 'submit:upload-archive-mp4'): void;
+  ): void
+  (e: 'update:pause-dialog', toggle: boolean): void
+  (e: 'update:live-mp4-dialog', toggle: boolean): void
+  (e: 'update:archive-mp4-dialog', toggle: boolean): void
+  (e: 'click:link-youtube'): void
+  (e: 'click:activate-static-image'): void
+  (e: 'click:deactivate-static-image'): void
+  (e: 'submit:pause'): void
+  (e: 'submit:unpause'): void
+  (e: 'submit:change-input-mp4'): void
+  (e: 'submit:change-input-rtmp'): void
+  (e: 'submit:upload-archive-mp4'): void
 }>()
 
 const statuses = [
@@ -85,40 +85,40 @@ const statuses = [
   { title: 'リソース作成中', value: BroadcastStatus.WAITING },
   { title: '配信停止中', value: BroadcastStatus.IDLE },
   { title: '配信中', value: BroadcastStatus.ACTIVE },
-  { title: '不明', value: BroadcastStatus.UNKNOWN }
+  { title: '不明', value: BroadcastStatus.UNKNOWN },
 ]
 
 const videoRef = ref<HTMLVideoElement>()
 
 const broadcastValue = computed({
   get: (): Broadcast => props.broadcast,
-  set: (broadcast: Broadcast): void => emit('update:broadcast', broadcast)
+  set: (broadcast: Broadcast): void => emit('update:broadcast', broadcast),
 })
 const pauseDialogValue = computed({
   get: (): boolean => props.pauseDialog,
-  set: (v: boolean): void => emit('update:pause-dialog', v)
+  set: (v: boolean): void => emit('update:pause-dialog', v),
 })
 const archiveMp4DialogValue = computed({
   get: (): boolean => props.archiveMp4Dialog,
-  set: (v: boolean): void => emit('update:archive-mp4-dialog', v)
+  set: (v: boolean): void => emit('update:archive-mp4-dialog', v),
 })
 const liveMp4DialogValue = computed({
   get: (): boolean => props.liveMp4Dialog,
-  set: (v: boolean): void => emit('update:live-mp4-dialog', v)
+  set: (v: boolean): void => emit('update:live-mp4-dialog', v),
 })
 const mp4FormDataValue = computed({
   get: (): File[] | undefined => props.mp4FormData,
   set: (formData: File[] | undefined): void =>
-    emit('update:mp4-form-data', formData)
+    emit('update:mp4-form-data', formData),
 })
 const authYoutubeFormDataValue = computed({
   get: (): AuthYoutubeBroadcastRequest => props.authYoutubeFormData,
   set: (formData: AuthYoutubeBroadcastRequest): void =>
-    emit('update:auth-youtube-form-data', formData)
+    emit('update:auth-youtube-form-data', formData),
 })
 const authYoutubeUrlValue = computed({
   get: (): string => props.authYoutubeUrl,
-  set: (url: string): void => console.log(url)
+  set: (url: string): void => console.log(url),
 })
 
 watch(
@@ -128,7 +128,7 @@ watch(
       return
     }
     onClickVideo()
-  }
+  },
 )
 
 const isLive = (): boolean => {
@@ -155,7 +155,8 @@ const onClickVideo = (): void => {
     hls.loadSource(src)
     hls.attachMedia(video)
     video.play()
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+  }
+  else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = src
     video.play()
   }
@@ -225,14 +226,21 @@ const onClickCopyUrl = (url: string) => {
 </script>
 
 <template>
-  <v-dialog v-model="pauseDialogValue" width="500">
+  <v-dialog
+    v-model="pauseDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h7">
         本当に停止しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="info" variant="text" @click="onClosePauseDialog">
+        <v-btn
+          color="info"
+          variant="text"
+          @click="onClosePauseDialog"
+        >
           閉じる
         </v-btn>
         <v-btn
@@ -263,8 +271,16 @@ const onClickCopyUrl = (url: string) => {
           :show-size="1000"
         >
           <template #selection="{ fileNames }">
-            <template v-for="fileName in fileNames" :key="fileName">
-              <v-chip size="small" label color="primary" class="me-2">
+            <template
+              v-for="fileName in fileNames"
+              :key="fileName"
+            >
+              <v-chip
+                size="small"
+                label
+                color="primary"
+                class="me-2"
+              >
                 {{ fileName }}
               </v-chip>
             </template>
@@ -273,7 +289,11 @@ const onClickCopyUrl = (url: string) => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onCloseArchiveMp4Dialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onCloseArchiveMp4Dialog"
+        >
           キャンセル
         </v-btn>
         <v-btn
@@ -304,8 +324,16 @@ const onClickCopyUrl = (url: string) => {
           :show-size="1000"
         >
           <template #selection="{ fileNames }">
-            <template v-for="fileName in fileNames" :key="fileName">
-              <v-chip size="small" label color="primary" class="me-2">
+            <template
+              v-for="fileName in fileNames"
+              :key="fileName"
+            >
+              <v-chip
+                size="small"
+                label
+                color="primary"
+                class="me-2"
+              >
                 {{ fileName }}
               </v-chip>
             </template>
@@ -314,7 +342,11 @@ const onClickCopyUrl = (url: string) => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onCloseLiveMp4Dialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onCloseLiveMp4Dialog"
+        >
           キャンセル
         </v-btn>
         <v-btn
@@ -330,16 +362,38 @@ const onClickCopyUrl = (url: string) => {
   </v-dialog>
 
   <v-row>
-    <v-col sm="12" md="12" lg="8">
+    <v-col
+      sm="12"
+      md="12"
+      lg="8"
+    >
       <v-card>
         <v-card-text>
           <v-container>
-            <video v-show="isLive()" id="video" ref="videoRef" controls />
-            <video v-show="isVOD()" id="video" controls>
-              <source :src="broadcast.archiveUrl" type="video/mp4">
-              <a :href="broadcast.archiveUrl" type="video/mp4">mp4</a>
+            <video
+              v-show="isLive()"
+              id="video"
+              ref="videoRef"
+              controls
+            />
+            <video
+              v-show="isVOD()"
+              id="video"
+              controls
+            >
+              <source
+                :src="broadcast.archiveUrl"
+                type="video/mp4"
+              >
+              <a
+                :href="broadcast.archiveUrl"
+                type="video/mp4"
+              >mp4</a>
             </video>
-            <v-btn v-show="isLive()" @click="onClickVideo">
+            <v-btn
+              v-show="isLive()"
+              @click="onClickVideo"
+            >
               映像の更新
             </v-btn>
           </v-container>
@@ -349,7 +403,10 @@ const onClickCopyUrl = (url: string) => {
       <v-card class="mt-4">
         <v-card-text>
           <div class="my-4">
-            <div v-if="broadcastValue.youtubeAccount === ''" class="px-0">
+            <div
+              v-if="broadcastValue.youtubeAccount === ''"
+              class="px-0"
+            >
               <template v-if="authYoutubeUrlValue === ''">
                 <v-text-field
                   v-model="authYoutubeFormDataValue.youtubeHandle"
@@ -406,7 +463,11 @@ const onClickCopyUrl = (url: string) => {
       </v-card>
     </v-col>
 
-    <v-col sm="12" md="12" lg="4">
+    <v-col
+      sm="12"
+      md="12"
+      lg="4"
+    >
       <v-card>
         <v-card-text class="px-4">
           <v-select
@@ -442,7 +503,10 @@ const onClickCopyUrl = (url: string) => {
         </v-card-text>
       </v-card>
 
-      <v-card v-show="isLive()" class="mt-4">
+      <v-card
+        v-show="isLive()"
+        class="mt-4"
+      >
         <v-card-text>
           <v-list>
             <v-list-item class="px-0">
@@ -516,7 +580,10 @@ const onClickCopyUrl = (url: string) => {
         </v-card-text>
       </v-card>
 
-      <v-card v-show="isVOD()" class="mt-4">
+      <v-card
+        v-show="isVOD()"
+        class="mt-4"
+      >
         <v-card-text>
           <v-list>
             <v-list-item class="px-0">

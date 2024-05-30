@@ -42,12 +42,15 @@ const handleSubmitComment = async () => {
     commentFormData.value = ''
     const res = await getComments(scheduleId.value)
     comments.value = res.comments
-  } catch (e) {
+  }
+  catch (e) {
     snackbarItems.value.push({
       text: 'コメントの送信に失敗しました。',
       isShow: true,
     })
-  } finally {
+    console.log(e)
+  }
+  finally {
     commentIsSending.value = false
   }
 }
@@ -58,14 +61,14 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
       schedule.value.lives.map((live) => {
         // 生産者情報のマッピング
         const producer = schedule.value?.producers.find(
-          (p) => p.id === live.producerId,
+          p => p.id === live.producerId,
         )
         // 商品のマッピング
         const products = live.productIds
           .map((id) => {
-            return schedule.value?.products.find((p) => p.id === id)
+            return schedule.value?.products.find(p => p.id === id)
           })
-          .filter((p) => p !== undefined)
+          .filter(p => p !== undefined)
         // コーディネーターのマッピング
         return {
           ...live,
@@ -74,7 +77,8 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
         }
       }) ?? []
     )
-  } else {
+  }
+  else {
     return []
   }
 })
@@ -82,7 +86,8 @@ const liveTimeLineItems = computed<LiveTimeLineItem[]>(() => {
 const isLiveStreaming = computed<boolean>(() => {
   if (schedule.value) {
     return schedule.value.schedule.status === ScheduleStatus.LIVE
-  } else {
+  }
+  else {
     return false
   }
 })
@@ -90,7 +95,8 @@ const isLiveStreaming = computed<boolean>(() => {
 const isArchive = computed<boolean>(() => {
   if (schedule.value) {
     return schedule.value.schedule.status === ScheduleStatus.ARCHIVED
-  } else {
+  }
+  else {
     return false
   }
 })
@@ -158,7 +164,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+  <template
+    v-for="(snackbarItem, i) in snackbarItems"
+    :key="i"
+  >
     <the-snackbar
       v-model:is-show="snackbarItem.isShow"
       :text="snackbarItem.text"
@@ -234,7 +243,10 @@ useSeoMeta({
                   @submit="handleSubmitComment"
                 />
                 <div class="flex flex-col gap-4 py-8">
-                  <div v-if="comments.length === 0" class="text-typography">
+                  <div
+                    v-if="comments.length === 0"
+                    class="text-typography"
+                  >
                     コメントがありません。
                   </div>
                   <div

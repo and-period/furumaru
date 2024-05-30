@@ -23,7 +23,10 @@ defineProps<Props>()
           {{ noItemText }}
         </p>
 
-        <p v-for="(item, i) in notificationItems" :key="i">
+        <p
+          v-for="(item, i) in notificationItems"
+          :key="i"
+        >
           {{ item }}
         </p>
       </div>

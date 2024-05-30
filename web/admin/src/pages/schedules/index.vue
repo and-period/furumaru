@@ -30,7 +30,8 @@ watch(pagination.itemsPerPage, (): void => {
 const fetchSchedules = async (): Promise<void> => {
   try {
     await scheduleStore.fetchSchedules(pagination.itemsPerPage.value, pagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -66,9 +67,10 @@ const handleClickApproval = async (scheduleId: string): Promise<void> => {
     await scheduleStore.approveSchedule(scheduleId, !schedule.approved)
     commonStore.addSnackbar({
       message: `${schedule.title}を更新しました。`,
-      color: 'info'
+      color: 'info',
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -87,9 +89,10 @@ const handleClickPublished = async (scheduleId: string): Promise<void> => {
     await scheduleStore.publishSchedule(scheduleId, !schedule.public)
     commonStore.addSnackbar({
       message: `${schedule.title}を更新しました。`,
-      color: 'info'
+      color: 'info',
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -109,23 +112,26 @@ const handleClickDelete = async (scheduleId: string): Promise<void> => {
     await scheduleStore.deleteSchedule(scheduleId)
     commonStore.addSnackbar({
       message: `${schedule.title}を削除しました。`,
-      color: 'info'
+      color: 'info',
     })
     deleteDialog.value = false
     fetchState.execute()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

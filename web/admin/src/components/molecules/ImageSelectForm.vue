@@ -4,32 +4,32 @@ import { mdiPlus } from '@mdi/js'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   label: {
     type: String,
-    default: ''
+    default: '',
   },
   imgUrl: {
     type: String,
-    default: ''
+    default: '',
   },
   accept: {
-    type: Array<String>,
-    default: (): string[] => ['image/*']
+    type: Array<string>,
+    default: (): string[] => ['image/*'],
   },
   error: {
     type: Boolean,
-    default: false
+    default: false,
   },
   message: {
     type: String,
-    default: ''
+    default: '',
   },
   validationErrorMessage: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits<{
@@ -70,8 +70,17 @@ const onChangeFile = (): void => {
     >
       <v-card-text>
         <div class="mb-4">
-          <v-avatar v-if="props.imgUrl === ''" size="80" :icon="mdiPlus" />
-          <v-img v-else :max-height="300" aspect-ratio="16/9" :src="props.imgUrl" />
+          <v-avatar
+            v-if="props.imgUrl === ''"
+            size="80"
+            :icon="mdiPlus"
+          />
+          <v-img
+            v-else
+            :max-height="300"
+            aspect-ratio="16/9"
+            :src="props.imgUrl"
+          />
         </div>
         <input
           ref="inputRef"
@@ -85,10 +94,16 @@ const onChangeFile = (): void => {
         </p>
       </v-card-text>
     </v-card>
-    <p v-show="props.validationErrorMessage" class="text-red ma-0">
+    <p
+      v-show="props.validationErrorMessage"
+      class="text-red ma-0"
+    >
       {{ props.validationErrorMessage }}
     </p>
-    <p v-show="props.error" class="red--text ma-0">
+    <p
+      v-show="props.error"
+      class="red--text ma-0"
+    >
       {{ props.message }}
     </p>
   </div>

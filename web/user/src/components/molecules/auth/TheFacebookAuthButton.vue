@@ -12,8 +12,14 @@ const handleClick = (): void => {
 </script>
 
 <template>
-  <the-button class="flex items-center bg-facebook" @click="handleClick">
-    <the-facebook-icon id="facebook-auth-icon" class="w-6" />
+  <the-button
+    class="flex items-center bg-facebook"
+    @click="handleClick"
+  >
+    <the-facebook-icon
+      id="facebook-auth-icon"
+      class="w-6"
+    />
     <p class="w-full text-center text-white">
       {{ buttonText }}
     </p>

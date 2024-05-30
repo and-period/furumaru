@@ -41,7 +41,8 @@ const fetchPromotions = async (): Promise<void> => {
     }) || []
 
     await promotionStore.fetchPromotions(pagination.itemsPerPage.value, pagination.offset.value, orders)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -72,14 +73,16 @@ const handleClickDelete = async (promotionId: string): Promise<void> => {
     await promotionStore.deletePromotion(promotionId)
     commonStore.addSnackbar({
       message: 'セール情報の削除が完了しました',
-      color: 'info'
+      color: 'info',
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     deleteDialog.value = false
     loading.value = false
   }
@@ -87,7 +90,8 @@ const handleClickDelete = async (promotionId: string): Promise<void> => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

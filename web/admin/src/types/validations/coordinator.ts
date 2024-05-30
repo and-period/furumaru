@@ -13,7 +13,7 @@ export const CreateCoordinatorValidationRules: ValidationArgs = {
   facebookId: { maxLength: maxLength(50) },
   email: { required, email },
   phoneNumber: { required, tel },
-  businessDays: { maxLengthArray: maxLengthArray(7) }
+  businessDays: { maxLengthArray: maxLengthArray(7) },
 }
 
 export const UpdateCoordinatorValidationRules: ValidationArgs = {
@@ -27,5 +27,5 @@ export const UpdateCoordinatorValidationRules: ValidationArgs = {
   instagramId: { maxLength: maxLength(30) },
   facebookId: { maxLength: maxLength(50) },
   phoneNumber: { required, tel },
-  businessDays: { maxLengthArray: maxLengthArray(7) }
+  businessDays: { maxLengthArray: maxLengthArray(7) },
 }

@@ -68,7 +68,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
             ...cart,
             // コーディネーターのマッピング
             coordinator: state._shoppingCart.coordinators.find(
-              (coordinator) => coordinator.id === cart.coordinatorId,
+              coordinator => coordinator.id === cart.coordinatorId,
             ),
             // 箱タイプ
             boxType: boxType(cart.type),
@@ -78,14 +78,14 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
             items: cart.items.map((item) => {
               // マッピング用の商品オブジェクトを事前計算
               const product = state._shoppingCart.products.find(
-                (product) => product.id === item.productId,
+                product => product.id === item.productId,
               )
               return {
                 ...item,
                 product: {
                   ...product,
                   // サムネイル画像のマッピング
-                  thumbnail: product?.media.find((m) => m.isThumbnail),
+                  thumbnail: product?.media.find(m => m.isThumbnail),
                 },
               }
             }),
@@ -99,11 +99,11 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     calcCartResponseItem: (state): CalcCart | undefined => {
       if (state._calcCartResponseItem) {
         // 商品情報をマッピング
-        const products: ProductItem[] =
-          state._calcCartResponseItem.products.map((product) => {
+        const products: ProductItem[]
+          = state._calcCartResponseItem.products.map((product) => {
             return {
               ...product,
-              thumbnail: product.media.find((m) => m.isThumbnail),
+              thumbnail: product.media.find(m => m.isThumbnail),
             }
           })
 
@@ -114,12 +114,13 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
             return {
               ...item,
               product: products.find(
-                (product) => product.id === item.productId,
+                product => product.id === item.productId,
               ),
             }
           }),
         }
-      } else {
+      }
+      else {
         return undefined
       }
     },
@@ -134,10 +135,10 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         return 0
       }
       const totalPrice = carts
-        .map((cart) =>
+        .map(cart =>
           cart.items
-            .map((item) => item.product.price)
-            .filter((price) => typeof price === 'number')
+            .map(item => item.product.price)
+            .filter(price => typeof price === 'number')
             .reduce((sum, price) => sum + price),
         )
         .reduce((sum, price) => sum + price)
@@ -154,7 +155,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
             ),
           }
         })
-        .filter((item) => item.status === 1)
+        .filter(item => item.status === 1)
     },
   },
 
@@ -194,7 +195,8 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
         this._calcCartResponseItem = res
         const requestId = res.requestId
         return requestId
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
       }
     },
@@ -214,7 +216,8 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
           code: promotionCode,
         })
         return true
-      } catch (_error) {
+      }
+      catch (_error) {
         return false
       }
     },
@@ -222,15 +225,16 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
     /**
      * 有効なプロモーションコードかを検証する(ゲスト用)
      */
-      async verifyGuestPromotionCode(promotionCode: string): Promise<boolean> {
-        try {
-          await this.promotionApiClient().v1GetPromotion({
-            code: promotionCode,
-          })
-          return true
-        } catch (_error) {
-          return false
-        }
-      },
+    async verifyGuestPromotionCode(promotionCode: string): Promise<boolean> {
+      try {
+        await this.promotionApiClient().v1GetPromotion({
+          code: promotionCode,
+        })
+        return true
+      }
+      catch (_error) {
+        return false
+      }
+    },
   },
 })

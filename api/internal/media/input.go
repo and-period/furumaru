@@ -102,6 +102,13 @@ type CreateBroadcastViewerLogInput struct {
 	ClientIP   string `validate:"omitempty,ip_addr"`
 }
 
+type AggregateBroadcastViewerLogsInput struct {
+	ScheduleID   string                                     `validate:"required"`
+	Interval     entity.AggregateBroadcastViewerLogInterval `validate:"required"`
+	CreatedAtGte time.Time                                  `validate:""`
+	CreatedAtLt  time.Time                                  `validate:""`
+}
+
 type ListBroadcastCommentsInput struct {
 	ScheduleID   string                        `validate:"required"`
 	CreatedAtGte time.Time                     `validate:""`

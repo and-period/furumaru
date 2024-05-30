@@ -71,12 +71,19 @@ useSeoMeta({
     </div>
 
     <div class="my-20 flex flex-wrap justify-center gap-10 tracking-wider">
-      <div v-for="(item, i) in circleItems" :key="i" :num="i + 1">
+      <div
+        v-for="(item, i) in circleItems"
+        :key="i"
+        :num="i + 1"
+      >
         <div
           class="h-[620px] w-full break-words rounded-full bg-white px-10 py-12 text-center text-main md:w-[620px] md:px-28"
         >
           <div class="relative mx-auto mb-16 block h-[73px] w-[98px]">
-            <img :src="item.imgSrc" :alt="`about-point-${i + 1}`" />
+            <img
+              :src="item.imgSrc"
+              :alt="`about-point-${i + 1}`"
+            >
           </div>
           <p class="mb-6 text-2xl font-bold md:whitespace-pre">
             {{ item.title }}

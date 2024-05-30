@@ -122,7 +122,12 @@ const handleSubmit = () => {
       }"
       required
     >
-      <option disabled value="0">都道府県</option>
+      <option
+        disabled
+        value="0"
+      >
+        都道府県
+      </option>
       <option
         v-for="prefecture in prefecturesList"
         :key="prefecture.id"

@@ -7,7 +7,7 @@ export const useProductTagStore = defineStore('productTag', {
   state: () => ({
     productTag: {} as ProductTag,
     productTags: [] as ProductTag[],
-    total: 0
+    total: 0,
   }),
 
   actions: {
@@ -17,12 +17,13 @@ export const useProductTagStore = defineStore('productTag', {
      * @param offset 取得開始位置
      * @param orders ソートキー
      */
-    async fetchProductTags (limit = 20, offset = 0, orders: string[] = []): Promise<void> {
+    async fetchProductTags(limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
         const res = await apiClient.productTagApi().v1ListProductTags(limit, offset, '', orders.join(','))
         this.productTags = res.data.productTags
         this.total = res.data.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -32,7 +33,7 @@ export const useProductTagStore = defineStore('productTag', {
      * @param name 商品タグ名(あいまい検索)
      * @param productTagIds stateの更新時に残しておく必要がある商品タグ情報
      */
-    async searchProductTags (name = '', productTagIds: string[] = []): Promise<void> {
+    async searchProductTags(name = '', productTagIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.productTagApi().v1ListProductTags(undefined, undefined, name)
         const productTags: ProductTag[] = []
@@ -50,7 +51,8 @@ export const useProductTagStore = defineStore('productTag', {
         })
         this.productTags = productTags
         this.total = res.data.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -59,14 +61,15 @@ export const useProductTagStore = defineStore('productTag', {
      * 商品タグを新規登録する非同期関数
      * @param payload
      */
-    async createProductTag (payload: CreateProductTagRequest): Promise<void> {
+    async createProductTag(payload: CreateProductTagRequest): Promise<void> {
       try {
         const res = await apiClient.productTagApi().v1CreateProductTag(payload)
         this.productTags.unshift(res.data.productTag)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
-          409: 'この商品タグ名はすでに登録されています。'
+          409: 'この商品タグ名はすでに登録されています。',
         })
       }
     },
@@ -76,14 +79,15 @@ export const useProductTagStore = defineStore('productTag', {
      * @param productTagId 商品タグID
      * @param payload
      */
-    async updateProductTag (productTagId: string, payload: UpdateProductTagRequest): Promise<void> {
+    async updateProductTag(productTagId: string, payload: UpdateProductTagRequest): Promise<void> {
       try {
         await apiClient.productTagApi().v1UpdateProductTag(productTagId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
           404: 'この商品タグは存在しません。',
-          409: 'この商品タグ名はすでに登録されています。'
+          409: 'この商品タグ名はすでに登録されています。',
         })
       }
     },
@@ -92,12 +96,13 @@ export const useProductTagStore = defineStore('productTag', {
      * 商品タグを削除する非同期関数
      * @param productTagId 商品タグID
      */
-    async deleteProductTag (productTagId: string): Promise<void> {
+    async deleteProductTag(productTagId: string): Promise<void> {
       try {
         await apiClient.productTagApi().v1DeleteProductTag(productTagId)
-      } catch (err) {
+      }
+      catch (err) {
         this.errorHandler(err, { 404: 'この商品タグは存在しません。' })
       }
-    }
-  }
+    },
+  },
 })

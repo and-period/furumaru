@@ -29,7 +29,8 @@ const formattedStartAt = computed(() => {
 const isLiveStreaming = (status: ScheduleStatus) => {
   if (status === ScheduleStatus.LIVE || status === ScheduleStatus.CLOSED) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }
@@ -50,7 +51,9 @@ const handleClick = () => {
         class="absolute -left-4 -top-4 z-[1] flex h-16 w-16 flex-col items-center justify-center rounded-full bg-orange xl:-left-8 xl:-top-8"
       >
         <the-live-icon />
-        <div class="text-xl font-bold uppercase text-white">live</div>
+        <div class="text-xl font-bold uppercase text-white">
+          live
+        </div>
       </div>
 
       <div class="relative">
@@ -100,11 +103,15 @@ const handleClick = () => {
         <div
           class="absolute bottom-[-120px] left-0 hidden h-[120px] w-full bg-white p-4 group-hover:block"
         >
-          <hr class="border-dashed" />
+          <hr class="border-dashed">
           <div class="mt-4 flex w-full items-center justify-end gap-4">
             <div class="text-[12px] tracking-[1.2px]">
-              <p class="mb-1">{{ marcheName }}/{{ address }}</p>
-              <p class="tracking-[1.3px]">コーディネーター：{{ cnName }}</p>
+              <p class="mb-1">
+                {{ marcheName }}/{{ address }}
+              </p>
+              <p class="tracking-[1.3px]">
+                コーディネーター：{{ cnName }}
+              </p>
             </div>
             <nuxt-img
               provider="cloudFront"

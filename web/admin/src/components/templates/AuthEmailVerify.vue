@@ -8,30 +8,30 @@ import { VerifyAuthEmailValidationRules } from '~/types/validations'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   email: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<VerifyAuthEmailRequest>,
     default: (): VerifyAuthEmailRequest => ({
-      verifyCode: ''
-    })
-  }
+      verifyCode: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -42,7 +42,7 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: () => props.formData,
-  set: (formData: VerifyAuthEmailRequest) => emit('update:from-data', formData)
+  set: (formData: VerifyAuthEmailRequest) => emit('update:from-data', formData),
 })
 
 const validate = useVuelidate(VerifyAuthEmailValidationRules, formDataValue)
@@ -62,14 +62,21 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card elevation="0">
     <v-card-text>
       <p class="text-center">
         認証コードが{{ props.email }}に送信されました
       </p>
-      <div class="ma-auto" style="max-width: 300px">
+      <div
+        class="ma-auto"
+        style="max-width: 300px"
+      >
         <v-otp-input
           v-model="validate.verifyCode.$model"
           focus-all
@@ -79,7 +86,10 @@ const onSubmit = async (): Promise<void> => {
         />
       </div>
       <div class="text-center mt-4">
-        <v-btn class="orange--text text--darken-4" @click="onClickResendEmail">
+        <v-btn
+          class="orange--text text--darken-4"
+          @click="onClickResendEmail"
+        >
           認証コードを再送する
         </v-btn>
       </div>

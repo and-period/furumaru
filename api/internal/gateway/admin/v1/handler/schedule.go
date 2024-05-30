@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,7 @@ func (h *handler) scheduleRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:scheduleId", h.filterAccessSchedule, h.DeleteSchedule)
 	r.PATCH("/:scheduleId/approval", h.filterAccessSchedule, h.ApproveSchedule)
 	r.PATCH("/:scheduleId/publish", h.filterAccessSchedule, h.PublishSchedule)
+	r.GET("/:scheduleId/analytics", h.filterAccessSchedule, h.AnalyzeSchedule)
 }
 
 func (h *handler) filterAccessSchedule(ctx *gin.Context) {
@@ -234,6 +236,48 @@ func (h *handler) PublishSchedule(ctx *gin.Context) {
 		return
 	}
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) AnalyzeSchedule(ctx *gin.Context) {
+	const defaultViewerLogInterval = service.BroadcastViewerLogIntervalMinute
+
+	schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	startAtUnix, err := util.GetQueryInt64(ctx, "startAt", schedule.StartAt)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	endAtUnix, err := util.GetQueryInt64(ctx, "endAt", schedule.EndAt)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	viewerLogIntervalStr := util.GetQuery(ctx, "viewerLogInterval", string(defaultViewerLogInterval))
+
+	startAt := jst.ParseFromUnix(startAtUnix)
+	endAt := jst.ParseFromUnix(endAtUnix)
+	viewerLogInterval := service.NewBroadcastViewerLogIntervalFromRequest(viewerLogIntervalStr)
+
+	viewerLogsIn := &media.AggregateBroadcastViewerLogsInput{
+		ScheduleID:   schedule.ID,
+		Interval:     viewerLogInterval.MediaEntity(),
+		CreatedAtGte: startAt,
+		CreatedAtLt:  endAt,
+	}
+	viewerLogs, err := h.media.AggregateBroadcastViewerLogs(ctx, viewerLogsIn)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.AnalyzeScheduleResponse{
+		ViewerLogs: service.NewBroadcastViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).Response(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) getSchedule(ctx context.Context, scheduleID string) (*service.Schedule, error) {

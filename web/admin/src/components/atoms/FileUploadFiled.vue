@@ -4,8 +4,8 @@ import { mdiPlus } from '@mdi/js'
 const props = defineProps({
   text: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const emit = defineEmits<{
@@ -69,7 +69,10 @@ const handleDrop = (e: DragEvent) => {
       <p class="mb-0 text-center">
         クリックまたはドラッグ&amp;ドロップでファイルを追加
         <br>
-        <v-icon start :icon="mdiPlus" />
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         {{ props.text }}
         <input
           ref="inputRef"

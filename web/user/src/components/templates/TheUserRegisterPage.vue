@@ -62,7 +62,10 @@ const usernameValue = computed({
               required
             />
 
-            <p class="my-6 whitespace-pre-wrap" v-html="cautionText" />
+            <p
+              class="my-6 whitespace-pre-wrap"
+              v-html="cautionText"
+            />
 
             <the-submit-button>
               {{ buttonText }}

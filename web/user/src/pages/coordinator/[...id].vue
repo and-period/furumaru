@@ -9,14 +9,15 @@ const coordinatorStore = useCoordinatorStore()
 
 const { fetchCoordinator } = coordinatorStore
 
-const { coordnatorInfo, archives, lives, producers } =
-  storeToRefs(coordinatorStore)
+const { coordnatorInfo, archives, lives, producers }
+  = storeToRefs(coordinatorStore)
 
 const id = computed<string>(() => {
   const ids = route.params.id
   if (Array.isArray(ids)) {
     return ids[0]
-  } else {
+  }
+  else {
     return ids
   }
 })
@@ -43,10 +44,10 @@ useAsyncData(`coordinator-${id.value}`, () => {
           <img
             class="h-full w-full object-cover"
             :src="coordnatorInfo.headerUrl"
-          />
+          >
         </template>
         <template v-else>
-          <div class="h-full w-full bg-gray-200"></div>
+          <div class="h-full w-full bg-gray-200" />
         </template>
       </div>
       <div
@@ -57,7 +58,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             <img
               :src="coordnatorInfo.thumbnailUrl"
               class="block aspect-square w-[120px] rounded-full border-2 border-white md:w-[168px]"
-            />
+            >
           </div>
           <p
             class="mt-4 text-center text-[16px] font-bold tracking-[2.0px] md:text-[20px]"
@@ -68,10 +69,14 @@ useAsyncData(`coordinator-${id.value}`, () => {
             class="flex justify-center pt-2 text-[12px] tracking-[1.4px] md:text-[14px]"
           >
             <p>{{ coordnatorInfo.prefecture }}</p>
-            <p class="pl-2">{{ coordnatorInfo.city }}</p>
+            <p class="pl-2">
+              {{ coordnatorInfo.city }}
+            </p>
           </div>
           <div class="my-4 flex justify-center tracking-[2.4px]">
-            <p class="mt-auto text-[12px] md:text-[14px]">コーディネータ</p>
+            <p class="mt-auto text-[12px] md:text-[14px]">
+              コーディネータ
+            </p>
             <p class="ml-2 text-[16px] font-bold md:text-[24px]">
               {{ coordnatorInfo.username }}
             </p>
@@ -81,7 +86,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
           >
             {{ coordnatorInfo.profile }}
           </p>
-          <hr class="m-4 border-dashed border-main md:mx-0" />
+          <hr class="m-4 border-dashed border-main md:mx-0">
           <div class="mx-4 grid grid-cols-3 md:mx-0">
             <div class="col-span-2 text-[14px] md:text-[16px]">
               SNSでフォローする
@@ -115,7 +120,11 @@ useAsyncData(`coordinator-${id.value}`, () => {
                   </g>
                   <defs>
                     <clipPath id="clip0_2557_4584">
-                      <rect width="32" height="32" fill="white" />
+                      <rect
+                        width="32"
+                        height="32"
+                        fill="white"
+                      />
                     </clipPath>
                   </defs>
                 </svg>
@@ -140,7 +149,11 @@ useAsyncData(`coordinator-${id.value}`, () => {
                   </g>
                   <defs>
                     <clipPath id="clip0_2557_4588">
-                      <rect width="32" height="32" fill="white" />
+                      <rect
+                        width="32"
+                        height="32"
+                        fill="white"
+                      />
                     </clipPath>
                   </defs>
                 </svg>
@@ -150,7 +163,10 @@ useAsyncData(`coordinator-${id.value}`, () => {
         </div>
         <div class="static pt-[16px] text-main md:col-span-5 md:pt-[100px]">
           <div class="flex w-full px-4 md:px-0">
-            <img src="/img/coordinator/marche.svg" class="z-10 w-full" />
+            <img
+              src="/img/coordinator/marche.svg"
+              class="z-10 w-full"
+            >
           </div>
           <div
             class="relative bottom-4 z-0 mx-4 bg-white pb-10 pt-[65px] md:bottom-8 md:mx-0 md:w-full"
@@ -205,7 +221,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             <img
               class="w-[120px] md:w-[260px]"
               src="/img/coordinator/left.svg"
-            />
+            >
             <p
               class="whitespace-nowrap pt-5 text-[14px] font-bold md:text-[20px]"
             >
@@ -214,7 +230,7 @@ useAsyncData(`coordinator-${id.value}`, () => {
             <img
               class="w-[120px] md:w-[260px]"
               src="/img/coordinator/right.svg"
-            />
+            >
           </div>
           <div
             class="grid grid-cols-1 gap-x-4 gap-y-[80px] pt-[80px] md:grid-cols-2 md:pt-[100px] lg:gap-x-6"

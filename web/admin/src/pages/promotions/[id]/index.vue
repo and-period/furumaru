@@ -27,14 +27,15 @@ const formData = ref<UpdatePromotionRequest>({
   discountRate: 0,
   code: '',
   startAt: dayjs().unix(),
-  endAt: dayjs().unix()
+  endAt: dayjs().unix(),
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await promotionStore.getPromotion(promotionId)
     formData.value = { ...promotion.value }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -51,27 +52,30 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = true
     const req: UpdatePromotionRequest = {
       ...formData.value,
-      discountRate: Number(formData.value.discountRate)
+      discountRate: Number(formData.value.discountRate),
     }
     await promotionStore.updatePromotion(promotionId, req)
     commonStore.addSnackbar({
       message: 'セール情報の編集が完了しました',
-      color: 'info'
+      color: 'info',
     })
     router.push('/promotions')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

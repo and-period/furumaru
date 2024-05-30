@@ -1,5 +1,5 @@
 import 'pinia'
-import {
+import type {
   AddressApi,
   AuthApi,
   AuthUserApi,
@@ -13,8 +13,7 @@ import {
   OrderApi,
   PromotionApi,
 } from '../api'
-import { CustomErrorMessage } from '~/plugins/api-error-handler'
-import VueI18n from 'vue-i18n'
+import type { CustomErrorMessage } from '~/plugins/api-error-handler'
 
 declare module 'pinia' {
   export interface PiniaCustomProperties {
@@ -46,6 +45,7 @@ declare module 'pinia' {
 }
 
 declare module '#app' {
+  // eslint-disable-next-line no-unused-vars
   interface NuxtApp {
     $md: MarkdownIt
   }

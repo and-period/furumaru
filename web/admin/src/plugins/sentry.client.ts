@@ -16,11 +16,11 @@ export default defineNuxtPlugin((nuxtApp) => {
     integrations: [
       browserProfilingIntegration(),
       browserTracingIntegration({ router }),
-      replayIntegration({ maskAllText: false, blockAllMedia: false })
+      replayIntegration({ maskAllText: false, blockAllMedia: false }),
     ],
     tracesSampleRate: runtimeConfig.public.SENTRY_TRACES_SAMPLE_RATE,
     profilesSampleRate: runtimeConfig.public.SENTRY_PROFILES_SAMPLE_RATE,
     replaysSessionSampleRate: runtimeConfig.public.SENTRY_REPLAYS_SESSION_SAMPLE_RATE,
-    replaysOnErrorSampleRate: runtimeConfig.public.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE
+    replaysOnErrorSampleRate: runtimeConfig.public.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE,
   })
 })

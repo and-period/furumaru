@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { mdiPlus, mdiAccount, mdiDelete } from '@mdi/js'
-import { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { convertI18nToJapanesePhoneNumber } from '~/lib/formatter'
 
 import { getResizedImages } from '~/lib/helpers'
@@ -10,40 +10,40 @@ import { AdminStatus, type Coordinator, type ProductType } from '~/types/api'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   coordinators: {
     type: Array<Coordinator>,
-    default: () => []
+    default: () => [],
   },
   productTypes: {
     type: Array<ProductType>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
@@ -59,50 +59,50 @@ const headers: VDataTable['headers'] = [
   {
     title: '',
     key: 'thumbnail',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'マルシェ名',
     key: 'marcheName',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'コーディネーター名',
     key: 'username',
-    sortable: false
+    sortable: false,
   },
   {
     title: '生産者数',
     key: 'producerTotal',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'メールアドレス',
     key: 'email',
-    sortable: false
+    sortable: false,
   },
   {
     title: '電話番号',
     key: 'phoneNumber',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ステータス',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const selectedItem = ref<Coordinator>()
 
 const deleteDialogValue = computed({
   get: () => props.deleteDialog,
-  set: (val: boolean) => emit('update:delete-dialog', val)
+  set: (val: boolean) => emit('update:delete-dialog', val),
 })
 
 const getStatus = (status: AdminStatus): string => {
@@ -176,31 +176,57 @@ const onClickDelete = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title>
         {{ coordinatorName(selectedItem) }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickClose">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickClose"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onClickDelete">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onClickDelete"
+        >
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       コーディネーター管理
       <v-spacer />
-      <v-btn variant="outlined" color="primary" @click="onClickAdd">
-        <v-icon start :icon="mdiPlus" />
+      <v-btn
+        variant="outlined"
+        color="primary"
+        @click="onClickAdd"
+      >
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         コーディネーター登録
       </v-btn>
     </v-card-title>
@@ -216,7 +242,7 @@ const onClickDelete = (): void => {
         no-data-text="登録されているコーディネーターがいません。"
         @update:page="onClickUpdatePage"
         @update:items-per-page="onClickUpdateItemsPerPage"
-        @click:row="(_:any, {item}: any) => onClickRow(item.id)"
+        @click:row="(_:any, { item }: any) => onClickRow(item.id)"
       >
         <template #[`item.thumbnail`]="{ item }">
           <v-avatar>
@@ -226,14 +252,20 @@ const onClickDelete = (): void => {
               :src="item.thumbnailUrl"
               :srcset="getImages(item)"
             />
-            <v-icon v-else :icon="mdiAccount" />
+            <v-icon
+              v-else
+              :icon="mdiAccount"
+            />
           </v-avatar>
         </template>
         <template #[`item.phoneNumber`]="{ item }">
           {{ convertI18nToJapanesePhoneNumber(item.phoneNumber) }}
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.status)">
+          <v-chip
+            size="small"
+            :color="getStatusColor(item.status)"
+          >
             {{ getStatus(item.status) }}
           </v-chip>
         </template>
@@ -244,7 +276,10 @@ const onClickDelete = (): void => {
             size="small"
             @click.stop="onClickOpen(item)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
             削除
           </v-btn>
         </template>

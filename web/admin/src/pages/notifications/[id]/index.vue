@@ -27,7 +27,7 @@ const formData = ref<UpdateNotificationRequest>({
   title: '',
   body: '',
   note: '',
-  publishedAt: 0
+  publishedAt: 0,
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -37,7 +37,8 @@ const fetchState = useAsyncData(async (): Promise<void> => {
       await promotionStore.getPromotion(notification.value.promotionId)
     }
     formData.value = { ...notification.value }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -55,22 +56,25 @@ const handleSubmit = async (): Promise<void> => {
     await notificationStore.updateNotification(notificationId, formData.value)
     commonStore.addSnackbar({
       message: 'お知らせ情報の編集が完了しました',
-      color: 'info'
+      color: 'info',
     })
     router.push('/notifications')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

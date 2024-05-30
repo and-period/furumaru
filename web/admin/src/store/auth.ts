@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs, { type Dayjs } from 'dayjs'
 import { getToken, isSupported } from 'firebase/messaging'
 import { defineStore } from 'pinia'
 import Cookies from 'universal-cookie'
@@ -18,7 +18,7 @@ import {
   type UpdateAuthPasswordRequest,
   type UpdateCoordinatorRequest,
   type UpsertShippingRequest,
-  type VerifyAuthEmailRequest
+  type VerifyAuthEmailRequest,
 } from '~/types/api'
 import { useProductTypeStore } from '~/store'
 
@@ -30,19 +30,19 @@ export const useAuthStore = defineStore('auth', {
     user: undefined as AuthUserResponse | undefined,
     coordinator: {} as Coordinator,
     shipping: {} as Shipping,
-    expiredAt: undefined as Dayjs | undefined
+    expiredAt: undefined as Dayjs | undefined,
   }),
 
   getters: {
-    adminId (state): string {
+    adminId(state): string {
       return state.auth?.adminId || ''
     },
-    accessToken (state): string | undefined {
+    accessToken(state): string | undefined {
       return state.auth?.accessToken
     },
-    role (state): AdminRole {
+    role(state): AdminRole {
       return state.auth?.role || AdminRole.UNKNOWN
-    }
+    },
   },
 
   actions: {
@@ -51,7 +51,7 @@ export const useAuthStore = defineStore('auth', {
      * @param payload メールアドレス/パスワード
      * @returns 遷移先Path
      */
-    async signIn (payload: SignInRequest): Promise<string> {
+    async signIn(payload: SignInRequest): Promise<string> {
       try {
         const res = await apiClient.authApi().v1SignIn(payload)
         this.auth = res.data
@@ -80,7 +80,8 @@ export const useAuthStore = defineStore('auth', {
           })
 
         return this.redirectPath
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 401: 'ユーザー名またはパスワードが違います。' })
       }
     },
@@ -88,11 +89,12 @@ export const useAuthStore = defineStore('auth', {
     /**
      * サインイン中管理者情報取得
      */
-    async getUser (): Promise<void> {
+    async getUser(): Promise<void> {
       try {
         const res = await apiClient.authApi().v1GetAuthUser()
         this.user = res.data
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 401: 'ユーザー名またはパスワードが違います。' })
       }
     },
@@ -101,13 +103,14 @@ export const useAuthStore = defineStore('auth', {
      * メールアドレス更新
      * @param payload
      */
-    async updateEmail (payload: UpdateAuthEmailRequest): Promise<void> {
+    async updateEmail(payload: UpdateAuthEmailRequest): Promise<void> {
       try {
         await apiClient.authApi().v1UpdateAuthEmail(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           409: 'このメールアドレスはすでに登録されているため、変更できません。',
-          412: '変更前のメールアドレスと同じため、変更できません。'
+          412: '変更前のメールアドレスと同じため、変更できません。',
         })
       }
     },
@@ -116,13 +119,14 @@ export const useAuthStore = defineStore('auth', {
      * メールアドレス更新後の検証
      * @param payload
      */
-    async verifyEmail (payload: VerifyAuthEmailRequest): Promise<void> {
+    async verifyEmail(payload: VerifyAuthEmailRequest): Promise<void> {
       try {
         await apiClient.authApi().v1VerifyAuthEmail(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           401: '認証エラーです。再度検証をしてみてください',
-          409: 'このメールアドレスはすでに利用されているため使用できません。'
+          409: 'このメールアドレスはすでに利用されているため使用できません。',
         })
       }
     },
@@ -131,13 +135,14 @@ export const useAuthStore = defineStore('auth', {
      * パスワード更新
      * @param payload
      */
-    async updatePassword (payload: UpdateAuthPasswordRequest): Promise<void> {
+    async updatePassword(payload: UpdateAuthPasswordRequest): Promise<void> {
       try {
         await apiClient.authApi().v1UpdateAuthPassword(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '入力内容に誤りがあります。',
-          401: '認証エラーです。再度試してみてください'
+          401: '認証エラーです。再度試してみてください',
         })
       }
     },
@@ -145,10 +150,11 @@ export const useAuthStore = defineStore('auth', {
     /**
      * パスワードリセットの検証
      */
-    async forgotPassword (payload: ForgotAuthPasswordRequest): Promise<void> {
+    async forgotPassword(payload: ForgotAuthPasswordRequest): Promise<void> {
       try {
         await apiClient.authApi().v1ForgotAuthPassword(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
       }
     },
@@ -157,10 +163,11 @@ export const useAuthStore = defineStore('auth', {
      * パスワードリセット
      * @param payload
      */
-    async resetPassword (payload: ResetAuthPasswordRequest): Promise<void> {
+    async resetPassword(payload: ResetAuthPasswordRequest): Promise<void> {
       try {
         await apiClient.authApi().v1ResetAuthPassword(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
       }
     },
@@ -169,16 +176,17 @@ export const useAuthStore = defineStore('auth', {
      * デバイス情報の登録
      * @param deviceToken デバイスID
      */
-    async registerDeviceToken (deviceToken: string): Promise<void> {
+    async registerDeviceToken(deviceToken: string): Promise<void> {
       try {
         await apiClient.authApi().v1RegisterAuthDevice({ device: deviceToken })
 
         const cookies = new Cookies()
         cookies.set('deviceToken', deviceToken, { secure: true })
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: 'デバイス情報の登録に失敗しました。',
-          401: '認証エラーです。再度ログインをしてください。'
+          401: '認証エラーです。再度ログインをしてください。',
         })
       }
     },
@@ -187,16 +195,17 @@ export const useAuthStore = defineStore('auth', {
      * 認証情報の更新
      * @param refreshToken リフレッシュトークン
      */
-    async getAuthByRefreshToken (refreshToken: string): Promise<void> {
+    async getAuthByRefreshToken(refreshToken: string): Promise<void> {
       try {
         const res = await apiClient.authApi().v1RefreshAuthToken({
-          refreshToken
+          refreshToken,
         })
         this.setExpiredAt(res.data)
         this.isAuthenticated = true
         this.auth = res.data
         this.auth.refreshToken = refreshToken
-      } catch (err) {
+      }
+      catch (err) {
         const cookies = new Cookies()
         cookies.remove('refreshToken')
         return this.errorHandler(err, { 401: '認証エラーです。再度ログインをしてください。' })
@@ -207,7 +216,7 @@ export const useAuthStore = defineStore('auth', {
      * デバイス情報の取得
      * @returns デバイスID
      */
-    async getDeviceToken (): Promise<string> {
+    async getDeviceToken(): Promise<string> {
       const runtimeConfig = useRuntimeConfig()
 
       const supported = await isSupported()
@@ -217,7 +226,7 @@ export const useAuthStore = defineStore('auth', {
       }
 
       return await getToken(messaging, {
-        vapidKey: runtimeConfig.public.FIREBASE_VAPID_KEY
+        vapidKey: runtimeConfig.public.FIREBASE_VAPID_KEY,
       })
         .then((currentToken) => {
           return currentToken
@@ -231,14 +240,15 @@ export const useAuthStore = defineStore('auth', {
     /**
      * コーディネーターの詳細情報を取得する非同期関数
      */
-    async getCoordinator (): Promise<void> {
+    async getCoordinator(): Promise<void> {
       try {
         const res = await apiClient.authApi().v1GetAuthCoordinator()
 
         const productTypeStore = useProductTypeStore()
         this.coordinator = res.data.coordinator
         productTypeStore.productTypes = res.data.productTypes
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: 'コーディネーター情報が見つかりません。' })
       }
     },
@@ -247,10 +257,11 @@ export const useAuthStore = defineStore('auth', {
      * コーディネーターの情報を更新する非同期関数
      * @param payload
      */
-    async updateCoordinator (payload: UpdateCoordinatorRequest): Promise<void> {
+    async updateCoordinator(payload: UpdateCoordinatorRequest): Promise<void> {
       try {
         await apiClient.authApi().v1UpdateAuthCoordinator(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: '入力内容に誤りがあります。' })
       }
     },
@@ -260,11 +271,12 @@ export const useAuthStore = defineStore('auth', {
      * @param coordinatorId
      * @returns
      */
-    async fetchShipping (): Promise<void> {
+    async fetchShipping(): Promise<void> {
       try {
         const res = await apiClient.authApi().v1GetAuthShipping()
         this.shipping = res.data.shipping
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '配送設定が見つかりません。' })
       }
     },
@@ -274,39 +286,42 @@ export const useAuthStore = defineStore('auth', {
      * @param payload
      * @returns
      */
-    async upsertShipping (payload: UpsertShippingRequest): Promise<void> {
+    async upsertShipping(payload: UpsertShippingRequest): Promise<void> {
       try {
         await apiClient.authApi().v1UpsertAuthShipping(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '入力内容に誤りがあります。',
-          404: '指定した配送設定が見つかりません。'
+          404: '指定した配送設定が見つかりません。',
         })
       }
     },
 
-    setRedirectPath (payload: string) {
+    setRedirectPath(payload: string) {
       this.redirectPath = payload
     },
 
-    setExpiredAt (auth: AuthResponse) {
+    setExpiredAt(auth: AuthResponse) {
       this.expiredAt = dayjs().add(auth.expiresIn, 'second')
     },
 
-    async logout () {
+    async logout() {
       try {
         await apiClient.authApi().v1SignOut()
         const cookies = new Cookies()
         cookies.remove('refreshToken')
         this.$reset()
-      } catch (error) {
+      }
+      catch (error) {
         console.log('APIでエラーが発生しました。', error)
-      } finally {
+      }
+      finally {
         this.isAuthenticated = false
         this.auth = undefined
         this.user = undefined
         this.expiredAt = undefined
       }
-    }
-  }
+    },
+  },
 })

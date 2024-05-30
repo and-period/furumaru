@@ -13,7 +13,10 @@ const handleClick = (): void => {
 </script>
 
 <template>
-  <the-button class="flex items-center bg-line" @click="handleClick">
+  <the-button
+    class="flex items-center bg-line"
+    @click="handleClick"
+  >
     <the-line-icon />
     <p class="w-full text-center text-white">
       {{ buttonText }}

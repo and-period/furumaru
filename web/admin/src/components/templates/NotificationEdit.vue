@@ -12,23 +12,23 @@ import { UpdateNotificationValidationRules } from '~/types/validations/notificat
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<UpdateNotificationRequest>,
@@ -37,8 +37,8 @@ const props = defineProps({
       title: '',
       body: '',
       note: '',
-      publishedAt: dayjs().unix()
-    })
+      publishedAt: dayjs().unix(),
+    }),
   },
   notification: {
     type: Object as PropType<Notification>,
@@ -55,8 +55,8 @@ const props = defineProps({
       createdBy: '',
       createdAt: 0,
       updatedBy: '',
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   promotion: {
     type: Object as PropType<Promotion>,
@@ -74,9 +74,9 @@ const props = defineProps({
       createdAt: 0,
       updatedAt: 0,
       usedAmount: 0,
-      usedCount: 0
-    })
-  }
+      usedCount: 0,
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -88,28 +88,28 @@ const typeList = [
   { title: 'システム関連', value: NotificationType.SYSTEM },
   { title: 'ライブ関連', value: NotificationType.LIVE },
   { title: 'セール関連', value: NotificationType.PROMOTION },
-  { title: 'その他', value: NotificationType.OTHER }
+  { title: 'その他', value: NotificationType.OTHER },
 ]
 const targetList = [
   { title: 'ユーザー', value: NotificationTarget.USERS },
   { title: '生産者', value: NotificationTarget.PRODUCERS },
   { title: 'コーディネーター', value: NotificationTarget.COORDINATORS },
-  { title: '管理者', value: NotificationTarget.ADMINISTRATORS }
+  { title: '管理者', value: NotificationTarget.ADMINISTRATORS },
 ]
 
 const formDataValue = computed({
   get: (): UpdateNotificationRequest => props.formData as UpdateNotificationRequest,
-  set: (formData: UpdateNotificationRequest) => emit('update:form-data', formData)
+  set: (formData: UpdateNotificationRequest) => emit('update:form-data', formData),
 })
 const timeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.publishedAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.publishedAt).format('HH:mm')
+    time: unix(props.formData.publishedAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const publishedAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.publishedAt = publishedAt.unix()
-  }
+  },
 })
 const notificationValue = computed((): Notification => {
   return props.notification

@@ -2,8 +2,8 @@
 const props = defineProps({
   width: {
     type: Number,
-    default: 200
-  }
+    default: 200,
+  },
 })
 </script>
 

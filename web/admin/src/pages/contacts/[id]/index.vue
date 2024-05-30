@@ -17,14 +17,15 @@ const { contact } = storeToRefs(contactStore)
 const loading = ref<boolean>(false)
 const formData = ref<UpdateContactRequest>({
   status: ContactStatus.UNKNOWN,
-  note: ''
+  note: '',
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await contactStore.getContact(contactId)
     formData.value = { ...contact.value }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -42,22 +43,25 @@ const handleSubmit = async (): Promise<void> => {
     await contactStore.updateContact(contactId, formData.value)
     commonStore.addSnackbar({
       message: 'お問い合わせ情報が更新されました。',
-      color: 'info'
+      color: 'info',
     })
     router.push('/contacts')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

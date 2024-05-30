@@ -21,7 +21,7 @@ const emits = defineEmits<Emits>()
 
 const formDataValue = computed({
   get: () => props.modelValue,
-  set: (val: UpdateDefaultShippingRate | UpsertShippingRate) => emits('update:modelValue', val)
+  set: (val: UpdateDefaultShippingRate | UpsertShippingRate) => emits('update:modelValue', val),
 })
 
 const v$ = useVuelidate<UpdateDefaultShippingRate | UpsertShippingRate>(UpsertShippingRateValidationRules, formDataValue)
@@ -55,7 +55,11 @@ const handleClickSelectAll = () => {
     item-value="value"
   >
     <template #prepend-item>
-      <v-list-item ripple @click="handleClickSelectAll" @mousedown.prevent>
+      <v-list-item
+        ripple
+        @click="handleClickSelectAll"
+        @mousedown.prevent
+      >
         <v-list-item-title>すべて選択</v-list-item-title>
       </v-list-item>
     </template>

@@ -4,29 +4,30 @@ import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { paymentsList, type PaymentListItem } from '~/constants'
 import type { AlertType } from '~/lib/hooks'
-import { PaymentMethodType, PaymentSystemStatus, type PaymentSystem } from '~/types/api'
+import { PaymentSystemStatus } from '~/types/api'
+import type { PaymentMethodType, PaymentSystem } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   systems: {
     type: Array<PaymentSystem>,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 const emit = defineEmits<{
@@ -37,18 +38,18 @@ const headers: VDataTable['headers'] = [
   {
     title: '決済システム',
     key: 'methodType',
-    sortable: false
+    sortable: false,
   },
   {
     title: '状態',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const getPaymentSystemName = (methodType: PaymentMethodType): string => {
@@ -97,9 +98,16 @@ const onSubmit = (methodType: PaymentMethodType): void => {
 </script>
 
 <template>
-  <v-alert v-show="isAlert" :type="alertType" v-text="alertText" />
+  <v-alert
+    v-show="isAlert"
+    :type="alertType"
+    v-text="alertText"
+  />
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title>決済システム状態管理</v-card-title>
 
     <v-card-text>
@@ -117,8 +125,15 @@ const onSubmit = (methodType: PaymentMethodType): void => {
           {{ getPaymentSystemStatus(item.status) }}
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn variant="outlined" :color="getUpdateButtonColor(item.status)" @click.stop="onSubmit(item.methodType)">
-            <v-icon size="small" :icon="mdiPencil" />
+          <v-btn
+            variant="outlined"
+            :color="getUpdateButtonColor(item.status)"
+            @click.stop="onSubmit(item.methodType)"
+          >
+            <v-icon
+              size="small"
+              :icon="mdiPencil"
+            />
             {{ getUpdateButtonLabel(item.status) }}
           </v-btn>
         </template>

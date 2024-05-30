@@ -1,13 +1,14 @@
+import type {
+  MessageProps } from '@vuelidate/validators'
 import {
   helpers,
-  MessageProps,
   required as _required,
   email as _email,
   minLength as _minLength,
   maxLength as _maxLength,
   minValue as _minValue,
   maxValue as _maxValue,
-  sameAs as _sameAs
+  sameAs as _sameAs,
 } from '@vuelidate/validators'
 
 import { isRef } from 'vue'
@@ -32,7 +33,7 @@ const kana = helpers.withMessage('ひらがなを入力してください。', k
  */
 const tel = helpers.withMessage(
   '電話番号は0から始まる数字のみの9桁または10桁で入力してください。',
-  helpers.regex(/^0[0-9]{9,10}$/)
+  helpers.regex(/^0[0-9]{9,10}$/),
 )
 
 /**
@@ -40,7 +41,7 @@ const tel = helpers.withMessage(
  */
 const postalCode = helpers.withMessage(
   '郵便番号は数字のみの7桁で入力してください。',
-  helpers.regex(/[0-9]{7}/)
+  helpers.regex(/[0-9]{7}/),
 )
 
 /**
@@ -48,7 +49,7 @@ const postalCode = helpers.withMessage(
  */
 const required = helpers.withMessage(
   (_: MessageProps) => 'この項目は必須項目です。',
-  _required
+  _required,
 )
 
 /**
@@ -56,7 +57,7 @@ const required = helpers.withMessage(
  */
 const email = helpers.withMessage(
   'メールアドレスの形式で入力してください。',
-  _email
+  _email,
 )
 
 /**
@@ -67,7 +68,7 @@ const email = helpers.withMessage(
 const minLength = (min: number | Ref<number>) =>
   helpers.withMessage(
     ({ $params }: MessageProps) => `${$params.min}文字以上入力してください。`,
-    _minLength(min)
+    _minLength(min),
   )
 
 /**
@@ -78,7 +79,7 @@ const minLength = (min: number | Ref<number>) =>
 const maxLength = (max: number | Ref<number>) =>
   helpers.withMessage(
     ({ $params }: MessageProps) => `${$params.max}文字までです。`,
-    _maxLength(max)
+    _maxLength(max),
   )
 
 /**
@@ -89,7 +90,7 @@ const maxLength = (max: number | Ref<number>) =>
 const minValue = (min: string | number | Ref<number> | Ref<string>) =>
   helpers.withMessage(
     ({ $params }: MessageProps) => `${$params.min}以上で入力してください。`,
-    _minValue(min)
+    _minValue(min),
   )
 
 /**
@@ -100,7 +101,7 @@ const minValue = (min: string | number | Ref<number> | Ref<string>) =>
 const maxValue = (max: string | number | Ref<number> | Ref<string>) =>
   helpers.withMessage(
     ({ $params }: MessageProps) => `${$params.max}以下で入力してください。`,
-    _maxValue(max)
+    _maxValue(max),
   )
 
 /**
@@ -112,7 +113,7 @@ const maxValue = (max: string | number | Ref<number> | Ref<string>) =>
 const sameAs = (equalTo: unknown, otherName?: string) =>
   helpers.withMessage(
     (_: MessageProps) => '一致しません。',
-    _sameAs(equalTo, otherName)
+    _sameAs(equalTo, otherName),
   )
 
 /**
@@ -126,8 +127,8 @@ const notSameAs = (notEqualTo: unknown, otherName?: string) =>
     `${otherName}と違う値を入力してください`,
     helpers.withParams(
       { type: 'notSameAs', notEqualTo },
-      value => value !== notEqualTo
-    )
+      value => value !== notEqualTo,
+    ),
   )
 
 /**
@@ -141,8 +142,8 @@ const minLengthArray = (minLength: number | Ref<number>) => {
     `少なくとも${minLengthValue}つ以上選択してください。`,
     helpers.withParams(
       { type: 'minLengthArray', minLength },
-      value => Array.isArray(value) && value.length >= minLengthValue
-    )
+      value => Array.isArray(value) && value.length >= minLengthValue,
+    ),
   )
 }
 
@@ -157,8 +158,8 @@ const maxLengthArray = (maxLength: number | Ref<number>) => {
     `この項目は最大${maxLengthValue}件まです。${maxLengthValue}件以下に修正してください。`,
     helpers.withParams(
       { type: 'minLengthArray', minLength: maxLength },
-      value => Array.isArray(value) && value.length <= maxLengthValue
-    )
+      value => Array.isArray(value) && value.length <= maxLengthValue,
+    ),
   )
 }
 
@@ -175,5 +176,5 @@ export {
   sameAs,
   notSameAs,
   minLengthArray,
-  maxLengthArray
+  maxLengthArray,
 }

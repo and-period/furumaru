@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/store/auth'
 import { useShoppingCartStore } from '~/store/shopping'
+
 const router = useRouter()
 
 const shoppingCartStore = useShoppingCartStore()
@@ -14,7 +15,8 @@ const { isAuthenticated } = storeToRefs(authStore)
 const handleClickBuyButton = (coordinatorId: string) => {
   if (isAuthenticated.value) {
     router.push(`/v1/purchase/address?coordinatorId=${coordinatorId}`)
-  } else {
+  }
+  else {
     router.push(
       `/v1/purchase/auth?required=true&coordinatorId=${coordinatorId}`,
     )
@@ -33,7 +35,8 @@ const handleClickCartBuyButton = (
         cartNumber,
       },
     })
-  } else {
+  }
+  else {
     router.push({
       path: '/v1/purchase/auth',
       query: {

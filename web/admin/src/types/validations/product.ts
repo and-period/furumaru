@@ -25,7 +25,7 @@ export const CreateProductValidationRules: ValidationArgs = {
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   originPrefectureCode: { required },
-  originCity: { required, maxLength: maxLength(32) }
+  originCity: { required, maxLength: maxLength(32) },
 }
 
 export const UpdateProductValidationRules: ValidationArgs = {
@@ -51,5 +51,5 @@ export const UpdateProductValidationRules: ValidationArgs = {
   box80Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   box100Rate: { required, minValue: minValue(0), maxValue: maxValue(100) },
   originPrefectureCode: { required },
-  originCity: { required, maxLength: maxLength(32) }
+  originCity: { required, maxLength: maxLength(32) },
 }

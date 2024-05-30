@@ -16,14 +16,14 @@ const { guestBroadcast } = storeToRefs(broadcastStore)
 
 const items = [
   { title: '公開', value: true },
-  { title: '限定公開', value: false }
+  { title: '限定公開', value: false },
 ]
 
 const loading = ref<boolean>(false)
 const formData = reactive<CreateYoutubeBroadcastRequest>({
   title: '',
   description: '',
-  public: false
+  public: false,
 })
 
 const parseTime = (unixtime: number): string => {
@@ -34,12 +34,14 @@ const fetchBroadcast = async () => {
   try {
     loading.value = true
     await broadcastStore.getGuestBroadcast()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -47,17 +49,19 @@ const fetchBroadcast = async () => {
 const connectYoutube = async () => {
   const req: CallbackAuthYoutubeBroadcastRequest = {
     state,
-    authCode: code
+    authCode: code,
   }
   try {
     loading.value = true
     await broadcastStore.connectYouTube(req)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -67,12 +71,14 @@ const handleSubmit = async () => {
     loading.value = true
     await broadcastStore.createYoutubeLive(formData)
     router.push('/auth/youtube/complete')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -80,12 +86,14 @@ const handleSubmit = async () => {
 try {
   if (state && code) {
     await connectYoutube()
-  } else {
+  }
+  else {
     await fetchBroadcast()
   }
   formData.title = guestBroadcast.value.title
   formData.description = guestBroadcast.value.description
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>
@@ -122,10 +130,26 @@ try {
 
     <h2>YouTube配信作成フォーム</h2>
     <v-form @submit.prevent="handleSubmit">
-      <v-text-field v-model="formData.title" label="タイトル" />
-      <v-text-field v-model="formData.description" label="説明" />
-      <v-select v-model.boolean="formData.public" :items="items" label="公開設定" />
-      <v-btn :loading="loading" type="submit" block variant="outlined" color="primary">
+      <v-text-field
+        v-model="formData.title"
+        label="タイトル"
+      />
+      <v-text-field
+        v-model="formData.description"
+        label="説明"
+      />
+      <v-select
+        v-model.boolean="formData.public"
+        :items="items"
+        label="公開設定"
+      />
+      <v-btn
+        :loading="loading"
+        type="submit"
+        block
+        variant="outlined"
+        color="primary"
+      >
         送信
       </v-btn>
     </v-form>

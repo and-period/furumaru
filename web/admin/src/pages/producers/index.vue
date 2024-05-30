@@ -30,7 +30,8 @@ watch(pagination.itemsPerPage, (): void => {
 const fetchProducers = async (): Promise<void> => {
   try {
     await producerStore.fetchProducers(pagination.itemsPerPage.value, pagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -61,15 +62,17 @@ const handleClickDelete = async (producerId: string): Promise<void> => {
     await producerStore.deleteProducer(producerId)
     commonStore.addSnackbar({
       color: 'info',
-      message: '生産者を削除しました。'
+      message: '生産者を削除しました。',
     })
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     deleteDialog.value = false
     loading.value = false
   }
@@ -77,7 +80,8 @@ const handleClickDelete = async (producerId: string): Promise<void> => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

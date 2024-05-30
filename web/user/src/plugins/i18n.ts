@@ -1,6 +1,6 @@
 import type { PiniaPluginContext } from 'pinia'
 
-function i18nInjector ({ app, store }: PiniaPluginContext) {
+function i18nInjector({ app, store }: PiniaPluginContext) {
   // storeにi18nインスタンスを注入する
   store.i18n = app.$nuxt.$i18n
 }

@@ -42,7 +42,9 @@ const handleClickRemoveButton = (id: string) => {
 
 <template>
   <div class="bg-base p-4">
-    <p class="mb-6 mt-2 text-center">買い物カゴ #{{ cartNumber }}</p>
+    <p class="mb-6 mt-2 text-center">
+      買い物カゴ #{{ cartNumber }}
+    </p>
 
     <dl class="flex flex-col gap-y-1 text-sm">
       <div class="flex">
@@ -84,9 +86,12 @@ const handleClickRemoveButton = (id: string) => {
         </div>
       </div>
 
-      <hr class="my-2 border-dashed border-main" />
+      <hr class="my-2 border-dashed border-main">
 
-      <div v-for="item in shoppingCart.items" :key="item.productId">
+      <div
+        v-for="item in shoppingCart.items"
+        :key="item.productId"
+      >
         <the-cart-product-item
           v-if="item"
           :id="item.productId"
@@ -96,10 +101,13 @@ const handleClickRemoveButton = (id: string) => {
           :quantity="item.quantity"
           @click:remove-button="handleClickRemoveButton"
         />
-        <hr class="my-2 border-dashed border-main" />
+        <hr class="my-2 border-dashed border-main">
       </div>
 
-      <button class="w-full bg-main py-1 text-white" @click="handleClick">
+      <button
+        class="w-full bg-main py-1 text-white"
+        @click="handleClick"
+      >
         買い物カゴを見る
       </button>
     </div>

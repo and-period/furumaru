@@ -41,7 +41,8 @@ const handleSubmit = async () => {
   try {
     await signIn(formData)
     router.push(localePath('/'))
-  } catch (error) {
+  }
+  catch (error) {
     hasError.value = true
     if (error instanceof ApiBaseError) {
       errorMessage.value = error.message

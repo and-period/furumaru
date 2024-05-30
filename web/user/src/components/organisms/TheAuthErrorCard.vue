@@ -10,7 +10,9 @@ const handleClickBackButton = () => {
   <div
     class="mx-auto flex max-w-[560px] flex-col items-center justify-center bg-white px-4 py-6 tracking-[10%] text-main md:p-10 xl:px-20"
   >
-    <p class="mb-12 text-[16px] font-semibold">この操作はログインが必要です</p>
+    <p class="mb-12 text-[16px] font-semibold">
+      この操作はログインが必要です
+    </p>
     <nuxt-link
       to="/signin"
       class="mb-6 w-full bg-main px-4 py-2 text-center text-white"

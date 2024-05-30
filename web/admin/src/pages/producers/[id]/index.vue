@@ -38,23 +38,23 @@ const formData = ref<UpdateProducerRequest>({
   promotionVideoUrl: '',
   bonusVideoUrl: '',
   instagramId: '',
-  facebookId: ''
+  facebookId: '',
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const headerUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const promotionVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const bonusVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -62,9 +62,10 @@ const fetchState = useAsyncData(async (): Promise<void> => {
     await producerStore.getProducer(producerId)
     formData.value = {
       ...producer.value,
-      phoneNumber: convertI18nToJapanesePhoneNumber(producer.value.phoneNumber)
+      phoneNumber: convertI18nToJapanesePhoneNumber(producer.value.phoneNumber),
     }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -81,20 +82,22 @@ const handleSubmit = async () => {
     loading.value = true
     const req: UpdateProducerRequest = {
       ...formData.value,
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
     }
     await producerStore.updateProducer(producerId, req)
     commonStore.addSnackbar({
       color: 'info',
-      message: `${formData.value.username}を更新しました。`
+      message: `${formData.value.username}を更新しました。`,
     })
     router.push('/producers')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -184,18 +187,21 @@ const handleSearchAddress = async (): Promise<void> => {
       ...formData.value,
       prefectureCode: res.prefecture,
       city: res.city,
-      addressLine1: res.town
+      addressLine1: res.town,
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

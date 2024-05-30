@@ -8,7 +8,7 @@ import {
   useProducerStore,
   useProductStore,
   useProductTagStore,
-  useProductTypeStore
+  useProductTypeStore,
 } from '~/store'
 
 const router = useRouter()
@@ -44,9 +44,10 @@ const fetchProducts = async (): Promise<void> => {
   try {
     await productStore.fetchProducts(
       pagination.itemsPerPage.value,
-      pagination.offset.value
+      pagination.offset.value,
     )
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -81,12 +82,14 @@ const handleClickDelete = async (productId: string): Promise<void> => {
   try {
     loading.value = true
     await productStore.deleteProduct(productId)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     deleteDialog.value = false
     loading.value = false
   }
@@ -94,7 +97,8 @@ const handleClickDelete = async (productId: string): Promise<void> => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

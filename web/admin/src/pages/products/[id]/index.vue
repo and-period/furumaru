@@ -9,14 +9,14 @@ import {
   useProducerStore,
   useProductStore,
   useProductTagStore,
-  useProductTypeStore
+  useProductTypeStore,
 } from '~/store'
 import {
   type UpdateProductRequest,
   type CreateProductRequestMediaInner,
   DeliveryType,
   StorageMethodType,
-  Prefecture
+  Prefecture,
 } from '~/types/api'
 
 const route = useRoute()
@@ -66,7 +66,7 @@ const formData = ref<UpdateProductRequest>({
   originPrefectureCode: Prefecture.HOKKAIDO,
   originCity: '',
   startAt: dayjs().unix(),
-  endAt: dayjs().unix()
+  endAt: dayjs().unix(),
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -80,7 +80,8 @@ const fetchState = useAsyncData(async (): Promise<void> => {
     if (productTags.value.length === 0) {
       productTagStore.fetchProductTags(20)
     }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -90,7 +91,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
 
 watch(selectedCategoryId, (newValue?: string, oldValue?: string): void => {
   productTypeStore.fetchProductTypesByCategoryId(
-    selectedCategoryId.value || ''
+    selectedCategoryId.value || '',
   )
   if (newValue === oldValue) {
     return
@@ -108,7 +109,8 @@ const handleSearchCategory = async (name: string): Promise<void> => {
       ? [selectedCategoryId.value]
       : []
     await categoryStore.searchCategories(name, categoryIds)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -124,9 +126,10 @@ const handleSearchProductType = async (name: string): Promise<void> => {
     await productTypeStore.searchProductTypes(
       name,
       selectedCategoryId.value,
-      productTypeIds
+      productTypeIds,
     )
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -137,7 +140,8 @@ const handleSearchProductType = async (name: string): Promise<void> => {
 const handleSearchProductTag = async (name: string): Promise<void> => {
   try {
     await productTagStore.searchProductTags(name, formData.value.productTagIds)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -151,7 +155,8 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
     try {
       const url: string = await productStore.uploadProductMedia(file)
       formData.value.media.push({ url, isThumbnail: false })
-    } catch (err) {
+    }
+    catch (err) {
       if (err instanceof Error) {
         show(err.message)
       }
@@ -171,8 +176,8 @@ const handleImageUpload = async (files: FileList): Promise<void> => {
   formData.value.media = formData.value.media.map(
     (item, i): CreateProductRequestMediaInner => ({
       ...item,
-      isThumbnail: i === 0
-    })
+      isThumbnail: i === 0,
+    }),
   )
 }
 
@@ -182,10 +187,11 @@ const handleSubmit = async (): Promise<void> => {
     await productStore.updateProduct(productId, formData.value)
     commonStore.addSnackbar({
       color: 'success',
-      message: '商品を更新しました。'
+      message: '商品を更新しました。',
     })
     router.push('/products')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -193,16 +199,18 @@ const handleSubmit = async (): Promise<void> => {
 
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

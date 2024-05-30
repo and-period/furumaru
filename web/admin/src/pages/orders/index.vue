@@ -25,11 +25,11 @@ const exportDialog = ref<boolean>(false)
 
 // TODO: API設計が決まり次第型定義の厳格化
 const importFormData = ref({
-  company: ''
+  company: '',
 })
 const exportFormData = ref<ExportOrdersRequest>({
   shippingCarrier: ShippingCarrier.UNKNOWN,
-  characterEncodingType: CharacterEncodingType.UTF8
+  characterEncodingType: CharacterEncodingType.UTF8,
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -43,7 +43,8 @@ watch(pagination.itemsPerPage, (): void => {
 const fetchOrders = async (): Promise<void> => {
   try {
     await orderStore.fetchOrders(pagination.itemsPerPage.value, pagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -78,7 +79,8 @@ const handleExport = async (): Promise<void> => {
     a.setAttribute('download', `orders_${dayjs().format('YYYYMMDDhhmmss')}.csv`)
     a.click()
     a.remove()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -89,7 +91,8 @@ const handleExport = async (): Promise<void> => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

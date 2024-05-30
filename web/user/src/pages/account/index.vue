@@ -139,7 +139,9 @@ definePageMeta({
     <div class="flex flex-col gap-4">
       <div>
         <div class="rounded bg-white p-4 md:p-16">
-          <div class="mb-6 text-[16px] font-semibold">アカウント情報</div>
+          <div class="mb-6 text-[16px] font-semibold">
+            アカウント情報
+          </div>
           <template v-if="user">
             <dl
               class="divide-y divide-dashed divide-typography border-y border-dashed border-typography [&>div]:py-4 [&_dt]:text-typography"
@@ -159,7 +161,10 @@ definePageMeta({
                       />
                     </template>
                     <template v-else>
-                      <the-account-icon class="h-14 w-14" color="white" />
+                      <the-account-icon
+                        class="h-14 w-14"
+                        color="white"
+                      />
                     </template>
                   </dd>
                 </div>
@@ -204,7 +209,9 @@ definePageMeta({
               <div class="flex items-center">
                 <div class="grow sm:grid sm:grid-cols-3 sm:gap-4">
                   <dt>パスワード</dt>
-                  <dd class="sm:col-span-2">********</dd>
+                  <dd class="sm:col-span-2">
+                    ********
+                  </dd>
                 </div>
                 <nuxt-link
                   to="/account/edit/password"
@@ -261,8 +268,13 @@ definePageMeta({
       </div>
 
       <!-- 基本お届け先情報表示エリア -->
-      <div v-if="defaultAddress" class="rounded bg-white p-4 md:p-16">
-        <div class="mb-6 text-[16px] font-semibold">基本お届け先情報</div>
+      <div
+        v-if="defaultAddress"
+        class="rounded bg-white p-4 md:p-16"
+      >
+        <div class="mb-6 text-[16px] font-semibold">
+          基本お届け先情報
+        </div>
         <dl class="[&_dt]:text-typography">
           <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
             <dt>氏名（ふりがな）</dt>
@@ -293,13 +305,21 @@ definePageMeta({
 
       <!-- お届け先情報一覧表示エリア -->
       <div class="rounded bg-white p-4 md:p-16">
-        <div class="mb-6 text-[16px] font-semibold">お届け先情報</div>
+        <div class="mb-6 text-[16px] font-semibold">
+          お届け先情報
+        </div>
         <div
           class="flex flex-col gap-6 divide-y divide-main border-y border-main"
         >
-          <div v-for="(address, i) in addresses" :key="address.id" class="py-4">
+          <div
+            v-for="(address, i) in addresses"
+            :key="address.id"
+            class="py-4"
+          >
             <div class="mb-2 inline-flex items-center gap-4">
-              <div class="font-semibold">お届け先 #{{ i + 1 }}</div>
+              <div class="font-semibold">
+                お届け先 #{{ i + 1 }}
+              </div>
             </div>
             <dl class="[&_dt]:text-typography">
               <div class="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
@@ -336,7 +356,9 @@ definePageMeta({
           />
         </template>
         <template v-else>
-          <div class="mt-4 text-center">登録されている住所がありません</div>
+          <div class="mt-4 text-center">
+            登録されている住所がありません
+          </div>
         </template>
       </div>
     </div>
@@ -347,7 +369,7 @@ definePageMeta({
         注文履歴（{{ total }}件）
       </div>
       <div class="flex flex-col">
-        <template v-if="fetchState.isLoading"> </template>
+        <template v-if="fetchState.isLoading" />
         <div class="divide-y divide-main border-y border-main">
           <div
             v-for="order in orderHistories"
@@ -383,8 +405,8 @@ definePageMeta({
                 </nuxt-link>
               </div>
             </div>
-            <hr class="my-4 border-b border-dashed" />
-            <div></div>
+            <hr class="my-4 border-b border-dashed">
+            <div />
 
             <div
               class="flex flex-col gap-4 sm:grid sm:grid-cols-3 md:grid-cols-4"
@@ -429,7 +451,7 @@ definePageMeta({
                 </div>
               </dl>
             </div>
-            <div class="mt-2 text-right text-[14px]"></div>
+            <div class="mt-2 text-right text-[14px]" />
           </div>
         </div>
       </div>
@@ -443,12 +465,19 @@ definePageMeta({
         />
       </template>
       <template v-else>
-        <div class="mt-4 text-center">注文履歴がありません</div>
+        <div class="mt-4 text-center">
+          注文履歴がありません
+        </div>
       </template>
     </div>
   </div>
 
   <div class="container mx-auto mt-16 text-right xl:px-0">
-    <button class="underline" @click="handleClickLogout">ログアウト</button>
+    <button
+      class="underline"
+      @click="handleClickLogout"
+    >
+      ログアウト
+    </button>
   </div>
 </template>

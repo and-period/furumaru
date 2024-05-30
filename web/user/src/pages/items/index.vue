@@ -84,7 +84,10 @@ const hideV1App = false
 </script>
 
 <template>
-  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+  <template
+    v-for="(snackbarItem, i) in snackbarItems"
+    :key="i"
+  >
     <the-snackbar
       v-model:is-show="snackbarItem.isShow"
       :text="snackbarItem.text"
@@ -100,28 +103,42 @@ const hideV1App = false
       >
         すべての商品
       </p>
-      <div v-if="hideV1App" class="mt-[24px] w-full md:mt-[38px]">
+      <div
+        v-if="hideV1App"
+        class="mt-[24px] w-full md:mt-[38px]"
+      >
         <div class="relative mx-auto md:w-[648px]">
           <the-search-icon class="absolute left-[24px] top-[12px]" />
           <input
             class="block w-full rounded-[28px] border border-typography py-3 pl-[56px] text-[12px] placeholder:text-center focus:border-2 focus:border-main focus:outline-none md:text-[16px]"
             type="text"
             placeholder="すべての商品からさがす"
-          />
+          >
         </div>
       </div>
     </div>
-    <hr class="mt-[40px]" />
+    <hr class="mt-[40px]">
     <div class="mt-[24px] w-full">
-      <div v-if="hideV1App" class="text-right">
+      <div
+        v-if="hideV1App"
+        class="text-right"
+      >
         <div
           class="inline-flex text-[12px] tracking-[1.3px] text-typography md:text-[13px]"
         >
-          <div class="mr-[16px]">並び替え：</div>
+          <div class="mr-[16px]">
+            並び替え：
+          </div>
           <div class="inline-flex gap-[22px]">
-            <button class="border-b border-main pb-2 text-main">新着順</button>
-            <button class="pb-2">値段の安い順</button>
-            <button class="pb-2">値段の高い順</button>
+            <button class="border-b border-main pb-2 text-main">
+              新着順
+            </button>
+            <button class="pb-2">
+              値段の安い順
+            </button>
+            <button class="pb-2">
+              値段の高い順
+            </button>
           </div>
         </div>
       </div>
@@ -135,9 +152,9 @@ const hideV1App = false
             :key="i"
             class="w-full animate-pulse"
           >
-            <div class="aspect-square w-full bg-slate-200"></div>
-            <div class="mt-2 h-[24px] w-[80%] rounded-lg bg-slate-200"></div>
-            <div class="mt-2 h-[24px] w-[60%] rounded-lg bg-slate-200"></div>
+            <div class="aspect-square w-full bg-slate-200" />
+            <div class="mt-2 h-[24px] w-[80%] rounded-lg bg-slate-200" />
+            <div class="mt-2 h-[24px] w-[60%] rounded-lg bg-slate-200" />
           </div>
         </template>
 

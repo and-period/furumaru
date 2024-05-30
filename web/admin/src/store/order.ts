@@ -11,7 +11,7 @@ export const useOrderStore = defineStore('order', {
   state: () => ({
     order: {} as Order,
     orders: [] as Order[],
-    totalItems: 0
+    totalItems: 0,
   }),
 
   actions: {
@@ -21,7 +21,7 @@ export const useOrderStore = defineStore('order', {
      * @param offset
      * @returns
      */
-    async fetchOrders (limit = 20, offset = 0): Promise<void> {
+    async fetchOrders(limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.orderApi().v1ListOrders(limit, offset)
 
@@ -33,7 +33,8 @@ export const useOrderStore = defineStore('order', {
         coordinatorStore.coordinators = res.data.coordinators
         customerStore.customers = res.data.users
         promotionStore.promotions = res.data.promotions
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -43,7 +44,7 @@ export const useOrderStore = defineStore('order', {
      * @param orderId 注文ID
      * @returns 注文情報
      */
-    async getOrder (orderId: string): Promise<void> {
+    async getOrder(orderId: string): Promise<void> {
       try {
         const res = await apiClient.orderApi().v1GetOrder(orderId)
 
@@ -56,10 +57,11 @@ export const useOrderStore = defineStore('order', {
         customerStore.customer = res.data.user
         promotionStore.promotions.push(res.data.promotion)
         productStore.products = res.data.products
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '対象の注文を閲覧する権限がありません',
-          404: '対象の注文が存在しません'
+          404: '対象の注文が存在しません',
         })
       }
     },
@@ -69,13 +71,14 @@ export const useOrderStore = defineStore('order', {
      * @param orderId 注文ID
      * @returns
      */
-    async captureOrder (orderId: string): Promise<void> {
+    async captureOrder(orderId: string): Promise<void> {
       try {
         await apiClient.orderApi().v1CaptureOrder(orderId)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '対象の注文を実売り上げ状態にする権限がありません',
-          404: '対象の注文が存在しません'
+          404: '対象の注文が存在しません',
         })
       }
     },
@@ -86,13 +89,14 @@ export const useOrderStore = defineStore('order', {
      * @param payload 下書き情報
      * @returns
      */
-    async draftOrder (orderId: string, payload: DraftOrderRequest): Promise<void> {
+    async draftOrder(orderId: string, payload: DraftOrderRequest): Promise<void> {
       try {
         await apiClient.orderApi().v1DraftOrder(orderId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '対象の注文を下書き保存する権限がありません',
-          404: '対象の注文が存在しません'
+          404: '対象の注文が存在しません',
         })
       }
     },
@@ -103,13 +107,14 @@ export const useOrderStore = defineStore('order', {
      * @param payload 対応完了時に必要な情報
      * @returns
      */
-    async completeOrder (orderId: string, payload: CompleteOrderRequest): Promise<void> {
+    async completeOrder(orderId: string, payload: CompleteOrderRequest): Promise<void> {
       try {
         await apiClient.orderApi().v1CompleteOrder(orderId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '対象の注文を完了状態にする権限がありません',
-          404: '対象の注文が存在しません'
+          404: '対象の注文が存在しません',
         })
       }
     },
@@ -119,13 +124,14 @@ export const useOrderStore = defineStore('order', {
      * @param orderId 注文ID
      * @returns
      */
-    async cancelOrder (orderId: string): Promise<void> {
+    async cancelOrder(orderId: string): Promise<void> {
       try {
         await apiClient.orderApi().v1CancelOrder(orderId)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '対象の注文をキャンセルする権限がありません',
-          404: '対象の注文が存在しません'
+          404: '対象の注文が存在しません',
         })
       }
     },
@@ -136,13 +142,14 @@ export const useOrderStore = defineStore('order', {
      * @param payload 返金時に必要な情報
      * @returns
      */
-    async refundOrder (orderId: string, payload: RefundOrderRequest): Promise<void> {
+    async refundOrder(orderId: string, payload: RefundOrderRequest): Promise<void> {
       try {
         await apiClient.orderApi().v1RefundOrder(orderId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '対象の注文を返金する権限がありません',
-          404: '対象の注文が存在しません'
+          404: '対象の注文が存在しません',
         })
       }
     },
@@ -154,13 +161,14 @@ export const useOrderStore = defineStore('order', {
      * @param payload 配送情報
      * @returns
      */
-    async updateFulfillment (orderId: string, fulfillmentId: string, payload: UpdateOrderFulfillmentRequest): Promise<void> {
+    async updateFulfillment(orderId: string, fulfillmentId: string, payload: UpdateOrderFulfillmentRequest): Promise<void> {
       try {
         await apiClient.orderApi().v1UpdateOrderFulfillment(orderId, fulfillmentId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '対象の注文の配送情報を更新する権限がありません',
-          404: '対象の注文または配送情報が存在しません'
+          404: '対象の注文または配送情報が存在しません',
         })
       }
     },
@@ -170,15 +178,16 @@ export const useOrderStore = defineStore('order', {
      * @param payload
      * @returns
      */
-    async exportOrders (payload: ExportOrdersRequest): Promise<string> {
+    async exportOrders(payload: ExportOrdersRequest): Promise<string> {
       try {
         const res = await apiClient.orderApi().v1ExportOrders(payload)
         return res.data
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
-          403: '注文履歴を取得する権限がありません'
+          403: '注文履歴を取得する権限がありません',
         })
       }
-    }
-  }
+    },
+  },
 })

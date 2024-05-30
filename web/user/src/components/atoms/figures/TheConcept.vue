@@ -5,5 +5,5 @@
     width="500"
     height="500"
     class="block"
-  />
+  >
 </template>

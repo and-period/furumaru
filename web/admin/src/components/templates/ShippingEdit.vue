@@ -10,19 +10,19 @@ import { UpsertShippingValidationRules } from '~/types/validations'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<UpdateDefaultShippingRequest | UpsertShippingRequest>,
@@ -31,29 +31,29 @@ const props = defineProps({
         {
           name: '',
           price: 0,
-          prefectureCodes: []
-        }
+          prefectureCodes: [],
+        },
       ],
       box60Frozen: 0,
       box80Rates: [
         {
           name: '',
           price: 0,
-          prefectureCodes: []
-        }
+          prefectureCodes: [],
+        },
       ],
       box80Frozen: 0,
       box100Rates: [
         {
           name: '',
           price: 0,
-          prefectureCodes: []
-        }
+          prefectureCodes: [],
+        },
       ],
       box100Frozen: 0,
       hasFreeShipping: false,
-      freeShippingRates: 0
-    })
+      freeShippingRates: 0,
+    }),
   },
   shipping: {
     type: Object as PropType<Shipping>,
@@ -69,9 +69,9 @@ const props = defineProps({
       hasFreeShipping: false,
       freeShippingRates: 0,
       createdAt: 0,
-      updatedAt: 0
-    })
-  }
+      updatedAt: 0,
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -81,7 +81,7 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: (): UpdateDefaultShippingRequest | UpsertShippingRequest => props.formData,
-  set: (formData: UpdateDefaultShippingRequest | UpsertShippingRequest): void => emit('update:form-data', formData)
+  set: (formData: UpdateDefaultShippingRequest | UpsertShippingRequest): void => emit('update:form-data', formData),
 })
 const box60RateItemsSize = computed(() => {
   return [...Array(formDataValue.value.box60Rates.length).keys()]
@@ -99,7 +99,7 @@ const addBox60RateItem = () => {
   formDataValue.value.box60Rates.push({
     name: '',
     price: 0,
-    prefectureCodes: []
+    prefectureCodes: [],
   })
 }
 
@@ -107,7 +107,7 @@ const addBox80RateItem = () => {
   formDataValue.value.box80Rates.push({
     name: '',
     price: 0,
-    prefectureCodes: []
+    prefectureCodes: [],
   })
 }
 
@@ -115,7 +115,7 @@ const addBox100RateItem = () => {
   formDataValue.value.box100Rates.push({
     name: '',
     price: 0,
-    prefectureCodes: []
+    prefectureCodes: [],
   })
 }
 
@@ -134,20 +134,20 @@ const getSelectableBox100RatePrefecturesList = (i: number): PrefecturesListSelec
 const onClickSelectAll = (rate: '60' | '80' | '100', i: number): void => {
   switch (rate) {
     case '60':
-      formDataValue.value.box60Rates[i].prefectureCodes =
-        getSelectableBox60RatePrefecturesList(i)
+      formDataValue.value.box60Rates[i].prefectureCodes
+        = getSelectableBox60RatePrefecturesList(i)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
     case '80':
-      formDataValue.value.box80Rates[i].prefectureCodes =
-        getSelectableBox80RatePrefecturesList(i)
+      formDataValue.value.box80Rates[i].prefectureCodes
+        = getSelectableBox80RatePrefecturesList(i)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
     case '100':
-      formDataValue.value.box100Rates[i].prefectureCodes =
-        getSelectableBox100RatePrefecturesList(i)
+      formDataValue.value.box100Rates[i].prefectureCodes
+        = getSelectableBox100RatePrefecturesList(i)
           .filter(item => !item.disabled)
           .map(item => item.value)
       break
@@ -179,7 +179,11 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card-title>配送情報詳細</v-card-title>
   <v-card class="mb-4 py-2">
@@ -196,7 +200,11 @@ const onSubmit = async (): Promise<void> => {
           min="0"
         />
       </div>
-      <div v-for="i in box60RateItemsSize" :key="`60-${i}`" class="px-4 py-2 mb-2 border">
+      <div
+        v-for="i in box60RateItemsSize"
+        :key="`60-${i}`"
+        class="px-4 py-2 mb-2 border"
+      >
         <div class="d-flex flex-row align-center">
           <p class="text-subtitle-2 text-grey">
             オプション{{ i + 1 }}
@@ -219,7 +227,12 @@ const onSubmit = async (): Promise<void> => {
       </div>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="primary" variant="outlined" block @click="addBox60RateItem">
+      <v-btn
+        color="primary"
+        variant="outlined"
+        block
+        @click="addBox60RateItem"
+      >
         <v-icon :icon="mdiPlus" />
         追加
       </v-btn>
@@ -240,7 +253,11 @@ const onSubmit = async (): Promise<void> => {
           min="0"
         />
       </div>
-      <div v-for="i in box80RateItemsSize" :key="`80-${i}`" class="px-4 py-2 mb-2 border">
+      <div
+        v-for="i in box80RateItemsSize"
+        :key="`80-${i}`"
+        class="px-4 py-2 mb-2 border"
+      >
         <div class="d-flex flex-row align-center">
           <p class="text-subtitle-2 text-grey">
             オプション{{ i + 1 }}
@@ -263,7 +280,12 @@ const onSubmit = async (): Promise<void> => {
       </div>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="primary" variant="outlined" block @click="addBox80RateItem">
+      <v-btn
+        color="primary"
+        variant="outlined"
+        block
+        @click="addBox80RateItem"
+      >
         <v-icon :icon="mdiPlus" />
         追加
       </v-btn>
@@ -284,7 +306,11 @@ const onSubmit = async (): Promise<void> => {
           min="0"
         />
       </div>
-      <div v-for="i in box100RateItemsSize" :key="`100-${i}`" class="px-4 py-2 mb-2 border">
+      <div
+        v-for="i in box100RateItemsSize"
+        :key="`100-${i}`"
+        class="px-4 py-2 mb-2 border"
+      >
         <div class="d-flex flex-row align-center">
           <p class="text-subtitle-2 text-grey">
             オプション{{ i + 1 }}
@@ -307,14 +333,24 @@ const onSubmit = async (): Promise<void> => {
       </div>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="primary" variant="outlined" block @click="addBox100RateItem">
+      <v-btn
+        color="primary"
+        variant="outlined"
+        block
+        @click="addBox100RateItem"
+      >
         <v-icon :icon="mdiPlus" />
         追加
       </v-btn>
     </v-card-actions>
   </v-card>
 
-  <v-btn :loading="loading" block variant="outlined" @click="onSubmit">
+  <v-btn
+    :loading="loading"
+    block
+    variant="outlined"
+    @click="onSubmit"
+  >
     更新
   </v-btn>
 </template>

@@ -19,7 +19,7 @@ const formData = ref<CreatePromotionRequest>({
   discountRate: 0,
   code: '',
   startAt: dayjs().unix(),
-  endAt: dayjs().unix()
+  endAt: dayjs().unix(),
 })
 
 const handleSubmit = async (): Promise<void> => {
@@ -27,20 +27,22 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = true
     const req: CreatePromotionRequest = {
       ...formData.value,
-      discountRate: Number(formData.value.discountRate)
+      discountRate: Number(formData.value.discountRate),
     }
     await promotionStore.createPromotion(req)
     commonStore.addSnackbar({
       message: `${formData.value.title}を作成しました。`,
-      color: 'info'
+      color: 'info',
     })
     router.push('/promotions')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

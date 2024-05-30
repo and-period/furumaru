@@ -28,7 +28,11 @@ const calcStyle = (i: number) => {
     >
       {{ snackbar.message }}
       <template #actions>
-        <v-btn variant="text" color="white" @click="commonStore.hideSnackbar(i)">
+        <v-btn
+          variant="text"
+          color="white"
+          @click="commonStore.hideSnackbar(i)"
+        >
           閉じる
         </v-btn>
       </template>

@@ -4,8 +4,8 @@ import type { SettingMenu } from '~/types/props'
 const props = defineProps({
   menus: {
     type: Array<SettingMenu>,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 const emit = defineEmits<{

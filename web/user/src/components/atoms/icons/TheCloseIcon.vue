@@ -6,7 +6,12 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect width="24" height="24" rx="12" fill="#604C3F" />
+    <rect
+      width="24"
+      height="24"
+      rx="12"
+      fill="#604C3F"
+    />
     <line
       x1="18.0208"
       y1="6.70711"

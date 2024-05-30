@@ -42,7 +42,9 @@ const handleClickItem = () => {
         v-if="!hasStock"
         class="absolute inset-0 flex items-center justify-center bg-black/50"
       >
-        <p class="text-[14px] font-semibold text-white">在庫なし</p>
+        <p class="text-[14px] font-semibold text-white">
+          在庫なし
+        </p>
       </div>
       <picture
         v-if="thumbnail"
