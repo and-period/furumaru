@@ -258,7 +258,6 @@ useSeoMeta({
                       provider="cloudFront"
                       width="32px"
                       height="32px"
-                      format="webp"
                       :src="
                         item.thumbnailUrl
                           ? item.thumbnailUrl

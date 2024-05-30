@@ -54,7 +54,6 @@ const handleClickItem = () => {
       >
         <nuxt-img
           provider="cloudFront"
-          format="webp"
           :src="thumbnail.url"
           :alt="`${name}のサムネイル画像`"
           class="aspect-square w-full"

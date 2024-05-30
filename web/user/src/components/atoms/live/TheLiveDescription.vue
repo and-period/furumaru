@@ -67,7 +67,6 @@ const handleClickShowDetailButton = () => {
       <nuxt-img
         width="40"
         height="40"
-        format="webp"
         provider="cloudFront"
         :src="coordinatorImgSrc"
         class="h-10 w-10 rounded-full hover:cursor-pointer"

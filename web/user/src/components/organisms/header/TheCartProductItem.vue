@@ -44,7 +44,6 @@ const handleRemoveButton = () => {
         :alt="name"
         width="72px"
         height="72px"
-        format="webp"
         class="aspect-square h-[72px] w-[72px]"
       />
       <div class="flex grow flex-col">

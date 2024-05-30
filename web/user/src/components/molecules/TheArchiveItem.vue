@@ -68,7 +68,6 @@ const handleClick = () => {
         :alt="`archive-${title}-thumbnail`"
         fit="cover"
         height="208px"
-        format="webp"
       />
     </div>
     <div class="mt-2 flex w-full flex-col gap-2">

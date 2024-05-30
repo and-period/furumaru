@@ -145,7 +145,6 @@ useSeoMeta({
           <nuxt-img
             provider="cloudFront"
             fill="contain"
-            format="webp"
             class="block h-full w-full object-contain"
             :src="
               selectedMediaIndex === -1
@@ -162,7 +161,6 @@ useSeoMeta({
             v-for="(m, i) in product.media"
             :key="i"
             width="72px"
-            format="webp"
             provider="cloudFront"
             :src="m.url"
             :alt="`${product.name}の画像_${i}`"
@@ -350,7 +348,6 @@ useSeoMeta({
             <nuxt-img
               provider="cloudFront"
               sizes="96px md:120px"
-              format="webp"
               :src="product.producer.thumbnailUrl"
               :alt="`${product.producer.username}`"
               class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px]"

@@ -16,7 +16,7 @@ import * as querystring from 'querystring';
 import sharp, { ResizeOptions } from 'sharp';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
-const cacheControl = 'max-age=2592000'; // 30 days
+const cacheControl = 'max-age=0,s-maxage=2592000'; // 30 days
 
 /**
  * Lambda@Edgeを利用して画像オブジェクトが存在するかを確認し、必要に応じて画像リサイズを実行する
@@ -71,6 +71,7 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
     console.log('failed to get object from S3 or convert image', err);
     return response;
   }
+  console.log('finished to convert image', { details });
 
   // 加工後の画像をアップロード（検証用）
   try {
@@ -87,6 +88,7 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
     // 画像のリサイズ処理は成功したがアップロードに失敗した状態であれば、エラーは返さずリサイズ後の画像を返す
     console.log('failed to put object to S3', err);
   }
+  console.log('finished to put object to S3', { details });
 
   const headers: CloudFrontHeaders = {
     ...response.headers,

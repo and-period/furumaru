@@ -158,7 +158,6 @@ definePageMeta({
                         class="h-14 w-14 rounded-full"
                         width="64px"
                         height="64px"
-                        format="webp"
                       />
                     </template>
                     <template v-else>
@@ -417,7 +416,6 @@ definePageMeta({
                   provider="cloudFront"
                   class="block max-w-[80px] rounded-full"
                   width="80px"
-                  format="webp"
                   :src="order.coordinator?.thumbnailUrl"
                   :alt="`${order.coordinator?.username}のサムネイル`"
                 />

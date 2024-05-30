@@ -386,7 +386,6 @@ useSeoMeta({
                     v-if="item.product.thumbnail"
                     width="56px"
                     height="56px"
-                    format="webp"
                     provider="cloudFront"
                     :src="item.product.thumbnail.url"
                     :alt="`${item.product.name}の画像`"
