@@ -18,6 +18,6 @@
   },
   "devDependencies": {
     "chokidar-cli": "^3.0.0",
-    "npm-run-all2": "^6.1.2"
+    "npm-run-all2": "^6.2.0"
   }
 }
