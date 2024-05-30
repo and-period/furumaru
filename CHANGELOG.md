@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.11.19](https://github.com/and-period/furumaru/compare/v1.11.18...v1.11.19) - 2024-05-30
+- fix(docs): APIドキュメントの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2244
+- feat: アーカイブの動画に配信日付の情報を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2243
+- Fix/purchase root by @hamachans in https://github.com/and-period/furumaru/pull/2242
+- Fix: fixed 29 line by @hamachans in https://github.com/and-period/furumaru/pull/2246
+- feat: リサイズ時にwebp指定に by @taba2424 in https://github.com/and-period/furumaru/pull/2247
+
 ## [v1.11.18](https://github.com/and-period/furumaru/compare/v1.11.17...v1.11.18) - 2024-05-30
 - 商品複製機能の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2235
 - feat(api): ライブ配信分析用APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2239
