@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.20](https://github.com/and-period/furumaru/compare/v1.11.19...v1.11.20) - 2024-05-30
+- Fix/revert by @taba2424 in https://github.com/and-period/furumaru/pull/2248
+
 ## [v1.11.19](https://github.com/and-period/furumaru/compare/v1.11.18...v1.11.19) - 2024-05-30
 - fix(docs): APIドキュメントの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2244
 - feat: アーカイブの動画に配信日付の情報を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2243
