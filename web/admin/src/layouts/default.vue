@@ -46,9 +46,9 @@ const homeDrawer: NavigationDrawerItem = {
 
 const generalDrawers: NavigationDrawerItem[] = [
   {
-    to: '/orders',
-    icon: mdiOrderBoolAscendingVariant,
-    title: '注文管理',
+    to: '/producers',
+    icon: mdiAccount,
+    title: '生産者管理',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   {
@@ -61,6 +61,18 @@ const generalDrawers: NavigationDrawerItem[] = [
     to: '/schedules',
     icon: mdiAntenna,
     title: 'ライブ配信',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
+  {
+    to: '/orders',
+    icon: mdiOrderBoolAscendingVariant,
+    title: '注文管理',
+    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
+  },
+  {
+    to: '/customers',
+    icon: mdiAccountDetails,
+    title: '顧客管理',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
   // {
@@ -81,20 +93,7 @@ const generalDrawers: NavigationDrawerItem[] = [
     title: 'セール情報',
     roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
   },
-  {
-    to: '/producers',
-    icon: mdiAccount,
-    title: '生産者管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
-  },
-  {
-    to: '/customers',
-    icon: mdiAccountDetails,
-    title: '顧客管理',
-    roles: [AdminRole.ADMINISTRATOR, AdminRole.COORDINATOR],
-  },
 ]
-
 const settingDrawers: NavigationDrawerItem[] = [
   {
     to: '/accounts',
