@@ -126,9 +126,11 @@ useSeoMeta({
               次回の更新をお楽しみに!
             </p>
           </div>
-          <div class="my-4 grid w-full justify-center md:mt-10 md:flex md:gap-x-16">
+          <div
+            class="my-4 grid w-full justify-center md:mt-10 md:flex md:gap-x-16"
+          >
             <button
-              class="w-60 bg-main py-2 text-white "
+              class="w-60 bg-main py-2 text-white"
               @click="handleClickAllArchive"
             >
               過去のライブ配信はこちら
@@ -216,6 +218,8 @@ useSeoMeta({
               :key="archive.scheduleId"
               :title="archive.title"
               :img-src="archive.thumbnailUrl"
+              :start-at="archive.startAt"
+              :end-at="archive.endAt"
               :width="368"
               class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
               @click="handleClickLiveItem(archive.scheduleId)"
