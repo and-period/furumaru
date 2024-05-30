@@ -56,8 +56,8 @@ func NewBroadcastViewerLog(aggregate *entity.AggregatedBroadcastViewerLog, inter
 	return &BroadcastViewerLog{
 		BroadcastViewerLog: response.BroadcastViewerLog{
 			BroadcastID: aggregate.BroadcastID,
-			StartAt:     aggregate.Timestamp.Unix(),
-			EndAt:       aggregate.Timestamp.Add(interval).Unix(),
+			StartAt:     aggregate.ReportedAt.Unix(),
+			EndAt:       aggregate.ReportedAt.Add(interval).Unix(),
 			Total:       aggregate.Total,
 		},
 	}
@@ -66,7 +66,7 @@ func NewBroadcastViewerLog(aggregate *entity.AggregatedBroadcastViewerLog, inter
 func newEmptyBroadcastViewerLog(broadcastID string, startAt time.Time, interval time.Duration) *BroadcastViewerLog {
 	aggregate := &entity.AggregatedBroadcastViewerLog{
 		BroadcastID: broadcastID,
-		Timestamp:   startAt,
+		ReportedAt:  startAt,
 		Total:       0,
 	}
 	return NewBroadcastViewerLog(aggregate, interval)
@@ -88,7 +88,7 @@ func NewBroadcastViewerLogs(
 	aggregatesMap := aggregates.GroupByBroadcastID()
 	res := make(BroadcastViewerLogs, 0, len(aggregates)*int((endAt.Sub(startAt)/duration)+1))
 	for broadcastID, aggregates := range aggregatesMap {
-		aggregateMap := aggregates.MapByTimestamp()
+		aggregateMap := aggregates.MapByReportedAt()
 		for ts := startAt; ts.Before(endAt); ts = ts.Add(duration) {
 			if aggregate, ok := aggregateMap[ts]; ok {
 				res = append(res, NewBroadcastViewerLog(aggregate, duration))

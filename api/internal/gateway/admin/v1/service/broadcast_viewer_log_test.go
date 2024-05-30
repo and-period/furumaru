@@ -80,7 +80,7 @@ func TestBroadcastViewerLog(t *testing.T) {
 			name: "success",
 			aggregate: &entity.AggregatedBroadcastViewerLog{
 				BroadcastID: "broadcast-id",
-				Timestamp:   time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+				ReportedAt:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 				Total:       1,
 			},
 			interval: time.Minute,
@@ -154,7 +154,7 @@ func TestBroadcastViewerLogs(t *testing.T) {
 			aggregates: entity.AggregatedBroadcastViewerLogs{
 				{
 					BroadcastID: "broadcast-id",
-					Timestamp:   time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					ReportedAt:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 					Total:       1,
 				},
 			},

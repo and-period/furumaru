@@ -116,7 +116,7 @@ func TestAggregateBroadcastViewerLogs(t *testing.T) {
 	logs := entity.AggregatedBroadcastViewerLogs{
 		{
 			BroadcastID: "broadcast-id",
-			Timestamp:   now,
+			ReportedAt:  now,
 			Total:       3,
 		},
 	}

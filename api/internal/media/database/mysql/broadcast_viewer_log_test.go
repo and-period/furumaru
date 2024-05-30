@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -110,9 +111,9 @@ func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 
 	logs := make(entity.BroadcastViewerLogs, 4)
 	logs[0] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now())
-	logs[1] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now().Add(time.Minute))
+	logs[1] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now().Add(1*time.Minute))
 	logs[2] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now())
-	logs[3] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now().Add(time.Minute))
+	logs[3] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now().Add(1*time.Minute))
 	logs[3].UserAgent = entity.ExcludeUserAgentLogs[0]
 	for _, log := range logs {
 		err = db.DB.Create(&log).Error
@@ -147,12 +148,12 @@ func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 				logs: entity.AggregatedBroadcastViewerLogs{
 					{
 						BroadcastID: "broadcast-id",
-						Timestamp:   now(),
+						ReportedAt:  jst.Date(now().Year(), now().Month(), now().Day(), now().Hour(), now().Minute(), 0, 0),
 						Total:       2,
 					},
 					{
 						BroadcastID: "broadcast-id",
-						Timestamp:   now().Add(time.Minute),
+						ReportedAt:  jst.Date(now().Year(), now().Month(), now().Day(), now().Hour(), now().Minute()+1, 0, 0),
 						Total:       1,
 					},
 				},
@@ -162,13 +163,10 @@ func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
-
-			err := delete(ctx, broadcastViewerLogTable)
-			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 

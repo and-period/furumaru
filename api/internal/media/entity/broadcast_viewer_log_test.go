@@ -42,7 +42,7 @@ func TestBroadcastViewerLog(t *testing.T) {
 	}
 }
 
-func TestAggregatedBroadcastViewerLogs_MapByTimestamp(t *testing.T) {
+func TestAggregatedBroadcastViewerLogs_MapByReportedAt(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name   string
@@ -54,14 +54,14 @@ func TestAggregatedBroadcastViewerLogs_MapByTimestamp(t *testing.T) {
 			logs: AggregatedBroadcastViewerLogs{
 				{
 					BroadcastID: "broadcast-id",
-					Timestamp:   time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					ReportedAt:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 					Total:       1,
 				},
 			},
 			expect: map[time.Time]*AggregatedBroadcastViewerLog{
 				time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC): {
 					BroadcastID: "broadcast-id",
-					Timestamp:   time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					ReportedAt:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 					Total:       1,
 				},
 			},
@@ -70,7 +70,7 @@ func TestAggregatedBroadcastViewerLogs_MapByTimestamp(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := tt.logs.MapByTimestamp()
+			actual := tt.logs.MapByReportedAt()
 			assert.Equal(t, tt.expect, actual)
 		})
 	}
@@ -88,7 +88,7 @@ func TestAggregatedBroadcastViewerLogs_GroupByBroadcastID(t *testing.T) {
 			logs: AggregatedBroadcastViewerLogs{
 				{
 					BroadcastID: "broadcast-id",
-					Timestamp:   time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+					ReportedAt:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 					Total:       1,
 				},
 			},
@@ -96,7 +96,7 @@ func TestAggregatedBroadcastViewerLogs_GroupByBroadcastID(t *testing.T) {
 				"broadcast-id": {
 					{
 						BroadcastID: "broadcast-id",
-						Timestamp:   time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+						ReportedAt:  time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
 						Total:       1,
 					},
 				},

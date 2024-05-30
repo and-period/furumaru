@@ -36,12 +36,12 @@ func (l *broadcastViewerLog) Create(ctx context.Context, log *entity.BroadcastVi
 func (l *broadcastViewerLog) Aggregate(
 	ctx context.Context, params *database.AggregateBroadcastViewerLogsParams,
 ) (entity.AggregatedBroadcastViewerLogs, error) {
-	var logs entity.AggregatedBroadcastViewerLogs
+	var logs internalAggregatedBroadcastViewerLogs
 
 	fields := []string{
 		"broadcast_id",
-		fmt.Sprintf("DATE_FORMAT(created_at, '%s') AS timestamp", params.Interval),
-		"count(DISTINCT(user_id)) AS total",
+		fmt.Sprintf("DATE_FORMAT(created_at, '%s') AS reported_at", params.Interval),
+		"COUNT(DISTINCT(user_id)) AS total",
 	}
 	stmt := l.db.Statement(ctx, l.db.DB, broadcastViewerLogTable, fields...).
 		Where("broadcast_id = ?", params.BroadcastID).
@@ -52,8 +52,35 @@ func (l *broadcastViewerLog) Aggregate(
 	if !params.CreatedAtLt.IsZero() {
 		stmt = stmt.Where("created_at < ?", params.CreatedAtLt)
 	}
-	stmt = stmt.Group("broadcast_id, timestamp").Order("timestamp ASC")
+	stmt = stmt.Group("broadcast_id, reported_at").Order("reported_at ASC")
 
-	err := stmt.Scan(&logs).Error
-	return logs, dbError(err)
+	if err := stmt.Scan(&logs).Error; err != nil {
+		return nil, dbError(err)
+	}
+	return logs.Entities(), nil
+}
+
+type internalAggregatedBroadcastViewerLog struct {
+	BroadcastID string
+	ReportedAt  string
+	Total       int64
+}
+
+type internalAggregatedBroadcastViewerLogs []*internalAggregatedBroadcastViewerLog
+
+func (l *internalAggregatedBroadcastViewerLog) Entity() *entity.AggregatedBroadcastViewerLog {
+	reportedAt, _ := jst.Parse("2006-01-02 15:04:05", l.ReportedAt)
+	return &entity.AggregatedBroadcastViewerLog{
+		BroadcastID: l.BroadcastID,
+		ReportedAt:  reportedAt,
+		Total:       l.Total,
+	}
+}
+
+func (ls internalAggregatedBroadcastViewerLogs) Entities() entity.AggregatedBroadcastViewerLogs {
+	res := make(entity.AggregatedBroadcastViewerLogs, len(ls))
+	for i := range ls {
+		res[i] = ls[i].Entity()
+	}
+	return res
 }

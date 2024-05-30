@@ -1,6 +1,8 @@
 package entity
 
-import "time"
+import (
+	"time"
+)
 
 type AggregateBroadcastViewerLogInterval string
 
@@ -31,7 +33,7 @@ type BroadcastViewerLogs []*BroadcastViewerLog
 // AggregatedBroadcastViewerLog - ライブ視聴履歴集計情報
 type AggregatedBroadcastViewerLog struct {
 	BroadcastID string    // ライブ配信ID
-	Timestamp   time.Time // 集計日時
+	ReportedAt  time.Time // 集計日時
 	Total       int64     // 視聴合計回数
 }
 
@@ -55,10 +57,10 @@ func NewBroadcastViewerLog(params *BroadcastViewerLogParams) *BroadcastViewerLog
 	}
 }
 
-func (ls AggregatedBroadcastViewerLogs) MapByTimestamp() map[time.Time]*AggregatedBroadcastViewerLog {
+func (ls AggregatedBroadcastViewerLogs) MapByReportedAt() map[time.Time]*AggregatedBroadcastViewerLog {
 	res := make(map[time.Time]*AggregatedBroadcastViewerLog, len(ls))
 	for _, l := range ls {
-		res[l.Timestamp] = l
+		res[l.ReportedAt] = l
 	}
 	return res
 }
