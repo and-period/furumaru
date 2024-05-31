@@ -83,6 +83,7 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
       Body: image,
       ContentType: getMimeType(details.dstFormat),
     };
+    console.log('put object to S3', { key, suffix, input });
     await s3Client.send(new PutObjectCommand(input));
   } catch (err) {
     // 画像のリサイズ処理は成功したがアップロードに失敗した状態であれば、エラーは返さずリサイズ後の画像を返す
