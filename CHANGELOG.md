@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.26](https://github.com/and-period/furumaru/compare/v1.11.25...v1.11.26) - 2024-05-31
+- feat(func): 縦か横どちらかのみ指定の場合に4:3のアスペクト比になるように by @taba2424 in https://github.com/and-period/furumaru/pull/2261
+
 ## [v1.11.25](https://github.com/and-period/furumaru/compare/v1.11.24...v1.11.25) - 2024-05-31
 - Fix: fixed line message by @hamachans in https://github.com/and-period/furumaru/pull/2258
 
