@@ -59,7 +59,7 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
   try {
     const input: GetObjectCommandInput = {
       Bucket: bucketName,
-      Key: details.objectKey,
+      Key: details.srcKey,
     };
     const data = await s3Client.send(new GetObjectCommand(input));
     if (!data.Body) {
@@ -75,15 +75,13 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
 
   // 加工後の画像をアップロード（検証用）
   try {
-    const suffix = new Array([details.options.width, details.options.height, details.options.format]).join('_');
-    const key = `${details.path.directory}/fixed/${details.path.filename}_${suffix}.${details.dstFormat}`;
     const input: PutObjectCommandInput = {
       Bucket: bucketName,
-      Key: key,
+      Key: details.dstKey,
       Body: image,
       ContentType: getMimeType(details.dstFormat),
     };
-    console.log('put object to S3', { key, suffix, input });
+    console.log('put object to S3', { details });
     await s3Client.send(new PutObjectCommand(input));
   } catch (err) {
     // 画像のリサイズ処理は成功したがアップロードに失敗した状態であれば、エラーは返さずリサイズ後の画像を返す
@@ -107,7 +105,8 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
 };
 
 type FileDetails = {
-  objectKey: string;
+  srcKey: string;
+  dstKey: string;
   convertable: boolean;
   path: FilePath;
   srcFormat: ImageFormat;
@@ -146,7 +145,8 @@ function getFileDetails(uri: string, params: querystring.ParsedUrlQuery): FileDe
   const convertable: boolean = isConvertableExtension(extension);
 
   const details: FileDetails = {
-    objectKey: key,
+    srcKey: key,
+    dstKey: '',
     srcFormat: extension as ImageFormat,
     dstFormat: extension as ImageFormat,
     convertable: false,
@@ -162,10 +162,33 @@ function getFileDetails(uri: string, params: querystring.ParsedUrlQuery): FileDe
 
   details.options = options;
   if (details.options.format) {
-    details.dstFormat = details.options.format;
   }
   details.convertable = isConvertableOptions(details.options);
+  details.dstKey = `${directory}/${filename}_${getFileSuffix(details)}.${extension}`;
   return details;
+}
+
+function getFileSuffix(details: FileDetails): string {
+  if (!details || !details.options) {
+    return '';
+  }
+  const keys: string[] = [];
+  if (details.options.width) {
+    keys.push(`w${details.options.width}`);
+  }
+  if (details.options.height) {
+    keys.push(`h${details.options.height}`);
+  }
+  if (details.options.format) {
+    keys.push(`fmt${details.options.format}`);
+  }
+  if (details.options.fit) {
+    keys.push(`fit${details.options.fit}`);
+  }
+  if (details.options.blur) {
+    keys.push(`b${details.options.blur}`);
+  }
+  return keys.join('_');
 }
 
 // ファイル拡張子を基に画像のリサイズが必要かを判定
