@@ -74,20 +74,20 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
   console.log('finished to convert image', { details });
 
   // 加工後の画像をアップロード（検証用）
+  const body: string = image.toString('base64');
   try {
     const input: PutObjectCommandInput = {
       Bucket: bucketName,
       Key: details.dstKey,
-      Body: image,
+      Body: body,
       ContentType: getMimeType(details.dstFormat),
     };
-    console.log('put object to S3', { details });
-    await s3Client.send(new PutObjectCommand(input));
+    console.log('put object to S3', { input, details });
+    s3Client.send(new PutObjectCommand(input));
   } catch (err) {
     // 画像のリサイズ処理は成功したがアップロードに失敗した状態であれば、エラーは返さずリサイズ後の画像を返す
     console.log('failed to put object to S3', err);
   }
-  console.log('finished to put object to S3', { details });
 
   const headers: CloudFrontHeaders = {
     ...response.headers,
@@ -98,7 +98,7 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
     status: '200',
     statusDescription: 'OK',
     headers: headers,
-    body: image.toString('base64'),
+    body: body,
     bodyEncoding: 'base64',
   };
   return res;
@@ -164,7 +164,7 @@ function getFileDetails(uri: string, params: querystring.ParsedUrlQuery): FileDe
   if (details.options.format) {
   }
   details.convertable = isConvertableOptions(details.options);
-  details.dstKey = `${directory}/${filename}_${getFileSuffix(details)}.${extension}`;
+  details.dstKey = `${directory.substring(1)}/${filename}_${getFileSuffix(details)}.${extension}`;
   return details;
 }
 
