@@ -264,6 +264,15 @@ function getMimeType(extension: ImageFormat): string {
 // 画像リサイズの実行 - 追加が必要な場合、以下ドキュメントを参照
 // @see: https://sharp.pixelplumbing.com/api-operation
 async function resizeImage(object: Uint8Array, options: ConvertOptions): Promise<Buffer> {
+  // 横のみ指定の場合、4:3のアスペクト比になるように高さを計算
+  if (options.width && !options.height) {
+    options.height = Math.floor((options.width * 3) / 4);
+  }
+  // 縦のみ指定の場合、4:3のアスペクト比になるように幅を計算
+  if (!options.width && options.height) {
+    options.width = Math.floor((options.height * 4) / 3);
+  }
+
   let resize = sharp(object);
   if (options.height || options.height) {
     const opts: ResizeOptions = {
