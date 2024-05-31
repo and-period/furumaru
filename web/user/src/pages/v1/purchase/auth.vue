@@ -157,6 +157,13 @@ const hideV1App = false
         username-placeholder="メールアドレス"
         @submit="handleSubmitSignForm"
       />
+      <button @click="handleClickNewAccountButton">
+        <p
+          class="mt-4 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
+        >
+          アカウントお持ちでない方はこちら
+        </p>
+      </button>
       <div
         v-if="hideV1App"
         class="mt-[24px] text-center text-[14px] underline"
@@ -171,15 +178,6 @@ const hideV1App = false
       <h2 class="mb-[40px] text-center text-[16px] font-bold">
         まだ登録されていない方
       </h2>
-      <p class="mb-[40px] text-[14px] tracking-[1.4px]">
-        アカウントをご登録いただくと毎回のお届け先等の情報入力が不要になり、お買い物がもっと便利になります。
-      </p>
-      <the-submit-button
-        type="button"
-        @click="handleClickNewAccountButton"
-      >
-        新規登録する
-      </the-submit-button>
       <p class="my-[40px] text-[14px] tracking-[1.4px]">
         アカウントを登録せずにご購入を希望される方はこちらからご利用ください。
       </p>
@@ -187,7 +185,7 @@ const hideV1App = false
         type="submit"
         @click="handleSubmitWithoutSignForm"
       >
-        ログインせずに購入
+        ゲストとして購入
       </the-submit-without-login-button>
     </div>
   </div>

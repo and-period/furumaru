@@ -16,7 +16,7 @@ import * as querystring from 'querystring';
 import sharp, { ResizeOptions } from 'sharp';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
-const cacheControl = 'max-age=2592000'; // 30 days
+const cacheControl = 'max-age=0,s-maxage=2592000'; // 30 days
 
 /**
  * Lambda@Edgeを利用して画像オブジェクトが存在するかを確認し、必要に応じて画像リサイズを実行する
@@ -59,7 +59,7 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
   try {
     const input: GetObjectCommandInput = {
       Bucket: bucketName,
-      Key: details.objectKey,
+      Key: details.srcKey,
     };
     const data = await s3Client.send(new GetObjectCommand(input));
     if (!data.Body) {
@@ -71,18 +71,19 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
     console.log('failed to get object from S3 or convert image', err);
     return response;
   }
+  console.log('finished to convert image', { details });
 
   // 加工後の画像をアップロード（検証用）
+  const body: string = image.toString('base64');
   try {
-    const suffix = new Array([details.options.width, details.options.height, details.options.format]).join('_');
-    const key = `${details.path.directory}/fixed/${details.path.filename}_${suffix}.${details.dstFormat}`;
     const input: PutObjectCommandInput = {
       Bucket: bucketName,
-      Key: key,
-      Body: image,
+      Key: details.dstKey,
+      Body: body,
       ContentType: getMimeType(details.dstFormat),
     };
-    await s3Client.send(new PutObjectCommand(input));
+    console.log('put object to S3', { input, details });
+    s3Client.send(new PutObjectCommand(input));
   } catch (err) {
     // 画像のリサイズ処理は成功したがアップロードに失敗した状態であれば、エラーは返さずリサイズ後の画像を返す
     console.log('failed to put object to S3', err);
@@ -97,14 +98,15 @@ export const lambdaHandler = async (event: CloudFrontResponseEvent): Promise<Clo
     status: '200',
     statusDescription: 'OK',
     headers: headers,
-    body: image.toString('base64'),
+    body: body,
     bodyEncoding: 'base64',
   };
   return res;
 };
 
 type FileDetails = {
-  objectKey: string;
+  srcKey: string;
+  dstKey: string;
   convertable: boolean;
   path: FilePath;
   srcFormat: ImageFormat;
@@ -143,7 +145,8 @@ function getFileDetails(uri: string, params: querystring.ParsedUrlQuery): FileDe
   const convertable: boolean = isConvertableExtension(extension);
 
   const details: FileDetails = {
-    objectKey: key,
+    srcKey: key,
+    dstKey: '',
     srcFormat: extension as ImageFormat,
     dstFormat: extension as ImageFormat,
     convertable: false,
@@ -159,10 +162,33 @@ function getFileDetails(uri: string, params: querystring.ParsedUrlQuery): FileDe
 
   details.options = options;
   if (details.options.format) {
-    details.dstFormat = details.options.format;
   }
   details.convertable = isConvertableOptions(details.options);
+  details.dstKey = `${directory.substring(1)}/${filename}_${getFileSuffix(details)}.${extension}`;
   return details;
+}
+
+function getFileSuffix(details: FileDetails): string {
+  if (!details || !details.options) {
+    return '';
+  }
+  const keys: string[] = [];
+  if (details.options.width) {
+    keys.push(`w${details.options.width}`);
+  }
+  if (details.options.height) {
+    keys.push(`h${details.options.height}`);
+  }
+  if (details.options.format) {
+    keys.push(`fmt${details.options.format}`);
+  }
+  if (details.options.fit) {
+    keys.push(`fit${details.options.fit}`);
+  }
+  if (details.options.blur) {
+    keys.push(`b${details.options.blur}`);
+  }
+  return keys.join('_');
 }
 
 // ファイル拡張子を基に画像のリサイズが必要かを判定

@@ -115,6 +115,6 @@ const handleClickItem = (
     ></a>
   </div>
   <p class="mt-4 flex justify-center text-center text-[16px] md:text-[20px]">
-    お友達追加で20%オフクーポンプレゼント！
+    お友達追加でお得な情報をGET！
   </p>
 </template>
