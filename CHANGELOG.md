@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.24](https://github.com/and-period/furumaru/compare/v1.11.23...v1.11.24) - 2024-05-31
+- fix(func): ディレクトリパスの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2256
+
 ## [v1.11.23](https://github.com/and-period/furumaru/compare/v1.11.22...v1.11.23) - 2024-05-31
 - fix(func): バックアップ用の画像保存先pathの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2254
 
