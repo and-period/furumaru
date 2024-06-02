@@ -62,7 +62,6 @@ const handleClick = () => {
           :src="imgSrc"
           :alt="`live-${title}-thumbnail`"
           class="aspect-video w-full object-cover"
-          fit="cover"
           sizes="320px md:368px"
         />
         <div
@@ -85,7 +84,7 @@ const handleClick = () => {
                   !isLiveStreaming(isLiveStatus),
               }"
             >
-              {{ isLiveStreaming(isLiveStatus) ? '配信中' : '配信予定' }}
+              {{ isLiveStreaming(isLiveStatus) ? "配信中" : "配信予定" }}
             </span>
             <span class="ml-2 after:content-['〜']">{{
               formattedStartAt
