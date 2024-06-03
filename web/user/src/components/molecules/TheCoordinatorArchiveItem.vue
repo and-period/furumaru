@@ -27,7 +27,7 @@ const handleClick = () => {
     <div class="flex justify-center">
       <nuxt-img
         provider="cloudFront"
-        fit="cover"
+        fit="contain"
         class="aspect-video w-full object-cover"
         :width="width"
         :src="imgSrc"
