@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.29](https://github.com/and-period/furumaru/compare/v1.11.28...v1.11.29) - 2024-06-03
+- fix: nuxt-imgのfill属性を更新 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2267
+
 ## [v1.11.28](https://github.com/and-period/furumaru/compare/v1.11.27...v1.11.28) - 2024-06-03
 - Fix/web/user/toppage/live/thumbnail by @wf-yamaday in https://github.com/and-period/furumaru/pull/2265
 
