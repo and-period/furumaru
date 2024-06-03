@@ -66,7 +66,7 @@ const handleClick = () => {
         class="h-[208px] w-full object-cover"
         :src="imgSrc"
         :alt="`archive-${title}-thumbnail`"
-        fit="cover"
+        fit="contain"
         height="208px"
       />
     </div>
