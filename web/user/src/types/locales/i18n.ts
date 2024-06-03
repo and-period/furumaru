@@ -76,6 +76,11 @@ export interface I18n {
   base: {
     top: {
       lineCouponText: string
+      marcheListSubTitle: string
+      noMarcheItemFirstText: string
+      noMarcheItemSecondText: string
+      pastMarcheLinkText: string
+      productsLinkText: string
     };
 
     about: {

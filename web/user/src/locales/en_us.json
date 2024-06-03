@@ -65,7 +65,12 @@
   },
   "base": {
     "top": {
-      "lineCouponText": "Add a friend on LINE and get a 20% off coupon!"
+      "lineCouponText": "Add a friend on LINE and get a 20% off coupon!",
+      "marcheListSubTitle": "Live & Upcoming Marché",
+      "noMarcheItemFirstText": "There are no Marché currently live or scheduled to be live.",
+      "noMarcheItemSecondText": "Please look forward to the next update!",
+      "pastMarcheLinkText": "View Past Live-Streams.",
+      "productsLinkText": "View Products for Sale"
     },
     "about": {
       "leadSentence": "Find wonderful taste",

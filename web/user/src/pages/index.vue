@@ -13,7 +13,7 @@ const topPageStore = useTopPageStore()
 const { archives, lives } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
 
-const lt = (str: keyof I18n['base']['top']) => {
+const tt = (str: keyof I18n['base']['top']) => {
   return i18n.t(`base.top.${str}`)
 }
 
@@ -111,11 +111,11 @@ useSeoMeta({
   <div>
     <the-carousel
       :items="banners"
-      :line-coupon-text="lt('lineCouponText')"
+      :line-coupon-text="tt('lineCouponText')"
     />
 
     <div class="mb-[72px] mt-8 flex flex-col gap-y-16 md:mt-[76px]">
-      <the-content-box title="live" sub-title="配信中・配信予定のマルシェ">
+      <the-content-box title="live" :sub-title="tt('marcheListSubTitle')">
         <template v-if="isInItLoading"> </template>
         <template v-if="lives.length === 0">
           <div class="flex justify-center">
@@ -128,12 +128,12 @@ useSeoMeta({
             />
           </div>
           <div class="mt-8 text-center text-[14px] text-main md:text-[16px]">
-            <p>ただいま配信中・配信予定のマルシェはありません。</p>
-            <p class="md:mt-4">次回の更新をお楽しみに!</p>
+            <p>{{ tt('noMarcheItemFirstText') }}</p>
+            <p class="md:mt-4">{{ tt('noMarcheItemSecondText') }}</p>
           </div>
           <div class="my-4 grid w-full justify-center md:mt-10 md:flex md:gap-x-16">
-            <button class="w-60 bg-main py-2 text-white " @click="handleClickAllArchive">過去のライブ配信はこちら</button>
-            <button class="mt-4 w-60 bg-main py-2 text-white md:mt-0" @click="handleClickAllItem">購入できる商品一覧はこちら</button>
+            <button class="w-60 bg-main py-2 text-white " @click="handleClickAllArchive">{{ tt('pastMarcheLinkText') }}</button>
+            <button class="mt-4 w-60 bg-main py-2 text-white md:mt-0" @click="handleClickAllItem">{{ tt('productsLinkText') }}</button>
           </div>
         </template>
         <template v-if="lives.length > 0">
