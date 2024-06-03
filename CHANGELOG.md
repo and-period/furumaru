@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.28](https://github.com/and-period/furumaru/compare/v1.11.27...v1.11.28) - 2024-06-03
+- Fix/web/user/toppage/live/thumbnail by @wf-yamaday in https://github.com/and-period/furumaru/pull/2265
+
 ## [v1.11.27](https://github.com/and-period/furumaru/compare/v1.11.26...v1.11.27) - 2024-06-02
 - fix: トップページのライブ配信のサムネイルのレイアウト調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2263
 
