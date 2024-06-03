@@ -60,6 +60,7 @@ const handleClick = () => {
         <nuxt-img
           provider="cloudFront"
           :src="imgSrc"
+          fit="contain"
           :alt="`live-${title}-thumbnail`"
           class="aspect-video w-full object-cover"
           sizes="320px md:368px"
