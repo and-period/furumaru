@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.27](https://github.com/and-period/furumaru/compare/v1.11.26...v1.11.27) - 2024-06-02
+- fix: トップページのライブ配信のサムネイルのレイアウト調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2263
+
 ## [v1.11.26](https://github.com/and-period/furumaru/compare/v1.11.25...v1.11.26) - 2024-05-31
 - feat(func): 縦か横どちらかのみ指定の場合に4:3のアスペクト比になるように by @taba2424 in https://github.com/and-period/furumaru/pull/2261
 
