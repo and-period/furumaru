@@ -33,6 +33,7 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     '@nuxtjs/stylelint-module',
     '@pinia/nuxt',
+    '@vueuse/nuxt',
   ],
   eslint: {
     config: {

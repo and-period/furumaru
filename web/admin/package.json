@@ -43,6 +43,8 @@
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/stylelint-module": "^5.2.0",
     "@sentry/vite-plugin": "^2.16.1",
+    "@vueuse/core": "^10.10.0",
+    "@vueuse/nuxt": "^10.10.0",
     "eslint": "^9.3.0",
     "postcss-html": "^1.6.0",
     "prettier": "^3.2.5",
