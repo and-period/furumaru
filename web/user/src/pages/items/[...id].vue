@@ -125,9 +125,7 @@ useSeoMeta({
       class="animate-pulse bg-white px-[112px] pb-6 pt-[40px] text-main md:grid md:grid-cols-2"
     >
       <div class="w-full">
-        <div
-          class="mx-auto aspect-square h-[500px] w-[500px] bg-slate-100"
-        />
+        <div class="mx-auto aspect-square h-[500px] w-[500px] bg-slate-100" />
       </div>
       <div class="flex w-full flex-col gap-4">
         <div class="h-[24px] w-[80%] rounded-md bg-slate-100" />
@@ -145,7 +143,7 @@ useSeoMeta({
           <nuxt-img
             provider="cloudFront"
             fill="contain"
-            class="block h-full w-full object-contain"
+            class="block h-full w-full object-contain border"
             :src="
               selectedMediaIndex === -1
                 ? product.thumbnail.url
@@ -161,10 +159,11 @@ useSeoMeta({
             v-for="(m, i) in product.media"
             :key="i"
             width="72px"
+            fill="contain"
             provider="cloudFront"
             :src="m.url"
             :alt="`${product.name}の画像_${i}`"
-            class="aspect-square w-[72px] cursor-pointer"
+            class="aspect-square w-[72px] cursor-pointer object-contain border"
             @click="handleClickMediaItem(i)"
           />
         </div>
@@ -286,8 +285,8 @@ useSeoMeta({
 
       <div class="col-span-2 mt-[40px] pb-10 md:mt-[80px] md:pb-16">
         <article
-          class="text-[14px] leading-[32px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
-          v-html="product.description"
+          class="text-[14px] leading-[32px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px] whitespace-pre-wrap"
+          v-text="product.description"
         />
       </div>
 
