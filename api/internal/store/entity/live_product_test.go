@@ -10,18 +10,21 @@ import (
 func TestLiveProduct(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name      string
-		liveID    string
-		productID string
-		expect    *LiveProduct
+		name   string
+		params *NewLiveProductParams
+		expect *LiveProduct
 	}{
 		{
-			name:      "success",
-			liveID:    "live-id",
-			productID: "product-id",
+			name: "success",
+			params: &NewLiveProductParams{
+				LiveID:    "live-id",
+				ProductID: "product-id",
+				Priority:  1,
+			},
 			expect: &LiveProduct{
 				LiveID:    "live-id",
 				ProductID: "product-id",
+				Priority:  1,
 			},
 		},
 	}
@@ -29,7 +32,7 @@ func TestLiveProduct(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, NewLiveProduct(tt.liveID, tt.productID))
+			assert.Equal(t, tt.expect, NewLiveProduct(tt.params))
 		})
 	}
 }
@@ -50,6 +53,7 @@ func TestLiveProducts(t *testing.T) {
 				{
 					LiveID:    "live-id",
 					ProductID: "product-id",
+					Priority:  1,
 				},
 			},
 		},
@@ -124,7 +128,7 @@ func TestLiveProducts_GroupByLiveID(t *testing.T) {
 	}
 }
 
-func TestLiveProducts_SortByCreatedAt(t *testing.T) {
+func TestLiveProducts_SortByPrimary(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	tests := []struct {
@@ -135,18 +139,18 @@ func TestLiveProducts_SortByCreatedAt(t *testing.T) {
 		{
 			name: "success",
 			products: LiveProducts{
-				{ProductID: "product-id01", CreatedAt: now},
-				{ProductID: "product-id02", CreatedAt: now.Add(-time.Minute)},
-				{ProductID: "product-id03", CreatedAt: now.Add(time.Minute)},
-				{ProductID: "product-id04", CreatedAt: now.Add(time.Hour)},
-				{ProductID: "product-id05", CreatedAt: now.Add(-time.Hour)},
+				{ProductID: "product-id01", Priority: 3, CreatedAt: now},
+				{ProductID: "product-id02", Priority: 2, CreatedAt: now.Add(-time.Minute)},
+				{ProductID: "product-id03", Priority: 4, CreatedAt: now.Add(time.Minute)},
+				{ProductID: "product-id04", Priority: 5, CreatedAt: now.Add(time.Hour)},
+				{ProductID: "product-id05", Priority: 1, CreatedAt: now.Add(-time.Hour)},
 			},
 			expect: LiveProducts{
-				{ProductID: "product-id05", CreatedAt: now.Add(-time.Hour)},
-				{ProductID: "product-id02", CreatedAt: now.Add(-time.Minute)},
-				{ProductID: "product-id01", CreatedAt: now},
-				{ProductID: "product-id03", CreatedAt: now.Add(time.Minute)},
-				{ProductID: "product-id04", CreatedAt: now.Add(time.Hour)},
+				{ProductID: "product-id05", Priority: 1, CreatedAt: now.Add(-time.Hour)},
+				{ProductID: "product-id02", Priority: 2, CreatedAt: now.Add(-time.Minute)},
+				{ProductID: "product-id01", Priority: 3, CreatedAt: now},
+				{ProductID: "product-id03", Priority: 4, CreatedAt: now.Add(time.Minute)},
+				{ProductID: "product-id04", Priority: 5, CreatedAt: now.Add(time.Hour)},
 			},
 		},
 	}
@@ -154,7 +158,7 @@ func TestLiveProducts_SortByCreatedAt(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual := tt.products.SortByCreatedAt()
+			actual := tt.products.SortByPrimary()
 			assert.Equal(t, tt.expect, actual)
 		})
 	}

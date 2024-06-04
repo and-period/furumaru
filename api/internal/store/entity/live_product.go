@@ -11,23 +11,41 @@ import (
 type LiveProduct struct {
 	LiveID    string    `gorm:"primaryKey;<-:create"` // ライブ配信ID
 	ProductID string    `gorm:"primaryKey;<-:create"` // 商品ID
+	Priority  int64     `gorm:"default:0"`            // 表示優先度
 	CreatedAt time.Time `gorm:"<-:create"`            // 登録日時
 	UpdatedAt time.Time `gorm:""`                     // 更新日時
 }
 
 type LiveProducts []*LiveProduct
 
-func NewLiveProduct(liveID, productID string) *LiveProduct {
+type NewLiveProductParams struct {
+	LiveID    string
+	ProductID string
+	Priority  int64
+}
+
+type NewLiveProductsParams struct {
+	LiveID     string
+	ProductIDs []string
+}
+
+func NewLiveProduct(params *NewLiveProductParams) *LiveProduct {
 	return &LiveProduct{
-		LiveID:    liveID,
-		ProductID: productID,
+		LiveID:    params.LiveID,
+		ProductID: params.ProductID,
+		Priority:  params.Priority,
 	}
 }
 
 func NewLiveProducts(liveID string, productIDs []string) LiveProducts {
 	res := make(LiveProducts, len(productIDs))
 	for i := range productIDs {
-		res[i] = NewLiveProduct(liveID, productIDs[i])
+		params := &NewLiveProductParams{
+			LiveID:    liveID,
+			ProductID: productIDs[i],
+			Priority:  int64(i + 1),
+		}
+		res[i] = NewLiveProduct(params)
 	}
 	return res
 }
@@ -51,9 +69,9 @@ func (ps LiveProducts) GroupByLiveID() map[string]LiveProducts {
 	return res
 }
 
-func (ps LiveProducts) SortByCreatedAt() LiveProducts {
+func (ps LiveProducts) SortByPrimary() LiveProducts {
 	sort.SliceStable(ps, func(i, j int) bool {
-		return ps[i].CreatedAt.Before(ps[j].CreatedAt)
+		return ps[i].Priority < ps[j].Priority
 	})
 	return ps
 }
