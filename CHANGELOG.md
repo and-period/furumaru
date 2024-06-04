@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.30](https://github.com/and-period/furumaru/compare/v1.11.29...v1.11.30) - 2024-06-04
+- fix(store): ライブ商品一覧の並び順を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2270
+
 ## [v1.11.29](https://github.com/and-period/furumaru/compare/v1.11.28...v1.11.29) - 2024-06-03
 - fix: nuxt-imgのfill属性を更新 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2267
 
