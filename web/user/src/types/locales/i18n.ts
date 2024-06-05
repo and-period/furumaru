@@ -75,6 +75,8 @@ export interface I18n {
 
   base: {
     top: {
+      lineAddFriendImageUrl: string
+      lineAddFriendImageAlt: string
       lineCouponText: string
       marcheListSubTitle: string
       noMarcheItemFirstText: string

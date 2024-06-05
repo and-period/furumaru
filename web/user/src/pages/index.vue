@@ -111,6 +111,8 @@ useSeoMeta({
   <div>
     <the-carousel
       :items="banners"
+      :line-add-friend-image-url="tt('lineAddFriendImageUrl')"
+      :line-add-friend-image-alt="tt('lineAddFriendImageAlt')"
       :line-coupon-text="tt('lineCouponText')"
     />
 

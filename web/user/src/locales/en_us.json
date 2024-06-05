@@ -65,6 +65,8 @@
   },
   "base": {
     "top": {
+      "lineAddFriendImageUrl": "https://scdn.line-apps.com/n/line_add_friends/btn/en.png",
+      "lineAddFriendImageAlt": "Add friend on LINE",
       "lineCouponText": "Add a friend on LINE and get a 20% off coupon!",
       "marcheListSubTitle": "Live & Upcoming Marché",
       "noMarcheItemFirstText": "There are no Marché currently live or scheduled to be live.",
