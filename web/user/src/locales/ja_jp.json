@@ -70,7 +70,9 @@
       "noMarcheItemFirstText": "ただいま配信中・配信予定のマルシェはありません。",
       "noMarcheItemSecondText": "次回の更新をお楽しみに!",
       "pastMarcheLinkText": "過去のライブ配信はこちら",
-      "productsLinkText": "購入できる商品一覧はこちら"
+      "productsLinkText": "購入できる商品一覧はこちら",
+      "archiveListSubTitle": "過去のマルシェ",
+      "archivesLinkText": "一覧を見る"
     },
     "about": {
       "leadSentence": "地域とつながる、おいしさ見つかる。",

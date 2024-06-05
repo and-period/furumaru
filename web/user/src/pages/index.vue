@@ -179,7 +179,7 @@ useSeoMeta({
         </template>
       </the-content-box>
 
-      <the-content-box title="archive" sub-title="過去のマルシェ">
+      <the-content-box title="archive" :sub-title="tt('archiveListSubTitle')">
         <div class="relative mx-auto flex max-w-[1440px]">
           <div class="absolute left-4 flex h-[208px] items-center">
             <the-icon-button
@@ -215,7 +215,7 @@ useSeoMeta({
         </div>
 
         <div class="mb-4 mt-10 flex w-full justify-center">
-          <button class="w-60 bg-main py-2 text-white" @click="handleClickLiveMore">一覧を見る</button>
+          <button class="w-60 bg-main py-2 text-white" @click="handleClickLiveMore">{{ tt('archivesLinkText') }}</button>
         </div>
       </the-content-box>
 
