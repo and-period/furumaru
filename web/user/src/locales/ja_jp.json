@@ -2,7 +2,7 @@
   "layout": {
     "header": {
       "becomeShopOwner": "出品する",
-      "cartEmptyMessag": "カートは空です",
+      "cartEmptyMessage": "カートは空です",
       "cartNotEmptyMessage": "レジに進む",
       "signUp": "登録する",
       "signIn": "ログイン",
@@ -15,8 +15,15 @@
       "notificationTitle": "お知らせ",
       "noNotificationItemText": "お知らせはありません。",
       "cartMenuMessage": "買い物カゴに商品が{count}点入っています。",
+      "cartTotalPriceText": "合計金額",
+      "cartTotalPriceTaxIncludedText": "(税込)",
       "myPageLinkText": "マイページ",
-      "viewMyCartText": "買い物カゴを見る"
+      "viewMyCartText": "買い物カゴを見る",
+      "numberOfCartsText": "現在のカゴの数",
+      "shippingFeeAnnotation": "買い物カゴごとに送料がかかります。詳しくは",
+      "shippingFeeAnnotationLinkText": "こちら",
+      "shippingFeeAnnotationCheckText": "からご確認ください。"
+
     },
     "footer": {
       "qaLinkText": "よくあるご質問",

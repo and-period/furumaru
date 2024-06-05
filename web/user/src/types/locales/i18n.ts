@@ -15,12 +15,19 @@ export interface I18n {
       aboutLinkText: string
 
       cartMenuMessage: string
+      cartTotalPriceText: string
+      cartTotalPriceTaxIncludedText: string
 
       notificationTitle: string
       noNotificationItemText: string
 
       myPageLinkText: string
       viewMyCartText: string
+
+      numberOfCartsText: string
+      shippingFeeAnnotation: string
+      shippingFeeAnnotationLinkText: string
+      shippingFeeAnnotationCheckText: string
     };
 
     footer: {

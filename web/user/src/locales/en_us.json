@@ -14,9 +14,15 @@
       "aboutLinkText": "About",
       "notificationTitle": "Notification",
       "noNotificationItemText": "No Notification",
-    "cartMenuMessage": "買い物カゴに商品が{count}点入っています。",
+      "cartMenuMessage": "There are {count} items in the shopping cart.",
+      "cartTotalPriceText": "Subtotal",
+      "cartTotalPriceTaxIncludedText": "(tax included)",
       "myPageLinkText": "My Page",
-      "viewMyCartText": "View My Cart"
+      "viewMyCartText": "View My Cart",
+      "numberOfCartsText": "Current number of carts",
+      "shippingFeeAnnotation": "Shipping fees apply per shopping cart. For more details, please check",
+      "shippingFeeAnnotationLinkText": "here",
+      "shippingFeeAnnotationCheckText": ""
     },
     "footer": {
       "qaLinkText": "Q and A",

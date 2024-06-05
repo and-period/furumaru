@@ -16,8 +16,15 @@ interface Props {
   notificationItems: any[]
   cartIsEmpty: boolean
   cartMenuMessage: string
+  cartTotalPriceText: string
+  cartTotalPriceTaxIncludedText: string
   totalPrice: number
   cartItems: ShoppingCart[]
+  viewMycartText: string
+  numberOfCartsText: string
+  shippingFeeAnnotation: string
+  shippingFeeAnnotationLinkText: string
+  shippingFeeAnnotationCheckText: string
   spMenuItems: LinkItem[]
   footerMenuItems: FooterMenuItem[]
 }
@@ -164,7 +171,14 @@ const handleClickLogoutButton = () => {
           :is-authenticated="isAuthenticated"
           :cart-is-empty="cartIsEmpty"
           :cart-menu-message="cartMenuMessage"
+          :cart-total-price-text="cartTotalPriceText"
+          :cart-total-price-tax-included-text="cartTotalPriceTaxIncludedText"
           :cart-items="cartItems"
+          :view-mycart-text="viewMycartText"
+          :number-of-carts-text="numberOfCartsText"
+          :shipping-fee-annotation="shippingFeeAnnotation"
+          :shipping-fee-annotation-link-text="shippingFeeAnnotationLinkText"
+          :shipping-fee-annotation-check-text="shippingFeeAnnotationCheckText"
           :total-price="totalPrice"
           @click:buy-button="handleClickBuyButton"
           @click:remove-item-from-cart="handleClickRemoveItemFromCartButton"
