@@ -86,6 +86,8 @@ export interface I18n {
       lineAddFriendImageAlt: string
       lineCouponText: string
       marcheListSubTitle: string
+      liveStreamingText: string
+      liveUpcomingText: string
       noMarcheItemFirstText: string
       noMarcheItemSecondText: string
       pastMarcheLinkText: string

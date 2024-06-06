@@ -162,6 +162,8 @@ useSeoMeta({
                 :address="liveItem.coordinator.city"
                 :cn-name="liveItem.coordinator.username"
                 :cn-img-src="liveItem.coordinator.thumbnailUrl"
+                :live-streaming-text="tt('liveStreamingText')"
+                :live-upcoming-text="tt('liveUpcomingText')"
                 @click="handleClickLiveItem(liveItem.scheduleId)"
               />
             </transition-group>

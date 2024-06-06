@@ -12,6 +12,8 @@ interface Props {
   address: string
   cnName: string
   cnImgSrc: string
+  liveStreamingText: string
+  liveUpcomingText: string
 }
 
 interface Emits {
@@ -66,7 +68,7 @@ const handleClick = () => {
           v-if="!isLiveStreaming(isLiveStatus)"
           class="absolute bottom-0 flex h-[48px] w-full items-center justify-center bg-black/50 text-[16px] font-bold tracking-[1.6px] text-white"
         >
-          {{ formattedStartAt }} 〜 配信予定
+          {{ formattedStartAt }} 〜 {{ liveUpcomingText }}
         </div>
       </div>
 
@@ -82,7 +84,7 @@ const handleClick = () => {
                   !isLiveStreaming(isLiveStatus),
               }"
             >
-              {{ isLiveStreaming(isLiveStatus) ? '配信中' : '配信予定' }}
+              {{ isLiveStreaming(isLiveStatus) ? liveStreamingText : liveUpcomingText }}
             </span>
             <span class="ml-2 after:content-['〜']">{{
               formattedStartAt
