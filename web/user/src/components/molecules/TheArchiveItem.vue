@@ -4,6 +4,7 @@ interface Props {
   title: string | undefined
   imgSrc: string | undefined
   width: number | undefined
+  archivedStreamText: string
 }
 
 defineProps<Props>()
@@ -36,7 +37,7 @@ const handleClick = () => {
         <span
           class="rounded border border-main px-1 text-[10px] font-bold tracking-[10%] text-main"
         >
-          アーカイブ配信
+          {{ archivedStreamText }}
         </span>
       </div>
       <p class="line-clamp-3 break-words text-[14px] tracking-[10%]">

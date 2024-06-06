@@ -204,6 +204,7 @@ useSeoMeta({
               :title="archive.title"
               :img-src="archive.thumbnailUrl"
               :width="368"
+              :archived-stream-text="tt('archivedStreamText')"
               class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
               @click="handleClickLiveItem(archive.scheduleId)"
             />

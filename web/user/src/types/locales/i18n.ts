@@ -95,6 +95,7 @@ export interface I18n {
       productsLinkText: string
       productsLinkText: string
       archiveListSubTitle: string
+      archivedStreamText: string
       archivesLinkText: string
     };
 

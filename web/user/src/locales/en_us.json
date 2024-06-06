@@ -10,7 +10,7 @@
       "topLinkText": "TOP",
       "searchItemLinkText": "Search Item",
       "allItemLinkText": "All Items",
-      "allMarcheLinkText": "All Marche",
+      "allMarcheLinkText": "All Marché",
       "aboutLinkText": "About",
       "notificationTitle": "Notification",
       "noNotificationItemText": "No Notification",
@@ -83,6 +83,7 @@
       "viewMoreText": "View More",
       "productsLinkText": "View Products for Sale",
       "archiveListSubTitle": "past Marché",
+      "archivedStreamText": "archived stream",
       "archivesLinkText": "View List"
     },
     "about": {
