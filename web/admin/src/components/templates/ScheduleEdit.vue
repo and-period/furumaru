@@ -15,6 +15,7 @@ import {
   type UpdateScheduleRequest,
   type Producer,
   type AuthYoutubeBroadcastRequest,
+  type BroadcastViewerLog,
 } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
@@ -156,6 +157,10 @@ const props = defineProps({
     type: Array<Product>,
     default: () => [],
   },
+  viewerLogs: {
+    type: Array<BroadcastViewerLog>,
+    default: () => [],
+  },
   authYoutubeUrl: {
     type: String,
     default: '',
@@ -231,6 +236,7 @@ const tabs: VTabs[] = [
   { name: '基本情報', value: 'schedule' },
   { name: 'ライブスケジュール', value: 'lives' },
   { name: 'ライブ配信', value: 'streaming' },
+  { name: '分析情報', value: 'analytics' },
 ]
 
 const selectedTabItemValue = computed({
@@ -438,6 +444,13 @@ const onSubmitUploadArchiveMp4 = (): void => {
             @submit:change-input-mp4="onSubmitChangeMp4Input"
             @submit:change-input-rtmp="onSubmitChangeRtmpInput"
             @submit:upload-archive-mp4="onSubmitUploadArchiveMp4"
+          />
+        </v-window-item>
+
+        <v-window-item value="analytics">
+          <organisms-schedule-analytics
+            :loading="loading"
+            :viewer-logs="viewerLogs"
           />
         </v-window-item>
       </v-window>

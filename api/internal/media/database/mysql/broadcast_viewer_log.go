@@ -41,7 +41,7 @@ func (l *broadcastViewerLog) Aggregate(
 	fields := []string{
 		"broadcast_id",
 		fmt.Sprintf("DATE_FORMAT(created_at, '%s') AS reported_at", params.Interval),
-		"COUNT(DISTINCT(user_id)) AS total",
+		"COUNT(DISTINCT(session_id)) AS total",
 	}
 	stmt := l.db.Statement(ctx, l.db.DB, broadcastViewerLogTable, fields...).
 		Where("broadcast_id = ?", params.BroadcastID).
