@@ -43,7 +43,6 @@ const chartOptions: ChartOptions<'line'> = {
     },
   },
   responsive: true,
-  maintainAspectRatio: false,
 }
 </script>
 
