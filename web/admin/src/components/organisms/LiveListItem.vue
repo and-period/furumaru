@@ -232,7 +232,6 @@ watch(
 watch(
   () => formData.value.productIds,
   () => {
-    console.log('並び替えが発生', formData.value.productIds)
     // ダイアログが閉じられた状態でフォーム要素のproductIdsが更新されたら更新処理を走らせる
     if (!updateDialogValue.value) {
       onSubmitUpdate()
