@@ -20,6 +20,11 @@ interface Props {
   cartTotalPriceTaxIncludedText: string
   totalPrice: number
   cartItems: ShoppingCart[]
+  signInLinkText: string
+  myPageLinkText: string
+  allItemLinkText: string
+  allMarcheLinkText: string
+  aboutLinkText: string
   viewMycartText: string
   numberOfCartsText: string
   shippingFeeAnnotation: string
@@ -69,7 +74,7 @@ const handleClickRemoveItemFromCartButton = (
 const SP_MENU_ITEMS = computed(() => [
   {
     icon: 'account',
-    text: props.isAuthenticated ? 'マイページ' : 'ログイン',
+    text: props.isAuthenticated ? props.myPageLinkText : props.signInLinkText,
     to: props.isAuthenticated ? '/account' : '/signin',
   },
   // {
@@ -79,7 +84,7 @@ const SP_MENU_ITEMS = computed(() => [
   // },
   {
     icon: 'cart',
-    text: '買い物カゴを見る',
+    text: props.viewMycartText,
     to: '/purchase',
   },
   // {
@@ -89,17 +94,17 @@ const SP_MENU_ITEMS = computed(() => [
   // },
   {
     icon: 'fruits',
-    text: 'すべての商品',
+    text: props.allItemLinkText,
     to: '/items',
   },
   {
     icon: 'flag',
-    text: 'すべてのマルシェ',
+    text: props.allMarcheLinkText,
     to: '/marches',
   },
   {
     icon: 'furumaru',
-    text: 'ふるマルについて',
+    text: props.aboutLinkText,
     to: '/about',
   },
 ])
