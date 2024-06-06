@@ -108,7 +108,13 @@ const handleClickItem = (
   </div>
 
   <div class="flex justify-center pt-8">
-      <a href="https://lin.ee/49SOeUC"><img :src=lineAddFriendImageUrl :alt=lineAddFriendImageAlt class="h-[40px] md:h-[65px]"></a>
-    </div>
-    <p class="mt-4 flex justify-center text-center text-[16px] md:text-[20px]">{{ lineCouponText }}</p>
+    <a href="https://lin.ee/49SOeUC"><img
+      :src=lineAddFriendImageUrl
+      :alt=lineAddFriendImageAlt
+      class="h-[40px] md:h-[65px]">
+    </a>
+  </div>
+  <p class="mt-4 flex justify-center text-center text-[16px] md:text-[20px]">
+    {{ lineCouponText }}
+  </p>
 </template>
