@@ -19,7 +19,8 @@ const id = computed<string>(() => {
   const ids = route.params.id
   if (Array.isArray(ids)) {
     return ids[0]
-  } else {
+  }
+  else {
     return ids
   }
 })
@@ -34,7 +35,8 @@ const priceString = computed<string>(() => {
       style: 'currency',
       currency: 'JPY',
     }).format(product.value.price)
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -42,10 +44,11 @@ const priceString = computed<string>(() => {
 const canAddCart = computed<boolean>(() => {
   if (product.value) {
     return (
-      product.value.status === ProductStatus.FOR_SALE &&
-      product.value.inventory > 0
+      product.value.status === ProductStatus.FOR_SALE
+      && product.value.inventory > 0
     )
-  } else {
+  }
+  else {
     return false
   }
 })
@@ -107,7 +110,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <template v-for="(snackbarItem, i) in snackbarItems" :key="i">
+  <template
+    v-for="(snackbarItem, i) in snackbarItems"
+    :key="i"
+  >
     <the-snackbar
       v-model:is-show="snackbarItem.isShow"
       :text="snackbarItem.text"
@@ -119,13 +125,11 @@ useSeoMeta({
       class="animate-pulse bg-white px-[112px] pb-6 pt-[40px] text-main md:grid md:grid-cols-2"
     >
       <div class="w-full">
-        <div
-          class="mx-auto aspect-square h-[500px] w-[500px] bg-slate-100"
-        ></div>
+        <div class="mx-auto aspect-square h-[500px] w-[500px] bg-slate-100" />
       </div>
       <div class="flex w-full flex-col gap-4">
-        <div class="h-[24px] w-[80%] rounded-md bg-slate-100"></div>
-        <div class="h-[24px] w-[60%] rounded-md bg-slate-100"></div>
+        <div class="h-[24px] w-[80%] rounded-md bg-slate-100" />
+        <div class="h-[24px] w-[60%] rounded-md bg-slate-100" />
       </div>
     </div>
   </template>
@@ -139,7 +143,7 @@ useSeoMeta({
           <nuxt-img
             provider="cloudFront"
             fill="contain"
-            class="block h-full w-full object-contain"
+            class="block h-full w-full object-contain border"
             :src="
               selectedMediaIndex === -1
                 ? product.thumbnail.url
@@ -155,10 +159,11 @@ useSeoMeta({
             v-for="(m, i) in product.media"
             :key="i"
             width="72px"
+            fill="contain"
             provider="cloudFront"
             :src="m.url"
             :alt="`${product.name}の画像_${i}`"
-            class="aspect-square w-[72px] cursor-pointer"
+            class="aspect-square w-[72px] cursor-pointer object-contain border"
             @click="handleClickMediaItem(i)"
           />
         </div>
@@ -179,7 +184,10 @@ useSeoMeta({
             class="text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
           >
             生産者:
-            <a href="#" class="font-bold underline">
+            <a
+              href="#"
+              class="font-bold underline"
+            >
               {{ product.producer.username }}
             </a>
           </div>
@@ -228,10 +236,15 @@ useSeoMeta({
             >
               {{ priceString }}
             </div>
-            <p class="pb-1 pl-2 text-[12px] md:text-[16px]">(税込)</p>
+            <p class="pb-1 pl-2 text-[12px] md:text-[16px]">
+              (税込)
+            </p>
           </div>
 
-          <div v-if="product" class="mt-4 inline-flex items-center md:mt-8">
+          <div
+            v-if="product"
+            class="mt-4 inline-flex items-center md:mt-8"
+          >
             <label class="mr-2 block text-[14px] md:text-[16px]">数量</label>
             <select
               v-model="quantity"
@@ -272,8 +285,8 @@ useSeoMeta({
 
       <div class="col-span-2 mt-[40px] pb-10 md:mt-[80px] md:pb-16">
         <article
-          class="text-[14px] leading-[32px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
-          v-html="product.description"
+          class="text-[14px] leading-[32px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px] whitespace-pre-wrap"
+          v-text="product.description"
         />
       </div>
 
@@ -281,23 +294,33 @@ useSeoMeta({
         class="col-span-2 flex flex-col divide-y divide-dashed divide-main border-y border-dashed border-main text-[14px] md:text-[16px]"
       >
         <div class="grid grid-cols-5 py-4">
-          <p class="col-span-2 md:col-span-1">・賞味期限</p>
+          <p class="col-span-2 md:col-span-1">
+            ・賞味期限
+          </p>
           <p class="col-span-3 md:col-span-4">
             発送日より{{ product.expirationDate }}日
           </p>
         </div>
         <div class="grid grid-cols-5 py-4">
-          <p class="col-span-2 md:col-span-1">・内容量</p>
-          <p class="col-span-3 md:col-span-4">{{ product.weight }}kg</p>
+          <p class="col-span-2 md:col-span-1">
+            ・内容量
+          </p>
+          <p class="col-span-3 md:col-span-4">
+            {{ product.weight }}kg
+          </p>
         </div>
         <div class="grid grid-cols-5 py-4">
-          <p class="col-span-2 md:col-span-1">・配送方法</p>
+          <p class="col-span-2 md:col-span-1">
+            ・配送方法
+          </p>
           <p class="col-span-3 md:col-span-4">
             {{ getDeliveryType(product.deliveryType) }}
           </p>
         </div>
         <div class="grid grid-cols-5 py-4">
-          <p class="col-span-2 md:col-span-1">・保存方法</p>
+          <p class="col-span-2 md:col-span-1">
+            ・保存方法
+          </p>
           <p class="col-span-3 md:col-span-4">
             {{ getStorageMethodType(product.storageMethodType) }}
           </p>

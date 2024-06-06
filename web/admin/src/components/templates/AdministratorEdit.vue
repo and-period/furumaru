@@ -8,19 +8,19 @@ import { UpdateAdministratorValidationRules } from '~/types/validations'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   administrator: {
     type: Object as PropType<Administrator>,
@@ -34,8 +34,8 @@ const props = defineProps({
       email: '',
       phoneNumber: '',
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   formData: {
     type: Object as PropType<UpdateAdministratorRequest>,
@@ -44,9 +44,9 @@ const props = defineProps({
       lastnameKana: '',
       firstname: '',
       firstnameKana: '',
-      phoneNumber: ''
-    })
-  }
+      phoneNumber: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -57,7 +57,7 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: (): UpdateAdministratorRequest => props.formData,
-  set: (formData: UpdateAdministratorRequest): void => emit('update:form-data', formData)
+  set: (formData: UpdateAdministratorRequest): void => emit('update:form-data', formData),
 })
 const administratorValue = computed((): Administrator => {
   return props.administrator
@@ -76,7 +76,11 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card>
     <v-card-title>管理者編集</v-card-title>
@@ -131,7 +135,13 @@ const onSubmit = async (): Promise<void> => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" type="submit" variant="outlined" color="primary">
+        <v-btn
+          block
+          :loading="loading"
+          type="submit"
+          variant="outlined"
+          color="primary"
+        >
           更新
         </v-btn>
       </v-card-actions>

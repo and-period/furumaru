@@ -24,13 +24,14 @@ const formData = ref<CreateNotificationRequest>({
   body: '',
   note: '',
   publishedAt: dayjs().unix(),
-  promotionId: ''
+  promotionId: '',
 })
 
 const fetchPromotions = async (): Promise<void> => {
   try {
     await promotionStore.fetchPromotions()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -56,15 +57,17 @@ const handleSubmit = async () => {
     await notificationStore.createNotification(formData.value)
     commonStore.addSnackbar({
       message: `${formData.value.title}を作成しました。`,
-      color: 'info'
+      color: 'info',
     })
     router.push('/notifications')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

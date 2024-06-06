@@ -14,50 +14,46 @@ import {
   type UpdateLiveRequest,
   type UpdateScheduleRequest,
   type Producer,
-  type AuthYoutubeBroadcastRequest
+  type AuthYoutubeBroadcastRequest,
 } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   updatable: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   pauseDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   createLiveDialog: {
     type: Boolean,
-    default: false
-  },
-  updateLiveDialog: {
-    type: Boolean,
-    default: false
+    default: false,
   },
   liveMp4Dialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   archiveMp4Dialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   scheduleFormData: {
     type: Object as PropType<UpdateScheduleRequest>,
@@ -68,12 +64,12 @@ const props = defineProps({
       imageUrl: '',
       openingVideoUrl: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix()
-    })
+      endAt: dayjs().unix(),
+    }),
   },
   publicFormData: {
     type: Boolean,
-    default: false
+    default: false,
   },
   createLiveFormData: {
     type: Object as PropType<CreateLiveRequest>,
@@ -82,27 +78,18 @@ const props = defineProps({
       productIds: [],
       comment: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix()
-    })
-  },
-  updateLiveFormData: {
-    type: Object as PropType<UpdateLiveRequest>,
-    default: (): UpdateLiveRequest => ({
-      productIds: [],
-      comment: '',
-      startAt: dayjs().unix(),
-      endAt: dayjs().unix()
-    })
+      endAt: dayjs().unix(),
+    }),
   },
   mp4FormData: {
     type: Object as PropType<File[] | undefined>,
-    default: (): File[] | undefined => undefined
+    default: (): File[] | undefined => undefined,
   },
   authYoutubeFormData: {
     type: Object as PropType<AuthYoutubeBroadcastRequest>,
     default: (): AuthYoutubeBroadcastRequest => ({
-      youtubeHandle: ''
-    })
+      youtubeHandle: '',
+    }),
   },
   schedule: {
     type: Object as PropType<Schedule>,
@@ -120,8 +107,8 @@ const props = defineProps({
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   live: {
     type: Object as PropType<Live>,
@@ -134,12 +121,12 @@ const props = defineProps({
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   lives: {
     type: Array<Live>,
-    default: () => []
+    default: () => [],
   },
   broadcast: {
     type: Object as PropType<Broadcast>,
@@ -154,146 +141,136 @@ const props = defineProps({
       youtubeViewerUrl: '',
       youtubeAdminUrl: '',
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   coordinators: {
     type: Array<Coordinator>,
-    default: () => []
+    default: () => [],
   },
   producers: {
     type: Array<Producer>,
-    default: () => []
+    default: () => [],
   },
   products: {
     type: Array<Product>,
-    default: () => []
+    default: () => [],
   },
   authYoutubeUrl: {
     type: String,
-    default: ''
+    default: '',
   },
   video: {
     type: Object as PropType<HTMLVideoElement | undefined>,
-    default: (): HTMLVideoElement | undefined => undefined
+    default: (): HTMLVideoElement | undefined => undefined,
   },
   selectedTabItem: {
     type: String,
-    default: 'schedule'
+    default: 'schedule',
   },
   thumbnailUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   imageUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   openingVideoUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
-  }
+      message: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
-  (e: 'click:link-youtube'): void;
-  (e: 'click:new-live'): void;
-  (e: 'click:edit-live', liveId: string): void;
-  (e: 'update:pause-dialog', v: boolean): void;
-  (e: 'update:live-mp4-dialog', v: boolean): void;
-  (e: 'update:archive-mp4-dialog', v: boolean): void;
-  (e: 'update:selected-tab-item', item: string): void;
-  (e: 'update:schedule-form-data', formData: UpdateScheduleRequest): void;
-  (e: 'update:create-live-dialog', v: boolean): void;
-  (e: 'update:update-live-dialog', v: boolean): void;
-  (e: 'update:create-live-form-data', formData: CreateLiveRequest): void;
-  (e: 'update:update-live-form-data', formData: UpdateLiveRequest): void;
+  (e: 'click:link-youtube'): void
+  (e: 'click:new-live'): void
+  (e: 'click:edit-live', liveId: string): void
+  (e: 'update:pause-dialog', v: boolean): void
+  (e: 'update:live-mp4-dialog', v: boolean): void
+  (e: 'update:archive-mp4-dialog', v: boolean): void
+  (e: 'update:selected-tab-item', item: string): void
+  (e: 'update:schedule-form-data', formData: UpdateScheduleRequest): void
+  (e: 'update:create-live-dialog', v: boolean): void
+  (e: 'update:update-live-dialog', v: boolean): void
+  (e: 'update:create-live-form-data', formData: CreateLiveRequest): void
   (
     e: 'update:auth-youtube-form-data',
     formData: AuthYoutubeBroadcastRequest,
-  ): void;
-  (e: 'update:mp4-form-data', formData?: File[]): void;
-  (e: 'update:thumbnail', files: FileList): void;
-  (e: 'update:image', files: FileList): void;
-  (e: 'update:opening-video', files: FileList): void;
-  (e: 'update:public', publish: boolean): void;
-  (e: 'search:producer', name: string): void;
-  (e: 'search:product', producerId: string, name: string): void;
-  (e: 'submit:schedule'): void;
-  (e: 'submit:create-live'): void;
-  (e: 'submit:update-live'): void;
-  (e: 'submit:delete-live'): void;
-  (e: 'submit:pause'): void;
-  (e: 'submit:unpause'): void;
-  (e: 'submit:activate-static-image'): void;
-  (e: 'submit:deactivate-static-image'): void;
-  (e: 'submit:change-input-mp4'): void;
-  (e: 'submit:change-input-rtmp'): void;
-  (e: 'submit:upload-archive-mp4'): void;
+  ): void
+  (e: 'update:mp4-form-data', formData?: File[]): void
+  (e: 'update:thumbnail', files: FileList): void
+  (e: 'update:image', files: FileList): void
+  (e: 'update:opening-video', files: FileList): void
+  (e: 'update:public', publish: boolean): void
+  (e: 'search:producer', name: string): void
+  (e: 'search:product', producerId: string, name: string): void
+  (e: 'submit:schedule'): void
+  (e: 'submit:create-live'): void
+  (e: 'submit:update-live', liveId: string, formData: UpdateLiveRequest): void
+  (e: 'submit:delete-live', liveId: string): void
+  (e: 'submit:pause'): void
+  (e: 'submit:unpause'): void
+  (e: 'submit:activate-static-image'): void
+  (e: 'submit:deactivate-static-image'): void
+  (e: 'submit:change-input-mp4'): void
+  (e: 'submit:change-input-rtmp'): void
+  (e: 'submit:upload-archive-mp4'): void
 }>()
 
 const tabs: VTabs[] = [
   { name: '基本情報', value: 'schedule' },
   { name: 'ライブスケジュール', value: 'lives' },
-  { name: 'ライブ配信', value: 'streaming' }
+  { name: 'ライブ配信', value: 'streaming' },
 ]
 
 const selectedTabItemValue = computed({
   get: (): string => props.selectedTabItem,
-  set: (item: string): void => emit('update:selected-tab-item', item)
+  set: (item: string): void => emit('update:selected-tab-item', item),
 })
 const scheduleFormDataValue = computed({
   get: (): UpdateScheduleRequest => props.scheduleFormData,
   set: (formData: UpdateScheduleRequest): void =>
-    emit('update:schedule-form-data', formData)
+    emit('update:schedule-form-data', formData),
 })
 const createLiveDialogValue = computed({
   get: (): boolean => props.createLiveDialog,
-  set: (val: boolean): void => emit('update:create-live-dialog', val)
-})
-const updateLiveDialogValue = computed({
-  get: (): boolean => props.updateLiveDialog,
-  set: (val: boolean): void => emit('update:update-live-dialog', val)
+  set: (val: boolean): void => emit('update:create-live-dialog', val),
 })
 const pauseDialogValue = computed({
   get: (): boolean => props.pauseDialog,
-  set: (val: boolean): void => emit('update:pause-dialog', val)
+  set: (val: boolean): void => emit('update:pause-dialog', val),
 })
 const liveMp4DialogValue = computed({
   get: (): boolean => props.liveMp4Dialog,
-  set: (val: boolean): void => emit('update:live-mp4-dialog', val)
+  set: (val: boolean): void => emit('update:live-mp4-dialog', val),
 })
 const archiveMp4DialogValue = computed({
   get: (): boolean => props.archiveMp4Dialog,
-  set: (val: boolean): void => emit('update:archive-mp4-dialog', val)
+  set: (val: boolean): void => emit('update:archive-mp4-dialog', val),
 })
 const createLiveFormDataValue = computed({
   get: (): CreateLiveRequest => props.createLiveFormData,
   set: (formData: CreateLiveRequest): void =>
-    emit('update:create-live-form-data', formData)
-})
-const updateLiveFormDataValue = computed({
-  get: (): UpdateLiveRequest => props.updateLiveFormData,
-  set: (formData: UpdateLiveRequest): void =>
-    emit('update:update-live-form-data', formData)
+    emit('update:create-live-form-data', formData),
 })
 const mp4FormDataValue = computed({
   get: (): File[] | undefined => props.mp4FormData,
-  set: (formData?: File[]): void => emit('update:mp4-form-data', formData)
+  set: (formData?: File[]): void => emit('update:mp4-form-data', formData),
 })
 const authYoutubeFormDataValue = computed({
   get: (): AuthYoutubeBroadcastRequest => props.authYoutubeFormData,
   set: (formData: AuthYoutubeBroadcastRequest): void =>
-    emit('update:auth-youtube-form-data', formData)
+    emit('update:auth-youtube-form-data', formData),
 })
 
 const onClickLinkYouTube = (): void => {
@@ -302,10 +279,6 @@ const onClickLinkYouTube = (): void => {
 
 const onClickNewLive = (): void => {
   emit('click:new-live')
-}
-
-const onClickEditLive = (liveId: string): void => {
-  emit('click:edit-live', liveId)
 }
 
 const onChangeThumbnailFile = (files: FileList): void => {
@@ -340,12 +313,15 @@ const onSubmitCreateLive = (): void => {
   emit('submit:create-live')
 }
 
-const onSubmitUpdateLive = (): void => {
-  emit('submit:update-live')
+const onSubmitUpdateLive = (
+  liveId: string,
+  formData: UpdateLiveRequest,
+): void => {
+  emit('submit:update-live', liveId, formData)
 }
 
-const onSubmitDeleteLive = (): void => {
-  emit('submit:delete-live')
+const onSubmitDeleteLive = (liveId: string): void => {
+  emit('submit:delete-live', liveId)
 }
 
 const onSubmitPause = (): void => {
@@ -389,13 +365,23 @@ const onSubmitUploadArchiveMp4 = (): void => {
     <v-card-title>ライブ配信詳細</v-card-title>
 
     <v-card-text>
-      <v-tabs v-model="selectedTabItemValue" grow>
-        <v-tab v-for="item in tabs" :key="item.value" :value="item.value">
+      <v-tabs
+        v-model="selectedTabItemValue"
+        grow
+      >
+        <v-tab
+          v-for="item in tabs"
+          :key="item.value"
+          :value="item.value"
+        >
           {{ item.name }}
         </v-tab>
       </v-tabs>
 
-      <v-window v-model="selectedTabItemValue" class="py-4">
+      <v-window
+        v-model="selectedTabItemValue"
+        class="py-4"
+      >
         <v-window-item value="schedule">
           <organisms-schedule-show
             v-model:form-data="scheduleFormDataValue"
@@ -417,9 +403,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-window-item value="lives">
           <organisms-live-list
             v-model:create-dialog="createLiveDialogValue"
-            v-model:update-dialog="updateLiveDialogValue"
             v-model:create-form-data="createLiveFormDataValue"
-            v-model:update-form-data="updateLiveFormDataValue"
             :loading="loading"
             :live="live"
             :lives="lives"
@@ -427,7 +411,6 @@ const onSubmitUploadArchiveMp4 = (): void => {
             :producers="producers"
             :products="products"
             @click:new="onClickNewLive"
-            @click:edit="onClickEditLive"
             @search:producer="onSearchProducer"
             @search:product="onSearchProduct"
             @submit:create="onSubmitCreateLive"

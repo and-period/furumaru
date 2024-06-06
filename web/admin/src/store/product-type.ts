@@ -7,13 +7,13 @@ import type {
   CreateProductTypeRequest,
   GetUploadUrlRequest,
   ProductType,
-  UpdateProductTypeRequest
+  UpdateProductTypeRequest,
 } from '~/types/api'
 
 export const useProductTypeStore = defineStore('productType', {
   state: () => ({
     productTypes: [] as ProductType[],
-    totalItems: 0
+    totalItems: 0,
   }),
 
   actions: {
@@ -23,7 +23,7 @@ export const useProductTypeStore = defineStore('productType', {
      * @param offset 取得開始位置
      * @param orders ソートキー
      */
-    async fetchProductTypes (limit = 20, offset = 0, orders = []): Promise<void> {
+    async fetchProductTypes(limit = 20, offset = 0, orders = []): Promise<void> {
       try {
         const res = await apiClient.productTypeApi().v1ListAllProductTypes(limit, offset, orders.join(','))
 
@@ -31,7 +31,8 @@ export const useProductTypeStore = defineStore('productType', {
         this.productTypes = res.data.productTypes
         this.totalItems = res.data.total
         categoryStore.categories = res.data.categories || []
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -43,7 +44,7 @@ export const useProductTypeStore = defineStore('productType', {
      * @param offset 取得開始位置
      * @returns
      */
-    async fetchProductTypesByCategoryId (categoryId: string, limit = 20, offset = 0): Promise<void> {
+    async fetchProductTypesByCategoryId(categoryId: string, limit = 20, offset = 0): Promise<void> {
       if (categoryId === '') {
         this.productTypes = []
         this.totalItems = 0
@@ -55,7 +56,8 @@ export const useProductTypeStore = defineStore('productType', {
 
         this.productTypes = res.data.productTypes
         this.totalItems = res.data.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -66,7 +68,7 @@ export const useProductTypeStore = defineStore('productType', {
      * @param categoryId カテゴリ名
      * @param productTypeIds stateの更新時に残しておく必要がある品目情報
      */
-    async searchProductTypes (name = '', categoryId = '', productTypeIds: string[] = []): Promise<void> {
+    async searchProductTypes(name = '', categoryId = '', productTypeIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.productTypeApi().v1ListProductTypes(categoryId, undefined, undefined, name)
         const productTypes: ProductType[] = []
@@ -84,7 +86,8 @@ export const useProductTypeStore = defineStore('productType', {
         })
         this.productTypes = productTypes
         this.totalItems = res.data.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -95,20 +98,21 @@ export const useProductTypeStore = defineStore('productType', {
      * @param payload
      * @returns
      */
-    async createProductType (
+    async createProductType(
       categoryId: string,
-      payload: CreateProductTypeRequest
+      payload: CreateProductTypeRequest,
     ): Promise<void> {
       try {
         const res = await apiClient.productTypeApi().v1CreateProductType(
           categoryId,
-          payload
+          payload,
         )
         this.productTypes.unshift(res.data.productType)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
-          409: '対象の品目名はすでに登録されているため、登録できません。'
+          409: '対象の品目名はすでに登録されているため、登録できません。',
         })
       }
     },
@@ -120,22 +124,23 @@ export const useProductTypeStore = defineStore('productType', {
      * @param payload 品目情報
      * @returns
      */
-    async updateProductType (
+    async updateProductType(
       categoryId: string,
       productTypeId: string,
-      payload: UpdateProductTypeRequest
+      payload: UpdateProductTypeRequest,
     ) {
       try {
         await apiClient.productTypeApi().v1UpdateProductType(
           categoryId,
           productTypeId,
-          payload
+          payload,
         )
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
           404: '対象の商品種別または品目が存在しません。',
-          409: '対象の品目名はすでに登録されているため、登録できません。'
+          409: '対象の品目名はすでに登録されているため、登録できません。',
         })
       }
     },
@@ -146,17 +151,18 @@ export const useProductTypeStore = defineStore('productType', {
      * @param productTypeId 品目ID
      * @returns
      */
-    async deleteProductType (
+    async deleteProductType(
       categoryId: string,
-      productTypeId: string
+      productTypeId: string,
     ): Promise<void> {
       try {
         await apiClient.productTypeApi().v1DeleteProductType(
           categoryId,
-          productTypeId
+          productTypeId,
         )
         this.fetchProductTypes()
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '対象の商品種別または品目が存在しません。' })
       }
     },
@@ -166,18 +172,19 @@ export const useProductTypeStore = defineStore('productType', {
      * @param payload 品目画像のファイルオブジェクト
      * @returns アップロード後の品目画像のパスを含んだオブジェクト
      */
-    async uploadProductTypeIcon (payload: File): Promise<string> {
+    async uploadProductTypeIcon(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: contentType,
         }
         const res = await apiClient.productTypeApi().v1GetProductTypeIconUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
-    }
-  }
+    },
+  },
 })

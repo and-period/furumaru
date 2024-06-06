@@ -26,10 +26,10 @@ const loading = ref<boolean>(false)
 const cancelDialog = ref<boolean>(false)
 const refundDialog = ref<boolean>(false)
 const completeFormData = ref<CompleteOrderRequest>({
-  shippingMessage: ''
+  shippingMessage: '',
 })
 const refundFormData = ref<RefundOrderRequest>({
-  description: ''
+  description: '',
 })
 const fulfillmentsFormData = ref<FulfillmentInput[]>([])
 
@@ -43,16 +43,17 @@ const fetchOrder = async (): Promise<void> => {
     const inputs = order.value.fulfillments.map((fulfillment: OrderFulfillment): FulfillmentInput => ({
       fulfillmentId: fulfillment.fulfillmentId,
       shippingCarrier: fulfillment.shippingCarrier,
-      trackingNumber: fulfillment.trackingNumber
+      trackingNumber: fulfillment.trackingNumber,
     }))
     completeFormData.value = {
-      shippingMessage: order.value.shippingMessage
+      shippingMessage: order.value.shippingMessage,
     }
     refundFormData.value = {
-      description: order.value.refund?.reason || ''
+      description: order.value.refund?.reason || '',
     }
     fulfillmentsFormData.value = inputs
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -69,12 +70,14 @@ const handleSubmitCapture = async (): Promise<void> => {
     loading.value = true
     await orderStore.captureOrder(orderId)
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -84,12 +87,14 @@ const handleSubmitDraft = async (): Promise<void> => {
     loading.value = true
     const req: DraftOrderRequest = { ...completeFormData.value }
     await orderStore.draftOrder(orderId, req)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -99,12 +104,14 @@ const handleSubmitComplete = async (): Promise<void> => {
     loading.value = true
     await orderStore.completeOrder(orderId, completeFormData.value)
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -115,12 +122,14 @@ const handleSubmitCancel = async (): Promise<void> => {
     await orderStore.cancelOrder(orderId)
     cancelDialog.value = false
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -131,12 +140,14 @@ const handleSubmitRefund = async (): Promise<void> => {
     await orderStore.refundOrder(orderId, refundFormData.value)
     refundDialog.value = false
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -154,19 +165,22 @@ const handleSubmitUpdateFulfillment = async (fulfillmentId: string): Promise<voi
     const req: UpdateOrderFulfillmentRequest = { ...payload }
     await orderStore.updateFulfillment(orderId, fulfillmentId, req)
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

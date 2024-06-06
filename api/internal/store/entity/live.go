@@ -53,7 +53,7 @@ func NewLive(params *NewLiveParams) *Live {
 }
 
 func (l *Live) Fill(products LiveProducts) {
-	l.ProductIDs = products.SortByCreatedAt().ProductIDs()
+	l.ProductIDs = products.SortByPrimary().ProductIDs()
 	l.LiveProducts = products
 }
 

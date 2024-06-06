@@ -14,7 +14,7 @@ import type {
   Product,
   UpdateProductRequest,
   GetUploadUrlRequest,
-  UploadUrlResponse
+  UploadUrlResponse,
 } from '~/types/api'
 import { NotFoundError, PermissionError, ValidationError } from '~/types/exception'
 
@@ -22,7 +22,7 @@ export const useProductStore = defineStore('product', {
   state: () => ({
     product: {} as Product,
     products: [] as Product[],
-    totalItems: 0
+    totalItems: 0,
   }),
 
   actions: {
@@ -32,7 +32,7 @@ export const useProductStore = defineStore('product', {
      * @param offset 取得開始位置
      * @returns
      */
-    async fetchProducts (limit = 20, offset = 0): Promise<void> {
+    async fetchProducts(limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.productApi().v1ListProducts(limit, offset)
 
@@ -48,7 +48,8 @@ export const useProductStore = defineStore('product', {
         categoryStore.categories = res.data.categories
         productTypeStore.productTypes = res.data.productTypes
         productTagStore.productTags = res.data.productTags
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -59,7 +60,7 @@ export const useProductStore = defineStore('product', {
      * @param producerId 生産者ID
      * @param productIds stateの更新時に残しておく必要がある商品情報
      */
-    async searchProducts (name = '', producerId = '', productIds: string[] = []): Promise<void> {
+    async searchProducts(name = '', producerId = '', productIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.productApi().v1ListProducts(undefined, undefined, producerId, name)
         const products: Product[] = []
@@ -77,7 +78,8 @@ export const useProductStore = defineStore('product', {
         })
         this.products = products
         this.totalItems = res.data.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -87,7 +89,7 @@ export const useProductStore = defineStore('product', {
      * @param productId
      * @returns
      */
-    async getProduct (productId: string): Promise<ProductResponse> {
+    async getProduct(productId: string): Promise<ProductResponse> {
       try {
         const res = await apiClient.productApi().v1GetProduct(productId)
 
@@ -103,10 +105,11 @@ export const useProductStore = defineStore('product', {
         productTypeStore.productTypes = [res.data.productType]
         productTagStore.productTags = res.data.productTags
         return res.data
-      } catch (err: any) {
+      }
+      catch (err: any) {
         return this.errorHandler(err, {
           403: '商品を閲覧する権限がありません',
-          404: '対象の商品が存在しません'
+          404: '対象の商品が存在しません',
         })
       }
     },
@@ -116,26 +119,28 @@ export const useProductStore = defineStore('product', {
      * @param payload
      * @returns
      */
-    async uploadProductMedia (payload: File): Promise<string> {
+    async uploadProductMedia(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const res = await this.getProductMediaUploadUrl(contentType)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
 
-    async getProductMediaUploadUrl (contentType: string): Promise<AxiosResponse<UploadUrlResponse, any>> {
+    async getProductMediaUploadUrl(contentType: string): Promise<AxiosResponse<UploadUrlResponse, any>> {
       const body: GetUploadUrlRequest = {
-        fileType: contentType
+        fileType: contentType,
       }
       if (contentType.includes('image/')) {
         try {
           const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
           return res
-        } catch (err) {
+        }
+        catch (err) {
           return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
         }
       }
@@ -143,7 +148,8 @@ export const useProductStore = defineStore('product', {
         try {
           const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
           return res
-        } catch (err) {
+        }
+        catch (err) {
           return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
         }
       }
@@ -153,16 +159,17 @@ export const useProductStore = defineStore('product', {
     /**
      * 商品を作成する非同期関数
      */
-    async createProduct (payload: CreateProductRequest): Promise<void> {
+    async createProduct(payload: CreateProductRequest): Promise<void> {
       try {
         await apiClient.productApi().v1CreateProduct({
           ...payload,
-          inventory: Number(payload.inventory)
+          inventory: Number(payload.inventory),
         })
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
-          403: '商品を登録する権限がありません'
+          403: '商品を登録する権限がありません',
         })
       }
     },
@@ -172,14 +179,15 @@ export const useProductStore = defineStore('product', {
      * @param productId
      * @param payload
      */
-    async updateProduct (productId: string, payload: UpdateProductRequest) {
+    async updateProduct(productId: string, payload: UpdateProductRequest) {
       try {
         await apiClient.productApi().v1UpdateProduct(productId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
           403: '商品を更新する権限がありません',
-          404: '対象の商品が存在しません'
+          404: '対象の商品が存在しません',
         })
       }
     },
@@ -189,18 +197,19 @@ export const useProductStore = defineStore('product', {
      * @param productId
      * @returns
      */
-    async deleteProduct (productId: string) {
+    async deleteProduct(productId: string) {
       try {
         await apiClient.productApi().v1DeleteProduct(productId)
         const index = this.products.findIndex(product => product.id === productId)
         this.products.splice(index, 1)
         this.totalItems--
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           403: '商品を削除する権限がありません',
-          404: '対象の商品が存在しません'
+          404: '対象の商品が存在しません',
         })
       }
-    }
-  }
+    },
+  },
 })

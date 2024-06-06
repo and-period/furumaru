@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  isShow: Boolean
+  isShow: boolean
   text: string
 }
 
@@ -28,7 +28,11 @@ onMounted(() => {
       class="mx-auto flex w-[90%] justify-between rounded-lg border-2 border-orange bg-white p-4 text-main shadow-md md:w-[400px]"
     >
       <div>{{ text }}</div>
-      <button type="button" class="ml-4" @click="handelCloseButton">
+      <button
+        type="button"
+        class="ml-4"
+        @click="handelCloseButton"
+      >
         <the-outline-close-icon />
       </button>
     </div>

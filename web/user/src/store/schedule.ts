@@ -29,13 +29,15 @@ export const useScheduleStore = defineStore('schedule', {
             scheduleId: id,
             body: { comment },
           })
-        } else {
+        }
+        else {
           await this.scheduleApiClient().v1CreateGuestLiveComment({
             scheduleId: id,
             body: { comment },
           })
         }
-      } catch (e) {
+      }
+      catch (e) {
         return this.errorHandler(e)
       }
     },

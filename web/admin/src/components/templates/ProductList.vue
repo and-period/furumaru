@@ -12,77 +12,77 @@ import {
   type ProductTag,
   type ProductType,
   type Producer,
-  AdminRole
+  AdminRole,
 } from '~/types/api'
 
 const props = defineProps({
   selectedItemId: {
     type: String,
-    default: ''
+    default: '',
   },
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   categories: {
     type: Array<Category>,
-    default: () => []
+    default: () => [],
   },
   producers: {
     type: Array<Producer>,
-    default: () => []
+    default: () => [],
   },
   products: {
     type: Array<Product>,
-    default: () => []
+    default: () => [],
   },
   productTags: {
     type: Array<ProductTag>,
-    default: () => []
+    default: () => [],
   },
   productTypes: {
     type: Array<ProductType>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
-  (e: 'click:update-page', page: number): void;
-  (e: 'click:update-items-per-page', page: number): void;
-  (e: 'click:show', productId: string): void;
-  (e: 'click:new'): void;
-  (e: 'click:copyItem'): void;
-  (e: 'click:delete', productId: string): void;
-  (e: 'update:delete-dialog', v: boolean): void;
-  (e: 'update:selectedItemId', v: string): void;
+  (e: 'click:update-page', page: number): void
+  (e: 'click:update-items-per-page', page: number): void
+  (e: 'click:show', productId: string): void
+  (e: 'click:new'): void
+  (e: 'click:copyItem'): void
+  (e: 'click:delete', productId: string): void
+  (e: 'update:delete-dialog', v: boolean): void
+  (e: 'update:selectedItemId', v: string): void
 }>()
 
 const headers: VDataTable['headers'] = [
@@ -90,54 +90,55 @@ const headers: VDataTable['headers'] = [
     title: '',
     key: 'media',
     width: 80,
-    sortable: false
+    sortable: false,
   },
   {
     title: '商品名',
     key: 'name',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ステータス',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '価格',
     key: 'price',
-    sortable: false
+    sortable: false,
   },
   {
     title: '在庫',
     key: 'inventory',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ジャンル',
     key: 'categoryName',
-    sortable: false
+    sortable: false,
   },
   {
     title: '品目',
     key: 'productTypeName',
-    sortable: false
+    sortable: false,
   },
   {
     title: '生産者名',
     key: 'producerName',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const handleUpdateSelectItemId = (itemIds: string[]): void => {
   if (itemIds.length === 0) {
     emit('update:selectedItemId', '')
-  } else {
+  }
+  else {
     emit('update:selectedItemId', itemIds[0])
   }
 }
@@ -146,7 +147,7 @@ const selectedItem = ref<Product>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (val: boolean): void => emit('update:delete-dialog', val)
+  set: (val: boolean): void => emit('update:delete-dialog', val),
 })
 
 const isRegisterable = (): boolean => {
@@ -169,7 +170,7 @@ const getProductTypeName = (productTypeId: string): string => {
   const productType = props.productTypes.find(
     (productType: ProductType): boolean => {
       return productType.id === productTypeId
-    }
+    },
   )
   return productType ? productType.name : ''
 }
@@ -275,14 +276,21 @@ const onClickCopyItem = (): void => {
     v-text="props.alertText"
   />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-text class="text-h7">
         {{ selectedItem?.name }}を本当に削除しますか？
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="toggleDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="toggleDeleteDialog"
+        >
           キャンセル
         </v-btn>
         <v-btn
@@ -297,15 +305,25 @@ const onClickCopyItem = (): void => {
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       商品管理
     </v-card-title>
 
     <div class="d-flex w-100 px-6 ga-2">
       <v-spacer />
-      <v-btn variant="outlined" color="secondary" @click="onClickCopyItem">
-        <v-icon start :icon="mdiContentCopy" />
+      <v-btn
+        variant="outlined"
+        color="secondary"
+        @click="onClickCopyItem"
+      >
+        <v-icon
+          start
+          :icon="mdiContentCopy"
+        />
         商品複製
         <v-tooltip
           v-if="selectedItemId === ''"
@@ -321,7 +339,10 @@ const onClickCopyItem = (): void => {
         color="primary"
         @click="onClickNew"
       >
-        <v-icon start :icon="mdiPlus" />
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         商品登録
       </v-btn>
     </div>
@@ -381,7 +402,10 @@ const onClickCopyItem = (): void => {
             size="small"
             @click.stop="toggleDeleteDialog(item)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
             削除
           </v-btn>
         </template>

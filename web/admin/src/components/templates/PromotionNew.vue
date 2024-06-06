@@ -11,19 +11,19 @@ import { CreatePromotionValidationRules, TimeDataValidationRules } from '~/types
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<CreatePromotionRequest>,
@@ -35,9 +35,9 @@ const props = defineProps({
       discountRate: 0,
       code: '',
       startAt: dayjs().unix(),
-      endAt: dayjs().unix()
-    })
-  }
+      endAt: dayjs().unix(),
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -47,37 +47,37 @@ const emit = defineEmits<{
 
 const statusList = [
   { status: '有効', value: true },
-  { status: '無効', value: false }
+  { status: '無効', value: false },
 ]
 const discountMethodList = [
   { method: '円', value: DiscountType.AMOUNT },
   { method: '%', value: DiscountType.RATE },
-  { method: '送料無料', value: DiscountType.FREE_SHIPPING }
+  { method: '送料無料', value: DiscountType.FREE_SHIPPING },
 ]
 
 const formDataValue = computed({
   get: (): CreatePromotionRequest => props.formData,
-  set: (val: CreatePromotionRequest) => emit('update:form-data', val)
+  set: (val: CreatePromotionRequest) => emit('update:form-data', val),
 })
 const startTimeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.startAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.startAt).format('HH:mm')
+    time: unix(props.formData.startAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const startAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.startAt = startAt.unix()
-  }
+  },
 })
 const endTimeDataValue = computed({
   get: (): DateTimeInput => ({
     date: unix(props.formData.endAt).format('YYYY-MM-DD'),
-    time: unix(props.formData.endAt).format('HH:mm')
+    time: unix(props.formData.endAt).format('HH:mm'),
   }),
   set: (timeData: DateTimeInput): void => {
     const endAt = dayjs(`${timeData.date} ${timeData.time}`)
     formDataValue.value.endAt = endAt.unix()
-  }
+  },
 })
 
 const formDataValidate = useVuelidate(CreatePromotionValidationRules, formDataValue)
@@ -99,8 +99,8 @@ const onClickGenerateCode = (): void => {
 }
 
 const generateRandomString = (): string => {
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const characters
+    = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   let result = ''
   const charactersLength = characters.length
   for (let i = 0; i < 8; i++) {
@@ -140,7 +140,11 @@ const onSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card>
     <v-card-title>セール情報登録</v-card-title>
@@ -164,7 +168,12 @@ const onSubmit = async (): Promise<void> => {
             class="mr-2"
             label="割引コード(8文字)"
           />
-          <v-btn variant="outlined" size="small" color="primary" @click="onClickGenerateCode">
+          <v-btn
+            variant="outlined"
+            size="small"
+            color="primary"
+            @click="onClickGenerateCode"
+          >
             自動生成
           </v-btn>
           <v-spacer />
@@ -229,11 +238,21 @@ const onSubmit = async (): Promise<void> => {
             @update:model-value="onChangeEndAt"
           />
         </div>
-        <v-switch v-model="formDataValue.public" label="クーポンを有効にする" color="primary" />
+        <v-switch
+          v-model="formDataValue.public"
+          label="クーポンを有効にする"
+          color="primary"
+        />
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
+        <v-btn
+          block
+          :loading="loading"
+          variant="outlined"
+          color="primary"
+          type="submit"
+        >
           登録
         </v-btn>
       </v-card-actions>

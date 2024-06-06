@@ -61,7 +61,10 @@ const hideV1App = false
     <the-card>
       <the-card-title>{{ pageName }}</the-card-title>
       <the-card-content>
-        <the-alert v-show="hasError" class="mb-2">
+        <the-alert
+          v-show="hasError"
+          class="mb-2"
+        >
           {{ errorMessage }}
         </the-alert>
 
@@ -100,8 +103,13 @@ const hideV1App = false
           </template>
 
           <div class="my-6">
-            <p class="mb-2">{{ dontHaveAccountText }}<br /></p>
-            <nuxt-link :to="signUpLink.href" class="underline">
+            <p class="mb-2">
+              {{ dontHaveAccountText }}<br>
+            </p>
+            <nuxt-link
+              :to="signUpLink.href"
+              class="underline"
+            >
               {{ signUpLink.text }}
             </nuxt-link>
           </div>

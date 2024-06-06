@@ -16,35 +16,36 @@ const formData = ref<UpdateDefaultShippingRequest>({
     {
       name: '',
       price: 0,
-      prefectureCodes: []
-    }
+      prefectureCodes: [],
+    },
   ],
   box60Frozen: 0,
   box80Rates: [
     {
       name: '',
       price: 0,
-      prefectureCodes: []
-    }
+      prefectureCodes: [],
+    },
   ],
   box80Frozen: 0,
   box100Rates: [
     {
       name: '',
       price: 0,
-      prefectureCodes: []
-    }
+      prefectureCodes: [],
+    },
   ],
   box100Frozen: 0,
   hasFreeShipping: false,
-  freeShippingRates: 0
+  freeShippingRates: 0,
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await shippingStore.fetchDefaultShipping()
     formData.value = { ...shipping.value }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -62,9 +63,10 @@ const handleSubmit = async (): Promise<void> => {
     await shippingStore.updateDefaultShipping(formData.value)
     commonStore.addSnackbar({
       color: 'info',
-      message: 'デフォルト配送設定を更新しました。'
+      message: 'デフォルト配送設定を更新しました。',
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -72,16 +74,18 @@ const handleSubmit = async (): Promise<void> => {
 
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

@@ -19,10 +19,12 @@ const handleSubmit = async () => {
   try {
     await updateUsername(formData.value)
     router.push('/account/edit/complete?from=username')
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof ApiBaseError) {
       errorMessage.value = error.message
-    } else {
+    }
+    else {
       errorMessage.value = 'ユーザー名の変更に失敗しました。'
     }
   }
@@ -36,12 +38,21 @@ useSeoMeta({
 <template>
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
-      <the-account-edit-card title="ユーザー名の変更" class="mt-6">
-        <the-alert v-if="errorMessage" class="mt-4 w-full">
+      <the-account-edit-card
+        title="ユーザー名の変更"
+        class="mt-6"
+      >
+        <the-alert
+          v-if="errorMessage"
+          class="mt-4 w-full"
+        >
           {{ errorMessage }}
         </the-alert>
 
-        <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
+        <form
+          class="flex w-full flex-col gap-6"
+          @submit.prevent="handleSubmit"
+        >
           <div class="my-10 flex w-full justify-center">
             <the-text-input
               v-model="formData"
@@ -55,7 +66,9 @@ useSeoMeta({
           </div>
 
           <div class="flex w-full flex-col gap-4">
-            <button class="w-ful bg-main px-4 py-2 text-white">変更する</button>
+            <button class="w-ful bg-main px-4 py-2 text-white">
+              変更する
+            </button>
             <nuxt-link
               class="border border-main px-4 py-2 text-center text-main"
               to="/account"

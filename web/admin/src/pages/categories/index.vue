@@ -24,7 +24,7 @@ const initialProductType: ProductType = {
   iconUrl: '',
   icons: [],
   createdAt: 0,
-  updatedAt: 0
+  updatedAt: 0,
 }
 
 const loading = ref<boolean>(false)
@@ -38,26 +38,26 @@ const createProductTypeDialog = ref<boolean>(false)
 const updateProductTypeDialog = ref<boolean>(false)
 const deleteProductTypeDialog = ref<boolean>(false)
 const createCategoryFormData = ref<CreateCategoryRequest>({
-  name: ''
+  name: '',
 })
 const updateCategoryFormData = ref<UpdateCategoryRequest>({
-  name: ''
+  name: '',
 })
 const createProductTypeFormData = ref<CreateProductTypeRequest>({
   name: '',
-  iconUrl: ''
+  iconUrl: '',
 })
 const updateProductTypeFormData = ref<CreateProductTypeRequest>({
   name: '',
-  iconUrl: ''
+  iconUrl: '',
 })
 const createProductTypeIconUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const updateProductTypeIconUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 
 watch(updateProductTypeDialog, (): void => {
@@ -100,7 +100,8 @@ const isLoading = (): boolean => {
 const fetchCategories = async (): Promise<void> => {
   try {
     await categoryStore.fetchCategories(categoryPagination.itemsPerPage.value, categoryPagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -111,7 +112,8 @@ const fetchCategories = async (): Promise<void> => {
 const fetchProductTypes = async (): Promise<void> => {
   try {
     await productTypeStore.fetchProductTypes(productTypePagination.itemsPerPage.value, productTypePagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -133,7 +135,8 @@ const handleSearchCategory = async (name: string): Promise<void> => {
   try {
     const categoryIds = productTypes.value.map((productType: ProductType): string => productType.categoryId)
     await categoryStore.searchCategories(name, categoryIds)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -244,15 +247,17 @@ const handleSubmitCreateCategory = async (): Promise<void> => {
     await categoryStore.createCategory(createCategoryFormData.value)
     commonStore.addSnackbar({
       message: 'カテゴリーを追加しました。',
-      color: 'info'
+      color: 'info',
     })
     createCategoryDialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -263,15 +268,17 @@ const handleSubmitUpdateCategory = async (): Promise<void> => {
     await categoryStore.updateCategory(selectedCategory.value?.id || '', updateCategoryFormData.value)
     commonStore.addSnackbar({
       message: '変更しました。',
-      color: 'info'
+      color: 'info',
     })
     updateCategoryDialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -282,15 +289,17 @@ const handleSubmitDeleteCategory = async (): Promise<void> => {
     await categoryStore.deleteCategory(selectedCategory.value?.id || '')
     commonStore.addSnackbar({
       message: 'カテゴリー削除が完了しました',
-      color: 'info'
+      color: 'info',
     })
     deleteCategoryDialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -301,15 +310,17 @@ const handleSubmitCreateProductType = async (categoryId: string): Promise<void> 
     await productTypeStore.createProductType(categoryId, createProductTypeFormData.value)
     commonStore.addSnackbar({
       message: '品目を追加しました。',
-      color: 'info'
+      color: 'info',
     })
     createProductTypeDialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -320,19 +331,21 @@ const handleSubmitUpdateProductType = async (): Promise<void> => {
     await productTypeStore.updateProductType(
       selectedProductType.value.categoryId,
       selectedProductType.value.id,
-      createProductTypeFormData.value
+      createProductTypeFormData.value,
     )
     commonStore.addSnackbar({
       message: '品目の更新が完了しました',
-      color: 'info'
+      color: 'info',
     })
     updateProductTypeDialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -342,26 +355,29 @@ const handleSubmitDeleteProductType = async (): Promise<void> => {
     loading.value = true
     await productTypeStore.deleteProductType(
       selectedProductType.value.categoryId,
-      selectedProductType.value.id
+      selectedProductType.value.id,
     )
     commonStore.addSnackbar({
       message: '品目の削除が完了しました',
-      color: 'info'
+      color: 'info',
     })
     deleteProductTypeDialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

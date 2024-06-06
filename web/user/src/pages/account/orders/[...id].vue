@@ -55,7 +55,7 @@ useSeoMeta({
       </div>
     </template>
 
-    <template v-if="!orderHistory"> </template>
+    <template v-if="!orderHistory" />
 
     <template v-else>
       <div class="rounded bg-white p-4">
@@ -134,19 +134,30 @@ useSeoMeta({
           </dl>
         </div>
 
-        <hr class="my-2 border-dashed" />
+        <hr class="my-2 border-dashed">
 
         <!-- 注文商品情報 -->
         <div
           v-if="orderHistory.items.length > 0"
           class="hidden grid-cols-5 items-center border-b py-2 text-[12px] tracking-[1.2px] md:grid"
         >
-          <div class="col-span-2">商品</div>
-          <div class="text-right">価格（税込み）</div>
-          <div class="text-right">数量</div>
-          <div class="text-right">小計（税込み）</div>
+          <div class="col-span-2">
+            商品
+          </div>
+          <div class="text-right">
+            価格（税込み）
+          </div>
+          <div class="text-right">
+            数量
+          </div>
+          <div class="text-right">
+            小計（税込み）
+          </div>
         </div>
-        <div v-for="(item, i) in orderHistory.items" :key="i">
+        <div
+          v-for="(item, i) in orderHistory.items"
+          :key="i"
+        >
           <div
             v-if="item.product"
             class="md-text-[16px] flex grid-cols-5 flex-col gap-2 border-b py-2 text-[14px] md:grid md:items-center"
@@ -180,41 +191,51 @@ useSeoMeta({
         <div class="mt-4 grid grid-cols-3 md:grid-cols-5">
           <div class="col-span-2 col-start-4 flex flex-col gap-2 text-[14px]">
             <div class="grid grid-cols-2 text-right">
-              <div class="px-4">商品合計</div>
+              <div class="px-4">
+                商品合計
+              </div>
               <div>
                 {{ priceFormatter(orderHistory.payment.subtotal) }}
               </div>
             </div>
             <div class="grid grid-cols-2 text-right">
-              <div class="px-4">配送料</div>
+              <div class="px-4">
+                配送料
+              </div>
               <div>
                 {{ priceFormatter(orderHistory.payment.shippingFee) }}
               </div>
             </div>
 
             <div class="grid grid-cols-2 text-right">
-              <div class="px-4">割引</div>
+              <div class="px-4">
+                割引
+              </div>
               <div>
                 {{ priceFormatter(orderHistory.payment.discount) }}
               </div>
             </div>
 
             <div class="grid grid-cols-2 text-right">
-              <div class="px-4">消費税</div>
+              <div class="px-4">
+                消費税
+              </div>
               <div>
                 {{
                   priceFormatter(
-                    orderHistory.payment.total -
-                      orderHistory.payment.subtotal -
-                      orderHistory.payment.shippingFee -
-                      orderHistory.payment.discount,
+                    orderHistory.payment.total
+                      - orderHistory.payment.subtotal
+                      - orderHistory.payment.shippingFee
+                      - orderHistory.payment.discount,
                   )
                 }}
               </div>
             </div>
 
             <div class="mt-2 grid grid-cols-2 text-right text-[16px] font-bold">
-              <div class="px-4">合計</div>
+              <div class="px-4">
+                合計
+              </div>
               <div class="underline">
                 {{ priceFormatter(orderHistory.payment.total) }}
               </div>

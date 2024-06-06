@@ -25,7 +25,10 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <form class="flex w-full flex-col" @submit.prevent="handleSubmit">
+  <form
+    class="flex w-full flex-col"
+    @submit.prevent="handleSubmit"
+  >
     <div
       class="flex w-full items-center gap-4"
       :class="{ 'animate-pulse': isSending }"
@@ -35,7 +38,7 @@ const handleSubmit = () => {
         type="text"
         class="block w-full border-typography p-2 shadow-[0_1px_0_0] focus:border-0 focus:border-main focus:shadow-[0_2px_0_0] focus:outline-none focus:ring-0"
         placeholder="コメントする…"
-      />
+      >
       <button
         class="whitespace-nowrap rounded-lg bg-main px-4 py-2 text-white disabled:bg-main/50"
         type="submit"

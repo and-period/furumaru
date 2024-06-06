@@ -25,7 +25,7 @@ onMounted(() => {
 watch(
   values,
   () => {
-    const val = values.value.map((item) => item).join('')
+    const val = values.value.map(item => item).join('')
     emits('update:modelValue', val)
   },
   { deep: true },
@@ -57,6 +57,6 @@ const handleKeyup = (event: KeyboardEvent, i: number) => {
       :type="type"
       maxlength="1"
       @keyup="(e) => handleKeyup(e, item)"
-    />
+    >
   </div>
 </template>

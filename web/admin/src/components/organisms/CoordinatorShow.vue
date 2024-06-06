@@ -8,7 +8,7 @@ import {
   type Coordinator,
   AdminStatus,
   Prefecture,
-  Weekday
+  Weekday,
 } from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
@@ -17,7 +17,7 @@ import { UpdateCoordinatorValidationRules } from '~/types/validations'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   formData: {
     type: Object as PropType<UpdateCoordinatorRequest>,
@@ -42,8 +42,8 @@ const props = defineProps({
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
-      businessDays: []
-    })
+      businessDays: [],
+    }),
   },
   coordinator: {
     type: Object as PropType<Coordinator>,
@@ -73,49 +73,49 @@ const props = defineProps({
       facebookId: '',
       createdAt: 0,
       updatedAt: 0,
-      businessDays: []
-    })
+      businessDays: [],
+    }),
   },
   productTypes: {
     type: Array<ProductType>,
-    default: () => []
+    default: () => [],
   },
   thumbnailUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   headerUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   promotionVideoUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   bonusVideoUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   searchErrorMessage: {
     type: String,
-    default: ''
+    default: '',
   },
   searchLoading: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const weekdays = [
@@ -125,23 +125,23 @@ const weekdays = [
   { title: '水曜日', value: Weekday.WEDNESDAY },
   { title: '木曜日', value: Weekday.THURSDAY },
   { title: '金曜日', value: Weekday.FRIDAY },
-  { title: '土曜日', value: Weekday.SATURDAY }
+  { title: '土曜日', value: Weekday.SATURDAY },
 ]
 
 const emit = defineEmits<{
-  (e: 'update:form-data', formData: UpdateCoordinatorRequest): void;
-  (e: 'update:thumbnail-file', files: FileList): void;
-  (e: 'update:header-file', files: FileList): void;
-  (e: 'update:promotion-video', files: FileList): void;
-  (e: 'update:bonus-video', files: FileList): void;
+  (e: 'update:form-data', formData: UpdateCoordinatorRequest): void
+  (e: 'update:thumbnail-file', files: FileList): void
+  (e: 'update:header-file', files: FileList): void
+  (e: 'update:promotion-video', files: FileList): void
+  (e: 'update:bonus-video', files: FileList): void
   (e: 'update:search-product-type', name: string): void
-  (e: 'click:search-address'): void;
-  (e: 'submit'): void;
+  (e: 'click:search-address'): void
+  (e: 'submit'): void
 }>()
 
 const formDataValue = computed({
   get: (): UpdateCoordinatorRequest => props.formData,
-  set: (val: UpdateCoordinatorRequest): void => emit('update:form-data', val)
+  set: (val: UpdateCoordinatorRequest): void => emit('update:form-data', val),
 })
 const coordinatorValue = computed(() => props.coordinator)
 
@@ -258,7 +258,11 @@ const onClickSearchAddress = (): void => {
           multiple
         />
         <v-row>
-          <v-col cols="12" ms="12" lg="6">
+          <v-col
+            cols="12"
+            ms="12"
+            lg="6"
+          >
             <molecules-video-select-form
               label="紹介動画"
               :loading="loading"
@@ -268,7 +272,11 @@ const onClickSearchAddress = (): void => {
               @update:file="onChangePromotionVideo"
             />
           </v-col>
-          <v-col cols="12" sm="12" lg="6">
+          <v-col
+            cols="12"
+            sm="12"
+            lg="6"
+          >
             <molecules-video-select-form
               label="サンキュー動画"
               :loading="loading"
@@ -331,7 +339,11 @@ const onClickSearchAddress = (): void => {
           label="連絡先（電話番号）"
         />
         <v-row>
-          <v-col cols="12" sm="6" md="6">
+          <v-col
+            cols="12"
+            sm="6"
+            md="6"
+          >
             <molecules-icon-select-form
               label="アイコン画像"
               :loading="loading"
@@ -341,7 +353,11 @@ const onClickSearchAddress = (): void => {
               @update:file="onChangeThumbnailFile"
             />
           </v-col>
-          <v-col cols="12" sm="6" md="6">
+          <v-col
+            cols="12"
+            sm="6"
+            md="6"
+          >
             <molecules-image-select-form
               label="ヘッダー画像"
               :loading="loading"

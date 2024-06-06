@@ -10,7 +10,7 @@ const transformQueryParamsFromModifiers = (
   modifiers: Partial<ImageModifiers>,
 ): string => {
   const params = Object.keys(modifiers)
-    .filter((key) => modifiers[key] !== undefined)
+    .filter(key => modifiers[key] !== undefined)
     .map((key) => {
       const value = encodeURIComponent(modifiers[key])
       return `${encodeURIComponent(key)}=${value}`

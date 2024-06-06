@@ -28,6 +28,9 @@ useSeoMeta({
 
 <template>
   <div class="mx-auto max-w-5xl">
-    <div class="prose max-w-none p-4" v-html="renderedContent"></div>
+    <div
+      class="prose max-w-none p-4"
+      v-html="renderedContent"
+    />
   </div>
 </template>

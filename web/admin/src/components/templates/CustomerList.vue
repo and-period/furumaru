@@ -9,36 +9,36 @@ import { UserStatus, type UserToList } from '~/types/api'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   customers: {
     type: Array<UserToList>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
+    default: 0,
   },
   tableSortBy: {
     type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 
 const emit = defineEmits<{
@@ -52,23 +52,23 @@ const headers: VDataTable['headers'] = [
   {
     title: '氏名',
     key: 'name',
-    sortable: false
+    sortable: false,
   },
   {
     title: '住所',
     key: 'address',
-    sortable: false
+    sortable: false,
   },
   {
     title: '注文数',
     key: 'paymentTotalCount',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ステータス',
     key: 'status',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const getName = (item: UserToList): string => {
@@ -133,7 +133,11 @@ const onClickRow = (item: UserToList): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card flat>
     <v-card-title>顧客管理</v-card-title>
@@ -161,7 +165,10 @@ const onClickRow = (item: UserToList): void => {
           {{ getAddress(item) }}
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.status)">
+          <v-chip
+            size="small"
+            :color="getStatusColor(item.status)"
+          >
             {{ getStatus(item.status) }}
           </v-chip>
         </template>

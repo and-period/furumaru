@@ -44,10 +44,12 @@ const formType = computed(() => {
   if (props.type === 'password') {
     if (showSecretValue.value) {
       return 'text'
-    } else {
+    }
+    else {
       return 'password'
     }
-  } else {
+  }
+  else {
     return props.type
   }
 })
@@ -73,7 +75,8 @@ const hasError = computed(() => {
 const viewMessage = computed(() => {
   if (props.errorMessage !== '') {
     return props.errorMessage
-  } else {
+  }
+  else {
     return props.message
   }
 })
@@ -82,7 +85,11 @@ const viewMessage = computed(() => {
 <template>
   <div class="mb-1">
     <div class="w-full">
-      <label v-if="withLabel" class="inline-block" :for="id">{{ label }}</label>
+      <label
+        v-if="withLabel"
+        class="inline-block"
+        :for="id"
+      >{{ label }}</label>
       <div class="relative w-full">
         <input
           :id="id"
@@ -98,7 +105,7 @@ const viewMessage = computed(() => {
             'border-b-2 border-orange': hasError,
             'pr-8': type === 'password',
           }"
-        />
+        >
         <button
           v-if="type === 'password'"
           class="absolute right-0 top-0 h-full px-2"

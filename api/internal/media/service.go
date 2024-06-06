@@ -28,7 +28,8 @@ type Service interface {
 	AuthYoutubeBroadcastEvent(ctx context.Context, in *AuthYoutubeBroadcastEventInput) (*entity.BroadcastAuth, error)             // Youtubeライブ配信認証後処理
 	CreateYoutubeBroadcast(ctx context.Context, in *CreateYoutubeBroadcastInput) error                                            // Youtubeライブ配信登録
 	// ライブ視聴履歴
-	CreateBroadcastViewerLog(ctx context.Context, in *CreateBroadcastViewerLogInput) error // ライブ配信視聴履歴登録
+	CreateBroadcastViewerLog(ctx context.Context, in *CreateBroadcastViewerLogInput) error                                                 // ライブ配信視聴履歴登録
+	AggregateBroadcastViewerLogs(ctx context.Context, in *AggregateBroadcastViewerLogsInput) (entity.AggregatedBroadcastViewerLogs, error) // ライブ配信視聴履歴集計
 	// ライブコメント
 	ListBroadcastComments(ctx context.Context, in *ListBroadcastCommentsInput) (entity.BroadcastComments, string, error)     // ライブコメント一覧取得
 	CreateBroadcastComment(ctx context.Context, in *CreateBroadcastCommentInput) (*entity.BroadcastComment, error)           // ライブコメント登録

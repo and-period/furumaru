@@ -4,10 +4,10 @@ import type { AlertType } from '~/lib/hooks'
 import type { Message } from '~/types/api'
 
 interface Props {
-  loading: boolean,
-  isAlert: boolean,
+  loading: boolean
+  isAlert: boolean
   alertType: AlertType
-  alertText: string,
+  alertText: string
   message: Message
   messages: Message[]
 }
@@ -25,14 +25,20 @@ const onClickMessage = (messageId: string): void => {
 const parsedMessage = computed<string>(() => {
   if (props.message && props.message.body) {
     return props.message.body.replaceAll('\\n', '\n')
-  } else {
+  }
+  else {
     return ''
   }
 })
 </script>
 
 <template>
-  <v-alert v-show="isAlert" class="mb-4" :type="alertType" v-text="alertText" />
+  <v-alert
+    v-show="isAlert"
+    class="mb-4"
+    :type="alertType"
+    v-text="alertText"
+  />
 
   <v-row no-gutters>
     <v-col cols="2">
@@ -41,7 +47,10 @@ const parsedMessage = computed<string>(() => {
           <v-list-item-title>メッセージ一覧</v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list nav class="pa-2">
+        <v-list
+          nav
+          class="pa-2"
+        >
           <v-list-item
             v-for="item in messages"
             :key="item.id"
@@ -65,9 +74,15 @@ const parsedMessage = computed<string>(() => {
             {{ `件名：${message.title}` }}
           </v-card-title>
           <v-divider />
-          <v-card-text class="message-area" v-text="parsedMessage" />
+          <v-card-text
+            class="message-area"
+            v-text="parsedMessage"
+          />
         </div>
-        <v-card-text v-else class="text-center">
+        <v-card-text
+          v-else
+          class="text-center"
+        >
           メッセージを選択してください
         </v-card-text>
       </v-card>

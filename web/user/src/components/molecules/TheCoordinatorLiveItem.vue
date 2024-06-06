@@ -19,7 +19,8 @@ const formattedStartAt = computed(() => {
 const isLiveStreaming = (status: ScheduleStatus) => {
   if (status === ScheduleStatus.LIVE || status === ScheduleStatus.CLOSED) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }
@@ -41,7 +42,7 @@ const handleClick = () => {
       <nuxt-img
         provider="cloudFront"
         height="208px"
-        fit="cover"
+        fit="contain"
         class="aspect-video max-h-[208px] cursor-pointer object-cover"
         :src="imgSrc"
         :alt="`live-${title}-thumbnail`"
@@ -59,7 +60,7 @@ const handleClick = () => {
               'border-2 border-main text-main': !isLiveStreaming(isLiveStatus),
             }"
           >
-            {{ isLiveStreaming(isLiveStatus) ? '配信中' : '配信予定' }}
+            {{ isLiveStreaming(isLiveStatus) ? "配信中" : "配信予定" }}
           </span>
           <span class="ml-2 text-main after:content-['〜']">{{
             formattedStartAt

@@ -5,7 +5,7 @@ import type { Shipping, UpdateDefaultShippingRequest, UpsertShippingRequest } fr
 
 export const useShippingStore = defineStore('shipping', {
   state: () => ({
-    shipping: {} as Shipping
+    shipping: {} as Shipping,
   }),
 
   actions: {
@@ -13,11 +13,12 @@ export const useShippingStore = defineStore('shipping', {
      * デフォルト配送設定を取得する非同期関数
      * @returns
      */
-    async fetchDefaultShipping (): Promise<void> {
+    async fetchDefaultShipping(): Promise<void> {
       try {
         const res = await apiClient.shippingApi().v1GetDefaultShipping()
         this.shipping = res.data.shipping
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -27,10 +28,11 @@ export const useShippingStore = defineStore('shipping', {
      * @param payload
      * @returns
      */
-    async updateDefaultShipping (payload: UpdateDefaultShippingRequest): Promise<void> {
+    async updateDefaultShipping(payload: UpdateDefaultShippingRequest): Promise<void> {
       try {
         await apiClient.shippingApi().v1UpdateDefaultShipping(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: '必須項目が不足しているか、入力内容に誤りがあります。' })
       }
     },
@@ -40,11 +42,12 @@ export const useShippingStore = defineStore('shipping', {
      * @param coordinatorId
      * @returns
      */
-    async fetchShipping (coordinatorId: string): Promise<void> {
+    async fetchShipping(coordinatorId: string): Promise<void> {
       try {
         const res = await apiClient.shippingApi().v1GetShipping(coordinatorId)
         this.shipping = res.data.shipping
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '対象のコーディネーターが見つかりません。' })
       }
     },
@@ -55,15 +58,16 @@ export const useShippingStore = defineStore('shipping', {
      * @param payload
      * @returns
      */
-    async upsertShipping (coordinatorId: string, payload: UpsertShippingRequest): Promise<void> {
+    async upsertShipping(coordinatorId: string, payload: UpsertShippingRequest): Promise<void> {
       try {
         await apiClient.shippingApi().v1UpsertShipping(coordinatorId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、入力内容に誤りがあります。',
-          404: '対象のコーディネーターが見つかりません。'
+          404: '対象のコーディネーターが見つかりません。',
         })
       }
-    }
-  }
+    },
+  },
 })

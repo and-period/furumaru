@@ -29,10 +29,16 @@ const priceString = computed(() => {
       class="flex w-full flex-col justify-between text-[12px] tracking-[1.2px]"
     >
       <div>
-        <div class="min-h-[28px]">{{ name }}</div>
-        <div class="font-bold">{{ priceString }}（税込み）</div>
+        <div class="min-h-[28px]">
+          {{ name }}
+        </div>
+        <div class="font-bold">
+          {{ priceString }}（税込み）
+        </div>
       </div>
-      <button class="mt-2 bg-main px-2 py-1 text-white">追加する</button>
+      <button class="mt-2 bg-main px-2 py-1 text-white">
+        追加する
+      </button>
     </div>
   </div>
 </template>

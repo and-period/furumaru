@@ -50,7 +50,9 @@ const handleClickShowDetailButton = () => {
           <div class="mr-2 pt-[2px]">
             <the-live-icon />
           </div>
-          <div class="align-middle">LIVE</div>
+          <div class="align-middle">
+            LIVE
+          </div>
         </div>
       </template>
 
@@ -72,14 +74,15 @@ const handleClickShowDetailButton = () => {
         @click="handleCLickCoordinator"
       />
       <div class="text-[12px] tracking-[1.2px]">
-        <p class="mb-1">{{ marcheName }}/{{ coordinatorAddress }}</p>
+        <p class="mb-1">
+          {{ marcheName }}/{{ coordinatorAddress }}
+        </p>
         <p>
           コーディネーター：
           <span
             class="cursor-pointer hover:underline"
             @click="handleCLickCoordinator"
-            >{{ coordinatorName }}</span
-          >
+          >{{ coordinatorName }}</span>
         </p>
       </div>
     </div>
@@ -89,7 +92,7 @@ const handleClickShowDetailButton = () => {
         v-if="showDetail"
         class="mt-6 whitespace-pre-wrap text-[14px] tracking-[1.4px]"
         v-html="description"
-      ></p>
+      />
       <button
         class="inline-flex w-full items-center justify-center gap-2 text-[12px] tracking-[1.2px]"
         @click="handleClickShowDetailButton"

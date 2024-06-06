@@ -28,7 +28,8 @@ watch(pagination.itemsPerPage, (): void => {
 const fetchCoordinators = async (): Promise<void> => {
   try {
     await coordinatorStore.fetchCoordinators(pagination.itemsPerPage.value, pagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -59,19 +60,21 @@ const handleClickDelete = async (coordinatorId: string): Promise<void> => {
     await coordinatorStore.deleteCoordinator(coordinatorId)
     commonStore.addSnackbar({
       color: 'info',
-      message: 'コーディネーターの削除が完了しました。'
+      message: 'コーディネーターの削除が完了しました。',
     })
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     console.log(err)
-  } finally {
+  }
+  finally {
     deleteDialog.value = false
     loading.value = true
   }
@@ -79,7 +82,8 @@ const handleClickDelete = async (coordinatorId: string): Promise<void> => {
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

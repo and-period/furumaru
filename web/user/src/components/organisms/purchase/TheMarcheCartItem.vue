@@ -12,7 +12,7 @@ interface Props {
 interface Emits {
   (e: 'click:buyButton', coordinatorId: string): void
   (e: 'click:cartBuyButton', coordinatorId: string, cartNumber: number): void
-  (e: 'click:removeItemFromCart', cartNumber: Number, id: string): void
+  (e: 'click:removeItemFromCart', cartNumber: number, id: string): void
 }
 
 const props = defineProps<Props>()
@@ -20,7 +20,7 @@ const emits = defineEmits<Emits>()
 
 const totalPrice = computed<number>(() => {
   return props.items
-    .map((item) => item.product.price * item.quantity)
+    .map(item => item.product.price * item.quantity)
     .reduce((sum, price) => sum + price)
 })
 
@@ -58,11 +58,15 @@ const handelClickRemoveItemButton = (id: string) => {
       </div>
 
       <div class="flex items-center justify-between font-bold">
-        <div class="text-[14px]">商品合計（税込み）</div>
-        <div class="text-[20px]">{{ priceStringFormatter(totalPrice) }}</div>
+        <div class="text-[14px]">
+          商品合計（税込み）
+        </div>
+        <div class="text-[20px]">
+          {{ priceStringFormatter(totalPrice) }}
+        </div>
       </div>
 
-      <hr class="my-5 border-main" />
+      <hr class="my-5 border-main">
 
       <div>※送料はご購入手続き画面で加算されます。</div>
 
@@ -79,7 +83,7 @@ const handelClickRemoveItemButton = (id: string) => {
     >
       <div
         class="absolute -left-4 top-12 hidden h-8 w-8 rotate-45 bg-white lg:block"
-      ></div>
+      />
 
       <div class="flex flex-col gap-y-6 lg:gap-y-16">
         <div
@@ -93,7 +97,9 @@ const handelClickRemoveItemButton = (id: string) => {
           <div
             class="hidden grid-cols-5 items-center border-b py-2 text-[12px] tracking-[1.2px] md:grid"
           >
-            <div class="col-span-2">商品</div>
+            <div class="col-span-2">
+              商品
+            </div>
             <div>価格（税込み）</div>
             <div>数量</div>
             <div>小計（税込み）</div>
@@ -176,40 +182,51 @@ const handelClickRemoveItemButton = (id: string) => {
           <!-- スマートフォン、タブレットのみで表示する -->
           <div class="lg:hidden">
             <div class="flex items-center justify-between">
-              <div class="text-[14px]">小計（税込み）</div>
+              <div class="text-[14px]">
+                小計（税込み）
+              </div>
               <div class="text-[20px]">
                 {{ priceStringFormatter(totalPrice) }}
               </div>
             </div>
-            <hr class="my-4 border-main" />
+            <hr class="my-4 border-main">
             <div class="text-[12px]">
               ※送料はご購入手続き画面で加算されます。
             </div>
           </div>
 
           <div class="flex grow gap-10">
-            <the-cardboard :box-size="cart.size" :use-rate="cart.useRate" />
+            <the-cardboard
+              :box-size="cart.size"
+              :use-rate="cart.useRate"
+            />
 
             <div class="flex grow flex-col gap-4 whitespace-nowrap">
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
                   箱タイプ
                 </div>
-                <div class="text-[14px]">{{ cart.boxType }}</div>
+                <div class="text-[14px]">
+                  {{ cart.boxType }}
+                </div>
               </div>
 
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
                   箱サイズ
                 </div>
-                <div class="text-[14px]">{{ cart.boxSize }}</div>
+                <div class="text-[14px]">
+                  {{ cart.boxSize }}
+                </div>
               </div>
 
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
                   占有率
                 </div>
-                <div class="text-[14px]">{{ cart.useRate }}</div>
+                <div class="text-[14px]">
+                  {{ cart.useRate }}
+                </div>
               </div>
             </div>
           </div>
@@ -217,12 +234,14 @@ const handelClickRemoveItemButton = (id: string) => {
           <div class="flex flex-col gap-7">
             <div class="hidden lg:block">
               <div class="flex items-center justify-between">
-                <div class="text-[14px]">小計（税込み）</div>
+                <div class="text-[14px]">
+                  小計（税込み）
+                </div>
                 <div class="text-[20px]">
                   {{ priceStringFormatter(totalPrice) }}
                 </div>
               </div>
-              <hr class="my-4 border-main" />
+              <hr class="my-4 border-main">
               <div>※送料はご購入手続き画面で加算されます。</div>
             </div>
 

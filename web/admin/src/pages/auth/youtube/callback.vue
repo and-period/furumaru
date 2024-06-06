@@ -2,7 +2,10 @@
 import { storeToRefs } from 'pinia'
 import { unix } from 'dayjs'
 import { useAlert } from '~/lib/hooks'
-import type { CreateYoutubeBroadcastRequest, CallbackAuthYoutubeBroadcastRequest } from '~/types/api'
+import type {
+  CreateYoutubeBroadcastRequest,
+  CallbackAuthYoutubeBroadcastRequest,
+} from '~/types/api'
 import { useBroadcastStore } from '~/store'
 
 const route = useRoute()
@@ -16,14 +19,14 @@ const { guestBroadcast } = storeToRefs(broadcastStore)
 
 const items = [
   { title: '公開', value: true },
-  { title: '限定公開', value: false }
+  { title: '限定公開', value: false },
 ]
 
 const loading = ref<boolean>(false)
 const formData = reactive<CreateYoutubeBroadcastRequest>({
   title: '',
   description: '',
-  public: false
+  public: false,
 })
 
 const parseTime = (unixtime: number): string => {
@@ -34,12 +37,14 @@ const fetchBroadcast = async () => {
   try {
     loading.value = true
     await broadcastStore.getGuestBroadcast()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -47,17 +52,19 @@ const fetchBroadcast = async () => {
 const connectYoutube = async () => {
   const req: CallbackAuthYoutubeBroadcastRequest = {
     state,
-    authCode: code
+    authCode: code,
   }
   try {
     loading.value = true
     await broadcastStore.connectYouTube(req)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -67,12 +74,14 @@ const handleSubmit = async () => {
     loading.value = true
     await broadcastStore.createYoutubeLive(formData)
     router.push('/auth/youtube/complete')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -80,54 +89,92 @@ const handleSubmit = async () => {
 try {
   if (state && code) {
     await connectYoutube()
-  } else {
+  }
+  else {
     await fetchBroadcast()
   }
   formData.title = guestBroadcast.value.title
   formData.description = guestBroadcast.value.description
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>
 
 <template>
   <div>
-    <h1>WIP）Youtube Callback</h1>
+    <h1 class="mb-4">
+      YouTube連携情報
+    </h1>
 
-    <h2>ライブ配信情報</h2>
-    <v-table v-if="guestBroadcast">
-      <tbody>
-        <tr>
-          <td>タイトル</td>
-          <td>{{ guestBroadcast.title }}</td>
-        </tr>
-        <tr>
-          <td>説明</td>
-          <td>{{ guestBroadcast.description }}</td>
-        </tr>
-        <tr>
-          <td>配信時間</td>
-          <td>{{ parseTime(guestBroadcast.startAt) }}〜{{ parseTime(guestBroadcast.endAt) }}</td>
-        </tr>
-        <tr>
-          <td>配信担当者（マルシェ名）</td>
-          <td>{{ guestBroadcast.coordinatorMarche }}</td>
-        </tr>
-        <tr>
-          <td>配信担当者（コーディネータ名）</td>
-          <td>{{ guestBroadcast.coordinatorName }}</td>
-        </tr>
-      </tbody>
-    </v-table>
+    <v-card>
+      <v-card-title> ライブ配信情報 </v-card-title>
+      <v-card-text>
+        <v-table v-if="guestBroadcast">
+          <tbody>
+            <tr>
+              <td>タイトル</td>
+              <td>{{ guestBroadcast.title }}</td>
+            </tr>
+            <tr>
+              <td>説明</td>
+              <td>{{ guestBroadcast.description }}</td>
+            </tr>
+            <tr>
+              <td>配信時間</td>
+              <td>
+                {{ parseTime(guestBroadcast.startAt) }}〜{{
+                  parseTime(guestBroadcast.endAt)
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td>配信担当者（マルシェ名）</td>
+              <td>{{ guestBroadcast.coordinatorMarche }}</td>
+            </tr>
+            <tr>
+              <td>配信担当者（コーディネータ名）</td>
+              <td>{{ guestBroadcast.coordinatorName }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card-text>
+    </v-card>
 
-    <h2>YouTube配信作成フォーム</h2>
-    <v-form @submit.prevent="handleSubmit">
-      <v-text-field v-model="formData.title" label="タイトル" />
-      <v-text-field v-model="formData.description" label="説明" />
-      <v-select v-model.boolean="formData.public" :items="items" label="公開設定" />
-      <v-btn :loading="loading" type="submit" block variant="outlined" color="primary">
-        送信
-      </v-btn>
-    </v-form>
+    <v-card class="mt-4">
+      <v-card-title> YouTube 配信情報</v-card-title>
+      <v-card-text>
+        <form @submit.prevent="handleSubmit">
+          <v-text-field
+            v-model="formData.title"
+            label="タイトル"
+            variant="outlined"
+            primary
+            required
+          />
+          <v-textarea
+            v-model="formData.description"
+            label="説明"
+            variant="outlined"
+          />
+          <v-select
+            v-model.boolean="formData.public"
+            variant="outlined"
+            :items="items"
+            label="公開設定"
+            chips
+          />
+          <v-btn
+            :loading="loading"
+            type="submit"
+            block
+            variant="outlined"
+            color="primary"
+          >
+            送信
+          </v-btn>
+        </form>
+      </v-card-text>
+    </v-card>
   </div>
 </template>

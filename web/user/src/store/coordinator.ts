@@ -17,8 +17,8 @@ export const useCoordinatorStore = defineStore('coordinator', {
      * コーディネーターの詳細情報を取得する非同期関数
      * @param coordinatorId 対象のコーディネーターのID
      */
-    async fetchCoordinator (id: string): Promise<void> {
-      const response : CoordinatorResponse = await this.coordinatorApiClient().v1GetCoordinator({coordinatorId: id})
+    async fetchCoordinator(id: string): Promise<void> {
+      const response: CoordinatorResponse = await this.coordinatorApiClient().v1GetCoordinator({ coordinatorId: id })
       this.coordinatorResponse = response
       this.coordinatorFetchState.isLoading = false
     },
@@ -39,7 +39,7 @@ export const useCoordinatorStore = defineStore('coordinator', {
     },
     lives(state) {
       return {
-        ...state.coordinatorResponse.lives
+        ...state.coordinatorResponse.lives,
       }
     },
     producers(state) {
@@ -48,10 +48,10 @@ export const useCoordinatorStore = defineStore('coordinator', {
           ...producer,
           products: state.coordinatorResponse.products.filter((product) => {
             return product.producerId === producer.id
-          }
-        )
+          },
+          ),
         }
       })
-    }
-  }
+    },
+  },
 })

@@ -63,14 +63,21 @@ defineProps<Props>()
       </g>
       <defs>
         <clipPath id="clip0_626_1312">
-          <rect width="230.619" height="152" fill="white" />
+          <rect
+            width="230.619"
+            height="152"
+            fill="white"
+          />
         </clipPath>
       </defs>
     </svg>
 
     <div class="absolute bottom-[4px] left-[38px]">
       <div class="relative">
-        <the-apple-item v-show="useRate > 0" class="absolute bottom-0 z-10" />
+        <the-apple-item
+          v-show="useRate > 0"
+          class="absolute bottom-0 z-10"
+        />
         <the-apple-item
           v-show="useRate > 8.3"
           class="absolute bottom-[32px] left-[28px]"

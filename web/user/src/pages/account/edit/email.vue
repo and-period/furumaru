@@ -15,10 +15,12 @@ const handleSubmit = async () => {
   try {
     await updateEmail(formData.value)
     router.push('/account/edit/complete?from=email')
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof ApiBaseError) {
       errorMessage.value = error.message
-    } else {
+    }
+    else {
       errorMessage.value = 'メールアドレスの変更に失敗しました。'
     }
   }
@@ -32,9 +34,15 @@ useSeoMeta({
 <template>
   <div class="container mx-auto p-4 md:p-0">
     <template v-if="user">
-      <the-account-edit-card title="メールアドレスの変更" class="mt-6">
+      <the-account-edit-card
+        title="メールアドレスの変更"
+        class="mt-6"
+      >
         <!-- エラーメッセージ -->
-        <the-alert v-if="errorMessage" class="mt-4 w-full">
+        <the-alert
+          v-if="errorMessage"
+          class="mt-4 w-full"
+        >
           {{ errorMessage }}
         </the-alert>
 
@@ -42,10 +50,15 @@ useSeoMeta({
           この機能は現在準備中で使用できません。
         </the-alert>
 
-        <form class="flex w-full flex-col gap-6" @submit.prevent="handleSubmit">
+        <form
+          class="flex w-full flex-col gap-6"
+          @submit.prevent="handleSubmit"
+        >
           <div class="my-10 flex w-full flex-col justify-center gap-14">
             <div>
-              <p class="mb-4">現在のメールアドレス</p>
+              <p class="mb-4">
+                現在のメールアドレス
+              </p>
               <p>{{ user.email }}</p>
             </div>
 

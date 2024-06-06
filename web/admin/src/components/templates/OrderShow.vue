@@ -25,26 +25,26 @@ import {
   type ProductMediaInner,
   type Promotion,
   type RefundOrderRequest,
-  type User
+  type User,
 } from '~/types/api'
 import type { FulfillmentInput } from '~/types/props'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   order: {
     type: Object as PropType<Order>,
@@ -74,7 +74,7 @@ const props = defineProps({
         addressLine2: '',
         phoneNumber: '',
         orderedAt: 0,
-        paidAt: 0
+        paidAt: 0,
       },
       fulfillments: [],
       refund: {
@@ -82,54 +82,54 @@ const props = defineProps({
         type: OrderRefundType.NONE,
         reason: '',
         canceled: false,
-        canceledAt: 0
+        canceledAt: 0,
       },
       items: [],
       createdAt: 0,
       updatedAt: 0,
-      completedAt: 0
-    })
+      completedAt: 0,
+    }),
   },
   coordinator: {
     type: Object as PropType<Coordinator>,
-    default: () => ({})
+    default: () => ({}),
   },
   customer: {
     type: Object as PropType<User>,
-    default: () => ({})
+    default: () => ({}),
   },
   products: {
     type: Array<Product>,
-    default: () => []
+    default: () => [],
   },
   promotions: {
     type: Array<Promotion>,
-    default: () => []
+    default: () => [],
   },
   completeFormData: {
     type: Object as PropType<CompleteOrderRequest>,
     default: (): CompleteOrderRequest => ({
-      shippingMessage: ''
-    })
+      shippingMessage: '',
+    }),
   },
   refundFormData: {
     type: Object as PropType<RefundOrderRequest>,
     default: (): RefundOrderRequest => ({
-      description: ''
-    })
+      description: '',
+    }),
   },
   fulfillmentsFormData: {
     type: Array<FulfillmentInput>,
-    default: () => ([])
+    default: () => ([]),
   },
   cancelDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   refundDialog: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits<{
@@ -151,55 +151,55 @@ const productHeaders: VDataTable['headers'] = [
     title: '',
     key: 'media',
     width: 80,
-    sortable: false
+    sortable: false,
   },
   {
     title: '商品名',
     key: 'name',
-    sortable: false
+    sortable: false,
   },
   {
     title: '価格',
     key: 'price',
-    sortable: false
+    sortable: false,
   },
   {
     title: '数量',
     key: 'quantity',
-    sortable: false
+    sortable: false,
   },
   {
     title: '小計',
     key: 'total',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const shippingCarriers = [
   { title: '未選択', value: ShippingCarrier.UNKNOWN },
   { title: 'ヤマト運輸', value: ShippingCarrier.YAMATO },
-  { title: '佐川急便', value: ShippingCarrier.SAGAWA }
+  { title: '佐川急便', value: ShippingCarrier.SAGAWA },
 ]
 
 const completeFormDataValue = computed({
   get: (): CompleteOrderRequest => props.completeFormData,
-  set: (formData: CompleteOrderRequest): void => emit('update:complete-form-data', formData)
+  set: (formData: CompleteOrderRequest): void => emit('update:complete-form-data', formData),
 })
 const refundFormDataValue = computed({
   get: (): RefundOrderRequest => props.refundFormData,
-  set: (formData: RefundOrderRequest): void => emit('update:refund-form-data', formData)
+  set: (formData: RefundOrderRequest): void => emit('update:refund-form-data', formData),
 })
 const fulfillmentsFormDataValue = computed({
   get: (): FulfillmentInput[] => props.fulfillmentsFormData,
-  set: (formData: FulfillmentInput[]): void => emit('update:fulfillments-form-data', formData)
+  set: (formData: FulfillmentInput[]): void => emit('update:fulfillments-form-data', formData),
 })
 const cancelDialogValue = computed({
   get: (): boolean => props.cancelDialog,
-  set: (val: boolean): void => emit('update:cancel-dialog', val)
+  set: (val: boolean): void => emit('update:cancel-dialog', val),
 })
 const refundDialogValue = computed({
   get: (): boolean => props.refundDialog,
-  set: (val: boolean): void => emit('update:refund-dialog', val)
+  set: (val: boolean): void => emit('update:refund-dialog', val),
 })
 
 /**
@@ -233,14 +233,14 @@ const isShipped = (): boolean => {
 const isPreservable = (): boolean => {
   const targets: OrderStatus[] = [
     OrderStatus.PREPARING,
-    OrderStatus.SHIPPED
+    OrderStatus.SHIPPED,
   ]
   return targets.includes(props.order.status)
 }
 
 const isCancelable = (): boolean => {
   const targets: OrderStatus[] = [
-    OrderStatus.WAITING
+    OrderStatus.WAITING,
   ]
   return targets.includes(props.order.status)
 }
@@ -249,7 +249,7 @@ const isRefundable = (): boolean => {
   const targets: OrderStatus[] = [
     OrderStatus.PREPARING,
     OrderStatus.SHIPPED,
-    OrderStatus.COMPLETED
+    OrderStatus.COMPLETED,
   ]
   return targets.includes(props.order.status)
 }
@@ -257,7 +257,7 @@ const isRefundable = (): boolean => {
 const isUpdatableFulfillment = (): boolean => {
   const targets: OrderStatus[] = [
     OrderStatus.PREPARING,
-    OrderStatus.SHIPPED
+    OrderStatus.SHIPPED,
   ]
   return targets.includes(props.order.status)
 }
@@ -337,7 +337,8 @@ const getAllItems = (): OrderItem[] => {
     })
     if (index < 0) {
       items.push(item)
-    } else {
+    }
+    else {
       items[index].quantity += item.quantity
     }
   })
@@ -361,7 +362,7 @@ const getPaymentStatus = (status: PaymentStatus): string => {
   }
 }
 
-const getPaymentStatusColor = (status:PaymentStatus): string => {
+const getPaymentStatusColor = (status: PaymentStatus): string => {
   switch (status) {
     case PaymentStatus.UNPAID:
       return 'secondary'
@@ -556,7 +557,7 @@ const showShippingMessage = (): boolean => {
   const targets: OrderStatus[] = [
     OrderStatus.PREPARING,
     OrderStatus.SHIPPED,
-    OrderStatus.COMPLETED
+    OrderStatus.COMPLETED,
   ]
   return targets.includes(props.order.status)
 }
@@ -603,26 +604,45 @@ const onSubmitRefund = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
-  <v-dialog v-model="cancelDialogValue" width="500">
+  <v-dialog
+    v-model="cancelDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title>
         本当に注文キャンセルしますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseCancelDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseCancelDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitCancel">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onSubmitCancel"
+        >
           削除
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="refundDialogValue" width="500">
+  <v-dialog
+    v-model="refundDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title>
         返金依頼
@@ -636,10 +656,19 @@ const onSubmitRefund = (): void => {
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseRefundDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseRefundDialog"
+        >
           キャンセル
         </v-btn>
-        <v-btn :loading="loading" color="primary" variant="outlined" @click="onSubmitRefund">
+        <v-btn
+          :loading="loading"
+          color="primary"
+          variant="outlined"
+          @click="onSubmitRefund"
+        >
           削除
         </v-btn>
       </v-card-actions>
@@ -647,8 +676,15 @@ const onSubmitRefund = (): void => {
   </v-dialog>
 
   <v-row>
-    <v-col sm="12" md="12" lg="8">
-      <v-card elevation="0" class="mb-4">
+    <v-col
+      sm="12"
+      md="12"
+      lg="8"
+    >
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-title class="pb-4">
           基本情報
         </v-card-title>
@@ -682,7 +718,10 @@ const onSubmitRefund = (): void => {
               ステータス
             </v-col>
             <v-col cols="9">
-              <v-chip size="small" :color="getStatusColor()">
+              <v-chip
+                size="small"
+                :color="getStatusColor()"
+              >
                 {{ getStatus() }}
               </v-chip>
             </v-col>
@@ -705,7 +744,10 @@ const onSubmitRefund = (): void => {
           </v-row>
         </v-card-text>
       </v-card>
-      <v-card elevation="0" class="mb-4">
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-title class="pb-4">
           支払い情報
         </v-card-title>
@@ -715,7 +757,10 @@ const onSubmitRefund = (): void => {
               ステータス
             </v-col>
             <v-col cols="9">
-              <v-chip size="small" :color="getPaymentStatusColor(order.payment.status)">
+              <v-chip
+                size="small"
+                :color="getPaymentStatusColor(order.payment.status)"
+              >
                 {{ getPaymentStatus(order.payment.status) }}
               </v-chip>
             </v-col>
@@ -768,14 +813,26 @@ const onSubmitRefund = (): void => {
           </v-row>
         </v-card-text>
       </v-card>
-      <v-card elevation="0" class="mb-4">
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-title class="pb-4">
           注文情報
         </v-card-title>
         <v-card-text>
-          <v-data-table :headers="productHeaders" :items="getAllItems()">
+          <v-data-table
+            :headers="productHeaders"
+            :items="getAllItems()"
+          >
             <template #[`item.media`]="{ item }">
-              <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.productId)" :srcset="getResizedThumbnails(item.productId)" />
+              <v-img
+                aspect-ratio="1/1"
+                :max-height="56"
+                :max-width="80"
+                :src="getThumbnail(item.productId)"
+                :srcset="getResizedThumbnails(item.productId)"
+              />
             </template>
             <template #[`item.name`]="{ item }">
               {{ getProductName(item.productId) }}
@@ -794,8 +851,15 @@ const onSubmitRefund = (): void => {
       </v-card>
     </v-col>
 
-    <v-col sm="12" md="12" lg="4">
-      <v-card elevation="0" class="mb-4">
+    <v-col
+      sm="12"
+      md="12"
+      lg="4"
+    >
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-text>
           <v-list>
             <v-list-item class="mb-4">
@@ -845,9 +909,19 @@ const onSubmitRefund = (): void => {
     </v-col>
   </v-row>
 
-  <v-row v-for="(fulfillment, index) in props.order.fulfillments" :key="fulfillment.fulfillmentId">
-    <v-col sm="12" md="12" lg="8">
-      <v-card elevation="0" class="mb-4">
+  <v-row
+    v-for="(fulfillment, index) in props.order.fulfillments"
+    :key="fulfillment.fulfillmentId"
+  >
+    <v-col
+      sm="12"
+      md="12"
+      lg="8"
+    >
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-title class="pb-4">
           配送詳細 {{ index + 1 }}
         </v-card-title>
@@ -857,7 +931,10 @@ const onSubmitRefund = (): void => {
               ステータス
             </v-col>
             <v-col cols="9">
-              <v-chip size="small" :color="getFulfillmentStatusColor(fulfillment.status)">
+              <v-chip
+                size="small"
+                :color="getFulfillmentStatusColor(fulfillment.status)"
+              >
                 {{ getFulfillmentStatus(fulfillment.status) }}
               </v-chip>
             </v-col>
@@ -896,9 +973,18 @@ const onSubmitRefund = (): void => {
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-data-table :headers="productHeaders" :items="getOrderItems(fulfillment.fulfillmentId)">
+              <v-data-table
+                :headers="productHeaders"
+                :items="getOrderItems(fulfillment.fulfillmentId)"
+              >
                 <template #[`item.media`]="{ item }">
-                  <v-img aspect-ratio="1/1" :max-height="56" :max-width="80" :src="getThumbnail(item.productId)" :srcset="getResizedThumbnails(item.productId)" />
+                  <v-img
+                    aspect-ratio="1/1"
+                    :max-height="56"
+                    :max-width="80"
+                    :src="getThumbnail(item.productId)"
+                    :srcset="getResizedThumbnails(item.productId)"
+                  />
                 </template>
                 <template #[`item.name`]="{ item }">
                   {{ getProductName(item.productId) }}
@@ -918,8 +1004,15 @@ const onSubmitRefund = (): void => {
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col sm="12" md="12" lg="4">
-      <v-card elevation="0" class="mb-4">
+    <v-col
+      sm="12"
+      md="12"
+      lg="4"
+    >
+      <v-card
+        elevation="0"
+        class="mb-4"
+      >
         <v-card-text>
           <v-select
             v-model="fulfillmentsFormDataValue[index].shippingCarrier"
@@ -932,8 +1025,17 @@ const onSubmitRefund = (): void => {
             label="伝票番号"
             :readonly="!isUpdatableFulfillment()"
           />
-          <v-btn v-show="isUpdatableFulfillment()" :loading="loading" class="mt-2" variant="outlined" @click="onSubmitUpdate(fulfillment.fulfillmentId)">
-            <v-icon start :icon="mdiPlus" />
+          <v-btn
+            v-show="isUpdatableFulfillment()"
+            :loading="loading"
+            class="mt-2"
+            variant="outlined"
+            @click="onSubmitUpdate(fulfillment.fulfillmentId)"
+          >
+            <v-icon
+              start
+              :icon="mdiPlus"
+            />
             更新
           </v-btn>
         </v-card-text>
@@ -941,7 +1043,12 @@ const onSubmitRefund = (): void => {
     </v-col>
   </v-row>
   <v-row>
-    <v-col v-show="showShippingMessage()" sm="12" md="12" lg="8">
+    <v-col
+      v-show="showShippingMessage()"
+      sm="12"
+      md="12"
+      lg="8"
+    >
       <v-card>
         <v-card-title class="pb-4">
           発送連絡
@@ -956,7 +1063,11 @@ const onSubmitRefund = (): void => {
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col sm="12" md="12" lg="8">
+    <v-col
+      sm="12"
+      md="12"
+      lg="8"
+    >
       <v-btn
         v-show="isPreservable()"
         :loading="loading"
@@ -965,7 +1076,10 @@ const onSubmitRefund = (): void => {
         class="mr-2"
         @click="onSubmitSaveDraft()"
       >
-        <v-icon start :icon="mdiPlus" />
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         下書きを保存
       </v-btn>
       <v-btn
@@ -976,7 +1090,10 @@ const onSubmitRefund = (): void => {
         class="mr-2"
         @click="onSubmitCapture()"
       >
-        <v-icon start :icon="mdiPlus" />
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         注文を確定
       </v-btn>
       <v-btn
@@ -987,7 +1104,10 @@ const onSubmitRefund = (): void => {
         class="mr-2"
         @click="onSubmitComplete()"
       >
-        <v-icon start :icon="mdiPlus" />
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         発送完了を通知
       </v-btn>
       <v-btn
@@ -998,11 +1118,23 @@ const onSubmitRefund = (): void => {
         class="mr-2"
         @click="onClickOpenCancelDialog()"
       >
-        <v-icon start :icon="mdiDelete" />
+        <v-icon
+          start
+          :icon="mdiDelete"
+        />
         注文をキャンセル
       </v-btn>
-      <v-btn v-show="isRefundable()" :loading="loading" variant="outlined" color="error" @click="onClickOpenRefundDialog">
-        <v-icon start :icon="mdiDelete" />
+      <v-btn
+        v-show="isRefundable()"
+        :loading="loading"
+        variant="outlined"
+        color="error"
+        @click="onClickOpenRefundDialog"
+      >
+        <v-icon
+          start
+          :icon="mdiDelete"
+        />
         返金
       </v-btn>
     </v-col>

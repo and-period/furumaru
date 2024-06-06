@@ -14,12 +14,14 @@ const handleClickMessage = async (messageId: string) => {
   try {
     loading.value = true
     await messageStore.fetchMessage(messageId)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }

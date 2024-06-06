@@ -7,27 +7,27 @@ import type { SignInRequest } from '~/types/api'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   formData: {
     type: Object as PropType<SignInRequest>,
     default: () => ({
       username: '',
-      password: ''
-    })
-  }
+      password: '',
+    }),
+  },
 })
 
 const emit = defineEmits<{
@@ -39,7 +39,7 @@ const showPassword = ref<boolean>(false)
 
 const formDataValue = computed({
   get: (): SignInRequest => props.formData,
-  set: (v: SignInRequest): void => emit('update:form-data', v)
+  set: (v: SignInRequest): void => emit('update:form-data', v),
 })
 
 const onChangePasswordFieldType = (): void => {
@@ -52,9 +52,16 @@ const onSubmit = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" :text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    :text="props.alertText"
+  />
 
-  <atoms-app-logo-with-title :width="450" class="mx-auto py-8" />
+  <atoms-app-logo-with-title
+    :width="450"
+    class="mx-auto py-8"
+  />
 
   <v-card>
     <v-card-title>ログイン</v-card-title>
@@ -80,7 +87,13 @@ const onSubmit = (): void => {
         </nuxt-link>
       </v-card-text>
       <v-card-actions>
-        <v-btn :loading="loading" type="submit" block color="primary" variant="outlined">
+        <v-btn
+          :loading="loading"
+          type="submit"
+          block
+          color="primary"
+          variant="outlined"
+        >
           ログイン
         </v-btn>
       </v-card-actions>
@@ -88,13 +101,27 @@ const onSubmit = (): void => {
   </v-card>
   <v-container class="text-right">
     <v-row>
-      <v-col cols="12" sm="1" md="12">
-        <nuxt-link class="text-body-2" to="/privacy">
+      <v-col
+        cols="12"
+        sm="1"
+        md="12"
+      >
+        <nuxt-link
+          class="text-body-2"
+          to="/privacy"
+        >
           プライバシーポリシー
         </nuxt-link>
       </v-col>
-      <v-col cols="12" sm="1" md="12">
-        <nuxt-link class="text-body-2" to="/legal-notice">
+      <v-col
+        cols="12"
+        sm="1"
+        md="12"
+      >
+        <nuxt-link
+          class="text-body-2"
+          to="/legal-notice"
+        >
           特商取引法に基づく表記
         </nuxt-link>
       </v-col>

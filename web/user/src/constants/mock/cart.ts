@@ -1,8 +1,8 @@
 export interface CartItemMock {
   id: string
-  name: string;
-  inventory: number;
-  price: number;
+  name: string
+  inventory: number
+  price: number
   imgSrc: string
 }
 
@@ -24,16 +24,16 @@ export const MOCK_CART_ITEMS: CartMock[] = [
         name: 'たまねぎ 500g',
         price: 3000,
         inventory: 10,
-        imgSrc: '/img/recommend/1.png'
+        imgSrc: '/img/recommend/1.png',
       },
       {
         id: '4',
         name: 'レモン 500g',
         inventory: 10,
         price: 3000,
-        imgSrc: '/img/recommend/6.png'
-      }
-    ]
+        imgSrc: '/img/recommend/6.png',
+      },
+    ],
   },
   {
     marche: '大崎上島',
@@ -45,9 +45,9 @@ export const MOCK_CART_ITEMS: CartMock[] = [
         name: '卵 500g',
         inventory: 10,
         price: 3000,
-        imgSrc: '/img/recommend/5.png'
-      }
-    ]
+        imgSrc: '/img/recommend/5.png',
+      },
+    ],
   },
   {
     marche: '大崎上島',
@@ -59,8 +59,8 @@ export const MOCK_CART_ITEMS: CartMock[] = [
         name: '【冷凍】黒毛和牛 500g',
         inventory: 10,
         price: 3000,
-        imgSrc: '/img/recommend/2.png'
-      }
-    ]
-  }
+        imgSrc: '/img/recommend/2.png',
+      },
+    ],
+  },
 ]

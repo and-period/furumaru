@@ -29,7 +29,11 @@ withDefaults(defineProps<Props>(), {
     </g>
     <defs>
       <clipPath :id="id">
-        <rect width="24" height="24" :fill="fill" />
+        <rect
+          width="24"
+          height="24"
+          :fill="fill"
+        />
       </clipPath>
     </defs>
   </svg>

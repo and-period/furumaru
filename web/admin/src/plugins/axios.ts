@@ -1,7 +1,6 @@
 import axios, { type AxiosInstance } from 'axios'
 import { useAuthStore } from '~/store'
 
-// eslint-disable-next-line import/no-mutable-exports
 let client: AxiosInstance
 
 export const defaultTimeout: number = 20000 // 20sec
@@ -15,7 +14,7 @@ export default defineNuxtPlugin(() => {
     baseURL: baseUrl,
     timeout: defaultTimeout,
     withCredentials: true,
-    headers: {}
+    headers: {},
   })
 
   client.interceptors.request.use((config) => {
@@ -31,8 +30,8 @@ export default defineNuxtPlugin(() => {
 
   return {
     provide: {
-      axios: client
-    }
+      axios: client,
+    },
   }
 })
 

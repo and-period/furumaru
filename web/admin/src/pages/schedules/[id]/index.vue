@@ -2,8 +2,22 @@
 import dayjs, { unix } from 'dayjs'
 import { storeToRefs } from 'pinia'
 import { useAlert } from '~/lib/hooks'
-import { useBroadcastStore, useCommonStore, useCoordinatorStore, useLiveStore, useProducerStore, useProductStore, useScheduleStore } from '~/store'
-import type { AuthYoutubeBroadcastRequest, CreateLiveRequest, Live, UpdateLiveRequest, UpdateScheduleRequest } from '~/types/api'
+import {
+  useBroadcastStore,
+  useCommonStore,
+  useCoordinatorStore,
+  useLiveStore,
+  useProducerStore,
+  useProductStore,
+  useScheduleStore,
+} from '~/store'
+import type {
+  AuthYoutubeBroadcastRequest,
+  CreateLiveRequest,
+  Live,
+  UpdateLiveRequest,
+  UpdateScheduleRequest,
+} from '~/types/api'
 import type { ImageUploadStatus } from '~/types/props'
 
 const route = useRoute()
@@ -35,7 +49,7 @@ const initialLive: Live = {
   startAt: dayjs().unix(),
   endAt: dayjs().unix(),
   createdAt: 0,
-  updatedAt: 0
+  updatedAt: 0,
 }
 
 const loading = ref<boolean>(false)
@@ -43,7 +57,6 @@ const selector = ref<string>(tab ?? 'schedule')
 const selectedLive = ref<Live>({ ...initialLive })
 const authYoutubeUrl = ref<string>('')
 const createLiveDialog = ref<boolean>(false)
-const updateLiveDialog = ref<boolean>(false)
 const pauseDialog = ref<boolean>(false)
 const liveMp4Dialog = ref<boolean>(false)
 const archiveMp4Dialog = ref<boolean>(false)
@@ -54,43 +67,30 @@ const scheduleFormData = ref<UpdateScheduleRequest>({
   imageUrl: '',
   openingVideoUrl: '',
   startAt: dayjs().unix(),
-  endAt: dayjs().unix()
+  endAt: dayjs().unix(),
 })
 const createLiveFormData = ref<CreateLiveRequest>({
   producerId: '',
   productIds: [],
   comment: '',
   startAt: dayjs().unix(),
-  endAt: dayjs().unix()
-})
-const updateLiveFormData = ref<UpdateLiveRequest>({
-  productIds: [],
-  comment: '',
-  startAt: dayjs().unix(),
-  endAt: dayjs().unix()
+  endAt: dayjs().unix(),
 })
 const mp4FormData = ref<File[] | undefined>()
 const authYoutubeFormData = ref<AuthYoutubeBroadcastRequest>({
-  youtubeHandle: ''
+  youtubeHandle: '',
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const imageUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const openingVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
-})
-
-watch(updateLiveDialog, (): void => {
-  if (updateLiveDialog) {
-    return
-  }
-  selectedLive.value = { ...initialLive }
+  message: '',
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -98,10 +98,11 @@ const fetchState = useAsyncData(async (): Promise<void> => {
     await Promise.all([
       scheduleStore.getSchedule(scheduleId),
       liveStore.fetchLives(scheduleId),
-      broadcastStore.getBroadcastByScheduleId(scheduleId)
+      broadcastStore.getBroadcastByScheduleId(scheduleId),
     ])
     scheduleFormData.value = { ...schedule.value }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -120,9 +121,12 @@ const updatable = (): boolean => {
 
 const handleSearchProducer = async (name: string): Promise<void> => {
   try {
-    const producerIds = lives.value.map((live: Live): string => live.producerId)
+    const producerIds = lives.value.map(
+      (live: Live): string => live.producerId,
+    )
     await producerStore.searchProducers(name, producerIds)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -130,7 +134,10 @@ const handleSearchProducer = async (name: string): Promise<void> => {
   }
 }
 
-const handleSearchProduct = async (producerId: string, name: string): Promise<void> => {
+const handleSearchProduct = async (
+  producerId: string,
+  name: string,
+): Promise<void> => {
   try {
     const productIds: string[] = []
     lives.value.forEach((live: Live): void => {
@@ -139,7 +146,8 @@ const handleSearchProduct = async (producerId: string, name: string): Promise<vo
       })
     })
     await productStore.searchProducts(name, producerId, productIds)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -153,7 +161,8 @@ const handleUploadThumbnail = (files: FileList): void => {
   }
 
   loading.value = true
-  scheduleStore.uploadScheduleThumbnail(files[0])
+  scheduleStore
+    .uploadScheduleThumbnail(files[0])
     .then((url: string) => {
       scheduleFormData.value.thumbnailUrl = url
     })
@@ -172,7 +181,8 @@ const handleUploadImage = (files: FileList): void => {
   }
 
   loading.value = true
-  scheduleStore.uploadScheduleImage(files[0])
+  scheduleStore
+    .uploadScheduleImage(files[0])
     .then((url: string) => {
       scheduleFormData.value.imageUrl = url
     })
@@ -191,7 +201,8 @@ const handleUploadOpeningVideo = (files: FileList): void => {
   }
 
   loading.value = true
-  scheduleStore.uploadScheduleOpeningVideo(files[0])
+  scheduleStore
+    .uploadScheduleOpeningVideo(files[0])
     .then((url: string) => {
       scheduleFormData.value.openingVideoUrl = url
     })
@@ -207,19 +218,24 @@ const handleUploadOpeningVideo = (files: FileList): void => {
 const handleClickLinkYouTube = async (): Promise<void> => {
   try {
     loading.value = true
-    const authUrl: string = await broadcastStore.authYouTube(scheduleId, authYoutubeFormData.value)
+    const authUrl: string = await broadcastStore.authYouTube(
+      scheduleId,
+      authYoutubeFormData.value,
+    )
     authYoutubeUrl.value = authUrl
 
     commonStore.addSnackbar({
       message: 'YouTubeと連携用のURLを発行しました。',
-      color: 'info'
+      color: 'info',
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -234,39 +250,27 @@ const handleClickNewLive = (): void => {
   createLiveDialog.value = true
 }
 
-const handleClickEditLive = (liveId: string): void => {
-  const live = lives.value.find((live: Live): boolean => {
-    return live.id === liveId
-  })
-  if (!live) {
-    return
-  }
-  handleSearchProduct(live.producerId, '')
-
-  selectedLive.value = live
-  updateLiveFormData.value = { ...live }
-  updateLiveDialog.value = true
-}
-
 const handleSubmitUpdateSchedule = async (): Promise<void> => {
   try {
     loading.value = true
     await scheduleStore.updateSchedule(scheduleId, scheduleFormData.value)
     commonStore.addSnackbar({
       message: `${scheduleFormData.value.title}を更新しました。`,
-      color: 'info'
+      color: 'info',
     })
     schedule.value = { ...schedule.value, ...scheduleFormData.value }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -278,20 +282,23 @@ const handleSubmitPublishSchedule = async (publish: boolean): Promise<void> => {
     let message: string
     if (publish) {
       message = `${schedule.value.title}を公開しました。`
-    } else {
+    }
+    else {
       message = `${schedule.value.title}を非公開にしましました。`
     }
     commonStore.addSnackbar({
       message,
-      color: 'info'
+      color: 'info',
     })
     schedule.value = { ...schedule.value, public: publish }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -301,54 +308,61 @@ const handleSubmitCreateLive = async (): Promise<void> => {
     loading.value = true
     await liveStore.createLive(scheduleId, createLiveFormData.value)
     createLiveDialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
-const handleSubmitUpdateLive = async (): Promise<void> => {
+const handleSubmitUpdateLive = async (
+  liveId: string,
+  formData: UpdateLiveRequest,
+): Promise<void> => {
   try {
     loading.value = true
-    await liveStore.updateLive(scheduleId, selectedLive.value.id, updateLiveFormData.value)
-    updateLiveDialog.value = false
-  } catch (err) {
+    await liveStore.updateLive(scheduleId, liveId, formData)
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
-const handleSubmitDeleteLive = async (): Promise<void> => {
+const handleSubmitDeleteLive = async (liveId: string): Promise<void> => {
   try {
     loading.value = true
-    await liveStore.deleteLive(scheduleId, selectedLive.value.id)
-    updateLiveDialog.value = false
-  } catch (err) {
+    await liveStore.deleteLive(scheduleId, liveId)
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -358,12 +372,14 @@ const handleSubmitPause = async (): Promise<void> => {
     loading.value = true
     await broadcastStore.pause(scheduleId)
     pauseDialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -372,12 +388,14 @@ const handleSubmitUnpause = async (): Promise<void> => {
   try {
     loading.value = true
     await broadcastStore.unpause(scheduleId)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -386,12 +404,14 @@ const handleSubmitActivateStaticImage = async (): Promise<void> => {
   try {
     loading.value = true
     await broadcastStore.activateStaticImage(scheduleId)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -400,12 +420,14 @@ const handleSubmitDeactivateStaticImage = async (): Promise<void> => {
   try {
     loading.value = true
     await broadcastStore.deactivateStaticImage(scheduleId)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -418,12 +440,14 @@ const handleSubmitChangeMp4Input = async (): Promise<void> => {
     loading.value = true
     await broadcastStore.activateMp4Input(scheduleId, mp4FormData.value[0])
     liveMp4Dialog.value = false
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -432,12 +456,14 @@ const handleSubmitChangeRtmpInput = async (): Promise<void> => {
   try {
     loading.value = true
     await broadcastStore.activateRtmpInput(scheduleId)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -451,19 +477,22 @@ const handleSubmitUploadArchiveMp4 = async (): Promise<void> => {
     await broadcastStore.uploadArchiveMp4(scheduleId, mp4FormData.value[0])
     archiveMp4Dialog.value = false
     fetchState.refresh()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>
@@ -499,7 +528,6 @@ try {
     :opening-video-upload-status="openingVideoUploadStatus"
     @click:link-youtube="handleClickLinkYouTube"
     @click:new-live="handleClickNewLive"
-    @click:edit-live="handleClickEditLive"
     @update:thumbnail="handleUploadThumbnail"
     @update:image="handleUploadImage"
     @update:opening-video="handleUploadOpeningVideo"

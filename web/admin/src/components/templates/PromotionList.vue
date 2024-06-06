@@ -8,105 +8,105 @@ import {
   AdminRole,
   DiscountType,
   PromotionStatus,
-  type Promotion
+  type Promotion,
 } from '~/types/api'
 
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   role: {
     type: Number as PropType<AdminRole>,
-    default: AdminRole.UNKNOWN
+    default: AdminRole.UNKNOWN,
   },
   deleteDialog: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   sortBy: {
     type: Array as PropType<VDataTable['sortBy']>,
-    default: () => []
+    default: () => [],
   },
   promotions: {
     type: Array<Promotion>,
-    default: () => []
+    default: () => [],
   },
   tableItemsPerPage: {
     type: Number,
-    default: 20
+    default: 20,
   },
   tableItemsTotal: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const emit = defineEmits<{
-  (e: 'click:update-page', page: number): void;
-  (e: 'click:update-items-per-page', page: number): void;
-  (e: 'click:row', notificationId: string): void;
-  (e: 'click:add'): void;
-  (e: 'click:delete', notificationId: string): void;
-  (e: 'update:delete-dialog', v: boolean): void;
-  (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void;
+  (e: 'click:update-page', page: number): void
+  (e: 'click:update-items-per-page', page: number): void
+  (e: 'click:row', notificationId: string): void
+  (e: 'click:add'): void
+  (e: 'click:delete', notificationId: string): void
+  (e: 'update:delete-dialog', v: boolean): void
+  (e: 'update:sort-by', sortBy: VDataTable['sortBy']): void
 }>()
 
 const headers: VDataTable['headers'] = [
   {
     title: 'タイトル',
     key: 'title',
-    sortable: false
+    sortable: false,
   },
   {
     title: 'ステータス',
     key: 'status',
-    sortable: false
+    sortable: false,
   },
   {
     title: '割引コード',
     key: 'code',
-    sortable: false
+    sortable: false,
   },
   {
     title: '割引額',
     key: 'discount',
-    sortable: false
+    sortable: false,
   },
   {
     title: '使用期間',
     key: 'term',
-    sortable: false
+    sortable: false,
   },
   {
     title: '使用回数',
     key: 'usedCount',
-    sortable: false
+    sortable: false,
   },
   {
     title: '',
     key: 'actions',
-    sortable: false
-  }
+    sortable: false,
+  },
 ]
 
 const selectedItem = ref<Promotion>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
-  set: (val: boolean): void => emit('update:delete-dialog', val)
+  set: (val: boolean): void => emit('update:delete-dialog', val),
 })
 
 const isRegisterable = (): boolean => {
@@ -119,7 +119,7 @@ const isEditable = (): boolean => {
 
 const getDiscount = (
   discountType: DiscountType,
-  discountRate: number
+  discountRate: number,
 ): string => {
   switch (discountType) {
     case DiscountType.AMOUNT:
@@ -212,14 +212,21 @@ const onClickDelete = (): void => {
     v-text="props.alertText"
   />
 
-  <v-dialog v-model="deleteDialogValue" width="500">
+  <v-dialog
+    v-model="deleteDialogValue"
+    width="500"
+  >
     <v-card>
       <v-card-title class="text-h7">
         {{ selectedItem?.title || "" }}を本当に削除しますか？
       </v-card-title>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="text" @click="onClickCloseDeleteDialog">
+        <v-btn
+          color="error"
+          variant="text"
+          @click="onClickCloseDeleteDialog"
+        >
           キャンセル
         </v-btn>
         <v-btn
@@ -234,7 +241,10 @@ const onClickDelete = (): void => {
     </v-card>
   </v-dialog>
 
-  <v-card class="mt-4" flat>
+  <v-card
+    class="mt-4"
+    flat
+  >
     <v-card-title class="d-flex flex-row">
       セール情報
       <v-spacer />
@@ -244,7 +254,10 @@ const onClickDelete = (): void => {
         color="primary"
         @click="onClickAdd"
       >
-        <v-icon start :icon="mdiPlus" />
+        <v-icon
+          start
+          :icon="mdiPlus"
+        />
         セール情報登録
       </v-btn>
     </v-card-title>
@@ -270,7 +283,10 @@ const onClickDelete = (): void => {
           {{ item.title }}
         </template>
         <template #[`item.status`]="{ item }">
-          <v-chip size="small" :color="getStatusColor(item.status)">
+          <v-chip
+            size="small"
+            :color="getStatusColor(item.status)"
+          >
             {{ getStatus(item.status) }}
           </v-chip>
         </template>
@@ -291,7 +307,10 @@ const onClickDelete = (): void => {
             variant="outlined"
             @click.stop="onClickOpenDeleteDialog(item)"
           >
-            <v-icon size="small" :icon="mdiDelete" />
+            <v-icon
+              size="small"
+              :icon="mdiDelete"
+            />
             削除
           </v-btn>
         </template>

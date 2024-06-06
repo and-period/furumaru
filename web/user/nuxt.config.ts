@@ -50,6 +50,7 @@ export default defineNuxtConfig({
   },
   plugins: ['~/plugins/sentry.client'],
   modules: [
+    '@nuxt/eslint',
     '@nuxt/image',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
@@ -65,6 +66,18 @@ export default defineNuxtConfig({
     ],
     '@pinia-plugin-persistedstate/nuxt',
   ],
+  gtag: {
+    id: process.env.NUXT_PUBLIC_GTAG_ID,
+  },
+  eslint: {
+    config: {
+      stylistic: {
+        indent: 2,
+        quotes: 'single',
+        semi: false,
+      },
+    },
+  },
   image: {
     providers: {
       cloudFront: {

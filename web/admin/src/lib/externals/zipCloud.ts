@@ -29,12 +29,12 @@ export interface SearchAddressResponse {
  * @param code 郵便番号
  * @returns
  */
-export async function searchAddressByPostalCode (
-  code: number
+export async function searchAddressByPostalCode(
+  code: number,
 ): Promise<SearchAddressResponse> {
   try {
     const res = await axios.get<ZipCloudApiResponse>(
-      `${endPoint}?zipcode=${code}`
+      `${endPoint}?zipcode=${code}`,
     )
 
     if (res.data.status === 400) {
@@ -48,12 +48,13 @@ export async function searchAddressByPostalCode (
     const result: SearchAddressResponse = {
       prefecture: Number(res.data.results[0].prefcode),
       city: res.data.results[0].address2,
-      addressLine1: res.data.results[0].address3
+      addressLine1: res.data.results[0].address3,
     }
     return result
-  } catch (error) {
+  }
+  catch (error) {
     throw new Error(
-      '住所検索に失敗しました。お手数ですがご自身で入力してください。'
+      '住所検索に失敗しました。お手数ですがご自身で入力してください。',
     )
   }
 }

@@ -170,6 +170,9 @@ func (l *live) replaceProducts(ctx context.Context, tx *gorm.DB, liveID string, 
 	}
 	for _, product := range products {
 		params := map[string]interface{}{
+			"live_id":    product.LiveID,
+			"product_id": product.ProductID,
+			"priority":   product.Priority,
 			"updated_at": l.now(),
 		}
 		conds := clause.OnConflict{

@@ -21,7 +21,7 @@ const formData = ref<UpdateAdministratorRequest>({
   firstname: '',
   lastnameKana: '',
   firstnameKana: '',
-  phoneNumber: ''
+  phoneNumber: '',
 })
 
 const fetchState = useAsyncData(async (): Promise<void> => {
@@ -29,9 +29,10 @@ const fetchState = useAsyncData(async (): Promise<void> => {
     await administratorStore.getAdministrator(administratorId)
     formData.value = {
       ...administrator.value,
-      phoneNumber: convertI18nToJapanesePhoneNumber(administrator.value.phoneNumber)
+      phoneNumber: convertI18nToJapanesePhoneNumber(administrator.value.phoneNumber),
     }
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -48,27 +49,30 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = true
     const req: UpdateAdministratorRequest = {
       ...formData.value,
-      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber)
+      phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
     }
     await administratorStore.updateAdministrator(administratorId, req)
     commonStore.addSnackbar({
       message: '管理者情報の更新が完了しました。',
-      color: 'info'
+      color: 'info',
     })
     router.push('/administrators')
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

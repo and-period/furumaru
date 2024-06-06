@@ -15,7 +15,8 @@ const loading = ref<boolean>(false)
 const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await paymentSystemStore.fetchPaymentSystems()
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       showError(err.message)
     }
@@ -50,7 +51,8 @@ const handleUpdateStatus = async (methodType: PaymentMethodType): Promise<void> 
   try {
     loading.value = true
     await paymentSystemStore.updatePaymentStatus(methodType, status)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -58,9 +60,10 @@ const handleUpdateStatus = async (methodType: PaymentMethodType): Promise<void> 
 
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
-  } finally {
+  }
+  finally {
     loading.value = false
     fetchState.refresh()
   }
@@ -68,7 +71,8 @@ const handleUpdateStatus = async (methodType: PaymentMethodType): Promise<void> 
 
 try {
   await fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

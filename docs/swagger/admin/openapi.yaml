@@ -169,6 +169,8 @@ paths:
     $ref: './paths/v1/schedules/_scheduleId/approval.yaml'
   /v1/schedules/{scheduleId}/publish:
     $ref: './paths/v1/schedules/_scheduleId/publish.yaml'
+  /v1/schedules/{scheduleId}/analytics:
+    $ref: './paths/v1/schedules/_scheduleId/analytics.yaml'
   # Live
   /v1/schedules/{scheduleId}/lives:
     $ref: './paths/v1/schedules/_scheduleId/lives/index.yaml'
@@ -283,6 +285,8 @@ components:
       $ref: './components/schemas/codes/admin.yaml#/adminStatus'
     broadcastStatus:
       $ref: './components/schemas/codes/broadcast.yaml#/broadcastStatus'
+    broadcastViewerLogInterval:
+      $ref: './components/schemas/codes/broadcast.yaml#/broadcastViewerLogInterval'
     characterEncodingType:
       $ref: './components/schemas/codes/common.yaml#/characterEncodingType'
     prefecture:
@@ -348,6 +352,8 @@ components:
       $ref: './components/schemas/entity/broadcast.yaml#/broadcast'
     guestBroadcast:
       $ref: './components/schemas/entity/broadcast.yaml#/guestBroadcast'
+    broadcastViewerLog:
+      $ref: './components/schemas/entity/broadcast.yaml#/broadcastViewerLog'
     category:
       $ref: './components/schemas/entity/category.yaml#/category'
     contactCategory:
@@ -562,6 +568,8 @@ components:
       $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
     v1SchedulesResponse:
       $ref: './components/schemas/v1/schedule.response.yaml#/schedulesResponse'
+    v1AnalyzeScheduleResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/analyzeScheduleResponse'
     v1LiveResponse:
       $ref: './components/schemas/v1/live.response.yaml#/liveResponse'
     v1LivesResponse:

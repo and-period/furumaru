@@ -8,19 +8,19 @@ import type { ImageUploadStatus } from '~/types/props'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   coordinatorFormData: {
     type: Object as PropType<UpdateCoordinatorRequest>,
@@ -45,8 +45,8 @@ const props = defineProps({
       bonusVideoUrl: '',
       instagramId: '',
       facebookId: '',
-      businessDays: []
-    })
+      businessDays: [],
+    }),
   },
   shippingFormData: {
     type: Object as PropType<UpsertShippingRequest>,
@@ -55,29 +55,29 @@ const props = defineProps({
         {
           name: '',
           price: 0,
-          prefectureCodes: []
-        }
+          prefectureCodes: [],
+        },
       ],
       box60Frozen: 0,
       box80Rates: [
         {
           name: '',
           price: 0,
-          prefectureCodes: []
-        }
+          prefectureCodes: [],
+        },
       ],
       box80Frozen: 0,
       box100Rates: [
         {
           name: '',
           price: 0,
-          prefectureCodes: []
-        }
+          prefectureCodes: [],
+        },
       ],
       box100Frozen: 0,
       hasFreeShipping: false,
-      freeShippingRates: 0
-    })
+      freeShippingRates: 0,
+    }),
   },
   coordinator: {
     type: Object as PropType<Coordinator>,
@@ -109,8 +109,8 @@ const props = defineProps({
       facebookId: '',
       createdAt: 0,
       updatedAt: 0,
-      businessDays: []
-    })
+      businessDays: [],
+    }),
   },
   shipping: {
     type: Object as PropType<Shipping>,
@@ -126,53 +126,53 @@ const props = defineProps({
       hasFreeShipping: false,
       freeShippingRates: 0,
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   productTypes: {
     type: Array<ProductType>,
-    default: () => []
+    default: () => [],
   },
   thumbnailUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   headerUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   promotionVideoUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   bonusVideoUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   searchErrorMessage: {
     type: String,
-    default: ''
+    default: '',
   },
   searchLoading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   selectedTabItem: {
     type: String,
-    default: 'coordinator'
-  }
+    default: 'coordinator',
+  },
 })
 
 const emit = defineEmits<{
@@ -191,20 +191,20 @@ const emit = defineEmits<{
 
 const tabs: VTabs[] = [
   { title: '基本情報', value: 'coordinator' },
-  { title: '配送設定', value: 'shipping' }
+  { title: '配送設定', value: 'shipping' },
 ]
 
 const selectedTabItemValue = computed({
   get: (): string => props.selectedTabItem,
-  set: (item: string): void => emit('update:selected-tab-item', item)
+  set: (item: string): void => emit('update:selected-tab-item', item),
 })
 const coordinatorFormDataValue = computed({
   get: (): UpdateCoordinatorRequest => props.coordinatorFormData,
-  set: (val: UpdateCoordinatorRequest): void => emit('update:coordinator-form-data', val)
+  set: (val: UpdateCoordinatorRequest): void => emit('update:coordinator-form-data', val),
 })
 const shippingFormDataValue = computed({
   get: (): UpsertShippingRequest => props.shippingFormData,
-  set: (val: UpsertShippingRequest): void => emit('update:shipping-form-data', val)
+  set: (val: UpsertShippingRequest): void => emit('update:shipping-form-data', val),
 })
 
 const onChangeThumbnailFile = (files?: FileList) => {
@@ -253,14 +253,26 @@ const onClickSearchAddress = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card class="mb-4">
     <v-card-title>コーディネーター詳細</v-card-title>
 
     <v-card-text>
-      <v-tabs v-model="selectedTabItemValue" grow color="dark">
-        <v-tab v-for="item in tabs" :key="item.value" :value="item.value">
+      <v-tabs
+        v-model="selectedTabItemValue"
+        grow
+        color="dark"
+      >
+        <v-tab
+          v-for="item in tabs"
+          :key="item.value"
+          :value="item.value"
+        >
           {{ item.title }}
         </v-tab>
       </v-tabs>

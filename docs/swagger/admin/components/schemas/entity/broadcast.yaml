@@ -98,3 +98,30 @@ guestBroadcast:
     endAt: 1640962800
     coordinatorMarche: 'マルシェ名'
     coordinatorName: '名前'
+broadcastViewerLog:
+  properties:
+    broadcastId:
+      type: string
+      description: マルシェライブ配信ID
+    startAt:
+      type: integer
+      format: int64
+      description: 集計開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: 集計終了日時 (unixtime)
+    total:
+      type: integer
+      format: int64
+      description: 合計視聴者数
+  required:
+  - broadcastId
+  - startAt
+  - endAt
+  - total
+  example:
+    broadcastId: 'kSByoE6FetnPs5Byk3a9Zx'
+    startAt: 1640962800
+    endAt: 1640962800
+    total: 100

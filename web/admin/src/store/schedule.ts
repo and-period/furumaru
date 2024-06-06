@@ -9,7 +9,7 @@ export const useScheduleStore = defineStore('schedule', {
   state: () => ({
     schedule: {} as Schedule,
     schedules: [] as Schedule[],
-    total: 0
+    total: 0,
   }),
 
   actions: {
@@ -18,7 +18,7 @@ export const useScheduleStore = defineStore('schedule', {
      * @param limit
      * @param offset
      */
-    async fetchSchedules (limit = 20, offset = 0): Promise<void> {
+    async fetchSchedules(limit = 20, offset = 0): Promise<void> {
       try {
         const res = await apiClient.scheduleApi().v1ListSchedules(limit, offset)
 
@@ -26,7 +26,8 @@ export const useScheduleStore = defineStore('schedule', {
         this.schedules = res.data.schedules
         this.total = res.data.total
         coordinatorStore.coordinators = res.data.coordinators
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -36,14 +37,15 @@ export const useScheduleStore = defineStore('schedule', {
      * @param scheduleId スケジュールID
      * @returns
      */
-    async getSchedule (scheduleId: string): Promise<void> {
+    async getSchedule(scheduleId: string): Promise<void> {
       try {
         const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
 
         const coordinatorStore = useCoordinatorStore()
         this.schedule = res.data.schedule
         coordinatorStore.coordinators.push(res.data.coordinator)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '対象の開催スケジュールが見つかりません。' })
       }
     },
@@ -52,11 +54,12 @@ export const useScheduleStore = defineStore('schedule', {
      * マルシェ開催スケジュールを登録する非同期関数
      * @param payload
      */
-    async createSchedule (payload: CreateScheduleRequest): Promise<Schedule> {
+    async createSchedule(payload: CreateScheduleRequest): Promise<Schedule> {
       try {
         const res = await apiClient.scheduleApi().v1CreateSchedule(payload)
         return res.data.schedule
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: '必須項目が不足しているか、入力内容に誤りがあります。' })
       }
     },
@@ -66,13 +69,14 @@ export const useScheduleStore = defineStore('schedule', {
      * @param scheduleId スケジュールID
      * @param payload
      */
-    async updateSchedule (scheduleId: string, payload: UpdateScheduleRequest): Promise<void> {
+    async updateSchedule(scheduleId: string, payload: UpdateScheduleRequest): Promise<void> {
       try {
         await apiClient.scheduleApi().v1UpdateSchedule(scheduleId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
-          404: '対象の開催スケジュールが見つかりません。'
+          404: '対象の開催スケジュールが見つかりません。',
         })
       }
     },
@@ -82,13 +86,14 @@ export const useScheduleStore = defineStore('schedule', {
      * @param scheduleId スケジュールID
      * @returns
      */
-    async deleteSchedule (scheduleId: string): Promise<void> {
+    async deleteSchedule(scheduleId: string): Promise<void> {
       try {
         await apiClient.scheduleApi().v1DeleteSchedule(scheduleId)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           404: '対象の開催スケジュールが見つかりません。',
-          412: 'ライブ配信中のため削除できません。'
+          412: 'ライブ配信中のため削除できません。',
         })
       }
     },
@@ -99,7 +104,7 @@ export const useScheduleStore = defineStore('schedule', {
      * @param approved 承認フラグ
      * @returns
      */
-    async approveSchedule (scheduleId: string, approved: boolean): Promise<void> {
+    async approveSchedule(scheduleId: string, approved: boolean): Promise<void> {
       try {
         const req: ApproveScheduleRequest = { approved }
         await apiClient.scheduleApi().v1ApproveSchedule(scheduleId, req)
@@ -111,10 +116,11 @@ export const useScheduleStore = defineStore('schedule', {
         }
         const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
         this.schedules.splice(index, 1, res.data.schedule)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
-          404: '対象の開催スケジュールが見つかりません。'
+          404: '対象の開催スケジュールが見つかりません。',
         })
       }
     },
@@ -125,7 +131,7 @@ export const useScheduleStore = defineStore('schedule', {
      * @param public 公開フラグ
      * @returns
      */
-    async publishSchedule (scheduleId: string, published: boolean): Promise<void> {
+    async publishSchedule(scheduleId: string, published: boolean): Promise<void> {
       try {
         const req: PublishScheduleRequest = { public: published }
         await apiClient.scheduleApi().v1PublishSchedule(scheduleId, req)
@@ -137,10 +143,11 @@ export const useScheduleStore = defineStore('schedule', {
         }
         const res = await apiClient.scheduleApi().v1GetSchedule(scheduleId)
         this.schedules.splice(index, 1, res.data.schedule)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
-          404: '対象の開催スケジュールが見つかりません。'
+          404: '対象の開催スケジュールが見つかりません。',
         })
       }
     },
@@ -150,16 +157,17 @@ export const useScheduleStore = defineStore('schedule', {
      * @param payload
      * @returns アップロード先URL
      */
-    async uploadScheduleThumbnail (payload: File): Promise<string> {
+    async uploadScheduleThumbnail(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: contentType,
         }
         const res = await apiClient.scheduleApi().v1GetScheduleThumbnailUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
@@ -169,16 +177,17 @@ export const useScheduleStore = defineStore('schedule', {
      * @param payload
      * @returns アップロード先URL
      */
-    async uploadScheduleImage (payload: File): Promise<string> {
+    async uploadScheduleImage(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: contentType,
         }
         const res = await apiClient.scheduleApi().v1GetScheduleImageUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
     },
@@ -188,18 +197,19 @@ export const useScheduleStore = defineStore('schedule', {
      * @param payload
      * @returns アップロード先URL
      */
-    async uploadScheduleOpeningVideo (payload: File): Promise<string> {
+    async uploadScheduleOpeningVideo(payload: File): Promise<string> {
       const contentType = payload.type
       try {
         const body: GetUploadUrlRequest = {
-          fileType: contentType
+          fileType: contentType,
         }
         const res = await apiClient.scheduleApi().v1GetScheduleOpeningVideoUploadUrl(body)
 
         return await fileUpload(payload, res.data.key, res.data.url)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
       }
-    }
-  }
+    },
+  },
 })

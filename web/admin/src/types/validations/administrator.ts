@@ -7,7 +7,7 @@ export const CreateAdministratorValidationRules: ValidationArgs = {
   lastnameKana: { required, maxLength: maxLength(32), kana },
   firstnameKana: { required, maxLength: maxLength(32), kana },
   email: { required, email },
-  phoneNumber: { required, tel }
+  phoneNumber: { required, tel },
 }
 
 export const UpdateAdministratorValidationRules: ValidationArgs = {
@@ -15,5 +15,5 @@ export const UpdateAdministratorValidationRules: ValidationArgs = {
   firstname: { required, maxLength: maxLength(16) },
   lastnameKana: { required, maxLength: maxLength(32), kana },
   firstnameKana: { required, maxLength: maxLength(32), kana },
-  phoneNumber: { required, tel }
+  phoneNumber: { required, tel },
 }

@@ -1,5 +1,54 @@
 # Changelog
 
+## [v1.11.30](https://github.com/and-period/furumaru/compare/v1.11.29...v1.11.30) - 2024-06-04
+- fix(store): ライブ商品一覧の並び順を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2270
+
+## [v1.11.29](https://github.com/and-period/furumaru/compare/v1.11.28...v1.11.29) - 2024-06-03
+- fix: nuxt-imgのfill属性を更新 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2267
+
+## [v1.11.28](https://github.com/and-period/furumaru/compare/v1.11.27...v1.11.28) - 2024-06-03
+- Fix/web/user/toppage/live/thumbnail by @wf-yamaday in https://github.com/and-period/furumaru/pull/2265
+
+## [v1.11.27](https://github.com/and-period/furumaru/compare/v1.11.26...v1.11.27) - 2024-06-02
+- fix: トップページのライブ配信のサムネイルのレイアウト調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2263
+
+## [v1.11.26](https://github.com/and-period/furumaru/compare/v1.11.25...v1.11.26) - 2024-05-31
+- feat(func): 縦か横どちらかのみ指定の場合に4:3のアスペクト比になるように by @taba2424 in https://github.com/and-period/furumaru/pull/2261
+
+## [v1.11.25](https://github.com/and-period/furumaru/compare/v1.11.24...v1.11.25) - 2024-05-31
+- Fix: fixed line message by @hamachans in https://github.com/and-period/furumaru/pull/2258
+
+## [v1.11.24](https://github.com/and-period/furumaru/compare/v1.11.23...v1.11.24) - 2024-05-31
+- fix(func): ディレクトリパスの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2256
+
+## [v1.11.23](https://github.com/and-period/furumaru/compare/v1.11.22...v1.11.23) - 2024-05-31
+- fix(func): バックアップ用の画像保存先pathの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2254
+
+## [v1.11.22](https://github.com/and-period/furumaru/compare/v1.11.21...v1.11.22) - 2024-05-31
+- feat(func): S3へのアップロード検証用のデバッグログ追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2252
+
+## [v1.11.21](https://github.com/and-period/furumaru/compare/v1.11.20...v1.11.21) - 2024-05-30
+- fix(user): dayjsのインポート箇所のエラー修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2250
+
+## [v1.11.20](https://github.com/and-period/furumaru/compare/v1.11.19...v1.11.20) - 2024-05-30
+- Fix/revert by @taba2424 in https://github.com/and-period/furumaru/pull/2248
+
+## [v1.11.19](https://github.com/and-period/furumaru/compare/v1.11.18...v1.11.19) - 2024-05-30
+- fix(docs): APIドキュメントの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2244
+- feat: アーカイブの動画に配信日付の情報を追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2243
+- Fix/purchase root by @hamachans in https://github.com/and-period/furumaru/pull/2242
+- Fix: fixed 29 line by @hamachans in https://github.com/and-period/furumaru/pull/2246
+- feat: リサイズ時にwebp指定に by @taba2424 in https://github.com/and-period/furumaru/pull/2247
+
+## [v1.11.18](https://github.com/and-period/furumaru/compare/v1.11.17...v1.11.18) - 2024-05-30
+- 商品複製機能の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2235
+- feat(api): ライブ配信分析用APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2239
+- chore(deps): bump the dependencies group in /api with 42 updates by @dependabot in https://github.com/and-period/furumaru/pull/2237
+- chore(deps): bump the dependencies group in /docs/swagger with 3 updates by @dependabot in https://github.com/and-period/furumaru/pull/2225
+- YouTube連携のcallback画面と完了画面のUI作成 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2238
+- fix(gateway): 生産者が紐づかない場合の商品一覧取得APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2240
+- fix(func): 画像リサイズ処理の引数取得処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2241
+
 ## [v1.11.17](https://github.com/and-period/furumaru/compare/v1.11.16...v1.11.17) - 2024-05-25
 - fix(media): YouTubeとの連携処理を見直し by @taba2424 in https://github.com/and-period/furumaru/pull/2229
 - fix(admin): Google認証後の処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2231

@@ -13,28 +13,29 @@ const calendarValue = ref<string>('')
 const type = ref<string>('month')
 const calendarRef = ref<{
   title: string
-  prev:() => {}
+  prev: () => {}
   next: () => {}
-    } | null>(null)
+} | null>(null)
 const typeItems = [
   {
     text: '日',
-    value: 'day'
+    value: 'day',
   },
   {
     text: '週',
-    value: 'week'
+    value: 'week',
   },
   {
     text: '月',
-    value: 'month'
-  }
+    value: 'month',
+  },
 ]
 
 const calendarTitle = computed(() => {
   if (calendarRef && calendarRef.value) {
     return calendarRef.value?.title
-  } else {
+  }
+  else {
     return ''
   }
 })
@@ -73,10 +74,18 @@ const handleClickNextButton = () => {
         label="表示形式"
         class="ml-4"
       />
-      <v-btn icon class="ma-2" @click="handleClickPrevButton">
+      <v-btn
+        icon
+        class="ma-2"
+        @click="handleClickPrevButton"
+      >
         <v-icon :icon="mdiChevronLeft" />
       </v-btn>
-      <v-btn icon class="ma-2" @click="handleClickNextButton">
+      <v-btn
+        icon
+        class="ma-2"
+        @click="handleClickNextButton"
+      >
         <v-icon :icon="mdiChevronRight" />
       </v-btn>
 

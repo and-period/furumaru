@@ -6,7 +6,7 @@ export const CreatePromotionValidationRules: ValidationArgs = {
   description: { required, maxLength: maxLength(2000) },
   discountType: {},
   discountRate: { minValue: minValue(0) },
-  code: { required, minLength: minLength(8), maxLength: maxLength(8) }
+  code: { required, minLength: minLength(8), maxLength: maxLength(8) },
 }
 
 export const UpdatePromotionValidationRules: ValidationArgs = {
@@ -14,5 +14,5 @@ export const UpdatePromotionValidationRules: ValidationArgs = {
   description: { required, maxLength: maxLength(2000) },
   discountType: {},
   discountRate: { minValue: minValue(0) },
-  code: { required, minLength: minLength(8), maxLength: maxLength(8) }
+  code: { required, minLength: minLength(8), maxLength: maxLength(8) },
 }

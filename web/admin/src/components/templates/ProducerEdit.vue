@@ -10,19 +10,19 @@ import { UpdateProducerValidationRules } from '~/types/validations'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   isAlert: {
     type: Boolean,
-    default: false
+    default: false,
   },
   alertType: {
     type: String as PropType<AlertType>,
-    default: undefined
+    default: undefined,
   },
   alertText: {
     type: String,
-    default: ''
+    default: '',
   },
   producer: {
     type: Object as PropType<Producer>,
@@ -50,8 +50,8 @@ const props = defineProps({
       instagramId: '',
       facebookId: '',
       createdAt: 0,
-      updatedAt: 0
-    })
+      updatedAt: 0,
+    }),
   },
   formData: {
     type: Object as PropType<UpdateProducerRequest>,
@@ -74,45 +74,45 @@ const props = defineProps({
       promotionVideoUrl: '',
       bonusVideoUrl: '',
       instagramId: '',
-      facebookId: ''
-    })
+      facebookId: '',
+    }),
   },
   thumbnailUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   headerUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   promotionVideoUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   bonusVideoUploadStatus: {
     type: Object,
     default: (): ImageUploadStatus => ({
       error: false,
-      message: ''
-    })
+      message: '',
+    }),
   },
   searchErrorMessage: {
     type: String,
-    default: ''
+    default: '',
   },
   searchLoading: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emit = defineEmits<{
@@ -128,11 +128,11 @@ const emit = defineEmits<{
 
 const formDataValue = computed({
   get: (): UpdateProducerRequest => props.formData,
-  set: (val: UpdateProducerRequest): void => emit('update:form-data', val)
+  set: (val: UpdateProducerRequest): void => emit('update:form-data', val),
 })
 const producerValue = computed({
   get: (): Producer => props.producer,
-  set: (producer: Producer): void => emit('update:producer', producer)
+  set: (producer: Producer): void => emit('update:producer', producer),
 })
 
 const validate = useVuelidate(UpdateProducerValidationRules, formDataValue)
@@ -180,7 +180,11 @@ const onClickSearchAddress = (): void => {
 </script>
 
 <template>
-  <v-alert v-show="props.isAlert" :type="props.alertType" v-text="props.alertText" />
+  <v-alert
+    v-show="props.isAlert"
+    :type="props.alertType"
+    v-text="props.alertText"
+  />
 
   <v-card>
     <v-card-title>生産者詳細</v-card-title>
@@ -193,7 +197,11 @@ const onClickSearchAddress = (): void => {
           label="生産者名"
         />
         <v-row>
-          <v-col cols="12" ms="12" lg="6">
+          <v-col
+            cols="12"
+            ms="12"
+            lg="6"
+          >
             <molecules-video-select-form
               label="紹介動画"
               :loading="loading"
@@ -203,7 +211,11 @@ const onClickSearchAddress = (): void => {
               @update:file="onChangePromotionVideo"
             />
           </v-col>
-          <v-col cols="12" sm="12" lg="6">
+          <v-col
+            cols="12"
+            sm="12"
+            lg="6"
+          >
             <molecules-video-select-form
               label="サンキュー動画"
               :loading="loading"
@@ -267,7 +279,11 @@ const onClickSearchAddress = (): void => {
           label="連絡先（電話番号）"
         />
         <v-row>
-          <v-col cols="12" sm="6" md="6">
+          <v-col
+            cols="12"
+            sm="6"
+            md="6"
+          >
             <molecules-icon-select-form
               label="アイコン画像"
               :loading="loading"
@@ -277,7 +293,11 @@ const onClickSearchAddress = (): void => {
               @update:file="onChangeThumbnailFile"
             />
           </v-col>
-          <v-col cols="12" sm="6" md="6">
+          <v-col
+            cols="12"
+            sm="6"
+            md="6"
+          >
             <molecules-image-select-form
               label="ヘッダー画像"
               :loading="loading"
@@ -314,7 +334,13 @@ const onClickSearchAddress = (): void => {
       </v-card-text>
 
       <v-card-actions>
-        <v-btn block :loading="loading" variant="outlined" color="primary" type="submit">
+        <v-btn
+          block
+          :loading="loading"
+          variant="outlined"
+          color="primary"
+          type="submit"
+        >
           更新
         </v-btn>
       </v-card-actions>

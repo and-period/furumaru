@@ -8,8 +8,8 @@ const router = useRouter()
 const liveStore = useLiveStore()
 
 const { fetchArchives } = useLiveStore()
-const { archivesFetchState, archiveResponse, totalArchivesCount } =
-  storeToRefs(liveStore)
+const { archivesFetchState, archiveResponse, totalArchivesCount }
+  = storeToRefs(liveStore)
 
 // 1ページ当たりに表示するマルシェ数
 const pagePerItems = ref<number>(20)
@@ -72,15 +72,19 @@ useSeoMeta({
         すべてのマルシェ
       </p>
     </div>
-    <hr class="mt-[40px]" />
+    <hr class="mt-[40px]">
     <div
       class="mx-auto mt-[24px] grid max-w-[1440px] gap-x-[19px] gap-y-6 md:grid-cols-3 md:gap-x-8 lg:grid-cols-3 xl:grid-cols-4"
     >
       <template v-if="archivesFetchState.isLoading">
-        <div v-for="i in [1, 2, 3, 4, 5]" :key="i" class="w-full animate-pulse">
-          <div class="aspect-square w-full bg-slate-200"></div>
-          <div class="mt-2 h-[24px] w-[80%] rounded-lg bg-slate-200"></div>
-          <div class="mt-2 h-[24px] w-[60%] rounded-lg bg-slate-200"></div>
+        <div
+          v-for="i in [1, 2, 3, 4, 5]"
+          :key="i"
+          class="w-full animate-pulse"
+        >
+          <div class="aspect-square w-full bg-slate-200" />
+          <div class="mt-2 h-[24px] w-[80%] rounded-lg bg-slate-200" />
+          <div class="mt-2 h-[24px] w-[60%] rounded-lg bg-slate-200" />
         </div>
       </template>
 

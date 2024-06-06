@@ -42,9 +42,11 @@ export const useOrderStore = defineStore('order', {
         this._promotions = res.promotions
         this._products = res.products
         this.total = res.total
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
-      } finally {
+      }
+      finally {
         this.fetchState.isLoading = false
       }
     },
@@ -61,7 +63,8 @@ export const useOrderStore = defineStore('order', {
           },
         )
         this.orederResponse = res
-      } catch (error) {
+      }
+      catch (error) {
         return this.errorHandler(error)
       }
     },
@@ -74,14 +77,14 @@ export const useOrderStore = defineStore('order', {
           ...order,
           // コーディネーターをマッピング
           coordinator: this._coordinators.find(
-            (coordinator) => coordinator.id === order.coordinatorId,
+            coordinator => coordinator.id === order.coordinatorId,
           ),
           items: order.items.map((item) => {
             return {
               ...item,
               // 商品をマッピング
               product: this._products.find(
-                (product) => product.id === item.productId,
+                product => product.id === item.productId,
               ),
             }
           }),
@@ -101,7 +104,7 @@ export const useOrderStore = defineStore('order', {
           return {
             ...item,
             product: this.orederResponse?.products.find(
-              (product) => product.id === item.productId,
+              product => product.id === item.productId,
             ),
           }
         }),

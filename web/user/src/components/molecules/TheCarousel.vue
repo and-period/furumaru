@@ -39,7 +39,8 @@ const bannerItems = computed(() => {
 const handleClickLeftArrowButton = () => {
   if (activeIdx.value === 0) {
     activeIdx.value = props.items.length - 1
-  } else {
+  }
+  else {
     activeIdx.value = activeIdx.value - 1
   }
 }
@@ -47,7 +48,8 @@ const handleClickLeftArrowButton = () => {
 const handleClickRightArrowButton = () => {
   if (activeIdx.value === props.items.length - 1) {
     activeIdx.value = 0
-  } else {
+  }
+  else {
     activeIdx.value = activeIdx.value + 1
   }
 }
@@ -62,7 +64,8 @@ const handleClickItem = (
     if (isInternalLink) {
       // 内部リンクは vue-routerで遷移させる
       router.push(link)
-    } else {
+    }
+    else {
       // 外部リンクは新規タブで開く
       window.open(link, '_blank', 'noopener,noreferrer')?.focus()
     }

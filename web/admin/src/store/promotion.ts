@@ -5,14 +5,14 @@ import type {
   CreatePromotionRequest,
   PromotionResponse,
   Promotion,
-  UpdatePromotionRequest
+  UpdatePromotionRequest,
 } from '~/types/api'
 
 export const usePromotionStore = defineStore('promotion', {
   state: () => ({
     promotion: {} as Promotion,
     promotions: [] as Promotion[],
-    total: 0
+    total: 0,
   }),
   actions: {
     /**
@@ -21,12 +21,13 @@ export const usePromotionStore = defineStore('promotion', {
      * @param offset 取得開始位置
      * @param orders ソートキー
      */
-    async fetchPromotions (limit = 20, offset = 0, orders: string[] = []): Promise<void> {
+    async fetchPromotions(limit = 20, offset = 0, orders: string[] = []): Promise<void> {
       try {
         const res = await apiClient.promotionApi().v1ListPromotions(limit, offset, orders.join(','))
         this.promotions = res.data.promotions
         this.total = res.data.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -36,7 +37,7 @@ export const usePromotionStore = defineStore('promotion', {
      * @param name タイトル(あいまい検索)
      * @param promotionIds stateの更新時に残しておく必要があるセール情報
      */
-    async searchPromotions (name = '', promotionIds: string[] = []): Promise<void> {
+    async searchPromotions(name = '', promotionIds: string[] = []): Promise<void> {
       try {
         const res = await apiClient.promotionApi().v1ListPromotions(undefined, undefined, name)
         const promotions: Promotion[] = []
@@ -54,7 +55,8 @@ export const usePromotionStore = defineStore('promotion', {
         })
         this.promotions = promotions
         this.total = res.data.total
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err)
       }
     },
@@ -64,12 +66,13 @@ export const usePromotionStore = defineStore('promotion', {
      * @param promotionId セールID
      * @returns セールの情報
      */
-    async getPromotion (promotionId: string): Promise<PromotionResponse> {
+    async getPromotion(promotionId: string): Promise<PromotionResponse> {
       try {
         const res = await apiClient.promotionApi().v1GetPromotion(promotionId)
         this.promotion = res.data.promotion
         return res.data
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '対象のセール情報が存在しません。' })
       }
     },
@@ -78,13 +81,14 @@ export const usePromotionStore = defineStore('promotion', {
      * セール情報を登録する非同期関数
      * @param payload
      */
-    async createPromotion (payload: CreatePromotionRequest): Promise<void> {
+    async createPromotion(payload: CreatePromotionRequest): Promise<void> {
       try {
         await apiClient.promotionApi().v1CreatePromotion(payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
-          409: 'このクーポンコードはすでに登録されています。'
+          409: 'このクーポンコードはすでに登録されています。',
         })
       }
     },
@@ -93,11 +97,12 @@ export const usePromotionStore = defineStore('promotion', {
      * セール情報を削除する非同期関数
      * @param promotionId お知らせID
      */
-    async deletePromotion (promotionId: string): Promise<void> {
+    async deletePromotion(promotionId: string): Promise<void> {
       try {
         await apiClient.promotionApi().v1DeletePromotion(promotionId)
         this.fetchPromotions()
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: '対象のセール情報が存在しません。' })
       }
     },
@@ -107,16 +112,17 @@ export const usePromotionStore = defineStore('promotion', {
      * @param promotionId セールID
      * @param payload
      */
-    async updatePromotion (promotionId: string, payload: UpdatePromotionRequest): Promise<void> {
+    async updatePromotion(promotionId: string, payload: UpdatePromotionRequest): Promise<void> {
       try {
         await apiClient.promotionApi().v1UpdatePromotion(promotionId, payload)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります。',
           404: '対象のセール情報が存在しません。',
-          409: 'このクーポンコードはすでに登録されています。'
+          409: 'このクーポンコードはすでに登録されています。',
         })
       }
-    }
-  }
+    },
+  },
 })

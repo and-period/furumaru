@@ -8,7 +8,7 @@ import type { CreateLiveRequest, Live, UpdateLiveRequest } from '~/types/api'
 export const useLiveStore = defineStore('live', {
   state: () => ({
     lives: [] as Live[],
-    total: 0
+    total: 0,
   }),
 
   actions: {
@@ -17,7 +17,7 @@ export const useLiveStore = defineStore('live', {
      * @param scheduleId 開催スケジュールID
      * @returns
      */
-    async fetchLives (scheduleId: string): Promise<void> {
+    async fetchLives(scheduleId: string): Promise<void> {
       try {
         const res = await apiClient.liveApi().v1ListLives(scheduleId)
 
@@ -27,7 +27,8 @@ export const useLiveStore = defineStore('live', {
         this.total = res.data.total
         producerStore.producers = res.data.producers
         productStore.products = res.data.products
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, { 404: 'マルシェタイムテーブルが存在しません' })
       }
     },
@@ -36,7 +37,7 @@ export const useLiveStore = defineStore('live', {
      * ライブ配信コメント一覧を取得する非同期関数
      * @param scheduleId 開催スケジュールID
      */
-    async fetchLiveComments (scheduleId: string): Promise<void> {},
+    async fetchLiveComments(scheduleId: string): Promise<void> {},
 
     /**
      * ライブ配信スケジュールを登録する非同期関数
@@ -44,16 +45,17 @@ export const useLiveStore = defineStore('live', {
      * @param payload
      * @returns
      */
-    async createLive (scheduleId: string, payload: CreateLiveRequest): Promise<void> {
+    async createLive(scheduleId: string, payload: CreateLiveRequest): Promise<void> {
       try {
         const res = await apiClient.liveApi().v1CreateLive(scheduleId, payload)
 
         this.lives.push(res.data.live)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
           404: 'マルシェタイムテーブルが存在しません',
-          412: '開催時間, 生産者が重複しています'
+          412: '開催時間, 生産者が重複しています',
         })
       }
     },
@@ -65,18 +67,19 @@ export const useLiveStore = defineStore('live', {
      * @param payload
      * @returns
      */
-    async updateLive (scheduleId: string, liveId: string, payload: UpdateLiveRequest): Promise<void> {
+    async updateLive(scheduleId: string, liveId: string, payload: UpdateLiveRequest): Promise<void> {
       try {
         await apiClient.liveApi().v1UpdateLive(scheduleId, liveId, payload)
 
         const index = this.lives.findIndex((live: Live): boolean => live.id === liveId)
         const live = this.lives[index]
         this.lives.splice(index, 1, { ...live, ...payload })
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
           404: 'マルシェ開催スケジュール, マルシェタイムテーブルが存在しません',
-          412: '開催時間, 生産者が重複しています'
+          412: '開催時間, 生産者が重複しています',
         })
       }
     },
@@ -87,18 +90,19 @@ export const useLiveStore = defineStore('live', {
      * @param liveId
      * @returns
      */
-    async deleteLive (scheduleId: string, liveId: string): Promise<void> {
+    async deleteLive(scheduleId: string, liveId: string): Promise<void> {
       try {
         await apiClient.liveApi().v1DeleteLive(scheduleId, liveId)
 
         const index = this.lives.findIndex((live: Live): boolean => live.id === liveId)
         this.lives.splice(index, 1)
-      } catch (err) {
+      }
+      catch (err) {
         return this.errorHandler(err, {
           400: '必須項目が不足しているか、内容に誤りがあります',
-          404: 'マルシェ開催スケジュール, マルシェタイムテーブルが存在しません'
+          404: 'マルシェ開催スケジュール, マルシェタイムテーブルが存在しません',
         })
       }
-    }
-  }
+    },
+  },
 })

@@ -7,16 +7,16 @@ export default defineNuxtConfig({
     head: {
       titleTemplate: 'ふるマル - 管理者ツール',
       htmlAttrs: {
-        lang: 'ja'
+        lang: 'ja',
       },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { hid: 'description', name: 'description', content: '' },
-        { name: 'format-detection', content: 'telephone=no' }
+        { name: 'format-detection', content: 'telephone=no' },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
-    }
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    },
   },
   css: ['~/assets/main.scss', '~/assets/variables.scss'],
   plugins: [
@@ -25,22 +25,33 @@ export default defineNuxtConfig({
     '~/plugins/google-analytics',
     '~/plugins/sentry.client',
     '~/plugins/vuetify',
-    '~/plugins/api-client'
+    '~/plugins/api-client',
   ],
   modules: [
     '@nuxt/devtools',
+    '@nuxt/eslint',
     '@nuxtjs/google-fonts',
     '@nuxtjs/stylelint-module',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
   ],
+  eslint: {
+    config: {
+      stylistic: {
+        indent: 2,
+        quotes: 'single',
+        semi: false,
+      },
+    },
+  },
   googleFonts: {
     download: true,
     inject: true,
     overwriting: true,
     display: 'swap',
     families: {
-      'BIZ+UDGothic': true
-    }
+      'BIZ+UDGothic': true,
+    },
   },
   runtimeConfig: {
     public: {
@@ -57,34 +68,40 @@ export default defineNuxtConfig({
       ENVIRONMENT: process.env.ENVIRONMENT || '',
       SENTRY_DSN: process.env.SENTRY_DSN || '',
       SENTRY_TRACES_SAMPLE_RATE: parseFloat(
-        process.env.SENTRY_TRACES_SAMPLE_RATE || '0.5'
+        process.env.SENTRY_TRACES_SAMPLE_RATE || '0.5',
       ),
       SENTRY_PROFILES_SAMPLE_RATE: parseFloat(
-        process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.5'
+        process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.5',
       ),
       SENTRY_REPLAYS_SESSION_SAMPLE_RATE: parseFloat(
-        process.env.SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.2'
+        process.env.SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.2',
       ),
       SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: parseFloat(
-        process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0'
-      )
-    }
+        process.env.SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0',
+      ),
+    },
   },
   devtools: {
     timeline: {
-      enabled: true
-    }
+      enabled: true,
+    },
   },
   vite: {
+    vue: {
+      script: {
+        defineModel: true,
+        propsDestructure: true,
+      },
+    },
     build: {
-      sourcemap: true
+      sourcemap: true,
     },
     plugins: [
       sentryVitePlugin({
         org: process.env.SENTRY_ORGANIZATION,
         project: process.env.SENTRY_PROJECT,
-        authToken: process.env.SENTRY_AUTH_TOKEN
-      })
-    ]
-  }
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+      }),
+    ],
+  },
 })

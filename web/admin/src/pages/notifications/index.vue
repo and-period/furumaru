@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { VDataTable } from 'vuetify/lib/components/index.mjs'
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 import { useAlert, usePagination } from '~/lib/hooks'
 import { useAdminStore, useAuthStore, useCommonStore, useNotificationStore } from '~/store'
 
@@ -34,7 +34,8 @@ watch(sortBy, (): void => {
 const fetchNotifications = async (): Promise<void> => {
   try {
     await notificationStore.fetchNotifications(pagination.itemsPerPage.value, pagination.offset.value)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
@@ -65,14 +66,16 @@ const handleClickDelete = async (notificationId: string): Promise<void> => {
     await notificationStore.deleteNotification(notificationId)
     commonStore.addSnackbar({
       message: 'お知らせの削除が完了しました',
-      color: 'info'
+      color: 'info',
     })
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     console.log(err)
-  } finally {
+  }
+  finally {
     deleteDialog.value = false
     loading.value = false
   }
@@ -80,7 +83,8 @@ const handleClickDelete = async (notificationId: string): Promise<void> => {
 
 try {
   fetchState.execute()
-} catch (err) {
+}
+catch (err) {
   console.log('failed to setup', err)
 }
 </script>

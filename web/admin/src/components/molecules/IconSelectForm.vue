@@ -4,28 +4,28 @@ import { mdiPlus } from '@mdi/js'
 const props = defineProps({
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   label: {
     type: String,
-    default: ''
+    default: '',
   },
   imgUrl: {
     type: String,
-    default: ''
+    default: '',
   },
   accept: {
-    type: Array<String>,
-    default: (): string[] => ['image/*']
+    type: Array<string>,
+    default: (): string[] => ['image/*'],
   },
   error: {
     type: Boolean,
-    default: false
+    default: false,
   },
   message: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits<{
@@ -65,8 +65,16 @@ const onChangeFile = (): void => {
     >
       <v-card-text>
         <div class="mb-4">
-          <v-avatar v-if="props.imgUrl === ''" size="80" :icon="mdiPlus" />
-          <v-avatar v-else size="160" :image="props.imgUrl" />
+          <v-avatar
+            v-if="props.imgUrl === ''"
+            size="80"
+            :icon="mdiPlus"
+          />
+          <v-avatar
+            v-else
+            size="160"
+            :image="props.imgUrl"
+          />
         </div>
         <input
           ref="inputRef"
@@ -80,7 +88,10 @@ const onChangeFile = (): void => {
         </p>
       </v-card-text>
     </v-card>
-    <p v-show="props.error" class="red--text ma-0">
+    <p
+      v-show="props.error"
+      class="red--text ma-0"
+    >
       {{ props.message }}
     </p>
   </div>

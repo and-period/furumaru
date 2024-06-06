@@ -24,19 +24,19 @@ const formData = ref<CreateScheduleRequest>({
   openingVideoUrl: 'https://furumaru.s3.ap-northeast-1.amazonaws.com/asset/furumaru_opening.mp4',
   public: true, // 公開状態で作成する(承認フラグで公開かの出し分けを実施)
   startAt: dayjs().unix(),
-  endAt: dayjs().unix()
+  endAt: dayjs().unix(),
 })
 const thumbnailUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const imageUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 const openingVideoUploadStatus = ref<ImageUploadStatus>({
   error: false,
-  message: ''
+  message: '',
 })
 
 const isLoading = (): boolean => {
@@ -105,24 +105,26 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = true
     const req: CreateScheduleRequest = {
       ...formData.value,
-      coordinatorId: auth.value?.adminId || ''
+      coordinatorId: auth.value?.adminId || '',
     }
     const schedule = await scheduleStore.createSchedule(req)
     commonStore.addSnackbar({
       message: `${formData.value.title}を作成しました。`,
-      color: 'info'
+      color: 'info',
     })
     router.push(`/schedules/${schedule.id}?tab=lives`)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof Error) {
       show(err.message)
     }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
     console.log(err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
