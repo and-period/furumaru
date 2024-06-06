@@ -33,7 +33,7 @@ const { alertType, isShow, alertText, show } = useAlert('error')
 const scheduleId = route.params.id as string
 const tab = route.query.tab as string
 
-const { schedule } = storeToRefs(scheduleStore)
+const { schedule, viewerLogs } = storeToRefs(scheduleStore)
 const { lives } = storeToRefs(liveStore)
 const { broadcast } = storeToRefs(broadcastStore)
 const { coordinators } = storeToRefs(coordinatorStore)
@@ -97,6 +97,7 @@ const fetchState = useAsyncData(async (): Promise<void> => {
   try {
     await Promise.all([
       scheduleStore.getSchedule(scheduleId),
+      scheduleStore.analyzeSchedule(scheduleId),
       liveStore.fetchLives(scheduleId),
       broadcastStore.getBroadcastByScheduleId(scheduleId),
     ])
@@ -522,6 +523,7 @@ catch (err) {
     :coordinators="coordinators"
     :producers="producers"
     :products="products"
+    :viewer-logs="viewerLogs"
     :auth-youtube-url="authYoutubeUrl"
     :thumbnail-upload-status="thumbnailUploadStatus"
     :image-upload-status="imageUploadStatus"

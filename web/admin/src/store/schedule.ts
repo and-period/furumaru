@@ -3,12 +3,13 @@ import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useCoordinatorStore } from './coordinator'
 import { apiClient } from '~/plugins/api-client'
-import type { ApproveScheduleRequest, CreateScheduleRequest, GetUploadUrlRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest } from '~/types/api'
+import type { ApproveScheduleRequest, BroadcastViewerLog, CreateScheduleRequest, GetUploadUrlRequest, PublishScheduleRequest, Schedule, UpdateScheduleRequest } from '~/types/api'
 
 export const useScheduleStore = defineStore('schedule', {
   state: () => ({
     schedule: {} as Schedule,
     schedules: [] as Schedule[],
+    viewerLogs: [] as BroadcastViewerLog[],
     total: 0,
   }),
 
@@ -44,6 +45,17 @@ export const useScheduleStore = defineStore('schedule', {
         const coordinatorStore = useCoordinatorStore()
         this.schedule = res.data.schedule
         coordinatorStore.coordinators.push(res.data.coordinator)
+      }
+      catch (err) {
+        return this.errorHandler(err, { 404: '対象の開催スケジュールが見つかりません。' })
+      }
+    },
+
+    async analyzeSchedule(scheduleId: string): Promise<void> {
+      try {
+        const res = await apiClient.scheduleApi().v1AnalyzeSchedule(scheduleId)
+
+        this.viewerLogs = res.data.viewerLogs
       }
       catch (err) {
         return this.errorHandler(err, { 404: '対象の開催スケジュールが見つかりません。' })
