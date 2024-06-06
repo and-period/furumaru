@@ -97,7 +97,7 @@ export interface I18n {
       archiveListSubTitle: string
       archivedStreamText: string
       archivesLinkText: string
-    };
+    }
 
     about: {
       leadSentence: string
