@@ -211,8 +211,8 @@ type CreateProductInput struct {
 	RecommendedPoints    []string                 `validate:"max=3,dive,max=128"`
 	StorageMethodType    entity.StorageMethodType `validate:"required,oneof=1 2 3 4"`
 	DeliveryType         entity.DeliveryType      `validate:"required,oneof=1 2 3"`
-	Box60Rate            int64                    `validate:"min=0,max=100"`
-	Box80Rate            int64                    `validate:"min=0,max=100"`
+	Box60Rate            int64                    `validate:"min=0,max=600"`
+	Box80Rate            int64                    `validate:"min=0,max=250"`
 	Box100Rate           int64                    `validate:"min=0,max=100"`
 	OriginPrefectureCode int32                    `validate:"required"`
 	OriginCity           string                   `validate:"max=32"`
@@ -245,8 +245,8 @@ type UpdateProductInput struct {
 	RecommendedPoints    []string                 `validate:"max=3,dive,max=128"`
 	StorageMethodType    entity.StorageMethodType `validate:"required,oneof=1 2 3 4"`
 	DeliveryType         entity.DeliveryType      `validate:"required,oneof=1 2 3"`
-	Box60Rate            int64                    `validate:"min=0,max=100"`
-	Box80Rate            int64                    `validate:"min=0,max=100"`
+	Box60Rate            int64                    `validate:"min=0,max=600"`
+	Box80Rate            int64                    `validate:"min=0,max=250"`
 	Box100Rate           int64                    `validate:"min=0,max=100"`
 	OriginPrefectureCode int32                    `validate:"required"`
 	OriginCity           string                   `validate:"max=32"`
