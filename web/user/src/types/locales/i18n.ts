@@ -91,6 +91,7 @@ export interface I18n {
       noMarcheItemFirstText: string
       noMarcheItemSecondText: string
       pastMarcheLinkText: string
+      viewMoreText: string
       productsLinkText: string
       productsLinkText: string
       archiveListSubTitle: string

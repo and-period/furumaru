@@ -173,7 +173,7 @@ useSeoMeta({
               class="relative w-60 bg-main py-2 text-white"
               @click="handleClickMoreViewButton"
             >
-              もっと見る
+              {{ tt('viewMoreText') }}
               <div class="absolute bottom-3.5 right-4">
                 <the-up-arrow-icon v-show="isOpen" fill="white" />
                 <the-down-arrow-icon v-show="!isOpen" fill="white" />
