@@ -66,6 +66,9 @@ export default defineNuxtConfig({
     ],
     '@pinia-plugin-persistedstate/nuxt',
   ],
+  gtag: {
+    id: process.env.NUXT_PUBLIC_GTAG_ID,
+  },
   eslint: {
     config: {
       stylistic: {
