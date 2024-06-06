@@ -47,10 +47,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  updateLiveDialog: {
-    type: Boolean,
-    default: false,
-  },
   liveMp4Dialog: {
     type: Boolean,
     default: false,
@@ -79,15 +75,6 @@ const props = defineProps({
     type: Object as PropType<CreateLiveRequest>,
     default: (): CreateLiveRequest => ({
       producerId: '',
-      productIds: [],
-      comment: '',
-      startAt: dayjs().unix(),
-      endAt: dayjs().unix(),
-    }),
-  },
-  updateLiveFormData: {
-    type: Object as PropType<UpdateLiveRequest>,
-    default: (): UpdateLiveRequest => ({
       productIds: [],
       comment: '',
       startAt: dayjs().unix(),
@@ -216,7 +203,6 @@ const emit = defineEmits<{
   (e: 'update:create-live-dialog', v: boolean): void
   (e: 'update:update-live-dialog', v: boolean): void
   (e: 'update:create-live-form-data', formData: CreateLiveRequest): void
-  (e: 'update:update-live-form-data', formData: UpdateLiveRequest): void
   (
     e: 'update:auth-youtube-form-data',
     formData: AuthYoutubeBroadcastRequest,
@@ -230,8 +216,8 @@ const emit = defineEmits<{
   (e: 'search:product', producerId: string, name: string): void
   (e: 'submit:schedule'): void
   (e: 'submit:create-live'): void
-  (e: 'submit:update-live'): void
-  (e: 'submit:delete-live'): void
+  (e: 'submit:update-live', liveId: string, formData: UpdateLiveRequest): void
+  (e: 'submit:delete-live', liveId: string): void
   (e: 'submit:pause'): void
   (e: 'submit:unpause'): void
   (e: 'submit:activate-static-image'): void
@@ -260,10 +246,6 @@ const createLiveDialogValue = computed({
   get: (): boolean => props.createLiveDialog,
   set: (val: boolean): void => emit('update:create-live-dialog', val),
 })
-const updateLiveDialogValue = computed({
-  get: (): boolean => props.updateLiveDialog,
-  set: (val: boolean): void => emit('update:update-live-dialog', val),
-})
 const pauseDialogValue = computed({
   get: (): boolean => props.pauseDialog,
   set: (val: boolean): void => emit('update:pause-dialog', val),
@@ -281,11 +263,6 @@ const createLiveFormDataValue = computed({
   set: (formData: CreateLiveRequest): void =>
     emit('update:create-live-form-data', formData),
 })
-const updateLiveFormDataValue = computed({
-  get: (): UpdateLiveRequest => props.updateLiveFormData,
-  set: (formData: UpdateLiveRequest): void =>
-    emit('update:update-live-form-data', formData),
-})
 const mp4FormDataValue = computed({
   get: (): File[] | undefined => props.mp4FormData,
   set: (formData?: File[]): void => emit('update:mp4-form-data', formData),
@@ -302,10 +279,6 @@ const onClickLinkYouTube = (): void => {
 
 const onClickNewLive = (): void => {
   emit('click:new-live')
-}
-
-const onClickEditLive = (liveId: string): void => {
-  emit('click:edit-live', liveId)
 }
 
 const onChangeThumbnailFile = (files: FileList): void => {
@@ -340,12 +313,15 @@ const onSubmitCreateLive = (): void => {
   emit('submit:create-live')
 }
 
-const onSubmitUpdateLive = (): void => {
-  emit('submit:update-live')
+const onSubmitUpdateLive = (
+  liveId: string,
+  formData: UpdateLiveRequest,
+): void => {
+  emit('submit:update-live', liveId, formData)
 }
 
-const onSubmitDeleteLive = (): void => {
-  emit('submit:delete-live')
+const onSubmitDeleteLive = (liveId: string): void => {
+  emit('submit:delete-live', liveId)
 }
 
 const onSubmitPause = (): void => {
@@ -427,9 +403,7 @@ const onSubmitUploadArchiveMp4 = (): void => {
         <v-window-item value="lives">
           <organisms-live-list
             v-model:create-dialog="createLiveDialogValue"
-            v-model:update-dialog="updateLiveDialogValue"
             v-model:create-form-data="createLiveFormDataValue"
-            v-model:update-form-data="updateLiveFormDataValue"
             :loading="loading"
             :live="live"
             :lives="lives"
@@ -437,7 +411,6 @@ const onSubmitUploadArchiveMp4 = (): void => {
             :producers="producers"
             :products="products"
             @click:new="onClickNewLive"
-            @click:edit="onClickEditLive"
             @search:producer="onSearchProducer"
             @search:product="onSearchProduct"
             @submit:create="onSubmitCreateLive"
