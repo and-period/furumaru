@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.11.31](https://github.com/and-period/furumaru/compare/v1.11.30...v1.11.31) - 2024-06-06
+- feat(store): 箱サイズのバリデーションを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2273
+- 商品の並べ替え登録機能の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2275
+- fix: 商品詳細で説明に改行が反映されるように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2269
+- setup: gtapの設定を明示的に書いてみる by @wf-yamaday in https://github.com/and-period/furumaru/pull/2276
+- feat(admin): 視聴者ログの可視化 by @taba2424 in https://github.com/and-period/furumaru/pull/2278
+
 ## [v1.11.30](https://github.com/and-period/furumaru/compare/v1.11.29...v1.11.30) - 2024-06-04
 - fix(store): ライブ商品一覧の並び順を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2270
 
