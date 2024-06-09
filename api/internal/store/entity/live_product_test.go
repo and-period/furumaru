@@ -79,17 +79,28 @@ func TestLiveProducts_ProductIDs(t *testing.T) {
 			products: LiveProducts{
 				{
 					LiveID:    "live-id",
-					ProductID: "product-id",
+					ProductID: "product-id-0",
+					Priority:  2,
+				},
+				{
+					LiveID:    "live-id",
+					ProductID: "product-id-1",
+					Priority:  1,
+				},
+				{
+					LiveID:    "live-id",
+					ProductID: "product-id-2",
+					Priority:  0,
 				},
 			},
-			expect: []string{"product-id"},
+			expect: []string{"product-id-2", "product-id-1", "product-id-0"},
 		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tt.expect, tt.products.ProductIDs())
+			assert.Exactly(t, tt.expect, tt.products.ProductIDs())
 		})
 	}
 }

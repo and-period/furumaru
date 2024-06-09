@@ -52,8 +52,9 @@ func NewLiveProducts(liveID string, productIDs []string) LiveProducts {
 
 func (ps LiveProducts) ProductIDs() []string {
 	res := set.NewEmpty[string](len(ps))
-	for i := range ps {
-		res.Add(ps[i].ProductID)
+	orderedPs := ps.SortByPrimary()
+	for i := range orderedPs {
+		res.Add(orderedPs[i].ProductID)
 	}
 	return res.Slice()
 }
