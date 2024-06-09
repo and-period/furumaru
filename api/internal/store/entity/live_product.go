@@ -3,8 +3,6 @@ package entity
 import (
 	"sort"
 	"time"
-
-	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 // ライブ配信関連商品情報
@@ -51,11 +49,12 @@ func NewLiveProducts(liveID string, productIDs []string) LiveProducts {
 }
 
 func (ps LiveProducts) ProductIDs() []string {
-	res := set.NewEmpty[string](len(ps))
-	for i := range ps {
-		res.Add(ps[i].ProductID)
+	orderedPs := ps.SortByPrimary()
+	res := make([]string, 0, len(orderedPs))
+	for i := range orderedPs {
+		res = append(res, orderedPs[i].ProductID)
 	}
-	return res.Slice()
+	return res
 }
 
 func (ps LiveProducts) GroupByLiveID() map[string]LiveProducts {
