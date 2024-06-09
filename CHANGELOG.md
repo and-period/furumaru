@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.32](https://github.com/and-period/furumaru/compare/v1.11.31...v1.11.32) - 2024-06-09
+- fix: Liveに紐づく関連商品のidsをPriorityでソートするように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2279
+
 ## [v1.11.31](https://github.com/and-period/furumaru/compare/v1.11.30...v1.11.31) - 2024-06-06
 - feat(store): 箱サイズのバリデーションを変更 by @taba2424 in https://github.com/and-period/furumaru/pull/2273
 - 商品の並べ替え登録機能の実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2275
