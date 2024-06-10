@@ -2,7 +2,7 @@
   "layout": {
     "header": {
       "becomeShopOwner": "出品する",
-      "cartEmptyMessag": "カートは空です",
+      "cartEmptyMessage": "カートは空です",
       "cartNotEmptyMessage": "レジに進む",
       "signUp": "登録する",
       "signIn": "ログイン",
@@ -15,8 +15,15 @@
       "notificationTitle": "お知らせ",
       "noNotificationItemText": "お知らせはありません。",
       "cartMenuMessage": "買い物カゴに商品が{count}点入っています。",
+      "cartTotalPriceText": "合計金額",
+      "cartTotalPriceTaxIncludedText": "(税込)",
       "myPageLinkText": "マイページ",
-      "viewMyCartText": "買い物カゴを見る"
+      "viewMyCartText": "買い物カゴを見る",
+      "numberOfCartsText": "現在のカゴの数",
+      "shippingFeeAnnotation": "買い物カゴごとに送料がかかります。詳しくは",
+      "shippingFeeAnnotationLinkText": "こちら",
+      "shippingFeeAnnotationCheckText": "からご確認ください。"
+
     },
     "footer": {
       "qaLinkText": "よくあるご質問",
@@ -64,6 +71,22 @@
     }
   },
   "base": {
+    "top": {
+      "lineAddFriendImageUrl": "https://scdn.line-apps.com/n/line_add_friends/btn/ja.png",
+      "lineAddFriendImageAlt": "友だち追加",
+      "lineCouponText": "お友達追加でお得な情報をGET！",
+      "marcheListSubTitle": "配信中・配信予定のマルシェ",
+      "liveStreamingText": "配信中",
+      "liveUpcomingText": "配信予定",
+      "noMarcheItemFirstText": "ただいま配信中・配信予定のマルシェはありません。",
+      "noMarcheItemSecondText": "次回の更新をお楽しみに!",
+      "viewMoreText": "もっと見る",
+      "pastMarcheLinkText": "過去のライブ配信はこちら",
+      "productsLinkText": "購入できる商品一覧はこちら",
+      "archiveListSubTitle": "過去のマルシェ",
+      "archivedStreamText": "アーカイブ配信",
+      "archivesLinkText": "一覧を見る"
+    },
     "about": {
       "leadSentence": "地域とつながる、おいしさ見つかる。",
       "description": "「ふるマル」は、まるで地方のマルシェに来たような感覚で\n全国各地から届くこだわりの品を動画を見ながら購入できる\nライブコマースを配信するプラットフォームです。",

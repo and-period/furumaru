@@ -10,13 +10,19 @@
       "topLinkText": "TOP",
       "searchItemLinkText": "Search Item",
       "allItemLinkText": "All Items",
-      "allMarcheLinkText": "All Marche",
+      "allMarcheLinkText": "All Marché",
       "aboutLinkText": "About",
       "notificationTitle": "Notification",
       "noNotificationItemText": "No Notification",
-    "cartMenuMessage": "買い物カゴに商品が{count}点入っています。",
+      "cartMenuMessage": "There are {count} items in the shopping cart.",
+      "cartTotalPriceText": "Subtotal",
+      "cartTotalPriceTaxIncludedText": "(tax included)",
       "myPageLinkText": "My Page",
-      "viewMyCartText": "View My Cart"
+      "viewMyCartText": "View My Cart",
+      "numberOfCartsText": "Current number of carts",
+      "shippingFeeAnnotation": "Shipping fees apply per shopping cart. For more details, please check",
+      "shippingFeeAnnotationLinkText": "here",
+      "shippingFeeAnnotationCheckText": ""
     },
     "footer": {
       "qaLinkText": "Q and A",
@@ -64,6 +70,22 @@
     }
   },
   "base": {
+    "top": {
+      "lineAddFriendImageUrl": "https://scdn.line-apps.com/n/line_add_friends/btn/en.png",
+      "lineAddFriendImageAlt": "Add friend on LINE",
+      "lineCouponText": "Add a friend on LINE and get exclusive deals!",
+      "marcheListSubTitle": "Live & Upcoming Marché",
+      "liveStreamingText": "Live",
+      "liveUpcomingText": "Upcoming",
+      "noMarcheItemFirstText": "There are no Marché currently live or scheduled to be live.",
+      "noMarcheItemSecondText": "Please look forward to the next update!",
+      "pastMarcheLinkText": "View Past Live-Streams",
+      "viewMoreText": "View More",
+      "productsLinkText": "View Products for Sale",
+      "archiveListSubTitle": "past Marché",
+      "archivedStreamText": "archived stream",
+      "archivesLinkText": "View List"
+    },
     "about": {
       "leadSentence": "Find wonderful taste",
       "description": "Furumaru is a live commerce platform.",

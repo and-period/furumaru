@@ -8,6 +8,7 @@ interface Props {
   width: number | undefined
   startAt: number
   endAt: number
+  archivedStreamText: string
 }
 
 const props = defineProps<Props>()
@@ -75,7 +76,7 @@ const handleClick = () => {
         <span
           class="rounded border border-main px-1 text-[10px] font-bold tracking-[10%] text-main"
         >
-          アーカイブ配信
+          {{ archivedStreamText }}
         </span>
         <span class="text-sm">{{ time }}</span>
       </div>

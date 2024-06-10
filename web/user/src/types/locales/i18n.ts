@@ -15,12 +15,19 @@ export interface I18n {
       aboutLinkText: string
 
       cartMenuMessage: string
+      cartTotalPriceText: string
+      cartTotalPriceTaxIncludedText: string
 
       notificationTitle: string
       noNotificationItemText: string
 
       myPageLinkText: string
       viewMyCartText: string
+
+      numberOfCartsText: string
+      shippingFeeAnnotation: string
+      shippingFeeAnnotationLinkText: string
+      shippingFeeAnnotationCheckText: string
     }
 
     footer: {
@@ -74,6 +81,24 @@ export interface I18n {
   }
 
   base: {
+    top: {
+      lineAddFriendImageUrl: string
+      lineAddFriendImageAlt: string
+      lineCouponText: string
+      marcheListSubTitle: string
+      liveStreamingText: string
+      liveUpcomingText: string
+      noMarcheItemFirstText: string
+      noMarcheItemSecondText: string
+      pastMarcheLinkText: string
+      viewMoreText: string
+      productsLinkText: string
+      productsLinkText: string
+      archiveListSubTitle: string
+      archivedStreamText: string
+      archivesLinkText: string
+    }
+
     about: {
       leadSentence: string
       description: string

@@ -5,8 +5,15 @@ interface Props {
   isAuthenticated: boolean
   cartIsEmpty: boolean
   cartMenuMessage: string
+  cartTotalPriceText: string
+  cartTotalPriceTaxIncludedText: string
   totalPrice: number
   cartItems: ShoppingCart[]
+  viewMycartText: string
+  numberOfCartsText: string
+  shippingFeeAnnotation: string
+  shippingFeeAnnotationLinkText: string
+  shippingFeeAnnotationCheckText: string
 }
 
 defineProps<Props>()
@@ -62,31 +69,31 @@ const handleClickRemoveItemButton = (cartNumber: number, id: string) => {
         <p v-html="cartMenuMessage" />
         <hr class="border-main">
         <div>
-          合計金額:
+          {{ cartTotalPriceText }}:
           <p
-            class="font-bold after:ml-2 after:text-[16px] after:content-['(税込)']"
+            class="font-bold after:ml-2 after:text-[16px]"
           >
-            {{ priceStringFormatter(totalPrice) }}
+            {{ priceStringFormatter(totalPrice) }}{{ cartTotalPriceTaxIncludedText }}
           </p>
         </div>
         <button
           class="w-full bg-main py-1 text-white"
           @click="handleClickBuyButton"
         >
-          買い物カゴを見る
+          {{ viewMycartText }}
         </button>
 
         <div class="border border-orange p-3 text-sm text-orange">
-          現在のカゴの数: {{ cartItems.length }}
+          {{ numberOfCartsText }}: {{ cartItems.length }}
           <p>
-            買い物カゴごとに送料がかかります。 詳しくは
+            {{ shippingFeeAnnotation }}
             <nuxt-link
               href="/legal-notice"
               class="underline"
             >
-              こちら
+              {{ shippingFeeAnnotationLinkText }}
             </nuxt-link>
-            からご確認ください。
+            {{ shippingFeeAnnotationCheckText }}
           </p>
         </div>
 

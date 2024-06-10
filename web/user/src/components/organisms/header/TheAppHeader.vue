@@ -16,8 +16,20 @@ interface Props {
   notificationItems: any[]
   cartIsEmpty: boolean
   cartMenuMessage: string
+  cartTotalPriceText: string
+  cartTotalPriceTaxIncludedText: string
   totalPrice: number
   cartItems: ShoppingCart[]
+  signInLinkText: string
+  myPageLinkText: string
+  allItemLinkText: string
+  allMarcheLinkText: string
+  aboutLinkText: string
+  viewMycartText: string
+  numberOfCartsText: string
+  shippingFeeAnnotation: string
+  shippingFeeAnnotationLinkText: string
+  shippingFeeAnnotationCheckText: string
   spMenuItems: LinkItem[]
   footerMenuItems: FooterMenuItem[]
 }
@@ -62,7 +74,7 @@ const handleClickRemoveItemFromCartButton = (
 const SP_MENU_ITEMS = computed(() => [
   {
     icon: 'account',
-    text: props.isAuthenticated ? 'マイページ' : 'ログイン',
+    text: props.isAuthenticated ? props.myPageLinkText : props.signInLinkText,
     to: props.isAuthenticated ? '/account' : '/signin',
   },
   // {
@@ -72,7 +84,7 @@ const SP_MENU_ITEMS = computed(() => [
   // },
   {
     icon: 'cart',
-    text: '買い物カゴを見る',
+    text: props.viewMycartText,
     to: '/purchase',
   },
   // {
@@ -82,17 +94,17 @@ const SP_MENU_ITEMS = computed(() => [
   // },
   {
     icon: 'fruits',
-    text: 'すべての商品',
+    text: props.allItemLinkText,
     to: '/items',
   },
   {
     icon: 'flag',
-    text: 'すべてのマルシェ',
+    text: props.allMarcheLinkText,
     to: '/marches',
   },
   {
     icon: 'furumaru',
-    text: 'ふるマルについて',
+    text: props.aboutLinkText,
     to: '/about',
   },
 ])
@@ -171,7 +183,14 @@ const handleClickLogoutButton = () => {
           :is-authenticated="isAuthenticated"
           :cart-is-empty="cartIsEmpty"
           :cart-menu-message="cartMenuMessage"
+          :cart-total-price-text="cartTotalPriceText"
+          :cart-total-price-tax-included-text="cartTotalPriceTaxIncludedText"
           :cart-items="cartItems"
+          :view-mycart-text="viewMycartText"
+          :number-of-carts-text="numberOfCartsText"
+          :shipping-fee-annotation="shippingFeeAnnotation"
+          :shipping-fee-annotation-link-text="shippingFeeAnnotationLinkText"
+          :shipping-fee-annotation-check-text="shippingFeeAnnotationCheckText"
           :total-price="totalPrice"
           @click:buy-button="handleClickBuyButton"
           @click:remove-item-from-cart="handleClickRemoveItemFromCartButton"

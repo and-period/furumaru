@@ -3,12 +3,19 @@ import { storeToRefs } from 'pinia'
 import { MOCK_RECOMMEND_ITEMS } from '~/constants/mock'
 import { useTopPageStore } from '~/store/home'
 import type { BannerItem } from '~/types/props'
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
 
 const router = useRouter()
 
 const topPageStore = useTopPageStore()
 const { archives, lives } = storeToRefs(topPageStore)
 const { getHomeContent } = topPageStore
+
+const tt = (str: keyof I18n['base']['top']) => {
+  return i18n.t(`base.top.${str}`)
+}
 
 const isInItLoading = ref<boolean>(false)
 
@@ -102,12 +109,17 @@ useSeoMeta({
 
 <template>
   <div>
-    <the-carousel :items="banners" />
+    <the-carousel
+      :items="banners"
+      :line-add-friend-image-url="tt('lineAddFriendImageUrl')"
+      :line-add-friend-image-alt="tt('lineAddFriendImageAlt')"
+      :line-coupon-text="tt('lineCouponText')"
+    />
 
     <div class="mb-[72px] mt-8 flex flex-col gap-y-16 md:mt-[76px]">
       <the-content-box
         title="live"
-        sub-title="配信中・配信予定のマルシェ"
+        :sub-title="tt('marcheListSubTitle')"
       >
         <template v-if="isInItLoading" />
         <template v-if="lives.length === 0">
@@ -121,9 +133,9 @@ useSeoMeta({
             >
           </div>
           <div class="mt-8 text-center text-[14px] text-main md:text-[16px]">
-            <p>ただいま配信中・配信予定のマルシェはありません。</p>
+            <p>{{ tt('noMarcheItemFirstText') }}</p>
             <p class="md:mt-4">
-              次回の更新をお楽しみに!
+              {{ tt('noMarcheItemSecondText') }}
             </p>
           </div>
           <div
@@ -133,13 +145,13 @@ useSeoMeta({
               class="w-60 bg-main py-2 text-white"
               @click="handleClickAllArchive"
             >
-              過去のライブ配信はこちら
+              {{ tt('pastMarcheLinkText') }}
             </button>
             <button
               class="mt-4 w-60 bg-main py-2 text-white md:mt-0"
               @click="handleClickAllItem"
             >
-              購入できる商品一覧はこちら
+              {{ tt('productsLinkText') }}
             </button>
           </div>
         </template>
@@ -167,6 +179,8 @@ useSeoMeta({
                 :address="liveItem.coordinator.city"
                 :cn-name="liveItem.coordinator.username"
                 :cn-img-src="liveItem.coordinator.thumbnailUrl"
+                :live-streaming-text="tt('liveStreamingText')"
+                :live-upcoming-text="tt('liveUpcomingText')"
                 @click="handleClickLiveItem(liveItem.scheduleId)"
               />
             </transition-group>
@@ -179,7 +193,7 @@ useSeoMeta({
               class="relative w-60 bg-main py-2 text-white"
               @click="handleClickMoreViewButton"
             >
-              もっと見る
+              {{ tt('viewMoreText') }}
               <div class="absolute bottom-3.5 right-4">
                 <the-up-arrow-icon
                   v-show="isOpen"
@@ -197,7 +211,7 @@ useSeoMeta({
 
       <the-content-box
         title="archive"
-        sub-title="過去のマルシェ"
+        :sub-title="tt('archiveListSubTitle')"
       >
         <div class="relative mx-auto flex max-w-[1440px]">
           <div class="absolute left-4 flex h-[208px] items-center">
@@ -221,6 +235,7 @@ useSeoMeta({
               :start-at="archive.startAt"
               :end-at="archive.endAt"
               :width="368"
+              :archived-stream-text="tt('archivedStreamText')"
               class="cursor-pointer md:min-w-[368px] md:max-w-[368px]"
               @click="handleClickLiveItem(archive.scheduleId)"
             />
@@ -240,7 +255,7 @@ useSeoMeta({
             class="w-60 bg-main py-2 text-white"
             @click="handleClickLiveMore"
           >
-            一覧を見る
+            {{ tt('archivesLinkText') }}
           </button>
         </div>
       </the-content-box>
