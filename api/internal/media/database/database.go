@@ -109,7 +109,14 @@ type UpdateBroadcastCommentParams struct {
 
 type BroadcastViewerLog interface {
 	Create(ctx context.Context, log *entity.BroadcastViewerLog) error
+	GetTotal(ctx context.Context, params *GetBroadcastTotalViewersParams) (int64, error)
 	Aggregate(ctx context.Context, params *AggregateBroadcastViewerLogsParams) (entity.AggregatedBroadcastViewerLogs, error)
+}
+
+type GetBroadcastTotalViewersParams struct {
+	BroadcastID  string
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
 }
 
 type AggregateBroadcastViewerLogsParams struct {

@@ -139,6 +139,10 @@ analyzeScheduleResponse:
       description: 視聴者ログ一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/broadcastViewerLog'
+    totalViewers:
+      type: integer
+      format: int64
+      description: 合計視聴者数
   required:
   - viewerLogs
   example:
@@ -147,3 +151,4 @@ analyzeScheduleResponse:
       startAt: 1640962800
       endAt: 1640962800
       total: 100
+    totalViewers: 100

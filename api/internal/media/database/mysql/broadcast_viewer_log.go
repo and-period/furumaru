@@ -33,6 +33,24 @@ func (l *broadcastViewerLog) Create(ctx context.Context, log *entity.BroadcastVi
 	return dbError(err)
 }
 
+func (l *broadcastViewerLog) GetTotal(ctx context.Context, params *database.GetBroadcastTotalViewersParams) (int64, error) {
+	var total int64
+
+	const field = "COUNT(DISTINCT(session_id)) AS total"
+	stmt := l.db.Statement(ctx, l.db.DB, broadcastViewerLogTable, field).
+		Where("broadcast_id = ?", params.BroadcastID).
+		Where("user_agent NOT IN (?)", entity.ExcludeUserAgentLogs)
+	if !params.CreatedAtGte.IsZero() {
+		stmt = stmt.Where("created_at >= ?", params.CreatedAtGte)
+	}
+	if !params.CreatedAtLt.IsZero() {
+		stmt = stmt.Where("created_at < ?", params.CreatedAtLt)
+	}
+
+	err := stmt.Count(&total).Error
+	return total, dbError(err)
+}
+
 func (l *broadcastViewerLog) Aggregate(
 	ctx context.Context, params *database.AggregateBroadcastViewerLogsParams,
 ) (entity.AggregatedBroadcastViewerLogs, error) {

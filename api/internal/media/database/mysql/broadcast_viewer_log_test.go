@@ -91,6 +91,81 @@ func TestBroadcastViewerLog_Create(t *testing.T) {
 	}
 }
 
+func TestBroadcastViewerLog_GetTotal(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	db := dbClient
+	now := func() time.Time {
+		return current
+	}
+
+	err := deleteAll(ctx)
+	require.NoError(t, err)
+
+	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
+	err = db.DB.Create(&broadcast).Error
+	require.NoError(t, err)
+
+	logs := make(entity.BroadcastViewerLogs, 4)
+	logs[0] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now())
+	logs[1] = testBroadcastViewerLog("broadcast-id", "session-id01", "user-id01", now().Add(1*time.Minute))
+	logs[2] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now())
+	logs[3] = testBroadcastViewerLog("broadcast-id", "session-id02", "user-id02", now().Add(1*time.Minute))
+	logs[3].UserAgent = entity.ExcludeUserAgentLogs[0]
+	for _, log := range logs {
+		err = db.DB.Create(&log).Error
+		require.NoError(t, err)
+	}
+
+	type args struct {
+		params *database.GetBroadcastTotalViewersParams
+	}
+	type want struct {
+		total int64
+		err   error
+	}
+	tests := []struct {
+		name  string
+		setup func(ctx context.Context, t *testing.T, db *mysql.Client)
+		args  args
+		want  want
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				params: &database.GetBroadcastTotalViewersParams{
+					BroadcastID:  "broadcast-id",
+					CreatedAtGte: now().Add(-time.Minute),
+					CreatedAtLt:  now().Add(time.Hour),
+				},
+			},
+			want: want{
+				total: 2,
+				err:   nil,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			tt.setup(ctx, t, db)
+
+			db := &broadcastViewerLog{db: db, now: now}
+			total, err := db.GetTotal(ctx, tt.args.params)
+			assert.ErrorIs(t, err, tt.want.err)
+			assert.Equal(t, tt.want.total, total)
+		})
+	}
+}
+
 func TestBroadcastViewerLog_Aggregate(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
