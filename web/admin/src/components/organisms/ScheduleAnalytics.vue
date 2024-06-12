@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import type { ChartData, ChartOptions } from 'chart.js'
-import { LineChart } from 'vue-chart-3'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import {
+  TitleComponent,
+  GridComponent,
+  TooltipComponent,
+} from 'echarts/components'
+import { LineChart } from 'echarts/charts'
+import VChart from 'vue-echarts'
 import type { BroadcastViewerLog } from '~/types/api'
 
 const props = defineProps({
@@ -15,7 +22,15 @@ const props = defineProps({
   },
 })
 
-const chartData = computed<ChartData<'line'>>(() => {
+use([
+  GridComponent,
+  CanvasRenderer,
+  LineChart,
+  TitleComponent,
+  TooltipComponent,
+])
+
+const option = computed(() => {
   const labels: string[] = []
   const values: number[] = []
 
@@ -26,33 +41,56 @@ const chartData = computed<ChartData<'line'>>(() => {
   })
 
   return {
-    labels,
-    datasets: [
+    title: {
+      show: labels.length === 0,
+      left: 'center',
+      top: 'center',
+      text: 'データがありません',
+      textStyle: {
+        color: '#c0c0c0',
+      },
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    xAxis: {
+      type: 'category',
+      data: labels,
+      axisLabel: {
+        rotate: 20,
+      },
+      name: '時刻',
+    },
+    yAxis: {
+      minInterval: 1,
+      type: 'value',
+      name: '視聴者数',
+    },
+    series: [
       {
-        label: '視聴者数',
+        type: 'line',
         data: values,
+        smooth: true,
       },
     ],
   }
 })
-
-const chartOptions: ChartOptions<'line'> = {
-  scales: {
-    yAxes: {
-      beginAtZero: true,
-    },
-  },
-  responsive: true,
-}
 </script>
 
 <template>
   <v-card :loading="loading">
     <v-card-text>
-      <LineChart
-        :chart-data="chartData"
-        :options="chartOptions"
+      <v-chart
+        :option="option"
+        class="chart"
+        autoresize
       />
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped lang="scss">
+.chart {
+  height: 400px;
+}
+</style>
