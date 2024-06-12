@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.11.33](https://github.com/and-period/furumaru/compare/v1.11.32...v1.11.33) - 2024-06-12
+- feat(user): TOPのi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2277
+- feat(media): 合計視聴者数を取得できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2283
+- build(deps): bump the dependencies group across 1 directory with 46 updates by @dependabot in https://github.com/and-period/furumaru/pull/2282
+- Fix/web/admin/live dashborad by @wf-yamaday in https://github.com/and-period/furumaru/pull/2284
+
 ## [v1.11.32](https://github.com/and-period/furumaru/compare/v1.11.31...v1.11.32) - 2024-06-09
 - fix: Liveに紐づく関連商品のidsをPriorityでソートするように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2279
 
