@@ -268,14 +268,15 @@ func (h *handler) AnalyzeSchedule(ctx *gin.Context) {
 		CreatedAtGte: startAt,
 		CreatedAtLt:  endAt,
 	}
-	viewerLogs, err := h.media.AggregateBroadcastViewerLogs(ctx, viewerLogsIn)
+	viewerLogs, totalViewers, err := h.media.AggregateBroadcastViewerLogs(ctx, viewerLogsIn)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.AnalyzeScheduleResponse{
-		ViewerLogs: service.NewBroadcastViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).Response(),
+		ViewerLogs:   service.NewBroadcastViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).Response(),
+		TotalViewers: totalViewers,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

@@ -30,5 +30,6 @@ type SchedulesResponse struct {
 }
 
 type AnalyzeScheduleResponse struct {
-	ViewerLogs []*BroadcastViewerLog `json:"viewerLogs"` // 視聴者数ログ
+	ViewerLogs   []*BroadcastViewerLog `json:"viewerLogs"`   // 視聴者数ログ
+	TotalViewers int64                 `json:"totalViewers"` // 合計視聴者数
 }

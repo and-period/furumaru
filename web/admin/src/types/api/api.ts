@@ -349,6 +349,12 @@ export interface AnalyzeScheduleResponse {
      * @memberof AnalyzeScheduleResponse
      */
     'viewerLogs': Array<BroadcastViewerLog>;
+    /**
+     * 合計視聴者数
+     * @type {number}
+     * @memberof AnalyzeScheduleResponse
+     */
+    'totalViewers'?: number;
 }
 /**
  * 
