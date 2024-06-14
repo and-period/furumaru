@@ -3,6 +3,9 @@ import { storeToRefs } from 'pinia'
 import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
 import type { Snackbar } from '~/types/props'
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
 
 const router = useRouter()
 const route = useRoute()
@@ -13,6 +16,10 @@ const shoppingCartStore = useShoppingCartStore()
 const { fetchProducts } = productStore
 const { addCart } = shoppingCartStore
 const { products, totalProductsCount } = storeToRefs(productStore)
+
+const lt = (str: keyof I18n['items']['list']) => {
+  return i18n.t(`items.list.${str}`)
+}
 
 const handleClick = (id: string) => {
   router.push(`/items/${id}`)
@@ -101,7 +108,7 @@ const hideV1App = false
       <p
         class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]"
       >
-        すべての商品
+        {{ lt('allItemsTitle') }}
       </p>
       <div
         v-if="hideV1App"

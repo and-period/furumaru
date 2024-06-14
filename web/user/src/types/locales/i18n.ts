@@ -93,7 +93,6 @@ export interface I18n {
       pastMarcheLinkText: string
       viewMoreText: string
       productsLinkText: string
-      productsLinkText: string
       archiveListSubTitle: string
       archivedStreamText: string
       archivesLinkText: string
@@ -119,6 +118,12 @@ export interface I18n {
     complete: {
       thanksMessage: string
       completeMessage: string
+    }
+  }
+
+  items: {
+    list: {
+      allItemsTitle: string
     }
   }
 }
