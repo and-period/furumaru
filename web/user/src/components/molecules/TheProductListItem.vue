@@ -119,7 +119,7 @@ const handleClickAddCartButton = () => {
         <label
           class="mr-2 block whitespace-nowrap text-center text-[8px] md:text-[14px]"
         >
-          数量
+          {{ lt('quantityLabel') }}
         </label>
         <select
           v-model="quantity"

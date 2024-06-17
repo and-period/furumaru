@@ -115,7 +115,8 @@
       "presalesText": "Available Soon",
       "unknouwnItemText": "Invalid Item",
       "itemThumbnailAlt": "Thumnail of {name}",
-      "itemPriceTaxIncludedText": "(tax included)"
+      "itemPriceTaxIncludedText": "(tax included)",
+      "quantityLabel": "Quantity"
     }
   }
 }

@@ -131,6 +131,7 @@ export interface I18n {
       unknouwnItemText: string,
       itemThumbnailAlt: string,
       itemPriceTaxIncludedText: string,
+      quantityLabel: string,
     }
   }
 }
