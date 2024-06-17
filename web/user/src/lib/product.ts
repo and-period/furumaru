@@ -1,5 +1,5 @@
-import { ProductStatus } from '~/types/api'
 import type { Composer, UseI18nOptions } from 'vue-i18n'
+import { ProductStatus } from '~/types/api'
 import type { I18n } from '~/types/locales/i18n'
 
 /**

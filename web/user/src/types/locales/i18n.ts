@@ -124,17 +124,17 @@ export interface I18n {
   items: {
     list: {
       allItemsTitle: string
-      forSaleText: string,
-      soldOutText: string,
-      outOfSalesText: string,
-      presalesText: string,
-      unknouwnItemText: string,
-      itemThumbnailAlt: string,
-      itemPriceTaxIncludedText: string,
-      quantityLabel: string,
-      addToCartText: string,
-      coordinatorLabel: string,
-      coordinatorThumbnailAlt: string,
+      forSaleText: string
+      soldOutText: string
+      outOfSalesText: string
+      presalesText: string
+      unknouwnItemText: string
+      itemThumbnailAlt: string
+      itemPriceTaxIncludedText: string
+      quantityLabel: string
+      addToCartText: string
+      coordinatorLabel: string
+      coordinatorThumbnailAlt: string
     }
   }
 }
