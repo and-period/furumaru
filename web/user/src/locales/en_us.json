@@ -119,7 +119,8 @@
       "quantityLabel": "Quantity",
       "addToCartText": "Add to Cart",
       "coordinatorLabel": "Coordinator",
-      "coordinatorThumbnailAlt": "Thumbnail of {coordinatorName}"
+      "coordinatorThumbnailAlt": "Thumbnail of {coordinatorName}",
+      "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
     }
   }
 }

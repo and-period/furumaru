@@ -135,6 +135,7 @@ export interface I18n {
       addToCartText: string
       coordinatorLabel: string
       coordinatorThumbnailAlt: string
+      addCartSnackbarMessage: string
     }
   }
 }
