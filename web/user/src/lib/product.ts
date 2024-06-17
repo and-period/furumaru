@@ -23,6 +23,6 @@ export function productStatusToString(
     case ProductStatus.PRESALE:
       return statusText('presalesText')
     default:
-      return statusText('unknouwnItemText')
+      return statusText('unknownItemText')
   }
 }

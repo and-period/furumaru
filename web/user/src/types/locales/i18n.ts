@@ -128,7 +128,7 @@ export interface I18n {
       soldOutText: string
       outOfSalesText: string
       presalesText: string
-      unknouwnItemText: string
+      unknownItemText: string
       itemThumbnailAlt: string
       itemPriceTaxIncludedText: string
       quantityLabel: string

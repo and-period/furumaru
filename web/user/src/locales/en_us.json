@@ -113,7 +113,7 @@
       "soldOutText": "Sold Out",
       "outOfSalesText": "Discontinued",
       "presalesText": "Available Soon",
-      "unknouwnItemText": "Invalid Item",
+      "unknownItemText": "Invalid Item",
       "itemThumbnailAlt": "Thumbnail of {itemName}",
       "itemPriceTaxIncludedText": "(tax included)",
       "quantityLabel": "Quantity",

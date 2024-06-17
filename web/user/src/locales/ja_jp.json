@@ -115,7 +115,7 @@
       "soldOutText": "在庫なし",
       "outOfSalesText": "販売終了",
       "presalesText": "近日販売開始",
-      "unknouwnItemText": "無効な商品",
+      "unknownItemText": "無効な商品",
       "itemThumbnailAlt": "{itemName}のサムネイル画像",
       "itemPriceTaxIncludedText": "(税込)",
       "quantityLabel": "数量",
