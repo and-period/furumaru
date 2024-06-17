@@ -132,6 +132,7 @@ export interface I18n {
       itemThumbnailAlt: string,
       itemPriceTaxIncludedText: string,
       quantityLabel: string,
+      addToCartText: string,
     }
   }
 }

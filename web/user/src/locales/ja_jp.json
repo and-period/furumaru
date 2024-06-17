@@ -118,7 +118,8 @@
       "unknouwnItemText": "無効な商品",
       "itemThumbnailAlt": "{name}のサムネイル画像",
       "itemPriceTaxIncludedText": "(税込)",
-      "quantityLabel": "数量"
+      "quantityLabel": "数量",
+      "addToCartText": "カゴに入れる"
     }
   }
 }

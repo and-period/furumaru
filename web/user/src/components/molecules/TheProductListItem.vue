@@ -146,7 +146,7 @@ const handleClickAddCartButton = () => {
           id="add-cart-icon"
           class="mr-1 h-2 w-2 lg:h-4 lg:w-4"
         />
-        カゴに入れる
+        {{ lt('addToCartText') }}
       </button>
     </div>
     <div
