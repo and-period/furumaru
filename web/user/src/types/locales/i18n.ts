@@ -133,6 +133,8 @@ export interface I18n {
       itemPriceTaxIncludedText: string,
       quantityLabel: string,
       addToCartText: string,
+      coordinatorLabel: string,
+      coordinatorThumbnailAlt: string,
     }
   }
 }

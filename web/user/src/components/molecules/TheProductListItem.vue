@@ -34,9 +34,15 @@ const lt = (str: keyof I18n['items']['list']) => {
   return i18n.t(`items.list.${str}`)
 }
 
-const thumbNailAlt = computed<string>(() => {
+const itemThumbnailAlt = computed<string>(() => {
   return i18n.t('items.list.itemThumbnailAlt', {
-    name: props.name,
+    itemName: props.name,
+  })
+})
+
+const coordinatorThumbnailAlt = computed<string>(() => {
+  return i18n.t('items.list.coordinatorThumbnailAlt', {
+    coordinatorName: props.coordinator?.username,
   })
 })
 
@@ -94,7 +100,7 @@ const handleClickAddCartButton = () => {
         <nuxt-img
           provider="cloudFront"
           :src="thumbnail.url"
-          :alt="thumbnailAlt"
+          :alt="itemThumbnailAlt"
           fit="cover"
           sizes="180px md:250px"
           class="aspect-square w-full"
@@ -172,7 +178,7 @@ const handleClickAddCartButton = () => {
           width="64px"
           hidden="64px"
           :src="coordinator.thumbnailUrl"
-          :alt="`${coordinator.username}のサムネイル画像`"
+          :alt="coordinatorThumbnailAlt"
           class="block aspect-square h-14 w-14 rounded-full"
         />
         <div>
@@ -190,7 +196,7 @@ const handleClickAddCartButton = () => {
           </div>
           <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
             <p class="whitespace-nowrap">
-              取扱元:
+              {{ lt('coordinatorLabel') }}:
             </p>
             <p class="text-[12px] md:text-[14px]">
               {{ coordinator.username }}

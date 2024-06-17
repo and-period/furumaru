@@ -114,10 +114,12 @@
       "outOfSalesText": "Discontinued",
       "presalesText": "Available Soon",
       "unknouwnItemText": "Invalid Item",
-      "itemThumbnailAlt": "Thumnail of {name}",
+      "itemThumbnailAlt": "Thumbnail of {itemName}",
       "itemPriceTaxIncludedText": "(tax included)",
       "quantityLabel": "Quantity",
-      "addToCartText": "Add to Cart"
+      "addToCartText": "Add to Cart",
+      "coordinatorLabel": "Coordinator",
+      "coordinatorThumbnailAlt": "Thumbnail of {coordinatorName}"
     }
   }
 }
