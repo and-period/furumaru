@@ -114,7 +114,8 @@
       "outOfSalesText": "Discontinued",
       "presalesText": "Available Soon",
       "unknouwnItemText": "Invalid Item",
-      "itemThumbnailAlt": "Thumnail of {name}"
+      "itemThumbnailAlt": "Thumnail of {name}",
+      "itemPriceTaxIncludedText": "(tax included)"
     }
   }
 }

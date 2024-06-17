@@ -109,9 +109,9 @@ const handleClickAddCartButton = () => {
     </p>
 
     <p
-      class="my-4 text-[16px] tracking-[1.6px] after:ml-2 after:text-[16px] after:content-['(税込)'] md:text-[20px] md:tracking-[2.0px]"
+      class="my-4 text-[16px] tracking-[1.6px] md:text-[20px] md:tracking-[2.0px]"
     >
-      {{ priceString }}
+      {{ priceString }}{{ lt('itemPriceTaxIncludedText') }}
     </p>
 
     <div class="flex h-6 items-center gap-2 text-[10px]">

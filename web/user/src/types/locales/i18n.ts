@@ -129,7 +129,8 @@ export interface I18n {
       outOfSalesText: string,
       presalesText: string,
       unknouwnItemText: string,
-      itemThumbnailAlt: string
+      itemThumbnailAlt: string,
+      itemPriceTaxIncludedText: string,
     }
   }
 }
