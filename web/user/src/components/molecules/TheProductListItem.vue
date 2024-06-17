@@ -4,6 +4,7 @@ import {
   type Coordinator,
   type ProductMediaInner,
 } from '~/types/api'
+import type { I18n } from '~/types/locales'
 import { productStatusToString } from '~/lib/product'
 
 interface Props {
@@ -25,7 +26,13 @@ interface Emits {
 
 const props = defineProps<Props>()
 
+const i18n = useI18n()
+
 const router = useRouter()
+
+const lt = (str: keyof I18n['items']['list']) => {
+  return i18n.t(`items.list.${str}`)
+}
 
 const emits = defineEmits<Emits>()
 
@@ -68,8 +75,8 @@ const handleClickAddCartButton = () => {
         <p class="text-lg font-semibold text-white">
           {{
             status === ProductStatus.FOR_SALE
-              ? '在庫なし'
-              : productStatusToString(status)
+              ? lt('soldOutText')
+              : productStatusToString(status, i18n)
           }}
         </p>
       </div>

@@ -108,7 +108,12 @@
   },
   "items": {
     "list": {
-      "allItemsTitle": "All Items"
+      "allItemsTitle": "All Items",
+      "forSaleText": "For Sale",
+      "soldOutText": "Sold Out",
+      "outOfSalesText": "Discontinued",
+      "presalesText": "Available Soon",
+      "unknouwnItemText": "Invalid Item"
     }
   }
 }

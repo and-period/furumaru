@@ -124,6 +124,11 @@ export interface I18n {
   items: {
     list: {
       allItemsTitle: string
+      forSaleText: string,
+      soldOutText: string,
+      outOfSalesText: string,
+      presalesText: string,
+      unknouwnItemText: string
     }
   }
 }
