@@ -113,7 +113,8 @@
       "soldOutText": "Sold Out",
       "outOfSalesText": "Discontinued",
       "presalesText": "Available Soon",
-      "unknouwnItemText": "Invalid Item"
+      "unknouwnItemText": "Invalid Item",
+      "itemThumbnailAlt": "Thumnail of {name}"
     }
   }
 }

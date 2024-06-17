@@ -34,6 +34,12 @@ const lt = (str: keyof I18n['items']['list']) => {
   return i18n.t(`items.list.${str}`)
 }
 
+const thumbNailAlt = computed<string>(() => {
+  return i18n.t('items.list.itemThumbnailAlt', {
+    name: props.name,
+  })
+})
+
 const emits = defineEmits<Emits>()
 
 const quantity = ref<number>(1)
@@ -88,7 +94,7 @@ const handleClickAddCartButton = () => {
         <nuxt-img
           provider="cloudFront"
           :src="thumbnail.url"
-          :alt="`${name}のサムネイル画像`"
+          :alt="thumbnailAlt"
           fit="cover"
           sizes="180px md:250px"
           class="aspect-square w-full"

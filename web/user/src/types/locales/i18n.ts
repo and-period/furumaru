@@ -128,7 +128,8 @@ export interface I18n {
       soldOutText: string,
       outOfSalesText: string,
       presalesText: string,
-      unknouwnItemText: string
+      unknouwnItemText: string,
+      itemThumbnailAlt: string
     }
   }
 }
