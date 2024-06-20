@@ -107,5 +107,22 @@
       "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",
       "completeMessage": "ご登録いただいたメールアドレスに確認メールをお送りしましたのでご確認ください。\nメールが届かない場合は上記の注文番号をお書き添えの上、こちらからお問い合わせください。\n注文の詳細は、アカウントページの注文履歴からもご確認いただけます。"
     }
+  },
+  "items": {
+    "list": {
+      "allItemsTitle": "すべての商品",
+      "forSaleText": "販売中",
+      "soldOutText": "在庫なし",
+      "outOfSalesText": "販売終了",
+      "presalesText": "近日販売開始",
+      "unknownItemText": "無効な商品",
+      "itemThumbnailAlt": "{itemName}のサムネイル画像",
+      "itemPriceTaxIncludedText": "(税込)",
+      "quantityLabel": "数量",
+      "addToCartText": "カゴに入れる",
+      "coordinatorLabel": "取扱元",
+      "coordinatorThumbnailAlt": "{coordinatorName}のサムネイル画像",
+      "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"
+    }
   }
 }

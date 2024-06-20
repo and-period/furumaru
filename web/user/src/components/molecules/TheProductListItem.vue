@@ -4,6 +4,7 @@ import {
   type Coordinator,
   type ProductMediaInner,
 } from '~/types/api'
+import type { I18n } from '~/types/locales'
 import { productStatusToString } from '~/lib/product'
 
 interface Props {
@@ -25,7 +26,25 @@ interface Emits {
 
 const props = defineProps<Props>()
 
+const i18n = useI18n()
+
 const router = useRouter()
+
+const lt = (str: keyof I18n['items']['list']) => {
+  return i18n.t(`items.list.${str}`)
+}
+
+const itemThumbnailAlt = computed<string>(() => {
+  return i18n.t('items.list.itemThumbnailAlt', {
+    itemName: props.name,
+  })
+})
+
+const coordinatorThumbnailAlt = computed<string>(() => {
+  return i18n.t('items.list.coordinatorThumbnailAlt', {
+    coordinatorName: props.coordinator?.username,
+  })
+})
 
 const emits = defineEmits<Emits>()
 
@@ -68,8 +87,8 @@ const handleClickAddCartButton = () => {
         <p class="text-lg font-semibold text-white">
           {{
             status === ProductStatus.FOR_SALE
-              ? '在庫なし'
-              : productStatusToString(status)
+              ? lt('soldOutText')
+              : productStatusToString(status, i18n)
           }}
         </p>
       </div>
@@ -81,7 +100,7 @@ const handleClickAddCartButton = () => {
         <nuxt-img
           provider="cloudFront"
           :src="thumbnail.url"
-          :alt="`${name}のサムネイル画像`"
+          :alt="itemThumbnailAlt"
           fit="cover"
           sizes="180px md:250px"
           class="aspect-square w-full"
@@ -96,9 +115,9 @@ const handleClickAddCartButton = () => {
     </p>
 
     <p
-      class="my-4 text-[16px] tracking-[1.6px] after:ml-2 after:text-[16px] after:content-['(税込)'] md:text-[20px] md:tracking-[2.0px]"
+      class="my-4 text-[16px] tracking-[1.6px] md:text-[20px] md:tracking-[2.0px]"
     >
-      {{ priceString }}
+      {{ priceString }}{{ lt('itemPriceTaxIncludedText') }}
     </p>
 
     <div class="flex h-6 items-center gap-2 text-[10px]">
@@ -106,7 +125,7 @@ const handleClickAddCartButton = () => {
         <label
           class="mr-2 block whitespace-nowrap text-center text-[8px] md:text-[14px]"
         >
-          数量
+          {{ lt('quantityLabel') }}
         </label>
         <select
           v-model="quantity"
@@ -133,7 +152,7 @@ const handleClickAddCartButton = () => {
           id="add-cart-icon"
           class="mr-1 h-2 w-2 lg:h-4 lg:w-4"
         />
-        カゴに入れる
+        {{ lt('addToCartText') }}
       </button>
     </div>
     <div
@@ -159,7 +178,7 @@ const handleClickAddCartButton = () => {
           width="64px"
           hidden="64px"
           :src="coordinator.thumbnailUrl"
-          :alt="`${coordinator.username}のサムネイル画像`"
+          :alt="coordinatorThumbnailAlt"
           class="block aspect-square h-14 w-14 rounded-full"
         />
         <div>
@@ -177,7 +196,7 @@ const handleClickAddCartButton = () => {
           </div>
           <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
             <p class="whitespace-nowrap">
-              取扱元:
+              {{ lt('coordinatorLabel') }}:
             </p>
             <p class="text-[12px] md:text-[14px]">
               {{ coordinator.username }}
