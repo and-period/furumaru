@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.34](https://github.com/and-period/furumaru/compare/v1.11.33...v1.11.34) - 2024-06-20
+- feat(user): 商品一覧のi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2285
+
 ## [v1.11.33](https://github.com/and-period/furumaru/compare/v1.11.32...v1.11.33) - 2024-06-12
 - feat(user): TOPのi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2277
 - feat(media): 合計視聴者数を取得できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2283
