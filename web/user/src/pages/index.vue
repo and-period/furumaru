@@ -110,21 +110,26 @@ useSeoMeta({
   <div>
     <!-- 動画部分 -->
     <div class="relative md:h-[calc(100vh-360px)] h-[calc(100vh-220px)] w-full">
+      <div class="absolute bg-black/50 w-full h-full" />
       <div
-        class="absolute text-white md:text-[48px] text-[32px] font-bold md:p-16 p-4"
+        class="absolute text-white md:text-[48px] text-[32px] font-bold md:p-16 p-4 tracking-wider"
       >
         <p>&#035;Deep Japan 体験型</p>
         <p>ローカル映像メディア</p>
       </div>
 
-      <div class="absolute 2xl:bottom-36 bottom-20 w-full">
+      <div class="absolute 2xl:bottom-36 bottom-20 w-full z-10">
         <div
           class="md:w-[80%] flex flex-col md:grid grid-cols-2 items-center justify-center md:gap-16 gap-8 mx-auto text-[24px] text-main font-bold"
         >
-          <button class="bg-base rounded-lg px-8 py-2">
+          <button
+            class="bg-base/90 rounded-xl px-8 py-2 hover:bg-base tracking-wide"
+          >
             <span class="text-[32px]">商品</span>と出会う
           </button>
-          <button class="bg-base rounded-lg px-8 py-2">
+          <button
+            class="bg-base/90 rounded-xl px-8 py-2 hover:bg-base tracking-wide"
+          >
             <span class="text-[32px]">体験</span>と出会う
           </button>
         </div>
