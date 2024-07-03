@@ -109,7 +109,7 @@ useSeoMeta({
 <template>
   <div>
     <!-- 動画部分 -->
-    <div class="relative md:h-[calc(100vh-360px)] h-[calc(100vh-220px)] w-full">
+    <div class="relative md:h-[calc(100vh-180px)] h-[calc(100vh-220px)] w-full">
       <div class="absolute bg-black/50 w-full h-full" />
       <div
         class="absolute text-white md:text-[48px] text-[32px] font-bold md:p-16 p-4 tracking-wider"
@@ -120,7 +120,7 @@ useSeoMeta({
 
       <div class="absolute 2xl:bottom-36 bottom-20 w-full z-10">
         <div
-          class="md:w-[80%] flex flex-col md:grid grid-cols-2 items-center justify-center md:gap-16 gap-8 mx-auto text-[24px] text-main font-bold"
+          class="xl:w-[40%] md:w-[80%] flex flex-col md:grid grid-cols-2 items-center justify-center md:gap-16 gap-8 mx-auto text-[24px] text-main font-bold"
         >
           <button
             class="bg-base/90 rounded-xl px-8 py-2 hover:bg-base tracking-wide"
