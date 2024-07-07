@@ -109,7 +109,7 @@ useSeoMeta({
 <template>
   <div>
     <!-- 動画部分 -->
-    <div class="relative md:h-[calc(100vh-180px)] h-[calc(100vh-220px)] w-full">
+    <div class="relative md:h-[calc(100vh-180px)] h-[calc(100vh-80px)] w-full">
       <div class="absolute bg-black/50 w-full h-full" />
       <div
         class="absolute w-full h-full z-10 flex flex-col md:gap-40 justify-center"
