@@ -112,25 +112,27 @@ useSeoMeta({
     <div class="relative md:h-[calc(100vh-180px)] h-[calc(100vh-220px)] w-full">
       <div class="absolute bg-black/50 w-full h-full" />
       <div
-        class="absolute text-white md:text-[48px] text-[32px] font-bold md:p-16 p-4 tracking-wider"
+        class="absolute w-full h-full z-10 flex flex-col md:gap-40 justify-center"
       >
-        <p>&#035;Deep Japan 体験型</p>
-        <p>ローカル映像メディア</p>
-      </div>
-
-      <div class="absolute 2xl:bottom-36 bottom-20 w-full z-10">
         <div
-          class="xl:w-[40%] md:w-[80%] flex flex-col md:grid grid-cols-2 items-center justify-center md:gap-16 gap-8 mx-auto text-[24px] text-main font-bold"
+          class="text-white md:text-[48px] text-[28px] font-bold w-full text-center tracking-wider md:grow-0 grow flex flex-col justify-center"
+        >
+          <p>&#035;Deep Japan 体験型</p>
+          <p>ローカル映像メディア</p>
+        </div>
+
+        <div
+          class="md:py-0 pb-10 px-4 xl:w-[40%] md:w-[80%] grid grid-cols-2 items-center justify-center md:gap-16 gap-4 mx-auto md:text-[18px] text-[14px] text-white font-bold"
         >
           <button
-            class="bg-base/90 rounded-xl px-8 py-2 hover:bg-base tracking-wide"
+            class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide"
           >
-            <span class="text-[32px]">商品</span>と出会う
+            <span class="md:text-[24px] text-[18px]">商品</span>と出会う
           </button>
           <button
-            class="bg-base/90 rounded-xl px-8 py-2 hover:bg-base tracking-wide"
+            class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide"
           >
-            <span class="text-[32px]">体験</span>と出会う
+            <span class="md:text-[24px] text-[18px]">体験</span>と出会う
           </button>
         </div>
       </div>
