@@ -136,7 +136,7 @@ export interface I18n {
       coordinatorLabel: string
       coordinatorThumbnailAlt: string
       addCartSnackbarMessage: string
-    },
+    }
     details: {
       itemThumbnailAlt: string
       producerLabel: string
@@ -145,10 +145,10 @@ export interface I18n {
       quantityLabel: string
       addToCartText: string
       addCartSnackbarMessage: string
-      expirationDateLabel:string
+      expirationDateLabel: string
       expirationDateText: string
-      weightLabel:string
-      deliveryTypeLabel:string
+      weightLabel: string
+      deliveryTypeLabel: string
       deliveryTypeStandard: string
       deliveryTypeRefrigerated: string
       deliveryTypeFrozen: string
