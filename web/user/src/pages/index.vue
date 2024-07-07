@@ -89,7 +89,6 @@ const banners: BannerItem[] = [
 ]
 
 const isOpen = ref<boolean>(false)
-
 const handleClickMoreViewButton = () => {
   isOpen.value = !isOpen.value
 }
@@ -109,7 +108,53 @@ useSeoMeta({
 
 <template>
   <div>
+    <!-- 動画部分 -->
+    <div class="relative md:h-[calc(100vh-180px)] h-[calc(100vh-140px)] w-full">
+      <div class="absolute bg-black/50 w-full h-full" />
+      <div
+        class="absolute w-full h-full z-10 flex flex-col md:gap-40 justify-center"
+      >
+        <div
+          class="text-white md:text-[48px] text-[28px] font-bold w-full text-center tracking-wider md:grow-0 grow flex flex-col justify-center"
+        >
+          <p>&#035;Deep Japan 体験型</p>
+          <p>ローカル映像メディア</p>
+        </div>
+
+        <div
+          class="md:py-0 pb-12 px-4 xl:w-[40%] md:w-[80%] grid grid-cols-2 items-center justify-center md:gap-16 gap-4 mx-auto md:text-[18px] text-[14px] text-white font-bold"
+        >
+          <nuxt-link
+            to="/items"
+            class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
+          >
+            <span class="md:text-[24px] text-[18px]">商品</span>と出会う
+          </nuxt-link>
+          <nuxt-link
+            to="/marches"
+            class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
+          >
+            <span class="md:text-[24px] text-[18px]">体験</span>と出会う
+          </nuxt-link>
+        </div>
+      </div>
+      <video
+        webkit-playsinline
+        playsinline
+        muted
+        autoplay
+        loop
+        class="h-full object-cover w-full"
+      >
+        <source
+          src="/video/furumaru.webm"
+          type="video/webm"
+        >
+      </video>
+    </div>
+
     <the-carousel
+      v-if="false"
       :items="banners"
       :line-add-friend-image-url="tt('lineAddFriendImageUrl')"
       :line-add-friend-image-alt="tt('lineAddFriendImageAlt')"
@@ -133,9 +178,9 @@ useSeoMeta({
             >
           </div>
           <div class="mt-8 text-center text-[14px] text-main md:text-[16px]">
-            <p>{{ tt('noMarcheItemFirstText') }}</p>
+            <p>{{ tt("noMarcheItemFirstText") }}</p>
             <p class="md:mt-4">
-              {{ tt('noMarcheItemSecondText') }}
+              {{ tt("noMarcheItemSecondText") }}
             </p>
           </div>
           <div
@@ -145,13 +190,13 @@ useSeoMeta({
               class="w-60 bg-main py-2 text-white"
               @click="handleClickAllArchive"
             >
-              {{ tt('pastMarcheLinkText') }}
+              {{ tt("pastMarcheLinkText") }}
             </button>
             <button
               class="mt-4 w-60 bg-main py-2 text-white md:mt-0"
               @click="handleClickAllItem"
             >
-              {{ tt('productsLinkText') }}
+              {{ tt("productsLinkText") }}
             </button>
           </div>
         </template>
@@ -193,7 +238,7 @@ useSeoMeta({
               class="relative w-60 bg-main py-2 text-white"
               @click="handleClickMoreViewButton"
             >
-              {{ tt('viewMoreText') }}
+              {{ tt("viewMoreText") }}
               <div class="absolute bottom-3.5 right-4">
                 <the-up-arrow-icon
                   v-show="isOpen"
@@ -255,7 +300,7 @@ useSeoMeta({
             class="w-60 bg-main py-2 text-white"
             @click="handleClickLiveMore"
           >
-            {{ tt('archivesLinkText') }}
+            {{ tt("archivesLinkText") }}
           </button>
         </div>
       </the-content-box>
