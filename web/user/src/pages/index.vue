@@ -122,7 +122,7 @@ useSeoMeta({
         </div>
 
         <div
-          class="md:py-0 pb-10 px-4 xl:w-[40%] md:w-[80%] grid grid-cols-2 items-center justify-center md:gap-16 gap-4 mx-auto md:text-[18px] text-[14px] text-white font-bold"
+          class="md:py-0 pb-12 px-4 xl:w-[40%] md:w-[80%] grid grid-cols-2 items-center justify-center md:gap-16 gap-4 mx-auto md:text-[18px] text-[14px] text-white font-bold"
         >
           <button
             class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide"
