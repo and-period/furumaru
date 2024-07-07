@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.11.34](https://github.com/and-period/furumaru/compare/v1.11.33...v1.11.34) - 2024-07-07
+- feat(user): 商品一覧のi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2285
+- build(deps): bump minimatch from 9.0.4 to 9.0.5 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2288
+- feat: トップページに動画イメージのUIを実装 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2289
+
 ## [v1.11.33](https://github.com/and-period/furumaru/compare/v1.11.32...v1.11.33) - 2024-06-12
 - feat(user): TOPのi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2277
 - feat(media): 合計視聴者数を取得できるように by @taba2424 in https://github.com/and-period/furumaru/pull/2283
