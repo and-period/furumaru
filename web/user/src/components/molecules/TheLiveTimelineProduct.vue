@@ -16,6 +16,8 @@ interface Emits {
 
 const emits = defineEmits<Emits>()
 
+const i18n = useI18n()
+
 const formData = ref<number>(1)
 
 const inventoryCountAboveTen = computed<boolean>(() => {
@@ -72,8 +74,8 @@ const handleClickItem = () => {
           >
             {{
               product.status === ProductStatus.FOR_SALE
-                ? '在庫なし'
-                : productStatusToString(product.status)
+                ? "在庫なし"
+                : productStatusToString(product.status, i18n)
             }}
           </p>
         </div>
