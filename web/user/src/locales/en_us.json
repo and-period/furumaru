@@ -121,6 +121,29 @@
       "coordinatorLabel": "Coordinator",
       "coordinatorThumbnailAlt": "Thumbnail of {coordinatorName}",
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
+    },
+    "details": {
+      "itemThumbnailAlt": "{itemName}のサムネイル画像",
+      "producerLabel": "Producer",
+      "highlightsLabel": "Highlights",
+      "itemPriceTaxIncludedText": "(tax included)",
+      "quantityLabel": "Quantity",
+      "addToCartText": "Add to Cart",
+      "addCartSnackbarMessage": "Added {itemName} to your shopping cart",
+      "expirationDateLabel": "・Expiration Date",
+      "expirationDateText": "{expirationDate} days from shipping",
+      "weightLabel": "・Net Weight",
+      "deliveryTypeLabel": "・Shipping",
+      "deliveryTypeStandard": "Standard",
+      "deliveryTypeRefrigerated": "Refrigerated",
+      "deliveryTypeFrozen": "Frozen",
+      "storageTypeLabel": "・Storage",
+      "storageTypeUnknown": "Unknown",
+      "storageTypeRoomTemperature": "Room Temperature",
+      "storageTypeCoolAndDark": "Cool and Dark",
+      "storageTypeRefrigerated": "Refrigerated",
+      "storageTypeFrozen": "Frozen",
+      "producerInformationTitle": "Producer of this Product" 
     }
   }
 }

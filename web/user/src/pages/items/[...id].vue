@@ -4,6 +4,9 @@ import { useProductStore } from '~/store/product'
 import { useShoppingCartStore } from '~/store/shopping'
 import { ProductStatus } from '~/types/api'
 import type { Snackbar } from '~/types/props'
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
 
 const route = useRoute()
 
@@ -14,6 +17,22 @@ const { fetchProduct } = productStore
 const { addCart } = shoppingCartStore
 
 const { product, productFetchState } = storeToRefs(productStore)
+
+const dt = (str: keyof I18n['items']['details']) => {
+  return i18n.t(`items.details.${str}`)
+}
+
+const itemThumbnailAlt = computed<string>(() => {
+  return i18n.t('items.list.itemThumbnailAlt', {
+    itemName: product.value.name,
+  })
+})
+
+const expirationDateText = computed<string>(() => {
+  return i18n.t('items.details.expirationDateText', {
+    expirationDate: product.value.expirationDate,
+  })
+})
 
 const id = computed<string>(() => {
   const ids = route.params.id
@@ -54,12 +73,15 @@ const canAddCart = computed<boolean>(() => {
 })
 
 const handleClickAddCartButton = () => {
+  const message = i18n.t('items.details.addCartSnackbarMessage', {
+    itemName: product.value.name,
+  })
   addCart({
     productId: id.value,
     quantity: quantity.value,
   })
   snackbarItems.value.push({
-    text: `買い物カゴに「${product.value.name}」を追加しました`,
+    text: message,
     isShow: true,
   })
 }
@@ -67,11 +89,11 @@ const handleClickAddCartButton = () => {
 const getDeliveryType = (type: number) => {
   switch (type) {
     case 1:
-      return '通常便'
+      return dt('deliveryTypeStandard')
     case 2:
-      return '冷蔵便'
+      return dt('deliveryTypeRefrigerated')
     case 3:
-      return '冷凍便'
+      return dt('deliveryTypeFrozen')
     default:
       return ''
   }
@@ -80,15 +102,15 @@ const getDeliveryType = (type: number) => {
 const getStorageMethodType = (type: number) => {
   switch (type) {
     case 0:
-      return '不明'
+      return dt('storageTypeUnknown')
     case 1:
-      return '常温保存'
+      return dt('storageTypeRoomTemperature')
     case 2:
-      return '冷暗所保存'
+      return dt('storageTypeCoolAndDark')
     case 3:
-      return '冷蔵保存'
+      return dt('storageTypeRefrigerated')
     case 4:
-      return '冷凍保存'
+      return dt('storageTypeFrozen')
   }
 }
 
@@ -149,7 +171,7 @@ useSeoMeta({
                 ? product.thumbnail.url
                 : product.media[selectedMediaIndex].url
             "
-            :alt="`${product.name}のサムネイル画像`"
+            :alt="itemThumbnailAlt"
           />
         </div>
         <div
@@ -162,7 +184,7 @@ useSeoMeta({
             fill="contain"
             provider="cloudFront"
             :src="m.url"
-            :alt="`${product.name}の画像_${i}`"
+            :alt="`${itemThumbnailAlt}_${i}`"
             class="aspect-square w-[72px] cursor-pointer object-contain border"
             @click="handleClickMediaItem(i)"
           />
@@ -183,7 +205,7 @@ useSeoMeta({
           <div
             class="text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
           >
-            生産者:
+            {{ dt('producerLabel') }}:
             <a
               href="#"
               class="font-bold underline"
@@ -203,7 +225,7 @@ useSeoMeta({
           <p
             class="mb-[12px] text-[12px] font-medium tracking-[1.4px] md:text-[14px]"
           >
-            おすすめポイント
+            {{ dt('highlightsLabel') }}
           </p>
           <ol
             class="recommend-list flex flex-col divide-y divide-dashed divide-main px-[4px] pl-[24px]"
@@ -237,7 +259,7 @@ useSeoMeta({
               {{ priceString }}
             </div>
             <p class="pb-1 pl-2 text-[12px] md:text-[16px]">
-              (税込)
+              {{ dt('itemPriceTaxIncludedText') }}
             </p>
           </div>
 
@@ -245,7 +267,7 @@ useSeoMeta({
             v-if="product"
             class="mt-4 inline-flex items-center md:mt-8"
           >
-            <label class="mr-2 block text-[14px] md:text-[16px]">数量</label>
+            <label class="mr-2 block text-[14px] md:text-[16px]">{{ dt('quantityLabel') }}</label>
             <select
               v-model="quantity"
               class="h-full border-[1px] border-main px-2"
@@ -269,7 +291,7 @@ useSeoMeta({
           :disabled="!canAddCart"
           @click="handleClickAddCartButton"
         >
-          買い物カゴに入れる
+          {{ dt('addToCartText') }}
         </button>
 
         <div class="mt-4 inline-flex gap-4">
@@ -295,15 +317,15 @@ useSeoMeta({
       >
         <div class="grid grid-cols-5 py-4">
           <p class="col-span-2 md:col-span-1">
-            ・賞味期限
+            {{ dt('expirationDateLabel') }}
           </p>
           <p class="col-span-3 md:col-span-4">
-            発送日より{{ product.expirationDate }}日
+            {{ expirationDateText }}
           </p>
         </div>
         <div class="grid grid-cols-5 py-4">
           <p class="col-span-2 md:col-span-1">
-            ・内容量
+            {{ dt('weightLabel') }}
           </p>
           <p class="col-span-3 md:col-span-4">
             {{ product.weight }}kg
@@ -311,7 +333,7 @@ useSeoMeta({
         </div>
         <div class="grid grid-cols-5 py-4">
           <p class="col-span-2 md:col-span-1">
-            ・配送方法
+            {{ dt('deliveryTypeLabel') }}
           </p>
           <p class="col-span-3 md:col-span-4">
             {{ getDeliveryType(product.deliveryType) }}
@@ -319,7 +341,7 @@ useSeoMeta({
         </div>
         <div class="grid grid-cols-5 py-4">
           <p class="col-span-2 md:col-span-1">
-            ・保存方法
+            {{ dt('storageTypeLabel') }}
           </p>
           <p class="col-span-3 md:col-span-4">
             {{ getStorageMethodType(product.storageMethodType) }}
@@ -337,7 +359,7 @@ useSeoMeta({
         <p
           class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
         >
-          この商品の生産者
+          {{ dt('producerInformationTitle') }}
         </p>
 
         <div class="mt-[64px] flex w-full flex-col gap-4 md:flex-row lg:gap-10">
@@ -357,11 +379,14 @@ useSeoMeta({
               <p class="text-sm font-[500] tracking-[1.4px]">
                 {{ `${product.originPrefecture} ${product.originCity}` }}
               </p>
-              <p
-                class="text-[16px] tracking-[1.4px] before:mr-1 before:text-[14px] before:font-medium before:content-['生産者'] md:text-[24px]"
+              <div
+                class="flex flex-row items-baseline grow text-[16px] tracking-[1.4px] md:text-[24px]"
               >
-                {{ product.producer.username }}
-              </p>
+                <p class="mr-1 text-[14px] font-medium">
+                  {{ dt('producerLabel') }}
+                </p>
+                <p>{{ product.producer.username }}</p>
+              </div>
             </div>
           </div>
           <div

@@ -123,6 +123,29 @@
       "coordinatorLabel": "取扱元",
       "coordinatorThumbnailAlt": "{coordinatorName}のサムネイル画像",
       "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"
+    },
+    "details": {
+      "itemThumbnailAlt": "{itemName}のサムネイル画像",
+      "producerLabel": "生産者",
+      "highlightsLabel": "おすすめポイント",
+      "itemPriceTaxIncludedText": "(税込)",
+      "quantityLabel": "数量",
+      "addToCartText": "カゴに入れる",
+      "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました",
+      "expirationDateLabel": "・賞味期限",
+      "expirationDateText": "発送日より{expirationDate}日まで",
+      "weightLabel": "・内容量",
+      "deliveryTypeLabel": "・配送方法",
+      "deliveryTypeStandard": "通常便",
+      "deliveryTypeRefrigerated": "冷蔵便",
+      "deliveryTypeFrozen": "冷凍便",
+      "storageTypeLabel": "・保存方法",
+      "storageTypeUnknown": "不明",
+      "storageTypeRoomTemperature": "常温保存",
+      "storageTypeCoolAndDark": "冷暗所保存",
+      "storageTypeRefrigerated": "冷蔵保存",
+      "storageTypeFrozen": "冷凍保存",
+      "producerInformationTitle": "この商品の生産者"
     }
   }
 }

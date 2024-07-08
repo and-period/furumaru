@@ -137,5 +137,28 @@ export interface I18n {
       coordinatorThumbnailAlt: string
       addCartSnackbarMessage: string
     }
+    details: {
+      itemThumbnailAlt: string
+      producerLabel: string
+      highlightsLabel: string
+      itemPriceTaxIncludedText: string
+      quantityLabel: string
+      addToCartText: string
+      addCartSnackbarMessage: string
+      expirationDateLabel: string
+      expirationDateText: string
+      weightLabel: string
+      deliveryTypeLabel: string
+      deliveryTypeStandard: string
+      deliveryTypeRefrigerated: string
+      deliveryTypeFrozen: string
+      storageTypeLabel: string
+      storageTypeUnknown: string
+      storageTypeRoomTemperature: string
+      storageTypeCoolAndDark: string
+      storageTypeRefrigerated: string
+      storageTypeFrozen: string
+      producerInformationTitle: string
+    }
   }
 }
