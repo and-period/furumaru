@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.35](https://github.com/and-period/furumaru/compare/v1.11.34...v1.11.35) - 2024-07-08
+- fix: i18nのオブジェクトを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2292
+
 ## [v1.11.34](https://github.com/and-period/furumaru/compare/v1.11.33...v1.11.34) - 2024-07-07
 - feat(user): 商品一覧のi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2285
 - build(deps): bump minimatch from 9.0.4 to 9.0.5 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2288
