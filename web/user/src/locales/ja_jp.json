@@ -150,6 +150,8 @@
   },
   "lives": {
     "details": {
+      "hideMarcheDetailsText": "マルシェの詳細を隠す",
+      "showMarcheDetailsText": "マルシェの詳細を見る",
       "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"
     }
   }

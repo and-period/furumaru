@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { datetimeformatterFromUnixtime } from '~/lib/dayjs'
+import type { I18n } from '~/types/locales'
 
 interface Props {
   title: string
@@ -12,6 +13,12 @@ interface Props {
   coordinatorName: string
   coordinatorImgSrc: string
   coordinatorAddress: string
+}
+
+const i18n = useI18n()
+
+const dt = (str: keyof I18n['lives']['details']) => {
+  return i18n.t(`lives.details.${str}`)
 }
 
 const props = defineProps<Props>()
@@ -98,7 +105,7 @@ const handleClickShowDetailButton = () => {
         @click="handleClickShowDetailButton"
       >
         <div>
-          {{ showDetail ? 'マルシェの詳細を隠す' : 'マルシェの詳細を見る' }}
+          {{ showDetail ? dt('hideMarcheDetailsText') : dt('showMarcheDetailsText') }}
         </div>
         <div>
           <the-up-arrow-icon v-if="showDetail" />

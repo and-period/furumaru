@@ -148,6 +148,8 @@
   },
   "lives": {
     "details": {
+      "hideMarcheDetailsText": "Hide Marché Details",
+      "showMarcheDetailsText": "Show Marché Details",
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
     }
   }

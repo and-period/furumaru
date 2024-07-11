@@ -164,6 +164,8 @@ export interface I18n {
 
   lives: {
     details: {
+      hideMarcheDetailsText: string
+      showMarcheDetailsText: string
       addCartSnackbarMessage: string
     }
   }
