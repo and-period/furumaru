@@ -164,6 +164,7 @@ export interface I18n {
 
   lives: {
     details: {
+      coordinatorLabel: string
       hideMarcheDetailsText: string
       showMarcheDetailsText: string
       addCartSnackbarMessage: string

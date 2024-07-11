@@ -85,7 +85,7 @@ const handleClickShowDetailButton = () => {
           {{ marcheName }}/{{ coordinatorAddress }}
         </p>
         <p>
-          コーディネーター：
+          {{ dt('coordinatorLabel') }}:
           <span
             class="cursor-pointer hover:underline"
             @click="handleCLickCoordinator"
