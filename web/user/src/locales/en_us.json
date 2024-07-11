@@ -123,7 +123,7 @@
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
     },
     "details": {
-      "itemThumbnailAlt": "{itemName}のサムネイル画像",
+      "itemThumbnailAlt": "Thumbnail of {itemName}",
       "producerLabel": "Producer",
       "highlightsLabel": "Highlights",
       "itemPriceTaxIncludedText": "(tax included)",
@@ -151,6 +151,8 @@
       "coordinatorLabel": "Coordinator",
       "hideMarcheDetailsText": "Hide Marché Details",
       "showMarcheDetailsText": "Show Marché Details",
+      "itemsTabLabel": "Marché Items",
+      "commentsTabLabel": "Comments",
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
     }
   }

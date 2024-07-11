@@ -167,6 +167,8 @@ export interface I18n {
       coordinatorLabel: string
       hideMarcheDetailsText: string
       showMarcheDetailsText: string
+      itemsTabLabel: string
+      commentsTabLabel: string
       addCartSnackbarMessage: string
     }
   }

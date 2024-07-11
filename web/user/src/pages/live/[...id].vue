@@ -9,6 +9,7 @@ import {
 } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { LiveTimeLineItem } from '~/types/props/schedule'
+import type { I18n } from '~/types/locales'
 
 const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
@@ -22,6 +23,10 @@ const { addCart } = shoppingCartStore
 const snackbarItems = ref<Snackbar[]>([])
 
 const i18n = useI18n()
+
+const dt = (str: keyof I18n['lives']['details']) => {
+  return i18n.t(`lives.details.${str}`)
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -217,7 +222,7 @@ useSeoMeta({
                 }"
                 @click="clickTab('product')"
               >
-                このマルシェの商品
+                {{ dt('itemsTabLabel') }}
               </button>
               <button
                 class="rounded-t-xl p-4 text-center"
@@ -228,7 +233,7 @@ useSeoMeta({
                 }"
                 @click="clickTab('comment')"
               >
-                コメント
+                {{ dt('commentsTabLabel') }}
               </button>
             </div>
             <template v-if="selectedTab === 'product'">
