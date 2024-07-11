@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
+const dt = (str: keyof I18n['lives']['details']) => {
+  return i18n.t(`lives.details.${str}`)
+}
+
 interface Props {
   isAuthenticated: boolean
   isSending: boolean
@@ -37,18 +44,20 @@ const handleSubmit = () => {
         v-model="modelValue"
         type="text"
         class="block w-full border-typography p-2 shadow-[0_1px_0_0] focus:border-0 focus:border-main focus:shadow-[0_2px_0_0] focus:outline-none focus:ring-0"
-        placeholder="コメントする…"
+        :placeholder="dt('commentPlaceholder')"
       >
       <button
         class="whitespace-nowrap rounded-lg bg-main px-4 py-2 text-white disabled:bg-main/50"
         type="submit"
         :disabled="!canSubmit || isSending"
       >
-        送信
+        {{ dt('submitButtonText') }}
       </button>
     </div>
     <span class="mt-1 text-[12px] tracking-[10%]">
-      <template v-if="!isAuthenticated">※ゲストとしてコメントします </template>
+      <template v-if="!isAuthenticated">
+        {{ dt('guestCommentNote') }}
+      </template>
     </span>
   </form>
 </template>

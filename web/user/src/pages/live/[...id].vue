@@ -257,7 +257,7 @@ useSeoMeta({
                     v-if="comments.length === 0"
                     class="text-typography"
                   >
-                    コメントがありません。
+                    {{ dt('noCommentsText') }}
                   </div>
                   <div
                     v-for="(item, i) in comments"
@@ -281,7 +281,7 @@ useSeoMeta({
                       <div
                         class="whitespace-nowrap text-[14px] text-typography"
                       >
-                        {{ item.username ? item.username : 'ゲスト' }}
+                        {{ item.username ? item.username : dt('guestNameLabel') }}
                       </div>
                       <div class="line-clamp-2 text-main">
                         {{ item.comment }}

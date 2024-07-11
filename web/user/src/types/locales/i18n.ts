@@ -172,6 +172,11 @@ export interface I18n {
       itemPriceTaxIncludedText: string
       addToCartText: string
       addCartSnackbarMessage: string
+      commentPlaceholder: string
+      submitButtonText: string
+      guestCommentNote: string
+      noCommentsText: string
+      guestNameLabel: string
     }
   }
 }

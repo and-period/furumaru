@@ -155,7 +155,12 @@
       "commentsTabLabel": "Comments",
       "itemPriceTaxIncludedText": "(tax included)",
       "addToCartText": "Add to Cart",
-      "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
+      "addCartSnackbarMessage": "Added {itemName} to your shopping cart",
+      "commentPlaceholder": "Leave a comment…",
+      "submitButtonText": "Submit",
+      "guestCommentNote": "Note: Comment as a Guest",
+      "noCommentsText": "No comments yet",
+      "guestNameLabel": "guest"
     }
   }
 }

@@ -157,7 +157,12 @@
       "commentsTabLabel": "コメント",
       "itemPriceTaxIncludedText": "(税込)",
       "addToCartText": "カゴに入れる",
-      "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"
+      "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました",
+      "commentPlaceholder": "コメントをする…",
+      "submitButtonText": "送信",
+      "guestCommentNote": "※ゲストとしてコメントします",
+      "noCommentsText": "コメントはありません",
+      "guestNameLabel": "ゲスト"
     }
   }
 }
