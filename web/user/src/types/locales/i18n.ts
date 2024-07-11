@@ -164,6 +164,8 @@ export interface I18n {
 
   lives: {
     details: {
+      archivedStreamText: string
+      coordinatorThumbnailAlt: string
       coordinatorLabel: string
       hideMarcheDetailsText: string
       showMarcheDetailsText: string
