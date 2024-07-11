@@ -147,6 +147,9 @@
     }
   },
   "lives": {
+    "list": {
+      "allMarcheTitle": "All Marché"
+    },
     "details": {
       "archivedStreamText": "archived stream",
       "coordinatorThumbnailAlt": "{coordinatorName}'s Profile Picture",

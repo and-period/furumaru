@@ -149,6 +149,9 @@
     }
   },
   "lives": {
+    "list": {
+      "allMarcheTitle": "すべてのマルシェ"
+    },
     "details": {
       "archivedStreamText": "アーカイブ",
       "coordinatorThumbnailAlt": "{coordinatorName}のプロフィール画像",
