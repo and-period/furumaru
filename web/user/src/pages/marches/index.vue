@@ -76,7 +76,7 @@ useSeoMeta({
       <p
         class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]"
       >
-        {{ lt('allMarcheTitle')}}
+        {{ lt('allMarcheTitle') }}
       </p>
     </div>
     <hr class="mt-[40px]">

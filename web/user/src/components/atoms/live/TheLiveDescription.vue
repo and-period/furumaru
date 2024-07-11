@@ -83,7 +83,7 @@ const handleClickShowDetailButton = () => {
         provider="cloudFront"
         :src="coordinatorImgSrc"
         class="h-10 w-10 rounded-full hover:cursor-pointer"
-        :alt=coordinatorThumbnailAlt
+        :alt="coordinatorThumbnailAlt"
         @click="handleCLickCoordinator"
       />
       <div class="text-[12px] tracking-[1.2px]">
