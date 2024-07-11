@@ -155,6 +155,8 @@
       "showMarcheDetailsText": "マルシェの詳細を見る",
       "itemsTabLabel": "このマルシェの商品",
       "commentsTabLabel": "コメント",
+      "itemPriceTaxIncludedText": "(税込)",
+      "addToCartText": "カゴに入れる",
       "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"
     }
   }

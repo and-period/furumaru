@@ -2,6 +2,7 @@
 import { ProductStatus, type Product } from '~/types/api'
 import { priceFormatter } from '~/lib/price'
 import { productStatusToString } from '~/lib/product'
+import type { I18n } from '~/types/locales'
 
 interface Props {
   product: Product
@@ -17,6 +18,9 @@ interface Emits {
 const emits = defineEmits<Emits>()
 
 const i18n = useI18n()
+const dt = (str: keyof I18n['lives']['details']) => {
+  return i18n.t(`lives.details.${str}`)
+}
 
 const formData = ref<number>(1)
 
@@ -99,11 +103,14 @@ const handleClickItem = () => {
         {{ product.name }}
       </div>
       <div>
-        <p
-          class="mb-2 text-[12px] font-bold after:ml-2 after:content-['(税込)']"
-        >
-          {{ priceFormatter(product.price) }}
-        </p>
+        <div class="flex flex-row mb-2 text-[12px] font-bold">
+          <p>
+            {{ priceFormatter(product.price) }}
+          </p>
+          <p class="ml-2">
+            {{ dt('itemPriceTaxIncludedText') }}
+          </p>
+        </div>
         <div class="flex h-6 items-center gap-2 text-[10px]">
           <div class="inline-flex h-full items-center">
             <select
@@ -135,7 +142,7 @@ const handleClickItem = () => {
             :disabled="!canAddCart"
             @click.stop="handleClickAddCart"
           >
-            カゴに入れる
+            {{ dt('addToCartText') }}
           </button>
         </div>
       </div>

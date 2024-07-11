@@ -169,6 +169,8 @@ export interface I18n {
       showMarcheDetailsText: string
       itemsTabLabel: string
       commentsTabLabel: string
+      itemPriceTaxIncludedText: string
+      addToCartText: string
       addCartSnackbarMessage: string
     }
   }

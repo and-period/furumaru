@@ -153,6 +153,8 @@
       "showMarcheDetailsText": "Show Marché Details",
       "itemsTabLabel": "Marché Items",
       "commentsTabLabel": "Comments",
+      "itemPriceTaxIncludedText": "(tax included)",
+      "addToCartText": "Add to Cart",
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
     }
   }
