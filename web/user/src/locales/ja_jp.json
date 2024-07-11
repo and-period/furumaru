@@ -147,5 +147,10 @@
       "storageTypeFrozen": "冷凍保存",
       "producerInformationTitle": "この商品の生産者"
     }
+  },
+  "lives": {
+    "details": {
+      "addCartSnackbarMessage": "買い物カゴに{itemName}を追加しました"
+    }
   }
 }

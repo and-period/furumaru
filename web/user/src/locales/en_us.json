@@ -145,5 +145,10 @@
       "storageTypeFrozen": "Frozen",
       "producerInformationTitle": "Producer of this Product" 
     }
+  },
+  "lives": {
+    "details": {
+      "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
+    }
   }
 }

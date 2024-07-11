@@ -161,4 +161,10 @@ export interface I18n {
       producerInformationTitle: string
     }
   }
+
+  lives: {
+    details: {
+      addCartSnackbarMessage: string
+    }
+  }
 }

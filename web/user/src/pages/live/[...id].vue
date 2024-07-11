@@ -21,6 +21,8 @@ const { addCart } = shoppingCartStore
 
 const snackbarItems = ref<Snackbar[]>([])
 
+const i18n = useI18n()
+
 const router = useRouter()
 const route = useRoute()
 
@@ -124,9 +126,12 @@ const handleClickItem = (productId: string) => {
 }
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
+  const message = i18n.t('items.details.addCartSnackbarMessage', {
+    itemName: name,
+  })
   addCart({ productId: id, quantity })
   snackbarItems.value.push({
-    text: `買い物カゴに「${name}」を追加しました`,
+    text: message,
     isShow: true,
   })
 }
