@@ -161,4 +161,27 @@ export interface I18n {
       producerInformationTitle: string
     }
   }
+
+  lives: {
+    list: {
+      allMarcheTitle: string
+    }
+    details: {
+      archivedStreamText: string
+      coordinatorThumbnailAlt: string
+      coordinatorLabel: string
+      hideMarcheDetailsText: string
+      showMarcheDetailsText: string
+      itemsTabLabel: string
+      commentsTabLabel: string
+      itemPriceTaxIncludedText: string
+      addToCartText: string
+      addCartSnackbarMessage: string
+      commentPlaceholder: string
+      submitButtonText: string
+      guestCommentNote: string
+      noCommentsText: string
+      guestNameLabel: string
+    }
+  }
 }

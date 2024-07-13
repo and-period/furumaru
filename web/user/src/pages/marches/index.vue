@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useLiveStore } from '~/store/live'
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
 
 const route = useRoute()
 const router = useRouter()
+
+const lt = (str: keyof I18n['lives']['list']) => {
+  return i18n.t(`lives.list.${str}`)
+}
 
 const liveStore = useLiveStore()
 
@@ -69,7 +76,7 @@ useSeoMeta({
       <p
         class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]"
       >
-        すべてのマルシェ
+        {{ lt('allMarcheTitle') }}
       </p>
     </div>
     <hr class="mt-[40px]">

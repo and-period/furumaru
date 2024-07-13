@@ -9,6 +9,7 @@ import {
 } from '~/types/api'
 import type { Snackbar } from '~/types/props'
 import type { LiveTimeLineItem } from '~/types/props/schedule'
+import type { I18n } from '~/types/locales'
 
 const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
@@ -20,6 +21,12 @@ const shoppingCartStore = useShoppingCartStore()
 const { addCart } = shoppingCartStore
 
 const snackbarItems = ref<Snackbar[]>([])
+
+const i18n = useI18n()
+
+const dt = (str: keyof I18n['lives']['details']) => {
+  return i18n.t(`lives.details.${str}`)
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -124,9 +131,12 @@ const handleClickItem = (productId: string) => {
 }
 
 const handleClickAddCart = (name: string, id: string, quantity: number) => {
+  const message = i18n.t('items.details.addCartSnackbarMessage', {
+    itemName: name,
+  })
   addCart({ productId: id, quantity })
   snackbarItems.value.push({
-    text: `買い物カゴに「${name}」を追加しました`,
+    text: message,
     isShow: true,
   })
 }
@@ -212,7 +222,7 @@ useSeoMeta({
                 }"
                 @click="clickTab('product')"
               >
-                このマルシェの商品
+                {{ dt('itemsTabLabel') }}
               </button>
               <button
                 class="rounded-t-xl p-4 text-center"
@@ -223,7 +233,7 @@ useSeoMeta({
                 }"
                 @click="clickTab('comment')"
               >
-                コメント
+                {{ dt('commentsTabLabel') }}
               </button>
             </div>
             <template v-if="selectedTab === 'product'">
@@ -247,7 +257,7 @@ useSeoMeta({
                     v-if="comments.length === 0"
                     class="text-typography"
                   >
-                    コメントがありません。
+                    {{ dt('noCommentsText') }}
                   </div>
                   <div
                     v-for="(item, i) in comments"
@@ -271,7 +281,7 @@ useSeoMeta({
                       <div
                         class="whitespace-nowrap text-[14px] text-typography"
                       >
-                        {{ item.username ? item.username : 'ゲスト' }}
+                        {{ item.username ? item.username : dt('guestNameLabel') }}
                       </div>
                       <div class="line-clamp-2 text-main">
                         {{ item.comment }}

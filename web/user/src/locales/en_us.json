@@ -123,7 +123,7 @@
       "addCartSnackbarMessage": "Added {itemName} to your shopping cart"
     },
     "details": {
-      "itemThumbnailAlt": "{itemName}のサムネイル画像",
+      "itemThumbnailAlt": "Thumbnail of {itemName}",
       "producerLabel": "Producer",
       "highlightsLabel": "Highlights",
       "itemPriceTaxIncludedText": "(tax included)",
@@ -144,6 +144,28 @@
       "storageTypeRefrigerated": "Refrigerated",
       "storageTypeFrozen": "Frozen",
       "producerInformationTitle": "Producer of this Product" 
+    }
+  },
+  "lives": {
+    "list": {
+      "allMarcheTitle": "All Marché"
+    },
+    "details": {
+      "archivedStreamText": "archived stream",
+      "coordinatorThumbnailAlt": "{coordinatorName}'s Profile Picture",
+      "coordinatorLabel": "Coordinator",
+      "hideMarcheDetailsText": "Hide Marché Details",
+      "showMarcheDetailsText": "Show Marché Details",
+      "itemsTabLabel": "Marché Items",
+      "commentsTabLabel": "Comments",
+      "itemPriceTaxIncludedText": "(tax included)",
+      "addToCartText": "Add to Cart",
+      "addCartSnackbarMessage": "Added {itemName} to your shopping cart",
+      "commentPlaceholder": "Leave a comment…",
+      "submitButtonText": "Submit",
+      "guestCommentNote": "Note: Comment as a Guest",
+      "noCommentsText": "No comments yet",
+      "guestNameLabel": "guest"
     }
   }
 }

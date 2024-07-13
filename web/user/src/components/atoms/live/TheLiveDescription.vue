@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { datetimeformatterFromUnixtime } from '~/lib/dayjs'
+import type { I18n } from '~/types/locales'
 
 interface Props {
   title: string
@@ -13,6 +14,18 @@ interface Props {
   coordinatorImgSrc: string
   coordinatorAddress: string
 }
+
+const i18n = useI18n()
+
+const dt = (str: keyof I18n['lives']['details']) => {
+  return i18n.t(`lives.details.${str}`)
+}
+
+const coordinatorThumbnailAlt = computed<string>(() => {
+  return i18n.t('lives.details.coordinatorThumbnailAlt', {
+    coordinatorName: props.coordinatorName,
+  })
+})
 
 const props = defineProps<Props>()
 
@@ -40,7 +53,7 @@ const handleClickShowDetailButton = () => {
         <div
           class="flex max-w-fit items-center justify-center rounded border-2 border-main px-2 font-bold text-main"
         >
-          アーカイブ
+          {{ dt('archivedStreamText') }}
         </div>
       </template>
       <template v-else-if="isLiveStreaming">
@@ -70,7 +83,7 @@ const handleClickShowDetailButton = () => {
         provider="cloudFront"
         :src="coordinatorImgSrc"
         class="h-10 w-10 rounded-full hover:cursor-pointer"
-        :alt="`${coordinatorName}のプロフィール画像`"
+        :alt="coordinatorThumbnailAlt"
         @click="handleCLickCoordinator"
       />
       <div class="text-[12px] tracking-[1.2px]">
@@ -78,7 +91,7 @@ const handleClickShowDetailButton = () => {
           {{ marcheName }}/{{ coordinatorAddress }}
         </p>
         <p>
-          コーディネーター：
+          {{ dt('coordinatorLabel') }}:
           <span
             class="cursor-pointer hover:underline"
             @click="handleCLickCoordinator"
@@ -98,7 +111,7 @@ const handleClickShowDetailButton = () => {
         @click="handleClickShowDetailButton"
       >
         <div>
-          {{ showDetail ? 'マルシェの詳細を隠す' : 'マルシェの詳細を見る' }}
+          {{ showDetail ? dt('hideMarcheDetailsText') : dt('showMarcheDetailsText') }}
         </div>
         <div>
           <the-up-arrow-icon v-if="showDetail" />
