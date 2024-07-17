@@ -115,6 +115,9 @@ export interface I18n {
   }
 
   purchase: {
+    cart: {
+      cartTitle: string
+    }
     complete: {
       thanksMessage: string
       completeMessage: string
