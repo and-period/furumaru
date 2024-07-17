@@ -76,8 +76,8 @@ useSeoMeta({
       <p>{{ ct('cartCountLabel') }}{{ shoppingCart.carts.length }}</p>
 
       <ul class="list-disc px-6">
-        <li>マルシェごとのご注文手続き・お届けとなります。</li>
-        <li>買い物カゴごとに送料がかかります。</li>
+        <li>{{ ct('firstNotice') }}</li>
+        <li>{{ ct('secondNotice') }}</li>
       </ul>
     </div>
 

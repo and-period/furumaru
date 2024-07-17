@@ -118,6 +118,8 @@ export interface I18n {
     cart: {
       cartTitle: string
       cartCountLabel: string
+      firstNotice: string
+      secondNotice: string
     }
     complete: {
       thanksMessage: string
