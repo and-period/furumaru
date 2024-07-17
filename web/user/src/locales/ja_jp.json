@@ -104,7 +104,8 @@
   },
   "purchase": {
     "cart": {
-      "cartTitle": "買い物カゴ"
+      "cartTitle": "買い物カゴ",
+      "cartCountLabel": "現在のカゴの数:"
     },
     "complete": {
       "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",

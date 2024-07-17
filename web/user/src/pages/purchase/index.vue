@@ -73,7 +73,7 @@ useSeoMeta({
     </div>
 
     <div class="my-10 border border-orange bg-white px-6 py-7 text-orange">
-      <div>現在のカゴの数：{{ shoppingCart.carts.length }}</div>
+      <p>{{ ct('cartCountLabel') }}{{ shoppingCart.carts.length }}</p>
 
       <ul class="list-disc px-6">
         <li>マルシェごとのご注文手続き・お届けとなります。</li>

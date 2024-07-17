@@ -117,6 +117,7 @@ export interface I18n {
   purchase: {
     cart: {
       cartTitle: string
+      cartCountLabel: string
     }
     complete: {
       thanksMessage: string
