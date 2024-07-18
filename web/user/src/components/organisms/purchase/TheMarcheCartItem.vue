@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Coordinator } from '~/types/api'
 import type { CartItem, ShoppingCart } from '~/types/store'
+import type { I18n } from '~/types/locales'
 
 interface Props {
   cartNumber: number
@@ -13,6 +14,12 @@ interface Emits {
   (e: 'click:buyButton', coordinatorId: string): void
   (e: 'click:cartBuyButton', coordinatorId: string, cartNumber: number): void
   (e: 'click:removeItemFromCart', cartNumber: number, id: string): void
+}
+
+const i18n = useI18n()
+
+const ct = (str: keyof I18n['purchase']['cart']) => {
+  return i18n.t(`purchase.cart.${str}`)
 }
 
 const props = defineProps<Props>()
@@ -52,14 +59,14 @@ const handelClickRemoveItemButton = (id: string) => {
       </div>
 
       <div class="my-9">
-        <div>カゴの数：{{ cart.items.length }}</div>
-        <div>発送地：{{ `${coordinator.prefecture}${coordinator.city}` }}</div>
-        <div>取り扱い元：{{ coordinator.username }}</div>
+        <div>{{ ct('cartCountLabel') }}{{ cart.items.length }}</div>
+        <div>{{ ct('shipFromLabel') }}{{ `${coordinator.prefecture}${coordinator.city}` }}</div>
+        <div>{{ ct('coordinatorLabel') }}{{ coordinator.username }}</div>
       </div>
 
       <div class="flex items-center justify-between font-bold">
         <div class="text-[14px]">
-          商品合計（税込み）
+          {{ ct('totalPriceLabel') }}
         </div>
         <div class="text-[20px]">
           {{ priceStringFormatter(totalPrice) }}

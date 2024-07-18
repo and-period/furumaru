@@ -105,9 +105,12 @@
   "purchase": {
     "cart": {
       "cartTitle": "買い物カゴ",
-      "cartCountLabel": "現在のカゴの数:",
+      "cartCountLabel": "現在のカゴの数: ",
       "firstNotice": "マルシェごとのご注文手続き・お届けとなります。",
-      "secondNotice": "買い物カゴごとに送料がかかります。"
+      "secondNotice": "買い物カゴごとに送料がかかります。",
+      "shipFromLabel": "発送元: ",
+      "coordinatorLabel": "取り扱い元: ",
+      "totalPriceLabel": "商品合計（税込み）"
     },
     "complete": {
       "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",

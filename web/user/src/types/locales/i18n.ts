@@ -120,6 +120,9 @@ export interface I18n {
       cartCountLabel: string
       firstNotice: string
       secondNotice: string
+      shipFromLabel: string
+      coordinatorLabel: string
+      totalPriceLabel: string
     }
     complete: {
       thanksMessage: string
