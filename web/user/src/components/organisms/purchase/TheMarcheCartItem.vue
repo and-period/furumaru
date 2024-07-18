@@ -211,7 +211,7 @@ const handelClickRemoveItemButton = (id: string) => {
             <div class="flex grow flex-col gap-4 whitespace-nowrap">
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
-                  箱タイプ
+                  {{ ct('boxTypeLabel') }}
                 </div>
                 <div class="text-[14px]">
                   {{ cart.boxType }}
@@ -220,7 +220,7 @@ const handelClickRemoveItemButton = (id: string) => {
 
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
-                  箱サイズ
+                  {{ ct('boxSizeLabel') }}
                 </div>
                 <div class="text-[14px]">
                   {{ cart.boxSize }}
@@ -229,7 +229,7 @@ const handelClickRemoveItemButton = (id: string) => {
 
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
-                  占有率
+                  {{ ct('utilizationRateLabel') }}
                 </div>
                 <div class="text-[14px]">
                   {{ cart.useRate }}
@@ -242,21 +242,21 @@ const handelClickRemoveItemButton = (id: string) => {
             <div class="hidden lg:block">
               <div class="flex items-center justify-between">
                 <div class="text-[14px]">
-                  小計（税込み）
+                  {{ ct('subtotalLabel') }}
                 </div>
                 <div class="text-[20px]">
                   {{ priceStringFormatter(totalPrice) }}
                 </div>
               </div>
               <hr class="my-4 border-main">
-              <div>※送料はご購入手続き画面で加算されます。</div>
+              <div>{{ ct('shippingFeeNotice') }}</div>
             </div>
 
             <button
               class="bg-main p-[14px] text-[16px] text-white"
               @click="handleCartBuyButton"
             >
-              このカゴのご購入手続きへ
+              {{ ct('checkoutButtonText') }}
             </button>
           </div>
         </div>

@@ -117,7 +117,10 @@
       "productPriceLabel": "価格（税込み）",
       "quantityLabel": "数量",
       "subtotalLabel": "小計（税込み）",
-      "deleteButtonText": "削除"
+      "deleteButtonText": "削除",
+      "boxTypeLabel": "箱タイプ",
+      "boxSizeLabel": "箱サイズ",
+      "utilizationRateLabel": "占有率"
     },
     "complete": {
       "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",

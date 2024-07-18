@@ -130,6 +130,9 @@ export interface I18n {
       quantityLabel: string
       subtotalLabel: string
       deleteButtonText: string
+      boxTypeLabel: string
+      boxSizeLabel: string
+      utilizationRateLabel: string
     }
     complete: {
       thanksMessage: string
