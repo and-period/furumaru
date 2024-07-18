@@ -125,6 +125,11 @@ export interface I18n {
       totalPriceLabel: string
       shippingFeeNotice: string
       checkoutButtonText: string
+      productNameLabel: string
+      productPriceLabel: string
+      quantityLabel: string
+      subtotalLabel: string
+      deleteButtonText: string
     }
     complete: {
       thanksMessage: string

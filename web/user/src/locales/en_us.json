@@ -111,7 +111,12 @@
       "coordinatorLabel": "Coordinator: ",
       "totalPriceLabel": "Total (tax included)",
       "shippingFeeNotice": "Note: Shipping fees will be added at checkout.",
-      "checkoutButtonText": "Proceed to Checkout for this Origin"
+      "checkoutButtonText": "Proceed to Checkout for this Origin",
+      "productNameLabel": "product",
+      "productPriceLabel": "Price (tax included)",
+      "quantityLabel": "Quantity",
+      "subtotalLabel": "Subtotal (tax included)",
+      "deleteButtonText": "delete"
     },
     "complete": {
       "completeMessage": "A confirmation email has been sent to the email address you registered, so please check it. if you do not receive an email, please contact us here and include your order number above. you can also check your order details from your order history on your account page."

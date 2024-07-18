@@ -96,7 +96,7 @@ const handelClickRemoveItemButton = (id: string) => {
         <div
           class="mb-7 rounded-2xl bg-base p-2 text-center font-bold tracking-[1.2px] text-main"
         >
-          買い物カゴ #{{ cartNumber }} -{{ coordinator.marcheName }}-
+          {{ ct('cartTitle') }} #{{ cartNumber }} -{{ coordinator.marcheName }}-
         </div>
 
         <div class="flex w-full flex-col text-main">
@@ -105,11 +105,11 @@ const handelClickRemoveItemButton = (id: string) => {
             class="hidden grid-cols-5 items-center border-b py-2 text-[12px] tracking-[1.2px] md:grid"
           >
             <div class="col-span-2">
-              商品
+              {{ ct('productNameLabel') }}
             </div>
-            <div>価格（税込み）</div>
-            <div>数量</div>
-            <div>小計（税込み）</div>
+            <div>{{ ct('productPriceLabel') }}</div>
+            <div>{{ ct('quantityLabel') }}</div>
+            <div>{{ ct('subtotalLabel') }}</div>
           </div>
 
           <!-- PC、タブレットのみで表示する -->
@@ -139,7 +139,7 @@ const handelClickRemoveItemButton = (id: string) => {
                 type="button"
                 @click="handelClickRemoveItemButton(item.product.id)"
               >
-                削除
+                {{ ct('deleteButtonText') }}
               </button>
             </div>
             <div>
@@ -171,13 +171,13 @@ const handelClickRemoveItemButton = (id: string) => {
                 </div>
 
                 <div class="flex items-center gap-4 text-[12px]">
-                  <div>数量: {{ item.quantity }}</div>
+                  <div>{{ ct('quantityLabel') }}: {{ item.quantity }}</div>
                   <button
                     class="text-[12px] underline"
                     type="button"
                     @click="handelClickRemoveItemButton(item.product.id)"
                   >
-                    削除
+                    {{ ct('deleteButtonText') }}
                   </button>
                 </div>
               </div>
@@ -190,7 +190,7 @@ const handelClickRemoveItemButton = (id: string) => {
           <div class="lg:hidden">
             <div class="flex items-center justify-between">
               <div class="text-[14px]">
-                小計（税込み）
+                {{ ct('subtotalLabel') }}
               </div>
               <div class="text-[20px]">
                 {{ priceStringFormatter(totalPrice) }}
@@ -198,7 +198,7 @@ const handelClickRemoveItemButton = (id: string) => {
             </div>
             <hr class="my-4 border-main">
             <div class="text-[12px]">
-              ※送料はご購入手続き画面で加算されます。
+              {{ ct('shippingFeeNotice') }}
             </div>
           </div>
 

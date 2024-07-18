@@ -112,7 +112,12 @@
       "coordinatorLabel": "取り扱い元: ",
       "totalPriceLabel": "商品合計（税込み）",
       "shippingFeeNotice": "※送料はご購入手続き画面で加算されます。",
-      "checkoutButtonText": "この産地のご購入手続きへ"
+      "checkoutButtonText": "この産地のご購入手続きへ",
+      "productNameLabel": "商品",
+      "productPriceLabel": "価格（税込み）",
+      "quantityLabel": "数量",
+      "subtotalLabel": "小計（税込み）",
+      "deleteButtonText": "削除"
     },
     "complete": {
       "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",
