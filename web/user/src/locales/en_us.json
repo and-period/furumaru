@@ -121,6 +121,21 @@
       "boxSizeLabel": "Box Size",
       "utilizationRateLabel": "Utilization Rate"
     },
+    "auth": {
+      "loginRequiredMessage": "Login is required to make a purchase.",
+      "loginNewAccountMessage": "Log in with your created account.",
+      "withAccountTitle": "For those with an account",
+      "loginAndCheckoutButtonText": "Log in and Checkout",
+      "usernameLabel": "Email Address",
+      "passwordLabel": "Password",
+      "usernamePlaceholder": "Email Address",
+      "passwordPlaceholder": "Password",
+      "noAccountButtonText": "No account? Click here to sign up",
+      "forgetPasswordLink": "Forget Password?",
+      "notSignUpTitle": "For those who haven't signed up yet",
+      "checkoutWithoutAccountDescription": "If you prefer to purchase without signing up for an account, please click here.",
+      "checkoutWithoutAccountButtonText": "Guest Checkout"
+    },
     "complete": {
       "completeMessage": "A confirmation email has been sent to the email address you registered, so please check it. if you do not receive an email, please contact us here and include your order number above. you can also check your order details from your order history on your account page."
     }

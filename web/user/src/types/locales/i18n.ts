@@ -134,6 +134,21 @@ export interface I18n {
       boxSizeLabel: string
       utilizationRateLabel: string
     }
+    auth: {
+      loginRequiredMessage: string
+      loginNewAccountMessage: string
+      withAccountTitle: string
+      loginAndCheckoutButtonText: string
+      usernameLabel: string
+      passwordLabel: string
+      usernamePlaceholder: string
+      passwordPlaceholder: string
+      noAccountButtonText: string
+      forgetPasswordLink: string
+      notSignUpTitle: string
+      checkoutWithoutAccountDescription: string
+      checkoutWithoutAccountButtonText: string
+    }
     complete: {
       thanksMessage: string
       completeMessage: string

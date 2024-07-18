@@ -122,6 +122,21 @@
       "boxSizeLabel": "箱サイズ",
       "utilizationRateLabel": "占有率"
     },
+    "auth": {
+      "loginRequiredMessage": "ご購入にはログインが必須です。",
+      "loginNewAccountMessage": "作成したアカウントでログインをしましょう",
+      "withAccountTitle": "アカウントをお持ちの方",
+      "loginAndCheckoutButtonText": "ログインして購入",
+      "usernameLabel": "メールアドレス",
+      "passwordLabel": "パスワード",
+      "usernamePlaceholder": "メールアドレス",
+      "passwordPlaceholder": "パスワード",
+      "noAccountButtonText": "アカウントをお持ちでない方はこちら",
+      "forgetPasswordLink": "パスワードをお忘れの方はこちら",
+      "notSignUpTitle": "まだ登録されていない方",
+      "checkoutWithoutAccountDescription": "アカウントを登録せずにご購入を希望される方はこちらからご利用ください。",
+      "checkoutWithoutAccountButtonText": "ゲストとして購入"
+    },
     "complete": {
       "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",
       "completeMessage": "ご登録いただいたメールアドレスに確認メールをお送りしましたのでご確認ください。\nメールが届かない場合は上記の注文番号をお書き添えの上、こちらからお問い合わせください。\n注文の詳細は、アカウントページの注文履歴からもご確認いただけます。"
