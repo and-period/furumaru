@@ -123,6 +123,8 @@ export interface I18n {
       shipFromLabel: string
       coordinatorLabel: string
       totalPriceLabel: string
+      shippingFeeNotice: string
+      checkoutButtonText: string
     }
     complete: {
       thanksMessage: string

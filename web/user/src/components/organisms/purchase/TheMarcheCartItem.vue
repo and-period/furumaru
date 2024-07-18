@@ -75,13 +75,13 @@ const handelClickRemoveItemButton = (id: string) => {
 
       <hr class="my-5 border-main">
 
-      <div>※送料はご購入手続き画面で加算されます。</div>
+      <div>{{ ct('shippingFeeNotice') }}</div>
 
       <button
         class="mt-8 bg-main p-[14px] text-[16px] text-white"
         @click="handleBuyButton"
       >
-        この産地のご購入手続きへ
+        {{ ct('checkoutButtonText') }}
       </button>
     </div>
 
