@@ -95,7 +95,11 @@ async function isUserMigrationAuthenticationTriggerEvent(
     exists = true;
   });
 
-  return exists ? event : Promise.reject('user not found');
+  if (!exists) {
+    throw new Error('user not found');
+  }
+  console.log('user found', JSON.stringify(user));
+  return event;
 }
 
 async function isUserMigrationForgotPasswordTriggerEvent(
@@ -130,5 +134,9 @@ async function isUserMigrationForgotPasswordTriggerEvent(
     exists = true;
   });
 
-  return exists ? event : Promise.reject('user not found');
+  if (!exists) {
+    throw new Error('user not found');
+  }
+  console.log('user found', JSON.stringify(user));
+  return event;
 }
