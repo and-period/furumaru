@@ -76,13 +76,13 @@ jobs:
     - name: Upload build artifact to s3 bucket
       run: S3_BUCKET_NAME=${LAMBDA_FUNCTION_S3_BUCKET} make push
       env:
-        LAMBDA_FUNCTION_S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
+        LAMBDA_FUNCTION_S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_GLOBAL_BUCKET }}
 
     - name: Update lambda function
       run: FUNCTION_NAME=${LAMBDA_FUNCTION} S3_BUCKET_NAME=${S3_BUCKET} make deploy
       env:
         LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_CLOUDFRONT_ORIGIN_RESPONSE }}
-        S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
+        S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_GLOBAL_BUCKET }}
 
     - name: Set output
       id: set-output
