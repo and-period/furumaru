@@ -15,6 +15,12 @@ const gt = (str: keyof I18n['purchase']['guest']) => {
   return i18n.t(`purchase.guest.${str}`)
 }
 
+const itemThumbnailAlt = (itemName: string) => {
+  return i18n.t('items.list.itemThumbnailAlt', {
+    itemName: itemName,
+  })
+}
+
 const addressStore = useAddressStore()
 const { searchAddressByPostalCode } = addressStore
 const shoppingCartStore = useShoppingCartStore()
@@ -321,7 +327,7 @@ useSeoMeta({
     <div
       class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
     >
-      {{ gt('purchaseTitle') }}
+      {{ gt('checkoutTitle') }}
     </div>
 
     <the-alert
@@ -362,7 +368,7 @@ useSeoMeta({
         class="row-span-2 self-start bg-base px-[16px] py-[24px] text-main md:w-full md:p-10"
       >
         <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
-          注文内容
+          {{ gt('orderDetailsTitle') }}
         </div>
 
         <template v-if="calcCartResponseItem">
@@ -371,15 +377,15 @@ useSeoMeta({
               {{ calcCartResponseItem.coordinator.marcheName }}
             </p>
             <p>
-              発送地：{{
+              {{ gt('shipFromLabel') }}{{
                 `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
               }}
             </p>
             <p>
-              取扱元：
+              {{ gt('coordinatorLabel') }}
               {{ calcCartResponseItem.coordinator.username }}
             </p>
-            <p>箱の数：{{ calcCartResponseItem.carts.length }}</p>
+            <p>{{ gt('boxCountLabel') }}{{ calcCartResponseItem.carts.length }}</p>
           </div>
           <div>
             <div class="divide-y border-y">
@@ -395,7 +401,7 @@ useSeoMeta({
                     height="56px"
                     provider="cloudFront"
                     :src="item.product.thumbnail.url"
-                    :alt="`${item.product.name}の画像`"
+                    :alt="itemThumbnailAlt(item.product.name)"
                     class="block aspect-square h-[56px] w-[56px]"
                   />
                   <div class="col-span-3 pl-[24px] md:pl-0">
@@ -403,7 +409,7 @@ useSeoMeta({
                     <div
                       class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
                     >
-                      数量：{{ item.quantity }}
+                      {{ gt('quantityLabel')}}{{ item.quantity }}
                     </div>
                   </div>
 
@@ -433,7 +439,7 @@ useSeoMeta({
                       d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                     />
                   </svg>
-                  クーポンコード適用済み
+                  {{ gt('couponAppliedMessage') }}
                 </div>
                 <button @click="handleClickCancelPromotionCodeButton">
                   <svg
@@ -461,21 +467,21 @@ useSeoMeta({
                     v-model="promotionCodeFormValue"
                     type="text"
                     class="w-full border border-gray-300 bg-gray-50 p-2.5 text-[14px] md:text-[16px]"
-                    placeholder="クーポンコード"
+                    :placeholder="gt('couponPlaceholder')"
                   >
                 </div>
                 <button
                   class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
                   @click="handleClickUsePromotionCodeButton"
                 >
-                  適用する
+                  {{ gt('applyButtonText') }}
                 </button>
               </div>
               <div
                 v-if="invalidPromotion"
                 class="mt-2 px-1 text-[12px] leading-[1.2px]"
               >
-                指定したクーポンコードは無効です。
+                {{ gt('couponInvalidMessage') }}
               </div>
             </template>
 
@@ -483,29 +489,29 @@ useSeoMeta({
               class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
             >
               <div class="col-span-2 md:col-span-1">
-                商品合計（税込）
+                {{ gt('totalPriceLabel') }}
               </div>
               <div class="col-span-3 text-right md:col-span-1">
                 {{ priceFormatter(calcCartResponseItem.subtotal) }}
               </div>
               <div class="col-span-2 md:col-span-1">
-                クーポン利用
+                {{ gt('applyCouponLabel') }}
               </div>
               <div class="col-span-3 text-right md:col-span-1">
                 {{ priceFormatter(calcCartResponseItem.discount) }}
               </div>
               <div class="col-span-2 md:col-span-1">
-                送料（税込）
+                {{ gt('shippingFeeLabel') }}
               </div>
               <div class="col-span-3 text-right md:col-span-1">
-                次ページで計算されます
+                {{ gt('calculateNextPageMessage') }}
               </div>
             </div>
 
             <div
               class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
             >
-              <div>合計（税込み）</div>
+              <div>{{ gt('totalPriceLabel') }}</div>
               <div class="text-right">
                 {{ priceFormatter(calcCartResponseItem.total) }}
               </div>
@@ -522,7 +528,7 @@ useSeoMeta({
           @click="handleClickBackCartButton"
         >
           <the-left-arrow-icon class="h-4 w-4" />
-          買い物カゴへ戻る
+          {{ gt('backToCartButtonText') }}
         </button>
 
         <div>
@@ -530,7 +536,7 @@ useSeoMeta({
             class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
             @click="handleClickNextStepButton()"
           >
-            お支払方法の選択へ
+            {{ gt('paymentMethodButtonText') }}
           </button>
         </div>
       </div>

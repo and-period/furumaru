@@ -149,7 +149,24 @@
       "prefectureLabel": "Prefecture",
       "cityPlaceholder": "Address (City/Ward/Town)",
       "streetPlaceholder": "Address (Street Address)",
-      "apartmentPlaceholder": "Address (Apartment Name, Room Number)"
+      "apartmentPlaceholder": "Address (Apartment Name, Room Number)",
+      "orderDetailsTitle": "Order Details",
+      "shipFromLabel": "Ship From: ",
+      "coordinatorLabel": "Coordinator: ",
+      "boxCountLabel": "Number of Boxes: ",
+      "itemThumbnailAlt": "Thumbnail of {itemName}",
+      "quantityLabel": "Quantity: ",
+      "couponPlaceholder": "Coupon Code",
+      "applyButtonText": "Apply",
+      "couponAppliedMessage": "Coupon code applied",
+      "couponInvalidMessage": "The coupon code you entered is invalid.",
+      "itemTotalPriceLabel": "Total (tax included)",
+      "applyCouponLabel": "Apply Coupon",
+      "shippingFeeLabel": "Shipping Fee (tax included)",
+      "calculateNextPageMessage": "Calculated on the next page",
+      "totalPriceLabel": "Total (tax included)",
+      "backToCartButtonText": "Back to Cart",
+      "paymentMethodButtonText": "Proceed to Payment Method Selection"
     },
     "complete": {
       "completeMessage": "A confirmation email has been sent to the email address you registered, so please check it. if you do not receive an email, please contact us here and include your order number above. you can also check your order details from your order history on your account page."
