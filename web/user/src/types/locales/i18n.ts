@@ -152,6 +152,14 @@ export interface I18n {
     guest: {
       checkoutTitle: string
       customerInformationTitle: string
+      nameErrorMessage: string
+      nameKanaErrorMessage: string
+      phoneErrorMessage: string
+      postalCodeErrorMessage: string
+      cityErrorMessage: string
+      addressErrorMessage: string
+      emailErrorMessage: string
+      emailInvalidErrorMessage: string
       firstNamePlaceholder: string
       lastNamePlaceholder: string
       firstNameKanaPlaceholder: string

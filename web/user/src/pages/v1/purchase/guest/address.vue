@@ -125,7 +125,7 @@ const validate = () => {
   emailErrorMessage.value = ''
 
   if (formData.value.firstname === '' || formData.value.lastname === '') {
-    nameErrorMessage.value = '氏名を入力してください'
+    nameErrorMessage.value = gt('nameErrorMessage')
     hasError.value = true
   }
   else {
@@ -142,14 +142,14 @@ const validate = () => {
     formData.value.firstnameKana === ''
     || formData.value.lastnameKana === ''
   ) {
-    nameKanaErrorMessage.value = '氏名(かな)を入力してください'
+    nameKanaErrorMessage.value = gt('nameKanaErrorMessage')
     hasError.value = true
   }
   else if (
     !isKana(formData.value.firstnameKana)
     || !isKana(formData.value.lastnameKana)
   ) {
-    nameKanaErrorMessage.value = '氏名(かな)を入力してください'
+    nameKanaErrorMessage.value = gt('nameKanaErrorMessage')
     hasError.value = true
   }
   else {
@@ -165,22 +165,22 @@ const validate = () => {
     formData.value.phoneNumber === ''
     || !isValidJapanesePhoneNumber(formData.value.phoneNumber)
   ) {
-    phoneErrorMessage.value = '電話番号を入力してください'
+    phoneErrorMessage.value = gt('phoneErrorMessage')
     hasError.value = true
   }
 
   if (formData.value.postalCode === '') {
-    postalCodeErrorMessage.value = '郵便番号を入力してください'
+    postalCodeErrorMessage.value = gt('postalCodeErrorMessage')
     hasError.value = true
   }
 
   if (formData.value.city === '') {
-    cityErrorMessage.value = '市区町村を入力してください'
+    cityErrorMessage.value = gt('cityErrorMessage')
     hasError.value = true
   }
 
   if (formData.value.addressLine1 === '') {
-    addressErrorMessage.value = '住所を入力してください'
+    addressErrorMessage.value = gt('addressErrorMessage')
     hasError.value = true
   }
 
@@ -191,11 +191,11 @@ const validate = () => {
   }
 
   if (formEmailData.value.email === '') {
-    emailErrorMessage.value = 'メールアドレスを入力してください'
+    emailErrorMessage.value = gt('emailErrorMessage')
     hasError.value = true
   }
   else if (!validateEmail(formEmailData.value.email)) {
-    emailErrorMessage.value = '正しいメールアドレスを入力してください'
+    emailErrorMessage.value = gt('emailInvalidErrorMessage')
     hasError.value = true
   }
 
