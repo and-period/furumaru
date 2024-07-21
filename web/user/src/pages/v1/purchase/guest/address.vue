@@ -321,7 +321,7 @@ useSeoMeta({
     <div
       class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
     >
-      ご購入手続き
+      {{ gt('purchaseTitle') }}
     </div>
 
     <the-alert

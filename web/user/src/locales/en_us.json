@@ -137,6 +137,7 @@
       "checkoutWithoutAccountButtonText": "Guest Checkout"
     },
     "guest": {
+      "checkoutTitle": "Checkout Process",
       "customerInformationTitle": "Customer Information",
       "firstNamePlaceholder": "First Name",
       "lastNamePlaceholder": "Last Name", 

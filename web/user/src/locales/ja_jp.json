@@ -123,6 +123,7 @@
       "utilizationRateLabel": "占有率"
     },
     "guest":{
+      "checkoutTitle": "ご購入手続き",
       "customerInformationTitle": "お客様情報", 
       "firstNamePlaceholder": "名",
       "lastNamePlaceholder": "姓",

@@ -150,6 +150,7 @@ export interface I18n {
       checkoutWithoutAccountButtonText: string
     }
     guest: {
+      checkoutTitle: string
       customerInformationTitle: string
       firstNamePlaceholder: string
       lastNamePlaceholder: string
