@@ -409,7 +409,7 @@ useSeoMeta({
                     <div
                       class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
                     >
-                      {{ gt('quantityLabel')}}{{ item.quantity }}
+                      {{ gt('quantityLabel') }}{{ item.quantity }}
                     </div>
                   </div>
 

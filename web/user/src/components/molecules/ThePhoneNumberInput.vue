@@ -28,7 +28,6 @@ const gt = (str: keyof I18n['purchase']['guest']) => {
   return i18n.t(`purchase.guest.${str}`)
 }
 
-
 const tel1 = ref<string>('')
 const tel2 = ref<string>('')
 const tel3 = ref<string>('')
