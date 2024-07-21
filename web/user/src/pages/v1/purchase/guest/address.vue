@@ -309,7 +309,7 @@ onMounted(async () => {
     }
     else {
       calcCartResponseItemState.value.errorMessage
-        = '不明なエラーが発生しました。'
+        = gt('unknownErrorMessage')
     }
   }
   finally {

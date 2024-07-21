@@ -160,6 +160,7 @@ export interface I18n {
       addressErrorMessage: string
       emailErrorMessage: string
       emailInvalidErrorMessage: string
+      unknownErrorMessage: string
       firstNamePlaceholder: string
       lastNamePlaceholder: string
       firstNameKanaPlaceholder: string

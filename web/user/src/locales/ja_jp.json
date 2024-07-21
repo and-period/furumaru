@@ -133,6 +133,7 @@
       "addressErrorMessage": "住所を入力してください",
       "emailErrorMessage": "メールアドレスを入力してください",
       "emailInvalidErrorMessage": "正しいメールアドレスを入力してください",
+      "unknownErrorMessage": "不明なエラーが発生しました。",
       "firstNamePlaceholder": "名",
       "lastNamePlaceholder": "姓",
       "firstNameKanaPlaceholder": "ふりがな(名)",

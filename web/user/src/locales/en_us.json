@@ -147,6 +147,7 @@
       "addressErrorMessage": "Please enter your address.",
       "emailErrorMessage": "Please enter your email address.",
       "emailInvalidErrorMessage": "Please enter a valid email address.",
+      "unknownErrorMessage": "An unknown error has occurred.",
       "firstNamePlaceholder": "First Name",
       "lastNamePlaceholder": "Last Name", 
       "firstNameKanaPlaceholder": "Furigana (First Name)",
