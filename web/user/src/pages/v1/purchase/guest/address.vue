@@ -4,9 +4,16 @@ import type { GuestCheckoutAddress } from '~/types/api'
 import { useAddressStore } from '~/store/address'
 import { useShoppingCartStore } from '~/store/shopping'
 import { ApiBaseError } from '~/types/exception'
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
 
 const route = useRoute()
 const router = useRouter()
+
+const gt = (str: keyof I18n['purchase']['guest']) => {
+  return i18n.t(`purchase.guest.${str}`)
+}
 
 const addressStore = useAddressStore()
 const { searchAddressByPostalCode } = addressStore
@@ -332,7 +339,7 @@ useSeoMeta({
         <div
           class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
         >
-          お客様情報
+          {{ gt('customerInformationTitle') }}
         </div>
 
         <the-guest-address-form

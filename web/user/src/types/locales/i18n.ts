@@ -149,6 +149,20 @@ export interface I18n {
       checkoutWithoutAccountDescription: string
       checkoutWithoutAccountButtonText: string
     }
+    guest: {
+      customerInformationTitle: string
+      firstNamePlaceholder: string
+      lastNamePlaceholder: string
+      firstNameKanaPlaceholder: string
+      lastNameKanaPlaceholder: string
+      phoneNumberLabel: string
+      postalCodeLabel: string
+      searchButtonText: string
+      prefectureLabel: string
+      cityPlaceholder: string
+      streetPlaceholder: string
+      apartmentPlaceholder: string
+    }
     complete: {
       thanksMessage: string
       completeMessage: string

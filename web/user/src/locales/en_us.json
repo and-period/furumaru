@@ -136,6 +136,20 @@
       "checkoutWithoutAccountDescription": "If you prefer to purchase without signing up for an account, please click here.",
       "checkoutWithoutAccountButtonText": "Guest Checkout"
     },
+    "guest": {
+      "customerInformationTitle": "Customer Information",
+      "firstNamePlaceholder": "First Name",
+      "lastNamePlaceholder": "Last Name", 
+      "firstNameKanaPlaceholder": "Furigana (First Name)",
+      "lastNameKanaPlaceholder": "Furigana (Last Name)",
+      "phoneNumberLabel": "Phone Number",
+      "postalCodeLabel": "Postal Code (no hyphens)",
+      "searchButtonText": "Search",
+      "prefectureLabel": "Prefecture",
+      "cityPlaceholder": "Address (City/Ward/Town)",
+      "streetPlaceholder": "Address (Street Address)",
+      "apartmentPlaceholder": "Address (Apartment Name, Room Number)"
+    },
     "complete": {
       "completeMessage": "A confirmation email has been sent to the email address you registered, so please check it. if you do not receive an email, please contact us here and include your order number above. you can also check your order details from your order history on your account page."
     }

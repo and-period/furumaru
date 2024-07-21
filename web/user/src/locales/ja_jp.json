@@ -122,6 +122,20 @@
       "boxSizeLabel": "箱サイズ",
       "utilizationRateLabel": "占有率"
     },
+    "guest":{
+      "customerInformationTitle": "お客様情報", 
+      "firstNamePlaceholder": "名",
+      "lastNamePlaceholder": "姓",
+      "firstNameKanaPlaceholder": "ふりがな(名)",
+      "lastNameKanaPlaceholder": "ふりがな(姓)",
+      "phoneNumberLabel": "電話番号",
+      "postalCodeLabel": "郵便番号（ハイフンなし）",
+      "searchButtonText": "検索",
+      "prefectureLabel": "都道府県",
+      "cityPlaceholder": "住所（市区町村)",
+      "streetPlaceholder": "住所（番地）",
+      "apartmentPlaceholder": "住所（マンション名、部屋番号）"
+    },
     "auth": {
       "loginRequiredMessage": "ご購入にはログインが必須です。",
       "loginNewAccountMessage": "作成したアカウントでログインをしましょう",
