@@ -6,18 +6,18 @@ require (
 	firebase.google.com/go/v4 v4.14.1
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/aws/aws-sdk-go-v2 v1.30.3
-	github.com/aws/aws-sdk-go-v2/config v1.27.26
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.26
+	github.com/aws/aws-sdk-go-v2/config v1.27.27
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.27
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.14.9
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.41.4
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.34.3
 	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.57.3
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.54.3
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.55.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.58.2
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.32.3
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.32.4
 	github.com/aws/aws-sdk-go-v2/service/sfn v1.29.3
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.34.3
-	github.com/casbin/casbin/v2 v2.97.0
+	github.com/casbin/casbin/v2 v2.98.0
 	github.com/dlclark/regexp2 v1.11.2
 	github.com/getsentry/sentry-go v0.28.1
 	github.com/gin-contrib/gzip v0.0.6
@@ -50,8 +50,8 @@ require (
 	go.uber.org/mock v0.4.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.7.0
-	google.golang.org/api v0.188.0
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240708141625-4ad9e859172b
+	google.golang.org/api v0.189.0
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240722135656-d784300faade
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/yaml.v2 v2.4.0
@@ -62,7 +62,7 @@ require (
 )
 
 require (
-	cloud.google.com/go/auth v0.7.0 // indirect
+	cloud.google.com/go/auth v0.7.2 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.3 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
@@ -91,8 +91,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.9.16 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.11.17 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.17.15 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ivs v1.37.3
-	github.com/aws/aws-sdk-go-v2/service/sso v1.22.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ivs v1.38.0
+	github.com/aws/aws-sdk-go-v2/service/sso v1.22.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.26.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.30.3 // indirect
 	github.com/aws/smithy-go v1.20.3 // indirect
@@ -112,9 +112,9 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/google/s2a-go v0.1.7 // indirect
+	github.com/google/s2a-go v0.1.8 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
-	github.com/googleapis/gax-go/v2 v2.12.5 // indirect
+	github.com/googleapis/gax-go/v2 v2.13.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -152,7 +152,7 @@ require (
 	golang.org/x/text v0.16.0
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/appengine/v2 v2.0.6 // indirect
-	google.golang.org/genproto v0.0.0-20240708141625-4ad9e859172b // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240701130421-f6361c86f094 // indirect
+	google.golang.org/genproto v0.0.0-20240722135656-d784300faade // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240711142825-46eb208f015d // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
