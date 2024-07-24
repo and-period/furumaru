@@ -68,7 +68,7 @@ const handleClickLogoutButton = () => {
           </template>
           <template v-else>
             <img
-              src="~/assets/img/account.png"
+              src="/img/account.png"
               class="block h-[40px] w-[40px] rounded-full"
             >
           </template>

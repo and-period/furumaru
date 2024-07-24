@@ -87,7 +87,7 @@ const handleClickAddCartButton = () => {
         <p class="text-lg font-semibold text-white">
           {{
             status === ProductStatus.FOR_SALE
-              ? lt('soldOutText')
+              ? lt("soldOutText")
               : productStatusToString(status, i18n)
           }}
         </p>
@@ -117,7 +117,7 @@ const handleClickAddCartButton = () => {
     <p
       class="my-4 text-[16px] tracking-[1.6px] md:text-[20px] md:tracking-[2.0px]"
     >
-      {{ priceString }}{{ lt('itemPriceTaxIncludedText') }}
+      {{ priceString }}{{ lt("itemPriceTaxIncludedText") }}
     </p>
 
     <div class="flex h-6 items-center gap-2 text-[10px]">
@@ -125,7 +125,7 @@ const handleClickAddCartButton = () => {
         <label
           class="mr-2 block whitespace-nowrap text-center text-[8px] md:text-[14px]"
         >
-          {{ lt('quantityLabel') }}
+          {{ lt("quantityLabel") }}
         </label>
         <select
           v-model="quantity"
@@ -152,7 +152,7 @@ const handleClickAddCartButton = () => {
           id="add-cart-icon"
           class="mr-1 h-2 w-2 lg:h-4 lg:w-4"
         />
-        {{ lt('addToCartText') }}
+        {{ lt("addToCartText") }}
       </button>
     </div>
     <div
@@ -177,9 +177,10 @@ const handleClickAddCartButton = () => {
           provider="cloudFront"
           width="64px"
           hidden="64px"
+          fit="cover"
           :src="coordinator.thumbnailUrl"
           :alt="coordinatorThumbnailAlt"
-          class="block aspect-square h-14 w-14 rounded-full"
+          class="block aspect-square h-14 w-14 rounded-full object-cover"
         />
         <div>
           <div class="hidden md:block">
@@ -196,7 +197,7 @@ const handleClickAddCartButton = () => {
           </div>
           <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
             <p class="whitespace-nowrap">
-              {{ lt('coordinatorLabel') }}:
+              {{ lt("coordinatorLabel") }}:
             </p>
             <p class="text-[12px] md:text-[14px]">
               {{ coordinator.username }}

@@ -150,7 +150,7 @@ const fetchComments = async () => {
   comments.value = res.comments
 }
 
-useAsyncData(`schedule-${scheduleId.value}`, async () => {
+await useAsyncData(`schedule-${scheduleId.value}`, async () => {
   isLoading.value = true
   const scheduleRes = await getSchedule(scheduleId.value)
   schedule.value = scheduleRes
@@ -222,7 +222,7 @@ useSeoMeta({
                 }"
                 @click="clickTab('product')"
               >
-                {{ dt('itemsTabLabel') }}
+                {{ dt("itemsTabLabel") }}
               </button>
               <button
                 class="rounded-t-xl p-4 text-center"
@@ -233,7 +233,7 @@ useSeoMeta({
                 }"
                 @click="clickTab('comment')"
               >
-                {{ dt('commentsTabLabel') }}
+                {{ dt("commentsTabLabel") }}
               </button>
             </div>
             <template v-if="selectedTab === 'product'">
@@ -257,7 +257,7 @@ useSeoMeta({
                     v-if="comments.length === 0"
                     class="text-typography"
                   >
-                    {{ dt('noCommentsText') }}
+                    {{ dt("noCommentsText") }}
                   </div>
                   <div
                     v-for="(item, i) in comments"
@@ -281,7 +281,9 @@ useSeoMeta({
                       <div
                         class="whitespace-nowrap text-[14px] text-typography"
                       >
-                        {{ item.username ? item.username : dt('guestNameLabel') }}
+                        {{
+                          item.username ? item.username : dt("guestNameLabel")
+                        }}
                       </div>
                       <div class="line-clamp-2 text-main">
                         {{ item.comment }}
