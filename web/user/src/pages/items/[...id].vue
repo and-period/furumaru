@@ -205,7 +205,7 @@ useSeoMeta({
           <div
             class="text-[14px] tracking-[1.4px] md:text-[16px] md:tracking-[1.6px]"
           >
-            {{ dt('producerLabel') }}:
+            {{ dt("producerLabel") }}:
             <a
               href="#"
               class="font-bold underline"
@@ -225,7 +225,7 @@ useSeoMeta({
           <p
             class="mb-[12px] text-[12px] font-medium tracking-[1.4px] md:text-[14px]"
           >
-            {{ dt('highlightsLabel') }}
+            {{ dt("highlightsLabel") }}
           </p>
           <ol
             class="recommend-list flex flex-col divide-y divide-dashed divide-main px-[4px] pl-[24px]"
@@ -259,7 +259,7 @@ useSeoMeta({
               {{ priceString }}
             </div>
             <p class="pb-1 pl-2 text-[12px] md:text-[16px]">
-              {{ dt('itemPriceTaxIncludedText') }}
+              {{ dt("itemPriceTaxIncludedText") }}
             </p>
           </div>
 
@@ -267,7 +267,9 @@ useSeoMeta({
             v-if="product"
             class="mt-4 inline-flex items-center md:mt-8"
           >
-            <label class="mr-2 block text-[14px] md:text-[16px]">{{ dt('quantityLabel') }}</label>
+            <label class="mr-2 block text-[14px] md:text-[16px]">{{
+              dt("quantityLabel")
+            }}</label>
             <select
               v-model="quantity"
               class="h-full border-[1px] border-main px-2"
@@ -291,7 +293,7 @@ useSeoMeta({
           :disabled="!canAddCart"
           @click="handleClickAddCartButton"
         >
-          {{ dt('addToCartText') }}
+          {{ dt("addToCartText") }}
         </button>
 
         <div class="mt-4 inline-flex gap-4">
@@ -317,7 +319,7 @@ useSeoMeta({
       >
         <div class="grid grid-cols-5 py-4">
           <p class="col-span-2 md:col-span-1">
-            {{ dt('expirationDateLabel') }}
+            {{ dt("expirationDateLabel") }}
           </p>
           <p class="col-span-3 md:col-span-4">
             {{ expirationDateText }}
@@ -325,7 +327,7 @@ useSeoMeta({
         </div>
         <div class="grid grid-cols-5 py-4">
           <p class="col-span-2 md:col-span-1">
-            {{ dt('weightLabel') }}
+            {{ dt("weightLabel") }}
           </p>
           <p class="col-span-3 md:col-span-4">
             {{ product.weight }}kg
@@ -333,7 +335,7 @@ useSeoMeta({
         </div>
         <div class="grid grid-cols-5 py-4">
           <p class="col-span-2 md:col-span-1">
-            {{ dt('deliveryTypeLabel') }}
+            {{ dt("deliveryTypeLabel") }}
           </p>
           <p class="col-span-3 md:col-span-4">
             {{ getDeliveryType(product.deliveryType) }}
@@ -341,7 +343,7 @@ useSeoMeta({
         </div>
         <div class="grid grid-cols-5 py-4">
           <p class="col-span-2 md:col-span-1">
-            {{ dt('storageTypeLabel') }}
+            {{ dt("storageTypeLabel") }}
           </p>
           <p class="col-span-3 md:col-span-4">
             {{ getStorageMethodType(product.storageMethodType) }}
@@ -359,20 +361,29 @@ useSeoMeta({
         <p
           class="mx-auto w-full rounded-full bg-base py-2 text-center text-[14px] font-bold text-main md:text-[16px]"
         >
-          {{ dt('producerInformationTitle') }}
+          {{ dt("producerInformationTitle") }}
         </p>
 
         <div class="mt-[64px] flex w-full flex-col gap-4 md:flex-row lg:gap-10">
           <div
             class="flex min-w-max flex-col items-center justify-center gap-4 md:flex-row"
           >
-            <nuxt-img
-              provider="cloudFront"
-              sizes="96px md:120px"
-              :src="product.producer.thumbnailUrl"
-              :alt="`${product.producer.username}`"
-              class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px]"
-            />
+            <template v-if="product.producer.thumbnailUrl">
+              <nuxt-img
+                provider="cloudFront"
+                sizes="96px md:120px"
+                fit="cover"
+                :src="product.producer.thumbnailUrl"
+                :alt="`${product.producer.username}`"
+                class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px] object-cover"
+              />
+            </template>
+            <template v-else>
+              <img
+                class="mx-auto block aspect-square w-[96px] rounded-full md:w-[120px] object-cover"
+                src="/img/account.png"
+              >
+            </template>
             <div
               class="flex min-w-max grow flex-col items-center gap-2 md:items-start md:gap-2 md:whitespace-nowrap"
             >
@@ -383,7 +394,7 @@ useSeoMeta({
                 class="flex flex-row items-baseline grow text-[16px] tracking-[1.4px] md:text-[24px]"
               >
                 <p class="mr-1 text-[14px] font-medium">
-                  {{ dt('producerLabel') }}
+                  {{ dt("producerLabel") }}
                 </p>
                 <p>{{ product.producer.username }}</p>
               </div>
