@@ -1,5 +1,26 @@
 # Changelog
 
+## [v1.11.36](https://github.com/and-period/furumaru/compare/v1.11.35...v1.11.36) - 2024-07-24
+- feat(user): 商品詳細ページのi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2291
+- build(deps): bump the dependencies group in /api with 51 updates by @dependabot in https://github.com/and-period/furumaru/pull/2290
+- build(deps-dev): bump npm-run-all2 from 6.2.0 to 6.2.2 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2295
+- feat(user): マルシェ一覧と詳細のi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2297
+- build(deps): bump serverless/github-action from 3.2 to 4 in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2298
+- build(deps): bump the dependencies group across 1 directory with 44 updates by @dependabot in https://github.com/and-period/furumaru/pull/2299
+- feat(func): Cognitoのユーザープール移行用の関数実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2300
+- build(deps): bump @sigstore/protobuf-specs from 0.3.1 to 0.3.2 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2305
+- build(deps): bump @nuxt/ui-templates from 1.3.3 to 1.3.4 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2306
+- build(deps): bump socks-proxy-agent from 8.0.3 to 8.0.4 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2307
+- build(deps): bump npm-package-arg from 11.0.2 to 11.0.3 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2309
+- build(deps): bump read-package-json from 7.0.0 to 7.0.1 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2310
+- build(deps): bump npm-bundled from 3.0.0 to 3.0.1 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2313
+- build(deps): bump @npmcli/promise-spawn from 7.0.1 to 7.0.2 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2314
+- build(deps): bump @sigstore/tuf from 2.3.2 to 2.3.4 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2311
+- build(deps): bump make-fetch-happen from 13.0.0 to 13.0.1 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2315
+- build(deps): bump minipass-fetch from 3.0.4 to 3.0.5 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2317
+- build(deps): bump validate-npm-package-name from 5.0.0 to 5.0.1 in /web/admin by @dependabot in https://github.com/and-period/furumaru/pull/2318
+- ユーザー向け画面のレイアウト調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2320
+
 ## [v1.11.35](https://github.com/and-period/furumaru/compare/v1.11.34...v1.11.35) - 2024-07-08
 - fix: i18nのオブジェクトを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2292
 
