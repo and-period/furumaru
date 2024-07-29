@@ -42,11 +42,11 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
           const boxType = (type: number) => {
             switch (type) {
               case 1:
-                return '通常便'
+                return this.i18n.t('items.details.deliveryTypeStandard')
               case 2:
-                return '冷蔵便'
+                return this.i18n.t('items.details.deliveryTypeRefrigerated')
               case 3:
-                return '冷凍便'
+                return this.i18n.t('items.details.deliveryTypeFrozen')
               default:
                 return ''
             }

@@ -2,12 +2,19 @@
 import { useAuthStore } from '~/store/auth'
 import type { SignInRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
+import type { I18n } from '~/types/locales'
 
 const authStore = useAuthStore()
 const { signIn } = authStore
 
+const i18n = useI18n()
+
 const router = useRouter()
 const route = useRoute()
+
+const at = (str: keyof I18n['purchase']['auth']) => {
+  return i18n.t(`purchase.auth.${str}`)
+}
 
 const loginRequired = computed<boolean>(() => {
   const required = route.query.required
@@ -116,7 +123,7 @@ const hideV1App = false
     <the-alert
       class="mx-auto my-4 w-full bg-white p-4 lg:w-[768px] xl:w-[1024px]"
     >
-      ご購入にはログインが必須です。
+      {{ at('loginRequiredMessage') }}
     </the-alert>
   </div>
 
@@ -127,7 +134,7 @@ const hideV1App = false
     <the-alert
       class="mx-auto my-4 w-full bg-white p-4 lg:w-[768px] xl:w-[1024px]"
     >
-      作成したアカウントでログインをしましょう
+      {{ at('loginNewAccountMessage') }}
     </the-alert>
   </div>
 
@@ -138,7 +145,7 @@ const hideV1App = false
       class="w-full bg-white px-4 py-[40px] tracking-[1.6px] text-main md:mx-auto md:w-[360px] md:px-[40px] lg:w-[480px] xl:w-[560px] xl:px-[80px]"
     >
       <h2 class="mb-[40px] text-center text-[16px] font-bold">
-        アカウントをお持ちの方
+        {{ at('withAccountTitle') }}
       </h2>
       <the-alert
         v-if="authErrorState.hasError"
@@ -150,25 +157,25 @@ const hideV1App = false
       </the-alert>
       <the-sign-in-form
         v-model="formData"
-        button-text="ログインして購入"
-        username-label="メールアドレス"
-        password-label="パスワード"
-        password-placeholder="パスワード"
-        username-placeholder="メールアドレス"
+        :button-text="at('loginAndCheckoutButtonText')"
+        :username-label="at('usernameLabel')"
+        :password-label="at('passwordLabel')"
+        :password-placeholder="at('passwordPlaceholder')"
+        :username-placeholder="at('usernamePlaceholder')"
         @submit="handleSubmitSignForm"
       />
       <button @click="handleClickNewAccountButton">
         <p
           class="mt-4 inline-block whitespace-pre-wrap text-[14px] font-bold underline md:text-[15px]"
         >
-          アカウントお持ちでない方はこちら
+          {{ at('noAccountButtonText') }}
         </p>
       </button>
       <div
         v-if="hideV1App"
         class="mt-[24px] text-center text-[14px] underline"
       >
-        パスワードをお忘れの方はこちら
+        {{ at('forgetPasswordLink') }}
       </div>
     </div>
 
@@ -176,16 +183,16 @@ const hideV1App = false
       class="w-full bg-white px-4 py-[40px] tracking-[1.6px] text-main md:mx-auto md:w-[360px] md:px-[40px] lg:w-[480px] xl:w-[560px] xl:px-[80px]"
     >
       <h2 class="mb-[40px] text-center text-[16px] font-bold">
-        まだ登録されていない方
+        {{ at('notSignUpTitle') }}
       </h2>
       <p class="my-[40px] text-[14px] tracking-[1.4px]">
-        アカウントを登録せずにご購入を希望される方はこちらからご利用ください。
+        {{ at('checkoutWithoutAccountDescription') }}
       </p>
       <the-submit-without-login-button
         type="submit"
         @click="handleSubmitWithoutSignForm"
       >
-        ゲストとして購入
+        {{ at('checkoutWithoutAccountButtonText') }}
       </the-submit-without-login-button>
     </div>
   </div>

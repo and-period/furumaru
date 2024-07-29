@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { I18n } from '~/types/locales'
+
 interface Props {
   modelValue: string
   required?: boolean
@@ -19,6 +21,12 @@ interface Emits {
 }
 
 const emits = defineEmits<Emits>()
+
+const i18n = useI18n()
+
+const gt = (str: keyof I18n['purchase']['guest']) => {
+  return i18n.t(`purchase.guest.${str}`)
+}
 
 const tel1 = ref<string>('')
 const tel2 = ref<string>('')
@@ -55,7 +63,9 @@ const viewMessage = computed(() => {
 
 <template>
   <div>
-    <label class="text-[12px] tracking-[1.2px] text-main">電話番号</label>
+    <label class="text-[12px] tracking-[1.2px] text-main">
+      {{ gt('phoneNumberLabel') }}
+    </label>
     <div class="grid w-full grid-cols-11 items-center gap-2">
       <input
         v-model="tel1"
