@@ -48,17 +48,14 @@ async function isUserMigrationAuthenticationTriggerEvent(
     throw new Error('bad trigger source');
   }
 
-  const request = event.request;
-  const userAttributes = request.userAttributes;
-
   let auth: InitiateAuthCommandOutput;
   try {
     const input: InitiateAuthCommandInput = {
       ClientId: PREVIOUS_COGNITO_CLIENT_ID,
       AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
       AuthParameters: {
-        USERNAME: userAttributes.email,
-        PASSWORD: request.password || '',
+        USERNAME: event.userName || '',
+        PASSWORD: event.request.password || '',
       },
     };
     auth = await client.send(new InitiateAuthCommand(input));
@@ -80,25 +77,29 @@ async function isUserMigrationAuthenticationTriggerEvent(
     throw new Error(`failed to get user. err=${err.message}`);
   }
 
-  let exists: boolean = false;
-  user.UserAttributes?.forEach((attr: AttributeType): void => {
-    if (attr.Name !== 'email') {
-      return;
-    }
-    userAttributes.email = attr.Value || '';
-    event.response.userAttributes = {
-      email: attr.Value || '',
-      email_verified: 'true',
-    };
-    event['response']['messageAction'] = 'SUPPRESS';
-
-    exists = true;
-  });
-
-  if (!exists) {
-    throw new Error('user not found');
+  if (!user) {
+    throw new Error('user is not found');
   }
   console.log('user found', JSON.stringify(user));
+
+  const attributes: { [key: string]: string } = {};
+  user.UserAttributes?.forEach((attr: AttributeType): void => {
+    switch (attr.Name) {
+      case 'email':
+        attributes.email = attr.Value || '';
+        attributes.email_verified = 'true';
+        break;
+      case 'sub':
+        attributes.sub = attr.Value || '';
+        break;
+    }
+  });
+
+  event.response.userAttributes = attributes;
+  event.response.finalUserStatus = 'CONFIRMED';
+  event.response.messageAction = 'SUPPRESS';
+
+  console.log('return event', JSON.stringify(event));
   return event;
 }
 
@@ -120,23 +121,28 @@ async function isUserMigrationForgotPasswordTriggerEvent(
     throw new Error(`failed to get user. err=${err.message}`);
   }
 
-  let exists: boolean = false;
-  user.UserAttributes?.forEach((attr: AttributeType): void => {
-    if (attr.Name !== 'email') {
-      return;
-    }
-    event.response.userAttributes = {
-      email: attr.Value || '',
-      email_verified: 'true',
-    };
-    event['response']['messageAction'] = 'SUPPRESS';
-
-    exists = true;
-  });
-
-  if (!exists) {
-    throw new Error('user not found');
+  if (!user) {
+    throw new Error('user is not found');
   }
   console.log('user found', JSON.stringify(user));
+
+  const attributes: { [key: string]: string } = {};
+  user.UserAttributes?.forEach((attr: AttributeType): void => {
+    switch (attr.Name) {
+      case 'email':
+        attributes.email = attr.Value || '';
+        attributes.email_verified = 'true';
+        break;
+      case 'sub':
+        attributes.sub = attr.Value || '';
+        break;
+    }
+  });
+
+  event.response.userAttributes = attributes;
+  event.response.finalUserStatus = 'CONFIRMED';
+  event.response.messageAction = 'SUPPRESS';
+
+  console.log('return event', JSON.stringify(event));
   return event;
 }
