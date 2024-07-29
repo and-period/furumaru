@@ -43,6 +43,7 @@ jobs:
     environment: prd
     needs:
     - setup
+    - cloudfront_origin_response
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -118,8 +119,8 @@ jobs:
         ORIGIN_RESPONSE_ARN: ${{ needs.cloudfront_origin_response.outputs.lambda-arn }}
 
   # Cognitoユーザープール移行
-  cognito_migrate_user_pool:
-    name: cognito migrate user pool
+  build_cognito_migrate_user_pool:
+    name: build cognito migrate user pool
     environment: prd
     needs:
     - setup
@@ -155,8 +156,58 @@ jobs:
       env:
         LAMBDA_FUNCTION_S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
 
+  deploy_cognito_migrate_user_pool:
+    name: deploy cognito migrate user pool
+    environment: prd
+    needs:
+    - setup
+    - build_cognito_migrate_user_pool
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func/cognito-migrate-user-pool
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ap-northeast-1
+
     - name: Update lambda function
       run: FUNCTION_NAME=${LAMBDA_FUNCTION} S3_BUCKET_NAME=${S3_BUCKET} make deploy
       env:
         LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_COGNITO_MIGRATE_USER_POOL }}
+        S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
+
+  deploy_cognito_migrate_admin_pool:
+    name: deploy cognito migrate user pool
+    environment: prd
+    needs:
+    - setup
+    - build_cognito_migrate_user_pool
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./func/cognito-migrate-user-pool
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup AWS
+      uses: ./.github/actions/setup-aws
+      with:
+        aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ap-northeast-1
+
+    - name: Update lambda function
+      run: FUNCTION_NAME=${LAMBDA_FUNCTION} S3_BUCKET_NAME=${S3_BUCKET} make deploy
+      env:
+        LAMBDA_FUNCTION: ${{ vars.LAMBDA_FUNCTION_COGNITO_MIGRATE_ADMIN_POOL }}
         S3_BUCKET: ${{ vars.LAMBDA_FUNCTION_S3_BUCKET }}
