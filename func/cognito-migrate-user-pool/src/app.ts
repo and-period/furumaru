@@ -82,7 +82,9 @@ async function isUserMigrationAuthenticationTriggerEvent(
   }
   console.log('user found', JSON.stringify(user));
 
-  const attributes: { [key: string]: string } = {};
+  const attributes: { [key: string]: string } = {
+    username: user.Username || '',
+  };
   user.UserAttributes?.forEach((attr: AttributeType): void => {
     switch (attr.Name) {
       case 'email':
@@ -95,7 +97,6 @@ async function isUserMigrationAuthenticationTriggerEvent(
     }
   });
 
-  event.userName = user.Username;
   event.response.userAttributes = attributes;
   event.response.finalUserStatus = 'CONFIRMED';
   event.response.messageAction = 'SUPPRESS';
@@ -127,7 +128,9 @@ async function isUserMigrationForgotPasswordTriggerEvent(
   }
   console.log('user found', JSON.stringify(user));
 
-  const attributes: { [key: string]: string } = {};
+  const attributes: { [key: string]: string } = {
+    username: user.Username || '',
+  };
   user.UserAttributes?.forEach((attr: AttributeType): void => {
     switch (attr.Name) {
       case 'email':
@@ -140,7 +143,6 @@ async function isUserMigrationForgotPasswordTriggerEvent(
     }
   });
 
-  event.userName = user.Username;
   event.response.userAttributes = attributes;
   event.response.messageAction = 'SUPPRESS';
 
