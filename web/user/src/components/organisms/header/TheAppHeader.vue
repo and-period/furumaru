@@ -24,6 +24,7 @@ interface Props {
   myPageLinkText: string
   allItemLinkText: string
   allMarcheLinkText: string
+  volunteerLinkText: string
   aboutLinkText: string
   viewMycartText: string
   numberOfCartsText: string
@@ -101,6 +102,11 @@ const SP_MENU_ITEMS = computed(() => [
     icon: 'flag',
     text: props.allMarcheLinkText,
     to: '/marches',
+  },
+  {
+    icon: 'furumaru',
+    text: props.volunteerLinkText,
+    to: '/volunteer',
   },
   {
     icon: 'furumaru',
