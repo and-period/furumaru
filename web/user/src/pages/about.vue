@@ -60,7 +60,7 @@ useSeoMeta({
     >
       <div class="mb-10 text-main">
         <p class="mb-12 text-[32px] font-semibold">
-          {{ t('leadSentence') }}
+          {{ t("leadSentence") }}
         </p>
         <p
           class="whitespace-pre-wrap text-xl leading-10"
