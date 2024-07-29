@@ -95,6 +95,7 @@ async function isUserMigrationAuthenticationTriggerEvent(
     }
   });
 
+  event.userName = user.Username;
   event.response.userAttributes = attributes;
   event.response.finalUserStatus = 'CONFIRMED';
   event.response.messageAction = 'SUPPRESS';
@@ -139,8 +140,8 @@ async function isUserMigrationForgotPasswordTriggerEvent(
     }
   });
 
+  event.userName = user.Username;
   event.response.userAttributes = attributes;
-  event.response.finalUserStatus = 'CONFIRMED';
   event.response.messageAction = 'SUPPRESS';
 
   console.log('return event', JSON.stringify(event));
