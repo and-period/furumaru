@@ -93,6 +93,7 @@ async function isUserMigrationAuthenticationTriggerEvent(
         break;
       case 'sub':
         attributes.sub = attr.Value || '';
+        event.request.usernameParameter = attr.Value;
         break;
     }
   });
@@ -139,6 +140,7 @@ async function isUserMigrationForgotPasswordTriggerEvent(
         break;
       case 'sub':
         attributes.sub = attr.Value || '';
+        event.request.usernameParameter = attr.Value;
         break;
     }
   });
