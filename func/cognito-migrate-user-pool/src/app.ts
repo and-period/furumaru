@@ -5,9 +5,6 @@ import {
   AttributeType,
   AuthFlowType,
   CognitoIdentityProviderClient,
-  GetUserCommand,
-  GetUserCommandInput,
-  GetUserCommandOutput,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   InitiateAuthCommandOutput,
@@ -19,6 +16,8 @@ const client = new CognitoIdentityProviderClient({ region: process.env.AWS_REGIO
 const PREVIOUS_COGNITO_USER_POOL_ID = process.env.PREVIOUS_COGNITO_USER_POOL_ID;
 const PREVIOUS_COGNITO_CLIENT_ID = process.env.PREVIOUS_COGNITO_CLIENT_ID;
 
+const triggerSources: string[] = ['UserMigration_Authentication', 'UserMigration_ForgotPassword'] as const;
+
 /**
  * Cognitoプールのユーザー情報を別のユーザープールへ移行する
  * @param {Object} event
@@ -27,127 +26,74 @@ const PREVIOUS_COGNITO_CLIENT_ID = process.env.PREVIOUS_COGNITO_CLIENT_ID;
 export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise<CognitoUserPoolTriggerEvent> => {
   console.log('received event', JSON.stringify(event));
 
-  try {
-    if (event.triggerSource === 'UserMigration_Authentication') {
-      return await isUserMigrationAuthenticationTriggerEvent(event);
-    }
-    if (event.triggerSource === 'UserMigration_ForgotPassword') {
-      return await isUserMigrationForgotPasswordTriggerEvent(event);
-    }
-    throw new Error('unknown trigger source');
-  } catch (err: any) {
-    console.log('received error', err);
-    return err.message || `occurred unknown error. err=${err}`;
-  }
-};
-
-async function isUserMigrationAuthenticationTriggerEvent(
-  event: CognitoUserPoolTriggerEvent,
-): Promise<CognitoUserPoolTriggerEvent> {
-  if (event.triggerSource !== 'UserMigration_Authentication') {
+  if (!triggerSources.includes(event.triggerSource)) {
     throw new Error('bad trigger source');
   }
 
-  let auth: InitiateAuthCommandOutput;
-  try {
-    const input: InitiateAuthCommandInput = {
-      ClientId: PREVIOUS_COGNITO_CLIENT_ID,
-      AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
-      AuthParameters: {
-        USERNAME: event.userName || '',
-        PASSWORD: event.request.password || '',
-      },
-    };
-    auth = await client.send(new InitiateAuthCommand(input));
-  } catch (err: any) {
-    throw new Error(`failed to initiate auth. err=${err.message}`);
+  if (event.triggerSource === 'UserMigration_Authentication') {
+    let auth: InitiateAuthCommandOutput;
+    try {
+      auth = await initiateAuth(event.userName, event.request.password);
+    } catch (err: any) {
+      throw new Error(`failed to initiate auth. err=${err.message}`);
+    }
+    console.log('success to initiate auth', JSON.stringify(auth));
   }
 
-  if (!auth) {
-    throw new Error('authenticated user is not found');
-  }
-
-  let user: GetUserCommandOutput;
+  let user: AdminGetUserCommandOutput;
   try {
-    const input: GetUserCommandInput = {
-      AccessToken: auth.AuthenticationResult?.AccessToken || '',
-    };
-    user = await client.send(new GetUserCommand(input));
+    user = await getUser(event.userName);
   } catch (err: any) {
     throw new Error(`failed to get user. err=${err.message}`);
   }
+  console.log('success to get user', JSON.stringify(user));
 
-  if (!user) {
-    throw new Error('user is not found');
-  }
-  console.log('user found', JSON.stringify(user));
-
-  const attributes: { [key: string]: string } = {
-    username: user.Username || '',
-  };
-  user.UserAttributes?.forEach((attr: AttributeType): void => {
-    switch (attr.Name) {
-      case 'email':
-        attributes.email = attr.Value || '';
-        attributes.email_verified = 'true';
-        break;
-      case 'sub':
-        attributes.sub = attr.Value || '';
-        event.request.usernameParameter = attr.Value;
-        break;
-    }
-  });
-
-  event.response.userAttributes = attributes;
+  event.response.userAttributes = toUserAttributes(user);
   event.response.finalUserStatus = 'CONFIRMED';
   event.response.messageAction = 'SUPPRESS';
 
   console.log('return event', JSON.stringify(event));
   return event;
+};
+
+function initiateAuth(username?: string, password?: string): Promise<InitiateAuthCommandOutput> {
+  const input: InitiateAuthCommandInput = {
+    ClientId: PREVIOUS_COGNITO_CLIENT_ID,
+    AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
+    AuthParameters: {
+      USERNAME: username || '',
+      PASSWORD: password || '',
+    },
+  };
+  return client.send(new InitiateAuthCommand(input));
 }
 
-async function isUserMigrationForgotPasswordTriggerEvent(
-  event: CognitoUserPoolTriggerEvent,
-): Promise<CognitoUserPoolTriggerEvent> {
-  if (event.triggerSource !== 'UserMigration_ForgotPassword') {
-    throw new Error('bad trigger source');
-  }
+function getUser(username?: string): Promise<AdminGetUserCommandOutput> {
+  const input: AdminGetUserCommandInput = {
+    UserPoolId: PREVIOUS_COGNITO_USER_POOL_ID,
+    Username: username,
+  };
+  return client.send(new AdminGetUserCommand(input));
+}
 
-  let user: AdminGetUserCommandOutput;
-  try {
-    const input: AdminGetUserCommandInput = {
-      UserPoolId: PREVIOUS_COGNITO_USER_POOL_ID,
-      Username: event.userName,
-    };
-    user = await client.send(new AdminGetUserCommand(input));
-  } catch (err: any) {
-    throw new Error(`failed to get user. err=${err.message}`);
-  }
-
-  if (!user) {
-    throw new Error('user is not found');
-  }
-  console.log('user found', JSON.stringify(user));
-
+function toUserAttributes(user: AdminGetUserCommandOutput): { [key: string]: string } {
   const attributes: { [key: string]: string } = {
     username: user.Username || '',
   };
   user.UserAttributes?.forEach((attr: AttributeType): void => {
     switch (attr.Name) {
+      case 'sub':
+        attributes.sub = attr.Value || '';
+        break;
       case 'email':
         attributes.email = attr.Value || '';
         attributes.email_verified = 'true';
         break;
-      case 'sub':
-        attributes.sub = attr.Value || '';
-        event.request.usernameParameter = attr.Value;
+      case 'phone_number':
+        attributes.phone_number = attr.Value || '';
+        attributes.phone_number_verified = 'true';
         break;
     }
   });
-
-  event.response.userAttributes = attributes;
-  event.response.messageAction = 'SUPPRESS';
-
-  console.log('return event', JSON.stringify(event));
-  return event;
+  return attributes;
 }
