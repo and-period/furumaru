@@ -82,9 +82,6 @@ function toUserAttributes(user: AdminGetUserCommandOutput): { [key: string]: str
   };
   user.UserAttributes?.forEach((attr: AttributeType): void => {
     switch (attr.Name) {
-      case 'sub':
-        attributes.sub = attr.Value || '';
-        break;
       case 'email':
         attributes.email = attr.Value || '';
         attributes.email_verified = 'true';
