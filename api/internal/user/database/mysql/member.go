@@ -57,7 +57,7 @@ func (m *member) GetByEmail(ctx context.Context, email string, fields ...string)
 		Joins("INNER JOIN users ON members.user_id = users.id").
 		Where("members.email = ?", email).
 		Where("members.provider_type = ?", entity.ProviderTypeEmail).
-		Where("users.deeleted_at IS NULL")
+		Where("users.deleted_at IS NULL")
 
 	if err := stmt.First(&member).Error; err != nil {
 		return nil, dbError(err)
