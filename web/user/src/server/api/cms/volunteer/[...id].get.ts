@@ -1,7 +1,8 @@
 import { cmsClient } from '~/server/client/microcms'
+import type { VolunteerBlogItemResponse } from '~/types/cms/volunteer'
 
 export default defineEventHandler(async (event) => {
-  const id = event.context.params.id
+  const id = event.context.params?.id || ''
 
   if (!id) {
     throw createError({
@@ -11,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const res = await cmsClient
-    .get({
+    .get<VolunteerBlogItemResponse>({
       endpoint: 'volunteer',
       contentId: id,
     })
