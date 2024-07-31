@@ -19,13 +19,14 @@ useSeoMeta({
       <hr class="mt-[40px] mb-[20px]">
       <template v-if="data.contents">
         <div class="grid md:grid-cols-3 w-full px-4">
-          <div
+          <nuxt-link
             v-for="content in data.contents"
             :key="content.id"
+            :to="`/volunteer/${content.id}`"
           >
             <img
               :src="content.eyecatch.url"
-              class="md:w-[400px] aspect-video object-cover w-full"
+              class="w-full aspect-video object-cover w-full"
             >
             <div class="flex flex-col gap-2 mt-2">
               <h2 class="text-[18px] font-semibold tracking-[2px]">
@@ -42,7 +43,7 @@ useSeoMeta({
                 </span>
               </div>
             </div>
-          </div>
+          </nuxt-link>
         </div>
       </template>
     </div>
