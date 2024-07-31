@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/user/database"
@@ -45,9 +46,18 @@ func (m *member) GetByCognitoID(ctx context.Context, cognitoID string, fields ..
 func (m *member) GetByEmail(ctx context.Context, email string, fields ...string) (*entity.Member, error) {
 	var member *entity.Member
 
+	if len(fields) == 0 {
+		fields = []string{"*"}
+	}
+	for i, field := range fields {
+		fields[i] = fmt.Sprintf("members.%s", field)
+	}
+
 	stmt := m.db.Statement(ctx, m.db.DB, memberTable, fields...).
-		Where("email = ?", email).
-		Where("provider_type = ?", entity.ProviderTypeEmail)
+		Joins("INNER JOIN users ON members.user_id = users.id").
+		Where("members.email = ?", email).
+		Where("members.provider_type = ?", entity.ProviderTypeEmail).
+		Where("users.deeleted_at IS NULL")
 
 	if err := stmt.First(&member).Error; err != nil {
 		return nil, dbError(err)
