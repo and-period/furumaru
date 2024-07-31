@@ -7,7 +7,5 @@ export default defineEventHandler(async (event) => {
     })
     .catch(e => console.error(e))
 
-  console.log(res)
-
   return res
 })
