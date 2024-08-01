@@ -16,7 +16,20 @@ export default defineEventHandler(async (event) => {
       endpoint: 'volunteer',
       contentId: id,
     })
-    .catch(e => console.error(e))
+    .catch((e) => {
+      console.log('エラーです')
+      // if (e.response.status === 404) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Not found.',
+      })
+      // } else {
+      //   throw createError({
+      //     statusCode: 500,
+      //     statusMessage: "Internal Server Error.",
+      //   });
+      // }
+    })
 
   return res
 })

@@ -4,12 +4,16 @@ import type { VolunteerBlogListResponse } from '~/types/cms/volunteer'
 const route = useRoute()
 const router = useRouter()
 
-const { data } = await useAsyncData<VolunteerBlogListResponse>(
+const { data, error } = await useAsyncData<VolunteerBlogListResponse>(
   'volunteer-list',
   () => {
     return $fetch('/api/cms/volunteer')
   },
 )
+
+if (error.value) {
+  throw createError(error.value)
+}
 
 const totalCount = computed(() => {
   return data.value?.totalCount || 0

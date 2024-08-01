@@ -7,7 +7,7 @@ const id = computed(() => {
   return route.params.id as string
 })
 
-const { data } = await useAsyncData<VolunteerBlogItemResponse>(
+const { data, error } = await useAsyncData<VolunteerBlogItemResponse>(
   `volunteer-${id.value}`,
   () => {
     return $fetch(`/api/cms/volunteer/${id.value}`)
@@ -17,6 +17,10 @@ const { data } = await useAsyncData<VolunteerBlogItemResponse>(
 const title = computed(() => {
   return data.value?.title || ''
 })
+
+if (error.value) {
+  throw createError(error.value)
+}
 
 useSeoMeta({
   title,
