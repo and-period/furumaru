@@ -2,6 +2,8 @@ import { cmsClient } from '~/server/client/microcms'
 import type { VolunteerBlogItemResponse } from '~/types/cms/volunteer'
 
 export default defineEventHandler(async (event) => {
+  const { MICRO_CMS_DOMAIN, MICRO_CMS_API_KEY } = useRuntimeConfig()
+
   const id = event.context.params?.id || ''
 
   if (!id) {
@@ -11,24 +13,17 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const res = await cmsClient
+  const res = await cmsClient(MICRO_CMS_DOMAIN, MICRO_CMS_API_KEY)
     .get<VolunteerBlogItemResponse>({
       endpoint: 'volunteer',
       contentId: id,
     })
     .catch((e) => {
-      console.log('エラーです')
-      // if (e.response.status === 404) {
+      console.log(e)
       throw createError({
-        statusCode: 404,
-        statusMessage: 'Not found.',
+        statusCode: 500,
+        statusMessage: 'Internal Server Error',
       })
-      // } else {
-      //   throw createError({
-      //     statusCode: 500,
-      //     statusMessage: "Internal Server Error.",
-      //   });
-      // }
     })
 
   return res
