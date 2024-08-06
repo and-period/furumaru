@@ -20,6 +20,13 @@ get:
     description: 取得開始位置(min:0)
     required: false
     example: 0
+  - in: query
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネータID
+    required: false
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
   responses:
     200:
       description: 成功
