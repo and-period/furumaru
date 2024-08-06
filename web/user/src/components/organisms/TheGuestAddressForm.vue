@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { GuestCheckoutAddress } from '~/types/api'
 import { prefecturesList } from '~/constants/prefectures'
+import type { I18n } from '~/types/locales'
 
 interface Props {
   formData: GuestCheckoutAddress
@@ -23,6 +24,12 @@ interface Emits {
 }
 
 const emits = defineEmits<Emits>()
+
+const i18n = useI18n()
+
+const gt = (str: keyof I18n['purchase']['guest']) => {
+  return i18n.t(`purchase.guest.${str}`)
+}
 
 const formDataValue = computed({
   get: () => props.formData,
@@ -49,7 +56,7 @@ const handleSubmit = () => {
     <div class="grid grid-cols-2 gap-4">
       <the-text-input
         v-model="formDataValue.lastname"
-        placeholder="姓"
+        :placeholder="gt('lastNamePlaceholder')"
         :with-label="false"
         :error-message="nameErrorMessage"
         type="text"
@@ -58,7 +65,7 @@ const handleSubmit = () => {
       />
       <the-text-input
         v-model="formDataValue.firstname"
-        placeholder="名"
+        :placeholder="gt('firstNamePlaceholder')"
         :with-label="false"
         :error-message="nameErrorMessage"
         name="firstName"
@@ -69,7 +76,7 @@ const handleSubmit = () => {
     <div class="grid grid-cols-2 gap-4">
       <the-text-input
         v-model="formDataValue.lastnameKana"
-        placeholder="ふりがな(姓)"
+        :placeholder="gt('lastNameKanaPlaceholder')"
         :with-label="false"
         :error-message="nameKanaErrorMessage"
         type="text"
@@ -77,7 +84,7 @@ const handleSubmit = () => {
       />
       <the-text-input
         v-model="formDataValue.firstnameKana"
-        placeholder="ふりがな(名)"
+        :placeholder="gt('firstNameKanaPlaceholder')"
         :with-label="false"
         :error-message="nameKanaErrorMessage"
         type="text"
@@ -100,7 +107,7 @@ const handleSubmit = () => {
     <div class="flex items-center gap-4">
       <the-text-input
         v-model="formDataValue.postalCode"
-        placeholder="郵便番号（ハイフンなし）"
+        :placeholder="gt('postalCodeLabel')"
         :with-label="false"
         :error-message="postalCodeErrorMessage"
         type="text"
@@ -112,7 +119,7 @@ const handleSubmit = () => {
         class="whitespace-nowrap bg-main px-4 py-1 text-white"
         @click="handleClickSearchAddressButton"
       >
-        検索
+        {{ gt('searchButtonText') }}
       </button>
     </div>
     <select
@@ -126,7 +133,7 @@ const handleSubmit = () => {
         disabled
         value="0"
       >
-        都道府県
+        {{ gt('prefectureLabel') }}
       </option>
       <option
         v-for="prefecture in prefecturesList"
@@ -139,7 +146,7 @@ const handleSubmit = () => {
     <the-text-input
       id="address-line1"
       v-model="formDataValue.city"
-      placeholder="住所（市区町村)"
+      :placeholder="gt('cityPlaceholder')"
       :with-label="false"
       :error-message="cityErrorMessage"
       name="address-line1"
@@ -149,7 +156,7 @@ const handleSubmit = () => {
     <the-text-input
       id="address-line2"
       v-model="formDataValue.addressLine1"
-      placeholder="住所（それ以降）"
+      :placeholder="gt('streetPlaceholder')"
       :with-label="false"
       :error-message="addressErrorMessage"
       name="address-line2"
@@ -158,7 +165,7 @@ const handleSubmit = () => {
     <the-text-input
       id="address-line3"
       v-model="formDataValue.addressLine2"
-      placeholder="住所（マンション名、部屋番号）"
+      :placeholder="gt('apartmentPlaceholder')"
       :with-label="false"
       name="address-line3"
       type="text"

@@ -116,6 +116,80 @@ export interface I18n {
   }
 
   purchase: {
+    cart: {
+      cartTitle: string
+      cartCountLabel: string
+      firstNotice: string
+      secondNotice: string
+      shipFromLabel: string
+      coordinatorLabel: string
+      totalPriceLabel: string
+      shippingFeeNotice: string
+      checkoutButtonText: string
+      productNameLabel: string
+      productPriceLabel: string
+      quantityLabel: string
+      subtotalLabel: string
+      deleteButtonText: string
+      boxTypeLabel: string
+      boxSizeLabel: string
+      utilizationRateLabel: string
+    }
+    auth: {
+      loginRequiredMessage: string
+      loginNewAccountMessage: string
+      withAccountTitle: string
+      loginAndCheckoutButtonText: string
+      usernameLabel: string
+      passwordLabel: string
+      usernamePlaceholder: string
+      passwordPlaceholder: string
+      noAccountButtonText: string
+      forgetPasswordLink: string
+      notSignUpTitle: string
+      checkoutWithoutAccountDescription: string
+      checkoutWithoutAccountButtonText: string
+    }
+    guest: {
+      checkoutTitle: string
+      customerInformationTitle: string
+      nameErrorMessage: string
+      nameKanaErrorMessage: string
+      phoneErrorMessage: string
+      postalCodeErrorMessage: string
+      cityErrorMessage: string
+      addressErrorMessage: string
+      emailErrorMessage: string
+      emailInvalidErrorMessage: string
+      unknownErrorMessage: string
+      firstNamePlaceholder: string
+      lastNamePlaceholder: string
+      firstNameKanaPlaceholder: string
+      lastNameKanaPlaceholder: string
+      phoneNumberLabel: string
+      postalCodeLabel: string
+      searchButtonText: string
+      prefectureLabel: string
+      cityPlaceholder: string
+      streetPlaceholder: string
+      apartmentPlaceholder: string
+      orderDetailsTitle: string
+      shipFromLabel: string
+      coordinatorLabel: string
+      boxCountLabel: string
+      quantityLabel: string
+      couponPlaceholder: string
+      applyButtonText: string
+      couponAppliedMessage: string
+      couponInvalidMessage: string
+      itemTotalPriceLabel: string
+      applyCouponLabel: string
+      shippingFeeLabel: string
+      calculateNextPageMessage: string
+      totalPriceLabel: string
+      backToCartButtonText: string
+      paymentMethodButtonText: string
+    }
     complete: {
       thanksMessage: string
       completeMessage: string

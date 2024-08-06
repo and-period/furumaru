@@ -2,8 +2,14 @@
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '~/store/auth'
 import { useShoppingCartStore } from '~/store/shopping'
+import type { I18n } from '~/types/locales'
 
+const i18n = useI18n()
 const router = useRouter()
+
+const ct = (str: keyof I18n['purchase']['cart']) => {
+  return i18n.t(`purchase.cart.${str}`)
+}
 
 const shoppingCartStore = useShoppingCartStore()
 const { removeProductFromCart } = shoppingCartStore
@@ -63,15 +69,15 @@ useSeoMeta({
 <template>
   <div class="container mx-auto px-4 xl:px-0">
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
-      買い物カゴ
+      {{ ct('cartTitle') }}
     </div>
 
     <div class="my-10 border border-orange bg-white px-6 py-7 text-orange">
-      <div>現在のカゴの数：{{ shoppingCart.carts.length }}</div>
+      <p>{{ ct('cartCountLabel') }}{{ shoppingCart.carts.length }}</p>
 
       <ul class="list-disc px-6">
-        <li>マルシェごとのご注文手続き・お届けとなります。</li>
-        <li>買い物カゴごとに送料がかかります。</li>
+        <li>{{ ct('firstNotice') }}</li>
+        <li>{{ ct('secondNotice') }}</li>
       </ul>
     </div>
 
