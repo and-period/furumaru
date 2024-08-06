@@ -27,6 +27,7 @@
     "dayjs": "^1.11.10",
     "hls.js": "^1.4.10",
     "markdown-it": "^13.0.2",
+    "microcms-js-sdk": "^3.1.2",
     "nuxt": "^3.8.2",
     "pinia": "^2.0.30",
     "postcss-custom-properties": "^13.3.3",

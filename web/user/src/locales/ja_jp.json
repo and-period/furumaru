@@ -11,6 +11,7 @@
       "searchItemLinkText": "商品をさがす",
       "allItemLinkText": "すべての商品",
       "allMarcheLinkText": "すべてのマルシェ",
+      "volunteerLinkText": "ひろしま援農計画",
       "aboutLinkText": "ふるマルについて",
       "notificationTitle": "お知らせ",
       "noNotificationItemText": "お知らせはありません。",
@@ -23,7 +24,6 @@
       "shippingFeeAnnotation": "買い物カゴごとに送料がかかります。詳しくは",
       "shippingFeeAnnotationLinkText": "こちら",
       "shippingFeeAnnotationCheckText": "からご確認ください。"
-
     },
     "footer": {
       "qaLinkText": "よくあるご質問",

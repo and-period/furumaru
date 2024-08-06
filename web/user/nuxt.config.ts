@@ -115,6 +115,8 @@ export default defineNuxtConfig({
     },
   ],
   runtimeConfig: {
+    MICRO_CMS_DOMAIN: process.env.MICRO_CMS_DOMAIN,
+    MICRO_CMS_API_KEY: process.env.MICRO_CMS_API_KEY,
     public: {
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:18000',
       ENVIRONMENT: process.env.ENVIRONMENT || '',
