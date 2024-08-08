@@ -1,5 +1,21 @@
 # Changelog
 
+## [v1.11.37](https://github.com/and-period/furumaru/compare/v1.11.36...v1.11.37) - 2024-08-08
+- feat(workflow): Cognitoのユーザープール移行用のワークフロー追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2302
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2322
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2323
+- feat(user): 購入関連のi18n対応(ゲスト購入) by @sea-kai in https://github.com/and-period/furumaru/pull/2301
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2324
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2325
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2326
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2327
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2328
+- fix(user): 会員情報取得処理の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2331
+- 援農募集ページの整備 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2332
+- ブログ部分のレイアウト調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2337
+- feat(gateway): 商品一覧APIでコーディネータIDを用いたフィルタリングができるように by @taba2424 in https://github.com/and-period/furumaru/pull/2333
+- feat: コーディネータ登録時のパスワードを表示するように by @taba2424 in https://github.com/and-period/furumaru/pull/2338
+
 ## [v1.11.36](https://github.com/and-period/furumaru/compare/v1.11.35...v1.11.36) - 2024-07-24
 - feat(user): 商品詳細ページのi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2291
 - build(deps): bump the dependencies group in /api with 51 updates by @dependabot in https://github.com/and-period/furumaru/pull/2290
