@@ -35,6 +35,7 @@ export interface V1GetProductRequest {
 export interface V1ListProductsRequest {
     limit?: number;
     offset?: number;
+    coordinatorId?: string;
 }
 
 /**
@@ -84,6 +85,10 @@ export class ProductApi extends runtime.BaseAPI {
 
         if (requestParameters.offset !== undefined) {
             queryParameters['offset'] = requestParameters.offset;
+        }
+
+        if (requestParameters.coordinatorId !== undefined) {
+            queryParameters['coordinatorId'] = requestParameters.coordinatorId;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

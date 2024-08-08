@@ -44,6 +44,7 @@ func (h *handler) ListProducts(ctx *gin.Context) {
 		OnlyPublished:    true,
 		ExcludeOutOfSale: true,
 		ExcludeDeleted:   true,
+		CoordinatorID:    util.GetQuery(ctx, "coordinatorId", ""),
 		Orders: []*store.ListProductsOrder{
 			// 売り切れでないもの順 && 公開日時が新しいもの順
 			{Key: entity.ProductOrderBySoldOut, OrderByASC: true},
