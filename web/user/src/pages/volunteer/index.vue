@@ -72,18 +72,23 @@ useSeoMeta({
             v-for="content in data.contents"
             :key="content.id"
             :to="`/volunteer/${content.id}`"
-            class="flex flex-col gap-4"
+            class="flex flex-col md:gap-4 gap-2"
           >
             <img
               :src="content.eyecatch.url"
-              class="w-full aspect-video object-cover w-full"
+              :alt="`${content.title}のサムネイル`"
+              class="w-full aspect-video object-cover"
             >
-            <div class="flex flex-col gap-2 mt-2">
-              <h2 class="text-[18px] font-semibold tracking-[2px]">
+            <div class="flex flex-col md:gap-2 gap-1 md:mt-2">
+              <h2
+                class="md:text-[18px] font-semibold md:tracking-[2px] tracking-[1.4px] text-[14px]"
+              >
                 {{ content.title }}
               </h2>
 
-              <div class="text-gray flex flex-col gap-2 tracking-[10%]">
+              <div
+                class="text-gray flex flex-col md:gap-2 gap-1 tracking-[10%] md:text-[16px] text-[12px]"
+              >
                 <div>{{ content.name }}</div>
                 <div class="inline-flex gap-2 items-center">
                   <the-map-pin-icon class="h-4 w-4" />
@@ -91,7 +96,9 @@ useSeoMeta({
                 </div>
               </div>
 
-              <div class="inline-flex gap-x-4 text-[14px] flex-wrap gap-y-1">
+              <div
+                class="inline-flex gap-x-4 md:text-[14px] flex-wrap gap-y-1 text-[10px]"
+              >
                 <span
                   v-for="category in content.category"
                   :key="category.id"
