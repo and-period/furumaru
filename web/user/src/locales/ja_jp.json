@@ -11,7 +11,7 @@
       "searchItemLinkText": "商品をさがす",
       "allItemLinkText": "すべての商品",
       "allMarcheLinkText": "すべてのマルシェ",
-      "volunteerLinkText": "ひろしま援農計画",
+      "blogLinkText": "ブログ",
       "aboutLinkText": "ふるマルについて",
       "notificationTitle": "お知らせ",
       "noNotificationItemText": "お知らせはありません。",
@@ -122,9 +122,9 @@
       "boxSizeLabel": "箱サイズ",
       "utilizationRateLabel": "占有率"
     },
-    "guest":{
+    "guest": {
       "checkoutTitle": "ご購入手続き",
-      "customerInformationTitle": "お客様情報", 
+      "customerInformationTitle": "お客様情報",
       "nameErrorMessage": "氏名を入力してください",
       "nameKanaErrorMessage": "氏名(かな)を入力してください",
       "phoneErrorMessage": "電話番号を入力してください",

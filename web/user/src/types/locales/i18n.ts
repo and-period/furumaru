@@ -12,7 +12,7 @@ export interface I18n {
       searchItemLinkText: string
       allItemLinkText: string
       allMarcheLinkText: string
-      volunteerLinkText: string
+      blogLinkText: string
       aboutLinkText: string
 
       cartMenuMessage: string
