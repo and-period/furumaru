@@ -53,7 +53,7 @@ const handleClickPage = (page: number) => {
 }
 
 useSeoMeta({
-  title: 'ひろしま援農計画',
+  title: 'ブログ',
 })
 </script>
 
@@ -62,7 +62,7 @@ useSeoMeta({
     <div
       class="container mx-auto text-center text-[14px] font-bold tracking-[2px] md:text-[20px]"
     >
-      ひろしま援農計画
+      ブログ記事一覧
     </div>
     <div class="grow container mx-auto">
       <hr class="mt-[40px] mb-[20px]">
@@ -98,7 +98,7 @@ useSeoMeta({
                   v-for="category in content.category"
                   :key="category.id"
                 >
-                  {{ category }}
+                  {{ category.name }}
                 </span>
               </div>
             </div>

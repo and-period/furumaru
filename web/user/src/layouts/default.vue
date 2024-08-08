@@ -60,7 +60,7 @@ const navbarMenuList = computed<HeaderMenuItem[]>(() => [
     active: route.path === localePath('/marches'),
   },
   {
-    text: ht('volunteerLinkText'),
+    text: ht('blogLinkText'),
     to: localePath('/volunteer'),
     active: route.path === localePath('/volunteer'),
   },
@@ -173,7 +173,7 @@ onUnmounted(() => {
       :view-mycart-text="ht('viewMyCartText')"
       :all-item-link-text="ht('allItemLinkText')"
       :all-marche-link-text="ht('allMarcheLinkText')"
-      :volunteer-link-text="ht('volunteerLinkText')"
+      :blog-link-text="ht('blogLinkText')"
       :about-link-text="ht('aboutLinkText')"
       :number-of-carts-text="ht('numberOfCartsText')"
       :shipping-fee-annotation="ht('shippingFeeAnnotation')"
