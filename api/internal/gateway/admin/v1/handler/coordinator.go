@@ -155,14 +155,16 @@ func (h *handler) CreateCoordinator(ctx *gin.Context) {
 		AddressLine2:      req.AddressLine2,
 		BusinessDays:      req.BusinessDays,
 	}
-	coordinator, err := h.user.CreateCoordinator(ctx, in)
+	coordinator, password, err := h.user.CreateCoordinator(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 
 	res := &response.CoordinatorResponse{
-		Coordinator: service.NewCoordinator(coordinator).Response(),
+		Coordinator:  service.NewCoordinator(coordinator).Response(),
+		ProductTypes: productTypes.Response(),
+		Password:     password,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

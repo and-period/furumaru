@@ -38,6 +38,7 @@ type Coordinator struct {
 type CoordinatorResponse struct {
 	Coordinator  *Coordinator   `json:"coordinator"`  // コーディネータ情報
 	ProductTypes []*ProductType `json:"productTypes"` // 品目一覧
+	Password     string         `json:"password"`     // パスワード（登録時のみ）
 }
 
 type CoordinatorsResponse struct {

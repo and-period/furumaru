@@ -4,11 +4,12 @@ import { storeToRefs } from 'pinia'
 
 import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
-import { useCoordinatorStore, useProductTypeStore } from '~/store'
+import { useCommonStore, useCoordinatorStore, useProductTypeStore } from '~/store'
 import { type CreateCoordinatorRequest, Prefecture } from '~/types/api'
 import { type ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const coordinatorStore = useCoordinatorStore()
 const productTypeStore = useProductTypeStore()
 const searchAddress = useSearchAddress()
@@ -73,7 +74,11 @@ const handleSubmit = async (): Promise<void> => {
       ...formData.value,
       phoneNumber: convertJapaneseToI18nPhoneNumber(formData.value.phoneNumber),
     }
-    await coordinatorStore.createCoordinator(req)
+    const res = await coordinatorStore.createCoordinator(req)
+    commonStore.addSnackbar({
+      message: `コーディネータの登録が完了しました。（初期パスワード：${res.password}）`,
+      color: 'info',
+    })
     router.push('/coordinators')
   }
   catch (err) {
