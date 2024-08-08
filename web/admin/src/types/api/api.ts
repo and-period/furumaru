@@ -1221,6 +1221,12 @@ export interface CoordinatorResponse {
      * @memberof CoordinatorResponse
      */
     'productTypes': Array<ProductType>;
+    /**
+     * パスワード
+     * @type {string}
+     * @memberof CoordinatorResponse
+     */
+    'password': string;
 }
 /**
  * 

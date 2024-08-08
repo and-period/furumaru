@@ -7,9 +7,13 @@ coordinatorResponse:
       description: 品目一覧
       items:
         $ref: './../../../openapi.yaml#/components/schemas/productType'
+    password:
+      type: string
+      description: パスワード
   required:
   - coordinator
   - productTypes
+  - password
   example:
     coordinator:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
@@ -44,6 +48,7 @@ coordinatorResponse:
       categoryName: '野菜'
       createdAt: 1640962800
       updatedAt: 1640962800
+    password: 'password'
 coordinatorsResponse:
   type: object
   properties:

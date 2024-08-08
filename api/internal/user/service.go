@@ -35,7 +35,7 @@ type Service interface {
 	ListCoordinators(ctx context.Context, in *ListCoordinatorsInput) (entity.Coordinators, int64, error)           // 一覧取得
 	MultiGetCoordinators(ctx context.Context, in *MultiGetCoordinatorsInput) (entity.Coordinators, error)          // 一覧取得(ID指定)
 	GetCoordinator(ctx context.Context, in *GetCoordinatorInput) (*entity.Coordinator, error)                      // １件取得
-	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, error)                // 登録
+	CreateCoordinator(ctx context.Context, in *CreateCoordinatorInput) (*entity.Coordinator, string, error)        // 登録
 	UpdateCoordinator(ctx context.Context, in *UpdateCoordinatorInput) error                                       // 更新
 	UpdateCoordinatorEmail(ctx context.Context, in *UpdateCoordinatorEmailInput) error                             // メールアドレス更新
 	ResetCoordinatorPassword(ctx context.Context, in *ResetCoordinatorPasswordInput) error                         // パスワードリセット

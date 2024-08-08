@@ -86,17 +86,17 @@ func (s *service) GetCoordinator(
 
 func (s *service) CreateCoordinator(
 	ctx context.Context, in *user.CreateCoordinatorInput,
-) (*entity.Coordinator, error) {
+) (*entity.Coordinator, string, error) {
 	const size = 8
 	if err := s.validator.Struct(in); err != nil {
-		return nil, internalError(err)
+		return nil, "", internalError(err)
 	}
 	productTypes, err := s.multiGetProductTypes(ctx, in.ProductTypeIDs)
 	if err != nil {
-		return nil, internalError(err)
+		return nil, "", internalError(err)
 	}
 	if len(productTypes) != len(in.ProductTypeIDs) {
-		return nil, fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
+		return nil, "", fmt.Errorf("api: invalid product type ids: %w", exception.ErrInvalidArgument)
 	}
 	cognitoID := uuid.Base58Encode(uuid.New())
 	password := random.NewStrings(size)
@@ -131,11 +131,11 @@ func (s *service) CreateCoordinator(
 	}
 	coordinator, err := entity.NewCoordinator(params)
 	if err != nil {
-		return nil, fmt.Errorf("service: failed to new coordinator: %w: %s", exception.ErrInvalidArgument, err.Error())
+		return nil, "", fmt.Errorf("service: failed to new coordinator: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	auth := s.createCognitoAdmin(cognitoID, in.Email, password)
 	if err := s.db.Coordinator.Create(ctx, coordinator, auth); err != nil {
-		return nil, internalError(err)
+		return nil, "", internalError(err)
 	}
 	s.logger.Debug("Create coordinator", zap.String("coordinatorId", coordinator.ID), zap.String("password", password))
 	s.waitGroup.Add(1)
@@ -146,7 +146,7 @@ func (s *service) CreateCoordinator(
 			s.logger.Warn("Failed to notify register admin", zap.String("coordinatorId", coordinator.ID), zap.Error(err))
 		}
 	}()
-	return coordinator, nil
+	return coordinator, password, nil
 }
 
 func (s *service) UpdateCoordinator(ctx context.Context, in *user.UpdateCoordinatorInput) error {
