@@ -67,7 +67,7 @@ useSeoMeta({
     <div class="grow container mx-auto">
       <hr class="mt-[40px] mb-[20px]">
       <template v-if="data">
-        <div class="grid md:grid-cols-3 w-full px-4">
+        <div class="grid md:grid-cols-3 grid-cols-2 w-full px-4">
           <nuxt-link
             v-for="content in data.contents"
             :key="content.id"
@@ -91,12 +91,11 @@ useSeoMeta({
                 </div>
               </div>
 
-              <div
-                class="inline-flex gap-4 [&>span]:px-3 [&>span]:py-1 [&>span]:border [&>span]:border-main [&>span]:text-main [&>span]:rounded-full text-[14px]"
-              >
+              <div class="inline-flex gap-x-4 text-[14px] flex-wrap gap-y-1">
                 <span
                   v-for="category in content.category"
                   :key="category.id"
+                  class="px-3 py-1 border border-main text-main rounded-full whitespace-nowrap"
                 >
                   {{ category.name }}
                 </span>
