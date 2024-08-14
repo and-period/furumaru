@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CreateAddressRequest } from '~/types/api'
 import { prefecturesList } from '~/constants/prefectures'
-import type { I18n } from '~/types/locales';
+import type { I18n } from '~/types/locales'
 
 interface Props {
   formData: CreateAddressRequest

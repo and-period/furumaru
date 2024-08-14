@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import type { Composer, UseI18nOptions } from '@nuxtjs/i18n/dist/runtime/composables'
 import { useAuthStore } from './auth'
 import {
   type AddCartItemRequest,
@@ -13,7 +14,6 @@ import type {
   ShoppingCart,
 } from '~/types/store'
 import { getPaymentMethodNameByPaymentMethodType } from '~/lib/order'
-import type { Composer, UseI18nOptions } from '@nuxtjs/i18n/dist/runtime/composables'
 
 /**
  * 買い物かごを管理するグローバルステート
@@ -153,7 +153,7 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
             ...item,
             methodName: getPaymentMethodNameByPaymentMethodType(
               item.methodType,
-             this.i18n
+              this.i18n,
             ),
           }
         })

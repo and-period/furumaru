@@ -51,7 +51,7 @@ export function getOperationResultFromOrderStatus(status: OrderStatus): string {
  */
 export function getPaymentMethodNameByPaymentMethodType(
   methodType: PaymentMethodType,
-  i18n: Composer<NonNullable<UseI18nOptions['messages']>, NonNullable<UseI18nOptions['datetimeFormats']>, NonNullable<UseI18nOptions['numberFormats']>, UseI18nOptions['locale'] extends unknown ? string : UseI18nOptions['locale']> ,
+  i18n: Composer<NonNullable<UseI18nOptions['messages']>, NonNullable<UseI18nOptions['datetimeFormats']>, NonNullable<UseI18nOptions['numberFormats']>, UseI18nOptions['locale'] extends unknown ? string : UseI18nOptions['locale']>,
 ): string {
   const paymentMethodText = (str: keyof I18n['purchase']['confirmation']) => {
     return i18n.t(`purchase.confirmation.${str}`)

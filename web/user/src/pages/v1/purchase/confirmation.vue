@@ -32,7 +32,6 @@ const ct = (str: keyof I18n['purchase']['confirmation']) => {
   return i18n.t(`purchase.confirmation.${str}`)
 }
 
-
 /**
  * 配送先住所ID（クエリパラメータから算出）
  */
@@ -283,13 +282,11 @@ useSeoMeta({
           </div>
 
           <div class="items-center border-b py-2" />
-            {{ ct('paymentInformationTitle') }}
+          {{ ct('paymentInformationTitle') }}
           <div>
             <div
               class="pt-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
-            >
-              
-            </div>
+            />
 
             <div class="mt-4 flex items-center justify-between">
               <div class="flex w-full flex-col items-center gap-4">
