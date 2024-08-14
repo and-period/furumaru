@@ -218,6 +218,22 @@ export interface I18n {
       streetPlaceholder: string
       apartmentPlaceholder: string
       setDefaultAddressLabel: string
+      orderDetailsTitle: string
+      shipFromLabel: string
+      coordinatorLabel: string
+      boxCountLabel: string
+      quantityLabel: string
+      couponPlaceholder: string
+      applyButtonText: string
+      couponAppliedMessage: string
+      couponInvalidMessage: string
+      itemTotalPriceLabel: string
+      applyCouponLabel: string
+      shippingFeeLabel: string
+      calculateNextPageMessage: string
+      totalPriceLabel: string
+      backToCartButtonText: string
+      paymentMethodButtonText: string
     }
     complete: {
       thanksMessage: string
