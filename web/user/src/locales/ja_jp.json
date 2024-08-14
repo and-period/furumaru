@@ -139,6 +139,7 @@
       "firstNameKanaPlaceholder": "ふりがな(名)",
       "lastNameKanaPlaceholder": "ふりがな(姓)",
       "phoneNumberLabel": "電話番号",
+      "emailPlaceholder": "メールアドレス",
       "postalCodeLabel": "郵便番号（ハイフンなし）",
       "searchButtonText": "検索",
       "prefectureLabel": "都道府県",

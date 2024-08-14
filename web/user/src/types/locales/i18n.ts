@@ -167,6 +167,7 @@ export interface I18n {
       firstNameKanaPlaceholder: string
       lastNameKanaPlaceholder: string
       phoneNumberLabel: string
+      emailPlaceholder: string
       postalCodeLabel: string
       searchButtonText: string
       prefectureLabel: string

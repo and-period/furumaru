@@ -154,6 +154,7 @@
       "firstNameKanaPlaceholder": "Furigana (First Name)",
       "lastNameKanaPlaceholder": "Furigana (Last Name)",
       "phoneNumberLabel": "Phone Number",
+      "emailPlaceholder": "Email Address",
       "postalCodeLabel": "Postal Code (no hyphens)",
       "searchButtonText": "Search",
       "prefectureLabel": "Prefecture",
