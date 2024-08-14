@@ -4,7 +4,9 @@ import type { CreateAddressRequest } from '~/types/api'
 import { useAddressStore } from '~/store/address'
 import { useShoppingCartStore } from '~/store/shopping'
 import { ApiBaseError } from '~/types/exception'
+import type { I18n } from '~/types/locales'
 
+const i18n = useI18n()
 const route = useRoute()
 const router = useRouter()
 
@@ -16,6 +18,10 @@ const { fetchAddresses, searchAddressByPostalCode, registerAddress }
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
 const { calcCartItemByCoordinatorId, verifyPromotionCode } = shoppingCartStore
+
+const at = (str: keyof I18n['purchase']['address']) => {
+  return i18n.t(`purchase.address.${str}`)
+}
 
 const targetAddress = ref<string>('default')
 const calcCartResponseItemState = ref<{
@@ -228,7 +234,7 @@ useSeoMeta({
     <div
       class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
     >
-      ご購入手続き
+      {{ at('checkoutTitle') }}
     </div>
 
     <the-alert
@@ -251,7 +257,7 @@ useSeoMeta({
           <div
             class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
           >
-            お客様情報
+            {{ at('customerInformationTitle') }}
           </div>
 
           <!-- デフォルトの住所が登録されている場合 -->
@@ -267,7 +273,7 @@ useSeoMeta({
                   class="h-4 w-4 accent-main"
                   value="default"
                 >
-                <label for="default-radio">上記の住所にお届け</label>
+                <label for="default-radio">{{ at('shippingAvobeAdderssLabel') }}</label>
               </div>
               <div class="flex items-center gap-2">
                 <input
@@ -277,14 +283,14 @@ useSeoMeta({
                   class="h-4 w-4 accent-main"
                   value="other"
                 >
-                <label for="other-radio">その他の住所にお届け</label>
+                <label for="other-radio">{{ at('shippingAnotherAdderssLabel') }}</label>
               </div>
             </div>
             <template v-if="targetAddress === 'other'">
               <div
                 class="my-6 text-[16px] font-bold tracking-[1.6px] text-main"
               >
-                お届け先情報
+                {{ at('shippingInformationLabel') }}
               </div>
               <the-new-address-form
                 v-model:form-data="formData"

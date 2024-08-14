@@ -185,6 +185,28 @@
       "checkoutWithoutAccountDescription": "アカウントを登録せずにご購入を希望される方はこちらからご利用ください。",
       "checkoutWithoutAccountButtonText": "ゲストとして購入"
     },
+    "address": {
+      "checkoutTitle": "ご購入手続き",
+      "customerInformationTitle": "お客様情報",
+      "nameLabel": "氏名",
+      "phoneNumberLabel": "電話番号",
+      "addressLabel": "住所",
+      "shippingAvobeAdderssLabel": "上記の住所にお届け",
+      "shippingAnotherAdderssLabel": "その他の住所にお届け",
+      "shippingInformationLabel": "お届け先情報",
+      "firstNamePlaceholder": "名",
+      "lastNamePlaceholder": "姓",
+      "firstNameKanaPlaceholder": "ふりがな(名)",
+      "lastNameKanaPlaceholder": "ふりがな(姓)",
+      "emailPlaceholder": "メールアドレス",
+      "postalCodePlaceholder": "郵便番号（ハイフンなし）",
+      "searchButtonText": "検索",
+      "prefectureLabel": "都道府県",
+      "cityPlaceholder": "住所（市区町村)",
+      "streetPlaceholder": "住所（番地）",
+      "apartmentPlaceholder": "住所（マンション名、部屋番号）",
+      "setDefaultAddressLabel": "この住所を基本の配送先に指定する"
+    },
     "complete": {
       "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",
       "completeMessage": "ご登録いただいたメールアドレスに確認メールをお送りしましたのでご確認ください。\nメールが届かない場合は上記の注文番号をお書き添えの上、こちらからお問い合わせください。\n注文の詳細は、アカウントページの注文履歴からもご確認いただけます。"

@@ -197,6 +197,28 @@ export interface I18n {
       backToCartButtonText: string
       paymentMethodButtonText: string
     }
+    address: {
+      checkoutTitle: string
+      customerInformationTitle: string
+      nameLabel: string
+      phoneNumberLabel: string
+      addressLabel: string
+      shippingAvobeAdderssLabel: string
+      shippingAnotherAdderssLabel: string
+      shippingInformationLabel: string
+      firstNamePlaceholder: string
+      lastNamePlaceholder: string
+      firstNameKanaPlaceholder: string
+      lastNameKanaPlaceholder: string
+      emailPlaceholder: string
+      postalCodePlaceholder: string
+      searchButtonText: string
+      prefectureLabel: string
+      cityPlaceholder: string
+      streetPlaceholder: string
+      apartmentPlaceholder: string
+      setDefaultAddressLabel: string
+    }
     complete: {
       thanksMessage: string
       completeMessage: string
