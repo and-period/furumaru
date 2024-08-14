@@ -235,6 +235,36 @@ export interface I18n {
       backToCartButtonText: string
       paymentMethodButtonText: string
     }
+    confirmation: {
+      checkoutTitle: string
+      customerInformationTitle: string
+      changeButtonText: string
+      shippingAvobeAdderssLabel: string
+      shippingAnotherAdderssLabel: string
+      shippingInformationLabel: string
+      orderDetailsTitle: string
+      shipFromLabel: string
+      coordinatorLabel: string
+      boxCountLabel: string
+      quantityLabel: string
+      couponPlaceholder: string
+      applyButtonText: string
+      couponAppliedMessage: string
+      couponInvalidMessage: string
+      itemTotalPriceLabel: string
+      applyCouponLabel: string
+      shippingFeeLabel: string
+      calculateNextPageMessage: string
+      totalPriceLabel: string
+      backToPreviousPageButtonText: string
+      proceedToPaymentButtonText: string
+      paymentInformationTitle: string
+      creditCardNumberPlaceholder: string
+      cardholderNamePlaceholder: string
+      expirationMonthPlaceholder: string
+      expirationYearPlaceholder: string
+      securityCodePlaceholder: string
+    }
     complete: {
       thanksMessage: string
       completeMessage: string

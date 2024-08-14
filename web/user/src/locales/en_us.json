@@ -224,6 +224,37 @@
       "backToCartButtonText": "Back to Cart",
       "paymentMethodButtonText": "Proceed to Payment Method Selection"
     },
+    "confirmation": {
+      "checkoutTitle": "Checkout Process",
+      "customerInformationTitle": "Customer Information",
+      "changeButtonText": "Change",
+      "shippingAvobeAdderssLabel": "Ship to the above address",
+      "shippingAnotherAdderssLabel": "Ship to another address",
+      "shippingInformationLabel": "Shipping Information",
+      "orderDetailsTitle": "Order Details",
+      "shipFromLabel": "Ship From: ",
+      "coordinatorLabel": "Coordinator: ",
+      "boxCountLabel": "Number of Boxes: ",
+      "itemThumbnailAlt": "Thumbnail of {itemName}",
+      "quantityLabel": "Quantity: ",
+      "couponPlaceholder": "Coupon Code",
+      "applyButtonText": "Apply",
+      "couponAppliedMessage": "Coupon code applied",
+      "couponInvalidMessage": "The coupon code you entered is invalid.",
+      "itemTotalPriceLabel": "Total (tax included)",
+      "applyCouponLabel": "Apply Coupon",
+      "shippingFeeLabel": "Shipping Fee (tax included)",
+      "calculateNextPageMessage": "Calculated on the next page",
+      "totalPriceLabel": "Total (tax included)",
+      "backToPreviousPageButtonText": "Back to the Previous Page",
+      "proceedToPaymentButtonText": "Proceed to Payment",
+      "paymentInformationTitle": "Payment Information",
+      "creditCardNumberPlaceholder": "Credit Card Number",
+      "cardholderNamePlaceholder": "Cardholder Name",
+      "expirationMonthPlaceholder": "Expiration Date (Month)",
+      "expirationYearPlaceholder": "Expiration Date (Year)",
+      "securityCodePlaceholder": "Security Code"
+    },
     "complete": {
       "completeMessage": "A confirmation email has been sent to the email address you registered, so please check it. if you do not receive an email, please contact us here and include your order number above. you can also check your order details from your order history on your account page."
     }
