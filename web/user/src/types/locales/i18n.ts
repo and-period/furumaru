@@ -56,6 +56,12 @@ export interface I18n {
 
     signUp: {
       pageName: string
+      usernamePlaceholder: string
+      userIdPlaceholder: string
+      firstNamePlaceholder: string
+      lastNamePlaceholder: string
+      firstNameKanaPlaceholder: string
+      lastNameKanaPlaceholder: string
       tel: string
       email: string
       password: string

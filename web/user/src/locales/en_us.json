@@ -48,6 +48,12 @@
     },
     "signUp": {
       "pageName": "Create a new Account",
+      "usernamePlaceholder": "Username (Furumaru)",
+      "userIdPlaceholder": "UserID (furumaruchan)",
+      "firstNamePlaceholder": "First Name",
+      "lastNamePlaceholder": "Last Name",
+      "firstNameKanaPlaceholder": "Furigana (First Name)",
+      "lastNameKanaPlaceholder": "Furigana (Last Name)",
       "tel": "Tel",
       "email": "Email",
       "password": "Password",

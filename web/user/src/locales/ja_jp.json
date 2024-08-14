@@ -48,6 +48,12 @@
     },
     "signUp": {
       "pageName": "新規アカウント作成",
+      "usernamePlaceholder": "ユーザー名（ふるマル）",
+      "userIdPlaceholder": "ユーザーID（furumaruchan）",
+      "firstNamePlaceholder": "名",
+      "lastNamePlaceholder": "姓",
+      "firstNameKanaPlaceholder": "ふりがな(名)",
+      "lastNameKanaPlaceholder": "ふりがな(姓)",
       "tel": "電話番号",
       "email": "メールアドレス",
       "password": "パスワード",
