@@ -264,6 +264,15 @@ export interface I18n {
       expirationMonthPlaceholder: string
       expirationYearPlaceholder: string
       securityCodePlaceholder: string
+      paymentMethodCashText: string
+      paymentMethodCreditCardText: string
+      paymentMethodConvinienceStoreText: string
+      paymentMethodBankTransferText: string
+      paymentMethodPayPayText: string
+      paymentMethodLinePayText: string
+      paymentMethodMerPayText: string
+      paymentMethodRakutenPayText: string
+      paymentMethodAUPayText: string
     }
     complete: {
       thanksMessage: string

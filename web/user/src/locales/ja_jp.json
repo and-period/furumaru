@@ -253,7 +253,16 @@
       "cardholderNamePlaceholder": "カード名義",
       "expirationMonthPlaceholder": "有効期限 (月)",
       "expirationYearPlaceholder": "有効期限 (年)",
-      "securityCodePlaceholder": "セキュリティコード"
+      "securityCodePlaceholder": "セキュリティコード",
+      "paymentMethodCashText": "現金支払い",
+      "paymentMethodCreditCardText": "クレジットカード決済",
+      "paymentMethodConvinienceStoreText": "コンビニ決済",
+      "paymentMethodBankTransferText": "銀行振込決済",
+      "paymentMethodPayPayText": "QR決済（PayPay）",
+      "paymentMethodLinePayText": "QR決済（LINE Pay）",
+      "paymentMethodMerPayText": "QR決済（メルペイ）",
+      "paymentMethodRakutenPayText": "QR決済（楽天ペイ）",
+      "paymentMethodAUPayText": "QR決済（au PAY）"
     },
     "complete": {
       "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",

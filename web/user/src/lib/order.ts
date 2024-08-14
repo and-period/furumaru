@@ -1,4 +1,6 @@
+import type { Composer, UseI18nOptions } from 'vue-i18n'
 import { OrderStatus, PaymentMethodType } from '~/types/api'
+import type { I18n } from '~/types/locales/i18n'
 
 /**
  * ステータスを文字列に変換する関数
@@ -49,26 +51,31 @@ export function getOperationResultFromOrderStatus(status: OrderStatus): string {
  */
 export function getPaymentMethodNameByPaymentMethodType(
   methodType: PaymentMethodType,
+  i18n: Composer<NonNullable<UseI18nOptions['messages']>, NonNullable<UseI18nOptions['datetimeFormats']>, NonNullable<UseI18nOptions['numberFormats']>, UseI18nOptions['locale'] extends unknown ? string : UseI18nOptions['locale']> ,
 ): string {
+  const paymentMethodText = (str: keyof I18n['purchase']['confirmation']) => {
+    return i18n.t(`purchase.confirmation.${str}`)
+  }
+
   switch (methodType) {
     case PaymentMethodType.CASH:
-      return '現金支払い'
+      return paymentMethodText('paymentMethodCashText')
     case PaymentMethodType.CREDIT_CARD:
-      return 'クレジットカード決済'
+      return paymentMethodText('paymentMethodCreditCardText')
     case PaymentMethodType.KONBINI:
-      return 'コンビニ決済'
+      return paymentMethodText('paymentMethodConvinienceStoreText')
     case PaymentMethodType.BANK_TRANSFER:
-      return '銀行振込決済'
+      return paymentMethodText('paymentMethodBankTransferText')
     case PaymentMethodType.PAYPAY:
-      return 'QR決済（PayPay）'
+      return paymentMethodText('paymentMethodPayPayText')
     case PaymentMethodType.LINE_PAY:
-      return 'QR決済（Line Pay）'
+      return paymentMethodText('paymentMethodLinePayText')
     case PaymentMethodType.MERPAY:
-      return 'QR決済（メルペイ）'
+      return paymentMethodText('paymentMethodMerPayText')
     case PaymentMethodType.RAKUTEN_PAY:
-      return 'QR決済（楽天ペイ）'
+      return paymentMethodText('paymentMethodRakutenPayText')
     case PaymentMethodType.AU_PAY:
-      return 'QR決済（au PAY）'
+      return paymentMethodText('paymentMethodAUPayText')
     case PaymentMethodType.UNKNOWN:
     default:
       return ''
