@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import type { Composer, UseI18nOptions } from '@nuxtjs/i18n/dist/runtime/composables'
 import { useAuthStore } from './auth'
 import {
   type AddCartItemRequest,
