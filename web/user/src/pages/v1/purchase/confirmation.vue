@@ -384,7 +384,7 @@ useSeoMeta({
               </div>
               <the-text-input
                 v-model="checkoutFormData.creditCard.name"
-                :placeholder="ct('cardHolderNamePlaceholder')"
+                :placeholder="ct('cardholderNamePlaceholder')"
                 :with-label="false"
                 name="cc-name"
                 type="text"
