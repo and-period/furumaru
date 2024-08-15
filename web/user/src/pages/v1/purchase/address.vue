@@ -4,7 +4,9 @@ import type { CreateAddressRequest } from '~/types/api'
 import { useAddressStore } from '~/store/address'
 import { useShoppingCartStore } from '~/store/shopping'
 import { ApiBaseError } from '~/types/exception'
+import type { I18n } from '~/types/locales'
 
+const i18n = useI18n()
 const route = useRoute()
 const router = useRouter()
 
@@ -16,6 +18,16 @@ const { fetchAddresses, searchAddressByPostalCode, registerAddress }
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
 const { calcCartItemByCoordinatorId, verifyPromotionCode } = shoppingCartStore
+
+const at = (str: keyof I18n['purchase']['address']) => {
+  return i18n.t(`purchase.address.${str}`)
+}
+
+const itemThumbnailAlt = (itemName: string) => {
+  return i18n.t('purchase.address.itemThumbnailAlt', {
+    itemName: itemName,
+  })
+}
 
 const targetAddress = ref<string>('default')
 const calcCartResponseItemState = ref<{
@@ -228,7 +240,7 @@ useSeoMeta({
     <div
       class="mt-[32px] text-center text-[20px] font-bold tracking-[2px] text-main"
     >
-      ご購入手続き
+      {{ at('checkoutTitle') }}
     </div>
 
     <the-alert
@@ -251,7 +263,7 @@ useSeoMeta({
           <div
             class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
           >
-            お客様情報
+            {{ at('customerInformationTitle') }}
           </div>
 
           <!-- デフォルトの住所が登録されている場合 -->
@@ -267,7 +279,7 @@ useSeoMeta({
                   class="h-4 w-4 accent-main"
                   value="default"
                 >
-                <label for="default-radio">上記の住所にお届け</label>
+                <label for="default-radio">{{ at('shippingAvobeAdderssLabel') }}</label>
               </div>
               <div class="flex items-center gap-2">
                 <input
@@ -277,14 +289,14 @@ useSeoMeta({
                   class="h-4 w-4 accent-main"
                   value="other"
                 >
-                <label for="other-radio">その他の住所にお届け</label>
+                <label for="other-radio">{{ at('shippingAnotherAdderssLabel') }}</label>
               </div>
             </div>
             <template v-if="targetAddress === 'other'">
               <div
                 class="my-6 text-[16px] font-bold tracking-[1.6px] text-main"
               >
-                お届け先情報
+                {{ at('shippingInformationLabel') }}
               </div>
               <the-new-address-form
                 v-model:form-data="formData"
@@ -311,7 +323,7 @@ useSeoMeta({
           class="row-span-2 self-start bg-base px-[16px] py-[24px] text-main md:w-full md:p-10"
         >
           <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
-            注文内容
+            {{ at('orderDetailsTitle') }}
           </div>
 
           <template v-if="calcCartResponseItem">
@@ -320,15 +332,19 @@ useSeoMeta({
                 {{ calcCartResponseItem.coordinator.marcheName }}
               </p>
               <p>
-                発送地：{{
+                {{ at('shipFromLabel') }}
+                {{
                   `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
                 }}
               </p>
               <p>
-                取扱元：
+                {{ at('coordinatorLabel') }}
                 {{ calcCartResponseItem.coordinator.username }}
               </p>
-              <p>箱の数：{{ calcCartResponseItem.carts.length }}</p>
+              <p>
+                {{ at('boxCountLabel') }}
+                {{ calcCartResponseItem.carts.length }}
+              </p>
             </div>
             <div>
               <div class="divide-y border-y">
@@ -342,7 +358,7 @@ useSeoMeta({
                       v-if="item.product.thumbnail"
                       provider="cloudFront"
                       :src="item.product.thumbnail.url"
-                      :alt="`${item.product.name}の画像`"
+                      :alt="itemThumbnailAlt(item.product.name)"
                       width="56px"
                       height="56px"
                       class="block aspect-square h-[56px] w-[56px]"
@@ -352,7 +368,7 @@ useSeoMeta({
                       <div
                         class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
                       >
-                        数量：{{ item.quantity }}
+                        {{ at('quantityLabel') }}{{ item.quantity }}
                       </div>
                     </div>
 
@@ -382,7 +398,7 @@ useSeoMeta({
                         d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
-                    クーポンコード適用済み
+                    {{ at('couponAppliedMessage') }}
                   </div>
                   <button @click="handleClickCancelPromotionCodeButton">
                     <svg
@@ -410,21 +426,21 @@ useSeoMeta({
                       v-model="promotionCodeFormValue"
                       type="text"
                       class="w-full border border-gray-300 bg-gray-50 p-2.5 text-[14px] md:text-[16px]"
-                      placeholder="クーポンコード"
+                      :placeholder="at('couponPlaceholder')"
                     >
                   </div>
                   <button
                     class="whitespace-nowrap bg-main p-2 text-[14px] text-white md:text-[16px]"
                     @click="handleClickUsePromotionCodeButton"
                   >
-                    適用する
+                    {{ at('applyButtonText') }}
                   </button>
                 </div>
                 <div
                   v-if="invalidPromotion"
                   class="mt-2 px-1 text-[12px] leading-[1.2px]"
                 >
-                  指定したクーポンコードは無効です。
+                  {{ at('couponInvalidMessage') }}
                 </div>
               </template>
 
@@ -432,29 +448,29 @@ useSeoMeta({
                 class="mt-4 grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
               >
                 <div class="col-span-2 md:col-span-1">
-                  商品合計（税込）
+                  {{ at('itemTotalPriceLabel') }}
                 </div>
                 <div class="col-span-3 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.subtotal) }}
                 </div>
                 <div class="col-span-2 md:col-span-1">
-                  クーポン利用
+                  {{ at('applyCouponLabel') }}
                 </div>
                 <div class="col-span-3 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.discount) }}
                 </div>
                 <div class="col-span-2 md:col-span-1">
-                  送料（税込）
+                  {{ at('shippingFeeLabel') }}
                 </div>
                 <div class="col-span-3 text-right md:col-span-1">
-                  次ページで計算されます
+                  {{ at('calculateNextPageMessage') }}
                 </div>
               </div>
 
               <div
                 class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
               >
-                <div>合計（税込み）</div>
+                <div>{{ at('totalPriceLabel') }}</div>
                 <div class="text-right">
                   {{ priceFormatter(calcCartResponseItem.total) }}
                 </div>
@@ -471,7 +487,7 @@ useSeoMeta({
             @click="handleClickBackCartButton"
           >
             <the-left-arrow-icon class="h-4 w-4" />
-            買い物カゴへ戻る
+            {{ at('backToCartButtonText') }}
           </button>
 
           <template v-if="defaultAddress && targetAddress === 'default'">
@@ -480,7 +496,7 @@ useSeoMeta({
               class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
               @click="handleClickNextStepButton(defaultAddress.id)"
             >
-              お支払方法の選択へ
+              {{ at('paymentMethodButtonText') }}
             </button>
           </template>
           <template v-else>
@@ -490,7 +506,7 @@ useSeoMeta({
               type="submit"
               form="new-address-form"
             >
-              お支払方法の選択へ
+              {{ at('paymentMethodButtonText') }}
             </button>
           </template>
         </div>

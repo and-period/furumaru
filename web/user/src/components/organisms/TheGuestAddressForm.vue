@@ -98,7 +98,7 @@ const handleSubmit = () => {
     />
     <the-text-input
       v-model="email"
-      placeholder="メールアドレス"
+      :placeholder="gt('emailPlaceholder')"
       :with-label="false"
       :error-message="emailErrorMessage"
       type="text"

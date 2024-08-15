@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { CreateAuthUserRequest } from '~/types/api'
+import type { I18n } from '~/types/locales'
 
 interface Props {
   modelValue: CreateAuthUserRequest
@@ -23,9 +24,14 @@ interface Emits {
   (e: 'update:modelValue', value: CreateAuthUserRequest): void
 }
 
+const i18n = useI18n()
 const props = defineProps<Props>()
 
 const emits = defineEmits<Emits>()
+
+const t = (str: keyof I18n['auth']['signUp']) => {
+  return i18n.t(`auth.signUp.${str}`)
+}
 
 const formData = computed({
   get: () => props.modelValue,
@@ -44,7 +50,7 @@ const handleSubmit = () => {
         v-model="formData.username"
         label="ユーザー名"
         :with-label="false"
-        placeholder="ユーザー名（ふるマル）"
+        :placeholder="t('usernamePlaceholder')"
         type="text"
         required
       />
@@ -53,7 +59,7 @@ const handleSubmit = () => {
         v-model="formData.accountId"
         label="ユーザーID"
         :with-label="false"
-        placeholder="ユーザーID（furumaruchan）"
+        :placeholder="t('userIdPlaceholder')"
         type="text"
         required
       />
@@ -63,7 +69,7 @@ const handleSubmit = () => {
           v-model="formData.lastname"
           label="姓"
           :with-label="false"
-          placeholder="姓"
+          :placeholder="t('lastNamePlaceholder')"
           type="text"
           required
         />
@@ -71,7 +77,7 @@ const handleSubmit = () => {
           v-model="formData.firstname"
           label="名"
           :with-label="false"
-          placeholder="名"
+          :placeholder="t('firstNamePlaceholder')"
           type="text"
           required
         />
@@ -79,7 +85,7 @@ const handleSubmit = () => {
           v-model="formData.lastnameKana"
           label="姓（かな）"
           :with-label="false"
-          placeholder="姓（かな）"
+          :placeholder="t('lastNameKanaPlaceholder')"
           type="text"
           required
         />
@@ -88,7 +94,7 @@ const handleSubmit = () => {
           v-model="formData.firstnameKana"
           label="名（かな）"
           :with-label="false"
-          placeholder="名（かな）"
+          :placeholder="t('firstNameKanaPlaceholder')"
           type="text"
           required
         />

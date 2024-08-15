@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { CreateAddressRequest } from '~/types/api'
 import { prefecturesList } from '~/constants/prefectures'
+import type { I18n } from '~/types/locales'
 
 interface Props {
   formData: CreateAddressRequest
   formId: string
 }
 
+const i18n = useI18n()
 const props = defineProps<Props>()
 
 interface Emits {
@@ -16,6 +18,10 @@ interface Emits {
 }
 
 const emits = defineEmits<Emits>()
+
+const at = (str: keyof I18n['purchase']['address']) => {
+  return i18n.t(`purchase.address.${str}`)
+}
 
 const formDataValue = computed({
   get: () => props.formData,
@@ -40,7 +46,7 @@ const handleSubmit = () => {
     <div class="grid grid-cols-2 gap-4">
       <the-text-input
         v-model="formDataValue.lastname"
-        placeholder="姓"
+        :placeholder="at('lastNamePlaceholder')"
         :with-label="false"
         type="text"
         name="lastname"
@@ -48,7 +54,7 @@ const handleSubmit = () => {
       />
       <the-text-input
         v-model="formDataValue.firstname"
-        placeholder="名"
+        :placeholder="at('firstNamePlaceholder')"
         :with-label="false"
         name="firstName"
         type="text"
@@ -58,14 +64,14 @@ const handleSubmit = () => {
     <div class="grid grid-cols-2 gap-4">
       <the-text-input
         v-model="formDataValue.lastnameKana"
-        placeholder="ふりがな(姓)"
+        :placeholder="at('lastNameKanaPlaceholder')"
         :with-label="false"
         type="text"
         required
       />
       <the-text-input
         v-model="formDataValue.firstnameKana"
-        placeholder="ふりがな(名)"
+        :placeholder="at('firstNameKanaPlaceholder')"
         :with-label="false"
         type="text"
         required
@@ -78,7 +84,7 @@ const handleSubmit = () => {
     <div class="flex items-center gap-4">
       <the-text-input
         v-model="formDataValue.postalCode"
-        placeholder="郵便番号（ハイフンなし）"
+        :placeholder="at('postalCodePlaceholder')"
         :with-label="false"
         type="text"
         name="postal-code"
@@ -89,7 +95,7 @@ const handleSubmit = () => {
         class="whitespace-nowrap bg-main px-4 py-1 text-white"
         @click="handleClickSearchAddressButton"
       >
-        検索
+        {{ at('searchButtonText') }}
       </button>
     </div>
     <select
@@ -103,7 +109,7 @@ const handleSubmit = () => {
         disabled
         value="0"
       >
-        都道府県
+        {{ at('prefectureLabel') }}
       </option>
       <option
         v-for="prefecture in prefecturesList"
@@ -116,7 +122,7 @@ const handleSubmit = () => {
     <the-text-input
       id="address-line1"
       v-model="formDataValue.city"
-      placeholder="住所（市区町村)"
+      :placeholder="at('cityPlaceholder')"
       :with-label="false"
       name="address-line1"
       type="text"
@@ -125,7 +131,7 @@ const handleSubmit = () => {
     <the-text-input
       id="address-line2"
       v-model="formDataValue.addressLine1"
-      placeholder="住所（それ以降）"
+      :placeholder="at('streetPlaceholder')"
       :with-label="false"
       name="address-line2"
       type="text"
@@ -133,7 +139,7 @@ const handleSubmit = () => {
     <the-text-input
       id="address-line3"
       v-model="formDataValue.addressLine2"
-      placeholder="住所（マンション名、部屋番号）"
+      :placeholder="at('apartmentPlaceholder')"
       :with-label="false"
       name="address-line3"
       type="text"
@@ -145,7 +151,7 @@ const handleSubmit = () => {
         type="checkbox"
         class="h-4 w-4 rounded accent-main"
       >
-      <label for="isDefault">この住所を基本の配送先に指定する</label>
+      <label for="isDefault">{{ at('setDefaultAddressLabel') }}</label>
     </div>
   </form>
 </template>

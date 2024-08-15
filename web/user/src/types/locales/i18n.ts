@@ -56,6 +56,12 @@ export interface I18n {
 
     signUp: {
       pageName: string
+      usernamePlaceholder: string
+      userIdPlaceholder: string
+      firstNamePlaceholder: string
+      lastNamePlaceholder: string
+      firstNameKanaPlaceholder: string
+      lastNameKanaPlaceholder: string
       tel: string
       email: string
       password: string
@@ -167,6 +173,7 @@ export interface I18n {
       firstNameKanaPlaceholder: string
       lastNameKanaPlaceholder: string
       phoneNumberLabel: string
+      emailPlaceholder: string
       postalCodeLabel: string
       searchButtonText: string
       prefectureLabel: string
@@ -189,6 +196,83 @@ export interface I18n {
       totalPriceLabel: string
       backToCartButtonText: string
       paymentMethodButtonText: string
+    }
+    address: {
+      checkoutTitle: string
+      customerInformationTitle: string
+      nameLabel: string
+      phoneNumberLabel: string
+      addressLabel: string
+      shippingAvobeAdderssLabel: string
+      shippingAnotherAdderssLabel: string
+      shippingInformationLabel: string
+      firstNamePlaceholder: string
+      lastNamePlaceholder: string
+      firstNameKanaPlaceholder: string
+      lastNameKanaPlaceholder: string
+      emailPlaceholder: string
+      postalCodePlaceholder: string
+      searchButtonText: string
+      prefectureLabel: string
+      cityPlaceholder: string
+      streetPlaceholder: string
+      apartmentPlaceholder: string
+      setDefaultAddressLabel: string
+      orderDetailsTitle: string
+      shipFromLabel: string
+      coordinatorLabel: string
+      boxCountLabel: string
+      quantityLabel: string
+      couponPlaceholder: string
+      applyButtonText: string
+      couponAppliedMessage: string
+      couponInvalidMessage: string
+      itemTotalPriceLabel: string
+      applyCouponLabel: string
+      shippingFeeLabel: string
+      calculateNextPageMessage: string
+      totalPriceLabel: string
+      backToCartButtonText: string
+      paymentMethodButtonText: string
+    }
+    confirmation: {
+      checkoutTitle: string
+      customerInformationTitle: string
+      changeButtonText: string
+      shippingAvobeAdderssLabel: string
+      shippingAnotherAdderssLabel: string
+      shippingInformationLabel: string
+      orderDetailsTitle: string
+      shipFromLabel: string
+      coordinatorLabel: string
+      boxCountLabel: string
+      quantityLabel: string
+      couponPlaceholder: string
+      applyButtonText: string
+      couponAppliedMessage: string
+      couponInvalidMessage: string
+      itemTotalPriceLabel: string
+      applyCouponLabel: string
+      shippingFeeLabel: string
+      calculateNextPageMessage: string
+      totalPriceLabel: string
+      backToPreviousPageButtonText: string
+      proceedToPaymentButtonText: string
+      paymentInformationTitle: string
+      creditCardNumberPlaceholder: string
+      cardholderNamePlaceholder: string
+      expirationMonthPlaceholder: string
+      expirationYearPlaceholder: string
+      securityCodePlaceholder: string
+      paymentMethodCashText: string
+      paymentMethodCreditCardText: string
+      paymentMethodConvinienceStoreText: string
+      paymentMethodBankTransferText: string
+      paymentMethodPayPayText: string
+      paymentMethodLinePayText: string
+      paymentMethodMerPayText: string
+      paymentMethodRakutenPayText: string
+      paymentMethodAUPayText: string
     }
     complete: {
       thanksMessage: string
