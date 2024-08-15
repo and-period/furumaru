@@ -152,7 +152,6 @@ export const useShoppingCartStore = defineStore('shopping-cart', {
             ...item,
             methodName: getPaymentMethodNameByPaymentMethodType(
               item.methodType,
-              this.i18n,
             ),
           }
         })
