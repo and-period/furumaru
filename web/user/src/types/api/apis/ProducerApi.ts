@@ -46,8 +46,11 @@ export class ProducerApi extends runtime.BaseAPI {
      * 生産者情報取得
      */
     async v1GetProducerRaw(requestParameters: V1GetProducerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProducerResponse>> {
-        if (requestParameters.producerId === null || requestParameters.producerId === undefined) {
-            throw new runtime.RequiredError('producerId','Required parameter requestParameters.producerId was null or undefined when calling v1GetProducer.');
+        if (requestParameters['producerId'] == null) {
+            throw new runtime.RequiredError(
+                'producerId',
+                'Required parameter "producerId" was null or undefined when calling v1GetProducer().'
+            );
         }
 
         const queryParameters: any = {};
@@ -55,7 +58,7 @@ export class ProducerApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/producers/{producerId}`.replace(`{${"producerId"}}`, encodeURIComponent(String(requestParameters.producerId))),
+            path: `/v1/producers/{producerId}`.replace(`{${"producerId"}}`, encodeURIComponent(String(requestParameters['producerId']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -78,12 +81,12 @@ export class ProducerApi extends runtime.BaseAPI {
     async v1ListProducersRaw(requestParameters: V1ListProducersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProducersResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

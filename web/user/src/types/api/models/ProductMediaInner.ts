@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -36,12 +36,10 @@ export interface ProductMediaInner {
 /**
  * Check if a given object implements the ProductMediaInner interface.
  */
-export function instanceOfProductMediaInner(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "url" in value;
-    isInstance = isInstance && "isThumbnail" in value;
-
-    return isInstance;
+export function instanceOfProductMediaInner(value: object): value is ProductMediaInner {
+    if (!('url' in value) || value['url'] === undefined) return false;
+    if (!('isThumbnail' in value) || value['isThumbnail'] === undefined) return false;
+    return true;
 }
 
 export function ProductMediaInnerFromJSON(json: any): ProductMediaInner {
@@ -49,7 +47,7 @@ export function ProductMediaInnerFromJSON(json: any): ProductMediaInner {
 }
 
 export function ProductMediaInnerFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProductMediaInner {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -60,16 +58,13 @@ export function ProductMediaInnerFromJSONTyped(json: any, ignoreDiscriminator: b
 }
 
 export function ProductMediaInnerToJSON(value?: ProductMediaInner | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'url': value.url,
-        'isThumbnail': value.isThumbnail,
+        'url': value['url'],
+        'isThumbnail': value['isThumbnail'],
     };
 }
 

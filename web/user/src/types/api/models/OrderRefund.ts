@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { OrderRefundType } from './OrderRefundType';
 import {
     OrderRefundTypeFromJSON,
@@ -58,18 +58,18 @@ export interface OrderRefund {
     canceledAt: number;
 }
 
+
+
 /**
  * Check if a given object implements the OrderRefund interface.
  */
-export function instanceOfOrderRefund(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "total" in value;
-    isInstance = isInstance && "type" in value;
-    isInstance = isInstance && "reason" in value;
-    isInstance = isInstance && "canceled" in value;
-    isInstance = isInstance && "canceledAt" in value;
-
-    return isInstance;
+export function instanceOfOrderRefund(value: object): value is OrderRefund {
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('reason' in value) || value['reason'] === undefined) return false;
+    if (!('canceled' in value) || value['canceled'] === undefined) return false;
+    if (!('canceledAt' in value) || value['canceledAt'] === undefined) return false;
+    return true;
 }
 
 export function OrderRefundFromJSON(json: any): OrderRefund {
@@ -77,7 +77,7 @@ export function OrderRefundFromJSON(json: any): OrderRefund {
 }
 
 export function OrderRefundFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrderRefund {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -91,19 +91,16 @@ export function OrderRefundFromJSONTyped(json: any, ignoreDiscriminator: boolean
 }
 
 export function OrderRefundToJSON(value?: OrderRefund | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'total': value.total,
-        'type': OrderRefundTypeToJSON(value.type),
-        'reason': value.reason,
-        'canceled': value.canceled,
-        'canceledAt': value.canceledAt,
+        'total': value['total'],
+        'type': OrderRefundTypeToJSON(value['type']),
+        'reason': value['reason'],
+        'canceled': value['canceled'],
+        'canceledAt': value['canceledAt'],
     };
 }
 

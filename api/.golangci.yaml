@@ -8,7 +8,6 @@ linters:
   - bidichk
   - bodyclose
   - containedctx
-  - contextcheck
   - decorder
   - dogsled
   - dupl

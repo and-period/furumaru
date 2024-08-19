@@ -12,13 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { Cart } from './Cart';
+import { mapValues } from '../runtime';
+import type { Product } from './Product';
 import {
-    CartFromJSON,
-    CartFromJSONTyped,
-    CartToJSON,
-} from './Cart';
+    ProductFromJSON,
+    ProductFromJSONTyped,
+    ProductToJSON,
+} from './Product';
 import type { CartItem } from './CartItem';
 import {
     CartItemFromJSON,
@@ -31,18 +31,18 @@ import {
     CoordinatorFromJSONTyped,
     CoordinatorToJSON,
 } from './Coordinator';
-import type { Product } from './Product';
-import {
-    ProductFromJSON,
-    ProductFromJSONTyped,
-    ProductToJSON,
-} from './Product';
 import type { Promotion } from './Promotion';
 import {
     PromotionFromJSON,
     PromotionFromJSONTyped,
     PromotionToJSON,
 } from './Promotion';
+import type { Cart } from './Cart';
+import {
+    CartFromJSON,
+    CartFromJSONTyped,
+    CartToJSON,
+} from './Cart';
 
 /**
  * 
@@ -115,19 +115,17 @@ export interface CalcCartResponse {
 /**
  * Check if a given object implements the CalcCartResponse interface.
  */
-export function instanceOfCalcCartResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "carts" in value;
-    isInstance = isInstance && "items" in value;
-    isInstance = isInstance && "products" in value;
-    isInstance = isInstance && "coordinator" in value;
-    isInstance = isInstance && "promotion" in value;
-    isInstance = isInstance && "subtotal" in value;
-    isInstance = isInstance && "discount" in value;
-    isInstance = isInstance && "shippingFee" in value;
-    isInstance = isInstance && "total" in value;
-
-    return isInstance;
+export function instanceOfCalcCartResponse(value: object): value is CalcCartResponse {
+    if (!('carts' in value) || value['carts'] === undefined) return false;
+    if (!('items' in value) || value['items'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('promotion' in value) || value['promotion'] === undefined) return false;
+    if (!('subtotal' in value) || value['subtotal'] === undefined) return false;
+    if (!('discount' in value) || value['discount'] === undefined) return false;
+    if (!('shippingFee' in value) || value['shippingFee'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    return true;
 }
 
 export function CalcCartResponseFromJSON(json: any): CalcCartResponse {
@@ -135,7 +133,7 @@ export function CalcCartResponseFromJSON(json: any): CalcCartResponse {
 }
 
 export function CalcCartResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CalcCartResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -149,29 +147,26 @@ export function CalcCartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'discount': json['discount'],
         'shippingFee': json['shippingFee'],
         'total': json['total'],
-        'requestId': !exists(json, 'requestId') ? undefined : json['requestId'],
+        'requestId': json['requestId'] == null ? undefined : json['requestId'],
     };
 }
 
 export function CalcCartResponseToJSON(value?: CalcCartResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'carts': ((value.carts as Array<any>).map(CartToJSON)),
-        'items': ((value.items as Array<any>).map(CartItemToJSON)),
-        'products': ((value.products as Array<any>).map(ProductToJSON)),
-        'coordinator': CoordinatorToJSON(value.coordinator),
-        'promotion': PromotionToJSON(value.promotion),
-        'subtotal': value.subtotal,
-        'discount': value.discount,
-        'shippingFee': value.shippingFee,
-        'total': value.total,
-        'requestId': value.requestId,
+        'carts': ((value['carts'] as Array<any>).map(CartToJSON)),
+        'items': ((value['items'] as Array<any>).map(CartItemToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
+        'coordinator': CoordinatorToJSON(value['coordinator']),
+        'promotion': PromotionToJSON(value['promotion']),
+        'subtotal': value['subtotal'],
+        'discount': value['discount'],
+        'shippingFee': value['shippingFee'],
+        'total': value['total'],
+        'requestId': value['requestId'],
     };
 }
 

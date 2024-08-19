@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface ForgotAuthPasswordRequest {
 /**
  * Check if a given object implements the ForgotAuthPasswordRequest interface.
  */
-export function instanceOfForgotAuthPasswordRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "email" in value;
-
-    return isInstance;
+export function instanceOfForgotAuthPasswordRequest(value: object): value is ForgotAuthPasswordRequest {
+    if (!('email' in value) || value['email'] === undefined) return false;
+    return true;
 }
 
 export function ForgotAuthPasswordRequestFromJSON(json: any): ForgotAuthPasswordRequest {
@@ -42,7 +40,7 @@ export function ForgotAuthPasswordRequestFromJSON(json: any): ForgotAuthPassword
 }
 
 export function ForgotAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ForgotAuthPasswordRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function ForgotAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscrimi
 }
 
 export function ForgotAuthPasswordRequestToJSON(value?: ForgotAuthPasswordRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'email': value.email,
+        'email': value['email'],
     };
 }
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { ArchiveSummary } from './ArchiveSummary';
 import {
     ArchiveSummaryFromJSON,
@@ -61,13 +61,11 @@ export interface TopCommonResponse {
 /**
  * Check if a given object implements the TopCommonResponse interface.
  */
-export function instanceOfTopCommonResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "lives" in value;
-    isInstance = isInstance && "archives" in value;
-    isInstance = isInstance && "coordinators" in value;
-
-    return isInstance;
+export function instanceOfTopCommonResponse(value: object): value is TopCommonResponse {
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('archives' in value) || value['archives'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    return true;
 }
 
 export function TopCommonResponseFromJSON(json: any): TopCommonResponse {
@@ -75,7 +73,7 @@ export function TopCommonResponseFromJSON(json: any): TopCommonResponse {
 }
 
 export function TopCommonResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TopCommonResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -87,17 +85,14 @@ export function TopCommonResponseFromJSONTyped(json: any, ignoreDiscriminator: b
 }
 
 export function TopCommonResponseToJSON(value?: TopCommonResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'lives': ((value.lives as Array<any>).map(LiveSummaryToJSON)),
-        'archives': ((value.archives as Array<any>).map(ArchiveSummaryToJSON)),
-        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
+        'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
+        'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
     };
 }
 

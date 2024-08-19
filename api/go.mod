@@ -1,6 +1,6 @@
 module github.com/and-period/furumaru/api
 
-go 1.22
+go 1.23
 
 require (
 	firebase.google.com/go/v4 v4.14.1

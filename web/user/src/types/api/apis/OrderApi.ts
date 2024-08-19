@@ -46,8 +46,11 @@ export class OrderApi extends runtime.BaseAPI {
      * 注文履歴情報取得
      */
     async v1GetOrderRaw(requestParameters: V1GetOrderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OrderResponse>> {
-        if (requestParameters.orderId === null || requestParameters.orderId === undefined) {
-            throw new runtime.RequiredError('orderId','Required parameter requestParameters.orderId was null or undefined when calling v1GetOrder.');
+        if (requestParameters['orderId'] == null) {
+            throw new runtime.RequiredError(
+                'orderId',
+                'Required parameter "orderId" was null or undefined when calling v1GetOrder().'
+            );
         }
 
         const queryParameters: any = {};
@@ -63,7 +66,7 @@ export class OrderApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/v1/orders/{orderId}`.replace(`{${"orderId"}}`, encodeURIComponent(String(requestParameters.orderId))),
+            path: `/v1/orders/{orderId}`.replace(`{${"orderId"}}`, encodeURIComponent(String(requestParameters['orderId']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -86,12 +89,12 @@ export class OrderApi extends runtime.BaseAPI {
     async v1ListOrdersRaw(requestParameters: V1ListOrdersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OrdersResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

@@ -6798,7 +6798,7 @@ export const AddressApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SearchPostalCode(postalCode: string, options?: any): AxiosPromise<PostalCodeResponse> {
+        v1SearchPostalCode(postalCode: string, options?: RawAxiosRequestConfig): AxiosPromise<PostalCodeResponse> {
             return localVarFp.v1SearchPostalCode(postalCode, options).then((request) => request(axios, basePath));
         },
     };
@@ -7246,7 +7246,7 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateAdministrator(body: CreateAdministratorRequest, options?: any): AxiosPromise<AdministratorResponse> {
+        v1CreateAdministrator(body: CreateAdministratorRequest, options?: RawAxiosRequestConfig): AxiosPromise<AdministratorResponse> {
             return localVarFp.v1CreateAdministrator(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -7256,7 +7256,7 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteAdministrator(adminId: string, options?: any): AxiosPromise<object> {
+        v1DeleteAdministrator(adminId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteAdministrator(adminId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -7266,7 +7266,7 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetAdministrator(adminId: string, options?: any): AxiosPromise<AdministratorResponse> {
+        v1GetAdministrator(adminId: string, options?: RawAxiosRequestConfig): AxiosPromise<AdministratorResponse> {
             return localVarFp.v1GetAdministrator(adminId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -7277,7 +7277,7 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListAdministrators(limit?: number, offset?: number, options?: any): AxiosPromise<AdministratorsResponse> {
+        v1ListAdministrators(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<AdministratorsResponse> {
             return localVarFp.v1ListAdministrators(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
@@ -7288,7 +7288,7 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateAdministrator(adminId: string, body: UpdateAdministratorRequest, options?: any): AxiosPromise<object> {
+        v1UpdateAdministrator(adminId: string, body: UpdateAdministratorRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateAdministrator(adminId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -7299,7 +7299,7 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateAdministratorEmail(adminId: string, body: UpdateAdministratorEmailRequest, options?: any): AxiosPromise<object> {
+        v1UpdateAdministratorEmail(adminId: string, body: UpdateAdministratorEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateAdministratorEmail(adminId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -7310,7 +7310,7 @@ export const AdministratorApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateAdministratorPassword(adminId: string, body: object, options?: any): AxiosPromise<object> {
+        v1UpdateAdministratorPassword(adminId: string, body: object, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateAdministratorPassword(adminId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -8199,7 +8199,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: any): AxiosPromise<object> {
+        v1ForgotAuthPassword(body: ForgotAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1ForgotAuthPassword(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8208,7 +8208,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetAuth(options?: any): AxiosPromise<AuthResponse> {
+        v1GetAuth(options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
             return localVarFp.v1GetAuth(options).then((request) => request(axios, basePath));
         },
         /**
@@ -8217,7 +8217,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetAuthCoordinator(options?: any): AxiosPromise<CoordinatorResponse> {
+        v1GetAuthCoordinator(options?: RawAxiosRequestConfig): AxiosPromise<CoordinatorResponse> {
             return localVarFp.v1GetAuthCoordinator(options).then((request) => request(axios, basePath));
         },
         /**
@@ -8226,7 +8226,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetAuthShipping(options?: any): AxiosPromise<ShippingResponse> {
+        v1GetAuthShipping(options?: RawAxiosRequestConfig): AxiosPromise<ShippingResponse> {
             return localVarFp.v1GetAuthShipping(options).then((request) => request(axios, basePath));
         },
         /**
@@ -8235,7 +8235,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetAuthUser(options?: any): AxiosPromise<AuthUserResponse> {
+        v1GetAuthUser(options?: RawAxiosRequestConfig): AxiosPromise<AuthUserResponse> {
             return localVarFp.v1GetAuthUser(options).then((request) => request(axios, basePath));
         },
         /**
@@ -8245,7 +8245,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1RefreshAuthToken(body: RefreshAuthTokenRequest, options?: any): AxiosPromise<AuthResponse> {
+        v1RefreshAuthToken(body: RefreshAuthTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
             return localVarFp.v1RefreshAuthToken(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8255,7 +8255,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1RegisterAuthDevice(body: RegisterAuthDeviceRequest, options?: any): AxiosPromise<object> {
+        v1RegisterAuthDevice(body: RegisterAuthDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1RegisterAuthDevice(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8265,7 +8265,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: any): AxiosPromise<object> {
+        v1ResetAuthPassword(body: ResetAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1ResetAuthPassword(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8275,7 +8275,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SignIn(body: SignInRequest, options?: any): AxiosPromise<AuthResponse> {
+        v1SignIn(body: SignInRequest, options?: RawAxiosRequestConfig): AxiosPromise<AuthResponse> {
             return localVarFp.v1SignIn(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8284,7 +8284,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SignOut(options?: any): AxiosPromise<object> {
+        v1SignOut(options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1SignOut(options).then((request) => request(axios, basePath));
         },
         /**
@@ -8294,7 +8294,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateAuthCoordinator(body: UpdateCoordinatorRequest, options?: any): AxiosPromise<object> {
+        v1UpdateAuthCoordinator(body: UpdateCoordinatorRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateAuthCoordinator(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8304,7 +8304,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateAuthEmail(body: UpdateAuthEmailRequest, options?: any): AxiosPromise<object> {
+        v1UpdateAuthEmail(body: UpdateAuthEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateAuthEmail(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8314,7 +8314,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateAuthPassword(body: UpdateAuthPasswordRequest, options?: any): AxiosPromise<object> {
+        v1UpdateAuthPassword(body: UpdateAuthPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateAuthPassword(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8324,7 +8324,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpsertAuthShipping(body: UpsertShippingRequest, options?: any): AxiosPromise<object> {
+        v1UpsertAuthShipping(body: UpsertShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpsertAuthShipping(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8334,7 +8334,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1VerifyAuthEmail(body: VerifyAuthEmailRequest, options?: any): AxiosPromise<object> {
+        v1VerifyAuthEmail(body: VerifyAuthEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1VerifyAuthEmail(body, options).then((request) => request(axios, basePath));
         },
     };
@@ -9294,7 +9294,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ActivateBroadcastMP4(scheduleId: string, body: ActivateBroadcastMP4Request, options?: any): AxiosPromise<object> {
+        v1ActivateBroadcastMP4(scheduleId: string, body: ActivateBroadcastMP4Request, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1ActivateBroadcastMP4(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9304,7 +9304,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ActivateBroadcastRTMP(scheduleId: string, options?: any): AxiosPromise<object> {
+        v1ActivateBroadcastRTMP(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1ActivateBroadcastRTMP(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9314,7 +9314,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ActivateBroadcastStaticImage(scheduleId: string, options?: any): AxiosPromise<object> {
+        v1ActivateBroadcastStaticImage(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1ActivateBroadcastStaticImage(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9325,7 +9325,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AuthYoutubeBroadcast(scheduleId: string, body: AuthYoutubeBroadcastRequest, options?: any): AxiosPromise<AuthYoutubeBroadcastResponse> {
+        v1AuthYoutubeBroadcast(scheduleId: string, body: AuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<AuthYoutubeBroadcastResponse> {
             return localVarFp.v1AuthYoutubeBroadcast(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9335,7 +9335,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CallbackAuthYoutubeBroadcast(body: CallbackAuthYoutubeBroadcastRequest, options?: any): AxiosPromise<GuestBroadcastResponse> {
+        v1CallbackAuthYoutubeBroadcast(body: CallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<GuestBroadcastResponse> {
             return localVarFp.v1CallbackAuthYoutubeBroadcast(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9345,7 +9345,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateYoutubeBroadcast(body: CreateYoutubeBroadcastRequest, options?: any): AxiosPromise<void> {
+        v1CreateYoutubeBroadcast(body: CreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.v1CreateYoutubeBroadcast(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9355,7 +9355,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeactivateBroadcastStaticImage(scheduleId: string, options?: any): AxiosPromise<object> {
+        v1DeactivateBroadcastStaticImage(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeactivateBroadcastStaticImage(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9365,7 +9365,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetBroadcast(scheduleId: string, options?: any): AxiosPromise<BroadcastResponse> {
+        v1GetBroadcast(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<BroadcastResponse> {
             return localVarFp.v1GetBroadcast(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9376,7 +9376,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetBroadcastArchiveUploadUrl(scheduleId: string, body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetBroadcastArchiveUploadUrl(scheduleId: string, body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetBroadcastArchiveUploadUrl(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9386,7 +9386,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetBroadcastLiveUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetBroadcastLiveUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetBroadcastLiveUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9395,7 +9395,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestGetBroadcast(options?: any): AxiosPromise<GuestBroadcastResponse> {
+        v1GuestGetBroadcast(options?: RawAxiosRequestConfig): AxiosPromise<GuestBroadcastResponse> {
             return localVarFp.v1GuestGetBroadcast(options).then((request) => request(axios, basePath));
         },
         /**
@@ -9405,7 +9405,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PauseBroadcast(scheduleId: string, options?: any): AxiosPromise<object> {
+        v1PauseBroadcast(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1PauseBroadcast(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9415,7 +9415,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UnpauseBroadcast(scheduleId: string, options?: any): AxiosPromise<object> {
+        v1UnpauseBroadcast(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UnpauseBroadcast(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9426,7 +9426,7 @@ export const BroadcastApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateBroadcastArchive(scheduleId: string, body: UpdateBroadcastArchiveRequest, options?: any): AxiosPromise<object> {
+        v1UpdateBroadcastArchive(scheduleId: string, body: UpdateBroadcastArchiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateBroadcastArchive(scheduleId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -9878,7 +9878,7 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateCategory(body: CreateCategoryRequest, options?: any): AxiosPromise<CategoryResponse> {
+        v1CreateCategory(body: CreateCategoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<CategoryResponse> {
             return localVarFp.v1CreateCategory(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9888,7 +9888,7 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteCategory(categoryId: string, options?: any): AxiosPromise<object> {
+        v1DeleteCategory(categoryId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteCategory(categoryId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9901,7 +9901,7 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListCategories(limit?: number, offset?: number, name?: string, orders?: string, options?: any): AxiosPromise<CategoriesResponse> {
+        v1ListCategories(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<CategoriesResponse> {
             return localVarFp.v1ListCategories(limit, offset, name, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -9912,7 +9912,7 @@ export const CategoryApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateCategory(categoryId: string, body: UpdateCategoryRequest, options?: any): AxiosPromise<object> {
+        v1UpdateCategory(categoryId: string, body: UpdateCategoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateCategory(categoryId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -10284,7 +10284,7 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateContact(body: CreateContactRequest, options?: any): AxiosPromise<ContactResponse> {
+        v1CreateContact(body: CreateContactRequest, options?: RawAxiosRequestConfig): AxiosPromise<ContactResponse> {
             return localVarFp.v1CreateContact(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -10294,7 +10294,7 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteContact(contactId: string, options?: any): AxiosPromise<object> {
+        v1DeleteContact(contactId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteContact(contactId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -10304,7 +10304,7 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetContact(contactId: string, options?: any): AxiosPromise<ContactResponse> {
+        v1GetContact(contactId: string, options?: RawAxiosRequestConfig): AxiosPromise<ContactResponse> {
             return localVarFp.v1GetContact(contactId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -10315,7 +10315,7 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListContacts(limit?: number, offset?: number, options?: any): AxiosPromise<ContactsResponse> {
+        v1ListContacts(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ContactsResponse> {
             return localVarFp.v1ListContacts(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
@@ -10326,7 +10326,7 @@ export const ContactApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: any): AxiosPromise<object> {
+        v1UpdateContact(contactId: string, body: UpdateContactRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateContact(contactId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -10546,7 +10546,7 @@ export const ContactCategoryApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetContactCategory(contactCategoryId: string, options?: any): AxiosPromise<ContactCategoryResponse> {
+        v1GetContactCategory(contactCategoryId: string, options?: RawAxiosRequestConfig): AxiosPromise<ContactCategoryResponse> {
             return localVarFp.v1GetContactCategory(contactCategoryId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -10557,7 +10557,7 @@ export const ContactCategoryApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListContactCategories(limit?: number, offset?: number, options?: any): AxiosPromise<ContactCategoriesResponse> {
+        v1ListContactCategories(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ContactCategoriesResponse> {
             return localVarFp.v1ListContactCategories(limit, offset, options).then((request) => request(axios, basePath));
         },
     };
@@ -11299,7 +11299,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateCoordinator(body: CreateCoordinatorRequest, options?: any): AxiosPromise<CoordinatorResponse> {
+        v1CreateCoordinator(body: CreateCoordinatorRequest, options?: RawAxiosRequestConfig): AxiosPromise<CoordinatorResponse> {
             return localVarFp.v1CreateCoordinator(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11309,7 +11309,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteCoordinator(coordinatorId: string, options?: any): AxiosPromise<object> {
+        v1DeleteCoordinator(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteCoordinator(coordinatorId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11319,7 +11319,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetCoordinator(coordinatorId: string, options?: any): AxiosPromise<CoordinatorResponse> {
+        v1GetCoordinator(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<CoordinatorResponse> {
             return localVarFp.v1GetCoordinator(coordinatorId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11329,7 +11329,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetCoordinatorBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetCoordinatorBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetCoordinatorBonusVideoUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11339,7 +11339,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetCoordinatorHeaderUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetCoordinatorHeaderUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetCoordinatorHeaderUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11349,7 +11349,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetCoordinatorPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetCoordinatorPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetCoordinatorPromotionVideoUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11359,7 +11359,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetCoordinatorThumbnailUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetCoordinatorThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetCoordinatorThumbnailUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11371,7 +11371,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListCoordinators(limit?: number, offset?: number, username?: string, options?: any): AxiosPromise<CoordinatorsResponse> {
+        v1ListCoordinators(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): AxiosPromise<CoordinatorsResponse> {
             return localVarFp.v1ListCoordinators(limit, offset, username, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11383,7 +11383,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListRelatedProducers(coordinatorId: string, limit?: number, offset?: number, options?: any): AxiosPromise<ProducersResponse> {
+        v1ListRelatedProducers(coordinatorId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ProducersResponse> {
             return localVarFp.v1ListRelatedProducers(coordinatorId, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11394,7 +11394,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateCoordinator(coordinatorId: string, body: UpdateCoordinatorRequest, options?: any): AxiosPromise<object> {
+        v1UpdateCoordinator(coordinatorId: string, body: UpdateCoordinatorRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateCoordinator(coordinatorId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11405,7 +11405,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateCoordinatorEmail(coordinatorId: string, body: UpdateCoordinatorEmailRequest, options?: any): AxiosPromise<object> {
+        v1UpdateCoordinatorEmail(coordinatorId: string, body: UpdateCoordinatorEmailRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateCoordinatorEmail(coordinatorId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11416,7 +11416,7 @@ export const CoordinatorApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateCoordinatorPassword(coordinatorId: string, body: object, options?: any): AxiosPromise<object> {
+        v1UpdateCoordinatorPassword(coordinatorId: string, body: object, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateCoordinatorPassword(coordinatorId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -11760,7 +11760,7 @@ export const GuestApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CallbackAuthYoutubeBroadcast(body: CallbackAuthYoutubeBroadcastRequest, options?: any): AxiosPromise<GuestBroadcastResponse> {
+        v1CallbackAuthYoutubeBroadcast(body: CallbackAuthYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<GuestBroadcastResponse> {
             return localVarFp.v1CallbackAuthYoutubeBroadcast(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11770,7 +11770,7 @@ export const GuestApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateYoutubeBroadcast(body: CreateYoutubeBroadcastRequest, options?: any): AxiosPromise<void> {
+        v1CreateYoutubeBroadcast(body: CreateYoutubeBroadcastRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.v1CreateYoutubeBroadcast(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -11779,7 +11779,7 @@ export const GuestApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GuestGetBroadcast(options?: any): AxiosPromise<GuestBroadcastResponse> {
+        v1GuestGetBroadcast(options?: RawAxiosRequestConfig): AxiosPromise<GuestBroadcastResponse> {
             return localVarFp.v1GuestGetBroadcast(options).then((request) => request(axios, basePath));
         },
     };
@@ -12092,7 +12092,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateLive(scheduleId: string, body: CreateLiveRequest, options?: any): AxiosPromise<LiveResponse> {
+        v1CreateLive(scheduleId: string, body: CreateLiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<LiveResponse> {
             return localVarFp.v1CreateLive(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -12103,7 +12103,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteLive(scheduleId: string, liveId: string, options?: any): AxiosPromise<object> {
+        v1DeleteLive(scheduleId: string, liveId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteLive(scheduleId, liveId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -12113,7 +12113,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListLives(scheduleId: string, options?: any): AxiosPromise<LivesResponse> {
+        v1ListLives(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<LivesResponse> {
             return localVarFp.v1ListLives(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -12125,7 +12125,7 @@ export const LiveApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateLive(scheduleId: string, liveId: string, body: UpdateLiveRequest, options?: any): AxiosPromise<object> {
+        v1UpdateLive(scheduleId: string, liveId: string, body: UpdateLiveRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateLive(scheduleId, liveId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -12341,7 +12341,7 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetMessage(messageId: string, options?: any): AxiosPromise<MessageResponse> {
+        v1GetMessage(messageId: string, options?: RawAxiosRequestConfig): AxiosPromise<MessageResponse> {
             return localVarFp.v1GetMessage(messageId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -12353,7 +12353,7 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListMessages(limit?: number, offset?: number, orders?: string, options?: any): AxiosPromise<MessagesResponse> {
+        v1ListMessages(limit?: number, offset?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<MessagesResponse> {
             return localVarFp.v1ListMessages(limit, offset, orders, options).then((request) => request(axios, basePath));
         },
     };
@@ -12717,7 +12717,7 @@ export const NotificationApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateNotification(body: CreateNotificationRequest, options?: any): AxiosPromise<NotificationResponse> {
+        v1CreateNotification(body: CreateNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<NotificationResponse> {
             return localVarFp.v1CreateNotification(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -12727,7 +12727,7 @@ export const NotificationApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteNotification(notificationId: string, options?: any): AxiosPromise<object> {
+        v1DeleteNotification(notificationId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteNotification(notificationId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -12737,7 +12737,7 @@ export const NotificationApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetNotification(notificationId: string, options?: any): AxiosPromise<NotificationResponse> {
+        v1GetNotification(notificationId: string, options?: RawAxiosRequestConfig): AxiosPromise<NotificationResponse> {
             return localVarFp.v1GetNotification(notificationId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -12751,7 +12751,7 @@ export const NotificationApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListNotifications(limit?: number, offset?: number, since?: number, until?: number, orders?: string, options?: any): AxiosPromise<NotificationsResponse> {
+        v1ListNotifications(limit?: number, offset?: number, since?: number, until?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<NotificationsResponse> {
             return localVarFp.v1ListNotifications(limit, offset, since, until, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -12762,7 +12762,7 @@ export const NotificationApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateNotification(notificationId: string, body: UpdateNotificationRequest, options?: any): AxiosPromise<object> {
+        v1UpdateNotification(notificationId: string, body: UpdateNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateNotification(notificationId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -13389,7 +13389,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CancelOrder(orderId: string, options?: any): AxiosPromise<object> {
+        v1CancelOrder(orderId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1CancelOrder(orderId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13399,7 +13399,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CaptureOrder(orderId: string, options?: any): AxiosPromise<object> {
+        v1CaptureOrder(orderId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1CaptureOrder(orderId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13410,7 +13410,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CompleteOrder(orderId: string, body: CompleteOrderRequest, options?: any): AxiosPromise<object> {
+        v1CompleteOrder(orderId: string, body: CompleteOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1CompleteOrder(orderId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13421,7 +13421,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DraftOrder(orderId: string, body: DraftOrderRequest, options?: any): AxiosPromise<object> {
+        v1DraftOrder(orderId: string, body: DraftOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DraftOrder(orderId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13431,7 +13431,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ExportOrders(body: ExportOrdersRequest, options?: any): AxiosPromise<string> {
+        v1ExportOrders(body: ExportOrdersRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.v1ExportOrders(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13441,7 +13441,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetOrder(orderId: string, options?: any): AxiosPromise<OrderResponse> {
+        v1GetOrder(orderId: string, options?: RawAxiosRequestConfig): AxiosPromise<OrderResponse> {
             return localVarFp.v1GetOrder(orderId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13454,7 +13454,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, options?: any): AxiosPromise<OrdersResponse> {
+        v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, options?: RawAxiosRequestConfig): AxiosPromise<OrdersResponse> {
             return localVarFp.v1ListOrders(limit, offset, orders, status, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13465,7 +13465,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1RefundOrder(orderId: string, body: RefundOrderRequest, options?: any): AxiosPromise<object> {
+        v1RefundOrder(orderId: string, body: RefundOrderRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1RefundOrder(orderId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13477,7 +13477,7 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateOrderFulfillment(orderId: string, fulfillmentId: string, body: UpdateOrderFulfillmentRequest, options?: any): AxiosPromise<object> {
+        v1UpdateOrderFulfillment(orderId: string, fulfillmentId: string, body: UpdateOrderFulfillmentRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateOrderFulfillment(orderId, fulfillmentId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -13747,7 +13747,7 @@ export const OtherApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetUploadState(key: string, options?: any): AxiosPromise<UploadStateResponse> {
+        v1GetUploadState(key: string, options?: RawAxiosRequestConfig): AxiosPromise<UploadStateResponse> {
             return localVarFp.v1GetUploadState(key, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13757,7 +13757,7 @@ export const OtherApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1SearchPostalCode(postalCode: string, options?: any): AxiosPromise<PostalCodeResponse> {
+        v1SearchPostalCode(postalCode: string, options?: RawAxiosRequestConfig): AxiosPromise<PostalCodeResponse> {
             return localVarFp.v1SearchPostalCode(postalCode, options).then((request) => request(axios, basePath));
         },
     };
@@ -13933,7 +13933,7 @@ export const PaymentSystemApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListPaymentSystems(options?: any): AxiosPromise<PaymentSystemsResponse> {
+        v1ListPaymentSystems(options?: RawAxiosRequestConfig): AxiosPromise<PaymentSystemsResponse> {
             return localVarFp.v1ListPaymentSystems(options).then((request) => request(axios, basePath));
         },
         /**
@@ -13944,7 +13944,7 @@ export const PaymentSystemApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdatePaymentSystem(methodType: number, body: UpdatePaymentSystemRequest, options?: any): AxiosPromise<PaymentSystemsResponse> {
+        v1UpdatePaymentSystem(methodType: number, body: UpdatePaymentSystemRequest, options?: RawAxiosRequestConfig): AxiosPromise<PaymentSystemsResponse> {
             return localVarFp.v1UpdatePaymentSystem(methodType, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -14506,7 +14506,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateProducer(body: CreateProducerRequest, options?: any): AxiosPromise<ProducerResponse> {
+        v1CreateProducer(body: CreateProducerRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProducerResponse> {
             return localVarFp.v1CreateProducer(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14516,7 +14516,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteProducer(producerId: string, options?: any): AxiosPromise<object> {
+        v1DeleteProducer(producerId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteProducer(producerId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14526,7 +14526,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProducer(producerId: string, options?: any): AxiosPromise<ProducerResponse> {
+        v1GetProducer(producerId: string, options?: RawAxiosRequestConfig): AxiosPromise<ProducerResponse> {
             return localVarFp.v1GetProducer(producerId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14536,7 +14536,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProducerBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetProducerBonusVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetProducerBonusVideoUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14546,7 +14546,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProducerHeaderUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetProducerHeaderUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetProducerHeaderUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14556,7 +14556,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProducerPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetProducerPromotionVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetProducerPromotionVideoUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14566,7 +14566,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProducerThumbnailUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetProducerThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetProducerThumbnailUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14578,7 +14578,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListProducers(limit?: number, offset?: number, username?: string, options?: any): AxiosPromise<ProducersResponse> {
+        v1ListProducers(limit?: number, offset?: number, username?: string, options?: RawAxiosRequestConfig): AxiosPromise<ProducersResponse> {
             return localVarFp.v1ListProducers(limit, offset, username, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14589,7 +14589,7 @@ export const ProducerApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateProducer(producerId: string, body: UpdateProducerRequest, options?: any): AxiosPromise<object> {
+        v1UpdateProducer(producerId: string, body: UpdateProducerRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateProducer(producerId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -15144,7 +15144,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateProduct(body: CreateProductRequest, options?: any): AxiosPromise<ProductResponse> {
+        v1CreateProduct(body: CreateProductRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProductResponse> {
             return localVarFp.v1CreateProduct(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15154,7 +15154,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteProduct(productId: string, options?: any): AxiosPromise<object> {
+        v1DeleteProduct(productId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteProduct(productId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15164,7 +15164,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProduct(productId: string, options?: any): AxiosPromise<ProductResponse> {
+        v1GetProduct(productId: string, options?: RawAxiosRequestConfig): AxiosPromise<ProductResponse> {
             return localVarFp.v1GetProduct(productId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15174,7 +15174,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProductImageUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetProductImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetProductImageUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15184,7 +15184,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProductVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetProductVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetProductVideoUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15198,7 +15198,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListProducts(limit?: number, offset?: number, producerId?: string, name?: string, orders?: string, options?: any): AxiosPromise<ProductsResponse> {
+        v1ListProducts(limit?: number, offset?: number, producerId?: string, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ProductsResponse> {
             return localVarFp.v1ListProducts(limit, offset, producerId, name, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15209,7 +15209,7 @@ export const ProductApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: any): AxiosPromise<object> {
+        v1UpdateProduct(productId: string, body: UpdateProductRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateProduct(productId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -15579,7 +15579,7 @@ export const ProductTagApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateProductTag(body: CreateProductTagRequest, options?: any): AxiosPromise<ProductTagResponse> {
+        v1CreateProductTag(body: CreateProductTagRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProductTagResponse> {
             return localVarFp.v1CreateProductTag(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15589,7 +15589,7 @@ export const ProductTagApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteProductTag(productTagId: string, options?: any): AxiosPromise<object> {
+        v1DeleteProductTag(productTagId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteProductTag(productTagId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15602,7 +15602,7 @@ export const ProductTagApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListProductTags(limit?: number, offset?: number, name?: string, orders?: string, options?: any): AxiosPromise<ProductTagsResponse> {
+        v1ListProductTags(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ProductTagsResponse> {
             return localVarFp.v1ListProductTags(limit, offset, name, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -15613,7 +15613,7 @@ export const ProductTagApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateProductTag(productTagId: string, body: UpdateProductTagRequest, options?: any): AxiosPromise<object> {
+        v1UpdateProductTag(productTagId: string, body: UpdateProductTagRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateProductTag(productTagId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -16090,7 +16090,7 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateProductType(categoryId: string, body: CreateProductTypeRequest, options?: any): AxiosPromise<ProductTypeResponse> {
+        v1CreateProductType(categoryId: string, body: CreateProductTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProductTypeResponse> {
             return localVarFp.v1CreateProductType(categoryId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16101,7 +16101,7 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteProductType(categoryId: string, productTypeId: string, options?: any): AxiosPromise<object> {
+        v1DeleteProductType(categoryId: string, productTypeId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteProductType(categoryId, productTypeId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16111,7 +16111,7 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetProductTypeIconUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetProductTypeIconUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetProductTypeIconUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16124,7 +16124,7 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListAllProductTypes(limit?: number, offset?: number, name?: string, orders?: string, options?: any): AxiosPromise<ProductTypesResponse> {
+        v1ListAllProductTypes(limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ProductTypesResponse> {
             return localVarFp.v1ListAllProductTypes(limit, offset, name, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16138,7 +16138,7 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListProductTypes(categoryId: string, limit?: number, offset?: number, name?: string, orders?: string, options?: any): AxiosPromise<ProductTypesResponse> {
+        v1ListProductTypes(categoryId: string, limit?: number, offset?: number, name?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<ProductTypesResponse> {
             return localVarFp.v1ListProductTypes(categoryId, limit, offset, name, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16150,7 +16150,7 @@ export const ProductTypeApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: any): AxiosPromise<object> {
+        v1UpdateProductType(categoryId: string, productTypeId: string, body: UpdateProductTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateProductType(categoryId, productTypeId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -16565,7 +16565,7 @@ export const PromotionApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreatePromotion(body: CreatePromotionRequest, options?: any): AxiosPromise<PromotionResponse> {
+        v1CreatePromotion(body: CreatePromotionRequest, options?: RawAxiosRequestConfig): AxiosPromise<PromotionResponse> {
             return localVarFp.v1CreatePromotion(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16575,7 +16575,7 @@ export const PromotionApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeletePromotion(promotionId: string, options?: any): AxiosPromise<object> {
+        v1DeletePromotion(promotionId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeletePromotion(promotionId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16585,7 +16585,7 @@ export const PromotionApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetPromotion(promotionId: string, options?: any): AxiosPromise<PromotionResponse> {
+        v1GetPromotion(promotionId: string, options?: RawAxiosRequestConfig): AxiosPromise<PromotionResponse> {
             return localVarFp.v1GetPromotion(promotionId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16598,7 +16598,7 @@ export const PromotionApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListPromotions(limit?: number, offset?: number, title?: string, orders?: string, options?: any): AxiosPromise<PromotionsResponse> {
+        v1ListPromotions(limit?: number, offset?: number, title?: string, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<PromotionsResponse> {
             return localVarFp.v1ListPromotions(limit, offset, title, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -16609,7 +16609,7 @@ export const PromotionApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdatePromotion(promotionId: string, body: UpdatePromotionRequest, options?: any): AxiosPromise<object> {
+        v1UpdatePromotion(promotionId: string, body: UpdatePromotionRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdatePromotion(promotionId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -17476,7 +17476,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1AnalyzeSchedule(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: BroadcastViewerLogInterval, options?: any): AxiosPromise<AnalyzeScheduleResponse> {
+        v1AnalyzeSchedule(scheduleId: string, startAt?: number, endAt?: number, viewerLogInterval?: BroadcastViewerLogInterval, options?: RawAxiosRequestConfig): AxiosPromise<AnalyzeScheduleResponse> {
             return localVarFp.v1AnalyzeSchedule(scheduleId, startAt, endAt, viewerLogInterval, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17487,7 +17487,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ApproveSchedule(scheduleId: string, body: ApproveScheduleRequest, options?: any): AxiosPromise<object> {
+        v1ApproveSchedule(scheduleId: string, body: ApproveScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1ApproveSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17497,7 +17497,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateSchedule(body: CreateScheduleRequest, options?: any): AxiosPromise<ScheduleResponse> {
+        v1CreateSchedule(body: CreateScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<ScheduleResponse> {
             return localVarFp.v1CreateSchedule(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17507,7 +17507,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteSchedule(scheduleId: string, options?: any): AxiosPromise<object> {
+        v1DeleteSchedule(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteSchedule(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17517,7 +17517,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetSchedule(scheduleId: string, options?: any): AxiosPromise<ScheduleResponse> {
+        v1GetSchedule(scheduleId: string, options?: RawAxiosRequestConfig): AxiosPromise<ScheduleResponse> {
             return localVarFp.v1GetSchedule(scheduleId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17527,7 +17527,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetScheduleImageUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetScheduleImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetScheduleImageUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17537,7 +17537,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetScheduleOpeningVideoUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetScheduleOpeningVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetScheduleOpeningVideoUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17547,7 +17547,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetScheduleThumbnailUploadUrl(body: GetUploadUrlRequest, options?: any): AxiosPromise<UploadUrlResponse> {
+        v1GetScheduleThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
             return localVarFp.v1GetScheduleThumbnailUploadUrl(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17562,7 +17562,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: any): AxiosPromise<LiveCommentsResponse> {
+        v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<LiveCommentsResponse> {
             return localVarFp.v1ListLiveComments(scheduleId, limit, next, start, end, orders, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17573,7 +17573,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListSchedules(limit?: number, offset?: number, options?: any): AxiosPromise<SchedulesResponse> {
+        v1ListSchedules(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<SchedulesResponse> {
             return localVarFp.v1ListSchedules(limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17584,7 +17584,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: any): AxiosPromise<object> {
+        v1PublishSchedule(scheduleId: string, body: PublishScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1PublishSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17596,7 +17596,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateLiveComment(scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options?: any): AxiosPromise<object> {
+        v1UpdateLiveComment(scheduleId: string, commentId: string, body: UpdateLiveCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateLiveComment(scheduleId, commentId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -17607,7 +17607,7 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateSchedule(scheduleId: string, body: UpdateScheduleRequest, options?: any): AxiosPromise<object> {
+        v1UpdateSchedule(scheduleId: string, body: UpdateScheduleRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateSchedule(scheduleId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -18033,7 +18033,7 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetDefaultShipping(options?: any): AxiosPromise<ShippingResponse> {
+        v1GetDefaultShipping(options?: RawAxiosRequestConfig): AxiosPromise<ShippingResponse> {
             return localVarFp.v1GetDefaultShipping(options).then((request) => request(axios, basePath));
         },
         /**
@@ -18043,7 +18043,7 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetShipping(coordinatorId: string, options?: any): AxiosPromise<ShippingResponse> {
+        v1GetShipping(coordinatorId: string, options?: RawAxiosRequestConfig): AxiosPromise<ShippingResponse> {
             return localVarFp.v1GetShipping(coordinatorId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18053,7 +18053,7 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateDefaultShipping(body: UpdateDefaultShippingRequest, options?: any): AxiosPromise<object> {
+        v1UpdateDefaultShipping(body: UpdateDefaultShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateDefaultShipping(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18064,7 +18064,7 @@ export const ShippingApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpsertShipping(coordinatorId: string, body: UpsertShippingRequest, options?: any): AxiosPromise<object> {
+        v1UpsertShipping(coordinatorId: string, body: UpsertShippingRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpsertShipping(coordinatorId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -18437,7 +18437,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1CreateThread(body: CreateThreadRequest, options?: any): AxiosPromise<ThreadResponse> {
+        v1CreateThread(body: CreateThreadRequest, options?: RawAxiosRequestConfig): AxiosPromise<ThreadResponse> {
             return localVarFp.v1CreateThread(body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18447,7 +18447,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteThread(threadId: string, options?: any): AxiosPromise<object> {
+        v1DeleteThread(threadId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteThread(threadId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18457,7 +18457,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetThread(threadId: string, options?: any): AxiosPromise<ThreadResponse> {
+        v1GetThread(threadId: string, options?: RawAxiosRequestConfig): AxiosPromise<ThreadResponse> {
             return localVarFp.v1GetThread(threadId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18469,7 +18469,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListThreadsByContactId(contactId: string, limit?: number, offset?: number, options?: any): AxiosPromise<ThreadsResponse> {
+        v1ListThreadsByContactId(contactId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ThreadsResponse> {
             return localVarFp.v1ListThreadsByContactId(contactId, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18480,7 +18480,7 @@ export const ThreadApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1UpdateThread(threadId: string, body: UpdateThreadRequest, options?: any): AxiosPromise<object> {
+        v1UpdateThread(threadId: string, body: UpdateThreadRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateThread(threadId, body, options).then((request) => request(axios, basePath));
         },
     };
@@ -18815,7 +18815,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1DeleteUser(userId: string, options?: any): AxiosPromise<object> {
+        v1DeleteUser(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1DeleteUser(userId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18825,7 +18825,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1GetUser(userId: string, options?: any): AxiosPromise<UserResponse> {
+        v1GetUser(userId: string, options?: RawAxiosRequestConfig): AxiosPromise<UserResponse> {
             return localVarFp.v1GetUser(userId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18837,7 +18837,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListUserOrders(userId: string, limit?: number, offset?: number, options?: any): AxiosPromise<UserOrdersResponse> {
+        v1ListUserOrders(userId: string, limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<UserOrdersResponse> {
             return localVarFp.v1ListUserOrders(userId, limit, offset, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18848,7 +18848,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListUsers(limit?: number, offset?: number, options?: any): AxiosPromise<UsersResponse> {
+        v1ListUsers(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<UsersResponse> {
             return localVarFp.v1ListUsers(limit, offset, options).then((request) => request(axios, basePath));
         },
     };

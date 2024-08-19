@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { OrderStatus } from './OrderStatus';
 import {
     OrderStatusFromJSON,
@@ -40,15 +40,15 @@ export interface CheckoutStateResponse {
     status: OrderStatus;
 }
 
+
+
 /**
  * Check if a given object implements the CheckoutStateResponse interface.
  */
-export function instanceOfCheckoutStateResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "orderId" in value;
-    isInstance = isInstance && "status" in value;
-
-    return isInstance;
+export function instanceOfCheckoutStateResponse(value: object): value is CheckoutStateResponse {
+    if (!('orderId' in value) || value['orderId'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    return true;
 }
 
 export function CheckoutStateResponseFromJSON(json: any): CheckoutStateResponse {
@@ -56,7 +56,7 @@ export function CheckoutStateResponseFromJSON(json: any): CheckoutStateResponse 
 }
 
 export function CheckoutStateResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CheckoutStateResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -67,16 +67,13 @@ export function CheckoutStateResponseFromJSONTyped(json: any, ignoreDiscriminato
 }
 
 export function CheckoutStateResponseToJSON(value?: CheckoutStateResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'orderId': value.orderId,
-        'status': OrderStatusToJSON(value.status),
+        'orderId': value['orderId'],
+        'status': OrderStatusToJSON(value['status']),
     };
 }
 

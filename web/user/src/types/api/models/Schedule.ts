@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { ScheduleStatus } from './ScheduleStatus';
 import {
     ScheduleStatusFromJSON,
@@ -82,22 +82,22 @@ export interface Schedule {
     endAt: number;
 }
 
+
+
 /**
  * Check if a given object implements the Schedule interface.
  */
-export function instanceOfSchedule(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "coordinatorId" in value;
-    isInstance = isInstance && "status" in value;
-    isInstance = isInstance && "title" in value;
-    isInstance = isInstance && "description" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "distributionUrl" in value;
-    isInstance = isInstance && "startAt" in value;
-    isInstance = isInstance && "endAt" in value;
-
-    return isInstance;
+export function instanceOfSchedule(value: object): value is Schedule {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('distributionUrl' in value) || value['distributionUrl'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    return true;
 }
 
 export function ScheduleFromJSON(json: any): Schedule {
@@ -105,7 +105,7 @@ export function ScheduleFromJSON(json: any): Schedule {
 }
 
 export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): Schedule {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -123,23 +123,20 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
 }
 
 export function ScheduleToJSON(value?: Schedule | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'coordinatorId': value.coordinatorId,
-        'status': ScheduleStatusToJSON(value.status),
-        'title': value.title,
-        'description': value.description,
-        'thumbnailUrl': value.thumbnailUrl,
-        'distributionUrl': value.distributionUrl,
-        'startAt': value.startAt,
-        'endAt': value.endAt,
+        'id': value['id'],
+        'coordinatorId': value['coordinatorId'],
+        'status': ScheduleStatusToJSON(value['status']),
+        'title': value['title'],
+        'description': value['description'],
+        'thumbnailUrl': value['thumbnailUrl'],
+        'distributionUrl': value['distributionUrl'],
+        'startAt': value['startAt'],
+        'endAt': value['endAt'],
     };
 }
 

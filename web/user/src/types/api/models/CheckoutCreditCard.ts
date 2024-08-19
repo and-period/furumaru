@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -54,15 +54,13 @@ export interface CheckoutCreditCard {
 /**
  * Check if a given object implements the CheckoutCreditCard interface.
  */
-export function instanceOfCheckoutCreditCard(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "name" in value;
-    isInstance = isInstance && "number" in value;
-    isInstance = isInstance && "month" in value;
-    isInstance = isInstance && "year" in value;
-    isInstance = isInstance && "verificationValue" in value;
-
-    return isInstance;
+export function instanceOfCheckoutCreditCard(value: object): value is CheckoutCreditCard {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('number' in value) || value['number'] === undefined) return false;
+    if (!('month' in value) || value['month'] === undefined) return false;
+    if (!('year' in value) || value['year'] === undefined) return false;
+    if (!('verificationValue' in value) || value['verificationValue'] === undefined) return false;
+    return true;
 }
 
 export function CheckoutCreditCardFromJSON(json: any): CheckoutCreditCard {
@@ -70,7 +68,7 @@ export function CheckoutCreditCardFromJSON(json: any): CheckoutCreditCard {
 }
 
 export function CheckoutCreditCardFromJSONTyped(json: any, ignoreDiscriminator: boolean): CheckoutCreditCard {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -84,19 +82,16 @@ export function CheckoutCreditCardFromJSONTyped(json: any, ignoreDiscriminator: 
 }
 
 export function CheckoutCreditCardToJSON(value?: CheckoutCreditCard | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'name': value.name,
-        'number': value.number,
-        'month': value.month,
-        'year': value.year,
-        'verificationValue': value.verificationValue,
+        'name': value['name'],
+        'number': value['number'],
+        'month': value['month'],
+        'year': value['year'],
+        'verificationValue': value['verificationValue'],
     };
 }
 

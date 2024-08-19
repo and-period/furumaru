@@ -56,12 +56,18 @@ export class GuestApi extends runtime.BaseAPI {
      * ライブ配信ゲストコメント投稿
      */
     async v1CreateGuestLiveCommentRaw(requestParameters: V1CreateGuestLiveCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.scheduleId === null || requestParameters.scheduleId === undefined) {
-            throw new runtime.RequiredError('scheduleId','Required parameter requestParameters.scheduleId was null or undefined when calling v1CreateGuestLiveComment.');
+        if (requestParameters['scheduleId'] == null) {
+            throw new runtime.RequiredError(
+                'scheduleId',
+                'Required parameter "scheduleId" was null or undefined when calling v1CreateGuestLiveComment().'
+            );
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateGuestLiveComment.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateGuestLiveComment().'
+            );
         }
 
         const queryParameters: any = {};
@@ -71,11 +77,11 @@ export class GuestApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/v1/guests/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters.scheduleId))),
+            path: `/v1/guests/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -92,8 +98,11 @@ export class GuestApi extends runtime.BaseAPI {
      * ゲスト注文情報の取得
      */
     async v1GetGuestCheckoutStateRaw(requestParameters: V1GetGuestCheckoutStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutStateResponse>> {
-        if (requestParameters.transactionId === null || requestParameters.transactionId === undefined) {
-            throw new runtime.RequiredError('transactionId','Required parameter requestParameters.transactionId was null or undefined when calling v1GetGuestCheckoutState.');
+        if (requestParameters['transactionId'] == null) {
+            throw new runtime.RequiredError(
+                'transactionId',
+                'Required parameter "transactionId" was null or undefined when calling v1GetGuestCheckoutState().'
+            );
         }
 
         const queryParameters: any = {};
@@ -101,7 +110,7 @@ export class GuestApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/guests/checkouts/{transactionId}`.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters.transactionId))),
+            path: `/v1/guests/checkouts/{transactionId}`.replace(`{${"transactionId"}}`, encodeURIComponent(String(requestParameters['transactionId']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -122,8 +131,11 @@ export class GuestApi extends runtime.BaseAPI {
      * ゲスト商品購入
      */
     async v1GuestCheckoutRaw(requestParameters: V1GuestCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutResponse>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1GuestCheckout.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1GuestCheckout().'
+            );
         }
 
         const queryParameters: any = {};
@@ -137,7 +149,7 @@ export class GuestApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => GuestCheckoutResponseFromJSON(jsonValue));

@@ -1,5 +1,5 @@
 # ビルド用コンテナ
-FROM golang:1.22.1-alpine as builder
+FROM golang:1.23.0-alpine as builder
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo

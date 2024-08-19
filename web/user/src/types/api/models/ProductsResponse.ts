@@ -12,31 +12,19 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Category } from './Category';
 import {
     CategoryFromJSON,
     CategoryFromJSONTyped,
     CategoryToJSON,
 } from './Category';
-import type { Coordinator } from './Coordinator';
-import {
-    CoordinatorFromJSON,
-    CoordinatorFromJSONTyped,
-    CoordinatorToJSON,
-} from './Coordinator';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
 } from './Producer';
-import type { Product } from './Product';
-import {
-    ProductFromJSON,
-    ProductFromJSONTyped,
-    ProductToJSON,
-} from './Product';
 import type { ProductTag } from './ProductTag';
 import {
     ProductTagFromJSON,
@@ -49,6 +37,18 @@ import {
     ProductTypeFromJSONTyped,
     ProductTypeToJSON,
 } from './ProductType';
+import type { Product } from './Product';
+import {
+    ProductFromJSON,
+    ProductFromJSONTyped,
+    ProductToJSON,
+} from './Product';
+import type { Coordinator } from './Coordinator';
+import {
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
 
 /**
  * 
@@ -103,17 +103,15 @@ export interface ProductsResponse {
 /**
  * Check if a given object implements the ProductsResponse interface.
  */
-export function instanceOfProductsResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "products" in value;
-    isInstance = isInstance && "coordinators" in value;
-    isInstance = isInstance && "producers" in value;
-    isInstance = isInstance && "categories" in value;
-    isInstance = isInstance && "productTypes" in value;
-    isInstance = isInstance && "productTags" in value;
-    isInstance = isInstance && "total" in value;
-
-    return isInstance;
+export function instanceOfProductsResponse(value: object): value is ProductsResponse {
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('categories' in value) || value['categories'] === undefined) return false;
+    if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
+    if (!('productTags' in value) || value['productTags'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    return true;
 }
 
 export function ProductsResponseFromJSON(json: any): ProductsResponse {
@@ -121,7 +119,7 @@ export function ProductsResponseFromJSON(json: any): ProductsResponse {
 }
 
 export function ProductsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProductsResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -137,21 +135,18 @@ export function ProductsResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
 }
 
 export function ProductsResponseToJSON(value?: ProductsResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'products': ((value.products as Array<any>).map(ProductToJSON)),
-        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
-        'producers': ((value.producers as Array<any>).map(ProducerToJSON)),
-        'categories': ((value.categories as Array<any>).map(CategoryToJSON)),
-        'productTypes': ((value.productTypes as Array<any>).map(ProductTypeToJSON)),
-        'productTags': ((value.productTags as Array<any>).map(ProductTagToJSON)),
-        'total': value.total,
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'categories': ((value['categories'] as Array<any>).map(CategoryToJSON)),
+        'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
+        'productTags': ((value['productTags'] as Array<any>).map(ProductTagToJSON)),
+        'total': value['total'],
     };
 }
 

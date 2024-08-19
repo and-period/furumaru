@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -84,20 +84,18 @@ export interface CreateAuthUserRequest {
 /**
  * Check if a given object implements the CreateAuthUserRequest interface.
  */
-export function instanceOfCreateAuthUserRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "accountId" in value;
-    isInstance = isInstance && "lastname" in value;
-    isInstance = isInstance && "firstname" in value;
-    isInstance = isInstance && "lastnameKana" in value;
-    isInstance = isInstance && "firstnameKana" in value;
-    isInstance = isInstance && "email" in value;
-    isInstance = isInstance && "phoneNumber" in value;
-    isInstance = isInstance && "password" in value;
-    isInstance = isInstance && "passwordConfirmation" in value;
-
-    return isInstance;
+export function instanceOfCreateAuthUserRequest(value: object): value is CreateAuthUserRequest {
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('firstname' in value) || value['firstname'] === undefined) return false;
+    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
+    if (!('password' in value) || value['password'] === undefined) return false;
+    if (!('passwordConfirmation' in value) || value['passwordConfirmation'] === undefined) return false;
+    return true;
 }
 
 export function CreateAuthUserRequestFromJSON(json: any): CreateAuthUserRequest {
@@ -105,7 +103,7 @@ export function CreateAuthUserRequestFromJSON(json: any): CreateAuthUserRequest 
 }
 
 export function CreateAuthUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAuthUserRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -124,24 +122,21 @@ export function CreateAuthUserRequestFromJSONTyped(json: any, ignoreDiscriminato
 }
 
 export function CreateAuthUserRequestToJSON(value?: CreateAuthUserRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'username': value.username,
-        'accountId': value.accountId,
-        'lastname': value.lastname,
-        'firstname': value.firstname,
-        'lastnameKana': value.lastnameKana,
-        'firstnameKana': value.firstnameKana,
-        'email': value.email,
-        'phoneNumber': value.phoneNumber,
-        'password': value.password,
-        'passwordConfirmation': value.passwordConfirmation,
+        'username': value['username'],
+        'accountId': value['accountId'],
+        'lastname': value['lastname'],
+        'firstname': value['firstname'],
+        'lastnameKana': value['lastnameKana'],
+        'firstnameKana': value['firstnameKana'],
+        'email': value['email'],
+        'phoneNumber': value['phoneNumber'],
+        'password': value['password'],
+        'passwordConfirmation': value['passwordConfirmation'],
     };
 }
 

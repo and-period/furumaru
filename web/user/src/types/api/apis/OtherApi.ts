@@ -45,14 +45,17 @@ export class OtherApi extends runtime.BaseAPI {
      * ファイルアップロード状態取得
      */
     async v1GetUploadStateRaw(requestParameters: V1GetUploadStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadStateResponse>> {
-        if (requestParameters.key === null || requestParameters.key === undefined) {
-            throw new runtime.RequiredError('key','Required parameter requestParameters.key was null or undefined when calling v1GetUploadState.');
+        if (requestParameters['key'] == null) {
+            throw new runtime.RequiredError(
+                'key',
+                'Required parameter "key" was null or undefined when calling v1GetUploadState().'
+            );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters.key !== undefined) {
-            queryParameters['key'] = requestParameters.key;
+        if (requestParameters['key'] != null) {
+            queryParameters['key'] = requestParameters['key'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -79,8 +82,11 @@ export class OtherApi extends runtime.BaseAPI {
      * 郵便番号情報検索
      */
     async v1SearchPostalCodeRaw(requestParameters: V1SearchPostalCodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PostalCodeResponse>> {
-        if (requestParameters.postalCode === null || requestParameters.postalCode === undefined) {
-            throw new runtime.RequiredError('postalCode','Required parameter requestParameters.postalCode was null or undefined when calling v1SearchPostalCode.');
+        if (requestParameters['postalCode'] == null) {
+            throw new runtime.RequiredError(
+                'postalCode',
+                'Required parameter "postalCode" was null or undefined when calling v1SearchPostalCode().'
+            );
         }
 
         const queryParameters: any = {};
@@ -88,7 +94,7 @@ export class OtherApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/postal-codes/{postalCode}`.replace(`{${"postalCode"}}`, encodeURIComponent(String(requestParameters.postalCode))),
+            path: `/v1/postal-codes/{postalCode}`.replace(`{${"postalCode"}}`, encodeURIComponent(String(requestParameters['postalCode']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

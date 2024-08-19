@@ -12,25 +12,25 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { CartItem } from './CartItem';
-import {
-    CartItemFromJSON,
-    CartItemFromJSONTyped,
-    CartItemToJSON,
-} from './CartItem';
-import type { ShippingSize } from './ShippingSize';
-import {
-    ShippingSizeFromJSON,
-    ShippingSizeFromJSONTyped,
-    ShippingSizeToJSON,
-} from './ShippingSize';
+import { mapValues } from '../runtime';
 import type { ShippingType } from './ShippingType';
 import {
     ShippingTypeFromJSON,
     ShippingTypeFromJSONTyped,
     ShippingTypeToJSON,
 } from './ShippingType';
+import type { ShippingSize } from './ShippingSize';
+import {
+    ShippingSizeFromJSON,
+    ShippingSizeFromJSONTyped,
+    ShippingSizeToJSON,
+} from './ShippingSize';
+import type { CartItem } from './CartItem';
+import {
+    CartItemFromJSON,
+    CartItemFromJSONTyped,
+    CartItemToJSON,
+} from './CartItem';
 
 /**
  * カート情報
@@ -76,19 +76,19 @@ export interface Cart {
     coordinatorId: string;
 }
 
+
+
 /**
  * Check if a given object implements the Cart interface.
  */
-export function instanceOfCart(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "number" in value;
-    isInstance = isInstance && "type" in value;
-    isInstance = isInstance && "size" in value;
-    isInstance = isInstance && "rate" in value;
-    isInstance = isInstance && "items" in value;
-    isInstance = isInstance && "coordinatorId" in value;
-
-    return isInstance;
+export function instanceOfCart(value: object): value is Cart {
+    if (!('number' in value) || value['number'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!('size' in value) || value['size'] === undefined) return false;
+    if (!('rate' in value) || value['rate'] === undefined) return false;
+    if (!('items' in value) || value['items'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    return true;
 }
 
 export function CartFromJSON(json: any): Cart {
@@ -96,7 +96,7 @@ export function CartFromJSON(json: any): Cart {
 }
 
 export function CartFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cart {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -111,20 +111,17 @@ export function CartFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cart
 }
 
 export function CartToJSON(value?: Cart | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'number': value.number,
-        'type': ShippingTypeToJSON(value.type),
-        'size': ShippingSizeToJSON(value.size),
-        'rate': value.rate,
-        'items': ((value.items as Array<any>).map(CartItemToJSON)),
-        'coordinatorId': value.coordinatorId,
+        'number': value['number'],
+        'type': ShippingTypeToJSON(value['type']),
+        'size': ShippingSizeToJSON(value['size']),
+        'rate': value['rate'],
+        'items': ((value['items'] as Array<any>).map(CartItemToJSON)),
+        'coordinatorId': value['coordinatorId'],
     };
 }
 

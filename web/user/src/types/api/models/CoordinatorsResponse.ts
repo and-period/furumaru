@@ -12,19 +12,19 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { Coordinator } from './Coordinator';
-import {
-    CoordinatorFromJSON,
-    CoordinatorFromJSONTyped,
-    CoordinatorToJSON,
-} from './Coordinator';
+import { mapValues } from '../runtime';
 import type { ProductType } from './ProductType';
 import {
     ProductTypeFromJSON,
     ProductTypeFromJSONTyped,
     ProductTypeToJSON,
 } from './ProductType';
+import type { Coordinator } from './Coordinator';
+import {
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
 
 /**
  * 
@@ -55,13 +55,11 @@ export interface CoordinatorsResponse {
 /**
  * Check if a given object implements the CoordinatorsResponse interface.
  */
-export function instanceOfCoordinatorsResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "coordinators" in value;
-    isInstance = isInstance && "productTypes" in value;
-    isInstance = isInstance && "total" in value;
-
-    return isInstance;
+export function instanceOfCoordinatorsResponse(value: object): value is CoordinatorsResponse {
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    return true;
 }
 
 export function CoordinatorsResponseFromJSON(json: any): CoordinatorsResponse {
@@ -69,7 +67,7 @@ export function CoordinatorsResponseFromJSON(json: any): CoordinatorsResponse {
 }
 
 export function CoordinatorsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CoordinatorsResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -81,17 +79,14 @@ export function CoordinatorsResponseFromJSONTyped(json: any, ignoreDiscriminator
 }
 
 export function CoordinatorsResponseToJSON(value?: CoordinatorsResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
-        'productTypes': ((value.productTypes as Array<any>).map(ProductTypeToJSON)),
-        'total': value.total,
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
+        'total': value['total'],
     };
 }
 

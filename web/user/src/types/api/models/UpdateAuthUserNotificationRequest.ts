@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface UpdateAuthUserNotificationRequest {
 /**
  * Check if a given object implements the UpdateAuthUserNotificationRequest interface.
  */
-export function instanceOfUpdateAuthUserNotificationRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "enabled" in value;
-
-    return isInstance;
+export function instanceOfUpdateAuthUserNotificationRequest(value: object): value is UpdateAuthUserNotificationRequest {
+    if (!('enabled' in value) || value['enabled'] === undefined) return false;
+    return true;
 }
 
 export function UpdateAuthUserNotificationRequestFromJSON(json: any): UpdateAuthUserNotificationRequest {
@@ -42,7 +40,7 @@ export function UpdateAuthUserNotificationRequestFromJSON(json: any): UpdateAuth
 }
 
 export function UpdateAuthUserNotificationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateAuthUserNotificationRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function UpdateAuthUserNotificationRequestFromJSONTyped(json: any, ignore
 }
 
 export function UpdateAuthUserNotificationRequestToJSON(value?: UpdateAuthUserNotificationRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'enabled': value.enabled,
+        'enabled': value['enabled'],
     };
 }
 

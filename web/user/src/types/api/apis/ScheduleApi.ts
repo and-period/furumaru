@@ -88,20 +88,20 @@ export class ScheduleApi extends runtime.BaseAPI {
     async v1ArchiveSchedulesRaw(requestParameters: V1ArchiveSchedulesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ArchiveSchedulesResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
         }
 
-        if (requestParameters.coordinator !== undefined) {
-            queryParameters['coordinator'] = requestParameters.coordinator;
+        if (requestParameters['coordinator'] != null) {
+            queryParameters['coordinator'] = requestParameters['coordinator'];
         }
 
-        if (requestParameters.producer !== undefined) {
-            queryParameters['producer'] = requestParameters.producer;
+        if (requestParameters['producer'] != null) {
+            queryParameters['producer'] = requestParameters['producer'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -128,12 +128,18 @@ export class ScheduleApi extends runtime.BaseAPI {
      * ライブ配信ゲストコメント投稿
      */
     async v1CreateGuestLiveCommentRaw(requestParameters: V1CreateGuestLiveCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.scheduleId === null || requestParameters.scheduleId === undefined) {
-            throw new runtime.RequiredError('scheduleId','Required parameter requestParameters.scheduleId was null or undefined when calling v1CreateGuestLiveComment.');
+        if (requestParameters['scheduleId'] == null) {
+            throw new runtime.RequiredError(
+                'scheduleId',
+                'Required parameter "scheduleId" was null or undefined when calling v1CreateGuestLiveComment().'
+            );
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateGuestLiveComment.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateGuestLiveComment().'
+            );
         }
 
         const queryParameters: any = {};
@@ -143,11 +149,11 @@ export class ScheduleApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/v1/guests/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters.scheduleId))),
+            path: `/v1/guests/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -164,12 +170,18 @@ export class ScheduleApi extends runtime.BaseAPI {
      * ライブ配信コメント投稿
      */
     async v1CreateLiveCommentRaw(requestParameters: V1CreateLiveCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.scheduleId === null || requestParameters.scheduleId === undefined) {
-            throw new runtime.RequiredError('scheduleId','Required parameter requestParameters.scheduleId was null or undefined when calling v1CreateLiveComment.');
+        if (requestParameters['scheduleId'] == null) {
+            throw new runtime.RequiredError(
+                'scheduleId',
+                'Required parameter "scheduleId" was null or undefined when calling v1CreateLiveComment().'
+            );
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateLiveComment.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateLiveComment().'
+            );
         }
 
         const queryParameters: any = {};
@@ -187,11 +199,11 @@ export class ScheduleApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/v1/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters.scheduleId))),
+            path: `/v1/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -208,8 +220,11 @@ export class ScheduleApi extends runtime.BaseAPI {
      * マルシェ開催スケジュール取得
      */
     async v1GetScheduleRaw(requestParameters: V1GetScheduleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ScheduleResponse>> {
-        if (requestParameters.scheduleId === null || requestParameters.scheduleId === undefined) {
-            throw new runtime.RequiredError('scheduleId','Required parameter requestParameters.scheduleId was null or undefined when calling v1GetSchedule.');
+        if (requestParameters['scheduleId'] == null) {
+            throw new runtime.RequiredError(
+                'scheduleId',
+                'Required parameter "scheduleId" was null or undefined when calling v1GetSchedule().'
+            );
         }
 
         const queryParameters: any = {};
@@ -217,7 +232,7 @@ export class ScheduleApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/schedules/{scheduleId}`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters.scheduleId))),
+            path: `/v1/schedules/{scheduleId}`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -238,36 +253,39 @@ export class ScheduleApi extends runtime.BaseAPI {
      * ライブ配信コメント取得
      */
     async v1ListLiveCommentsRaw(requestParameters: V1ListLiveCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveCommentsResponse>> {
-        if (requestParameters.scheduleId === null || requestParameters.scheduleId === undefined) {
-            throw new runtime.RequiredError('scheduleId','Required parameter requestParameters.scheduleId was null or undefined when calling v1ListLiveComments.');
+        if (requestParameters['scheduleId'] == null) {
+            throw new runtime.RequiredError(
+                'scheduleId',
+                'Required parameter "scheduleId" was null or undefined when calling v1ListLiveComments().'
+            );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters.next !== undefined) {
-            queryParameters['next'] = requestParameters.next;
+        if (requestParameters['next'] != null) {
+            queryParameters['next'] = requestParameters['next'];
         }
 
-        if (requestParameters.start !== undefined) {
-            queryParameters['start'] = requestParameters.start;
+        if (requestParameters['start'] != null) {
+            queryParameters['start'] = requestParameters['start'];
         }
 
-        if (requestParameters.end !== undefined) {
-            queryParameters['end'] = requestParameters.end;
+        if (requestParameters['end'] != null) {
+            queryParameters['end'] = requestParameters['end'];
         }
 
-        if (requestParameters.orders !== undefined) {
-            queryParameters['orders'] = requestParameters.orders;
+        if (requestParameters['orders'] != null) {
+            queryParameters['orders'] = requestParameters['orders'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters.scheduleId))),
+            path: `/v1/schedules/{scheduleId}/comments`.replace(`{${"scheduleId"}}`, encodeURIComponent(String(requestParameters['scheduleId']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -290,20 +308,20 @@ export class ScheduleApi extends runtime.BaseAPI {
     async v1LiveSchedulesRaw(requestParameters: V1LiveSchedulesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LiveSchedulesResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
         }
 
-        if (requestParameters.coordinator !== undefined) {
-            queryParameters['coordinator'] = requestParameters.coordinator;
+        if (requestParameters['coordinator'] != null) {
+            queryParameters['coordinator'] = requestParameters['coordinator'];
         }
 
-        if (requestParameters.producer !== undefined) {
-            queryParameters['producer'] = requestParameters.producer;
+        if (requestParameters['producer'] != null) {
+            queryParameters['producer'] = requestParameters['producer'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

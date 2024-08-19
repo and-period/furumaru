@@ -29,6 +29,17 @@ export const Weekday = {
 export type Weekday = typeof Weekday[keyof typeof Weekday];
 
 
+export function instanceOfWeekday(value: any): boolean {
+    for (const key in Weekday) {
+        if (Object.prototype.hasOwnProperty.call(Weekday, key)) {
+            if (Weekday[key as keyof typeof Weekday] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function WeekdayFromJSON(json: any): Weekday {
     return WeekdayFromJSONTyped(json, false);
 }

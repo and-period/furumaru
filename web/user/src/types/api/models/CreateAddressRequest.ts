@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Prefecture } from './Prefecture';
 import {
     PrefectureFromJSON,
@@ -94,24 +94,24 @@ export interface CreateAddressRequest {
     isDefault: boolean;
 }
 
+
+
 /**
  * Check if a given object implements the CreateAddressRequest interface.
  */
-export function instanceOfCreateAddressRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "lastname" in value;
-    isInstance = isInstance && "firstname" in value;
-    isInstance = isInstance && "lastnameKana" in value;
-    isInstance = isInstance && "firstnameKana" in value;
-    isInstance = isInstance && "postalCode" in value;
-    isInstance = isInstance && "prefectureCode" in value;
-    isInstance = isInstance && "city" in value;
-    isInstance = isInstance && "addressLine1" in value;
-    isInstance = isInstance && "addressLine2" in value;
-    isInstance = isInstance && "phoneNumber" in value;
-    isInstance = isInstance && "isDefault" in value;
-
-    return isInstance;
+export function instanceOfCreateAddressRequest(value: object): value is CreateAddressRequest {
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('firstname' in value) || value['firstname'] === undefined) return false;
+    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('postalCode' in value) || value['postalCode'] === undefined) return false;
+    if (!('prefectureCode' in value) || value['prefectureCode'] === undefined) return false;
+    if (!('city' in value) || value['city'] === undefined) return false;
+    if (!('addressLine1' in value) || value['addressLine1'] === undefined) return false;
+    if (!('addressLine2' in value) || value['addressLine2'] === undefined) return false;
+    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
+    if (!('isDefault' in value) || value['isDefault'] === undefined) return false;
+    return true;
 }
 
 export function CreateAddressRequestFromJSON(json: any): CreateAddressRequest {
@@ -119,7 +119,7 @@ export function CreateAddressRequestFromJSON(json: any): CreateAddressRequest {
 }
 
 export function CreateAddressRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAddressRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -139,25 +139,22 @@ export function CreateAddressRequestFromJSONTyped(json: any, ignoreDiscriminator
 }
 
 export function CreateAddressRequestToJSON(value?: CreateAddressRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'lastname': value.lastname,
-        'firstname': value.firstname,
-        'lastnameKana': value.lastnameKana,
-        'firstnameKana': value.firstnameKana,
-        'postalCode': value.postalCode,
-        'prefectureCode': PrefectureToJSON(value.prefectureCode),
-        'city': value.city,
-        'addressLine1': value.addressLine1,
-        'addressLine2': value.addressLine2,
-        'phoneNumber': value.phoneNumber,
-        'isDefault': value.isDefault,
+        'lastname': value['lastname'],
+        'firstname': value['firstname'],
+        'lastnameKana': value['lastnameKana'],
+        'firstnameKana': value['firstnameKana'],
+        'postalCode': value['postalCode'],
+        'prefectureCode': PrefectureToJSON(value['prefectureCode']),
+        'city': value['city'],
+        'addressLine1': value['addressLine1'],
+        'addressLine2': value['addressLine2'],
+        'phoneNumber': value['phoneNumber'],
+        'isDefault': value['isDefault'],
     };
 }
 

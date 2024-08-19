@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Prefecture } from './Prefecture';
 import {
     PrefectureFromJSON,
@@ -58,18 +58,18 @@ export interface PostalCodeResponse {
     town: string;
 }
 
+
+
 /**
  * Check if a given object implements the PostalCodeResponse interface.
  */
-export function instanceOfPostalCodeResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "postalCode" in value;
-    isInstance = isInstance && "prefectureCode" in value;
-    isInstance = isInstance && "prefecture" in value;
-    isInstance = isInstance && "city" in value;
-    isInstance = isInstance && "town" in value;
-
-    return isInstance;
+export function instanceOfPostalCodeResponse(value: object): value is PostalCodeResponse {
+    if (!('postalCode' in value) || value['postalCode'] === undefined) return false;
+    if (!('prefectureCode' in value) || value['prefectureCode'] === undefined) return false;
+    if (!('prefecture' in value) || value['prefecture'] === undefined) return false;
+    if (!('city' in value) || value['city'] === undefined) return false;
+    if (!('town' in value) || value['town'] === undefined) return false;
+    return true;
 }
 
 export function PostalCodeResponseFromJSON(json: any): PostalCodeResponse {
@@ -77,7 +77,7 @@ export function PostalCodeResponseFromJSON(json: any): PostalCodeResponse {
 }
 
 export function PostalCodeResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): PostalCodeResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -91,19 +91,16 @@ export function PostalCodeResponseFromJSONTyped(json: any, ignoreDiscriminator: 
 }
 
 export function PostalCodeResponseToJSON(value?: PostalCodeResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'postalCode': value.postalCode,
-        'prefectureCode': PrefectureToJSON(value.prefectureCode),
-        'prefecture': value.prefecture,
-        'city': value.city,
-        'town': value.town,
+        'postalCode': value['postalCode'],
+        'prefectureCode': PrefectureToJSON(value['prefectureCode']),
+        'prefecture': value['prefecture'],
+        'city': value['city'],
+        'town': value['town'],
     };
 }
 

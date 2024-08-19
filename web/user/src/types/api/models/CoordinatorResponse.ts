@@ -12,13 +12,31 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { ArchiveSummary } from './ArchiveSummary';
 import {
     ArchiveSummaryFromJSON,
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
 } from './ArchiveSummary';
+import type { Producer } from './Producer';
+import {
+    ProducerFromJSON,
+    ProducerFromJSONTyped,
+    ProducerToJSON,
+} from './Producer';
+import type { ProductType } from './ProductType';
+import {
+    ProductTypeFromJSON,
+    ProductTypeFromJSONTyped,
+    ProductTypeToJSON,
+} from './ProductType';
+import type { Product } from './Product';
+import {
+    ProductFromJSON,
+    ProductFromJSONTyped,
+    ProductToJSON,
+} from './Product';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
@@ -31,24 +49,6 @@ import {
     LiveSummaryFromJSONTyped,
     LiveSummaryToJSON,
 } from './LiveSummary';
-import type { Producer } from './Producer';
-import {
-    ProducerFromJSON,
-    ProducerFromJSONTyped,
-    ProducerToJSON,
-} from './Producer';
-import type { Product } from './Product';
-import {
-    ProductFromJSON,
-    ProductFromJSONTyped,
-    ProductToJSON,
-} from './Product';
-import type { ProductType } from './ProductType';
-import {
-    ProductTypeFromJSON,
-    ProductTypeFromJSONTyped,
-    ProductTypeToJSON,
-} from './ProductType';
 
 /**
  * 
@@ -97,16 +97,14 @@ export interface CoordinatorResponse {
 /**
  * Check if a given object implements the CoordinatorResponse interface.
  */
-export function instanceOfCoordinatorResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "coordinator" in value;
-    isInstance = isInstance && "lives" in value;
-    isInstance = isInstance && "archives" in value;
-    isInstance = isInstance && "productTypes" in value;
-    isInstance = isInstance && "producers" in value;
-    isInstance = isInstance && "products" in value;
-
-    return isInstance;
+export function instanceOfCoordinatorResponse(value: object): value is CoordinatorResponse {
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('archives' in value) || value['archives'] === undefined) return false;
+    if (!('productTypes' in value) || value['productTypes'] === undefined) return false;
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    return true;
 }
 
 export function CoordinatorResponseFromJSON(json: any): CoordinatorResponse {
@@ -114,7 +112,7 @@ export function CoordinatorResponseFromJSON(json: any): CoordinatorResponse {
 }
 
 export function CoordinatorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CoordinatorResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -129,20 +127,17 @@ export function CoordinatorResponseFromJSONTyped(json: any, ignoreDiscriminator:
 }
 
 export function CoordinatorResponseToJSON(value?: CoordinatorResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'coordinator': CoordinatorToJSON(value.coordinator),
-        'lives': ((value.lives as Array<any>).map(LiveSummaryToJSON)),
-        'archives': ((value.archives as Array<any>).map(ArchiveSummaryToJSON)),
-        'productTypes': ((value.productTypes as Array<any>).map(ProductTypeToJSON)),
-        'producers': ((value.producers as Array<any>).map(ProducerToJSON)),
-        'products': ((value.products as Array<any>).map(ProductToJSON)),
+        'coordinator': CoordinatorToJSON(value['coordinator']),
+        'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
+        'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
+        'productTypes': ((value['productTypes'] as Array<any>).map(ProductTypeToJSON)),
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
     };
 }
 

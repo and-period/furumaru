@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface CreateAuthUserResponse {
 /**
  * Check if a given object implements the CreateAuthUserResponse interface.
  */
-export function instanceOfCreateAuthUserResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-
-    return isInstance;
+export function instanceOfCreateAuthUserResponse(value: object): value is CreateAuthUserResponse {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    return true;
 }
 
 export function CreateAuthUserResponseFromJSON(json: any): CreateAuthUserResponse {
@@ -42,7 +40,7 @@ export function CreateAuthUserResponseFromJSON(json: any): CreateAuthUserRespons
 }
 
 export function CreateAuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAuthUserResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function CreateAuthUserResponseFromJSONTyped(json: any, ignoreDiscriminat
 }
 
 export function CreateAuthUserResponseToJSON(value?: CreateAuthUserResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
+        'id': value['id'],
     };
 }
 

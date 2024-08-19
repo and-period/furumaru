@@ -27,6 +27,17 @@ export const PromotionStatus = {
 export type PromotionStatus = typeof PromotionStatus[keyof typeof PromotionStatus];
 
 
+export function instanceOfPromotionStatus(value: any): boolean {
+    for (const key in PromotionStatus) {
+        if (Object.prototype.hasOwnProperty.call(PromotionStatus, key)) {
+            if (PromotionStatus[key as keyof typeof PromotionStatus] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function PromotionStatusFromJSON(json: any): PromotionStatus {
     return PromotionStatusFromJSONTyped(json, false);
 }

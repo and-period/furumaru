@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface UpdateAuthUserAccountIdRequest {
 /**
  * Check if a given object implements the UpdateAuthUserAccountIdRequest interface.
  */
-export function instanceOfUpdateAuthUserAccountIdRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "accountId" in value;
-
-    return isInstance;
+export function instanceOfUpdateAuthUserAccountIdRequest(value: object): value is UpdateAuthUserAccountIdRequest {
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    return true;
 }
 
 export function UpdateAuthUserAccountIdRequestFromJSON(json: any): UpdateAuthUserAccountIdRequest {
@@ -42,7 +40,7 @@ export function UpdateAuthUserAccountIdRequestFromJSON(json: any): UpdateAuthUse
 }
 
 export function UpdateAuthUserAccountIdRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateAuthUserAccountIdRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function UpdateAuthUserAccountIdRequestFromJSONTyped(json: any, ignoreDis
 }
 
 export function UpdateAuthUserAccountIdRequestToJSON(value?: UpdateAuthUserAccountIdRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'accountId': value.accountId,
+        'accountId': value['accountId'],
     };
 }
 

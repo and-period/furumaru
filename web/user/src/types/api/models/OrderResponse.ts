@@ -12,13 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { Coordinator } from './Coordinator';
-import {
-    CoordinatorFromJSON,
-    CoordinatorFromJSONTyped,
-    CoordinatorToJSON,
-} from './Coordinator';
+import { mapValues } from '../runtime';
 import type { Order } from './Order';
 import {
     OrderFromJSON,
@@ -31,6 +25,12 @@ import {
     ProductFromJSONTyped,
     ProductToJSON,
 } from './Product';
+import type { Coordinator } from './Coordinator';
+import {
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
 import type { Promotion } from './Promotion';
 import {
     PromotionFromJSON,
@@ -73,14 +73,12 @@ export interface OrderResponse {
 /**
  * Check if a given object implements the OrderResponse interface.
  */
-export function instanceOfOrderResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "order" in value;
-    isInstance = isInstance && "coordinator" in value;
-    isInstance = isInstance && "promotion" in value;
-    isInstance = isInstance && "products" in value;
-
-    return isInstance;
+export function instanceOfOrderResponse(value: object): value is OrderResponse {
+    if (!('order' in value) || value['order'] === undefined) return false;
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('promotion' in value) || value['promotion'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    return true;
 }
 
 export function OrderResponseFromJSON(json: any): OrderResponse {
@@ -88,7 +86,7 @@ export function OrderResponseFromJSON(json: any): OrderResponse {
 }
 
 export function OrderResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrderResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -101,18 +99,15 @@ export function OrderResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
 }
 
 export function OrderResponseToJSON(value?: OrderResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'order': OrderToJSON(value.order),
-        'coordinator': CoordinatorToJSON(value.coordinator),
-        'promotion': PromotionToJSON(value.promotion),
-        'products': ((value.products as Array<any>).map(ProductToJSON)),
+        'order': OrderToJSON(value['order']),
+        'coordinator': CoordinatorToJSON(value['coordinator']),
+        'promotion': PromotionToJSON(value['promotion']),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
     };
 }
 

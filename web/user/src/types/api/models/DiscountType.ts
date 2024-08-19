@@ -26,6 +26,17 @@ export const DiscountType = {
 export type DiscountType = typeof DiscountType[keyof typeof DiscountType];
 
 
+export function instanceOfDiscountType(value: any): boolean {
+    for (const key in DiscountType) {
+        if (Object.prototype.hasOwnProperty.call(DiscountType, key)) {
+            if (DiscountType[key as keyof typeof DiscountType] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function DiscountTypeFromJSON(json: any): DiscountType {
     return DiscountTypeFromJSONTyped(json, false);
 }

@@ -27,6 +27,17 @@ export const ScheduleStatus = {
 export type ScheduleStatus = typeof ScheduleStatus[keyof typeof ScheduleStatus];
 
 
+export function instanceOfScheduleStatus(value: any): boolean {
+    for (const key in ScheduleStatus) {
+        if (Object.prototype.hasOwnProperty.call(ScheduleStatus, key)) {
+            if (ScheduleStatus[key as keyof typeof ScheduleStatus] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function ScheduleStatusFromJSON(json: any): ScheduleStatus {
     return ScheduleStatusFromJSONTyped(json, false);
 }

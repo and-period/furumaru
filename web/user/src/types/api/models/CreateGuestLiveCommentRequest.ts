@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface CreateGuestLiveCommentRequest {
 /**
  * Check if a given object implements the CreateGuestLiveCommentRequest interface.
  */
-export function instanceOfCreateGuestLiveCommentRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "comment" in value;
-
-    return isInstance;
+export function instanceOfCreateGuestLiveCommentRequest(value: object): value is CreateGuestLiveCommentRequest {
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    return true;
 }
 
 export function CreateGuestLiveCommentRequestFromJSON(json: any): CreateGuestLiveCommentRequest {
@@ -42,7 +40,7 @@ export function CreateGuestLiveCommentRequestFromJSON(json: any): CreateGuestLiv
 }
 
 export function CreateGuestLiveCommentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateGuestLiveCommentRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function CreateGuestLiveCommentRequestFromJSONTyped(json: any, ignoreDisc
 }
 
 export function CreateGuestLiveCommentRequestToJSON(value?: CreateGuestLiveCommentRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'comment': value.comment,
+        'comment': value['comment'],
     };
 }
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Promotion } from './Promotion';
 import {
     PromotionFromJSON,
@@ -37,11 +37,9 @@ export interface PromotionResponse {
 /**
  * Check if a given object implements the PromotionResponse interface.
  */
-export function instanceOfPromotionResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "promotion" in value;
-
-    return isInstance;
+export function instanceOfPromotionResponse(value: object): value is PromotionResponse {
+    if (!('promotion' in value) || value['promotion'] === undefined) return false;
+    return true;
 }
 
 export function PromotionResponseFromJSON(json: any): PromotionResponse {
@@ -49,7 +47,7 @@ export function PromotionResponseFromJSON(json: any): PromotionResponse {
 }
 
 export function PromotionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): PromotionResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -59,15 +57,12 @@ export function PromotionResponseFromJSONTyped(json: any, ignoreDiscriminator: b
 }
 
 export function PromotionResponseToJSON(value?: PromotionResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'promotion': PromotionToJSON(value.promotion),
+        'promotion': PromotionToJSON(value['promotion']),
     };
 }
 

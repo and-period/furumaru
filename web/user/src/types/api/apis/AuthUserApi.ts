@@ -110,8 +110,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * 購入者登録 (メール/SMS認証)
      */
     async v1CreateAuthUserRaw(requestParameters: V1CreateAuthUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateAuthUserResponse>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateAuthUser.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateAuthUser().'
+            );
         }
 
         const queryParameters: any = {};
@@ -125,7 +128,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CreateAuthUserResponseFromJSON(jsonValue));
@@ -143,8 +146,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * 購入者登録 (SNS認証)
      */
     async v1CreateAuthUserWithOAuthRaw(requestParameters: V1CreateAuthUserWithOAuthRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthUserResponse>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateAuthUserWithOAuth.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateAuthUserWithOAuth().'
+            );
         }
 
         const queryParameters: any = {};
@@ -166,7 +172,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AuthUserResponseFromJSON(jsonValue));
@@ -251,8 +257,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * 購入者サムネイルアップロード用URL取得
      */
     async v1GetUserThumbnailUploadUrlRaw(requestParameters: V1GetUserThumbnailUploadUrlRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadUrlResponse>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1GetUserThumbnailUploadUrl.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1GetUserThumbnailUploadUrl().'
+            );
         }
 
         const queryParameters: any = {};
@@ -274,7 +283,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UploadUrlResponseFromJSON(jsonValue));
@@ -292,8 +301,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * ユーザーID(検索用)更新
      */
     async v1UpdateAuthUserAccountIdRaw(requestParameters: V1UpdateAuthUserAccountIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthUserAccountId.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1UpdateAuthUserAccountId().'
+            );
         }
 
         const queryParameters: any = {};
@@ -315,7 +327,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -332,8 +344,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * メールアドレス更新
      */
     async v1UpdateAuthUserEmailRaw(requestParameters: V1UpdateAuthUserEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthUserEmail.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1UpdateAuthUserEmail().'
+            );
         }
 
         const queryParameters: any = {};
@@ -355,7 +370,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -372,8 +387,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * 通知設定更新
      */
     async v1UpdateAuthUserNotificationRaw(requestParameters: V1UpdateAuthUserNotificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthUserNotification.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1UpdateAuthUserNotification().'
+            );
         }
 
         const queryParameters: any = {};
@@ -395,7 +413,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -412,8 +430,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * サムネイル更新
      */
     async v1UpdateAuthUserThumbnailRaw(requestParameters: V1UpdateAuthUserThumbnailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthUserThumbnail.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1UpdateAuthUserThumbnail().'
+            );
         }
 
         const queryParameters: any = {};
@@ -435,7 +456,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -452,8 +473,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * ユーザー名(表示名)更新
      */
     async v1UpdateAuthUserUsernameRaw(requestParameters: V1UpdateAuthUserUsernameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAuthUserUsername.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1UpdateAuthUserUsername().'
+            );
         }
 
         const queryParameters: any = {};
@@ -475,7 +499,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -492,8 +516,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * 購入者登録 - コード検証 (メール/SMS認証)
      */
     async v1VerifyAuthUserRaw(requestParameters: V1VerifyAuthUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1VerifyAuthUser.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1VerifyAuthUser().'
+            );
         }
 
         const queryParameters: any = {};
@@ -507,7 +534,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -524,8 +551,11 @@ export class AuthUserApi extends runtime.BaseAPI {
      * メールアドレス更新 - コード検証
      */
     async v1VerifyAuthUserEmailRaw(requestParameters: V1VerifyAuthUserEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1VerifyAuthUserEmail.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1VerifyAuthUserEmail().'
+            );
         }
 
         const queryParameters: any = {};
@@ -547,7 +577,7 @@ export class AuthUserApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Address } from './Address';
 import {
     AddressFromJSON,
@@ -37,11 +37,9 @@ export interface AddressResponse {
 /**
  * Check if a given object implements the AddressResponse interface.
  */
-export function instanceOfAddressResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "address" in value;
-
-    return isInstance;
+export function instanceOfAddressResponse(value: object): value is AddressResponse {
+    if (!('address' in value) || value['address'] === undefined) return false;
+    return true;
 }
 
 export function AddressResponseFromJSON(json: any): AddressResponse {
@@ -49,7 +47,7 @@ export function AddressResponseFromJSON(json: any): AddressResponse {
 }
 
 export function AddressResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AddressResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -59,15 +57,12 @@ export function AddressResponseFromJSONTyped(json: any, ignoreDiscriminator: boo
 }
 
 export function AddressResponseToJSON(value?: AddressResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'address': AddressToJSON(value.address),
+        'address': AddressToJSON(value['address']),
     };
 }
 

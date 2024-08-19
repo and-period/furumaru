@@ -26,6 +26,17 @@ export const ShippingSize = {
 export type ShippingSize = typeof ShippingSize[keyof typeof ShippingSize];
 
 
+export function instanceOfShippingSize(value: any): boolean {
+    for (const key in ShippingSize) {
+        if (Object.prototype.hasOwnProperty.call(ShippingSize, key)) {
+            if (ShippingSize[key as keyof typeof ShippingSize] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function ShippingSizeFromJSON(json: any): ShippingSize {
     return ShippingSizeFromJSONTyped(json, false);
 }

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -84,20 +84,18 @@ export interface AuthUserResponse {
 /**
  * Check if a given object implements the AuthUserResponse interface.
  */
-export function instanceOfAuthUserResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "accountId" in value;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "lastname" in value;
-    isInstance = isInstance && "firstname" in value;
-    isInstance = isInstance && "lastnameKana" in value;
-    isInstance = isInstance && "firstnameKana" in value;
-    isInstance = isInstance && "email" in value;
-    isInstance = isInstance && "notificationEnabled" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
-
-    return isInstance;
+export function instanceOfAuthUserResponse(value: object): value is AuthUserResponse {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('firstname' in value) || value['firstname'] === undefined) return false;
+    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('notificationEnabled' in value) || value['notificationEnabled'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    return true;
 }
 
 export function AuthUserResponseFromJSON(json: any): AuthUserResponse {
@@ -105,7 +103,7 @@ export function AuthUserResponseFromJSON(json: any): AuthUserResponse {
 }
 
 export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthUserResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -124,24 +122,21 @@ export function AuthUserResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
 }
 
 export function AuthUserResponseToJSON(value?: AuthUserResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'accountId': value.accountId,
-        'username': value.username,
-        'lastname': value.lastname,
-        'firstname': value.firstname,
-        'lastnameKana': value.lastnameKana,
-        'firstnameKana': value.firstnameKana,
-        'email': value.email,
-        'notificationEnabled': value.notificationEnabled,
-        'thumbnailUrl': value.thumbnailUrl,
+        'id': value['id'],
+        'accountId': value['accountId'],
+        'username': value['username'],
+        'lastname': value['lastname'],
+        'firstname': value['firstname'],
+        'lastnameKana': value['lastnameKana'],
+        'firstnameKana': value['firstnameKana'],
+        'email': value['email'],
+        'notificationEnabled': value['notificationEnabled'],
+        'thumbnailUrl': value['thumbnailUrl'],
     };
 }
 

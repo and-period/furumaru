@@ -12,25 +12,25 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { Cart } from './Cart';
-import {
-    CartFromJSON,
-    CartFromJSONTyped,
-    CartToJSON,
-} from './Cart';
-import type { Coordinator } from './Coordinator';
-import {
-    CoordinatorFromJSON,
-    CoordinatorFromJSONTyped,
-    CoordinatorToJSON,
-} from './Coordinator';
+import { mapValues } from '../runtime';
 import type { Product } from './Product';
 import {
     ProductFromJSON,
     ProductFromJSONTyped,
     ProductToJSON,
 } from './Product';
+import type { Coordinator } from './Coordinator';
+import {
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
+import type { Cart } from './Cart';
+import {
+    CartFromJSON,
+    CartFromJSONTyped,
+    CartToJSON,
+} from './Cart';
 
 /**
  * 
@@ -61,13 +61,11 @@ export interface CartResponse {
 /**
  * Check if a given object implements the CartResponse interface.
  */
-export function instanceOfCartResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "carts" in value;
-    isInstance = isInstance && "coordinators" in value;
-    isInstance = isInstance && "products" in value;
-
-    return isInstance;
+export function instanceOfCartResponse(value: object): value is CartResponse {
+    if (!('carts' in value) || value['carts'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    return true;
 }
 
 export function CartResponseFromJSON(json: any): CartResponse {
@@ -75,7 +73,7 @@ export function CartResponseFromJSON(json: any): CartResponse {
 }
 
 export function CartResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CartResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -87,17 +85,14 @@ export function CartResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
 }
 
 export function CartResponseToJSON(value?: CartResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'carts': ((value.carts as Array<any>).map(CartToJSON)),
-        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
-        'products': ((value.products as Array<any>).map(ProductToJSON)),
+        'carts': ((value['carts'] as Array<any>).map(CartToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
     };
 }
 

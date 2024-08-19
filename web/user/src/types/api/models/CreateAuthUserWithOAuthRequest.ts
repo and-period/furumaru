@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -66,17 +66,15 @@ export interface CreateAuthUserWithOAuthRequest {
 /**
  * Check if a given object implements the CreateAuthUserWithOAuthRequest interface.
  */
-export function instanceOfCreateAuthUserWithOAuthRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "accountId" in value;
-    isInstance = isInstance && "lastname" in value;
-    isInstance = isInstance && "firstname" in value;
-    isInstance = isInstance && "lastnameKana" in value;
-    isInstance = isInstance && "firstnameKana" in value;
-    isInstance = isInstance && "phoneNumber" in value;
-
-    return isInstance;
+export function instanceOfCreateAuthUserWithOAuthRequest(value: object): value is CreateAuthUserWithOAuthRequest {
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('firstname' in value) || value['firstname'] === undefined) return false;
+    if (!('lastnameKana' in value) || value['lastnameKana'] === undefined) return false;
+    if (!('firstnameKana' in value) || value['firstnameKana'] === undefined) return false;
+    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
+    return true;
 }
 
 export function CreateAuthUserWithOAuthRequestFromJSON(json: any): CreateAuthUserWithOAuthRequest {
@@ -84,7 +82,7 @@ export function CreateAuthUserWithOAuthRequestFromJSON(json: any): CreateAuthUse
 }
 
 export function CreateAuthUserWithOAuthRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateAuthUserWithOAuthRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -100,21 +98,18 @@ export function CreateAuthUserWithOAuthRequestFromJSONTyped(json: any, ignoreDis
 }
 
 export function CreateAuthUserWithOAuthRequestToJSON(value?: CreateAuthUserWithOAuthRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'username': value.username,
-        'accountId': value.accountId,
-        'lastname': value.lastname,
-        'firstname': value.firstname,
-        'lastnameKana': value.lastnameKana,
-        'firstnameKana': value.firstnameKana,
-        'phoneNumber': value.phoneNumber,
+        'username': value['username'],
+        'accountId': value['accountId'],
+        'lastname': value['lastname'],
+        'firstname': value['firstname'],
+        'lastnameKana': value['lastnameKana'],
+        'firstnameKana': value['firstnameKana'],
+        'phoneNumber': value['phoneNumber'],
     };
 }
 

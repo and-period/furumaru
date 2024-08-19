@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -60,16 +60,14 @@ export interface LiveComment {
 /**
  * Check if a given object implements the LiveComment interface.
  */
-export function instanceOfLiveComment(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "userId" in value;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "accountId" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "comment" in value;
-    isInstance = isInstance && "publishedAt" in value;
-
-    return isInstance;
+export function instanceOfLiveComment(value: object): value is LiveComment {
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('accountId' in value) || value['accountId'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('publishedAt' in value) || value['publishedAt'] === undefined) return false;
+    return true;
 }
 
 export function LiveCommentFromJSON(json: any): LiveComment {
@@ -77,7 +75,7 @@ export function LiveCommentFromJSON(json: any): LiveComment {
 }
 
 export function LiveCommentFromJSONTyped(json: any, ignoreDiscriminator: boolean): LiveComment {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -92,20 +90,17 @@ export function LiveCommentFromJSONTyped(json: any, ignoreDiscriminator: boolean
 }
 
 export function LiveCommentToJSON(value?: LiveComment | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'userId': value.userId,
-        'username': value.username,
-        'accountId': value.accountId,
-        'thumbnailUrl': value.thumbnailUrl,
-        'comment': value.comment,
-        'publishedAt': value.publishedAt,
+        'userId': value['userId'],
+        'username': value['username'],
+        'accountId': value['accountId'],
+        'thumbnailUrl': value['thumbnailUrl'],
+        'comment': value['comment'],
+        'publishedAt': value['publishedAt'],
     };
 }
 

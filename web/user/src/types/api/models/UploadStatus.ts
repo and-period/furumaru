@@ -26,6 +26,17 @@ export const UploadStatus = {
 export type UploadStatus = typeof UploadStatus[keyof typeof UploadStatus];
 
 
+export function instanceOfUploadStatus(value: any): boolean {
+    for (const key in UploadStatus) {
+        if (Object.prototype.hasOwnProperty.call(UploadStatus, key)) {
+            if (UploadStatus[key as keyof typeof UploadStatus] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function UploadStatusFromJSON(json: any): UploadStatus {
     return UploadStatusFromJSONTyped(json, false);
 }
