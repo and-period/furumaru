@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Address } from './Address';
 import {
     AddressFromJSON,
@@ -43,12 +43,10 @@ export interface AddressesResponse {
 /**
  * Check if a given object implements the AddressesResponse interface.
  */
-export function instanceOfAddressesResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "addresses" in value;
-    isInstance = isInstance && "total" in value;
-
-    return isInstance;
+export function instanceOfAddressesResponse(value: object): value is AddressesResponse {
+    if (!('addresses' in value) || value['addresses'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    return true;
 }
 
 export function AddressesResponseFromJSON(json: any): AddressesResponse {
@@ -56,7 +54,7 @@ export function AddressesResponseFromJSON(json: any): AddressesResponse {
 }
 
 export function AddressesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AddressesResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -67,16 +65,13 @@ export function AddressesResponseFromJSONTyped(json: any, ignoreDiscriminator: b
 }
 
 export function AddressesResponseToJSON(value?: AddressesResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'addresses': ((value.addresses as Array<any>).map(AddressToJSON)),
-        'total': value.total,
+        'addresses': ((value['addresses'] as Array<any>).map(AddressToJSON)),
+        'total': value['total'],
     };
 }
 

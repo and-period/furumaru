@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
@@ -43,12 +43,10 @@ export interface ProducersResponse {
 /**
  * Check if a given object implements the ProducersResponse interface.
  */
-export function instanceOfProducersResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "producers" in value;
-    isInstance = isInstance && "total" in value;
-
-    return isInstance;
+export function instanceOfProducersResponse(value: object): value is ProducersResponse {
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    return true;
 }
 
 export function ProducersResponseFromJSON(json: any): ProducersResponse {
@@ -56,7 +54,7 @@ export function ProducersResponseFromJSON(json: any): ProducersResponse {
 }
 
 export function ProducersResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProducersResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -67,16 +65,13 @@ export function ProducersResponseFromJSONTyped(json: any, ignoreDiscriminator: b
 }
 
 export function ProducersResponseToJSON(value?: ProducersResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'producers': ((value.producers as Array<any>).map(ProducerToJSON)),
-        'total': value.total,
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'total': value['total'],
     };
 }
 

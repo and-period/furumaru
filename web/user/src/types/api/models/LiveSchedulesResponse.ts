@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
@@ -55,13 +55,11 @@ export interface LiveSchedulesResponse {
 /**
  * Check if a given object implements the LiveSchedulesResponse interface.
  */
-export function instanceOfLiveSchedulesResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "lives" in value;
-    isInstance = isInstance && "coordinators" in value;
-    isInstance = isInstance && "total" in value;
-
-    return isInstance;
+export function instanceOfLiveSchedulesResponse(value: object): value is LiveSchedulesResponse {
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    return true;
 }
 
 export function LiveSchedulesResponseFromJSON(json: any): LiveSchedulesResponse {
@@ -69,7 +67,7 @@ export function LiveSchedulesResponseFromJSON(json: any): LiveSchedulesResponse 
 }
 
 export function LiveSchedulesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): LiveSchedulesResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -81,17 +79,14 @@ export function LiveSchedulesResponseFromJSONTyped(json: any, ignoreDiscriminato
 }
 
 export function LiveSchedulesResponseToJSON(value?: LiveSchedulesResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'lives': ((value.lives as Array<any>).map(LiveSummaryToJSON)),
-        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
-        'total': value.total,
+        'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'total': value['total'],
     };
 }
 

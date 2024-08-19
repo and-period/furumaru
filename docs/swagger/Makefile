@@ -1,6 +1,6 @@
 .PHONY: help setup build generate lint validate
 
-OPENAPITOOLS_VERSION := 2.13.1
+OPENAPITOOLS_VERSION := 2.13.4
 SWAGGER_CLI_VERSION  := 4.0.4
 SWAGGER_UI_VERSION   := 5.12.0
 

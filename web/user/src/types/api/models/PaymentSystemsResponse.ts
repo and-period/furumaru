@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { PaymentSystem } from './PaymentSystem';
 import {
     PaymentSystemFromJSON,
@@ -37,11 +37,9 @@ export interface PaymentSystemsResponse {
 /**
  * Check if a given object implements the PaymentSystemsResponse interface.
  */
-export function instanceOfPaymentSystemsResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "systems" in value;
-
-    return isInstance;
+export function instanceOfPaymentSystemsResponse(value: object): value is PaymentSystemsResponse {
+    if (!('systems' in value) || value['systems'] === undefined) return false;
+    return true;
 }
 
 export function PaymentSystemsResponseFromJSON(json: any): PaymentSystemsResponse {
@@ -49,7 +47,7 @@ export function PaymentSystemsResponseFromJSON(json: any): PaymentSystemsRespons
 }
 
 export function PaymentSystemsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaymentSystemsResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -59,15 +57,12 @@ export function PaymentSystemsResponseFromJSONTyped(json: any, ignoreDiscriminat
 }
 
 export function PaymentSystemsResponseToJSON(value?: PaymentSystemsResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'systems': ((value.systems as Array<any>).map(PaymentSystemToJSON)),
+        'systems': ((value['systems'] as Array<any>).map(PaymentSystemToJSON)),
     };
 }
 

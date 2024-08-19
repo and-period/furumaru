@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 過去のマルシェ情報
  * @export
@@ -60,16 +60,14 @@ export interface ArchiveSummary {
 /**
  * Check if a given object implements the ArchiveSummary interface.
  */
-export function instanceOfArchiveSummary(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "scheduleId" in value;
-    isInstance = isInstance && "coordinatorId" in value;
-    isInstance = isInstance && "title" in value;
-    isInstance = isInstance && "startAt" in value;
-    isInstance = isInstance && "endAt" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
-
-    return isInstance;
+export function instanceOfArchiveSummary(value: object): value is ArchiveSummary {
+    if (!('scheduleId' in value) || value['scheduleId'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    return true;
 }
 
 export function ArchiveSummaryFromJSON(json: any): ArchiveSummary {
@@ -77,7 +75,7 @@ export function ArchiveSummaryFromJSON(json: any): ArchiveSummary {
 }
 
 export function ArchiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean): ArchiveSummary {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -92,20 +90,17 @@ export function ArchiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: bool
 }
 
 export function ArchiveSummaryToJSON(value?: ArchiveSummary | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'scheduleId': value.scheduleId,
-        'coordinatorId': value.coordinatorId,
-        'title': value.title,
-        'startAt': value.startAt,
-        'endAt': value.endAt,
-        'thumbnailUrl': value.thumbnailUrl,
+        'scheduleId': value['scheduleId'],
+        'coordinatorId': value['coordinatorId'],
+        'title': value['title'],
+        'startAt': value['startAt'],
+        'endAt': value['endAt'],
+        'thumbnailUrl': value['thumbnailUrl'],
     };
 }
 

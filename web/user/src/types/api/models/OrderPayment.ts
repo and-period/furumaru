@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { PaymentMethodType } from './PaymentMethodType';
 import {
     PaymentMethodTypeFromJSON,
@@ -88,22 +88,22 @@ export interface OrderPayment {
     paidAt: number;
 }
 
+
+
 /**
  * Check if a given object implements the OrderPayment interface.
  */
-export function instanceOfOrderPayment(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "transactionId" in value;
-    isInstance = isInstance && "methodType" in value;
-    isInstance = isInstance && "status" in value;
-    isInstance = isInstance && "subtotal" in value;
-    isInstance = isInstance && "discount" in value;
-    isInstance = isInstance && "shippingFee" in value;
-    isInstance = isInstance && "total" in value;
-    isInstance = isInstance && "orderedAt" in value;
-    isInstance = isInstance && "paidAt" in value;
-
-    return isInstance;
+export function instanceOfOrderPayment(value: object): value is OrderPayment {
+    if (!('transactionId' in value) || value['transactionId'] === undefined) return false;
+    if (!('methodType' in value) || value['methodType'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('subtotal' in value) || value['subtotal'] === undefined) return false;
+    if (!('discount' in value) || value['discount'] === undefined) return false;
+    if (!('shippingFee' in value) || value['shippingFee'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('orderedAt' in value) || value['orderedAt'] === undefined) return false;
+    if (!('paidAt' in value) || value['paidAt'] === undefined) return false;
+    return true;
 }
 
 export function OrderPaymentFromJSON(json: any): OrderPayment {
@@ -111,7 +111,7 @@ export function OrderPaymentFromJSON(json: any): OrderPayment {
 }
 
 export function OrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrderPayment {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -129,23 +129,20 @@ export function OrderPaymentFromJSONTyped(json: any, ignoreDiscriminator: boolea
 }
 
 export function OrderPaymentToJSON(value?: OrderPayment | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'transactionId': value.transactionId,
-        'methodType': PaymentMethodTypeToJSON(value.methodType),
-        'status': PaymentStatusToJSON(value.status),
-        'subtotal': value.subtotal,
-        'discount': value.discount,
-        'shippingFee': value.shippingFee,
-        'total': value.total,
-        'orderedAt': value.orderedAt,
-        'paidAt': value.paidAt,
+        'transactionId': value['transactionId'],
+        'methodType': PaymentMethodTypeToJSON(value['methodType']),
+        'status': PaymentStatusToJSON(value['status']),
+        'subtotal': value['subtotal'],
+        'discount': value['discount'],
+        'shippingFee': value['shippingFee'],
+        'total': value['total'],
+        'orderedAt': value['orderedAt'],
+        'paidAt': value['paidAt'],
     };
 }
 

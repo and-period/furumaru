@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { DiscountType } from './DiscountType';
 import {
     DiscountTypeFromJSON,
@@ -88,22 +88,22 @@ export interface Promotion {
     endAt: number;
 }
 
+
+
 /**
  * Check if a given object implements the Promotion interface.
  */
-export function instanceOfPromotion(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "title" in value;
-    isInstance = isInstance && "description" in value;
-    isInstance = isInstance && "status" in value;
-    isInstance = isInstance && "discountType" in value;
-    isInstance = isInstance && "discountRate" in value;
-    isInstance = isInstance && "code" in value;
-    isInstance = isInstance && "startAt" in value;
-    isInstance = isInstance && "endAt" in value;
-
-    return isInstance;
+export function instanceOfPromotion(value: object): value is Promotion {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('discountType' in value) || value['discountType'] === undefined) return false;
+    if (!('discountRate' in value) || value['discountRate'] === undefined) return false;
+    if (!('code' in value) || value['code'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    return true;
 }
 
 export function PromotionFromJSON(json: any): Promotion {
@@ -111,7 +111,7 @@ export function PromotionFromJSON(json: any): Promotion {
 }
 
 export function PromotionFromJSONTyped(json: any, ignoreDiscriminator: boolean): Promotion {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -129,23 +129,20 @@ export function PromotionFromJSONTyped(json: any, ignoreDiscriminator: boolean):
 }
 
 export function PromotionToJSON(value?: Promotion | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'title': value.title,
-        'description': value.description,
-        'status': PromotionStatusToJSON(value.status),
-        'discountType': DiscountTypeToJSON(value.discountType),
-        'discountRate': value.discountRate,
-        'code': value.code,
-        'startAt': value.startAt,
-        'endAt': value.endAt,
+        'id': value['id'],
+        'title': value['title'],
+        'description': value['description'],
+        'status': PromotionStatusToJSON(value['status']),
+        'discountType': DiscountTypeToJSON(value['discountType']),
+        'discountRate': value['discountRate'],
+        'code': value['code'],
+        'startAt': value['startAt'],
+        'endAt': value['endAt'],
     };
 }
 

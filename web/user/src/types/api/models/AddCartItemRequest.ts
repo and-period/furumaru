@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -36,12 +36,10 @@ export interface AddCartItemRequest {
 /**
  * Check if a given object implements the AddCartItemRequest interface.
  */
-export function instanceOfAddCartItemRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "productId" in value;
-    isInstance = isInstance && "quantity" in value;
-
-    return isInstance;
+export function instanceOfAddCartItemRequest(value: object): value is AddCartItemRequest {
+    if (!('productId' in value) || value['productId'] === undefined) return false;
+    if (!('quantity' in value) || value['quantity'] === undefined) return false;
+    return true;
 }
 
 export function AddCartItemRequestFromJSON(json: any): AddCartItemRequest {
@@ -49,7 +47,7 @@ export function AddCartItemRequestFromJSON(json: any): AddCartItemRequest {
 }
 
 export function AddCartItemRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AddCartItemRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -60,16 +58,13 @@ export function AddCartItemRequestFromJSONTyped(json: any, ignoreDiscriminator: 
 }
 
 export function AddCartItemRequestToJSON(value?: AddCartItemRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'productId': value.productId,
-        'quantity': value.quantity,
+        'productId': value['productId'],
+        'quantity': value['quantity'],
     };
 }
 

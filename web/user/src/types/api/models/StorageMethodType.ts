@@ -27,6 +27,17 @@ export const StorageMethodType = {
 export type StorageMethodType = typeof StorageMethodType[keyof typeof StorageMethodType];
 
 
+export function instanceOfStorageMethodType(value: any): boolean {
+    for (const key in StorageMethodType) {
+        if (Object.prototype.hasOwnProperty.call(StorageMethodType, key)) {
+            if (StorageMethodType[key as keyof typeof StorageMethodType] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function StorageMethodTypeFromJSON(json: any): StorageMethodType {
     return StorageMethodTypeFromJSONTyped(json, false);
 }

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { PaymentMethodType } from './PaymentMethodType';
 import {
     PaymentMethodTypeFromJSON,
@@ -58,17 +58,17 @@ export interface PaymentSystem {
     updatedAt: number;
 }
 
+
+
 /**
  * Check if a given object implements the PaymentSystem interface.
  */
-export function instanceOfPaymentSystem(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "methodType" in value;
-    isInstance = isInstance && "status" in value;
-    isInstance = isInstance && "createdAt" in value;
-    isInstance = isInstance && "updatedAt" in value;
-
-    return isInstance;
+export function instanceOfPaymentSystem(value: object): value is PaymentSystem {
+    if (!('methodType' in value) || value['methodType'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    return true;
 }
 
 export function PaymentSystemFromJSON(json: any): PaymentSystem {
@@ -76,7 +76,7 @@ export function PaymentSystemFromJSON(json: any): PaymentSystem {
 }
 
 export function PaymentSystemFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaymentSystem {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -89,18 +89,15 @@ export function PaymentSystemFromJSONTyped(json: any, ignoreDiscriminator: boole
 }
 
 export function PaymentSystemToJSON(value?: PaymentSystem | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'methodType': PaymentMethodTypeToJSON(value.methodType),
-        'status': PaymentSystemStatusToJSON(value.status),
-        'createdAt': value.createdAt,
-        'updatedAt': value.updatedAt,
+        'methodType': PaymentMethodTypeToJSON(value['methodType']),
+        'status': PaymentSystemStatusToJSON(value['status']),
+        'createdAt': value['createdAt'],
+        'updatedAt': value['updatedAt'],
     };
 }
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Weekday } from './Weekday';
 import {
     WeekdayFromJSON,
@@ -109,23 +109,21 @@ export interface Coordinator {
 /**
  * Check if a given object implements the Coordinator interface.
  */
-export function instanceOfCoordinator(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "marcheName" in value;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "profile" in value;
-    isInstance = isInstance && "productTypeIds" in value;
-    isInstance = isInstance && "businessDays" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "headerUrl" in value;
-    isInstance = isInstance && "promotionVideoUrl" in value;
-    isInstance = isInstance && "instagramId" in value;
-    isInstance = isInstance && "facebookId" in value;
-    isInstance = isInstance && "prefecture" in value;
-    isInstance = isInstance && "city" in value;
-
-    return isInstance;
+export function instanceOfCoordinator(value: object): value is Coordinator {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('marcheName' in value) || value['marcheName'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('profile' in value) || value['profile'] === undefined) return false;
+    if (!('productTypeIds' in value) || value['productTypeIds'] === undefined) return false;
+    if (!('businessDays' in value) || value['businessDays'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('headerUrl' in value) || value['headerUrl'] === undefined) return false;
+    if (!('promotionVideoUrl' in value) || value['promotionVideoUrl'] === undefined) return false;
+    if (!('instagramId' in value) || value['instagramId'] === undefined) return false;
+    if (!('facebookId' in value) || value['facebookId'] === undefined) return false;
+    if (!('prefecture' in value) || value['prefecture'] === undefined) return false;
+    if (!('city' in value) || value['city'] === undefined) return false;
+    return true;
 }
 
 export function CoordinatorFromJSON(json: any): Coordinator {
@@ -133,7 +131,7 @@ export function CoordinatorFromJSON(json: any): Coordinator {
 }
 
 export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean): Coordinator {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -155,27 +153,24 @@ export function CoordinatorFromJSONTyped(json: any, ignoreDiscriminator: boolean
 }
 
 export function CoordinatorToJSON(value?: Coordinator | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'marcheName': value.marcheName,
-        'username': value.username,
-        'profile': value.profile,
-        'productTypeIds': value.productTypeIds,
-        'businessDays': ((value.businessDays as Array<any>).map(WeekdayToJSON)),
-        'thumbnailUrl': value.thumbnailUrl,
-        'headerUrl': value.headerUrl,
-        'promotionVideoUrl': value.promotionVideoUrl,
-        'instagramId': value.instagramId,
-        'facebookId': value.facebookId,
-        'prefecture': value.prefecture,
-        'city': value.city,
+        'id': value['id'],
+        'marcheName': value['marcheName'],
+        'username': value['username'],
+        'profile': value['profile'],
+        'productTypeIds': value['productTypeIds'],
+        'businessDays': ((value['businessDays'] as Array<any>).map(WeekdayToJSON)),
+        'thumbnailUrl': value['thumbnailUrl'],
+        'headerUrl': value['headerUrl'],
+        'promotionVideoUrl': value['promotionVideoUrl'],
+        'instagramId': value['instagramId'],
+        'facebookId': value['facebookId'],
+        'prefecture': value['prefecture'],
+        'city': value['city'],
     };
 }
 

@@ -25,6 +25,17 @@ export const FulfillmentStatus = {
 export type FulfillmentStatus = typeof FulfillmentStatus[keyof typeof FulfillmentStatus];
 
 
+export function instanceOfFulfillmentStatus(value: any): boolean {
+    for (const key in FulfillmentStatus) {
+        if (Object.prototype.hasOwnProperty.call(FulfillmentStatus, key)) {
+            if (FulfillmentStatus[key as keyof typeof FulfillmentStatus] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function FulfillmentStatusFromJSON(json: any): FulfillmentStatus {
     return FulfillmentStatusFromJSONTyped(json, false);
 }

@@ -25,6 +25,17 @@ export const OrderRefundType = {
 export type OrderRefundType = typeof OrderRefundType[keyof typeof OrderRefundType];
 
 
+export function instanceOfOrderRefundType(value: any): boolean {
+    for (const key in OrderRefundType) {
+        if (Object.prototype.hasOwnProperty.call(OrderRefundType, key)) {
+            if (OrderRefundType[key as keyof typeof OrderRefundType] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function OrderRefundTypeFromJSON(json: any): OrderRefundType {
     return OrderRefundTypeFromJSONTyped(json, false);
 }

@@ -1,4 +1,4 @@
-FROM node:20.11.1-alpine
+FROM node:22.6.0-alpine
 
 ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
@@ -10,4 +10,4 @@ RUN apk add --update \
   openjdk11-jre-headless \
   && rm -rf /var/cache/apk/*
 
-RUN yarn global add @openapitools/openapi-generator-cli@v2.9.0
+RUN yarn global add @openapitools/openapi-generator-cli@v2.13.4

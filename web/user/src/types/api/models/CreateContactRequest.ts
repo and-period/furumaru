@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -54,15 +54,13 @@ export interface CreateContactRequest {
 /**
  * Check if a given object implements the CreateContactRequest interface.
  */
-export function instanceOfCreateContactRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "title" in value;
-    isInstance = isInstance && "content" in value;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "email" in value;
-    isInstance = isInstance && "phoneNumber" in value;
-
-    return isInstance;
+export function instanceOfCreateContactRequest(value: object): value is CreateContactRequest {
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('content' in value) || value['content'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
+    return true;
 }
 
 export function CreateContactRequestFromJSON(json: any): CreateContactRequest {
@@ -70,7 +68,7 @@ export function CreateContactRequestFromJSON(json: any): CreateContactRequest {
 }
 
 export function CreateContactRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateContactRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -84,19 +82,16 @@ export function CreateContactRequestFromJSONTyped(json: any, ignoreDiscriminator
 }
 
 export function CreateContactRequestToJSON(value?: CreateContactRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'title': value.title,
-        'content': value.content,
-        'username': value.username,
-        'email': value.email,
-        'phoneNumber': value.phoneNumber,
+        'title': value['title'],
+        'content': value['content'],
+        'username': value['username'],
+        'email': value['email'],
+        'phoneNumber': value['phoneNumber'],
     };
 }
 

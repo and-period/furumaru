@@ -12,37 +12,37 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { Coordinator } from './Coordinator';
-import {
-    CoordinatorFromJSON,
-    CoordinatorFromJSONTyped,
-    CoordinatorToJSON,
-} from './Coordinator';
-import type { Live } from './Live';
-import {
-    LiveFromJSON,
-    LiveFromJSONTyped,
-    LiveToJSON,
-} from './Live';
+import { mapValues } from '../runtime';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
 } from './Producer';
-import type { Product } from './Product';
-import {
-    ProductFromJSON,
-    ProductFromJSONTyped,
-    ProductToJSON,
-} from './Product';
 import type { Schedule } from './Schedule';
 import {
     ScheduleFromJSON,
     ScheduleFromJSONTyped,
     ScheduleToJSON,
 } from './Schedule';
+import type { Live } from './Live';
+import {
+    LiveFromJSON,
+    LiveFromJSONTyped,
+    LiveToJSON,
+} from './Live';
+import type { Product } from './Product';
+import {
+    ProductFromJSON,
+    ProductFromJSONTyped,
+    ProductToJSON,
+} from './Product';
+import type { Coordinator } from './Coordinator';
+import {
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
 
 /**
  * 
@@ -85,15 +85,13 @@ export interface ScheduleResponse {
 /**
  * Check if a given object implements the ScheduleResponse interface.
  */
-export function instanceOfScheduleResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "schedule" in value;
-    isInstance = isInstance && "coordinator" in value;
-    isInstance = isInstance && "lives" in value;
-    isInstance = isInstance && "producers" in value;
-    isInstance = isInstance && "products" in value;
-
-    return isInstance;
+export function instanceOfScheduleResponse(value: object): value is ScheduleResponse {
+    if (!('schedule' in value) || value['schedule'] === undefined) return false;
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('producers' in value) || value['producers'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    return true;
 }
 
 export function ScheduleResponseFromJSON(json: any): ScheduleResponse {
@@ -101,7 +99,7 @@ export function ScheduleResponseFromJSON(json: any): ScheduleResponse {
 }
 
 export function ScheduleResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ScheduleResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -115,19 +113,16 @@ export function ScheduleResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
 }
 
 export function ScheduleResponseToJSON(value?: ScheduleResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'schedule': ScheduleToJSON(value.schedule),
-        'coordinator': CoordinatorToJSON(value.coordinator),
-        'lives': ((value.lives as Array<any>).map(LiveToJSON)),
-        'producers': ((value.producers as Array<any>).map(ProducerToJSON)),
-        'products': ((value.products as Array<any>).map(ProductToJSON)),
+        'schedule': ScheduleToJSON(value['schedule']),
+        'coordinator': CoordinatorToJSON(value['coordinator']),
+        'lives': ((value['lives'] as Array<any>).map(LiveToJSON)),
+        'producers': ((value['producers'] as Array<any>).map(ProducerToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
     };
 }
 

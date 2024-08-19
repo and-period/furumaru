@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface CheckoutResponse {
 /**
  * Check if a given object implements the CheckoutResponse interface.
  */
-export function instanceOfCheckoutResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "url" in value;
-
-    return isInstance;
+export function instanceOfCheckoutResponse(value: object): value is CheckoutResponse {
+    if (!('url' in value) || value['url'] === undefined) return false;
+    return true;
 }
 
 export function CheckoutResponseFromJSON(json: any): CheckoutResponse {
@@ -42,7 +40,7 @@ export function CheckoutResponseFromJSON(json: any): CheckoutResponse {
 }
 
 export function CheckoutResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CheckoutResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function CheckoutResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
 }
 
 export function CheckoutResponseToJSON(value?: CheckoutResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'url': value.url,
+        'url': value['url'],
     };
 }
 

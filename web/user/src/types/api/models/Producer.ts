@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 生産者情報
  * @export
@@ -90,21 +90,19 @@ export interface Producer {
 /**
  * Check if a given object implements the Producer interface.
  */
-export function instanceOfProducer(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "coordinatorId" in value;
-    isInstance = isInstance && "username" in value;
-    isInstance = isInstance && "profile" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "headerUrl" in value;
-    isInstance = isInstance && "promotionVideoUrl" in value;
-    isInstance = isInstance && "instagramId" in value;
-    isInstance = isInstance && "facebookId" in value;
-    isInstance = isInstance && "prefecture" in value;
-    isInstance = isInstance && "city" in value;
-
-    return isInstance;
+export function instanceOfProducer(value: object): value is Producer {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
+    if (!('profile' in value) || value['profile'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('headerUrl' in value) || value['headerUrl'] === undefined) return false;
+    if (!('promotionVideoUrl' in value) || value['promotionVideoUrl'] === undefined) return false;
+    if (!('instagramId' in value) || value['instagramId'] === undefined) return false;
+    if (!('facebookId' in value) || value['facebookId'] === undefined) return false;
+    if (!('prefecture' in value) || value['prefecture'] === undefined) return false;
+    if (!('city' in value) || value['city'] === undefined) return false;
+    return true;
 }
 
 export function ProducerFromJSON(json: any): Producer {
@@ -112,7 +110,7 @@ export function ProducerFromJSON(json: any): Producer {
 }
 
 export function ProducerFromJSONTyped(json: any, ignoreDiscriminator: boolean): Producer {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -132,25 +130,22 @@ export function ProducerFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
 }
 
 export function ProducerToJSON(value?: Producer | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'coordinatorId': value.coordinatorId,
-        'username': value.username,
-        'profile': value.profile,
-        'thumbnailUrl': value.thumbnailUrl,
-        'headerUrl': value.headerUrl,
-        'promotionVideoUrl': value.promotionVideoUrl,
-        'instagramId': value.instagramId,
-        'facebookId': value.facebookId,
-        'prefecture': value.prefecture,
-        'city': value.city,
+        'id': value['id'],
+        'coordinatorId': value['coordinatorId'],
+        'username': value['username'],
+        'profile': value['profile'],
+        'thumbnailUrl': value['thumbnailUrl'],
+        'headerUrl': value['headerUrl'],
+        'promotionVideoUrl': value['promotionVideoUrl'],
+        'instagramId': value['instagramId'],
+        'facebookId': value['facebookId'],
+        'prefecture': value['prefecture'],
+        'city': value['city'],
     };
 }
 

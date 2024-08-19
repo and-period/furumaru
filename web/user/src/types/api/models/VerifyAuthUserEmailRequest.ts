@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface VerifyAuthUserEmailRequest {
 /**
  * Check if a given object implements the VerifyAuthUserEmailRequest interface.
  */
-export function instanceOfVerifyAuthUserEmailRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "verifyCode" in value;
-
-    return isInstance;
+export function instanceOfVerifyAuthUserEmailRequest(value: object): value is VerifyAuthUserEmailRequest {
+    if (!('verifyCode' in value) || value['verifyCode'] === undefined) return false;
+    return true;
 }
 
 export function VerifyAuthUserEmailRequestFromJSON(json: any): VerifyAuthUserEmailRequest {
@@ -42,7 +40,7 @@ export function VerifyAuthUserEmailRequestFromJSON(json: any): VerifyAuthUserEma
 }
 
 export function VerifyAuthUserEmailRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): VerifyAuthUserEmailRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function VerifyAuthUserEmailRequestFromJSONTyped(json: any, ignoreDiscrim
 }
 
 export function VerifyAuthUserEmailRequestToJSON(value?: VerifyAuthUserEmailRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'verifyCode': value.verifyCode,
+        'verifyCode': value['verifyCode'],
     };
 }
 

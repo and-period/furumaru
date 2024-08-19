@@ -25,6 +25,17 @@ export const ShippingCarrier = {
 export type ShippingCarrier = typeof ShippingCarrier[keyof typeof ShippingCarrier];
 
 
+export function instanceOfShippingCarrier(value: any): boolean {
+    for (const key in ShippingCarrier) {
+        if (Object.prototype.hasOwnProperty.call(ShippingCarrier, key)) {
+            if (ShippingCarrier[key as keyof typeof ShippingCarrier] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function ShippingCarrierFromJSON(json: any): ShippingCarrier {
     return ShippingCarrierFromJSONTyped(json, false);
 }

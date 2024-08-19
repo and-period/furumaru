@@ -12,13 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { Coordinator } from './Coordinator';
-import {
-    CoordinatorFromJSON,
-    CoordinatorFromJSONTyped,
-    CoordinatorToJSON,
-} from './Coordinator';
+import { mapValues } from '../runtime';
 import type { Order } from './Order';
 import {
     OrderFromJSON,
@@ -31,6 +25,12 @@ import {
     ProductFromJSONTyped,
     ProductToJSON,
 } from './Product';
+import type { Coordinator } from './Coordinator';
+import {
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
 import type { Promotion } from './Promotion';
 import {
     PromotionFromJSON,
@@ -79,15 +79,13 @@ export interface OrdersResponse {
 /**
  * Check if a given object implements the OrdersResponse interface.
  */
-export function instanceOfOrdersResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "orders" in value;
-    isInstance = isInstance && "coordinators" in value;
-    isInstance = isInstance && "promotions" in value;
-    isInstance = isInstance && "products" in value;
-    isInstance = isInstance && "total" in value;
-
-    return isInstance;
+export function instanceOfOrdersResponse(value: object): value is OrdersResponse {
+    if (!('orders' in value) || value['orders'] === undefined) return false;
+    if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
+    if (!('promotions' in value) || value['promotions'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    return true;
 }
 
 export function OrdersResponseFromJSON(json: any): OrdersResponse {
@@ -95,7 +93,7 @@ export function OrdersResponseFromJSON(json: any): OrdersResponse {
 }
 
 export function OrdersResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrdersResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -109,19 +107,16 @@ export function OrdersResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
 }
 
 export function OrdersResponseToJSON(value?: OrdersResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'orders': ((value.orders as Array<any>).map(OrderToJSON)),
-        'coordinators': ((value.coordinators as Array<any>).map(CoordinatorToJSON)),
-        'promotions': ((value.promotions as Array<any>).map(PromotionToJSON)),
-        'products': ((value.products as Array<any>).map(ProductToJSON)),
-        'total': value.total,
+        'orders': ((value['orders'] as Array<any>).map(OrderToJSON)),
+        'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
+        'promotions': ((value['promotions'] as Array<any>).map(PromotionToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
+        'total': value['total'],
     };
 }
 

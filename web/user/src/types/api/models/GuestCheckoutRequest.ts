@@ -12,25 +12,25 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { GuestCheckoutAddress } from './GuestCheckoutAddress';
-import {
-    GuestCheckoutAddressFromJSON,
-    GuestCheckoutAddressFromJSONTyped,
-    GuestCheckoutAddressToJSON,
-} from './GuestCheckoutAddress';
-import type { GuestCheckoutCreditCard } from './GuestCheckoutCreditCard';
-import {
-    GuestCheckoutCreditCardFromJSON,
-    GuestCheckoutCreditCardFromJSONTyped,
-    GuestCheckoutCreditCardToJSON,
-} from './GuestCheckoutCreditCard';
+import { mapValues } from '../runtime';
 import type { PaymentMethodType } from './PaymentMethodType';
 import {
     PaymentMethodTypeFromJSON,
     PaymentMethodTypeFromJSONTyped,
     PaymentMethodTypeToJSON,
 } from './PaymentMethodType';
+import type { GuestCheckoutCreditCard } from './GuestCheckoutCreditCard';
+import {
+    GuestCheckoutCreditCardFromJSON,
+    GuestCheckoutCreditCardFromJSONTyped,
+    GuestCheckoutCreditCardToJSON,
+} from './GuestCheckoutCreditCard';
+import type { GuestCheckoutAddress } from './GuestCheckoutAddress';
+import {
+    GuestCheckoutAddressFromJSON,
+    GuestCheckoutAddressFromJSONTyped,
+    GuestCheckoutAddressToJSON,
+} from './GuestCheckoutAddress';
 
 /**
  * 
@@ -112,24 +112,24 @@ export interface GuestCheckoutRequest {
     creditCard: GuestCheckoutCreditCard;
 }
 
+
+
 /**
  * Check if a given object implements the GuestCheckoutRequest interface.
  */
-export function instanceOfGuestCheckoutRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "requestId" in value;
-    isInstance = isInstance && "coordinatorId" in value;
-    isInstance = isInstance && "boxNumber" in value;
-    isInstance = isInstance && "promotionCode" in value;
-    isInstance = isInstance && "paymentMethod" in value;
-    isInstance = isInstance && "callbackUrl" in value;
-    isInstance = isInstance && "total" in value;
-    isInstance = isInstance && "email" in value;
-    isInstance = isInstance && "isSameAddress" in value;
-    isInstance = isInstance && "shippingAddress" in value;
-    isInstance = isInstance && "creditCard" in value;
-
-    return isInstance;
+export function instanceOfGuestCheckoutRequest(value: object): value is GuestCheckoutRequest {
+    if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('boxNumber' in value) || value['boxNumber'] === undefined) return false;
+    if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
+    if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
+    if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('isSameAddress' in value) || value['isSameAddress'] === undefined) return false;
+    if (!('shippingAddress' in value) || value['shippingAddress'] === undefined) return false;
+    if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
+    return true;
 }
 
 export function GuestCheckoutRequestFromJSON(json: any): GuestCheckoutRequest {
@@ -137,7 +137,7 @@ export function GuestCheckoutRequestFromJSON(json: any): GuestCheckoutRequest {
 }
 
 export function GuestCheckoutRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GuestCheckoutRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -151,33 +151,30 @@ export function GuestCheckoutRequestFromJSONTyped(json: any, ignoreDiscriminator
         'total': json['total'],
         'email': json['email'],
         'isSameAddress': json['isSameAddress'],
-        'billingAddress': !exists(json, 'billingAddress') ? undefined : GuestCheckoutAddressFromJSON(json['billingAddress']),
+        'billingAddress': json['billingAddress'] == null ? undefined : GuestCheckoutAddressFromJSON(json['billingAddress']),
         'shippingAddress': GuestCheckoutAddressFromJSON(json['shippingAddress']),
         'creditCard': GuestCheckoutCreditCardFromJSON(json['creditCard']),
     };
 }
 
 export function GuestCheckoutRequestToJSON(value?: GuestCheckoutRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'requestId': value.requestId,
-        'coordinatorId': value.coordinatorId,
-        'boxNumber': value.boxNumber,
-        'promotionCode': value.promotionCode,
-        'paymentMethod': PaymentMethodTypeToJSON(value.paymentMethod),
-        'callbackUrl': value.callbackUrl,
-        'total': value.total,
-        'email': value.email,
-        'isSameAddress': value.isSameAddress,
-        'billingAddress': GuestCheckoutAddressToJSON(value.billingAddress),
-        'shippingAddress': GuestCheckoutAddressToJSON(value.shippingAddress),
-        'creditCard': GuestCheckoutCreditCardToJSON(value.creditCard),
+        'requestId': value['requestId'],
+        'coordinatorId': value['coordinatorId'],
+        'boxNumber': value['boxNumber'],
+        'promotionCode': value['promotionCode'],
+        'paymentMethod': PaymentMethodTypeToJSON(value['paymentMethod']),
+        'callbackUrl': value['callbackUrl'],
+        'total': value['total'],
+        'email': value['email'],
+        'isSameAddress': value['isSameAddress'],
+        'billingAddress': GuestCheckoutAddressToJSON(value['billingAddress']),
+        'shippingAddress': GuestCheckoutAddressToJSON(value['shippingAddress']),
+        'creditCard': GuestCheckoutCreditCardToJSON(value['creditCard']),
     };
 }
 

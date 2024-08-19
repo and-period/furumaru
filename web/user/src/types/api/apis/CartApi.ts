@@ -56,8 +56,11 @@ export class CartApi extends runtime.BaseAPI {
      * 買い物かごへ商品を追加
      */
     async v1AddCartItemRaw(requestParameters: V1AddCartItemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1AddCartItem.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1AddCartItem().'
+            );
         }
 
         const queryParameters: any = {};
@@ -71,7 +74,7 @@ export class CartApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -88,28 +91,31 @@ export class CartApi extends runtime.BaseAPI {
      * 買い物かごの金額計算
      */
     async v1CalcCartRaw(requestParameters: V1CalcCartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CalcCartResponse>> {
-        if (requestParameters.coordinatorId === null || requestParameters.coordinatorId === undefined) {
-            throw new runtime.RequiredError('coordinatorId','Required parameter requestParameters.coordinatorId was null or undefined when calling v1CalcCart.');
+        if (requestParameters['coordinatorId'] == null) {
+            throw new runtime.RequiredError(
+                'coordinatorId',
+                'Required parameter "coordinatorId" was null or undefined when calling v1CalcCart().'
+            );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters.number !== undefined) {
-            queryParameters['number'] = requestParameters.number;
+        if (requestParameters['number'] != null) {
+            queryParameters['number'] = requestParameters['number'];
         }
 
-        if (requestParameters.prefecture !== undefined) {
-            queryParameters['prefecture'] = requestParameters.prefecture;
+        if (requestParameters['prefecture'] != null) {
+            queryParameters['prefecture'] = requestParameters['prefecture'];
         }
 
-        if (requestParameters.promotion !== undefined) {
-            queryParameters['promotion'] = requestParameters.promotion;
+        if (requestParameters['promotion'] != null) {
+            queryParameters['promotion'] = requestParameters['promotion'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/carts/{coordinatorId}`.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters.coordinatorId))),
+            path: `/v1/carts/{coordinatorId}`.replace(`{${"coordinatorId"}}`, encodeURIComponent(String(requestParameters['coordinatorId']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -156,20 +162,23 @@ export class CartApi extends runtime.BaseAPI {
      * 買い物かごから商品を削除
      */
     async v1RemoveCartItemRaw(requestParameters: V1RemoveCartItemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.productId === null || requestParameters.productId === undefined) {
-            throw new runtime.RequiredError('productId','Required parameter requestParameters.productId was null or undefined when calling v1RemoveCartItem.');
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling v1RemoveCartItem().'
+            );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters.number !== undefined) {
-            queryParameters['number'] = requestParameters.number;
+        if (requestParameters['number'] != null) {
+            queryParameters['number'] = requestParameters['number'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/carts/-/items/{productId}`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters.productId))),
+            path: `/v1/carts/-/items/{productId}`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,

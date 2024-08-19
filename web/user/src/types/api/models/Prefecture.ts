@@ -70,6 +70,17 @@ export const Prefecture = {
 export type Prefecture = typeof Prefecture[keyof typeof Prefecture];
 
 
+export function instanceOfPrefecture(value: any): boolean {
+    for (const key in Prefecture) {
+        if (Object.prototype.hasOwnProperty.call(Prefecture, key)) {
+            if (Prefecture[key as keyof typeof Prefecture] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function PrefectureFromJSON(json: any): Prefecture {
     return PrefectureFromJSONTyped(json, false);
 }

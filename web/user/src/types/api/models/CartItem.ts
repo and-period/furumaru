@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -36,11 +36,9 @@ export interface CartItem {
 /**
  * Check if a given object implements the CartItem interface.
  */
-export function instanceOfCartItem(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "quantity" in value;
-
-    return isInstance;
+export function instanceOfCartItem(value: object): value is CartItem {
+    if (!('quantity' in value) || value['quantity'] === undefined) return false;
+    return true;
 }
 
 export function CartItemFromJSON(json: any): CartItem {
@@ -48,27 +46,24 @@ export function CartItemFromJSON(json: any): CartItem {
 }
 
 export function CartItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): CartItem {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
         
-        'productId': !exists(json, 'productId') ? undefined : json['productId'],
+        'productId': json['productId'] == null ? undefined : json['productId'],
         'quantity': json['quantity'],
     };
 }
 
 export function CartItemToJSON(value?: CartItem | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'productId': value.productId,
-        'quantity': value.quantity,
+        'productId': value['productId'],
+        'quantity': value['quantity'],
     };
 }
 

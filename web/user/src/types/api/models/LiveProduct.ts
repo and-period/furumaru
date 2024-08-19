@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * マルシェに関連づく商品情報
  * @export
@@ -54,15 +54,13 @@ export interface LiveProduct {
 /**
  * Check if a given object implements the LiveProduct interface.
  */
-export function instanceOfLiveProduct(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "name" in value;
-    isInstance = isInstance && "price" in value;
-    isInstance = isInstance && "inventory" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
-
-    return isInstance;
+export function instanceOfLiveProduct(value: object): value is LiveProduct {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('price' in value) || value['price'] === undefined) return false;
+    if (!('inventory' in value) || value['inventory'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    return true;
 }
 
 export function LiveProductFromJSON(json: any): LiveProduct {
@@ -70,7 +68,7 @@ export function LiveProductFromJSON(json: any): LiveProduct {
 }
 
 export function LiveProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): LiveProduct {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -84,19 +82,16 @@ export function LiveProductFromJSONTyped(json: any, ignoreDiscriminator: boolean
 }
 
 export function LiveProductToJSON(value?: LiveProduct | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'name': value.name,
-        'price': value.price,
-        'inventory': value.inventory,
-        'thumbnailUrl': value.thumbnailUrl,
+        'id': value['id'],
+        'name': value['name'],
+        'price': value['price'],
+        'inventory': value['inventory'],
+        'thumbnailUrl': value['thumbnailUrl'],
     };
 }
 

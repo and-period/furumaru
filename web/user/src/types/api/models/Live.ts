@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * マルシェタイムテーブル情報
  * @export
@@ -60,16 +60,14 @@ export interface Live {
 /**
  * Check if a given object implements the Live interface.
  */
-export function instanceOfLive(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "scheduleId" in value;
-    isInstance = isInstance && "producerId" in value;
-    isInstance = isInstance && "productIds" in value;
-    isInstance = isInstance && "comment" in value;
-    isInstance = isInstance && "startAt" in value;
-    isInstance = isInstance && "endAt" in value;
-
-    return isInstance;
+export function instanceOfLive(value: object): value is Live {
+    if (!('scheduleId' in value) || value['scheduleId'] === undefined) return false;
+    if (!('producerId' in value) || value['producerId'] === undefined) return false;
+    if (!('productIds' in value) || value['productIds'] === undefined) return false;
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    return true;
 }
 
 export function LiveFromJSON(json: any): Live {
@@ -77,7 +75,7 @@ export function LiveFromJSON(json: any): Live {
 }
 
 export function LiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): Live {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -92,20 +90,17 @@ export function LiveFromJSONTyped(json: any, ignoreDiscriminator: boolean): Live
 }
 
 export function LiveToJSON(value?: Live | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'scheduleId': value.scheduleId,
-        'producerId': value.producerId,
-        'productIds': value.productIds,
-        'comment': value.comment,
-        'startAt': value.startAt,
-        'endAt': value.endAt,
+        'scheduleId': value['scheduleId'],
+        'producerId': value['producerId'],
+        'productIds': value['productIds'],
+        'comment': value['comment'],
+        'startAt': value['startAt'],
+        'endAt': value['endAt'],
     };
 }
 

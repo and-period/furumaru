@@ -12,31 +12,19 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { Category } from './Category';
 import {
     CategoryFromJSON,
     CategoryFromJSONTyped,
     CategoryToJSON,
 } from './Category';
-import type { Coordinator } from './Coordinator';
-import {
-    CoordinatorFromJSON,
-    CoordinatorFromJSONTyped,
-    CoordinatorToJSON,
-} from './Coordinator';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
     ProducerFromJSONTyped,
     ProducerToJSON,
 } from './Producer';
-import type { Product } from './Product';
-import {
-    ProductFromJSON,
-    ProductFromJSONTyped,
-    ProductToJSON,
-} from './Product';
 import type { ProductTag } from './ProductTag';
 import {
     ProductTagFromJSON,
@@ -49,6 +37,18 @@ import {
     ProductTypeFromJSONTyped,
     ProductTypeToJSON,
 } from './ProductType';
+import type { Product } from './Product';
+import {
+    ProductFromJSON,
+    ProductFromJSONTyped,
+    ProductToJSON,
+} from './Product';
+import type { Coordinator } from './Coordinator';
+import {
+    CoordinatorFromJSON,
+    CoordinatorFromJSONTyped,
+    CoordinatorToJSON,
+} from './Coordinator';
 
 /**
  * 
@@ -97,16 +97,14 @@ export interface ProductResponse {
 /**
  * Check if a given object implements the ProductResponse interface.
  */
-export function instanceOfProductResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "product" in value;
-    isInstance = isInstance && "coordinator" in value;
-    isInstance = isInstance && "producer" in value;
-    isInstance = isInstance && "category" in value;
-    isInstance = isInstance && "productType" in value;
-    isInstance = isInstance && "productTags" in value;
-
-    return isInstance;
+export function instanceOfProductResponse(value: object): value is ProductResponse {
+    if (!('product' in value) || value['product'] === undefined) return false;
+    if (!('coordinator' in value) || value['coordinator'] === undefined) return false;
+    if (!('producer' in value) || value['producer'] === undefined) return false;
+    if (!('category' in value) || value['category'] === undefined) return false;
+    if (!('productType' in value) || value['productType'] === undefined) return false;
+    if (!('productTags' in value) || value['productTags'] === undefined) return false;
+    return true;
 }
 
 export function ProductResponseFromJSON(json: any): ProductResponse {
@@ -114,7 +112,7 @@ export function ProductResponseFromJSON(json: any): ProductResponse {
 }
 
 export function ProductResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProductResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -129,20 +127,17 @@ export function ProductResponseFromJSONTyped(json: any, ignoreDiscriminator: boo
 }
 
 export function ProductResponseToJSON(value?: ProductResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'product': ProductToJSON(value.product),
-        'coordinator': CoordinatorToJSON(value.coordinator),
-        'producer': ProducerToJSON(value.producer),
-        'category': CategoryToJSON(value.category),
-        'productType': ProductTypeToJSON(value.productType),
-        'productTags': ((value.productTags as Array<any>).map(ProductTagToJSON)),
+        'product': ProductToJSON(value['product']),
+        'coordinator': CoordinatorToJSON(value['coordinator']),
+        'producer': ProducerToJSON(value['producer']),
+        'category': CategoryToJSON(value['category']),
+        'productType': ProductTypeToJSON(value['productType']),
+        'productTags': ((value['productTags'] as Array<any>).map(ProductTagToJSON)),
     };
 }
 

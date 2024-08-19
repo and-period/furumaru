@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { UploadStatus } from './UploadStatus';
 import {
     UploadStatusFromJSON,
@@ -40,15 +40,15 @@ export interface UploadStateResponse {
     status: UploadStatus;
 }
 
+
+
 /**
  * Check if a given object implements the UploadStateResponse interface.
  */
-export function instanceOfUploadStateResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "url" in value;
-    isInstance = isInstance && "status" in value;
-
-    return isInstance;
+export function instanceOfUploadStateResponse(value: object): value is UploadStateResponse {
+    if (!('url' in value) || value['url'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    return true;
 }
 
 export function UploadStateResponseFromJSON(json: any): UploadStateResponse {
@@ -56,7 +56,7 @@ export function UploadStateResponseFromJSON(json: any): UploadStateResponse {
 }
 
 export function UploadStateResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UploadStateResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -67,16 +67,13 @@ export function UploadStateResponseFromJSONTyped(json: any, ignoreDiscriminator:
 }
 
 export function UploadStateResponseToJSON(value?: UploadStateResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'url': value.url,
-        'status': UploadStatusToJSON(value.status),
+        'url': value['url'],
+        'status': UploadStatusToJSON(value['status']),
     };
 }
 

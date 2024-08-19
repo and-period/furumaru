@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -36,12 +36,10 @@ export interface VerifyAuthUserRequest {
 /**
  * Check if a given object implements the VerifyAuthUserRequest interface.
  */
-export function instanceOfVerifyAuthUserRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "verifyCode" in value;
-
-    return isInstance;
+export function instanceOfVerifyAuthUserRequest(value: object): value is VerifyAuthUserRequest {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('verifyCode' in value) || value['verifyCode'] === undefined) return false;
+    return true;
 }
 
 export function VerifyAuthUserRequestFromJSON(json: any): VerifyAuthUserRequest {
@@ -49,7 +47,7 @@ export function VerifyAuthUserRequestFromJSON(json: any): VerifyAuthUserRequest 
 }
 
 export function VerifyAuthUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): VerifyAuthUserRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -60,16 +58,13 @@ export function VerifyAuthUserRequestFromJSONTyped(json: any, ignoreDiscriminato
 }
 
 export function VerifyAuthUserRequestToJSON(value?: VerifyAuthUserRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'verifyCode': value.verifyCode,
+        'id': value['id'],
+        'verifyCode': value['verifyCode'],
     };
 }
 

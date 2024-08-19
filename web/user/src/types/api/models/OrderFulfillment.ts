@@ -12,31 +12,31 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { FulfillmentStatus } from './FulfillmentStatus';
 import {
     FulfillmentStatusFromJSON,
     FulfillmentStatusFromJSONTyped,
     FulfillmentStatusToJSON,
 } from './FulfillmentStatus';
-import type { ShippingCarrier } from './ShippingCarrier';
-import {
-    ShippingCarrierFromJSON,
-    ShippingCarrierFromJSONTyped,
-    ShippingCarrierToJSON,
-} from './ShippingCarrier';
-import type { ShippingSize } from './ShippingSize';
-import {
-    ShippingSizeFromJSON,
-    ShippingSizeFromJSONTyped,
-    ShippingSizeToJSON,
-} from './ShippingSize';
 import type { ShippingType } from './ShippingType';
 import {
     ShippingTypeFromJSON,
     ShippingTypeFromJSONTyped,
     ShippingTypeToJSON,
 } from './ShippingType';
+import type { ShippingSize } from './ShippingSize';
+import {
+    ShippingSizeFromJSON,
+    ShippingSizeFromJSONTyped,
+    ShippingSizeToJSON,
+} from './ShippingSize';
+import type { ShippingCarrier } from './ShippingCarrier';
+import {
+    ShippingCarrierFromJSON,
+    ShippingCarrierFromJSONTyped,
+    ShippingCarrierToJSON,
+} from './ShippingCarrier';
 
 /**
  * 注文配送情報
@@ -100,22 +100,22 @@ export interface OrderFulfillment {
     shippedAt: number;
 }
 
+
+
 /**
  * Check if a given object implements the OrderFulfillment interface.
  */
-export function instanceOfOrderFulfillment(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "fulfillmentId" in value;
-    isInstance = isInstance && "trackingNumber" in value;
-    isInstance = isInstance && "status" in value;
-    isInstance = isInstance && "shippingCarrier" in value;
-    isInstance = isInstance && "shippingType" in value;
-    isInstance = isInstance && "boxNumber" in value;
-    isInstance = isInstance && "boxSize" in value;
-    isInstance = isInstance && "boxRate" in value;
-    isInstance = isInstance && "shippedAt" in value;
-
-    return isInstance;
+export function instanceOfOrderFulfillment(value: object): value is OrderFulfillment {
+    if (!('fulfillmentId' in value) || value['fulfillmentId'] === undefined) return false;
+    if (!('trackingNumber' in value) || value['trackingNumber'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('shippingCarrier' in value) || value['shippingCarrier'] === undefined) return false;
+    if (!('shippingType' in value) || value['shippingType'] === undefined) return false;
+    if (!('boxNumber' in value) || value['boxNumber'] === undefined) return false;
+    if (!('boxSize' in value) || value['boxSize'] === undefined) return false;
+    if (!('boxRate' in value) || value['boxRate'] === undefined) return false;
+    if (!('shippedAt' in value) || value['shippedAt'] === undefined) return false;
+    return true;
 }
 
 export function OrderFulfillmentFromJSON(json: any): OrderFulfillment {
@@ -123,7 +123,7 @@ export function OrderFulfillmentFromJSON(json: any): OrderFulfillment {
 }
 
 export function OrderFulfillmentFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrderFulfillment {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -141,23 +141,20 @@ export function OrderFulfillmentFromJSONTyped(json: any, ignoreDiscriminator: bo
 }
 
 export function OrderFulfillmentToJSON(value?: OrderFulfillment | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'fulfillmentId': value.fulfillmentId,
-        'trackingNumber': value.trackingNumber,
-        'status': FulfillmentStatusToJSON(value.status),
-        'shippingCarrier': ShippingCarrierToJSON(value.shippingCarrier),
-        'shippingType': ShippingTypeToJSON(value.shippingType),
-        'boxNumber': value.boxNumber,
-        'boxSize': ShippingSizeToJSON(value.boxSize),
-        'boxRate': value.boxRate,
-        'shippedAt': value.shippedAt,
+        'fulfillmentId': value['fulfillmentId'],
+        'trackingNumber': value['trackingNumber'],
+        'status': FulfillmentStatusToJSON(value['status']),
+        'shippingCarrier': ShippingCarrierToJSON(value['shippingCarrier']),
+        'shippingType': ShippingTypeToJSON(value['shippingType']),
+        'boxNumber': value['boxNumber'],
+        'boxSize': ShippingSizeToJSON(value['boxSize']),
+        'boxRate': value['boxRate'],
+        'shippedAt': value['shippedAt'],
     };
 }
 

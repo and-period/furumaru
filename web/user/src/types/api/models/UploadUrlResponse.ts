@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -36,12 +36,10 @@ export interface UploadUrlResponse {
 /**
  * Check if a given object implements the UploadUrlResponse interface.
  */
-export function instanceOfUploadUrlResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "key" in value;
-    isInstance = isInstance && "url" in value;
-
-    return isInstance;
+export function instanceOfUploadUrlResponse(value: object): value is UploadUrlResponse {
+    if (!('key' in value) || value['key'] === undefined) return false;
+    if (!('url' in value) || value['url'] === undefined) return false;
+    return true;
 }
 
 export function UploadUrlResponseFromJSON(json: any): UploadUrlResponse {
@@ -49,7 +47,7 @@ export function UploadUrlResponseFromJSON(json: any): UploadUrlResponse {
 }
 
 export function UploadUrlResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UploadUrlResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -60,16 +58,13 @@ export function UploadUrlResponseFromJSONTyped(json: any, ignoreDiscriminator: b
 }
 
 export function UploadUrlResponseToJSON(value?: UploadUrlResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'key': value.key,
-        'url': value.url,
+        'key': value['key'],
+        'url': value['url'],
     };
 }
 

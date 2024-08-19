@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface UpdateAuthUserUsernameRequest {
 /**
  * Check if a given object implements the UpdateAuthUserUsernameRequest interface.
  */
-export function instanceOfUpdateAuthUserUsernameRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "username" in value;
-
-    return isInstance;
+export function instanceOfUpdateAuthUserUsernameRequest(value: object): value is UpdateAuthUserUsernameRequest {
+    if (!('username' in value) || value['username'] === undefined) return false;
+    return true;
 }
 
 export function UpdateAuthUserUsernameRequestFromJSON(json: any): UpdateAuthUserUsernameRequest {
@@ -42,7 +40,7 @@ export function UpdateAuthUserUsernameRequestFromJSON(json: any): UpdateAuthUser
 }
 
 export function UpdateAuthUserUsernameRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateAuthUserUsernameRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function UpdateAuthUserUsernameRequestFromJSONTyped(json: any, ignoreDisc
 }
 
 export function UpdateAuthUserUsernameRequestToJSON(value?: UpdateAuthUserUsernameRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'username': value.username,
+        'username': value['username'],
     };
 }
 

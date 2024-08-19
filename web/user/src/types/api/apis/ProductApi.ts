@@ -47,8 +47,11 @@ export class ProductApi extends runtime.BaseAPI {
      * 商品取得
      */
     async v1GetProductRaw(requestParameters: V1GetProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProductResponse>> {
-        if (requestParameters.productId === null || requestParameters.productId === undefined) {
-            throw new runtime.RequiredError('productId','Required parameter requestParameters.productId was null or undefined when calling v1GetProduct.');
+        if (requestParameters['productId'] == null) {
+            throw new runtime.RequiredError(
+                'productId',
+                'Required parameter "productId" was null or undefined when calling v1GetProduct().'
+            );
         }
 
         const queryParameters: any = {};
@@ -56,7 +59,7 @@ export class ProductApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/products/{productId}`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters.productId))),
+            path: `/v1/products/{productId}`.replace(`{${"productId"}}`, encodeURIComponent(String(requestParameters['productId']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -79,16 +82,16 @@ export class ProductApi extends runtime.BaseAPI {
     async v1ListProductsRaw(requestParameters: V1ListProductsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProductsResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
         }
 
-        if (requestParameters.coordinatorId !== undefined) {
-            queryParameters['coordinatorId'] = requestParameters.coordinatorId;
+        if (requestParameters['coordinatorId'] != null) {
+            queryParameters['coordinatorId'] = requestParameters['coordinatorId'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

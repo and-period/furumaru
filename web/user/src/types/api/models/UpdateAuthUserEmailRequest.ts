@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface UpdateAuthUserEmailRequest {
 /**
  * Check if a given object implements the UpdateAuthUserEmailRequest interface.
  */
-export function instanceOfUpdateAuthUserEmailRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "email" in value;
-
-    return isInstance;
+export function instanceOfUpdateAuthUserEmailRequest(value: object): value is UpdateAuthUserEmailRequest {
+    if (!('email' in value) || value['email'] === undefined) return false;
+    return true;
 }
 
 export function UpdateAuthUserEmailRequestFromJSON(json: any): UpdateAuthUserEmailRequest {
@@ -42,7 +40,7 @@ export function UpdateAuthUserEmailRequestFromJSON(json: any): UpdateAuthUserEma
 }
 
 export function UpdateAuthUserEmailRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateAuthUserEmailRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function UpdateAuthUserEmailRequestFromJSONTyped(json: any, ignoreDiscrim
 }
 
 export function UpdateAuthUserEmailRequestToJSON(value?: UpdateAuthUserEmailRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'email': value.email,
+        'email': value['email'],
     };
 }
 

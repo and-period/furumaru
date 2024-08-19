@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 商品タグ情報
  * @export
@@ -36,12 +36,10 @@ export interface ProductTag {
 /**
  * Check if a given object implements the ProductTag interface.
  */
-export function instanceOfProductTag(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "name" in value;
-
-    return isInstance;
+export function instanceOfProductTag(value: object): value is ProductTag {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    return true;
 }
 
 export function ProductTagFromJSON(json: any): ProductTag {
@@ -49,7 +47,7 @@ export function ProductTagFromJSON(json: any): ProductTag {
 }
 
 export function ProductTagFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProductTag {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -60,16 +58,13 @@ export function ProductTagFromJSONTyped(json: any, ignoreDiscriminator: boolean)
 }
 
 export function ProductTagToJSON(value?: ProductTag | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'name': value.name,
+        'id': value['id'],
+        'name': value['name'],
     };
 }
 

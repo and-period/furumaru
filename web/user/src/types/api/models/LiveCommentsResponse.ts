@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { LiveComment } from './LiveComment';
 import {
     LiveCommentFromJSON,
@@ -43,12 +43,10 @@ export interface LiveCommentsResponse {
 /**
  * Check if a given object implements the LiveCommentsResponse interface.
  */
-export function instanceOfLiveCommentsResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "comments" in value;
-    isInstance = isInstance && "nextToken" in value;
-
-    return isInstance;
+export function instanceOfLiveCommentsResponse(value: object): value is LiveCommentsResponse {
+    if (!('comments' in value) || value['comments'] === undefined) return false;
+    if (!('nextToken' in value) || value['nextToken'] === undefined) return false;
+    return true;
 }
 
 export function LiveCommentsResponseFromJSON(json: any): LiveCommentsResponse {
@@ -56,7 +54,7 @@ export function LiveCommentsResponseFromJSON(json: any): LiveCommentsResponse {
 }
 
 export function LiveCommentsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): LiveCommentsResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -67,16 +65,13 @@ export function LiveCommentsResponseFromJSONTyped(json: any, ignoreDiscriminator
 }
 
 export function LiveCommentsResponseToJSON(value?: LiveCommentsResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'comments': ((value.comments as Array<any>).map(LiveCommentToJSON)),
-        'nextToken': value.nextToken,
+        'comments': ((value['comments'] as Array<any>).map(LiveCommentToJSON)),
+        'nextToken': value['nextToken'],
     };
 }
 

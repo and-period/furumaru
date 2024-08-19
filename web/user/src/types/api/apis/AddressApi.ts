@@ -72,8 +72,11 @@ export class AddressApi extends runtime.BaseAPI {
      * アドレス登録
      */
     async v1CreateAddressRaw(requestParameters: V1CreateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AddressResponse>> {
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1CreateAddress.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateAddress().'
+            );
         }
 
         const queryParameters: any = {};
@@ -95,7 +98,7 @@ export class AddressApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AddressResponseFromJSON(jsonValue));
@@ -113,8 +116,11 @@ export class AddressApi extends runtime.BaseAPI {
      * アドレス削除
      */
     async v1DeleteAddressRaw(requestParameters: V1DeleteAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.addressId === null || requestParameters.addressId === undefined) {
-            throw new runtime.RequiredError('addressId','Required parameter requestParameters.addressId was null or undefined when calling v1DeleteAddress.');
+        if (requestParameters['addressId'] == null) {
+            throw new runtime.RequiredError(
+                'addressId',
+                'Required parameter "addressId" was null or undefined when calling v1DeleteAddress().'
+            );
         }
 
         const queryParameters: any = {};
@@ -130,7 +136,7 @@ export class AddressApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/v1/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters.addressId))),
+            path: `/v1/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId']))),
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -150,8 +156,11 @@ export class AddressApi extends runtime.BaseAPI {
      * アドレス取得
      */
     async v1GetAddressRaw(requestParameters: V1GetAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AddressResponse>> {
-        if (requestParameters.addressId === null || requestParameters.addressId === undefined) {
-            throw new runtime.RequiredError('addressId','Required parameter requestParameters.addressId was null or undefined when calling v1GetAddress.');
+        if (requestParameters['addressId'] == null) {
+            throw new runtime.RequiredError(
+                'addressId',
+                'Required parameter "addressId" was null or undefined when calling v1GetAddress().'
+            );
         }
 
         const queryParameters: any = {};
@@ -167,7 +176,7 @@ export class AddressApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/v1/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters.addressId))),
+            path: `/v1/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -190,12 +199,12 @@ export class AddressApi extends runtime.BaseAPI {
     async v1ListAddressesRaw(requestParameters: V1ListAddressesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AddressesResponse>> {
         const queryParameters: any = {};
 
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
         }
 
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -230,8 +239,11 @@ export class AddressApi extends runtime.BaseAPI {
      * 郵便番号情報検索
      */
     async v1SearchPostalCodeRaw(requestParameters: V1SearchPostalCodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PostalCodeResponse>> {
-        if (requestParameters.postalCode === null || requestParameters.postalCode === undefined) {
-            throw new runtime.RequiredError('postalCode','Required parameter requestParameters.postalCode was null or undefined when calling v1SearchPostalCode.');
+        if (requestParameters['postalCode'] == null) {
+            throw new runtime.RequiredError(
+                'postalCode',
+                'Required parameter "postalCode" was null or undefined when calling v1SearchPostalCode().'
+            );
         }
 
         const queryParameters: any = {};
@@ -239,7 +251,7 @@ export class AddressApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/postal-codes/{postalCode}`.replace(`{${"postalCode"}}`, encodeURIComponent(String(requestParameters.postalCode))),
+            path: `/v1/postal-codes/{postalCode}`.replace(`{${"postalCode"}}`, encodeURIComponent(String(requestParameters['postalCode']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -260,12 +272,18 @@ export class AddressApi extends runtime.BaseAPI {
      * アドレス更新
      */
     async v1UpdateAddressRaw(requestParameters: V1UpdateAddressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters.addressId === null || requestParameters.addressId === undefined) {
-            throw new runtime.RequiredError('addressId','Required parameter requestParameters.addressId was null or undefined when calling v1UpdateAddress.');
+        if (requestParameters['addressId'] == null) {
+            throw new runtime.RequiredError(
+                'addressId',
+                'Required parameter "addressId" was null or undefined when calling v1UpdateAddress().'
+            );
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling v1UpdateAddress.');
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1UpdateAddress().'
+            );
         }
 
         const queryParameters: any = {};
@@ -283,11 +301,11 @@ export class AddressApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/v1/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters.addressId))),
+            path: `/v1/addresses/{addressId}`.replace(`{${"addressId"}}`, encodeURIComponent(String(requestParameters['addressId']))),
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

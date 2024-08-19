@@ -26,6 +26,17 @@ export const ProductStatus = {
 export type ProductStatus = typeof ProductStatus[keyof typeof ProductStatus];
 
 
+export function instanceOfProductStatus(value: any): boolean {
+    for (const key in ProductStatus) {
+        if (Object.prototype.hasOwnProperty.call(ProductStatus, key)) {
+            if (ProductStatus[key as keyof typeof ProductStatus] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function ProductStatusFromJSON(json: any): ProductStatus {
     return ProductStatusFromJSONTyped(json, false);
 }

@@ -12,19 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 import type { ArchiveSummary } from './ArchiveSummary';
 import {
     ArchiveSummaryFromJSON,
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
 } from './ArchiveSummary';
-import type { LiveSummary } from './LiveSummary';
-import {
-    LiveSummaryFromJSON,
-    LiveSummaryFromJSONTyped,
-    LiveSummaryToJSON,
-} from './LiveSummary';
 import type { Producer } from './Producer';
 import {
     ProducerFromJSON,
@@ -37,6 +31,12 @@ import {
     ProductFromJSONTyped,
     ProductToJSON,
 } from './Product';
+import type { LiveSummary } from './LiveSummary';
+import {
+    LiveSummaryFromJSON,
+    LiveSummaryFromJSONTyped,
+    LiveSummaryToJSON,
+} from './LiveSummary';
 
 /**
  * 
@@ -73,14 +73,12 @@ export interface ProducerResponse {
 /**
  * Check if a given object implements the ProducerResponse interface.
  */
-export function instanceOfProducerResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "producer" in value;
-    isInstance = isInstance && "lives" in value;
-    isInstance = isInstance && "archives" in value;
-    isInstance = isInstance && "products" in value;
-
-    return isInstance;
+export function instanceOfProducerResponse(value: object): value is ProducerResponse {
+    if (!('producer' in value) || value['producer'] === undefined) return false;
+    if (!('lives' in value) || value['lives'] === undefined) return false;
+    if (!('archives' in value) || value['archives'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    return true;
 }
 
 export function ProducerResponseFromJSON(json: any): ProducerResponse {
@@ -88,7 +86,7 @@ export function ProducerResponseFromJSON(json: any): ProducerResponse {
 }
 
 export function ProducerResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProducerResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -101,18 +99,15 @@ export function ProducerResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
 }
 
 export function ProducerResponseToJSON(value?: ProducerResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'producer': ProducerToJSON(value.producer),
-        'lives': ((value.lives as Array<any>).map(LiveSummaryToJSON)),
-        'archives': ((value.archives as Array<any>).map(ArchiveSummaryToJSON)),
-        'products': ((value.products as Array<any>).map(ProductToJSON)),
+        'producer': ProducerToJSON(value['producer']),
+        'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
+        'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
+        'products': ((value['products'] as Array<any>).map(ProductToJSON)),
     };
 }
 

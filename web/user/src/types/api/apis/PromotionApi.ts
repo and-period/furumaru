@@ -38,8 +38,11 @@ export class PromotionApi extends runtime.BaseAPI {
      * プロモーション情報取得
      */
     async v1GetPromotionRaw(requestParameters: V1GetPromotionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromotionResponse>> {
-        if (requestParameters.code === null || requestParameters.code === undefined) {
-            throw new runtime.RequiredError('code','Required parameter requestParameters.code was null or undefined when calling v1GetPromotion.');
+        if (requestParameters['code'] == null) {
+            throw new runtime.RequiredError(
+                'code',
+                'Required parameter "code" was null or undefined when calling v1GetPromotion().'
+            );
         }
 
         const queryParameters: any = {};
@@ -47,7 +50,7 @@ export class PromotionApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/v1/promotions/{code}`.replace(`{${"code"}}`, encodeURIComponent(String(requestParameters.code))),
+            path: `/v1/promotions/{code}`.replace(`{${"code"}}`, encodeURIComponent(String(requestParameters['code']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

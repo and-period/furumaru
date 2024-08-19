@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -42,13 +42,11 @@ export interface UpdateAuthPasswordRequest {
 /**
  * Check if a given object implements the UpdateAuthPasswordRequest interface.
  */
-export function instanceOfUpdateAuthPasswordRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "oldPassword" in value;
-    isInstance = isInstance && "newPassword" in value;
-    isInstance = isInstance && "passwordConfirmation" in value;
-
-    return isInstance;
+export function instanceOfUpdateAuthPasswordRequest(value: object): value is UpdateAuthPasswordRequest {
+    if (!('oldPassword' in value) || value['oldPassword'] === undefined) return false;
+    if (!('newPassword' in value) || value['newPassword'] === undefined) return false;
+    if (!('passwordConfirmation' in value) || value['passwordConfirmation'] === undefined) return false;
+    return true;
 }
 
 export function UpdateAuthPasswordRequestFromJSON(json: any): UpdateAuthPasswordRequest {
@@ -56,7 +54,7 @@ export function UpdateAuthPasswordRequestFromJSON(json: any): UpdateAuthPassword
 }
 
 export function UpdateAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateAuthPasswordRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -68,17 +66,14 @@ export function UpdateAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscrimi
 }
 
 export function UpdateAuthPasswordRequestToJSON(value?: UpdateAuthPasswordRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'oldPassword': value.oldPassword,
-        'newPassword': value.newPassword,
-        'passwordConfirmation': value.passwordConfirmation,
+        'oldPassword': value['oldPassword'],
+        'newPassword': value['newPassword'],
+        'passwordConfirmation': value['passwordConfirmation'],
     };
 }
 

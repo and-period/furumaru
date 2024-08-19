@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 注文商品情報
  * @export
@@ -48,14 +48,12 @@ export interface OrderItem {
 /**
  * Check if a given object implements the OrderItem interface.
  */
-export function instanceOfOrderItem(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "fulfillmentId" in value;
-    isInstance = isInstance && "productId" in value;
-    isInstance = isInstance && "price" in value;
-    isInstance = isInstance && "quantity" in value;
-
-    return isInstance;
+export function instanceOfOrderItem(value: object): value is OrderItem {
+    if (!('fulfillmentId' in value) || value['fulfillmentId'] === undefined) return false;
+    if (!('productId' in value) || value['productId'] === undefined) return false;
+    if (!('price' in value) || value['price'] === undefined) return false;
+    if (!('quantity' in value) || value['quantity'] === undefined) return false;
+    return true;
 }
 
 export function OrderItemFromJSON(json: any): OrderItem {
@@ -63,7 +61,7 @@ export function OrderItemFromJSON(json: any): OrderItem {
 }
 
 export function OrderItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): OrderItem {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -76,18 +74,15 @@ export function OrderItemFromJSONTyped(json: any, ignoreDiscriminator: boolean):
 }
 
 export function OrderItemToJSON(value?: OrderItem | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'fulfillmentId': value.fulfillmentId,
-        'productId': value.productId,
-        'price': value.price,
-        'quantity': value.quantity,
+        'fulfillmentId': value['fulfillmentId'],
+        'productId': value['productId'],
+        'price': value['price'],
+        'quantity': value['quantity'],
     };
 }
 

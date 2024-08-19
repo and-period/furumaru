@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface UpdateAuthUserThumbnailRequest {
 /**
  * Check if a given object implements the UpdateAuthUserThumbnailRequest interface.
  */
-export function instanceOfUpdateAuthUserThumbnailRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "thumbnailUrl" in value;
-
-    return isInstance;
+export function instanceOfUpdateAuthUserThumbnailRequest(value: object): value is UpdateAuthUserThumbnailRequest {
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    return true;
 }
 
 export function UpdateAuthUserThumbnailRequestFromJSON(json: any): UpdateAuthUserThumbnailRequest {
@@ -42,7 +40,7 @@ export function UpdateAuthUserThumbnailRequestFromJSON(json: any): UpdateAuthUse
 }
 
 export function UpdateAuthUserThumbnailRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UpdateAuthUserThumbnailRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function UpdateAuthUserThumbnailRequestFromJSONTyped(json: any, ignoreDis
 }
 
 export function UpdateAuthUserThumbnailRequestToJSON(value?: UpdateAuthUserThumbnailRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'thumbnailUrl': value.thumbnailUrl,
+        'thumbnailUrl': value['thumbnailUrl'],
     };
 }
 

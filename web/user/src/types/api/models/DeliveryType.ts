@@ -26,6 +26,17 @@ export const DeliveryType = {
 export type DeliveryType = typeof DeliveryType[keyof typeof DeliveryType];
 
 
+export function instanceOfDeliveryType(value: any): boolean {
+    for (const key in DeliveryType) {
+        if (Object.prototype.hasOwnProperty.call(DeliveryType, key)) {
+            if (DeliveryType[key as keyof typeof DeliveryType] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function DeliveryTypeFromJSON(json: any): DeliveryType {
     return DeliveryTypeFromJSONTyped(json, false);
 }

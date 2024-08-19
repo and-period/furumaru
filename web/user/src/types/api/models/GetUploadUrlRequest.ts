@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface GetUploadUrlRequest {
 /**
  * Check if a given object implements the GetUploadUrlRequest interface.
  */
-export function instanceOfGetUploadUrlRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "fileType" in value;
-
-    return isInstance;
+export function instanceOfGetUploadUrlRequest(value: object): value is GetUploadUrlRequest {
+    if (!('fileType' in value) || value['fileType'] === undefined) return false;
+    return true;
 }
 
 export function GetUploadUrlRequestFromJSON(json: any): GetUploadUrlRequest {
@@ -42,7 +40,7 @@ export function GetUploadUrlRequestFromJSON(json: any): GetUploadUrlRequest {
 }
 
 export function GetUploadUrlRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GetUploadUrlRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function GetUploadUrlRequestFromJSONTyped(json: any, ignoreDiscriminator:
 }
 
 export function GetUploadUrlRequestToJSON(value?: GetUploadUrlRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'fileType': value.fileType,
+        'fileType': value['fileType'],
     };
 }
 

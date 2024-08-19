@@ -27,6 +27,17 @@ export const PaymentStatus = {
 export type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
 
 
+export function instanceOfPaymentStatus(value: any): boolean {
+    for (const key in PaymentStatus) {
+        if (Object.prototype.hasOwnProperty.call(PaymentStatus, key)) {
+            if (PaymentStatus[key as keyof typeof PaymentStatus] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function PaymentStatusFromJSON(json: any): PaymentStatus {
     return PaymentStatusFromJSONTyped(json, false);
 }

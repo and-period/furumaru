@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -54,15 +54,13 @@ export interface AuthResponse {
 /**
  * Check if a given object implements the AuthResponse interface.
  */
-export function instanceOfAuthResponse(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "userId" in value;
-    isInstance = isInstance && "accessToken" in value;
-    isInstance = isInstance && "refreshToken" in value;
-    isInstance = isInstance && "expiresIn" in value;
-    isInstance = isInstance && "tokenType" in value;
-
-    return isInstance;
+export function instanceOfAuthResponse(value: object): value is AuthResponse {
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('accessToken' in value) || value['accessToken'] === undefined) return false;
+    if (!('refreshToken' in value) || value['refreshToken'] === undefined) return false;
+    if (!('expiresIn' in value) || value['expiresIn'] === undefined) return false;
+    if (!('tokenType' in value) || value['tokenType'] === undefined) return false;
+    return true;
 }
 
 export function AuthResponseFromJSON(json: any): AuthResponse {
@@ -70,7 +68,7 @@ export function AuthResponseFromJSON(json: any): AuthResponse {
 }
 
 export function AuthResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthResponse {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -84,19 +82,16 @@ export function AuthResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
 }
 
 export function AuthResponseToJSON(value?: AuthResponse | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'userId': value.userId,
-        'accessToken': value.accessToken,
-        'refreshToken': value.refreshToken,
-        'expiresIn': value.expiresIn,
-        'tokenType': value.tokenType,
+        'userId': value['userId'],
+        'accessToken': value['accessToken'],
+        'refreshToken': value['refreshToken'],
+        'expiresIn': value['expiresIn'],
+        'tokenType': value['tokenType'],
     };
 }
 

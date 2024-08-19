@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -48,14 +48,12 @@ export interface ResetAuthPasswordRequest {
 /**
  * Check if a given object implements the ResetAuthPasswordRequest interface.
  */
-export function instanceOfResetAuthPasswordRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "email" in value;
-    isInstance = isInstance && "verifyCode" in value;
-    isInstance = isInstance && "password" in value;
-    isInstance = isInstance && "passwordConfirmation" in value;
-
-    return isInstance;
+export function instanceOfResetAuthPasswordRequest(value: object): value is ResetAuthPasswordRequest {
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('verifyCode' in value) || value['verifyCode'] === undefined) return false;
+    if (!('password' in value) || value['password'] === undefined) return false;
+    if (!('passwordConfirmation' in value) || value['passwordConfirmation'] === undefined) return false;
+    return true;
 }
 
 export function ResetAuthPasswordRequestFromJSON(json: any): ResetAuthPasswordRequest {
@@ -63,7 +61,7 @@ export function ResetAuthPasswordRequestFromJSON(json: any): ResetAuthPasswordRe
 }
 
 export function ResetAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ResetAuthPasswordRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -76,18 +74,15 @@ export function ResetAuthPasswordRequestFromJSONTyped(json: any, ignoreDiscrimin
 }
 
 export function ResetAuthPasswordRequestToJSON(value?: ResetAuthPasswordRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'email': value.email,
-        'verifyCode': value.verifyCode,
-        'password': value.password,
-        'passwordConfirmation': value.passwordConfirmation,
+        'email': value['email'],
+        'verifyCode': value['verifyCode'],
+        'password': value['password'],
+        'passwordConfirmation': value['passwordConfirmation'],
     };
 }
 

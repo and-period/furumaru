@@ -32,6 +32,17 @@ export const PaymentMethodType = {
 export type PaymentMethodType = typeof PaymentMethodType[keyof typeof PaymentMethodType];
 
 
+export function instanceOfPaymentMethodType(value: any): boolean {
+    for (const key in PaymentMethodType) {
+        if (Object.prototype.hasOwnProperty.call(PaymentMethodType, key)) {
+            if (PaymentMethodType[key as keyof typeof PaymentMethodType] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function PaymentMethodTypeFromJSON(json: any): PaymentMethodType {
     return PaymentMethodTypeFromJSONTyped(json, false);
 }

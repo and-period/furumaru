@@ -12,19 +12,19 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
-import type { LiveProduct } from './LiveProduct';
-import {
-    LiveProductFromJSON,
-    LiveProductFromJSONTyped,
-    LiveProductToJSON,
-} from './LiveProduct';
+import { mapValues } from '../runtime';
 import type { ScheduleStatus } from './ScheduleStatus';
 import {
     ScheduleStatusFromJSON,
     ScheduleStatusFromJSONTyped,
     ScheduleStatusToJSON,
 } from './ScheduleStatus';
+import type { LiveProduct } from './LiveProduct';
+import {
+    LiveProductFromJSON,
+    LiveProductFromJSONTyped,
+    LiveProductToJSON,
+} from './LiveProduct';
 
 /**
  * 開催中・開催予定のマルシェ情報
@@ -82,21 +82,21 @@ export interface LiveSummary {
     products: Array<LiveProduct>;
 }
 
+
+
 /**
  * Check if a given object implements the LiveSummary interface.
  */
-export function instanceOfLiveSummary(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "scheduleId" in value;
-    isInstance = isInstance && "coordinatorId" in value;
-    isInstance = isInstance && "status" in value;
-    isInstance = isInstance && "title" in value;
-    isInstance = isInstance && "thumbnailUrl" in value;
-    isInstance = isInstance && "startAt" in value;
-    isInstance = isInstance && "endAt" in value;
-    isInstance = isInstance && "products" in value;
-
-    return isInstance;
+export function instanceOfLiveSummary(value: object): value is LiveSummary {
+    if (!('scheduleId' in value) || value['scheduleId'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('thumbnailUrl' in value) || value['thumbnailUrl'] === undefined) return false;
+    if (!('startAt' in value) || value['startAt'] === undefined) return false;
+    if (!('endAt' in value) || value['endAt'] === undefined) return false;
+    if (!('products' in value) || value['products'] === undefined) return false;
+    return true;
 }
 
 export function LiveSummaryFromJSON(json: any): LiveSummary {
@@ -104,7 +104,7 @@ export function LiveSummaryFromJSON(json: any): LiveSummary {
 }
 
 export function LiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean): LiveSummary {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -121,22 +121,19 @@ export function LiveSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean
 }
 
 export function LiveSummaryToJSON(value?: LiveSummary | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'scheduleId': value.scheduleId,
-        'coordinatorId': value.coordinatorId,
-        'status': ScheduleStatusToJSON(value.status),
-        'title': value.title,
-        'thumbnailUrl': value.thumbnailUrl,
-        'startAt': value.startAt,
-        'endAt': value.endAt,
-        'products': ((value.products as Array<any>).map(LiveProductToJSON)),
+        'scheduleId': value['scheduleId'],
+        'coordinatorId': value['coordinatorId'],
+        'status': ScheduleStatusToJSON(value['status']),
+        'title': value['title'],
+        'thumbnailUrl': value['thumbnailUrl'],
+        'startAt': value['startAt'],
+        'endAt': value['endAt'],
+        'products': ((value['products'] as Array<any>).map(LiveProductToJSON)),
     };
 }
 

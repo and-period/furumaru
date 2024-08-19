@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -30,11 +30,9 @@ export interface CreateLiveCommentRequest {
 /**
  * Check if a given object implements the CreateLiveCommentRequest interface.
  */
-export function instanceOfCreateLiveCommentRequest(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "comment" in value;
-
-    return isInstance;
+export function instanceOfCreateLiveCommentRequest(value: object): value is CreateLiveCommentRequest {
+    if (!('comment' in value) || value['comment'] === undefined) return false;
+    return true;
 }
 
 export function CreateLiveCommentRequestFromJSON(json: any): CreateLiveCommentRequest {
@@ -42,7 +40,7 @@ export function CreateLiveCommentRequestFromJSON(json: any): CreateLiveCommentRe
 }
 
 export function CreateLiveCommentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateLiveCommentRequest {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -52,15 +50,12 @@ export function CreateLiveCommentRequestFromJSONTyped(json: any, ignoreDiscrimin
 }
 
 export function CreateLiveCommentRequestToJSON(value?: CreateLiveCommentRequest | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'comment': value.comment,
+        'comment': value['comment'],
     };
 }
 

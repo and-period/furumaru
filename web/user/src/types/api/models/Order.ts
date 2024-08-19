@@ -12,7 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
+import type { OrderStatus } from './OrderStatus';
+import {
+    OrderStatusFromJSON,
+    OrderStatusFromJSONTyped,
+    OrderStatusToJSON,
+} from './OrderStatus';
 import type { Address } from './Address';
 import {
     AddressFromJSON,
@@ -31,24 +37,18 @@ import {
     OrderItemFromJSONTyped,
     OrderItemToJSON,
 } from './OrderItem';
-import type { OrderPayment } from './OrderPayment';
-import {
-    OrderPaymentFromJSON,
-    OrderPaymentFromJSONTyped,
-    OrderPaymentToJSON,
-} from './OrderPayment';
 import type { OrderRefund } from './OrderRefund';
 import {
     OrderRefundFromJSON,
     OrderRefundFromJSONTyped,
     OrderRefundToJSON,
 } from './OrderRefund';
-import type { OrderStatus } from './OrderStatus';
+import type { OrderPayment } from './OrderPayment';
 import {
-    OrderStatusFromJSON,
-    OrderStatusFromJSONTyped,
-    OrderStatusToJSON,
-} from './OrderStatus';
+    OrderPaymentFromJSON,
+    OrderPaymentFromJSONTyped,
+    OrderPaymentToJSON,
+} from './OrderPayment';
 
 /**
  * 注文履歴情報
@@ -118,23 +118,23 @@ export interface Order {
     shippingAddress: Address;
 }
 
+
+
 /**
  * Check if a given object implements the Order interface.
  */
-export function instanceOfOrder(value: object): boolean {
-    let isInstance = true;
-    isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "coordinatorId" in value;
-    isInstance = isInstance && "promotionId" in value;
-    isInstance = isInstance && "status" in value;
-    isInstance = isInstance && "payment" in value;
-    isInstance = isInstance && "refund" in value;
-    isInstance = isInstance && "fulfillments" in value;
-    isInstance = isInstance && "items" in value;
-    isInstance = isInstance && "billingAddress" in value;
-    isInstance = isInstance && "shippingAddress" in value;
-
-    return isInstance;
+export function instanceOfOrder(value: object): value is Order {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
+    if (!('promotionId' in value) || value['promotionId'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('payment' in value) || value['payment'] === undefined) return false;
+    if (!('refund' in value) || value['refund'] === undefined) return false;
+    if (!('fulfillments' in value) || value['fulfillments'] === undefined) return false;
+    if (!('items' in value) || value['items'] === undefined) return false;
+    if (!('billingAddress' in value) || value['billingAddress'] === undefined) return false;
+    if (!('shippingAddress' in value) || value['shippingAddress'] === undefined) return false;
+    return true;
 }
 
 export function OrderFromJSON(json: any): Order {
@@ -142,7 +142,7 @@ export function OrderFromJSON(json: any): Order {
 }
 
 export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Order {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -161,24 +161,21 @@ export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ord
 }
 
 export function OrderToJSON(value?: Order | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'id': value.id,
-        'coordinatorId': value.coordinatorId,
-        'promotionId': value.promotionId,
-        'status': OrderStatusToJSON(value.status),
-        'payment': OrderPaymentToJSON(value.payment),
-        'refund': OrderRefundToJSON(value.refund),
-        'fulfillments': ((value.fulfillments as Array<any>).map(OrderFulfillmentToJSON)),
-        'items': ((value.items as Array<any>).map(OrderItemToJSON)),
-        'billingAddress': AddressToJSON(value.billingAddress),
-        'shippingAddress': AddressToJSON(value.shippingAddress),
+        'id': value['id'],
+        'coordinatorId': value['coordinatorId'],
+        'promotionId': value['promotionId'],
+        'status': OrderStatusToJSON(value['status']),
+        'payment': OrderPaymentToJSON(value['payment']),
+        'refund': OrderRefundToJSON(value['refund']),
+        'fulfillments': ((value['fulfillments'] as Array<any>).map(OrderFulfillmentToJSON)),
+        'items': ((value['items'] as Array<any>).map(OrderItemToJSON)),
+        'billingAddress': AddressToJSON(value['billingAddress']),
+        'shippingAddress': AddressToJSON(value['shippingAddress']),
     };
 }
 
