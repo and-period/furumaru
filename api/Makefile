@@ -17,7 +17,7 @@ setup: install ## 初回環境構築用
 install: ## 依存ライブラリのインストール
 	go install mvdan.cc/gofumpt@v${GOFUMPT_VERSION}
 	go install go.uber.org/mock/mockgen@v${MOCKGEN_VERSION}
-	go install github.com/cosmtrek/air@v${AIR_VERSION}
+	go install github.com/air-verse/air@v${AIR_VERSION}
 
 mockgen: ## ユニットテストで使用するモックの生成
 	rm -rf ./mock
