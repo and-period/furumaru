@@ -30,7 +30,7 @@ func TestVideo_List(t *testing.T) {
 	videos := make(entity.Videos, 3)
 	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
 	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
-	videos[3] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[2] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
 	err = db.DB.Create(&videos).Error
 	require.NoError(t, err)
 	for _, video := range videos {
@@ -104,7 +104,7 @@ func TestVideo_Count(t *testing.T) {
 	videos := make(entity.Videos, 3)
 	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
 	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
-	videos[3] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[2] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
 	err = db.DB.Create(&videos).Error
 	require.NoError(t, err)
 	for _, video := range videos {

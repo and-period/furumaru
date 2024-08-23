@@ -622,13 +622,13 @@ func testExperience(experienceID, typeID, coordinatorID, producerID string, revi
 		HostCity:           "彦根市",
 		StartAt:            now.AddDate(0, -1, 0),
 		EndAt:              now.AddDate(0, 1, 0),
-		ExperienceRevision: *TestExperienceRevision(revisionID, experienceID, now),
+		ExperienceRevision: *testExperienceRevision(revisionID, experienceID, now),
 		CreatedAt:          now,
 		UpdatedAt:          now,
 	}
 }
 
-func TestExperienceRevision(revisionID int64, experienceID string, now time.Time) *entity.ExperienceRevision {
+func testExperienceRevision(revisionID int64, experienceID string, now time.Time) *entity.ExperienceRevision {
 	return &entity.ExperienceRevision{
 		ID:                    revisionID,
 		ExperienceID:          experienceID,
