@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `stores`.`experiences` (
   `id`                  VARCHAR(22)  NOT NULL,          -- 体験ID
   `coordinator_id`      VARCHAR(22)  NOT NULL,          -- コーディネータID
   `producer_id`         VARCHAR(22)  NOT NULL,          -- 生産者ID
-  `experience_type_id`  VARCHAR(22)  NOT NULL,          -- 体験種別ID
+  `experience_type_id`  VARCHAR(22)  NULL DEFAULT NULL, -- 体験種別ID
   `title`               VARCHAR(128) NOT NULL,          -- タイトル
   `description`         TEXT         NOT NULL,          -- 説明
   `public`              TINYINT      NOT NULL,          -- 公開設定
