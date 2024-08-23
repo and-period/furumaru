@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"encoding/json"
 	"time"
 
 	"gorm.io/datatypes"
@@ -56,3 +57,28 @@ type ExperienceMedia struct {
 }
 
 type MultiExperienceMedia []*ExperienceMedia
+
+func (e *Experience) FillJSON() error {
+	media, err := e.Media.Marshal()
+	if err != nil {
+		return err
+	}
+	points, err := ExperienceMarshalRecommendedPoints(e.RecommendedPoints)
+	if err != nil {
+		return err
+	}
+	e.MediaJSON = media
+	e.RecommendedPointsJSON = points
+	return nil
+}
+
+func ExperienceMarshalRecommendedPoints(points []string) ([]byte, error) {
+	return json.Marshal(points)
+}
+
+func (m MultiExperienceMedia) Marshal() ([]byte, error) {
+	if len(m) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(m)
+}

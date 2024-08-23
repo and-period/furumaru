@@ -87,6 +87,21 @@ type Service interface {
 	CalcCart(ctx context.Context, in *CalcCartInput) (*entity.Cart, *entity.OrderPaymentSummary, error) // 購入前の支払い情報取得
 	AddCartItem(ctx context.Context, in *AddCartItemInput) error                                        // 商品を追加
 	RemoveCartItem(ctx context.Context, in *RemoveCartItemInput) error                                  // 商品を削除
+	// 体験種別
+	ListExperienceTypes(ctx context.Context, in *ListExperienceTypesInput) (entity.ExperienceTypes, int64, error)  // 一覧取得
+	MultiGetExperienceTypes(ctx context.Context, in *MultiGetExperienceTypesInput) (entity.ExperienceTypes, error) // 一覧取得（ID指定）
+	GetExperienceType(ctx context.Context, in *GetExperienceTypeInput) (*entity.ExperienceType, error)             // １件取得
+	CreateExperienceType(ctx context.Context, in *CreateExperienceTypeInput) (*entity.ExperienceType, error)       // 登録
+	UpdateExperienceType(ctx context.Context, in *UpdateExperienceTypeInput) error                                 // 更新
+	DeleteExperienceType(ctx context.Context, in *DeleteExperienceTypeInput) error                                 // 削除
+	// 体験
+	ListExperiences(ctx context.Context, in *ListExperiencesInput) (entity.Experiences, int64, error)                      // 一覧取得
+	MultiGetExperiences(ctx context.Context, in *MultiGetExperiencesInput) (entity.Experiences, error)                     // 一覧取得（ID指定）
+	MultiGetExperiencesByRevision(ctx context.Context, in *MultiGetExperiencesByRevisionInput) (entity.Experiences, error) // 一覧取得(変更履歴ID指定)
+	GetExperience(ctx context.Context, in *GetExperienceInput) (*entity.Experience, error)                                 // １件取得
+	CreateExperience(ctx context.Context, in *CreateExperienceInput) (*entity.Experience, error)                           // 登録
+	UpdateExperience(ctx context.Context, in *UpdateExperienceInput) error                                                 // 更新
+	DeleteExperience(ctx context.Context, in *DeleteExperienceInput) error                                                 // 削除
 	// 購入処理
 	GetCheckoutState(ctx context.Context, in *GetCheckoutStateInput) (string, entity.PaymentStatus, error) // 支払い状態取得
 	CheckoutCreditCard(ctx context.Context, in *CheckoutCreditCardInput) (string, error)                   // 支払い申請（クレジットカード）

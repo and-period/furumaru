@@ -24,6 +24,7 @@ type Database struct {
 	Broadcast          Broadcast
 	BroadcastComment   BroadcastComment
 	BroadcastViewerLog BroadcastViewerLog
+	Video              Video
 }
 
 type Broadcast interface {
@@ -124,6 +125,33 @@ type AggregateBroadcastViewerLogsParams struct {
 	Interval     entity.AggregateBroadcastViewerLogInterval
 	CreatedAtGte time.Time
 	CreatedAtLt  time.Time
+}
+
+type Video interface {
+	List(ctx context.Context, params *ListVideosParams, fields ...string) (entity.Videos, error)
+	Count(ctx context.Context, params *ListVideosParams) (int64, error)
+	Get(ctx context.Context, videoID string, fields ...string) (*entity.Video, error)
+	Create(ctx context.Context, video *entity.Video) error
+	Update(ctx context.Context, videoID string, params *UpdateVideoParams) error
+	Delete(ctx context.Context, videoID string) error
+}
+
+type ListVideosParams struct {
+	CoordinatorID string
+	Limit         int
+	Offset        int
+}
+
+type UpdateVideoParams struct {
+	Title         string
+	Description   string
+	ProductIDs    []string
+	ExperienceIDs []string
+	ThumbnailURL  string
+	VideoURL      string
+	Public        bool
+	Limited       bool
+	PublishedAt   time.Time
 }
 
 type Error struct {

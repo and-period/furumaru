@@ -13,16 +13,18 @@ import (
 
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
-		Category:      newCategory(db),
-		Live:          newLive(db),
-		Order:         newOrder(db),
-		PaymentSystem: newPaymentSystem(db),
-		Product:       newProduct(db),
-		ProductTag:    newProductTag(db),
-		ProductType:   newProductType(db),
-		Promotion:     newPromotion(db),
-		Shipping:      newShipping(db),
-		Schedule:      newSchedule(db),
+		Category:       newCategory(db),
+		Expericence:    newExperience(db),
+		ExperienceType: newExperienceType(db),
+		Live:           newLive(db),
+		Order:          newOrder(db),
+		PaymentSystem:  newPaymentSystem(db),
+		Product:        newProduct(db),
+		ProductTag:     newProductTag(db),
+		ProductType:    newProductType(db),
+		Promotion:      newPromotion(db),
+		Shipping:       newShipping(db),
+		Schedule:       newSchedule(db),
 	}
 }
 

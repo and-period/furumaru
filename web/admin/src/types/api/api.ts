@@ -13175,10 +13175,11 @@ export const ExperienceTypeApiAxiosParamCreator = function (configuration?: Conf
          * @summary 体験種別一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [name] 体験名(あいまい検索)(128文字以内)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListExperienceTypes: async (limit?: number, offset?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListExperienceTypes: async (limit?: number, offset?: number, name?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/experience-types`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -13201,6 +13202,10 @@ export const ExperienceTypeApiAxiosParamCreator = function (configuration?: Conf
 
             if (offset !== undefined) {
                 localVarQueryParameter['offset'] = offset;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
             }
 
 
@@ -13299,11 +13304,12 @@ export const ExperienceTypeApiFp = function(configuration?: Configuration) {
          * @summary 体験種別一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [name] 体験名(あいまい検索)(128文字以内)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListExperienceTypes(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperienceTypesResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListExperienceTypes(limit, offset, options);
+        async v1ListExperienceTypes(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperienceTypesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListExperienceTypes(limit, offset, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceTypeApi.v1ListExperienceTypes']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -13357,11 +13363,12 @@ export const ExperienceTypeApiFactory = function (configuration?: Configuration,
          * @summary 体験種別一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [name] 体験名(あいまい検索)(128文字以内)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListExperienceTypes(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ExperienceTypesResponse> {
-            return localVarFp.v1ListExperienceTypes(limit, offset, options).then((request) => request(axios, basePath));
+        v1ListExperienceTypes(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<ExperienceTypesResponse> {
+            return localVarFp.v1ListExperienceTypes(limit, offset, name, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -13413,12 +13420,13 @@ export class ExperienceTypeApi extends BaseAPI {
      * @summary 体験種別一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [name] 体験名(あいまい検索)(128文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ExperienceTypeApi
      */
-    public v1ListExperienceTypes(limit?: number, offset?: number, options?: RawAxiosRequestConfig) {
-        return ExperienceTypeApiFp(this.configuration).v1ListExperienceTypes(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    public v1ListExperienceTypes(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig) {
+        return ExperienceTypeApiFp(this.configuration).v1ListExperienceTypes(limit, offset, name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

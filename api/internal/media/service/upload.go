@@ -45,6 +45,25 @@ func (s *service) GetBroadcastLiveMP4UploadURL(ctx context.Context, in *media.Ge
 }
 
 /**
+ * オンデマンド配信関連
+ */
+func (s *service) GetVideoThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	// TODO: 詳細の実装
+	return &entity.UploadEvent{}, nil
+}
+
+func (s *service) GetVideoFileUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	// TODO: 詳細の実装
+	return &entity.UploadEvent{}, nil
+}
+
+/**
  * コーディネータ関連
  */
 func (s *service) GetCoordinatorThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {

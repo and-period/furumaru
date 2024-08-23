@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `stores`.`experiences` (
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_experiences_experience_type_id`
     FOREIGN KEY (`experience_type_id`) REFERENCES `stores`.`experience_types` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+    ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE FULLTEXT INDEX `ftx_experiences_title_description` ON `stores`.`experiences` (`title`, `description`) WITH PARSER ngram;

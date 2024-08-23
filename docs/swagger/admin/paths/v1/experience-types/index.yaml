@@ -22,6 +22,13 @@ get:
     description: 取得開始位置(min:0)
     required: false
     example: 0
+  - in: query
+    name: name
+    schema:
+      type: string
+    description: 体験名(あいまい検索)(128文字以内)
+    required: false
+    example: 'じゃがいも掘り'
   responses:
     200:
       description: 成功
