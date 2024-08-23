@@ -15,7 +15,7 @@ type Experience struct {
 	PriceAdult            int64              `json:"priceAdult"`            // 大人料金
 	PriceJuniorHighSchool int64              `json:"priceJuniorHighSchool"` // 中学生料金
 	PriceElementarySchool int64              `json:"priceElementarySchool"` // 小学生料金
-	PricePreschool      int64              `json:"pricePreschool"`      // 幼児料金
+	PricePreschool        int64              `json:"pricePreschool"`        // 幼児料金
 	PriceSenior           int64              `json:"priceSenior"`           // シニア料金
 	RecommendedPoint1     string             `json:"recommendedPoint1"`     // おすすめポイント1
 	RecommendedPoint2     string             `json:"recommendedPoint2"`     // おすすめポイント2

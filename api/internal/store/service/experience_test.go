@@ -203,7 +203,7 @@ func TestCreateExperience(t *testing.T) {
 				PriceAdult:            1000,
 				PriceJuniorHighSchool: 800,
 				PriceElementarySchool: 600,
-				PricePreschool:      400,
+				PricePreschool:        400,
 				PriceSenior:           700,
 				RecommendedPoints: []string{
 					"じゃがいもを収穫する楽しさを体験できます。",
@@ -266,7 +266,7 @@ func TestUpdateExperience(t *testing.T) {
 				PriceAdult:            1000,
 				PriceJuniorHighSchool: 800,
 				PriceElementarySchool: 600,
-				PricePreschool:      400,
+				PricePreschool:        400,
 				PriceSenior:           700,
 				RecommendedPoints: []string{
 					"じゃがいもを収穫する楽しさを体験できます。",
