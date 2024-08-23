@@ -1,0 +1,20 @@
+createExperienceTypeRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 体験種別名(32文字まで)
+  required:
+  - name
+  example:
+    name: 'じゃがいも堀り'
+updateExperienceTypeRequest:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 体験種別名(32文字まで)
+  required:
+  - name
+  example:
+    name: 'じゃがいも堀り'

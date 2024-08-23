@@ -1,0 +1,78 @@
+get:
+  summary: 体験一覧取得
+  operationId: v1ListExperiences
+  tags:
+  - Experience
+  security:
+  - bearerAuth: []
+  parameters:
+  - in: query
+    name: limit
+    schema:
+      type: integer
+      format: int64
+    description: 取得上限数(max:200)
+    required: false
+    example: 20
+  - in: query
+    name: offset
+    schema:
+      type: integer
+      format: int64
+    description: 取得開始位置(min:0)
+    required: false
+    example: 0
+  - in: query
+    name: producerId
+    schema:
+      type: string
+    description: 生産者ID
+    required: false
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: name
+    schema:
+      type: string
+    description: 体験名(あいまい検索)(64文字以内)
+    required: false
+    example: 'じゃがいも掘り'
+  response:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1ExperiencesResponse'
+post:
+  summary: 体験登録
+  operationId: v1CreateExperience
+  tags:
+  - Experience
+  security:
+  - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../openapi.yaml#/components/schemas/v1CreateExperienceRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1ExperienceResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+    403:
+      description: 体験の登録権限がない
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/errorResponse'
+

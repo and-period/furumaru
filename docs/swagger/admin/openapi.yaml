@@ -11,48 +11,54 @@ servers:
 tags:
 - name: Auth
   description: 認証関連
+- name: Address
+  description: 住所関連
 - name: Administrator
   description: システム管理者関連
-- name: Coordinator
-  description: コーディネータ関連
-- name: Producer
-  description: 生産者関連
+- name: Broadcast
+  description: マルシェライブ配信関連
 - name: Category
   description: 商品種別関連
-- name: ProductType
-  description: 品目関連
-- name: ProductTag
-  description: 商品タグ関連
+- name: Contact
+  description: お問い合わせ関連
+- name: ContactCategory
+  description: お問い合わせ種別関連
+- name: Coordinator
+  description: コーディネータ関連
+- name: Experience
+  description: 体験関連
+- name: ExperienceType
+  description: 体験種別関連
+- name: Live
+  description: マルシェタイムテーブル関連
+- name: Message
+  description: メッセージ関連
+- name: Notification
+  description: お知らせ関連
+- name: Order
+  description: 注文関連
+- name: PaymentSystem
+  description: 決済システム関連
+- name: Producer
+  description: 生産者関連
 - name: Product
   description: 商品関連
-- name: Shipping
-  description: 配送設定関連
+- name: ProductTag
+  description: 商品タグ関連
+- name: ProductType
+  description: 品目関連
 - name: Promotion
   description: プロモーション関連
 - name: Schedule
   description: マルシェ開催スケジュール関連
-- name: Live
-  description: マルシェタイムテーブル関連
-- name: Broadcast
-  description: マルシェライブ配信関連
-- name: Order
-  description: 注文関連
-- name: User
-  description: 購入者関連
-- name: Address
-  description: 住所関連
-- name: ContactCategory
-  description: お問い合わせ種別関連
-- name: Contact
-  description: お問い合わせ関連
+- name: Shipping
+  description: 配送設定関連
 - name: Thread
   description: お問い合わせ会話履歴関連
-- name: Notification
-  description: お知らせ関連
-- name: Message
-  description: メッセージ関連
-- name: PaymentSystem
-  description: 決済システム関連
+- name: User
+  description: 購入者関連
+- name: Video
+  description: オンデマンド配信関連
 - name: Other
   description: その他（外部APIなど）
 paths:
@@ -88,98 +94,6 @@ paths:
     $ref: './paths/v1/administrators/_adminId/email.yaml'
   /v1/administrators/{adminId}/password:
     $ref: './paths/v1/administrators/_adminId/password.yaml'
-  # Coordinator
-  /v1/coordinators:
-    $ref: './paths/v1/coordinators/index.yaml'
-  /v1/coordinators/{coordinatorId}:
-    $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
-  /v1/coordinators/{coordinatorId}/email:
-    $ref: './paths/v1/coordinators/_coordinatorId/email.yaml'
-  /v1/coordinators/{coordinatorId}/password:
-    $ref: './paths/v1/coordinators/_coordinatorId/password.yaml'
-  /v1/coordinators/{coordinatorId}/producers:
-    $ref: './paths/v1/coordinators/_coordinatorId/producers/index.yaml'
-  # Producer
-  /v1/producers:
-    $ref: './paths/v1/producers/index.yaml'
-  /v1/producers/{producerId}:
-    $ref: './paths/v1/producers/_producerId/index.yaml'
-  # Category
-  /v1/categories:
-    $ref: './paths/v1/categories/index.yaml'
-  /v1/categories/{categoryId}:
-    $ref: './paths/v1/categories/_categoryId/index.yaml'
-  # ProductType
-  /v1/categories/-/product-types:
-    $ref: './paths/v1/categories/-/product-types/index.yaml'
-  /v1/categories/{categoryId}/product-types:
-    $ref: './paths/v1/categories/_categoryId/product-types/index.yaml'
-  /v1/categories/{categoryId}/product-types/{productTypeId}:
-    $ref: './paths/v1/categories/_categoryId/product-types/_productTypeId/index.yaml'
-  /v1/products:
-    $ref: './paths/v1/products/index.yaml'
-  /v1/products/{productId}:
-    $ref: './paths/v1/products/_productId/index.yaml'
-  # ProductTag
-  /v1/product-tags:
-    $ref: './paths/v1/product-tags/index.yaml'
-  /v1/product-tags/{productTagId}:
-    $ref: './paths/v1/product-tags/_productTagId/index.yaml'
-  # Shipping
-  /v1/shippings/default:
-    $ref: './paths/v1/shippings/default.yaml'
-  /v1/coordinators/{coordinatorId}/shippings:
-    $ref: './paths/v1/coordinators/_coordinatorId/shippings/index.yaml'
-  # Promotion
-  /v1/promotions:
-    $ref: './paths/v1/promotions/index.yaml'
-  /v1/promotions/{promotionId}:
-    $ref: './paths/v1/promotions/_promotionId/index.yaml'
-  # ContactCatogory
-  /v1/contact-categories:
-    $ref: './paths/v1/contact-categories/index.yaml'
-  /v1/contact-categories/{contactCategoryId}:
-    $ref: './paths/v1/contact-categories/_contactCategoryId/index.yaml'
-  # Contact
-  /v1/contacts:
-    $ref: './paths/v1/contacts/index.yaml'
-  /v1/contacts/{contactId}:
-    $ref: './paths/v1/contacts/_contactId/index.yaml'
-  # Thread
-  /v1/contacts/{contactId}/threads:
-    $ref: './paths/v1/contacts/_contactId/threads/index.yaml'
-  /v1/contacts/{contactId}/threads/{threadId}:
-    $ref: './paths/v1/contacts/_contactId/threads/_threadId/index.yaml'
-  # Notification
-  /v1/notifications:
-    $ref: './paths/v1/notifications/index.yaml'
-  /v1/notifications/{notificationId}:
-    $ref: './paths/v1/notifications/_notificationId/index.yaml'
-  # Message
-  /v1/messages:
-    $ref: './paths/v1/messages/index.yaml'
-  /v1/messages/{messageId}:
-    $ref: './paths/v1/messages/_messageId/index.yaml'
-  # Schedule
-  /v1/schedules:
-    $ref: './paths/v1/schedules/index.yaml'
-  /v1/schedules/{scheduleId}:
-    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
-  /v1/schedules/{scheduleId}/approval:
-    $ref: './paths/v1/schedules/_scheduleId/approval.yaml'
-  /v1/schedules/{scheduleId}/publish:
-    $ref: './paths/v1/schedules/_scheduleId/publish.yaml'
-  /v1/schedules/{scheduleId}/analytics:
-    $ref: './paths/v1/schedules/_scheduleId/analytics.yaml'
-  # Live
-  /v1/schedules/{scheduleId}/lives:
-    $ref: './paths/v1/schedules/_scheduleId/lives/index.yaml'
-  /v1/schedules/{scheduleId}/lives/{liveId}:
-    $ref: './paths/v1/schedules/_scheduleId/lives/_liveId/index.yaml'
-  /v1/schedules/{scheduleId}/comments:
-    $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
-  /v1/schedules/{scheduleId}/comments/{commentId}:
-    $ref: './paths/v1/schedules/_scheduleId/comments/_commentId/index.yaml'
   # Broadcast
   /v1/schedules/{scheduleId}/broadcasts:
     $ref: './paths/v1/schedules/_scheduleId/broadcasts/index.yaml'
@@ -199,6 +113,108 @@ paths:
     $ref: './paths/v1/guests/schedules/-/broadcasts/youtube/index.yaml'
   /v1/guests/schedules/-/broadcasts/youtube/auth/complete:
     $ref: './paths/v1/guests/schedules/-/broadcasts/youtube/auth/complete.yaml'
+  # Category
+  /v1/categories:
+    $ref: './paths/v1/categories/index.yaml'
+  /v1/categories/{categoryId}:
+    $ref: './paths/v1/categories/_categoryId/index.yaml'
+  # Contact
+  /v1/contacts:
+    $ref: './paths/v1/contacts/index.yaml'
+  /v1/contacts/{contactId}:
+    $ref: './paths/v1/contacts/_contactId/index.yaml'
+  # ContactCatogory
+  /v1/contact-categories:
+    $ref: './paths/v1/contact-categories/index.yaml'
+  /v1/contact-categories/{contactCategoryId}:
+    $ref: './paths/v1/contact-categories/_contactCategoryId/index.yaml'
+  # Coordinator
+  /v1/coordinators:
+    $ref: './paths/v1/coordinators/index.yaml'
+  /v1/coordinators/{coordinatorId}:
+    $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
+  /v1/coordinators/{coordinatorId}/email:
+    $ref: './paths/v1/coordinators/_coordinatorId/email.yaml'
+  /v1/coordinators/{coordinatorId}/password:
+    $ref: './paths/v1/coordinators/_coordinatorId/password.yaml'
+  /v1/coordinators/{coordinatorId}/producers:
+    $ref: './paths/v1/coordinators/_coordinatorId/producers/index.yaml'
+  # Experience
+  /v1/experiences:
+    $ref: './paths/v1/experiences/index.yaml'
+  /v1/experiences/{experienceId}:
+    $ref: './paths/v1/experiences/_experienceId/index.yaml'
+  # ExperienceType
+  /v1/experience-types:
+    $ref: './paths/v1/experience-types/index.yaml'
+  /v1/experience-types/{experienceTypeId}:
+    $ref: './paths/v1/experience-types/_experienceTypeId/index.yaml'
+  # Live
+  /v1/schedules/{scheduleId}/lives:
+    $ref: './paths/v1/schedules/_scheduleId/lives/index.yaml'
+  /v1/schedules/{scheduleId}/lives/{liveId}:
+    $ref: './paths/v1/schedules/_scheduleId/lives/_liveId/index.yaml'
+  /v1/schedules/{scheduleId}/comments:
+    $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
+  /v1/schedules/{scheduleId}/comments/{commentId}:
+    $ref: './paths/v1/schedules/_scheduleId/comments/_commentId/index.yaml'
+  # Message
+  /v1/messages:
+    $ref: './paths/v1/messages/index.yaml'
+  /v1/messages/{messageId}:
+    $ref: './paths/v1/messages/_messageId/index.yaml'
+  # Notification
+  /v1/notifications:
+    $ref: './paths/v1/notifications/index.yaml'
+  /v1/notifications/{notificationId}:
+    $ref: './paths/v1/notifications/_notificationId/index.yaml'
+  # Producer
+  /v1/producers:
+    $ref: './paths/v1/producers/index.yaml'
+  /v1/producers/{producerId}:
+    $ref: './paths/v1/producers/_producerId/index.yaml'
+  # ProductTag
+  /v1/product-tags:
+    $ref: './paths/v1/product-tags/index.yaml'
+  /v1/product-tags/{productTagId}:
+    $ref: './paths/v1/product-tags/_productTagId/index.yaml'
+  # ProductType
+  /v1/categories/-/product-types:
+    $ref: './paths/v1/categories/-/product-types/index.yaml'
+  /v1/categories/{categoryId}/product-types:
+    $ref: './paths/v1/categories/_categoryId/product-types/index.yaml'
+  /v1/categories/{categoryId}/product-types/{productTypeId}:
+    $ref: './paths/v1/categories/_categoryId/product-types/_productTypeId/index.yaml'
+  /v1/products:
+    $ref: './paths/v1/products/index.yaml'
+  /v1/products/{productId}:
+    $ref: './paths/v1/products/_productId/index.yaml'
+  # Promotion
+  /v1/promotions:
+    $ref: './paths/v1/promotions/index.yaml'
+  /v1/promotions/{promotionId}:
+    $ref: './paths/v1/promotions/_promotionId/index.yaml'
+  # Schedule
+  /v1/schedules:
+    $ref: './paths/v1/schedules/index.yaml'
+  /v1/schedules/{scheduleId}:
+    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
+  /v1/schedules/{scheduleId}/approval:
+    $ref: './paths/v1/schedules/_scheduleId/approval.yaml'
+  /v1/schedules/{scheduleId}/publish:
+    $ref: './paths/v1/schedules/_scheduleId/publish.yaml'
+  /v1/schedules/{scheduleId}/analytics:
+    $ref: './paths/v1/schedules/_scheduleId/analytics.yaml'
+  # Shipping
+  /v1/shippings/default:
+    $ref: './paths/v1/shippings/default.yaml'
+  /v1/coordinators/{coordinatorId}/shippings:
+    $ref: './paths/v1/coordinators/_coordinatorId/shippings/index.yaml'
+  # Thread
+  /v1/contacts/{contactId}/threads:
+    $ref: './paths/v1/contacts/_contactId/threads/index.yaml'
+  /v1/contacts/{contactId}/threads/{threadId}:
+    $ref: './paths/v1/contacts/_contactId/threads/_threadId/index.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
@@ -241,6 +257,10 @@ paths:
     $ref: './paths/v1/upload/coordinators/promotion-video.yaml'
   /v1/upload/coordinators/bonus-video:
     $ref: './paths/v1/upload/coordinators/bonus-video.yaml'
+  /v1/upload/experiences/image:
+    $ref: './paths/v1/upload/experiences/image.yaml'
+  /v1/upload/experiences/video:
+    $ref: './paths/v1/upload/experiences/video.yaml'
   /v1/upload/producers/header:
     $ref: './paths/v1/upload/producers/header.yaml'
   /v1/upload/producers/thumbnail:
@@ -265,6 +285,15 @@ paths:
     $ref: './paths/v1/upload/schedules/_scheduleId/broadcasts/archive.yaml'
   /v1/upload/schedules/-/broadcasts/live:
     $ref: './paths/v1/upload/schedules/-/broadcasts/live.yaml'
+  /v1/upload/videos/thumbnail:
+    $ref: './paths/v1/upload/videos/thumbnail.yaml'
+  /v1/upload/videos/file:
+    $ref: './paths/v1/upload/videos/file.yaml'
+  # Video
+  /v1/videos:
+    $ref: './paths/v1/videos/index.yaml'
+  /v1/videos/{videoId}:
+    $ref: './paths/v1/videos/_videoId/index.yaml'
   # Other
   /v1/postal-codes/{postalCode}:
     $ref: './paths/v1/postal-codes/_postalCode.yaml'
@@ -297,6 +326,8 @@ components:
       $ref: './components/schemas/codes/contact.yaml#/contactUserType'
     contactStatus:
       $ref: './components/schemas/codes/contact.yaml#/contactStatus'
+    experienceStatus:
+      $ref: './components/schemas/codes/experience.yaml#/experienceStatus'
     messageType:
       $ref: './components/schemas/codes/message.yaml#/messageType'
     notificationStatus:
@@ -339,6 +370,8 @@ components:
       $ref: './components/schemas/codes/upload.yaml#/uploadStatus'
     userStatus:
       $ref: './components/schemas/codes/user.yaml#/userStatus'
+    videoStatus:
+      $ref: './components/schemas/codes/video.yaml#/videoStatus'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity
@@ -356,12 +389,16 @@ components:
       $ref: './components/schemas/entity/broadcast.yaml#/broadcastViewerLog'
     category:
       $ref: './components/schemas/entity/category.yaml#/category'
-    contactCategory:
-      $ref: './components/schemas/entity/contact-category.yaml#/contactCategory'
     contact:
       $ref: './components/schemas/entity/contact.yaml#/contact'
+    contactCategory:
+      $ref: './components/schemas/entity/contact-category.yaml#/contactCategory'
     coordinator:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
+    experience:
+      $ref: './components/schemas/entity/experience.yaml#/experience'
+    experienceType:
+      $ref: './components/schemas/entity/experience-type.yaml#/experienceType'
     live:
       $ref: './components/schemas/entity/live.yaml#/live'
     liveComment:
@@ -376,12 +413,12 @@ components:
       $ref: './components/schemas/entity/payment-system.yaml#/paymentSystem'
     producer:
       $ref: './components/schemas/entity/producer.yaml#/producer'
+    product:
+      $ref: './components/schemas/entity/product.yaml#/product'
     productTag:
       $ref: './components/schemas/entity/product-tag.yaml#/productTag'
     productType:
       $ref: './components/schemas/entity/product-type.yaml#/productType'
-    product:
-      $ref: './components/schemas/entity/product.yaml#/product'
     promotion:
       $ref: './components/schemas/entity/promotion.yaml#/promotion'
     schedule:
@@ -396,7 +433,15 @@ components:
       $ref: './components/schemas/entity/user.yaml#/userToList'
     userOrder:
       $ref: './components/schemas/entity/user.yaml#/userOrder'
+    video:
+      $ref: './components/schemas/entity/video.yaml#/video'
     # Request
+    v1CreateAdministratorRequest:
+      $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
+    v1UpdateAdministratorRequest:
+      $ref: './components/schemas/v1/administrator.request.yaml#/updateAdministratorRequest'
+    v1UpdateAdministratorEmailRequest:
+      $ref: './components/schemas/v1/administrator.request.yaml#/updateAdministratorEmailRequest'
     v1SignInRequest:
       $ref: './components/schemas/v1/auth.request.yaml#/signInRequest'
     v1RefreshAuthTokenRequest:
@@ -423,74 +468,38 @@ components:
       $ref: './components/schemas/v1/broadcast.request.yaml#/callbackAuthYoutubeBroadcastRequest'
     v1CreateYoutubeBroadcastRequest:
       $ref: './components/schemas/v1/broadcast.request.yaml#/createYoutubeBroadcastRequest'
-    v1CreateAdministratorRequest:
-      $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
-    v1UpdateAdministratorRequest:
-      $ref: './components/schemas/v1/administrator.request.yaml#/updateAdministratorRequest'
-    v1UpdateAdministratorEmailRequest:
-      $ref: './components/schemas/v1/administrator.request.yaml#/updateAdministratorEmailRequest'
+    v1CreateCategoryRequest:
+      $ref: './components/schemas/v1/category.request.yaml#/createCategoryRequest'
+    v1UpdateCategoryRequest:
+      $ref: './components/schemas/v1/category.request.yaml#/updateCategoryRequest'
+    v1CreateContactRequest:
+      $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
+    v1UpdateContactRequest:
+      $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
     v1CreateCoordinatorRequest:
       $ref: './components/schemas/v1/coordinator.request.yaml#/createCoordinatorRequest'
     v1UpdateCoordinatorRequest:
       $ref: './components/schemas/v1/coordinator.request.yaml#/updateCoordinatorRequest'
     v1UpdateCoordinatorEmailRequest:
       $ref: './components/schemas/v1/coordinator.request.yaml#/updateCoordinatorEmailRequest'
-    v1UpdatePaymentSystemRequest:
-      $ref: './components/schemas/v1/payment-system.request.yaml#/updatePaymentSystemRequest'
-    v1CreateProducerRequest:
-      $ref: './components/schemas/v1/producer.request.yaml#/createProducerRequest'
-    v1UpdateProducerRequest:
-      $ref: './components/schemas/v1/producer.request.yaml#/updateProducerRequest'
-    v1CreateCategoryRequest:
-      $ref: './components/schemas/v1/category.request.yaml#/createCategoryRequest'
-    v1UpdateCategoryRequest:
-      $ref: './components/schemas/v1/category.request.yaml#/updateCategoryRequest'
-    v1CreateProductTypeRequest:
-      $ref: './components/schemas/v1/product-type.request.yaml#/createProductTypeRequest'
-    v1UpdateProductTypeRequest:
-      $ref: './components/schemas/v1/product-type.request.yaml#/updateProductTypeRequest'
-    v1CreateProductTagRequest:
-      $ref: './components/schemas/v1/product-tag.request.yaml#/createProductTagRequest'
-    v1UpdateProductTagRequest:
-      $ref: './components/schemas/v1/product-tag.request.yaml#/updateProductTagRequest'
-    v1CreateProductRequest:
-      $ref: './components/schemas/v1/product.request.yaml#/createProductRequest'
-    v1UpdateProductRequest:
-      $ref: './components/schemas/v1/product.request.yaml#/updateProductRequest'
-    v1UpsertShippingRequest:
-      $ref: './components/schemas/v1/shipping.request.yaml#/upsertShippingRequest'
-    v1UpdateDefaultShippingRequest:
-      $ref: './components/schemas/v1/shipping.request.yaml#/updateDefaultShippingRequest'
-    v1CreatePromotionRequest:
-      $ref: './components/schemas/v1/promotion.request.yaml#/createPromotionRequest'
-    v1UpdatePromotionRequest:
-      $ref: './components/schemas/v1/promotion.request.yaml#/updatePromotionRequest'
-    v1CreateContactRequest:
-      $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
-    v1UpdateContactRequest:
-      $ref: './components/schemas/v1/contact.request.yaml#/updateContactRequest'
-    v1CreateThreadRequest:
-      $ref: './components/schemas/v1/thread.request.yaml#/createThreadRequest'
-    v1UpdateThreadRequest:
-      $ref: './components/schemas/v1/thread.request.yaml#/updateThreadRequest'
-    v1CreateNotificationRequest:
-      $ref: './components/schemas/v1/notification.request.yaml#/createNotificationRequest'
-    v1UpdateNotificationRequest:
-      $ref: './components/schemas/v1/notification.request.yaml#/updateNotificationRequest'
-    v1CreateScheduleRequest:
-      $ref: './components/schemas/v1/schedule.request.yaml#/createScheduleRequest'
-    v1UpdateScheduleRequest:
-      $ref: './components/schemas/v1/schedule.request.yaml#/updateScheduleRequest'
-    v1ApproveScheduleRequest:
-      $ref: './components/schemas/v1/schedule.request.yaml#/approveScheduleRequest'
-    v1PublishScheduleRequest:
-      $ref: './components/schemas/v1/schedule.request.yaml#/publishScheduleRequest'
+    v1CreateExperienceRequest:
+      $ref: './components/schemas/v1/experience.request.yaml#/createExperienceRequest'
+    v1UpdateExperienceRequest:
+      $ref: './components/schemas/v1/experience.request.yaml#/updateExperienceRequest'
+    v1CreateExperienceTypeRequest:
+      $ref: './components/schemas/v1/experience-type.request.yaml#/createExperienceTypeRequest'
+    v1UpdateExperienceTypeRequest:
+      $ref: './components/schemas/v1/experience-type.request.yaml#/updateExperienceTypeRequest'
     v1CreateLiveRequest:
       $ref: './components/schemas/v1/live.request.yaml#/createLiveRequest'
     v1UpdateLiveRequest:
       $ref: './components/schemas/v1/live.request.yaml#/updateLiveRequest'
     v1UpdateLiveCommentRequest:
       $ref: './components/schemas/v1/live-comment.request.yaml#/updateLiveCommentRequest'
+    v1CreateNotificationRequest:
+      $ref: './components/schemas/v1/notification.request.yaml#/createNotificationRequest'
+    v1UpdateNotificationRequest:
+      $ref: './components/schemas/v1/notification.request.yaml#/updateNotificationRequest'
     v1DraftOrderRequest:
       $ref: './components/schemas/v1/order.request.yaml#/draftOrderRequest'
     v1CompleteOrderRequest:
@@ -503,98 +512,152 @@ components:
       $ref: './components/schemas/v1/order.request.yaml#/exportOrdersRequest'
     v1GetUploadUrlRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/getUploadUrlRequest'
+    v1UpdatePaymentSystemRequest:
+      $ref: './components/schemas/v1/payment-system.request.yaml#/updatePaymentSystemRequest'
+    v1CreateProducerRequest:
+      $ref: './components/schemas/v1/producer.request.yaml#/createProducerRequest'
+    v1UpdateProducerRequest:
+      $ref: './components/schemas/v1/producer.request.yaml#/updateProducerRequest'
+    v1CreateProductRequest:
+      $ref: './components/schemas/v1/product.request.yaml#/createProductRequest'
+    v1UpdateProductRequest:
+      $ref: './components/schemas/v1/product.request.yaml#/updateProductRequest'
+    v1CreateProductTagRequest:
+      $ref: './components/schemas/v1/product-tag.request.yaml#/createProductTagRequest'
+    v1UpdateProductTagRequest:
+      $ref: './components/schemas/v1/product-tag.request.yaml#/updateProductTagRequest'
+    v1CreateProductTypeRequest:
+      $ref: './components/schemas/v1/product-type.request.yaml#/createProductTypeRequest'
+    v1UpdateProductTypeRequest:
+      $ref: './components/schemas/v1/product-type.request.yaml#/updateProductTypeRequest'
+    v1CreatePromotionRequest:
+      $ref: './components/schemas/v1/promotion.request.yaml#/createPromotionRequest'
+    v1UpdatePromotionRequest:
+      $ref: './components/schemas/v1/promotion.request.yaml#/updatePromotionRequest'
+    v1CreateScheduleRequest:
+      $ref: './components/schemas/v1/schedule.request.yaml#/createScheduleRequest'
+    v1UpdateScheduleRequest:
+      $ref: './components/schemas/v1/schedule.request.yaml#/updateScheduleRequest'
+    v1ApproveScheduleRequest:
+      $ref: './components/schemas/v1/schedule.request.yaml#/approveScheduleRequest'
+    v1PublishScheduleRequest:
+      $ref: './components/schemas/v1/schedule.request.yaml#/publishScheduleRequest'
+    v1UpsertShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/upsertShippingRequest'
+    v1UpdateDefaultShippingRequest:
+      $ref: './components/schemas/v1/shipping.request.yaml#/updateDefaultShippingRequest'
+    v1CreateThreadRequest:
+      $ref: './components/schemas/v1/thread.request.yaml#/createThreadRequest'
+    v1UpdateThreadRequest:
+      $ref: './components/schemas/v1/thread.request.yaml#/updateThreadRequest'
+    v1CreateVideoRequest:
+      $ref: './components/schemas/v1/video.request.yaml#/createVideoRequest'
+    v1UpdateVideoRequest:
+      $ref: './components/schemas/v1/video.request.yaml#/updateVideoRequest'
     # Response
-    v1AuthResponse:
-      $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
-    v1AuthUserResponse:
-      $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
     v1AdministratorResponse:
       $ref: './components/schemas/v1/administrator.response.yaml#/administratorResponse'
     v1AdministratorsResponse:
       $ref: './components/schemas/v1/administrator.response.yaml#/administratorsResponse'
-    v1CoordinatorResponse:
-      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
-    v1CoordinatorsResponse:
-      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
-    v1PaymentSystemsResponse:
-      $ref: './components/schemas/v1/payment-system.response.yaml#/paymentSystemsResponse'
-    v1ProducerResponse:
-      $ref: './components/schemas/v1/producer.response.yaml#/producerResponse'
-    v1ProducersResponse:
-      $ref: './components/schemas/v1/producer.response.yaml#/producersResponse'
-    v1CategoryResponse:
-      $ref: './components/schemas/v1/category.response.yaml#/categoryResponse'
-    v1CategoriesResponse:
-      $ref: './components/schemas/v1/category.response.yaml#/categoriesResponse'
-    v1ProductTypeResponse:
-      $ref: './components/schemas/v1/product-type.response.yaml#/productTypeResponse'
-    v1ProductTypesResponse:
-      $ref: './components/schemas/v1/product-type.response.yaml#/productTypesResponse'
-    v1ProductTagResponse:
-      $ref: './components/schemas/v1/product-tag.response.yaml#/productTagResponse'
-    v1ProductTagsResponse:
-      $ref: './components/schemas/v1/product-tag.response.yaml#/productTagsResponse'
-    v1ProductResponse:
-      $ref: './components/schemas/v1/product.response.yaml#/productResponse'
-    v1ProductsResponse:
-      $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
-    v1ShippingResponse:
-      $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
-    v1PromotionResponse:
-      $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
-    v1PromotionsResponse:
-      $ref: './components/schemas/v1/promotion.response.yaml#/promotionsResponse'
-    v1ContactCategoryResponse:
-      $ref: './components/schemas/v1/contact-category.response.yaml#/contactCategoryResponse'
-    v1ContactCategoriesResponse:
-      $ref: './components/schemas/v1/contact-category.response.yaml#/contactCategoriesResponse'
-    v1ContactResponse:
-      $ref: './components/schemas/v1/contact.response.yaml#/contactResponse'
-    v1ContactsResponse:
-      $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
-    v1ThreadResponse:
-      $ref: './components/schemas/v1/thread.response.yaml#/threadResponse'
-    v1ThreadsResponse:
-      $ref: './components/schemas/v1/thread.response.yaml#/threadsResponse'
-    v1NotificationResponse:
-      $ref: './components/schemas/v1/notification.response.yaml#/notificationResponse'
-    v1NotificationsResponse:
-      $ref: './components/schemas/v1/notification.response.yaml#/notificationsResponse'
-    v1MessageResponse:
-      $ref: './components/schemas/v1/message.response.yaml#/messageResponse'
-    v1MessagesResponse:
-      $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
-    v1ScheduleResponse:
-      $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
-    v1SchedulesResponse:
-      $ref: './components/schemas/v1/schedule.response.yaml#/schedulesResponse'
-    v1AnalyzeScheduleResponse:
-      $ref: './components/schemas/v1/schedule.response.yaml#/analyzeScheduleResponse'
-    v1LiveResponse:
-      $ref: './components/schemas/v1/live.response.yaml#/liveResponse'
-    v1LivesResponse:
-      $ref: './components/schemas/v1/live.response.yaml#/livesResponse'
-    v1LiveCommentsResponse:
-      $ref: './components/schemas/v1/live-comment.response.yaml#/liveCommentsResponse'
+    v1AuthResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/authResponse'
+    v1AuthUserResponse:
+      $ref: './components/schemas/v1/auth.response.yaml#/authUserResponse'
     v1BroadcastResponse:
       $ref: './components/schemas/v1/broadcast.response.yaml#/broadcastResponse'
     v1GuestBroadcastResponse:
       $ref: './components/schemas/v1/broadcast.response.yaml#/guestBroadcastResponse'
     v1AuthYoutubeBroadcastResponse:
       $ref: './components/schemas/v1/broadcast.response.yaml#/authYoutubeBroadcastResponse'
+    v1CategoryResponse:
+      $ref: './components/schemas/v1/category.response.yaml#/categoryResponse'
+    v1CategoriesResponse:
+      $ref: './components/schemas/v1/category.response.yaml#/categoriesResponse'
+    v1ContactResponse:
+      $ref: './components/schemas/v1/contact.response.yaml#/contactResponse'
+    v1ContactsResponse:
+      $ref: './components/schemas/v1/contact.response.yaml#/contactsResponse'
+    v1ContactCategoryResponse:
+      $ref: './components/schemas/v1/contact-category.response.yaml#/contactCategoryResponse'
+    v1ContactCategoriesResponse:
+      $ref: './components/schemas/v1/contact-category.response.yaml#/contactCategoriesResponse'
+    v1CoordinatorResponse:
+      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
+    v1CoordinatorsResponse:
+      $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
+    v1ExperienceResponse:
+      $ref: './components/schemas/v1/experience.response.yaml#/experienceResponse'
+    # v1ExperiencesResponse:
+    #   $ref: './components/schemas/v1/experience.response.yaml#/experiencesResponse'
+    v1ExperienceTypeResponse:
+      $ref: './components/schemas/v1/experience-type.response.yaml#/experienceTypeResponse'
+    v1ExperienceTypesResponse:
+      $ref: './components/schemas/v1/experience-type.response.yaml#/experienceTypesResponse'
+    v1LiveResponse:
+      $ref: './components/schemas/v1/live.response.yaml#/liveResponse'
+    v1LivesResponse:
+      $ref: './components/schemas/v1/live.response.yaml#/livesResponse'
+    v1LiveCommentsResponse:
+      $ref: './components/schemas/v1/live-comment.response.yaml#/liveCommentsResponse'
+    v1MessageResponse:
+      $ref: './components/schemas/v1/message.response.yaml#/messageResponse'
+    v1MessagesResponse:
+      $ref: './components/schemas/v1/message.response.yaml#/messagesResponse'
+    v1NotificationResponse:
+      $ref: './components/schemas/v1/notification.response.yaml#/notificationResponse'
+    v1NotificationsResponse:
+      $ref: './components/schemas/v1/notification.response.yaml#/notificationsResponse'
     v1OrderResponse:
       $ref: './components/schemas/v1/order.response.yaml#/orderResponse'
     v1OrdersResponse:
       $ref: './components/schemas/v1/order.response.yaml#/ordersResponse'
+    v1PaymentSystemsResponse:
+      $ref: './components/schemas/v1/payment-system.response.yaml#/paymentSystemsResponse'
+    v1PostalCodeResponse:
+      $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
+    v1ProducerResponse:
+      $ref: './components/schemas/v1/producer.response.yaml#/producerResponse'
+    v1ProducersResponse:
+      $ref: './components/schemas/v1/producer.response.yaml#/producersResponse'
+    v1ProductResponse:
+      $ref: './components/schemas/v1/product.response.yaml#/productResponse'
+    v1ProductsResponse:
+      $ref: './components/schemas/v1/product.response.yaml#/productsResponse'
+    v1ProductTagResponse:
+      $ref: './components/schemas/v1/product-tag.response.yaml#/productTagResponse'
+    v1ProductTagsResponse:
+      $ref: './components/schemas/v1/product-tag.response.yaml#/productTagsResponse'
+    v1ProductTypeResponse:
+      $ref: './components/schemas/v1/product-type.response.yaml#/productTypeResponse'
+    v1ProductTypesResponse:
+      $ref: './components/schemas/v1/product-type.response.yaml#/productTypesResponse'
+    v1PromotionResponse:
+      $ref: './components/schemas/v1/promotion.response.yaml#/promotionResponse'
+    v1PromotionsResponse:
+      $ref: './components/schemas/v1/promotion.response.yaml#/promotionsResponse'
+    v1ScheduleResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/scheduleResponse'
+    v1SchedulesResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/schedulesResponse'
+    v1AnalyzeScheduleResponse:
+      $ref: './components/schemas/v1/schedule.response.yaml#/analyzeScheduleResponse'
+    v1ShippingResponse:
+      $ref: './components/schemas/v1/shipping.response.yaml#/shippingResponse'
+    v1ThreadResponse:
+      $ref: './components/schemas/v1/thread.response.yaml#/threadResponse'
+    v1ThreadsResponse:
+      $ref: './components/schemas/v1/thread.response.yaml#/threadsResponse'
+    v1UploadUrlResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadUrlResponse'
+    v1UploadStateResponse:
+      $ref: './components/schemas/v1/upload.response.yaml#/uploadStateResponse'
     v1UserResponse:
       $ref: './components/schemas/v1/user.response.yaml#/userResponse'
     v1UsersResponse:
       $ref: './components/schemas/v1/user.response.yaml#/usersResponse'
     v1UserOrdersResponse:
       $ref: './components/schemas/v1/user.response.yaml#/userOrdersResponse'
-    v1PostalCodeResponse:
-      $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
-    v1UploadUrlResponse:
-      $ref: './components/schemas/v1/upload.response.yaml#/uploadUrlResponse'
-    v1UploadStateResponse:
-      $ref: './components/schemas/v1/upload.response.yaml#/uploadStateResponse'
+    v1VideoResponse:
+      $ref: './components/schemas/v1/video.response.yaml#/videoResponse'
+    v1VideosResponse:
+      $ref: './components/schemas/v1/video.response.yaml#/videosResponse'

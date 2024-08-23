@@ -144,6 +144,8 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.contactCategoryRoutes(v1)
 	h.contactReadRoutes(v1)
 	h.coordinatorRoutes(v1)
+	h.experienceRoutes(v1)
+	h.experienceTypeRoutes(v1)
 	h.liveRoutes(v1)
 	h.liveCommentRoutes(v1)
 	h.messageRoutes(v1)
@@ -162,6 +164,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.threadRoutes(v1)
 	h.uploadRoutes(v1)
 	h.userRoutes(v1)
+	h.videoRoutes(v1)
 
 	// 認証が不要なエンドポイント
 	h.guestBroadcastRoutes(v1)
