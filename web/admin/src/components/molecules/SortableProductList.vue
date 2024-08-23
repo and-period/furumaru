@@ -4,7 +4,7 @@ import { mdiDrag } from '@mdi/js'
 import { getResizedImages } from '~/lib/helpers'
 import type { Product, ProductMediaInner } from '~/types/api'
 
-const model = defineModel()
+const model = defineModel<any>()
 
 interface Props {
   products: Product[]

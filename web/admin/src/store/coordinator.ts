@@ -3,13 +3,7 @@ import { defineStore } from 'pinia'
 import { fileUpload } from './helper'
 import { useProductTypeStore } from './product-type'
 import { apiClient } from '~/plugins/api-client'
-import {
-  type Coordinator,
-  type CreateCoordinatorRequest,
-  type GetUploadUrlRequest,
-  type Producer,
-  type UpdateCoordinatorRequest,
-} from '~/types/api'
+import type { Coordinator, CreateCoordinatorRequest, GetUploadUrlRequest, Producer, UpdateCoordinatorRequest } from '~/types/api'
 
 export const useCoordinatorStore = defineStore('coordinator', {
   state: () => ({
