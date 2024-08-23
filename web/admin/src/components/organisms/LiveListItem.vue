@@ -327,6 +327,7 @@ watch(
             density="comfortable"
             @update:search="onSearchProductFromUpdate"
           >
+            <!-- eslint-disable-next-line vue/no-template-shadow -->
             <template #chip="{ props: val, item }">
               <v-chip
                 v-bind="val"
@@ -337,6 +338,7 @@ watch(
                 variant="outlined"
               />
             </template>
+            <!-- eslint-disable-next-line vue/no-template-shadow -->
             <template #item="{ props: val, item }">
               <v-list-item
                 v-bind="val"

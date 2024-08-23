@@ -6,7 +6,7 @@ import { convertJapaneseToI18nPhoneNumber } from '~/lib/formatter'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import { useCommonStore, useCoordinatorStore, useProductTypeStore } from '~/store'
 import { type CreateCoordinatorRequest, Prefecture } from '~/types/api'
-import { type ImageUploadStatus } from '~/types/props'
+import type { ImageUploadStatus } from '~/types/props'
 
 const router = useRouter()
 const commonStore = useCommonStore()

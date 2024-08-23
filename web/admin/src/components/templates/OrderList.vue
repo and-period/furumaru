@@ -93,8 +93,8 @@ const emit = defineEmits<{
   (e: 'click:update-items-per-page', page: number): void
   (e: 'update:import-dialog', dialog: boolean): void
   (e: 'update:export-dialog', dialog: boolean): void
-  (e: 'update:import-form-data', formData: Object): void
-  (e: 'update:export-form-data', formData: Object): void
+  (e: 'update:import-form-data', formData: object): void
+  (e: 'update:export-form-data', formData: ExportOrdersRequest): void
   (e: 'submit:import'): void
   (e: 'submit:export'): void
 }>()

@@ -4,7 +4,7 @@ import useVuelidate from '@vuelidate/core'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
 
 import { AdminRole, type Category, type CreateProductTypeRequest, type ProductType, type UpdateProductTypeRequest } from '~/types/api'
-import { type ImageUploadStatus } from '~/types/props'
+import type { ImageUploadStatus } from '~/types/props'
 import { getErrorMessage } from '~/lib/validations'
 import { getResizedImages } from '~/lib/helpers'
 import { CreateProductTypeValidationRules, UpdateProductTypeValidationRules } from '~/types/validations'
