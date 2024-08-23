@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `stores`.`experience_revisions` (
   `price_junior_high_school` BIGINT      NOT NULL,                -- 中学生料金
   `price_elementary_school`  BIGINT      NOT NULL,                -- 小学生料金
   `price_preschool`          BIGINT      NOT NULL,                -- 幼児料金
-  `price_sinior`             BIGINT      NOT NULL,                -- シニア料金
+  `price_senior`             BIGINT      NOT NULL,                -- シニア料金
   `created_at`               DATETIME(3) NOT NULL,                -- 登録日時
   `updated_at`               DATETIME(3) NOT NULL,                -- 更新日時
   PRIMARY KEY (`id`),
