@@ -1,0 +1,256 @@
+createExperienceRequest:
+  type: object
+  properties:
+    title:
+      type: string
+      description: タイトル(128文字まで)
+    description:
+      type: string
+      description: 説明(20000文字まで)
+    public:
+      type: boolean
+      description: 公開フラグ
+    soldOut:
+      type: boolean
+      description: 完売フラグ
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    producerId:
+      type: string
+      description: 生産者ID
+    experienceTypeId:
+      type: string
+      description: 体験種別ID
+    media:
+      type: array
+      description: メディア一覧(8つまで)
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: メディアURL
+          isThumbnail:
+            type: boolean
+            description: サムネイルとして使用（1つまで）
+        required:
+        - url
+        - isThumbnail
+    priceAdult:
+      type: integer
+      format: int64
+      description: 大人販売価格(税込:0以上)
+    priceJuniorHighSchool:
+      type: integer
+      format: int64
+      description: 中学生販売価格(税込:0以上)
+    priceElementarySchool:
+      type: integer
+      format: int64
+      description: 小学生販売価格(税込:0以上)
+    pricePreschooler:
+      type: integer
+      format: int64
+      description: 幼児販売価格(税込:0以上)
+    priceSenior:
+      type: integer
+      format: int64
+      description: シニア販売価格(税込:0以上)
+    recommendedPoint1:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint2:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint3:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    hostPrefectureCode:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+      description: 開催場所(都道府県)
+    hostCity:
+      type: string
+      description: 開催場所(市区町村)
+    startAt:
+      type: integer
+      format: int64
+      description: 販売開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: 販売終了日時 (unixtime)
+  required:
+  - title
+  - description
+  - public
+  - soldOut
+  - coordinatorId
+  - producerId
+  - experienceTypeId
+  - media
+  - priceAdult
+  - priceJuniorHighSchool
+  - priceElementarySchool
+  - pricePreschooler
+  - priceSenior
+  - recommendedPoint1
+  - recommendedPoint2
+  - recommendedPoint3
+  - hostPrefectureCode
+  - hostCity
+  - startAt
+  - endAt
+  example:
+    title: 'じゃがいも収穫体験'
+    description: 'じゃがいもを収穫する体験です。'
+    public: true
+    soldOut: false
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+    experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+    media:
+      - url: 'https://example.com/image1.jpg'
+        isThumbnail: true
+      - url: 'https://example.com/image2.jpg'
+        isThumbnail: false
+    priceAdult: 1000
+    priceJuniorHighSchool: 800
+    priceElementarySchool: 600
+    pricePreschooler: 400
+    priceSenior: 800
+    recommendedPoint1: '新鮮なじゃがいもを収穫'
+    recommendedPoint2: '新鮮なじゃがいもを収穫'
+    recommendedPoint3: '新鮮なじゃがいもを収穫'
+    hostPrefectureCode: 1
+    hostCity: '東京都'
+    startAt: 1609459200
+    endAt: 1609545600
+updateExperienceRequest:
+  type: object
+  properties:
+    title:
+      type: string
+      description: タイトル(128文字まで)
+    description:
+      type: string
+      description: 説明(20000文字まで)
+    public:
+      type: boolean
+      description: 公開フラグ
+    soldOut:
+      type: boolean
+      description: 完売フラグ
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    producerId:
+      type: string
+      description: 生産者ID
+    experienceTypeId:
+      type: string
+      description: 体験種別ID
+    media:
+      type: array
+      description: メディア一覧(8つまで)
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: メディアURL
+          isThumbnail:
+            type: boolean
+            description: サムネイルとして使用（1つまで）
+        required:
+        - url
+        - isThumbnail
+    priceAdult:
+      type: integer
+      format: int64
+      description: 大人販売価格(税込:0以上)
+    priceJuniorHighSchool:
+      type: integer
+      format: int64
+      description: 中学生販売価格(税込:0以上)
+    priceElementarySchool:
+      type: integer
+      format: int64
+      description: 小学生販売価格(税込:0以上)
+    pricePreschooler:
+      type: integer
+      format: int64
+      description: 幼児販売価格(税込:0以上)
+    priceSenior:
+      type: integer
+      format: int64
+      description: シニア販売価格(税込:0以上)
+    recommendedPoint1:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint2:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint3:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    hostPrefectureCode:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+      description: 開催場所(都道府県)
+    hostCity:
+      type: string
+      description: 開催場所(市区町村)
+    startAt:
+      type: integer
+      format: int64
+      description: 販売開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: 販売終了日時 (unixtime)
+  required:
+  - title
+  - description
+  - public
+  - soldOut
+  - coordinatorId
+  - producerId
+  - experienceTypeId
+  - media
+  - priceAdult
+  - priceJuniorHighSchool
+  - priceElementarySchool
+  - pricePreschooler
+  - priceSenior
+  - recommendedPoint1
+  - recommendedPoint2
+  - recommendedPoint3
+  - hostPrefectureCode
+  - hostCity
+  - startAt
+  - endAt
+  example:
+    title: 'じゃがいも収穫体験'
+    description: 'じゃがいもを収穫する体験です。'
+    public: true
+    soldOut: false
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+    experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+    media:
+      - url: 'https://example.com/image1.jpg'
+        isThumbnail: true
+      - url: 'https://example.com/image2.jpg'
+        isThumbnail: false
+    priceAdult: 1000
+    priceJuniorHighSchool: 800
+    priceElementarySchool: 600
+    pricePreschooler: 400
+    priceSenior: 800
+    recommendedPoint1: '新鮮なじゃがいもを収穫'
+    recommendedPoint2: '新鮮なじゃがいもを収穫'
+    recommendedPoint3: '新鮮なじゃがいもを収穫'
+    hostPrefectureCode: 1
+    hostCity: '東京都'
+    startAt: 1609459200
+    endAt: 1609545600

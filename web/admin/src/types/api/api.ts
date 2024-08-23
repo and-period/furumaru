@@ -1514,6 +1514,148 @@ export interface CreateCoordinatorRequest {
 /**
  * 
  * @export
+ * @interface CreateExperienceRequest
+ */
+export interface CreateExperienceRequest {
+    /**
+     * タイトル(128文字まで)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'title': string;
+    /**
+     * 説明(20000文字まで)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'description': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof CreateExperienceRequest
+     */
+    'public': boolean;
+    /**
+     * 完売フラグ
+     * @type {boolean}
+     * @memberof CreateExperienceRequest
+     */
+    'soldOut': boolean;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'producerId': string;
+    /**
+     * 体験種別ID
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'experienceTypeId': string;
+    /**
+     * メディア一覧(8つまで)
+     * @type {Array<ExperienceMediaInner>}
+     * @memberof CreateExperienceRequest
+     */
+    'media': Array<ExperienceMediaInner>;
+    /**
+     * 大人販売価格(税込:0以上)
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'priceAdult': number;
+    /**
+     * 中学生販売価格(税込:0以上)
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'priceJuniorHighSchool': number;
+    /**
+     * 小学生販売価格(税込:0以上)
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'priceElementarySchool': number;
+    /**
+     * 幼児販売価格(税込:0以上)
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'pricePreschooler': number;
+    /**
+     * シニア販売価格(税込:0以上)
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'priceSenior': number;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'recommendedPoint3': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof CreateExperienceRequest
+     */
+    'hostPrefectureCode': Prefecture;
+    /**
+     * 開催場所(市区町村)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'hostCity': string;
+    /**
+     * 販売開始日時 (unixtime)
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'startAt': number;
+    /**
+     * 販売終了日時 (unixtime)
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'endAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CreateExperienceTypeRequest
+ */
+export interface CreateExperienceTypeRequest {
+    /**
+     * 体験種別名(32文字まで)
+     * @type {string}
+     * @memberof CreateExperienceTypeRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface CreateLiveRequest
  */
 export interface CreateLiveRequest {
@@ -2085,6 +2227,73 @@ export interface CreateThreadRequest {
 /**
  * 
  * @export
+ * @interface CreateVideoRequest
+ */
+export interface CreateVideoRequest {
+    /**
+     * タイトル(128文字まで)
+     * @type {string}
+     * @memberof CreateVideoRequest
+     */
+    'title': string;
+    /**
+     * 説明(20000文字まで)
+     * @type {string}
+     * @memberof CreateVideoRequest
+     */
+    'description': string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof CreateVideoRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof CreateVideoRequest
+     */
+    'productIds': Array<string>;
+    /**
+     * 体験ID一覧
+     * @type {Array<string>}
+     * @memberof CreateVideoRequest
+     */
+    'experienceIds': Array<string>;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof CreateVideoRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * 動画URL
+     * @type {string}
+     * @memberof CreateVideoRequest
+     */
+    'videoUrl': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof CreateVideoRequest
+     */
+    'public': boolean;
+    /**
+     * 限定公開フラグ
+     * @type {boolean}
+     * @memberof CreateVideoRequest
+     */
+    'limited': boolean;
+    /**
+     * 公開日時 (unixtime)
+     * @type {number}
+     * @memberof CreateVideoRequest
+     */
+    'publishedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface CreateYoutubeBroadcastRequest
  */
 export interface CreateYoutubeBroadcastRequest {
@@ -2200,6 +2409,308 @@ export interface ErrorResponse {
      * @memberof ErrorResponse
      */
     'details': string;
+}
+/**
+ * 体験情報
+ * @export
+ * @interface Experience
+ */
+export interface Experience {
+    /**
+     * 体験ID
+     * @type {string}
+     * @memberof Experience
+     */
+    'id': string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Experience
+     */
+    'coordinatorId': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof Experience
+     */
+    'producerId': string;
+    /**
+     * 体験種別ID
+     * @type {string}
+     * @memberof Experience
+     */
+    'experienceTypeId': string;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof Experience
+     */
+    'title': string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof Experience
+     */
+    'description': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof Experience
+     */
+    'public': boolean;
+    /**
+     * 完売フラグ
+     * @type {boolean}
+     * @memberof Experience
+     */
+    'soldOut': boolean;
+    /**
+     * 
+     * @type {ExperienceStatus}
+     * @memberof Experience
+     */
+    'status': ExperienceStatus;
+    /**
+     * 
+     * @type {Array<ExperienceMediaInner>}
+     * @memberof Experience
+     */
+    'media': Array<ExperienceMediaInner>;
+    /**
+     * 大人販売価格（税込）
+     * @type {number}
+     * @memberof Experience
+     */
+    'priceAdult': number;
+    /**
+     * 中学生販売価格（税込）
+     * @type {number}
+     * @memberof Experience
+     */
+    'priceJuniorHighSchool': number;
+    /**
+     * 小学生販売価格（税込）
+     * @type {number}
+     * @memberof Experience
+     */
+    'priceElementarySchool': number;
+    /**
+     * 幼児販売価格（税込）
+     * @type {number}
+     * @memberof Experience
+     */
+    'pricePreschooler': number;
+    /**
+     * シニア販売価格（税込）
+     * @type {number}
+     * @memberof Experience
+     */
+    'priceSenior': number;
+    /**
+     * おすすめポイント1
+     * @type {string}
+     * @memberof Experience
+     */
+    'recommendedPoint1'?: string;
+    /**
+     * おすすめポイント2
+     * @type {string}
+     * @memberof Experience
+     */
+    'recommendedPoint2'?: string;
+    /**
+     * おすすめポイント3
+     * @type {string}
+     * @memberof Experience
+     */
+    'recommendedPoint3'?: string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof Experience
+     */
+    'hostPrefectureCode': Prefecture;
+    /**
+     * 開催地（市区町村）
+     * @type {string}
+     * @memberof Experience
+     */
+    'hostCity': string;
+    /**
+     * 販売開始日時 (unixtime)
+     * @type {number}
+     * @memberof Experience
+     */
+    'startAt': number;
+    /**
+     * 販売終了日時 (unixtime)
+     * @type {number}
+     * @memberof Experience
+     */
+    'endAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Experience
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Experience
+     */
+    'updatedAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ExperienceMediaInner
+ */
+export interface ExperienceMediaInner {
+    /**
+     * メディアURL
+     * @type {string}
+     * @memberof ExperienceMediaInner
+     */
+    'url': string;
+    /**
+     * サムネイルとして使用（1つまで）
+     * @type {boolean}
+     * @memberof ExperienceMediaInner
+     */
+    'isThumbnail': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ExperienceResponse
+ */
+export interface ExperienceResponse {
+    /**
+     * 
+     * @type {Experience}
+     * @memberof ExperienceResponse
+     */
+    'experience': Experience;
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof ExperienceResponse
+     */
+    'coordinator': Coordinator;
+    /**
+     * 
+     * @type {Producer}
+     * @memberof ExperienceResponse
+     */
+    'producer': Producer;
+    /**
+     * 
+     * @type {ExperienceType}
+     * @memberof ExperienceResponse
+     */
+    'experienceType': ExperienceType;
+}
+/**
+ * 商品販売ステータス
+ * @export
+ * @enum {string}
+ */
+
+export const ExperienceStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 非公開
+    */
+    PRIVATE: 1,
+    /**
+    * 公開前
+    */
+    WAITING: 2,
+    /**
+    * 受付中
+    */
+    ACCEPTING: 3,
+    /**
+    * 定員オーバー
+    */
+    SOLD_OUT: 4,
+    /**
+    * 販売終了
+    */
+    FINISHED: 5
+} as const;
+
+export type ExperienceStatus = typeof ExperienceStatus[keyof typeof ExperienceStatus];
+
+
+/**
+ * 体験種別情報
+ * @export
+ * @interface ExperienceType
+ */
+export interface ExperienceType {
+    /**
+     * 体験種別ID
+     * @type {string}
+     * @memberof ExperienceType
+     */
+    'id': string;
+    /**
+     * 体験種別名
+     * @type {string}
+     * @memberof ExperienceType
+     */
+    'name': string;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof ExperienceType
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof ExperienceType
+     */
+    'updatedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface ExperienceTypeResponse
+ */
+export interface ExperienceTypeResponse {
+    /**
+     * 
+     * @type {ExperienceType}
+     * @memberof ExperienceTypeResponse
+     */
+    'experienceType': ExperienceType;
+}
+/**
+ * 
+ * @export
+ * @interface ExperienceTypesResponse
+ */
+export interface ExperienceTypesResponse {
+    /**
+     * 体験種別一覧
+     * @type {Array<ExperienceType>}
+     * @memberof ExperienceTypesResponse
+     */
+    'experienceTypes': Array<ExperienceType>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof ExperienceTypesResponse
+     */
+    'total': number;
 }
 /**
  * 
@@ -5643,6 +6154,148 @@ export interface UpdateDefaultShippingRequest {
 /**
  * 
  * @export
+ * @interface UpdateExperienceRequest
+ */
+export interface UpdateExperienceRequest {
+    /**
+     * タイトル(128文字まで)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'title': string;
+    /**
+     * 説明(20000文字まで)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'description': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof UpdateExperienceRequest
+     */
+    'public': boolean;
+    /**
+     * 完売フラグ
+     * @type {boolean}
+     * @memberof UpdateExperienceRequest
+     */
+    'soldOut': boolean;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 生産者ID
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'producerId': string;
+    /**
+     * 体験種別ID
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'experienceTypeId': string;
+    /**
+     * メディア一覧(8つまで)
+     * @type {Array<ExperienceMediaInner>}
+     * @memberof UpdateExperienceRequest
+     */
+    'media': Array<ExperienceMediaInner>;
+    /**
+     * 大人販売価格(税込:0以上)
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'priceAdult': number;
+    /**
+     * 中学生販売価格(税込:0以上)
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'priceJuniorHighSchool': number;
+    /**
+     * 小学生販売価格(税込:0以上)
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'priceElementarySchool': number;
+    /**
+     * 幼児販売価格(税込:0以上)
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'pricePreschooler': number;
+    /**
+     * シニア販売価格(税込:0以上)
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'priceSenior': number;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'recommendedPoint1': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'recommendedPoint2': string;
+    /**
+     * おすすめポイント1(128文字まで)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'recommendedPoint3': string;
+    /**
+     * 
+     * @type {Prefecture}
+     * @memberof UpdateExperienceRequest
+     */
+    'hostPrefectureCode': Prefecture;
+    /**
+     * 開催場所(市区町村)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'hostCity': string;
+    /**
+     * 販売開始日時 (unixtime)
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'startAt': number;
+    /**
+     * 販売終了日時 (unixtime)
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'endAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface UpdateExperienceTypeRequest
+ */
+export interface UpdateExperienceTypeRequest {
+    /**
+     * 体験種別名(32文字まで)
+     * @type {string}
+     * @memberof UpdateExperienceTypeRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface UpdateLiveCommentRequest
  */
 export interface UpdateLiveCommentRequest {
@@ -6207,6 +6860,73 @@ export interface UpdateThreadRequest {
 /**
  * 
  * @export
+ * @interface UpdateVideoRequest
+ */
+export interface UpdateVideoRequest {
+    /**
+     * タイトル(128文字まで)
+     * @type {string}
+     * @memberof UpdateVideoRequest
+     */
+    'title': string;
+    /**
+     * 説明(20000文字まで)
+     * @type {string}
+     * @memberof UpdateVideoRequest
+     */
+    'description': string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof UpdateVideoRequest
+     */
+    'coordinatorId': string;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof UpdateVideoRequest
+     */
+    'productIds': Array<string>;
+    /**
+     * 体験ID一覧
+     * @type {Array<string>}
+     * @memberof UpdateVideoRequest
+     */
+    'experienceIds': Array<string>;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof UpdateVideoRequest
+     */
+    'thumbnailUrl': string;
+    /**
+     * 動画URL
+     * @type {string}
+     * @memberof UpdateVideoRequest
+     */
+    'videoUrl': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof UpdateVideoRequest
+     */
+    'public': boolean;
+    /**
+     * 限定公開フラグ
+     * @type {boolean}
+     * @memberof UpdateVideoRequest
+     */
+    'limited': boolean;
+    /**
+     * 公開日時 (unixtime)
+     * @type {number}
+     * @memberof UpdateVideoRequest
+     */
+    'publishedAt': number;
+}
+/**
+ * 
+ * @export
  * @interface UploadStateResponse
  */
 export interface UploadStateResponse {
@@ -6672,6 +7392,199 @@ export interface VerifyAuthEmailRequest {
      * @memberof VerifyAuthEmailRequest
      */
     'verifyCode': string;
+}
+/**
+ * オンデマンド配信情報
+ * @export
+ * @interface Video
+ */
+export interface Video {
+    /**
+     * オンデマンド配信ID
+     * @type {string}
+     * @memberof Video
+     */
+    'id': string;
+    /**
+     * コーディネータID
+     * @type {string}
+     * @memberof Video
+     */
+    'coordinatorId': string;
+    /**
+     * 商品ID一覧
+     * @type {Array<string>}
+     * @memberof Video
+     */
+    'productIds': Array<string>;
+    /**
+     * 体験ID一覧
+     * @type {Array<string>}
+     * @memberof Video
+     */
+    'experienceIds': Array<string>;
+    /**
+     * タイトル
+     * @type {string}
+     * @memberof Video
+     */
+    'title': string;
+    /**
+     * 説明
+     * @type {string}
+     * @memberof Video
+     */
+    'description': string;
+    /**
+     * 
+     * @type {VideoStatus}
+     * @memberof Video
+     */
+    'status': VideoStatus;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof Video
+     */
+    'thumbnailUrl': string;
+    /**
+     * 動画URL
+     * @type {string}
+     * @memberof Video
+     */
+    'videoUrl': string;
+    /**
+     * 公開フラグ
+     * @type {boolean}
+     * @memberof Video
+     */
+    'public': boolean;
+    /**
+     * 限定公開フラグ
+     * @type {boolean}
+     * @memberof Video
+     */
+    'limited': boolean;
+    /**
+     * 公開日時 (unixtime)
+     * @type {number}
+     * @memberof Video
+     */
+    'publishedAt': number;
+    /**
+     * 登録日時 (unixtime)
+     * @type {number}
+     * @memberof Video
+     */
+    'createdAt': number;
+    /**
+     * 更新日時 (unixtime)
+     * @type {number}
+     * @memberof Video
+     */
+    'updatedAt': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface VideoResponse
+ */
+export interface VideoResponse {
+    /**
+     * 
+     * @type {Video}
+     * @memberof VideoResponse
+     */
+    'video': Video;
+    /**
+     * 
+     * @type {Coordinator}
+     * @memberof VideoResponse
+     */
+    'coordinator': Coordinator;
+    /**
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof VideoResponse
+     */
+    'products': Array<Product>;
+    /**
+     * 体験一覧
+     * @type {Array<Experience>}
+     * @memberof VideoResponse
+     */
+    'experiences': Array<Experience>;
+}
+/**
+ * オンデマンド配信ステータス
+ * @export
+ * @enum {string}
+ */
+
+export const VideoStatus = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 非公開
+    */
+    PRIVATE: 1,
+    /**
+    * 公開前
+    */
+    WAITING: 2,
+    /**
+    * 限定公開
+    */
+    LIMITED: 3,
+    /**
+    * 公開済み
+    */
+    PUBLISHED: 4
+} as const;
+
+export type VideoStatus = typeof VideoStatus[keyof typeof VideoStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface VideosResponse
+ */
+export interface VideosResponse {
+    /**
+     * 動画一覧
+     * @type {Array<Video>}
+     * @memberof VideosResponse
+     */
+    'videos': Array<Video>;
+    /**
+     * コーディネーター一覧
+     * @type {Array<Coordinator>}
+     * @memberof VideosResponse
+     */
+    'coordinators': Array<Coordinator>;
+    /**
+     * 商品一覧
+     * @type {Array<Product>}
+     * @memberof VideosResponse
+     */
+    'products': Array<Product>;
+    /**
+     * 体験一覧
+     * @type {Array<Experience>}
+     * @memberof VideosResponse
+     */
+    'experiences': Array<Experience>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof VideosResponse
+     */
+    'total': number;
 }
 /**
  * 曜日
@@ -11578,6 +12491,947 @@ export class CoordinatorApi extends BaseAPI {
      */
     public v1UpdateCoordinatorPassword(coordinatorId: string, body: object, options?: RawAxiosRequestConfig) {
         return CoordinatorApiFp(this.configuration).v1UpdateCoordinatorPassword(coordinatorId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ExperienceApi - axios parameter creator
+ * @export
+ */
+export const ExperienceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 体験登録
+         * @param {CreateExperienceRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateExperience: async (body: CreateExperienceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateExperience', 'body', body)
+            const localVarPath = `/v1/experiences`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験削除
+         * @param {string} experienceId 体験ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteExperience: async (experienceId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'experienceId' is not null or undefined
+            assertParamExists('v1DeleteExperience', 'experienceId', experienceId)
+            const localVarPath = `/v1/experiences/{experienceId}`
+                .replace(`{${"experienceId"}}`, encodeURIComponent(String(experienceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験取得
+         * @param {string} experienceId 体験ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetExperience: async (experienceId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'experienceId' is not null or undefined
+            assertParamExists('v1GetExperience', 'experienceId', experienceId)
+            const localVarPath = `/v1/experiences/{experienceId}`
+                .replace(`{${"experienceId"}}`, encodeURIComponent(String(experienceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetExperienceImageUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetExperienceImageUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/experiences/image`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetExperienceVideoUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetExperienceVideoUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/experiences/video`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [producerId] 生産者ID
+         * @param {string} [name] 体験名(あいまい検索)(64文字以内)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListExperiences: async (limit?: number, offset?: number, producerId?: string, name?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/experiences`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (producerId !== undefined) {
+                localVarQueryParameter['producerId'] = producerId;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験更新
+         * @param {string} experienceId 体験ID
+         * @param {UpdateExperienceRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateExperience: async (experienceId: string, body: UpdateExperienceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'experienceId' is not null or undefined
+            assertParamExists('v1UpdateExperience', 'experienceId', experienceId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateExperience', 'body', body)
+            const localVarPath = `/v1/experiences/{experienceId}`
+                .replace(`{${"experienceId"}}`, encodeURIComponent(String(experienceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ExperienceApi - functional programming interface
+ * @export
+ */
+export const ExperienceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ExperienceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 体験登録
+         * @param {CreateExperienceRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateExperience(body: CreateExperienceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperienceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateExperience(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1CreateExperience']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験削除
+         * @param {string} experienceId 体験ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteExperience(experienceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteExperience(experienceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1DeleteExperience']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験取得
+         * @param {string} experienceId 体験ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetExperience(experienceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperienceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetExperience(experienceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1GetExperience']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetExperienceImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetExperienceImageUploadUrl(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1GetExperienceImageUploadUrl']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetExperienceVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetExperienceVideoUploadUrl(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1GetExperienceVideoUploadUrl']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [producerId] 生産者ID
+         * @param {string} [name] 体験名(あいまい検索)(64文字以内)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListExperiences(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListExperiences(limit, offset, producerId, name, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1ListExperiences']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験更新
+         * @param {string} experienceId 体験ID
+         * @param {UpdateExperienceRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateExperience(experienceId: string, body: UpdateExperienceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateExperience(experienceId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1UpdateExperience']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ExperienceApi - factory interface
+ * @export
+ */
+export const ExperienceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ExperienceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 体験登録
+         * @param {CreateExperienceRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateExperience(body: CreateExperienceRequest, options?: RawAxiosRequestConfig): AxiosPromise<ExperienceResponse> {
+            return localVarFp.v1CreateExperience(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験削除
+         * @param {string} experienceId 体験ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteExperience(experienceId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1DeleteExperience(experienceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験取得
+         * @param {string} experienceId 体験ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetExperience(experienceId: string, options?: RawAxiosRequestConfig): AxiosPromise<ExperienceResponse> {
+            return localVarFp.v1GetExperience(experienceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験画像アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetExperienceImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetExperienceImageUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetExperienceVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetExperienceVideoUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [producerId] 生産者ID
+         * @param {string} [name] 体験名(あいまい検索)(64文字以内)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListExperiences(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.v1ListExperiences(limit, offset, producerId, name, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験更新
+         * @param {string} experienceId 体験ID
+         * @param {UpdateExperienceRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateExperience(experienceId: string, body: UpdateExperienceRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1UpdateExperience(experienceId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ExperienceApi - object-oriented interface
+ * @export
+ * @class ExperienceApi
+ * @extends {BaseAPI}
+ */
+export class ExperienceApi extends BaseAPI {
+    /**
+     * 
+     * @summary 体験登録
+     * @param {CreateExperienceRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceApi
+     */
+    public v1CreateExperience(body: CreateExperienceRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1CreateExperience(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験削除
+     * @param {string} experienceId 体験ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceApi
+     */
+    public v1DeleteExperience(experienceId: string, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1DeleteExperience(experienceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験取得
+     * @param {string} experienceId 体験ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceApi
+     */
+    public v1GetExperience(experienceId: string, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1GetExperience(experienceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験画像アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceApi
+     */
+    public v1GetExperienceImageUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1GetExperienceImageUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceApi
+     */
+    public v1GetExperienceVideoUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1GetExperienceVideoUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [producerId] 生産者ID
+     * @param {string} [name] 体験名(あいまい検索)(64文字以内)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceApi
+     */
+    public v1ListExperiences(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1ListExperiences(limit, offset, producerId, name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験更新
+     * @param {string} experienceId 体験ID
+     * @param {UpdateExperienceRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceApi
+     */
+    public v1UpdateExperience(experienceId: string, body: UpdateExperienceRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceApiFp(this.configuration).v1UpdateExperience(experienceId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ExperienceTypeApi - axios parameter creator
+ * @export
+ */
+export const ExperienceTypeApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary 体験種別登録
+         * @param {CreateExperienceTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateExperienceType: async (body: CreateExperienceTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateExperienceType', 'body', body)
+            const localVarPath = `/v1/experience-types`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験種別削除
+         * @param {string} experienceTypeId 体験種別ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteExperienceType: async (experienceTypeId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'experienceTypeId' is not null or undefined
+            assertParamExists('v1DeleteExperienceType', 'experienceTypeId', experienceTypeId)
+            const localVarPath = `/v1/experience-types/{experienceTypeId}`
+                .replace(`{${"experienceTypeId"}}`, encodeURIComponent(String(experienceTypeId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験種別一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListExperienceTypes: async (limit?: number, offset?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/experience-types`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary 体験種別更新
+         * @param {string} experienceTypeId 体験種別ID
+         * @param {UpdateExperienceTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateExperienceType: async (experienceTypeId: string, body: UpdateExperienceTypeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'experienceTypeId' is not null or undefined
+            assertParamExists('v1UpdateExperienceType', 'experienceTypeId', experienceTypeId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateExperienceType', 'body', body)
+            const localVarPath = `/v1/experience-types/{experienceTypeId}`
+                .replace(`{${"experienceTypeId"}}`, encodeURIComponent(String(experienceTypeId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ExperienceTypeApi - functional programming interface
+ * @export
+ */
+export const ExperienceTypeApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ExperienceTypeApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary 体験種別登録
+         * @param {CreateExperienceTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateExperienceType(body: CreateExperienceTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperienceTypeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateExperienceType(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceTypeApi.v1CreateExperienceType']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験種別削除
+         * @param {string} experienceTypeId 体験種別ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteExperienceType(experienceTypeId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteExperienceType(experienceTypeId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceTypeApi.v1DeleteExperienceType']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験種別一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListExperienceTypes(limit?: number, offset?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperienceTypesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListExperienceTypes(limit, offset, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceTypeApi.v1ListExperienceTypes']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary 体験種別更新
+         * @param {string} experienceTypeId 体験種別ID
+         * @param {UpdateExperienceTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateExperienceType(experienceTypeId: string, body: UpdateExperienceTypeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateExperienceType(experienceTypeId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ExperienceTypeApi.v1UpdateExperienceType']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ExperienceTypeApi - factory interface
+ * @export
+ */
+export const ExperienceTypeApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ExperienceTypeApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary 体験種別登録
+         * @param {CreateExperienceTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateExperienceType(body: CreateExperienceTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ExperienceTypeResponse> {
+            return localVarFp.v1CreateExperienceType(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験種別削除
+         * @param {string} experienceTypeId 体験種別ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteExperienceType(experienceTypeId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1DeleteExperienceType(experienceTypeId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験種別一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListExperienceTypes(limit?: number, offset?: number, options?: RawAxiosRequestConfig): AxiosPromise<ExperienceTypesResponse> {
+            return localVarFp.v1ListExperienceTypes(limit, offset, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary 体験種別更新
+         * @param {string} experienceTypeId 体験種別ID
+         * @param {UpdateExperienceTypeRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateExperienceType(experienceTypeId: string, body: UpdateExperienceTypeRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1UpdateExperienceType(experienceTypeId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ExperienceTypeApi - object-oriented interface
+ * @export
+ * @class ExperienceTypeApi
+ * @extends {BaseAPI}
+ */
+export class ExperienceTypeApi extends BaseAPI {
+    /**
+     * 
+     * @summary 体験種別登録
+     * @param {CreateExperienceTypeRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceTypeApi
+     */
+    public v1CreateExperienceType(body: CreateExperienceTypeRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceTypeApiFp(this.configuration).v1CreateExperienceType(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験種別削除
+     * @param {string} experienceTypeId 体験種別ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceTypeApi
+     */
+    public v1DeleteExperienceType(experienceTypeId: string, options?: RawAxiosRequestConfig) {
+        return ExperienceTypeApiFp(this.configuration).v1DeleteExperienceType(experienceTypeId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験種別一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceTypeApi
+     */
+    public v1ListExperienceTypes(limit?: number, offset?: number, options?: RawAxiosRequestConfig) {
+        return ExperienceTypeApiFp(this.configuration).v1ListExperienceTypes(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 体験種別更新
+     * @param {string} experienceTypeId 体験種別ID
+     * @param {UpdateExperienceTypeRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExperienceTypeApi
+     */
+    public v1UpdateExperienceType(experienceTypeId: string, body: UpdateExperienceTypeRequest, options?: RawAxiosRequestConfig) {
+        return ExperienceTypeApiFp(this.configuration).v1UpdateExperienceType(experienceTypeId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -18910,6 +20764,596 @@ export class UserApi extends BaseAPI {
      */
     public v1ListUsers(limit?: number, offset?: number, options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).v1ListUsers(limit, offset, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * VideoApi - axios parameter creator
+ * @export
+ */
+export const VideoApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary オンデマンド配信登録
+         * @param {CreateVideoRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateVideo: async (body: CreateVideoRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1CreateVideo', 'body', body)
+            const localVarPath = `/v1/videos`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary オンデマンド配信削除
+         * @param {string} videoId オンデマンド配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteVideo: async (videoId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1DeleteVideo', 'videoId', videoId)
+            const localVarPath = `/v1/videos/{videoId}`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary オンデマンド配信取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetVideo: async (videoId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1GetVideo', 'videoId', videoId)
+            const localVarPath = `/v1/videos/{videoId}`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary オンデマンド配信動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetVideoFileUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetVideoFileUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/videos/file`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary オンデマンド配信サムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetVideoThumbnailUploadUrl: async (body: GetUploadUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1GetVideoThumbnailUploadUrl', 'body', body)
+            const localVarPath = `/v1/upload/videos/thumbnail`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary オンデマンド配信一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [producerId] 生産者ID
+         * @param {string} [name] オンデマンド配信名(あいまい検索)(64文字以内)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListVideos: async (limit?: number, offset?: number, producerId?: string, name?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/videos`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (producerId !== undefined) {
+                localVarQueryParameter['producerId'] = producerId;
+            }
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary オンデマンド配信更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {UpdateVideoRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateVideo: async (videoId: string, body: UpdateVideoRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1UpdateVideo', 'videoId', videoId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateVideo', 'body', body)
+            const localVarPath = `/v1/videos/{videoId}`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * VideoApi - functional programming interface
+ * @export
+ */
+export const VideoApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = VideoApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary オンデマンド配信登録
+         * @param {CreateVideoRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1CreateVideo(body: CreateVideoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1CreateVideo(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1CreateVideo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary オンデマンド配信削除
+         * @param {string} videoId オンデマンド配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1DeleteVideo(videoId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1DeleteVideo(videoId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1DeleteVideo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary オンデマンド配信取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetVideo(videoId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetVideo(videoId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1GetVideo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary オンデマンド配信動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetVideoFileUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetVideoFileUploadUrl(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1GetVideoFileUploadUrl']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary オンデマンド配信サムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1GetVideoThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadUrlResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1GetVideoThumbnailUploadUrl(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1GetVideoThumbnailUploadUrl']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary オンデマンド配信一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [producerId] 生産者ID
+         * @param {string} [name] オンデマンド配信名(あいまい検索)(64文字以内)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListVideos(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideosResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListVideos(limit, offset, producerId, name, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1ListVideos']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary オンデマンド配信更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {UpdateVideoRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateVideo(videoId: string, body: UpdateVideoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateVideo(videoId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1UpdateVideo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * VideoApi - factory interface
+ * @export
+ */
+export const VideoApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = VideoApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary オンデマンド配信登録
+         * @param {CreateVideoRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1CreateVideo(body: CreateVideoRequest, options?: RawAxiosRequestConfig): AxiosPromise<VideoResponse> {
+            return localVarFp.v1CreateVideo(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary オンデマンド配信削除
+         * @param {string} videoId オンデマンド配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1DeleteVideo(videoId: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1DeleteVideo(videoId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary オンデマンド配信取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetVideo(videoId: string, options?: RawAxiosRequestConfig): AxiosPromise<VideoResponse> {
+            return localVarFp.v1GetVideo(videoId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary オンデマンド配信動画アップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetVideoFileUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetVideoFileUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary オンデマンド配信サムネイルアップロード用URL取得
+         * @param {GetUploadUrlRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1GetVideoThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadUrlResponse> {
+            return localVarFp.v1GetVideoThumbnailUploadUrl(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary オンデマンド配信一覧取得
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {number} [offset] 取得開始位置(min:0)
+         * @param {string} [producerId] 生産者ID
+         * @param {string} [name] オンデマンド配信名(あいまい検索)(64文字以内)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListVideos(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<VideosResponse> {
+            return localVarFp.v1ListVideos(limit, offset, producerId, name, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary オンデマンド配信更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {UpdateVideoRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateVideo(videoId: string, body: UpdateVideoRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1UpdateVideo(videoId, body, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * VideoApi - object-oriented interface
+ * @export
+ * @class VideoApi
+ * @extends {BaseAPI}
+ */
+export class VideoApi extends BaseAPI {
+    /**
+     * 
+     * @summary オンデマンド配信登録
+     * @param {CreateVideoRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1CreateVideo(body: CreateVideoRequest, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1CreateVideo(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary オンデマンド配信削除
+     * @param {string} videoId オンデマンド配信ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1DeleteVideo(videoId: string, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1DeleteVideo(videoId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary オンデマンド配信取得
+     * @param {string} videoId オンデマンド配信ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1GetVideo(videoId: string, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1GetVideo(videoId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary オンデマンド配信動画アップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1GetVideoFileUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1GetVideoFileUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary オンデマンド配信サムネイルアップロード用URL取得
+     * @param {GetUploadUrlRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1GetVideoThumbnailUploadUrl(body: GetUploadUrlRequest, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1GetVideoThumbnailUploadUrl(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary オンデマンド配信一覧取得
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {number} [offset] 取得開始位置(min:0)
+     * @param {string} [producerId] 生産者ID
+     * @param {string} [name] オンデマンド配信名(あいまい検索)(64文字以内)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1ListVideos(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1ListVideos(limit, offset, producerId, name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary オンデマンド配信更新
+     * @param {string} videoId オンデマンド配信ID
+     * @param {UpdateVideoRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1UpdateVideo(videoId: string, body: UpdateVideoRequest, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1UpdateVideo(videoId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

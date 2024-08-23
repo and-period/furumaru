@@ -1,0 +1,26 @@
+post:
+  summary: 体験動画アップロード用URL取得
+  operationId: v1GetExperienceVideoUploadUrl
+  tags:
+  - Experience
+  security:
+  - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './../../../../openapi.yaml#/components/schemas/v1GetUploadUrlRequest'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/v1UploadUrlResponse'
+    400:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: './../../../../openapi.yaml#/components/schemas/errorResponse'

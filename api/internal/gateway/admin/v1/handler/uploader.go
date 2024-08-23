@@ -21,6 +21,8 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/coordinators/header", h.CreateCoordinatorHeaderUploadURL)
 	r.POST("/coordinators/promotion-video", h.CreateCoordinatorPromotionVideoUploadURL)
 	r.POST("/coordinators/bonus-video", h.CreateCoordinatorBonusVideoUploadURL)
+	r.POST("/experiences/image", h.CreateExperienceImageUploadURL)
+	r.POST("/experiences/video", h.CreateExperienceVideoUploadURL)
 	r.POST("/producers/thumbnail", h.CreateProducerThumbnailUploadURL)
 	r.POST("/producers/header", h.CreateProducerHeaderUploadURL)
 	r.POST("/producers/promotion-video", h.CreateProducerPromotionVideoUploadURL)
@@ -33,6 +35,8 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/schedules/opening-video", h.CreateScheduleOpeningVideoUploadURL)
 	r.POST("/schedules/:scheduleId/broadcasts/archive", h.CreateBroadcastArchiveMP4UploadURL)
 	r.POST("/schedules/-/broadcasts/live", h.CreateBroadcastLiveMP4UploadURL)
+	r.POST("/videos/thumbnail", h.CreateVideoThumbnailUploadURL)
+	r.POST("/videos/file", h.CreateVideoFileUploadURL)
 }
 
 func (h *handler) GetUploadState(ctx *gin.Context) {
@@ -95,6 +99,18 @@ func (h *handler) CreateCoordinatorBonusVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetCoordinatorBonusVideoUploadURL)
 }
 
+func (h *handler) CreateExperienceImageUploadURL(ctx *gin.Context) {
+	// TODO: 詳細の実装
+	res := &response.UploadURLResponse{}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateExperienceVideoUploadURL(ctx *gin.Context) {
+	// TODO: 詳細の実装
+	res := &response.UploadURLResponse{}
+	ctx.JSON(http.StatusOK, res)
+}
+
 func (h *handler) CreateProducerThumbnailUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetProducerThumbnailUploadURL)
 }
@@ -133,6 +149,18 @@ func (h *handler) CreateScheduleImageUploadURL(ctx *gin.Context) {
 
 func (h *handler) CreateScheduleOpeningVideoUploadURL(ctx *gin.Context) {
 	h.getUploadURL(ctx, h.media.GetScheduleOpeningVideoUploadURL)
+}
+
+func (h *handler) CreateVideoThumbnailUploadURL(ctx *gin.Context) {
+	// TODO: 詳細の実装
+	res := &response.UploadURLResponse{}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) CreateVideoFileUploadURL(ctx *gin.Context) {
+	// TODO: 詳細の実装
+	res := &response.UploadURLResponse{}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (*entity.UploadEvent, error)) {

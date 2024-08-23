@@ -1,0 +1,84 @@
+video:
+  type: object
+  description: オンデマンド配信情報
+  properties:
+    id:
+      type: string
+      description: オンデマンド配信ID
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    productIds:
+      type: array
+      description: 商品ID一覧
+      items:
+        type: string
+    experienceIds:
+      type: array
+      description: 体験ID一覧
+      items:
+        type: string
+    title:
+      type: string
+      description: タイトル
+    description:
+      type: string
+      description: 説明
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/videoStatus'
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    videoUrl:
+      type: string
+      description: 動画URL
+    public:
+      type: boolean
+      description: 公開フラグ
+    limited:
+      type: boolean
+      description: 限定公開フラグ
+    publishedAt:
+      type: integer
+      format: int64
+      description: 公開日時 (unixtime)
+    createdAt:
+      type: integer
+      format: int64
+      description: 登録日時 (unixtime)
+    updatedAt:
+      type: integer
+      format: int64
+      description: 更新日時 (unixtime)
+  required:
+  - id
+  - coordinatorId
+  - productIds
+  - experienceIds
+  - title
+  - description
+  - status
+  - thumbnailUrl
+  - videoUrl
+  - public
+  - limited
+  - publishedAt
+  - createdAt
+  - updatedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    productIds:
+    - 'kSByoE6FetnPs5Byk3a9Zx'
+    experienceIds:
+    - 'kSByoE6FetnPs5Byk3a9Zx'
+    title: 'じゃがいも堀り体験'
+    description: '新鮮なじゃがいもを掘り出す体験'
+    status: 4
+    thumbnailUrl: 'https://example.com/thumbnail.jpg'
+    videoUrl: 'https://example.com/video.mp4'
+    public: true
+    limited: false
+    publishedAt: 1614556800
+    createdAt: 1614556800
+    updatedAt: 1614556800

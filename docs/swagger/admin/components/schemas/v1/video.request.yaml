@@ -1,0 +1,128 @@
+createVideoRequest:
+  type: object
+  properties:
+    title:
+      type: string
+      description: タイトル(128文字まで)
+    description:
+      type: string
+      description: 説明(20000文字まで)
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    productIds:
+      type: array
+      description: 商品ID一覧
+      items:
+        type: string
+        description: 商品ID
+    experienceIds:
+      type: array
+      description: 体験ID一覧
+      items:
+        type: string
+        description: 体験ID
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    videoUrl:
+      type: string
+      description: 動画URL
+    public:
+      type: boolean
+      description: 公開フラグ
+    limited:
+      type: boolean
+      description: 限定公開フラグ
+    publishedAt:
+      type: integer
+      format: int64
+      description: 公開日時 (unixtime)
+  required:
+  - title
+  - description
+  - coordinatorId
+  - productIds
+  - experienceIds
+  - thumbnailUrl
+  - videoUrl
+  - public
+  - limited
+  - publishedAt
+  example:
+    title: タイトル
+    description: 説明
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    productIds:
+    - 'kSByoE6FetnPs5Byk3a9Zx'
+    experienceIds:
+    - 'kSByoE6FetnPs5Byk3a9Zx'
+    thumbnailUrl: https://example.com/thumbnail.jpg
+    videoUrl: https://example.com/video.mp4
+    public: true
+    limited: false
+    publishedAt: 1614556800
+updateVideoRequest:
+  type: object
+  properties:
+    title:
+      type: string
+      description: タイトル(128文字まで)
+    description:
+      type: string
+      description: 説明(20000文字まで)
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    productIds:
+      type: array
+      description: 商品ID一覧
+      items:
+        type: string
+        description: 商品ID
+    experienceIds:
+      type: array
+      description: 体験ID一覧
+      items:
+        type: string
+        description: 体験ID
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    videoUrl:
+      type: string
+      description: 動画URL
+    public:
+      type: boolean
+      description: 公開フラグ
+    limited:
+      type: boolean
+      description: 限定公開フラグ
+    publishedAt:
+      type: integer
+      format: int64
+      description: 公開日時 (unixtime)
+  required:
+  - title
+  - description
+  - coordinatorId
+  - productIds
+  - experienceIds
+  - thumbnailUrl
+  - videoUrl
+  - public
+  - limited
+  - publishedAt
+  example:
+    title: タイトル
+    description: 説明
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    productIds:
+    - 'kSByoE6FetnPs5Byk3a9Zx'
+    experienceIds:
+    - 'kSByoE6FetnPs5Byk3a9Zx'
+    thumbnailUrl: https://example.com/thumbnail.jpg
+    videoUrl: https://example.com/video.mp4
+    public: true
+    limited: false
+    publishedAt: 1614556800
