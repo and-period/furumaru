@@ -1,4 +1,7 @@
 <script setup lang="ts">
+const { locale } = useI18n()
+const currentLocale = computed(() => locale.value)
+
 const { $md } = useNuxtApp()
 const content = ref<string>('')
 
@@ -7,7 +10,7 @@ const renderedContent = computed<string>(() => {
 })
 
 const fetchContent = async () => {
-  const response = await $fetch('/_content/privacyPolicy.md', {
+  const response = await $fetch(`/_content/privacyPolicy_${currentLocale.value}.md`, {
     method: 'GET',
     headers: {
       'content-type': 'text/markdown',
