@@ -87,7 +87,7 @@ type UpdateExperienceParams struct {
 	PriceAdult            int64
 	PriceJuniorHighSchool int64
 	PriceElementarySchool int64
-	PricePreschooler      int64
+	PricePreschool      int64
 	PriceSenior           int64
 	RecommendedPoints     []string
 	HostPrefectureCode    int32

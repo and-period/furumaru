@@ -12,7 +12,7 @@ type CreateExperienceRequest struct {
 	PriceAdult            int64                    `json:"priceAdult,omitempty"`            // 大人料金
 	PriceJuniorHighSchool int64                    `json:"priceJuniorHighSchool,omitempty"` // 中学生料金
 	PriceElementarySchool int64                    `json:"priceElementarySchool,omitempty"` // 小学生料金
-	PricePreschooler      int64                    `json:"pricePreschooler,omitempty"`      // 幼児料金
+	PricePreschool      int64                    `json:"pricePreschool,omitempty"`      // 幼児料金
 	PriceSenior           int64                    `json:"priceSenior,omitempty"`           // シニア料金
 	RecommendedPoint1     string                   `json:"recommendedPoint1,omitempty"`     // おすすめポイント1
 	RecommendedPoint2     string                   `json:"recommendedPoint2,omitempty"`     // おすすめポイント2
@@ -41,7 +41,7 @@ type UpdateExperienceRequest struct {
 	PriceAdult            int64                    `json:"priceAdult,omitempty"`            // 大人料金
 	PriceJuniorHighSchool int64                    `json:"priceJuniorHighSchool,omitempty"` // 中学生料金
 	PriceElementarySchool int64                    `json:"priceElementarySchool,omitempty"` // 小学生料金
-	PricePreschooler      int64                    `json:"pricePreschooler,omitempty"`      // 幼児料金
+	PricePreschool      int64                    `json:"pricePreschool,omitempty"`      // 幼児料金
 	PriceSenior           int64                    `json:"priceSenior,omitempty"`           // シニア料金
 	RecommendedPoint1     string                   `json:"recommendedPoint1,omitempty"`     // おすすめポイント1
 	RecommendedPoint2     string                   `json:"recommendedPoint2,omitempty"`     // おすすめポイント2

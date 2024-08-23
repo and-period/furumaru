@@ -488,7 +488,7 @@ func TestExperience_Update(t *testing.T) {
 					PriceAdult:            1000,
 					PriceJuniorHighSchool: 800,
 					PriceElementarySchool: 600,
-					PricePreschooler:      400,
+					PricePreschool:      400,
 					PriceSenior:           500,
 					RecommendedPoints: []string{
 						"じゃがいもを収穫する",
@@ -635,7 +635,7 @@ func testExperienceRevision(revisionID int64, experienceID string, now time.Time
 		PriceAdult:            1000,
 		PriceJuniorHighSchool: 800,
 		PriceElementarySchool: 600,
-		PricePreschooler:      400,
+		PricePreschool:      400,
 		PriceSenior:           200,
 		CreatedAt:             now,
 		UpdatedAt:             now,
