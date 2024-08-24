@@ -71,39 +71,39 @@ func TestExperienceStatus_Response(t *testing.T) {
 		expect int32
 	}{
 		{
-			name:   "ExperienceStatusUnknown",
-			status: ExperienceStatusUnknown,
-			expect: 0,
-		},
-		{
-			name:   "ExperienceStatusPrivate",
+			name:   "private",
 			status: ExperienceStatusPrivate,
 			expect: 1,
 		},
 		{
-			name:   "ExperienceStatusWaiting",
+			name:   "waiting",
 			status: ExperienceStatusWaiting,
 			expect: 2,
 		},
 		{
-			name:   "ExperienceStatusAccepting",
+			name:   "accepting",
 			status: ExperienceStatusAccepting,
 			expect: 3,
 		},
 		{
-			name:   "ExperienceStatusSoldOut",
+			name:   "sold out",
 			status: ExperienceStatusSoldOut,
 			expect: 4,
 		},
 		{
-			name:   "ExperienceStatusFinished",
+			name:   "finished",
 			status: ExperienceStatusFinished,
 			expect: 5,
 		},
 		{
-			name:   "ExperienceStatusArchived",
+			name:   "archived",
 			status: ExperienceStatusArchived,
 			expect: 6,
+		},
+		{
+			name:   "unknown",
+			status: ExperienceStatusUnknown,
+			expect: 0,
 		},
 	}
 

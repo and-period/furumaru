@@ -137,6 +137,7 @@ type Video interface {
 }
 
 type ListVideosParams struct {
+	Name          string
 	CoordinatorID string
 	Limit         int
 	Offset        int

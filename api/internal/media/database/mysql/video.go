@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/gorm"
 )
 
 const (
@@ -28,14 +29,51 @@ func newVideo(db *mysql.Client) database.Video {
 	}
 }
 
+type listVideosParams database.ListVideosParams
+
+func (p listVideosParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Name != "" {
+		stmt = stmt.Where("MATCH (`title`, `description`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
+	}
+	if p.CoordinatorID != "" {
+		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
+	return stmt.Order("published_at DESC")
+}
+
+func (p listVideosParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
 func (v *video) List(ctx context.Context, params *database.ListVideosParams, fields ...string) (entity.Videos, error) {
-	// TODO: 詳細の実装
-	return entity.Videos{}, nil
+	var videos entity.Videos
+
+	p := listVideosParams(*params)
+
+	stmt := v.db.Statement(ctx, v.db.DB, videoTable, fields...)
+	stmt = p.stmt(stmt)
+	stmt = p.pagination(stmt)
+
+	if err := stmt.Find(&videos).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if err := v.fill(ctx, v.db.DB, videos...); err != nil {
+		return nil, dbError(err)
+	}
+	return videos, nil
 }
 
 func (v *video) Count(ctx context.Context, params *database.ListVideosParams) (int64, error) {
-	// TODO: 詳細の実装
-	return 0, nil
+	p := listVideosParams(*params)
+
+	total, err := v.db.Count(ctx, v.db.DB, &entity.Video{}, p.stmt)
+	return total, dbError(err)
 }
 
 func (v *video) Get(ctx context.Context, videoID string, fields ...string) (*entity.Video, error) {
@@ -55,5 +93,29 @@ func (v *video) Update(ctx context.Context, videoID string, params *database.Upd
 
 func (v *video) Delete(ctx context.Context, videoID string) error {
 	// TODO: 詳細の実装
+	return nil
+}
+
+func (v *video) fill(ctx context.Context, tx *gorm.DB, videos ...*entity.Video) error {
+	var (
+		products    entity.VideoProducts
+		experiences entity.VideoExperiences
+	)
+
+	ids := entity.Videos(videos).IDs()
+	if len(ids) == 0 {
+		return nil
+	}
+
+	stmt := v.db.Statement(ctx, tx, videoProductTable).Where("video_id IN (?)", ids)
+	if err := stmt.Find(&products).Error; err != nil {
+		return err
+	}
+	stmt = v.db.Statement(ctx, tx, videoExperienceTable).Where("video_id IN (?)", ids)
+	if err := stmt.Find(&experiences).Error; err != nil {
+		return err
+	}
+
+	entity.Videos(videos).Fill(products.GroupByVideoID(), experiences.GroupByVideoID(), v.now())
 	return nil
 }

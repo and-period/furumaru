@@ -29,8 +29,11 @@ func TestVideo_List(t *testing.T) {
 
 	videos := make(entity.Videos, 3)
 	videos[0] = testVideo("video-id01", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[0].PublishedAt = now().AddDate(0, 0, -1)
 	videos[1] = testVideo("video-id02", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[1].PublishedAt = now().AddDate(0, 0, -2)
 	videos[2] = testVideo("video-id03", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	videos[2].PublishedAt = now().AddDate(0, -1, 0)
 	err = db.DB.Create(&videos).Error
 	require.NoError(t, err)
 	for _, video := range videos {
@@ -58,13 +61,14 @@ func TestVideo_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListVideosParams{
-					CoordinatorID: "",
-					Limit:         1,
+					Name:          "オンデマンド配信",
+					CoordinatorID: "coordinator-id",
+					Limit:         2,
 					Offset:        1,
 				},
 			},
 			want: want{
-				videos: entity.Videos{},
+				videos: videos[1:],
 				err:    nil,
 			},
 		},
@@ -132,13 +136,14 @@ func TestVideo_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListVideosParams{
-					CoordinatorID: "",
+					Name:          "オンデマンド配信",
+					CoordinatorID: "coordinator-id",
 					Limit:         1,
 					Offset:        1,
 				},
 			},
 			want: want{
-				total: 0,
+				total: 3,
 				err:   nil,
 			},
 		},

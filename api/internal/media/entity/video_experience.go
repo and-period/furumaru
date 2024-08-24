@@ -1,6 +1,9 @@
 package entity
 
-import "time"
+import (
+	"sort"
+	"time"
+)
 
 // オンデマンド配信関連体験情報
 type VideoExperience struct {
@@ -12,3 +15,29 @@ type VideoExperience struct {
 }
 
 type VideoExperiences []*VideoExperience
+
+func (es VideoExperiences) ExperienceIDs() []string {
+	res := make([]string, len(es))
+	for i := range es {
+		res[i] = es[i].ExperienceID
+	}
+	return res
+}
+
+func (es VideoExperiences) GroupByVideoID() map[string]VideoExperiences {
+	res := make(map[string]VideoExperiences, len(es))
+	for _, e := range es {
+		if _, ok := res[e.VideoID]; !ok {
+			res[e.VideoID] = make(VideoExperiences, 0, len(es))
+		}
+		res[e.VideoID] = append(res[e.VideoID], e)
+	}
+	return res
+}
+
+func (es VideoExperiences) SortByPriority() VideoExperiences {
+	sort.SliceStable(es, func(i, j int) bool {
+		return es[i].Priority < es[j].Priority
+	})
+	return es
+}
