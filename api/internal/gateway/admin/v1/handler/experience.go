@@ -137,12 +137,40 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 }
 
 func (h *handler) GetExperience(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	experience, err := h.getExperience(ctx, util.GetParam(ctx, "experienceId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	var (
+		coordinator    *service.Coordinator
+		producer       *service.Producer
+		experienceType *service.ExperienceType
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, experience.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
+		producer, err = h.getProducer(ectx, experience.ProducerID)
+		return
+	})
+	eg.Go(func() (err error) {
+		experienceType, err = h.getExperienceType(ectx, experience.ExperienceTypeID)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.ExperienceResponse{
-		Experience:     &response.Experience{},
-		Coordinator:    &response.Coordinator{},
-		Producer:       &response.Producer{},
-		ExperienceType: &response.ExperienceType{},
+		Experience:     experience.Response(),
+		Coordinator:    coordinator.Response(),
+		Producer:       producer.Response(),
+		ExperienceType: experienceType.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -193,6 +221,12 @@ func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []strin
 }
 
 func (h *handler) getExperience(ctx context.Context, experienceID string) (*service.Experience, error) {
-	// TODO: 詳細の実装
-	return &service.Experience{}, nil
+	in := &store.GetExperienceInput{
+		ExperienceID: experienceID,
+	}
+	experience, err := h.store.GetExperience(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperience(experience), nil
 }

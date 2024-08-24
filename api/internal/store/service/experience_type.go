@@ -41,16 +41,16 @@ func (s *service) MultiGetExperienceTypes(ctx context.Context, in *store.MultiGe
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return entity.ExperienceTypes{}, nil
+	types, err := s.db.ExperienceType.MultiGet(ctx, in.ExperienceTypeIDs)
+	return types, internalError(err)
 }
 
 func (s *service) GetExperienceType(ctx context.Context, in *store.GetExperienceTypeInput) (*entity.ExperienceType, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return &entity.ExperienceType{}, nil
+	typ, err := s.db.ExperienceType.Get(ctx, in.ExperienceTypeID)
+	return typ, internalError(err)
 }
 
 func (s *service) CreateExperienceType(ctx context.Context, in *store.CreateExperienceTypeInput) (*entity.ExperienceType, error) {

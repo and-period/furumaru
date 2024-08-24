@@ -43,8 +43,8 @@ func (s *service) MultiGetExperiences(ctx context.Context, in *store.MultiGetExp
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return entity.Experiences{}, nil
+	experiences, err := s.db.Experience.MultiGet(ctx, in.ExperienceIDs)
+	return experiences, internalError(err)
 }
 
 func (s *service) MultiGetExperiencesByRevision(
@@ -53,16 +53,16 @@ func (s *service) MultiGetExperiencesByRevision(
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return entity.Experiences{}, nil
+	experiences, err := s.db.Experience.MultiGetByRevision(ctx, in.ExperienceRevisionIDs)
+	return experiences, internalError(err)
 }
 
 func (s *service) GetExperience(ctx context.Context, in *store.GetExperienceInput) (*entity.Experience, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return &entity.Experience{}, nil
+	experience, err := s.db.Experience.Get(ctx, in.ExperienceID)
+	return experience, internalError(err)
 }
 
 func (s *service) CreateExperience(ctx context.Context, in *store.CreateExperienceInput) (*entity.Experience, error) {

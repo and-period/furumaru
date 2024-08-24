@@ -99,6 +99,40 @@ func TestListExperiences(t *testing.T) {
 			expectTotal: 0,
 			expectErr:   exception.ErrInvalidArgument,
 		},
+		{
+			name: "failed to list",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.Experience.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &store.ListExperiencesInput{
+				Name:          "収穫",
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				Limit:         20,
+				Offset:        0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
+		{
+			name: "failed to count",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().List(gomock.Any(), params).Return(experiences, nil)
+				mocks.db.Experience.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+			},
+			input: &store.ListExperiencesInput{
+				Name:          "収穫",
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				Limit:         20,
+				Offset:        0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
 	}
 
 	for _, tt := range tests {
@@ -115,6 +149,49 @@ func TestListExperiences(t *testing.T) {
 func TestMultiGetExperiences(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	experiences := entity.Experiences{
+		{
+			ID:            "experience-id",
+			CoordinatorID: "coordinator-id",
+			ProducerID:    "producer-id",
+			TypeID:        "experience-type-id",
+			Title:         "じゃがいも収穫",
+			Description:   "じゃがいもを収穫する体験です。",
+			Public:        true,
+			SoldOut:       false,
+			Status:        entity.ExperienceStatusAccepting,
+			ThumbnailURL:  "http://example.com/thumbnail.png",
+			Media: []*entity.ExperienceMedia{
+				{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+				{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+			},
+			RecommendedPoints: []string{
+				"じゃがいもを収穫する楽しさを体験できます。",
+				"新鮮なじゃがいもを持ち帰ることができます。",
+			},
+			PromotionVideoURL:  "http://example.com/promotion.mp4",
+			HostPrefecture:     "滋賀県",
+			HostPrefectureCode: 25,
+			HostCity:           "彦根市",
+			StartAt:            now.AddDate(0, 0, -1),
+			EndAt:              now.AddDate(0, 0, 1),
+			ExperienceRevision: entity.ExperienceRevision{
+				ID:                    1,
+				ExperienceID:          "experience-id",
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				CreatedAt:             now,
+				UpdatedAt:             now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -123,12 +200,14 @@ func TestMultiGetExperiences(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().MultiGet(ctx, []string{"experience-id"}).Return(experiences, nil)
+			},
 			input: &store.MultiGetExperiencesInput{
 				ExperienceIDs: []string{"experience-id"},
 			},
-			expect:    []*entity.Experience{},
+			expect:    experiences,
 			expectErr: nil,
 		},
 		{
@@ -139,6 +218,17 @@ func TestMultiGetExperiences(t *testing.T) {
 			},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().MultiGet(ctx, []string{"experience-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.MultiGetExperiencesInput{
+				ExperienceIDs: []string{"experience-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -155,6 +245,49 @@ func TestMultiGetExperiences(t *testing.T) {
 func TestMultiGetExperiencesByRevision(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	experiences := entity.Experiences{
+		{
+			ID:            "experience-id",
+			CoordinatorID: "coordinator-id",
+			ProducerID:    "producer-id",
+			TypeID:        "experience-type-id",
+			Title:         "じゃがいも収穫",
+			Description:   "じゃがいもを収穫する体験です。",
+			Public:        true,
+			SoldOut:       false,
+			Status:        entity.ExperienceStatusAccepting,
+			ThumbnailURL:  "http://example.com/thumbnail.png",
+			Media: []*entity.ExperienceMedia{
+				{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+				{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+			},
+			RecommendedPoints: []string{
+				"じゃがいもを収穫する楽しさを体験できます。",
+				"新鮮なじゃがいもを持ち帰ることができます。",
+			},
+			PromotionVideoURL:  "http://example.com/promotion.mp4",
+			HostPrefecture:     "滋賀県",
+			HostPrefectureCode: 25,
+			HostCity:           "彦根市",
+			StartAt:            now.AddDate(0, 0, -1),
+			EndAt:              now.AddDate(0, 0, 1),
+			ExperienceRevision: entity.ExperienceRevision{
+				ID:                    1,
+				ExperienceID:          "experience-id",
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				CreatedAt:             now,
+				UpdatedAt:             now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -163,12 +296,14 @@ func TestMultiGetExperiencesByRevision(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().MultiGetByRevision(ctx, []int64{1, 2}).Return(experiences, nil)
+			},
 			input: &store.MultiGetExperiencesByRevisionInput{
 				ExperienceRevisionIDs: []int64{1, 2},
 			},
-			expect:    []*entity.Experience{},
+			expect:    experiences,
 			expectErr: nil,
 		},
 		{
@@ -179,6 +314,17 @@ func TestMultiGetExperiencesByRevision(t *testing.T) {
 			},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get by revision",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().MultiGetByRevision(ctx, []int64{1, 2}).Return(nil, assert.AnError)
+			},
+			input: &store.MultiGetExperiencesByRevisionInput{
+				ExperienceRevisionIDs: []int64{1, 2},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -195,6 +341,47 @@ func TestMultiGetExperiencesByRevision(t *testing.T) {
 func TestGetExperience(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	experience := &entity.Experience{
+		ID:            "experience-id",
+		CoordinatorID: "coordinator-id",
+		ProducerID:    "producer-id",
+		TypeID:        "experience-type-id",
+		Title:         "じゃがいも収穫",
+		Description:   "じゃがいもを収穫する体験です。",
+		Public:        true,
+		SoldOut:       false,
+		Status:        entity.ExperienceStatusAccepting,
+		ThumbnailURL:  "http://example.com/thumbnail.png",
+		Media: []*entity.ExperienceMedia{
+			{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+			{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+		},
+		RecommendedPoints: []string{
+			"じゃがいもを収穫する楽しさを体験できます。",
+			"新鮮なじゃがいもを持ち帰ることができます。",
+		},
+		PromotionVideoURL:  "http://example.com/promotion.mp4",
+		HostPrefecture:     "滋賀県",
+		HostPrefectureCode: 25,
+		HostCity:           "彦根市",
+		StartAt:            now.AddDate(0, 0, -1),
+		EndAt:              now.AddDate(0, 0, 1),
+		ExperienceRevision: entity.ExperienceRevision{
+			ID:                    1,
+			ExperienceID:          "experience-id",
+			PriceAdult:            1000,
+			PriceJuniorHighSchool: 800,
+			PriceElementarySchool: 600,
+			PricePreschool:        400,
+			PriceSenior:           700,
+			CreatedAt:             now,
+			UpdatedAt:             now,
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -203,12 +390,14 @@ func TestGetExperience(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().Get(ctx, "experience-id").Return(experience, nil)
+			},
 			input: &store.GetExperienceInput{
 				ExperienceID: "experience-id",
 			},
-			expect:    &entity.Experience{},
+			expect:    experience,
 			expectErr: nil,
 		},
 		{
@@ -217,6 +406,17 @@ func TestGetExperience(t *testing.T) {
 			input:     &store.GetExperienceInput{},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().Get(ctx, "experience-id").Return(nil, assert.AnError)
+			},
+			input: &store.GetExperienceInput{
+				ExperienceID: "experience-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

@@ -224,7 +224,7 @@ func TestExperience_MultiGet(t *testing.T) {
 				experienceIDs: []string{"experience-id01", "experience-id02"},
 			},
 			want: want{
-				experiences: entity.Experiences{},
+				experiences: experiences[:2],
 				err:         nil,
 			},
 		},
@@ -241,6 +241,7 @@ func TestExperience_MultiGet(t *testing.T) {
 			db := &experience{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.experienceIDs)
 			assert.ErrorIs(t, err, tt.want.err)
+			fillIgnoreExperiencesFields(actual, now())
 			assert.ElementsMatch(t, tt.want.experiences, actual)
 		})
 	}
@@ -293,10 +294,10 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				revisionIDs: []int64{1, 2},
+				revisionIDs: []int64{1, 2, 3},
 			},
 			want: want{
-				experiences: entity.Experiences{},
+				experiences: experiences,
 				err:         nil,
 			},
 		},
@@ -313,6 +314,7 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 			db := &experience{db: db, now: now}
 			actual, err := db.MultiGetByRevision(ctx, tt.args.revisionIDs)
 			assert.ErrorIs(t, err, tt.want.err)
+			fillIgnoreExperiencesFields(actual, now())
 			assert.ElementsMatch(t, tt.want.experiences, actual)
 		})
 	}
@@ -361,8 +363,19 @@ func TestExperience_Get(t *testing.T) {
 				experienceID: "experience-id",
 			},
 			want: want{
-				experience: &entity.Experience{},
+				experience: e,
 				err:        nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				experienceID: "",
+			},
+			want: want{
+				experience: nil,
+				err:        database.ErrNotFound,
 			},
 		},
 	}
@@ -378,6 +391,7 @@ func TestExperience_Get(t *testing.T) {
 			db := &experience{db: db, now: now}
 			actual, err := db.Get(ctx, tt.args.experienceID)
 			assert.ErrorIs(t, err, tt.want.err)
+			fillIgnoreExperienceFields(actual, now())
 			assert.Equal(t, tt.want.experience, actual)
 		})
 	}

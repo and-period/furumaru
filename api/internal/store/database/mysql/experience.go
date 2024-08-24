@@ -79,18 +79,41 @@ func (e *experience) Count(ctx context.Context, params *database.ListExperiences
 }
 
 func (e *experience) MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.Experiences, error) {
-	// TODO: 詳細の実装
-	return entity.Experiences{}, nil
+	experiences, err := e.multiGet(ctx, e.db.DB, experienceIDs, fields...)
+	return experiences, dbError(err)
 }
 
 func (e *experience) MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Experiences, error) {
-	// TODO: 詳細の実装
-	return entity.Experiences{}, nil
+	var revisions entity.ExperienceRevisions
+
+	stmt := e.db.Statement(ctx, e.db.DB, experienceRevisionTable).
+		Where("id IN (?)", revisionIDs)
+
+	if err := stmt.Find(&revisions).Error; err != nil {
+		return nil, dbError(err)
+	}
+	if len(revisions) == 0 {
+		return entity.Experiences{}, nil
+	}
+
+	experiences, err := e.multiGet(ctx, e.db.DB, revisions.ExperienceIDs(), fields...)
+	if err != nil {
+		return nil, err
+	}
+	if len(experiences) == 0 {
+		return entity.Experiences{}, nil
+	}
+
+	res, err := revisions.Merge(experiences.Map())
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 func (e *experience) Get(ctx context.Context, experienceID string, fields ...string) (*entity.Experience, error) {
-	// TODO: 詳細の実装
-	return &entity.Experience{}, nil
+	experience, err := e.get(ctx, e.db.DB, experienceID, fields...)
+	return experience, dbError(err)
 }
 
 func (e *experience) Create(ctx context.Context, experience *entity.Experience) error {
@@ -106,6 +129,36 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 func (e *experience) Delete(ctx context.Context, experienceID string) error {
 	// TODO: 詳細の実装
 	return nil
+}
+
+func (e *experience) multiGet(ctx context.Context, tx *gorm.DB, experienceIDs []string, fields ...string) (entity.Experiences, error) {
+	var experiences entity.Experiences
+
+	stmt := e.db.Statement(ctx, tx, experienceTable, fields...).
+		Where("id IN (?)", experienceIDs)
+
+	if err := stmt.Find(&experiences).Error; err != nil {
+		return nil, err
+	}
+	if err := e.fill(ctx, tx, experiences...); err != nil {
+		return nil, err
+	}
+	return experiences, nil
+}
+
+func (e *experience) get(ctx context.Context, tx *gorm.DB, experienceID string, fields ...string) (*entity.Experience, error) {
+	var experience *entity.Experience
+
+	stmt := e.db.Statement(ctx, tx, experienceTable, fields...).
+		Where("id = ?", experienceID)
+
+	if err := stmt.First(&experience).Error; err != nil {
+		return nil, err
+	}
+	if err := e.fill(ctx, tx, experience); err != nil {
+		return nil, err
+	}
+	return experience, nil
 }
 
 func (e *experience) fill(ctx context.Context, tx *gorm.DB, experiences ...*entity.Experience) error {

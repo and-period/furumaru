@@ -174,6 +174,14 @@ func (es Experiences) ExperienceTypeIDs() []string {
 	})
 }
 
+func (es Experiences) Map() map[string]*Experience {
+	res := make(map[string]*Experience, len(es))
+	for _, e := range es {
+		res[e.ID] = e
+	}
+	return res
+}
+
 func (m MultiExperienceMedia) Marshal() ([]byte, error) {
 	if len(m) == 0 {
 		return []byte{}, nil
