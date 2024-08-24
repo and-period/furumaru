@@ -23,6 +23,7 @@ func (h *handler) uploadRoutes(rg *gin.RouterGroup) {
 	r.POST("/coordinators/bonus-video", h.CreateCoordinatorBonusVideoUploadURL)
 	r.POST("/experiences/image", h.CreateExperienceImageUploadURL)
 	r.POST("/experiences/video", h.CreateExperienceVideoUploadURL)
+	r.POST("/experiences/promotion-video", h.CreateExperiencePromotionVideoUploadURL)
 	r.POST("/producers/thumbnail", h.CreateProducerThumbnailUploadURL)
 	r.POST("/producers/header", h.CreateProducerHeaderUploadURL)
 	r.POST("/producers/promotion-video", h.CreateProducerPromotionVideoUploadURL)
@@ -100,15 +101,15 @@ func (h *handler) CreateCoordinatorBonusVideoUploadURL(ctx *gin.Context) {
 }
 
 func (h *handler) CreateExperienceImageUploadURL(ctx *gin.Context) {
-	// TODO: 詳細の実装
-	res := &response.UploadURLResponse{}
-	ctx.JSON(http.StatusOK, res)
+	h.getUploadURL(ctx, h.media.GetExperienceMediaImageUploadURL)
 }
 
 func (h *handler) CreateExperienceVideoUploadURL(ctx *gin.Context) {
-	// TODO: 詳細の実装
-	res := &response.UploadURLResponse{}
-	ctx.JSON(http.StatusOK, res)
+	h.getUploadURL(ctx, h.media.GetExperienceMediaVideoUploadURL)
+}
+
+func (h *handler) CreateExperiencePromotionVideoUploadURL(ctx *gin.Context) {
+	h.getUploadURL(ctx, h.media.GetExperiencePromotionVideoUploadURL)
 }
 
 func (h *handler) CreateProducerThumbnailUploadURL(ctx *gin.Context) {
@@ -152,15 +153,11 @@ func (h *handler) CreateScheduleOpeningVideoUploadURL(ctx *gin.Context) {
 }
 
 func (h *handler) CreateVideoThumbnailUploadURL(ctx *gin.Context) {
-	// TODO: 詳細の実装
-	res := &response.UploadURLResponse{}
-	ctx.JSON(http.StatusOK, res)
+	h.getUploadURL(ctx, h.media.GetVideoThumbnailUploadURL)
 }
 
 func (h *handler) CreateVideoFileUploadURL(ctx *gin.Context) {
-	// TODO: 詳細の実装
-	res := &response.UploadURLResponse{}
-	ctx.JSON(http.StatusOK, res)
+	h.getUploadURL(ctx, h.media.GetVideoFileUploadURL)
 }
 
 func (h *handler) getUploadURL(ctx *gin.Context, fn func(context.Context, *media.GenerateUploadURLInput) (*entity.UploadEvent, error)) {

@@ -38,6 +38,11 @@ const (
 	ScheduleThumbnailPath         = "schedules/thumbnail"          // 開催スケジュールサムネイル
 	ScheduleImagePath             = "schedules/image"              // 開催スケジュール蓋絵
 	ScheduleOpeningVideoPath      = "schedules/opening-video"      // 開催スケジュールオープニング動画
+	ExperienceMediaImagePath      = "experiences/media/image"      // 体験メディア(画像)
+	ExperienceMediaVideoPath      = "experiences/media/video"      // 体験メディア(映像)
+	ExperiencePromotionVideoPath  = "experiences/promotion-video"  // 体験紹介映像
+	VideoThumbnailPath            = "videos/thumbnail"             // オンデマンド配信サムネイル画像
+	VideoMP4Path                  = "videos/mp4"                   // オンデマンド配信動画(mp4)
 )
 
 // ConversionType - ファイルの変換種別
@@ -149,6 +154,33 @@ var (
 		MaxSize: 200 << 20, // 200MB
 		Formats: set.New("video/mp4"),
 		dir:     ScheduleOpeningVideoPath,
+	}
+	// 体験関連
+	ExperienceMediaImageRegulation = &Regulation{
+		MaxSize: 10 << 20, // 10MB
+		Formats: set.New("image/png", "image/jpeg"),
+		dir:     ExperienceMediaImagePath,
+	}
+	ExperienceMediaVideoRegulation = &Regulation{
+		MaxSize: 200 << 20, // 200MB
+		Formats: set.New("video/mp4"),
+		dir:     ExperienceMediaVideoPath,
+	}
+	ExperiencePromotionVideoRegulation = &Regulation{
+		MaxSize: 200 << 20, // 200MB
+		Formats: set.New("video/mp4"),
+		dir:     ExperiencePromotionVideoPath,
+	}
+	// オンデマンド配信関連
+	VideoThumbnailRegulation = &Regulation{
+		MaxSize: 10 << 20, // 10MB
+		Formats: set.New("image/png", "image/jpeg"),
+		dir:     VideoThumbnailPath,
+	}
+	VideoMP4Regulation = &Regulation{
+		MaxSize: 3 << 30, // 3GB
+		Formats: set.New("video/mp4"),
+		dir:     VideoMP4Path,
 	}
 )
 

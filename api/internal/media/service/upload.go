@@ -48,19 +48,11 @@ func (s *service) GetBroadcastLiveMP4UploadURL(ctx context.Context, in *media.Ge
  * オンデマンド配信関連
  */
 func (s *service) GetVideoThumbnailUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
-	if err := s.validator.Struct(in); err != nil {
-		return nil, internalError(err)
-	}
-	// TODO: 詳細の実装
-	return &entity.UploadEvent{}, nil
+	return s.generateUploadURL(ctx, in, entity.VideoThumbnailRegulation)
 }
 
 func (s *service) GetVideoFileUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
-	if err := s.validator.Struct(in); err != nil {
-		return nil, internalError(err)
-	}
-	// TODO: 詳細の実装
-	return &entity.UploadEvent{}, nil
+	return s.generateUploadURL(ctx, in, entity.VideoMP4Regulation)
 }
 
 /**
@@ -141,6 +133,21 @@ func (s *service) GetScheduleImageUploadURL(ctx context.Context, in *media.Gener
 
 func (s *service) GetScheduleOpeningVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
 	return s.generateUploadURL(ctx, in, entity.ScheduleOpeningVideoRegulation)
+}
+
+/**
+ * 体験関連
+ */
+func (s *service) GetExperienceMediaImageUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
+	return s.generateUploadURL(ctx, in, entity.ExperienceMediaImageRegulation)
+}
+
+func (s *service) GetExperienceMediaVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
+	return s.generateUploadURL(ctx, in, entity.ExperienceMediaVideoRegulation)
+}
+
+func (s *service) GetExperiencePromotionVideoUploadURL(ctx context.Context, in *media.GenerateUploadURLInput) (*entity.UploadEvent, error) {
+	return s.generateUploadURL(ctx, in, entity.ExperiencePromotionVideoRegulation)
 }
 
 /**
