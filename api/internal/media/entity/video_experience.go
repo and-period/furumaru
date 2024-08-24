@@ -16,6 +16,33 @@ type VideoExperience struct {
 
 type VideoExperiences []*VideoExperience
 
+type NewVideoExperienceParams struct {
+	VideoID      string
+	ExperienceID string
+	Priority     int64
+}
+
+func NewVideoExperience(params *NewVideoExperienceParams) *VideoExperience {
+	return &VideoExperience{
+		VideoID:      params.VideoID,
+		ExperienceID: params.ExperienceID,
+		Priority:     params.Priority,
+	}
+}
+
+func NewVideoExperiences(videoID string, experienceIDs []string) VideoExperiences {
+	res := make(VideoExperiences, len(experienceIDs))
+	for i := range experienceIDs {
+		params := &NewVideoExperienceParams{
+			VideoID:      videoID,
+			ExperienceID: experienceIDs[i],
+			Priority:     int64(i + 1),
+		}
+		res[i] = NewVideoExperience(params)
+	}
+	return res
+}
+
 func (es VideoExperiences) ExperienceIDs() []string {
 	res := make([]string, len(es))
 	for i := range es {

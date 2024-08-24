@@ -16,6 +16,33 @@ type VideoProduct struct {
 
 type VideoProducts []*VideoProduct
 
+type NewVideoProductParams struct {
+	VideoID   string
+	ProductID string
+	Priority  int64
+}
+
+func NewVideoProduct(params *NewVideoProductParams) *VideoProduct {
+	return &VideoProduct{
+		VideoID:   params.VideoID,
+		ProductID: params.ProductID,
+		Priority:  params.Priority,
+	}
+}
+
+func NewVideoProducts(videoID string, productIDs []string) VideoProducts {
+	res := make(VideoProducts, len(productIDs))
+	for i := range productIDs {
+		params := &NewVideoProductParams{
+			VideoID:   videoID,
+			ProductID: productIDs[i],
+			Priority:  int64(i + 1),
+		}
+		res[i] = NewVideoProduct(params)
+	}
+	return res
+}
+
 func (ps VideoProducts) ProductIDs() []string {
 	res := make([]string, len(ps))
 	for i := range ps {

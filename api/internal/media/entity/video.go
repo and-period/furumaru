@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
 // VideoStatus - オンデマンド配信状況
@@ -38,6 +39,38 @@ type Video struct {
 }
 
 type Videos []*Video
+
+type NewVideoParams struct {
+	CoordinatorID string
+	ProductIDs    []string
+	ExperienceIDs []string
+	Title         string
+	Description   string
+	ThumbnailURL  string
+	VideoURL      string
+	Public        bool
+	Limited       bool
+	PublishedAt   time.Time
+}
+
+func NewVideo(params *NewVideoParams) *Video {
+	videoID := uuid.Base58Encode(uuid.New())
+	return &Video{
+		ID:               videoID,
+		CoordinatorID:    params.CoordinatorID,
+		ProductIDs:       params.ProductIDs,
+		ExperienceIDs:    params.ExperienceIDs,
+		Title:            params.Title,
+		Description:      params.Description,
+		ThumbnailURL:     params.ThumbnailURL,
+		VideoURL:         params.VideoURL,
+		Public:           params.Public,
+		Limited:          params.Limited,
+		PublishedAt:      params.PublishedAt,
+		VideoProducts:    NewVideoProducts(videoID, params.ProductIDs),
+		VideoExperiences: NewVideoExperiences(videoID, params.ExperienceIDs),
+	}
+}
 
 func (v *Video) Fill(products VideoProducts, experiences VideoExperiences, now time.Time) {
 	v.ProductIDs = products.SortByPriority().ProductIDs()
