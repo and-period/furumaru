@@ -261,6 +261,8 @@ paths:
     $ref: './paths/v1/upload/experiences/image.yaml'
   /v1/upload/experiences/video:
     $ref: './paths/v1/upload/experiences/video.yaml'
+  /v1/upload/experiences/promotion-video:
+    $ref: './paths/v1/upload/experiences/promotion-video.yaml'
   /v1/upload/producers/header:
     $ref: './paths/v1/upload/producers/header.yaml'
   /v1/upload/producers/thumbnail:

@@ -194,8 +194,10 @@ func TestGetVideoThumbnailUploadURL(t *testing.T) {
 		expect error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.VideoThumbnailPath, "png", nil)
+			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "image/png",
 			},
@@ -219,8 +221,10 @@ func TestGetVideoFileUploadURL(t *testing.T) {
 		expect error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.VideoMP4Path, "mp4", nil)
+			},
 			input: &media.GenerateUploadURLInput{
 				FileType: "video/mp4",
 			},
@@ -650,6 +654,87 @@ func TestGetScheduleOpeningVideoUploadURL(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
 			_, err := service.GetScheduleOpeningVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetExperienceMediaImageUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.ExperienceMediaImagePath, "png", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetExperienceMediaImageUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetExperienceMediaVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.ExperienceMediaVideoPath, "mp4", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetExperienceMediaVideoUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetExperiencePromotionVideoUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				generateUploadURLMocks(mocks, t, entity.ExperiencePromotionVideoPath, "mp4", nil)
+			},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetExperiencePromotionVideoUploadURL(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expect)
 		}))
 	}
