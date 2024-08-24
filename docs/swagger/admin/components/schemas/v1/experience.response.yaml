@@ -31,7 +31,7 @@ experienceResponse:
       priceAdult: 1000
       priceJuniorHighSchool: 800
       priceElementarySchool: 600
-      pricePreschooler: 400
+      pricePreschool: 400
       priceSenior: 800
       recommendedPoint1: '新鮮なじゃがいもを堀ります'
       recommendedPoint2: 'じゃがいもの美味しさを体験'
@@ -147,7 +147,7 @@ experiencesResponse:
       priceAdult: 1000
       priceJuniorHighSchool: 800
       priceElementarySchool: 600
-      pricePreschooler: 400
+      pricePreschool: 400
       priceSenior: 800
       recommendedPoint1: '新鮮なじゃがいもを堀ります'
       recommendedPoint2: 'じゃがいもの美味しさを体験'

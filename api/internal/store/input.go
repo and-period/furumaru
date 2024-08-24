@@ -586,3 +586,108 @@ type NotifyPaymentRefundedInput struct {
 	Total    int64                `validate:"min=0"`
 	IssuedAt time.Time            `validate:"required"`
 }
+
+type ListExperienceTypesInput struct {
+	Name   string `validate:"max=32"`
+	Limit  int64  `validate:"required,max=200"`
+	Offset int64  `validate:"min=0"`
+}
+
+type MultiGetExperienceTypesInput struct {
+	ExperienceTypeIDs []string `validate:"dive,required"`
+}
+
+type GetExperienceTypeInput struct {
+	ExperienceTypeID string `validate:"required"`
+}
+
+type CreateExperienceTypeInput struct {
+	Name string `validate:"required,max=32"`
+}
+
+type UpdateExperienceTypeInput struct {
+	ExperienceTypeID string `validate:"required"`
+	Name             string `validate:"required,max=32"`
+}
+
+type DeleteExperienceTypeInput struct {
+	ExperienceTypeID string `validate:"required"`
+}
+
+type ListExperiencesInput struct {
+	Name          string `validate:"max=64"`
+	CoordinatorID string `validate:""`
+	ProducerID    string `validate:""`
+	Limit         int64  `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset        int64  `validate:"min=0"`
+	NoLimit       bool   `validate:""`
+}
+
+type MultiGetExperiencesInput struct {
+	ExperienceIDs []string `validate:"dive,required"`
+}
+
+type MultiGetExperiencesByRevisionInput struct {
+	ExperienceRevisionIDs []int64 `validate:"dive,required"`
+}
+
+type GetExperienceInput struct {
+	ExperienceID string `validate:"required"`
+}
+
+type CreateExperienceInput struct {
+	CoordinatorID         string                   `validate:"required"`
+	ProducerID            string                   `validate:"required"`
+	TypeID                string                   `validate:"required"`
+	Title                 string                   `validate:"required,max=128"`
+	Description           string                   `validate:"required,max=20000"`
+	Public                bool                     `validate:""`
+	SoldOut               bool                     `validate:""`
+	Media                 []*CreateExperienceMedia `validate:"max=8,unique=URL"`
+	PriceAdult            int64                    `validate:"min=0"`
+	PriceJuniorHighSchool int64                    `validate:"min=0"`
+	PriceElementarySchool int64                    `validate:"min=0"`
+	PricePreschool        int64                    `validate:"min=0"`
+	PriceSenior           int64                    `validate:"min=0"`
+	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
+	HostPrefectureCode    int32                    `validate:"required"`
+	HostCity              string                   `validate:"max=32"`
+	StartAt               time.Time                `validate:"required"`
+	EndAt                 time.Time                `validate:"required,gtfield=StartAt"`
+}
+
+type CreateExperienceMedia struct {
+	URL         string `validate:"required,url"`
+	IsThumbnail bool   `validate:""`
+}
+
+type UpdateExperienceInput struct {
+	ExperienceID          string                   `validate:"required"`
+	CoordinatorID         string                   `validate:"required"`
+	ProducerID            string                   `validate:"required"`
+	TypeID                string                   `validate:"required"`
+	Title                 string                   `validate:"required,max=128"`
+	Description           string                   `validate:"required,max=20000"`
+	Public                bool                     `validate:""`
+	SoldOut               bool                     `validate:""`
+	Media                 []*UpdateExperienceMedia `validate:"max=8,unique=URL"`
+	PriceAdult            int64                    `validate:"min=0"`
+	PriceJuniorHighSchool int64                    `validate:"min=0"`
+	PriceElementarySchool int64                    `validate:"min=0"`
+	PricePreschool        int64                    `validate:"min=0"`
+	PriceSenior           int64                    `validate:"min=0"`
+	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
+	HostPrefectureCode    int32                    `validate:"required"`
+	HostCity              string                   `validate:"max=32"`
+	StartAt               time.Time                `validate:"required"`
+	EndAt                 time.Time                `validate:"required,gtfield=StartAt"`
+}
+
+type UpdateExperienceMedia struct {
+	URL         string `validate:"required,url"`
+	IsThumbnail bool   `validate:""`
+}
+
+type DeleteExperienceInput struct {
+	ExperienceID string `validate:"required"`
+}

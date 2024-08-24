@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `stores`.`experiences` (
   `id`                  VARCHAR(22)  NOT NULL,          -- 体験ID
   `coordinator_id`      VARCHAR(22)  NOT NULL,          -- コーディネータID
   `producer_id`         VARCHAR(22)  NOT NULL,          -- 生産者ID
-  `experience_type_id`  VARCHAR(22)  NOT NULL,          -- 体験種別ID
+  `experience_type_id`  VARCHAR(22)  NULL DEFAULT NULL, -- 体験種別ID
   `title`               VARCHAR(128) NOT NULL,          -- タイトル
   `description`         TEXT         NOT NULL,          -- 説明
   `public`              TINYINT      NOT NULL,          -- 公開設定
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `stores`.`experiences` (
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_experiences_experience_type_id`
     FOREIGN KEY (`experience_type_id`) REFERENCES `stores`.`experience_types` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+    ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE FULLTEXT INDEX `ftx_experiences_title_description` ON `stores`.`experiences` (`title`, `description`) WITH PARSER ngram;
@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `stores`.`experience_revisions` (
   `price_junior_high_school` BIGINT      NOT NULL,                -- 中学生料金
   `price_elementary_school`  BIGINT      NOT NULL,                -- 小学生料金
   `price_preschool`          BIGINT      NOT NULL,                -- 幼児料金
+  `price_senior`             BIGINT      NOT NULL,                -- シニア料金
   `created_at`               DATETIME(3) NOT NULL,                -- 登録日時
   `updated_at`               DATETIME(3) NOT NULL,                -- 更新日時
   PRIMARY KEY (`id`),

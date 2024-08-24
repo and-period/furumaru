@@ -21,16 +21,18 @@ var (
 )
 
 type Database struct {
-	Category      Category
-	Order         Order
-	PaymentSystem PaymentSystem
-	Product       Product
-	ProductTag    ProductTag
-	ProductType   ProductType
-	Promotion     Promotion
-	Shipping      Shipping
-	Schedule      Schedule
-	Live          Live
+	Category       Category
+	Expericence    Experience
+	ExperienceType ExperienceType
+	Order          Order
+	PaymentSystem  PaymentSystem
+	Product        Product
+	ProductTag     ProductTag
+	ProductType    ProductType
+	Promotion      Promotion
+	Shipping       Shipping
+	Schedule       Schedule
+	Live           Live
 }
 
 /**
@@ -56,6 +58,62 @@ type ListCategoriesParams struct {
 type ListCategoriesOrder struct {
 	Key        entity.CategoryOrderBy
 	OrderByASC bool
+}
+
+type Experience interface {
+	List(ctx context.Context, params *ListExperiencesParams, fields ...string) (entity.Experiences, error)
+	Count(ctx context.Context, params *ListExperiencesParams) (int64, error)
+	MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.Experiences, error)
+	MultiGetByRevision(ctx context.Context, revisionIDs []int64, fields ...string) (entity.Experiences, error)
+	Get(ctx context.Context, experienceID string, fields ...string) (*entity.Experience, error)
+	Create(ctx context.Context, experience *entity.Experience) error
+	Update(ctx context.Context, experienceID string, params *UpdateExperienceParams) error
+	Delete(ctx context.Context, experienceID string) error
+}
+
+type ListExperiencesParams struct {
+	Name   string
+	Limit  int
+	Offset int
+}
+
+type UpdateExperienceParams struct {
+	TypeID                string
+	Title                 string
+	Description           string
+	Public                bool
+	SoldOut               bool
+	Media                 entity.MultiProductMedia
+	PriceAdult            int64
+	PriceJuniorHighSchool int64
+	PriceElementarySchool int64
+	PricePreschool        int64
+	PriceSenior           int64
+	RecommendedPoints     []string
+	HostPrefectureCode    int32
+	HostCity              string
+	StartAt               time.Time
+	EndAt                 time.Time
+}
+
+type ExperienceType interface {
+	List(ctx context.Context, params *ListExperienceTypesParams, fields ...string) (entity.ExperienceTypes, error)
+	Count(ctx context.Context, params *ListExperienceTypesParams) (int64, error)
+	MultiGet(ctx context.Context, experienceTypeIDs []string, fields ...string) (entity.ExperienceTypes, error)
+	Get(ctx context.Context, experienceTypeID string, fields ...string) (*entity.ExperienceType, error)
+	Create(ctx context.Context, experienceType *entity.ExperienceType) error
+	Update(ctx context.Context, experienceTypeID string, params *UpdateExperienceTypeParams) error
+	Delete(ctx context.Context, experienceTypeID string) error
+}
+
+type ListExperienceTypesParams struct {
+	Name   string
+	Limit  int
+	Offset int
+}
+
+type UpdateExperienceTypeParams struct {
+	Name string
 }
 
 type Live interface {

@@ -54,7 +54,7 @@ experience:
       type: integer
       format: int64
       description: 小学生販売価格（税込）
-    pricePreschooler:
+    pricePreschool:
       type: integer
       format: int64
       description: 幼児販売価格（税込）
@@ -107,7 +107,7 @@ experience:
   - priceAdult
   - priceJuniorHighSchool
   - priceElementarySchool
-  - pricePreschooler
+  - pricePreschool
   - priceSenior
   - hostPrefectureCode
   - hostCity
@@ -131,7 +131,7 @@ experience:
     priceAdult: 1000
     priceJuniorHighSchool: 800
     priceElementarySchool: 600
-    pricePreschooler: 400
+    pricePreschool: 400
     priceSenior: 800
     recommendedPoint1: '新鮮なじゃがいもを堀ります'
     recommendedPoint2: 'じゃがいもの美味しさを体験'

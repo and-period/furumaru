@@ -185,6 +185,56 @@ func TestGetBroadcastLiveMP4UploadURL(t *testing.T) {
 	}
 }
 
+func TestGetVideoThumbnailUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &media.GenerateUploadURLInput{
+				FileType: "image/png",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetVideoThumbnailUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
+func TestGetVideoFileUploadURL(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		setup  func(ctx context.Context, mocks *mocks)
+		input  *media.GenerateUploadURLInput
+		expect error
+	}{
+		{
+			name:  "success",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &media.GenerateUploadURLInput{
+				FileType: "video/mp4",
+			},
+			expect: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
+			_, err := service.GetVideoFileUploadURL(ctx, tt.input)
+			assert.ErrorIs(t, err, tt.expect)
+		}))
+	}
+}
+
 func TestGetCoordinatorThumbnailUploadURL(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

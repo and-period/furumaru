@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"encoding/json"
 	"time"
 
 	"gorm.io/datatypes"
@@ -38,7 +39,7 @@ type Experience struct {
 	RecommendedPointsJSON datatypes.JSON       `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
 	PromotionVideoURL     string               `gorm:""`                                       // 紹介動画URL
 	HostPrefecture        string               `gorm:"-"`                                      // 開催場所(都道府県)
-	HostPrefectureCode    int32                `gorm:"column:origin_prefecture"`               // 開催場所(都道府県コード)
+	HostPrefectureCode    int32                `gorm:"column:host_prefecture"`                 // 開催場所(都道府県コード)
 	HostCity              string               `gorm:""`                                       // 開催場所(市区町村)
 	StartAt               time.Time            `gorm:""`                                       // 募集開始日時
 	EndAt                 time.Time            `gorm:""`                                       // 募集終了日時
@@ -56,3 +57,28 @@ type ExperienceMedia struct {
 }
 
 type MultiExperienceMedia []*ExperienceMedia
+
+func (e *Experience) FillJSON() error {
+	media, err := e.Media.Marshal()
+	if err != nil {
+		return err
+	}
+	points, err := ExperienceMarshalRecommendedPoints(e.RecommendedPoints)
+	if err != nil {
+		return err
+	}
+	e.MediaJSON = media
+	e.RecommendedPointsJSON = points
+	return nil
+}
+
+func ExperienceMarshalRecommendedPoints(points []string) ([]byte, error) {
+	return json.Marshal(points)
+}
+
+func (m MultiExperienceMedia) Marshal() ([]byte, error) {
+	if len(m) == 0 {
+		return []byte{}, nil
+	}
+	return json.Marshal(m)
+}

@@ -35,6 +35,14 @@ type Service interface {
 	CreateBroadcastComment(ctx context.Context, in *CreateBroadcastCommentInput) (*entity.BroadcastComment, error)           // ライブコメント登録
 	CreateBroadcastGuestComment(ctx context.Context, in *CreateBroadcastGuestCommentInput) (*entity.BroadcastComment, error) // ライブゲストコメント登録
 	UpdateBroadcastComment(ctx context.Context, in *UpdateBroadcastCommentInput) error                                       // ライブコメント更新
+	// オンデマンド配信
+	ListVideos(ctx context.Context, in *ListVideosInput) (entity.Videos, int64, error)                       // 一覧取得
+	GetVideo(ctx context.Context, in *GetVideoInput) (*entity.Video, error)                                  // １件取得
+	CreateVideo(ctx context.Context, in *CreateVideoInput) (*entity.Video, error)                            // 登録
+	UpdateVideo(ctx context.Context, in *UpdateVideoInput) error                                             // 更新
+	DeleteVideo(ctx context.Context, in *DeleteVideoInput) error                                             // 削除
+	GetVideoThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // サムネイル画像アップロード用URLの生成
+	GetVideoFileUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)      // 動画アップロード用URLの生成
 	// コーディネータ
 	GetCoordinatorThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)      // サムネイル画像アップロード用URLの生成
 	GetCoordinatorHeaderUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)         // ヘッダー画像アップロード用URLの生成
