@@ -6,12 +6,30 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListExperienceTypes(t *testing.T) {
 	t.Parallel()
+
+	now := jst.Date(2024, 8, 24, 18, 30, 0, 0)
+	params := &database.ListExperienceTypesParams{
+		Name:   "収穫",
+		Limit:  20,
+		Offset: 0,
+	}
+	types := entity.ExperienceTypes{
+		{
+			ID:        "experience-type-id",
+			Name:      "じゃがいも収穫",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
 
 	tests := []struct {
 		name        string
@@ -22,15 +40,25 @@ func TestListExperienceTypes(t *testing.T) {
 		expectErr   error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().List(gomock.Any(), params).Return(types, nil)
+				mocks.db.ExperienceType.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
 			input: &store.ListExperienceTypesInput{
-				Name:   "",
+				Name:   "収穫",
 				Limit:  20,
 				Offset: 0,
 			},
-			expect:      []*entity.ExperienceType{},
-			expectTotal: 0,
+			expect: []*entity.ExperienceType{
+				{
+					ID:        "experience-type-id",
+					Name:      "じゃがいも収穫",
+					CreatedAt: now,
+					UpdatedAt: now,
+				},
+			},
+			expectTotal: 1,
 			expectErr:   nil,
 		},
 		{
@@ -40,6 +68,36 @@ func TestListExperienceTypes(t *testing.T) {
 			expect:      nil,
 			expectTotal: 0,
 			expectErr:   exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to list experience types",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.ExperienceType.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &store.ListExperienceTypesInput{
+				Name:   "収穫",
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
+		{
+			name: "failed to count experience types",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().List(gomock.Any(), params).Return(types, nil)
+				mocks.db.ExperienceType.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+			},
+			input: &store.ListExperienceTypesInput{
+				Name:   "収穫",
+				Limit:  20,
+				Offset: 0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
 		},
 	}
 

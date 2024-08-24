@@ -62,7 +62,7 @@ func TestExperienceType_List(t *testing.T) {
 				},
 			},
 			want: want{
-				experienceTypes: entity.ExperienceTypes{},
+				experienceTypes: types[1:2],
 				err:             nil,
 			},
 		},
@@ -128,7 +128,7 @@ func TestExperienceType_Count(t *testing.T) {
 				},
 			},
 			want: want{
-				total: 0,
+				total: 3,
 				err:   nil,
 			},
 		},

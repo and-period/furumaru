@@ -5,6 +5,9 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,9 +21,36 @@ func (h *handler) experienceTypeRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) ListExperienceTypes(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	in := &store.ListExperienceTypesInput{
+		Name:   util.GetQuery(ctx, "name", ""),
+		Limit:  limit,
+		Offset: offset,
+	}
+	types, total, err := h.store.ListExperienceTypes(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.ExperienceTypesResponse{
-		ExperienceTypes: []*response.ExperienceType{},
+		ExperienceTypes: service.NewExperienceTypes(types).Response(),
+		Total:           total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }

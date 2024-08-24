@@ -39,16 +39,18 @@ type mocks struct {
 }
 
 type dbMocks struct {
-	Category      *mock_database.MockCategory
-	Order         *mock_database.MockOrder
-	PaymentSystem *mock_database.MockPaymentSystem
-	Product       *mock_database.MockProduct
-	ProductTag    *mock_database.MockProductTag
-	ProductType   *mock_database.MockProductType
-	Promotion     *mock_database.MockPromotion
-	Shipping      *mock_database.MockShipping
-	Schedule      *mock_database.MockSchedule
-	Live          *mock_database.MockLive
+	Category       *mock_database.MockCategory
+	Experience     *mock_database.MockExperience
+	ExperienceType *mock_database.MockExperienceType
+	Order          *mock_database.MockOrder
+	PaymentSystem  *mock_database.MockPaymentSystem
+	Product        *mock_database.MockProduct
+	ProductTag     *mock_database.MockProductTag
+	ProductType    *mock_database.MockProductType
+	Promotion      *mock_database.MockPromotion
+	Shipping       *mock_database.MockShipping
+	Schedule       *mock_database.MockSchedule
+	Live           *mock_database.MockLive
 }
 
 type testOptions struct {
@@ -83,16 +85,18 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 
 func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 	return &dbMocks{
-		Category:      mock_database.NewMockCategory(ctrl),
-		Order:         mock_database.NewMockOrder(ctrl),
-		PaymentSystem: mock_database.NewMockPaymentSystem(ctrl),
-		Product:       mock_database.NewMockProduct(ctrl),
-		ProductTag:    mock_database.NewMockProductTag(ctrl),
-		ProductType:   mock_database.NewMockProductType(ctrl),
-		Promotion:     mock_database.NewMockPromotion(ctrl),
-		Shipping:      mock_database.NewMockShipping(ctrl),
-		Schedule:      mock_database.NewMockSchedule(ctrl),
-		Live:          mock_database.NewMockLive(ctrl),
+		Category:       mock_database.NewMockCategory(ctrl),
+		Experience:     mock_database.NewMockExperience(ctrl),
+		ExperienceType: mock_database.NewMockExperienceType(ctrl),
+		Order:          mock_database.NewMockOrder(ctrl),
+		PaymentSystem:  mock_database.NewMockPaymentSystem(ctrl),
+		Product:        mock_database.NewMockProduct(ctrl),
+		ProductTag:     mock_database.NewMockProductTag(ctrl),
+		ProductType:    mock_database.NewMockProductType(ctrl),
+		Promotion:      mock_database.NewMockPromotion(ctrl),
+		Shipping:       mock_database.NewMockShipping(ctrl),
+		Schedule:       mock_database.NewMockSchedule(ctrl),
+		Live:           mock_database.NewMockLive(ctrl),
 	}
 }
 
@@ -106,16 +110,18 @@ func newService(mocks *mocks, opts ...testOption) *service {
 	params := &Params{
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
-			Category:      mocks.db.Category,
-			Order:         mocks.db.Order,
-			PaymentSystem: mocks.db.PaymentSystem,
-			Product:       mocks.db.Product,
-			ProductTag:    mocks.db.ProductTag,
-			ProductType:   mocks.db.ProductType,
-			Promotion:     mocks.db.Promotion,
-			Shipping:      mocks.db.Shipping,
-			Schedule:      mocks.db.Schedule,
-			Live:          mocks.db.Live,
+			Category:       mocks.db.Category,
+			Expericence:    mocks.db.Experience,
+			ExperienceType: mocks.db.ExperienceType,
+			Order:          mocks.db.Order,
+			PaymentSystem:  mocks.db.PaymentSystem,
+			Product:        mocks.db.Product,
+			ProductTag:     mocks.db.ProductTag,
+			ProductType:    mocks.db.ProductType,
+			Promotion:      mocks.db.Promotion,
+			Shipping:       mocks.db.Shipping,
+			Schedule:       mocks.db.Schedule,
+			Live:           mocks.db.Live,
 		},
 		Cache:      mocks.cache,
 		User:       mocks.user,
