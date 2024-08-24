@@ -14,7 +14,7 @@ import (
 func NewDatabase(db *mysql.Client) *database.Database {
 	return &database.Database{
 		Category:       newCategory(db),
-		Expericence:    newExperience(db),
+		Experience:     newExperience(db),
 		ExperienceType: newExperienceType(db),
 		Live:           newLive(db),
 		Order:          newOrder(db),

@@ -66,12 +66,13 @@ func TestExperience_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListExperiencesParams{
-					Limit:  1,
+					Name:   "収穫",
+					Limit:  2,
 					Offset: 1,
 				},
 			},
 			want: want{
-				experiences: entity.Experiences{},
+				experiences: experiences[1:],
 				err:         nil,
 			},
 		},
@@ -141,12 +142,13 @@ func TestExperience_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListExperiencesParams{
-					Limit:  1,
+					Name:   "収穫",
+					Limit:  2,
 					Offset: 1,
 				},
 			},
 			want: want{
-				total: 0,
+				total: 3,
 				err:   nil,
 			},
 		},

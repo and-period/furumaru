@@ -1,11 +1,16 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
+	"github.com/and-period/furumaru/api/internal/gateway/util"
+	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
@@ -13,19 +18,120 @@ func (h *handler) experienceRoutes(rg *gin.RouterGroup) {
 
 	r.GET("", h.ListExperiences)
 	r.POST("", h.CreateExperience)
-	r.GET("/:experienceId", h.GetExperience)
-	r.PATCH("/:experienceId", h.UpdateExperience)
-	r.DELETE("/:experienceId", h.DeleteExperience)
+	r.GET("/:experienceId", h.filterAccessExperience, h.GetExperience)
+	r.PATCH("/:experienceId", h.filterAccessExperience, h.UpdateExperience)
+	r.DELETE("/:experienceId", h.filterAccessExperience, h.DeleteExperience)
+}
+
+func (h *handler) filterAccessExperience(ctx *gin.Context) {
+	params := &filterAccessParams{
+		coordinator: func(ctx *gin.Context) (bool, error) {
+			producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+			if err != nil {
+				return false, err
+			}
+			experience, err := h.getExperience(ctx, util.GetParam(ctx, "experienceId"))
+			if err != nil {
+				return false, err
+			}
+			return producers.Contains(experience.ProducerID), nil
+		},
+		producer: func(ctx *gin.Context) (bool, error) {
+			experience, err := h.getExperience(ctx, util.GetParam(ctx, "experienceId"))
+			if err != nil {
+				return false, err
+			}
+			return experience.ProducerID == getAdminID(ctx), nil
+		},
+	}
+	if err := filterAccess(ctx, params); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	ctx.Next()
 }
 
 func (h *handler) ListExperiences(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	const (
+		defaultLimit  = 20
+		defaultOffset = 0
+	)
+
+	limit, err := util.GetQueryInt64(ctx, "limit", defaultLimit)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	offset, err := util.GetQueryInt64(ctx, "offset", defaultOffset)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+
+	in := &store.ListExperiencesInput{
+		Name:       util.GetQuery(ctx, "name", ""),
+		ProducerID: util.GetQuery(ctx, "producerId", ""),
+		Limit:      limit,
+		Offset:     offset,
+		NoLimit:    false,
+	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		// 生産者が紐づかない場合、体験が存在しないためアーリーリターンする
+		if len(producers) == 0 {
+			res := &response.ExperiencesResponse{
+				Experiences: []*response.Experience{},
+			}
+			ctx.JSON(http.StatusOK, res)
+			return
+		}
+	}
+	experiences, total, err := h.store.ListExperiences(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	if len(experiences) == 0 {
+		res := &response.ExperiencesResponse{
+			Experiences: []*response.Experience{},
+		}
+		ctx.JSON(http.StatusOK, res)
+		return
+	}
+
+	var (
+		coordinators    service.Coordinators
+		producers       service.Producers
+		experienceTypes service.ExperienceTypes
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinators, err = h.multiGetCoordinators(ctx, experiences.CoordinatorIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		producers, err = h.multiGetProducers(ctx, experiences.ProducerIDs())
+		return
+	})
+	eg.Go(func() (err error) {
+		experienceTypes, err = h.multiGetExperienceTypes(ectx, experiences.ExperienceTypeIDs())
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.ExperiencesResponse{
-		Experiences:     []*response.Experience{},
-		Coordinators:    []*response.Coordinator{},
-		Producers:       []*response.Producer{},
-		ExperienceTypes: []*response.ExperienceType{},
-		Total:           0,
+		Experiences:     service.NewExperiences(experiences).Response(),
+		Coordinators:    coordinators.Response(),
+		Producers:       producers.Response(),
+		ExperienceTypes: experienceTypes.Response(),
+		Total:           total,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -70,4 +176,9 @@ func (h *handler) UpdateExperience(ctx *gin.Context) {
 func (h *handler) DeleteExperience(ctx *gin.Context) {
 	// TODO: 詳細の実装
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) getExperience(ctx context.Context, experienceID string) (*service.Experience, error) {
+	// TODO: 詳細の実装
+	return &service.Experience{}, nil
 }

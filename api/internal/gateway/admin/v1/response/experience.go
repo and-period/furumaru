@@ -3,7 +3,7 @@ package response
 // Experience - 体験情報
 type Experience struct {
 	ID                    string             `json:"id"`                    // 体験ID
-	Coordinator           string             `json:"coordinator"`           // コーディネータ
+	CoordinatorID         string             `json:"coordinatorId"`         // コーディネータID
 	ProducerID            string             `json:"producerId"`            // プロデューサーID
 	ExperienceTypeID      string             `json:"experienceType"`        // 体験種別ID
 	Title                 string             `json:"title"`                 // タイトル

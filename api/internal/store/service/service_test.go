@@ -111,7 +111,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 		WaitGroup: &sync.WaitGroup{},
 		Database: &database.Database{
 			Category:       mocks.db.Category,
-			Expericence:    mocks.db.Experience,
+			Experience:     mocks.db.Experience,
 			ExperienceType: mocks.db.ExperienceType,
 			Order:          mocks.db.Order,
 			PaymentSystem:  mocks.db.PaymentSystem,

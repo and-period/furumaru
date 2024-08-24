@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
@@ -81,4 +82,18 @@ func (h *handler) UpdateExperienceType(ctx *gin.Context) {
 func (h *handler) DeleteExperienceType(ctx *gin.Context) {
 	// TODO: 詳細の実装
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) multiGetExperienceTypes(ctx context.Context, experinceTypeIDs []string) (service.ExperienceTypes, error) {
+	if len(experinceTypeIDs) == 0 {
+		return service.ExperienceTypes{}, nil
+	}
+	in := &store.MultiGetExperienceTypesInput{
+		ExperienceTypeIDs: experinceTypeIDs,
+	}
+	types, err := h.store.MultiGetExperienceTypes(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperienceTypes(types), nil
 }

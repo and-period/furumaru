@@ -6,13 +6,65 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListExperiences(t *testing.T) {
 	t.Parallel()
+
+	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	params := &database.ListExperiencesParams{
+		Name:          "収穫",
+		CoordinatorID: "coordinator-id",
+		ProducerID:    "producer-id",
+		Limit:         20,
+		Offset:        0,
+	}
+	experiences := entity.Experiences{
+		{
+			ID:            "experience-id",
+			CoordinatorID: "coordinator-id",
+			ProducerID:    "producer-id",
+			TypeID:        "experience-type-id",
+			Title:         "じゃがいも収穫",
+			Description:   "じゃがいもを収穫する体験です。",
+			Public:        true,
+			SoldOut:       false,
+			Status:        entity.ExperienceStatusAccepting,
+			ThumbnailURL:  "http://example.com/thumbnail.png",
+			Media: []*entity.ExperienceMedia{
+				{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+				{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+			},
+			RecommendedPoints: []string{
+				"じゃがいもを収穫する楽しさを体験できます。",
+				"新鮮なじゃがいもを持ち帰ることができます。",
+			},
+			PromotionVideoURL:  "http://example.com/promotion.mp4",
+			HostPrefecture:     "滋賀県",
+			HostPrefectureCode: 25,
+			HostCity:           "彦根市",
+			StartAt:            now.AddDate(0, 0, -1),
+			EndAt:              now.AddDate(0, 0, 1),
+			ExperienceRevision: entity.ExperienceRevision{
+				ID:                    1,
+				ExperienceID:          "experience-id",
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				CreatedAt:             now,
+				UpdatedAt:             now,
+			},
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
 
 	tests := []struct {
 		name        string
@@ -23,15 +75,20 @@ func TestListExperiences(t *testing.T) {
 		expectErr   error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &store.ListExperiencesInput{
-				Name:   "",
-				Limit:  20,
-				Offset: 0,
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().List(gomock.Any(), params).Return(experiences, nil)
+				mocks.db.Experience.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
-			expect:      []*entity.Experience{},
-			expectTotal: 0,
+			input: &store.ListExperiencesInput{
+				Name:          "収穫",
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				Limit:         20,
+				Offset:        0,
+			},
+			expect:      experiences,
+			expectTotal: 1,
 			expectErr:   nil,
 		},
 		{

@@ -316,7 +316,7 @@ func (p *product) fill(ctx context.Context, tx *gorm.DB, products ...*entity.Pro
 		Where("id IN (?)", sub)
 
 	if err := stmt.Find(&revisions).Error; err != nil {
-		return nil
+		return err
 	}
 	if len(revisions) == 0 {
 		return nil
