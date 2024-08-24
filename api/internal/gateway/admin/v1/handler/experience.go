@@ -178,6 +178,20 @@ func (h *handler) DeleteExperience(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []string) (service.Experiences, error) {
+	if len(experienceIDs) == 0 {
+		return service.Experiences{}, nil
+	}
+	in := &store.MultiGetExperiencesInput{
+		ExperienceIDs: experienceIDs,
+	}
+	experiences, err := h.store.MultiGetExperiences(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperiences(experiences), nil
+}
+
 func (h *handler) getExperience(ctx context.Context, experienceID string) (*service.Experience, error) {
 	// TODO: 詳細の実装
 	return &service.Experience{}, nil

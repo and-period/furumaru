@@ -140,6 +140,7 @@ type UpdateBroadcastCommentInput struct {
 }
 
 type ListVideosInput struct {
+	Name          string `validate:""`
 	CoordinatorID string `validate:""`
 	Limit         int64  `validate:"required_without=NoLimit,min=0,max=200"`
 	Offset        int64  `validate:"min=0"`

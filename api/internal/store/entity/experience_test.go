@@ -2,10 +2,90 @@ package entity
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
+
+func TestExperience_SetStatus(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name           string
+		experience     *Experience
+		expectedStatus ExperienceStatus
+	}{
+		{
+			name: "archived",
+			experience: &Experience{
+				DeletedAt: gorm.DeletedAt{Time: now, Valid: true},
+			},
+			expectedStatus: ExperienceStatusArchived,
+		},
+		{
+			name: "private",
+			experience: &Experience{
+				Public:  false,
+				SoldOut: false,
+				StartAt: now.AddDate(0, 0, -1),
+				EndAt:   now.AddDate(0, 0, 1),
+			},
+			expectedStatus: ExperienceStatusPrivate,
+		},
+		{
+			name: "sold out",
+			experience: &Experience{
+				Public:  true,
+				SoldOut: true,
+				StartAt: now.AddDate(0, 0, -1),
+				EndAt:   now.AddDate(0, 0, 1),
+			},
+			expectedStatus: ExperienceStatusSoldOut,
+		},
+		{
+			name: "waiting",
+			experience: &Experience{
+				Public:  true,
+				SoldOut: false,
+				StartAt: now.AddDate(0, 0, 1),
+				EndAt:   now.AddDate(0, 0, 2),
+			},
+			expectedStatus: ExperienceStatusWaiting,
+		},
+		{
+			name: "accepting",
+			experience: &Experience{
+				Public:  true,
+				SoldOut: false,
+				StartAt: now.AddDate(0, 0, -1),
+				EndAt:   now.AddDate(0, 0, 1),
+			},
+			expectedStatus: ExperienceStatusAccepting,
+		},
+		{
+			name: "finished",
+			experience: &Experience{
+				Public:  true,
+				SoldOut: false,
+				StartAt: now.AddDate(0, 0, -2),
+				EndAt:   now.AddDate(0, 0, -1),
+			},
+			expectedStatus: ExperienceStatusFinished,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tt.experience.SetStatus(now)
+			assert.Equal(t, tt.expectedStatus, tt.experience.Status)
+		})
+	}
+}
 
 func TestExperience_FillJSON(t *testing.T) {
 	t.Parallel()
@@ -54,6 +134,338 @@ func TestExperience_FillJSON(t *testing.T) {
 			err := tt.experience.FillJSON()
 			assert.Equal(t, err != nil, tt.hasErr)
 			assert.Equal(t, tt.experience, tt.expect)
+		})
+	}
+}
+
+func TestExperience_Fill(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name        string
+		experiences Experiences
+		revisions   map[string]*ExperienceRevision
+		now         time.Time
+		expect      Experiences
+		hasErr      bool
+	}{
+		{
+			name: "success",
+			experiences: Experiences{
+				{
+					ID:                    "experience-id",
+					CoordinatorID:         "coordinator-id",
+					ProducerID:            "producer-id",
+					TypeID:                "experience-type-id",
+					Title:                 "じゃがいも収穫",
+					Description:           "じゃがいもを収穫する体験",
+					Public:                true,
+					SoldOut:               false,
+					Status:                ExperienceStatusUnknown,
+					ThumbnailURL:          "http://example.com/thumbnail.png",
+					Media:                 []*ExperienceMedia{},
+					MediaJSON:             datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints:     []string{},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					HostPrefecture:        "東京都",
+					HostPrefectureCode:    13,
+					HostCity:              "千代田区",
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
+				},
+			},
+			revisions: map[string]*ExperienceRevision{},
+			now:       time.Now(),
+			expect: Experiences{
+				{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					HostPrefecture:        "東京都",
+					HostPrefectureCode:    13,
+					HostCity:              "千代田区",
+					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
+				},
+			},
+			hasErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			err := tt.experiences.Fill(tt.revisions, tt.now)
+			assert.Equal(t, err != nil, tt.hasErr)
+			assert.Equal(t, tt.experiences, tt.expect)
+		})
+	}
+}
+
+func TestExperiences_IDs(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name        string
+		experiences Experiences
+		expect      []string
+	}{
+		{
+			name: "success",
+			experiences: Experiences{
+				{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					HostPrefecture:        "東京都",
+					HostPrefectureCode:    13,
+					HostCity:              "千代田区",
+					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
+				},
+			},
+			expect: []string{"experience-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.experiences.IDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestExperiences_CoordinatorIDs(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name        string
+		experiences Experiences
+		expect      []string
+	}{
+		{
+			name: "success",
+			experiences: Experiences{
+				{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					HostPrefecture:        "東京都",
+					HostPrefectureCode:    13,
+					HostCity:              "千代田区",
+					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
+				},
+			},
+			expect: []string{"coordinator-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.experiences.CoordinatorIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestExperiences_ProducerIDs(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name        string
+		experiences Experiences
+		expect      []string
+	}{
+		{
+			name: "success",
+			experiences: Experiences{
+				{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					HostPrefecture:        "東京都",
+					HostPrefectureCode:    13,
+					HostCity:              "千代田区",
+					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
+				},
+			},
+			expect: []string{"producer-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.experiences.ProducerIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestExperiences_ExperienceTypeIDs(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name        string
+		experiences Experiences
+		expect      []string
+	}{
+		{
+			name: "success",
+			experiences: Experiences{
+				{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					HostPrefecture:        "東京都",
+					HostPrefectureCode:    13,
+					HostCity:              "千代田区",
+					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
+				},
+			},
+			expect: []string{"experience-type-id"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.experiences.ExperienceTypeIDs()
+			assert.ElementsMatch(t, tt.expect, actual)
 		})
 	}
 }

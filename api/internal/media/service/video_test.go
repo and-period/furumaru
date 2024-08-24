@@ -6,13 +6,55 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListVideos(t *testing.T) {
 	t.Parallel()
+
+	now := jst.Date(2023, 10, 20, 18, 30, 0, 0)
+	params := &database.ListVideosParams{
+		Name:          "じゃがいも収穫",
+		CoordinatorID: "coordinator-id",
+		Limit:         20,
+		Offset:        0,
+	}
+	videos := entity.Videos{
+		{
+			ID:            "video-id",
+			CoordinatorID: "coordinator-id",
+			ProductIDs:    []string{"product-id"},
+			ExperienceIDs: []string{"experience-id"},
+			Title:         "じゃがいも収穫",
+			Description:   "じゃがいも収穫の説明",
+			Status:        entity.VideoStatusPublished,
+			ThumbnailURL:  "https://example.com/thumbnail.jpg",
+			VideoURL:      "https://example.com/video.mp4",
+			Public:        true,
+			Limited:       false,
+			VideoProducts: []*entity.VideoProduct{{
+				VideoID:   "video-id",
+				ProductID: "product-id",
+				Priority:  1,
+				CreatedAt: now,
+				UpdatedAt: now,
+			}},
+			VideoExperiences: []*entity.VideoExperience{{
+				VideoID:      "video-id",
+				ExperienceID: "experience-id",
+				Priority:     1,
+				CreatedAt:    now,
+				UpdatedAt:    now,
+			}},
+			PublishedAt: now.AddDate(0, 0, -1),
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		},
+	}
 
 	tests := []struct {
 		name        string
@@ -23,14 +65,19 @@ func TestListVideos(t *testing.T) {
 		expectErr   error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
-			input: &media.ListVideosInput{
-				Limit:  10,
-				Offset: 0,
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().List(gomock.Any(), params).Return(videos, nil)
+				mocks.db.Video.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
-			expect:      entity.Videos{},
-			expectTotal: 0,
+			input: &media.ListVideosInput{
+				Name:          "じゃがいも収穫",
+				CoordinatorID: "coordinator-id",
+				Limit:         20,
+				Offset:        0,
+			},
+			expect:      videos,
+			expectTotal: 1,
 			expectErr:   nil,
 		},
 		{

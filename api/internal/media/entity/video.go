@@ -2,6 +2,8 @@ package entity
 
 import (
 	"time"
+
+	"github.com/and-period/furumaru/api/pkg/set"
 )
 
 // VideoStatus - オンデマンド配信状況
@@ -36,3 +38,58 @@ type Video struct {
 }
 
 type Videos []*Video
+
+func (v *Video) Fill(products VideoProducts, experiences VideoExperiences, now time.Time) {
+	v.ProductIDs = products.SortByPriority().ProductIDs()
+	v.ExperienceIDs = experiences.SortByPriority().ExperienceIDs()
+	v.VideoProducts = products
+	v.VideoExperiences = experiences
+	v.SetStatus(now)
+}
+
+func (v *Video) SetStatus(now time.Time) {
+	switch {
+	case !v.Public:
+		v.Status = VideoStatusPrivate
+	case now.Before(v.PublishedAt):
+		v.Status = VideoStatusWaiting
+	case v.Limited:
+		v.Status = VideoStatusLimited
+	default:
+		v.Status = VideoStatusPublished
+	}
+}
+
+func (vs Videos) IDs() []string {
+	return set.UniqBy(vs, func(v *Video) string {
+		return v.ID
+	})
+}
+
+func (vs Videos) CoordinatorIDs() []string {
+	return set.UniqBy(vs, func(v *Video) string {
+		return v.CoordinatorID
+	})
+}
+
+func (vs Videos) ProductIDs() []string {
+	res := set.NewEmpty[string](len(vs))
+	for i := range vs {
+		res.Add(vs[i].ProductIDs...)
+	}
+	return res.Slice()
+}
+
+func (vs Videos) ExperienceIDs() []string {
+	res := set.NewEmpty[string](len(vs))
+	for i := range vs {
+		res.Add(vs[i].ExperienceIDs...)
+	}
+	return res.Slice()
+}
+
+func (vs Videos) Fill(products map[string]VideoProducts, experiences map[string]VideoExperiences, now time.Time) {
+	for i := range vs {
+		vs[i].Fill(products[vs[i].ID], experiences[vs[i].ID], now)
+	}
+}
