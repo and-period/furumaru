@@ -22,6 +22,26 @@ type ExperienceRevision struct {
 
 type ExperienceRevisions []*ExperienceRevision
 
+type NewExperienceRevisionParams struct {
+	ExperienceID          string
+	PriceAdult            int64
+	PriceJuniorHighSchool int64
+	PriceElementarySchool int64
+	PricePreschool        int64
+	PriceSenior           int64
+}
+
+func NewExperienceRevision(params *NewExperienceRevisionParams) *ExperienceRevision {
+	return &ExperienceRevision{
+		ExperienceID:          params.ExperienceID,
+		PriceAdult:            params.PriceAdult,
+		PriceJuniorHighSchool: params.PriceJuniorHighSchool,
+		PriceElementarySchool: params.PriceElementarySchool,
+		PricePreschool:        params.PricePreschool,
+		PriceSenior:           params.PriceSenior,
+	}
+}
+
 func (rs ExperienceRevisions) ExperienceIDs() []string {
 	return set.UniqBy(rs, func(r *ExperienceRevision) string {
 		return r.ExperienceID

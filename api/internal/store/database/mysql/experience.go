@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/store/database"
@@ -117,18 +118,82 @@ func (e *experience) Get(ctx context.Context, experienceID string, fields ...str
 }
 
 func (e *experience) Create(ctx context.Context, experience *entity.Experience) error {
-	// TODO: 詳細の実装
-	return nil
+	err := e.db.Transaction(ctx, func(tx *gorm.DB) error {
+		if err := experience.FillJSON(); err != nil {
+			return err
+		}
+
+		now := e.now()
+
+		experience.CreatedAt, experience.UpdatedAt = now, now
+		experience.ExperienceRevision.CreatedAt, experience.ExperienceRevision.UpdatedAt = now, now
+		if err := tx.WithContext(ctx).Table(experienceTable).Create(&experience).Error; err != nil {
+			return err
+		}
+		return tx.WithContext(ctx).Table(experienceRevisionTable).Create(&experience.ExperienceRevision).Error
+	})
+	return dbError(err)
 }
 
 func (e *experience) Update(ctx context.Context, experienceID string, params *database.UpdateExperienceParams) error {
-	// TODO: 詳細の実装
-	return nil
+	now := e.now()
+	rparams := &entity.NewExperienceRevisionParams{
+		ExperienceID:          experienceID,
+		PriceAdult:            params.PriceAdult,
+		PriceJuniorHighSchool: params.PriceJuniorHighSchool,
+		PriceElementarySchool: params.PriceElementarySchool,
+		PricePreschool:        params.PricePreschool,
+		PriceSenior:           params.PriceSenior,
+	}
+	revision := entity.NewExperienceRevision(rparams)
+
+	err := e.db.Transaction(ctx, func(tx *gorm.DB) error {
+		media, err := params.Media.Marshal()
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
+		points, err := entity.ExperienceMarshalRecommendedPoints(params.RecommendedPoints)
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
+
+		updates := map[string]interface{}{
+			"experience_type_id":  params.TypeID,
+			"title":               params.Title,
+			"description":         params.Description,
+			"public":              params.Public,
+			"sold_out":            params.SoldOut,
+			"media":               nil,
+			"recommended_points":  points,
+			"promotion_video_url": params.PromotionVideoURL,
+			"host_prefecture":     params.HostPrefectureCode,
+			"host_city":           params.HostCity,
+			"start_at":            params.StartAt,
+			"end_at":              params.EndAt,
+			"updated_at":          now,
+		}
+		if len(media) > 0 {
+			updates["media"] = media
+		}
+
+		stmt := tx.WithContext(ctx).Table(experienceTable).Where("id = ?", experienceID)
+		if err := stmt.Updates(updates).Error; err != nil {
+			return err
+		}
+
+		revision.CreatedAt, revision.UpdatedAt = now, now
+		return tx.WithContext(ctx).Table(experienceRevisionTable).Create(&revision).Error
+	})
+	return dbError(err)
 }
 
 func (e *experience) Delete(ctx context.Context, experienceID string) error {
-	// TODO: 詳細の実装
-	return nil
+	params := map[string]interface{}{
+		"deleted_at": e.now(),
+	}
+	stmt := e.db.DB.WithContext(ctx).Table(experienceTable).Where("id = ?", experienceID)
+	err := stmt.Updates(params).Error
+	return dbError(err)
 }
 
 func (e *experience) multiGet(ctx context.Context, tx *gorm.DB, experienceIDs []string, fields ...string) (entity.Experiences, error) {
