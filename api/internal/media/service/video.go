@@ -2,10 +2,15 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
+	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/user"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -50,22 +55,125 @@ func (s *service) CreateVideo(ctx context.Context, in *media.CreateVideoInput) (
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return &entity.Video{}, nil
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &user.GetCoordinatorInput{
+			CoordinatorID: in.CoordinatorID,
+		}
+		_, err = s.user.GetCoordinator(ectx, in)
+		return
+	})
+	eg.Go(func() (err error) {
+		in := &store.MultiGetProductsInput{
+			ProductIDs: in.ProductIDs,
+		}
+		products, err := s.store.MultiGetProducts(ectx, in)
+		if err != nil {
+			return err
+		}
+		if len(products) != len(in.ProductIDs) {
+			return fmt.Errorf("service: product not found: %w", exception.ErrNotFound)
+		}
+		return nil
+	})
+	eg.Go(func() (err error) {
+		in := &store.MultiGetExperiencesInput{
+			ExperienceIDs: in.ExperienceIDs,
+		}
+		experiences, err := s.store.MultiGetExperiences(ectx, in)
+		if err != nil {
+			return err
+		}
+		if len(experiences) != len(in.ExperienceIDs) {
+			return fmt.Errorf("service: experience not found: %w", exception.ErrNotFound)
+		}
+		return nil
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return nil, fmt.Errorf("service: invalid request: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return nil, internalError(err)
+	}
+
+	params := &entity.NewVideoParams{
+		CoordinatorID: in.CoordinatorID,
+		ProductIDs:    in.ProductIDs,
+		ExperienceIDs: in.ExperienceIDs,
+		Title:         in.Title,
+		Description:   in.Description,
+		ThumbnailURL:  in.ThumbnailURL,
+		VideoURL:      in.VideoURL,
+		Public:        in.Public,
+		Limited:       in.Limited,
+		PublishedAt:   in.PublishedAt,
+	}
+	video := entity.NewVideo(params)
+	if err := s.db.Video.Create(ctx, video); err != nil {
+		return nil, internalError(err)
+	}
+	return video, nil
 }
 
 func (s *service) UpdateVideo(ctx context.Context, in *media.UpdateVideoInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	// TODO: 詳細の実装
-	return nil
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &store.MultiGetProductsInput{
+			ProductIDs: in.ProductIDs,
+		}
+		products, err := s.store.MultiGetProducts(ectx, in)
+		if err != nil {
+			return err
+		}
+		if len(products) != len(in.ProductIDs) {
+			return fmt.Errorf("service: product not found: %w", exception.ErrNotFound)
+		}
+		return nil
+	})
+	eg.Go(func() (err error) {
+		in := &store.MultiGetExperiencesInput{
+			ExperienceIDs: in.ExperienceIDs,
+		}
+		experiences, err := s.store.MultiGetExperiences(ectx, in)
+		if err != nil {
+			return err
+		}
+		if len(experiences) != len(in.ExperienceIDs) {
+			return fmt.Errorf("service: experience not found: %w", exception.ErrNotFound)
+		}
+		return nil
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return fmt.Errorf("service: invalid request: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return internalError(err)
+	}
+
+	params := &database.UpdateVideoParams{
+		Title:         in.Title,
+		Description:   in.Description,
+		ProductIDs:    in.ProductIDs,
+		ExperienceIDs: in.ExperienceIDs,
+		ThumbnailURL:  in.ThumbnailURL,
+		VideoURL:      in.VideoURL,
+		Public:        in.Public,
+		Limited:       in.Limited,
+		PublishedAt:   in.PublishedAt,
+	}
+	err = s.db.Video.Update(ctx, in.VideoID, params)
+	return internalError(err)
 }
 
 func (s *service) DeleteVideo(ctx context.Context, in *media.DeleteVideoInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	// TODO: 詳細の実装
-	return nil
+	err := s.db.Video.Delete(ctx, in.VideoID)
+	return internalError(err)
 }

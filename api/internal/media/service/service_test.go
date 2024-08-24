@@ -16,6 +16,7 @@ import (
 	mock_storage "github.com/and-period/furumaru/api/mock/pkg/storage"
 	mock_youtube "github.com/and-period/furumaru/api/mock/pkg/youtube"
 	mock_store "github.com/and-period/furumaru/api/mock/store"
+	mock_user "github.com/and-period/furumaru/api/mock/user"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/storage"
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -39,6 +40,7 @@ type mocks struct {
 	tmp            *mock_storage.MockBucket
 	storage        *mock_storage.MockBucket
 	producer       *mock_sqs.MockProducer
+	user           *mock_user.MockService
 	media          *mock_medialive.MockMediaLive
 	youtube        *mock_youtube.MockYoutube
 	youtubeService *mock_youtube.MockService
@@ -85,6 +87,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		tmp:            mock_storage.NewMockBucket(ctrl),
 		storage:        mock_storage.NewMockBucket(ctrl),
 		producer:       mock_sqs.NewMockProducer(ctrl),
+		user:           mock_user.NewMockService(ctrl),
 		media:          mock_medialive.NewMockMediaLive(ctrl),
 		youtube:        mock_youtube.NewMockYoutube(ctrl),
 		youtubeService: mock_youtube.NewMockService(ctrl),
@@ -118,6 +121,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Video:              mocks.db.Video,
 		},
 		Cache:     mocks.cache,
+		User:      mocks.user,
 		Store:     mocks.store,
 		Tmp:       mocks.tmp,
 		Storage:   mocks.storage,

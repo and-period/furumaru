@@ -2,13 +2,17 @@ package handler
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/media"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -158,12 +162,71 @@ func (h *handler) CreateVideo(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+
+	var (
+		coordinator *service.Coordinator
+		products    service.Products
+		experiences service.Experiences
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, req.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
+		products, err = h.multiGetProducts(ectx, req.ProductIDs)
+		if len(products) != len(req.ProductIDs) {
+			return fmt.Errorf("handler: unmatch products length: %w", exception.ErrInvalidArgument)
+		}
+		return
+	})
+	eg.Go(func() (err error) {
+		experiences, err = h.multiGetExperiences(ectx, req.ExperienceIDs)
+		if len(experiences) != len(req.ExperienceIDs) {
+			return fmt.Errorf("handler: unmatch experiences length: %w", exception.ErrInvalidArgument)
+		}
+		return
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		h.badRequest(ctx, err)
+		return
+	}
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		if !currentAdmin(ctx, req.CoordinatorID) {
+			h.httpError(ctx, exception.ErrForbidden)
+			return
+		}
+	}
+
+	in := &media.CreateVideoInput{
+		Title:         req.Title,
+		Description:   req.Description,
+		CoordinatorID: req.CoordinatorID,
+		ProductIDs:    req.ProductIDs,
+		ExperienceIDs: req.ExperienceIDs,
+		ThumbnailURL:  req.ThumbnailURL,
+		VideoURL:      req.VideoURL,
+		Public:        req.Public,
+		Limited:       req.Limited,
+		PublishedAt:   jst.ParseFromUnix(req.PublishedAt),
+	}
+	video, err := h.media.CreateVideo(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.VideoResponse{
-		Video:       &response.Video{},
-		Coordinator: &response.Coordinator{},
-		Products:    []*response.Product{},
-		Experiences: []*response.Experience{},
+		Video:       service.NewVideo(video).Response(),
+		Coordinator: coordinator.Response(),
+		Products:    products.Response(),
+		Experiences: experiences.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -174,12 +237,61 @@ func (h *handler) UpdateVideo(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		products, err := h.multiGetProducts(ectx, req.ProductIDs)
+		if err != nil {
+			return err
+		}
+		if len(products) != len(req.ProductIDs) {
+			return fmt.Errorf("handler: unmatch products length: %w", exception.ErrInvalidArgument)
+		}
+		return nil
+	})
+	eg.Go(func() error {
+		experiences, err := h.multiGetExperiences(ectx, req.ExperienceIDs)
+		if err != nil {
+			return err
+		}
+		if len(experiences) != len(req.ExperienceIDs) {
+			return fmt.Errorf("handler: unmatch experiences length: %w", exception.ErrInvalidArgument)
+		}
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	in := &media.UpdateVideoInput{
+		VideoID:       util.GetParam(ctx, "videoId"),
+		Title:         req.Title,
+		Description:   req.Description,
+		ProductIDs:    req.ProductIDs,
+		ExperienceIDs: req.ExperienceIDs,
+		ThumbnailURL:  req.ThumbnailURL,
+		VideoURL:      req.VideoURL,
+		Public:        req.Public,
+		Limited:       req.Limited,
+		PublishedAt:   jst.ParseFromUnix(req.PublishedAt),
+	}
+	if err := h.media.UpdateVideo(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteVideo(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	in := &media.DeleteVideoInput{
+		VideoID: util.GetParam(ctx, "videoId"),
+	}
+	if err := h.media.DeleteVideo(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 

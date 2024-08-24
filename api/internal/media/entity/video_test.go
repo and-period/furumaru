@@ -7,6 +7,64 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestVideo(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name   string
+		params *NewVideoParams
+		expect *Video
+	}{
+		{
+			name: "success",
+			params: &NewVideoParams{
+				CoordinatorID: "coordinator-id",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				Title:         "じゃがいもの育て方",
+				Description:   "じゃがいもの育て方の動画です。",
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now.AddDate(0, 0, -1),
+			},
+			expect: &Video{
+				CoordinatorID:    "coordinator-id",
+				ProductIDs:       []string{"product-id"},
+				ExperienceIDs:    []string{"experience-id"},
+				Title:            "じゃがいもの育て方",
+				Description:      "じゃがいもの育て方の動画です。",
+				Status:           VideoStatusUnknown,
+				ThumbnailURL:     "https://example.com/thumbnail.jpg",
+				VideoURL:         "https://example.com/video.mp4",
+				Public:           true,
+				Limited:          false,
+				VideoProducts:    []*VideoProduct{{ProductID: "product-id", Priority: 1}},
+				VideoExperiences: []*VideoExperience{{ExperienceID: "experience-id", Priority: 1}},
+				PublishedAt:      now.AddDate(0, 0, -1),
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewVideo(tt.params)
+			actual.ID = "" // ignore
+			for _, vp := range actual.VideoProducts {
+				vp.VideoID = "" // ignore
+			}
+			for _, ve := range actual.VideoExperiences {
+				ve.VideoID = "" // ignore
+			}
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestVideo_SetStatus(t *testing.T) {
 	t.Parallel()
 

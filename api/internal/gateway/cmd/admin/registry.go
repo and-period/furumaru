@@ -441,6 +441,10 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	user, err := a.newUserService(p, nil, nil)
+	if err != nil {
+		return nil, err
+	}
 	store, err := a.newStoreService(p, nil, nil, nil)
 	if err != nil {
 		return nil, err
@@ -454,6 +458,7 @@ func (a *app) newMediaService(p *params) (media.Service, error) {
 		Storage:   p.storage,
 		Tmp:       p.tmpStorage,
 		Producer:  p.mediaQueue,
+		User:      user,
 		Store:     store,
 	}
 	return mediasrv.NewService(params, mediasrv.WithLogger(p.logger))

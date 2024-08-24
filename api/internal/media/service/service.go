@@ -12,6 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/medialive"
@@ -37,6 +38,7 @@ type Params struct {
 	Tmp       storage.Bucket
 	Storage   storage.Bucket
 	Producer  sqs.Producer
+	User      user.Service
 	Store     store.Service
 	Youtube   youtube.Youtube
 }
@@ -52,6 +54,7 @@ type service struct {
 	tmpURL         func() *url.URL
 	storageURL     func() *url.URL
 	producer       sqs.Producer
+	user           user.Service
 	store          store.Service
 	media          medialive.MediaLive
 	youtube        youtube.Youtube
@@ -124,6 +127,7 @@ func NewService(params *Params, opts ...Option) (media.Service, error) {
 		storage:    params.Storage,
 		storageURL: storageURL,
 		producer:   params.Producer,
+		user:       params.User,
 		store:      params.Store,
 		youtube:    params.Youtube,
 		now:        jst.Now,

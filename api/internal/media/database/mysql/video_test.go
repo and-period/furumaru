@@ -276,6 +276,24 @@ func TestVideo_Create(t *testing.T) {
 				err: nil,
 			},
 		},
+		{
+			name: "already exists",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				v := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+				err = db.DB.Create(&v).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&v.VideoProducts).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&v.VideoExperiences).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				video: testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now()),
+			},
+			want: want{
+				err: database.ErrAlreadyExists,
+			},
+		},
 	}
 
 	for _, tt := range tests {

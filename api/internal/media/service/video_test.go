@@ -8,6 +8,10 @@ import (
 	"github.com/and-period/furumaru/api/internal/media"
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
+	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -220,17 +224,68 @@ func TestCreateVideo(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2023, 10, 20, 18, 30, 0, 0)
+	coordinatorIn := &user.GetCoordinatorInput{
+		CoordinatorID: "coordinator-id",
+	}
+	coordinator := &uentity.Coordinator{
+		AdminID: "coordinator-id",
+	}
+	productIn := &store.MultiGetProductsInput{
+		ProductIDs: []string{"product-id"},
+	}
+	products := sentity.Products{
+		{ID: "product-id"},
+	}
+	experienceIn := &store.MultiGetExperiencesInput{
+		ExperienceIDs: []string{"experience-id"},
+	}
+	experiences := sentity.Experiences{
+		{ID: "experience-id"},
+	}
 
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
 		input     *media.CreateVideoInput
-		expect    *entity.Video
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.db.Video.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, video *entity.Video) error {
+						expect := &entity.Video{
+							ID:            video.ID, // ignore
+							CoordinatorID: "coordinator-id",
+							ProductIDs:    []string{"product-id"},
+							ExperienceIDs: []string{"experience-id"},
+							Title:         "オンデマンド配信",
+							Description:   "オンデマンド配信の説明",
+							Status:        entity.VideoStatusUnknown,
+							ThumbnailURL:  "https://example.com/thumbnail.jpg",
+							VideoURL:      "https://example.com/video.mp4",
+							Public:        true,
+							Limited:       false,
+							PublishedAt:   now,
+							VideoProducts: []*entity.VideoProduct{{
+								VideoID:   video.ID,
+								ProductID: "product-id",
+								Priority:  1,
+							}},
+							VideoExperiences: []*entity.VideoExperience{{
+								VideoID:      video.ID,
+								ExperienceID: "experience-id",
+								Priority:     1,
+							}},
+						}
+						assert.Equal(t, expect, video)
+						return nil
+					})
+			},
 			input: &media.CreateVideoInput{
 				Title:         "オンデマンド配信",
 				Description:   "オンデマンド配信の説明",
@@ -243,24 +298,169 @@ func TestCreateVideo(t *testing.T) {
 				Limited:       false,
 				PublishedAt:   now,
 			},
-			expect:    &entity.Video{},
 			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.CreateVideoInput{},
-			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "not found coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+			},
+			input: &media.CreateVideoInput{
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				CoordinatorID: "coordinator-id",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "unmatch products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(sentity.Products{}, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+			},
+			input: &media.CreateVideoInput{
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				CoordinatorID: "coordinator-id",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "unmatch experiences",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(sentity.Experiences{}, nil)
+			},
+			input: &media.CreateVideoInput{
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				CoordinatorID: "coordinator-id",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+			},
+			input: &media.CreateVideoInput{
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				CoordinatorID: "coordinator-id",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+			},
+			input: &media.CreateVideoInput{
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				CoordinatorID: "coordinator-id",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get experiences",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(nil, assert.AnError)
+			},
+			input: &media.CreateVideoInput{
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				CoordinatorID: "coordinator-id",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to create video",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.db.Video.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &media.CreateVideoInput{
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				CoordinatorID: "coordinator-id",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.CreateVideo(ctx, tt.input)
+			_, err := service.CreateVideo(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }
@@ -269,17 +469,43 @@ func TestUpdateVideo(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2023, 10, 20, 18, 30, 0, 0)
+	productIn := &store.MultiGetProductsInput{
+		ProductIDs: []string{"product-id"},
+	}
+	products := sentity.Products{
+		{ID: "product-id"},
+	}
+	experienceIn := &store.MultiGetExperiencesInput{
+		ExperienceIDs: []string{"experience-id"},
+	}
+	experiences := sentity.Experiences{
+		{ID: "experience-id"},
+	}
+	params := &database.UpdateVideoParams{
+		Title:         "オンデマンド配信",
+		Description:   "オンデマンド配信の説明",
+		ProductIDs:    []string{"product-id"},
+		ExperienceIDs: []string{"experience-id"},
+		ThumbnailURL:  "https://example.com/thumbnail.jpg",
+		VideoURL:      "https://example.com/video.mp4",
+		Public:        true,
+		Limited:       false,
+		PublishedAt:   now,
+	}
 
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
 		input     *media.UpdateVideoInput
-		expect    *entity.Video
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.db.Video.EXPECT().Update(ctx, "video-id", params).Return(nil)
+			},
 			input: &media.UpdateVideoInput{
 				VideoID:       "video-id",
 				Title:         "オンデマンド配信",
@@ -292,15 +518,114 @@ func TestUpdateVideo(t *testing.T) {
 				Limited:       false,
 				PublishedAt:   now,
 			},
-			expect:    &entity.Video{},
 			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.UpdateVideoInput{},
-			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "unmatch products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(sentity.Products{}, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+			},
+			input: &media.UpdateVideoInput{
+				VideoID:       "video-id",
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "unmatch experiences",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(sentity.Experiences{}, nil)
+			},
+			input: &media.UpdateVideoInput{
+				VideoID:       "video-id",
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get products",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(nil, assert.AnError)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+			},
+			input: &media.UpdateVideoInput{
+				VideoID:       "video-id",
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to multi get experiences",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(nil, assert.AnError)
+			},
+			input: &media.UpdateVideoInput{
+				VideoID:       "video-id",
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "failed to update video",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.store.EXPECT().MultiGetProducts(gomock.Any(), productIn).Return(products, nil)
+				mocks.store.EXPECT().MultiGetExperiences(gomock.Any(), experienceIn).Return(experiences, nil)
+				mocks.db.Video.EXPECT().Update(ctx, "video-id", params).Return(assert.AnError)
+			},
+			input: &media.UpdateVideoInput{
+				VideoID:       "video-id",
+				Title:         "オンデマンド配信",
+				Description:   "オンデマンド配信の説明",
+				ProductIDs:    []string{"product-id"},
+				ExperienceIDs: []string{"experience-id"},
+				ThumbnailURL:  "https://example.com/thumbnail.jpg",
+				VideoURL:      "https://example.com/video.mp4",
+				Public:        true,
+				Limited:       false,
+				PublishedAt:   now,
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -323,8 +648,10 @@ func TestDeleteVideo(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().Delete(ctx, "video-id").Return(nil)
+			},
 			input: &media.DeleteVideoInput{
 				VideoID: "video-id",
 			},
@@ -335,6 +662,16 @@ func TestDeleteVideo(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &media.DeleteVideoInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete video",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().Delete(ctx, "video-id").Return(assert.AnError)
+			},
+			input: &media.DeleteVideoInput{
+				VideoID: "video-id",
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 

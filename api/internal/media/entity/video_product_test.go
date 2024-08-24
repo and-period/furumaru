@@ -6,6 +6,35 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestVideoProducts(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name       string
+		videoID    string
+		productIDs []string
+		expect     VideoProducts
+	}{
+		{
+			name:       "success",
+			videoID:    "video-id",
+			productIDs: []string{"product-id01", "product-id02"},
+			expect: VideoProducts{
+				{VideoID: "video-id", ProductID: "product-id01", Priority: 1},
+				{VideoID: "video-id", ProductID: "product-id02", Priority: 2},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewVideoProducts(tt.videoID, tt.productIDs)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestVideoProducts_ProductIDs(t *testing.T) {
 	t.Parallel()
 
