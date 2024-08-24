@@ -437,6 +437,22 @@ func TestExperience_Create(t *testing.T) {
 				err: nil,
 			},
 		},
+		{
+			name: "already exists",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				e := testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
+				err := db.DB.Create(&e).Error
+				require.NoError(t, err)
+				err = db.DB.Create(&e.ExperienceRevision).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				experience: testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now()),
+			},
+			want: want{
+				err: database.ErrAlreadyExists,
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -504,7 +520,7 @@ func TestExperience_Update(t *testing.T) {
 					Description:           "じゃがいもを収穫する体験です。",
 					Public:                true,
 					SoldOut:               true,
-					Media:                 []*entity.ProductMedia{},
+					Media:                 entity.MultiExperienceMedia{},
 					PriceAdult:            1000,
 					PriceJuniorHighSchool: 800,
 					PriceElementarySchool: 600,

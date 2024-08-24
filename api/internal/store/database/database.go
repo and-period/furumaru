@@ -85,13 +85,14 @@ type UpdateExperienceParams struct {
 	Description           string
 	Public                bool
 	SoldOut               bool
-	Media                 entity.MultiProductMedia
+	Media                 entity.MultiExperienceMedia
 	PriceAdult            int64
 	PriceJuniorHighSchool int64
 	PriceElementarySchool int64
 	PricePreschool        int64
 	PriceSenior           int64
 	RecommendedPoints     []string
+	PromotionVideoURL     string
 	HostPrefectureCode    int32
 	HostCity              string
 	StartAt               time.Time

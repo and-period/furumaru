@@ -2,10 +2,12 @@ package entity
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -60,6 +62,71 @@ type ExperienceMedia struct {
 }
 
 type MultiExperienceMedia []*ExperienceMedia
+
+type NewExperienceParams struct {
+	CoordinatorID         string
+	ProducerID            string
+	TypeID                string
+	Title                 string
+	Description           string
+	Public                bool
+	SoldOut               bool
+	Media                 MultiExperienceMedia
+	RecommendedPoints     []string
+	PromotionVideoURL     string
+	HostPrefectureCode    int32
+	HostCity              string
+	StartAt               time.Time
+	EndAt                 time.Time
+	PriceAdult            int64
+	PriceJuniorHighSchool int64
+	PriceElementarySchool int64
+	PricePreschool        int64
+	PriceSenior           int64
+}
+
+func NewExperience(params *NewExperienceParams) (*Experience, error) {
+	experienceID := uuid.Base58Encode(uuid.New())
+	prefecture, err := codes.ToPrefectureJapanese(params.HostPrefectureCode)
+	if err != nil {
+		return nil, err
+	}
+	rparams := &NewExperienceRevisionParams{
+		ExperienceID:          experienceID,
+		PriceAdult:            params.PriceAdult,
+		PriceJuniorHighSchool: params.PriceJuniorHighSchool,
+		PriceElementarySchool: params.PriceElementarySchool,
+		PricePreschool:        params.PricePreschool,
+		PriceSenior:           params.PriceSenior,
+	}
+	revision := NewExperienceRevision(rparams)
+	return &Experience{
+		ID:                 experienceID,
+		CoordinatorID:      params.CoordinatorID,
+		ProducerID:         params.ProducerID,
+		TypeID:             params.TypeID,
+		Title:              params.Title,
+		Description:        params.Description,
+		Public:             params.Public,
+		SoldOut:            params.SoldOut,
+		Media:              params.Media,
+		RecommendedPoints:  params.RecommendedPoints,
+		PromotionVideoURL:  params.PromotionVideoURL,
+		HostPrefecture:     prefecture,
+		HostPrefectureCode: params.HostPrefectureCode,
+		HostCity:           params.HostCity,
+		StartAt:            params.StartAt,
+		EndAt:              params.EndAt,
+		ExperienceRevision: *revision,
+	}, nil
+}
+
+func (e *Experience) Validate() error {
+	if len(e.RecommendedPoints) > 3 {
+		return errors.New("entity: limit exceeded recommended points")
+	}
+	return e.Media.Validate()
+}
 
 func (e *Experience) Fill(revision *ExperienceRevision, now time.Time) (err error) {
 	e.Media, err = e.unmarshalMedia()
@@ -180,6 +247,27 @@ func (es Experiences) Map() map[string]*Experience {
 		res[e.ID] = e
 	}
 	return res
+}
+
+func NewExperienceMedia(url string, isThumbnail bool) *ExperienceMedia {
+	return &ExperienceMedia{
+		URL:         url,
+		IsThumbnail: isThumbnail,
+	}
+}
+
+func (m MultiExperienceMedia) Validate() error {
+	var exists bool
+	for _, media := range m {
+		if !media.IsThumbnail {
+			continue
+		}
+		if exists {
+			return errOnlyOneThumbnail
+		}
+		exists = true
+	}
+	return nil
 }
 
 func (m MultiExperienceMedia) Marshal() ([]byte, error) {

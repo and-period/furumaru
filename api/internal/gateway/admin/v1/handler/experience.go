@@ -2,13 +2,16 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
@@ -181,12 +184,89 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+	if getRole(ctx).IsCoordinator() {
+		if req.CoordinatorID != getAdminID(ctx) {
+			h.forbidden(ctx, errors.New("handler: not allowed to create experience"))
+			return
+		}
+		producers, err := h.getProducersByCoordinatorID(ctx, getAdminID(ctx))
+		if err != nil {
+			h.httpError(ctx, err)
+			return
+		}
+		if !producers.Contains(req.ProducerID) {
+			h.forbidden(ctx, errors.New("handler: not allowed to create experience"))
+			return
+		}
+	}
+
+	var (
+		coordinator    *service.Coordinator
+		producer       *service.Producer
+		experienceType *service.ExperienceType
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, req.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
+		producer, err = h.getProducer(ectx, req.ProducerID)
+		return
+	})
+	eg.Go(func() (err error) {
+		experienceType, err = h.getExperienceType(ectx, req.TypeID)
+		return
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		h.badRequest(ctx, err)
+		return
+	}
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	media := make([]*store.CreateExperienceMedia, len(req.Media))
+	for i := range req.Media {
+		media[i] = &store.CreateExperienceMedia{
+			URL:         req.Media[i].URL,
+			IsThumbnail: req.Media[i].IsThumbnail,
+		}
+	}
+	in := &store.CreateExperienceInput{
+		CoordinatorID:         req.CoordinatorID,
+		ProducerID:            req.ProducerID,
+		TypeID:                req.TypeID,
+		Title:                 req.Title,
+		Description:           req.Description,
+		Public:                req.Public,
+		SoldOut:               req.SoldOut,
+		Media:                 media,
+		PriceAdult:            req.PriceAdult,
+		PriceJuniorHighSchool: req.PriceJuniorHighSchool,
+		PriceElementarySchool: req.PriceElementarySchool,
+		PricePreschool:        req.PricePreschool,
+		PriceSenior:           req.PriceSenior,
+		RecommendedPoints:     h.newExperiencePoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
+		PromotionVideoURL:     req.PromotionVideoURL,
+		HostPrefectureCode:    req.HostPrefectureCode,
+		HostCity:              req.HostCity,
+		StartAt:               jst.ParseFromUnix(req.StartAt),
+		EndAt:                 jst.ParseFromUnix(req.EndAt),
+	}
+	experience, err := h.store.CreateExperience(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.ExperienceResponse{
-		Experience:     &response.Experience{},
-		Coordinator:    &response.Coordinator{},
-		Producer:       &response.Producer{},
-		ExperienceType: &response.ExperienceType{},
+		Experience:     service.NewExperience(experience).Response(),
+		Coordinator:    coordinator.Response(),
+		Producer:       producer.Response(),
+		ExperienceType: experienceType.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -197,12 +277,70 @@ func (h *handler) UpdateExperience(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+
+	_, err := h.getExperienceType(ctx, req.TypeID)
+	if errors.Is(err, exception.ErrNotFound) {
+		h.badRequest(ctx, err)
+		return
+	}
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	media := make([]*store.UpdateExperienceMedia, len(req.Media))
+	for i := range req.Media {
+		media[i] = &store.UpdateExperienceMedia{
+			URL:         req.Media[i].URL,
+			IsThumbnail: req.Media[i].IsThumbnail,
+		}
+	}
+	in := &store.UpdateExperienceInput{
+		ExperienceID:          util.GetParam(ctx, "experienceId"),
+		TypeID:                req.TypeID,
+		Title:                 req.Title,
+		Description:           req.Description,
+		Public:                req.Public,
+		SoldOut:               req.SoldOut,
+		Media:                 media,
+		PriceAdult:            req.PriceAdult,
+		PriceJuniorHighSchool: req.PriceJuniorHighSchool,
+		PriceElementarySchool: req.PriceElementarySchool,
+		PricePreschool:        req.PricePreschool,
+		PriceSenior:           req.PriceSenior,
+		RecommendedPoints:     h.newExperiencePoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
+		PromotionVideoURL:     req.PromotionVideoURL,
+		HostPrefectureCode:    req.HostPrefectureCode,
+		HostCity:              req.HostCity,
+		StartAt:               jst.ParseFromUnix(req.StartAt),
+		EndAt:                 jst.ParseFromUnix(req.EndAt),
+	}
+	if err := h.store.UpdateExperience(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 
+func (h *handler) newExperiencePoints(points ...string) []string {
+	res := make([]string, 0, len(points))
+	for _, point := range points {
+		if point == "" {
+			continue
+		}
+		res = append(res, point)
+	}
+	return res
+}
+
 func (h *handler) DeleteExperience(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	in := &store.DeleteExperienceInput{
+		ExperienceID: util.GetParam(ctx, "experienceId"),
+	}
+	if err := h.store.DeleteExperience(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 

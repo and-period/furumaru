@@ -6182,18 +6182,6 @@ export interface UpdateExperienceRequest {
      */
     'soldOut': boolean;
     /**
-     * コーディネータID
-     * @type {string}
-     * @memberof UpdateExperienceRequest
-     */
-    'coordinatorId': string;
-    /**
-     * 生産者ID
-     * @type {string}
-     * @memberof UpdateExperienceRequest
-     */
-    'producerId': string;
-    /**
      * 体験種別ID
      * @type {string}
      * @memberof UpdateExperienceRequest

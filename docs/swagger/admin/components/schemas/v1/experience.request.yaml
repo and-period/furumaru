@@ -141,12 +141,6 @@ updateExperienceRequest:
     soldOut:
       type: boolean
       description: 完売フラグ
-    coordinatorId:
-      type: string
-      description: コーディネータID
-    producerId:
-      type: string
-      description: 生産者ID
     experienceTypeId:
       type: string
       description: 体験種別ID
@@ -213,8 +207,6 @@ updateExperienceRequest:
   - description
   - public
   - soldOut
-  - coordinatorId
-  - producerId
   - experienceTypeId
   - media
   - priceAdult
@@ -234,8 +226,6 @@ updateExperienceRequest:
     description: 'じゃがいもを収穫する体験です。'
     public: true
     soldOut: false
-    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
-    producerId: 'kSByoE6FetnPs5Byk3a9Zx'
     experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
     media:
       - url: 'https://example.com/image1.jpg'

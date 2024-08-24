@@ -34,8 +34,6 @@ type UpdateExperienceRequest struct {
 	Description           string                   `json:"description,omitempty"`           // 説明
 	Public                bool                     `json:"public,omitempty"`                // 公開設定
 	SoldOut               bool                     `json:"soldOut,omitempty"`               // 定員オーバーフラグ
-	CoordinatorID         string                   `json:"coordinatorId,omitempty"`         // コーディネータID
-	ProducerID            string                   `json:"producerId,omitempty"`            // 生産者ID
 	TypeID                string                   `json:"experienceTypeId,omitempty"`      // 体験種別ID
 	Media                 []*UpdateExperienceMedia `json:"media,omitempty"`                 // メディア一覧
 	PriceAdult            int64                    `json:"priceAdult,omitempty"`            // 大人料金

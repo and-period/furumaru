@@ -8,6 +8,8 @@ import (
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/internal/user"
+	uentity "github.com/and-period/furumaru/api/internal/user/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -434,17 +436,72 @@ func TestCreateExperience(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	coordinatorIn := &user.GetCoordinatorInput{
+		CoordinatorID: "coordinator-id",
+	}
+	coordinator := &uentity.Coordinator{
+		AdminID: "coordinator-id",
+	}
+	producerIn := &user.GetProducerInput{
+		ProducerID: "producer-id",
+	}
+	producer := &uentity.Producer{
+		AdminID: "producer-id",
+	}
 
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
 		input     *store.CreateExperienceInput
-		expect    *entity.Experience
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Experience.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, experience *entity.Experience) error {
+						expect := &entity.Experience{
+							ID:            experience.ID, // ignore
+							CoordinatorID: "coordinator-id",
+							ProducerID:    "producer-id",
+							TypeID:        "experience-type-id",
+							Title:         "じゃがいも収穫体験",
+							Description:   "じゃがいもを収穫する体験です。",
+							Public:        true,
+							SoldOut:       false,
+							Status:        entity.ExperienceStatusUnknown,
+							ThumbnailURL:  "",
+							Media: entity.MultiExperienceMedia{
+								{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+								{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+							},
+							RecommendedPoints: []string{
+								"じゃがいもを収穫する楽しさを体験できます。",
+								"新鮮なじゃがいもを持ち帰ることができます。",
+							},
+							PromotionVideoURL:  "http://example.com/promotion.mp4",
+							HostPrefecture:     "滋賀県",
+							HostPrefectureCode: 25,
+							HostCity:           "彦根市",
+							StartAt:            now.AddDate(0, -1, 0),
+							EndAt:              now.AddDate(0, 1, 0),
+							ExperienceRevision: entity.ExperienceRevision{
+								ID:                    0,
+								ExperienceID:          experience.ID, // ignore
+								PriceAdult:            1000,
+								PriceJuniorHighSchool: 800,
+								PriceElementarySchool: 600,
+								PricePreschool:        400,
+								PriceSenior:           700,
+							},
+						}
+						assert.Equal(t, expect, experience)
+						return nil
+					})
+			},
 			input: &store.CreateExperienceInput{
 				CoordinatorID: "coordinator-id",
 				ProducerID:    "producer-id",
@@ -454,8 +511,8 @@ func TestCreateExperience(t *testing.T) {
 				Public:        true,
 				SoldOut:       false,
 				Media: []*store.CreateExperienceMedia{
-					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
-					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
 				},
 				PriceAdult:            1000,
 				PriceJuniorHighSchool: 800,
@@ -466,29 +523,200 @@ func TestCreateExperience(t *testing.T) {
 					"じゃがいもを収穫する楽しさを体験できます。",
 					"新鮮なじゃがいもを持ち帰ることができます。",
 				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
 				HostPrefectureCode: 25,
 				HostCity:           "彦根市",
 				StartAt:            now.AddDate(0, -1, 0),
 				EndAt:              now.AddDate(0, 1, 0),
 			},
-			expect:    &entity.Experience{},
 			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateExperienceInput{},
-			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "invalid experience media",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.CreateExperienceInput{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫体験",
+				Description:   "じゃがいもを収穫する体験です。",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*store.CreateExperienceMedia{
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: true},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get coordinator",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(nil, exception.ErrNotFound)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+			},
+			input: &store.CreateExperienceInput{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫体験",
+				Description:   "じゃがいもを収穫する体験です。",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*store.CreateExperienceMedia{
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get producer",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(nil, assert.AnError)
+			},
+			input: &store.CreateExperienceInput{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫体験",
+				Description:   "じゃがいもを収穫する体験です。",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*store.CreateExperienceMedia{
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "invalid experience validation",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+			},
+			input: &store.CreateExperienceInput{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫体験",
+				Description:   "じゃがいもを収穫する体験です。",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*store.CreateExperienceMedia{
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPrefectureCode: -1,
+				HostCity:           "彦根市",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to create experience",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.db.Experience.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &store.CreateExperienceInput{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫体験",
+				Description:   "じゃがいもを収穫する体験です。",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*store.CreateExperienceMedia{
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.CreateExperience(ctx, tt.input)
+			_, err := service.CreateExperience(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }
@@ -497,6 +725,31 @@ func TestUpdateExperience(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	params := &database.UpdateExperienceParams{
+		TypeID:      "experience-type-id",
+		Title:       "じゃがいも収穫体験",
+		Description: "じゃがいもを収穫する体験です。",
+		Public:      true,
+		SoldOut:     false,
+		Media: entity.MultiExperienceMedia{
+			{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+			{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+		},
+		PriceAdult:            1000,
+		PriceJuniorHighSchool: 800,
+		PriceElementarySchool: 600,
+		PricePreschool:        400,
+		PriceSenior:           700,
+		RecommendedPoints: []string{
+			"じゃがいもを収穫する楽しさを体験できます。",
+			"新鮮なじゃがいもを持ち帰ることができます。",
+		},
+		PromotionVideoURL:  "http://example.com/promotion.mp4",
+		HostPrefectureCode: 25,
+		HostCity:           "彦根市",
+		StartAt:            now.AddDate(0, -1, 0),
+		EndAt:              now.AddDate(0, 1, 0),
+	}
 
 	tests := []struct {
 		name      string
@@ -505,17 +758,17 @@ func TestUpdateExperience(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().Update(ctx, "experience-id", params).Return(nil)
+			},
 			input: &store.UpdateExperienceInput{
-				ExperienceID:  "experience-id",
-				CoordinatorID: "coordinator-id",
-				ProducerID:    "producer-id",
-				TypeID:        "experience-type-id",
-				Title:         "じゃがいも収穫体験",
-				Description:   "じゃがいもを収穫する体験です。",
-				Public:        true,
-				SoldOut:       false,
+				ExperienceID: "experience-id",
+				TypeID:       "experience-type-id",
+				Title:        "じゃがいも収穫体験",
+				Description:  "じゃがいもを収穫する体験です。",
+				Public:       true,
+				SoldOut:      false,
 				Media: []*store.UpdateExperienceMedia{
 					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
 					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
@@ -529,6 +782,7 @@ func TestUpdateExperience(t *testing.T) {
 					"じゃがいもを収穫する楽しさを体験できます。",
 					"新鮮なじゃがいもを持ち帰ることができます。",
 				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
 				HostPrefectureCode: 25,
 				HostCity:           "彦根市",
 				StartAt:            now.AddDate(0, -1, 0),
@@ -541,6 +795,101 @@ func TestUpdateExperience(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateExperienceInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "invalid prefecture code",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.UpdateExperienceInput{
+				ExperienceID: "experience-id",
+				TypeID:       "experience-type-id",
+				Title:        "じゃがいも収穫体験",
+				Description:  "じゃがいもを収穫する体験です。",
+				Public:       true,
+				SoldOut:      false,
+				Media: []*store.UpdateExperienceMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPrefectureCode: -1,
+				HostCity:           "彦根市",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name:  "invalid experience media",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.UpdateExperienceInput{
+				ExperienceID: "experience-id",
+				TypeID:       "experience-type-id",
+				Title:        "じゃがいも収穫体験",
+				Description:  "じゃがいもを収穫する体験です。",
+				Public:       true,
+				SoldOut:      false,
+				Media: []*store.UpdateExperienceMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: true},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update experience",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().Update(ctx, "experience-id", params).Return(assert.AnError)
+			},
+			input: &store.UpdateExperienceInput{
+				ExperienceID: "experience-id",
+				TypeID:       "experience-type-id",
+				Title:        "じゃがいも収穫体験",
+				Description:  "じゃがいもを収穫する体験です。",
+				Public:       true,
+				SoldOut:      false,
+				Media: []*store.UpdateExperienceMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -563,8 +912,10 @@ func TestDeleteExperience(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().Delete(ctx, "experience-id").Return(nil)
+			},
 			input: &store.DeleteExperienceInput{
 				ExperienceID: "experience-id",
 			},
@@ -575,6 +926,16 @@ func TestDeleteExperience(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteExperienceInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete experience",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Experience.EXPECT().Delete(ctx, "experience-id").Return(assert.AnError)
+			},
+			input: &store.DeleteExperienceInput{
+				ExperienceID: "experience-id",
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 
