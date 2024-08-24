@@ -175,6 +175,10 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 	revision := entity.NewProductRevision(rparams)
 
 	err := p.db.Transaction(ctx, func(tx *gorm.DB) error {
+		media, err := params.Media.Marshal()
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
 		tagIDs, err := entity.ProductMarshalTagIDs(params.TagIDs)
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
@@ -189,6 +193,7 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			"product_tag_ids":     tagIDs,
 			"name":                params.Name,
 			"description":         params.Description,
+			"media":               nil,
 			"recommended_points":  points,
 			"public":              params.Public,
 			"inventory":           params.Inventory,
@@ -210,10 +215,6 @@ func (p *product) Update(ctx context.Context, productID string, params *database
 			"updated_at":          p.now(),
 		}
 		if len(params.Media) > 0 {
-			media, err := params.Media.Marshal()
-			if err != nil {
-				return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
-			}
 			updates["media"] = media
 		}
 
