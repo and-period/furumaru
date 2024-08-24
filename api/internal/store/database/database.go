@@ -22,7 +22,7 @@ var (
 
 type Database struct {
 	Category       Category
-	Expericence    Experience
+	Experience     Experience
 	ExperienceType ExperienceType
 	Order          Order
 	PaymentSystem  PaymentSystem
@@ -72,9 +72,11 @@ type Experience interface {
 }
 
 type ListExperiencesParams struct {
-	Name   string
-	Limit  int
-	Offset int
+	Name          string
+	CoordinatorID string
+	ProducerID    string
+	Limit         int
+	Offset        int
 }
 
 type UpdateExperienceParams struct {

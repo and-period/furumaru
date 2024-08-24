@@ -39,8 +39,11 @@ func TestExperience_List(t *testing.T) {
 	require.NoError(t, err)
 	experiences := make(entity.Experiences, 3)
 	experiences[0] = testExperience("experience-id01", "experience-type-id01", "coordinator-id", "producer-id", 1, now())
+	experiences[0].StartAt = now().AddDate(0, 0, -1)
 	experiences[1] = testExperience("experience-id02", "experience-type-id02", "coordinator-id", "producer-id", 2, now())
+	experiences[1].StartAt = now().AddDate(0, 0, -2)
 	experiences[2] = testExperience("experience-id03", "experience-type-id02", "coordinator-id", "producer-id", 3, now())
+	experiences[2].StartAt = now().AddDate(0, -1, 0)
 	err = db.DB.Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {
@@ -66,12 +69,13 @@ func TestExperience_List(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListExperiencesParams{
-					Limit:  1,
+					Name:   "収穫",
+					Limit:  2,
 					Offset: 1,
 				},
 			},
 			want: want{
-				experiences: entity.Experiences{},
+				experiences: experiences[1:],
 				err:         nil,
 			},
 		},
@@ -88,6 +92,7 @@ func TestExperience_List(t *testing.T) {
 			db := &experience{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
+			fillIgnoreExperiencesFields(actual, now())
 			assert.ElementsMatch(t, tt.want.experiences, actual)
 		})
 	}
@@ -141,12 +146,13 @@ func TestExperience_Count(t *testing.T) {
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
 				params: &database.ListExperiencesParams{
-					Limit:  1,
+					Name:   "収穫",
+					Limit:  2,
 					Offset: 1,
 				},
 			},
 			want: want{
-				total: 0,
+				total: 3,
 				err:   nil,
 			},
 		},
@@ -590,7 +596,7 @@ func TestExperience_Delete(t *testing.T) {
 }
 
 func testExperience(experienceID, typeID, coordinatorID, producerID string, revisionID int64, now time.Time) *entity.Experience {
-	return &entity.Experience{
+	e := &entity.Experience{
 		ID:            experienceID,
 		CoordinatorID: coordinatorID,
 		ProducerID:    producerID,
@@ -626,6 +632,8 @@ func testExperience(experienceID, typeID, coordinatorID, producerID string, revi
 		CreatedAt:          now,
 		UpdatedAt:          now,
 	}
+	_ = e.FillJSON()
+	return e
 }
 
 func testExperienceRevision(revisionID int64, experienceID string, now time.Time) *entity.ExperienceRevision {

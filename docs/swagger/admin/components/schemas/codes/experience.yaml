@@ -17,6 +17,7 @@ experienceStatus:
   - ACCEPTING
   - SOLD_OUT
   - FINISHED
+  - ARCHIVED
   x-enum-descriptions:
   - 不明
   - 非公開
@@ -24,3 +25,4 @@ experienceStatus:
   - 受付中
   - 定員オーバー
   - 販売終了
+  - アーカイブ済み

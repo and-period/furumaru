@@ -26,6 +26,15 @@ p, coordinator_create, /v1/coordinators, POST, allow
 p, coordinator_update, /v1/coordinators/*, PATCH, allow
 p, coordinator_delete, /v1/coordinators/*, DELETE, allow
 p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
+p, experience_type_list, /v1/experience-types, GET, allow
+p, experience_type_create, /v1/experience-types, POST, allow
+p, experience_type_update, /v1/experience-types/*, PATCH, allow
+p, experience_type_delete, /v1/experience-types/*, DELETE, allow
+p, experience_list, /v1/experiences, GET, allow
+p, experience_get, /v1/experiences/*, GET, allow
+p, experience_create, /v1/experiences, POST, allow
+p, experience_update, /v1/experiences/*, PATCH, allow
+p, experience_delete, /v1/experiences/*, DELETE, allow
 p, live_list, /v1/schedules/*/lives, GET, allow
 p, live_get, /v1/schedules/*/lives/*, GET, allow
 p, live_create, /v1/schedules/*/lives, POST, allow
@@ -117,6 +126,15 @@ g, administrator, coordinator_create
 g, administrator, coordinator_update
 g, administrator, coordinator_delete
 g, administrator, coordinator_uploader
+g, administrator, experience_list
+g, administrator, experience_get
+g, administrator, experience_create
+g, administrator, experience_update
+g, administrator, experience_delete
+g, administrator, experience_type_list
+g, administrator, experience_type_create
+g, administrator, experience_type_update
+g, administrator, experience_type_delete
 g, administrator, live_list
 g, administrator, live_get
 g, administrator, live_create
@@ -195,6 +213,12 @@ g, coordinator, contact_category_get
 g, coordinator, contact_category_list
 g, coordinator, contact_read_create
 g, coordinator, coordinator_uploader
+g, coordinator, experience_list
+g, coordinator, experience_get
+g, coordinator, experience_create
+g, coordinator, experience_update
+g, coordinator, experience_delete
+g, coordinator, experience_type_list
 g, coordinator, live_list
 g, coordinator, live_get
 g, coordinator, live_create
@@ -255,6 +279,9 @@ g, producer, contact_delete
 g, producer, contact_category_list
 g, producer, contact_category_get
 g, producer, contact_read_create
+g, producer, experience_list
+g, producer, experience_get
+g, producer, experience_type_list
 g, producer, live_list
 g, producer, message_list
 g, producer, message_get

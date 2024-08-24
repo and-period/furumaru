@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/and-period/furumaru/api/internal/codes"
+	"github.com/and-period/furumaru/api/pkg/set"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -18,6 +20,7 @@ const (
 	ExperienceStatusAccepting ExperienceStatus = 3 // 受付中
 	ExperienceStatusSoldOut   ExperienceStatus = 4 // 定員オーバー
 	ExperienceStatusFinished  ExperienceStatus = 5 // 終了済み
+	ExperienceStatusArchived  ExperienceStatus = 6 // アーカイブ済み
 )
 
 // Experience - 体験情報
@@ -58,6 +61,64 @@ type ExperienceMedia struct {
 
 type MultiExperienceMedia []*ExperienceMedia
 
+func (e *Experience) Fill(revision *ExperienceRevision, now time.Time) (err error) {
+	e.Media, err = e.unmarshalMedia()
+	if err != nil {
+		return
+	}
+	e.RecommendedPoints, err = e.unmarshalRecommendedPoints()
+	if err != nil {
+		return
+	}
+	e.SetStatus(now)
+	e.SetThumbnail()
+	e.ExperienceRevision = *revision
+	e.HostPrefecture, _ = codes.ToPrefectureJapanese(e.HostPrefectureCode)
+	return
+}
+
+func (e *Experience) SetStatus(now time.Time) {
+	switch {
+	case !e.DeletedAt.Time.IsZero():
+		e.Status = ExperienceStatusArchived
+	case !e.Public:
+		e.Status = ExperienceStatusPrivate
+	case e.SoldOut:
+		e.Status = ExperienceStatusSoldOut
+	case now.Before(e.StartAt):
+		e.Status = ExperienceStatusWaiting
+	case now.Before(e.EndAt):
+		e.Status = ExperienceStatusAccepting
+	default:
+		e.Status = ExperienceStatusFinished
+	}
+}
+
+func (e *Experience) SetThumbnail() {
+	for _, media := range e.Media {
+		if !media.IsThumbnail {
+			continue
+		}
+		e.ThumbnailURL = media.URL
+	}
+}
+
+func (e *Experience) unmarshalMedia() (MultiExperienceMedia, error) {
+	if e.MediaJSON == nil {
+		return MultiExperienceMedia{}, nil
+	}
+	var media MultiExperienceMedia
+	return media, json.Unmarshal(e.MediaJSON, &media)
+}
+
+func (e *Experience) unmarshalRecommendedPoints() ([]string, error) {
+	if e.RecommendedPointsJSON == nil {
+		return []string{}, nil
+	}
+	var points []string
+	return points, json.Unmarshal(e.RecommendedPointsJSON, &points)
+}
+
 func (e *Experience) FillJSON() error {
 	media, err := e.Media.Marshal()
 	if err != nil {
@@ -74,6 +135,43 @@ func (e *Experience) FillJSON() error {
 
 func ExperienceMarshalRecommendedPoints(points []string) ([]byte, error) {
 	return json.Marshal(points)
+}
+
+func (es Experiences) Fill(revisions map[string]*ExperienceRevision, now time.Time) error {
+	for _, e := range es {
+		revision, ok := revisions[e.ID]
+		if !ok {
+			revision = &ExperienceRevision{ExperienceID: e.ID}
+		}
+		if err := e.Fill(revision, now); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (es Experiences) IDs() []string {
+	return set.UniqBy(es, func(e *Experience) string {
+		return e.ID
+	})
+}
+
+func (es Experiences) CoordinatorIDs() []string {
+	return set.UniqBy(es, func(e *Experience) string {
+		return e.CoordinatorID
+	})
+}
+
+func (es Experiences) ProducerIDs() []string {
+	return set.UniqBy(es, func(e *Experience) string {
+		return e.ProducerID
+	})
+}
+
+func (es Experiences) ExperienceTypeIDs() []string {
+	return set.UniqBy(es, func(e *Experience) string {
+		return e.TypeID
+	})
 }
 
 func (m MultiExperienceMedia) Marshal() ([]byte, error) {

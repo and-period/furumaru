@@ -4,15 +4,39 @@ import (
 	"context"
 
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"golang.org/x/sync/errgroup"
 )
 
 func (s *service) ListExperiences(ctx context.Context, in *store.ListExperiencesInput) (entity.Experiences, int64, error) {
 	if err := s.validator.Struct(in); err != nil {
 		return nil, 0, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return entity.Experiences{}, 0, nil
+	params := &database.ListExperiencesParams{
+		Name:          in.Name,
+		CoordinatorID: in.CoordinatorID,
+		ProducerID:    in.ProducerID,
+		Limit:         int(in.Limit),
+		Offset:        int(in.Offset),
+	}
+	var (
+		experiences entity.Experiences
+		total       int64
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		experiences, err = s.db.Experience.List(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		total, err = s.db.Experience.Count(ectx, params)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, 0, internalError(err)
+	}
+	return experiences, total, nil
 }
 
 func (s *service) MultiGetExperiences(ctx context.Context, in *store.MultiGetExperiencesInput) (entity.Experiences, error) {

@@ -14,3 +14,13 @@ type ExperienceRevision struct {
 	CreatedAt             time.Time `gorm:"<-:create"`            // 登録日時
 	UpdatedAt             time.Time `gorm:""`                     // 更新日時
 }
+
+type ExperienceRevisions []*ExperienceRevision
+
+func (rs ExperienceRevisions) MapByExperienceID() map[string]*ExperienceRevision {
+	res := make(map[string]*ExperienceRevision, len(rs))
+	for _, r := range rs {
+		res[r.ExperienceID] = r
+	}
+	return res
+}
