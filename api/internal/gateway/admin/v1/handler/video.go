@@ -114,12 +114,40 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 }
 
 func (h *handler) GetVideo(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	var (
+		coordinator *service.Coordinator
+		products    service.Products
+		experiences service.Experiences
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		coordinator, err = h.getCoordinator(ectx, video.CoordinatorID)
+		return
+	})
+	eg.Go(func() (err error) {
+		products, err = h.multiGetProducts(ectx, video.ProductIDs)
+		return
+	})
+	eg.Go(func() (err error) {
+		experiences, err = h.multiGetExperiences(ectx, video.ExperienceIDs)
+		return
+	})
+	if err := eg.Wait(); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.VideoResponse{
-		Video:       &response.Video{},
-		Coordinator: &response.Coordinator{},
-		Products:    []*response.Product{},
-		Experiences: []*response.Experience{},
+		Video:       video.Response(),
+		Coordinator: coordinator.Response(),
+		Products:    products.Response(),
+		Experiences: experiences.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -156,6 +184,12 @@ func (h *handler) DeleteVideo(ctx *gin.Context) {
 }
 
 func (h *handler) getVideo(ctx context.Context, videoID string) (*service.Video, error) {
-	// TODO: 詳細の実装
-	return &service.Video{}, nil
+	in := &media.GetVideoInput{
+		VideoID: videoID,
+	}
+	video, err := h.media.GetVideo(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewVideo(video), nil
 }

@@ -42,8 +42,8 @@ func (s *service) GetVideo(ctx context.Context, in *media.GetVideoInput) (*entit
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return &entity.Video{}, nil
+	video, err := s.db.Video.Get(ctx, in.VideoID)
+	return video, internalError(err)
 }
 
 func (s *service) CreateVideo(ctx context.Context, in *media.CreateVideoInput) (*entity.Video, error) {

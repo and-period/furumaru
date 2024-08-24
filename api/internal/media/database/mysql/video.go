@@ -77,8 +77,8 @@ func (v *video) Count(ctx context.Context, params *database.ListVideosParams) (i
 }
 
 func (v *video) Get(ctx context.Context, videoID string, fields ...string) (*entity.Video, error) {
-	// TODO: 詳細の実装
-	return &entity.Video{}, nil
+	video, err := v.get(ctx, v.db.DB, videoID, fields...)
+	return video, dbError(err)
 }
 
 func (v *video) Create(ctx context.Context, video *entity.Video) error {
@@ -94,6 +94,20 @@ func (v *video) Update(ctx context.Context, videoID string, params *database.Upd
 func (v *video) Delete(ctx context.Context, videoID string) error {
 	// TODO: 詳細の実装
 	return nil
+}
+
+func (v *video) get(ctx context.Context, tx *gorm.DB, videoID string, fields ...string) (*entity.Video, error) {
+	var video *entity.Video
+
+	stmt := v.db.Statement(ctx, tx, videoTable, fields...).Where("id = ?", videoID)
+
+	if err := stmt.First(&video).Error; err != nil {
+		return nil, err
+	}
+	if err := v.fill(ctx, tx, video); err != nil {
+		return nil, err
+	}
+	return video, nil
 }
 
 func (v *video) fill(ctx context.Context, tx *gorm.DB, videos ...*entity.Video) error {
