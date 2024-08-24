@@ -320,6 +320,20 @@ func TestExperienceType_Create(t *testing.T) {
 				err: nil,
 			},
 		},
+		{
+			name: "already exists",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
+				typ := testExperienceType("experience-type-id", "じゃがいも収穫", now())
+				err := db.DB.Create(&typ).Error
+				require.NoError(t, err)
+			},
+			args: args{
+				experienceType: testExperienceType("experience-type-id", "じゃがいも収穫", now()),
+			},
+			want: want{
+				err: database.ErrAlreadyExists,
+			},
+		},
 	}
 
 	for _, tt := range tests {

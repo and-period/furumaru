@@ -62,9 +62,18 @@ func (h *handler) CreateExperienceType(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+
+	in := &store.CreateExperienceTypeInput{
+		Name: req.Name,
+	}
+	experienceType, err := h.store.CreateExperienceType(ctx, in)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	res := &response.ExperienceTypeResponse{
-		ExperienceType: &response.ExperienceType{},
+		ExperienceType: service.NewExperienceType(experienceType).Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -75,12 +84,27 @@ func (h *handler) UpdateExperienceType(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	// TODO: 詳細の実装
+
+	in := &store.UpdateExperienceTypeInput{
+		ExperienceTypeID: ctx.Param("experienceTypeId"),
+		Name:             req.Name,
+	}
+	if err := h.store.UpdateExperienceType(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
 	ctx.Status(http.StatusNoContent)
 }
 
 func (h *handler) DeleteExperienceType(ctx *gin.Context) {
-	// TODO: 詳細の実装
+	in := &store.DeleteExperienceTypeInput{
+		ExperienceTypeID: ctx.Param("experienceTypeId"),
+	}
+	if err := h.store.DeleteExperienceType(ctx, in); err != nil {
+		h.httpError(ctx, err)
+		return
+	}
 	ctx.Status(http.StatusNoContent)
 }
 

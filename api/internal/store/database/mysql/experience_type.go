@@ -82,18 +82,27 @@ func (t *experienceType) Get(ctx context.Context, experienceID string, fields ..
 }
 
 func (t *experienceType) Create(ctx context.Context, experience *entity.ExperienceType) error {
-	// TODO: 詳細の実装
-	return nil
+	now := t.now()
+	experience.CreatedAt, experience.UpdatedAt = now, now
+
+	err := t.db.DB.WithContext(ctx).Table(experienceTypeTable).Create(experience).Error
+	return dbError(err)
 }
 
 func (t *experienceType) Update(ctx context.Context, experienceID string, params *database.UpdateExperienceTypeParams) error {
-	// TODO: 詳細の実装
-	return nil
+	updates := map[string]interface{}{
+		"name":       params.Name,
+		"updated_at": t.now(),
+	}
+	stmt := t.db.DB.WithContext(ctx).Table(experienceTypeTable).Where("id = ?", experienceID)
+	err := stmt.Updates(updates).Error
+	return dbError(err)
 }
 
 func (t *experienceType) Delete(ctx context.Context, experienceID string) error {
-	// TODO: 詳細の実装
-	return nil
+	stmt := t.db.DB.WithContext(ctx).Table(experienceTypeTable).Where("id = ?", experienceID)
+	err := stmt.Delete(&entity.ExperienceType{}).Error
+	return dbError(err)
 }
 
 func (t *experienceType) get(ctx context.Context, db *gorm.DB, experienceID string, fields ...string) (*entity.ExperienceType, error) {
