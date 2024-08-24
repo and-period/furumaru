@@ -39,8 +39,11 @@ func TestExperience_List(t *testing.T) {
 	require.NoError(t, err)
 	experiences := make(entity.Experiences, 3)
 	experiences[0] = testExperience("experience-id01", "experience-type-id01", "coordinator-id", "producer-id", 1, now())
+	experiences[0].StartAt = now().AddDate(0, 0, -1)
 	experiences[1] = testExperience("experience-id02", "experience-type-id02", "coordinator-id", "producer-id", 2, now())
+	experiences[1].StartAt = now().AddDate(0, 0, -2)
 	experiences[2] = testExperience("experience-id03", "experience-type-id02", "coordinator-id", "producer-id", 3, now())
+	experiences[2].StartAt = now().AddDate(0, -1, 0)
 	err = db.DB.Create(&experiences).Error
 	require.NoError(t, err)
 	for i := range experiences {

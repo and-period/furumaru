@@ -84,12 +84,12 @@ func (h *handler) DeleteExperienceType(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (h *handler) multiGetExperienceTypes(ctx context.Context, experinceTypeIDs []string) (service.ExperienceTypes, error) {
-	if len(experinceTypeIDs) == 0 {
+func (h *handler) multiGetExperienceTypes(ctx context.Context, experienceTypeIDs []string) (service.ExperienceTypes, error) {
+	if len(experienceTypeIDs) == 0 {
 		return service.ExperienceTypes{}, nil
 	}
 	in := &store.MultiGetExperienceTypesInput{
-		ExperienceTypeIDs: experinceTypeIDs,
+		ExperienceTypeIDs: experienceTypeIDs,
 	}
 	types, err := h.store.MultiGetExperienceTypes(ctx, in)
 	if err != nil {
