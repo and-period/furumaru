@@ -36,7 +36,7 @@ get:
     description: 体験名(あいまい検索)(64文字以内)
     required: false
     example: 'じゃがいも掘り'
-  response:
+  responses:
     200:
       description: 成功
       content:

@@ -2715,6 +2715,43 @@ export interface ExperienceTypesResponse {
 /**
  * 
  * @export
+ * @interface ExperiencesResponse
+ */
+export interface ExperiencesResponse {
+    /**
+     * 体験一覧
+     * @type {Array<Experience>}
+     * @memberof ExperiencesResponse
+     */
+    'experiences': Array<Experience>;
+    /**
+     * コーディネータ一覧
+     * @type {Array<Coordinator>}
+     * @memberof ExperiencesResponse
+     */
+    'coordinators': Array<Coordinator>;
+    /**
+     * 生産者一覧
+     * @type {Array<Producer>}
+     * @memberof ExperiencesResponse
+     */
+    'producers': Array<Producer>;
+    /**
+     * 体験種別一覧
+     * @type {Array<ExperienceType>}
+     * @memberof ExperiencesResponse
+     */
+    'experienceTypes': Array<ExperienceType>;
+    /**
+     * 合計数
+     * @type {number}
+     * @memberof ExperiencesResponse
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
  * @interface ExportOrdersRequest
  */
 export interface ExportOrdersRequest {
@@ -12922,7 +12959,7 @@ export const ExperienceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListExperiences(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async v1ListExperiences(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExperiencesResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListExperiences(limit, offset, producerId, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ExperienceApi.v1ListExperiences']?.[localVarOperationServerIndex]?.url;
@@ -13022,7 +13059,7 @@ export const ExperienceApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListExperiences(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        v1ListExperiences(limit?: number, offset?: number, producerId?: string, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<ExperiencesResponse> {
             return localVarFp.v1ListExperiences(limit, offset, producerId, name, options).then((request) => request(axios, basePath));
         },
         /**

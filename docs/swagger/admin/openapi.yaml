@@ -589,8 +589,8 @@ components:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
     v1ExperienceResponse:
       $ref: './components/schemas/v1/experience.response.yaml#/experienceResponse'
-    # v1ExperiencesResponse:
-    #   $ref: './components/schemas/v1/experience.response.yaml#/experiencesResponse'
+    v1ExperiencesResponse:
+      $ref: './components/schemas/v1/experience.response.yaml#/experiencesResponse'
     v1ExperienceTypeResponse:
       $ref: './components/schemas/v1/experience-type.response.yaml#/experienceTypeResponse'
     v1ExperienceTypesResponse:
