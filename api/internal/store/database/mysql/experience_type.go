@@ -8,6 +8,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
+	"gorm.io/gorm"
 )
 
 const experienceTypeTable = "experience_types"
@@ -24,16 +25,45 @@ func newExperienceType(db *mysql.Client) database.ExperienceType {
 	}
 }
 
+type listExperienceTypesParams database.ListExperienceTypesParams
+
+func (p listExperienceTypesParams) stmt(stmt *gorm.DB) *gorm.DB {
+	if p.Name != "" {
+		stmt = stmt.Where("MATCH (`name`, `description`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
+	}
+	return stmt
+}
+
+func (p listExperienceTypesParams) pagination(stmt *gorm.DB) *gorm.DB {
+	if p.Limit > 0 {
+		stmt = stmt.Limit(p.Limit)
+	}
+	if p.Offset > 0 {
+		stmt = stmt.Offset(p.Offset)
+	}
+	return stmt
+}
+
 func (t *experienceType) List(
 	ctx context.Context, params *database.ListExperienceTypesParams, fields ...string,
 ) (entity.ExperienceTypes, error) {
-	// TODO: 詳細の実装
-	return entity.ExperienceTypes{}, nil
+	var types entity.ExperienceTypes
+
+	p := listExperienceTypesParams(*params)
+
+	stmt := t.db.Statement(ctx, t.db.DB, experienceTypeTable, fields...)
+	stmt = p.stmt(stmt)
+	stmt = p.pagination(stmt)
+
+	err := stmt.Find(&types).Error
+	return types, dbError(err)
 }
 
 func (t *experienceType) Count(ctx context.Context, params *database.ListExperienceTypesParams) (int64, error) {
-	// TODO: 詳細の実装
-	return 0, nil
+	p := listExperienceTypesParams(*params)
+
+	total, err := t.db.Count(ctx, t.db.DB, &entity.ExperienceType{}, p.stmt)
+	return total, dbError(err)
 }
 
 func (t *experienceType) MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.ExperienceTypes, error) {
