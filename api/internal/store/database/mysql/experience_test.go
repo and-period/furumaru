@@ -241,6 +241,7 @@ func TestExperience_MultiGet(t *testing.T) {
 			db := &experience{db: db, now: now}
 			actual, err := db.MultiGet(ctx, tt.args.experienceIDs)
 			assert.ErrorIs(t, err, tt.want.err)
+			fillIgnoreExperiencesFields(actual, now())
 			assert.ElementsMatch(t, tt.want.experiences, actual)
 		})
 	}
