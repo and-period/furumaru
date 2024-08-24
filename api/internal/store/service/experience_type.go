@@ -57,22 +57,31 @@ func (s *service) CreateExperienceType(ctx context.Context, in *store.CreateExpe
 	if err := s.validator.Struct(in); err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 詳細の実装
-	return &entity.ExperienceType{}, nil
+	params := &entity.NewExperienceTypeParams{
+		Name: in.Name,
+	}
+	typ := entity.NewExperienceType(params)
+	if err := s.db.ExperienceType.Create(ctx, typ); err != nil {
+		return nil, internalError(err)
+	}
+	return typ, nil
 }
 
 func (s *service) UpdateExperienceType(ctx context.Context, in *store.UpdateExperienceTypeInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	// TODO: 詳細の実装
-	return nil
+	params := &database.UpdateExperienceTypeParams{
+		Name: in.Name,
+	}
+	err := s.db.ExperienceType.Update(ctx, in.ExperienceTypeID, params)
+	return internalError(err)
 }
 
 func (s *service) DeleteExperienceType(ctx context.Context, in *store.DeleteExperienceTypeInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)
 	}
-	// TODO: 詳細の実装
-	return nil
+	err := s.db.ExperienceType.Delete(ctx, in.ExperienceTypeID)
+	return internalError(err)
 }

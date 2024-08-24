@@ -1,6 +1,10 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/and-period/furumaru/api/pkg/uuid"
+)
 
 // ExperienceType - 体験種別情報
 type ExperienceType struct {
@@ -11,3 +15,14 @@ type ExperienceType struct {
 }
 
 type ExperienceTypes []*ExperienceType
+
+type NewExperienceTypeParams struct {
+	Name string
+}
+
+func NewExperienceType(params *NewExperienceTypeParams) *ExperienceType {
+	return &ExperienceType{
+		ID:   uuid.Base58Encode(uuid.New()),
+		Name: params.Name,
+	}
+}

@@ -245,35 +245,57 @@ func TestCreateExperienceType(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().
+					Create(ctx, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, experienceType *entity.ExperienceType) error {
+						expect := &entity.ExperienceType{
+							ID:   experienceType.ID, // ignore
+							Name: "じゃがいも収穫",
+						}
+						assert.Equal(t, expect, experienceType)
+						return nil
+					})
+			},
 			input: &store.CreateExperienceTypeInput{
 				Name: "じゃがいも収穫",
 			},
-			expect:    &entity.ExperienceType{},
 			expectErr: nil,
 		},
 		{
 			name:      "invalid argument",
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.CreateExperienceTypeInput{},
-			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to create experience type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
+			},
+			input: &store.CreateExperienceTypeInput{
+				Name: "じゃがいも収穫",
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			actual, err := service.CreateExperienceType(ctx, tt.input)
+			_, err := service.CreateExperienceType(ctx, tt.input)
 			assert.ErrorIs(t, err, tt.expectErr)
-			assert.Equal(t, tt.expect, actual)
 		}))
 	}
 }
 
 func TestUpdateExperienceType(t *testing.T) {
 	t.Parallel()
+
+	params := &database.UpdateExperienceTypeParams{
+		Name: "じゃがいも収穫",
+	}
 
 	tests := []struct {
 		name      string
@@ -282,8 +304,10 @@ func TestUpdateExperienceType(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().Update(ctx, "experience-type-id", params).Return(nil)
+			},
 			input: &store.UpdateExperienceTypeInput{
 				ExperienceTypeID: "experience-type-id",
 				Name:             "じゃがいも収穫",
@@ -295,6 +319,17 @@ func TestUpdateExperienceType(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.UpdateExperienceTypeInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to update experience type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().Update(ctx, "experience-type-id", params).Return(assert.AnError)
+			},
+			input: &store.UpdateExperienceTypeInput{
+				ExperienceTypeID: "experience-type-id",
+				Name:             "じゃがいも収穫",
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -317,8 +352,10 @@ func TestDeleteExperienceType(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().Delete(ctx, "experience-type-id").Return(nil)
+			},
 			input: &store.DeleteExperienceTypeInput{
 				ExperienceTypeID: "experience-type-id",
 			},
@@ -329,6 +366,16 @@ func TestDeleteExperienceType(t *testing.T) {
 			setup:     func(ctx context.Context, mocks *mocks) {},
 			input:     &store.DeleteExperienceTypeInput{},
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to delete experience type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().Delete(ctx, "experience-type-id").Return(assert.AnError)
+			},
+			input: &store.DeleteExperienceTypeInput{
+				ExperienceTypeID: "experience-type-id",
+			},
+			expectErr: exception.ErrInternal,
 		},
 	}
 
