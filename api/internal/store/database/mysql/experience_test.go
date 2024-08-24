@@ -92,6 +92,7 @@ func TestExperience_List(t *testing.T) {
 			db := &experience{db: db, now: now}
 			actual, err := db.List(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
+			fillIgnoreExperiencesFields(actual, now())
 			assert.ElementsMatch(t, tt.want.experiences, actual)
 		})
 	}
@@ -595,7 +596,7 @@ func TestExperience_Delete(t *testing.T) {
 }
 
 func testExperience(experienceID, typeID, coordinatorID, producerID string, revisionID int64, now time.Time) *entity.Experience {
-	return &entity.Experience{
+	e := &entity.Experience{
 		ID:            experienceID,
 		CoordinatorID: coordinatorID,
 		ProducerID:    producerID,
@@ -631,6 +632,8 @@ func testExperience(experienceID, typeID, coordinatorID, producerID string, revi
 		CreatedAt:          now,
 		UpdatedAt:          now,
 	}
+	_ = e.FillJSON()
+	return e
 }
 
 func testExperienceRevision(revisionID int64, experienceID string, now time.Time) *entity.ExperienceRevision {
