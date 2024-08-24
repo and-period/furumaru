@@ -207,8 +207,19 @@ func TestVideo_Get(t *testing.T) {
 				videoID: "video-id",
 			},
 			want: want{
-				video: &entity.Video{},
+				video: v,
 				err:   nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				videoID: "",
+			},
+			want: want{
+				video: nil,
+				err:   database.ErrNotFound,
 			},
 		},
 	}

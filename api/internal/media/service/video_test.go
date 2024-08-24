@@ -88,6 +88,38 @@ func TestListVideos(t *testing.T) {
 			expectTotal: 0,
 			expectErr:   exception.ErrInvalidArgument,
 		},
+		{
+			name: "failed to list videos",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().List(gomock.Any(), params).Return(nil, assert.AnError)
+				mocks.db.Video.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
+			},
+			input: &media.ListVideosInput{
+				Name:          "じゃがいも収穫",
+				CoordinatorID: "coordinator-id",
+				Limit:         20,
+				Offset:        0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
+		{
+			name: "failed to count videos",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().List(gomock.Any(), params).Return(videos, nil)
+				mocks.db.Video.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
+			},
+			input: &media.ListVideosInput{
+				Name:          "じゃがいも収穫",
+				CoordinatorID: "coordinator-id",
+				Limit:         20,
+				Offset:        0,
+			},
+			expect:      nil,
+			expectTotal: 0,
+			expectErr:   exception.ErrInternal,
+		},
 	}
 
 	for _, tt := range tests {
@@ -104,6 +136,38 @@ func TestListVideos(t *testing.T) {
 func TestGetVideo(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2023, 10, 20, 18, 30, 0, 0)
+	video := &entity.Video{
+		ID:            "video-id",
+		CoordinatorID: "coordinator-id",
+		ProductIDs:    []string{"product-id"},
+		ExperienceIDs: []string{"experience-id"},
+		Title:         "じゃがいも収穫",
+		Description:   "じゃがいも収穫の説明",
+		Status:        entity.VideoStatusPublished,
+		ThumbnailURL:  "https://example.com/thumbnail.jpg",
+		VideoURL:      "https://example.com/video.mp4",
+		Public:        true,
+		Limited:       false,
+		VideoProducts: []*entity.VideoProduct{{
+			VideoID:   "video-id",
+			ProductID: "product-id",
+			Priority:  1,
+			CreatedAt: now,
+			UpdatedAt: now,
+		}},
+		VideoExperiences: []*entity.VideoExperience{{
+			VideoID:      "video-id",
+			ExperienceID: "experience-id",
+			Priority:     1,
+			CreatedAt:    now,
+			UpdatedAt:    now,
+		}},
+		PublishedAt: now.AddDate(0, 0, -1),
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -112,12 +176,14 @@ func TestGetVideo(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().Get(gomock.Any(), "video-id").Return(video, nil)
+			},
 			input: &media.GetVideoInput{
 				VideoID: "video-id",
 			},
-			expect:    &entity.Video{},
+			expect:    video,
 			expectErr: nil,
 		},
 		{
@@ -126,6 +192,17 @@ func TestGetVideo(t *testing.T) {
 			input:     &media.GetVideoInput{},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get video",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.Video.EXPECT().Get(gomock.Any(), "video-id").Return(nil, assert.AnError)
+			},
+			input: &media.GetVideoInput{
+				VideoID: "video-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
