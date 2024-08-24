@@ -91,9 +91,20 @@ func (h *handler) multiGetExperienceTypes(ctx context.Context, experienceTypeIDs
 	in := &store.MultiGetExperienceTypesInput{
 		ExperienceTypeIDs: experienceTypeIDs,
 	}
-	types, err := h.store.MultiGetExperienceTypes(ctx, in)
+	experienceTypes, err := h.store.MultiGetExperienceTypes(ctx, in)
 	if err != nil {
 		return nil, err
 	}
-	return service.NewExperienceTypes(types), nil
+	return service.NewExperienceTypes(experienceTypes), nil
+}
+
+func (h *handler) getExperienceType(ctx context.Context, experienceTypeID string) (*service.ExperienceType, error) {
+	in := &store.GetExperienceTypeInput{
+		ExperienceTypeID: experienceTypeID,
+	}
+	experienceType, err := h.store.GetExperienceType(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperienceType(experienceType), nil
 }

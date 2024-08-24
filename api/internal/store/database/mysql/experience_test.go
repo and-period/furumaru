@@ -224,7 +224,7 @@ func TestExperience_MultiGet(t *testing.T) {
 				experienceIDs: []string{"experience-id01", "experience-id02"},
 			},
 			want: want{
-				experiences: entity.Experiences{},
+				experiences: experiences[:2],
 				err:         nil,
 			},
 		},
@@ -293,10 +293,10 @@ func TestExperience_MultiGetByRevision(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				revisionIDs: []int64{1, 2},
+				revisionIDs: []int64{1, 2, 3},
 			},
 			want: want{
-				experiences: entity.Experiences{},
+				experiences: experiences,
 				err:         nil,
 			},
 		},
@@ -361,8 +361,19 @@ func TestExperience_Get(t *testing.T) {
 				experienceID: "experience-id",
 			},
 			want: want{
-				experience: &entity.Experience{},
+				experience: e,
 				err:        nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				experienceID: "",
+			},
+			want: want{
+				experience: nil,
+				err:        database.ErrNotFound,
 			},
 		},
 	}

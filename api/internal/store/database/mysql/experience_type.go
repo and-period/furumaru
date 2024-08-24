@@ -67,13 +67,18 @@ func (t *experienceType) Count(ctx context.Context, params *database.ListExperie
 }
 
 func (t *experienceType) MultiGet(ctx context.Context, experienceIDs []string, fields ...string) (entity.ExperienceTypes, error) {
-	// TODO: 詳細の実装
-	return entity.ExperienceTypes{}, nil
+	var types entity.ExperienceTypes
+
+	stmt := t.db.Statement(ctx, t.db.DB, experienceTypeTable, fields...).
+		Where("id IN (?)", experienceIDs)
+
+	err := stmt.Find(&types).Error
+	return types, dbError(err)
 }
 
 func (t *experienceType) Get(ctx context.Context, experienceID string, fields ...string) (*entity.ExperienceType, error) {
-	// TODO: 詳細の実装
-	return &entity.ExperienceType{}, nil
+	experienceType, err := t.get(ctx, t.db.DB, experienceID, fields...)
+	return experienceType, dbError(err)
 }
 
 func (t *experienceType) Create(ctx context.Context, experience *entity.ExperienceType) error {
@@ -89,4 +94,16 @@ func (t *experienceType) Update(ctx context.Context, experienceID string, params
 func (t *experienceType) Delete(ctx context.Context, experienceID string) error {
 	// TODO: 詳細の実装
 	return nil
+}
+
+func (t *experienceType) get(ctx context.Context, db *gorm.DB, experienceID string, fields ...string) (*entity.ExperienceType, error) {
+	var experience *entity.ExperienceType
+
+	stmt := t.db.Statement(ctx, db, experienceTypeTable, fields...).
+		Where("id = ?", experienceID)
+
+	if err := stmt.First(&experience).Error; err != nil {
+		return nil, err
+	}
+	return experience, nil
 }

@@ -470,6 +470,100 @@ func TestExperiences_ExperienceTypeIDs(t *testing.T) {
 	}
 }
 
+func TestExperiences_Map(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name        string
+		experiences Experiences
+		expect      map[string]*Experience
+	}{
+		{
+			name: "success",
+			experiences: Experiences{
+				{
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					HostPrefecture:        "東京都",
+					HostPrefectureCode:    13,
+					HostCity:              "千代田区",
+					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
+				},
+			},
+			expect: map[string]*Experience{
+				"experience-id": {
+					ID:            "experience-id",
+					CoordinatorID: "coordinator-id",
+					ProducerID:    "producer-id",
+					TypeID:        "experience-type-id",
+					Title:         "じゃがいも収穫",
+					Description:   "じゃがいもを収穫する体験",
+					Public:        true,
+					SoldOut:       false,
+					Status:        ExperienceStatusAccepting,
+					ThumbnailURL:  "http://example.com/thumbnail.png",
+					Media: MultiExperienceMedia{
+						{
+							URL:         "http://example.com/thumbnail.png",
+							IsThumbnail: true,
+						},
+					},
+					MediaJSON: datatypes.JSON([]byte(`[{"url":"http://example.com/thumbnail.png","isThumbnail":true}]`)),
+					RecommendedPoints: []string{
+						"ポイント1",
+						"ポイント2",
+					},
+					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+					PromotionVideoURL:     "http://example.com/promotion.mp4",
+					HostPrefecture:        "東京都",
+					HostPrefectureCode:    13,
+					HostCity:              "千代田区",
+					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:               now.AddDate(0, 0, -1),
+					EndAt:                 now.AddDate(0, 0, 1),
+					CreatedAt:             now,
+					UpdatedAt:             now,
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := tt.experiences.Map()
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
 func TestMultiExperienceMedia_Marshal(t *testing.T) {
 	t.Parallel()
 

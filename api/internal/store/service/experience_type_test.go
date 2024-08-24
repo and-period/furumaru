@@ -115,6 +115,16 @@ func TestListExperienceTypes(t *testing.T) {
 func TestMultiGetExperienceTypes(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2024, 8, 24, 18, 30, 0, 0)
+	types := entity.ExperienceTypes{
+		{
+			ID:        "experience-type-id",
+			Name:      "じゃがいも収穫",
+			CreatedAt: now,
+			UpdatedAt: now,
+		},
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -123,12 +133,14 @@ func TestMultiGetExperienceTypes(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().MultiGet(gomock.Any(), []string{"experience-type-id"}).Return(types, nil)
+			},
 			input: &store.MultiGetExperienceTypesInput{
 				ExperienceTypeIDs: []string{"experience-type-id"},
 			},
-			expect:    []*entity.ExperienceType{},
+			expect:    types,
 			expectErr: nil,
 		},
 		{
@@ -139,6 +151,17 @@ func TestMultiGetExperienceTypes(t *testing.T) {
 			},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to multi get experience types",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().MultiGet(gomock.Any(), []string{"experience-type-id"}).Return(nil, assert.AnError)
+			},
+			input: &store.MultiGetExperienceTypesInput{
+				ExperienceTypeIDs: []string{"experience-type-id"},
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
 		},
 	}
 
@@ -155,6 +178,14 @@ func TestMultiGetExperienceTypes(t *testing.T) {
 func TestGetExperienceType(t *testing.T) {
 	t.Parallel()
 
+	now := jst.Date(2024, 8, 24, 18, 30, 0, 0)
+	typ := &entity.ExperienceType{
+		ID:        "experience-type-id",
+		Name:      "じゃがいも収穫",
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
 	tests := []struct {
 		name      string
 		setup     func(ctx context.Context, mocks *mocks)
@@ -163,12 +194,14 @@ func TestGetExperienceType(t *testing.T) {
 		expectErr error
 	}{
 		{
-			name:  "success",
-			setup: func(ctx context.Context, mocks *mocks) {},
+			name: "success",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().Get(gomock.Any(), "experience-type-id").Return(typ, nil)
+			},
 			input: &store.GetExperienceTypeInput{
 				ExperienceTypeID: "experience-type-id",
 			},
-			expect:    &entity.ExperienceType{},
+			expect:    typ,
 			expectErr: nil,
 		},
 		{
@@ -177,6 +210,17 @@ func TestGetExperienceType(t *testing.T) {
 			input:     &store.GetExperienceTypeInput{},
 			expect:    nil,
 			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get experience type",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.db.ExperienceType.EXPECT().Get(gomock.Any(), "experience-type-id").Return(nil, assert.AnError)
+			},
+			input: &store.GetExperienceTypeInput{
+				ExperienceTypeID: "experience-type-id",
+			},
+			expect:    nil,
+			expectErr: exception.ErrInternal,
 		},
 	}
 

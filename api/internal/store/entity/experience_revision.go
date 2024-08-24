@@ -1,6 +1,11 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/and-period/furumaru/api/pkg/set"
+	"github.com/jinzhu/copier"
+)
 
 // ExperienceRevision - 体験変更履歴情報
 type ExperienceRevision struct {
@@ -17,10 +22,34 @@ type ExperienceRevision struct {
 
 type ExperienceRevisions []*ExperienceRevision
 
+func (rs ExperienceRevisions) ExperienceIDs() []string {
+	return set.UniqBy(rs, func(r *ExperienceRevision) string {
+		return r.ExperienceID
+	})
+}
+
 func (rs ExperienceRevisions) MapByExperienceID() map[string]*ExperienceRevision {
 	res := make(map[string]*ExperienceRevision, len(rs))
 	for _, r := range rs {
 		res[r.ExperienceID] = r
 	}
 	return res
+}
+
+func (rs ExperienceRevisions) Merge(experiences map[string]*Experience) (Experiences, error) {
+	res := make(Experiences, 0, len(rs))
+	for _, r := range rs {
+		experience := &Experience{}
+		base, ok := experiences[r.ExperienceID]
+		if !ok {
+			base = &Experience{ID: r.ExperienceID}
+		}
+		opt := copier.Option{IgnoreEmpty: true, DeepCopy: true}
+		if err := copier.CopyWithOption(&experience, &base, opt); err != nil {
+			return nil, err
+		}
+		experience.ExperienceRevision = *r
+		res = append(res, experience)
+	}
+	return res, nil
 }

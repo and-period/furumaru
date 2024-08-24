@@ -191,7 +191,7 @@ func TestExperienceType_MultiGet(t *testing.T) {
 				experienceTypeIDs: []string{"experience-type-id01", "experience-type-id02"},
 			},
 			want: want{
-				experienceTypes: entity.ExperienceTypes{},
+				experienceTypes: types[:2],
 				err:             nil,
 			},
 		},
@@ -251,8 +251,19 @@ func TestExperienceType_Get(t *testing.T) {
 				experienceTypeID: "experience-type-id",
 			},
 			want: want{
-				experienceType: &entity.ExperienceType{},
+				experienceType: typ,
 				err:            nil,
+			},
+		},
+		{
+			name:  "not found",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				experienceTypeID: "",
+			},
+			want: want{
+				experienceType: nil,
+				err:            database.ErrNotFound,
 			},
 		},
 	}
