@@ -25,7 +25,7 @@ p, coordinator_get, /v1/coordinators/*, GET, allow
 p, coordinator_create, /v1/coordinators, POST, allow
 p, coordinator_update, /v1/coordinators/*, PATCH, allow
 p, coordinator_delete, /v1/coordinators/*, DELETE, allow
-p, coordinator_uploader, /v1/upload/coordinators/*, POST, allow
+p, coordinator_upload, /v1/upload/coordinators/*, POST, allow
 p, experience_type_list, /v1/experience-types, GET, allow
 p, experience_type_create, /v1/experience-types, POST, allow
 p, experience_type_update, /v1/experience-types/*, PATCH, allow
@@ -35,6 +35,7 @@ p, experience_get, /v1/experiences/*, GET, allow
 p, experience_create, /v1/experiences, POST, allow
 p, experience_update, /v1/experiences/*, PATCH, allow
 p, experience_delete, /v1/experiences/*, DELETE, allow
+p, experience_upload, /v1/upload/experiences/*, POST, allow
 p, live_list, /v1/schedules/*/lives, GET, allow
 p, live_get, /v1/schedules/*/lives/*, GET, allow
 p, live_create, /v1/schedules/*/lives, POST, allow
@@ -57,13 +58,13 @@ p, producer_get, /v1/producers/*, GET, allow
 p, producer_create, /v1/producers, POST, allow
 p, producer_update, /v1/producers/*, (POST)|(PATCH), allow
 p, producer_delete, /v1/producers/*, DELETE, allow
-p, producer_uploader, /v1/upload/producers/*, POST, allow
+p, producer_upload, /v1/upload/producers/*, POST, allow
 p, product_list, /v1/products, GET, allow
 p, product_get, /v1/products/*, GET, allow
 p, product_create, /v1/products, POST, allow
 p, product_update, /v1/products/*, PATCH, allow
 p, product_delete, /v1/products/*, DELETE, allow
-p, product_uploader, /v1/upload/products/*, POST, allow
+p, product_upload, /v1/upload/products/*, POST, allow
 p, product_tag_list, /v1/product-tags, GET, allow
 p, product_tag_create, /v1/product-tags, POST, allow
 p, product_tag_update, /v1/product-tags/*, PATCH, allow
@@ -72,7 +73,7 @@ p, product_type_list, /v1/categories/*/product-types, GET, allow
 p, product_type_create, /v1/categories/*/product-types, POST, allow
 p, product_type_update, /v1/categories/*/product-types/*, PATCH, allow
 p, product_type_delete, /v1/categories/*/product-types/*, DELETE, allow
-p, product_type_uploader, /v1/upload/product-types/*, POST, allow
+p, product_type_upload, /v1/upload/product-types/*, POST, allow
 p, promotion_list, /v1/promotions, GET, allow
 p, promotion_get, /v1/promotions/*, GET, allow
 p, promotion_create, /v1/promotions, POST, allow
@@ -83,7 +84,7 @@ p, schedule_get, /v1/schedules/*, GET, allow
 p, schedule_create, /v1/schedules, POST, allow
 p, schedule_update, /v1/schedules/*, PATCH, allow
 p, schedule_delete, /v1/schedules/*, DELETE, allow
-p, schedule_uploader, /v1/upload/schedules/*, POST, allow
+p, schedule_upload, /v1/upload/schedules/*, POST, allow
 p, shipping_get, /v1/coordinators/*/shippings, GET, allow
 p, shipping_upsert, /v1/coordinators/*/shippings, PATCH, allow
 p, default_shipping_get, /v1/shippings/default, GET, allow
@@ -96,6 +97,12 @@ p, thread_delete, /v1/contacts/*/threads/*, DELETE, allow
 p, user_list, /v1/users, GET, allow
 p, user_get, /v1/users/*, GET, allow
 p, user_delete, /v1/users/*, DELETE, allow
+p, video_list, /v1/videos, GET, allow
+p, video_get, /v1/videos/*, GET, allow
+p, video_create, /v1/videos, POST, allow
+p, video_update, /v1/videos/*, PATCH, allow
+p, video_delete, /v1/videos/*, DELETE, allow
+p, video_upload, /v1/upload/videos/*, POST, allow
 p, postal_code_search, /v1/postal-codes/*, GET, allow
 p, upload_get, /v1/upload/state, GET, allow
 
@@ -125,12 +132,13 @@ g, administrator, coordinator_get
 g, administrator, coordinator_create
 g, administrator, coordinator_update
 g, administrator, coordinator_delete
-g, administrator, coordinator_uploader
+g, administrator, coordinator_upload
 g, administrator, experience_list
 g, administrator, experience_get
 g, administrator, experience_create
 g, administrator, experience_update
 g, administrator, experience_delete
+g, administrator, experience_upload
 g, administrator, experience_type_list
 g, administrator, experience_type_create
 g, administrator, experience_type_update
@@ -157,14 +165,14 @@ g, administrator, producer_get
 g, administrator, producer_create
 g, administrator, producer_update
 g, administrator, producer_delete
-g, administrator, producer_uploader
+g, administrator, producer_upload
 g, administrator, postal_code_search
 g, administrator, product_list
 g, administrator, product_get
 g, administrator, product_create
 g, administrator, product_update
 g, administrator, product_delete
-g, administrator, product_uploader
+g, administrator, product_upload
 g, administrator, product_tag_list
 g, administrator, product_tag_create
 g, administrator, product_tag_update
@@ -173,7 +181,7 @@ g, administrator, product_type_list
 g, administrator, product_type_create
 g, administrator, product_type_update
 g, administrator, product_type_delete
-g, administrator, product_type_uploader
+g, administrator, product_type_upload
 g, administrator, promotion_list
 g, administrator, promotion_get
 g, administrator, promotion_create
@@ -184,7 +192,7 @@ g, administrator, schedule_get
 g, administrator, schedule_create
 g, administrator, schedule_update
 g, administrator, schedule_delete
-g, administrator, schedule_uploader
+g, administrator, schedule_upload
 g, administrator, shipping_get
 g, administrator, shipping_upsert
 g, administrator, default_shipping_get
@@ -198,6 +206,12 @@ g, administrator, user_list
 g, administrator, user_get
 g, administrator, user_delete
 g, administrator, upload_get
+g, administrator, video_list
+g, administrator, video_get
+g, administrator, video_create
+g, administrator, video_update
+g, administrator, video_delete
+g, administrator, video_upload
 
 g, coordinator, auth
 g, coordinator, broadcast_get
@@ -212,12 +226,13 @@ g, coordinator, contact_delete
 g, coordinator, contact_category_get
 g, coordinator, contact_category_list
 g, coordinator, contact_read_create
-g, coordinator, coordinator_uploader
+g, coordinator, coordinator_upload
 g, coordinator, experience_list
 g, coordinator, experience_get
 g, coordinator, experience_create
 g, coordinator, experience_update
 g, coordinator, experience_delete
+g, coordinator, experience_upload
 g, coordinator, experience_type_list
 g, coordinator, live_list
 g, coordinator, live_get
@@ -236,7 +251,7 @@ g, coordinator, producer_get
 g, coordinator, producer_create
 g, coordinator, producer_update
 g, coordinator, producer_delete
-g, coordinator, producer_uploader
+g, coordinator, producer_upload
 g, coordinator, order_list
 g, coordinator, order_get
 g, coordinator, order_update
@@ -246,7 +261,7 @@ g, coordinator, product_get
 g, coordinator, product_create
 g, coordinator, product_update
 g, coordinator, product_delete
-g, coordinator, product_uploader
+g, coordinator, product_upload
 g, coordinator, product_tag_list
 g, coordinator, product_type_list
 g, coordinator, promotion_list
@@ -256,7 +271,7 @@ g, coordinator, schedule_get
 g, coordinator, schedule_create
 g, coordinator, schedule_update
 g, coordinator, schedule_schedule
-g, coordinator, schedule_uploader
+g, coordinator, schedule_upload
 g, coordinator, shipping_get
 g, coordinator, shipping_upsert
 g, coordinator, thread_list_by_contactId
@@ -266,6 +281,12 @@ g, coordinator, thread_update
 g, coordinator, thread_delete
 g, coordinator, user_list
 g, coordinator, user_get
+g, coordinator, video_list
+g, coordinator, video_get
+g, coordinator, video_create
+g, coordinator, video_update
+g, coordinator, video_delete
+g, coordinator, video_upload
 g, coordinator, upload_get
 
 g, producer, auth
@@ -292,7 +313,7 @@ g, producer, order_get
 g, producer, postal_code_search
 g, producer, product_list
 g, producer, product_get
-g, producer, producer_uploader
+g, producer, producer_upload
 g, producer, product_tag_list
 g, producer, product_type_list
 g, producer, promotion_list
@@ -304,4 +325,6 @@ g, producer, thread_get
 g, producer, thread_create
 g, producer, thread_update
 g, producer, thread_delete
+g, producer, video_list
+g, producer, video_get
 g, producer, upload_get
