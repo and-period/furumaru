@@ -56,6 +56,7 @@ func (h *handler) ListCoordinators(ctx *gin.Context) {
 	if len(coordinators) == 0 {
 		res := &response.CoordinatorsResponse{
 			Coordinators: []*response.Coordinator{},
+			ProductTypes: []*response.ProductType{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return

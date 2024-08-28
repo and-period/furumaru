@@ -72,6 +72,7 @@ func (h *handler) ListNotifications(ctx *gin.Context) {
 	if len(notifications) == 0 {
 		res := &response.NotificationsResponse{
 			Notifications: []*response.Notification{},
+			Admins:        []*response.Admin{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return

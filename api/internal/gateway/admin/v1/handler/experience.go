@@ -87,7 +87,10 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 		// 生産者が紐づかない場合、体験が存在しないためアーリーリターンする
 		if len(producers) == 0 {
 			res := &response.ExperiencesResponse{
-				Experiences: []*response.Experience{},
+				Experiences:     []*response.Experience{},
+				Coordinators:    []*response.Coordinator{},
+				Producers:       []*response.Producer{},
+				ExperienceTypes: []*response.ExperienceType{},
 			}
 			ctx.JSON(http.StatusOK, res)
 			return
