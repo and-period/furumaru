@@ -77,7 +77,8 @@ func (h *handler) ListSchedules(ctx *gin.Context) {
 	}
 	if len(schedules) == 0 {
 		res := &response.SchedulesResponse{
-			Schedules: []*response.Schedule{},
+			Schedules:    []*response.Schedule{},
+			Coordinators: []*response.Coordinator{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return

@@ -88,7 +88,10 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	}
 	if len(orders) == 0 {
 		res := &response.OrdersResponse{
-			Orders: []*response.Order{},
+			Orders:       []*response.Order{},
+			Users:        []*response.User{},
+			Coordinators: []*response.Coordinator{},
+			Promotions:   []*response.Promotion{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return

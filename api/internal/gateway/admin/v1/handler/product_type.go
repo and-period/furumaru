@@ -62,6 +62,7 @@ func (h *handler) ListProductTypes(ctx *gin.Context) {
 	if len(productTypes) == 0 {
 		res := &response.ProductTypesResponse{
 			ProductTypes: []*response.ProductType{},
+			Categories:   []*response.Category{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return

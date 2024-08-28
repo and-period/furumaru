@@ -78,7 +78,10 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 	}
 	if len(videos) == 0 {
 		res := &response.VideosResponse{
-			Videos: []*response.Video{},
+			Videos:       []*response.Video{},
+			Coordinators: []*response.Coordinator{},
+			Products:     []*response.Product{},
+			Experiences:  []*response.Experience{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
