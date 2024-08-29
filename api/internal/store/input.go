@@ -650,7 +650,7 @@ type CreateExperienceInput struct {
 	PricePreschool        int64                    `validate:"min=0"`
 	PriceSenior           int64                    `validate:"min=0"`
 	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
-	PromotionVideoURL     string                   `validate:"required,url"`
+	PromotionVideoURL     string                   `validate:"omitempty,url"`
 	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
 	HostCity              string                   `validate:"required,max=32"`
@@ -679,7 +679,7 @@ type UpdateExperienceInput struct {
 	PricePreschool        int64                    `validate:"min=0"`
 	PriceSenior           int64                    `validate:"min=0"`
 	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
-	PromotionVideoURL     string                   `validate:"required,url"`
+	PromotionVideoURL     string                   `validate:"omitempty,url"`
 	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
 	HostCity              string                   `validate:"required,max=32"`

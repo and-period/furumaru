@@ -71,6 +71,9 @@ experience:
     recommendedPoint3:
       type: string
       description: おすすめポイント3
+    promotionVideoUrl:
+      type: string
+      description: 紹介動画URL
     hostPostalCode:
       type: string
       description: 開催地（郵便番号）
@@ -118,6 +121,10 @@ experience:
   - priceElementarySchool
   - pricePreschool
   - priceSenior
+  - recommendedPoint1
+  - recommendedPoint2
+  - recommendedPoint3
+  - promotionVideoUrl
   - hostPostalCode
   - hostPrefectureCode
   - hostCity
@@ -148,6 +155,7 @@ experience:
     recommendedPoint1: '新鮮なじゃがいもを堀ります'
     recommendedPoint2: 'じゃがいもの美味しさを体験'
     recommendedPoint3: '楽しい体験ができます'
+    promotionVideoUrl: 'https://example.com/promotion.mp4'
     hostPostalCode: '1600023'
     hostPrefectureCode: '13'
     hostCity: '新宿区'
