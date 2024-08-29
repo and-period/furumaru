@@ -21,8 +21,11 @@ type Experience struct {
 	RecommendedPoint2     string             `json:"recommendedPoint2"`     // おすすめポイント2
 	RecommendedPoint3     string             `json:"recommendedPoint3"`     // おすすめポイント3
 	PromotionVideoURL     string             `json:"promotionVideoUrl"`     // 紹介動画URL
+	HostPostalCode        string             `json:"hostPostalCode"`        // 開催場所(郵便番号)
 	HostPrefectureCode    int32              `json:"hostPrefectureCode"`    // 開催場所(都道府県コード)
 	HostCity              string             `json:"hostCity"`              // 開催場所(市区町村)
+	HostAddressLine1      string             `json:"hostAddressLine1"`      // 開催場所(住所1)
+	HostAddressLine2      string             `json:"hostAddressLine2"`      // 開催場所(住所2)
 	StartAt               int64              `json:"startAt"`               // 募集開始日時
 	EndAt                 int64              `json:"endAt"`                 // 募集終了日時
 	CreatedAt             int64              `json:"createdAt"`             // 作成日時

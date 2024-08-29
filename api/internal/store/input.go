@@ -651,8 +651,11 @@ type CreateExperienceInput struct {
 	PriceSenior           int64                    `validate:"min=0"`
 	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
 	PromotionVideoURL     string                   `validate:"required,url"`
+	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
-	HostCity              string                   `validate:"max=32"`
+	HostCity              string                   `validate:"required,max=32"`
+	HostAddressLine1      string                   `validate:"required,max=64"`
+	HostAddressLine2      string                   `validate:"max=64"`
 	StartAt               time.Time                `validate:"required"`
 	EndAt                 time.Time                `validate:"required,gtfield=StartAt"`
 }
@@ -677,8 +680,11 @@ type UpdateExperienceInput struct {
 	PriceSenior           int64                    `validate:"min=0"`
 	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
 	PromotionVideoURL     string                   `validate:"required,url"`
+	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
-	HostCity              string                   `validate:"max=32"`
+	HostCity              string                   `validate:"required,max=32"`
+	HostAddressLine1      string                   `validate:"required,max=64"`
+	HostAddressLine2      string                   `validate:"max=64"`
 	StartAt               time.Time                `validate:"required"`
 	EndAt                 time.Time                `validate:"required,gtfield=StartAt"`
 }

@@ -36,8 +36,11 @@ experienceResponse:
       recommendedPoint1: '新鮮なじゃがいもを堀ります'
       recommendedPoint2: 'じゃがいもの美味しさを体験'
       recommendedPoint3: '楽しい体験ができます'
-      hostPrefectureCode: '13'
-      hostCity: '新宿区'
+      hostPostalCode: '1000014'
+      hostPrefectureCode: 13
+      hostCity: '東京都'
+      hostAddressLine1: '永田町1-7-1'
+      hostAddressLine2: ''
       startAt: 1640962800
       endAt: 1640962800
       createdAt: 1640962800
@@ -152,8 +155,11 @@ experiencesResponse:
       recommendedPoint1: '新鮮なじゃがいもを堀ります'
       recommendedPoint2: 'じゃがいもの美味しさを体験'
       recommendedPoint3: '楽しい体験ができます'
-      hostPrefectureCode: '13'
-      hostCity: '新宿区'
+      hostPostalCode: '1000014'
+      hostPrefectureCode: 13
+      hostCity: '東京都'
+      hostAddressLine1: '永田町1-7-1'
+      hostAddressLine2: ''
       startAt: 1640962800
       endAt: 1640962800
       createdAt: 1640962800
