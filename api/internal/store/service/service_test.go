@@ -12,6 +12,7 @@ import (
 	mock_media "github.com/and-period/furumaru/api/mock/media"
 	mock_messenger "github.com/and-period/furumaru/api/mock/messenger"
 	mock_dynamodb "github.com/and-period/furumaru/api/mock/pkg/dynamodb"
+	mock_geolocation "github.com/and-period/furumaru/api/mock/pkg/geolocation"
 	mock_ivs "github.com/and-period/furumaru/api/mock/pkg/ivs"
 	mock_postalcode "github.com/and-period/furumaru/api/mock/pkg/postalcode"
 	mock_database "github.com/and-period/furumaru/api/mock/store/database"
@@ -33,6 +34,7 @@ type mocks struct {
 	messenger     *mock_messenger.MockService
 	media         *mock_media.MockService
 	postalCode    *mock_postalcode.MockClient
+	geolocation   *mock_geolocation.MockClient
 	ivs           *mock_ivs.MockClient
 	komojuPayment *mock_komoju.MockPayment
 	komojuSession *mock_komoju.MockSession
@@ -77,6 +79,7 @@ func newMocks(ctrl *gomock.Controller) *mocks {
 		messenger:     mock_messenger.NewMockService(ctrl),
 		media:         mock_media.NewMockService(ctrl),
 		postalCode:    mock_postalcode.NewMockClient(ctrl),
+		geolocation:   mock_geolocation.NewMockClient(ctrl),
 		ivs:           mock_ivs.NewMockClient(ctrl),
 		komojuPayment: mock_komoju.NewMockPayment(ctrl),
 		komojuSession: mock_komoju.NewMockSession(ctrl),
@@ -123,12 +126,13 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			Schedule:       mocks.db.Schedule,
 			Live:           mocks.db.Live,
 		},
-		Cache:      mocks.cache,
-		User:       mocks.user,
-		Messenger:  mocks.messenger,
-		Media:      mocks.media,
-		PostalCode: mocks.postalCode,
-		Ivs:        mocks.ivs,
+		Cache:       mocks.cache,
+		User:        mocks.user,
+		Messenger:   mocks.messenger,
+		Media:       mocks.media,
+		PostalCode:  mocks.postalCode,
+		Geolocation: mocks.geolocation,
+		Ivs:         mocks.ivs,
 		Komoju: &komoju.Komoju{
 			Payment: mocks.komojuPayment,
 			Session: mocks.komojuSession,

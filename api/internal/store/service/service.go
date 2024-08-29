@@ -15,6 +15,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
+	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/ivs"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/postalcode"
@@ -40,6 +41,7 @@ type Params struct {
 	Messenger           messenger.Service
 	Media               media.Service
 	PostalCode          postalcode.Client
+	Geolocation         geolocation.Client
 	Ivs                 ivs.Client
 	Komoju              *komoju.Komoju
 	CheckoutRedirectURL string
@@ -58,6 +60,7 @@ type service struct {
 	messenger           messenger.Service
 	media               media.Service
 	postalCode          postalcode.Client
+	geolocation         geolocation.Client
 	ivs                 ivs.Client
 	komoju              *komoju.Komoju
 	cartTTL             time.Duration
@@ -115,6 +118,7 @@ func NewService(params *Params, opts ...Option) store.Service {
 		messenger:           params.Messenger,
 		media:               params.Media,
 		postalCode:          params.PostalCode,
+		geolocation:         params.Geolocation,
 		ivs:                 params.Ivs,
 		komoju:              params.Komoju,
 		cartTTL:             dopts.cartTTL,
@@ -145,6 +149,9 @@ func internalError(err error) error {
 		return fmt.Errorf("%w: %s", e, err.Error())
 	}
 	if e := postalCodeError(err); e != nil {
+		return fmt.Errorf("%w: %s", e, err.Error())
+	}
+	if e := geolocationError(err); e != nil {
 		return fmt.Errorf("%w: %s", e, err.Error())
 	}
 
@@ -210,6 +217,19 @@ func postalCodeError(err error) error {
 		return exception.ErrUnavailable
 	case errors.Is(err, postalcode.ErrTimeout):
 		return exception.ErrDeadlineExceeded
+	default:
+		return nil
+	}
+}
+
+func geolocationError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch {
+	case errors.Is(err, geolocation.ErrNotFound):
+		return exception.ErrInvalidArgument
 	default:
 		return nil
 	}

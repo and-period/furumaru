@@ -11,6 +11,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
+	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -103,7 +104,23 @@ func (s *service) CreateExperience(ctx context.Context, in *store.CreateExperien
 	if err != nil {
 		return nil, internalError(err)
 	}
-	// TODO: 座標情報の取得
+	prefecture, err := codes.ToPrefectureJapanese(in.HostPrefectureCode)
+	if err != nil {
+		return nil, fmt.Errorf("api: invalid host prefecture code: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	locationIn := &geolocation.GetGeolocationInput{
+		Address: &geolocation.Address{
+			PostalCode:   in.HostPostalCode,
+			Prefecture:   prefecture,
+			City:         in.HostCity,
+			AddressLine1: in.HostAddressLine1,
+			AddressLine2: in.HostAddressLine2,
+		},
+	}
+	location, err := s.geolocation.GetGeolocation(ctx, locationIn)
+	if err != nil {
+		return nil, internalError(err)
+	}
 	params := &entity.NewExperienceParams{
 		CoordinatorID:         in.CoordinatorID,
 		ProducerID:            in.ProducerID,
@@ -120,8 +137,8 @@ func (s *service) CreateExperience(ctx context.Context, in *store.CreateExperien
 		HostCity:              in.HostCity,
 		HostAddressLine1:      in.HostAddressLine1,
 		HostAddressLine2:      in.HostAddressLine2,
-		HostLongitude:         0,
-		HostLatitude:          0,
+		HostLongitude:         location.Longitude,
+		HostLatitude:          location.Latitude,
 		StartAt:               in.StartAt,
 		EndAt:                 in.EndAt,
 		PriceAdult:            in.PriceAdult,
@@ -132,9 +149,6 @@ func (s *service) CreateExperience(ctx context.Context, in *store.CreateExperien
 	}
 	experience, err := entity.NewExperience(params)
 	if err != nil {
-		return nil, fmt.Errorf("api: invalid experience: %s: %w", err.Error(), exception.ErrInvalidArgument)
-	}
-	if err := experience.Validate(); err != nil {
 		return nil, fmt.Errorf("api: invalid experience: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
 	if err := s.db.Experience.Create(ctx, experience); err != nil {
@@ -157,7 +171,23 @@ func (s *service) UpdateExperience(ctx context.Context, in *store.UpdateExperien
 	if err := media.Validate(); err != nil {
 		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	// TODO: 座標情報の取得
+	prefecture, err := codes.ToPrefectureJapanese(in.HostPrefectureCode)
+	if err != nil {
+		return fmt.Errorf("api: invalid host prefecture code: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+	locationIn := &geolocation.GetGeolocationInput{
+		Address: &geolocation.Address{
+			PostalCode:   in.HostPostalCode,
+			Prefecture:   prefecture,
+			City:         in.HostCity,
+			AddressLine1: in.HostAddressLine1,
+			AddressLine2: in.HostAddressLine2,
+		},
+	}
+	location, err := s.geolocation.GetGeolocation(ctx, locationIn)
+	if err != nil {
+		return internalError(err)
+	}
 	params := &database.UpdateExperienceParams{
 		TypeID:                in.TypeID,
 		Title:                 in.Title,
@@ -177,12 +207,12 @@ func (s *service) UpdateExperience(ctx context.Context, in *store.UpdateExperien
 		HostCity:              in.HostCity,
 		HostAddressLine1:      in.HostAddressLine1,
 		HostAddressLine2:      in.HostAddressLine2,
-		HostLongitude:         0,
-		HostLatitude:          0,
+		HostLongitude:         location.Longitude,
+		HostLatitude:          location.Latitude,
 		StartAt:               in.StartAt,
 		EndAt:                 in.EndAt,
 	}
-	err := s.db.Experience.Update(ctx, in.ExperienceID, params)
+	err = s.db.Experience.Update(ctx, in.ExperienceID, params)
 	return internalError(err)
 }
 

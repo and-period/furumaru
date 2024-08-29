@@ -27,6 +27,7 @@ import (
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
+	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
 	"github.com/and-period/furumaru/api/pkg/medialive"
@@ -48,41 +49,43 @@ import (
 )
 
 type params struct {
-	logger               *zap.Logger
-	waitGroup            *sync.WaitGroup
-	enforcer             rbac.Enforcer
-	aws                  aws.Config
-	secret               secret.Client
-	storage              storage.Bucket
-	tmpStorage           storage.Bucket
-	adminAuth            cognito.Client
-	userAuth             cognito.Client
-	cache                dynamodb.Client
-	messengerQueue       sqs.Producer
-	mediaQueue           sqs.Producer
-	medialive            medialive.MediaLive
-	youtube              youtube.Youtube
-	slack                slack.Client
-	newRelic             *newrelic.Application
-	sentry               sentry.Client
-	komoju               *komoju.Komoju
-	adminWebURL          *url.URL
-	userWebURL           *url.URL
-	postalCode           postalcode.Client
-	now                  func() time.Time
-	debugMode            bool
-	dbHost               string
-	dbPort               string
-	dbUsername           string
-	dbPassword           string
-	slackToken           string
-	slackChannelID       string
-	newRelicLicense      string
-	sentryDsn            string
-	komojuClientID       string
-	komojuClientPassword string
-	googleClientID       string
-	googleClientSecret   string
+	logger                   *zap.Logger
+	waitGroup                *sync.WaitGroup
+	enforcer                 rbac.Enforcer
+	aws                      aws.Config
+	secret                   secret.Client
+	storage                  storage.Bucket
+	tmpStorage               storage.Bucket
+	adminAuth                cognito.Client
+	userAuth                 cognito.Client
+	cache                    dynamodb.Client
+	messengerQueue           sqs.Producer
+	mediaQueue               sqs.Producer
+	medialive                medialive.MediaLive
+	youtube                  youtube.Youtube
+	slack                    slack.Client
+	newRelic                 *newrelic.Application
+	sentry                   sentry.Client
+	komoju                   *komoju.Komoju
+	adminWebURL              *url.URL
+	userWebURL               *url.URL
+	postalCode               postalcode.Client
+	geolocation              geolocation.Client
+	now                      func() time.Time
+	debugMode                bool
+	dbHost                   string
+	dbPort                   string
+	dbUsername               string
+	dbPassword               string
+	slackToken               string
+	slackChannelID           string
+	newRelicLicense          string
+	sentryDsn                string
+	komojuClientID           string
+	komojuClientPassword     string
+	googleClientID           string
+	googleClientSecret       string
+	googleMapsPlatformAPIKey string
 }
 
 //nolint:funlen,maintidx
@@ -245,6 +248,16 @@ func (a *app) inject(ctx context.Context) error {
 	// PostalCodeの設定
 	params.postalCode = postalcode.NewClient(&http.Client{}, postalcode.WithLogger(params.logger))
 
+	// Geolocationの設定
+	geolocationParams := &geolocation.Params{
+		APIKey: params.googleMapsPlatformAPIKey,
+	}
+	geolocation, err := geolocation.NewClient(geolocationParams, geolocation.WithLogger(params.logger))
+	if err != nil {
+		return fmt.Errorf("cmd: failed to create geolocation client: %w", err)
+	}
+	params.geolocation = geolocation
+
 	// WebURLの設定
 	adminWebURL, err := url.Parse(a.AdminWebURL)
 	if err != nil {
@@ -396,6 +409,7 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		if a.GoogleClientSecret == "" {
 			p.googleClientID = a.GoogleClientID
 			p.googleClientSecret = a.GoogleClientSecret
+			p.googleMapsPlatformAPIKey = a.GoogleMapsPlatformAPIKey
 		}
 		secrets, err := p.secret.Get(ectx, a.GoogleSecretName)
 		if err != nil {
@@ -403,6 +417,7 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		}
 		p.googleClientID = secrets["clientId"]
 		p.googleClientSecret = secrets["clientSecret"]
+		p.googleMapsPlatformAPIKey = secrets["mapsPlatformAPIKey"]
 		return nil
 	})
 	return eg.Wait()
@@ -518,13 +533,14 @@ func (a *app) newStoreService(
 		return nil, err
 	}
 	params := &storesrv.Params{
-		WaitGroup:  p.waitGroup,
-		Database:   storedb.NewDatabase(mysql),
-		User:       user,
-		Messenger:  messenger,
-		Media:      media,
-		PostalCode: p.postalCode,
-		Komoju:     p.komoju,
+		WaitGroup:   p.waitGroup,
+		Database:    storedb.NewDatabase(mysql),
+		User:        user,
+		Messenger:   messenger,
+		Media:       media,
+		PostalCode:  p.postalCode,
+		Geolocation: p.geolocation,
+		Komoju:      p.komoju,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }
