@@ -103,6 +103,7 @@ func (s *service) CreateExperience(ctx context.Context, in *store.CreateExperien
 	if err != nil {
 		return nil, internalError(err)
 	}
+	// TODO: 座標情報の取得
 	params := &entity.NewExperienceParams{
 		CoordinatorID:         in.CoordinatorID,
 		ProducerID:            in.ProducerID,
@@ -114,8 +115,13 @@ func (s *service) CreateExperience(ctx context.Context, in *store.CreateExperien
 		Media:                 media,
 		RecommendedPoints:     in.RecommendedPoints,
 		PromotionVideoURL:     in.PromotionVideoURL,
+		HostPostalCode:        in.HostPostalCode,
 		HostPrefectureCode:    in.HostPrefectureCode,
 		HostCity:              in.HostCity,
+		HostAddressLine1:      in.HostAddressLine1,
+		HostAddressLine2:      in.HostAddressLine2,
+		HostLongitude:         0,
+		HostLatitude:          0,
 		StartAt:               in.StartAt,
 		EndAt:                 in.EndAt,
 		PriceAdult:            in.PriceAdult,
@@ -151,6 +157,7 @@ func (s *service) UpdateExperience(ctx context.Context, in *store.UpdateExperien
 	if err := media.Validate(); err != nil {
 		return fmt.Errorf("api: invalid media format: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
+	// TODO: 座標情報の取得
 	params := &database.UpdateExperienceParams{
 		TypeID:                in.TypeID,
 		Title:                 in.Title,
@@ -165,8 +172,13 @@ func (s *service) UpdateExperience(ctx context.Context, in *store.UpdateExperien
 		PriceSenior:           in.PriceSenior,
 		RecommendedPoints:     in.RecommendedPoints,
 		PromotionVideoURL:     in.PromotionVideoURL,
+		HostPostalCode:        in.HostPostalCode,
 		HostPrefectureCode:    in.HostPrefectureCode,
 		HostCity:              in.HostCity,
+		HostAddressLine1:      in.HostAddressLine1,
+		HostAddressLine2:      in.HostAddressLine2,
+		HostLongitude:         0,
+		HostLatitude:          0,
 		StartAt:               in.StartAt,
 		EndAt:                 in.EndAt,
 	}

@@ -254,8 +254,11 @@ func (h *handler) CreateExperience(ctx *gin.Context) {
 		PriceSenior:           req.PriceSenior,
 		RecommendedPoints:     h.newExperiencePoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
 		PromotionVideoURL:     req.PromotionVideoURL,
+		HostPostalCode:        req.HostPostalCode,
 		HostPrefectureCode:    req.HostPrefectureCode,
 		HostCity:              req.HostCity,
+		HostAddressLine1:      req.HostAddressLine1,
+		HostAddressLine2:      req.HostAddressLine2,
 		StartAt:               jst.ParseFromUnix(req.StartAt),
 		EndAt:                 jst.ParseFromUnix(req.EndAt),
 	}
@@ -313,8 +316,11 @@ func (h *handler) UpdateExperience(ctx *gin.Context) {
 		PriceSenior:           req.PriceSenior,
 		RecommendedPoints:     h.newExperiencePoints(req.RecommendedPoint1, req.RecommendedPoint2, req.RecommendedPoint3),
 		PromotionVideoURL:     req.PromotionVideoURL,
+		HostPostalCode:        req.HostPostalCode,
 		HostPrefectureCode:    req.HostPrefectureCode,
 		HostCity:              req.HostCity,
+		HostAddressLine1:      req.HostAddressLine1,
+		HostAddressLine2:      req.HostAddressLine2,
 		StartAt:               jst.ParseFromUnix(req.StartAt),
 		EndAt:                 jst.ParseFromUnix(req.EndAt),
 	}

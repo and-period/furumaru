@@ -4,10 +4,111 @@ import (
 	"testing"
 	"time"
 
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
+
+func TestExperience(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name   string
+		params *NewExperienceParams
+		expect *Experience
+		hasErr bool
+	}{
+		{
+			name: "success",
+			params: &NewExperienceParams{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫",
+				Description:   "じゃがいもを収穫する体験",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*ExperienceMedia{{
+					URL:         "http://example.com/thumbnail.png",
+					IsThumbnail: true,
+				}},
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する",
+					"じゃがいもを食べる",
+					"じゃがいもを持ち帰る",
+				},
+				PromotionVideoURL:     "http://example.com/promotion.mp4",
+				HostPostalCode:        "5220061",
+				HostPrefectureCode:    25,
+				HostCity:              "彦根市",
+				HostAddressLine1:      "金亀町１−１",
+				HostAddressLine2:      "",
+				HostLongitude:         136.251739,
+				HostLatitude:          35.276833,
+				StartAt:               now.AddDate(0, -1, 0),
+				EndAt:                 now.AddDate(0, 1, 0),
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           200,
+			},
+			expect: &Experience{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫",
+				Description:   "じゃがいもを収穫する体験",
+				Public:        true,
+				SoldOut:       false,
+				Status:        ExperienceStatusUnknown,
+				Media: MultiExperienceMedia{{
+					URL:         "http://example.com/thumbnail.png",
+					IsThumbnail: true,
+				}},
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する",
+					"じゃがいもを食べる",
+					"じゃがいもを持ち帰る",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPostalCode:     "5220061",
+				HostPrefecture:     "滋賀県",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				HostAddressLine1:   "金亀町１−１",
+				HostAddressLine2:   "",
+				HostLongitude:      136.251739,
+				HostLatitude:       35.276833,
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+				ExperienceRevision: ExperienceRevision{
+					ID:                    0,
+					ExperienceID:          "", // ignore
+					PriceAdult:            1000,
+					PriceJuniorHighSchool: 800,
+					PriceElementarySchool: 600,
+					PricePreschool:        400,
+					PriceSenior:           200,
+				},
+			},
+			hasErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := NewExperience(tt.params)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			actual.ID, actual.ExperienceRevision.ExperienceID = "", "" // ignore
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
 
 func TestExperience_SetStatus(t *testing.T) {
 	t.Parallel()
@@ -109,6 +210,8 @@ func TestExperience_FillJSON(t *testing.T) {
 					"ポイント1",
 					"ポイント2",
 				},
+				HostLongitude: 136.251739,
+				HostLatitude:  35.276833,
 			},
 			expect: &Experience{
 				Media: MultiExperienceMedia{
@@ -123,6 +226,12 @@ func TestExperience_FillJSON(t *testing.T) {
 					"ポイント2",
 				},
 				RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
+				HostLongitude:         136.251739,
+				HostLatitude:          35.276833,
+				HostGeolocation: mysql.Geometry{
+					X: 136.251739,
+					Y: 35.276833,
+				},
 			},
 			hasErr: false,
 		},
@@ -170,13 +279,19 @@ func TestExperience_Fill(t *testing.T) {
 					RecommendedPoints:     []string{},
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
 					PromotionVideoURL:     "http://example.com/promotion.mp4",
-					HostPrefecture:        "東京都",
-					HostPrefectureCode:    13,
-					HostCity:              "千代田区",
-					StartAt:               now.AddDate(0, 0, -1),
-					EndAt:                 now.AddDate(0, 0, 1),
-					CreatedAt:             now,
-					UpdatedAt:             now,
+					HostPostalCode:        "5220061",
+					HostPrefectureCode:    25,
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostGeolocation: mysql.Geometry{
+						X: 136.251739,
+						Y: 35.276833,
+					},
+					StartAt:   now.AddDate(0, 0, -1),
+					EndAt:     now.AddDate(0, 0, 1),
+					CreatedAt: now,
+					UpdatedAt: now,
 				},
 			},
 			revisions: map[string]*ExperienceRevision{},
@@ -206,14 +321,23 @@ func TestExperience_Fill(t *testing.T) {
 					},
 					RecommendedPointsJSON: datatypes.JSON([]byte(`["ポイント1","ポイント2"]`)),
 					PromotionVideoURL:     "http://example.com/promotion.mp4",
-					HostPrefecture:        "東京都",
-					HostPrefectureCode:    13,
-					HostCity:              "千代田区",
-					ExperienceRevision:    ExperienceRevision{ExperienceID: "experience-id"},
-					StartAt:               now.AddDate(0, 0, -1),
-					EndAt:                 now.AddDate(0, 0, 1),
-					CreatedAt:             now,
-					UpdatedAt:             now,
+					HostPostalCode:        "5220061",
+					HostPrefecture:        "滋賀県",
+					HostPrefectureCode:    25,
+					HostCity:              "彦根市",
+					HostAddressLine1:      "金亀町１−１",
+					HostAddressLine2:      "",
+					HostLongitude:         136.251739,
+					HostLatitude:          35.276833,
+					HostGeolocation: mysql.Geometry{
+						X: 136.251739,
+						Y: 35.276833,
+					},
+					ExperienceRevision: ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:            now.AddDate(0, 0, -1),
+					EndAt:              now.AddDate(0, 0, 1),
+					CreatedAt:          now,
+					UpdatedAt:          now,
 				},
 			},
 			hasErr: false,

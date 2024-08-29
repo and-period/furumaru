@@ -71,12 +71,21 @@ experience:
     recommendedPoint3:
       type: string
       description: おすすめポイント3
+    hostPostalCode:
+      type: string
+      description: 開催地（郵便番号）
     hostPrefectureCode:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
       description: 開催地（都道府県）
     hostCity:
       type: string
       description: 開催地（市区町村）
+    hostAddressLine1:
+      type: string
+      description: 開催地（住所1）
+    hostAddressLine2:
+      type: string
+      description: 開催地（住所2）
     startAt:
       type: integer
       format: int64
@@ -109,8 +118,11 @@ experience:
   - priceElementarySchool
   - pricePreschool
   - priceSenior
+  - hostPostalCode
   - hostPrefectureCode
   - hostCity
+  - hostAddressLine1
+  - hostAddressLine2
   - startAt
   - endAt
   - createdAt
@@ -136,8 +148,11 @@ experience:
     recommendedPoint1: '新鮮なじゃがいもを堀ります'
     recommendedPoint2: 'じゃがいもの美味しさを体験'
     recommendedPoint3: '楽しい体験ができます'
+    hostPostalCode: '1600023'
     hostPrefectureCode: '13'
     hostCity: '新宿区'
+    hostAddressLine1: '西新宿1-1-1'
+    hostAddressLine2: '新宿中央公園'
     startAt: 1640962800
     endAt: 1640962800
     createdAt: 1640962800

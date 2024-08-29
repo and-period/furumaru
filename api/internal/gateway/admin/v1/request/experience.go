@@ -18,8 +18,11 @@ type CreateExperienceRequest struct {
 	RecommendedPoint2     string                   `json:"recommendedPoint2,omitempty"`     // おすすめポイント2
 	RecommendedPoint3     string                   `json:"recommendedPoint3,omitempty"`     // おすすめポイント3
 	PromotionVideoURL     string                   `json:"promotionVideoUrl,omitempty"`     // 紹介動画URL
+	HostPostalCode        string                   `json:"hostPostalCode,omitempty"`        // 開催場所(郵便番号)
 	HostPrefectureCode    int32                    `json:"hostPrefectureCode,omitempty"`    // 開催場所(都道府県コード)
 	HostCity              string                   `json:"hostCity,omitempty"`              // 開催場所(市区町村)
+	HostAddressLine1      string                   `json:"hostAddressLine1,omitempty"`      // 開催場所(住所1)
+	HostAddressLine2      string                   `json:"hostAddressLine2,omitempty"`      // 開催場所(住所2)
 	StartAt               int64                    `json:"startAt,omitempty"`               // 募集開始日時
 	EndAt                 int64                    `json:"endAt,omitempty"`                 // 募集終了日時
 }
@@ -45,8 +48,11 @@ type UpdateExperienceRequest struct {
 	RecommendedPoint2     string                   `json:"recommendedPoint2,omitempty"`     // おすすめポイント2
 	RecommendedPoint3     string                   `json:"recommendedPoint3,omitempty"`     // おすすめポイント3
 	PromotionVideoURL     string                   `json:"promotionVideoUrl,omitempty"`     // 紹介動画URL
+	HostPostalCode        string                   `json:"hostPostalCode,omitempty"`        // 開催場所(郵便番号)
 	HostPrefectureCode    int32                    `json:"hostPrefectureCode,omitempty"`    // 開催場所(都道府県コード)
 	HostCity              string                   `json:"hostCity,omitempty"`              // 開催場所(市区町村)
+	HostAddressLine1      string                   `json:"hostAddressLine1,omitempty"`      // 開催場所(住所1)
+	HostAddressLine2      string                   `json:"hostAddressLine2,omitempty"`      // 開催場所(住所2)
 	StartAt               int64                    `json:"startAt,omitempty"`               // 募集開始日時
 	EndAt                 int64                    `json:"endAt,omitempty"`                 // 募集終了日時
 }

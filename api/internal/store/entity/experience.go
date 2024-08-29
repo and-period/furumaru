@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
+	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
 	"gorm.io/datatypes"
@@ -43,9 +44,15 @@ type Experience struct {
 	RecommendedPoints     []string             `gorm:"-"`                                      // おすすめポイント一覧
 	RecommendedPointsJSON datatypes.JSON       `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
 	PromotionVideoURL     string               `gorm:""`                                       // 紹介動画URL
+	HostPostalCode        string               `gorm:""`                                       // 開催場所(郵便番号)
 	HostPrefecture        string               `gorm:"-"`                                      // 開催場所(都道府県)
 	HostPrefectureCode    int32                `gorm:"column:host_prefecture"`                 // 開催場所(都道府県コード)
 	HostCity              string               `gorm:""`                                       // 開催場所(市区町村)
+	HostAddressLine1      string               `gorm:""`                                       // 開催場所(町名・番地)
+	HostAddressLine2      string               `gorm:""`                                       // 開催場所(ビル名・号室など)
+	HostGeolocation       mysql.Geometry       `gorm:""`                                       // 開催場所(座標情報)
+	HostLongitude         float64              `gorm:"-"`                                      // 開催場所(座標情報:経度)
+	HostLatitude          float64              `gorm:"-"`                                      // 開催場所(座標情報:緯度)
 	StartAt               time.Time            `gorm:""`                                       // 募集開始日時
 	EndAt                 time.Time            `gorm:""`                                       // 募集終了日時
 	CreatedAt             time.Time            `gorm:"<-:create"`                              // 登録日時
@@ -74,8 +81,13 @@ type NewExperienceParams struct {
 	Media                 MultiExperienceMedia
 	RecommendedPoints     []string
 	PromotionVideoURL     string
+	HostPostalCode        string
 	HostPrefectureCode    int32
 	HostCity              string
+	HostAddressLine1      string
+	HostAddressLine2      string
+	HostLongitude         float64
+	HostLatitude          float64
 	StartAt               time.Time
 	EndAt                 time.Time
 	PriceAdult            int64
@@ -100,7 +112,7 @@ func NewExperience(params *NewExperienceParams) (*Experience, error) {
 		PriceSenior:           params.PriceSenior,
 	}
 	revision := NewExperienceRevision(rparams)
-	return &Experience{
+	experience := &Experience{
 		ID:                 experienceID,
 		CoordinatorID:      params.CoordinatorID,
 		ProducerID:         params.ProducerID,
@@ -112,18 +124,33 @@ func NewExperience(params *NewExperienceParams) (*Experience, error) {
 		Media:              params.Media,
 		RecommendedPoints:  params.RecommendedPoints,
 		PromotionVideoURL:  params.PromotionVideoURL,
+		HostPostalCode:     params.HostPostalCode,
 		HostPrefecture:     prefecture,
 		HostPrefectureCode: params.HostPrefectureCode,
 		HostCity:           params.HostCity,
+		HostAddressLine1:   params.HostAddressLine1,
+		HostAddressLine2:   params.HostAddressLine2,
+		HostLongitude:      params.HostLongitude,
+		HostLatitude:       params.HostLatitude,
 		StartAt:            params.StartAt,
 		EndAt:              params.EndAt,
 		ExperienceRevision: *revision,
-	}, nil
+	}
+	if err := experience.Validate(); err != nil {
+		return nil, err
+	}
+	return experience, nil
 }
 
 func (e *Experience) Validate() error {
 	if len(e.RecommendedPoints) > 3 {
 		return errors.New("entity: limit exceeded recommended points")
+	}
+	if e.HostLongitude < -180 || 180 < e.HostLongitude {
+		return errors.New("entity: invalid host longitude")
+	}
+	if e.HostLatitude < -90 || 90 < e.HostLatitude {
+		return errors.New("entity: invalid host latitude")
 	}
 	return e.Media.Validate()
 }
@@ -138,6 +165,7 @@ func (e *Experience) Fill(revision *ExperienceRevision, now time.Time) (err erro
 		return
 	}
 	e.SetStatus(now)
+	e.SetLocation()
 	e.SetThumbnail()
 	e.ExperienceRevision = *revision
 	e.HostPrefecture, _ = codes.ToPrefectureJapanese(e.HostPrefectureCode)
@@ -159,6 +187,11 @@ func (e *Experience) SetStatus(now time.Time) {
 	default:
 		e.Status = ExperienceStatusFinished
 	}
+}
+
+func (e *Experience) SetLocation() {
+	e.HostLongitude = e.HostGeolocation.X
+	e.HostLatitude = e.HostGeolocation.Y
 }
 
 func (e *Experience) SetThumbnail() {
@@ -197,11 +230,16 @@ func (e *Experience) FillJSON() error {
 	}
 	e.MediaJSON = media
 	e.RecommendedPointsJSON = points
+	e.HostGeolocation = ExperienceHostGeolocation(e.HostLongitude, e.HostLatitude)
 	return nil
 }
 
 func ExperienceMarshalRecommendedPoints(points []string) ([]byte, error) {
 	return json.Marshal(points)
+}
+
+func ExperienceHostGeolocation(longitude, latitude float64) mysql.Geometry {
+	return mysql.Geometry{X: longitude, Y: latitude}
 }
 
 func (es Experiences) Fill(revisions map[string]*ExperienceRevision, now time.Time) error {

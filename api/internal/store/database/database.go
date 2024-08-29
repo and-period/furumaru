@@ -93,8 +93,13 @@ type UpdateExperienceParams struct {
 	PriceSenior           int64
 	RecommendedPoints     []string
 	PromotionVideoURL     string
+	HostPostalCode        string
 	HostPrefectureCode    int32
 	HostCity              string
+	HostAddressLine1      string
+	HostAddressLine2      string
+	HostLongitude         float64
+	HostLatitude          float64
 	StartAt               time.Time
 	EndAt                 time.Time
 }

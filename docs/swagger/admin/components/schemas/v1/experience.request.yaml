@@ -66,12 +66,21 @@ createExperienceRequest:
     recommendedPoint3:
       type: string
       description: おすすめポイント1(128文字まで)
+    hostPostalCode:
+      type: string
+      description: 郵便番号(ハイフンなし)
     hostPrefectureCode:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
       description: 開催場所(都道府県)
     hostCity:
       type: string
       description: 開催場所(市区町村)
+    hostAddressLine1:
+      type: string
+      description: 町名・番地(64文字まで)
+    hostAddressLine2:
+      type: string
+      description: ビル名・号室など(64文字まで)
     startAt:
       type: integer
       format: int64
@@ -97,8 +106,11 @@ createExperienceRequest:
   - recommendedPoint1
   - recommendedPoint2
   - recommendedPoint3
+  - hostPostalCode
   - hostPrefectureCode
   - hostCity
+  - hostAddressLine1
+  - hostAddressLine2
   - startAt
   - endAt
   example:
@@ -122,8 +134,11 @@ createExperienceRequest:
     recommendedPoint1: '新鮮なじゃがいもを収穫'
     recommendedPoint2: '新鮮なじゃがいもを収穫'
     recommendedPoint3: '新鮮なじゃがいもを収穫'
-    hostPrefectureCode: 1
+    hostPostalCode: '1000014'
+    hostPrefectureCode: 13
     hostCity: '東京都'
+    hostAddressLine1: '永田町1-7-1'
+    hostAddressLine2: ''
     startAt: 1609459200
     endAt: 1609545600
 updateExperienceRequest:
@@ -188,12 +203,21 @@ updateExperienceRequest:
     recommendedPoint3:
       type: string
       description: おすすめポイント1(128文字まで)
+    hostPostalCode:
+      type: string
+      description: 郵便番号(ハイフンなし)
     hostPrefectureCode:
       $ref: './../../../openapi.yaml#/components/schemas/prefecture'
       description: 開催場所(都道府県)
     hostCity:
       type: string
       description: 開催場所(市区町村)
+    hostAddressLine1:
+      type: string
+      description: 町名・番地(64文字まで)
+    hostAddressLine2:
+      type: string
+      description: ビル名・号室など(64文字まで)
     startAt:
       type: integer
       format: int64
@@ -217,8 +241,11 @@ updateExperienceRequest:
   - recommendedPoint1
   - recommendedPoint2
   - recommendedPoint3
+  - hostPostalCode
   - hostPrefectureCode
   - hostCity
+  - hostAddressLine1
+  - hostAddressLine2
   - startAt
   - endAt
   example:
@@ -240,7 +267,10 @@ updateExperienceRequest:
     recommendedPoint1: '新鮮なじゃがいもを収穫'
     recommendedPoint2: '新鮮なじゃがいもを収穫'
     recommendedPoint3: '新鮮なじゃがいもを収穫'
-    hostPrefectureCode: 1
+    hostPostalCode: '1000014'
+    hostPrefectureCode: 13
     hostCity: '東京都'
+    hostAddressLine1: '永田町1-7-1'
+    hostAddressLine2: ''
     startAt: 1609459200
     endAt: 1609545600

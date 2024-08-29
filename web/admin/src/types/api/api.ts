@@ -1614,6 +1614,12 @@ export interface CreateExperienceRequest {
      */
     'recommendedPoint3': string;
     /**
+     * 郵便番号(ハイフンなし)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'hostPostalCode': string;
+    /**
      * 
      * @type {Prefecture}
      * @memberof CreateExperienceRequest
@@ -1625,6 +1631,18 @@ export interface CreateExperienceRequest {
      * @memberof CreateExperienceRequest
      */
     'hostCity': string;
+    /**
+     * 町名・番地(64文字まで)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'hostAddressLine1': string;
+    /**
+     * ビル名・号室など(64文字まで)
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'hostAddressLine2': string;
     /**
      * 販売開始日時 (unixtime)
      * @type {number}
@@ -2525,6 +2543,12 @@ export interface Experience {
      */
     'recommendedPoint3'?: string;
     /**
+     * 開催地（郵便番号）
+     * @type {string}
+     * @memberof Experience
+     */
+    'hostPostalCode': string;
+    /**
      * 
      * @type {Prefecture}
      * @memberof Experience
@@ -2536,6 +2560,18 @@ export interface Experience {
      * @memberof Experience
      */
     'hostCity': string;
+    /**
+     * 開催地（住所1）
+     * @type {string}
+     * @memberof Experience
+     */
+    'hostAddressLine1': string;
+    /**
+     * 開催地（住所2）
+     * @type {string}
+     * @memberof Experience
+     */
+    'hostAddressLine2': string;
     /**
      * 販売開始日時 (unixtime)
      * @type {number}
@@ -6279,6 +6315,12 @@ export interface UpdateExperienceRequest {
      */
     'recommendedPoint3': string;
     /**
+     * 郵便番号(ハイフンなし)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'hostPostalCode': string;
+    /**
      * 
      * @type {Prefecture}
      * @memberof UpdateExperienceRequest
@@ -6290,6 +6332,18 @@ export interface UpdateExperienceRequest {
      * @memberof UpdateExperienceRequest
      */
     'hostCity': string;
+    /**
+     * 町名・番地(64文字まで)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'hostAddressLine1': string;
+    /**
+     * ビル名・号室など(64文字まで)
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'hostAddressLine2': string;
     /**
      * 販売開始日時 (unixtime)
      * @type {number}
