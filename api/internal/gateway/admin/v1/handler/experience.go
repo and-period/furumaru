@@ -103,7 +103,10 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 	}
 	if len(experiences) == 0 {
 		res := &response.ExperiencesResponse{
-			Experiences: []*response.Experience{},
+			Experiences:     []*response.Experience{},
+			Coordinators:    []*response.Coordinator{},
+			Producers:       []*response.Producer{},
+			ExperienceTypes: []*response.ExperienceType{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
