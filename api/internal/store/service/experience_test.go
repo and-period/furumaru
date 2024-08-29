@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	uentity "github.com/and-period/furumaru/api/internal/user/entity"
+	"github.com/and-period/furumaru/api/pkg/geolocation"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -468,6 +469,19 @@ func TestCreateExperience(t *testing.T) {
 	producer := &uentity.Producer{
 		AdminID: "producer-id",
 	}
+	locationIn := &geolocation.GetGeolocationInput{
+		Address: &geolocation.Address{
+			PostalCode:   "5220061",
+			Prefecture:   "滋賀県",
+			City:         "彦根市",
+			AddressLine1: "金亀町１−１",
+			AddressLine2: "",
+		},
+	}
+	location := &geolocation.GetGeolocationOutput{
+		Longitude: 136.251739,
+		Latitude:  35.276833,
+	}
 
 	tests := []struct {
 		name      string
@@ -480,6 +494,7 @@ func TestCreateExperience(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
 				mocks.db.Experience.EXPECT().
 					Create(ctx, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, experience *entity.Experience) error {
@@ -509,10 +524,10 @@ func TestCreateExperience(t *testing.T) {
 							HostCity:           "彦根市",
 							HostAddressLine1:   "金亀町１−１",
 							HostAddressLine2:   "",
-							// HostLongitude:      136.251739,
-							// HostLatitude:       35.276833,
-							StartAt: now.AddDate(0, -1, 0),
-							EndAt:   now.AddDate(0, 1, 0),
+							HostLongitude:      136.251739,
+							HostLatitude:       35.276833,
+							StartAt:            now.AddDate(0, -1, 0),
+							EndAt:              now.AddDate(0, 1, 0),
 							ExperienceRevision: entity.ExperienceRevision{
 								ID:                    0,
 								ExperienceID:          experience.ID, // ignore
@@ -677,7 +692,7 @@ func TestCreateExperience(t *testing.T) {
 			expectErr: exception.ErrInternal,
 		},
 		{
-			name: "invalid experience validation",
+			name: "invalid prefecture validation",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
@@ -715,10 +730,93 @@ func TestCreateExperience(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name: "failed to get geolocation",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(nil, assert.AnError)
+			},
+			input: &store.CreateExperienceInput{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫体験",
+				Description:   "じゃがいもを収穫する体験です。",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*store.CreateExperienceMedia{
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPostalCode:     "5220061",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				HostAddressLine1:   "金亀町１−１",
+				HostAddressLine2:   "",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
+			name: "invalid experience validation",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
+				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				location := &geolocation.GetGeolocationOutput{
+					Longitude: 270.0,
+					Latitude:  90.0,
+				}
+				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
+			},
+			input: &store.CreateExperienceInput{
+				CoordinatorID: "coordinator-id",
+				ProducerID:    "producer-id",
+				TypeID:        "experience-type-id",
+				Title:         "じゃがいも収穫体験",
+				Description:   "じゃがいもを収穫する体験です。",
+				Public:        true,
+				SoldOut:       false,
+				Media: []*store.CreateExperienceMedia{
+					{URL: "http://example.com/thumbnail01.png", IsThumbnail: true},
+					{URL: "http://example.com/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPostalCode:     "5220061",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				HostAddressLine1:   "金亀町１−１",
+				HostAddressLine2:   "",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
 			name: "failed to create experience",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetCoordinator(gomock.Any(), coordinatorIn).Return(coordinator, nil)
 				mocks.user.EXPECT().GetProducer(gomock.Any(), producerIn).Return(producer, nil)
+				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
 				mocks.db.Experience.EXPECT().Create(ctx, gomock.Any()).Return(assert.AnError)
 			},
 			input: &store.CreateExperienceInput{
@@ -768,6 +866,19 @@ func TestUpdateExperience(t *testing.T) {
 	t.Parallel()
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
+	locationIn := &geolocation.GetGeolocationInput{
+		Address: &geolocation.Address{
+			PostalCode:   "5220061",
+			Prefecture:   "滋賀県",
+			City:         "彦根市",
+			AddressLine1: "金亀町１−１",
+			AddressLine2: "",
+		},
+	}
+	location := &geolocation.GetGeolocationOutput{
+		Longitude: 136.251739,
+		Latitude:  35.276833,
+	}
 	params := &database.UpdateExperienceParams{
 		TypeID:      "experience-type-id",
 		Title:       "じゃがいも収穫体験",
@@ -793,10 +904,10 @@ func TestUpdateExperience(t *testing.T) {
 		HostCity:           "彦根市",
 		HostAddressLine1:   "金亀町１−１",
 		HostAddressLine2:   "",
-		// HostLongitude:      136.251739,
-		// HostLatitude:       35.276833,
-		StartAt: now.AddDate(0, -1, 0),
-		EndAt:   now.AddDate(0, 1, 0),
+		HostLongitude:      136.251739,
+		HostLatitude:       35.276833,
+		StartAt:            now.AddDate(0, -1, 0),
+		EndAt:              now.AddDate(0, 1, 0),
 	}
 
 	tests := []struct {
@@ -808,6 +919,7 @@ func TestUpdateExperience(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
 				mocks.db.Experience.EXPECT().Update(ctx, "experience-id", params).Return(nil)
 			},
 			input: &store.UpdateExperienceInput{
@@ -913,8 +1025,79 @@ func TestUpdateExperience(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
+			name:  "invalid prefecture validation",
+			setup: func(ctx context.Context, mocks *mocks) {},
+			input: &store.UpdateExperienceInput{
+				ExperienceID: "experience-id",
+				TypeID:       "experience-type-id",
+				Title:        "じゃがいも収穫体験",
+				Description:  "じゃがいもを収穫する体験です。",
+				Public:       true,
+				SoldOut:      false,
+				Media: []*store.UpdateExperienceMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPostalCode:     "5220061",
+				HostPrefectureCode: -1,
+				HostCity:           "彦根市",
+				HostAddressLine1:   "金亀町１−１",
+				HostAddressLine2:   "",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
+			name: "failed to get geolocation",
+			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(nil, assert.AnError)
+			},
+			input: &store.UpdateExperienceInput{
+				ExperienceID: "experience-id",
+				TypeID:       "experience-type-id",
+				Title:        "じゃがいも収穫体験",
+				Description:  "じゃがいもを収穫する体験です。",
+				Public:       true,
+				SoldOut:      false,
+				Media: []*store.UpdateExperienceMedia{
+					{URL: "https://and-period.jp/thumbnail01.png", IsThumbnail: true},
+					{URL: "https://and-period.jp/thumbnail02.png", IsThumbnail: false},
+				},
+				PriceAdult:            1000,
+				PriceJuniorHighSchool: 800,
+				PriceElementarySchool: 600,
+				PricePreschool:        400,
+				PriceSenior:           700,
+				RecommendedPoints: []string{
+					"じゃがいもを収穫する楽しさを体験できます。",
+					"新鮮なじゃがいもを持ち帰ることができます。",
+				},
+				PromotionVideoURL:  "http://example.com/promotion.mp4",
+				HostPostalCode:     "5220061",
+				HostPrefectureCode: 25,
+				HostCity:           "彦根市",
+				HostAddressLine1:   "金亀町１−１",
+				HostAddressLine2:   "",
+				StartAt:            now.AddDate(0, -1, 0),
+				EndAt:              now.AddDate(0, 1, 0),
+			},
+			expectErr: exception.ErrInternal,
+		},
+		{
 			name: "failed to update experience",
 			setup: func(ctx context.Context, mocks *mocks) {
+				mocks.geolocation.EXPECT().GetGeolocation(ctx, locationIn).Return(location, nil)
 				mocks.db.Experience.EXPECT().Update(ctx, "experience-id", params).Return(assert.AnError)
 			},
 			input: &store.UpdateExperienceInput{
