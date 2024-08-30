@@ -7,6 +7,7 @@ export * from './CartApi';
 export * from './CheckoutApi';
 export * from './ContactApi';
 export * from './CoordinatorApi';
+export * from './ExperienceApi';
 export * from './GuestApi';
 export * from './OrderApi';
 export * from './OtherApi';

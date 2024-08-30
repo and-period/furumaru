@@ -1,0 +1,170 @@
+experienceResponse:
+  type: object
+  properties:
+    experience:
+      $ref: './../../../openapi.yaml#/components/schemas/experience'
+    coordinator:
+      $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    producer:
+      $ref: './../../../openapi.yaml#/components/schemas/producer'
+    experienceType:
+      $ref: './../../../openapi.yaml#/components/schemas/experienceType'
+  required:
+  - experience
+  - coordinator
+  - producer
+  - experienceType
+  example:
+    experience:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: '農業体験'
+      description: '農業体験の説明'
+      status: 1
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      thumbnailUrl: 'https://example.com/image.jpg'
+      media:
+      - url: 'https://example.com/image.jpg'
+        isThumbnail: true
+      - url: 'https://example.com/image.jpg'
+        isThumbnail: false
+      priceAdult: 1000
+      priceJuniorHighSchool: 800
+      priceElementarySchool: 600
+      pricePreschool: 400
+      priceSenior: 800
+      recommendedPoint1: 'おすすめポイント1'
+      recommendedPoint2: 'おすすめポイント2'
+      recommendedPoint3: 'おすすめポイント3'
+      hostPostalCode: '123-4567'
+      hostPrefecture: '東京都'
+      hostCity: '千代田区'
+      hostAddressLine1: '千代田1-1-1'
+      hostAddressLine2: '千代田ビル1F'
+      hostLongitude: 139.767052
+      hostLatitude: 35.681167
+      startAt: 1614556800
+      endAt: 1614643199
+    coordinator:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      headerUrl: 'https://and-period.jp/header.png'
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    producer:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: '&.農園'
+      profile: '紹介文です。'
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      headerUrl: 'https://and-period.jp/header.png'
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    experienceType:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '農業体験'
+experiencesResponse:
+  type: object
+  properties:
+    experiences:
+      type: array
+      description: 体験一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/experience'
+    coordinators:
+      type: array
+      description: コーディネータ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    producers:
+      type: array
+      description: 生産者一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/producer'
+    experienceTypes:
+      type: array
+      description: 体験種別一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/experienceType'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - experiences
+  - coordinators
+  - producers
+  - experienceTypes
+  - total
+  example:
+    experiences:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: '農業体験'
+      description: '農業体験の説明'
+      status: 1
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      thumbnailUrl: 'https://example.com/image.jpg'
+      media:
+      - url: 'https://example.com/image.jpg'
+        isThumbnail: true
+      - url: 'https://example.com/image.jpg'
+        isThumbnail: false
+      priceAdult: 1000
+      priceJuniorHighSchool: 800
+      priceElementarySchool: 600
+      pricePreschool: 400
+      priceSenior: 800
+      recommendedPoint1: 'おすすめポイント1'
+      recommendedPoint2: 'おすすめポイント2'
+      recommendedPoint3: 'おすすめポイント3'
+      hostPostalCode: '123-4567'
+      hostPrefecture: '東京都'
+      hostCity: '千代田区'
+      hostAddressLine1: '千代田1-1-1'
+      hostAddressLine2: '千代田ビル1F'
+      hostLongitude: 139.767052
+      hostLatitude: 35.681167
+      startAt: 1614556800
+      endAt: 1614643199
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypes: ['kSByoE6FetnPs5Byk3a9Zx']
+      businessDays: [1,2,3,4,5]
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      headerUrl: 'https://and-period.jp/header.png'
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    producers:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: '&.農園'
+      profile: '紹介文です。'
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      headerUrl: 'https://and-period.jp/header.png'
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    experienceTypes:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '農業体験'
+    total: 1

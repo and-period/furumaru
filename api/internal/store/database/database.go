@@ -72,11 +72,15 @@ type Experience interface {
 }
 
 type ListExperiencesParams struct {
-	Name          string
-	CoordinatorID string
-	ProducerID    string
-	Limit         int
-	Offset        int
+	Name           string
+	HostPrefecture int32
+	CoordinatorID  string
+	ProducerID     string
+	OnlyPublished  bool
+	ExcludeDeleted bool
+	EndAtGte       time.Time
+	Limit          int
+	Offset         int
 }
 
 type UpdateExperienceParams struct {

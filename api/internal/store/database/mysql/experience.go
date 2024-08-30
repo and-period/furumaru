@@ -35,11 +35,23 @@ func (p listExperiencesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
 		stmt = stmt.Where("MATCH (`title`, `description`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
+	if p.HostPrefecture > 0 {
+		stmt = stmt.Where("host_prefecture = ?", p.HostPrefecture)
+	}
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
 	if p.ProducerID != "" {
 		stmt = stmt.Where("producer_id = ?", p.ProducerID)
+	}
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ?", true).Where("deleted_at IS NULL")
+	}
+	if !p.EndAtGte.IsZero() {
+		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
+	}
+	if !p.ExcludeDeleted {
+		stmt = stmt.Unscoped()
 	}
 	return stmt.Order("start_at DESC")
 }

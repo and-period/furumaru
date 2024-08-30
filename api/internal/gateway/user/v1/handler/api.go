@@ -140,6 +140,7 @@ func (h *handler) Routes(rg *gin.RouterGroup) {
 	h.topRoutes(v1)
 	h.scheduleRoutes(v1)
 	h.productRoutes(v1)
+	h.experienceRoutes(v1)
 	h.coordinatorRoutes(v1)
 	h.producerRoutes(v1)
 	h.promotionRoutes(v1)

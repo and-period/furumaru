@@ -19,26 +19,28 @@ tags:
   description: 買い物かご関連
 - name: Checkout
   description: 購入関連
-- name: Order
-  description: 注文履歴関連
-- name: Top
-  description: トップページ関連
-- name: Schedule
-  description: マルシェ開催スケジュール関連
 - name: Coordinator
   description: コーディネータ関連
+- name: Contact
+  description: お問い合わせ関連
+- name: Guest
+  description: ゲスト関連
+- name: Experience
+  description: 体験関連
+- name: Order
+  description: 注文履歴関連
 - name: Producer
   description: 生産者関連
 - name: Product
   description: 商品関連
 - name: Promotion
   description: プロモーション関連
-- name: Guest
-  description: ゲスト関連
-- name: Contact
-  description: お問い合わせ関連
+- name: Schedule
+  description: マルシェ開催スケジュール関連
 - name: Status
   description: システム状態関連
+- name: Top
+  description: トップページ関連
 - name: Other
   description: その他（外部APIなど）
 paths:
@@ -91,31 +93,31 @@ paths:
     $ref: './paths/v1/checkouts/index.yaml'
   /v1/checkouts/{transactionId}:
     $ref: './paths/v1/checkouts/_transactionId/index.yaml'
-  # Order
-  /v1/orders:
-    $ref: './paths/v1/orders/index.yaml'
-  /v1/orders/{orderId}:
-    $ref: './paths/v1/orders/_orderId/index.yaml'
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
-  # Top
-  /v1/top/common:
-    $ref: './paths/v1/top/common.yaml'
-  # Schedule
-  /v1/schedules/lives:
-    $ref: './paths/v1/schedules/lives.yaml'
-  /v1/schedules/archives:
-    $ref: './paths/v1/schedules/archives.yaml'
-  /v1/schedules/{scheduleId}:
-    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
-  /v1/schedules/{scheduleId}/comments:
-    $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
   # Coordinator
   /v1/coordinators:
     $ref: './paths/v1/coordinators/index.yaml'
   /v1/coordinators/{coordinatorId}:
     $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
+  # Experience
+  /v1/experiences:
+    $ref: './paths/v1/experiences/index.yaml'
+  /v1/experiences/{experienceId}:
+    $ref: './paths/v1/experiences/_experienceId/index.yaml'
+  # Guest
+  /v1/guests/checkouts:
+    $ref: './paths/v1/guests/checkouts/index.yaml'
+  /v1/guests/checkouts/{transactionId}:
+    $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
+  /v1/guests/schedules/{scheduleId}/comments:
+    $ref: './paths/v1/guests/schedules/_scheduleId/comments/index.yaml'
+  # Order
+  /v1/orders:
+    $ref: './paths/v1/orders/index.yaml'
+  /v1/orders/{orderId}:
+    $ref: './paths/v1/orders/_orderId/index.yaml'
   # Producer
   /v1/producers:
     $ref: './paths/v1/producers/index.yaml'
@@ -129,16 +131,21 @@ paths:
   # Promotion
   /v1/promotions/{code}:
     $ref: './paths/v1/promotions/_code/index.yaml'
-  # Guest
-  /v1/guests/checkouts:
-    $ref: './paths/v1/guests/checkouts/index.yaml'
-  /v1/guests/checkouts/{transactionId}:
-    $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
-  /v1/guests/schedules/{scheduleId}/comments:
-    $ref: './paths/v1/guests/schedules/_scheduleId/comments/index.yaml'
+  # Schedule
+  /v1/schedules/lives:
+    $ref: './paths/v1/schedules/lives.yaml'
+  /v1/schedules/archives:
+    $ref: './paths/v1/schedules/archives.yaml'
+  /v1/schedules/{scheduleId}:
+    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
+  /v1/schedules/{scheduleId}/comments:
+    $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
+  # Top
+  /v1/top/common:
+    $ref: './paths/v1/top/common.yaml'
   # Upload
   /v1/upload/state:
     $ref: './paths/v1/upload/state.yaml'
@@ -162,6 +169,8 @@ components:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
     weekday:
       $ref: './components/schemas/codes/common.yaml#/weekday'
+    experienceStatus:
+      $ref: './components/schemas/codes/experience.yaml#/experienceStatus'
     orderStatus:
       $ref: './components/schemas/codes/order.yaml#/orderStatus'
     fulfillmentStatus:
@@ -207,6 +216,10 @@ components:
       $ref: './components/schemas/entity/category.yaml#/category'
     coordinator:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
+    experience:
+      $ref: './components/schemas/entity/experience.yaml#/experience'
+    experienceType:
+      $ref: './components/schemas/entity/experience-type.yaml#/experienceType'
     live:
       $ref: './components/schemas/entity/live.yaml#/live'
     liveSummary:
@@ -303,6 +316,10 @@ components:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
     v1CoordinatorsResponse:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
+    v1ExperienceResponse:
+      $ref: './components/schemas/v1/experience.response.yaml#/experienceResponse'
+    v1ExperiencesResponse:
+      $ref: './components/schemas/v1/experience.response.yaml#/experiencesResponse'
     v1GuestCheckoutResponse:
       $ref: './components/schemas/v1/guest-checkout.response.yaml#/guestCheckoutResponse'
     v1GuestCheckoutStateResponse:

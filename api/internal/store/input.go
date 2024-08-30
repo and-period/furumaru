@@ -615,12 +615,16 @@ type DeleteExperienceTypeInput struct {
 }
 
 type ListExperiencesInput struct {
-	Name          string `validate:"max=64"`
-	CoordinatorID string `validate:""`
-	ProducerID    string `validate:""`
-	Limit         int64  `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset        int64  `validate:"min=0"`
-	NoLimit       bool   `validate:""`
+	Name            string `validate:"max=64"`
+	PrefectureCode  int32  `validate:"min=0,max=47"`
+	CoordinatorID   string `validate:""`
+	ProducerID      string `validate:""`
+	OnlyPublished   bool   `validate:""`
+	ExcludeFinished bool   `validate:""`
+	ExcludeDeleted  bool   `validate:""`
+	Limit           int64  `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset          int64  `validate:"min=0"`
+	NoLimit         bool   `validate:""`
 }
 
 type MultiGetExperiencesInput struct {
