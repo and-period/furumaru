@@ -20,11 +20,17 @@ func (s *service) ListExperiences(ctx context.Context, in *store.ListExperiences
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListExperiencesParams{
-		Name:          in.Name,
-		CoordinatorID: in.CoordinatorID,
-		ProducerID:    in.ProducerID,
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
+		Name:           in.Name,
+		HostPrefecture: in.PrefectureCode,
+		CoordinatorID:  in.CoordinatorID,
+		ProducerID:     in.ProducerID,
+		OnlyPublished:  in.OnlyPublished,
+		ExcludeDeleted: in.ExcludeDeleted,
+		Limit:          int(in.Limit),
+		Offset:         int(in.Offset),
+	}
+	if in.ExcludeFinished {
+		params.EndAtGte = s.now()
 	}
 	var (
 		experiences entity.Experiences

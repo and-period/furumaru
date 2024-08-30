@@ -21,11 +21,14 @@ func TestListExperiences(t *testing.T) {
 
 	now := jst.Date(2022, 6, 28, 18, 30, 0, 0)
 	params := &database.ListExperiencesParams{
-		Name:          "収穫",
-		CoordinatorID: "coordinator-id",
-		ProducerID:    "producer-id",
-		Limit:         20,
-		Offset:        0,
+		Name:           "収穫",
+		CoordinatorID:  "coordinator-id",
+		ProducerID:     "producer-id",
+		OnlyPublished:  true,
+		ExcludeDeleted: true,
+		EndAtGte:       now,
+		Limit:          20,
+		Offset:         0,
 	}
 	experiences := entity.Experiences{
 		{
@@ -89,11 +92,15 @@ func TestListExperiences(t *testing.T) {
 				mocks.db.Experience.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListExperiencesInput{
-				Name:          "収穫",
-				CoordinatorID: "coordinator-id",
-				ProducerID:    "producer-id",
-				Limit:         20,
-				Offset:        0,
+				Name:            "収穫",
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				OnlyPublished:   true,
+				ExcludeFinished: true,
+				ExcludeDeleted:  true,
+				Limit:           20,
+				Offset:          0,
+				NoLimit:         false,
 			},
 			expect:      experiences,
 			expectTotal: 1,
@@ -114,11 +121,14 @@ func TestListExperiences(t *testing.T) {
 				mocks.db.Experience.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &store.ListExperiencesInput{
-				Name:          "収穫",
-				CoordinatorID: "coordinator-id",
-				ProducerID:    "producer-id",
-				Limit:         20,
-				Offset:        0,
+				Name:            "収穫",
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				OnlyPublished:   true,
+				ExcludeFinished: true,
+				ExcludeDeleted:  true,
+				Limit:           20,
+				Offset:          0,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -131,11 +141,14 @@ func TestListExperiences(t *testing.T) {
 				mocks.db.Experience.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &store.ListExperiencesInput{
-				Name:          "収穫",
-				CoordinatorID: "coordinator-id",
-				ProducerID:    "producer-id",
-				Limit:         20,
-				Offset:        0,
+				Name:            "収穫",
+				CoordinatorID:   "coordinator-id",
+				ProducerID:      "producer-id",
+				OnlyPublished:   true,
+				ExcludeFinished: true,
+				ExcludeDeleted:  true,
+				Limit:           20,
+				Offset:          0,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -150,7 +163,7 @@ func TestListExperiences(t *testing.T) {
 			assert.ErrorIs(t, err, tt.expectErr)
 			assert.ElementsMatch(t, tt.expect, actual)
 			assert.Equal(t, tt.expectTotal, total)
-		}))
+		}, withNow(now)))
 	}
 }
 

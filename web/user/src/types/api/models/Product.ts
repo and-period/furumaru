@@ -19,18 +19,18 @@ import {
     StorageMethodTypeFromJSONTyped,
     StorageMethodTypeToJSON,
 } from './StorageMethodType';
+import type { ExperienceMediaInner } from './ExperienceMediaInner';
+import {
+    ExperienceMediaInnerFromJSON,
+    ExperienceMediaInnerFromJSONTyped,
+    ExperienceMediaInnerToJSON,
+} from './ExperienceMediaInner';
 import type { ProductStatus } from './ProductStatus';
 import {
     ProductStatusFromJSON,
     ProductStatusFromJSONTyped,
     ProductStatusToJSON,
 } from './ProductStatus';
-import type { ProductMediaInner } from './ProductMediaInner';
-import {
-    ProductMediaInnerFromJSON,
-    ProductMediaInnerFromJSONTyped,
-    ProductMediaInnerToJSON,
-} from './ProductMediaInner';
 import type { DeliveryType } from './DeliveryType';
 import {
     DeliveryTypeFromJSON,
@@ -106,10 +106,10 @@ export interface Product {
     thumbnailUrl: string;
     /**
      * 
-     * @type {Array<ProductMediaInner>}
+     * @type {Array<ExperienceMediaInner>}
      * @memberof Product
      */
-    media: Array<ProductMediaInner>;
+    media: Array<ExperienceMediaInner>;
     /**
      * 販売価格（税込）
      * @type {number}
@@ -278,7 +278,7 @@ export function ProductFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         'productTypeId': json['productTypeId'],
         'productTagIds': json['productTagIds'],
         'thumbnailUrl': json['thumbnailUrl'],
-        'media': ((json['media'] as Array<any>).map(ProductMediaInnerFromJSON)),
+        'media': ((json['media'] as Array<any>).map(ExperienceMediaInnerFromJSON)),
         'price': json['price'],
         'inventory': json['inventory'],
         'weight': json['weight'],
@@ -316,7 +316,7 @@ export function ProductToJSON(value?: Product | null): any {
         'productTypeId': value['productTypeId'],
         'productTagIds': value['productTagIds'],
         'thumbnailUrl': value['thumbnailUrl'],
-        'media': ((value['media'] as Array<any>).map(ProductMediaInnerToJSON)),
+        'media': ((value['media'] as Array<any>).map(ExperienceMediaInnerToJSON)),
         'price': value['price'],
         'inventory': value['inventory'],
         'weight': value['weight'],
