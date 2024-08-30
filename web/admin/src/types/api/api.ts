@@ -1614,6 +1614,12 @@ export interface CreateExperienceRequest {
      */
     'recommendedPoint3': string;
     /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'promotionVideoUrl': string;
+    /**
      * 郵便番号(ハイフンなし)
      * @type {string}
      * @memberof CreateExperienceRequest
@@ -2529,19 +2535,25 @@ export interface Experience {
      * @type {string}
      * @memberof Experience
      */
-    'recommendedPoint1'?: string;
+    'recommendedPoint1': string;
     /**
      * おすすめポイント2
      * @type {string}
      * @memberof Experience
      */
-    'recommendedPoint2'?: string;
+    'recommendedPoint2': string;
     /**
      * おすすめポイント3
      * @type {string}
      * @memberof Experience
      */
-    'recommendedPoint3'?: string;
+    'recommendedPoint3': string;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof Experience
+     */
+    'promotionVideoUrl': string;
     /**
      * 開催地（郵便番号）
      * @type {string}
@@ -6314,6 +6326,12 @@ export interface UpdateExperienceRequest {
      * @memberof UpdateExperienceRequest
      */
     'recommendedPoint3': string;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'promotionVideoUrl': string;
     /**
      * 郵便番号(ハイフンなし)
      * @type {string}
