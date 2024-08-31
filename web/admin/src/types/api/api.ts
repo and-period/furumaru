@@ -6985,12 +6985,6 @@ export interface UpdateVideoRequest {
      */
     'description': string;
     /**
-     * コーディネータID
-     * @type {string}
-     * @memberof UpdateVideoRequest
-     */
-    'coordinatorId': string;
-    /**
      * 商品ID一覧(displayProductがtrueの場合必須)
      * @type {Array<string>}
      * @memberof UpdateVideoRequest
