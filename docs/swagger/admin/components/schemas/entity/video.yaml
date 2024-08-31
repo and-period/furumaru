@@ -38,6 +38,12 @@ video:
     limited:
       type: boolean
       description: 限定公開フラグ
+    displayProduct:
+      type: boolean
+      description: 商品表示フラグ
+    displayExperience:
+      type: boolean
+      description: 体験表示フラグ
     publishedAt:
       type: integer
       format: int64
@@ -62,6 +68,8 @@ video:
   - videoUrl
   - public
   - limited
+  - displayProduct
+  - displayExperience
   - publishedAt
   - createdAt
   - updatedAt
@@ -79,6 +87,8 @@ video:
     videoUrl: 'https://example.com/video.mp4'
     public: true
     limited: false
+    displayProduct: true
+    displayExperience: true
     publishedAt: 1614556800
     createdAt: 1614556800
     updatedAt: 1614556800

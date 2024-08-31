@@ -109,14 +109,16 @@ func (v *video) Update(ctx context.Context, videoID string, params *database.Upd
 		experiences := entity.NewVideoExperiences(videoID, params.ExperienceIDs)
 
 		updates := map[string]interface{}{
-			"title":         params.Title,
-			"description":   params.Description,
-			"thumbnail_url": params.ThumbnailURL,
-			"video_url":     params.VideoURL,
-			"public":        params.Public,
-			"limited":       params.Limited,
-			"published_at":  params.PublishedAt,
-			"updated_at":    v.now(),
+			"title":              params.Title,
+			"description":        params.Description,
+			"thumbnail_url":      params.ThumbnailURL,
+			"video_url":          params.VideoURL,
+			"public":             params.Public,
+			"limited":            params.Limited,
+			"display_product":    params.DisplayProduct,
+			"display_experience": params.DisplayExperience,
+			"published_at":       params.PublishedAt,
+			"updated_at":         v.now(),
 		}
 		stmt := tx.WithContext(ctx).Table(videoTable).Where("id = ?", videoID)
 		if err := stmt.Updates(updates).Error; err != nil {

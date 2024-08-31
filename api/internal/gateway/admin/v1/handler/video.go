@@ -208,16 +208,18 @@ func (h *handler) CreateVideo(ctx *gin.Context) {
 	}
 
 	in := &media.CreateVideoInput{
-		Title:         req.Title,
-		Description:   req.Description,
-		CoordinatorID: req.CoordinatorID,
-		ProductIDs:    req.ProductIDs,
-		ExperienceIDs: req.ExperienceIDs,
-		ThumbnailURL:  req.ThumbnailURL,
-		VideoURL:      req.VideoURL,
-		Public:        req.Public,
-		Limited:       req.Limited,
-		PublishedAt:   jst.ParseFromUnix(req.PublishedAt),
+		Title:             req.Title,
+		Description:       req.Description,
+		CoordinatorID:     req.CoordinatorID,
+		ProductIDs:        req.ProductIDs,
+		ExperienceIDs:     req.ExperienceIDs,
+		ThumbnailURL:      req.ThumbnailURL,
+		VideoURL:          req.VideoURL,
+		Public:            req.Public,
+		Limited:           req.Limited,
+		DisplayProduct:    req.DisplayProduct,
+		DisplayExperience: req.DisplayExperience,
+		PublishedAt:       jst.ParseFromUnix(req.PublishedAt),
 	}
 	video, err := h.media.CreateVideo(ctx, in)
 	if err != nil {
@@ -268,16 +270,18 @@ func (h *handler) UpdateVideo(ctx *gin.Context) {
 	}
 
 	in := &media.UpdateVideoInput{
-		VideoID:       util.GetParam(ctx, "videoId"),
-		Title:         req.Title,
-		Description:   req.Description,
-		ProductIDs:    req.ProductIDs,
-		ExperienceIDs: req.ExperienceIDs,
-		ThumbnailURL:  req.ThumbnailURL,
-		VideoURL:      req.VideoURL,
-		Public:        req.Public,
-		Limited:       req.Limited,
-		PublishedAt:   jst.ParseFromUnix(req.PublishedAt),
+		VideoID:           util.GetParam(ctx, "videoId"),
+		Title:             req.Title,
+		Description:       req.Description,
+		ProductIDs:        req.ProductIDs,
+		ExperienceIDs:     req.ExperienceIDs,
+		ThumbnailURL:      req.ThumbnailURL,
+		VideoURL:          req.VideoURL,
+		Public:            req.Public,
+		Limited:           req.Limited,
+		DisplayProduct:    req.DisplayProduct,
+		DisplayExperience: req.DisplayExperience,
+		PublishedAt:       jst.ParseFromUnix(req.PublishedAt),
 	}
 	if err := h.media.UpdateVideo(ctx, in); err != nil {
 		h.httpError(ctx, err)

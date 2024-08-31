@@ -144,15 +144,17 @@ type ListVideosParams struct {
 }
 
 type UpdateVideoParams struct {
-	Title         string
-	Description   string
-	ProductIDs    []string
-	ExperienceIDs []string
-	ThumbnailURL  string
-	VideoURL      string
-	Public        bool
-	Limited       bool
-	PublishedAt   time.Time
+	Title             string
+	Description       string
+	ProductIDs        []string
+	ExperienceIDs     []string
+	ThumbnailURL      string
+	VideoURL          string
+	Public            bool
+	Limited           bool
+	DisplayProduct    bool
+	DisplayExperience bool
+	PublishedAt       time.Time
 }
 
 type Error struct {
