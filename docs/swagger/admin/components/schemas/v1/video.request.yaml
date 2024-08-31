@@ -81,9 +81,6 @@ updateVideoRequest:
     description:
       type: string
       description: 説明(20000文字まで)
-    coordinatorId:
-      type: string
-      description: コーディネータID
     productIds:
       type: array
       description: 商品ID一覧(displayProductがtrueの場合必須)
@@ -115,7 +112,6 @@ updateVideoRequest:
   required:
   - title
   - description
-  - coordinatorId
   - productIds
   - experienceIds
   - thumbnailUrl
@@ -128,7 +124,6 @@ updateVideoRequest:
   example:
     title: タイトル
     description: 説明
-    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     productIds:
     - 'kSByoE6FetnPs5Byk3a9Zx'
     experienceIds:

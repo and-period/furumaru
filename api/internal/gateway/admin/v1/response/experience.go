@@ -5,7 +5,7 @@ type Experience struct {
 	ID                    string             `json:"id"`                    // 体験ID
 	CoordinatorID         string             `json:"coordinatorId"`         // コーディネータID
 	ProducerID            string             `json:"producerId"`            // プロデューサーID
-	ExperienceTypeID      string             `json:"experienceType"`        // 体験種別ID
+	ExperienceTypeID      string             `json:"experienceTypeId"`      // 体験種別ID
 	Title                 string             `json:"title"`                 // タイトル
 	Description           string             `json:"description"`           // 説明
 	Public                bool               `json:"public"`                // 公開設定
