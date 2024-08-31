@@ -152,29 +152,33 @@ type GetVideoInput struct {
 }
 
 type CreateVideoInput struct {
-	Title         string    `validate:"required,max=128"`
-	Description   string    `validate:"required,max=2000"`
-	CoordinatorID string    `validate:"required"`
-	ProductIDs    []string  `validate:"dive,required"`
-	ExperienceIDs []string  `validate:"dive,required"`
-	ThumbnailURL  string    `validate:"required,url"`
-	VideoURL      string    `validate:"required,url"`
-	Public        bool      `validate:""`
-	Limited       bool      `validate:""`
-	PublishedAt   time.Time `validate:"required"`
+	Title             string    `validate:"required,max=128"`
+	Description       string    `validate:"required,max=2000"`
+	CoordinatorID     string    `validate:"required"`
+	ProductIDs        []string  `validate:"dive,required"`
+	ExperienceIDs     []string  `validate:"dive,required"`
+	ThumbnailURL      string    `validate:"required,url"`
+	VideoURL          string    `validate:"required,url"`
+	Public            bool      `validate:""`
+	Limited           bool      `validate:""`
+	DisplayProduct    bool      `validate:""`
+	DisplayExperience bool      `validate:""`
+	PublishedAt       time.Time `validate:"required"`
 }
 
 type UpdateVideoInput struct {
-	VideoID       string    `validate:"required"`
-	Title         string    `validate:"required,max=128"`
-	Description   string    `validate:"required,max=2000"`
-	ProductIDs    []string  `validate:"dive,required"`
-	ExperienceIDs []string  `validate:"dive,required"`
-	ThumbnailURL  string    `validate:"required,url"`
-	VideoURL      string    `validate:"required,url"`
-	Public        bool      `validate:""`
-	Limited       bool      `validate:""`
-	PublishedAt   time.Time `validate:"required"`
+	VideoID           string    `validate:"required"`
+	Title             string    `validate:"required,max=128"`
+	Description       string    `validate:"required,max=2000"`
+	ProductIDs        []string  `validate:"dive,required"`
+	ExperienceIDs     []string  `validate:"dive,required"`
+	ThumbnailURL      string    `validate:"required,url"`
+	VideoURL          string    `validate:"required,url"`
+	Public            bool      `validate:""`
+	Limited           bool      `validate:""`
+	DisplayProduct    bool      `validate:""`
+	DisplayExperience bool      `validate:""`
+	PublishedAt       time.Time `validate:"required"`
 }
 
 type DeleteVideoInput struct {

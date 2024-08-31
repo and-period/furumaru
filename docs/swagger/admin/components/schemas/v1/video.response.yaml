@@ -35,6 +35,8 @@ videoResponse:
       videoUrl: 'https://example.com/video.mp4'
       public: true
       limited: false
+      displayProduct: true
+      displayExperience: true
       publishedAt: 1614556800
       createdAt: 1614556800
       updatedAt: 1614556800

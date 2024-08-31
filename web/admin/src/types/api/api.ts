@@ -2273,13 +2273,13 @@ export interface CreateVideoRequest {
      */
     'coordinatorId': string;
     /**
-     * 商品ID一覧
+     * 商品ID一覧(displayProductがtrueの場合必須)
      * @type {Array<string>}
      * @memberof CreateVideoRequest
      */
     'productIds': Array<string>;
     /**
-     * 体験ID一覧
+     * 体験ID一覧(displayExperienceがtrueの場合必須)
      * @type {Array<string>}
      * @memberof CreateVideoRequest
      */
@@ -2308,6 +2308,18 @@ export interface CreateVideoRequest {
      * @memberof CreateVideoRequest
      */
     'limited': boolean;
+    /**
+     * 商品表示フラグ
+     * @type {boolean}
+     * @memberof CreateVideoRequest
+     */
+    'displayProduct': boolean;
+    /**
+     * 体験表示フラグ
+     * @type {boolean}
+     * @memberof CreateVideoRequest
+     */
+    'displayExperience': boolean;
     /**
      * 公開日時 (unixtime)
      * @type {number}
@@ -6979,13 +6991,13 @@ export interface UpdateVideoRequest {
      */
     'coordinatorId': string;
     /**
-     * 商品ID一覧
+     * 商品ID一覧(displayProductがtrueの場合必須)
      * @type {Array<string>}
      * @memberof UpdateVideoRequest
      */
     'productIds': Array<string>;
     /**
-     * 体験ID一覧
+     * 体験ID一覧(displayExperienceがtrueの場合必須)
      * @type {Array<string>}
      * @memberof UpdateVideoRequest
      */
@@ -7562,6 +7574,18 @@ export interface Video {
      * @memberof Video
      */
     'limited': boolean;
+    /**
+     * 商品表示フラグ
+     * @type {boolean}
+     * @memberof Video
+     */
+    'displayProduct': boolean;
+    /**
+     * 体験表示フラグ
+     * @type {boolean}
+     * @memberof Video
+     */
+    'displayExperience': boolean;
     /**
      * 公開日時 (unixtime)
      * @type {number}
