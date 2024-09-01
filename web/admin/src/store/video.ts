@@ -1,11 +1,11 @@
-import { apiClient } from "~/plugins/api-client";
+import { apiClient } from '~/plugins/api-client'
 import type {
   CreateVideoRequest,
   VideoResponse,
   VideosResponse,
-} from "~/types/api";
+} from '~/types/api'
 
-export const useVideoStore = defineStore("video", {
+export const useVideoStore = defineStore('video', {
   state: () => ({
     videoResponse: null as VideosResponse | null,
   }),
@@ -21,11 +21,12 @@ export const useVideoStore = defineStore("video", {
      */
     async fetchVideos(limit = 20, offset = 0): Promise<void> {
       try {
-        const res = await apiClient.videoApi().v1ListVideos(limit, offset);
-        this.videoResponse = res.data;
-      } catch (error) {
-        console.log(error);
-        return this.errorHandler(error);
+        const res = await apiClient.videoApi().v1ListVideos(limit, offset)
+        this.videoResponse = res.data
+      }
+      catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -36,11 +37,12 @@ export const useVideoStore = defineStore("video", {
      */
     async fetchVideo(id: string): Promise<VideoResponse> {
       try {
-        const res = await apiClient.videoApi().v1GetVideo(id);
-        return res.data;
-      } catch (error) {
-        console.log(error);
-        return this.errorHandler(error);
+        const res = await apiClient.videoApi().v1GetVideo(id)
+        return res.data
+      }
+      catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -51,10 +53,11 @@ export const useVideoStore = defineStore("video", {
      */
     async createVideo(payload: CreateVideoRequest): Promise<void> {
       try {
-        const res = await apiClient.videoApi().v1CreateVideo(payload);
-      } catch (error) {
-        console.log(error);
-        return this.errorHandler(error);
+        const res = await apiClient.videoApi().v1CreateVideo(payload)
+      }
+      catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
 
@@ -66,11 +69,12 @@ export const useVideoStore = defineStore("video", {
      */
     async updateVideo(id: string, payload: CreateVideoRequest): Promise<void> {
       try {
-        await apiClient.videoApi().v1UpdateVideo(id, payload);
-      } catch (error) {
-        console.log(error);
-        return this.errorHandler(error);
+        await apiClient.videoApi().v1UpdateVideo(id, payload)
+      }
+      catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
       }
     },
   },
-});
+})
