@@ -57,6 +57,12 @@ func TestCreateBrodcastViewerLog(t *testing.T) {
 			expect: nil,
 		},
 		{
+			name:   "invalid argument",
+			setup:  func(ctx context.Context, mocks *mocks) {},
+			input:  &media.CreateBroadcastViewerLogInput{},
+			expect: exception.ErrInvalidArgument,
+		},
+		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)

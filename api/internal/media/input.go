@@ -94,21 +94,6 @@ type CreateYoutubeBroadcastInput struct {
 	Public      bool   `validate:""`
 }
 
-type CreateBroadcastViewerLogInput struct {
-	ScheduleID string `validate:"required"`
-	SessionID  string `validate:"required"`
-	UserID     string `validate:""`
-	UserAgent  string `validate:""`
-	ClientIP   string `validate:"omitempty,ip_addr"`
-}
-
-type AggregateBroadcastViewerLogsInput struct {
-	ScheduleID   string                                     `validate:"required"`
-	Interval     entity.AggregateBroadcastViewerLogInterval `validate:"required"`
-	CreatedAtGte time.Time                                  `validate:""`
-	CreatedAtLt  time.Time                                  `validate:""`
-}
-
 type ListBroadcastCommentsInput struct {
 	ScheduleID   string    `validate:"required"`
 	WithDisabled bool      `validate:""`
@@ -132,6 +117,21 @@ type CreateBroadcastGuestCommentInput struct {
 type UpdateBroadcastCommentInput struct {
 	CommentID string `validate:"required"`
 	Disabled  bool   `validate:""`
+}
+
+type CreateBroadcastViewerLogInput struct {
+	ScheduleID string `validate:"required"`
+	SessionID  string `validate:"required"`
+	UserID     string `validate:""`
+	UserAgent  string `validate:""`
+	ClientIP   string `validate:"omitempty,ip_addr"`
+}
+
+type AggregateBroadcastViewerLogsInput struct {
+	ScheduleID   string                                     `validate:"required"`
+	Interval     entity.AggregateBroadcastViewerLogInterval `validate:"required"`
+	CreatedAtGte time.Time                                  `validate:""`
+	CreatedAtLt  time.Time                                  `validate:""`
 }
 
 type ListVideosInput struct {
@@ -207,4 +207,19 @@ type CreateVideoGuestCommentInput struct {
 type UpdateVideoCommentInput struct {
 	CommentID string `validate:"required"`
 	Disabled  bool   `validate:""`
+}
+
+type CreateVideoViewerLogInput struct {
+	VideoID   string `validate:"required"`
+	SessionID string `validate:"required"`
+	UserID    string `validate:""`
+	UserAgent string `validate:""`
+	ClientIP  string `validate:"omitempty,ip_addr"`
+}
+
+type AggregateVideoViewerLogsInput struct {
+	VideoID      string                                 `validate:"required"`
+	Interval     entity.AggregateVideoViewerLogInterval `validate:"required"`
+	CreatedAtGte time.Time                              `validate:""`
+	CreatedAtLt  time.Time                              `validate:""`
 }

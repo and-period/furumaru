@@ -26,6 +26,7 @@ type Database struct {
 	BroadcastViewerLog BroadcastViewerLog
 	Video              Video
 	VideoComment       VideoComment
+	VideoViewerLog     VideoViewerLog
 }
 
 type Broadcast interface {
@@ -173,6 +174,25 @@ type ListVideoCommentsParams struct {
 
 type UpdateVideoCommentParams struct {
 	Disabled bool
+}
+
+type VideoViewerLog interface {
+	Create(ctx context.Context, log *entity.VideoViewerLog) error
+	GetTotal(ctx context.Context, params *GetVideoTotalViewersParams) (int64, error)
+	Aggregate(ctx context.Context, params *AggregateVideoViewerLogsParams) (entity.AggregatedVideoViewerLogs, error)
+}
+
+type GetVideoTotalViewersParams struct {
+	VideoID      string
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
+}
+
+type AggregateVideoViewerLogsParams struct {
+	VideoID      string
+	Interval     entity.AggregateVideoViewerLogInterval
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
 }
 
 type Error struct {
