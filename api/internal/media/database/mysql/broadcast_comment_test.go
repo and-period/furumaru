@@ -70,7 +70,7 @@ func TestBroadcastComment_List(t *testing.T) {
 				},
 			},
 			want: want{
-				comments: comments[0:1],
+				comments: comments[1:],
 				token:    strconv.FormatInt(comments[1].CreatedAt.UnixNano(), 10),
 				err:      nil,
 			},
