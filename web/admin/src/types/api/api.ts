@@ -359,6 +359,25 @@ export interface AnalyzeScheduleResponse {
 /**
  * 
  * @export
+ * @interface AnalyzeVideoResponse
+ */
+export interface AnalyzeVideoResponse {
+    /**
+     * 視聴者ログ一覧
+     * @type {Array<VideoViewerLog>}
+     * @memberof AnalyzeVideoResponse
+     */
+    'viewerLogs': Array<VideoViewerLog>;
+    /**
+     * 合計視聴者数
+     * @type {number}
+     * @memberof AnalyzeVideoResponse
+     */
+    'totalViewers'?: number;
+}
+/**
+ * 
+ * @export
  * @interface ApproveScheduleRequest
  */
 export interface ApproveScheduleRequest {
@@ -6969,6 +6988,19 @@ export interface UpdateThreadRequest {
 /**
  * 
  * @export
+ * @interface UpdateVideoCommentRequest
+ */
+export interface UpdateVideoCommentRequest {
+    /**
+     * コメントの無効化
+     * @type {boolean}
+     * @memberof UpdateVideoCommentRequest
+     */
+    'disabled': boolean;
+}
+/**
+ * 
+ * @export
  * @interface UpdateVideoRequest
  */
 export interface UpdateVideoRequest {
@@ -7616,6 +7648,80 @@ export interface Video {
 /**
  * 
  * @export
+ * @interface VideoComment
+ */
+export interface VideoComment {
+    /**
+     * コメントID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'id': string;
+    /**
+     * ユーザーID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'userId': string;
+    /**
+     * ユーザー名
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'username': string;
+    /**
+     * アカウントID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'accountId': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'thumbnailUrl': string;
+    /**
+     * コメント
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'comment': string;
+    /**
+     * コメント無効化フラグ
+     * @type {boolean}
+     * @memberof VideoComment
+     */
+    'disabled': boolean;
+    /**
+     * 投稿日時
+     * @type {number}
+     * @memberof VideoComment
+     */
+    'publishedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface VideoCommentsResponse
+ */
+export interface VideoCommentsResponse {
+    /**
+     * コメント一覧
+     * @type {Array<VideoComment>}
+     * @memberof VideoCommentsResponse
+     */
+    'comments': Array<VideoComment>;
+    /**
+     * 次の取得位置
+     * @type {string}
+     * @memberof VideoCommentsResponse
+     */
+    'nextToken': string;
+}
+/**
+ * 
+ * @export
  * @interface VideoResponse
  */
 export interface VideoResponse {
@@ -7674,6 +7780,52 @@ export const VideoStatus = {
 } as const;
 
 export type VideoStatus = typeof VideoStatus[keyof typeof VideoStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface VideoViewerLog
+ */
+export interface VideoViewerLog {
+    /**
+     * オンデマンド配信ID
+     * @type {string}
+     * @memberof VideoViewerLog
+     */
+    'videoId': string;
+    /**
+     * 集計開始日時 (unixtime)
+     * @type {number}
+     * @memberof VideoViewerLog
+     */
+    'startAt': number;
+    /**
+     * 集計終了日時 (unixtime)
+     * @type {number}
+     * @memberof VideoViewerLog
+     */
+    'endAt': number;
+    /**
+     * 合計視聴者数
+     * @type {number}
+     * @memberof VideoViewerLog
+     */
+    'total': number;
+}
+/**
+ * オンデマンド配信ログ取得間隔
+ * @export
+ * @enum {string}
+ */
+
+export const VideoViewerLogInterval = {
+    SECOND: 'second',
+    MINUTE: 'minute',
+    HOUR: 'hour'
+} as const;
+
+export type VideoViewerLogInterval = typeof VideoViewerLogInterval[keyof typeof VideoViewerLogInterval];
 
 
 /**
@@ -20979,6 +21131,59 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
+         * @summary オンデマンド配信分析情報取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+         * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+         * @param {VideoViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1AnalyzeVideo: async (videoId: string, startAt?: number, endAt?: number, viewerLogInterval?: VideoViewerLogInterval, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1AnalyzeVideo', 'videoId', videoId)
+            const localVarPath = `/v1/videos/{videoId}/analytics`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (startAt !== undefined) {
+                localVarQueryParameter['startAt'] = startAt;
+            }
+
+            if (endAt !== undefined) {
+                localVarQueryParameter['endAt'] = endAt;
+            }
+
+            if (viewerLogInterval !== undefined) {
+                localVarQueryParameter['viewerLogInterval'] = viewerLogInterval;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary オンデマンド配信登録
          * @param {CreateVideoRequest} body 
          * @param {*} [options] Override http request option.
@@ -21175,6 +21380,60 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary オンデマンド配信コメント取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListVideoComments: async (videoId: string, limit?: number, next?: string, start?: number, end?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1ListVideoComments', 'videoId', videoId)
+            const localVarPath = `/v1/videos/{videoId}/comments`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (next !== undefined) {
+                localVarQueryParameter['next'] = next;
+            }
+
+            if (start !== undefined) {
+                localVarQueryParameter['start'] = start;
+            }
+
+            if (end !== undefined) {
+                localVarQueryParameter['end'] = end;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -21271,6 +21530,50 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary オンデマンド配信コメント更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {string} commentId コメントID
+         * @param {UpdateVideoCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateVideoComment: async (videoId: string, commentId: string, body: UpdateVideoCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1UpdateVideoComment', 'videoId', videoId)
+            // verify required parameter 'commentId' is not null or undefined
+            assertParamExists('v1UpdateVideoComment', 'commentId', commentId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateVideoComment', 'body', body)
+            const localVarPath = `/v1/videos/{videoId}/comments/{commentId}`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)))
+                .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -21281,6 +21584,22 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
 export const VideoApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = VideoApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary オンデマンド配信分析情報取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+         * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+         * @param {VideoViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1AnalyzeVideo(videoId: string, startAt?: number, endAt?: number, viewerLogInterval?: VideoViewerLogInterval, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AnalyzeVideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AnalyzeVideo(videoId, startAt, endAt, viewerLogInterval, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1AnalyzeVideo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * 
          * @summary オンデマンド配信登録
@@ -21348,6 +21667,23 @@ export const VideoApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary オンデマンド配信コメント取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListVideoComments(videoId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideoCommentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListVideoComments(videoId, limit, next, start, end, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1ListVideoComments']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -21376,6 +21712,21 @@ export const VideoApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['VideoApi.v1UpdateVideo']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary オンデマンド配信コメント更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {string} commentId コメントID
+         * @param {UpdateVideoCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateVideoComment(videoId: string, commentId: string, body: UpdateVideoCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateVideoComment(videoId, commentId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1UpdateVideoComment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -21386,6 +21737,19 @@ export const VideoApiFp = function(configuration?: Configuration) {
 export const VideoApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = VideoApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary オンデマンド配信分析情報取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+         * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+         * @param {VideoViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1AnalyzeVideo(videoId: string, startAt?: number, endAt?: number, viewerLogInterval?: VideoViewerLogInterval, options?: RawAxiosRequestConfig): AxiosPromise<AnalyzeVideoResponse> {
+            return localVarFp.v1AnalyzeVideo(videoId, startAt, endAt, viewerLogInterval, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary オンデマンド配信登録
@@ -21438,6 +21802,20 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @summary オンデマンド配信コメント取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListVideoComments(videoId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig): AxiosPromise<VideoCommentsResponse> {
+            return localVarFp.v1ListVideoComments(videoId, limit, next, start, end, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -21460,6 +21838,18 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
         v1UpdateVideo(videoId: string, body: UpdateVideoRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateVideo(videoId, body, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary オンデマンド配信コメント更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {string} commentId コメントID
+         * @param {UpdateVideoCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateVideoComment(videoId: string, commentId: string, body: UpdateVideoCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1UpdateVideoComment(videoId, commentId, body, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -21470,6 +21860,21 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class VideoApi extends BaseAPI {
+    /**
+     * 
+     * @summary オンデマンド配信分析情報取得
+     * @param {string} videoId オンデマンド配信ID
+     * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+     * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+     * @param {VideoViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1AnalyzeVideo(videoId: string, startAt?: number, endAt?: number, viewerLogInterval?: VideoViewerLogInterval, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1AnalyzeVideo(videoId, startAt, endAt, viewerLogInterval, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary オンデマンド配信登録
@@ -21532,6 +21937,22 @@ export class VideoApi extends BaseAPI {
 
     /**
      * 
+     * @summary オンデマンド配信コメント取得
+     * @param {string} videoId オンデマンド配信ID
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {string} [next] 取得開始位置
+     * @param {number} [start] 取得範囲(開始時間:unixtime)
+     * @param {number} [end] 取得範囲(終了時間:unixtime)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1ListVideoComments(videoId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1ListVideoComments(videoId, limit, next, start, end, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary オンデマンド配信一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
@@ -21556,6 +21977,20 @@ export class VideoApi extends BaseAPI {
      */
     public v1UpdateVideo(videoId: string, body: UpdateVideoRequest, options?: RawAxiosRequestConfig) {
         return VideoApiFp(this.configuration).v1UpdateVideo(videoId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary オンデマンド配信コメント更新
+     * @param {string} videoId オンデマンド配信ID
+     * @param {string} commentId コメントID
+     * @param {UpdateVideoCommentRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1UpdateVideoComment(videoId: string, commentId: string, body: UpdateVideoCommentRequest, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1UpdateVideoComment(videoId, commentId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

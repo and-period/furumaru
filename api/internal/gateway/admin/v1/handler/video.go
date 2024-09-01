@@ -25,6 +25,7 @@ func (h *handler) videoRoutes(rg *gin.RouterGroup) {
 	r.GET("/:videoId", h.filterAccessVideo, h.GetVideo)
 	r.PATCH("/:videoId", h.filterAccessVideo, h.UpdateVideo)
 	r.DELETE("/:videoId", h.filterAccessVideo, h.DeleteVideo)
+	r.GET("/:videoId/analytics", h.filterAccessVideo, h.AnalyzeVideo)
 }
 
 func (h *handler) filterAccessVideo(ctx *gin.Context) {
@@ -288,6 +289,49 @@ func (h *handler) UpdateVideo(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusNoContent)
+}
+
+func (h *handler) AnalyzeVideo(ctx *gin.Context) {
+	const defaultViewerLogInterval = service.VideoViewerLogIntervalMinute
+
+	video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+	startAtUnix, err := util.GetQueryInt64(ctx, "start", video.PublishedAt)
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	endAtUnix, err := util.GetQueryInt64(ctx, "end", jst.Now().Unix())
+	if err != nil {
+		h.badRequest(ctx, err)
+		return
+	}
+	viewerLogIntervalStr := util.GetQuery(ctx, "viewerLogInterval", string(defaultViewerLogInterval))
+
+	startAt := jst.ParseFromUnix(startAtUnix)
+	endAt := jst.ParseFromUnix(endAtUnix)
+	viewerLogInterval := service.NewVideoViewerLogIntervalFromRequest(viewerLogIntervalStr)
+
+	viewerLogIn := &media.AggregateVideoViewerLogsInput{
+		VideoID:      video.ID,
+		Interval:     viewerLogInterval.MediaEntity(),
+		CreatedAtGte: startAt,
+		CreatedAtLt:  endAt,
+	}
+	viewerLogs, totalViewers, err := h.media.AggregateVideoViewerLogs(ctx, viewerLogIn)
+	if err != nil {
+		h.httpError(ctx, err)
+		return
+	}
+
+	res := &response.AnalyzeVideoResponse{
+		ViewerLogs:   service.NewVideoViewerLogs(viewerLogInterval, startAt, endAt, viewerLogs).Response(),
+		TotalViewers: totalViewers,
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (h *handler) DeleteVideo(ctx *gin.Context) {

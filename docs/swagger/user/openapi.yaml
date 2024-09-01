@@ -257,6 +257,8 @@ components:
       $ref: './components/schemas/entity/video.yaml#/video'
     videoSummary:
       $ref: './components/schemas/entity/video.yaml#/videoSummary'
+    videoComment:
+      $ref: './components/schemas/entity/video-comment.yaml#/videoComment'
     # Request
     v1CreateAddressRequest:
       $ref: './components/schemas/v1/address.request.yaml#/createAddressRequest'
@@ -300,8 +302,12 @@ components:
       $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutRequest'
     v1CreateGuestLiveCommentRequest:
       $ref: './components/schemas/v1/guest-live-comment.request.yaml#/createGuestLiveCommentRequest'
+    v1CreateGuestVideoCommentRequest:
+      $ref: './components/schemas/v1/guest-video-comment.request.yaml#/createGuestVideoCommentRequest'
     v1CreateLiveCommentRequest:
       $ref: './components/schemas/v1/live-comment.request.yaml#/createLiveCommentRequest'
+    v1CreateVideoCommentRequest:
+      $ref: './components/schemas/v1/video-comment.request.yaml#/createVideoCommentRequest'
     v1GetUploadUrlRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/getUploadUrlRequest'
     # Response
@@ -365,6 +371,8 @@ components:
       $ref: './components/schemas/v1/video.response.yaml#/videoResponse'
     v1VideosResponse:
       $ref: './components/schemas/v1/video.response.yaml#/videosResponse'
+    v1VideoCommentsResponse:
+      $ref: './components/schemas/v1/video-comment.response.yaml#/videoCommentsResponse'
     v1PostalCodeResponse:
       $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
     v1UploadUrlResponse:
