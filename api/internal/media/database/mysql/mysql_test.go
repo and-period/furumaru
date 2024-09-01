@@ -54,6 +54,8 @@ func deleteAll(ctx context.Context) error {
 		broadcastViewerLogTable,
 		broadcastCommentTable,
 		broadcastTable,
+		videoViewerLogTable,
+		videoCommentTable,
 		videoProductTable,
 		videoExperienceTable,
 		videoTable,
