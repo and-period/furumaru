@@ -41,6 +41,8 @@ tags:
   description: システム状態関連
 - name: Top
   description: トップページ関連
+- name: Video
+  description: オンデマンド配信関連
 - name: Other
   description: その他（外部APIなど）
 paths:
@@ -146,6 +148,11 @@ paths:
   # Top
   /v1/top/common:
     $ref: './paths/v1/top/common.yaml'
+  # Video
+  /v1/videos:
+    $ref: './paths/v1/videos/index.yaml'
+  /v1/videos/{videoId}:
+    $ref: './paths/v1/videos/_videoId/index.yaml'
   # Upload
   /v1/upload/state:
     $ref: './paths/v1/upload/state.yaml'
@@ -246,6 +253,8 @@ components:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     paymentSystem:
       $ref: './components/schemas/entity/status.yaml#/paymentSystem'
+    video:
+      $ref: './components/schemas/entity/video.yaml#/video'
     videoSummary:
       $ref: './components/schemas/entity/video.yaml#/videoSummary'
     # Request
@@ -352,6 +361,10 @@ components:
       $ref: './components/schemas/v1/status.response.yaml#/paymentSystemsResponse'
     v1TopCommonResponse:
       $ref: './components/schemas/v1/top.response.yaml#/topCommonResponse'
+    v1VideoResponse:
+      $ref: './components/schemas/v1/video.response.yaml#/videoResponse'
+    v1VideosResponse:
+      $ref: './components/schemas/v1/video.response.yaml#/videosResponse'
     v1PostalCodeResponse:
       $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
     v1UploadUrlResponse:

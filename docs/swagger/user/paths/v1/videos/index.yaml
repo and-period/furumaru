@@ -1,0 +1,44 @@
+get:
+  summary: オンデマンド配信一覧取得
+  operationId: v1Videos
+  tags:
+  - Video
+  parameters:
+  - in: query
+    name: limit
+    schema:
+      type: integer
+      format: int64
+    description: 取得上限数(max:200)
+    required: false
+    example: 20
+  - in: query
+    name: offset
+    schema:
+      type: integer
+      format: int64
+    description: 取得開始位置(min:0)
+    required: false
+    example: 0
+  - in: query
+    name: coordinator
+    schema:
+      type: string
+    description: コーディネータID
+    required: false
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: category
+    schema:
+      type: string
+    description: カテゴリ種別（all:全て,product:商品,experience:体験）
+    required: false
+    default: 'all'
+    example: 'product'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1VideosResponse'

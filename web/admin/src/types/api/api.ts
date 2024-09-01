@@ -2674,7 +2674,7 @@ export interface ExperienceResponse {
     'experienceType': ExperienceType;
 }
 /**
- * 商品販売ステータス
+ * 体験受付ステータス
  * @export
  * @enum {string}
  */
@@ -2689,15 +2689,15 @@ export const ExperienceStatus = {
     */
     PRIVATE: 1,
     /**
-    * 公開前
+    * 販売開始前
     */
     WAITING: 2,
     /**
-    * 受付中
+    * 体験受付中
     */
     ACCEPTING: 3,
     /**
-    * 定員オーバー
+    * 体験受付終了
     */
     SOLD_OUT: 4,
     /**

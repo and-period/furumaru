@@ -234,6 +234,65 @@ func TestVideo_SetStatus(t *testing.T) {
 	}
 }
 
+func TestVideo_Published(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
+
+	tests := []struct {
+		name   string
+		video  *Video
+		expect bool
+	}{
+		{
+			name: "private",
+			video: &Video{
+				Status:      VideoStatusPrivate,
+				Public:      false,
+				Limited:     false,
+				PublishedAt: now.AddDate(0, 0, -1),
+			},
+			expect: false,
+		},
+		{
+			name: "waiting",
+			video: &Video{
+				Status:      VideoStatusWaiting,
+				Public:      true,
+				Limited:     false,
+				PublishedAt: now.AddDate(0, 0, 1),
+			},
+			expect: false,
+		},
+		{
+			name: "limited",
+			video: &Video{
+				Status:      VideoStatusLimited,
+				Public:      true,
+				Limited:     true,
+				PublishedAt: now.AddDate(0, 0, -1),
+			},
+			expect: true,
+		},
+		{
+			name: "public",
+			video: &Video{
+				Status:      VideoStatusPublished,
+				Public:      true,
+				Limited:     false,
+				PublishedAt: now.AddDate(0, 0, -1),
+			},
+			expect: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expect, tt.video.Published())
+		})
+	}
+}
+
 func TestVideos_IDs(t *testing.T) {
 	t.Parallel()
 

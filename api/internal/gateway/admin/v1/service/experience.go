@@ -5,16 +5,16 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-// ExperienceStatus - 体験販売状況
+// ExperienceStatus - 体験受付状況
 type ExperienceStatus int32
 
 const (
 	ExperienceStatusUnknown   ExperienceStatus = 0
 	ExperienceStatusPrivate   ExperienceStatus = 1 // 非公開
-	ExperienceStatusWaiting   ExperienceStatus = 2 // 公開前
-	ExperienceStatusAccepting ExperienceStatus = 3 // 受付中
-	ExperienceStatusSoldOut   ExperienceStatus = 4 // 定員オーバー
-	ExperienceStatusFinished  ExperienceStatus = 5 // 終了済み
+	ExperienceStatusWaiting   ExperienceStatus = 2 // 販売開始前
+	ExperienceStatusAccepting ExperienceStatus = 3 // 体験受付中
+	ExperienceStatusSoldOut   ExperienceStatus = 4 // 体験受付終了
+	ExperienceStatusFinished  ExperienceStatus = 5 // 販売終了
 	ExperienceStatusArchived  ExperienceStatus = 6 // アーカイブ済み
 )
 

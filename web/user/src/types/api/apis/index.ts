@@ -17,3 +17,4 @@ export * from './PromotionApi';
 export * from './ScheduleApi';
 export * from './StatusApi';
 export * from './TopApi';
+export * from './VideoApi';

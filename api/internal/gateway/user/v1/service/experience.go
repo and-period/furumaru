@@ -5,15 +5,15 @@ import (
 	"github.com/and-period/furumaru/api/internal/store/entity"
 )
 
-// ExperienceStatus - 体験販売状況
+// ExperienceStatus - 体験受付状況
 type ExperienceStatus int32
 
 const (
 	ExperienceStatusUnknown   ExperienceStatus = 0
-	ExperienceStatusWaiting   ExperienceStatus = 1 // 受付前
-	ExperienceStatusAccepting ExperienceStatus = 2 // 受付中
-	ExperienceStatusSoldOut   ExperienceStatus = 3 // 定員オーバー
-	ExperienceStatusFinished  ExperienceStatus = 4 // 終了済み
+	ExperienceStatusWaiting   ExperienceStatus = 1 // 販売開始前
+	ExperienceStatusAccepting ExperienceStatus = 2 // 体験受付中
+	ExperienceStatusSoldOut   ExperienceStatus = 3 // 体験受付終了
+	ExperienceStatusFinished  ExperienceStatus = 4 // 販売終了
 )
 
 type Experience struct {

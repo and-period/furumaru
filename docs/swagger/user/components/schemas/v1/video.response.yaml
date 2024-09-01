@@ -1,0 +1,158 @@
+videoResponse:
+  type: object
+  properties:
+    video:
+      $ref: './../../../openapi.yaml#/components/schemas/video'
+    coordinator:
+      $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    products:
+      type: array
+      description: 商品一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/product'
+    experiences:
+      type: array
+      description: 体験一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/experience'
+  required:
+  - video
+  - coordinator
+  - products
+  - experiences
+  example:
+    video:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productIds:
+      - 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceIds:
+      - 'kSByoE6FetnPs5Byk3a9Zx'
+      title: '芽が出たじゃがいも'
+      description: 'じゃがいもの芽が出る様子を撮影しました。'
+      thumbnailUrl: 'https://example.com/thumbnail.png'
+      videoUrl: 'https://example.com/video.mp4'
+      publishedAt: 1614556800
+    coordinator:
+      id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      headerUrl: 'https://and-period.jp/header.png'
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    products:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      name: '新鮮なじゃがいも'
+      description: '新鮮なじゃがいもをお届けします。'
+      status: 2
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      categoryId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productTagIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      media:
+      - url: 'https://and-period.jp/thumbnail01.png'
+        isThumbnail: true
+      - url: 'https://and-period.jp/thumbnail02.png'
+        isThumbnail: false
+      price: 2500
+      inventory: 30
+      weight: 2.5
+      itemUnit: '袋'
+      itemDescription: '1袋あたり2.5kgのじゃがいも'
+      deliveryType: 1
+      recommendedPoint1: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint2: 'シャリシャリほろ苦がクセになる！'
+      recommendedPoint3: 'シャリシャリほろ苦がクセになる！'
+      expirationDate: 7
+      storageMethodType: 1
+      box60Rate: 80
+      box80Rate: 50
+      box100Rate: 40
+      originPrefecture: '東京都'
+      originCity: '彦根市'
+      startAt: 1640962800
+      endAt: 1640962800
+    experiences:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      title: '農業体験'
+      description: '農業体験の説明'
+      status: 1
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+      thumbnailUrl: 'https://example.com/image.jpg'
+      media:
+      - url: 'https://example.com/image.jpg'
+        isThumbnail: true
+      - url: 'https://example.com/image.jpg'
+        isThumbnail: false
+      priceAdult: 1000
+      priceJuniorHighSchool: 800
+      priceElementarySchool: 600
+      pricePreschool: 400
+      priceSenior: 800
+      recommendedPoint1: 'おすすめポイント1'
+      recommendedPoint2: 'おすすめポイント2'
+      recommendedPoint3: 'おすすめポイント3'
+      hostPostalCode: '123-4567'
+      hostPrefecture: '東京都'
+      hostCity: '千代田区'
+      hostAddressLine1: '千代田1-1-1'
+      hostAddressLine2: '千代田ビル1F'
+      hostLongitude: 139.767052
+      hostLatitude: 35.681167
+      startAt: 1614556800
+      endAt: 1614643199
+videosResponse:
+  type: object
+  properties:
+    videos:
+      type: array
+      description: 動画一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/video'
+    coordinators:
+      type: array
+      description: コーディネータ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/coordinator'
+    total:
+      type: integer
+      format: int64
+      description: 合計数
+  required:
+  - videos
+  - coordinators
+  - total
+  example:
+    videos:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+      productIds:
+      - 'kSByoE6FetnPs5Byk3a9Zx'
+      experienceIds:
+      - 'kSByoE6FetnPs5Byk3a9Zx'
+      title: '芽が出たじゃがいも'
+      description: 'じゃがいもの芽が出る様子を撮影しました。'
+      thumbnailUrl: 'https://example.com/thumbnail.png'
+      videoUrl: 'https://example.com/video.mp4'
+      publishedAt: 1614556800
+    coordinators:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      storeName: '&.農園'
+      profile: '紹介文です。'
+      productTypeIds: ['kSByoE6FetnPs5Byk3a9Zx']
+      thumbnailUrl: 'https://and-period.jp/thumbnail.png'
+      headerUrl: 'https://and-period.jp/header.png'
+      promotionVideoUrl: 'https://and-period.jp/promotion.mp4'
+      instagramId: 'instagram-id'
+      facebookId: 'facebook-id'
+      prefecture: '東京都'
+      city: '千代田区'
+    total: 1

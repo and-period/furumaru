@@ -46,18 +46,20 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 	})
 	eg.Go(func() (err error) {
 		params := &listVideoSummariesParams{
-			limit:  defaultVideosLimit,
-			offset: 0,
+			category: videoCategoryProduct,
+			limit:    defaultVideosLimit,
+			offset:   0,
 		}
-		productVideos, err = h.listProductVideoSummaries(ectx, params)
+		productVideos, _, err = h.listVideoSummaries(ectx, params)
 		return
 	})
 	eg.Go(func() (err error) {
 		params := &listVideoSummariesParams{
-			limit:  defaultVideosLimit,
-			offset: 0,
+			category: videoCategoryExperience,
+			limit:    defaultVideosLimit,
+			offset:   0,
 		}
-		experienceVideos, err = h.listExperienceVideoSummaries(ectx, params)
+		experienceVideos, _, err = h.listVideoSummaries(ectx, params)
 		return
 	})
 	if err := eg.Wait(); err != nil {

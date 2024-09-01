@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/exception"
@@ -138,6 +139,20 @@ func (h *handler) GetExperience(ctx *gin.Context) {
 		ExperienceType: experienceType.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []string) (service.Experiences, error) {
+	if len(experienceIDs) == 0 {
+		return service.Experiences{}, nil
+	}
+	in := &store.MultiGetExperiencesInput{
+		ExperienceIDs: experienceIDs,
+	}
+	experiences, err := h.store.MultiGetExperiences(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperiences(experiences.FilterByPublished()), nil
 }
 
 func (h *handler) getExperience(ctx *gin.Context, experienceID string) (*service.Experience, error) {

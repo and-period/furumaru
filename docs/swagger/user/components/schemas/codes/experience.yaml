@@ -1,7 +1,7 @@
 experienceStatus:
   type: integer
   format: int32
-  description: 体験販売ステータス
+  description: 体験受付ステータス
   nullable: false
   enum:
   - 0
@@ -17,7 +17,7 @@ experienceStatus:
   - FINISHED
   x-enum-descriptions:
   - 不明
-  - 受付前
+  - 販売開始前
   - 体験受付中
-  - 定員に達した
-  - 受付終了
+  - 体験受付終了
+  - 販売終了

@@ -1,3 +1,61 @@
+video:
+  type: object
+  description: オンデマンド配信情報
+  properties:
+    id:
+      type: string
+      description: オンデマンド配信ID
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    productIds:
+      type: array
+      items:
+        type: string
+      description: 商品ID一覧
+    experienceIds:
+      type: array
+      items:
+        type: string
+      description: 体験ID一覧
+    title:
+      type: string
+      description: タイトル
+    description:
+      type: string
+      description: 説明
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    videoUrl:
+      type: string
+      description: 動画URL
+    publishedAt:
+      type: integer
+      format: int64
+      description: 公開日時 (unixtime)
+  required:
+  - id
+  - coordinatorId
+  - productIds
+  - experienceIds
+  - title
+  - description
+  - thumbnailUrl
+  - videoUrl
+  - publishedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    productIds:
+    - 'kSByoE6FetnPs5Byk3a9Zx'
+    experienceIds:
+    - 'kSByoE6FetnPs5Byk3a9Zx'
+    title: '芽が出たじゃがいも'
+    description: 'じゃがいもの芽が出る様子を撮影しました。'
+    thumbnailUrl: 'https://example.com/thumbnail.png'
+    videoUrl: 'https://example.com/video.mp4'
+    publishedAt: 1614556800
 videoSummary:
   type: object
   description: オンデマンド配信の概要

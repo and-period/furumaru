@@ -14,7 +14,7 @@
 
 
 /**
- * 体験販売ステータス
+ * 体験受付ステータス
  * @export
  */
 export const ExperienceStatus = {

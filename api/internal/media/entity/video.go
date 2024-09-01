@@ -119,6 +119,10 @@ func (v *Video) SetStatus(now time.Time) {
 	}
 }
 
+func (v *Video) Published() bool {
+	return v.Status == VideoStatusPublished || v.Status == VideoStatusLimited
+}
+
 func (vs Videos) IDs() []string {
 	return set.UniqBy(vs, func(v *Video) string {
 		return v.ID
