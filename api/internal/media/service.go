@@ -43,6 +43,10 @@ type Service interface {
 	DeleteVideo(ctx context.Context, in *DeleteVideoInput) error                                             // 削除
 	GetVideoThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // サムネイル画像アップロード用URLの生成
 	GetVideoFileUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)      // 動画アップロード用URLの生成
+	// オンデマンド配信コメント
+	ListVideoComments(ctx context.Context, in *ListVideoCommentsInput) (entity.VideoComments, string, error) // 一覧取得
+	CreateVideoComment(ctx context.Context, in *CreateVideoCommentInput) (*entity.VideoComment, error)       // 登録
+	UpdateVideoComment(ctx context.Context, in *UpdateVideoCommentInput) error                               // 更新
 	// コーディネータ
 	GetCoordinatorThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)      // サムネイル画像アップロード用URLの生成
 	GetCoordinatorHeaderUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)         // ヘッダー画像アップロード用URLの生成

@@ -34,10 +34,6 @@ func TestListBroadcastComments(t *testing.T) {
 		CreatedAtLt:  now,
 		Limit:        20,
 		NextToken:    "next-token",
-		Orders: []*database.ListBroadcastCommentsOrder{{
-			Key:        entity.BroadcastCommentOrderByCreatedAt,
-			OrderByASC: false,
-		}},
 	}
 	comments := entity.BroadcastComments{
 		{
@@ -71,10 +67,6 @@ func TestListBroadcastComments(t *testing.T) {
 				CreatedAtLt:  now,
 				Limit:        20,
 				NextToken:    "next-token",
-				Orders: []*media.ListBroadcastCommentsOrder{{
-					Key:        entity.BroadcastCommentOrderByCreatedAt,
-					OrderByASC: false,
-				}},
 			},
 			expect: entity.BroadcastComments{
 				{
@@ -109,10 +101,6 @@ func TestListBroadcastComments(t *testing.T) {
 				CreatedAtLt:  now,
 				Limit:        20,
 				NextToken:    "next-token",
-				Orders: []*media.ListBroadcastCommentsOrder{{
-					Key:        entity.BroadcastCommentOrderByCreatedAt,
-					OrderByASC: false,
-				}},
 			},
 			expect:      nil,
 			expectToken: "",
@@ -130,10 +118,6 @@ func TestListBroadcastComments(t *testing.T) {
 				CreatedAtLt:  now,
 				Limit:        20,
 				NextToken:    "next-token",
-				Orders: []*media.ListBroadcastCommentsOrder{{
-					Key:        entity.BroadcastCommentOrderByCreatedAt,
-					OrderByASC: false,
-				}},
 			},
 			expect:      nil,
 			expectToken: "",

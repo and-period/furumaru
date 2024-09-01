@@ -8,33 +8,32 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/media/database"
 	"github.com/and-period/furumaru/api/internal/media/entity"
-	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 )
 
-const broadcastCommentTable = "broadcast_comments"
+const videoCommentTable = "video_comments"
 
-type broadcastComment struct {
+type videoComment struct {
 	db  *mysql.Client
 	now func() time.Time
 }
 
-func newBroadcastComment(db *mysql.Client) database.BroadcastComment {
-	return &broadcastComment{
+func newVideoComment(db *mysql.Client) database.VideoComment {
+	return &videoComment{
 		db:  db,
-		now: jst.Now,
+		now: time.Now,
 	}
 }
 
-func (c *broadcastComment) List(
+func (c *videoComment) List(
 	ctx context.Context,
-	params *database.ListBroadcastCommentsParams,
+	params *database.ListVideoCommentsParams,
 	fields ...string,
-) (entity.BroadcastComments, string, error) {
-	var comments entity.BroadcastComments
+) (entity.VideoComments, string, error) {
+	var comments entity.VideoComments
 
-	stmt := c.db.Statement(ctx, c.db.DB, broadcastCommentTable, fields...).
-		Where("broadcast_id = ?", params.BroadcastID).
+	stmt := c.db.Statement(ctx, c.db.DB, videoCommentTable, fields...).
+		Where("video_id = ?", params.VideoID).
 		Limit(int(params.Limit) + 1)
 
 	if !params.WithDisabled {
@@ -61,24 +60,26 @@ func (c *broadcastComment) List(
 	var nextToken string
 	if len(comments) > int(params.Limit) {
 		nextToken = strconv.FormatInt(comments[params.Limit].CreatedAt.UnixNano(), 10)
-		comments = comments[:params.Limit]
+		comments = comments[:len(comments)-1]
 	}
 	return comments, nextToken, nil
 }
 
-func (c *broadcastComment) Create(ctx context.Context, comment *entity.BroadcastComment) error {
+func (c *videoComment) Create(ctx context.Context, comment *entity.VideoComment) error {
 	now := c.now()
 	comment.CreatedAt, comment.UpdatedAt = now, now
 
-	err := c.db.DB.WithContext(ctx).Table(broadcastCommentTable).Create(&comment).Error
+	err := c.db.DB.WithContext(ctx).Table(videoCommentTable).Create(comment).Error
 	return dbError(err)
 }
 
-func (c *broadcastComment) Update(ctx context.Context, commentID string, params *database.UpdateBroadcastCommentParams) error {
-	values := map[string]interface{}{
+func (c *videoComment) Update(ctx context.Context, commentID string, params *database.UpdateVideoCommentParams) error {
+	updates := map[string]interface{}{
 		"disabled":   params.Disabled,
 		"updated_at": c.now(),
 	}
-	err := c.db.DB.WithContext(ctx).Table(broadcastCommentTable).Where("id = ?", commentID).Updates(values).Error
+	stmt := c.db.DB.WithContext(ctx).Table(videoCommentTable).Where("id = ?", commentID)
+
+	err := stmt.Updates(updates).Error
 	return dbError(err)
 }
