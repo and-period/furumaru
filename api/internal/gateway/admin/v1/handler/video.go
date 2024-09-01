@@ -65,11 +65,10 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 	}
 
 	in := &media.ListVideosInput{
-		Name:           util.GetQuery(ctx, "name", ""),
-		CoordinatorID:  util.GetQuery(ctx, "coordinatorId", ""),
-		ExcludeDeleted: true,
-		Limit:          limit,
-		Offset:         offset,
+		Name:          util.GetQuery(ctx, "name", ""),
+		CoordinatorID: util.GetQuery(ctx, "coordinatorId", ""),
+		Limit:         limit,
+		Offset:        offset,
 	}
 	videos, total, err := h.media.ListVideos(ctx, in)
 	if err != nil {

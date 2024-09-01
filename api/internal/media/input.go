@@ -146,7 +146,6 @@ type ListVideosInput struct {
 	OnlyDisplayProduct    bool   `validate:""`
 	OnlyDisplayExperience bool   `validate:""`
 	ExcludeLimited        bool   `validate:""`
-	ExcludeDeleted        bool   `validate:""`
 	Limit                 int64  `validate:"required_without=NoLimit,min=0,max=200"`
 	Offset                int64  `validate:"min=0"`
 	NoLimit               bool   `validate:""`

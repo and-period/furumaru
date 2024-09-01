@@ -40,7 +40,7 @@ func (p listVideosParams) stmt(stmt *gorm.DB, now time.Time) *gorm.DB {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
 	if p.OnlyPublished {
-		stmt = stmt.Where("public = ? AND published_at <= ?", true, now).Where("deleted_at IS NULL")
+		stmt = stmt.Where("public = ? AND published_at <= ?", true, now)
 	}
 	if p.OnlyDisplayProduct {
 		stmt = stmt.Where("display_product = ?", true)
@@ -50,9 +50,6 @@ func (p listVideosParams) stmt(stmt *gorm.DB, now time.Time) *gorm.DB {
 	}
 	if p.ExcludeLimited {
 		stmt = stmt.Where("limited = ?", false)
-	}
-	if !p.ExcludeDeleted {
-		stmt = stmt.Unscoped()
 	}
 	return stmt.Order("published_at DESC")
 }
