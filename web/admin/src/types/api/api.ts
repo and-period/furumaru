@@ -7021,6 +7021,18 @@ export interface UpdateVideoRequest {
      */
     'limited': boolean;
     /**
+     * 商品表示フラグ
+     * @type {boolean}
+     * @memberof UpdateVideoRequest
+     */
+    'displayProduct': boolean;
+    /**
+     * 体験表示フラグ
+     * @type {boolean}
+     * @memberof UpdateVideoRequest
+     */
+    'displayExperience': boolean;
+    /**
      * 公開日時 (unixtime)
      * @type {number}
      * @memberof UpdateVideoRequest

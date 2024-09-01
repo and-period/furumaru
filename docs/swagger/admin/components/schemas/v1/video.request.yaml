@@ -105,6 +105,12 @@ updateVideoRequest:
     limited:
       type: boolean
       description: 限定公開フラグ
+    displayProduct:
+      type: boolean
+      description: 商品表示フラグ
+    displayExperience:
+      type: boolean
+      description: 体験表示フラグ
     publishedAt:
       type: integer
       format: int64
