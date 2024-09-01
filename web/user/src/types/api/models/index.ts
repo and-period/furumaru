@@ -101,4 +101,5 @@ export * from './UploadStatus';
 export * from './UploadUrlResponse';
 export * from './VerifyAuthUserEmailRequest';
 export * from './VerifyAuthUserRequest';
+export * from './VideoSummary';
 export * from './Weekday';

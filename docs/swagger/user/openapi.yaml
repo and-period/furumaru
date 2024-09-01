@@ -246,6 +246,8 @@ components:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     paymentSystem:
       $ref: './components/schemas/entity/status.yaml#/paymentSystem'
+    videoSummary:
+      $ref: './components/schemas/entity/video.yaml#/videoSummary'
     # Request
     v1CreateAddressRequest:
       $ref: './components/schemas/v1/address.request.yaml#/createAddressRequest'
