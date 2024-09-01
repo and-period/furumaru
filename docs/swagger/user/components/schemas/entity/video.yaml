@@ -1,0 +1,32 @@
+videoSummary:
+  type: object
+  description: オンデマンド配信の概要
+  properties:
+    id:
+      type: string
+      description: オンデマンド配信ID
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    title:
+      type: string
+      description: タイトル
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    publishedAt:
+      type: integer
+      format: int64
+      description: 公開日時 (unixtime)
+  required:
+  - id
+  - coordinatorId
+  - title
+  - thumbnailUrl
+  - publishedAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    title: '芽が出たじゃがいも'
+    thumbnailUrl: 'https://example.com/thumbnail.png'
+    publishedAt: 1614556800

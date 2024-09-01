@@ -19,6 +19,12 @@ import {
     ArchiveSummaryFromJSONTyped,
     ArchiveSummaryToJSON,
 } from './ArchiveSummary';
+import type { VideoSummary } from './VideoSummary';
+import {
+    VideoSummaryFromJSON,
+    VideoSummaryFromJSONTyped,
+    VideoSummaryToJSON,
+} from './VideoSummary';
 import type { Coordinator } from './Coordinator';
 import {
     CoordinatorFromJSON,
@@ -51,6 +57,18 @@ export interface TopCommonResponse {
      */
     archives: Array<ArchiveSummary>;
     /**
+     * 商品動画一覧
+     * @type {Array<VideoSummary>}
+     * @memberof TopCommonResponse
+     */
+    productVideos: Array<VideoSummary>;
+    /**
+     * 体験動画一覧
+     * @type {Array<VideoSummary>}
+     * @memberof TopCommonResponse
+     */
+    experienceVideos: Array<VideoSummary>;
+    /**
      * コーディネータ一覧
      * @type {Array<Coordinator>}
      * @memberof TopCommonResponse
@@ -64,6 +82,8 @@ export interface TopCommonResponse {
 export function instanceOfTopCommonResponse(value: object): value is TopCommonResponse {
     if (!('lives' in value) || value['lives'] === undefined) return false;
     if (!('archives' in value) || value['archives'] === undefined) return false;
+    if (!('productVideos' in value) || value['productVideos'] === undefined) return false;
+    if (!('experienceVideos' in value) || value['experienceVideos'] === undefined) return false;
     if (!('coordinators' in value) || value['coordinators'] === undefined) return false;
     return true;
 }
@@ -80,6 +100,8 @@ export function TopCommonResponseFromJSONTyped(json: any, ignoreDiscriminator: b
         
         'lives': ((json['lives'] as Array<any>).map(LiveSummaryFromJSON)),
         'archives': ((json['archives'] as Array<any>).map(ArchiveSummaryFromJSON)),
+        'productVideos': ((json['productVideos'] as Array<any>).map(VideoSummaryFromJSON)),
+        'experienceVideos': ((json['experienceVideos'] as Array<any>).map(VideoSummaryFromJSON)),
         'coordinators': ((json['coordinators'] as Array<any>).map(CoordinatorFromJSON)),
     };
 }
@@ -92,6 +114,8 @@ export function TopCommonResponseToJSON(value?: TopCommonResponse | null): any {
         
         'lives': ((value['lives'] as Array<any>).map(LiveSummaryToJSON)),
         'archives': ((value['archives'] as Array<any>).map(ArchiveSummaryToJSON)),
+        'productVideos': ((value['productVideos'] as Array<any>).map(VideoSummaryToJSON)),
+        'experienceVideos': ((value['experienceVideos'] as Array<any>).map(VideoSummaryToJSON)),
         'coordinators': ((value['coordinators'] as Array<any>).map(CoordinatorToJSON)),
     };
 }
