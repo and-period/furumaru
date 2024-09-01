@@ -182,6 +182,12 @@ func TestCreateBroadcastComment(t *testing.T) {
 			expectErr: nil,
 		},
 		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.CreateBroadcastCommentInput{},
+			expectErr: exception.ErrInvalidArgument,
+		},
+		{
 			name: "failed to get broadcast",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Broadcast.EXPECT().GetByScheduleID(ctx, "schedule-id").Return(nil, assert.AnError)
@@ -260,6 +266,12 @@ func TestCreateBroadcastGuestComment(t *testing.T) {
 				Content:    "こんにちは",
 			},
 			expectErr: nil,
+		},
+		{
+			name:      "invalid argument",
+			setup:     func(ctx context.Context, mocks *mocks) {},
+			input:     &media.CreateBroadcastGuestCommentInput{},
+			expectErr: exception.ErrInvalidArgument,
 		},
 		{
 			name: "failed to get broadcast",

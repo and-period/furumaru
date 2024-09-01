@@ -27,14 +27,14 @@ type Service interface {
 	AuthYoutubeBroadcast(ctx context.Context, in *AuthYoutubeBroadcastInput) (string, error)                                      // Youtubeライブ配信認証
 	AuthYoutubeBroadcastEvent(ctx context.Context, in *AuthYoutubeBroadcastEventInput) (*entity.BroadcastAuth, error)             // Youtubeライブ配信認証後処理
 	CreateYoutubeBroadcast(ctx context.Context, in *CreateYoutubeBroadcastInput) error                                            // Youtubeライブ配信登録
-	// ライブ視聴履歴
-	CreateBroadcastViewerLog(ctx context.Context, in *CreateBroadcastViewerLogInput) error                                                        // ライブ配信視聴履歴登録
-	AggregateBroadcastViewerLogs(ctx context.Context, in *AggregateBroadcastViewerLogsInput) (entity.AggregatedBroadcastViewerLogs, int64, error) // ライブ配信視聴履歴集計
 	// ライブコメント
 	ListBroadcastComments(ctx context.Context, in *ListBroadcastCommentsInput) (entity.BroadcastComments, string, error)     // ライブコメント一覧取得
 	CreateBroadcastComment(ctx context.Context, in *CreateBroadcastCommentInput) (*entity.BroadcastComment, error)           // ライブコメント登録
 	CreateBroadcastGuestComment(ctx context.Context, in *CreateBroadcastGuestCommentInput) (*entity.BroadcastComment, error) // ライブゲストコメント登録
 	UpdateBroadcastComment(ctx context.Context, in *UpdateBroadcastCommentInput) error                                       // ライブコメント更新
+	// ライブ視聴履歴
+	CreateBroadcastViewerLog(ctx context.Context, in *CreateBroadcastViewerLogInput) error                                                        // ライブ配信視聴履歴登録
+	AggregateBroadcastViewerLogs(ctx context.Context, in *AggregateBroadcastViewerLogsInput) (entity.AggregatedBroadcastViewerLogs, int64, error) // ライブ配信視聴履歴集計
 	// オンデマンド配信
 	ListVideos(ctx context.Context, in *ListVideosInput) (entity.Videos, int64, error)                       // 一覧取得
 	GetVideo(ctx context.Context, in *GetVideoInput) (*entity.Video, error)                                  // １件取得
@@ -47,6 +47,9 @@ type Service interface {
 	ListVideoComments(ctx context.Context, in *ListVideoCommentsInput) (entity.VideoComments, string, error) // 一覧取得
 	CreateVideoComment(ctx context.Context, in *CreateVideoCommentInput) (*entity.VideoComment, error)       // 登録
 	UpdateVideoComment(ctx context.Context, in *UpdateVideoCommentInput) error                               // 更新
+	// オンデマンド配信視聴履歴
+	CreateVideoViewerLog(ctx context.Context, in *CreateVideoViewerLogInput) error                                                    // オンデマンド配信視聴履歴登録
+	AggregateVideoViewerLogs(ctx context.Context, in *AggregateVideoViewerLogsInput) (entity.AggregatedVideoViewerLogs, int64, error) // オンデマンド配信視聴履歴集計
 	// コーディネータ
 	GetCoordinatorThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)      // サムネイル画像アップロード用URLの生成
 	GetCoordinatorHeaderUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)         // ヘッダー画像アップロード用URLの生成
