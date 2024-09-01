@@ -92,3 +92,30 @@ video:
     publishedAt: 1614556800
     createdAt: 1614556800
     updatedAt: 1614556800
+videoViewerLog:
+  properties:
+    videoId:
+      type: string
+      description: オンデマンド配信ID
+    startAt:
+      type: integer
+      format: int64
+      description: 集計開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: 集計終了日時 (unixtime)
+    total:
+      type: integer
+      format: int64
+      description: 合計視聴者数
+  required:
+  - videoId
+  - startAt
+  - endAt
+  - total
+  example:
+    videoId: 'kSByoE6FetnPs5Byk3a9Zx'
+    startAt: 1640962800
+    endAt: 1640962800
+    total: 100

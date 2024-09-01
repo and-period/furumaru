@@ -296,6 +296,12 @@ paths:
     $ref: './paths/v1/videos/index.yaml'
   /v1/videos/{videoId}:
     $ref: './paths/v1/videos/_videoId/index.yaml'
+  /v1/videos/{videoId}/analytics:
+    $ref: './paths/v1/videos/_videoId/analytics.yaml'
+  /v1/videos/{videoId}/comments:
+    $ref: './paths/v1/videos/_videoId/comments/index.yaml'
+  /v1/videos/{videoId}/comments/{commentId}:
+    $ref: './paths/v1/videos/_videoId/comments/_commentId/index.yaml'
   # Other
   /v1/postal-codes/{postalCode}:
     $ref: './paths/v1/postal-codes/_postalCode.yaml'
@@ -374,6 +380,8 @@ components:
       $ref: './components/schemas/codes/user.yaml#/userStatus'
     videoStatus:
       $ref: './components/schemas/codes/video.yaml#/videoStatus'
+    videoViewerLogInterval:
+      $ref: './components/schemas/codes/video.yaml#/videoViewerLogInterval'
     errorResponse:
       $ref: './components/schemas/common.yaml#/errorResponse'
     # Entity
@@ -437,6 +445,10 @@ components:
       $ref: './components/schemas/entity/user.yaml#/userOrder'
     video:
       $ref: './components/schemas/entity/video.yaml#/video'
+    videoViewerLog:
+      $ref: './components/schemas/entity/video.yaml#/videoViewerLog'
+    videoComment:
+      $ref: './components/schemas/entity/video-comment.yaml#/videoComment'
     # Request
     v1CreateAdministratorRequest:
       $ref: './components/schemas/v1/administrator.request.yaml#/createAdministratorRequest'
@@ -556,6 +568,8 @@ components:
       $ref: './components/schemas/v1/video.request.yaml#/createVideoRequest'
     v1UpdateVideoRequest:
       $ref: './components/schemas/v1/video.request.yaml#/updateVideoRequest'
+    v1UpdateVideoCommentRequest:
+      $ref: './components/schemas/v1/video-comment.request.yaml#/updateVideoCommentRequest'
     # Response
     v1AdministratorResponse:
       $ref: './components/schemas/v1/administrator.response.yaml#/administratorResponse'
@@ -663,3 +677,7 @@ components:
       $ref: './components/schemas/v1/video.response.yaml#/videoResponse'
     v1VideosResponse:
       $ref: './components/schemas/v1/video.response.yaml#/videosResponse'
+    v1AnalyzeVideoResponse:
+      $ref: './components/schemas/v1/video.response.yaml#/analyzeVideoResponse'
+    v1VideoCommentsResponse:
+      $ref: './components/schemas/v1/video-comment.response.yaml#/videoCommentsResponse'

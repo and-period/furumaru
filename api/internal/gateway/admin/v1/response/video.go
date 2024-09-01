@@ -20,6 +20,14 @@ type Video struct {
 	UpdatedAt         int64    `json:"updatedAt"`         // 更新日時
 }
 
+// VideoViewerLog - オンデマンド配信視聴ログ解析情報
+type VideoViewerLog struct {
+	VideoID string `json:"videoId"` // オンデマンド動画ID
+	StartAt int64  `json:"startAt"` // 集計開始日時
+	EndAt   int64  `json:"endAt"`   // 集計終了日時
+	Total   int64  `json:"total"`   // 合計視聴者数
+}
+
 type VideoResponse struct {
 	Video       *Video        `json:"video"`       // オンデマンド動画情報
 	Coordinator *Coordinator  `json:"coordinator"` // コーディネータ情報
@@ -33,4 +41,9 @@ type VideosResponse struct {
 	Products     []*Product     `json:"products"`     // 商品一覧
 	Experiences  []*Experience  `json:"experiences"`  // 体験一覧
 	Total        int64          `json:"total"`        // オンデマンド動画合計数
+}
+
+type AnalyzeVideoResponse struct {
+	ViewerLogs   []*VideoViewerLog `json:"viewerLogs"`   // 視聴者数ログ
+	TotalViewers int64             `json:"totalViewers"` // 合計視聴者数
 }

@@ -268,3 +268,24 @@ videosResponse:
       createdAt: 1640962800
       updatedAt: 1640962800
     total: 1
+analyzeVideoResponse:
+  type: object
+  properties:
+    viewerLogs:
+      type: array
+      description: 視聴者ログ一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/videoViewerLog'
+    totalViewers:
+      type: integer
+      format: int64
+      description: 合計視聴者数
+  required:
+  - viewerLogs
+  example:
+    viewerLogs:
+    - videoId: 'kSByoE6FetnPs5Byk3a9Zx'
+      startAt: 1640962800
+      endAt: 1640962800
+      total: 100
+    totalViewers: 100

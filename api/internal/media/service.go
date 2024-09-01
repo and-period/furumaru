@@ -44,9 +44,10 @@ type Service interface {
 	GetVideoThumbnailUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error) // サムネイル画像アップロード用URLの生成
 	GetVideoFileUploadURL(ctx context.Context, in *GenerateUploadURLInput) (*entity.UploadEvent, error)      // 動画アップロード用URLの生成
 	// オンデマンド配信コメント
-	ListVideoComments(ctx context.Context, in *ListVideoCommentsInput) (entity.VideoComments, string, error) // 一覧取得
-	CreateVideoComment(ctx context.Context, in *CreateVideoCommentInput) (*entity.VideoComment, error)       // 登録
-	UpdateVideoComment(ctx context.Context, in *UpdateVideoCommentInput) error                               // 更新
+	ListVideoComments(ctx context.Context, in *ListVideoCommentsInput) (entity.VideoComments, string, error)     // 一覧取得
+	CreateVideoComment(ctx context.Context, in *CreateVideoCommentInput) (*entity.VideoComment, error)           // 登録
+	CreateVideoGuestComment(ctx context.Context, in *CreateVideoGuestCommentInput) (*entity.VideoComment, error) // ゲストコメント登録
+	UpdateVideoComment(ctx context.Context, in *UpdateVideoCommentInput) error                                   // 更新
 	// オンデマンド配信視聴履歴
 	CreateVideoViewerLog(ctx context.Context, in *CreateVideoViewerLogInput) error                                                    // オンデマンド配信視聴履歴登録
 	AggregateVideoViewerLogs(ctx context.Context, in *AggregateVideoViewerLogsInput) (entity.AggregatedVideoViewerLogs, int64, error) // オンデマンド配信視聴履歴集計

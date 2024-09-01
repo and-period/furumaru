@@ -18,7 +18,7 @@ func (h *handler) videoRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/videos")
 
 	r.GET("", h.ListVideos)
-	r.GET("/:videoId", h.GetVideo)
+	r.GET("/:videoId", h.createVideoViewerLog, h.GetVideo)
 }
 
 func (h *handler) ListVideos(ctx *gin.Context) {

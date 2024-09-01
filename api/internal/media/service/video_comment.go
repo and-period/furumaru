@@ -49,6 +49,28 @@ func (s *service) CreateVideoComment(ctx context.Context, in *media.CreateVideoC
 	return comment, nil
 }
 
+func (s *service) CreateVideoGuestComment(ctx context.Context, in *media.CreateVideoGuestCommentInput) (*entity.VideoComment, error) {
+	if err := s.validator.Struct(in); err != nil {
+		return nil, internalError(err)
+	}
+	video, err := s.db.Video.Get(ctx, in.VideoID)
+	if err != nil {
+		return nil, internalError(err)
+	}
+	if !video.Published() {
+		return nil, fmt.Errorf("service: this video is not published: %w", exception.ErrFailedPrecondition)
+	}
+	params := &entity.NewVideoCommentParams{
+		VideoID: in.VideoID,
+		Content: in.Content,
+	}
+	comment := entity.NewVideoComment(params)
+	if err := s.db.VideoComment.Create(ctx, comment); err != nil {
+		return nil, internalError(err)
+	}
+	return comment, nil
+}
+
 func (s *service) UpdateVideoComment(ctx context.Context, in *media.UpdateVideoCommentInput) error {
 	if err := s.validator.Struct(in); err != nil {
 		return internalError(err)

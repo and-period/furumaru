@@ -1,0 +1,25 @@
+videoCommentsResponse:
+  type: object
+  properties:
+    comments:
+      type: array
+      description: コメント一覧
+      items:
+        $ref: './../../../openapi.yaml#/components/schemas/videoComment'
+    nextToken:
+      type: string
+      description: 次の取得位置
+  required:
+  - comments
+  - nextToken
+  example:
+    comments:
+    - id: 'kSByoE6FetnPs5Byk3a9Zx'
+      userId: 'kSByoE6FetnPs5Byk3a9Zx'
+      username: 'ふるマル 太郎'
+      accountId: 'account-id'
+      thumbnailUrl: 'http://example.com/thumbnail.png'
+      comment: 'こんにちは'
+      disabled: false
+      publishedAt: 1640962800
+    nextToken: '1640962800'

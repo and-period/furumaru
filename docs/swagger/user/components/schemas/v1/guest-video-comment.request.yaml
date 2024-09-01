@@ -1,0 +1,10 @@
+createGuestVideoCommentRequest:
+  type: object
+  properties:
+    comment:
+      type: string
+      description: コメント
+  required:
+  - comment
+  example:
+    comment: 'こんにちは'

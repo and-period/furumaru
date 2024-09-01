@@ -12,21 +12,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *handler) liveCommentRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/schedules/:scheduleId/comments")
+func (h *handler) videoCommentRoutes(rg *gin.RouterGroup) {
+	r := rg.Group("/videos/:videoId/comments", h.authentication)
 
-	r.GET("", h.ListLiveComments)
-	r.PATCH("/:commentId", h.filterAccessLiveComment, h.UpdateLiveComment)
+	r.GET("", h.ListVideoComments)
+	r.PATCH("/:commentId", h.filterAccessVideoComment, h.UpdateVideoComment)
 }
 
-func (h *handler) filterAccessLiveComment(ctx *gin.Context) {
+func (h *handler) filterAccessVideoComment(ctx *gin.Context) {
 	params := &filterAccessParams{
 		coordinator: func(ctx *gin.Context) (bool, error) {
-			schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
+			video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
 			if err != nil {
 				return false, err
 			}
-			return currentAdmin(ctx, schedule.CoordinatorID), nil
+			return video.CoordinatorID == getAdminID(ctx), nil
 		},
 	}
 	if err := filterAccess(ctx, params); err != nil {
@@ -36,10 +36,10 @@ func (h *handler) filterAccessLiveComment(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func (h *handler) ListLiveComments(ctx *gin.Context) {
+func (h *handler) ListVideoComments(ctx *gin.Context) {
 	const defaultLimit = 20
 
-	schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
+	video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -61,22 +61,22 @@ func (h *handler) ListLiveComments(ctx *gin.Context) {
 	}
 	nextToken := util.GetQuery(ctx, "next", "")
 
-	in := &media.ListBroadcastCommentsInput{
-		ScheduleID:   schedule.ID,
+	in := &media.ListVideoCommentsInput{
+		VideoID:      video.ID,
 		WithDisabled: true,
 		CreatedAtGte: jst.ParseFromUnix(startAt),
 		CreatedAtLt:  jst.ParseFromUnix(endAt),
 		Limit:        limit,
 		NextToken:    nextToken,
 	}
-	comments, token, err := h.media.ListBroadcastComments(ctx, in)
+	comments, token, err := h.media.ListVideoComments(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
 	if len(comments) == 0 {
-		res := &response.LiveCommentsResponse{
-			Comments: []*response.LiveComment{},
+		res := &response.VideoCommentsResponse{
+			Comments: []*response.VideoComment{},
 		}
 		ctx.JSON(http.StatusOK, res)
 		return
@@ -88,24 +88,24 @@ func (h *handler) ListLiveComments(ctx *gin.Context) {
 		return
 	}
 
-	res := &response.LiveCommentsResponse{
-		Comments:  service.NewLiveComments(comments, users.Map()).Response(),
+	res := &response.VideoCommentsResponse{
+		Comments:  service.NewVideoComments(comments, users.Map()).Response(),
 		NextToken: token,
 	}
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) UpdateLiveComment(ctx *gin.Context) {
-	req := &request.UpdateLiveCommentRequest{}
+func (h *handler) UpdateVideoComment(ctx *gin.Context) {
+	req := &request.UpdateVideoCommentRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
 		return
 	}
-	in := &media.UpdateBroadcastCommentInput{
+	in := &media.UpdateVideoCommentInput{
 		CommentID: util.GetParam(ctx, "commentId"),
 		Disabled:  req.Disabled,
 	}
-	if err := h.media.UpdateBroadcastComment(ctx, in); err != nil {
+	if err := h.media.UpdateVideoComment(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
