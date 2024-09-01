@@ -42,17 +42,6 @@ get:
     description: 取得範囲(終了時間:unixtime)
     required: false
     example: 1640962800
-  - in: query
-    name: orders
-    schema:
-      type: string
-    description: |
-      ソート
-      ・複数指定時は`,`区切り
-      ・降順の場合はprefixに`-`をつける
-      ・指定可能フィールド:publishedAt（デフォルト:-publishedAt）
-    required: false
-    example: '-publishedAt'
   responses:
     200:
       description: 成功

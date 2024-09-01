@@ -17,6 +17,7 @@ func NewDatabase(db *mysql.Client) *database.Database {
 		BroadcastComment:   newBroadcastComment(db),
 		BroadcastViewerLog: newBroadcastViewerLog(db),
 		Video:              newVideo(db),
+		VideoComment:       newVideoComment(db),
 	}
 }
 

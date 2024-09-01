@@ -7,12 +7,6 @@ import (
 	"github.com/and-period/furumaru/api/pkg/uuid"
 )
 
-type BroadcastCommentOrderBy string
-
-const (
-	BroadcastCommentOrderByCreatedAt BroadcastCommentOrderBy = "created_at"
-)
-
 // BroadcastComment - ライブ配信コメント情報
 type BroadcastComment struct {
 	ID          string    `gorm:"primaryKey;<-:create"` // コメントID

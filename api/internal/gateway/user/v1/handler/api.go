@@ -30,9 +30,8 @@ const (
 )
 
 var (
-	errNotFoundCart    = errors.New("handler: not found cart")
-	errNotFoundOrder   = errors.New("handler: not found order")
-	errInvalidOrderKey = errors.New("handler: invalid order key")
+	errNotFoundCart  = errors.New("handler: not found cart")
+	errNotFoundOrder = errors.New("handler: not found order")
 )
 
 /**

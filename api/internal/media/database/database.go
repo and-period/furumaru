@@ -25,6 +25,7 @@ type Database struct {
 	BroadcastComment   BroadcastComment
 	BroadcastViewerLog BroadcastViewerLog
 	Video              Video
+	VideoComment       VideoComment
 }
 
 type Broadcast interface {
@@ -96,12 +97,6 @@ type ListBroadcastCommentsParams struct {
 	CreatedAtLt  time.Time
 	Limit        int64
 	NextToken    string
-	Orders       []*ListBroadcastCommentsOrder
-}
-
-type ListBroadcastCommentsOrder struct {
-	Key        entity.BroadcastCommentOrderBy
-	OrderByASC bool
 }
 
 type UpdateBroadcastCommentParams struct {
@@ -159,6 +154,25 @@ type UpdateVideoParams struct {
 	DisplayProduct    bool
 	DisplayExperience bool
 	PublishedAt       time.Time
+}
+
+type VideoComment interface {
+	List(ctx context.Context, params *ListVideoCommentsParams, fields ...string) (entity.VideoComments, string, error)
+	Create(ctx context.Context, comment *entity.VideoComment) error
+	Update(ctx context.Context, commentID string, params *UpdateVideoCommentParams) error
+}
+
+type ListVideoCommentsParams struct {
+	VideoID      string
+	WithDisabled bool
+	CreatedAtGte time.Time
+	CreatedAtLt  time.Time
+	Limit        int64
+	NextToken    string
+}
+
+type UpdateVideoCommentParams struct {
+	Disabled bool
 }
 
 type Error struct {

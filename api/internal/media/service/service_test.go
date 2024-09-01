@@ -52,6 +52,7 @@ type dbMocks struct {
 	BroadcastComment   *mock_database.MockBroadcastComment
 	BroadcastViewerLog *mock_database.MockBroadcastViewerLog
 	Video              *mock_database.MockVideo
+	VideoComment       *mock_database.MockVideoComment
 }
 
 type testOptions struct {
@@ -101,6 +102,7 @@ func newDBMocks(ctrl *gomock.Controller) *dbMocks {
 		BroadcastComment:   mock_database.NewMockBroadcastComment(ctrl),
 		BroadcastViewerLog: mock_database.NewMockBroadcastViewerLog(ctrl),
 		Video:              mock_database.NewMockVideo(ctrl),
+		VideoComment:       mock_database.NewMockVideoComment(ctrl),
 	}
 }
 
@@ -119,6 +121,7 @@ func newService(mocks *mocks, opts ...testOption) *service {
 			BroadcastComment:   mocks.db.BroadcastComment,
 			BroadcastViewerLog: mocks.db.BroadcastViewerLog,
 			Video:              mocks.db.Video,
+			VideoComment:       mocks.db.VideoComment,
 		},
 		Cache:     mocks.cache,
 		User:      mocks.user,

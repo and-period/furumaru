@@ -14,11 +14,11 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func TestBroadcastComment(t *testing.T) {
-	assert.NotNil(t, newBroadcastComment(nil))
+func TestVideoComment(t *testing.T) {
+	assert.NotNil(t, newVideoComment(nil))
 }
 
-func TestBroadcastComment_List(t *testing.T) {
+func TestVideoComment_List(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -32,21 +32,21 @@ func TestBroadcastComment_List(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
-	err = db.DB.Create(&broadcast).Error
+	vide := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	err = db.DB.Create(&vide).Error
 	require.NoError(t, err)
 
-	comments := make(entity.BroadcastComments, 2)
-	comments[0] = testBroadcastComment("comment-id01", "broadcast-id", "user-id", now().Add(-time.Minute))
-	comments[1] = testBroadcastComment("comment-id02", "broadcast-id", "user-id", now())
+	comments := make(entity.VideoComments, 2)
+	comments[0] = testVideoComment("comment-id01", "video-id", "user-id", now().Add(-time.Minute))
+	comments[1] = testVideoComment("comment-id02", "video-id", "user-id", now())
 	err = db.DB.Create(&comments).Error
 	require.NoError(t, err)
 
 	type args struct {
-		params *database.ListBroadcastCommentsParams
+		params *database.ListVideoCommentsParams
 	}
 	type want struct {
-		comments entity.BroadcastComments
+		comments entity.VideoComments
 		token    string
 		err      error
 	}
@@ -60,8 +60,8 @@ func TestBroadcastComment_List(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &database.ListBroadcastCommentsParams{
-					BroadcastID:  "broadcast-id",
+				params: &database.ListVideoCommentsParams{
+					VideoID:      "video-id",
 					WithDisabled: false,
 					CreatedAtGte: now().Add(-time.Hour),
 					CreatedAtLt:  now().Add(time.Hour),
@@ -79,8 +79,8 @@ func TestBroadcastComment_List(t *testing.T) {
 			name:  "success with next token",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				params: &database.ListBroadcastCommentsParams{
-					BroadcastID:  "broadcast-id",
+				params: &database.ListVideoCommentsParams{
+					VideoID:      "video-id",
 					WithDisabled: false,
 					CreatedAtGte: now().Add(-time.Hour),
 					CreatedAtLt:  now().Add(time.Hour),
@@ -97,7 +97,6 @@ func TestBroadcastComment_List(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			ctx, cancel := context.WithCancel(context.Background())
@@ -105,16 +104,16 @@ func TestBroadcastComment_List(t *testing.T) {
 
 			tt.setup(ctx, t, db)
 
-			db := &broadcastComment{db: db, now: now}
-			actual, token, err := db.List(ctx, tt.args.params)
+			db := &videoComment{db: db, now: now}
+			comments, token, err := db.List(ctx, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
-			assert.Equal(t, tt.want.comments, actual)
+			assert.Equal(t, tt.want.comments, comments)
 			assert.Equal(t, tt.want.token, token)
 		})
 	}
 }
 
-func TestBroadcastComment_Create(t *testing.T) {
+func TestVideoComment_Create(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -128,12 +127,12 @@ func TestBroadcastComment_Create(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
-	err = db.DB.Create(&broadcast).Error
+	vide := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	err = db.DB.Create(&vide).Error
 	require.NoError(t, err)
 
 	type args struct {
-		comment *entity.BroadcastComment
+		comment *entity.VideoComment
 	}
 	type want struct {
 		err error
@@ -148,21 +147,21 @@ func TestBroadcastComment_Create(t *testing.T) {
 			name:  "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				comment: testBroadcastComment("comment-id", "broadcast-id", "user-id", now()),
+				comment: testVideoComment("comment-id", "video-id", "user-id", now()),
 			},
 			want: want{
 				err: nil,
 			},
 		},
 		{
-			name: "already exists",
+			name: "duplicate",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				comment := testBroadcastComment("comment-id", "broadcast-id", "user-id", now())
+				comment := testVideoComment("comment-id", "video-id", "user-id", now())
 				err := db.DB.Create(&comment).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				comment: testBroadcastComment("comment-id", "broadcast-id", "user-id", now()),
+				comment: testVideoComment("comment-id", "video-id", "user-id", now()),
 			},
 			want: want{
 				err: database.ErrAlreadyExists,
@@ -171,24 +170,23 @@ func TestBroadcastComment_Create(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, broadcastCommentTable)
+			err := delete(ctx, videoCommentTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
-			db := &broadcastComment{db: db, now: now}
+			db := &videoComment{db: db, now: now}
 			err = db.Create(ctx, tt.args.comment)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
 
-func TestBroadcastComment_Update(t *testing.T) {
+func TestVideoComment_Update(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	ctrl := gomock.NewController(t)
@@ -202,13 +200,13 @@ func TestBroadcastComment_Update(t *testing.T) {
 	err := deleteAll(ctx)
 	require.NoError(t, err)
 
-	broadcast := testBroadcast("broadcast-id", "schedule-id", "coordinator-id", now())
-	err = db.DB.Create(&broadcast).Error
+	vide := testVideo("video-id", "coordinator-id", []string{"product-id"}, []string{"experience-id"}, now())
+	err = db.DB.Create(&vide).Error
 	require.NoError(t, err)
 
 	type args struct {
 		commentID string
-		params    *database.UpdateBroadcastCommentParams
+		params    *database.UpdateVideoCommentParams
 	}
 	type want struct {
 		err error
@@ -222,14 +220,14 @@ func TestBroadcastComment_Update(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				comment := testBroadcastComment("comment-id", "broadcast-id", "user-id", now())
-				err = db.DB.Create(&comment).Error
+				comment := testVideoComment("comment-id", "video-id", "user-id", now())
+				err := db.DB.Create(&comment).Error
 				require.NoError(t, err)
 			},
 			args: args{
 				commentID: "comment-id",
-				params: &database.UpdateBroadcastCommentParams{
-					Disabled: true,
+				params: &database.UpdateVideoCommentParams{
+					Disabled: false,
 				},
 			},
 			want: want{
@@ -239,31 +237,30 @@ func TestBroadcastComment_Update(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, broadcastCommentTable)
+			err := delete(ctx, videoCommentTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
 
-			db := &broadcastComment{db: db, now: now}
+			db := &videoComment{db: db, now: now}
 			err = db.Update(ctx, tt.args.commentID, tt.args.params)
 			assert.ErrorIs(t, err, tt.want.err)
 		})
 	}
 }
 
-func testBroadcastComment(commentID, broadcastID, userID string, now time.Time) *entity.BroadcastComment {
-	return &entity.BroadcastComment{
-		ID:          commentID,
-		BroadcastID: broadcastID,
-		UserID:      userID,
-		Content:     "こんにちは",
-		Disabled:    false,
-		CreatedAt:   now,
-		UpdatedAt:   now,
+func testVideoComment(commentID, videoID, userID string, now time.Time) *entity.VideoComment {
+	return &entity.VideoComment{
+		ID:        commentID,
+		VideoID:   videoID,
+		UserID:    userID,
+		Content:   "とても面白いですね",
+		Disabled:  false,
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 }

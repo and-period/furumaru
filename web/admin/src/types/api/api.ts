@@ -19100,11 +19100,10 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
          * @param {string} [next] 取得開始位置
          * @param {number} [start] 取得範囲(開始時間:unixtime)
          * @param {number} [end] 取得範囲(終了時間:unixtime)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListLiveComments: async (scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListLiveComments: async (scheduleId: string, limit?: number, next?: string, start?: number, end?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1ListLiveComments', 'scheduleId', scheduleId)
             const localVarPath = `/v1/schedules/{scheduleId}/comments`
@@ -19134,10 +19133,6 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
 
             if (end !== undefined) {
                 localVarQueryParameter['end'] = end;
-            }
-
-            if (orders !== undefined) {
-                localVarQueryParameter['orders'] = orders;
             }
 
 
@@ -19453,12 +19448,11 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * @param {string} [next] 取得開始位置
          * @param {number} [start] 取得範囲(開始時間:unixtime)
          * @param {number} [end] 取得範囲(終了時間:unixtime)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveCommentsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListLiveComments(scheduleId, limit, next, start, end, orders, options);
+        async v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveCommentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListLiveComments(scheduleId, limit, next, start, end, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1ListLiveComments']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19622,12 +19616,11 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {string} [next] 取得開始位置
          * @param {number} [start] 取得範囲(開始時間:unixtime)
          * @param {number} [end] 取得範囲(終了時間:unixtime)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<LiveCommentsResponse> {
-            return localVarFp.v1ListLiveComments(scheduleId, limit, next, start, end, orders, options).then((request) => request(axios, basePath));
+        v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig): AxiosPromise<LiveCommentsResponse> {
+            return localVarFp.v1ListLiveComments(scheduleId, limit, next, start, end, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -19792,13 +19785,12 @@ export class ScheduleApi extends BaseAPI {
      * @param {string} [next] 取得開始位置
      * @param {number} [start] 取得範囲(開始時間:unixtime)
      * @param {number} [end] 取得範囲(終了時間:unixtime)
-     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ScheduleApi
      */
-    public v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1ListLiveComments(scheduleId, limit, next, start, end, orders, options).then((request) => request(this.axios, this.basePath));
+    public v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1ListLiveComments(scheduleId, limit, next, start, end, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
