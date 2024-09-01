@@ -25,7 +25,6 @@ func (s *service) ListVideos(ctx context.Context, in *media.ListVideosInput) (en
 		OnlyDisplayProduct:    in.OnlyDisplayProduct,
 		OnlyDisplayExperience: in.OnlyDisplayExperience,
 		ExcludeLimited:        in.ExcludeLimited,
-		ExcludeDeleted:        in.ExcludeDeleted,
 		Limit:                 int(in.Limit),
 		Offset:                int(in.Offset),
 	}

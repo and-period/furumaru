@@ -143,7 +143,6 @@ type ListVideosParams struct {
 	OnlyDisplayProduct    bool
 	OnlyDisplayExperience bool
 	ExcludeLimited        bool
-	ExcludeDeleted        bool
 	Limit                 int
 	Offset                int
 }
