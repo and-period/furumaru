@@ -137,10 +137,15 @@ type Video interface {
 }
 
 type ListVideosParams struct {
-	Name          string
-	CoordinatorID string
-	Limit         int
-	Offset        int
+	Name                  string
+	CoordinatorID         string
+	OnlyPublished         bool
+	OnlyDisplayProduct    bool
+	OnlyDisplayExperience bool
+	ExcludeLimited        bool
+	ExcludeDeleted        bool
+	Limit                 int
+	Offset                int
 }
 
 type UpdateVideoParams struct {

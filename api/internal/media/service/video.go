@@ -19,10 +19,15 @@ func (s *service) ListVideos(ctx context.Context, in *media.ListVideosInput) (en
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListVideosParams{
-		Name:          in.Name,
-		CoordinatorID: in.CoordinatorID,
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
+		Name:                  in.Name,
+		CoordinatorID:         in.CoordinatorID,
+		OnlyPublished:         in.OnlyPublished,
+		OnlyDisplayProduct:    in.OnlyDisplayProduct,
+		OnlyDisplayExperience: in.OnlyDisplayExperience,
+		ExcludeLimited:        in.ExcludeLimited,
+		ExcludeDeleted:        in.ExcludeDeleted,
+		Limit:                 int(in.Limit),
+		Offset:                int(in.Offset),
 	}
 	var (
 		videos entity.Videos

@@ -22,10 +22,15 @@ func TestListVideos(t *testing.T) {
 
 	now := jst.Date(2023, 10, 20, 18, 30, 0, 0)
 	params := &database.ListVideosParams{
-		Name:          "じゃがいも収穫",
-		CoordinatorID: "coordinator-id",
-		Limit:         20,
-		Offset:        0,
+		Name:                  "じゃがいも収穫",
+		CoordinatorID:         "coordinator-id",
+		OnlyPublished:         true,
+		OnlyDisplayProduct:    false,
+		OnlyDisplayExperience: false,
+		ExcludeLimited:        false,
+		ExcludeDeleted:        true,
+		Limit:                 20,
+		Offset:                0,
 	}
 	videos := entity.Videos{
 		{
@@ -75,10 +80,16 @@ func TestListVideos(t *testing.T) {
 				mocks.db.Video.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &media.ListVideosInput{
-				Name:          "じゃがいも収穫",
-				CoordinatorID: "coordinator-id",
-				Limit:         20,
-				Offset:        0,
+				Name:                  "じゃがいも収穫",
+				CoordinatorID:         "coordinator-id",
+				OnlyPublished:         true,
+				OnlyDisplayProduct:    false,
+				OnlyDisplayExperience: false,
+				ExcludeLimited:        false,
+				ExcludeDeleted:        true,
+				Limit:                 20,
+				Offset:                0,
+				NoLimit:               false,
 			},
 			expect:      videos,
 			expectTotal: 1,
@@ -99,10 +110,15 @@ func TestListVideos(t *testing.T) {
 				mocks.db.Video.EXPECT().Count(gomock.Any(), params).Return(int64(1), nil)
 			},
 			input: &media.ListVideosInput{
-				Name:          "じゃがいも収穫",
-				CoordinatorID: "coordinator-id",
-				Limit:         20,
-				Offset:        0,
+				Name:                  "じゃがいも収穫",
+				CoordinatorID:         "coordinator-id",
+				OnlyPublished:         true,
+				OnlyDisplayProduct:    false,
+				OnlyDisplayExperience: false,
+				ExcludeLimited:        false,
+				ExcludeDeleted:        true,
+				Limit:                 20,
+				Offset:                0,
 			},
 			expect:      nil,
 			expectTotal: 0,
@@ -115,10 +131,15 @@ func TestListVideos(t *testing.T) {
 				mocks.db.Video.EXPECT().Count(gomock.Any(), params).Return(int64(0), assert.AnError)
 			},
 			input: &media.ListVideosInput{
-				Name:          "じゃがいも収穫",
-				CoordinatorID: "coordinator-id",
-				Limit:         20,
-				Offset:        0,
+				Name:                  "じゃがいも収穫",
+				CoordinatorID:         "coordinator-id",
+				OnlyPublished:         true,
+				OnlyDisplayProduct:    false,
+				OnlyDisplayExperience: false,
+				ExcludeLimited:        false,
+				ExcludeDeleted:        true,
+				Limit:                 20,
+				Offset:                0,
 			},
 			expect:      nil,
 			expectTotal: 0,
