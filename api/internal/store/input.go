@@ -540,18 +540,23 @@ type CheckoutAUPayInput struct {
 }
 
 type CheckoutDetail struct {
-	UserID            string `validate:"required"`
-	SessionID         string `validate:"required"`
-	RequestID         string `validate:"required"`
-	CoordinatorID     string `validate:"required"`
-	BoxNumber         int64  `validate:"min=0"`
-	PromotionCode     string `validate:"omitempty,len=8"`
-	BillingAddressID  string `validate:"required"`
-	ShippingAddressID string `validate:"required"`
+	CheckoutProductDetail
+	Type             entity.OrderType `validate:"required"`
+	UserID           string           `validate:"required"`
+	SessionID        string           `validate:"required"`
+	RequestID        string           `validate:"required"`
+	PromotionCode    string           `validate:"omitempty,len=8"`
+	BillingAddressID string           `validate:"required"`
 	// TODO: クライアント側修正が完了し次第、正しいバリデーションに変更
 	// CallbackURL       string `validate:"required,http_url"`
 	CallbackURL string `validate:"omitempty,http_url"`
 	Total       int64  `validate:"required"`
+}
+
+type CheckoutProductDetail struct {
+	CoordinatorID     string `validate:"required"`
+	BoxNumber         int64  `validate:"min=0"`
+	ShippingAddressID string `validate:"required"`
 }
 
 type MultiGetPaymentSystemsInput struct {

@@ -19,6 +19,12 @@ import {
     OrderStatusFromJSONTyped,
     OrderStatusToJSON,
 } from './OrderStatus';
+import type { OrderType } from './OrderType';
+import {
+    OrderTypeFromJSON,
+    OrderTypeFromJSONTyped,
+    OrderTypeToJSON,
+} from './OrderType';
 import type { Address } from './Address';
 import {
     AddressFromJSON,
@@ -76,6 +82,12 @@ export interface Order {
     promotionId: string;
     /**
      * 
+     * @type {OrderType}
+     * @memberof Order
+     */
+    type: OrderType;
+    /**
+     * 
      * @type {OrderStatus}
      * @memberof Order
      */
@@ -127,6 +139,7 @@ export function instanceOfOrder(value: object): value is Order {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('coordinatorId' in value) || value['coordinatorId'] === undefined) return false;
     if (!('promotionId' in value) || value['promotionId'] === undefined) return false;
+    if (!('type' in value) || value['type'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('payment' in value) || value['payment'] === undefined) return false;
     if (!('refund' in value) || value['refund'] === undefined) return false;
@@ -150,6 +163,7 @@ export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ord
         'id': json['id'],
         'coordinatorId': json['coordinatorId'],
         'promotionId': json['promotionId'],
+        'type': OrderTypeFromJSON(json['type']),
         'status': OrderStatusFromJSON(json['status']),
         'payment': OrderPaymentFromJSON(json['payment']),
         'refund': OrderRefundFromJSON(json['refund']),
@@ -169,6 +183,7 @@ export function OrderToJSON(value?: Order | null): any {
         'id': value['id'],
         'coordinatorId': value['coordinatorId'],
         'promotionId': value['promotionId'],
+        'type': OrderTypeToJSON(value['type']),
         'status': OrderStatusToJSON(value['status']),
         'payment': OrderPaymentToJSON(value['payment']),
         'refund': OrderRefundToJSON(value['refund']),

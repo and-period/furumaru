@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOrder(t *testing.T) {
+func TestOrderProduct(t *testing.T) {
 	t.Parallel()
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
@@ -33,13 +33,13 @@ func TestOrder(t *testing.T) {
 	}
 	tests := []struct {
 		name   string
-		params *NewOrderParams
+		params *NewProductOrderParams
 		expect *Order
 		hasErr bool
 	}{
 		{
 			name: "success",
-			params: &NewOrderParams{
+			params: &NewProductOrderParams{
 				OrderID:       "order-id",
 				SessionID:     "session-id",
 				CoordinatorID: "coordinator-id",
@@ -200,6 +200,7 @@ func TestOrder(t *testing.T) {
 				UserID:          "user-id",
 				CoordinatorID:   "coordinator-id",
 				PromotionID:     "",
+				Type:            OrderTypeProduct,
 				Status:          OrderStatusUnpaid,
 				ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 			},
@@ -209,7 +210,7 @@ func TestOrder(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			actual, err := NewOrder(tt.params)
+			actual, err := NewProductOrder(tt.params)
 			if tt.hasErr {
 				assert.Error(t, err)
 				return

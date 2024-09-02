@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -63,7 +62,7 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 	if err := card.Validate(s.now()); err != nil {
 		return "", fmt.Errorf("service: invalid credit card: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	payFn := func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderCreditCardParams{
 			SessionID:         sessionID,
 			Name:              card.Name,
@@ -71,7 +70,7 @@ func (s *service) CheckoutCreditCard(ctx context.Context, in *store.CheckoutCred
 			Month:             card.Month,
 			Year:              card.Year,
 			VerificationValue: card.CVV,
-			Email:             params.Customer.Email(),
+			Email:             params.customer.Email(),
 		}
 		return s.komoju.Session.OrderCreditCard(ctx, in)
 	}
@@ -87,7 +86,7 @@ func (s *service) CheckoutPayPay(ctx context.Context, in *store.CheckoutPayPayIn
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderPayPayParams{
 			SessionID: sessionID,
 		}
@@ -105,7 +104,7 @@ func (s *service) CheckoutLinePay(ctx context.Context, in *store.CheckoutLinePay
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderLinePayParams{
 			SessionID: sessionID,
 		}
@@ -123,7 +122,7 @@ func (s *service) CheckoutMerpay(ctx context.Context, in *store.CheckoutMerpayIn
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderMerpayParams{
 			SessionID: sessionID,
 		}
@@ -141,7 +140,7 @@ func (s *service) CheckoutRakutenPay(ctx context.Context, in *store.CheckoutRaku
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderRakutenPayParams{
 			SessionID: sessionID,
 		}
@@ -159,7 +158,7 @@ func (s *service) CheckoutAUPay(ctx context.Context, in *store.CheckoutAUPayInpu
 	if err := s.validator.Struct(in); err != nil {
 		return "", internalError(err)
 	}
-	payFn := func(ctx context.Context, sessionID string, _ *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+	payFn := func(ctx context.Context, sessionID string, _ *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 		in := &komoju.OrderAUPayParams{
 			SessionID: sessionID,
 		}
@@ -173,61 +172,28 @@ func (s *service) CheckoutAUPay(ctx context.Context, in *store.CheckoutAUPayInpu
 	return s.checkout(ctx, params)
 }
 
-func (s *service) NotifyPaymentCompleted(ctx context.Context, in *store.NotifyPaymentCompletedInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	params := &database.UpdateOrderPaymentParams{
-		Status:    in.Status,
-		PaymentID: in.PaymentID,
-		IssuedAt:  in.IssuedAt,
-	}
-	err := s.db.Order.UpdatePayment(ctx, in.OrderID, params)
-	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order is already updated",
-			zap.String("orderId", in.OrderID), zap.Int32("status", int32(in.Status)), zap.Time("issuedAt", in.IssuedAt))
-		return nil
-	}
-	if err != nil {
-		return internalError(err)
-	}
-	if in.Status != entity.PaymentStatusAuthorized {
-		return nil
-	}
-	notifyIn := &messenger.NotifyOrderAuthorizedInput{
-		OrderID: in.OrderID,
-	}
-	err = s.messenger.NotifyOrderAuthorized(ctx, notifyIn)
-	return internalError(err)
-}
-
-func (s *service) NotifyPaymentRefunded(ctx context.Context, in *store.NotifyPaymentRefundedInput) error {
-	if err := s.validator.Struct(in); err != nil {
-		return internalError(err)
-	}
-	params := &database.UpdateOrderRefundParams{
-		Status:       in.Status,
-		RefundType:   in.Type,
-		RefundTotal:  in.Total,
-		RefundReason: in.Reason,
-		IssuedAt:     in.IssuedAt,
-	}
-	err := s.db.Order.UpdateRefund(ctx, in.OrderID, params)
-	if errors.Is(err, database.ErrFailedPrecondition) {
-		s.logger.Warn("Order is already updated",
-			zap.String("orderId", in.OrderID), zap.Int32("status", int32(in.Status)), zap.Time("issuedAt", in.IssuedAt))
-		return nil
-	}
-	return internalError(err)
-}
-
 type checkoutParams struct {
 	payload           *store.CheckoutDetail
 	paymentMethodType entity.PaymentMethodType
-	payFn             func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error)
+	payFn             func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error)
+}
+
+type checkoutDetailParams struct {
+	customer *uentity.User
 }
 
 func (s *service) checkout(ctx context.Context, params *checkoutParams) (string, error) {
+	switch params.payload.Type {
+	case entity.OrderTypeProduct:
+		return s.checkoutProduct(ctx, params)
+	case entity.OrderTypeExperience:
+		return "", fmt.Errorf("service: not implemented yet: %w", exception.ErrNotImplemented)
+	default:
+		return "", fmt.Errorf("service: invalid order type: %w", exception.ErrInvalidArgument)
+	}
+}
+
+func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (string, error) {
 	var (
 		customer        *uentity.User
 		billingAddress  *uentity.Address
@@ -320,7 +286,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		return "", fmt.Errorf("service: insufficient stock: %w: %s", exception.ErrFailedPrecondition, err.Error())
 	}
 	// 注文インスタンスの生成
-	oparams := &entity.NewOrderParams{
+	oparams := &entity.NewProductOrderParams{
 		OrderID:           params.payload.RequestID,
 		SessionID:         params.payload.SessionID,
 		CoordinatorID:     params.payload.CoordinatorID,
@@ -333,7 +299,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		PaymentMethodType: params.paymentMethodType,
 		Promotion:         promotion,
 	}
-	order, err := entity.NewOrder(oparams)
+	order, err := entity.NewProductOrder(oparams)
 	if err != nil {
 		return "", internalError(err)
 	}
@@ -381,7 +347,10 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 		return "", internalError(err)
 	}
 	// 決済依頼処理
-	pay, err := params.payFn(ctx, session.ID, oparams)
+	cparams := &checkoutDetailParams{
+		customer: customer,
+	}
+	pay, err := params.payFn(ctx, session.ID, cparams)
 	if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
 		// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
 		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), nil
