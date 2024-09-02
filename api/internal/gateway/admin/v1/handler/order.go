@@ -11,7 +11,6 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/store/entity"
 	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
@@ -81,7 +80,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		Statuses: statuses,
 	}
 	if orderType != "" {
-		in.Types = []entity.OrderType{service.NewOrderTypeFromString(orderType).StoreEntity()}
+		in.Types = []sentity.OrderType{service.NewOrderTypeFromString(orderType).StoreEntity()}
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
