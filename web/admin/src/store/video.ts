@@ -1,6 +1,8 @@
+import { fileUpload } from './helper'
 import { apiClient } from '~/plugins/api-client'
 import type {
   CreateVideoRequest,
+  UpdateVideoRequest,
   VideoResponse,
   VideosResponse,
 } from '~/types/api'
@@ -67,9 +69,49 @@ export const useVideoStore = defineStore('video', {
      * @param payload
      * @returns
      */
-    async updateVideo(id: string, payload: CreateVideoRequest): Promise<void> {
+    async updateVideo(id: string, payload: UpdateVideoRequest): Promise<void> {
       try {
         await apiClient.videoApi().v1UpdateVideo(id, payload)
+      }
+      catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * 動画ファイルアップロード関数
+     * @param file 動画ファイル
+     * @returns 参照先のURL
+     */
+    async uploadVideoFile(file: File): Promise<string> {
+      try {
+        const contentType = file.type
+        const res = await apiClient
+          .videoApi()
+          .v1GetVideoFileUploadUrl({ fileType: contentType })
+
+        return await fileUpload(file, res.data.key, res.data.url)
+      }
+      catch (error) {
+        console.log(error)
+        return this.errorHandler(error)
+      }
+    },
+
+    /**
+     * サムネイルファイルアップロード関数
+     * @param file 画像ファイル
+     * @returns 参照先のURL
+     */
+    async uploadThumbnailFile(file: File): Promise<string> {
+      try {
+        const contentType = file.type
+        const res = await apiClient
+          .videoApi()
+          .v1GetVideoThumbnailUploadUrl({ fileType: contentType })
+
+        return await fileUpload(file, res.data.key, res.data.url)
       }
       catch (error) {
         console.log(error)
