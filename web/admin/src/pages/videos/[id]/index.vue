@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useVideoStore } from '~/store'
 import type { UpdateVideoRequest, Product, Experience } from '~/types/api'
+import { ApiBaseError } from '~/types/exception'
 
 const route = useRoute()
 const router = useRouter()
@@ -42,6 +43,91 @@ const { status } = useAsyncData(async () => {
 
 const isInitLoading = computed<boolean>(() => status.value === 'pending')
 
+/**
+ * 動画ファイルアップロードステータス
+ */
+const uploadVideoStatus = ref<{
+  isUploading: boolean
+  hasError: boolean
+  errorMessage: string
+}>({
+  isUploading: false,
+  hasError: false,
+  errorMessage: '',
+})
+
+/**
+ * 動画ファイルアップロード関数
+ */
+const handleUploadVideo = async (file: File) => {
+  try {
+    uploadVideoStatus.value.isUploading = true
+    const newUrl = await videoStore.uploadVideoFile(file)
+    formData.value.videoUrl = newUrl
+  }
+  catch (error) {
+    uploadVideoStatus.value.hasError = true
+    if (error instanceof ApiBaseError) {
+      uploadVideoStatus.value.errorMessage = error.message
+    }
+    else {
+      uploadVideoStatus.value.errorMessage
+        = '動画ファイルのアップロードに失敗しました。不明なエラーが発生しました。'
+    }
+  }
+  finally {
+    uploadVideoStatus.value.isUploading = false
+  }
+}
+
+/**
+ * サムネイル画像アップロードステータス
+ */
+const uploadThumbnailStatus = ref<{
+  isUploading: boolean
+  hasError: boolean
+  errorMessage: string
+}>({
+  isUploading: false,
+  hasError: false,
+  errorMessage: '',
+})
+
+/**
+ * サムネイル画像ファイルアップロード関数
+ * @param file
+ */
+const handleUploadThumbnail = async (file: File) => {
+  try {
+    uploadThumbnailStatus.value.isUploading = true
+    const newUrl = await videoStore.uploadThumbnailFile(file)
+    formData.value.thumbnailUrl = newUrl
+  }
+  catch (error) {
+    uploadThumbnailStatus.value.hasError = true
+    if (error instanceof ApiBaseError) {
+      uploadThumbnailStatus.value.errorMessage = error.message
+    }
+    else {
+      uploadThumbnailStatus.value.errorMessage
+        = 'サムネイル画像のアップロードに失敗しました。不明なエラーが発生しました。'
+    }
+  }
+  finally {
+    uploadThumbnailStatus.value.isUploading = false
+  }
+}
+
+const handleSubmit = async () => {
+  try {
+    await videoStore.updateVideo(videoId, formData.value)
+    router.push('/videos')
+  }
+  catch (error) {
+    console.log('update error')
+  }
+}
+
 const handleClickBackButton = () => {
   router.back()
 }
@@ -61,6 +147,15 @@ const handleClickBackButton = () => {
             v-model="formData"
             :selected-products="selectedProducts"
             :selected-experiences="selectedExperiences"
+            :video-is-uploading="uploadVideoStatus.isUploading"
+            :video-has-error="uploadVideoStatus.hasError"
+            :video-error-message="uploadVideoStatus.errorMessage"
+            :thumbnail-is-uploading="uploadThumbnailStatus.isUploading"
+            :thumbnail-has-error="uploadThumbnailStatus.hasError"
+            :thumbnail-error-message="uploadThumbnailStatus.errorMessage"
+            @update:video="handleUploadVideo"
+            @update:thumbnail="handleUploadThumbnail"
+            @submit="handleSubmit"
           />
         </template>
       </v-card-text>
@@ -79,6 +174,8 @@ const handleClickBackButton = () => {
         <v-btn
           color="primary"
           variant="outlined"
+          type="submit"
+          form="update-video-form"
         >
           保存
         </v-btn>
