@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOrder(t *testing.T) {
+func TestOrderProduct(t *testing.T) {
 	t.Parallel()
 	shikoku := []int32{
 		codes.PrefectureValues["tokushima"],
@@ -200,6 +200,7 @@ func TestOrder(t *testing.T) {
 				UserID:          "user-id",
 				CoordinatorID:   "coordinator-id",
 				PromotionID:     "",
+				Type:            OrderTypeProduct,
 				Status:          OrderStatusUnpaid,
 				ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 			},

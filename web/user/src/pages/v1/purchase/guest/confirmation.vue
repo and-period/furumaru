@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { useAddressStore } from '~/store/address'
 import { useCheckoutStore } from '~/store/checkout'
 import { useShoppingCartStore } from '~/store/shopping'
-import type { GuestCheckoutRequest } from '~/types/api'
+import type { GuestCheckoutProductRequest } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 
 const addressStore = useAddressStore()
@@ -81,7 +81,7 @@ const cartNumber = computed<number | undefined>(() => {
 
 const { email, guestAddress } = storeToRefs(addressStore)
 
-const checkoutFormData = ref<GuestCheckoutRequest>({
+const checkoutFormData = ref<GuestCheckoutProductRequest>({
   requestId: '',
   coordinatorId: '',
   boxNumber: 0,
