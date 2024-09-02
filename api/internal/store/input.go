@@ -414,6 +414,7 @@ type DeleteLiveInput struct {
 type ListOrdersInput struct {
 	CoordinatorID string               `validate:""`
 	UserID        string               `validate:""`
+	Types         []entity.OrderType   `validate:""`
 	Statuses      []entity.OrderStatus `validate:""`
 	Limit         int64                `validate:"required,max=200"`
 	Offset        int64                `validate:"min=0"`

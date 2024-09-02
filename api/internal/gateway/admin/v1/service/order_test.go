@@ -10,6 +10,51 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestOrderType(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		typ      entity.OrderType
+		str      string
+		expect   OrderType
+		response int32
+	}{
+		{
+			name:     "product",
+			typ:      entity.OrderTypeProduct,
+			str:      "product",
+			expect:   OrderTypeProduct,
+			response: 1,
+		},
+		{
+			name:     "experience",
+			typ:      entity.OrderTypeExperience,
+			str:      "experience",
+			expect:   OrderTypeExperience,
+			response: 2,
+		},
+		{
+			name:     "unknown",
+			typ:      entity.OrderTypeUnknown,
+			str:      "unknown",
+			expect:   OrderTypeUnknown,
+			response: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual := NewOrderType(tt.typ)
+			assert.Equal(t, tt.expect, actual)
+			assert.Equal(t, actual, NewOrderTypeFromString(tt.str))
+			assert.Equal(t, tt.response, actual.Response())
+		})
+	}
+}
+
 func TestOrderStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

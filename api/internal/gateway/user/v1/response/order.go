@@ -5,6 +5,7 @@ type Order struct {
 	ID              string              `json:"id"`              // 注文履歴ID
 	CoordinatorID   string              `json:"coordinatorId"`   // コーディネータID
 	PromotionID     string              `json:"promotionId"`     // プロモーションID
+	Type            int32               `json:"type"`            // 注文種別
 	Status          int32               `json:"status"`          // 注文ステータス
 	Payment         *OrderPayment       `json:"payment"`         // 支払い情報
 	Refund          *OrderRefund        `json:"refund"`          // 注文キャンセル情報

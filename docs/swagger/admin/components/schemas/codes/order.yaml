@@ -1,3 +1,20 @@
+orderType:
+  type: integer
+  format: int32
+  description: 注文種別
+  nullable: false
+  enum:
+  - 0
+  - 1
+  - 2
+  x-enum-varnames:
+  - UNKNOWN
+  - PRODUCT
+  - EXPERIENCE
+  x-enum-descriptions:
+  - 不明
+  - 商品
+  - 体験
 orderStatus:
   type: integer
   format: int32
