@@ -12,9 +12,23 @@ interface Props {
   id: string
   selectedProducts: Product[]
   selectedExperiences: Experience[]
+  videoIsUploading: boolean
+  videoHasError: boolean
+  videoErrorMessage: string
+  thumbnailIsUploading: boolean
+  thumbnailHasError: boolean
+  thumbnailErrorMessage: string
 }
 
 defineProps<Props>()
+
+interface Emits {
+  (e: 'update:video', files: File): void
+  (e: 'update:thumbnail', files: File): void
+  (e: 'submit'): void
+}
+
+const emits = defineEmits<Emits>()
 
 const formData = defineModel<CreateVideoRequest | UpdateVideoRequest>({
   required: true,
@@ -90,17 +104,61 @@ watch(
     formData.value.publishedAt = publishedAt
   },
 )
+
+/**
+ * タイトルのバリデーションルール
+ */
+const titleRules = [
+  (v: string) => !!v || 'タイトルは必須です',
+  (v: string) =>
+    (v && v.length <= 128) || 'タイトルは128文字以内で入力してください',
+]
+
+/**
+ * 詳細のバリデーションルール
+ */
+const descriptionRules = [
+  (v: string) =>
+    (v && v.length <= 2000) || '詳細は2000文字以内で入力してください',
+]
+
+/**
+ * 動画ファイルの変更時の処理
+ */
+const handleChangeVideoFile = (files?: FileList): void => {
+  if (files) {
+    emits('update:video', files[0])
+  }
+}
+
+/**
+ * サムネイル画像の変更時の処理
+ */
+const handleChangeThumbnailFile = (files?: FileList): void => {
+  if (files) {
+    emits('update:thumbnail', files[0])
+  }
+}
+
+/**
+ * フォームの送信時の処理
+ */
+const handleSubmit = () => {
+  emits('submit')
+}
 </script>
 
 <template>
   <v-form
     :id="id"
     class="d-flex flex-column ga-4"
+    @submit.prevent="handleSubmit"
   >
     <v-text-field
       v-model="formData.title"
       label="タイトル"
       required
+      :rules="titleRules"
     />
     <v-select
       v-model="formData.public"
@@ -136,15 +194,24 @@ watch(
     <v-textarea
       v-model="formData.description"
       label="詳細"
+      :rules="descriptionRules"
     />
 
     <molecules-video-select-form
       label="動画"
       :video-url="formData.videoUrl"
+      :loading="videoIsUploading"
+      :error="videoHasError"
+      :message="videoErrorMessage"
+      @update:file="handleChangeVideoFile"
     />
     <molecules-icon-select-form
       label="サムネイル"
       :img-url="formData.thumbnailUrl"
+      :loading="thumbnailIsUploading"
+      :error="thumbnailHasError"
+      :message="thumbnailErrorMessage"
+      @update:file="handleChangeThumbnailFile"
     />
 
     <div>
