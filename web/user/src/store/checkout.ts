@@ -1,5 +1,5 @@
 import { useAuthStore } from './auth'
-import type { CheckoutRequest, CheckoutStateResponse, GuestCheckoutRequest, GuestCheckoutStateResponse } from '~/types/api'
+import type { CheckoutProductRequest, CheckoutStateResponse, GuestCheckoutProductRequest, GuestCheckoutStateResponse } from '~/types/api'
 
 export const useCheckoutStore = defineStore('checkout', {
   state: () => {
@@ -19,13 +19,13 @@ export const useCheckoutStore = defineStore('checkout', {
      * @param payload
      * @returns
      */
-    async checkout(payload: CheckoutRequest): Promise<string> {
+    async checkout(payload: CheckoutProductRequest): Promise<string> {
       this.checkoutState.isLoading = true
       try {
         const authStore = useAuthStore()
         const res = await this.checkoutApiClient(
           authStore.accessToken,
-        ).v1Checkout({
+        ).v1CheckoutProduct({
           body: payload,
         })
         return res.url
@@ -43,10 +43,10 @@ export const useCheckoutStore = defineStore('checkout', {
      * @param payload
      * @returns
      */
-    async guestCheckout(payload: GuestCheckoutRequest): Promise<string> {
+    async guestCheckout(payload: GuestCheckoutProductRequest): Promise<string> {
       this.checkoutState.isLoading = true
       try {
-        const res = await this.checkoutApiClient().v1GuestCheckout({
+        const res = await this.checkoutApiClient().v1GuestCheckoutProduct({
           body: payload,
         })
         return res.url

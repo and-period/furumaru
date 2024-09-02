@@ -269,6 +269,7 @@ func TestNotifyOrderAuthorized(t *testing.T) {
 		UserID:        "user-id",
 		CoordinatorID: "coordinator-id",
 		PromotionID:   "",
+		Type:          sentity.OrderTypeProduct,
 	}
 	coordinatorIn := &user.GetCoordinatorInput{
 		CoordinatorID: "coordinator-id",

@@ -11,6 +11,8 @@ order:
     promotionId:
       type: string
       description: プロモーションID
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/orderType'
     status:
       $ref: './../../../openapi.yaml#/components/schemas/orderStatus'
     payment:
@@ -35,6 +37,7 @@ order:
   - id
   - coordinatorId
   - promotionId
+  - type
   - status
   - payment
   - refund
@@ -46,6 +49,7 @@ order:
     id: 'kSByoE6FetnPs5Byk3a9Zx'
     coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+    type: 1
     status: 5
     payment:
       transactionId: 'kSByoE6FetnPs5Byk3a9Zx'

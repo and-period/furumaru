@@ -69,6 +69,21 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 		return internalError(err)
 	}
 	var (
+		emailTemplateID  entity.EmailTemplateID
+		reportTemplateID entity.ReportTemplateID
+	)
+	switch order.Type {
+	case sentity.OrderTypeProduct:
+		emailTemplateID = entity.EmailTemplateIDUserOrderAuthorized
+		reportTemplateID = entity.ReportTemplateIDOrderAuthorized
+	case sentity.OrderTypeExperience:
+		s.logger.Warn("Unsupported experience order type", zap.String("orderId", order.ID))
+		return nil
+	default:
+		s.logger.Warn("Unknown order type", zap.String("orderId", order.ID))
+		return nil
+	}
+	var (
 		coordinator          *uentity.Coordinator
 		products             sentity.Products
 		paymentAddress       *uentity.Address
@@ -108,12 +123,12 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 		OrderFulfillment(order.OrderFulfillments, fulfillmentAddresses.MapByRevision()).
 		OrderItems(order.OrderItems, products.MapByRevision())
 	mail := &entity.MailConfig{
-		TemplateID:    entity.EmailTemplateIDUserOrderAuthorized,
+		TemplateID:    emailTemplateID,
 		Substitutions: builder.Build(),
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
-		TemplateID: entity.ReportTemplateIDOrderAuthorized,
+		TemplateID: reportTemplateID,
 		Overview:   paymentAddress.Name(),
 		Author:     coordinator.Name(),
 		Link:       maker.Order(order.ID),

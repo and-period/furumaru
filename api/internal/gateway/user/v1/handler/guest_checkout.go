@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -9,23 +10,27 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	sentity "github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/user"
 	"github.com/gin-gonic/gin"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (h *handler) guestCheckoutRoutes(rg *gin.RouterGroup) {
 	r := rg.Group("/guests/checkouts")
 
-	r.POST("", h.GuestCheckout)
+	r.POST("/products", h.GuestCheckoutProduct)
+	r.POST("/experiences/:experienceId", h.GuestCheckoutProduct)
 	r.GET("/:transactionId", h.GetGuestCheckoutState)
 }
 
-func (h *handler) GuestCheckout(ctx *gin.Context) {
-	req := &request.GuestCheckoutRequest{}
+func (h *handler) GuestCheckoutProduct(ctx *gin.Context) {
+	req := &request.GuestCheckoutProductRequest{}
 	if err := ctx.BindJSON(req); err != nil {
 		h.badRequest(ctx, err)
+		return
+	}
+	methodType := service.PaymentMethodType(req.PaymentMethod)
+	if err := h.checkPaymentSystem(ctx, methodType); err != nil {
 		return
 	}
 	if req.BillingAddress == nil {
@@ -36,50 +41,13 @@ func (h *handler) GuestCheckout(ctx *gin.Context) {
 		h.badRequest(ctx, errors.New("handler: shipping address is required"))
 		return
 	}
-	methodType := service.PaymentMethodType(req.PaymentMethod)
-	system, err := h.getPaymentSystem(ctx, methodType)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	if !system.InService() {
-		h.forbidden(ctx, errors.New("handler: out of service"))
-		return
-	}
 	// ゲストユーザー登録
-	guestIn := &user.UpsertGuestInput{
-		Lastname:      req.BillingAddress.Lastname,
-		Firstname:     req.BillingAddress.Firstname,
-		LastnameKana:  req.BillingAddress.LastnameKana,
-		FirstnameKana: req.BillingAddress.FirstnameKana,
-		Email:         req.Email,
-	}
-	userID, err := h.user.UpsertGuest(ctx, guestIn)
+	userID, billingAddressID, err := h.createGuestForCheckout(ctx, req.Email, req.BillingAddress)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	// 請求先住所登録
-	baddressIn := &user.CreateAddressInput{
-		UserID:         userID,
-		Lastname:       req.BillingAddress.Lastname,
-		Firstname:      req.BillingAddress.Firstname,
-		LastnameKana:   req.BillingAddress.LastnameKana,
-		FirstnameKana:  req.BillingAddress.FirstnameKana,
-		PostalCode:     req.BillingAddress.PostalCode,
-		PrefectureCode: req.BillingAddress.PrefectureCode,
-		City:           req.BillingAddress.City,
-		AddressLine1:   req.BillingAddress.AddressLine1,
-		AddressLine2:   req.BillingAddress.AddressLine2,
-		PhoneNumber:    req.BillingAddress.PhoneNumber,
-		IsDefault:      true,
-	}
-	baddress, err := h.user.CreateAddress(ctx, baddressIn)
-	if err != nil {
-		h.httpError(ctx, err)
-		return
-	}
-	billingAddressID := baddress.ID
+	// 配送先住所登録
 	var shippingAddressID string
 	if req.IsSameAddress {
 		shippingAddressID = billingAddressID
@@ -107,71 +75,100 @@ func (h *handler) GuestCheckout(ctx *gin.Context) {
 	}
 	// 購入処理を進める
 	detail := &store.CheckoutDetail{
-		UserID:            userID,
-		SessionID:         h.getSessionID(ctx),
-		RequestID:         req.RequestID,
-		CoordinatorID:     req.CoordinatorID,
-		BoxNumber:         req.BoxNumber,
-		PromotionCode:     req.PromotionCode,
-		BillingAddressID:  billingAddressID,
-		ShippingAddressID: shippingAddressID,
-		CallbackURL:       req.CallbackURL,
-		Total:             req.Total,
+		Type:             sentity.OrderTypeProduct,
+		UserID:           userID,
+		SessionID:        h.getSessionID(ctx),
+		RequestID:        req.RequestID,
+		PromotionCode:    req.PromotionCode,
+		BillingAddressID: billingAddressID,
+		CallbackURL:      req.CallbackURL,
+		Total:            req.Total,
+		CheckoutProductDetail: store.CheckoutProductDetail{
+			CoordinatorID:     req.CoordinatorID,
+			BoxNumber:         req.BoxNumber,
+			ShippingAddressID: shippingAddressID,
+		},
 	}
-	var redirectURL string
-	switch methodType {
-	case service.PaymentMethodTypeCreditCard:
-		if req.CreditCard == nil {
-			h.badRequest(ctx, errors.New("handler: credit card is required"))
-			break
-		}
-		in := &store.CheckoutCreditCardInput{
-			CheckoutDetail:    *detail,
-			Name:              req.CreditCard.Name,
-			Number:            req.CreditCard.Number,
-			Month:             req.CreditCard.Month,
-			Year:              req.CreditCard.Year,
-			VerificationValue: req.CreditCard.VerificationValue,
-		}
-		redirectURL, err = h.store.CheckoutCreditCard(ctx, in)
-	case service.PaymentMethodTypePayPay:
-		in := &store.CheckoutPayPayInput{
-			CheckoutDetail: *detail,
-		}
-		redirectURL, err = h.store.CheckoutPayPay(ctx, in)
-	case service.PaymentMethodTypeLinePay:
-		in := &store.CheckoutLinePayInput{
-			CheckoutDetail: *detail,
-		}
-		redirectURL, err = h.store.CheckoutLinePay(ctx, in)
-	case service.PaymentMethodTypeMerpay:
-		in := &store.CheckoutMerpayInput{
-			CheckoutDetail: *detail,
-		}
-		redirectURL, err = h.store.CheckoutMerpay(ctx, in)
-	case service.PaymentMethodTypeRakutenPay:
-		in := &store.CheckoutRakutenPayInput{
-			CheckoutDetail: *detail,
-		}
-		redirectURL, err = h.store.CheckoutRakutenPay(ctx, in)
-	case service.PaymentMethodTypeAUPay:
-		in := &store.CheckoutAUPayInput{
-			CheckoutDetail: *detail,
-		}
-		redirectURL, err = h.store.CheckoutAUPay(ctx, in)
-	default:
-		err := errors.New("handler: not implemented payment method")
-		h.httpError(ctx, status.Error(codes.Unimplemented, err.Error()))
+	params := &checkoutParams{
+		methodType: methodType,
+		detail:     detail,
+		creditCard: req.CreditCard,
+	}
+	h.checkout(ctx, params)
+}
+
+func (h *handler) GuestCheckoutExperience(ctx *gin.Context) {
+	req := &request.GuestCheckoutExperienceRequest{}
+	if err := ctx.BindJSON(req); err != nil {
+		h.badRequest(ctx, err)
 		return
 	}
+	methodType := service.PaymentMethodType(req.PaymentMethod)
+	if err := h.checkPaymentSystem(ctx, methodType); err != nil {
+		return
+	}
+	if req.BillingAddress == nil {
+		h.badRequest(ctx, errors.New("handler: billing address is required"))
+		return
+	}
+	// ゲストユーザー登録
+	userID, billingAddressID, err := h.createGuestForCheckout(ctx, req.Email, req.BillingAddress)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
 	}
-	res := &response.GuestCheckoutResponse{
-		URL: redirectURL,
+	// 購入処理を進める
+	detail := &store.CheckoutDetail{
+		Type:             sentity.OrderTypeExperience,
+		UserID:           userID,
+		SessionID:        h.getSessionID(ctx),
+		RequestID:        req.RequestID,
+		PromotionCode:    req.PromotionCode,
+		BillingAddressID: billingAddressID,
+		CallbackURL:      req.CallbackURL,
+		Total:            req.Total,
 	}
-	ctx.JSON(http.StatusOK, res)
+	params := &checkoutParams{
+		methodType: methodType,
+		detail:     detail,
+		creditCard: req.CreditCard,
+	}
+	h.checkout(ctx, params)
+}
+
+func (h *handler) createGuestForCheckout(ctx context.Context, email string, address *request.GuestCheckoutAddress) (string, string, error) {
+	// ゲストユーザー登録
+	guestIn := &user.UpsertGuestInput{
+		Lastname:      address.Lastname,
+		Firstname:     address.Firstname,
+		LastnameKana:  address.LastnameKana,
+		FirstnameKana: address.FirstnameKana,
+		Email:         email,
+	}
+	userID, err := h.user.UpsertGuest(ctx, guestIn)
+	if err != nil {
+		return "", "", err
+	}
+	// 請求先住所登録
+	baddressIn := &user.CreateAddressInput{
+		UserID:         userID,
+		Lastname:       address.Lastname,
+		Firstname:      address.Firstname,
+		LastnameKana:   address.LastnameKana,
+		FirstnameKana:  address.FirstnameKana,
+		PostalCode:     address.PostalCode,
+		PrefectureCode: address.PrefectureCode,
+		City:           address.City,
+		AddressLine1:   address.AddressLine1,
+		AddressLine2:   address.AddressLine2,
+		PhoneNumber:    address.PhoneNumber,
+		IsDefault:      true,
+	}
+	baddress, err := h.user.CreateAddress(ctx, baddressIn)
+	if err != nil {
+		return "", "", err
+	}
+	return userID, baddress.ID, nil
 }
 
 func (h *handler) GetGuestCheckoutState(ctx *gin.Context) {

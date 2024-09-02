@@ -91,8 +91,8 @@ paths:
   /v1/carts/-/items/{productId}:
     $ref: './paths/v1/carts/-/items/_productId/index.yaml'
   # Checkout
-  /v1/checkouts:
-    $ref: './paths/v1/checkouts/index.yaml'
+  /v1/checkouts/products:
+    $ref: './paths/v1/checkouts/products/index.yaml'
   /v1/checkouts/{transactionId}:
     $ref: './paths/v1/checkouts/_transactionId/index.yaml'
   # Contact
@@ -109,8 +109,8 @@ paths:
   /v1/experiences/{experienceId}:
     $ref: './paths/v1/experiences/_experienceId/index.yaml'
   # Guest
-  /v1/guests/checkouts:
-    $ref: './paths/v1/guests/checkouts/index.yaml'
+  /v1/guests/checkouts/products:
+    $ref: './paths/v1/guests/checkouts/products/index.yaml'
   /v1/guests/checkouts/{transactionId}:
     $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
   /v1/guests/schedules/{scheduleId}/comments:
@@ -180,6 +180,8 @@ components:
       $ref: './components/schemas/codes/experience.yaml#/experienceStatus'
     orderStatus:
       $ref: './components/schemas/codes/order.yaml#/orderStatus'
+    orderType:
+      $ref: './components/schemas/codes/order.yaml#/orderType'
     fulfillmentStatus:
       $ref: './components/schemas/codes/order-fulfillment.yaml#/fulfillmentStatus'
     shippingCarrier:
@@ -294,12 +296,12 @@ components:
       $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserThumbnailRequest'
     v1AddCartItemRequest:
       $ref: './components/schemas/v1/cart.request.yaml#/addCartItemRequest'
-    v1CheckoutRequest:
-      $ref: './components/schemas/v1/checkout.request.yaml#/checkoutRequest'
+    v1CheckoutProductRequest:
+      $ref: './components/schemas/v1/checkout.request.yaml#/checkoutProductRequest'
     v1CreateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
-    v1GuestCheckoutRequest:
-      $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutRequest'
+    v1GuestCheckoutProductRequest:
+      $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutProductRequest'
     v1CreateGuestLiveCommentRequest:
       $ref: './components/schemas/v1/guest-live-comment.request.yaml#/createGuestLiveCommentRequest'
     v1CreateGuestVideoCommentRequest:

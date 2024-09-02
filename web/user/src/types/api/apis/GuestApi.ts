@@ -17,7 +17,7 @@ import * as runtime from '../runtime';
 import type {
   CreateGuestLiveCommentRequest,
   ErrorResponse,
-  GuestCheckoutRequest,
+  GuestCheckoutProductRequest,
   GuestCheckoutResponse,
   GuestCheckoutStateResponse,
 } from '../models/index';
@@ -26,8 +26,8 @@ import {
     CreateGuestLiveCommentRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-    GuestCheckoutRequestFromJSON,
-    GuestCheckoutRequestToJSON,
+    GuestCheckoutProductRequestFromJSON,
+    GuestCheckoutProductRequestToJSON,
     GuestCheckoutResponseFromJSON,
     GuestCheckoutResponseToJSON,
     GuestCheckoutStateResponseFromJSON,
@@ -43,8 +43,8 @@ export interface V1GetGuestCheckoutStateRequest {
     transactionId: string;
 }
 
-export interface V1GuestCheckoutRequest {
-    body: GuestCheckoutRequest;
+export interface V1GuestCheckoutProductRequest {
+    body: GuestCheckoutProductRequest;
 }
 
 /**
@@ -130,11 +130,11 @@ export class GuestApi extends runtime.BaseAPI {
     /**
      * ゲスト商品購入
      */
-    async v1GuestCheckoutRaw(requestParameters: V1GuestCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutResponse>> {
+    async v1GuestCheckoutProductRaw(requestParameters: V1GuestCheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
-                'Required parameter "body" was null or undefined when calling v1GuestCheckout().'
+                'Required parameter "body" was null or undefined when calling v1GuestCheckoutProduct().'
             );
         }
 
@@ -145,7 +145,7 @@ export class GuestApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/v1/guests/checkouts`,
+            path: `/v1/guests/checkouts/products`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -158,8 +158,8 @@ export class GuestApi extends runtime.BaseAPI {
     /**
      * ゲスト商品購入
      */
-    async v1GuestCheckout(requestParameters: V1GuestCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutResponse> {
-        const response = await this.v1GuestCheckoutRaw(requestParameters, initOverrides);
+    async v1GuestCheckoutProduct(requestParameters: V1GuestCheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutResponse> {
+        const response = await this.v1GuestCheckoutProductRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
