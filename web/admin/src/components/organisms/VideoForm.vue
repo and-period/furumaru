@@ -118,8 +118,7 @@ const titleRules = [
  * 詳細のバリデーションルール
  */
 const descriptionRules = [
-  (v: string) =>
-    (v && v.length <= 2000) || '詳細は2000文字以内で入力してください',
+  (v: string) => v.length <= 2000 || '詳細は2000文字以内で入力してください',
 ]
 
 /**
