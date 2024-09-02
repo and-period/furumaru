@@ -23,6 +23,8 @@ interface Props {
 defineProps<Props>()
 
 interface Emits {
+  (e: 'click:link-product'): void
+  (e: 'click:link-experience'): void
   (e: 'update:video', files: File): void
   (e: 'update:thumbnail', files: File): void
   (e: 'submit'): void
@@ -140,6 +142,20 @@ const handleChangeThumbnailFile = (files?: FileList): void => {
 }
 
 /**
+ * 商品を紐づけるボタンクリック時の処理
+ */
+const handleClickLinkProductButton = (): void => {
+  emits('click:link-product')
+}
+
+/**
+ * 体験を紐づけるボタンクリック時の処理
+ */
+const handleClickLinkExperienceButton = (): void => {
+  emits('click:link-experience')
+}
+
+/**
  * フォームの送信時の処理
  */
 const handleSubmit = () => {
@@ -244,6 +260,7 @@ const handleSubmit = () => {
       <v-btn
         class="w-100 mt-3"
         variant="outlined"
+        @click="handleClickLinkProductButton"
       >
         <v-icon :icon="mdiPlus" />
         商品を紐づける
@@ -264,6 +281,7 @@ const handleSubmit = () => {
       <v-btn
         class="w-100 mt-3"
         variant="outlined"
+        @click="handleClickLinkExperienceButton"
       >
         <v-icon :icon="mdiPlus" />
         体験を紐づける
