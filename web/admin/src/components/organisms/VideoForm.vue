@@ -204,7 +204,7 @@ const handleSubmit = () => {
       :message="videoErrorMessage"
       @update:file="handleChangeVideoFile"
     />
-    <molecules-icon-select-form
+    <molecules-image-select-form
       label="サムネイル"
       :img-url="formData.thumbnailUrl"
       :loading="thumbnailIsUploading"
