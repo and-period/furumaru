@@ -37,6 +37,11 @@ experienceResponse:
       recommendedPoint1: 'おすすめポイント1'
       recommendedPoint2: 'おすすめポイント2'
       recommendedPoint3: 'おすすめポイント3'
+      promotionVideoUrl: 'https://example.com/promotion.mp4'
+      duration: 60
+      direction: '新宿駅から徒歩10分'
+      businessOpenTime: '1000'
+      businessCloseTime: '1700'
       hostPostalCode: '123-4567'
       hostPrefecture: '東京都'
       hostCity: '千代田区'

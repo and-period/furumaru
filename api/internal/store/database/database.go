@@ -97,6 +97,10 @@ type UpdateExperienceParams struct {
 	PriceSenior           int64
 	RecommendedPoints     []string
 	PromotionVideoURL     string
+	Duration              int64
+	Direction             string
+	BusinessOpenTime      string
+	BusinessCloseTime     string
 	HostPostalCode        string
 	HostPrefectureCode    int32
 	HostCity              string

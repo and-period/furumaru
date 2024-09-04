@@ -1639,6 +1639,30 @@ export interface CreateExperienceRequest {
      */
     'promotionVideoUrl': string;
     /**
+     * 体験時間（単位:分、0以上）
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'duration': number;
+    /**
+     * アクセス方法（2000文字以下）
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'direction': string;
+    /**
+     * 営業開始時間（形式:HHmm）
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'businessOpenTime': string;
+    /**
+     * 営業終了時間（形式:HHmm）
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'businessCloseTime': string;
+    /**
      * 郵便番号(ハイフンなし)
      * @type {string}
      * @memberof CreateExperienceRequest
@@ -2585,6 +2609,30 @@ export interface Experience {
      * @memberof Experience
      */
     'promotionVideoUrl': string;
+    /**
+     * 体験時間（分）
+     * @type {number}
+     * @memberof Experience
+     */
+    'duration': number;
+    /**
+     * アクセス方法
+     * @type {string}
+     * @memberof Experience
+     */
+    'direction': string;
+    /**
+     * 営業開始時間
+     * @type {string}
+     * @memberof Experience
+     */
+    'businessOpenTime': string;
+    /**
+     * 営業終了時間
+     * @type {string}
+     * @memberof Experience
+     */
+    'businessCloseTime': string;
     /**
      * 開催地（郵便番号）
      * @type {string}
@@ -6363,6 +6411,30 @@ export interface UpdateExperienceRequest {
      * @memberof UpdateExperienceRequest
      */
     'promotionVideoUrl': string;
+    /**
+     * 体験時間（単位:分、0以上）
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'duration': number;
+    /**
+     * アクセス方法（2000文字以下）
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'direction': string;
+    /**
+     * 営業開始時間（形式:HHmm）
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'businessOpenTime': string;
+    /**
+     * 営業終了時間（形式:HHmm）
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'businessCloseTime': string;
     /**
      * 郵便番号(ハイフンなし)
      * @type {string}

@@ -69,6 +69,19 @@ createExperienceRequest:
     promotionVideoUrl:
       type: string
       description: 紹介動画URL
+    duration:
+      type: integer
+      format: int64
+      description: 体験時間（単位:分、0以上）
+    direction:
+      type: string
+      description: アクセス方法（2000文字以下）
+    businessOpenTime:
+      type: string
+      description: 営業開始時間（形式:HHmm）
+    businessCloseTime:
+      type: string
+      description: 営業終了時間（形式:HHmm）
     hostPostalCode:
       type: string
       description: 郵便番号(ハイフンなし)
@@ -110,6 +123,10 @@ createExperienceRequest:
   - recommendedPoint2
   - recommendedPoint3
   - promotionVideoUrl
+  - duration
+  - direction
+  - businessOpenTime
+  - businessCloseTime
   - hostPostalCode
   - hostPrefectureCode
   - hostCity
@@ -139,6 +156,10 @@ createExperienceRequest:
     recommendedPoint2: '新鮮なじゃがいもを収穫'
     recommendedPoint3: '新鮮なじゃがいもを収穫'
     promotionVideoUrl: 'https://example.com/video.mp4'
+    duration: 60
+    direction: '新宿駅から徒歩10分'
+    businessOpenTime: '1000'
+    businessCloseTime: '1700'
     hostPostalCode: '1000014'
     hostPrefectureCode: 13
     hostCity: '東京都'
@@ -211,6 +232,19 @@ updateExperienceRequest:
     promotionVideoUrl:
       type: string
       description: 紹介動画URL
+    duration:
+      type: integer
+      format: int64
+      description: 体験時間（単位:分、0以上）
+    direction:
+      type: string
+      description: アクセス方法（2000文字以下）
+    businessOpenTime:
+      type: string
+      description: 営業開始時間（形式:HHmm）
+    businessCloseTime:
+      type: string
+      description: 営業終了時間（形式:HHmm）
     hostPostalCode:
       type: string
       description: 郵便番号(ハイフンなし)
@@ -250,6 +284,10 @@ updateExperienceRequest:
   - recommendedPoint2
   - recommendedPoint3
   - promotionVideoUrl
+  - duration
+  - direction
+  - businessOpenTime
+  - businessCloseTime
   - hostPostalCode
   - hostPrefectureCode
   - hostCity
@@ -277,6 +315,10 @@ updateExperienceRequest:
     recommendedPoint2: '新鮮なじゃがいもを収穫'
     recommendedPoint3: '新鮮なじゃがいもを収穫'
     promotionVideoUrl: 'https://example.com/video.mp4'
+    duration: 60
+    direction: '新宿駅から徒歩10分'
+    businessOpenTime: '1000'
+    businessCloseTime: '1700'
     hostPostalCode: '1000014'
     hostPrefectureCode: 13
     hostCity: '東京都'
