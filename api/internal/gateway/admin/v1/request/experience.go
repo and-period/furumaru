@@ -18,6 +18,10 @@ type CreateExperienceRequest struct {
 	RecommendedPoint2     string                   `json:"recommendedPoint2,omitempty"`     // おすすめポイント2
 	RecommendedPoint3     string                   `json:"recommendedPoint3,omitempty"`     // おすすめポイント3
 	PromotionVideoURL     string                   `json:"promotionVideoUrl,omitempty"`     // 紹介動画URL
+	Duration              int64                    `json:"duration,omitempty"`              // 体験時間(分)
+	Direction             string                   `json:"direction,omitempty"`             // アクセス方法
+	BusinessOpenTime      string                   `json:"businessOpenTime,omitempty"`      // 営業開始時間
+	BusinessCloseTime     string                   `json:"businessCloseTime,omitempty"`     // 営業終了時間
 	HostPostalCode        string                   `json:"hostPostalCode,omitempty"`        // 開催場所(郵便番号)
 	HostPrefectureCode    int32                    `json:"hostPrefectureCode,omitempty"`    // 開催場所(都道府県コード)
 	HostCity              string                   `json:"hostCity,omitempty"`              // 開催場所(市区町村)
@@ -48,6 +52,10 @@ type UpdateExperienceRequest struct {
 	RecommendedPoint2     string                   `json:"recommendedPoint2,omitempty"`     // おすすめポイント2
 	RecommendedPoint3     string                   `json:"recommendedPoint3,omitempty"`     // おすすめポイント3
 	PromotionVideoURL     string                   `json:"promotionVideoUrl,omitempty"`     // 紹介動画URL
+	Duration              int64                    `json:"duration,omitempty"`              // 体験時間(分)
+	Direction             string                   `json:"direction,omitempty"`             // アクセス方法
+	BusinessOpenTime      string                   `json:"businessOpenTime,omitempty"`      // 営業開始時間
+	BusinessCloseTime     string                   `json:"businessCloseTime,omitempty"`     // 営業終了時間
 	HostPostalCode        string                   `json:"hostPostalCode,omitempty"`        // 開催場所(郵便番号)
 	HostPrefectureCode    int32                    `json:"hostPrefectureCode,omitempty"`    // 開催場所(都道府県コード)
 	HostCity              string                   `json:"hostCity,omitempty"`              // 開催場所(市区町村)

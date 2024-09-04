@@ -135,6 +135,36 @@ export interface Experience {
      */
     recommendedPoint3: string;
     /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof Experience
+     */
+    promotionVideoUrl: string;
+    /**
+     * 体験時間（分）
+     * @type {number}
+     * @memberof Experience
+     */
+    duration: number;
+    /**
+     * アクセス方法
+     * @type {string}
+     * @memberof Experience
+     */
+    direction: string;
+    /**
+     * 営業開始時間
+     * @type {string}
+     * @memberof Experience
+     */
+    businessOpenTime: string;
+    /**
+     * 営業終了時間
+     * @type {string}
+     * @memberof Experience
+     */
+    businessCloseTime: string;
+    /**
      * 開催場所（郵便番号）
      * @type {string}
      * @memberof Experience
@@ -213,6 +243,11 @@ export function instanceOfExperience(value: object): value is Experience {
     if (!('recommendedPoint1' in value) || value['recommendedPoint1'] === undefined) return false;
     if (!('recommendedPoint2' in value) || value['recommendedPoint2'] === undefined) return false;
     if (!('recommendedPoint3' in value) || value['recommendedPoint3'] === undefined) return false;
+    if (!('promotionVideoUrl' in value) || value['promotionVideoUrl'] === undefined) return false;
+    if (!('duration' in value) || value['duration'] === undefined) return false;
+    if (!('direction' in value) || value['direction'] === undefined) return false;
+    if (!('businessOpenTime' in value) || value['businessOpenTime'] === undefined) return false;
+    if (!('businessCloseTime' in value) || value['businessCloseTime'] === undefined) return false;
     if (!('hostPostalCode' in value) || value['hostPostalCode'] === undefined) return false;
     if (!('hostPrefecture' in value) || value['hostPrefecture'] === undefined) return false;
     if (!('hostCity' in value) || value['hostCity'] === undefined) return false;
@@ -252,6 +287,11 @@ export function ExperienceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'recommendedPoint1': json['recommendedPoint1'],
         'recommendedPoint2': json['recommendedPoint2'],
         'recommendedPoint3': json['recommendedPoint3'],
+        'promotionVideoUrl': json['promotionVideoUrl'],
+        'duration': json['duration'],
+        'direction': json['direction'],
+        'businessOpenTime': json['businessOpenTime'],
+        'businessCloseTime': json['businessCloseTime'],
         'hostPostalCode': json['hostPostalCode'],
         'hostPrefecture': json['hostPrefecture'],
         'hostCity': json['hostCity'],
@@ -287,6 +327,11 @@ export function ExperienceToJSON(value?: Experience | null): any {
         'recommendedPoint1': value['recommendedPoint1'],
         'recommendedPoint2': value['recommendedPoint2'],
         'recommendedPoint3': value['recommendedPoint3'],
+        'promotionVideoUrl': value['promotionVideoUrl'],
+        'duration': value['duration'],
+        'direction': value['direction'],
+        'businessOpenTime': value['businessOpenTime'],
+        'businessCloseTime': value['businessCloseTime'],
         'hostPostalCode': value['hostPostalCode'],
         'hostPrefecture': value['hostPrefecture'],
         'hostCity': value['hostCity'],

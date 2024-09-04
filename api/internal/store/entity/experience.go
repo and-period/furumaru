@@ -44,6 +44,10 @@ type Experience struct {
 	RecommendedPoints     []string             `gorm:"-"`                                      // おすすめポイント一覧
 	RecommendedPointsJSON datatypes.JSON       `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
 	PromotionVideoURL     string               `gorm:""`                                       // 紹介動画URL
+	Duration              int64                `gorm:""`                                       // 体験時間(分)
+	Direction             string               `gorm:""`                                       // アクセス方法
+	BusinessOpenTime      string               `gorm:""`                                       // 営業開始時間
+	BusinessCloseTime     string               `gorm:""`                                       // 営業終了時間
 	HostPostalCode        string               `gorm:""`                                       // 開催場所(郵便番号)
 	HostPrefecture        string               `gorm:"-"`                                      // 開催場所(都道府県)
 	HostPrefectureCode    int32                `gorm:"column:host_prefecture"`                 // 開催場所(都道府県コード)
@@ -81,6 +85,10 @@ type NewExperienceParams struct {
 	Media                 MultiExperienceMedia
 	RecommendedPoints     []string
 	PromotionVideoURL     string
+	Duration              int64
+	Direction             string
+	BusinessOpenTime      string
+	BusinessCloseTime     string
 	HostPostalCode        string
 	HostPrefectureCode    int32
 	HostCity              string
@@ -124,6 +132,10 @@ func NewExperience(params *NewExperienceParams) (*Experience, error) {
 		Media:              params.Media,
 		RecommendedPoints:  params.RecommendedPoints,
 		PromotionVideoURL:  params.PromotionVideoURL,
+		Duration:           params.Duration,
+		Direction:          params.Direction,
+		BusinessOpenTime:   params.BusinessOpenTime,
+		BusinessCloseTime:  params.BusinessCloseTime,
 		HostPostalCode:     params.HostPostalCode,
 		HostPrefecture:     prefecture,
 		HostPrefectureCode: params.HostPrefectureCode,

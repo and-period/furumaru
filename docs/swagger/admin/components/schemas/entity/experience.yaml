@@ -74,6 +74,19 @@ experience:
     promotionVideoUrl:
       type: string
       description: 紹介動画URL
+    duration:
+      type: integer
+      format: int64
+      description: 体験時間（分）
+    direction:
+      type: string
+      description: アクセス方法
+    businessOpenTime:
+      type: string
+      description: 営業開始時間
+    businessCloseTime:
+      type: string
+      description: 営業終了時間
     hostPostalCode:
       type: string
       description: 開催地（郵便番号）
@@ -125,6 +138,10 @@ experience:
   - recommendedPoint2
   - recommendedPoint3
   - promotionVideoUrl
+  - duration
+  - direction
+  - businessOpenTime
+  - businessCloseTime
   - hostPostalCode
   - hostPrefectureCode
   - hostCity
@@ -156,6 +173,10 @@ experience:
     recommendedPoint2: 'じゃがいもの美味しさを体験'
     recommendedPoint3: '楽しい体験ができます'
     promotionVideoUrl: 'https://example.com/promotion.mp4'
+    duration: 60
+    direction: '新宿駅から徒歩10分'
+    businessOpenTime: '1000'
+    businessCloseTime: '1700'
     hostPostalCode: '1600023'
     hostPrefectureCode: '13'
     hostCity: '新宿区'
