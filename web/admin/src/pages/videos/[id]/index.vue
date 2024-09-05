@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { useVideoStore } from '~/store'
+import { useVideoStore, useProductStore } from '~/store'
 import type { UpdateVideoRequest, Product, Experience } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
+import { getProductThumbnailUrl } from '~/lib/formatter'
 
 const route = useRoute()
 const router = useRouter()
 const videoStore = useVideoStore()
+
+const productStore = useProductStore()
+const { products } = storeToRefs(productStore)
 
 const videoId = route.params.id as string
 
@@ -118,6 +122,66 @@ const handleUploadThumbnail = async (file: File) => {
   }
 }
 
+const isOpenLinkProductDialog = ref<boolean>(false)
+
+const handleClickLinkProductButton = () => {
+  console.log('link product')
+  isOpenLinkProductDialog.value = true
+}
+
+const linkTargetProductIds = ref<string[]>([])
+
+/**
+ * 商品検索ステータス
+ */
+const productSearchStatus = ref<{
+  isLoading: boolean
+  hasError: boolean
+  errorMessage: string
+}>({
+  isLoading: false,
+  hasError: false,
+  errorMessage: '',
+})
+
+/**
+ * 商品検索関数
+ * @param text
+ */
+const searchProducts = (text: string) => {
+  try {
+    productSearchStatus.value.isLoading = true
+    productStore.searchProducts(text, undefined, linkTargetProductIds.value)
+  }
+  catch (error) {
+    productSearchStatus.value.hasError = true
+  }
+  finally {
+    productSearchStatus.value.isLoading = false
+  }
+}
+
+/**
+ * 紐づけ対象の商品をフォームに加える処理
+ */
+const handleClickLinkProductAddButton = () => {
+  const targetProducts = products.value.filter((product) => {
+    // 未選択の商品でかつ選択対象の商品IDリストに含まれる商品を対象とする
+    return (
+      !formData.value.productIds.includes(product.id)
+      && linkTargetProductIds.value.includes(product.id)
+    )
+  })
+
+  selectedProducts.value.push(...targetProducts)
+  formData.value.productIds.push(
+    ...targetProducts.map(product => product.id),
+  )
+  isOpenLinkProductDialog.value = false
+}
+
+searchProducts('')
+
 const handleSubmit = async () => {
   try {
     await videoStore.updateVideo(videoId, formData.value)
@@ -135,6 +199,53 @@ const handleClickBackButton = () => {
 
 <template>
   <div>
+    <v-dialog v-model="isOpenLinkProductDialog">
+      <v-card>
+        <v-card-title>商品紐づけ</v-card-title>
+        <v-card-text>
+          <v-autocomplete
+            v-model="linkTargetProductIds"
+            :loading="productSearchStatus.isLoading"
+            :items="products"
+            label="商品名"
+            messages="商品名を入力することで紐づける商品を検索できます。"
+            item-title="name"
+            item-value="id"
+            multiple
+            chips
+            @update:search-text="searchProducts"
+          >
+            <template #chip="{ props: val, item }">
+              <v-chip
+                v-bind="val"
+                :prepend-avatar="getProductThumbnailUrl(item.raw)"
+                :text="item.raw.name"
+                rounded
+                class="px-4"
+                variant="outlined"
+              />
+            </template>
+            <template #item="{ props: val, item }">
+              <v-list-item
+                v-bind="val"
+                :prepend-avatar="getProductThumbnailUrl(item.raw)"
+                :title="item.raw.name"
+              />
+            </template>
+          </v-autocomplete>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="primary"
+            variant="outlined"
+            @click="handleClickLinkProductAddButton"
+          >
+            追加
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-card
       class="mb-16"
       :loading="isInitLoading"
@@ -155,6 +266,7 @@ const handleClickBackButton = () => {
             :thumbnail-error-message="uploadThumbnailStatus.errorMessage"
             @update:video="handleUploadVideo"
             @update:thumbnail="handleUploadThumbnail"
+            @click:link-product="handleClickLinkProductButton"
             @submit="handleSubmit"
           />
         </template>
