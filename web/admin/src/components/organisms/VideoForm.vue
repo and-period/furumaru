@@ -251,11 +251,36 @@ const handleSubmit = () => {
       <p class="text-subtitle-2 text-gray mb-2">
         商品を紐づける
       </p>
-      <template
-        v-for="product in selectedProducts"
-        :key="product.id"
-      >
-        <molecules-video-linked-product-item :item="product" />
+      <template v-if="selectedProducts.length === 0">
+        <v-alert
+          dense
+          variant="outlined"
+          type="info"
+          class="my-2"
+        >
+          商品が紐づけられていません
+        </v-alert>
+      </template>
+      <template v-else>
+        <v-table>
+          <thead>
+            <tr>
+              <th />
+
+              <th>商品名</th>
+              <th>価格</th>
+              <th>在庫</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="product in selectedProducts"
+              :key="product.id"
+            >
+              <molecules-video-linked-product-item :item="product" />
+            </tr>
+          </tbody>
+        </v-table>
       </template>
       <v-btn
         class="w-100 mt-3"
