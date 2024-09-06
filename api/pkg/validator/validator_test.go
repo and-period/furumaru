@@ -15,6 +15,7 @@ func TestValidator(t *testing.T) {
 		Hiragana    string `validate:"omitempty,hiragana"`
 		Password    string `validate:"omitempty,password"`
 		PhoneNumber string `validate:"omitempty,phone_number"`
+		Date        string `validate:"omitempty,date"`
 		Time        string `validate:"omitempty,time"`
 	}
 	tests := []struct {
@@ -84,6 +85,13 @@ func TestValidator(t *testing.T) {
 			name: "valid phone_number when e164",
 			input: &input{
 				PhoneNumber: "+819012341234",
+			},
+			hasErr: false,
+		},
+		{
+			name: "valid date",
+			input: &input{
+				Date: "20240102",
 			},
 			hasErr: false,
 		},
@@ -204,6 +212,20 @@ func TestValidator(t *testing.T) {
 				PhoneNumber: "09012341234",
 			},
 			opts:   []Option{},
+			hasErr: true,
+		},
+		{
+			name: "invalid date format",
+			input: &input{
+				Date: "2024",
+			},
+			hasErr: true,
+		},
+		{
+			name: "invalid date range",
+			input: &input{
+				Date: "00000000",
+			},
 			hasErr: true,
 		},
 		{

@@ -3,9 +3,11 @@ package entity
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -163,6 +165,17 @@ func (e *Experience) Validate() error {
 	}
 	if e.HostLatitude < -90 || 90 < e.HostLatitude {
 		return errors.New("entity: invalid host latitude")
+	}
+	openTime, err := jst.ParseFromHHMM(e.BusinessOpenTime)
+	if err != nil {
+		return fmt.Errorf("entity: invalid business open time: %w", err)
+	}
+	closeTime, err := jst.ParseFromHHMM(e.BusinessCloseTime)
+	if err != nil {
+		return fmt.Errorf("entity: invalid business close time: %w", err)
+	}
+	if !openTime.Before(closeTime) {
+		return errors.New("entity: invalid business time")
 	}
 	return e.Media.Validate()
 }
