@@ -168,6 +168,17 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 		}
+		openTime, err := jst.ParseFromHHMM(params.BusinessOpenTime)
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
+		closeTime, err := jst.ParseFromHHMM(params.BusinessCloseTime)
+		if err != nil {
+			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
+		if !openTime.Before(closeTime) {
+			return fmt.Errorf("database: %w: invalid business time", database.ErrInvalidArgument)
+		}
 
 		updates := map[string]interface{}{
 			"experience_type_id":  params.TypeID,
@@ -180,8 +191,8 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 			"promotion_video_url": params.PromotionVideoURL,
 			"duration":            params.Duration,
 			"direction":           params.Direction,
-			"business_open_time":  params.BusinessOpenTime,
-			"business_close_time": params.BusinessCloseTime,
+			"business_open_time":  openTime,
+			"business_close_time": closeTime,
 			"host_postal_code":    params.HostPostalCode,
 			"host_prefecture":     params.HostPrefectureCode,
 			"host_city":           params.HostCity,

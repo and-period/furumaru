@@ -41,9 +41,9 @@ func EndOfMonth(year, month int) time.Time {
 	return Date(year, time.Month(month), 1, 0, 0, 0, 0).AddDate(0, 1, 0).Add(-time.Nanosecond)
 }
 
-// WithInPeriod 期間内かの検証
+// WithInPeriod 期間内かの検証（startAt <= t < endAt）
 func WithInPeriod(t, startAt, endAt time.Time) bool {
-	return !startAt.After(t) && !endAt.Before(t)
+	return !startAt.After(t) && t.Before(endAt)
 }
 
 // Unix エポック形式の時間を返す
@@ -97,6 +97,11 @@ func ParseFromYYYYMM(yyyymm string) (time.Time, error) {
 // ParseFromHHMMSS HHMMSS形式の文字列からtime.Timeを生成
 func ParseFromHHMMSS(hhmmss string) (time.Time, error) {
 	return time.ParseInLocation("150405", hhmmss, jst)
+}
+
+// ParseFromHHMM HHMM形式の文字列からtime.Timeを生成
+func ParseFromHHMM(hhmm string) (time.Time, error) {
+	return time.ParseInLocation("1504", hhmm, jst)
 }
 
 // ParseFromUnix Unixtimeからtime.Timeを生成

@@ -662,8 +662,8 @@ type CreateExperienceInput struct {
 	PromotionVideoURL     string                   `validate:"omitempty,url"`
 	Duration              int64                    `validate:"min=0"`
 	Direction             string                   `validate:"max=2000"`
-	BusinessOpenTime      string                   `validate:"time"`
-	BusinessCloseTime     string                   `validate:"time"`
+	BusinessOpenTime      string                   `validate:"required,time"`
+	BusinessCloseTime     string                   `validate:"required,time"`
 	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
 	HostCity              string                   `validate:"required,max=32"`
@@ -695,8 +695,8 @@ type UpdateExperienceInput struct {
 	PromotionVideoURL     string                   `validate:"omitempty,url"`
 	Duration              int64                    `validate:"min=0"`
 	Direction             string                   `validate:"max=2000"`
-	BusinessOpenTime      string                   `validate:"time"`
-	BusinessCloseTime     string                   `validate:"time"`
+	BusinessOpenTime      string                   `validate:"required,time"`
+	BusinessCloseTime     string                   `validate:"required,time"`
 	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
 	HostCity              string                   `validate:"required,max=32"`

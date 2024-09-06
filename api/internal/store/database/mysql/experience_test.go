@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -659,8 +660,8 @@ func testExperience(experienceID, typeID, coordinatorID, producerID string, revi
 		PromotionVideoURL:  "http://example.com/promotion.mp4",
 		Duration:           60,
 		Direction:          "彦根駅から徒歩10分",
-		BusinessOpenTime:   "1000",
-		BusinessCloseTime:  "1800",
+		BusinessOpenTime:   jst.Date(0, 1, 1, 10, 0, 0, 0),
+		BusinessCloseTime:  jst.Date(0, 1, 1, 18, 0, 0, 0),
 		HostPostalCode:     "5220061",
 		HostPrefecture:     "滋賀県",
 		HostPrefectureCode: 25,

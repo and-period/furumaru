@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -46,8 +47,8 @@ type Experience struct {
 	PromotionVideoURL     string               `gorm:""`                                       // 紹介動画URL
 	Duration              int64                `gorm:""`                                       // 体験時間(分)
 	Direction             string               `gorm:""`                                       // アクセス方法
-	BusinessOpenTime      string               `gorm:""`                                       // 営業開始時間
-	BusinessCloseTime     string               `gorm:""`                                       // 営業終了時間
+	BusinessOpenTime      time.Time            `gorm:""`                                       // 営業開始時間
+	BusinessCloseTime     time.Time            `gorm:""`                                       // 営業終了時間
 	HostPostalCode        string               `gorm:""`                                       // 開催場所(郵便番号)
 	HostPrefecture        string               `gorm:"-"`                                      // 開催場所(都道府県)
 	HostPrefectureCode    int32                `gorm:"column:host_prefecture"`                 // 開催場所(都道府県コード)
@@ -111,6 +112,14 @@ func NewExperience(params *NewExperienceParams) (*Experience, error) {
 	if err != nil {
 		return nil, err
 	}
+	openTime, err := jst.ParseFromHHMM(params.BusinessOpenTime)
+	if err != nil {
+		return nil, err
+	}
+	closeTime, err := jst.ParseFromHHMM(params.BusinessCloseTime)
+	if err != nil {
+		return nil, err
+	}
 	rparams := &NewExperienceRevisionParams{
 		ExperienceID:          experienceID,
 		PriceAdult:            params.PriceAdult,
@@ -134,8 +143,8 @@ func NewExperience(params *NewExperienceParams) (*Experience, error) {
 		PromotionVideoURL:  params.PromotionVideoURL,
 		Duration:           params.Duration,
 		Direction:          params.Direction,
-		BusinessOpenTime:   params.BusinessOpenTime,
-		BusinessCloseTime:  params.BusinessCloseTime,
+		BusinessOpenTime:   openTime,
+		BusinessCloseTime:  closeTime,
 		HostPostalCode:     params.HostPostalCode,
 		HostPrefecture:     prefecture,
 		HostPrefectureCode: params.HostPrefectureCode,
@@ -163,6 +172,9 @@ func (e *Experience) Validate() error {
 	}
 	if e.HostLatitude < -90 || 90 < e.HostLatitude {
 		return errors.New("entity: invalid host latitude")
+	}
+	if !e.StartAt.Before(e.EndAt) {
+		return errors.New("entity: invalid business time")
 	}
 	return e.Media.Validate()
 }

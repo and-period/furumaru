@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 )
 
 // ExperienceStatus - 体験受付状況
@@ -82,8 +83,8 @@ func NewExperience(experience *entity.Experience) *Experience {
 			PromotionVideoURL:     experience.PromotionVideoURL,
 			Duration:              experience.Duration,
 			Direction:             experience.Direction,
-			BusinessOpenTime:      experience.BusinessOpenTime,
-			BusinessCloseTime:     experience.BusinessCloseTime,
+			BusinessOpenTime:      jst.FormatHHMM(experience.BusinessOpenTime),
+			BusinessCloseTime:     jst.FormatHHMM(experience.BusinessCloseTime),
 			HostPostalCode:        experience.HostPostalCode,
 			HostPrefecture:        experience.HostPrefecture,
 			HostCity:              experience.HostCity,
