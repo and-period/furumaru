@@ -68,6 +68,8 @@ func NewValidator(opts ...Option) Validator {
 	v.RegisterValidation("password", validatePassword(passwordRegex))
 	// phone_number - 正規表現を利用して電話番号（ハイフンあり）の形式であるかの検証
 	v.RegisterValidation("phone_number", validatePhoneNumber(phoneNumberRegex))
+	// date - 日付の形式であるかの検証
+	v.RegisterValidation("date", validateDate())
 	// time - 時刻の形式であるかの検証
 	v.RegisterValidation("time", validateTime())
 
@@ -103,6 +105,13 @@ func validatePhoneNumber(regex *regexp.Regexp) func(fl validator.FieldLevel) boo
 		e164Regex := regexp.MustCompile(e164String, 0)
 		match, _ = e164Regex.MatchString(fl.Field().String())
 		return match
+	}
+}
+
+func validateDate() func(fl validator.FieldLevel) bool {
+	return func(fl validator.FieldLevel) bool {
+		_, err := time.Parse("20060102", fl.Field().String())
+		return err == nil
 	}
 }
 

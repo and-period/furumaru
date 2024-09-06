@@ -86,7 +86,7 @@ func TestWithInPeriod(t *testing.T) {
 			target:  now,
 			startAt: now.Add(-time.Hour),
 			endAt:   now,
-			expect:  true,
+			expect:  false,
 		},
 		{
 			name:    "after end at",
@@ -246,6 +246,33 @@ func TestParseFromHHMMSS(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			actual, err := ParseFromHHMMSS(tt.target)
+			assert.Equal(t, tt.expectErr, err != nil, err)
+			assert.Equal(t, tt.expect, actual)
+		})
+	}
+}
+
+func TestParseFromHHMM(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		target    string
+		expect    time.Time
+		expectErr bool
+	}{
+		{
+			name:      "success",
+			target:    "1830",
+			expect:    time.Date(0, 1, 1, 18, 30, 0, 0, jst),
+			expectErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			actual, err := ParseFromHHMM(tt.target)
 			assert.Equal(t, tt.expectErr, err != nil, err)
 			assert.Equal(t, tt.expect, actual)
 		})

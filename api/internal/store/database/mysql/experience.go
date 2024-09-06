@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -167,6 +168,17 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 		points, err := entity.ExperienceMarshalRecommendedPoints(params.RecommendedPoints)
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
+		}
+		openTime, err := jst.ParseFromHHMM(params.BusinessOpenTime)
+		if err != nil {
+			return fmt.Errorf("entity: invalid business open time: %w", err)
+		}
+		closeTime, err := jst.ParseFromHHMM(params.BusinessCloseTime)
+		if err != nil {
+			return fmt.Errorf("entity: invalid business close time: %w", err)
+		}
+		if !openTime.Before(closeTime) {
+			return errors.New("entity: invalid business time")
 		}
 
 		updates := map[string]interface{}{
