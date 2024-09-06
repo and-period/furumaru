@@ -10,6 +10,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/gateway/user/v1/service"
 	"github.com/and-period/furumaru/api/internal/gateway/util"
 	"github.com/and-period/furumaru/api/internal/store"
+	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -38,11 +39,15 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	orderType := util.GetQuery(ctx, "type", "")
 
 	ordersIn := &store.ListOrdersInput{
 		UserID: h.getUserID(ctx),
 		Limit:  limit,
 		Offset: offset,
+	}
+	if orderType != "" {
+		ordersIn.Types = []entity.OrderType{service.NewOrderTypeFromString(orderType).StoreEntity()}
 	}
 	orders, total, err := h.store.ListOrders(ctx, ordersIn)
 	if err != nil {

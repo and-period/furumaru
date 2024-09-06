@@ -30,6 +30,7 @@ func (s *service) ListOrders(ctx context.Context, in *store.ListOrdersInput) (en
 	params := &database.ListOrdersParams{
 		CoordinatorID: in.CoordinatorID,
 		UserID:        in.UserID,
+		Types:         in.Types,
 		Statuses:      in.Statuses,
 		Limit:         int(in.Limit),
 		Offset:        int(in.Offset),

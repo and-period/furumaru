@@ -72,11 +72,15 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
+	orderType := util.GetQuery(ctx, "type", "")
 
 	in := &store.ListOrdersInput{
 		Limit:    limit,
 		Offset:   offset,
 		Statuses: statuses,
+	}
+	if orderType != "" {
+		in.Types = []sentity.OrderType{service.NewOrderTypeFromString(orderType).StoreEntity()}
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		in.CoordinatorID = getAdminID(ctx)

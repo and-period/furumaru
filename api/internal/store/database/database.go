@@ -175,6 +175,7 @@ type Order interface {
 type ListOrdersParams struct {
 	CoordinatorID string
 	UserID        string
+	Types         []entity.OrderType
 	Statuses      []entity.OrderStatus
 	Limit         int
 	Offset        int

@@ -7,6 +7,15 @@ import (
 	"github.com/and-period/furumaru/api/pkg/set"
 )
 
+// OrderType - 注文種別
+type OrderType int32
+
+const (
+	OrderTypeUnknown    OrderType = 0
+	OrderTypeProduct    OrderType = 1 // 商品
+	OrderTypeExperience OrderType = 2 // 体験
+)
+
 // OrderStatus - 注文ステータス
 type OrderStatus int32
 
@@ -27,6 +36,43 @@ type Order struct {
 }
 
 type Orders []*Order
+
+func NewOrderType(typ entity.OrderType) OrderType {
+	switch typ {
+	case entity.OrderTypeProduct:
+		return OrderTypeProduct
+	case entity.OrderTypeExperience:
+		return OrderTypeExperience
+	default:
+		return OrderTypeUnknown
+	}
+}
+
+func NewOrderTypeFromString(typ string) OrderType {
+	switch typ {
+	case "product":
+		return OrderTypeProduct
+	case "experience":
+		return OrderTypeExperience
+	default:
+		return OrderTypeUnknown
+	}
+}
+
+func (t OrderType) StoreEntity() entity.OrderType {
+	switch t {
+	case OrderTypeProduct:
+		return entity.OrderTypeProduct
+	case OrderTypeExperience:
+		return entity.OrderTypeExperience
+	default:
+		return entity.OrderTypeUnknown
+	}
+}
+
+func (t OrderType) Response() int32 {
+	return int32(t)
+}
 
 func NewOrderStatus(status entity.OrderStatus) OrderStatus {
 	switch status {

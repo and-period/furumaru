@@ -344,6 +344,8 @@ components:
       $ref: './components/schemas/codes/notification.yaml#/notificationType'
     notificationTarget:
       $ref: './components/schemas/codes/notification.yaml#/notificationTarget'
+    orderType:
+      $ref: './components/schemas/codes/order.yaml#/orderType'
     orderStatus:
       $ref: './components/schemas/codes/order.yaml#/orderStatus'
     fulfillmentStatus:

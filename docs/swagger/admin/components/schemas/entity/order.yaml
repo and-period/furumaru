@@ -21,6 +21,8 @@ order:
     shippingMessage:
       type: string
       description: 発送連絡時のメッセージ
+    type:
+      $ref: './../../../openapi.yaml#/components/schemas/orderType'
     status:
       $ref: './../../../openapi.yaml#/components/schemas/orderStatus'
     payment:
@@ -56,6 +58,7 @@ order:
   - promotionId
   - managementId
   - shippingMessage
+  - type
   - status
   - payment
   - refund
@@ -71,6 +74,7 @@ order:
     promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
     managementId: 1
     shippingMessage: '購入ありがとうございます'
+    type: 1
     status: 5
     payment:
       transactionId: 'kSByoE6FetnPs5Byk3a9Zx'

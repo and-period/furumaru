@@ -3572,6 +3572,12 @@ export interface Order {
     'shippingMessage': string;
     /**
      * 
+     * @type {OrderType}
+     * @memberof Order
+     */
+    'type': OrderType;
+    /**
+     * 
      * @type {OrderStatus}
      * @memberof Order
      */
@@ -4032,6 +4038,30 @@ export const OrderStatus = {
 } as const;
 
 export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+
+/**
+ * 注文種別
+ * @export
+ * @enum {string}
+ */
+
+export const OrderType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 商品
+    */
+    PRODUCT: 1,
+    /**
+    * 体験
+    */
+    EXPERIENCE: 2
+} as const;
+
+export type OrderType = typeof OrderType[keyof typeof OrderType];
 
 
 /**
