@@ -5,7 +5,7 @@ type Experience struct {
 	ID                    string             `json:"id"`                    // 体験ID
 	CoordinatorID         string             `json:"coordinatorId"`         // コーディネータID
 	ProducerID            string             `json:"producerId"`            // プロデューサーID
-	ExperienceTypeID      string             `json:"experienceType"`        // 体験種別ID
+	ExperienceTypeID      string             `json:"experienceTypeId"`      // 体験種別ID
 	Title                 string             `json:"title"`                 // タイトル
 	Description           string             `json:"description"`           // 説明
 	Public                bool               `json:"public"`                // 公開設定
@@ -21,6 +21,10 @@ type Experience struct {
 	RecommendedPoint2     string             `json:"recommendedPoint2"`     // おすすめポイント2
 	RecommendedPoint3     string             `json:"recommendedPoint3"`     // おすすめポイント3
 	PromotionVideoURL     string             `json:"promotionVideoUrl"`     // 紹介動画URL
+	Duration              int64              `json:"duration"`              // 体験時間(分)
+	Direction             string             `json:"direction"`             // アクセス方法
+	BusinessOpenTime      string             `json:"businessOpenTime"`      // 営業開始時間
+	BusinessCloseTime     string             `json:"businessCloseTime"`     // 営業終了時間
 	HostPostalCode        string             `json:"hostPostalCode"`        // 開催場所(郵便番号)
 	HostPrefectureCode    int32              `json:"hostPrefectureCode"`    // 開催場所(都道府県コード)
 	HostCity              string             `json:"hostCity"`              // 開催場所(市区町村)

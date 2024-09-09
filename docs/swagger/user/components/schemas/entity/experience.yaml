@@ -1,0 +1,185 @@
+experience:
+  type: object
+  description: 体験情報
+  properties:
+    id:
+      type: string
+      description: 体験ID
+    title:
+      type: string
+      description: 体験名
+    description:
+      type: string
+      description: 体験説明
+    status:
+      $ref: './../../../openapi.yaml#/components/schemas/experienceStatus'
+    coordinatorId:
+      type: string
+      description: コーディネータID
+    producerId:
+      type: string
+      description: 生産者ID
+    experienceTypeId:
+      type: string
+      description: 体験種別ID
+    thumbnailUrl:
+      type: string
+      description: サムネイルURL
+    media:
+      type: array
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            description: メディアURL
+          isThumbnail:
+            type: boolean
+            description: サムネイルとして使用(1つまで)
+        required:
+        - url
+        - isThumbnail
+    priceAdult:
+      type: integer
+      format: int64
+      description: 大人販売価格（税込）
+    priceJuniorHighSchool:
+      type: integer
+      format: int64
+      description: 中学生販売価格（税込）
+    priceElementarySchool:
+      type: integer
+      format: int64
+      description: 小学生販売価格（税込）
+    pricePreschool:
+      type: integer
+      format: int64
+      description: 幼児販売価格（税込）
+    priceSenior:
+      type: integer
+      format: int64
+      description: シニア販売価格（税込）
+    recommendedPoint1:
+      type: string
+      description: おすすめポイント1(128文字まで)
+    recommendedPoint2:
+      type: string
+      description: おすすめポイント2(128文字まで)
+    recommendedPoint3:
+      type: string
+      description: おすすめポイント3(128文字まで)
+    promotionVideoUrl:
+      type: string
+      description: 紹介動画URL
+    duration:
+      type: integer
+      format: int64
+      description: 体験時間（分）
+    direction:
+      type: string
+      description: アクセス方法
+    businessOpenTime:
+      type: string
+      description: 営業開始時間
+    businessCloseTime:
+      type: string
+      description: 営業終了時間
+    hostPostalCode:
+      type: string
+      description: 開催場所（郵便番号）
+    hostPrefecture:
+      type: string
+      description: 開催場所（都道府県）
+    hostCity:
+      type: string
+      description: 開催場所（市区町村）
+    hostAddressLine1:
+      type: string
+      description: 開催場所（住所1）
+    hostAddressLine2:
+      type: string
+      description: 開催場所（住所2）
+    hostLongitude:
+      type: number
+      format: double
+      description: 開催場所（経度）
+    hostLatitude:
+      type: number
+      format: double
+      description: 開催場所（緯度）
+    startAt:
+      type: integer
+      format: int64
+      description: 販売開始日時 (unixtime)
+    endAt:
+      type: integer
+      format: int64
+      description: 販売終了日時 (unixtime)
+  required:
+  - id
+  - title
+  - description
+  - status
+  - coordinatorId
+  - producerId
+  - experienceTypeId
+  - thumbnailUrl
+  - media
+  - priceAdult
+  - priceJuniorHighSchool
+  - priceElementarySchool
+  - pricePreschool
+  - priceSenior
+  - recommendedPoint1
+  - recommendedPoint2
+  - recommendedPoint3
+  - promotionVideoUrl
+  - duration
+  - direction
+  - businessOpenTime
+  - businessCloseTime
+  - hostPostalCode
+  - hostPrefecture
+  - hostCity
+  - hostAddressLine1
+  - hostAddressLine2
+  - hostLongitude
+  - hostLatitude
+  - startAt
+  - endAt
+  example:
+    id: 'kSByoE6FetnPs5Byk3a9Zx'
+    title: '農業体験'
+    description: '農業体験の説明'
+    status: 1
+    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
+    producerId: 'kSByoE6FetnPs5Byk3a9Zx'
+    experienceTypeId: 'kSByoE6FetnPs5Byk3a9Zx'
+    thumbnailUrl: 'https://example.com/image.jpg'
+    media:
+    - url: 'https://example.com/image.jpg'
+      isThumbnail: true
+    - url: 'https://example.com/image.jpg'
+      isThumbnail: false
+    priceAdult: 1000
+    priceJuniorHighSchool: 800
+    priceElementarySchool: 600
+    pricePreschool: 400
+    priceSenior: 800
+    recommendedPoint1: 'おすすめポイント1'
+    recommendedPoint2: 'おすすめポイント2'
+    recommendedPoint3: 'おすすめポイント3'
+    promotionVideoUrl: 'https://example.com/promotion.mp4'
+    duration: 60
+    direction: '新宿駅から徒歩10分'
+    businessOpenTime: '1000'
+    businessCloseTime: '1700'
+    hostPostalCode: '123-4567'
+    hostPrefecture: '東京都'
+    hostCity: '千代田区'
+    hostAddressLine1: '千代田1-1-1'
+    hostAddressLine2: '千代田ビル1F'
+    hostLongitude: 139.767052
+    hostLatitude: 35.681167
+    startAt: 1614556800
+    endAt: 1614643199

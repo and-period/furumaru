@@ -1,10 +1,16 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
+)
+
+var (
+	ErrVideoRequiredProductIDs    = errors.New("entity: video required product ids")
+	ErrVideoRequiredExperienceIDs = errors.New("entity: video required experience ids")
 )
 
 // VideoStatus - オンデマンド配信状況
@@ -20,56 +26,76 @@ const (
 
 // Video - オンデマンド配信情報
 type Video struct {
-	VideoProducts    `gorm:"-"`
-	VideoExperiences `gorm:"-"`
-	ID               string      `gorm:"primaryKey;<-:create"` // オンデマンド動画ID
-	CoordinatorID    string      `gorm:""`                     // コーディネータID
-	ProductIDs       []string    `gorm:"-"`                    // 商品ID一覧
-	ExperienceIDs    []string    `gorm:"-"`                    // 体験ID一覧
-	Title            string      `gorm:""`                     // タイトル
-	Description      string      `gorm:""`                     // 説明
-	Status           VideoStatus `gorm:"-"`                    // 配信状況
-	ThumbnailURL     string      `gorm:""`                     // サムネイルURL
-	VideoURL         string      `gorm:""`                     // 動画URL
-	Public           bool        `gorm:""`                     // 公開設定
-	Limited          bool        `gorm:""`                     // 限定公開設定
-	PublishedAt      time.Time   `gorm:""`                     // 公開日時
-	CreatedAt        time.Time   `gorm:"<-:create"`            // 作成日時
-	UpdatedAt        time.Time   `gorm:""`                     // 更新日時
+	VideoProducts     `gorm:"-"`
+	VideoExperiences  `gorm:"-"`
+	ID                string      `gorm:"primaryKey;<-:create"` // オンデマンド動画ID
+	CoordinatorID     string      `gorm:""`                     // コーディネータID
+	ProductIDs        []string    `gorm:"-"`                    // 商品ID一覧
+	ExperienceIDs     []string    `gorm:"-"`                    // 体験ID一覧
+	Title             string      `gorm:""`                     // タイトル
+	Description       string      `gorm:""`                     // 説明
+	Status            VideoStatus `gorm:"-"`                    // 配信状況
+	ThumbnailURL      string      `gorm:""`                     // サムネイルURL
+	VideoURL          string      `gorm:""`                     // 動画URL
+	Public            bool        `gorm:""`                     // 公開設定
+	Limited           bool        `gorm:""`                     // 限定公開設定
+	DisplayProduct    bool        `gorm:""`                     // 商品への表示設定
+	DisplayExperience bool        `gorm:""`                     // 体験への表示設定
+	PublishedAt       time.Time   `gorm:""`                     // 公開日時
+	CreatedAt         time.Time   `gorm:"<-:create"`            // 作成日時
+	UpdatedAt         time.Time   `gorm:""`                     // 更新日時
 }
 
 type Videos []*Video
 
 type NewVideoParams struct {
-	CoordinatorID string
-	ProductIDs    []string
-	ExperienceIDs []string
-	Title         string
-	Description   string
-	ThumbnailURL  string
-	VideoURL      string
-	Public        bool
-	Limited       bool
-	PublishedAt   time.Time
+	CoordinatorID     string
+	ProductIDs        []string
+	ExperienceIDs     []string
+	Title             string
+	Description       string
+	ThumbnailURL      string
+	VideoURL          string
+	Public            bool
+	Limited           bool
+	DisplayProduct    bool
+	DisplayExperience bool
+	PublishedAt       time.Time
 }
 
-func NewVideo(params *NewVideoParams) *Video {
+func NewVideo(params *NewVideoParams) (*Video, error) {
 	videoID := uuid.Base58Encode(uuid.New())
-	return &Video{
-		ID:               videoID,
-		CoordinatorID:    params.CoordinatorID,
-		ProductIDs:       params.ProductIDs,
-		ExperienceIDs:    params.ExperienceIDs,
-		Title:            params.Title,
-		Description:      params.Description,
-		ThumbnailURL:     params.ThumbnailURL,
-		VideoURL:         params.VideoURL,
-		Public:           params.Public,
-		Limited:          params.Limited,
-		PublishedAt:      params.PublishedAt,
-		VideoProducts:    NewVideoProducts(videoID, params.ProductIDs),
-		VideoExperiences: NewVideoExperiences(videoID, params.ExperienceIDs),
+	video := &Video{
+		ID:                videoID,
+		CoordinatorID:     params.CoordinatorID,
+		ProductIDs:        params.ProductIDs,
+		ExperienceIDs:     params.ExperienceIDs,
+		Title:             params.Title,
+		Description:       params.Description,
+		ThumbnailURL:      params.ThumbnailURL,
+		VideoURL:          params.VideoURL,
+		Public:            params.Public,
+		Limited:           params.Limited,
+		DisplayProduct:    params.DisplayProduct,
+		DisplayExperience: params.DisplayExperience,
+		PublishedAt:       params.PublishedAt,
+		VideoProducts:     NewVideoProducts(videoID, params.ProductIDs),
+		VideoExperiences:  NewVideoExperiences(videoID, params.ExperienceIDs),
 	}
+	if err := video.Validate(); err != nil {
+		return nil, err
+	}
+	return video, nil
+}
+
+func (v *Video) Validate() error {
+	if v.DisplayProduct && len(v.ProductIDs) == 0 {
+		return ErrVideoRequiredProductIDs
+	}
+	if v.DisplayExperience && len(v.ExperienceIDs) == 0 {
+		return ErrVideoRequiredExperienceIDs
+	}
+	return nil
 }
 
 func (v *Video) Fill(products VideoProducts, experiences VideoExperiences, now time.Time) {
@@ -91,6 +117,10 @@ func (v *Video) SetStatus(now time.Time) {
 	default:
 		v.Status = VideoStatusPublished
 	}
+}
+
+func (v *Video) Published() bool {
+	return v.Status == VideoStatusPublished || v.Status == VideoStatusLimited
 }
 
 func (vs Videos) IDs() []string {

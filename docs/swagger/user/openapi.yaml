@@ -19,26 +19,30 @@ tags:
   description: 買い物かご関連
 - name: Checkout
   description: 購入関連
-- name: Order
-  description: 注文履歴関連
-- name: Top
-  description: トップページ関連
-- name: Schedule
-  description: マルシェ開催スケジュール関連
 - name: Coordinator
   description: コーディネータ関連
+- name: Contact
+  description: お問い合わせ関連
+- name: Guest
+  description: ゲスト関連
+- name: Experience
+  description: 体験関連
+- name: Order
+  description: 注文履歴関連
 - name: Producer
   description: 生産者関連
 - name: Product
   description: 商品関連
 - name: Promotion
   description: プロモーション関連
-- name: Guest
-  description: ゲスト関連
-- name: Contact
-  description: お問い合わせ関連
+- name: Schedule
+  description: マルシェ開催スケジュール関連
 - name: Status
   description: システム状態関連
+- name: Top
+  description: トップページ関連
+- name: Video
+  description: オンデマンド配信関連
 - name: Other
   description: その他（外部APIなど）
 paths:
@@ -87,35 +91,35 @@ paths:
   /v1/carts/-/items/{productId}:
     $ref: './paths/v1/carts/-/items/_productId/index.yaml'
   # Checkout
-  /v1/checkouts:
-    $ref: './paths/v1/checkouts/index.yaml'
+  /v1/checkouts/products:
+    $ref: './paths/v1/checkouts/products/index.yaml'
   /v1/checkouts/{transactionId}:
     $ref: './paths/v1/checkouts/_transactionId/index.yaml'
-  # Order
-  /v1/orders:
-    $ref: './paths/v1/orders/index.yaml'
-  /v1/orders/{orderId}:
-    $ref: './paths/v1/orders/_orderId/index.yaml'
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
-  # Top
-  /v1/top/common:
-    $ref: './paths/v1/top/common.yaml'
-  # Schedule
-  /v1/schedules/lives:
-    $ref: './paths/v1/schedules/lives.yaml'
-  /v1/schedules/archives:
-    $ref: './paths/v1/schedules/archives.yaml'
-  /v1/schedules/{scheduleId}:
-    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
-  /v1/schedules/{scheduleId}/comments:
-    $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
   # Coordinator
   /v1/coordinators:
     $ref: './paths/v1/coordinators/index.yaml'
   /v1/coordinators/{coordinatorId}:
     $ref: './paths/v1/coordinators/_coordinatorId/index.yaml'
+  # Experience
+  /v1/experiences:
+    $ref: './paths/v1/experiences/index.yaml'
+  /v1/experiences/{experienceId}:
+    $ref: './paths/v1/experiences/_experienceId/index.yaml'
+  # Guest
+  /v1/guests/checkouts/products:
+    $ref: './paths/v1/guests/checkouts/products/index.yaml'
+  /v1/guests/checkouts/{transactionId}:
+    $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
+  /v1/guests/schedules/{scheduleId}/comments:
+    $ref: './paths/v1/guests/schedules/_scheduleId/comments/index.yaml'
+  # Order
+  /v1/orders:
+    $ref: './paths/v1/orders/index.yaml'
+  /v1/orders/{orderId}:
+    $ref: './paths/v1/orders/_orderId/index.yaml'
   # Producer
   /v1/producers:
     $ref: './paths/v1/producers/index.yaml'
@@ -129,16 +133,26 @@ paths:
   # Promotion
   /v1/promotions/{code}:
     $ref: './paths/v1/promotions/_code/index.yaml'
-  # Guest
-  /v1/guests/checkouts:
-    $ref: './paths/v1/guests/checkouts/index.yaml'
-  /v1/guests/checkouts/{transactionId}:
-    $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
-  /v1/guests/schedules/{scheduleId}/comments:
-    $ref: './paths/v1/guests/schedules/_scheduleId/comments/index.yaml'
+  # Schedule
+  /v1/schedules/lives:
+    $ref: './paths/v1/schedules/lives.yaml'
+  /v1/schedules/archives:
+    $ref: './paths/v1/schedules/archives.yaml'
+  /v1/schedules/{scheduleId}:
+    $ref: './paths/v1/schedules/_scheduleId/index.yaml'
+  /v1/schedules/{scheduleId}/comments:
+    $ref: './paths/v1/schedules/_scheduleId/comments/index.yaml'
   # Status
   /v1/statuses/payments:
     $ref: './paths/v1/statuses/payments.yaml'
+  # Top
+  /v1/top/common:
+    $ref: './paths/v1/top/common.yaml'
+  # Video
+  /v1/videos:
+    $ref: './paths/v1/videos/index.yaml'
+  /v1/videos/{videoId}:
+    $ref: './paths/v1/videos/_videoId/index.yaml'
   # Upload
   /v1/upload/state:
     $ref: './paths/v1/upload/state.yaml'
@@ -162,8 +176,12 @@ components:
       $ref: './components/schemas/codes/common.yaml#/prefecture'
     weekday:
       $ref: './components/schemas/codes/common.yaml#/weekday'
+    experienceStatus:
+      $ref: './components/schemas/codes/experience.yaml#/experienceStatus'
     orderStatus:
       $ref: './components/schemas/codes/order.yaml#/orderStatus'
+    orderType:
+      $ref: './components/schemas/codes/order.yaml#/orderType'
     fulfillmentStatus:
       $ref: './components/schemas/codes/order-fulfillment.yaml#/fulfillmentStatus'
     shippingCarrier:
@@ -207,6 +225,10 @@ components:
       $ref: './components/schemas/entity/category.yaml#/category'
     coordinator:
       $ref: './components/schemas/entity/coordinator.yaml#/coordinator'
+    experience:
+      $ref: './components/schemas/entity/experience.yaml#/experience'
+    experienceType:
+      $ref: './components/schemas/entity/experience-type.yaml#/experienceType'
     live:
       $ref: './components/schemas/entity/live.yaml#/live'
     liveSummary:
@@ -233,6 +255,12 @@ components:
       $ref: './components/schemas/entity/schedule.yaml#/schedule'
     paymentSystem:
       $ref: './components/schemas/entity/status.yaml#/paymentSystem'
+    video:
+      $ref: './components/schemas/entity/video.yaml#/video'
+    videoSummary:
+      $ref: './components/schemas/entity/video.yaml#/videoSummary'
+    videoComment:
+      $ref: './components/schemas/entity/video-comment.yaml#/videoComment'
     # Request
     v1CreateAddressRequest:
       $ref: './components/schemas/v1/address.request.yaml#/createAddressRequest'
@@ -268,16 +296,20 @@ components:
       $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserThumbnailRequest'
     v1AddCartItemRequest:
       $ref: './components/schemas/v1/cart.request.yaml#/addCartItemRequest'
-    v1CheckoutRequest:
-      $ref: './components/schemas/v1/checkout.request.yaml#/checkoutRequest'
+    v1CheckoutProductRequest:
+      $ref: './components/schemas/v1/checkout.request.yaml#/checkoutProductRequest'
     v1CreateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
-    v1GuestCheckoutRequest:
-      $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutRequest'
+    v1GuestCheckoutProductRequest:
+      $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutProductRequest'
     v1CreateGuestLiveCommentRequest:
       $ref: './components/schemas/v1/guest-live-comment.request.yaml#/createGuestLiveCommentRequest'
+    v1CreateGuestVideoCommentRequest:
+      $ref: './components/schemas/v1/guest-video-comment.request.yaml#/createGuestVideoCommentRequest'
     v1CreateLiveCommentRequest:
       $ref: './components/schemas/v1/live-comment.request.yaml#/createLiveCommentRequest'
+    v1CreateVideoCommentRequest:
+      $ref: './components/schemas/v1/video-comment.request.yaml#/createVideoCommentRequest'
     v1GetUploadUrlRequest:
       $ref: './components/schemas/v1/upload.request.yaml#/getUploadUrlRequest'
     # Response
@@ -303,6 +335,10 @@ components:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorResponse'
     v1CoordinatorsResponse:
       $ref: './components/schemas/v1/coordinator.response.yaml#/coordinatorsResponse'
+    v1ExperienceResponse:
+      $ref: './components/schemas/v1/experience.response.yaml#/experienceResponse'
+    v1ExperiencesResponse:
+      $ref: './components/schemas/v1/experience.response.yaml#/experiencesResponse'
     v1GuestCheckoutResponse:
       $ref: './components/schemas/v1/guest-checkout.response.yaml#/guestCheckoutResponse'
     v1GuestCheckoutStateResponse:
@@ -333,6 +369,12 @@ components:
       $ref: './components/schemas/v1/status.response.yaml#/paymentSystemsResponse'
     v1TopCommonResponse:
       $ref: './components/schemas/v1/top.response.yaml#/topCommonResponse'
+    v1VideoResponse:
+      $ref: './components/schemas/v1/video.response.yaml#/videoResponse'
+    v1VideosResponse:
+      $ref: './components/schemas/v1/video.response.yaml#/videosResponse'
+    v1VideoCommentsResponse:
+      $ref: './components/schemas/v1/video-comment.response.yaml#/videoCommentsResponse'
     v1PostalCodeResponse:
       $ref: './components/schemas/v1/postal-code.response.yaml#/postalCodeResponse'
     v1UploadUrlResponse:

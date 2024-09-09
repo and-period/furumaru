@@ -53,18 +53,7 @@ func (c *broadcastComment) List(
 		}
 		stmt = stmt.Where("created_at >= ?", time.Unix(0, nsec))
 	}
-	for i := range params.Orders {
-		var value string
-		if params.Orders[i].OrderByASC {
-			value = fmt.Sprintf("`%s` ASC", params.Orders[i].Key)
-		} else {
-			value = fmt.Sprintf("`%s` DESC", params.Orders[i].Key)
-		}
-		stmt = stmt.Order(value)
-	}
-	if len(params.Orders) == 0 {
-		stmt = stmt.Order("created_at DESC")
-	}
+	stmt = stmt.Order("created_at DESC")
 
 	if err := stmt.Find(&comments).Error; err != nil {
 		return nil, "", dbError(err)

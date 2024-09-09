@@ -8,9 +8,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/codes"
 	"github.com/and-period/furumaru/api/internal/exception"
-	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
-	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/internal/store/komoju"
 	"github.com/and-period/furumaru/api/internal/user"
@@ -32,6 +30,7 @@ func TestGetCheckoutState(t *testing.T) {
 			UserID:          "user-id",
 			PromotionID:     "",
 			CoordinatorID:   "coordinator-id",
+			Type:            entity.OrderTypeProduct,
 			Status:          entity.OrderStatusUnpaid,
 			ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 			CreatedAt:       now,
@@ -215,21 +214,24 @@ func TestCheckoutCreditCard(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeCreditCard)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeCreditCard)
 				mocks.komojuSession.EXPECT().OrderCreditCard(gomock.Any(), params).Return(session, nil)
 			},
 			input: &store.CheckoutCreditCardInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 				Name:              "AND USER",
 				Number:            "4111111111111111",
@@ -252,16 +254,19 @@ func TestCheckoutCreditCard(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {},
 			input: &store.CheckoutCreditCardInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 				Name:              "AND USER",
 				Number:            "4111111111111111",
@@ -275,21 +280,24 @@ func TestCheckoutCreditCard(t *testing.T) {
 		{
 			name: "failed to order credit card",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeCreditCard)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeCreditCard)
 				mocks.komojuSession.EXPECT().OrderCreditCard(gomock.Any(), params).Return(nil, assert.AnError)
 			},
 			input: &store.CheckoutCreditCardInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 				Name:              "AND USER",
 				Number:            "4111111111111111",
@@ -330,21 +338,24 @@ func TestCheckoutPayPay(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypePayPay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypePayPay)
 				mocks.komojuSession.EXPECT().OrderPayPay(gomock.Any(), params).Return(session, nil)
 			},
 			input: &store.CheckoutPayPayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -360,21 +371,24 @@ func TestCheckoutPayPay(t *testing.T) {
 		{
 			name: "failed to order credit card",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypePayPay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypePayPay)
 				mocks.komojuSession.EXPECT().OrderPayPay(gomock.Any(), params).Return(nil, assert.AnError)
 			},
 			input: &store.CheckoutPayPayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "",
@@ -410,21 +424,24 @@ func TestCheckoutLinePay(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeLinePay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeLinePay)
 				mocks.komojuSession.EXPECT().OrderLinePay(gomock.Any(), params).Return(session, nil)
 			},
 			input: &store.CheckoutLinePayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -440,21 +457,24 @@ func TestCheckoutLinePay(t *testing.T) {
 		{
 			name: "failed to order credit card",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeLinePay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeLinePay)
 				mocks.komojuSession.EXPECT().OrderLinePay(gomock.Any(), params).Return(nil, assert.AnError)
 			},
 			input: &store.CheckoutLinePayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "",
@@ -490,21 +510,24 @@ func TestCheckoutMerpay(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeMerpay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeMerpay)
 				mocks.komojuSession.EXPECT().OrderMerpay(gomock.Any(), params).Return(session, nil)
 			},
 			input: &store.CheckoutMerpayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -520,21 +543,24 @@ func TestCheckoutMerpay(t *testing.T) {
 		{
 			name: "failed to order credit card",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeMerpay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeMerpay)
 				mocks.komojuSession.EXPECT().OrderMerpay(gomock.Any(), params).Return(nil, assert.AnError)
 			},
 			input: &store.CheckoutMerpayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "",
@@ -570,21 +596,24 @@ func TestCheckoutRakutenPay(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeRakutenPay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeRakutenPay)
 				mocks.komojuSession.EXPECT().OrderRakutenPay(gomock.Any(), params).Return(session, nil)
 			},
 			input: &store.CheckoutRakutenPayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -600,21 +629,24 @@ func TestCheckoutRakutenPay(t *testing.T) {
 		{
 			name: "failed to order credit card",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeRakutenPay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeRakutenPay)
 				mocks.komojuSession.EXPECT().OrderRakutenPay(gomock.Any(), params).Return(nil, assert.AnError)
 			},
 			input: &store.CheckoutRakutenPayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "",
@@ -650,21 +682,24 @@ func TestCheckoutAUPay(t *testing.T) {
 		{
 			name: "success",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeAUPay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeAUPay)
 				mocks.komojuSession.EXPECT().OrderAUPay(gomock.Any(), params).Return(session, nil)
 			},
 			input: &store.CheckoutAUPayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "http://example.com/redirect",
@@ -680,21 +715,24 @@ func TestCheckoutAUPay(t *testing.T) {
 		{
 			name: "failed to order credit card",
 			setup: func(ctx context.Context, mocks *mocks) {
-				checkoutmocks(mocks, t, now, entity.PaymentMethodTypeAUPay)
+				checkoutProductMocks(mocks, t, now, entity.PaymentMethodTypeAUPay)
 				mocks.komojuSession.EXPECT().OrderAUPay(gomock.Any(), params).Return(nil, assert.AnError)
 			},
 			input: &store.CheckoutAUPayInput{
 				CheckoutDetail: store.CheckoutDetail{
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					RequestID:         "order-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					RequestID:        "order-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 			},
 			expect:    "",
@@ -711,7 +749,7 @@ func TestCheckoutAUPay(t *testing.T) {
 	}
 }
 
-func checkoutmocks(
+func checkoutProductMocks(
 	m *mocks,
 	t *testing.T,
 	now time.Time,
@@ -813,6 +851,7 @@ func checkoutmocks(
 		UserID:          "user-id",
 		CoordinatorID:   "coordinator-id",
 		PromotionID:     "promotion-id",
+		Type:            entity.OrderTypeProduct,
 		Status:          entity.OrderStatusUnpaid,
 		ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}
@@ -941,189 +980,7 @@ func checkoutmocks(
 	m.db.Product.EXPECT().DecreaseInventory(gomock.Any(), int64(1), int64(2)).Return(nil).AnyTimes()
 }
 
-func TestNotifyPaymentCompleted(t *testing.T) {
-	t.Parallel()
-	now := time.Now()
-	params := &database.UpdateOrderPaymentParams{
-		Status:    entity.PaymentStatusAuthorized,
-		PaymentID: "payment-id",
-		IssuedAt:  now,
-	}
-	in := &messenger.NotifyOrderAuthorizedInput{
-		OrderID: "order-id",
-	}
-	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, mocks *mocks)
-		input  *store.NotifyPaymentCompletedInput
-		expect error
-	}{
-		{
-			name: "success authorized",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
-				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(nil)
-			},
-			input: &store.NotifyPaymentCompletedInput{
-				OrderID:   "order-id",
-				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
-				IssuedAt:  now,
-			},
-			expect: nil,
-		},
-		{
-			name: "success canceled",
-			setup: func(ctx context.Context, mocks *mocks) {
-				params := &database.UpdateOrderPaymentParams{
-					Status:    entity.PaymentStatusCanceled,
-					PaymentID: "payment-id",
-					IssuedAt:  now,
-				}
-				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
-			},
-			input: &store.NotifyPaymentCompletedInput{
-				OrderID:   "order-id",
-				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusCanceled,
-				IssuedAt:  now,
-			},
-			expect: nil,
-		},
-		{
-			name:   "invalid argument",
-			setup:  func(ctx context.Context, mocks *mocks) {},
-			input:  &store.NotifyPaymentCompletedInput{},
-			expect: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to update payment status",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(assert.AnError)
-			},
-			input: &store.NotifyPaymentCompletedInput{
-				OrderID:   "order-id",
-				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
-				IssuedAt:  now,
-			},
-			expect: exception.ErrInternal,
-		},
-		{
-			name: "already updated",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
-			},
-			input: &store.NotifyPaymentCompletedInput{
-				OrderID:   "order-id",
-				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
-				IssuedAt:  now,
-			},
-			expect: nil,
-		},
-		{
-			name: "failed to notify order authorized",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
-				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(assert.AnError)
-			},
-			input: &store.NotifyPaymentCompletedInput{
-				OrderID:   "order-id",
-				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
-				IssuedAt:  now,
-			},
-			expect: exception.ErrInternal,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyPaymentCompleted(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
-	}
-}
-
-func TestNotifyPaymentRefunded(t *testing.T) {
-	t.Parallel()
-	now := time.Now()
-	params := &database.UpdateOrderRefundParams{
-		Status:       entity.PaymentStatusRefunded,
-		RefundType:   entity.RefundTypeRefunded,
-		RefundTotal:  1980,
-		RefundReason: "在庫不足のため。",
-		IssuedAt:     now,
-	}
-	tests := []struct {
-		name   string
-		setup  func(ctx context.Context, mocks *mocks)
-		input  *store.NotifyPaymentRefundedInput
-		expect error
-	}{
-		{
-			name: "success",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(nil)
-			},
-			input: &store.NotifyPaymentRefundedInput{
-				OrderID:  "order-id",
-				Status:   entity.PaymentStatusRefunded,
-				Type:     entity.RefundTypeRefunded,
-				Total:    1980,
-				Reason:   "在庫不足のため。",
-				IssuedAt: now,
-			},
-			expect: nil,
-		},
-		{
-			name:   "invalid argument",
-			setup:  func(ctx context.Context, mocks *mocks) {},
-			input:  &store.NotifyPaymentRefundedInput{},
-			expect: exception.ErrInvalidArgument,
-		},
-		{
-			name: "failed to update payment status",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(assert.AnError)
-			},
-			input: &store.NotifyPaymentRefundedInput{
-				OrderID:  "order-id",
-				Status:   entity.PaymentStatusRefunded,
-				Type:     entity.RefundTypeRefunded,
-				Total:    1980,
-				Reason:   "在庫不足のため。",
-				IssuedAt: now,
-			},
-			expect: exception.ErrInternal,
-		},
-		{
-			name: "already updated",
-			setup: func(ctx context.Context, mocks *mocks) {
-				mocks.db.Order.EXPECT().UpdateRefund(ctx, "order-id", params).Return(database.ErrFailedPrecondition)
-			},
-			input: &store.NotifyPaymentRefundedInput{
-				OrderID:  "order-id",
-				Status:   entity.PaymentStatusRefunded,
-				Type:     entity.RefundTypeRefunded,
-				Total:    1980,
-				Reason:   "在庫不足のため。",
-				IssuedAt: now,
-			},
-			expect: nil,
-		},
-	}
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, testService(tt.setup, func(ctx context.Context, t *testing.T, service *service) {
-			err := service.NotifyPaymentRefunded(ctx, tt.input)
-			assert.ErrorIs(t, err, tt.expect)
-		}))
-	}
-}
-
-func TestCheckout(t *testing.T) {
+func TestCheckoutProduct(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	shikoku := []int32{
@@ -1326,6 +1183,7 @@ func TestCheckout(t *testing.T) {
 			UserID:          "user-id",
 			CoordinatorID:   "coordinator-id",
 			PromotionID:     "promotion-id",
+			Type:            entity.OrderTypeProduct,
 			Status:          entity.OrderStatusUnpaid,
 			ShippingMessage: "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 		}
@@ -1369,19 +1227,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1402,19 +1263,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1435,19 +1299,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1468,19 +1335,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1501,19 +1371,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1535,19 +1408,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1568,19 +1444,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1602,19 +1481,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1636,19 +1518,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1670,19 +1555,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1704,19 +1592,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1000,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1000,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1739,19 +1630,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1775,19 +1669,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					res := &komoju.OrderSessionResponse{
 						RedirectURL: "http://example.com/redirect",
 					}
@@ -1811,19 +1708,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					return nil, &komoju.Error{Status: http.StatusUnprocessableEntity, Code: komoju.ErrCodeUnprocessableEntity}
 				},
 			},
@@ -1844,19 +1744,22 @@ func TestCheckout(t *testing.T) {
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
-					RequestID:         "order-id",
-					UserID:            "user-id",
-					SessionID:         "session-id",
-					CoordinatorID:     "coordinator-id",
-					BoxNumber:         0,
-					PromotionCode:     "code1234",
-					BillingAddressID:  "address-id",
-					ShippingAddressID: "address-id",
-					CallbackURL:       "http://example.com/callback",
-					Total:             1400,
+					CheckoutProductDetail: store.CheckoutProductDetail{
+						CoordinatorID:     "coordinator-id",
+						BoxNumber:         0,
+						ShippingAddressID: "address-id",
+					},
+					Type:             entity.OrderTypeProduct,
+					RequestID:        "order-id",
+					UserID:           "user-id",
+					SessionID:        "session-id",
+					PromotionCode:    "code1234",
+					BillingAddressID: "address-id",
+					CallbackURL:      "http://example.com/callback",
+					Total:            1400,
 				},
 				paymentMethodType: entity.PaymentMethodTypeCreditCard,
-				payFn: func(ctx context.Context, sessionID string, params *entity.NewOrderParams) (*komoju.OrderSessionResponse, error) {
+				payFn: func(ctx context.Context, sessionID string, params *checkoutDetailParams) (*komoju.OrderSessionResponse, error) {
 					return nil, assert.AnError
 				},
 			},

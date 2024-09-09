@@ -36,6 +36,11 @@ experienceResponse:
       recommendedPoint1: '新鮮なじゃがいもを堀ります'
       recommendedPoint2: 'じゃがいもの美味しさを体験'
       recommendedPoint3: '楽しい体験ができます'
+      promotionVideoUrl: 'https://example.com/promotion.mp4'
+      duration: 60
+      direction: '新宿駅から徒歩10分'
+      businessOpenTime: '1000'
+      businessCloseTime: '1700'
       hostPostalCode: '1000014'
       hostPrefectureCode: 13
       hostCity: '東京都'
@@ -155,6 +160,11 @@ experiencesResponse:
       recommendedPoint1: '新鮮なじゃがいもを堀ります'
       recommendedPoint2: 'じゃがいもの美味しさを体験'
       recommendedPoint3: '楽しい体験ができます'
+      promotionVideoUrl: 'https://example.com/promotion.mp4'
+      duration: 60
+      direction: '新宿駅から徒歩10分'
+      businessOpenTime: '1000'
+      businessCloseTime: '1700'
       hostPostalCode: '1000014'
       hostPrefectureCode: 13
       hostCity: '東京都'

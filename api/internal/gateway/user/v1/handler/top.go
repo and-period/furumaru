@@ -17,11 +17,16 @@ func (h *handler) topRoutes(rg *gin.RouterGroup) {
 }
 
 func (h *handler) TopCommon(ctx *gin.Context) {
-	const defaultArchivesLimit = 6
+	const (
+		defaultArchivesLimit = 6
+		defaultVideosLimit   = 10
+	)
 
 	var (
-		lives    service.LiveSummaries
-		archives service.ArchiveSummaries
+		lives            service.LiveSummaries
+		archives         service.ArchiveSummaries
+		productVideos    service.VideoSummaries
+		experienceVideos service.VideoSummaries
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -39,6 +44,24 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 		archives, _, err = h.listArchiveSummaries(ectx, params)
 		return
 	})
+	eg.Go(func() (err error) {
+		params := &listVideoSummariesParams{
+			category: videoCategoryProduct,
+			limit:    defaultVideosLimit,
+			offset:   0,
+		}
+		productVideos, _, err = h.listVideoSummaries(ectx, params)
+		return
+	})
+	eg.Go(func() (err error) {
+		params := &listVideoSummariesParams{
+			category: videoCategoryExperience,
+			limit:    defaultVideosLimit,
+			offset:   0,
+		}
+		experienceVideos, _, err = h.listVideoSummaries(ectx, params)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
@@ -46,6 +69,8 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 
 	set := set.New(lives.CoordinatorIDs()...)
 	set.Add(archives.CoordinatorIDs()...)
+	set.Add(productVideos.CoordinatorIDs()...)
+	set.Add(experienceVideos.CoordinatorIDs()...)
 	coordinators, err := h.multiGetCoordinators(ctx, set.Slice())
 	if err != nil {
 		h.httpError(ctx, err)
@@ -53,9 +78,11 @@ func (h *handler) TopCommon(ctx *gin.Context) {
 	}
 
 	res := &response.TopCommonResponse{
-		Lives:        lives.Response(),
-		Archives:     archives.Response(),
-		Coordinators: coordinators.Response(),
+		Lives:            lives.Response(),
+		Archives:         archives.Response(),
+		ProductVideos:    productVideos.Response(),
+		ExperienceVideos: experienceVideos.Response(),
+		Coordinators:     coordinators.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }

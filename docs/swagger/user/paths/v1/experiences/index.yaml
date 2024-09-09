@@ -1,0 +1,43 @@
+get:
+  summary: 体験一覧取得
+  operationId: v1ListExperiences
+  tags:
+  - Experience
+  parameters:
+  - in: query
+    name: limit
+    schema:
+      type: integer
+      format: int64
+    description: 取得上限数(max:200)
+    required: false
+    example: 20
+  - in: query
+    name: offset
+    schema:
+      type: integer
+      format: int64
+    description: 取得開始位置(min:0)
+    required: false
+    example: 0
+  - in: query
+    name: coordinatorId
+    schema:
+      type: string
+    description: コーディネータID
+    required: false
+    example: 'kSByoE6FetnPs5Byk3a9Zx'
+  - in: query
+    name: prefecture
+    schema:
+      $ref: './../../../openapi.yaml#/components/schemas/prefecture'
+    description: 都道府県コード
+    required: false
+    example: '13'
+  responses:
+    200:
+      description: 成功
+      content:
+        application/json:
+          schema:
+            $ref: './../../../openapi.yaml#/components/schemas/v1ExperiencesResponse'

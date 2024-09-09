@@ -72,11 +72,15 @@ type Experience interface {
 }
 
 type ListExperiencesParams struct {
-	Name          string
-	CoordinatorID string
-	ProducerID    string
-	Limit         int
-	Offset        int
+	Name           string
+	HostPrefecture int32
+	CoordinatorID  string
+	ProducerID     string
+	OnlyPublished  bool
+	ExcludeDeleted bool
+	EndAtGte       time.Time
+	Limit          int
+	Offset         int
 }
 
 type UpdateExperienceParams struct {
@@ -93,6 +97,10 @@ type UpdateExperienceParams struct {
 	PriceSenior           int64
 	RecommendedPoints     []string
 	PromotionVideoURL     string
+	Duration              int64
+	Direction             string
+	BusinessOpenTime      string
+	BusinessCloseTime     string
 	HostPostalCode        string
 	HostPrefectureCode    int32
 	HostCity              string
@@ -167,6 +175,7 @@ type Order interface {
 type ListOrdersParams struct {
 	CoordinatorID string
 	UserID        string
+	Types         []entity.OrderType
 	Statuses      []entity.OrderStatus
 	Limit         int
 	Offset        int

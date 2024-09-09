@@ -414,6 +414,7 @@ type DeleteLiveInput struct {
 type ListOrdersInput struct {
 	CoordinatorID string               `validate:""`
 	UserID        string               `validate:""`
+	Types         []entity.OrderType   `validate:""`
 	Statuses      []entity.OrderStatus `validate:""`
 	Limit         int64                `validate:"required,max=200"`
 	Offset        int64                `validate:"min=0"`
@@ -540,18 +541,23 @@ type CheckoutAUPayInput struct {
 }
 
 type CheckoutDetail struct {
-	UserID            string `validate:"required"`
-	SessionID         string `validate:"required"`
-	RequestID         string `validate:"required"`
-	CoordinatorID     string `validate:"required"`
-	BoxNumber         int64  `validate:"min=0"`
-	PromotionCode     string `validate:"omitempty,len=8"`
-	BillingAddressID  string `validate:"required"`
-	ShippingAddressID string `validate:"required"`
+	CheckoutProductDetail
+	Type             entity.OrderType `validate:"required"`
+	UserID           string           `validate:"required"`
+	SessionID        string           `validate:"required"`
+	RequestID        string           `validate:"required"`
+	PromotionCode    string           `validate:"omitempty,len=8"`
+	BillingAddressID string           `validate:"required"`
 	// TODO: クライアント側修正が完了し次第、正しいバリデーションに変更
 	// CallbackURL       string `validate:"required,http_url"`
 	CallbackURL string `validate:"omitempty,http_url"`
 	Total       int64  `validate:"required"`
+}
+
+type CheckoutProductDetail struct {
+	CoordinatorID     string `validate:"required"`
+	BoxNumber         int64  `validate:"min=0"`
+	ShippingAddressID string `validate:"required"`
 }
 
 type MultiGetPaymentSystemsInput struct {
@@ -615,12 +621,16 @@ type DeleteExperienceTypeInput struct {
 }
 
 type ListExperiencesInput struct {
-	Name          string `validate:"max=64"`
-	CoordinatorID string `validate:""`
-	ProducerID    string `validate:""`
-	Limit         int64  `validate:"required_without=NoLimit,min=0,max=200"`
-	Offset        int64  `validate:"min=0"`
-	NoLimit       bool   `validate:""`
+	Name            string `validate:"max=64"`
+	PrefectureCode  int32  `validate:"min=0,max=47"`
+	CoordinatorID   string `validate:""`
+	ProducerID      string `validate:""`
+	OnlyPublished   bool   `validate:""`
+	ExcludeFinished bool   `validate:""`
+	ExcludeDeleted  bool   `validate:""`
+	Limit           int64  `validate:"required_without=NoLimit,min=0,max=200"`
+	Offset          int64  `validate:"min=0"`
+	NoLimit         bool   `validate:""`
 }
 
 type MultiGetExperiencesInput struct {
@@ -650,7 +660,11 @@ type CreateExperienceInput struct {
 	PricePreschool        int64                    `validate:"min=0"`
 	PriceSenior           int64                    `validate:"min=0"`
 	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
-	PromotionVideoURL     string                   `validate:"required,url"`
+	PromotionVideoURL     string                   `validate:"omitempty,url"`
+	Duration              int64                    `validate:"min=0"`
+	Direction             string                   `validate:"max=2000"`
+	BusinessOpenTime      string                   `validate:"time"`
+	BusinessCloseTime     string                   `validate:"time"`
 	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
 	HostCity              string                   `validate:"required,max=32"`
@@ -679,7 +693,11 @@ type UpdateExperienceInput struct {
 	PricePreschool        int64                    `validate:"min=0"`
 	PriceSenior           int64                    `validate:"min=0"`
 	RecommendedPoints     []string                 `validate:"max=3,dive,max=128"`
-	PromotionVideoURL     string                   `validate:"required,url"`
+	PromotionVideoURL     string                   `validate:"omitempty,url"`
+	Duration              int64                    `validate:"min=0"`
+	Direction             string                   `validate:"max=2000"`
+	BusinessOpenTime      string                   `validate:"time"`
+	BusinessCloseTime     string                   `validate:"time"`
 	HostPostalCode        string                   `validate:"required,max=16,numeric"`
 	HostPrefectureCode    int32                    `validate:"required"`
 	HostCity              string                   `validate:"required,max=32"`

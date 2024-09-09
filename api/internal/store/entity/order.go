@@ -8,6 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// OrderType - 注文種別
+type OrderType int32
+
+const (
+	OrderTypeUnknown    OrderType = 0
+	OrderTypeProduct    OrderType = 1 // 商品
+	OrderTypeExperience OrderType = 2 // 体験
+)
+
 // OrderStatus - 注文ステータス
 type OrderStatus int32
 
@@ -34,6 +43,7 @@ type Order struct {
 	CoordinatorID     string         `gorm:""`                     // 注文受付担当者ID
 	PromotionID       string         `gorm:"default:null"`         // プロモーションID
 	ManagementID      int64          `gorm:""`                     // 管理番号
+	Type              OrderType      `gorm:""`                     // 注文種別
 	Status            OrderStatus    `gorm:""`                     // 注文ステータス
 	ShippingMessage   string         `gorm:"default:null"`         // 発送時のメッセージ
 	CreatedAt         time.Time      `gorm:"<-:create"`            // 登録日時
@@ -64,7 +74,7 @@ type AggregatedOrderPromotion struct {
 
 type AggregatedOrderPromotions []*AggregatedOrderPromotion
 
-type NewOrderParams struct {
+type NewProductOrderParams struct {
 	OrderID           string
 	SessionID         string
 	CoordinatorID     string
@@ -78,7 +88,7 @@ type NewOrderParams struct {
 	Promotion         *Promotion
 }
 
-func NewOrder(params *NewOrderParams) (*Order, error) {
+func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 	var promotionID string
 	if params.Promotion != nil {
 		promotionID = params.Promotion.ID
@@ -115,6 +125,7 @@ func NewOrder(params *NewOrderParams) (*Order, error) {
 		UserID:            params.Customer.ID,
 		CoordinatorID:     params.CoordinatorID,
 		PromotionID:       promotionID,
+		Type:              OrderTypeProduct,
 		Status:            OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
 		ShippingMessage:   "ご注文ありがとうございます！商品到着まで今しばらくお待ち下さい。",
 	}, nil

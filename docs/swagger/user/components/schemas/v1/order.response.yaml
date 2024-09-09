@@ -21,6 +21,7 @@ orderResponse:
       id: 'kSByoE6FetnPs5Byk3a9Zx'
       coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
       promotionId: 'kSByoE6FetnPs5Byk3a9Zx'
+      type: 1
       status: 5
       payment:
         transactionId: 'kSByoE6FetnPs5Byk3a9Zx'

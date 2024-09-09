@@ -12,13 +12,13 @@ createVideoRequest:
       description: コーディネータID
     productIds:
       type: array
-      description: 商品ID一覧
+      description: 商品ID一覧(displayProductがtrueの場合必須)
       items:
         type: string
         description: 商品ID
     experienceIds:
       type: array
-      description: 体験ID一覧
+      description: 体験ID一覧(displayExperienceがtrueの場合必須)
       items:
         type: string
         description: 体験ID
@@ -34,6 +34,12 @@ createVideoRequest:
     limited:
       type: boolean
       description: 限定公開フラグ
+    displayProduct:
+      type: boolean
+      description: 商品表示フラグ
+    displayExperience:
+      type: boolean
+      description: 体験表示フラグ
     publishedAt:
       type: integer
       format: int64
@@ -48,6 +54,8 @@ createVideoRequest:
   - videoUrl
   - public
   - limited
+  - displayProduct
+  - displayExperience
   - publishedAt
   example:
     title: タイトル
@@ -61,6 +69,8 @@ createVideoRequest:
     videoUrl: https://example.com/video.mp4
     public: true
     limited: false
+    displayProduct: true
+    displayExperience: true
     publishedAt: 1614556800
 updateVideoRequest:
   type: object
@@ -71,18 +81,15 @@ updateVideoRequest:
     description:
       type: string
       description: 説明(20000文字まで)
-    coordinatorId:
-      type: string
-      description: コーディネータID
     productIds:
       type: array
-      description: 商品ID一覧
+      description: 商品ID一覧(displayProductがtrueの場合必須)
       items:
         type: string
         description: 商品ID
     experienceIds:
       type: array
-      description: 体験ID一覧
+      description: 体験ID一覧(displayExperienceがtrueの場合必須)
       items:
         type: string
         description: 体験ID
@@ -98,6 +105,12 @@ updateVideoRequest:
     limited:
       type: boolean
       description: 限定公開フラグ
+    displayProduct:
+      type: boolean
+      description: 商品表示フラグ
+    displayExperience:
+      type: boolean
+      description: 体験表示フラグ
     publishedAt:
       type: integer
       format: int64
@@ -105,18 +118,18 @@ updateVideoRequest:
   required:
   - title
   - description
-  - coordinatorId
   - productIds
   - experienceIds
   - thumbnailUrl
   - videoUrl
   - public
   - limited
+  - displayProduct
+  - displayExperience
   - publishedAt
   example:
     title: タイトル
     description: 説明
-    coordinatorId: 'kSByoE6FetnPs5Byk3a9Zx'
     productIds:
     - 'kSByoE6FetnPs5Byk3a9Zx'
     experienceIds:
@@ -125,4 +138,6 @@ updateVideoRequest:
     videoUrl: https://example.com/video.mp4
     public: true
     limited: false
+    displayProduct: true
+    displayExperience: true
     publishedAt: 1614556800

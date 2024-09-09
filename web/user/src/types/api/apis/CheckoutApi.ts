@@ -15,33 +15,33 @@
 
 import * as runtime from '../runtime';
 import type {
-  CheckoutRequest,
+  CheckoutProductRequest,
   CheckoutResponse,
   CheckoutStateResponse,
   ErrorResponse,
-  GuestCheckoutRequest,
+  GuestCheckoutProductRequest,
   GuestCheckoutResponse,
   GuestCheckoutStateResponse,
 } from '../models/index';
 import {
-    CheckoutRequestFromJSON,
-    CheckoutRequestToJSON,
+    CheckoutProductRequestFromJSON,
+    CheckoutProductRequestToJSON,
     CheckoutResponseFromJSON,
     CheckoutResponseToJSON,
     CheckoutStateResponseFromJSON,
     CheckoutStateResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-    GuestCheckoutRequestFromJSON,
-    GuestCheckoutRequestToJSON,
+    GuestCheckoutProductRequestFromJSON,
+    GuestCheckoutProductRequestToJSON,
     GuestCheckoutResponseFromJSON,
     GuestCheckoutResponseToJSON,
     GuestCheckoutStateResponseFromJSON,
     GuestCheckoutStateResponseToJSON,
 } from '../models/index';
 
-export interface V1CheckoutRequest {
-    body: CheckoutRequest;
+export interface V1CheckoutProductRequest {
+    body: CheckoutProductRequest;
 }
 
 export interface V1GetCheckoutStateRequest {
@@ -52,8 +52,8 @@ export interface V1GetGuestCheckoutStateRequest {
     transactionId: string;
 }
 
-export interface V1GuestCheckoutRequest {
-    body: GuestCheckoutRequest;
+export interface V1GuestCheckoutProductRequest {
+    body: GuestCheckoutProductRequest;
 }
 
 /**
@@ -64,11 +64,11 @@ export class CheckoutApi extends runtime.BaseAPI {
     /**
      * 商品購入
      */
-    async v1CheckoutRaw(requestParameters: V1CheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutResponse>> {
+    async v1CheckoutProductRaw(requestParameters: V1CheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
-                'Required parameter "body" was null or undefined when calling v1Checkout().'
+                'Required parameter "body" was null or undefined when calling v1CheckoutProduct().'
             );
         }
 
@@ -87,7 +87,7 @@ export class CheckoutApi extends runtime.BaseAPI {
             }
         }
         const response = await this.request({
-            path: `/v1/checkouts`,
+            path: `/v1/checkouts/products`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -100,8 +100,8 @@ export class CheckoutApi extends runtime.BaseAPI {
     /**
      * 商品購入
      */
-    async v1Checkout(requestParameters: V1CheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
-        const response = await this.v1CheckoutRaw(requestParameters, initOverrides);
+    async v1CheckoutProduct(requestParameters: V1CheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
+        const response = await this.v1CheckoutProductRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -182,11 +182,11 @@ export class CheckoutApi extends runtime.BaseAPI {
     /**
      * ゲスト商品購入
      */
-    async v1GuestCheckoutRaw(requestParameters: V1GuestCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutResponse>> {
+    async v1GuestCheckoutProductRaw(requestParameters: V1GuestCheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
-                'Required parameter "body" was null or undefined when calling v1GuestCheckout().'
+                'Required parameter "body" was null or undefined when calling v1GuestCheckoutProduct().'
             );
         }
 
@@ -197,7 +197,7 @@ export class CheckoutApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
         const response = await this.request({
-            path: `/v1/guests/checkouts`,
+            path: `/v1/guests/checkouts/products`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -210,8 +210,8 @@ export class CheckoutApi extends runtime.BaseAPI {
     /**
      * ゲスト商品購入
      */
-    async v1GuestCheckout(requestParameters: V1GuestCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutResponse> {
-        const response = await this.v1GuestCheckoutRaw(requestParameters, initOverrides);
+    async v1GuestCheckoutProduct(requestParameters: V1GuestCheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutResponse> {
+        const response = await this.v1GuestCheckoutProductRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

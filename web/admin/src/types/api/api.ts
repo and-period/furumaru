@@ -359,6 +359,25 @@ export interface AnalyzeScheduleResponse {
 /**
  * 
  * @export
+ * @interface AnalyzeVideoResponse
+ */
+export interface AnalyzeVideoResponse {
+    /**
+     * 視聴者ログ一覧
+     * @type {Array<VideoViewerLog>}
+     * @memberof AnalyzeVideoResponse
+     */
+    'viewerLogs': Array<VideoViewerLog>;
+    /**
+     * 合計視聴者数
+     * @type {number}
+     * @memberof AnalyzeVideoResponse
+     */
+    'totalViewers'?: number;
+}
+/**
+ * 
+ * @export
  * @interface ApproveScheduleRequest
  */
 export interface ApproveScheduleRequest {
@@ -1614,6 +1633,36 @@ export interface CreateExperienceRequest {
      */
     'recommendedPoint3': string;
     /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 体験時間（単位:分、0以上）
+     * @type {number}
+     * @memberof CreateExperienceRequest
+     */
+    'duration': number;
+    /**
+     * アクセス方法（2000文字以下）
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'direction': string;
+    /**
+     * 営業開始時間（形式:HHmm）
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'businessOpenTime': string;
+    /**
+     * 営業終了時間（形式:HHmm）
+     * @type {string}
+     * @memberof CreateExperienceRequest
+     */
+    'businessCloseTime': string;
+    /**
      * 郵便番号(ハイフンなし)
      * @type {string}
      * @memberof CreateExperienceRequest
@@ -2267,13 +2316,13 @@ export interface CreateVideoRequest {
      */
     'coordinatorId': string;
     /**
-     * 商品ID一覧
+     * 商品ID一覧(displayProductがtrueの場合必須)
      * @type {Array<string>}
      * @memberof CreateVideoRequest
      */
     'productIds': Array<string>;
     /**
-     * 体験ID一覧
+     * 体験ID一覧(displayExperienceがtrueの場合必須)
      * @type {Array<string>}
      * @memberof CreateVideoRequest
      */
@@ -2302,6 +2351,18 @@ export interface CreateVideoRequest {
      * @memberof CreateVideoRequest
      */
     'limited': boolean;
+    /**
+     * 商品表示フラグ
+     * @type {boolean}
+     * @memberof CreateVideoRequest
+     */
+    'displayProduct': boolean;
+    /**
+     * 体験表示フラグ
+     * @type {boolean}
+     * @memberof CreateVideoRequest
+     */
+    'displayExperience': boolean;
     /**
      * 公開日時 (unixtime)
      * @type {number}
@@ -2529,19 +2590,49 @@ export interface Experience {
      * @type {string}
      * @memberof Experience
      */
-    'recommendedPoint1'?: string;
+    'recommendedPoint1': string;
     /**
      * おすすめポイント2
      * @type {string}
      * @memberof Experience
      */
-    'recommendedPoint2'?: string;
+    'recommendedPoint2': string;
     /**
      * おすすめポイント3
      * @type {string}
      * @memberof Experience
      */
-    'recommendedPoint3'?: string;
+    'recommendedPoint3': string;
+    /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof Experience
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 体験時間（分）
+     * @type {number}
+     * @memberof Experience
+     */
+    'duration': number;
+    /**
+     * アクセス方法
+     * @type {string}
+     * @memberof Experience
+     */
+    'direction': string;
+    /**
+     * 営業開始時間
+     * @type {string}
+     * @memberof Experience
+     */
+    'businessOpenTime': string;
+    /**
+     * 営業終了時間
+     * @type {string}
+     * @memberof Experience
+     */
+    'businessCloseTime': string;
     /**
      * 開催地（郵便番号）
      * @type {string}
@@ -2650,7 +2741,7 @@ export interface ExperienceResponse {
     'experienceType': ExperienceType;
 }
 /**
- * 商品販売ステータス
+ * 体験受付ステータス
  * @export
  * @enum {string}
  */
@@ -2665,15 +2756,15 @@ export const ExperienceStatus = {
     */
     PRIVATE: 1,
     /**
-    * 公開前
+    * 販売開始前
     */
     WAITING: 2,
     /**
-    * 受付中
+    * 体験受付中
     */
     ACCEPTING: 3,
     /**
-    * 定員オーバー
+    * 体験受付終了
     */
     SOLD_OUT: 4,
     /**
@@ -3481,6 +3572,12 @@ export interface Order {
     'shippingMessage': string;
     /**
      * 
+     * @type {OrderType}
+     * @memberof Order
+     */
+    'type': OrderType;
+    /**
+     * 
      * @type {OrderStatus}
      * @memberof Order
      */
@@ -3941,6 +4038,30 @@ export const OrderStatus = {
 } as const;
 
 export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+
+/**
+ * 注文種別
+ * @export
+ * @enum {string}
+ */
+
+export const OrderType = {
+    /**
+    * 不明
+    */
+    UNKNOWN: 0,
+    /**
+    * 商品
+    */
+    PRODUCT: 1,
+    /**
+    * 体験
+    */
+    EXPERIENCE: 2
+} as const;
+
+export type OrderType = typeof OrderType[keyof typeof OrderType];
 
 
 /**
@@ -6315,6 +6436,36 @@ export interface UpdateExperienceRequest {
      */
     'recommendedPoint3': string;
     /**
+     * 紹介動画URL
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'promotionVideoUrl': string;
+    /**
+     * 体験時間（単位:分、0以上）
+     * @type {number}
+     * @memberof UpdateExperienceRequest
+     */
+    'duration': number;
+    /**
+     * アクセス方法（2000文字以下）
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'direction': string;
+    /**
+     * 営業開始時間（形式:HHmm）
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'businessOpenTime': string;
+    /**
+     * 営業終了時間（形式:HHmm）
+     * @type {string}
+     * @memberof UpdateExperienceRequest
+     */
+    'businessCloseTime': string;
+    /**
      * 郵便番号(ハイフンなし)
      * @type {string}
      * @memberof UpdateExperienceRequest
@@ -6939,6 +7090,19 @@ export interface UpdateThreadRequest {
 /**
  * 
  * @export
+ * @interface UpdateVideoCommentRequest
+ */
+export interface UpdateVideoCommentRequest {
+    /**
+     * コメントの無効化
+     * @type {boolean}
+     * @memberof UpdateVideoCommentRequest
+     */
+    'disabled': boolean;
+}
+/**
+ * 
+ * @export
  * @interface UpdateVideoRequest
  */
 export interface UpdateVideoRequest {
@@ -6955,19 +7119,13 @@ export interface UpdateVideoRequest {
      */
     'description': string;
     /**
-     * コーディネータID
-     * @type {string}
-     * @memberof UpdateVideoRequest
-     */
-    'coordinatorId': string;
-    /**
-     * 商品ID一覧
+     * 商品ID一覧(displayProductがtrueの場合必須)
      * @type {Array<string>}
      * @memberof UpdateVideoRequest
      */
     'productIds': Array<string>;
     /**
-     * 体験ID一覧
+     * 体験ID一覧(displayExperienceがtrueの場合必須)
      * @type {Array<string>}
      * @memberof UpdateVideoRequest
      */
@@ -6996,6 +7154,18 @@ export interface UpdateVideoRequest {
      * @memberof UpdateVideoRequest
      */
     'limited': boolean;
+    /**
+     * 商品表示フラグ
+     * @type {boolean}
+     * @memberof UpdateVideoRequest
+     */
+    'displayProduct': boolean;
+    /**
+     * 体験表示フラグ
+     * @type {boolean}
+     * @memberof UpdateVideoRequest
+     */
+    'displayExperience': boolean;
     /**
      * 公開日時 (unixtime)
      * @type {number}
@@ -7545,6 +7715,18 @@ export interface Video {
      */
     'limited': boolean;
     /**
+     * 商品表示フラグ
+     * @type {boolean}
+     * @memberof Video
+     */
+    'displayProduct': boolean;
+    /**
+     * 体験表示フラグ
+     * @type {boolean}
+     * @memberof Video
+     */
+    'displayExperience': boolean;
+    /**
      * 公開日時 (unixtime)
      * @type {number}
      * @memberof Video
@@ -7565,6 +7747,80 @@ export interface Video {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface VideoComment
+ */
+export interface VideoComment {
+    /**
+     * コメントID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'id': string;
+    /**
+     * ユーザーID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'userId': string;
+    /**
+     * ユーザー名
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'username': string;
+    /**
+     * アカウントID
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'accountId': string;
+    /**
+     * サムネイルURL
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'thumbnailUrl': string;
+    /**
+     * コメント
+     * @type {string}
+     * @memberof VideoComment
+     */
+    'comment': string;
+    /**
+     * コメント無効化フラグ
+     * @type {boolean}
+     * @memberof VideoComment
+     */
+    'disabled': boolean;
+    /**
+     * 投稿日時
+     * @type {number}
+     * @memberof VideoComment
+     */
+    'publishedAt': number;
+}
+/**
+ * 
+ * @export
+ * @interface VideoCommentsResponse
+ */
+export interface VideoCommentsResponse {
+    /**
+     * コメント一覧
+     * @type {Array<VideoComment>}
+     * @memberof VideoCommentsResponse
+     */
+    'comments': Array<VideoComment>;
+    /**
+     * 次の取得位置
+     * @type {string}
+     * @memberof VideoCommentsResponse
+     */
+    'nextToken': string;
+}
 /**
  * 
  * @export
@@ -7626,6 +7882,52 @@ export const VideoStatus = {
 } as const;
 
 export type VideoStatus = typeof VideoStatus[keyof typeof VideoStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface VideoViewerLog
+ */
+export interface VideoViewerLog {
+    /**
+     * オンデマンド配信ID
+     * @type {string}
+     * @memberof VideoViewerLog
+     */
+    'videoId': string;
+    /**
+     * 集計開始日時 (unixtime)
+     * @type {number}
+     * @memberof VideoViewerLog
+     */
+    'startAt': number;
+    /**
+     * 集計終了日時 (unixtime)
+     * @type {number}
+     * @memberof VideoViewerLog
+     */
+    'endAt': number;
+    /**
+     * 合計視聴者数
+     * @type {number}
+     * @memberof VideoViewerLog
+     */
+    'total': number;
+}
+/**
+ * オンデマンド配信ログ取得間隔
+ * @export
+ * @enum {string}
+ */
+
+export const VideoViewerLogInterval = {
+    SECOND: 'second',
+    MINUTE: 'minute',
+    HOUR: 'hour'
+} as const;
+
+export type VideoViewerLogInterval = typeof VideoViewerLogInterval[keyof typeof VideoViewerLogInterval];
 
 
 /**
@@ -19052,11 +19354,10 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
          * @param {string} [next] 取得開始位置
          * @param {number} [start] 取得範囲(開始時間:unixtime)
          * @param {number} [end] 取得範囲(終了時間:unixtime)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListLiveComments: async (scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListLiveComments: async (scheduleId: string, limit?: number, next?: string, start?: number, end?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'scheduleId' is not null or undefined
             assertParamExists('v1ListLiveComments', 'scheduleId', scheduleId)
             const localVarPath = `/v1/schedules/{scheduleId}/comments`
@@ -19086,10 +19387,6 @@ export const ScheduleApiAxiosParamCreator = function (configuration?: Configurat
 
             if (end !== undefined) {
                 localVarQueryParameter['end'] = end;
-            }
-
-            if (orders !== undefined) {
-                localVarQueryParameter['orders'] = orders;
             }
 
 
@@ -19405,12 +19702,11 @@ export const ScheduleApiFp = function(configuration?: Configuration) {
          * @param {string} [next] 取得開始位置
          * @param {number} [start] 取得範囲(開始時間:unixtime)
          * @param {number} [end] 取得範囲(終了時間:unixtime)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveCommentsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListLiveComments(scheduleId, limit, next, start, end, orders, options);
+        async v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LiveCommentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListLiveComments(scheduleId, limit, next, start, end, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ScheduleApi.v1ListLiveComments']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -19574,12 +19870,11 @@ export const ScheduleApiFactory = function (configuration?: Configuration, baseP
          * @param {string} [next] 取得開始位置
          * @param {number} [start] 取得範囲(開始時間:unixtime)
          * @param {number} [end] 取得範囲(終了時間:unixtime)
-         * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig): AxiosPromise<LiveCommentsResponse> {
-            return localVarFp.v1ListLiveComments(scheduleId, limit, next, start, end, orders, options).then((request) => request(axios, basePath));
+        v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig): AxiosPromise<LiveCommentsResponse> {
+            return localVarFp.v1ListLiveComments(scheduleId, limit, next, start, end, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -19744,13 +20039,12 @@ export class ScheduleApi extends BaseAPI {
      * @param {string} [next] 取得開始位置
      * @param {number} [start] 取得範囲(開始時間:unixtime)
      * @param {number} [end] 取得範囲(終了時間:unixtime)
-     * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:publishedAt（デフォルト:-publishedAt） 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ScheduleApi
      */
-    public v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, orders?: string, options?: RawAxiosRequestConfig) {
-        return ScheduleApiFp(this.configuration).v1ListLiveComments(scheduleId, limit, next, start, end, orders, options).then((request) => request(this.axios, this.basePath));
+    public v1ListLiveComments(scheduleId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig) {
+        return ScheduleApiFp(this.configuration).v1ListLiveComments(scheduleId, limit, next, start, end, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -20939,6 +21233,59 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
     return {
         /**
          * 
+         * @summary オンデマンド配信分析情報取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+         * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+         * @param {VideoViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1AnalyzeVideo: async (videoId: string, startAt?: number, endAt?: number, viewerLogInterval?: VideoViewerLogInterval, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1AnalyzeVideo', 'videoId', videoId)
+            const localVarPath = `/v1/videos/{videoId}/analytics`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (startAt !== undefined) {
+                localVarQueryParameter['startAt'] = startAt;
+            }
+
+            if (endAt !== undefined) {
+                localVarQueryParameter['endAt'] = endAt;
+            }
+
+            if (viewerLogInterval !== undefined) {
+                localVarQueryParameter['viewerLogInterval'] = viewerLogInterval;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary オンデマンド配信登録
          * @param {CreateVideoRequest} body 
          * @param {*} [options] Override http request option.
@@ -21135,6 +21482,60 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary オンデマンド配信コメント取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListVideoComments: async (videoId: string, limit?: number, next?: string, start?: number, end?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1ListVideoComments', 'videoId', videoId)
+            const localVarPath = `/v1/videos/{videoId}/comments`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (next !== undefined) {
+                localVarQueryParameter['next'] = next;
+            }
+
+            if (start !== undefined) {
+                localVarQueryParameter['start'] = start;
+            }
+
+            if (end !== undefined) {
+                localVarQueryParameter['end'] = end;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -21231,6 +21632,50 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary オンデマンド配信コメント更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {string} commentId コメントID
+         * @param {UpdateVideoCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateVideoComment: async (videoId: string, commentId: string, body: UpdateVideoCommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'videoId' is not null or undefined
+            assertParamExists('v1UpdateVideoComment', 'videoId', videoId)
+            // verify required parameter 'commentId' is not null or undefined
+            assertParamExists('v1UpdateVideoComment', 'commentId', commentId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('v1UpdateVideoComment', 'body', body)
+            const localVarPath = `/v1/videos/{videoId}/comments/{commentId}`
+                .replace(`{${"videoId"}}`, encodeURIComponent(String(videoId)))
+                .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -21241,6 +21686,22 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
 export const VideoApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = VideoApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary オンデマンド配信分析情報取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+         * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+         * @param {VideoViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1AnalyzeVideo(videoId: string, startAt?: number, endAt?: number, viewerLogInterval?: VideoViewerLogInterval, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AnalyzeVideoResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1AnalyzeVideo(videoId, startAt, endAt, viewerLogInterval, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1AnalyzeVideo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * 
          * @summary オンデマンド配信登録
@@ -21308,6 +21769,23 @@ export const VideoApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary オンデマンド配信コメント取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1ListVideoComments(videoId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideoCommentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListVideoComments(videoId, limit, next, start, end, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1ListVideoComments']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -21336,6 +21814,21 @@ export const VideoApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['VideoApi.v1UpdateVideo']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary オンデマンド配信コメント更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {string} commentId コメントID
+         * @param {UpdateVideoCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async v1UpdateVideoComment(videoId: string, commentId: string, body: UpdateVideoCommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UpdateVideoComment(videoId, commentId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['VideoApi.v1UpdateVideoComment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -21346,6 +21839,19 @@ export const VideoApiFp = function(configuration?: Configuration) {
 export const VideoApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = VideoApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary オンデマンド配信分析情報取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+         * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+         * @param {VideoViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1AnalyzeVideo(videoId: string, startAt?: number, endAt?: number, viewerLogInterval?: VideoViewerLogInterval, options?: RawAxiosRequestConfig): AxiosPromise<AnalyzeVideoResponse> {
+            return localVarFp.v1AnalyzeVideo(videoId, startAt, endAt, viewerLogInterval, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary オンデマンド配信登録
@@ -21398,6 +21904,20 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @summary オンデマンド配信コメント取得
+         * @param {string} videoId オンデマンド配信ID
+         * @param {number} [limit] 取得上限数(max:200)
+         * @param {string} [next] 取得開始位置
+         * @param {number} [start] 取得範囲(開始時間:unixtime)
+         * @param {number} [end] 取得範囲(終了時間:unixtime)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1ListVideoComments(videoId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig): AxiosPromise<VideoCommentsResponse> {
+            return localVarFp.v1ListVideoComments(videoId, limit, next, start, end, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
@@ -21420,6 +21940,18 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
         v1UpdateVideo(videoId: string, body: UpdateVideoRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.v1UpdateVideo(videoId, body, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary オンデマンド配信コメント更新
+         * @param {string} videoId オンデマンド配信ID
+         * @param {string} commentId コメントID
+         * @param {UpdateVideoCommentRequest} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        v1UpdateVideoComment(videoId: string, commentId: string, body: UpdateVideoCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.v1UpdateVideoComment(videoId, commentId, body, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -21430,6 +21962,21 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class VideoApi extends BaseAPI {
+    /**
+     * 
+     * @summary オンデマンド配信分析情報取得
+     * @param {string} videoId オンデマンド配信ID
+     * @param {number} [startAt] 集計開始日時 (unixtime,未指定の場合はライブ配信開始時間)
+     * @param {number} [endAt] 集計終了日時 (unixtime,未指定の場合はライブ配信終了時間)
+     * @param {VideoViewerLogInterval} [viewerLogInterval] 集計間隔 (未指定の場合は1分間隔)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1AnalyzeVideo(videoId: string, startAt?: number, endAt?: number, viewerLogInterval?: VideoViewerLogInterval, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1AnalyzeVideo(videoId, startAt, endAt, viewerLogInterval, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary オンデマンド配信登録
@@ -21492,6 +22039,22 @@ export class VideoApi extends BaseAPI {
 
     /**
      * 
+     * @summary オンデマンド配信コメント取得
+     * @param {string} videoId オンデマンド配信ID
+     * @param {number} [limit] 取得上限数(max:200)
+     * @param {string} [next] 取得開始位置
+     * @param {number} [start] 取得範囲(開始時間:unixtime)
+     * @param {number} [end] 取得範囲(終了時間:unixtime)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1ListVideoComments(videoId: string, limit?: number, next?: string, start?: number, end?: number, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1ListVideoComments(videoId, limit, next, start, end, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary オンデマンド配信一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
@@ -21516,6 +22079,20 @@ export class VideoApi extends BaseAPI {
      */
     public v1UpdateVideo(videoId: string, body: UpdateVideoRequest, options?: RawAxiosRequestConfig) {
         return VideoApiFp(this.configuration).v1UpdateVideo(videoId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary オンデマンド配信コメント更新
+     * @param {string} videoId オンデマンド配信ID
+     * @param {string} commentId コメントID
+     * @param {UpdateVideoCommentRequest} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VideoApi
+     */
+    public v1UpdateVideoComment(videoId: string, commentId: string, body: UpdateVideoCommentRequest, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1UpdateVideoComment(videoId, commentId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

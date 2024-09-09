@@ -3,9 +3,11 @@ package entity
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/codes"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/and-period/furumaru/api/pkg/set"
 	"github.com/and-period/furumaru/api/pkg/uuid"
@@ -13,16 +15,16 @@ import (
 	"gorm.io/gorm"
 )
 
-// ExperienceStatus - 体験販売状況
+// ExperienceStatus - 体験受付状況
 type ExperienceStatus int32
 
 const (
 	ExperienceStatusUnknown   ExperienceStatus = 0
 	ExperienceStatusPrivate   ExperienceStatus = 1 // 非公開
-	ExperienceStatusWaiting   ExperienceStatus = 2 // 公開前
-	ExperienceStatusAccepting ExperienceStatus = 3 // 受付中
-	ExperienceStatusSoldOut   ExperienceStatus = 4 // 定員オーバー
-	ExperienceStatusFinished  ExperienceStatus = 5 // 終了済み
+	ExperienceStatusWaiting   ExperienceStatus = 2 // 販売開始前
+	ExperienceStatusAccepting ExperienceStatus = 3 // 体験受付中
+	ExperienceStatusSoldOut   ExperienceStatus = 4 // 体験受付終了
+	ExperienceStatusFinished  ExperienceStatus = 5 // 販売終了
 	ExperienceStatusArchived  ExperienceStatus = 6 // アーカイブ済み
 )
 
@@ -44,6 +46,10 @@ type Experience struct {
 	RecommendedPoints     []string             `gorm:"-"`                                      // おすすめポイント一覧
 	RecommendedPointsJSON datatypes.JSON       `gorm:"default:null;column:recommended_points"` // おすすめポイント一覧(JSON)
 	PromotionVideoURL     string               `gorm:""`                                       // 紹介動画URL
+	Duration              int64                `gorm:""`                                       // 体験時間(分)
+	Direction             string               `gorm:""`                                       // アクセス方法
+	BusinessOpenTime      string               `gorm:""`                                       // 営業開始時間
+	BusinessCloseTime     string               `gorm:""`                                       // 営業終了時間
 	HostPostalCode        string               `gorm:""`                                       // 開催場所(郵便番号)
 	HostPrefecture        string               `gorm:"-"`                                      // 開催場所(都道府県)
 	HostPrefectureCode    int32                `gorm:"column:host_prefecture"`                 // 開催場所(都道府県コード)
@@ -81,6 +87,10 @@ type NewExperienceParams struct {
 	Media                 MultiExperienceMedia
 	RecommendedPoints     []string
 	PromotionVideoURL     string
+	Duration              int64
+	Direction             string
+	BusinessOpenTime      string
+	BusinessCloseTime     string
 	HostPostalCode        string
 	HostPrefectureCode    int32
 	HostCity              string
@@ -124,6 +134,10 @@ func NewExperience(params *NewExperienceParams) (*Experience, error) {
 		Media:              params.Media,
 		RecommendedPoints:  params.RecommendedPoints,
 		PromotionVideoURL:  params.PromotionVideoURL,
+		Duration:           params.Duration,
+		Direction:          params.Direction,
+		BusinessOpenTime:   params.BusinessOpenTime,
+		BusinessCloseTime:  params.BusinessCloseTime,
 		HostPostalCode:     params.HostPostalCode,
 		HostPrefecture:     prefecture,
 		HostPrefectureCode: params.HostPrefectureCode,
@@ -151,6 +165,17 @@ func (e *Experience) Validate() error {
 	}
 	if e.HostLatitude < -90 || 90 < e.HostLatitude {
 		return errors.New("entity: invalid host latitude")
+	}
+	openTime, err := jst.ParseFromHHMM(e.BusinessOpenTime)
+	if err != nil {
+		return fmt.Errorf("entity: invalid business open time: %w", err)
+	}
+	closeTime, err := jst.ParseFromHHMM(e.BusinessCloseTime)
+	if err != nil {
+		return fmt.Errorf("entity: invalid business close time: %w", err)
+	}
+	if !openTime.Before(closeTime) {
+		return errors.New("entity: invalid business time")
 	}
 	return e.Media.Validate()
 }
@@ -283,6 +308,17 @@ func (es Experiences) Map() map[string]*Experience {
 	res := make(map[string]*Experience, len(es))
 	for _, e := range es {
 		res[e.ID] = e
+	}
+	return res
+}
+
+func (es Experiences) FilterByPublished() Experiences {
+	res := make(Experiences, 0, len(es))
+	for _, e := range es {
+		if e.Status == ExperienceStatusPrivate || e.Status == ExperienceStatusArchived {
+			continue
+		}
+		res = append(res, e)
 	}
 	return res
 }

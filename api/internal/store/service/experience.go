@@ -20,11 +20,17 @@ func (s *service) ListExperiences(ctx context.Context, in *store.ListExperiences
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListExperiencesParams{
-		Name:          in.Name,
-		CoordinatorID: in.CoordinatorID,
-		ProducerID:    in.ProducerID,
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
+		Name:           in.Name,
+		HostPrefecture: in.PrefectureCode,
+		CoordinatorID:  in.CoordinatorID,
+		ProducerID:     in.ProducerID,
+		OnlyPublished:  in.OnlyPublished,
+		ExcludeDeleted: in.ExcludeDeleted,
+		Limit:          int(in.Limit),
+		Offset:         int(in.Offset),
+	}
+	if in.ExcludeFinished {
+		params.EndAtGte = s.now()
 	}
 	var (
 		experiences entity.Experiences
@@ -132,6 +138,10 @@ func (s *service) CreateExperience(ctx context.Context, in *store.CreateExperien
 		Media:                 media,
 		RecommendedPoints:     in.RecommendedPoints,
 		PromotionVideoURL:     in.PromotionVideoURL,
+		Duration:              in.Duration,
+		Direction:             in.Direction,
+		BusinessOpenTime:      in.BusinessOpenTime,
+		BusinessCloseTime:     in.BusinessCloseTime,
 		HostPostalCode:        in.HostPostalCode,
 		HostPrefectureCode:    in.HostPrefectureCode,
 		HostCity:              in.HostCity,
@@ -202,6 +212,10 @@ func (s *service) UpdateExperience(ctx context.Context, in *store.UpdateExperien
 		PriceSenior:           in.PriceSenior,
 		RecommendedPoints:     in.RecommendedPoints,
 		PromotionVideoURL:     in.PromotionVideoURL,
+		Duration:              in.Duration,
+		Direction:             in.Direction,
+		BusinessOpenTime:      in.BusinessOpenTime,
+		BusinessCloseTime:     in.BusinessCloseTime,
 		HostPostalCode:        in.HostPostalCode,
 		HostPrefectureCode:    in.HostPrefectureCode,
 		HostCity:              in.HostCity,

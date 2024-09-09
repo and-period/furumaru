@@ -1,4 +1,4 @@
-checkoutRequest:
+checkoutProductRequest:
   type: object
   properties:
     requestId:

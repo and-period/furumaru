@@ -19,10 +19,14 @@ func (s *service) ListVideos(ctx context.Context, in *media.ListVideosInput) (en
 		return nil, 0, internalError(err)
 	}
 	params := &database.ListVideosParams{
-		Name:          in.Name,
-		CoordinatorID: in.CoordinatorID,
-		Limit:         int(in.Limit),
-		Offset:        int(in.Offset),
+		Name:                  in.Name,
+		CoordinatorID:         in.CoordinatorID,
+		OnlyPublished:         in.OnlyPublished,
+		OnlyDisplayProduct:    in.OnlyDisplayProduct,
+		OnlyDisplayExperience: in.OnlyDisplayExperience,
+		ExcludeLimited:        in.ExcludeLimited,
+		Limit:                 int(in.Limit),
+		Offset:                int(in.Offset),
 	}
 	var (
 		videos entity.Videos
@@ -64,6 +68,9 @@ func (s *service) CreateVideo(ctx context.Context, in *media.CreateVideoInput) (
 		return
 	})
 	eg.Go(func() (err error) {
+		if len(in.ProductIDs) == 0 {
+			return nil
+		}
 		in := &store.MultiGetProductsInput{
 			ProductIDs: in.ProductIDs,
 		}
@@ -77,6 +84,9 @@ func (s *service) CreateVideo(ctx context.Context, in *media.CreateVideoInput) (
 		return nil
 	})
 	eg.Go(func() (err error) {
+		if len(in.ExperienceIDs) == 0 {
+			return nil
+		}
 		in := &store.MultiGetExperiencesInput{
 			ExperienceIDs: in.ExperienceIDs,
 		}
@@ -91,25 +101,30 @@ func (s *service) CreateVideo(ctx context.Context, in *media.CreateVideoInput) (
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return nil, fmt.Errorf("service: invalid request: %w", exception.ErrInvalidArgument)
+		return nil, fmt.Errorf("service: related data not found: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	if err != nil {
 		return nil, internalError(err)
 	}
 
 	params := &entity.NewVideoParams{
-		CoordinatorID: in.CoordinatorID,
-		ProductIDs:    in.ProductIDs,
-		ExperienceIDs: in.ExperienceIDs,
-		Title:         in.Title,
-		Description:   in.Description,
-		ThumbnailURL:  in.ThumbnailURL,
-		VideoURL:      in.VideoURL,
-		Public:        in.Public,
-		Limited:       in.Limited,
-		PublishedAt:   in.PublishedAt,
+		CoordinatorID:     in.CoordinatorID,
+		ProductIDs:        in.ProductIDs,
+		ExperienceIDs:     in.ExperienceIDs,
+		Title:             in.Title,
+		Description:       in.Description,
+		ThumbnailURL:      in.ThumbnailURL,
+		VideoURL:          in.VideoURL,
+		Public:            in.Public,
+		Limited:           in.Limited,
+		DisplayProduct:    in.DisplayProduct,
+		DisplayExperience: in.DisplayExperience,
+		PublishedAt:       in.PublishedAt,
 	}
-	video := entity.NewVideo(params)
+	video, err := entity.NewVideo(params)
+	if err != nil {
+		return nil, fmt.Errorf("service: video validation failed: %w: %s", exception.ErrInvalidArgument, err.Error())
+	}
 	if err := s.db.Video.Create(ctx, video); err != nil {
 		return nil, internalError(err)
 	}
@@ -122,6 +137,9 @@ func (s *service) UpdateVideo(ctx context.Context, in *media.UpdateVideoInput) e
 	}
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
+		if len(in.ProductIDs) == 0 {
+			return nil
+		}
 		in := &store.MultiGetProductsInput{
 			ProductIDs: in.ProductIDs,
 		}
@@ -135,6 +153,9 @@ func (s *service) UpdateVideo(ctx context.Context, in *media.UpdateVideoInput) e
 		return nil
 	})
 	eg.Go(func() (err error) {
+		if len(in.ExperienceIDs) == 0 {
+			return nil
+		}
 		in := &store.MultiGetExperiencesInput{
 			ExperienceIDs: in.ExperienceIDs,
 		}
@@ -149,22 +170,30 @@ func (s *service) UpdateVideo(ctx context.Context, in *media.UpdateVideoInput) e
 	})
 	err := eg.Wait()
 	if errors.Is(err, exception.ErrNotFound) {
-		return fmt.Errorf("service: invalid request: %w", exception.ErrInvalidArgument)
+		return fmt.Errorf("service: related data not found: %w: %s", exception.ErrInvalidArgument, err.Error())
 	}
 	if err != nil {
 		return internalError(err)
 	}
 
+	if in.DisplayProduct && len(in.ProductIDs) == 0 {
+		return fmt.Errorf("service: product is required: %w", exception.ErrInvalidArgument)
+	}
+	if in.DisplayExperience && len(in.ExperienceIDs) == 0 {
+		return fmt.Errorf("service: experience is required: %w", exception.ErrInvalidArgument)
+	}
 	params := &database.UpdateVideoParams{
-		Title:         in.Title,
-		Description:   in.Description,
-		ProductIDs:    in.ProductIDs,
-		ExperienceIDs: in.ExperienceIDs,
-		ThumbnailURL:  in.ThumbnailURL,
-		VideoURL:      in.VideoURL,
-		Public:        in.Public,
-		Limited:       in.Limited,
-		PublishedAt:   in.PublishedAt,
+		Title:             in.Title,
+		Description:       in.Description,
+		ProductIDs:        in.ProductIDs,
+		ExperienceIDs:     in.ExperienceIDs,
+		ThumbnailURL:      in.ThumbnailURL,
+		VideoURL:          in.VideoURL,
+		Public:            in.Public,
+		Limited:           in.Limited,
+		DisplayProduct:    in.DisplayProduct,
+		DisplayExperience: in.DisplayExperience,
+		PublishedAt:       in.PublishedAt,
 	}
 	err = s.db.Video.Update(ctx, in.VideoID, params)
 	return internalError(err)

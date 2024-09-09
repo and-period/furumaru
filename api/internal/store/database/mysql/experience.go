@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -35,11 +36,23 @@ func (p listExperiencesParams) stmt(stmt *gorm.DB) *gorm.DB {
 	if p.Name != "" {
 		stmt = stmt.Where("MATCH (`title`, `description`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
+	if p.HostPrefecture > 0 {
+		stmt = stmt.Where("host_prefecture = ?", p.HostPrefecture)
+	}
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
 	}
 	if p.ProducerID != "" {
 		stmt = stmt.Where("producer_id = ?", p.ProducerID)
+	}
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ?", true).Where("deleted_at IS NULL")
+	}
+	if !p.EndAtGte.IsZero() {
+		stmt = stmt.Where("end_at >= ?", p.EndAtGte)
+	}
+	if !p.ExcludeDeleted {
+		stmt = stmt.Unscoped()
 	}
 	return stmt.Order("start_at DESC")
 }
@@ -156,6 +169,17 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 		if err != nil {
 			return fmt.Errorf("database: %w: %s", database.ErrInvalidArgument, err.Error())
 		}
+		openTime, err := jst.ParseFromHHMM(params.BusinessOpenTime)
+		if err != nil {
+			return fmt.Errorf("entity: invalid business open time: %w", err)
+		}
+		closeTime, err := jst.ParseFromHHMM(params.BusinessCloseTime)
+		if err != nil {
+			return fmt.Errorf("entity: invalid business close time: %w", err)
+		}
+		if !openTime.Before(closeTime) {
+			return errors.New("entity: invalid business time")
+		}
 
 		updates := map[string]interface{}{
 			"experience_type_id":  params.TypeID,
@@ -166,6 +190,10 @@ func (e *experience) Update(ctx context.Context, experienceID string, params *da
 			"media":               nil,
 			"recommended_points":  points,
 			"promotion_video_url": params.PromotionVideoURL,
+			"duration":            params.Duration,
+			"direction":           params.Direction,
+			"business_open_time":  params.BusinessOpenTime,
+			"business_close_time": params.BusinessCloseTime,
 			"host_postal_code":    params.HostPostalCode,
 			"host_prefecture":     params.HostPrefectureCode,
 			"host_city":           params.HostCity,

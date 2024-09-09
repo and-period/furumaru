@@ -32,12 +32,24 @@ func newVideo(db *mysql.Client) database.Video {
 
 type listVideosParams database.ListVideosParams
 
-func (p listVideosParams) stmt(stmt *gorm.DB) *gorm.DB {
+func (p listVideosParams) stmt(stmt *gorm.DB, now time.Time) *gorm.DB {
 	if p.Name != "" {
 		stmt = stmt.Where("MATCH (`title`, `description`) AGAINST (? IN NATURAL LANGUAGE MODE)", p.Name)
 	}
 	if p.CoordinatorID != "" {
 		stmt = stmt.Where("coordinator_id = ?", p.CoordinatorID)
+	}
+	if p.OnlyPublished {
+		stmt = stmt.Where("public = ? AND published_at <= ?", true, now)
+	}
+	if p.OnlyDisplayProduct {
+		stmt = stmt.Where("display_product = ?", true)
+	}
+	if p.OnlyDisplayExperience {
+		stmt = stmt.Where("display_experience = ?", true)
+	}
+	if p.ExcludeLimited {
+		stmt = stmt.Where("limited = ?", false)
 	}
 	return stmt.Order("published_at DESC")
 }
@@ -58,7 +70,7 @@ func (v *video) List(ctx context.Context, params *database.ListVideosParams, fie
 	p := listVideosParams(*params)
 
 	stmt := v.db.Statement(ctx, v.db.DB, videoTable, fields...)
-	stmt = p.stmt(stmt)
+	stmt = p.stmt(stmt, v.now())
 	stmt = p.pagination(stmt)
 
 	if err := stmt.Find(&videos).Error; err != nil {
@@ -73,7 +85,8 @@ func (v *video) List(ctx context.Context, params *database.ListVideosParams, fie
 func (v *video) Count(ctx context.Context, params *database.ListVideosParams) (int64, error) {
 	p := listVideosParams(*params)
 
-	total, err := v.db.Count(ctx, v.db.DB, &entity.Video{}, p.stmt)
+	fn := func(stmt *gorm.DB) *gorm.DB { return p.stmt(stmt, v.now()) }
+	total, err := v.db.Count(ctx, v.db.DB, &entity.Video{}, fn)
 	return total, dbError(err)
 }
 
@@ -109,14 +122,16 @@ func (v *video) Update(ctx context.Context, videoID string, params *database.Upd
 		experiences := entity.NewVideoExperiences(videoID, params.ExperienceIDs)
 
 		updates := map[string]interface{}{
-			"title":         params.Title,
-			"description":   params.Description,
-			"thumbnail_url": params.ThumbnailURL,
-			"video_url":     params.VideoURL,
-			"public":        params.Public,
-			"limited":       params.Limited,
-			"published_at":  params.PublishedAt,
-			"updated_at":    v.now(),
+			"title":              params.Title,
+			"description":        params.Description,
+			"thumbnail_url":      params.ThumbnailURL,
+			"video_url":          params.VideoURL,
+			"public":             params.Public,
+			"limited":            params.Limited,
+			"display_product":    params.DisplayProduct,
+			"display_experience": params.DisplayExperience,
+			"published_at":       params.PublishedAt,
+			"updated_at":         v.now(),
 		}
 		stmt := tx.WithContext(ctx).Table(videoTable).Where("id = ?", videoID)
 		if err := stmt.Updates(updates).Error; err != nil {
