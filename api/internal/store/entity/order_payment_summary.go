@@ -22,7 +22,7 @@ type OrderPaymentSummary struct {
 	Total       int64 // 合計金額
 }
 
-type NewOrderPaymentSummaryParams struct {
+type NewProductOrderPaymentSummaryParams struct {
 	PrefectureCode int32
 	Baskets        CartBaskets
 	Products       Products
@@ -30,7 +30,17 @@ type NewOrderPaymentSummaryParams struct {
 	Promotion      *Promotion
 }
 
-func NewOrderPaymentSummary(params *NewOrderPaymentSummaryParams) (*OrderPaymentSummary, error) {
+type NewExperienceOrderPaymentSummaryParams struct {
+	Experience            *Experience
+	Promotion             *Promotion
+	AdultCount            int64
+	JuniorHighSchoolCount int64
+	ElementarySchoolCount int64
+	PreschoolCount        int64
+	SeniorCount           int64
+}
+
+func NewProductOrderPaymentSummary(params *NewProductOrderPaymentSummaryParams) (*OrderPaymentSummary, error) {
 	var shippingFee int64
 	// 商品購入価格の算出
 	subtotal, err := params.Baskets.TotalPrice(params.Products.Map())
@@ -63,4 +73,29 @@ func NewOrderPaymentSummary(params *NewOrderPaymentSummaryParams) (*OrderPayment
 		TaxRate:     taxRate,
 		Total:       dtotal.IntPart(),
 	}, nil
+}
+
+func NewExperienceOrderPaymentSummary(params *NewExperienceOrderPaymentSummaryParams) *OrderPaymentSummary {
+	var subtotal int64
+	// 体験購入価格の算出
+	subtotal += params.Experience.PriceAdult * params.AdultCount
+	subtotal += params.Experience.PriceJuniorHighSchool * params.JuniorHighSchoolCount
+	subtotal += params.Experience.PriceElementarySchool * params.ElementarySchoolCount
+	subtotal += params.Experience.PricePreschool * params.PreschoolCount
+	subtotal += params.Experience.PriceSenior * params.SeniorCount
+	// 割引金額の算出
+	discount := params.Promotion.CalcDiscount(subtotal, 0)
+	// 支払い金額の算出（消費税額＝税込価格÷（1+消費税率）×消費税率）
+	dsubtotal := decimal.NewFromInt(subtotal)
+	ddiscount := decimal.NewFromInt(discount)
+	dtotal := dsubtotal.Sub(ddiscount)
+	dtax := dtotal.Div(one.Add(taxPercent)).Mul(taxPercent)
+	return &OrderPaymentSummary{
+		Subtotal:    subtotal,
+		Discount:    discount,
+		ShippingFee: 0,
+		Tax:         dtax.IntPart(),
+		TaxRate:     taxRate,
+		Total:       dtotal.IntPart(),
+	}
 }

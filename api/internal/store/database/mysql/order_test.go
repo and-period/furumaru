@@ -7,6 +7,7 @@ import (
 
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
+	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/mysql"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -52,8 +53,8 @@ func TestOrder_List(t *testing.T) {
 	}
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", 2, now())
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 2, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -160,18 +161,36 @@ func TestOrder_ListUserIDs(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", 2, now())
+	experienceTypes := make(entity.ExperienceTypes, 1)
+	experienceTypes[0] = testExperienceType("experience-type-id", "体験", now())
+	err = db.DB.Create(&experienceTypes).Error
+	require.NoError(t, err)
+	experiences := make(entity.Experiences, 1)
+	experiences[0] = testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
+	err = db.DB.Create(&experiences).Error
+	require.NoError(t, err)
+	for i := range experiences {
+		err = db.DB.Create(&experiences[i].ExperienceRevision).Error
+		require.NoError(t, err)
+	}
+
+	orders := make(entity.Orders, 3)
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 2, now())
+	orders[2] = testOrder("order-id03", "user-id", "", "coordinator-id", entity.OrderTypeExperience, 3, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
-	payments := make(entity.OrderPayments, 2)
+
+	payments := make(entity.OrderPayments, 3)
 	payments[0] = testOrderPayment("order-id01", 1, "transaction-id01", "payment-id", now())
 	orders[0].OrderPayment = *payments[0]
 	payments[1] = testOrderPayment("order-id02", 1, "transaction-id02", "payment-id", now())
 	orders[1].OrderPayment = *payments[1]
+	payments[2] = testOrderPayment("order-id03", 1, "transaction-id03", "payment-id", now())
+	orders[2].OrderPayment = *payments[2]
 	err = db.DB.Create(&payments).Error
 	require.NoError(t, err)
+
 	fulfillments := make(entity.OrderFulfillments, 2)
 	fulfillments[0] = testOrderFulfillment("fulfillment-id01", "order-id01", 1, 1, now())
 	orders[0].OrderFulfillments = entity.OrderFulfillments{fulfillments[0]}
@@ -179,12 +198,19 @@ func TestOrder_ListUserIDs(t *testing.T) {
 	orders[1].OrderFulfillments = entity.OrderFulfillments{fulfillments[1]}
 	err = db.DB.Create(&fulfillments).Error
 	require.NoError(t, err)
+
 	items := make(entity.OrderItems, 2)
 	items[0] = testOrderItem("fulfillment-id01", 1, "order-id01", now())
 	orders[0].OrderItems = []*entity.OrderItem{items[0]}
 	items[1] = testOrderItem("fulfillment-id02", 2, "order-id02", now())
 	orders[1].OrderItems = []*entity.OrderItem{items[1]}
 	err = db.DB.Create(&items).Error
+	require.NoError(t, err)
+
+	oexperiences := make(entity.OrderExperiences, 1)
+	oexperiences[0] = testOrderExperience("order-id03", 1, now())
+	orders[2].OrderExperience = *oexperiences[0]
+	err = db.DB.Create(&oexperiences).Error
 	require.NoError(t, err)
 
 	type args struct {
@@ -276,8 +302,8 @@ func TestOrder_Count(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", 2, now())
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 2, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -386,7 +412,7 @@ func TestOrder_Get(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "", "coordinator-id", 1, now())
+	o := testOrder("order-id", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
 	err = db.DB.Create(&o).Error
 	require.NoError(t, err)
 	payment := testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
@@ -497,7 +523,7 @@ func TestOrder_GetByTransactionID(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "", "coordinator-id", 1, now())
+	o := testOrder("order-id", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
 	err = db.DB.Create(&o).Error
 	require.NoError(t, err)
 	payment := testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
@@ -611,7 +637,7 @@ func TestOrder_GetByTransactionIDWithSessionID(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
-	o := testOrder("order-id", "user-id", "", "coordinator-id", 1, now())
+	o := testOrder("order-id", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
 	err = db.DB.Create(&o).Error
 	require.NoError(t, err)
 	payment := testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
@@ -724,16 +750,31 @@ func TestOrder_Create(t *testing.T) {
 	err = db.DB.Create(&schedule).Error
 	require.NoError(t, err)
 
+	experienceType := testExperienceType("experience-type-id", "体験", now())
+	err = db.DB.Create(&experienceType).Error
+	require.NoError(t, err)
+	experience := testExperience("experience-id", "experience-type-id", "coordinator-id", "producer-id", 1, now())
+	err = db.DB.Create(&experience).Error
+	require.NoError(t, err)
+	err = db.DB.Create(&experience.ExperienceRevision).Error
+	require.NoError(t, err)
+
 	fulfillments := make(entity.OrderFulfillments, 1)
 	fulfillments[0] = testOrderFulfillment("fulfillment-id", "order-id", 1, 1, now())
 	items := make(entity.OrderItems, 2)
 	items[0] = testOrderItem("fulfillment-id", 1, "order-id", now())
 	items[1] = testOrderItem("fulfillment-id", 2, "order-id", now())
 
-	o := testOrder("order-id", "user-id", "", "coordinator-id", 1, now())
-	o.OrderPayment = *testOrderPayment("order-id", 1, "transaction-id", "payment-id", now())
-	o.OrderFulfillments = fulfillments
-	o.OrderItems = items
+	porder := testOrder("product-order-id", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	porder.Type = entity.OrderTypeProduct
+	porder.OrderPayment = *testOrderPayment("product-order-id", 1, "transaction-id", "payment-id", now())
+	porder.OrderFulfillments = fulfillments
+	porder.OrderItems = items
+
+	eorder := testOrder("experience-order-id", "user-id", "", "coordinator-id", entity.OrderTypeExperience, 2, now())
+	eorder.Type = entity.OrderTypeExperience
+	eorder.OrderPayment = *testOrderPayment("experience-order-id", 1, "transaction-id", "payment-id", now())
+	eorder.OrderExperience = *testOrderExperience("experience-order-id", 1, now())
 
 	type args struct {
 		order *entity.Order
@@ -748,10 +789,20 @@ func TestOrder_Create(t *testing.T) {
 		want  want
 	}{
 		{
-			name:  "success",
+			name:  "success product order",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
 			args: args{
-				order: o,
+				order: porder,
+			},
+			want: want{
+				hasErr: false,
+			},
+		},
+		{
+			name:  "success experience order",
+			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {},
+			args: args{
+				order: eorder,
 			},
 			want: want{
 				hasErr: false,
@@ -760,11 +811,11 @@ func TestOrder_Create(t *testing.T) {
 		{
 			name: "already exists",
 			setup: func(ctx context.Context, t *testing.T, db *mysql.Client) {
-				err := db.DB.Create(&o).Error
+				err := db.DB.Create(&porder).Error
 				require.NoError(t, err)
 			},
 			args: args{
-				order: o,
+				order: porder,
 			},
 			want: want{
 				hasErr: true,
@@ -828,7 +879,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
 		order.Status = status
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
@@ -1020,7 +1071,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.OrderStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
 		order.Status = status
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
@@ -1187,7 +1238,7 @@ func TestOrder_UpdateRefund(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -1347,7 +1398,7 @@ func TestOrder_Draft(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -1454,7 +1505,7 @@ func TestOrder_Complete(t *testing.T) {
 	require.NoError(t, err)
 
 	create := func(t *testing.T, orderID string, status entity.PaymentStatus, now time.Time) {
-		order := testOrder(orderID, "user-id", "", "coordinator-id", 1, now)
+		order := testOrder(orderID, "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now)
 		err := db.DB.Create(&order).Error
 		require.NoError(t, err)
 
@@ -1562,8 +1613,8 @@ func TestOrder_Aggregate(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", 2, now())
+	orders[0] = testOrder("order-id01", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 2, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -1684,8 +1735,8 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	require.NoError(t, err)
 
 	orders := make(entity.Orders, 2)
-	orders[0] = testOrder("order-id01", "user-id", "promotion-id", "coordinator-id", 1, now())
-	orders[1] = testOrder("order-id02", "user-id", "promotion-id", "coordinator-id", 2, now())
+	orders[0] = testOrder("order-id01", "user-id", "promotion-id", "coordinator-id", entity.OrderTypeProduct, 1, now())
+	orders[1] = testOrder("order-id02", "user-id", "promotion-id", "coordinator-id", entity.OrderTypeProduct, 2, now())
 	err = db.DB.Create(&orders).Error
 	require.NoError(t, err)
 	payments := make(entity.OrderPayments, 2)
@@ -1763,7 +1814,7 @@ func TestOrder_AggregateByPromotion(t *testing.T) {
 	}
 }
 
-func testOrder(id, userID, promotionID, coordinatorID string, mgmtID int64, now time.Time) *entity.Order {
+func testOrder(id, userID, promotionID, coordinatorID string, typ entity.OrderType, mgmtID int64, now time.Time) *entity.Order {
 	return &entity.Order{
 		ID:            id,
 		SessionID:     "session-id",
@@ -1771,6 +1822,7 @@ func testOrder(id, userID, promotionID, coordinatorID string, mgmtID int64, now 
 		PromotionID:   promotionID,
 		CoordinatorID: coordinatorID,
 		ManagementID:  mgmtID,
+		Type:          typ,
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
@@ -1820,4 +1872,25 @@ func testOrderItem(fulfillmentID string, productID int64, orderID string, now ti
 		CreatedAt:         now,
 		UpdatedAt:         now,
 	}
+}
+
+func testOrderExperience(orderID string, experienceID int64, now time.Time) *entity.OrderExperience {
+	e := &entity.OrderExperience{
+		OrderID:               orderID,
+		ExperienceRevisionID:  experienceID,
+		AdultCount:            1,
+		JuniorHighSchoolCount: 1,
+		ElementarySchoolCount: 2,
+		PreschoolCount:        0,
+		SeniorCount:           0,
+		Remarks: entity.OrderExperienceRemarks{
+			Transportation: "電車",
+			RequestedDate:  jst.Date(2024, 1, 2, 0, 0, 0, 0),
+			RequestedTime:  jst.Date(0, 1, 1, 18, 30, 0, 0),
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+	_ = e.Fill()
+	return e
 }
