@@ -21539,12 +21539,11 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [coordinatorid] コーディネータID
          * @param {string} [name] オンデマンド配信名(あいまい検索)(64文字以内)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListVideos: async (limit?: number, offset?: number, coordinatorid?: string, name?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListVideos: async (limit?: number, offset?: number, name?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/videos`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -21567,10 +21566,6 @@ export const VideoApiAxiosParamCreator = function (configuration?: Configuration
 
             if (offset !== undefined) {
                 localVarQueryParameter['offset'] = offset;
-            }
-
-            if (coordinatorid !== undefined) {
-                localVarQueryParameter['coordinatorid'] = coordinatorid;
             }
 
             if (name !== undefined) {
@@ -21789,13 +21784,12 @@ export const VideoApiFp = function(configuration?: Configuration) {
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [coordinatorid] コーディネータID
          * @param {string} [name] オンデマンド配信名(あいまい検索)(64文字以内)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListVideos(limit?: number, offset?: number, coordinatorid?: string, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideosResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListVideos(limit, offset, coordinatorid, name, options);
+        async v1ListVideos(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VideosResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListVideos(limit, offset, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['VideoApi.v1ListVideos']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -21921,13 +21915,12 @@ export const VideoApiFactory = function (configuration?: Configuration, basePath
          * @summary オンデマンド配信一覧取得
          * @param {number} [limit] 取得上限数(max:200)
          * @param {number} [offset] 取得開始位置(min:0)
-         * @param {string} [coordinatorid] コーディネータID
          * @param {string} [name] オンデマンド配信名(あいまい検索)(64文字以内)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListVideos(limit?: number, offset?: number, coordinatorid?: string, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<VideosResponse> {
-            return localVarFp.v1ListVideos(limit, offset, coordinatorid, name, options).then((request) => request(axios, basePath));
+        v1ListVideos(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig): AxiosPromise<VideosResponse> {
+            return localVarFp.v1ListVideos(limit, offset, name, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -22058,14 +22051,13 @@ export class VideoApi extends BaseAPI {
      * @summary オンデマンド配信一覧取得
      * @param {number} [limit] 取得上限数(max:200)
      * @param {number} [offset] 取得開始位置(min:0)
-     * @param {string} [coordinatorid] コーディネータID
      * @param {string} [name] オンデマンド配信名(あいまい検索)(64文字以内)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof VideoApi
      */
-    public v1ListVideos(limit?: number, offset?: number, coordinatorid?: string, name?: string, options?: RawAxiosRequestConfig) {
-        return VideoApiFp(this.configuration).v1ListVideos(limit, offset, coordinatorid, name, options).then((request) => request(this.axios, this.basePath));
+    public v1ListVideos(limit?: number, offset?: number, name?: string, options?: RawAxiosRequestConfig) {
+        return VideoApiFp(this.configuration).v1ListVideos(limit, offset, name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

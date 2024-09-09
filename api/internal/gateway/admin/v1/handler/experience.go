@@ -95,6 +95,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, res)
 			return
 		}
+		in.CoordinatorID = getAdminID(ctx)
 	}
 	experiences, total, err := h.store.ListExperiences(ctx, in)
 	if err != nil {
