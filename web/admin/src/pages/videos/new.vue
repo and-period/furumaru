@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useVideoStore, useProductStore } from '~/store'
+import { useVideoStore, useProductStore, useAuthStore } from '~/store'
 import type { CreateVideoRequest, Product, Experience } from '~/types/api'
 import { ApiBaseError } from '~/types/exception'
 import { getProductThumbnailUrl } from '~/lib/formatter'
@@ -9,6 +9,9 @@ const videoStore = useVideoStore()
 
 const productStore = useProductStore()
 const { products } = storeToRefs(productStore)
+
+const authStore = useAuthStore()
+const { adminId } = storeToRefs(authStore)
 
 const formData = ref<CreateVideoRequest>({
   title: '',
@@ -172,7 +175,10 @@ const handleClickLinkExperienceButton = () => {
 
 const handleSubmit = async () => {
   try {
-    await videoStore.createVideo(formData.value)
+    await videoStore.createVideo({
+      ...formData.value,
+      coordinatorId: adminId.value,
+    })
     router.push('/videos')
   }
   catch (error) {
