@@ -23,10 +23,10 @@ get:
     required: false
     example: 0
   - in: query
-    name: producerId
+    name: coordinatorid
     schema:
       type: string
-    description: 生産者ID
+    description: コーディネータID
     required: false
     example: 'kSByoE6FetnPs5Byk3a9Zx'
   - in: query

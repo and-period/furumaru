@@ -178,6 +178,25 @@ func TestUploadEvent_Regulation(t *testing.T) {
 			expect:    CoordinatorBonusVideoRegulation,
 			expectErr: nil,
 		},
+		// 体験関連
+		{
+			name:      "experience media image",
+			event:     &UploadEvent{FileGroup: ExperienceMediaImagePath},
+			expect:    ExperienceMediaImageRegulation,
+			expectErr: nil,
+		},
+		{
+			name:      "experience media video",
+			event:     &UploadEvent{FileGroup: ExperienceMediaVideoPath},
+			expect:    ExperienceMediaVideoRegulation,
+			expectErr: nil,
+		},
+		{
+			name:      "experience promotion video",
+			event:     &UploadEvent{FileGroup: ExperiencePromotionVideoPath},
+			expect:    ExperiencePromotionVideoRegulation,
+			expectErr: nil,
+		},
 		// 生産者関連
 		{
 			name:      "producer thumbnail",
@@ -254,6 +273,19 @@ func TestUploadEvent_Regulation(t *testing.T) {
 			event:     &UploadEvent{},
 			expect:    nil,
 			expectErr: ErrNotFoundReguration,
+		},
+		// オンデマンド配信関連
+		{
+			name:      "video thumbnail",
+			event:     &UploadEvent{FileGroup: VideoThumbnailPath},
+			expect:    VideoThumbnailRegulation,
+			expectErr: nil,
+		},
+		{
+			name:      "video mp4",
+			event:     &UploadEvent{FileGroup: VideoMP4Path},
+			expect:    VideoMP4Regulation,
+			expectErr: nil,
 		},
 	}
 	for _, tt := range tests {
