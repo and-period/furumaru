@@ -3,6 +3,7 @@ import { mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { usePagination } from '~/lib/hooks'
 import { useVideoStore } from '~/store'
+import { videoStatusToString, videoStatusToColor } from '~/lib/formatter'
 
 const videoStore = useVideoStore()
 const pagination = usePagination()
@@ -96,6 +97,11 @@ const { status } = useAsyncData(async () => {
         </template>
         <template #[`item.publishedAt`]="{ item }">
           {{ getPublishedAt(item.publishedAt) }}
+        </template>
+        <template #[`item.status`]="{ item }">
+          <v-chip :color="videoStatusToColor(item.status)">
+            {{ videoStatusToString(item.status) }}
+          </v-chip>
         </template>
       </v-data-table-server>
     </v-card-text>
