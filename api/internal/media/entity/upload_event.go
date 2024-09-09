@@ -85,6 +85,13 @@ func (e *UploadEvent) Reguration() (*Regulation, error) {
 		return CoordinatorPromotionVideoRegulation, nil
 	case CoordinatorBonusVideoPath:
 		return CoordinatorBonusVideoRegulation, nil
+	// 体験関連
+	case ExperienceMediaImagePath:
+		return ExperienceMediaImageRegulation, nil
+	case ExperienceMediaVideoPath:
+		return ExperienceMediaVideoRegulation, nil
+	case ExperiencePromotionVideoPath:
+		return ExperiencePromotionVideoRegulation, nil
 	// 生産者関連
 	case ProducerThumbnailPath:
 		return ProducerThumbnailRegulation, nil
@@ -112,6 +119,11 @@ func (e *UploadEvent) Reguration() (*Regulation, error) {
 		return ScheduleImageRegulation, nil
 	case ScheduleOpeningVideoPath:
 		return ScheduleOpeningVideoRegulation, nil
+	// オンデマンド配信関連
+	case VideoThumbnailPath:
+		return VideoThumbnailRegulation, nil
+	case VideoMP4Path:
+		return VideoMP4Regulation, nil
 	default:
 		return nil, ErrNotFoundReguration
 	}

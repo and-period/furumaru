@@ -66,10 +66,12 @@ func (h *handler) ListVideos(ctx *gin.Context) {
 	}
 
 	in := &media.ListVideosInput{
-		Name:          util.GetQuery(ctx, "name", ""),
-		CoordinatorID: util.GetQuery(ctx, "coordinatorId", ""),
-		Limit:         limit,
-		Offset:        offset,
+		Name:   util.GetQuery(ctx, "name", ""),
+		Limit:  limit,
+		Offset: offset,
+	}
+	if getRole(ctx) == service.AdminRoleCoordinator {
+		in.CoordinatorID = getAdminID(ctx)
 	}
 	videos, total, err := h.media.ListVideos(ctx, in)
 	if err != nil {
