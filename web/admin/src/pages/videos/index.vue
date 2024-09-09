@@ -2,14 +2,18 @@
 import { mdiPlus } from '@mdi/js'
 import { unix } from 'dayjs'
 import { usePagination } from '~/lib/hooks'
-import { useVideoStore } from '~/store'
+import { useAuthStore, useVideoStore } from '~/store'
 import { videoStatusToString, videoStatusToColor } from '~/lib/formatter'
+import { AdminRole } from '~/types/api'
 
 const videoStore = useVideoStore()
+const { videoResponse } = storeToRefs(videoStore)
+
 const pagination = usePagination()
 const router = useRouter()
 
-const { videoResponse } = storeToRefs(videoStore)
+const authStore = useAuthStore()
+const { role } = storeToRefs(authStore)
 
 const headers: VDataTable['headers'] = [
   {
@@ -67,7 +71,10 @@ const { status } = useAsyncData(async () => {
   <v-card>
     <v-card-title>動画管理</v-card-title>
 
-    <v-card-text class="text-right">
+    <v-card-text
+      v-if="role === AdminRole.COORDINATOR"
+      class="text-right"
+    >
       <v-btn
         color="primary"
         variant="outlined"
