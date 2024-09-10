@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  CheckoutExperienceRequest,
   CheckoutProductRequest,
   CheckoutResponse,
   CheckoutStateResponse,
@@ -24,6 +25,8 @@ import type {
   GuestCheckoutStateResponse,
 } from '../models/index';
 import {
+    CheckoutExperienceRequestFromJSON,
+    CheckoutExperienceRequestToJSON,
     CheckoutProductRequestFromJSON,
     CheckoutProductRequestToJSON,
     CheckoutResponseFromJSON,
@@ -42,6 +45,10 @@ import {
 
 export interface V1CheckoutProductRequest {
     body: CheckoutProductRequest;
+}
+
+export interface V1CheckoutsExperiencesExperienceIdPostRequest {
+    body: CheckoutExperienceRequest;
 }
 
 export interface V1GetCheckoutStateRequest {
@@ -102,6 +109,50 @@ export class CheckoutApi extends runtime.BaseAPI {
      */
     async v1CheckoutProduct(requestParameters: V1CheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
         const response = await this.v1CheckoutProductRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 体験購入
+     */
+    async v1CheckoutsExperiencesExperienceIdPostRaw(requestParameters: V1CheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CheckoutsExperiencesExperienceIdPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/checkouts/experiences/{experienceId}`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 体験購入
+     */
+    async v1CheckoutsExperiencesExperienceIdPost(requestParameters: V1CheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
+        const response = await this.v1CheckoutsExperiencesExperienceIdPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

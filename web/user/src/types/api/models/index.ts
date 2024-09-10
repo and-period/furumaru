@@ -14,6 +14,7 @@ export * from './CartItem';
 export * from './CartResponse';
 export * from './Category';
 export * from './CheckoutCreditCard';
+export * from './CheckoutExperienceRequest';
 export * from './CheckoutProductRequest';
 export * from './CheckoutResponse';
 export * from './CheckoutStateResponse';
