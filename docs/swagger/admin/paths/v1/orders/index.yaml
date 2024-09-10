@@ -42,6 +42,14 @@ get:
       注文ステータス
       ・複数指定時は`,`区切り
       ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了)
+  - in: query
+    name: type
+    schema:
+      type: integer
+    description: |
+      注文タイプ
+      ・複数指定時は`,`区切り
+      ・デフォルト:1(商品),2(体験)
   responses:
     200:
       description: 成功

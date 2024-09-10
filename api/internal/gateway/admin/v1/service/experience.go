@@ -105,6 +105,9 @@ func NewExperience(experience *entity.Experience) *Experience {
 }
 
 func (e *Experience) Response() *response.Experience {
+	if e == nil {
+		return nil
+	}
 	return &e.Experience
 }
 
@@ -116,10 +119,18 @@ func NewExperiences(experiences entity.Experiences) Experiences {
 	return res
 }
 
-func (e Experiences) Response() []*response.Experience {
-	res := make([]*response.Experience, len(e))
-	for i := range e {
-		res[i] = e[i].Response()
+func (es Experiences) MapByRevision() map[int64]*Experience {
+	res := make(map[int64]*Experience, len(es))
+	for _, e := range es {
+		res[e.revisionID] = e
+	}
+	return res
+}
+
+func (es Experiences) Response() []*response.Experience {
+	res := make([]*response.Experience, len(es))
+	for i := range es {
+		res[i] = es[i].Response()
 	}
 	return res
 }

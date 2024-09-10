@@ -101,7 +101,7 @@ func (s OrderStatus) Response() int32 {
 	return int32(s)
 }
 
-func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product) *Order {
+func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) *Order {
 	return &Order{
 		Order: response.Order{
 			ID:              order.ID,
@@ -110,11 +110,13 @@ func NewOrder(order *entity.Order, addresses map[int64]*Address, products map[in
 			PromotionID:     order.PromotionID,
 			ManagementID:    order.ManagementID,
 			ShippingMessage: order.ShippingMessage,
+			Type:            NewOrderType(order.Type).Response(),
 			Status:          NewOrderStatus(order.Status).Response(),
 			Payment:         NewOrderPayment(&order.OrderPayment, addresses[order.OrderPayment.AddressRevisionID]).Response(),
 			Refund:          NewOrderRefund(&order.OrderPayment).Response(),
 			Fulfillments:    NewOrderFulfillments(order.OrderFulfillments, addresses).Response(),
 			Items:           NewOrderItems(order.OrderItems, products).Response(),
+			Experience:      NewOrderExperience(&order.OrderExperience, experiences[order.OrderExperience.ExperienceRevisionID]).Response(),
 			CreatedAt:       jst.Unix(order.CreatedAt),
 			UpdatedAt:       jst.Unix(order.UpdatedAt),
 			CompletedAt:     jst.Unix(order.CompletedAt),
@@ -132,10 +134,10 @@ func (o *Order) Response() *response.Order {
 	return &o.Order
 }
 
-func NewOrders(orders entity.Orders, addresses map[int64]*Address, products map[int64]*Product) Orders {
+func NewOrders(orders entity.Orders, addresses map[int64]*Address, products map[int64]*Product, experiences map[int64]*Experience) Orders {
 	res := make(Orders, len(orders))
 	for i := range orders {
-		res[i] = NewOrder(orders[i], addresses, products)
+		res[i] = NewOrder(orders[i], addresses, products, experiences)
 	}
 	return res
 }

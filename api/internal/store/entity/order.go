@@ -349,6 +349,17 @@ func (os Orders) ProductRevisionIDs() []int64 {
 	return res.Slice()
 }
 
+func (os Orders) ExperienceRevisionIDs() []int64 {
+	res := set.NewEmpty[int64](len(os))
+	for i := range os {
+		if os[i].OrderExperience.ExperienceRevisionID == 0 {
+			continue
+		}
+		res.Add(os[i].ExperienceRevisionID)
+	}
+	return res.Slice()
+}
+
 func (os Orders) Fill(
 	payments map[string]*OrderPayment,
 	fulfillments map[string]OrderFulfillments,
