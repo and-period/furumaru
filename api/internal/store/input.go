@@ -541,13 +541,14 @@ type CheckoutAUPayInput struct {
 }
 
 type CheckoutDetail struct {
-	CheckoutProductDetail
-	Type             entity.OrderType `validate:"required"`
-	UserID           string           `validate:"required"`
-	SessionID        string           `validate:"required"`
-	RequestID        string           `validate:"required"`
-	PromotionCode    string           `validate:"omitempty,len=8"`
-	BillingAddressID string           `validate:"required"`
+	CheckoutProductDetail    `validate:"-"`
+	CheckoutExperienceDetail `validate:"-"`
+	Type                     entity.OrderType `validate:"required"`
+	UserID                   string           `validate:"required"`
+	SessionID                string           `validate:"required"`
+	RequestID                string           `validate:"required"`
+	PromotionCode            string           `validate:"omitempty,len=8"`
+	BillingAddressID         string           `validate:"required"`
 	// TODO: クライアント側修正が完了し次第、正しいバリデーションに変更
 	// CallbackURL       string `validate:"required,http_url"`
 	CallbackURL string `validate:"omitempty,http_url"`
@@ -558,6 +559,18 @@ type CheckoutProductDetail struct {
 	CoordinatorID     string `validate:"required"`
 	BoxNumber         int64  `validate:"min=0"`
 	ShippingAddressID string `validate:"required"`
+}
+
+type CheckoutExperienceDetail struct {
+	ExperienceID          string `validate:"required"`
+	AdultCount            int64  `validate:"min=0"`
+	JuniorHighSchoolCount int64  `validate:"min=0"`
+	ElementarySchoolCount int64  `validate:"min=0"`
+	PreschoolCount        int64  `validate:"min=0"`
+	SeniorCount           int64  `validate:"min=0"`
+	Transportation        string `validate:"max=256"`
+	RequestedDate         string `validate:"omitempty,date"`
+	RequestedTime         string `validate:"omitempty,time"`
 }
 
 type MultiGetPaymentSystemsInput struct {

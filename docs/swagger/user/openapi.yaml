@@ -95,6 +95,8 @@ paths:
     $ref: './paths/v1/checkouts/products/index.yaml'
   /v1/checkouts/{transactionId}:
     $ref: './paths/v1/checkouts/_transactionId/index.yaml'
+  /v1/checkouts/experiences/{experienceId}:
+    $ref: './paths/v1/checkouts/experiences/_experienceId/index.yaml'
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
@@ -296,6 +298,8 @@ components:
       $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserThumbnailRequest'
     v1AddCartItemRequest:
       $ref: './components/schemas/v1/cart.request.yaml#/addCartItemRequest'
+    v1CheckoutExperienceRequest:
+      $ref: './components/schemas/v1/checkout.request.yaml#/checkoutExperienceRequest'
     v1CheckoutProductRequest:
       $ref: './components/schemas/v1/checkout.request.yaml#/checkoutProductRequest'
     v1CreateContactRequest:
