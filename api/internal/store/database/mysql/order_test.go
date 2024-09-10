@@ -829,7 +829,7 @@ func TestOrder_Create(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
