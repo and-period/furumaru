@@ -760,10 +760,10 @@ func TestOrder_Create(t *testing.T) {
 	require.NoError(t, err)
 
 	fulfillments := make(entity.OrderFulfillments, 1)
-	fulfillments[0] = testOrderFulfillment("fulfillment-id", "order-id", 1, 1, now())
+	fulfillments[0] = testOrderFulfillment("fulfillment-id", "product-order-id", 1, 1, now())
 	items := make(entity.OrderItems, 2)
-	items[0] = testOrderItem("fulfillment-id", 1, "order-id", now())
-	items[1] = testOrderItem("fulfillment-id", 2, "order-id", now())
+	items[0] = testOrderItem("fulfillment-id", 1, "product-order-id", now())
+	items[1] = testOrderItem("fulfillment-id", 2, "product-order-id", now())
 
 	porder := testOrder("product-order-id", "user-id", "", "coordinator-id", entity.OrderTypeProduct, 1, now())
 	porder.Type = entity.OrderTypeProduct
@@ -824,7 +824,6 @@ func TestOrder_Create(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
