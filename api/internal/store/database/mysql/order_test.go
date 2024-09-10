@@ -1021,7 +1021,7 @@ func TestOrder_UpdatePayment(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1188,7 +1188,7 @@ func TestOrder_UpdateFulfillment(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1348,7 +1348,7 @@ func TestOrder_UpdateRefund(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1455,7 +1455,7 @@ func TestOrder_Draft(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
@@ -1563,7 +1563,7 @@ func TestOrder_Complete(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderTable)
+			err := delete(ctx, orderItemTable, orderFulfillmentTable, orderPaymentTable, orderExperienceTable, orderTable)
 			require.NoError(t, err)
 
 			tt.setup(ctx, t, db)
