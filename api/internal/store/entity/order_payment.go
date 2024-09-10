@@ -83,7 +83,7 @@ type OrderPayment struct {
 
 type OrderPayments []*OrderPayment
 
-type NewOrderPaymentParams struct {
+type NewProductOrderPaymentParams struct {
 	OrderID    string
 	MethodType PaymentMethodType
 	Address    *entity.Address
@@ -91,6 +91,19 @@ type NewOrderPaymentParams struct {
 	Products   Products
 	Shipping   *Shipping
 	Promotion  *Promotion
+}
+
+type NewExperienceOrderPaymentParams struct {
+	OrderID               string
+	MethodType            PaymentMethodType
+	Address               *entity.Address
+	Experience            *Experience
+	Promotion             *Promotion
+	AdultCount            int64
+	JuniorHighSchoolCount int64
+	ElementarySchoolCount int64
+	PreschoolCount        int64
+	SeniorCount           int64
 }
 
 func NewPaymentStatus(status komoju.PaymentStatus) PaymentStatus {
@@ -163,24 +176,55 @@ func (t PaymentMethodType) String() string {
 	}
 }
 
-func NewOrderPayment(params *NewOrderPaymentParams) (*OrderPayment, error) {
+func NewProductOrderPayment(params *NewProductOrderPaymentParams) (*OrderPayment, error) {
 	if params.Address == nil {
 		return nil, errNotFoundAddress
 	}
 	if err := codes.ValidatePrefectureValues(params.Address.PrefectureCode); err != nil {
 		return nil, err
 	}
-	sparams := &NewOrderPaymentSummaryParams{
+	sparams := &NewProductOrderPaymentSummaryParams{
 		PrefectureCode: params.Address.PrefectureCode,
 		Baskets:        params.Baskets,
 		Products:       params.Products,
 		Shipping:       params.Shipping,
 		Promotion:      params.Promotion,
 	}
-	summary, err := NewOrderPaymentSummary(sparams)
+	summary, err := NewProductOrderPaymentSummary(sparams)
 	if err != nil {
 		return nil, err
 	}
+	return &OrderPayment{
+		OrderID:           params.OrderID,
+		AddressRevisionID: params.Address.AddressRevision.ID,
+		Status:            PaymentStatusPending,
+		TransactionID:     "",
+		MethodType:        params.MethodType,
+		Subtotal:          summary.Subtotal,
+		Discount:          summary.Discount,
+		ShippingFee:       summary.ShippingFee,
+		Tax:               summary.Tax,
+		Total:             summary.Total,
+	}, nil
+}
+
+func NewExperienceOrderPayment(params *NewExperienceOrderPaymentParams) (*OrderPayment, error) {
+	if params.Address == nil {
+		return nil, errNotFoundAddress
+	}
+	if err := codes.ValidatePrefectureValues(params.Address.PrefectureCode); err != nil {
+		return nil, err
+	}
+	sparams := &NewExperienceOrderPaymentSummaryParams{
+		Experience:            params.Experience,
+		Promotion:             params.Promotion,
+		AdultCount:            params.AdultCount,
+		JuniorHighSchoolCount: params.JuniorHighSchoolCount,
+		ElementarySchoolCount: params.ElementarySchoolCount,
+		PreschoolCount:        params.PreschoolCount,
+		SeniorCount:           params.SeniorCount,
+	}
+	summary := NewExperienceOrderPaymentSummary(sparams)
 	return &OrderPayment{
 		OrderID:           params.OrderID,
 		AddressRevisionID: params.Address.AddressRevision.ID,

@@ -227,51 +227,235 @@ func TestOrderProduct(t *testing.T) {
 	}
 }
 
-func TestOrder_Fill(t *testing.T) {
+func TestNewExperienceOrder(t *testing.T) {
 	t.Parallel()
+
 	now := time.Now()
+
 	tests := []struct {
-		name         string
-		order        *Order
-		payment      *OrderPayment
-		fulfillments OrderFulfillments
-		items        OrderItems
-		expect       *Order
+		name   string
+		params *NewExperienceOrderParams
+		expect *Order
+		hasErr bool
 	}{
 		{
 			name: "success",
-			order: &Order{
-				ID:            "order-id",
+			params: &NewExperienceOrderParams{
+				OrderID:       "order-id",
 				SessionID:     "session-id",
-				UserID:        "user-id",
 				CoordinatorID: "coordinator-id",
-				PromotionID:   "promotion-id",
-				CreatedAt:     now,
-				UpdatedAt:     now,
+				Customer: &entity.User{
+					Member: entity.Member{
+						UserID:       "user-id",
+						CognitoID:    "cognito-id",
+						AccountID:    "account-id",
+						Username:     "username",
+						ProviderType: entity.ProviderTypeEmail,
+						Email:        "test@example.com",
+						PhoneNumber:  "+819012345678",
+						ThumbnailURL: "",
+					},
+					ID:         "user-id",
+					Registered: true,
+				},
+				BillingAddress: &entity.Address{
+					AddressRevision: entity.AddressRevision{
+						ID:             1,
+						AddressID:      "address-id",
+						Lastname:       "&.",
+						Firstname:      "購入者",
+						PostalCode:     "1000014",
+						PrefectureCode: 13,
+						City:           "千代田区",
+						AddressLine1:   "永田町1-7-1",
+						AddressLine2:   "",
+						PhoneNumber:    "090-1234-1234",
+					},
+					ID:     "address-id",
+					UserID: "user-id",
+				},
+				Experience: &Experience{
+					ID:                 "experience-id",
+					CoordinatorID:      "coordinator-id",
+					ProducerID:         "producer-id",
+					TypeID:             "experience-type-id",
+					Title:              "じゃがいも収穫",
+					Description:        "じゃがいもを収穫する体験",
+					Public:             true,
+					SoldOut:            false,
+					Status:             ExperienceStatusAccepting,
+					ThumbnailURL:       "http://example.com/thumbnail.png",
+					Media:              MultiExperienceMedia{{URL: "http://example.com/thumbnail.png", IsThumbnail: true}},
+					RecommendedPoints:  []string{"ポイント1", "ポイント2"},
+					PromotionVideoURL:  "http://example.com/promotion.mp4",
+					HostPrefecture:     "東京都",
+					HostPrefectureCode: 13,
+					HostCity:           "千代田区",
+					ExperienceRevision: ExperienceRevision{ExperienceID: "experience-id"},
+					StartAt:            now.AddDate(0, 0, -1),
+					EndAt:              now.AddDate(0, 0, 1),
+					CreatedAt:          now,
+					UpdatedAt:          now,
+				},
+				PaymentMethodType: PaymentMethodTypeCreditCard,
+				Promotion: &Promotion{
+					ID:           "promotion-id",
+					Description:  "プロモーションの詳細です。",
+					Public:       true,
+					PublishedAt:  jst.Date(2022, 8, 9, 18, 30, 0, 0),
+					DiscountType: DiscountTypeRate,
+					DiscountRate: 10,
+					Code:         "excode01",
+					CodeType:     PromotionCodeTypeAlways,
+					StartAt:      jst.Date(2022, 8, 1, 0, 0, 0, 0),
+					EndAt:        jst.Date(2022, 9, 1, 0, 0, 0, 0),
+				},
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 3,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+				Transportation:        "電車",
+				RequetsedDate:         "20221231",
+				RequetsedTime:         "1000",
 			},
-			payment:      &OrderPayment{OrderID: "order-id"},
-			fulfillments: OrderFulfillments{{OrderID: "order-id"}},
-			items:        OrderItems{{OrderID: "order-id", ProductRevisionID: 1}},
 			expect: &Order{
-				ID:                "order-id",
-				SessionID:         "session-id",
-				UserID:            "user-id",
-				CoordinatorID:     "coordinator-id",
-				PromotionID:       "promotion-id",
-				OrderPayment:      OrderPayment{OrderID: "order-id"},
-				OrderFulfillments: OrderFulfillments{{OrderID: "order-id"}},
-				OrderItems:        OrderItems{{OrderID: "order-id", ProductRevisionID: 1}},
-				CreatedAt:         now,
-				UpdatedAt:         now,
+				OrderPayment: OrderPayment{
+					OrderID:           "order-id",
+					AddressRevisionID: 1,
+					Status:            PaymentStatusPending,
+					MethodType:        PaymentMethodTypeCreditCard,
+					Subtotal:          0,
+					Discount:          0,
+					ShippingFee:       0,
+					Tax:               0,
+					Total:             0,
+				},
+				OrderExperience: OrderExperience{
+					OrderID:               "order-id",
+					ExperienceRevisionID:  0,
+					AdultCount:            2,
+					JuniorHighSchoolCount: 1,
+					ElementarySchoolCount: 3,
+					PreschoolCount:        0,
+					SeniorCount:           0,
+					Remarks: OrderExperienceRemarks{
+						Transportation: "電車",
+						RequestedDate:  jst.Date(2022, 12, 31, 0, 0, 0, 0),
+						RequestedTime:  jst.Date(0, 1, 1, 10, 0, 0, 0),
+					},
+				},
+				ID:              "order-id",
+				SessionID:       "session-id",
+				UserID:          "user-id",
+				CoordinatorID:   "coordinator-id",
+				PromotionID:     "promotion-id",
+				Type:            OrderTypeExperience,
+				Status:          OrderStatusUnpaid,
+				ShippingMessage: "",
 			},
+			hasErr: false,
+		},
+		{
+			name: "invalid payment method",
+			params: &NewExperienceOrderParams{
+				OrderID:               "order-id",
+				SessionID:             "session-id",
+				CoordinatorID:         "coordinator-id",
+				Customer:              &entity.User{ID: "user-id"},
+				BillingAddress:        &entity.Address{ID: "address-id"},
+				Experience:            &Experience{ID: "experience-id"},
+				PaymentMethodType:     PaymentMethodType(-1),
+				Promotion:             &Promotion{ID: "promotion-id"},
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 3,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+				Transportation:        "train",
+				RequetsedDate:         "2022-12-31",
+				RequetsedTime:         "10:00",
+			},
+			expect: nil,
+			hasErr: true,
+		},
+		{
+			name: "missing customer",
+			params: &NewExperienceOrderParams{
+				OrderID:               "order-id",
+				SessionID:             "session-id",
+				CoordinatorID:         "coordinator-id",
+				Customer:              nil,
+				BillingAddress:        &entity.Address{ID: "address-id"},
+				Experience:            &Experience{ID: "experience-id"},
+				PaymentMethodType:     PaymentMethodTypeCreditCard,
+				Promotion:             &Promotion{ID: "promotion-id"},
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 3,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+				Transportation:        "train",
+				RequetsedDate:         "2022-12-31",
+				RequetsedTime:         "10:00",
+			},
+			expect: nil,
+			hasErr: true,
+		},
+		{
+			name: "missing billing address",
+			params: &NewExperienceOrderParams{
+				OrderID:               "order-id",
+				SessionID:             "session-id",
+				CoordinatorID:         "coordinator-id",
+				Customer:              &entity.User{ID: "user-id"},
+				BillingAddress:        nil,
+				Experience:            &Experience{ID: "experience-id"},
+				PaymentMethodType:     PaymentMethodTypeCreditCard,
+				Promotion:             &Promotion{ID: "promotion-id"},
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 3,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+				Transportation:        "train",
+				RequetsedDate:         "2022-12-31",
+				RequetsedTime:         "10:00",
+			},
+			expect: nil,
+			hasErr: true,
+		},
+		{
+			name: "missing experience",
+			params: &NewExperienceOrderParams{
+				OrderID:               "order-id",
+				SessionID:             "session-id",
+				CoordinatorID:         "coordinator-id",
+				Customer:              &entity.User{ID: "user-id"},
+				BillingAddress:        &entity.Address{ID: "address-id"},
+				Experience:            nil,
+				PaymentMethodType:     PaymentMethodTypeCreditCard,
+				Promotion:             &Promotion{ID: "promotion-id"},
+				AdultCount:            2,
+				JuniorHighSchoolCount: 1,
+				ElementarySchoolCount: 3,
+				PreschoolCount:        0,
+				SeniorCount:           0,
+				Transportation:        "train",
+				RequetsedDate:         "2022-12-31",
+				RequetsedTime:         "10:00",
+			},
+			expect: nil,
+			hasErr: true,
 		},
 	}
+
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.order.Fill(tt.payment, tt.fulfillments, tt.items)
-			assert.Equal(t, tt.expect, tt.order)
+			actual, err := NewExperienceOrder(tt.params)
+			assert.Equal(t, tt.hasErr, err != nil, err)
+			assert.Equal(t, tt.expect, actual)
 		})
 	}
 }
@@ -809,6 +993,7 @@ func TestOrders_Fill(t *testing.T) {
 		payments     map[string]*OrderPayment
 		fulfillments map[string]OrderFulfillments
 		items        map[string]OrderItems
+		experiences  map[string]*OrderExperience
 		expect       Orders
 	}{
 		{
@@ -817,10 +1002,12 @@ func TestOrders_Fill(t *testing.T) {
 				{ID: "order-id01"},
 				{ID: "order-id02"},
 				{ID: "order-id03"},
+				{ID: "order-id04"},
 			},
 			payments: map[string]*OrderPayment{
 				"order-id01": {OrderID: "order-id01"},
 				"order-id02": {OrderID: "order-id02"},
+				"order-id04": {OrderID: "order-id04"},
 			},
 			fulfillments: map[string]OrderFulfillments{
 				"order-id01": {{OrderID: "order-id01"}},
@@ -829,6 +1016,9 @@ func TestOrders_Fill(t *testing.T) {
 			items: map[string]OrderItems{
 				"order-id01": {{OrderID: "order-id01", ProductRevisionID: 1}},
 				"order-id02": {{OrderID: "order-id02", ProductRevisionID: 1}},
+			},
+			experiences: map[string]*OrderExperience{
+				"order-id04": {OrderID: "order-id04", ExperienceRevisionID: 1},
 			},
 			expect: Orders{
 				{
@@ -847,6 +1037,11 @@ func TestOrders_Fill(t *testing.T) {
 					ID:           "order-id03",
 					OrderPayment: OrderPayment{},
 				},
+				{
+					ID:              "order-id04",
+					OrderPayment:    OrderPayment{OrderID: "order-id04"},
+					OrderExperience: OrderExperience{OrderID: "order-id04", ExperienceRevisionID: 1},
+				},
 			},
 		},
 	}
@@ -854,7 +1049,7 @@ func TestOrders_Fill(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			tt.orders.Fill(tt.payments, tt.fulfillments, tt.items)
+			tt.orders.Fill(tt.payments, tt.fulfillments, tt.items, tt.experiences)
 			assert.Equal(t, tt.expect, tt.orders)
 		})
 	}
