@@ -985,6 +985,47 @@ func TestOrders_ProductRevisionIDs(t *testing.T) {
 	}
 }
 
+func TestOrders_ExperienceRevisionIDs(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name   string
+		orders Orders
+		expect []int64
+	}{
+		{
+			name: "success",
+			orders: Orders{
+				{
+					ID:                "order-id01",
+					UserID:            "user-id",
+					CoordinatorID:     "coordinator-id",
+					PromotionID:       "promotion-id",
+					OrderPayment:      OrderPayment{OrderID: "order-id"},
+					OrderFulfillments: OrderFulfillments{{OrderID: "order-id"}},
+					OrderItems:        OrderItems{{OrderID: "order-id", ProductRevisionID: 1}},
+					OrderExperience:   OrderExperience{OrderID: "order-id", ExperienceRevisionID: 1},
+				},
+				{
+					ID:                "order-id02",
+					UserID:            "user-id",
+					CoordinatorID:     "coordinator-id",
+					OrderPayment:      OrderPayment{OrderID: "order-id"},
+					OrderFulfillments: OrderFulfillments{{OrderID: "order-id"}},
+					OrderItems:        OrderItems{{OrderID: "order-id", ProductRevisionID: 1}},
+				},
+			},
+			expect: []int64{1},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expect, tt.orders.ExperienceRevisionIDs())
+		})
+	}
+}
+
 func TestOrders_Fill(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

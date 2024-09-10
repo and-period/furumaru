@@ -379,6 +379,20 @@ func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []strin
 	return service.NewExperiences(experiences), nil
 }
 
+func (h *handler) multiGetExperiencesByRevision(ctx context.Context, revisionIDs []int64) (service.Experiences, error) {
+	if len(revisionIDs) == 0 {
+		return service.Experiences{}, nil
+	}
+	in := &store.MultiGetExperiencesByRevisionInput{
+		ExperienceRevisionIDs: revisionIDs,
+	}
+	experiences, err := h.store.MultiGetExperiencesByRevision(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperiences(experiences), nil
+}
+
 func (h *handler) getExperience(ctx context.Context, experienceID string) (*service.Experience, error) {
 	in := &store.GetExperienceInput{
 		ExperienceID: experienceID,

@@ -3607,6 +3607,12 @@ export interface Order {
      */
     'items': Array<OrderItem>;
     /**
+     * 
+     * @type {OrderExperience}
+     * @memberof Order
+     */
+    'experience': OrderExperience;
+    /**
      * 登録日時 (unixtime)
      * @type {number}
      * @memberof Order
@@ -3627,6 +3633,110 @@ export interface Order {
 }
 
 
+/**
+ * 注文体験情報
+ * @export
+ * @interface OrderExperience
+ */
+export interface OrderExperience {
+    /**
+     * 体験ID
+     * @type {string}
+     * @memberof OrderExperience
+     */
+    'experienceId': string;
+    /**
+     * 大人人数
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'adultCount': number;
+    /**
+     * 大人価格（税込）
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'adultPrice': number;
+    /**
+     * 中学生人数
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'juniorHighSchoolCount': number;
+    /**
+     * 中学生価格（税込）
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'juniorHighSchoolPrice': number;
+    /**
+     * 小学生人数
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'elementarySchoolCount': number;
+    /**
+     * 小学生価格（税込）
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'elementarySchoolPrice': number;
+    /**
+     * 幼児人数
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'preschoolCount': number;
+    /**
+     * 幼児価格（税込）
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'preschoolPrice': number;
+    /**
+     * シニア人数
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'seniorCount': number;
+    /**
+     * シニア価格（税込）
+     * @type {number}
+     * @memberof OrderExperience
+     */
+    'seniorPrice': number;
+    /**
+     * 
+     * @type {OrderExperienceRemarks}
+     * @memberof OrderExperience
+     */
+    'remarks': OrderExperienceRemarks;
+}
+/**
+ * 注文体験備考
+ * @export
+ * @interface OrderExperienceRemarks
+ */
+export interface OrderExperienceRemarks {
+    /**
+     * 交通手段
+     * @type {string}
+     * @memberof OrderExperienceRemarks
+     */
+    'transportation': string;
+    /**
+     * 体験希望日
+     * @type {string}
+     * @memberof OrderExperienceRemarks
+     */
+    'requestedDate': string;
+    /**
+     * 体験希望時間
+     * @type {string}
+     * @memberof OrderExperienceRemarks
+     */
+    'requestedTime': string;
+}
 /**
  * 注文配送情報
  * @export
@@ -15416,10 +15526,11 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
          * @param {number} [status] 注文ステータス ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了) 
+         * @param {number} [type] 注文タイプ ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:1(商品),2(体験) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListOrders: async (limit?: number, offset?: number, orders?: string, status?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        v1ListOrders: async (limit?: number, offset?: number, orders?: string, status?: number, type?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/orders`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -15450,6 +15561,10 @@ export const OrderApiAxiosParamCreator = function (configuration?: Configuration
 
             if (status !== undefined) {
                 localVarQueryParameter['status'] = status;
+            }
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
             }
 
 
@@ -15652,11 +15767,12 @@ export const OrderApiFp = function(configuration?: Configuration) {
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
          * @param {number} [status] 注文ステータス ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了) 
+         * @param {number} [type] 注文タイプ ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:1(商品),2(体験) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrdersResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListOrders(limit, offset, orders, status, options);
+        async v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, type?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OrdersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.v1ListOrders(limit, offset, orders, status, type, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrderApi.v1ListOrders']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -15769,11 +15885,12 @@ export const OrderApiFactory = function (configuration?: Configuration, basePath
          * @param {number} [offset] 取得開始位置(min:0)
          * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
          * @param {number} [status] 注文ステータス ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了) 
+         * @param {number} [type] 注文タイプ ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:1(商品),2(体験) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, options?: RawAxiosRequestConfig): AxiosPromise<OrdersResponse> {
-            return localVarFp.v1ListOrders(limit, offset, orders, status, options).then((request) => request(axios, basePath));
+        v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, type?: number, options?: RawAxiosRequestConfig): AxiosPromise<OrdersResponse> {
+            return localVarFp.v1ListOrders(limit, offset, orders, status, type, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -15889,12 +16006,13 @@ export class OrderApi extends BaseAPI {
      * @param {number} [offset] 取得開始位置(min:0)
      * @param {string} [orders] ソート ・複数指定時は&#x60;,&#x60;区切り ・降順の場合はprefixに&#x60;-&#x60;をつける ・指定可能フィールド:paymentStatus,fulfillmentStatus,orderedAt,paidAt,deliveredAt,canceledAt,createdAt,updatedAt, 
      * @param {number} [status] 注文ステータス ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:2(受注待ち),3(発送準備中),4(発送完了),5(完了) 
+     * @param {number} [type] 注文タイプ ・複数指定時は&#x60;,&#x60;区切り ・デフォルト:1(商品),2(体験) 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderApi
      */
-    public v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, options?: RawAxiosRequestConfig) {
-        return OrderApiFp(this.configuration).v1ListOrders(limit, offset, orders, status, options).then((request) => request(this.axios, this.basePath));
+    public v1ListOrders(limit?: number, offset?: number, orders?: string, status?: number, type?: number, options?: RawAxiosRequestConfig) {
+        return OrderApiFp(this.configuration).v1ListOrders(limit, offset, orders, status, type, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

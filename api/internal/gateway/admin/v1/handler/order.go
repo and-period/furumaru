@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/and-period/furumaru/api/internal/codes"
+	"github.com/and-period/furumaru/api/internal/exception"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/request"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
 	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/service"
@@ -67,20 +68,17 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	statuses, err := h.newOrderFileters(ctx)
+	statuses, types, err := h.newOrderFileters(ctx)
 	if err != nil {
 		h.badRequest(ctx, err)
 		return
 	}
-	orderType := util.GetQuery(ctx, "type", "")
 
 	in := &store.ListOrdersInput{
 		Limit:    limit,
 		Offset:   offset,
 		Statuses: statuses,
-	}
-	if orderType != "" {
-		in.Types = []sentity.OrderType{service.NewOrderTypeFromString(orderType).StoreEntity()}
+		Types:    types,
 	}
 	if getRole(ctx) == service.AdminRoleCoordinator {
 		in.CoordinatorID = getAdminID(ctx)
@@ -106,6 +104,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		coordinators service.Coordinators
 		addresses    service.Addresses
 		products     service.Products
+		experiences  service.Experiences
 		promotions   service.Promotions
 	)
 	eg, ectx := errgroup.WithContext(ctx)
@@ -122,6 +121,10 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 		return
 	})
 	eg.Go(func() (err error) {
+		experiences, err = h.multiGetExperiencesByRevision(ectx, orders.ExperienceRevisionIDs())
+		return
+	})
+	eg.Go(func() (err error) {
 		addresses, err = h.multiGetAddressesByRevision(ectx, orders.AddressRevisionIDs())
 		return
 	})
@@ -135,7 +138,7 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	}
 
 	res := &response.OrdersResponse{
-		Orders:       service.NewOrders(orders, addresses.MapByRevision(), products.MapByRevision()).Response(),
+		Orders:       service.NewOrders(orders, addresses.MapByRevision(), products.MapByRevision(), experiences.MapByRevision()).Response(),
 		Users:        users.Response(),
 		Coordinators: coordinators.Response(),
 		Promotions:   promotions.Response(),
@@ -144,25 +147,41 @@ func (h *handler) ListOrders(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (h *handler) newOrderFileters(ctx *gin.Context) ([]sentity.OrderStatus, error) {
-	params, err := util.GetQueryInt32s(ctx, "status")
+func (h *handler) newOrderFileters(ctx *gin.Context) ([]sentity.OrderStatus, []sentity.OrderType, error) {
+	sparams, err := util.GetQueryInt32s(ctx, "status")
 	if err != nil {
-		return nil, err
+		return nil, nil, fmt.Errorf("handler: failed to get status query params: %s: %w", err.Error(), exception.ErrInvalidArgument)
 	}
-	if len(params) == 0 {
-		res := []sentity.OrderStatus{
+	tparams, err := util.GetQueryInt32s(ctx, "type")
+	if err != nil {
+		return nil, nil, fmt.Errorf("handler: failed to get type query params: %s: %w", err.Error(), exception.ErrInvalidArgument)
+	}
+
+	statuses := make([]sentity.OrderStatus, len(sparams))
+	for i := range sparams {
+		statuses[i] = sentity.OrderStatus(sparams[i])
+	}
+	if len(statuses) == 0 {
+		statuses = []sentity.OrderStatus{
 			sentity.OrderStatusWaiting,   // 受注待ち
 			sentity.OrderStatusPreparing, // 発送準備中
 			sentity.OrderStatusShipped,   // 発送完了
 			sentity.OrderStatusCompleted, // 完了
 		}
-		return res, nil
 	}
-	res := make([]sentity.OrderStatus, len(params))
-	for i := range params {
-		res[i] = sentity.OrderStatus(params[i])
+
+	types := make([]sentity.OrderType, len(tparams))
+	for i := range tparams {
+		types[i] = sentity.OrderType(tparams[i])
 	}
-	return res, nil
+	if len(types) == 0 {
+		types = []sentity.OrderType{
+			sentity.OrderTypeProduct,    // 商品
+			sentity.OrderTypeExperience, // 体験
+		}
+	}
+
+	return statuses, types, nil
 }
 
 func (h *handler) GetOrder(ctx *gin.Context) {
@@ -176,6 +195,7 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		coordinator *service.Coordinator
 		promotion   *service.Promotion
 		products    service.Products
+		experience  *service.Experience
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -197,6 +217,13 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		products, err = h.multiGetProducts(ectx, order.ProductIDs())
 		return
 	})
+	eg.Go(func() (err error) {
+		if order.Experience == nil {
+			return nil
+		}
+		experience, err = h.getExperience(ectx, order.Experience.ExperienceID)
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		h.httpError(ctx, err)
 		return
@@ -207,6 +234,7 @@ func (h *handler) GetOrder(ctx *gin.Context) {
 		Coordinator: coordinator.Response(),
 		Promotion:   promotion.Response(),
 		Products:    products.Response(),
+		Experience:  experience.Response(),
 	}
 	ctx.JSON(http.StatusOK, res)
 }
@@ -340,8 +368,9 @@ func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order,
 		return nil, err
 	}
 	var (
-		addresses service.Addresses
-		products  service.Products
+		addresses   service.Addresses
+		products    service.Products
+		experiences service.Experiences
 	)
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() (err error) {
@@ -352,8 +381,15 @@ func (h *handler) getOrder(ctx context.Context, orderID string) (*service.Order,
 		products, err = h.multiGetProductsByRevision(ectx, order.ProductRevisionIDs())
 		return
 	})
+	eg.Go(func() (err error) {
+		if order.OrderExperience.ExperienceRevisionID == 0 {
+			return
+		}
+		experiences, err = h.multiGetExperiencesByRevision(ectx, []int64{order.OrderExperience.ExperienceRevisionID})
+		return
+	})
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return service.NewOrder(order, addresses.MapByRevision(), products.MapByRevision()), nil
+	return service.NewOrder(order, addresses.MapByRevision(), products.MapByRevision(), experiences.MapByRevision()), nil
 }
