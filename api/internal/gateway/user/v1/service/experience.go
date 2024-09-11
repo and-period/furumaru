@@ -18,6 +18,7 @@ const (
 
 type Experience struct {
 	response.Experience
+	revisionID int64
 }
 
 type Experiences []*Experience
@@ -94,6 +95,7 @@ func NewExperience(experience *entity.Experience) *Experience {
 			StartAt:               experience.StartAt.Unix(),
 			EndAt:                 experience.EndAt.Unix(),
 		},
+		revisionID: experience.ExperienceRevision.ID,
 	}
 }
 
@@ -105,6 +107,14 @@ func NewExperiences(experiences entity.Experiences) Experiences {
 	res := make(Experiences, len(experiences))
 	for i := range experiences {
 		res[i] = NewExperience(experiences[i])
+	}
+	return res
+}
+
+func (es Experiences) MapByRevision() map[int64]*Experience {
+	res := make(map[int64]*Experience, len(es))
+	for _, e := range es {
+		res[e.revisionID] = e
 	}
 	return res
 }
