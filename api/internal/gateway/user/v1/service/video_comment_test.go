@@ -15,39 +15,39 @@ func TestVideoComments(t *testing.T) {
 	now := time.Now()
 	tests := []struct {
 		name     string
-		comments mentity.BroadcastComments
+		comments mentity.VideoComments
 		users    map[string]*uentity.User
 		expect   VideoComments
 	}{
 		{
 			name: "success",
-			comments: mentity.BroadcastComments{
+			comments: mentity.VideoComments{
 				{
-					ID:          "comment-id",
-					BroadcastID: "broadcast-id",
-					UserID:      "user-id",
-					Content:     "こんにちは",
-					Disabled:    false,
-					CreatedAt:   now,
-					UpdatedAt:   now,
+					ID:        "comment-id",
+					VideoID:   "Video-id",
+					UserID:    "user-id",
+					Content:   "こんにちは",
+					Disabled:  false,
+					CreatedAt: now,
+					UpdatedAt: now,
 				},
 				{
-					ID:          "disabled-id",
-					BroadcastID: "broadcast-id",
-					UserID:      "user-id",
-					Content:     "こんにちは",
-					Disabled:    true,
-					CreatedAt:   now,
-					UpdatedAt:   now,
+					ID:        "disabled-id",
+					VideoID:   "Video-id",
+					UserID:    "user-id",
+					Content:   "こんにちは",
+					Disabled:  true,
+					CreatedAt: now,
+					UpdatedAt: now,
 				},
 				{
-					ID:          "unknown-id",
-					BroadcastID: "broadcast-id",
-					UserID:      "unknown-id",
-					Content:     "こんにちは",
-					Disabled:    false,
-					CreatedAt:   now,
-					UpdatedAt:   now,
+					ID:        "unknown-id",
+					VideoID:   "Video-id",
+					UserID:    "unknown-id",
+					Content:   "こんにちは",
+					Disabled:  false,
+					CreatedAt: now,
+					UpdatedAt: now,
 				},
 			},
 			users: map[string]*uentity.User{

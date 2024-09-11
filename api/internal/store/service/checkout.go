@@ -256,7 +256,11 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		promotion, err = s.db.Promotion.GetByCode(ectx, params.payload.PromotionCode)
 		return
 	})
-	if err := eg.Wait(); err != nil {
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return "", fmt.Errorf("service: not found: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
 		return "", internalError(err)
 	}
 	// プロモーションの有効性検証
@@ -421,7 +425,11 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		promotion, err = s.db.Promotion.GetByCode(ectx, params.payload.PromotionCode)
 		return
 	})
-	if err := eg.Wait(); err != nil {
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return "", fmt.Errorf("service: not found: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
 		return "", internalError(err)
 	}
 	// プロモーションの有効性検証
@@ -485,7 +493,6 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 			AddressLine1: billingAddress.AddressLine1,
 			AddressLine2: billingAddress.AddressLine2,
 		},
-		ShippingAddress: &komoju.CreateSessionAddress{},
 	}
 	session, err := s.komoju.Session.Create(ctx, sparams)
 	if err != nil {

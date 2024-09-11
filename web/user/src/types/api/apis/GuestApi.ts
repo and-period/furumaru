@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   CreateGuestLiveCommentRequest,
+  CreateGuestVideoCommentRequest,
   ErrorResponse,
   GuestCheckoutProductRequest,
   GuestCheckoutResponse,
@@ -24,6 +25,8 @@ import type {
 import {
     CreateGuestLiveCommentRequestFromJSON,
     CreateGuestLiveCommentRequestToJSON,
+    CreateGuestVideoCommentRequestFromJSON,
+    CreateGuestVideoCommentRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     GuestCheckoutProductRequestFromJSON,
@@ -39,8 +42,18 @@ export interface V1CreateGuestLiveCommentRequest {
     body: CreateGuestLiveCommentRequest;
 }
 
+export interface V1CreateGuestVideoCommentRequest {
+    videoId: string;
+    body: CreateGuestVideoCommentRequest;
+}
+
 export interface V1GetGuestCheckoutStateRequest {
     transactionId: string;
+}
+
+export interface V1GuestCheckoutExperienceRequest {
+    experienceId: string;
+    body: GuestCheckoutProductRequest;
 }
 
 export interface V1GuestCheckoutProductRequest {
@@ -95,6 +108,48 @@ export class GuestApi extends runtime.BaseAPI {
     }
 
     /**
+     * オンデマンド配信ゲストコメント投稿
+     */
+    async v1CreateGuestVideoCommentRaw(requestParameters: V1CreateGuestVideoCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['videoId'] == null) {
+            throw new runtime.RequiredError(
+                'videoId',
+                'Required parameter "videoId" was null or undefined when calling v1CreateGuestVideoComment().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateGuestVideoComment().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/v1/guests/videos/{videoId}/comments`.replace(`{${"videoId"}}`, encodeURIComponent(String(requestParameters['videoId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * オンデマンド配信ゲストコメント投稿
+     */
+    async v1CreateGuestVideoComment(requestParameters: V1CreateGuestVideoCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CreateGuestVideoCommentRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * ゲスト注文情報の取得
      */
     async v1GetGuestCheckoutStateRaw(requestParameters: V1GetGuestCheckoutStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutStateResponse>> {
@@ -124,6 +179,49 @@ export class GuestApi extends runtime.BaseAPI {
      */
     async v1GetGuestCheckoutState(requestParameters: V1GetGuestCheckoutStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutStateResponse> {
         const response = await this.v1GetGuestCheckoutStateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * ゲスト体験購入
+     */
+    async v1GuestCheckoutExperienceRaw(requestParameters: V1GuestCheckoutExperienceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutResponse>> {
+        if (requestParameters['experienceId'] == null) {
+            throw new runtime.RequiredError(
+                'experienceId',
+                'Required parameter "experienceId" was null or undefined when calling v1GuestCheckoutExperience().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1GuestCheckoutExperience().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/v1/guests/checkouts/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GuestCheckoutResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * ゲスト体験購入
+     */
+    async v1GuestCheckoutExperience(requestParameters: V1GuestCheckoutExperienceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutResponse> {
+        const response = await this.v1GuestCheckoutExperienceRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -127,6 +127,17 @@ func (h *handler) GuestCheckoutExperience(ctx *gin.Context) {
 		BillingAddressID: billingAddressID,
 		CallbackURL:      req.CallbackURL,
 		Total:            req.Total,
+		CheckoutExperienceDetail: store.CheckoutExperienceDetail{
+			ExperienceID:          util.GetParam(ctx, "experienceId"),
+			AdultCount:            req.AdultCount,
+			JuniorHighSchoolCount: req.JuniorHighSchoolCount,
+			ElementarySchoolCount: req.ElementarySchoolCount,
+			PreschoolCount:        req.PreschoolCount,
+			SeniorCount:           req.SeniorCount,
+			Transportation:        req.Transportation,
+			RequestedDate:         req.RequestedDate,
+			RequestedTime:         req.RequestedTime,
+		},
 	}
 	params := &checkoutParams{
 		methodType: methodType,
