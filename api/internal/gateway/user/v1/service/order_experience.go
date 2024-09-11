@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/and-period/furumaru/api/internal/gateway/admin/v1/response"
+	"github.com/and-period/furumaru/api/internal/gateway/user/v1/response"
 	"github.com/and-period/furumaru/api/internal/store/entity"
 	"github.com/and-period/furumaru/api/pkg/jst"
 )
@@ -13,14 +13,11 @@ type OrderExperience struct {
 
 type OrderExperiences []*OrderExperience
 
-type OrderExperienceRemarks struct {
-	response.OrderExperienceRemarks
-}
-
 func NewOrderExperience(item *entity.OrderExperience, experience *Experience) *OrderExperience {
 	var (
 		experienceID                                                                          string
 		adultPrice, juniorHighSchoolPrice, elementarySchoolPrice, preschoolPrice, seniorPrice int64
+		requestedDate, requestedTime                                                          string
 	)
 	if item == nil {
 		return nil
@@ -32,6 +29,12 @@ func NewOrderExperience(item *entity.OrderExperience, experience *Experience) *O
 		elementarySchoolPrice = experience.PriceElementarySchool
 		preschoolPrice = experience.PricePreschool
 		seniorPrice = experience.PriceSenior
+	}
+	if !item.Remarks.RequestedDate.IsZero() {
+		requestedDate = jst.FormatYYYYMMDD(item.Remarks.RequestedDate)
+	}
+	if !item.Remarks.RequestedTime.IsZero() {
+		requestedTime = jst.FormatHHMM(item.Remarks.RequestedTime)
 	}
 	return &OrderExperience{
 		OrderExperience: response.OrderExperience{
@@ -46,7 +49,9 @@ func NewOrderExperience(item *entity.OrderExperience, experience *Experience) *O
 			PreschoolPrice:        preschoolPrice,
 			SeniorCount:           item.SeniorCount,
 			SeniorPrice:           seniorPrice,
-			Remarks:               NewOrderExperienceRemarks(&item.Remarks).Response(),
+			Transportation:        item.Remarks.Transportation,
+			RequestedDate:         requestedDate,
+			RequestedTime:         requestedTime,
 		},
 		orderID: item.OrderID,
 	}
@@ -80,25 +85,4 @@ func (es OrderExperiences) Response() []*response.OrderExperience {
 		res = append(res, e.Response())
 	}
 	return res
-}
-
-func NewOrderExperienceRemarks(remarks *entity.OrderExperienceRemarks) *OrderExperienceRemarks {
-	var requestedDate, requestedTime string
-	if !remarks.RequestedDate.IsZero() {
-		requestedDate = jst.FormatYYYYMMDD(remarks.RequestedDate)
-	}
-	if !remarks.RequestedTime.IsZero() {
-		requestedTime = jst.FormatHHMM(remarks.RequestedTime)
-	}
-	return &OrderExperienceRemarks{
-		response.OrderExperienceRemarks{
-			Transportation: remarks.Transportation,
-			RequestedDate:  requestedDate,
-			RequestedTime:  requestedTime,
-		},
-	}
-}
-
-func (r *OrderExperienceRemarks) Response() *response.OrderExperienceRemarks {
-	return &r.OrderExperienceRemarks
 }

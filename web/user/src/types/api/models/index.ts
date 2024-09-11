@@ -54,6 +54,7 @@ export * from './LiveProduct';
 export * from './LiveSchedulesResponse';
 export * from './LiveSummary';
 export * from './Order';
+export * from './OrderExperience';
 export * from './OrderFulfillment';
 export * from './OrderItem';
 export * from './OrderPayment';
