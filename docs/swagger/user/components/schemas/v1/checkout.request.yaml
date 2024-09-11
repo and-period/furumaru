@@ -73,11 +73,11 @@ checkoutExperienceRequest:
       type: integer
       format: int64
       description: 大人の人数（0以上）
-    juniorHighSchoolStudentCount:
+    juniorHighSchoolCount:
       type: integer
       format: int64
       description: 中学生の人数（0以上）
-    elementarySchoolStudentCount:
+    elementarySchoolCount:
       type: integer
       format: int64
       description: 小学生の人数（0以上）
@@ -114,8 +114,8 @@ checkoutExperienceRequest:
   - billingAddressId
   - promotionCode
   - adultCount
-  - juniorHighSchoolStudentCount
-  - elementarySchoolStudentCount
+  - juniorHighSchoolCount
+  - elementarySchoolCount
   - preschoolCount
   - seniorCount
   - transportation
@@ -130,8 +130,8 @@ checkoutExperienceRequest:
     billingAddressId: 'kSByoE6FetnPs5Byk3a9Zx'
     promotionCode: 'code1234'
     adultCount: 1
-    juniorHighSchoolStudentCount: 2
-    elementarySchoolStudentCount: 3
+    juniorHighSchoolCount: 2
+    elementarySchoolCount: 3
     preschoolCount: 4
     seniorCount: 5
     transportation: '電車'

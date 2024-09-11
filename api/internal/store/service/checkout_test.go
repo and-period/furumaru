@@ -1927,7 +1927,6 @@ func TestCheckoutExperience(t *testing.T) {
 			AddressLine1: "永田町1-7-1",
 			AddressLine2: "",
 		},
-		ShippingAddress: &komoju.CreateSessionAddress{},
 	}
 	session := &komoju.SessionResponse{
 		ID:        "transaction-id",

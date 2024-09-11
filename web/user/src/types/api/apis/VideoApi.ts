@@ -15,11 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
+  CreateGuestVideoCommentRequest,
   ErrorResponse,
   VideoResponse,
   VideosResponse,
 } from '../models/index';
 import {
+    CreateGuestVideoCommentRequestFromJSON,
+    CreateGuestVideoCommentRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     VideoResponseFromJSON,
@@ -27,6 +30,11 @@ import {
     VideosResponseFromJSON,
     VideosResponseToJSON,
 } from '../models/index';
+
+export interface V1CreateGuestVideoCommentRequest {
+    videoId: string;
+    body: CreateGuestVideoCommentRequest;
+}
 
 export interface V1GetVideoRequest {
     videoId: string;
@@ -43,6 +51,48 @@ export interface V1VideosRequest {
  * 
  */
 export class VideoApi extends runtime.BaseAPI {
+
+    /**
+     * オンデマンド配信ゲストコメント投稿
+     */
+    async v1CreateGuestVideoCommentRaw(requestParameters: V1CreateGuestVideoCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['videoId'] == null) {
+            throw new runtime.RequiredError(
+                'videoId',
+                'Required parameter "videoId" was null or undefined when calling v1CreateGuestVideoComment().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CreateGuestVideoComment().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/v1/guests/videos/{videoId}/comments`.replace(`{${"videoId"}}`, encodeURIComponent(String(requestParameters['videoId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * オンデマンド配信ゲストコメント投稿
+     */
+    async v1CreateGuestVideoComment(requestParameters: V1CreateGuestVideoCommentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.v1CreateGuestVideoCommentRaw(requestParameters, initOverrides);
+    }
 
     /**
      * オンデマンド配信取得

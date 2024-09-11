@@ -13,7 +13,7 @@ import (
 )
 
 func (h *handler) videoCommentRoutes(rg *gin.RouterGroup) {
-	r := rg.Group("/schedules/:scheduleId/comments")
+	r := rg.Group("/videos/:videoId/comments")
 
 	r.GET("", h.createVideoViewerLog, h.ListVideoComments)
 	r.POST("", h.authentication, h.createVideoViewerLog, h.CreateVideoComment)
@@ -22,7 +22,7 @@ func (h *handler) videoCommentRoutes(rg *gin.RouterGroup) {
 func (h *handler) ListVideoComments(ctx *gin.Context) {
 	const defaultLimit = 20
 
-	schedule, err := h.getSchedule(ctx, util.GetParam(ctx, "scheduleId"))
+	video, err := h.getVideo(ctx, util.GetParam(ctx, "videoId"))
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -44,14 +44,14 @@ func (h *handler) ListVideoComments(ctx *gin.Context) {
 	}
 	nextToken := util.GetQuery(ctx, "next", "")
 
-	in := &media.ListBroadcastCommentsInput{
-		ScheduleID:   schedule.ID,
+	in := &media.ListVideoCommentsInput{
+		VideoID:      video.ID,
 		CreatedAtGte: jst.ParseFromUnix(startAt),
 		CreatedAtLt:  jst.ParseFromUnix(endAt),
 		Limit:        limit,
 		NextToken:    nextToken,
 	}
-	comments, token, err := h.media.ListBroadcastComments(ctx, in)
+	comments, token, err := h.media.ListVideoComments(ctx, in)
 	if err != nil {
 		h.httpError(ctx, err)
 		return
@@ -82,12 +82,12 @@ func (h *handler) CreateVideoComment(ctx *gin.Context) {
 		h.badRequest(ctx, err)
 		return
 	}
-	in := &media.CreateBroadcastCommentInput{
-		ScheduleID: util.GetParam(ctx, "scheduleId"),
-		UserID:     h.getUserID(ctx),
-		Content:    req.Comment,
+	in := &media.CreateVideoCommentInput{
+		VideoID: util.GetParam(ctx, "videoId"),
+		UserID:  h.getUserID(ctx),
+		Content: req.Comment,
 	}
-	if _, err := h.media.CreateBroadcastComment(ctx, in); err != nil {
+	if _, err := h.media.CreateVideoComment(ctx, in); err != nil {
 		h.httpError(ctx, err)
 		return
 	}
