@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import type { I18n } from '~/types/locales'
+
+const i18n = useI18n()
+
+const ct = (str: keyof I18n['base']['contact']) => {
+  return i18n.t(`base.contact.${str}`)
+}
+
 useSeoMeta({
   title: 'お問い合わせ',
 })
@@ -8,22 +16,22 @@ useSeoMeta({
   <div class="my-24 flex flex-col items-center px-4 text-main">
     <div>
       <h1 class="text-4xl">
-        お問い合わせ
+        {{ ct('contactTitle') }}
       </h1>
     </div>
     <div>
       <p class="mt-8">
-        ふるマルのアプリに関してや、販売商品に関してはライン友達追加後お問い合わせください。
+        {{ ct('description') }}
       </p>
       <div class="mt-8 flex justify-center underline">
         <a href="https://lin.ee/49SOeUC"><img
-          src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
-          alt="友だち追加"
+          :src="ct('lineAddFriendImageUrl')"
+          :alt="ct('lineAddFriendImageAlt')"
           height="36"
         ></a>
       </div>
       <p class="mt-8">
-        ※2〜3営業日以内に、ご返信させていただきます。
+        {{ ct('contactNotice') }}
       </p>
     </div>
   </div>

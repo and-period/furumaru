@@ -119,6 +119,14 @@ export interface I18n {
       forthPointDescription: string
       forthPointLinkText: string
     }
+
+    contact: {
+      contactTitle: string
+      description: string
+      lineAddFriendImageUrl: string
+      lineAddFriendImageAlt: string
+      contactNotice: string
+    }
   }
 
   purchase: {

@@ -106,6 +106,13 @@
       "forthPointTitle": "Save on shipping costs by shipping items from the same region together!",
       "forthPointDescription": "Furumaru shipping charges are added per marche, not per item. If you shop at the same marche, you will not be charged additional shipping fees no matter how many items you buy as long as they fit in the same box.",
       "forthPointLinkText": "For more information about shipping charges, click here."
+    },
+    "contact": {
+      "contactTitle": "Inquiries",
+      "description": "For inquiries regarding the Furumaru app or the products for sale, please contact us after adding us as a friend on LINE.",
+      "lineAddFriendImageUrl": "https://scdn.line-apps.com/n/line_add_friends/btn/en.png",
+      "lineAddFriendImageAlt": "Add friend on LINE",
+      "contactNotice": "We will reply within 2 to 3 business days."
     }
   },
   "purchase": {

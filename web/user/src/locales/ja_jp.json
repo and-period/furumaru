@@ -106,6 +106,13 @@
       "forthPointTitle": "同じ地域の商品を同梱発送するので\n送料がおトクに",
       "forthPointDescription": "ふるマルの送料は、商品（生産者）ごとではなくマルシェごとに加算されます。同じマルシェでのお買い物なら、同じ箱に収まる限りいくつ買っても追加の送料はかかりません。",
       "forthPointLinkText": "送料について詳しくはこちら"
+    },
+    "contact": {
+      "contactTitle": "お問い合わせ",
+      "description": "ふるマルのアプリに関してや、販売商品に関してはライン友達追加後お問い合わせください。",
+      "lineAddFriendImageUrl": "https://scdn.line-apps.com/n/line_add_friends/btn/ja.png",
+      "lineAddFriendImageAlt": "友だち追加",
+      "contactNotice": "※2〜3営業日以内に、ご返信させていただきます。"
     }
   },
   "purchase": {
