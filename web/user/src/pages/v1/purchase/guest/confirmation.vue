@@ -5,8 +5,10 @@ import { useAddressStore } from '~/store/address'
 import { useCheckoutStore } from '~/store/checkout'
 import { useShoppingCartStore } from '~/store/shopping'
 import type { GuestCheckoutProductRequest } from '~/types/api'
+import type { I18n } from '~/types/locales'
 import { ApiBaseError } from '~/types/exception'
 
+const i18n = useI18n()
 const addressStore = useAddressStore()
 const { addressFetchState } = storeToRefs(addressStore)
 
@@ -24,6 +26,11 @@ const { guestCheckout } = checkoutStore
 
 const route = useRoute()
 const router = useRouter()
+
+const ct = (str: keyof I18n['purchase']['confirmation']) => {
+  return i18n.t(`purchase.confirmation.${str}`)
+}
+
 
 /**
  * コーディネーターID（クエリパラメータから算出）
@@ -252,7 +259,7 @@ useSeoMeta({
 <template>
   <div class="container mx-auto">
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
-      ご購入手続き
+      {{ ct('checkoutTitle') }}
     </div>
 
     <the-alert
@@ -288,7 +295,7 @@ useSeoMeta({
           <div
             class="mb-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
           >
-            お客様情報
+            {{ ct('customerInformationTitle') }}
           </div>
           <the-guest-address-info
             v-if="guestAddress"
@@ -301,10 +308,10 @@ useSeoMeta({
             <div
               class="pt-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
             >
-              お届け先情報
+              {{ ct('shippingInformationLabel') }}
             </div>
             <div class="pt-[27px] text-[14px] tracking-[1.4px] text-main">
-              上記の住所にお届け
+              {{ ct('shippingAvobeAdderssLabel') }}
             </div>
           </div>
 
@@ -314,7 +321,7 @@ useSeoMeta({
             <div
               class="pt-6 text-left text-[16px] font-bold tracking-[1.6px] text-main"
             >
-              お支払い情報
+              {{ ct('paymentInformationTitle') }}
             </div>
 
             <div class="mt-4 flex items-center justify-between">
@@ -378,7 +385,7 @@ useSeoMeta({
               <div class="mt-4 flex w-full items-center gap-4">
                 <the-text-input
                   v-model="checkoutFormData.creditCard.number"
-                  placeholder="カード番号"
+                  :placeholder="ct('creditCardNumberPlaceholder')"
                   :with-label="false"
                   name="cc-number"
                   type="text"
@@ -413,7 +420,7 @@ useSeoMeta({
               </div>
               <the-text-input
                 v-model="checkoutFormData.creditCard.name"
-                placeholder="カード名義"
+                :placeholder="ct('cardholderNamePlaceholder')"
                 :with-label="false"
                 name="cc-name"
                 type="text"
@@ -429,7 +436,7 @@ useSeoMeta({
                     :value="0"
                     disabled
                   >
-                    有効期限 (月)
+                    {{ ct('expirationMonthPlaceholder') }}
                   </option>
                   <option
                     v-for="i in 12"
@@ -448,7 +455,7 @@ useSeoMeta({
                     value="0"
                     disabled
                   >
-                    有効期限 (年)
+                    {{ ct('expirationYearPlaceholder') }}
                   </option>
                   <option
                     v-for="i in 11"
@@ -461,7 +468,7 @@ useSeoMeta({
               </div>
               <the-text-input
                 v-model="checkoutFormData.creditCard.verificationValue"
-                placeholder="セキュリティコード"
+                :placeholder="ct('securityCodePlaceholder')"
                 :with-label="false"
                 name="cc-csc"
                 type="password"
@@ -478,7 +485,7 @@ useSeoMeta({
           class="row-span-2 self-start bg-base px-[16px] py-[24px] text-main md:w-full md:p-10"
         >
           <div class="text-[14px] font-bold tracking-[1.6px] md:text-[16px]">
-            注文内容
+            {{ ct('orderDetailsTitle') }}
           </div>
           <template v-if="calcCartResponseItem">
             <div class="my-[16px] text-[12px] tracking-[1.2px] md:my-6">
@@ -486,15 +493,15 @@ useSeoMeta({
                 {{ calcCartResponseItem.coordinator.marcheName }}
               </p>
               <p>
-                発送地：{{
+                {{ ct('shipFromLabel') }} {{
                   `${calcCartResponseItem.coordinator.prefecture}${calcCartResponseItem.coordinator.city}`
                 }}
               </p>
               <p>
-                取扱元：
+                {{ ct('coordinatorLabel') }}
                 {{ calcCartResponseItem.coordinator.username }}
               </p>
-              <p>箱の数：{{ calcCartResponseItem.carts.length }}</p>
+              <p>{{ ct('boxCountLabel') }}{{ calcCartResponseItem.carts.length }}</p>
             </div>
             <div>
               <div>
@@ -515,7 +522,7 @@ useSeoMeta({
                       <div
                         class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
                       >
-                        数量：{{ item.quantity }}
+                        {{ ct('quantityLabel') }}{{ item.quantity }}
                       </div>
                     </div>
 
@@ -530,19 +537,19 @@ useSeoMeta({
                 class="grid grid-cols-5 gap-y-4 border-y border-main py-6 text-[12px] tracking-[1.4px] md:grid-cols-2 md:text-[14px]"
               >
                 <div class="col-span-3 md:col-span-1">
-                  商品合計（税込み）
+                  {{ ct('itemTotalPriceLabel') }}
                 </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.subtotal) }}
                 </div>
                 <div class="col-span-3 md:col-span-1">
-                  クーポン利用
+                  {{ ct('applyCouponLabel') }}
                 </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.discount) }}
                 </div>
                 <div class="col-span-3 md:col-span-1">
-                  送料（合計）
+                  {{ ct('shippingFeeLabel') }}
                 </div>
                 <div class="col-span-2 text-right md:col-span-1">
                   {{ priceFormatter(calcCartResponseItem.shippingFee) }}
@@ -552,7 +559,7 @@ useSeoMeta({
               <div
                 class="mt-6 grid grid-cols-2 text-[14px] font-bold tracking-[1.4px]"
               >
-                <div>合計（税込み）</div>
+                <div>{{ ct('totalPriceLabel') }}</div>
                 <div class="text-right">
                   {{ priceFormatter(calcCartResponseItem.total) }}
                 </div>
@@ -569,7 +576,7 @@ useSeoMeta({
             @click="handleClickPreviousStepButton"
           >
             <the-left-arrow-icon class="h-4 w-4" />
-            前のページへ戻る
+            {{ ct('backToPreviousPageButtonText') }}
           </button>
           <button
             class="w-full bg-main p-[14px] text-[16px] text-white md:order-1 md:w-[240px]"
@@ -579,7 +586,7 @@ useSeoMeta({
             "
             @click="handleClickNextStepButton"
           >
-            支払い画面へ
+            {{ ct('proceedToPaymentButtonText') }}
           </button>
         </div>
       </template>
