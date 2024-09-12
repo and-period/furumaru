@@ -23,7 +23,14 @@
       "numberOfCartsText": "Current number of carts",
       "shippingFeeAnnotation": "Shipping fees apply per shopping cart. For more details, please check",
       "shippingFeeAnnotationLinkText": "here",
-      "shippingFeeAnnotationCheckText": ""
+      "shippingFeeAnnotationCheckText": "",
+      "cartTitle": "Shopping Cart",
+      "marcheLabel": "marché",
+      "boxTypeLabel": "Box Type",
+      "boxSizeLabel": "Box Size",
+      "boxUsedText": "Used",
+      "quantityLabel": "Quantity",
+      "deleteButtonText": "delete"
     },
     "footer": {
       "qaLinkText": "Q and A",

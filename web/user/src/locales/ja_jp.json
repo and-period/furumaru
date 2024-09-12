@@ -23,7 +23,14 @@
       "numberOfCartsText": "現在のカゴの数",
       "shippingFeeAnnotation": "買い物カゴごとに送料がかかります。詳しくは",
       "shippingFeeAnnotationLinkText": "こちら",
-      "shippingFeeAnnotationCheckText": "からご確認ください。"
+      "shippingFeeAnnotationCheckText": "からご確認ください。",
+      "cartTitle": "買い物カゴ",
+      "marcheLabel": "マルシェ",
+      "boxTypeLabel": "箱タイプ",
+      "boxSizeLabel": "箱サイズ",
+      "boxUsedText": "使用",
+      "quantityLabel": "数量",
+      "deleteButtonText": "削除"
     },
     "footer": {
       "qaLinkText": "よくあるご質問",

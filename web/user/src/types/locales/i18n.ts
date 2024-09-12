@@ -29,6 +29,14 @@ export interface I18n {
       shippingFeeAnnotation: string
       shippingFeeAnnotationLinkText: string
       shippingFeeAnnotationCheckText: string
+
+      cartTitle: string
+      marcheLabel: string
+      boxTypeLabel: string
+      boxSizeLabel: string
+      boxUsedText: string
+      quantityLabel: string
+      deleteButtonText: string
     }
 
     footer: {
@@ -127,6 +135,7 @@ export interface I18n {
       lineAddFriendImageAlt: string
       contactNotice: string
     }
+
   }
 
   purchase: {
