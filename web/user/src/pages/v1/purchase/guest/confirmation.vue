@@ -31,7 +31,6 @@ const ct = (str: keyof I18n['purchase']['confirmation']) => {
   return i18n.t(`purchase.confirmation.${str}`)
 }
 
-
 /**
  * コーディネーターID（クエリパラメータから算出）
  */

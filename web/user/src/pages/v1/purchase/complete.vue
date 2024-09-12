@@ -151,7 +151,7 @@ useSeoMeta({
           <p
             class="text-center text-[14px] font-medium tracking-[2px] md:text-xl"
           >
-          {{ orderIDMessage }}
+            {{ orderIDMessage }}
           </p>
           <div
             class="flex flex-col items-center justify-center px-[15px] text-[14px] font-medium md:px-0 md:text-[16px]"
@@ -173,7 +173,7 @@ useSeoMeta({
               class="w-[400px] bg-main py-2 tracking-[1.6px] text-white"
               @click="handleBackTopPageButton"
             >
-            {{ ct('topLinkText') }}
+              {{ ct('topLinkText') }}
             </button>
           </div>
         </div>
