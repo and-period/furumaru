@@ -279,8 +279,15 @@
       "paymentMethodAUPayText": "QR決済（au PAY）"
     },
     "complete": {
-      "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",
-      "completeMessage": "ご登録いただいたメールアドレスに確認メールをお送りしましたのでご確認ください。\nメールが届かない場合は上記の注文番号をお書き添えの上、こちらからお問い合わせください。\n注文の詳細は、アカウントページの注文履歴からもご確認いただけます。"
+      "thanksMessageFirst": "ご注文ありがとうございます！",
+      "thanksMessageSecond": "ご購入手続きが完了しました。",
+      "orderIDMessage": "お客様の注文IDは「{orderId}」です",
+      "completeMessageFirst": "ご登録いただいたメールアドレスに確認メールをお送りしましたのでご確認ください。",
+      "completeMessageSecond":"メールが届かない場合は上記の注文番号をお書き添えの上、こちらからお問い合わせください。",
+      "completeMessageThird":"注文の詳細は、アカウントページの注文履歴からもご確認いただけます。",
+      "topLinkText": "TOPページへ",
+      "cancelMessage": "この注文はキャンセルされました。",
+      "cartLinkText": "買い物カゴ画面に戻る"
     }
   },
   "items": {

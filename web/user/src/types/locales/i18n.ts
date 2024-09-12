@@ -292,8 +292,15 @@ export interface I18n {
       paymentMethodAUPayText: string
     }
     complete: {
-      thanksMessage: string
-      completeMessage: string
+      thanksMessageFirst: string
+      thanksMessageSecond: string
+      orderIDMessage: string
+      completeMessageFirst: string
+      completeMessageSecond: string
+      completeMessageThird: string
+      topLinkText: string
+      cancellMessage: string
+      cartLinkText: string
     }
   }
 
