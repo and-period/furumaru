@@ -78,14 +78,14 @@ func (s *service) CalcCart(ctx context.Context, in *store.CalcCartInput) (*entit
 	if err != nil {
 		return nil, nil, internalError(err)
 	}
-	params := &entity.NewOrderPaymentSummaryParams{
+	params := &entity.NewProductOrderPaymentSummaryParams{
 		PrefectureCode: in.PrefectureCode,
 		Baskets:        baskets,
 		Products:       products,
 		Shipping:       shipping,
 		Promotion:      promotion,
 	}
-	summary, err := entity.NewOrderPaymentSummary(params)
+	summary, err := entity.NewProductOrderPaymentSummary(params)
 	if err != nil {
 		return nil, nil, internalError(err)
 	}

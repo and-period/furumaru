@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  CheckoutExperienceRequest,
   CheckoutProductRequest,
   CheckoutResponse,
   CheckoutStateResponse,
@@ -24,6 +25,8 @@ import type {
   GuestCheckoutStateResponse,
 } from '../models/index';
 import {
+    CheckoutExperienceRequestFromJSON,
+    CheckoutExperienceRequestToJSON,
     CheckoutProductRequestFromJSON,
     CheckoutProductRequestToJSON,
     CheckoutResponseFromJSON,
@@ -44,12 +47,22 @@ export interface V1CheckoutProductRequest {
     body: CheckoutProductRequest;
 }
 
+export interface V1CheckoutsExperiencesExperienceIdPostRequest {
+    experienceId: string;
+    body: CheckoutExperienceRequest;
+}
+
 export interface V1GetCheckoutStateRequest {
     transactionId: string;
 }
 
 export interface V1GetGuestCheckoutStateRequest {
     transactionId: string;
+}
+
+export interface V1GuestCheckoutExperienceRequest {
+    experienceId: string;
+    body: GuestCheckoutProductRequest;
 }
 
 export interface V1GuestCheckoutProductRequest {
@@ -102,6 +115,57 @@ export class CheckoutApi extends runtime.BaseAPI {
      */
     async v1CheckoutProduct(requestParameters: V1CheckoutProductRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
         const response = await this.v1CheckoutProductRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * 体験購入
+     */
+    async v1CheckoutsExperiencesExperienceIdPostRaw(requestParameters: V1CheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CheckoutResponse>> {
+        if (requestParameters['experienceId'] == null) {
+            throw new runtime.RequiredError(
+                'experienceId',
+                'Required parameter "experienceId" was null or undefined when calling v1CheckoutsExperiencesExperienceIdPost().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1CheckoutsExperiencesExperienceIdPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/v1/checkouts/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CheckoutResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * 体験購入
+     */
+    async v1CheckoutsExperiencesExperienceIdPost(requestParameters: V1CheckoutsExperiencesExperienceIdPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CheckoutResponse> {
+        const response = await this.v1CheckoutsExperiencesExperienceIdPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -176,6 +240,49 @@ export class CheckoutApi extends runtime.BaseAPI {
      */
     async v1GetGuestCheckoutState(requestParameters: V1GetGuestCheckoutStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutStateResponse> {
         const response = await this.v1GetGuestCheckoutStateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * ゲスト体験購入
+     */
+    async v1GuestCheckoutExperienceRaw(requestParameters: V1GuestCheckoutExperienceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GuestCheckoutResponse>> {
+        if (requestParameters['experienceId'] == null) {
+            throw new runtime.RequiredError(
+                'experienceId',
+                'Required parameter "experienceId" was null or undefined when calling v1GuestCheckoutExperience().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling v1GuestCheckoutExperience().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/v1/guests/checkouts/experiences/{experienceId}`.replace(`{${"experienceId"}}`, encodeURIComponent(String(requestParameters['experienceId']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GuestCheckoutResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * ゲスト体験購入
+     */
+    async v1GuestCheckoutExperience(requestParameters: V1GuestCheckoutExperienceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GuestCheckoutResponse> {
+        const response = await this.v1GuestCheckoutExperienceRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

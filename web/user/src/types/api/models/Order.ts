@@ -31,6 +31,12 @@ import {
     AddressFromJSONTyped,
     AddressToJSON,
 } from './Address';
+import type { OrderExperience } from './OrderExperience';
+import {
+    OrderExperienceFromJSON,
+    OrderExperienceFromJSONTyped,
+    OrderExperienceToJSON,
+} from './OrderExperience';
 import type { OrderFulfillment } from './OrderFulfillment';
 import {
     OrderFulfillmentFromJSON,
@@ -118,6 +124,12 @@ export interface Order {
     items: Array<OrderItem>;
     /**
      * 
+     * @type {OrderExperience}
+     * @memberof Order
+     */
+    experience?: OrderExperience;
+    /**
+     * 
      * @type {Address}
      * @memberof Order
      */
@@ -169,6 +181,7 @@ export function OrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ord
         'refund': OrderRefundFromJSON(json['refund']),
         'fulfillments': ((json['fulfillments'] as Array<any>).map(OrderFulfillmentFromJSON)),
         'items': ((json['items'] as Array<any>).map(OrderItemFromJSON)),
+        'experience': json['experience'] == null ? undefined : OrderExperienceFromJSON(json['experience']),
         'billingAddress': AddressFromJSON(json['billingAddress']),
         'shippingAddress': AddressFromJSON(json['shippingAddress']),
     };
@@ -189,6 +202,7 @@ export function OrderToJSON(value?: Order | null): any {
         'refund': OrderRefundToJSON(value['refund']),
         'fulfillments': ((value['fulfillments'] as Array<any>).map(OrderFulfillmentToJSON)),
         'items': ((value['items'] as Array<any>).map(OrderItemToJSON)),
+        'experience': OrderExperienceToJSON(value['experience']),
         'billingAddress': AddressToJSON(value['billingAddress']),
         'shippingAddress': AddressToJSON(value['shippingAddress']),
     };

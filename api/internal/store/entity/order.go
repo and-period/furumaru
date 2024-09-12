@@ -37,6 +37,7 @@ type Order struct {
 	OrderPayment      `gorm:"-"`
 	OrderFulfillments `gorm:"-"`
 	OrderItems        `gorm:"-"`
+	OrderExperience   `gorm:"-"`
 	ID                string         `gorm:"primaryKey;<-:create"` // 注文履歴ID
 	UserID            string         `gorm:""`                     // ユーザーID
 	SessionID         string         `gorm:""`                     // 注文時セッションID
@@ -88,12 +89,31 @@ type NewProductOrderParams struct {
 	Promotion         *Promotion
 }
 
+type NewExperienceOrderParams struct {
+	OrderID               string
+	SessionID             string
+	CoordinatorID         string
+	Customer              *entity.User
+	BillingAddress        *entity.Address
+	Experience            *Experience
+	PaymentMethodType     PaymentMethodType
+	Promotion             *Promotion
+	AdultCount            int64
+	JuniorHighSchoolCount int64
+	ElementarySchoolCount int64
+	PreschoolCount        int64
+	SeniorCount           int64
+	Transportation        string
+	RequetsedDate         string
+	RequetsedTime         string
+}
+
 func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 	var promotionID string
 	if params.Promotion != nil {
 		promotionID = params.Promotion.ID
 	}
-	pparams := &NewOrderPaymentParams{
+	pparams := &NewProductOrderPaymentParams{
 		OrderID:    params.OrderID,
 		Address:    params.BillingAddress,
 		MethodType: params.PaymentMethodType,
@@ -102,7 +122,7 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 		Shipping:   params.Shipping,
 		Promotion:  params.Promotion,
 	}
-	payment, err := NewOrderPayment(pparams)
+	payment, err := NewProductOrderPayment(pparams)
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +151,64 @@ func NewProductOrder(params *NewProductOrderParams) (*Order, error) {
 	}, nil
 }
 
-func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, items OrderItems) {
-	o.OrderPayment = *payment
+func NewExperienceOrder(params *NewExperienceOrderParams) (*Order, error) {
+	var promotionID string
+	if params.Promotion != nil {
+		promotionID = params.Promotion.ID
+	}
+	pparams := &NewExperienceOrderPaymentParams{
+		OrderID:               params.OrderID,
+		MethodType:            params.PaymentMethodType,
+		Address:               params.BillingAddress,
+		Experience:            params.Experience,
+		Promotion:             params.Promotion,
+		AdultCount:            params.AdultCount,
+		JuniorHighSchoolCount: params.JuniorHighSchoolCount,
+		ElementarySchoolCount: params.ElementarySchoolCount,
+		PreschoolCount:        params.PreschoolCount,
+		SeniorCount:           params.SeniorCount,
+	}
+	payment, err := NewExperienceOrderPayment(pparams)
+	if err != nil {
+		return nil, err
+	}
+	eparams := &NewOrderExperienceParams{
+		OrderID:               params.OrderID,
+		Experience:            params.Experience,
+		AdultCount:            params.AdultCount,
+		JuniorHighSchoolCount: params.JuniorHighSchoolCount,
+		ElementarySchoolCount: params.ElementarySchoolCount,
+		PreschoolCount:        params.PreschoolCount,
+		SeniorCount:           params.SeniorCount,
+		Transportation:        params.Transportation,
+		RequestedDate:         params.RequetsedDate,
+		RequestedTime:         params.RequetsedTime,
+	}
+	experience, err := NewOrderExperience(eparams)
+	if err != nil {
+		return nil, err
+	}
+	return &Order{
+		OrderPayment:    *payment,
+		OrderExperience: *experience,
+		ID:              params.OrderID,
+		SessionID:       params.SessionID,
+		UserID:          params.Customer.ID,
+		CoordinatorID:   params.CoordinatorID,
+		PromotionID:     promotionID,
+		Type:            OrderTypeExperience,
+		Status:          OrderStatusUnpaid, // 初期ステータスは「支払い待ち」で登録
+		ShippingMessage: "",
+	}, nil
+}
+
+func (o *Order) Fill(payment *OrderPayment, fulfillments OrderFulfillments, items OrderItems, experience *OrderExperience) {
+	if payment != nil {
+		o.OrderPayment = *payment
+	}
+	if experience != nil {
+		o.OrderExperience = *experience
+	}
 	o.OrderFulfillments = fulfillments
 	o.OrderItems = items
 }
@@ -273,13 +349,33 @@ func (os Orders) ProductRevisionIDs() []int64 {
 	return res.Slice()
 }
 
-func (os Orders) Fill(payments map[string]*OrderPayment, fulfillments map[string]OrderFulfillments, items map[string]OrderItems) {
+func (os Orders) ExperienceRevisionIDs() []int64 {
+	res := set.NewEmpty[int64](len(os))
+	for i := range os {
+		if os[i].OrderExperience.ExperienceRevisionID == 0 {
+			continue
+		}
+		res.Add(os[i].ExperienceRevisionID)
+	}
+	return res.Slice()
+}
+
+func (os Orders) Fill(
+	payments map[string]*OrderPayment,
+	fulfillments map[string]OrderFulfillments,
+	items map[string]OrderItems,
+	experiences map[string]*OrderExperience,
+) {
 	for _, o := range os {
 		payment, ok := payments[o.ID]
 		if !ok {
 			payment = &OrderPayment{}
 		}
-		o.Fill(payment, fulfillments[o.ID], items[o.ID])
+		experience, ok := experiences[o.ID]
+		if !ok {
+			experience = &OrderExperience{}
+		}
+		o.Fill(payment, fulfillments[o.ID], items[o.ID], experience)
 	}
 }
 

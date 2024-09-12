@@ -110,14 +110,6 @@ func (c *client) Create(ctx context.Context, params *komoju.CreateSessionParams)
 			ExternalOrderNumber: params.OrderID,
 			Name:                params.Customer.Name,
 			NameKana:            params.Customer.NameKana,
-			ShippingAddress: &createSessionAddress{
-				ZipCode:        params.ShippingAddress.ZipCode,
-				Country:        defaultCountry,
-				State:          params.ShippingAddress.Prefecture,
-				City:           params.ShippingAddress.City,
-				StreetAddress1: params.ShippingAddress.AddressLine1,
-				StreetAddress2: params.ShippingAddress.AddressLine2,
-			},
 			BillingAddress: &createSessionAddress{
 				ZipCode:        params.BillingAddress.ZipCode,
 				Country:        defaultCountry,
@@ -128,6 +120,16 @@ func (c *client) Create(ctx context.Context, params *komoju.CreateSessionParams)
 			},
 			Capture: captureMode,
 		},
+	}
+	if params.ShippingAddress != nil {
+		body.PaymentData.ShippingAddress = &createSessionAddress{
+			ZipCode:        params.ShippingAddress.ZipCode,
+			Country:        defaultCountry,
+			State:          params.ShippingAddress.Prefecture,
+			City:           params.ShippingAddress.City,
+			StreetAddress1: params.ShippingAddress.AddressLine1,
+			StreetAddress2: params.ShippingAddress.AddressLine2,
+		}
 	}
 	req := &komoju.APIParams{
 		Host:   c.host,

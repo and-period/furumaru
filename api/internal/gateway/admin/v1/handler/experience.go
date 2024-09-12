@@ -95,6 +95,7 @@ func (h *handler) ListExperiences(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, res)
 			return
 		}
+		in.CoordinatorID = getAdminID(ctx)
 	}
 	experiences, total, err := h.store.ListExperiences(ctx, in)
 	if err != nil {
@@ -372,6 +373,20 @@ func (h *handler) multiGetExperiences(ctx context.Context, experienceIDs []strin
 		ExperienceIDs: experienceIDs,
 	}
 	experiences, err := h.store.MultiGetExperiences(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return service.NewExperiences(experiences), nil
+}
+
+func (h *handler) multiGetExperiencesByRevision(ctx context.Context, revisionIDs []int64) (service.Experiences, error) {
+	if len(revisionIDs) == 0 {
+		return service.Experiences{}, nil
+	}
+	in := &store.MultiGetExperiencesByRevisionInput{
+		ExperienceRevisionIDs: revisionIDs,
+	}
+	experiences, err := h.store.MultiGetExperiencesByRevision(ctx, in)
 	if err != nil {
 		return nil, err
 	}

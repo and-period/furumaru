@@ -185,9 +185,15 @@ type checkoutDetailParams struct {
 func (s *service) checkout(ctx context.Context, params *checkoutParams) (string, error) {
 	switch params.payload.Type {
 	case entity.OrderTypeProduct:
+		if err := s.validator.Struct(params.payload.CheckoutProductDetail); err != nil {
+			return "", internalError(err)
+		}
 		return s.checkoutProduct(ctx, params)
 	case entity.OrderTypeExperience:
-		return "", fmt.Errorf("service: not implemented yet: %w", exception.ErrNotImplemented)
+		if err := s.validator.Struct(params.payload.CheckoutExperienceDetail); err != nil {
+			return "", internalError(err)
+		}
+		return s.checkoutExperience(ctx, params)
 	default:
 		return "", fmt.Errorf("service: invalid order type: %w", exception.ErrInvalidArgument)
 	}
@@ -250,7 +256,11 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		promotion, err = s.db.Promotion.GetByCode(ectx, params.payload.PromotionCode)
 		return
 	})
-	if err := eg.Wait(); err != nil {
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return "", fmt.Errorf("service: not found: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
 		return "", internalError(err)
 	}
 	// プロモーションの有効性検証
@@ -374,6 +384,137 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		defer s.waitGroup.Done()
 		s.decreaseProductInventories(context.Background(), order.OrderItems)
 	}()
+	return pay.RedirectURL, nil
+}
+
+func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams) (string, error) {
+	var (
+		customer       *uentity.User
+		billingAddress *uentity.Address
+		experience     *entity.Experience
+		promotion      *entity.Promotion
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	// ユーザーの取得
+	eg.Go(func() (err error) {
+		in := &user.GetUserInput{
+			UserID: params.payload.UserID,
+		}
+		customer, err = s.user.GetUser(ectx, in)
+		return
+	})
+	// 請求先住所の取得
+	eg.Go(func() (err error) {
+		in := &user.GetAddressInput{
+			UserID:    params.payload.UserID,
+			AddressID: params.payload.BillingAddressID,
+		}
+		billingAddress, err = s.user.GetAddress(ectx, in)
+		return
+	})
+	// 体験の取得
+	eg.Go(func() (err error) {
+		experience, err = s.db.Experience.Get(ectx, params.payload.ExperienceID)
+		return
+	})
+	// プロモーションの取得
+	eg.Go(func() (err error) {
+		if params.payload.PromotionCode == "" {
+			return
+		}
+		promotion, err = s.db.Promotion.GetByCode(ectx, params.payload.PromotionCode)
+		return
+	})
+	err := eg.Wait()
+	if errors.Is(err, exception.ErrNotFound) {
+		return "", fmt.Errorf("service: not found: %w", exception.ErrInvalidArgument)
+	}
+	if err != nil {
+		return "", internalError(err)
+	}
+	// プロモーションの有効性検証
+	if params.payload.PromotionCode != "" && !promotion.IsEnabled() {
+		s.logger.Warn("Failed to disable promotion",
+			zap.String("userId", params.payload.UserID), zap.String("code", params.payload.PromotionCode))
+		return "", fmt.Errorf("service: disable promotion: %w", exception.ErrFailedPrecondition)
+	}
+	// 体験が販売中かの確認
+	if experience.Status != entity.ExperienceStatusAccepting {
+		s.logger.Warn("Failed to checkout because the experience is not accepting",
+			zap.String("userId", params.payload.UserID), zap.String("experienceId", params.payload.ExperienceID))
+		return "", fmt.Errorf("service: the experience is not accepting: %w", exception.ErrFailedPrecondition)
+	}
+	// 注文インスタンスの生成
+	oparams := &entity.NewExperienceOrderParams{
+		OrderID:               params.payload.RequestID,
+		SessionID:             params.payload.SessionID,
+		CoordinatorID:         experience.CoordinatorID,
+		Customer:              customer,
+		BillingAddress:        billingAddress,
+		Experience:            experience,
+		PaymentMethodType:     params.paymentMethodType,
+		Promotion:             promotion,
+		AdultCount:            params.payload.CheckoutExperienceDetail.AdultCount,
+		JuniorHighSchoolCount: params.payload.CheckoutExperienceDetail.JuniorHighSchoolCount,
+		ElementarySchoolCount: params.payload.CheckoutExperienceDetail.ElementarySchoolCount,
+		PreschoolCount:        params.payload.CheckoutExperienceDetail.PreschoolCount,
+		SeniorCount:           params.payload.CheckoutExperienceDetail.SeniorCount,
+		Transportation:        params.payload.CheckoutExperienceDetail.Transportation,
+		RequetsedDate:         params.payload.CheckoutExperienceDetail.RequestedDate,
+		RequetsedTime:         params.payload.CheckoutExperienceDetail.RequestedTime,
+	}
+	order, err := entity.NewExperienceOrder(oparams)
+	if err != nil {
+		return "", internalError(err)
+	}
+	// チェックサム
+	if params.payload.Total != order.OrderPayment.Total {
+		s.logger.Warn("Failed to checksum before checkout",
+			zap.String("userId", params.payload.UserID), zap.String("sessionId", params.payload.SessionID),
+			zap.String("coordinatorId", params.payload.CoordinatorID), zap.String("experienceId", params.payload.ExperienceID),
+			zap.Int64("payload.total", params.payload.Total), zap.Any("payment", order.OrderPayment))
+		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
+	}
+	// 決済トランザクションの発行
+	sparams := &komoju.CreateSessionParams{
+		OrderID:      order.ID,
+		Amount:       order.OrderPayment.Total,
+		CallbackURL:  params.payload.CallbackURL,
+		PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
+		Customer: &komoju.CreateSessionCustomer{
+			ID:    customer.ID,
+			Name:  billingAddress.Name(),
+			Email: customer.Email(),
+		},
+		BillingAddress: &komoju.CreateSessionAddress{
+			ZipCode:      billingAddress.PostalCode,
+			Prefecture:   billingAddress.Prefecture,
+			City:         billingAddress.City,
+			AddressLine1: billingAddress.AddressLine1,
+			AddressLine2: billingAddress.AddressLine2,
+		},
+	}
+	session, err := s.komoju.Session.Create(ctx, sparams)
+	if err != nil {
+		return "", internalError(err)
+	}
+	order.OrderPayment.SetTransactionID(session.ID, s.now())
+	// 注文履歴レコードの登録
+	if err := s.db.Order.Create(ctx, order); err != nil {
+		return "", internalError(err)
+	}
+	// 決済依頼処理
+	cparams := &checkoutDetailParams{
+		customer: customer,
+	}
+	pay, err := params.payFn(ctx, session.ID, cparams)
+	if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
+		// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
+		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), nil
+	}
+	if err != nil {
+		return "", internalError(err)
+	}
 	return pay.RedirectURL, nil
 }
 

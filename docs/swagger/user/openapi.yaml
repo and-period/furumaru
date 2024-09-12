@@ -95,6 +95,8 @@ paths:
     $ref: './paths/v1/checkouts/products/index.yaml'
   /v1/checkouts/{transactionId}:
     $ref: './paths/v1/checkouts/_transactionId/index.yaml'
+  /v1/checkouts/experiences/{experienceId}:
+    $ref: './paths/v1/checkouts/experiences/_experienceId/index.yaml'
   # Contact
   /v1/contacts:
     $ref: './paths/v1/contacts/index.yaml'
@@ -113,8 +115,12 @@ paths:
     $ref: './paths/v1/guests/checkouts/products/index.yaml'
   /v1/guests/checkouts/{transactionId}:
     $ref: './paths/v1/guests/checkouts/_transactionId/index.yaml'
+  /v1/guests/checkouts/experiences/{experienceId}:
+    $ref: './paths/v1/guests/checkouts/experiences/_experienceId/index.yaml'
   /v1/guests/schedules/{scheduleId}/comments:
     $ref: './paths/v1/guests/schedules/_scheduleId/comments/index.yaml'
+  /v1/guests/videos/{videoId}/comments:
+    $ref: './paths/v1/guests/videos/_videoId/comments/index.yaml'
   # Order
   /v1/orders:
     $ref: './paths/v1/orders/index.yaml'
@@ -296,10 +302,14 @@ components:
       $ref: './components/schemas/v1/auth-user.request.yaml#/updateAuthUserThumbnailRequest'
     v1AddCartItemRequest:
       $ref: './components/schemas/v1/cart.request.yaml#/addCartItemRequest'
+    v1CheckoutExperienceRequest:
+      $ref: './components/schemas/v1/checkout.request.yaml#/checkoutExperienceRequest'
     v1CheckoutProductRequest:
       $ref: './components/schemas/v1/checkout.request.yaml#/checkoutProductRequest'
     v1CreateContactRequest:
       $ref: './components/schemas/v1/contact.request.yaml#/createContactRequest'
+    v1GuestCheckoutExperienceRequest:
+      $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutExperienceRequest'
     v1GuestCheckoutProductRequest:
       $ref: './components/schemas/v1/guest-checkout.request.yaml#/guestCheckoutProductRequest'
     v1CreateGuestLiveCommentRequest:

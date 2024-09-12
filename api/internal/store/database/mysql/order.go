@@ -18,6 +18,7 @@ const (
 	orderFulfillmentTable = "order_fulfillments"
 	orderItemTable        = "order_items"
 	orderPaymentTable     = "order_payments"
+	orderExperienceTable  = "order_experiences"
 )
 
 type order struct {
@@ -161,12 +162,6 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 		order.ManagementID = total + 1
 		order.CreatedAt, order.UpdatedAt = now, now
 		order.OrderPayment.CreatedAt, order.OrderPayment.UpdatedAt = now, now
-		for _, f := range order.OrderFulfillments {
-			f.CreatedAt, f.UpdatedAt = now, now
-		}
-		for _, i := range order.OrderItems {
-			i.CreatedAt, i.UpdatedAt = now, now
-		}
 
 		if err := tx.WithContext(ctx).Table(orderTable).Create(&order).Error; err != nil {
 			return err
@@ -174,10 +169,31 @@ func (o *order) Create(ctx context.Context, order *entity.Order) error {
 		if err := tx.WithContext(ctx).Table(orderPaymentTable).Create(&order.OrderPayment).Error; err != nil {
 			return err
 		}
-		if err := tx.WithContext(ctx).Table(orderFulfillmentTable).Create(&order.OrderFulfillments).Error; err != nil {
-			return err
+
+		switch order.Type {
+		case entity.OrderTypeProduct:
+			for _, f := range order.OrderFulfillments {
+				f.CreatedAt, f.UpdatedAt = now, now
+			}
+			for _, i := range order.OrderItems {
+				i.CreatedAt, i.UpdatedAt = now, now
+			}
+			if err := tx.WithContext(ctx).Table(orderFulfillmentTable).Create(&order.OrderFulfillments).Error; err != nil {
+				return err
+			}
+			if err := tx.WithContext(ctx).Table(orderItemTable).Create(&order.OrderItems).Error; err != nil {
+				return err
+			}
+		case entity.OrderTypeExperience:
+			order.OrderExperience.CreatedAt, order.OrderExperience.UpdatedAt = now, now
+			if err := order.OrderExperience.FillJSON(); err != nil {
+				return fmt.Errorf("mysql: failed to fill order experience: %s: %w", err, database.ErrInvalidArgument)
+			}
+			if err := tx.WithContext(ctx).Table(orderExperienceTable).Create(&order.OrderExperience).Error; err != nil {
+				return err
+			}
 		}
-		return tx.WithContext(ctx).Table(orderItemTable).Create(&order.OrderItems).Error
+		return nil
 	})
 	return dbError(err)
 }
@@ -397,6 +413,7 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 		payments     entity.OrderPayments
 		fulfillments entity.OrderFulfillments
 		items        entity.OrderItems
+		experiences  entity.OrderExperiences
 	)
 
 	ids := entity.Orders(orders).IDs()
@@ -417,11 +434,21 @@ func (o *order) fill(ctx context.Context, tx *gorm.DB, orders ...*entity.Order) 
 		stmt := o.db.Statement(ectx, tx, orderItemTable).Where("order_id IN (?)", ids)
 		return stmt.Find(&items).Error
 	})
+	eg.Go(func() error {
+		stmt := o.db.Statement(ectx, tx, orderExperienceTable).Where("order_id IN (?)", ids)
+		if err := stmt.Find(&experiences).Error; err != nil {
+			return err
+		}
+		if err := experiences.Fill(); err != nil {
+			return fmt.Errorf("mysql: failed to unmarshal order experiences: %w", err)
+		}
+		return nil
+	})
 	if err := eg.Wait(); err != nil {
 		return err
 	}
 
-	entity.Orders(orders).Fill(payments.MapByOrderID(), fulfillments.GroupByOrderID(), items.GroupByOrderID())
+	entity.Orders(orders).Fill(payments.MapByOrderID(), fulfillments.GroupByOrderID(), items.GroupByOrderID(), experiences.MapByOrderID())
 	return nil
 }
 
