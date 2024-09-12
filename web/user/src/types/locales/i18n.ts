@@ -100,6 +100,11 @@ export interface I18n {
       lineAddFriendImageUrl: string
       lineAddFriendImageAlt: string
       lineCouponText: string
+      deepJapanText: string
+      localVideoMediaText: string
+      discoverExperienceLinkText: string
+      discoverProductLinkText: string
+      discoverText: string
       marcheListSubTitle: string
       liveStreamingText: string
       liveUpcomingText: string

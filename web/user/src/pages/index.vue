@@ -117,8 +117,8 @@ useSeoMeta({
         <div
           class="text-white md:text-[48px] text-[28px] font-bold w-full text-center tracking-wider md:grow-0 grow flex flex-col justify-center"
         >
-          <p>&#035;Deep Japan 体験型</p>
-          <p>ローカル映像メディア</p>
+          <p>&#035;{{ tt('deepJapanText') }}</p>
+          <p>{{ tt('localVideoMediaText') }}</p>
         </div>
 
         <div
@@ -128,13 +128,13 @@ useSeoMeta({
             to="/items"
             class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
           >
-            <span class="md:text-[24px] text-[18px]">商品</span>と出会う
+            <span class="md:text-[24px] text-[18px]">{{ tt('discoverProductLinkText') }}</span>{{ tt('discoverText') }}
           </nuxt-link>
           <nuxt-link
             to="/marches"
             class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
           >
-            <span class="md:text-[24px] text-[18px]">体験</span>と出会う
+            <span class="md:text-[24px] text-[18px]">{{ tt('discoverExperienceLinkText') }}</span>{{ tt('discoverText') }}
           </nuxt-link>
         </div>
       </div>
