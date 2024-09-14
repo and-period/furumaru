@@ -68,21 +68,24 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 	if err != nil {
 		return internalError(err)
 	}
-	var (
-		emailTemplateID  entity.EmailTemplateID
-		reportTemplateID entity.ReportTemplateID
-	)
+	var payload *entity.WorkerPayload
 	switch order.Type {
 	case sentity.OrderTypeProduct:
-		emailTemplateID = entity.EmailTemplateIDUserOrderAuthorized
-		reportTemplateID = entity.ReportTemplateIDOrderAuthorized
+		payload, err = s.newOrderProductAuthorized(ctx, order)
 	case sentity.OrderTypeExperience:
-		s.logger.Warn("Unsupported experience order type", zap.String("orderId", order.ID))
-		return nil
+		payload, err = s.newOrderExperienceAuthorized(ctx, order)
 	default:
 		s.logger.Warn("Unknown order type", zap.String("orderId", order.ID))
 		return nil
 	}
+	if err != nil {
+		return err
+	}
+	err = s.sendMessage(ctx, payload)
+	return internalError(err)
+}
+
+func (s *service) newOrderProductAuthorized(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
 	var (
 		coordinator          *uentity.Coordinator
 		products             sentity.Products
@@ -116,34 +119,94 @@ func (s *service) NotifyOrderAuthorized(ctx context.Context, in *messenger.Notif
 		return
 	})
 	if err := eg.Wait(); err != nil {
-		return internalError(err)
+		return nil, internalError(err)
 	}
 	builder := entity.NewTemplateDataBuilder().
 		OrderPayment(&order.OrderPayment).
 		OrderFulfillment(order.OrderFulfillments, fulfillmentAddresses.MapByRevision()).
 		OrderItems(order.OrderItems, products.MapByRevision())
 	mail := &entity.MailConfig{
-		TemplateID:    emailTemplateID,
+		TemplateID:    entity.EmailTemplateIDUserOrderProductAuthorized,
 		Substitutions: builder.Build(),
 	}
 	maker := entity.NewAdminURLMaker(s.adminWebURL())
 	report := &entity.ReportConfig{
-		TemplateID: reportTemplateID,
+		TemplateID: entity.ReportTemplateIDOrderProductAuthorized,
 		Overview:   paymentAddress.Name(),
 		Author:     coordinator.Name(),
 		Link:       maker.Order(order.ID),
 		ReceivedAt: order.PaidAt,
 	}
-	payload := &entity.WorkerPayload{
+	return &entity.WorkerPayload{
 		QueueID:   uuid.Base58Encode(uuid.New()),
 		EventType: entity.EventTypeOrderAuthorized,
 		UserType:  entity.UserTypeUser,
 		UserIDs:   []string{order.UserID},
 		Email:     mail,
 		Report:    report,
+	}, nil
+}
+
+func (s *service) newOrderExperienceAuthorized(ctx context.Context, order *sentity.Order) (*entity.WorkerPayload, error) {
+	var (
+		coordinator    *uentity.Coordinator
+		experience     *sentity.Experience
+		paymentAddress *uentity.Address
+	)
+	eg, ectx := errgroup.WithContext(ctx)
+	eg.Go(func() (err error) {
+		in := &user.GetCoordinatorInput{
+			CoordinatorID: order.CoordinatorID,
+			WithDeleted:   true, // 購入と同時に退会してしまった際でもメール通知はできるように
+		}
+		coordinator, err = s.user.GetCoordinator(ectx, in)
+		return
+	})
+	eg.Go(func() error {
+		experiences, err := s.multiGetExperiencesByRevision(ectx, []int64{order.ExperienceRevisionID})
+		if err != nil || len(experiences) == 0 {
+			experience = &sentity.Experience{}
+			return err
+		}
+		experience = experiences[0]
+		return nil
+	})
+	eg.Go(func() error {
+		addresses, err := s.multiGetAddressesByRevision(ectx, []int64{order.OrderPayment.AddressRevisionID})
+		if err != nil || len(addresses) == 0 {
+			paymentAddress = &uentity.Address{}
+			return err
+		}
+		paymentAddress = addresses[0]
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, internalError(err)
 	}
-	err = s.sendMessage(ctx, payload)
-	return internalError(err)
+	builder := entity.NewTemplateDataBuilder().
+		OrderPayment(&order.OrderPayment).
+		OrderBilling(paymentAddress).
+		OrderExperience(&order.OrderExperience, experience)
+	mail := &entity.MailConfig{
+		TemplateID:    entity.EmailTemplateIDUserOrderExperienceAuthorized,
+		Substitutions: builder.Build(),
+	}
+	maker := entity.NewAdminURLMaker(s.adminWebURL())
+	report := &entity.ReportConfig{
+		TemplateID: entity.ReportTemplateIDOrderExperienceAuthorized,
+		Overview:   paymentAddress.Name(),
+		Author:     coordinator.Name(),
+		Link:       maker.Order(order.ID),
+		ReceivedAt: order.PaidAt,
+	}
+	return &entity.WorkerPayload{
+		QueueID:   uuid.Base58Encode(uuid.New()),
+		EventType: entity.EventTypeOrderAuthorized,
+		UserType:  entity.UserTypeUser,
+		UserIDs:   []string{order.UserID},
+		Email:     mail,
+		Report:    report,
+	}, nil
 }
 
 // NotifyOrderShipped - 発送完了
@@ -484,6 +547,16 @@ func (s *service) multiGetProductsByRevision(ctx context.Context, revisionIDs []
 		ProductRevisionIDs: revisionIDs,
 	}
 	return s.store.MultiGetProductsByRevision(ctx, in)
+}
+
+func (s *service) multiGetExperiencesByRevision(ctx context.Context, revisionIDs []int64) (sentity.Experiences, error) {
+	if len(revisionIDs) == 0 {
+		return sentity.Experiences{}, nil
+	}
+	in := &store.MultiGetExperiencesByRevisionInput{
+		ExperienceRevisionIDs: revisionIDs,
+	}
+	return s.store.MultiGetExperiencesByRevision(ctx, in)
 }
 
 func (s *service) multiGetAddressesByRevision(ctx context.Context, revisionIDs []int64) (uentity.Addresses, error) {
