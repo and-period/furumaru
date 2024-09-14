@@ -46,6 +46,20 @@ func TestTemplateBuilder(t *testing.T) {
 			OrderID:           "order-id",
 			Quantity:          2,
 		}},
+		OrderExperience: sentity.OrderExperience{
+			OrderID:               "order-id",
+			ExperienceRevisionID:  1,
+			AdultCount:            2,
+			JuniorHighSchoolCount: 1,
+			ElementarySchoolCount: 0,
+			PreschoolCount:        0,
+			SeniorCount:           0,
+			Remarks: sentity.OrderExperienceRemarks{
+				Transportation: "電車",
+				RequestedDate:  now,
+				RequestedTime:  now,
+			},
+		},
 		ID:              "order-id",
 		UserID:          "user-id",
 		CoordinatorID:   "coordinator-id",
@@ -68,6 +82,49 @@ func TestTemplateBuilder(t *testing.T) {
 			Name:          "おいしいじゃがいも",
 			Public:        true,
 			ThumbnailURL:  "http://example.com/image.png",
+		},
+	}
+	experience := &sentity.Experience{
+		CoordinatorID: "coordinator-id",
+		ProducerID:    "producer-id",
+		TypeID:        "experience-type-id",
+		Title:         "じゃがいも収穫",
+		Description:   "じゃがいもを収穫する体験",
+		Public:        true,
+		SoldOut:       false,
+		Status:        sentity.ExperienceStatusAccepting,
+		Media: sentity.MultiExperienceMedia{{
+			URL:         "http://example.com/thumbnail.png",
+			IsThumbnail: true,
+		}},
+		RecommendedPoints: []string{
+			"じゃがいもを収穫する",
+			"じゃがいもを食べる",
+			"じゃがいもを持ち帰る",
+		},
+		PromotionVideoURL:  "http://example.com/promotion.mp4",
+		Duration:           60,
+		Direction:          "彦根駅から徒歩10分",
+		BusinessOpenTime:   "1000",
+		BusinessCloseTime:  "1800",
+		HostPostalCode:     "5220061",
+		HostPrefecture:     "滋賀県",
+		HostPrefectureCode: 25,
+		HostCity:           "彦根市",
+		HostAddressLine1:   "金亀町１−１",
+		HostAddressLine2:   "",
+		HostLongitude:      136.251739,
+		HostLatitude:       35.276833,
+		StartAt:            now.AddDate(0, -1, 0),
+		EndAt:              now.AddDate(0, 1, 0),
+		ExperienceRevision: sentity.ExperienceRevision{
+			ID:                    0,
+			ExperienceID:          "", // ignore
+			PriceAdult:            1000,
+			PriceJuniorHighSchool: 800,
+			PriceElementarySchool: 600,
+			PricePreschool:        400,
+			PriceSenior:           200,
 		},
 	}
 	addresses := map[int64]*uentity.Address{
@@ -103,8 +160,10 @@ func TestTemplateBuilder(t *testing.T) {
 			Contact("件名", "本文").
 			Live("マルシェ", "濵田 海斗", now, now).
 			OrderPayment(&order.OrderPayment).
+			OrderBilling(addresses[1]).
 			OrderFulfillment(order.OrderFulfillments, addresses).
 			OrderItems(order.OrderItems, products).
+			OrderExperience(&order.OrderExperience, experience).
 			Shipped(order.ShippingMessage)
 		data := builder.Build()
 		assert.Equal(t, "value", data["key"])
@@ -130,6 +189,12 @@ func TestTemplateBuilder(t *testing.T) {
 		assert.Equal(t, "1000014", data["郵便番号"])
 		assert.Equal(t, "東京都 千代田区 永田町1-7-1", data["住所"])
 		assert.Equal(t, "ありがとうございます", data["メッセージ"])
+		assert.Equal(t, "じゃがいも収穫", data["体験概要"])
+		assert.Equal(t, "2", data["大人人数"])
+		assert.Equal(t, "1", data["中学生人数"])
+		assert.Equal(t, "0", data["小学生人数"])
+		assert.Equal(t, "0", data["幼児人数"])
+		assert.Equal(t, "0", data["シニア人数"])
 		assert.Equal(t, []map[string]string{{
 			"商品名":      "おいしいじゃがいも",
 			"サムネイルURL": "http://example.com/image.png",
