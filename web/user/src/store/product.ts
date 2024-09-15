@@ -68,12 +68,13 @@ export const useProductStore = defineStore('product', {
 
     products(state) {
       return state.productsResponse.products.map((product) => {
+        const thumbnail = product.media.find(m => m.isThumbnail)
         return {
           ...product,
           // 在庫があるかのフラグ
           hasStock: product.inventory > 0,
           // サムネイル画像のマッピング
-          thumbnail: product.media.find(m => m.isThumbnail),
+          thumbnail,
           // 生産者情報をマッピング
           producer: state.productsResponse.producers.find(
             producer => producer.id === product.producerId,
@@ -97,20 +98,22 @@ export const useProductStore = defineStore('product', {
             ),
           ),
           // サムネイルが動画かどうかのフラグ
-          thumbnailIsVideo: product.thumbnailUrl.endsWith('.mp4'),
+          thumbnailIsVideo: thumbnail ? thumbnail.url.endsWith('.mp4') : false,
         }
       })
     },
 
     product(state) {
+      const thumbnail = state.productResponse.product?.media.find(
+        m => m.isThumbnail,
+      )
+
       return {
         ...state.productResponse.product,
         // 在庫があるかのフラグ
         hasStock: state.productResponse.product?.inventory > 0,
         // サムネイル画像のマッピング
-        thumbnail: state.productResponse.product?.media.find(
-          m => m.isThumbnail,
-        ),
+        thumbnail,
         // 生産者情報をマッピング
         producer: state.productResponse.producer,
         // コーディネーター情報をマッピング
@@ -122,8 +125,7 @@ export const useProductStore = defineStore('product', {
           ),
         ),
         // サムネイルが動画かどうかのフラグ
-        thumbnailIsVideo:
-          state.productResponse.product.thumbnailUrl.endsWith('.mp4'),
+        thumbnailIsVideo: thumbnail ? thumbnail.url.endsWith('.mp4') : false,
       }
     },
   },
