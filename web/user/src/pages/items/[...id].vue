@@ -185,17 +185,51 @@ useSeoMeta({
           <div
             class="hidden-scrollbar mt-2 grid w-full grid-flow-col justify-start gap-2 overflow-x-scroll"
           >
-            <nuxt-img
+            <template
               v-for="(m, i) in product.media"
               :key="i"
-              width="72px"
-              fill="contain"
-              provider="cloudFront"
-              :src="m.url"
-              :alt="`${itemThumbnailAlt}_${i}`"
-              class="aspect-square w-[72px] cursor-pointer object-contain border"
-              @click="handleClickMediaItem(i)"
-            />
+            >
+              <template v-if="m.url.endsWith('.mp4')">
+                <div
+                  class="aspect-square w-[72px] h-[72px] cursor-pointer border relative"
+                  @click="handleClickMediaItem(i)"
+                >
+                  <video
+                    :src="m.url"
+                    class="aspect-square w-full object-contain h-full"
+                  />
+                  <div
+                    class="absolute h-6 w-6 bottom-0 right-0 p-1 bg-main/80 rounded-full text-white"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <nuxt-img
+                  width="72px"
+                  fill="contain"
+                  provider="cloudFront"
+                  :src="m.url"
+                  :alt="`${itemThumbnailAlt}_${i}`"
+                  class="aspect-square w-[72px] h-[72px] cursor-pointer object-contain border block"
+                  @click="handleClickMediaItem(i)"
+                />
+              </template>
+            </template>
           </div>
         </div>
 
