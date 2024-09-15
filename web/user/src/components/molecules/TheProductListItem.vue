@@ -106,6 +106,7 @@ const handleClickAddCartButton = () => {
             muted
             webkit-playsinline
             playsinline
+            loop
           />
         </template>
         <template v-else>
