@@ -104,6 +104,8 @@ const handleClickAddCartButton = () => {
             class="aspect-square w-full"
             autoplay
             muted
+            webkit-playsinline
+            playsinline
           />
         </template>
         <template v-else>
