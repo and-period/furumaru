@@ -96,6 +96,8 @@ export const useProductStore = defineStore('product', {
               productTag => productTag.id === id,
             ),
           ),
+          // サムネイルが動画かどうかのフラグ
+          thumbnailIsVideo: product.thumbnailUrl.endsWith('.mp4'),
         }
       })
     },
@@ -119,6 +121,9 @@ export const useProductStore = defineStore('product', {
             productTag => productTag.id === id,
           ),
         ),
+        // サムネイルが動画かどうかのフラグ
+        thumbnailIsVideo:
+          state.productResponse.product.thumbnailUrl.endsWith('.mp4'),
       }
     },
   },
