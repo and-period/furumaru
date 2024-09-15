@@ -64,9 +64,12 @@ onMounted(() => {
     <video
       ref="videoRef"
       class="w-full h-full border"
-      :src="src"
+      :src="`${src}#t=0.1`"
     />
-    <div class="absolute bottom-0 h-[3px] w-full bg-main/50 rounded-lg">
+    <div
+      v-show="!videoPaused"
+      class="absolute bottom-0 h-[3px] w-full bg-main/50 rounded-lg"
+    >
       <div
         class="h-full bg-orange/80 rounded-lg"
         :style="{ width: `${progress}%` }"

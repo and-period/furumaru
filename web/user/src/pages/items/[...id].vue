@@ -195,7 +195,7 @@ useSeoMeta({
                   @click="handleClickMediaItem(i)"
                 >
                   <video
-                    :src="m.url"
+                    :src="`${m.url}#t=0.1`"
                     class="aspect-square w-full object-contain h-full"
                   />
                   <div
