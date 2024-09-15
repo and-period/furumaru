@@ -3,78 +3,78 @@ import {
   ProductStatus,
   type Coordinator,
   type ProductMediaInner,
-} from "~/types/api";
-import type { I18n } from "~/types/locales";
-import { productStatusToString } from "~/lib/product";
+} from '~/types/api'
+import type { I18n } from '~/types/locales'
+import { productStatusToString } from '~/lib/product'
 
 interface Props {
-  id: string;
-  status: ProductStatus;
-  name: string;
-  inventory: number;
-  price: number;
-  hasStock: boolean;
-  originCity: string;
-  coordinator: Coordinator | undefined;
-  thumbnail: ProductMediaInner | undefined;
+  id: string
+  status: ProductStatus
+  name: string
+  inventory: number
+  price: number
+  hasStock: boolean
+  originCity: string
+  coordinator: Coordinator | undefined
+  thumbnail: ProductMediaInner | undefined
 }
 
 interface Emits {
-  (e: "click:item", id: string): void;
-  (e: "click:addCart", name: string, id: string, quantity: number): void;
+  (e: 'click:item', id: string): void
+  (e: 'click:addCart', name: string, id: string, quantity: number): void
 }
 
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
-const i18n = useI18n();
+const i18n = useI18n()
 
-const router = useRouter();
+const router = useRouter()
 
-const lt = (str: keyof I18n["items"]["list"]) => {
-  return i18n.t(`items.list.${str}`);
-};
+const lt = (str: keyof I18n['items']['list']) => {
+  return i18n.t(`items.list.${str}`)
+}
 
 const itemThumbnailAlt = computed<string>(() => {
-  return i18n.t("items.list.itemThumbnailAlt", {
+  return i18n.t('items.list.itemThumbnailAlt', {
     itemName: props.name,
-  });
-});
+  })
+})
 
 const coordinatorThumbnailAlt = computed<string>(() => {
-  return i18n.t("items.list.coordinatorThumbnailAlt", {
+  return i18n.t('items.list.coordinatorThumbnailAlt', {
     coordinatorName: props.coordinator?.username,
-  });
-});
+  })
+})
 
-const emits = defineEmits<Emits>();
+const emits = defineEmits<Emits>()
 
-const quantity = ref<number>(1);
+const quantity = ref<number>(1)
 
 const priceString = computed<string>(() => {
-  return new Intl.NumberFormat("ja-JP", {
-    style: "currency",
-    currency: "JPY",
-  }).format(props.price);
-});
+  return new Intl.NumberFormat('ja-JP', {
+    style: 'currency',
+    currency: 'JPY',
+  }).format(props.price)
+})
 
 const canAddCart = computed<boolean>(() => {
   if (props.status === ProductStatus.FOR_SALE && props.hasStock) {
-    return true;
+    return true
   }
-  return false;
-});
+  return false
+})
 
 const handleClickItem = () => {
-  emits("click:item", props.id);
-};
+  emits('click:item', props.id)
+}
 
 const handleClickCoorinator = () => {
-  router.push(`/coordinator/${props.coordinator?.id}`);
-};
+  router.push(`/coordinator/${props.coordinator?.id}`)
+}
 
 const handleClickAddCartButton = () => {
-  emits("click:addCart", props.name, props.id, quantity.value);
-};
+  emits('click:addCart', props.name, props.id, quantity.value)
+}
 </script>
 
 <template>
@@ -148,7 +148,10 @@ const handleClickAddCartButton = () => {
         class="flex h-full grow items-center justify-center bg-main p-1 text-[10px] text-white disabled:cursor-not-allowed disabled:bg-main/60 lg:px-4 xl:text-[14px]"
         @click="handleClickAddCartButton"
       >
-        <the-cart-icon id="add-cart-icon" class="mr-1 h-2 w-2 lg:h-4 lg:w-4" />
+        <the-cart-icon
+          id="add-cart-icon"
+          class="mr-1 h-2 w-2 lg:h-4 lg:w-4"
+        />
         {{ lt("addToCartText") }}
       </button>
     </div>
@@ -174,7 +177,7 @@ const handleClickAddCartButton = () => {
           :src="coordinator.thumbnailUrl"
           :alt="coordinatorThumbnailAlt"
           class="block aspect-square h-14 w-14 rounded-full object-cover"
-        />
+        >
         <div>
           <div class="hidden md:block">
             <button @click="handleClickCoorinator">
@@ -189,7 +192,9 @@ const handleClickAddCartButton = () => {
             </p>
           </div>
           <div class="mt-[5px] flex flex-col gap-2 md:flex-row">
-            <p class="whitespace-nowrap">{{ lt("coordinatorLabel") }}:</p>
+            <p class="whitespace-nowrap">
+              {{ lt("coordinatorLabel") }}:
+            </p>
             <p class="text-[12px] md:text-[14px]">
               {{ coordinator.username }}
             </p>
