@@ -23,6 +23,7 @@
     "@sentry/vue": "^7.109.0",
     "@tailwindcss/typography": "^0.5.10",
     "@types/markdown-it": "^13.0.2",
+    "@vueuse/core": "^11.0.3",
     "axios": "^1.2.2",
     "dayjs": "^1.11.10",
     "hls.js": "^1.4.10",

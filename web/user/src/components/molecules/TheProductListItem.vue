@@ -17,6 +17,7 @@ interface Props {
   originCity: string
   coordinator: Coordinator | undefined
   thumbnail: ProductMediaInner | undefined
+  thumbnailIsVideo: boolean
 }
 
 interface Emits {
@@ -92,20 +93,35 @@ const handleClickAddCartButton = () => {
           }}
         </p>
       </div>
-      <picture
+      <div
         v-if="thumbnail"
-        class="w-full cursor-pointer"
+        class="cursor-pointer w-full"
         @click="handleClickItem"
       >
-        <nuxt-img
-          provider="cloudFront"
-          :src="thumbnail.url"
-          :alt="itemThumbnailAlt"
-          fit="cover"
-          sizes="180px md:250px"
-          class="aspect-square w-full"
-        />
-      </picture>
+        <template v-if="thumbnailIsVideo">
+          <video
+            :src="thumbnail.url"
+            class="aspect-square w-full"
+            autoplay
+            muted
+            webkit-playsinline
+            playsinline
+            loop
+          />
+        </template>
+        <template v-else>
+          <picture class="w-full">
+            <nuxt-img
+              provider="cloudFront"
+              :src="thumbnail.url"
+              :alt="itemThumbnailAlt"
+              fit="cover"
+              sizes="180px md:250px"
+              class="aspect-square w-full"
+            />
+          </picture>
+        </template>
+      </div>
     </div>
 
     <p

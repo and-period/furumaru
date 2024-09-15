@@ -111,7 +111,7 @@ const hideV1App = false
       <p
         class="text-center text-[14px] font-bold tracking-[2px] md:text-[20px]"
       >
-        {{ lt('allItemsTitle') }}
+        {{ lt("allItemsTitle") }}
       </p>
       <div
         v-if="hideV1App"
@@ -181,6 +181,7 @@ const hideV1App = false
             :thumbnail="product.thumbnail"
             :coordinator="product.coordinator"
             :origin-city="product.originCity"
+            :thumbnail-is-video="product.thumbnailIsVideo"
             @click:item="handleClick"
             @click:add-cart="handleClickAddCartButton"
           />
