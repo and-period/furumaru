@@ -118,6 +118,12 @@ const title = computed<string>(() => product.value.name)
 
 const selectedMediaIndex = ref<number>(-1)
 
+const selectMediaSrcUrl = computed<string>(() => {
+  return selectedMediaIndex.value === -1
+    ? product.value.thumbnailUrl
+    : product.value.media[selectedMediaIndex.value].url
+})
+
 const handleClickMediaItem = (index: number) => {
   selectedMediaIndex.value = index
 }
@@ -163,17 +169,18 @@ useSeoMeta({
       >
         <div class="mx-auto w-full max-w-[100%]">
           <div class="flex aspect-square h-full w-full justify-center">
-            <nuxt-img
-              provider="cloudFront"
-              fill="contain"
-              class="block h-full w-full object-contain border"
-              :src="
-                selectedMediaIndex === -1
-                  ? product.thumbnail.url
-                  : product.media[selectedMediaIndex].url
-              "
-              :alt="itemThumbnailAlt"
-            />
+            <template v-if="selectMediaSrcUrl.endsWith('.mp4')">
+              <the-item-video-player :src="selectMediaSrcUrl" />
+            </template>
+            <template v-else>
+              <nuxt-img
+                provider="cloudFront"
+                fill="contain"
+                class="block h-full w-full object-contain border"
+                :src="selectMediaSrcUrl"
+                :alt="itemThumbnailAlt"
+              />
+            </template>
           </div>
           <div
             class="hidden-scrollbar mt-2 grid w-full grid-flow-col justify-start gap-2 overflow-x-scroll"
