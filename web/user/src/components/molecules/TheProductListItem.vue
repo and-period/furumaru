@@ -102,6 +102,8 @@ const handleClickAddCartButton = () => {
           <video
             :src="thumbnail.url"
             class="aspect-square w-full"
+            autoplay
+            muted
           />
         </template>
         <template v-else>
