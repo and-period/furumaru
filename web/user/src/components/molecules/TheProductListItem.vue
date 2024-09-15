@@ -189,15 +189,11 @@ const handleClickAddCartButton = () => {
       </div>
 
       <div class="flex items-center gap-x-4">
-        <nuxt-img
-          provider="cloudFront"
-          width="64px"
-          hidden="64px"
-          fit="cover"
+        <img
           :src="coordinator.thumbnailUrl"
           :alt="coordinatorThumbnailAlt"
           class="block aspect-square h-14 w-14 rounded-full object-cover"
-        />
+        >
         <div>
           <div class="hidden md:block">
             <button @click="handleClickCoorinator">
