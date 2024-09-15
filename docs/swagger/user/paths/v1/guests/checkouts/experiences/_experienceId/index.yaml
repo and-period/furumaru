@@ -1,10 +1,10 @@
 post:
-  summary: 体験購入
-  operation: v1CheckoutExperience
+  summary: ゲスト体験購入
+  operationId: v1GuestCheckoutExperience
   tags:
+  - Guest
   - Checkout
   security:
-  - bearerAuth: []
   - cookieAuth: []
   parameters:
   - in: path
@@ -19,29 +19,29 @@ post:
     content:
       application/json:
         schema:
-          $ref: './../../../../../openapi.yaml#/components/schemas/v1CheckoutExperienceRequest'
+          $ref: './../../../../../../openapi.yaml#/components/schemas/v1GuestCheckoutProductRequest'
   responses:
     200:
       description: 成功
       content:
         application/json:
           schema:
-            $ref: './../../../../../openapi.yaml#/components/schemas/v1CheckoutResponse'
+            $ref: './../../../../../../openapi.yaml#/components/schemas/v1GuestCheckoutResponse'
     400:
       description: バリデーションエラー
       content:
         application/json:
           schema:
-            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
     403:
       description: 決済システムがメンテナンス中
       content:
         application/json:
           schema:
-            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'
     412:
       description: 前提条件エラー(体験販売期間外、無効なプロモーションなど...)
       content:
         application/json:
           schema:
-            $ref: './../../../../../openapi.yaml#/components/schemas/errorResponse'
+            $ref: './../../../../../../openapi.yaml#/components/schemas/errorResponse'

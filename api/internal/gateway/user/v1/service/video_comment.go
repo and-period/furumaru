@@ -12,7 +12,7 @@ type VideoComment struct {
 
 type VideoComments []*VideoComment
 
-func NewVideoComment(comment *mentity.BroadcastComment, user *uentity.User) *VideoComment {
+func NewVideoComment(comment *mentity.VideoComment, user *uentity.User) *VideoComment {
 	res := &VideoComment{
 		VideoComment: response.VideoComment{
 			Comment:     comment.Content,
@@ -33,7 +33,7 @@ func (c *VideoComment) Response() *response.VideoComment {
 	return &c.VideoComment
 }
 
-func NewVideoComments(comments mentity.BroadcastComments, users map[string]*uentity.User) VideoComments {
+func NewVideoComments(comments mentity.VideoComments, users map[string]*uentity.User) VideoComments {
 	res := make(VideoComments, 0, len(comments))
 	for _, comment := range comments {
 		if comment.Disabled {

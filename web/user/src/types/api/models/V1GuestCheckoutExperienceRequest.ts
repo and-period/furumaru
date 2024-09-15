@@ -13,123 +13,141 @@
  */
 
 import { mapValues } from '../runtime';
+import type { GuestCheckoutAddress1 } from './GuestCheckoutAddress1';
+import {
+    GuestCheckoutAddress1FromJSON,
+    GuestCheckoutAddress1FromJSONTyped,
+    GuestCheckoutAddress1ToJSON,
+} from './GuestCheckoutAddress1';
 import type { PaymentMethodType } from './PaymentMethodType';
 import {
     PaymentMethodTypeFromJSON,
     PaymentMethodTypeFromJSONTyped,
     PaymentMethodTypeToJSON,
 } from './PaymentMethodType';
-import type { CheckoutCreditCard } from './CheckoutCreditCard';
+import type { GuestCheckoutCreditCard } from './GuestCheckoutCreditCard';
 import {
-    CheckoutCreditCardFromJSON,
-    CheckoutCreditCardFromJSONTyped,
-    CheckoutCreditCardToJSON,
-} from './CheckoutCreditCard';
+    GuestCheckoutCreditCardFromJSON,
+    GuestCheckoutCreditCardFromJSONTyped,
+    GuestCheckoutCreditCardToJSON,
+} from './GuestCheckoutCreditCard';
 
 /**
  * 
  * @export
- * @interface CheckoutExperienceRequest
+ * @interface V1GuestCheckoutExperienceRequest
  */
-export interface CheckoutExperienceRequest {
+export interface V1GuestCheckoutExperienceRequest {
     /**
      * 支払いキー(重複判定用)
      * @type {string}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     requestId: string;
     /**
      * 請求先住所ID
      * @type {string}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     billingAddressId: string;
     /**
      * プロモーションコード（割引適用時のみ）
      * @type {string}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     promotionCode: string;
     /**
      * 大人の人数（0以上）
      * @type {number}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     adultCount: number;
     /**
      * 中学生の人数（0以上）
      * @type {number}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     juniorHighSchoolCount: number;
     /**
      * 小学生の人数（0以上）
      * @type {number}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     elementarySchoolCount: number;
     /**
      * 幼児の人数（0以上）
      * @type {number}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     preschoolCount: number;
     /**
      * 高齢者の人数（0以上）
      * @type {number}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     seniorCount: number;
     /**
      * 交通手段（256文字以内）
      * @type {string}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     transportation: string;
     /**
      * 体験希望日（形式:yyyymmdd）
      * @type {string}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     requestedDate: string;
     /**
      * 体験希望時間（形式:hhmm）
      * @type {string}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     requestedTime: string;
     /**
      * 
      * @type {PaymentMethodType}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     paymentMethod: PaymentMethodType;
     /**
      * 決済ページからの遷移先URL
      * @type {string}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     callbackUrl: string;
     /**
      * 支払い合計金額（誤り検出用）
      * @type {number}
-     * @memberof CheckoutExperienceRequest
+     * @memberof V1GuestCheckoutExperienceRequest
      */
     total: number;
     /**
-     * 
-     * @type {CheckoutCreditCard}
-     * @memberof CheckoutExperienceRequest
+     * 購入者メールアドレス
+     * @type {string}
+     * @memberof V1GuestCheckoutExperienceRequest
      */
-    creditCard: CheckoutCreditCard;
+    email: string;
+    /**
+     * 
+     * @type {GuestCheckoutAddress1}
+     * @memberof V1GuestCheckoutExperienceRequest
+     */
+    billingAddress: GuestCheckoutAddress1;
+    /**
+     * 
+     * @type {GuestCheckoutCreditCard}
+     * @memberof V1GuestCheckoutExperienceRequest
+     */
+    creditCard: GuestCheckoutCreditCard;
 }
 
 
 
 /**
- * Check if a given object implements the CheckoutExperienceRequest interface.
+ * Check if a given object implements the V1GuestCheckoutExperienceRequest interface.
  */
-export function instanceOfCheckoutExperienceRequest(value: object): value is CheckoutExperienceRequest {
+export function instanceOfV1GuestCheckoutExperienceRequest(value: object): value is V1GuestCheckoutExperienceRequest {
     if (!('requestId' in value) || value['requestId'] === undefined) return false;
     if (!('billingAddressId' in value) || value['billingAddressId'] === undefined) return false;
     if (!('promotionCode' in value) || value['promotionCode'] === undefined) return false;
@@ -144,15 +162,17 @@ export function instanceOfCheckoutExperienceRequest(value: object): value is Che
     if (!('paymentMethod' in value) || value['paymentMethod'] === undefined) return false;
     if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
     if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('billingAddress' in value) || value['billingAddress'] === undefined) return false;
     if (!('creditCard' in value) || value['creditCard'] === undefined) return false;
     return true;
 }
 
-export function CheckoutExperienceRequestFromJSON(json: any): CheckoutExperienceRequest {
-    return CheckoutExperienceRequestFromJSONTyped(json, false);
+export function V1GuestCheckoutExperienceRequestFromJSON(json: any): V1GuestCheckoutExperienceRequest {
+    return V1GuestCheckoutExperienceRequestFromJSONTyped(json, false);
 }
 
-export function CheckoutExperienceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CheckoutExperienceRequest {
+export function V1GuestCheckoutExperienceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): V1GuestCheckoutExperienceRequest {
     if (json == null) {
         return json;
     }
@@ -172,11 +192,13 @@ export function CheckoutExperienceRequestFromJSONTyped(json: any, ignoreDiscrimi
         'paymentMethod': PaymentMethodTypeFromJSON(json['paymentMethod']),
         'callbackUrl': json['callbackUrl'],
         'total': json['total'],
-        'creditCard': CheckoutCreditCardFromJSON(json['creditCard']),
+        'email': json['email'],
+        'billingAddress': GuestCheckoutAddress1FromJSON(json['billingAddress']),
+        'creditCard': GuestCheckoutCreditCardFromJSON(json['creditCard']),
     };
 }
 
-export function CheckoutExperienceRequestToJSON(value?: CheckoutExperienceRequest | null): any {
+export function V1GuestCheckoutExperienceRequestToJSON(value?: V1GuestCheckoutExperienceRequest | null): any {
     if (value == null) {
         return value;
     }
@@ -196,7 +218,9 @@ export function CheckoutExperienceRequestToJSON(value?: CheckoutExperienceReques
         'paymentMethod': PaymentMethodTypeToJSON(value['paymentMethod']),
         'callbackUrl': value['callbackUrl'],
         'total': value['total'],
-        'creditCard': CheckoutCreditCardToJSON(value['creditCard']),
+        'email': value['email'],
+        'billingAddress': GuestCheckoutAddress1ToJSON(value['billingAddress']),
+        'creditCard': GuestCheckoutCreditCardToJSON(value['creditCard']),
     };
 }
 
