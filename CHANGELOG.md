@@ -1,5 +1,77 @@
 # Changelog
 
+## [v1.11.37](https://github.com/and-period/furumaru/compare/v1.11.36...v1.11.37) - 2024-09-15
+- feat(workflow): Cognitoのユーザープール移行用のワークフロー追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2302
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2322
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2323
+- feat(user): 購入関連のi18n対応(ゲスト購入) by @sea-kai in https://github.com/and-period/furumaru/pull/2301
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2324
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2325
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2326
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2327
+- fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2328
+- fix(user): 会員情報取得処理の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2331
+- 援農募集ページの整備 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2332
+- ブログ部分のレイアウト調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2337
+- feat(gateway): 商品一覧APIでコーディネータIDを用いたフィルタリングができるように by @taba2424 in https://github.com/and-period/furumaru/pull/2333
+- feat: コーディネータ登録時のパスワードを表示するように by @taba2424 in https://github.com/and-period/furumaru/pull/2338
+- feat(user): signupとログインユーザーの購入手続きのi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2341
+- fix(user): purchaseのi18n対応でtypoによって文字列が読み込めていなかった部分を修正 by @sea-kai in https://github.com/and-period/furumaru/pull/2342
+- feat(media): オンデマンド配信用のエンティティ定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2343
+- build(deps): bump aws-actions/amazon-ecs-deploy-task-definition from 1 to 2 in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2335
+- build(deps): bump the dependencies group across 1 directory with 38 updates by @dependabot in https://github.com/and-period/furumaru/pull/2339
+- chore: Golang v1.23.0へアップグレード by @taba2424 in https://github.com/and-period/furumaru/pull/2344
+- build(deps): bump the dependencies group across 1 directory with 341 updates by @dependabot in https://github.com/and-period/furumaru/pull/2340
+- feat(user): プライバシーポリシーのi18n対応  by @sea-kai in https://github.com/and-period/furumaru/pull/2347
+- build(deps): bump the dependencies group in /api with 40 updates by @dependabot in https://github.com/and-period/furumaru/pull/2345
+- feat(gateway): 管理画面のオンデマンド配信APIを定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2348
+- build(deps): bump the dependencies group in /web/admin with 91 updates by @dependabot in https://github.com/and-period/furumaru/pull/2346
+- feat: オンデマンド配信関連サービスを定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2349
+- feat(gateway): 体験種別一覧取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2350
+- feat(gateway): 体験一覧取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2351
+- feat(gateway): オンデマンド配信一覧取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2352
+- feat(gateway): オンデマンド配信取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2354
+- feat(gateway): 体験取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2353
+- feat(gateway): 体験関連のファイルアップロードURL取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2355
+- feat(store): 体験種別関連APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2356
+- feat(store): 体験関連APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2357
+- fix(docs): 体験一覧APIの定義を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2358
+- feat(media): オンデマンド配信関連APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2359
+- fix(gateway): オンデマンド配信関連APIの権限追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2361
+- fix: 空配列を返すように by @taba2424 in https://github.com/and-period/furumaru/pull/2364
+- feat(mysql): MySQLでGEOMETRY型が扱えるようなstructを定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2360
+- feat(store): 体験関連のフィールド追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2366
+- feat(store): 座標取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2367
+- build(deps): bump the dependencies group in /web/admin with 83 updates by @dependabot in https://github.com/and-period/furumaru/pull/2363
+- fix(gateway): 体験一覧APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2369
+- build(deps): bump the dependencies group across 1 directory with 28 updates by @dependabot in https://github.com/and-period/furumaru/pull/2368
+- feat(user): 特商法ページのi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2365
+- fix(docs): 体験関連のフィールド追加分をAPI Docsにも反映 by @taba2424 in https://github.com/and-period/furumaru/pull/2370
+- feat(gateway): 体験取得APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2371
+- feat(media): ビデオに表示設定用のフィールド追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2372
+- fix(gateway): オンデマンド配信APIのレスポンス修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2373
+- feat(media): オンデマンド配信一覧取得メソッドの改修 by @taba2424 in https://github.com/and-period/furumaru/pull/2374
+- feat(gateway): トップ用のAPIにオンデマンド配信一覧を追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2375
+- fix(media): オンデマンド配信一覧APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2376
+- feat(media): オンデマンド配信コメント機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2377
+- feat(media): オンデマンド配信視聴ログ機能の実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2378
+- feat(gateway): オンデマンド配信のコメント・分析APIを実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2379
+- feat(store): 注文種別の追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2380
+- feat(store): 体験関連のフィールド追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2384
+- feat(store): 注文種別によるフィルタリングを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2381
+- fix(store): 体験周りのバリデーション追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2387
+- fix(media): 山田の苦情を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2388
+- feat(store): 体験の注文情報を定義 by @taba2424 in https://github.com/and-period/furumaru/pull/2389
+- feat(store): 体験の注文処理を実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2390
+- feat(gateway): 注文関連APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2391
+- feat(gateway): 注文関連APIの実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2392
+- fix(store): 体験注文APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2396
+- feat(messenger): 体験注文時の通知実装 by @taba2424 in https://github.com/and-period/furumaru/pull/2399
+- feat(messenger): 配送通知を商品購入時のみに by @taba2424 in https://github.com/and-period/furumaru/pull/2400
+- アーカイブ一覧を動画一覧に変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2397
+- fix: トップのアーカイブのサムネイルをnuxt-imgからimgに変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2395
+- 商品の動画サムネイルへの対応 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2401
+
 ## [v1.11.36](https://github.com/and-period/furumaru/compare/v1.11.35...v1.11.36) - 2024-07-24
 - feat(user): 商品詳細ページのi18n対応 by @sea-kai in https://github.com/and-period/furumaru/pull/2291
 - build(deps): bump the dependencies group in /api with 51 updates by @dependabot in https://github.com/and-period/furumaru/pull/2290
