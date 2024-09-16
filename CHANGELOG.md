@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.11.38](https://github.com/and-period/furumaru/compare/v1.11.37...v1.11.38) - 2024-09-16
+
 ## [v1.11.37](https://github.com/and-period/furumaru/compare/v1.11.36...v1.11.37) - 2024-09-15
 - feat(workflow): Cognitoのユーザープール移行用のワークフロー追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2302
 - fix(func): Cognitoユーザープールの移行関数の修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2322
