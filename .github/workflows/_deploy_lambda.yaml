@@ -57,6 +57,7 @@ jobs:
         aws lambda update-function-code \
           --region ${AWS_REGION} \
           --function-name="${LAMBDA_FUNCTION_NAME}" \
+          --architectures="arm64" \
           --image-uri="${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}" \
         | jq '. | del(.Environment)'
       env:

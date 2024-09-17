@@ -66,9 +66,10 @@ jobs:
 
     - name: Build image
       run: |
-        docker build -f ${IMAGE_PATH} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
+        docker build -f ${IMAGE_PATH} --platform ${PLATFORM} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
         docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
       env:
+        PLATFORM: linux/arm64
         SERVICE: ${{ inputs.service }}
         IMAGE_PATH: ${{ inputs.image-path }}
         ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}
