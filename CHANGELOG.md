@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.11.40](https://github.com/and-period/furumaru/compare/v1.11.39...v1.11.40) - 2024-09-17
+- feat(user): 残っている部分のi18n対応と、ブラウザ言語を検知して切り替え by @sea-kai in https://github.com/and-period/furumaru/pull/2398
+- feat(workflow): arm64のコンテナを利用するように by @taba2424 in https://github.com/and-period/furumaru/pull/2407
+
 ## [v1.11.39](https://github.com/and-period/furumaru/compare/v1.11.38...v1.11.39) - 2024-09-16
 - fix(gateway): 商品注文履歴取得APIの修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2403
 
