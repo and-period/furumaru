@@ -46,6 +46,12 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
     - name: Setup AWS
       uses: ./.github/actions/setup-aws
       with:
@@ -64,18 +70,11 @@ jobs:
         ecr-repository: ${{ inputs.ecr-repository }}
         image-tag: ${{ inputs.image-tag }}
 
-    - name: Build image
-      run: |
-        docker build -f ${IMAGE_PATH} --platform ${PLATFORM} --build-arg SERVICE=${SERVICE} -t ${ECR_REPOSITORY_URL} .
-        docker tag ${ECR_REPOSITORY_URL} ${ECR_REPOSITORY_URL}:${ECR_IMAGE_TAG}
-      env:
-        PLATFORM: linux/arm64
-        SERVICE: ${{ inputs.service }}
-        IMAGE_PATH: ${{ inputs.image-path }}
-        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}
-        ECR_IMAGE_TAG: ${{ steps.get-ecr-url.outputs.ecr-image-tag }}
-
-    - name: Push image to Amazon ECR
-      run: docker push -a ${ECR_REPOSITORY_URL}
-      env:
-        ECR_REPOSITORY_URL: ${{ steps.get-ecr-url.outputs.ecr-image-url }}
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ${{ inputs.image-path }}
+        platforms: linux/arm64
+        build-args: SERVICE=${SERVICE}
+        tags: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
