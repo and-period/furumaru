@@ -465,7 +465,7 @@ useSeoMeta({
                 {{ ct('coordinatorLabel') }}
                 {{ calcCartResponseItem.coordinator.username }}
               </p>
-              <p>{{ ct('coordinatorLabel') }}{{ calcCartResponseItem.carts.length }}</p>
+              <p>{{ ct('boxCountLabel') }}{{ calcCartResponseItem.carts.length }}</p>
             </div>
             <div>
               <div>

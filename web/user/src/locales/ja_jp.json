@@ -23,7 +23,14 @@
       "numberOfCartsText": "現在のカゴの数",
       "shippingFeeAnnotation": "買い物カゴごとに送料がかかります。詳しくは",
       "shippingFeeAnnotationLinkText": "こちら",
-      "shippingFeeAnnotationCheckText": "からご確認ください。"
+      "shippingFeeAnnotationCheckText": "からご確認ください。",
+      "cartTitle": "買い物カゴ",
+      "marcheLabel": "マルシェ",
+      "boxTypeLabel": "箱タイプ",
+      "boxSizeLabel": "箱サイズ",
+      "boxUsedText": "使用",
+      "quantityLabel": "数量",
+      "deleteButtonText": "削除"
     },
     "footer": {
       "qaLinkText": "よくあるご質問",
@@ -81,6 +88,11 @@
       "lineAddFriendImageUrl": "https://scdn.line-apps.com/n/line_add_friends/btn/ja.png",
       "lineAddFriendImageAlt": "友だち追加",
       "lineCouponText": "お友達追加でお得な情報をGET！",
+      "deepJapanText": "Deep Japan 体験型",
+      "localVideoMediaText": "ローカル映像メディア",
+      "discoverExperienceLinkText":"体験",
+      "discoverProductLinkText":"商品",
+      "discoverText":"と出会う",
       "marcheListSubTitle": "配信中・配信予定のマルシェ",
       "liveStreamingText": "配信中",
       "liveUpcomingText": "配信予定",
@@ -106,6 +118,13 @@
       "forthPointTitle": "同じ地域の商品を同梱発送するので\n送料がおトクに",
       "forthPointDescription": "ふるマルの送料は、商品（生産者）ごとではなくマルシェごとに加算されます。同じマルシェでのお買い物なら、同じ箱に収まる限りいくつ買っても追加の送料はかかりません。",
       "forthPointLinkText": "送料について詳しくはこちら"
+    },
+    "contact": {
+      "contactTitle": "お問い合わせ",
+      "description": "ふるマルのアプリに関してや、販売商品に関してはライン友達追加後お問い合わせください。",
+      "lineAddFriendImageUrl": "https://scdn.line-apps.com/n/line_add_friends/btn/ja.png",
+      "lineAddFriendImageAlt": "友だち追加",
+      "contactNotice": "※2〜3営業日以内に、ご返信させていただきます。"
     }
   },
   "purchase": {
@@ -265,8 +284,15 @@
       "paymentMethodAUPayText": "QR決済（au PAY）"
     },
     "complete": {
-      "thanksMessage": " ご注文ありがとうございます！\nご購入手続きが完了しました。",
-      "completeMessage": "ご登録いただいたメールアドレスに確認メールをお送りしましたのでご確認ください。\nメールが届かない場合は上記の注文番号をお書き添えの上、こちらからお問い合わせください。\n注文の詳細は、アカウントページの注文履歴からもご確認いただけます。"
+      "thanksMessageFirst": "ご注文ありがとうございます！",
+      "thanksMessageSecond": "ご購入手続きが完了しました。",
+      "orderIDMessage": "お客様の注文IDは「{orderId}」です",
+      "completeMessageFirst": "ご登録いただいたメールアドレスに確認メールをお送りしましたのでご確認ください。",
+      "completeMessageSecond":"メールが届かない場合は上記の注文番号をお書き添えの上、こちらからお問い合わせください。",
+      "completeMessageThird":"注文の詳細は、アカウントページの注文履歴からもご確認いただけます。",
+      "topLinkText": "TOPページへ",
+      "cancelMessage": "この注文はキャンセルされました。",
+      "cartLinkText": "買い物カゴ画面に戻る"
     }
   },
   "items": {

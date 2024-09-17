@@ -88,6 +88,10 @@ export default defineNuxtConfig({
   },
   i18n: {
     defaultLocale: 'ja',
+    detectBrowserLanguage: {
+      useCookie: false,
+      alwaysRedirect: true,
+    },
     locales: [
       {
         code: 'ja',

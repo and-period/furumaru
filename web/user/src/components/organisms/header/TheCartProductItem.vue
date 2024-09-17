@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import type { I18n } from 'types/locales'
+
+const i18n = useI18n()
+const ht = (str: keyof I18n['layout']['header']) => {
+  return i18n.t(`layout.header.${str}`)
+}
+
 interface Props {
   id: string
   name: string
@@ -31,11 +38,16 @@ const handleRemoveButton = () => {
   <div>
     <p>{{ name }}</p>
 
-    <p
-      class="my-4 font-bold after:ml-2 after:text-[16px] after:content-['(税込)']"
-    >
-      {{ priceString }}
-    </p>
+    <div class="flex flex-row font-bold items-center">
+      <p
+        class="my-4"
+      >
+        {{ priceString }}
+      </p>
+      <p class="text-sm">
+        {{ ht('cartTotalPriceTaxIncludedText') }}
+      </p>
+    </div>
 
     <div class="flex gap-x-3 text-sm">
       <nuxt-img
@@ -50,7 +62,7 @@ const handleRemoveButton = () => {
         <div class="flex grow items-start">
           <div class="inline-flex">
             <div class="mr-2 block whitespace-nowrap">
-              数量
+              {{ ht('quantityLabel') }}
               {{ quantity }}
             </div>
           </div>
@@ -61,7 +73,7 @@ const handleRemoveButton = () => {
             class="underline"
             @click="handleRemoveButton"
           >
-            削除
+            {{ ht('deleteButtonText') }}
           </button>
         </div>
       </div>

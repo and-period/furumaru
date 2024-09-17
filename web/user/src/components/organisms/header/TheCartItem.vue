@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { I18n } from 'types/locales'
 import type { ShoppingCart } from '~/types/store'
 
 interface Props {
@@ -8,6 +9,11 @@ interface Props {
   boxSize: number
   useRate: number
   shoppingCart: ShoppingCart
+}
+
+const i18n = useI18n()
+const ht = (str: keyof I18n['layout']['header']) => {
+  return i18n.t(`layout.header.${str}`)
 }
 
 const props = defineProps<Props>()
@@ -43,21 +49,21 @@ const handleClickRemoveButton = (id: string) => {
 <template>
   <div class="bg-base p-4">
     <p class="mb-6 mt-2 text-center">
-      買い物カゴ #{{ cartNumber }}
+      {{ ht('cartTitle') }} #{{ cartNumber }}
     </p>
 
     <dl class="flex flex-col gap-y-1 text-sm">
       <div class="flex">
-        <dt>マルシェ：</dt>
+        <dt>{{ ht('marcheLabel') }}：</dt>
         <dd>{{ marcheName }}</dd>
       </div>
       <div class="flex">
-        <dt>箱タイプ：</dt>
+        <dt>{{ ht('boxTypeLabel') }}：</dt>
         <dd>{{ boxType }}</dd>
       </div>
       <div class="flex">
-        <dt>箱サイズ{{ boxSize }}：</dt>
-        <dd>{{ useRate }}%使用</dd>
+        <dt>{{ ht('boxSizeLabel') }}{{ boxSize }}：</dt>
+        <dd>{{ useRate }}%{{ ht('boxUsedText') }}</dd>
       </div>
     </dl>
 
@@ -108,7 +114,7 @@ const handleClickRemoveButton = (id: string) => {
         class="w-full bg-main py-1 text-white"
         @click="handleClick"
       >
-        買い物カゴを見る
+        {{ ht('viewMyCartText') }}
       </button>
     </div>
   </div>
