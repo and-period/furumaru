@@ -73,8 +73,9 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
+        push: true
         context: .
-        file: ${{ inputs.image-path }}
         platforms: linux/arm64
+        file: ${{ inputs.image-path }}
         build-args: SERVICE=${SERVICE}
         tags: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
