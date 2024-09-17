@@ -79,3 +79,4 @@ jobs:
         build-args: SERVICE=${{ inputs.service}}
         tags: ${{ steps.get-ecr-url.outputs.ecr-image-url }}:${{ steps.get-ecr-url.outputs.ecr-image-tag }}
         push: true
+        provenance: false
