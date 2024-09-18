@@ -83,15 +83,28 @@ const handleClickItem = () => {
             }}
           </p>
         </div>
-        <nuxt-img
-          :src="thumbnailUrl"
-          provider="cloudFront"
-          width="80px"
-          height="80px"
-          class="aspect-square h-full w-full"
-          :class="{ 'hover:cursor-pointer hover:underline': canAddCart }"
-          @click="handleClickItem"
-        />
+        <template v-if="thumbnailUrl.endsWith('.mp4')">
+          <video
+            class="aspect-square h-full w-full"
+            :src="thumbnailUrl"
+            loop
+            autoplay
+            muted
+            webkit-playsinline
+            playsinline
+          />
+        </template>
+        <template v-else>
+          <nuxt-img
+            :src="thumbnailUrl"
+            provider="cloudFront"
+            width="80px"
+            height="80px"
+            class="aspect-square h-full w-full"
+            :class="{ 'hover:cursor-pointer hover:underline': canAddCart }"
+            @click="handleClickItem"
+          />
+        </template>
       </div>
     </template>
     <div class="flex flex-col justify-between">
@@ -108,7 +121,7 @@ const handleClickItem = () => {
             {{ priceFormatter(product.price) }}
           </p>
           <p class="ml-2">
-            {{ dt('itemPriceTaxIncludedText') }}
+            {{ dt("itemPriceTaxIncludedText") }}
           </p>
         </div>
         <div class="flex h-6 items-center gap-2 text-[10px]">
@@ -142,7 +155,7 @@ const handleClickItem = () => {
             :disabled="!canAddCart"
             @click.stop="handleClickAddCart"
           >
-            {{ dt('addToCartText') }}
+            {{ dt("addToCartText") }}
           </button>
         </div>
       </div>
