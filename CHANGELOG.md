@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.11.41](https://github.com/and-period/furumaru/compare/v1.11.40...v1.11.41) - 2024-09-18
+- build(deps-dev): bump npm-run-all2 from 6.2.2 to 6.2.3 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2408
+- ライブ配信に紐づいてる商品のサムネイルのレイアウト調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2405
+
 ## [v1.11.40](https://github.com/and-period/furumaru/compare/v1.11.39...v1.11.40) - 2024-09-17
 - feat(user): 残っている部分のi18n対応と、ブラウザ言語を検知して切り替え by @sea-kai in https://github.com/and-period/furumaru/pull/2398
 - feat(workflow): arm64のコンテナを利用するように by @taba2424 in https://github.com/and-period/furumaru/pull/2407
