@@ -126,15 +126,23 @@ useSeoMeta({
         >
           <nuxt-link
             to="/items"
-            class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
+            class="flex flex-col sm:flex-row justify-center items-baseline bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
           >
-            <span class="md:text-[24px] text-[18px]">{{ tt('discoverProductLinkText') }}</span>{{ tt('discoverText') }}
+            <div class="flex flex-row items-baseline">
+              <span class="md:text-[24px] text-[18px]">{{ tt('discoverProductLinkText') }}</span>
+              <span class="">と</span>
+            </div>
+            {{ tt('discoverText') }}
           </nuxt-link>
           <nuxt-link
             to="/marches"
-            class="bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
+            class="flex flex-col sm:flex-row justify-center items-baseline bg-base/50 rounded-xl px-8 py-2 hover:bg-base/60 tracking-wide text-center"
           >
-            <span class="md:text-[24px] text-[18px]">{{ tt('discoverExperienceLinkText') }}</span>{{ tt('discoverText') }}
+            <div class="flex flex-row items-baseline">
+              <span class="md:text-[24px] text-[18px]">{{ tt('discoverExperienceLinkText') }}</span>
+              <span class="">と</span>
+            </div>
+            {{ tt('discoverText') }}
           </nuxt-link>
         </div>
       </div>
