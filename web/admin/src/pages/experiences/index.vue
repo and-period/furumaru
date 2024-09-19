@@ -4,48 +4,52 @@ import { storeToRefs } from 'pinia'
 import { useAlert, usePagination } from '~/lib/hooks'
 import {
   useAuthStore,
-  useCategoryStore,
-  useProducerStore,
-  useProductStore,
-  useProductTagStore,
-  useProductTypeStore,
+  useExperienceStore,
+  useExperienceTypeStore,
 } from '~/store'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const categoryStore = useCategoryStore()
-const producerStore = useProducerStore()
-const productStore = useProductStore()
-const productTagStore = useProductTagStore()
-const productTypeStore = useProductTypeStore()
+const experienceStore = useExperienceStore()
+const experienceTypeStore = useExperienceTypeStore()
 const pagination = usePagination()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { role } = storeToRefs(authStore)
-const { categories } = storeToRefs(categoryStore)
-const { producers } = storeToRefs(producerStore)
-const { products, totalItems } = storeToRefs(productStore)
-const { productTags } = storeToRefs(productTagStore)
-const { productTypes } = storeToRefs(productTypeStore)
+const { experiencesResponse, totalItems } = storeToRefs(experienceStore)
+const { experienceTypes } = storeToRefs(experienceTypeStore)
 
 const loading = ref<boolean>(false)
 const deleteDialog = ref<boolean>(false)
 const selectedItemId = ref<string>('')
 
 const fetchState = useAsyncData(async (): Promise<void> => {
-  await fetchProducts()
+  await fetchExperiences()
+  await fetchExperienceTypes()
 })
 
 watch(pagination.itemsPerPage, (): void => {
   fetchState.refresh()
 })
 
-const fetchProducts = async (): Promise<void> => {
+const fetchExperiences = async (): Promise<void> => {
   try {
-    await productStore.fetchProducts(
+    await experienceStore.fetchExperiences(
       pagination.itemsPerPage.value,
       pagination.offset.value,
     )
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const fetchExperienceTypes = async (): Promise<void> => {
+  try {
+    await experienceTypeStore.fetchExperienceTypes()
   }
   catch (err) {
     if (err instanceof Error) {
@@ -64,18 +68,18 @@ const handleUpdatePage = async (page: number): Promise<void> => {
   await fetchState.refresh()
 }
 
-const handleClickShow = (productId: string): void => {
-  router.push(`/products/${productId}`)
+const handleClickShow = (experienceId: string): void => {
+  router.push(`/experiences/${experienceId}`)
 }
 
 const handleClickNew = (): void => {
   router.push('/experiences/new')
 }
 
-const handleClickDelete = async (productId: string): Promise<void> => {
+const handleClickDelete = async (experienceId: string): Promise<void> => {
   try {
     loading.value = true
-    await productStore.deleteProduct(productId)
+    await experienceStore.deleteExperience(experienceId)
   }
   catch (err) {
     if (err instanceof Error) {
@@ -106,6 +110,8 @@ catch (err) {
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
+    :experiences-response="experiencesResponse"
+    :experience-types="experienceTypes"
     :table-items-per-page="pagination.itemsPerPage.value"
     :table-items-total="totalItems"
     @click:show="handleClickShow"

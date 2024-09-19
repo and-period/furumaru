@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { mdiDelete, mdiPlus, mdiContentCopy } from '@mdi/js'
 import type { VDataTable } from 'vuetify/lib/components/index.mjs'
-
+import { prefecturesList } from '~/constants'
 import { getResizedImages } from '~/lib/helpers'
 import type { AlertType } from '~/lib/hooks'
 import {
-  type Product,
-  type ProductMediaInner,
-  ProductStatus,
-  type Category,
-  type ProductTag,
-  type ProductType,
-  type Producer,
+  type Experience,
+  type ExperienceType,
+  type ExperienceMediaInner,
+  type Prefecture,
+  type ExperiencesResponse,
+  ExperienceStatus,
   AdminRole,
 } from '~/types/api'
 
@@ -44,24 +43,16 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  categories: {
-    type: Array<Category>,
+  experiencesResponse: {
+    type: Array<ExperiencesResponse>,
     default: () => [],
   },
-  producers: {
-    type: Array<Producer>,
+  experiences: {
+    type: Array<Experience>,
     default: () => [],
   },
-  products: {
-    type: Array<Product>,
-    default: () => [],
-  },
-  productTags: {
-    type: Array<ProductTag>,
-    default: () => [],
-  },
-  productTypes: {
-    type: Array<ProductType>,
+  experienceTypes: {
+    type: Array<ExperienceType>,
     default: () => [],
   },
   tableItemsPerPage: {
@@ -94,7 +85,7 @@ const headers: VDataTable['headers'] = [
   },
   {
     title: '商品名',
-    key: 'name',
+    key: 'title',
     sortable: false,
   },
   {
@@ -132,13 +123,38 @@ const handleUpdateSelectItemId = (itemIds: string[]): void => {
     emit('update:selectedItemId', itemIds[0])
   }
 }
+console.log(props.experiencesResponse)
 
-const selectedItem = ref<Product>()
+const selectedItem = ref<Experience>()
 
 const deleteDialogValue = computed({
   get: (): boolean => props.deleteDialog,
   set: (val: boolean): void => emit('update:delete-dialog', val),
 })
+
+const getThumbnail = (media: ExperienceMediaInner[]): string => {
+  const thumbnail = media.find((media: ExperienceMediaInner) => {
+    return media.isThumbnail
+  })
+  return thumbnail?.url || ''
+}
+
+const getResizedThumbnails = (media: ExperienceMediaInner[]): string => {
+  const thumbnail = media.find((media: ExperienceMediaInner) => {
+    return media.isThumbnail
+  })
+  if (!thumbnail) {
+    return ''
+  }
+  return getResizedImages(thumbnail.url)
+}
+
+const getExperienceType = (experienceTypeId: string): string => {
+  const experienceType = props.experienceTypes.find((experienceType: ExperienceType): boolean => {
+    return experienceType.id === experienceTypeId
+  })
+  return experienceType ? experienceType.name : ''
+}
 
 const isRegisterable = (): boolean => {
   return props.role === AdminRole.COORDINATOR
@@ -149,47 +165,9 @@ const isDeletable = (): boolean => {
   return targets.includes(props.role)
 }
 
-const getStatus = (status: ProductStatus): string => {
-  switch (status) {
-    case ProductStatus.PRESALE:
-      return '予約販売'
-    case ProductStatus.FOR_SALE:
-      return '販売中'
-    case ProductStatus.OUT_OF_SALES:
-      return '販売終了'
-    case ProductStatus.PRIVATE:
-      return '非公開'
-    case ProductStatus.ARCHIVED:
-      return 'アーカイブ済み'
-    default:
-      return ''
-  }
-}
-
-const getStatusColor = (status: ProductStatus): string => {
-  switch (status) {
-    case ProductStatus.PRESALE:
-      return 'info'
-    case ProductStatus.FOR_SALE:
-      return 'primary'
-    case ProductStatus.OUT_OF_SALES:
-      return 'secondary'
-    case ProductStatus.PRIVATE:
-      return 'warning'
-    case ProductStatus.ARCHIVED:
-      return 'error'
-    default:
-      return ''
-  }
-}
-
-const getInventoryColor = (inventory: number): string => {
-  return inventory > 0 ? '' : 'text-error'
-}
-
-const toggleDeleteDialog = (product?: Product): void => {
-  if (product) {
-    selectedItem.value = product
+const toggleDeleteDialog = (experience?: Experience): void => {
+  if (experience) {
+    selectedItem.value = experience
   }
   deleteDialogValue.value = !deleteDialogValue.value
 }
@@ -214,8 +192,43 @@ const onClickDelete = (): void => {
   emit('click:delete', selectedItem?.value?.id || '')
 }
 
-const onClickCopyItem = (): void => {
-  emit('click:copyItem')
+const getStatus = (status: ExperienceStatus): string => {
+  switch (status) {
+    case ExperienceStatus.WAITING:
+      return '販売開始前'
+    case ExperienceStatus.ACCEPTING:
+      return '体験受付中'
+    case ExperienceStatus.SOLD_OUT:
+      return '体験受付終了'
+    case ExperienceStatus.PRIVATE:
+      return '非公開'
+    case ExperienceStatus.FINISHED:
+      return '販売終了'
+    default:
+      return ''
+  }
+}
+
+const getStatusColor = (status: ExperienceStatus): string => {
+  switch (status) {
+    case ExperienceStatus.WAITING:
+      return 'info'
+    case ExperienceStatus.ACCEPTING:
+      return 'primary'
+    case ExperienceStatus.SOLD_OUT:
+      return 'secondary'
+    case ExperienceStatus.PRIVATE:
+      return 'warning'
+    case ExperienceStatus.FINISHED:
+      return 'error'
+    default:
+      return ''
+  }
+}
+
+const getPrefecture = (hostPrefectureCode: Prefecture): string => {
+  const item = prefecturesList.find(prefecture => prefecture.value === hostPrefectureCode)
+  return item ? item.text : ''
 }
 </script>
 
@@ -232,7 +245,7 @@ const onClickCopyItem = (): void => {
   >
     <v-card>
       <v-card-text class="text-h7">
-        {{ selectedItem?.name }}を本当に削除しますか？
+        {{ selectedItem?.title }}を本当に削除しますか？
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -283,7 +296,7 @@ const onClickCopyItem = (): void => {
       <v-data-table-server
         :headers="headers"
         :loading="loading"
-        :items="props.products"
+        :items="props.experiencesResponse.experiences"
         :items-per-page="props.tableItemsPerPage"
         :items-length="props.tableItemsTotal"
         hover
@@ -300,7 +313,23 @@ const onClickCopyItem = (): void => {
             aspect-ratio="1/1"
             :max-height="56"
             :max-width="80"
+            :src="getThumbnail(item.media)"
+            :srcset="getResizedThumbnails(item.media)"
           />
+        </template>
+        <template #[`item.status`]="{ item }">
+          <v-chip :color="getStatusColor(item.status)">
+            {{ getStatus(item.status) }}
+          </v-chip>
+        </template>
+        <template #[`item.experienceType`]="{ item }">
+          {{ getExperienceType(item.experienceTypeId) }}
+        </template>
+        <template #[`item.place`]="{ item }">
+          {{ getPrefecture(item.hostPrefectureCode) }}
+        </template>
+        <template #[`item.producerName`]="{ item }">
+          {{ item.firstname }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
