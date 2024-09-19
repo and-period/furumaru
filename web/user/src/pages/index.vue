@@ -134,7 +134,8 @@ useSeoMeta({
               <span class="md:text-[24px] text-[18px]">{{ tt('discoverProductLinkText') }}</span>
               <span
                 v-if="isEnglish"
-                class="sm:mr-1">{{ tt('discoverConjunctionText') }}</span>
+                class="sm:mr-1"
+              >{{ tt('discoverConjunctionText') }}</span>
               <span v-else>{{ tt('discoverConjunctionText') }}</span>
             </div>
             {{ tt('discoverText') }}
@@ -147,7 +148,8 @@ useSeoMeta({
               <span class="md:text-[24px] text-[18px]">{{ tt('discoverExperienceLinkText') }}</span>
               <span
                 v-if="isEnglish"
-                class="sm:mr-1">{{ tt('discoverConjunctionText') }}</span>
+                class="sm:mr-1"
+              >{{ tt('discoverConjunctionText') }}</span>
               <span v-else>{{ tt('discoverConjunctionText') }}</span>
             </div>
             {{ tt('discoverText') }}
