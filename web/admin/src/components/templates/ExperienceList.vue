@@ -10,6 +10,7 @@ import {
   type ExperienceMediaInner,
   type Prefecture,
   type ExperiencesResponse,
+  type Producer,
   ExperienceStatus,
   AdminRole,
 } from '~/types/api'
@@ -42,6 +43,10 @@ const props = defineProps({
   alertText: {
     type: String,
     default: '',
+  },
+  producers: {
+    type: Array<Producer>,
+    defaut: () => [],
   },
   experiencesResponse: {
     type: Array<ExperiencesResponse>,
@@ -192,6 +197,13 @@ const onClickDelete = (): void => {
   emit('click:delete', selectedItem?.value?.id || '')
 }
 
+const getProducerName = (producerId: string): string => {
+  const producer = props.producers?.find((producer: Producer): boolean => {
+    return producer.id === producerId
+  })
+  return producer ? producer.username : ''
+}
+
 const getStatus = (status: ExperienceStatus): string => {
   switch (status) {
     case ExperienceStatus.WAITING:
@@ -329,7 +341,7 @@ const getPrefecture = (hostPrefectureCode: Prefecture): string => {
           {{ getPrefecture(item.hostPrefectureCode) }}
         </template>
         <template #[`item.producerName`]="{ item }">
-          {{ item.firstname }}
+          {{ getProducerName(item.producerId) }}
         </template>
         <template #[`item.actions`]="{ item }">
           <v-btn
