@@ -103,6 +103,7 @@ export interface I18n {
       deepJapanText: string
       localVideoMediaText: string
       discoverExperienceLinkText: string
+      discoverConjunctionText: string
       discoverProductLinkText: string
       discoverText: string
       marcheListSubTitle: string
