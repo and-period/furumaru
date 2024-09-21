@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.42](https://github.com/and-period/furumaru/compare/v1.11.41...v1.11.42) - 2024-09-20
+- feat(user): Topの文言変更とスタイル調整 by @sea-kai in https://github.com/and-period/furumaru/pull/2412
+
 ## [v1.11.41](https://github.com/and-period/furumaru/compare/v1.11.40...v1.11.41) - 2024-09-18
 - build(deps-dev): bump npm-run-all2 from 6.2.2 to 6.2.3 in /docs/swagger in the dependencies group by @dependabot in https://github.com/and-period/furumaru/pull/2408
 - ライブ配信に紐づいてる商品のサムネイルのレイアウト調整 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2405
