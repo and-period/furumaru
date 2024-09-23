@@ -131,11 +131,10 @@ func (a *app) run(ctx context.Context) error {
 	// メールの送信先と動的な変数を設定する
 	req := make([]*builder, len(rows))
 	for i, row := range rows {
-		if len(row) != len(header) {
-			return fmt.Errorf("invalid row: index=%d header=%d, row=%d", i, len(header), len(row))
+		builder, err := newBuilder(header, row)
+		if err != nil {
+			return fmt.Errorf("failed to create builder: index=%d, %w", i, err)
 		}
-
-		builder := newBuilder(header, row)
 
 		if _, ok := builder.getName(); !ok {
 			return fmt.Errorf("name is required: index=%d", i)
@@ -220,7 +219,10 @@ type builder struct {
 	substitutions map[string]string
 }
 
-func newBuilder(header, body []string) *builder {
+func newBuilder(header, body []string) (*builder, error) {
+	if len(body) != len(header) {
+		return nil, fmt.Errorf("header and body are not matched: header=%d, body=%d", len(header), len(body))
+	}
 	substitutions := make(map[string]string, len(header))
 	for i, key := range header {
 		substitutions[key] = body[i]
@@ -229,7 +231,7 @@ func newBuilder(header, body []string) *builder {
 		substitutions: substitutions,
 	}
 	builder.set()
-	return builder
+	return builder, nil
 }
 
 func (b *builder) build() (string, string, map[string]interface{}, bool) {
