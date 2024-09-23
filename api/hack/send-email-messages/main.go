@@ -1,4 +1,4 @@
-//nolint:forbidigo
+//nolint:forbidigo,gocritic
 package main
 
 import (
@@ -19,12 +19,12 @@ import (
 )
 
 var (
-	sendgridAPIKey  string
-	mailTemplateID  string
-	mailFromName    string
-	mailFromAddress string
-	sourceCSVFile   string
-	debug           bool
+	sendgridAPIKey     string
+	sendgridTemplateID string
+	mailFromName       string
+	mailFromAddress    string
+	sourceCSVFile      string
+	debug              bool
 )
 
 type app struct {
@@ -42,11 +42,13 @@ func main() {
 
 	app, err := setup(ctx)
 	if err != nil {
-		panic(fmt.Errorf("failed to setup: %w", err))
+		fmt.Fprintf(os.Stderr, "failed to setup: %v\n", err)
+		os.Exit(1)
 	}
 
 	if err := app.run(ctx); err != nil {
-		panic(fmt.Errorf("failed to run: %w", err))
+		fmt.Fprintf(os.Stderr, "failed to run: %v\n", err)
+		os.Exit(1)
 	}
 
 	endAt := jst.Now()
@@ -60,15 +62,18 @@ func main() {
 
 func setup(_ context.Context) (*app, error) {
 	flag.StringVar(&sendgridAPIKey, "sendgrid-api-key", "", "SendGridのAPIキー")
-	flag.StringVar(&mailTemplateID, "mail-template-id", "d-66e33b4d42a94c3db8e39b10911bca44", "メールテンプレートID")
+	flag.StringVar(&sendgridTemplateID, "sendgrid-template-id", "", "SendGridのテンプレートID")
 	flag.StringVar(&mailFromName, "mail-from-name", "", "メール送信元名")
 	flag.StringVar(&mailFromAddress, "mail-from-address", "", "メール送信元アドレス")
 	flag.StringVar(&sourceCSVFile, "source-csv-file", "", "参照元CSVファイル")
 	flag.BoolVar(&debug, "debug", true, "デバッグモード")
 	flag.Parse()
 
-	if mailTemplateID == "" {
-		return nil, fmt.Errorf("mail-template-id is required")
+	if sendgridAPIKey == "" {
+		return nil, fmt.Errorf("sendgrid-api-key is required")
+	}
+	if sendgridTemplateID == "" {
+		return nil, fmt.Errorf("sendgrid-template-id is required")
 	}
 	if mailFromName == "" {
 		return nil, fmt.Errorf("mail-from-name is required")
@@ -89,7 +94,7 @@ func setup(_ context.Context) (*app, error) {
 		APIKey:      sendgridAPIKey,
 		FromName:    mailFromName,
 		FromAddress: mailFromAddress,
-		TemplateMap: map[string]string{"default": mailTemplateID},
+		TemplateMap: map[string]string{"default": sendgridTemplateID},
 	}
 	mailer := mailer.NewClient(mailerParams, mailer.WithLogger(logger))
 
@@ -126,6 +131,10 @@ func (a *app) run(ctx context.Context) error {
 	// メールの送信先と動的な変数を設定する
 	req := make([]*builder, len(rows))
 	for i, row := range rows {
+		if len(row) != len(header) {
+			return fmt.Errorf("invalid row: index=%d header=%d, row=%d", i, len(header), len(row))
+		}
+
 		builder := newBuilder(header, row)
 
 		if _, ok := builder.getName(); !ok {
@@ -267,6 +276,14 @@ func (b *builder) setEmail() {
 		return
 	}
 	if v, ok := b.substitutions["e-mail"]; ok {
+		b.substitutions["メールアドレス"] = v
+		return
+	}
+	if v, ok := b.substitutions["email"]; ok {
+		b.substitutions["メールアドレス"] = v
+		return
+	}
+	if v, ok := b.substitutions["Email"]; ok {
 		b.substitutions["メールアドレス"] = v
 		return
 	}
