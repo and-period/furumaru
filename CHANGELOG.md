@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.43](https://github.com/and-period/furumaru/compare/v1.11.42...v1.11.43) - 2024-09-23
+- fix: topのボタン文言修正 by @sea-kai in https://github.com/and-period/furumaru/pull/2415
+
 ## [v1.11.42](https://github.com/and-period/furumaru/compare/v1.11.41...v1.11.42) - 2024-09-20
 - feat(user): Topの文言変更とスタイル調整 by @sea-kai in https://github.com/and-period/furumaru/pull/2412
 
