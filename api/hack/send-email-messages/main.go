@@ -162,6 +162,19 @@ func (a *app) run(ctx context.Context) error {
 		email := builder.substitutions["メールアドレス"]
 		res := "OK"
 
+		defer func() {
+			out := fmt.Sprintf("index=%d: 氏名=%s, 姓=%s, メールアドレス=%s, 結果=%s\n", i, name, sei, email, res)
+			if _, err := fmt.Fprint(writer, out); err != nil {
+				a.logger.Error("failed to write output", zap.Int("index", i), zap.String("name", name), zap.Error(err))
+			}
+		}()
+
+		if email == "" {
+			res = "Skip"
+			a.logger.Error("email is empty", zap.Int("index", i), zap.String("name", name))
+			continue
+		}
+
 		retryFn := func() error {
 			return a.send(ctx, builder)
 		}
@@ -170,11 +183,6 @@ func (a *app) run(ctx context.Context) error {
 		if err != nil {
 			res = "NG"
 			a.logger.Error("failed to retry", zap.Int("index", i), zap.String("name", name), zap.Error(err))
-		}
-
-		out := fmt.Sprintf("index=%d: 氏名=%s, 姓=%s, メールアドレス=%s, 結果=%s\n", i, name, sei, email, res)
-		if _, err := fmt.Fprint(writer, out); err != nil {
-			a.logger.Error("failed to write output", zap.Int("index", i), zap.String("name", name), zap.Error(err))
 		}
 	}
 	a.logger.Info("Finish to send emails")
