@@ -6,6 +6,7 @@ import type { I18n } from '~/types/locales'
 interface Props {
   formData: CreateAddressRequest
   formId: string
+  postalCodeErrorMessage: string
 }
 
 const i18n = useI18n()
@@ -89,13 +90,14 @@ const handleSubmit = () => {
         type="text"
         name="postal-code"
         required
+        :error-message="postalCodeErrorMessage"
       />
       <button
         type="button"
         class="whitespace-nowrap bg-main px-4 py-1 text-white"
         @click="handleClickSearchAddressButton"
       >
-        {{ at('searchButtonText') }}
+        {{ at("searchButtonText") }}
       </button>
     </div>
     <select
@@ -109,7 +111,7 @@ const handleSubmit = () => {
         disabled
         value="0"
       >
-        {{ at('prefectureLabel') }}
+        {{ at("prefectureLabel") }}
       </option>
       <option
         v-for="prefecture in prefecturesList"
@@ -151,7 +153,7 @@ const handleSubmit = () => {
         type="checkbox"
         class="h-4 w-4 rounded accent-main"
       >
-      <label for="isDefault">{{ at('setDefaultAddressLabel') }}</label>
+      <label for="isDefault">{{ at("setDefaultAddressLabel") }}</label>
     </div>
   </form>
 </template>
