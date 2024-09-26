@@ -32,7 +32,8 @@
     "nuxt": "^3.8.2",
     "pinia": "^2.0.30",
     "postcss-custom-properties": "^13.3.3",
-    "sass": "^1.57.1"
+    "sass": "^1.57.1",
+    "vue3-google-map": "^0.21.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.3",
