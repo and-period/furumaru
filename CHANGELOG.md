@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.11.44](https://github.com/and-period/furumaru/compare/v1.11.43...v1.11.44) - 2024-09-29
+- Fix: fixed purhcase ui by @hamachans in https://github.com/and-period/furumaru/pull/2420
+
 ## [v1.11.43](https://github.com/and-period/furumaru/compare/v1.11.42...v1.11.43) - 2024-09-23
 - fix: topのボタン文言修正 by @sea-kai in https://github.com/and-period/furumaru/pull/2415
 
