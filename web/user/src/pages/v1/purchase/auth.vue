@@ -16,15 +16,15 @@ const at = (str: keyof I18n['purchase']['auth']) => {
   return i18n.t(`purchase.auth.${str}`)
 }
 
-const loginRequired = computed<boolean>(() => {
-  const required = route.query.required
-  if (required) {
-    return Boolean(required)
-  }
-  else {
-    return false
-  }
-})
+// const loginRequired = computed<boolean>(() => {
+//   const required = route.query.required
+//   if (required) {
+//     return Boolean(required)
+//   }
+//   else {
+//     return false
+//   }
+// })
 
 const fromNewAccounet = computed<boolean>(() => {
   const fromNewAccounetParam = route.query.from_new_accounet
@@ -116,6 +116,7 @@ const hideV1App = false
 </script>
 
 <template>
+  <!-- 購入導線改善の検証のためにコメントアウト
   <div
     v-if="loginRequired"
     class="px-4"
@@ -126,6 +127,7 @@ const hideV1App = false
       {{ at('loginRequiredMessage') }}
     </the-alert>
   </div>
+  -->
 
   <div
     v-if="fromNewAccounet"
@@ -141,6 +143,22 @@ const hideV1App = false
   <div
     class="container mx-auto mt-[40px] flex flex-col gap-10 px-4 md:grid md:grid-cols-2 md:gap-0 md:px-0"
   >
+    <div
+      class="w-full bg-white px-4 py-[40px] tracking-[1.6px] text-main md:mx-auto md:w-[360px] md:px-[40px] lg:w-[480px] xl:w-[560px] xl:px-[80px]"
+    >
+      <h2 class="mb-[40px] text-center text-[16px] font-bold">
+        {{ at('notSignUpTitle') }}
+      </h2>
+      <p class="my-[40px] text-[14px] tracking-[1.4px]">
+        {{ at('checkoutWithoutAccountDescription') }}
+      </p>
+      <the-submit-without-login-button
+        type="submit"
+        @click="handleSubmitWithoutSignForm"
+      >
+        {{ at('checkoutWithoutAccountButtonText') }}
+      </the-submit-without-login-button>
+    </div>
     <div
       class="w-full bg-white px-4 py-[40px] tracking-[1.6px] text-main md:mx-auto md:w-[360px] md:px-[40px] lg:w-[480px] xl:w-[560px] xl:px-[80px]"
     >
@@ -177,23 +195,6 @@ const hideV1App = false
       >
         {{ at('forgetPasswordLink') }}
       </div>
-    </div>
-
-    <div
-      class="w-full bg-white px-4 py-[40px] tracking-[1.6px] text-main md:mx-auto md:w-[360px] md:px-[40px] lg:w-[480px] xl:w-[560px] xl:px-[80px]"
-    >
-      <h2 class="mb-[40px] text-center text-[16px] font-bold">
-        {{ at('notSignUpTitle') }}
-      </h2>
-      <p class="my-[40px] text-[14px] tracking-[1.4px]">
-        {{ at('checkoutWithoutAccountDescription') }}
-      </p>
-      <the-submit-without-login-button
-        type="submit"
-        @click="handleSubmitWithoutSignForm"
-      >
-        {{ at('checkoutWithoutAccountButtonText') }}
-      </the-submit-without-login-button>
     </div>
   </div>
 </template>
