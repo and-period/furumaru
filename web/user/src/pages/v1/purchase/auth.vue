@@ -16,15 +16,15 @@ const at = (str: keyof I18n['purchase']['auth']) => {
   return i18n.t(`purchase.auth.${str}`)
 }
 
-const loginRequired = computed<boolean>(() => {
-  const required = route.query.required
-  if (required) {
-    return Boolean(required)
-  }
-  else {
-    return false
-  }
-})
+// const loginRequired = computed<boolean>(() => {
+//   const required = route.query.required
+//   if (required) {
+//     return Boolean(required)
+//   }
+//   else {
+//     return false
+//   }
+// })
 
 const fromNewAccounet = computed<boolean>(() => {
   const fromNewAccounetParam = route.query.from_new_accounet
