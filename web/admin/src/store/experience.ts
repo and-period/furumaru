@@ -1,5 +1,7 @@
+import type { AxiosResponse } from "axios";
 import { apiClient } from "~/plugins/api-client";
-import type { Experience, ExperienceResponse, ExperiencesResponse, Producer } from "~/types/api";
+import type { Experience, ExperienceResponse, ExperiencesResponse, GetUploadUrlRequest, Producer, UploadUrlResponse } from "~/types/api";
+import { fileUpload } from "./helper";
 
 export const useExperienceStore = defineStore('experience', {
   state: () => ({
@@ -30,6 +32,47 @@ export const useExperienceStore = defineStore('experience', {
       }
     },
 
+    /**
+     * 体験メディアファイルをアップロードする非同期関数
+     * @param payload
+     * @returns
+     */
+    async uploadExperienceMedia(payload: File): Promise<string> {
+      const contentType = payload.type
+      try {
+        const res = await this.getExperienceMediaUploadUrl(contentType)
+
+        return await fileUpload(payload, res.data.key, res.data.url)
+      }
+      catch (err) {
+        return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+      }
+    },
+
+    async getExperienceMediaUploadUrl(contentType: string): Promise<AxiosResponse<UploadUrlResponse, any>> {
+      const body: GetUploadUrlRequest = {
+        fileType: contentType,
+      }
+      if (contentType.includes('image/')) {
+        try {
+          const res = await apiClient.productApi().v1GetProductImageUploadUrl(body)
+          return res
+        }
+        catch (err) {
+          return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        }
+      }
+      if (contentType.includes('video/')) {
+        try {
+          const res = await apiClient.productApi().v1GetProductVideoUploadUrl(body)
+          return res
+        }
+        catch (err) {
+          return this.errorHandler(err, { 400: 'このファイルはアップロードできません。' })
+        }
+      }
+      throw new Error('不明なMINEタイプです。')
+    },
     /**
      * 体験を削除する関数
      * @param experienceId

@@ -2,9 +2,11 @@
 import dayjs from 'dayjs'
 import { storeToRefs } from 'pinia'
 
-import { useAlert } from '~/lib/hooks'
+import { useAlert, useSearchAddress } from '~/lib/hooks'
 import {
   useAuthStore,
+  useExperienceStore,
+  useExperienceTypeStore,
   useProducerStore,
 } from '~/store'
 import type {
@@ -14,10 +16,14 @@ import type {
 const router = useRouter()
 const authStore = useAuthStore()
 const producerStore = useProducerStore()
+const experienceStore = useExperienceStore()
+const experienceTypeStore = useExperienceTypeStore()
+const searchAddress = useSearchAddress()
 const { alertType, isShow, alertText, show } = useAlert('error')
 
 const { auth } = storeToRefs(authStore)
 const { producers } = storeToRefs(producerStore)
+const { experienceTypes } = storeToRefs(experienceTypeStore)
 
 const loading = ref<boolean>(false)
 const formData = ref<CreateExperienceRequest>({
@@ -44,10 +50,80 @@ const formData = ref<CreateExperienceRequest>({
   hostAddressLine2: '',
   startAt: dayjs().unix(),
   endAt: dayjs().unix(),
+  promotionVideoUrl: '',
+  duration: 0,
+  direction: '',
+  businessOpenTime: '',
+  businessCloseTime: '',
 })
 
+onMounted(() => {
+  producerStore.fetchProducers(20, 0, '')
+  fetchExperienceTypes()
+})
+
+const fetchExperienceTypes = async (): Promise<void> => {
+  try {
+    await experienceTypeStore.fetchExperienceTypes()
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    console.log(err)
+  }
+}
+
+const handleImageUpload = async (files: FileList): Promise<void> => {
+  loading.value = true
+  for (const [index, file] of Array.from(files).entries()) {
+    try {
+      const url: string = await experienceStore.uploadExperienceMedia(file)
+      formData.value.media.push({ url, isThumbnail: index === 0 })
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        show(err.message)
+      }
+      console.log(err)
+    }
+  }
+  loading.value = false
+
+  const thumbnailItem = formData.value.media.find(item => item.isThumbnail)
+  if (thumbnailItem) {
+    return
+  }
+  formData.value.media = formData.value.media.map(
+    (item, i): any => ({
+      ...item,
+      isThumbnail: i === 0,
+    }),
+  )
+}
+
+const handleSearchAddress = async (): Promise<void> => {
+  try {
+    searchAddress.loading.value = true
+    searchAddress.errorMessage.value = ''
+    const res = await searchAddress.searchAddressByPostalCode(formData.value.hostPostalCode)
+    formData.value = {
+      ...formData.value,
+      hostPrefectureCode: res.prefecture,
+      hostCity: res.city,
+      hostAddressLine1: res.town,
+    }
+  }
+  catch (err) {
+    console.log(err)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
 const isLoading = (): boolean => {
-  return loading.value
+  return false
 }
 </script>
 
@@ -55,9 +131,14 @@ const isLoading = (): boolean => {
   <templates-experience-new
     v-model:form-data="formData"
     :loading="isLoading()"
+    :search-loading="searchAddress.loading.value"
+    :search-error-message="searchAddress.errorMessage.value"
     :is-alert="isShow"
     :alert-type="alertType"
     :alert-text="alertText"
     :producers="producers"
+    :experience-types="experienceTypes"
+    @click:search-address="handleSearchAddress"
+    @update:files="handleImageUpload"
   />
 </template>

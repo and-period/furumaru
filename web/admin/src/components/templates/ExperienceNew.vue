@@ -6,11 +6,12 @@ import dayjs, { unix } from 'dayjs'
 import type { AlertType } from '~/lib/hooks'
 import type {
   CreateExperienceRequest,
+  ExperienceType,
   Producer,
 } from '~/types/api'
 import type { DateTimeInput } from '~/types/props'
 import {
-  CreateProductValidationRules,
+  CreateExperienceValidationRules,
   NotSameTimeDataValidationRules,
   TimeDataValidationRules,
 } from '~/types/validations'
@@ -59,13 +60,116 @@ const props = defineProps({
       hostAddressLine2: '',
       startAt: dayjs().unix(),
       endAt: dayjs().unix(),
+      promotionVideoUrl: '',
+      duration: 0,
+      direction: '',
+      businessOpenTime: '',
+      businessCloseTime: '',
     }),
   },
   producers: {
     type: Array<Producer>,
     default: () => [],
   },
+  experienceTypes: {
+    type: Array<ExperienceType>,
+    default: () => [],
+  },
+  searchErrorMessage: {
+    type: String,
+    default: '',
+  },
+  searchLoading: {
+    type: Boolean,
+    default: false,
+  },
 })
+
+const emit = defineEmits<{
+  (e: 'update:files', files: FileList): void
+  (e: 'update:form-data', formData: CreateExperienceRequest): void
+  (e: 'click:search-address'): void
+  (e: 'submit'): void
+}>()
+
+const thumbnailIndex = computed<number>({
+  get: (): number => props.formData.media.findIndex(item => item.isThumbnail),
+  set: (index: number): void => {
+    if (formDataValue.value.media.length <= index) {
+      return
+    }
+    formDataValue.value.media = formDataValue.value.media.map((item, i) => {
+      if (i === index) {
+        return {
+          ...item,
+          isThumbnail: true,
+        }
+      }
+      else {
+        return {
+          ...item,
+          isThumbnail: false,
+        }
+      }
+    })
+  },
+})
+
+const publicStatus = [
+  { title: '公開', value: true },
+  { title: '非公開', value: false },
+]
+
+const soloStatus = [
+  { title: '販売中', value: true },
+  { title: '在庫なし', value: false },
+]
+
+const onChangeStartAt = (): void => {
+  const startAt = dayjs(
+    `${startTimeDataValue.value.date} ${startTimeDataValue.value.time}`,
+  )
+  formDataValue.value.startAt = startAt.unix()
+}
+
+const onChangeEndAt = (): void => {
+  const endAt = dayjs(
+    `${endTimeDataValue.value.date} ${endTimeDataValue.value.time}`,
+  )
+  formDataValue.value.endAt = endAt.unix()
+}
+
+const onClickThumbnail = (i: number): void => {
+  thumbnailIndex.value = i
+}
+
+const onDeleteThumbnail = (i: number): void => {
+  const targetItem = props.formData.media.find((_, index) => index === i)
+  if (!targetItem) {
+    return
+  }
+
+  const media = targetItem.isThumbnail
+    ? props.formData.media
+      .filter((_, index) => index !== i)
+      .map((item, i) => {
+        return i === 0 ? { ...item, isThumbnail: true } : item
+      })
+    : props.formData.media.filter((_, index) => index !== i)
+  formDataValue.value.media = media
+}
+
+const onClickImageUpload = (files?: FileList): void => {
+  if (!files) {
+    return
+  }
+
+  emit('update:files', files)
+}
+
+const onClickSearchAddress = (): void => {
+  emit('click:search-address')
+}
 
 const formDataValue = computed({
   get: (): CreateExperienceRequest => props.formData,
@@ -94,7 +198,7 @@ const endTimeDataValue = computed({
 })
 
 const formDataValidate = useVuelidate(
-  CreateProductValidationRules,
+  CreateExperienceValidationRules,
   formDataValue,
 )
 const startTimeDataValidate = useVuelidate(
@@ -104,6 +208,11 @@ const startTimeDataValidate = useVuelidate(
 const endTimeDataValidate = useVuelidate(
   TimeDataValidationRules,
   endTimeDataValue,
+)
+
+const notSameTimeValidate = useVuelidate(
+  () => NotSameTimeDataValidationRules(props.formData.startAt, '販売開始日時'),
+  formDataValue,
 )
 </script>
 
@@ -131,20 +240,24 @@ const endTimeDataValidate = useVuelidate(
           <v-card-title>基本情報</v-card-title>
           <v-card-text>
             <v-autocomplete
+              v-model="formDataValidate.producerId.$model"
               label="生産者名"
               :items="producers"
               item-title="username"
               item-value="id"
             />
             <v-text-field
+              v-model="formDataValidate.title.$model"
               label="体験名"
               outlined
             />
             <v-textarea
+              v-model="formDataValidate.description.$model"
               label="体験説明"
               maxlength="2000"
             />
             <v-number-input
+              v-model="formDataValidate.duration.$model"
               :max="24"
               :min="0"
               :reverse="false"
@@ -158,18 +271,23 @@ const endTimeDataValidate = useVuelidate(
             </p>
             <div class="d-flex flex-column flex-md-row justify-center">
               <v-text-field
+                v-model="formDataValidate.businessOpenTime.$model"
                 type="time"
                 variant="outlined"
                 density="compact"
               />
-              <div class="pa-3">〜</div>
+              <div class="pa-3">
+                〜
+              </div>
               <v-text-field
+                v-model="formDataValidate.businessCloseTime.$model"
                 type="time"
                 variant="outlined"
                 density="compact"
               />
             </div>
             <v-textarea
+              v-model="formDataValidate.direction.$model"
               label="アクセス方法"
               maxlength="2000"
             />
@@ -177,6 +295,7 @@ const endTimeDataValidate = useVuelidate(
           <v-card-subtitle>商品画像登録</v-card-subtitle>
           <v-card-text>
             <v-radio-group
+              v-model="thumbnailIndex"
               :error-messages="getErrorMessage(formDataValidate.media.$errors)"
             >
               <v-row>
@@ -191,6 +310,7 @@ const endTimeDataValidate = useVuelidate(
                     variant="outlined"
                     width="100%"
                     :class="{ 'thumbnail-border': img.isThumbnail }"
+                    @click="onClickThumbnail(i)"
                   >
                     <v-img
                       :src="img.url"
@@ -206,6 +326,7 @@ const endTimeDataValidate = useVuelidate(
                           color="error"
                           variant="text"
                           size="small"
+                          @click="onDeleteThumbnail(i)"
                         />
                       </div>
                     </v-img>
@@ -222,62 +343,86 @@ const endTimeDataValidate = useVuelidate(
             <div class="mb-2">
               <atoms-file-upload-filed
                 text="商品画像"
+                @update:files="onClickImageUpload"
               />
             </div>
           </v-card-text>
+          <div class="mx-4">
+            <molecules-video-select-form
+              label="紹介動画"
+              :loading="loading"
+            />
+          </div>
           <v-card-text>
             <v-text-field
+              v-model="formDataValidate.recommendedPoint1.$model"
               :error-messages="
                 getErrorMessage(formDataValidate.recommendedPoint1.$errors)
               "
               label="おすすめポイント1"
             />
             <v-text-field
+              v-model="formDataValidate.recommendedPoint2.$model"
               :error-messages="
                 getErrorMessage(formDataValidate.recommendedPoint2.$errors)
               "
               label="おすすめポイント2"
             />
             <v-text-field
+              v-model="formDataValidate.recommendedPoint3.$model"
               :error-messages="
                 getErrorMessage(formDataValidate.recommendedPoint3.$errors)
               "
               label="おすすめポイント3"
             />
-            <molecules-address-form />
+            <molecules-address-form
+              v-model:postal-code="formDataValue.hostPostalCode"
+              v-model:prefecture="formDataValue.hostPrefectureCode"
+              v-model:city="formDataValue.hostCity"
+              v-model:address-line1="formDataValue.hostAddressLine1"
+              v-model:address-line2="formDataValue.hostAddressLine2"
+              :error-messages="props.searchErrorMessage"
+              :loading="props.searchLoading"
+              @click:search="onClickSearchAddress"
+            />
           </v-card-text>
           <v-card-title>価格設定</v-card-title>
           <v-card-text>
             <v-text-field
-              :error-messages="getErrorMessage(formDataValidate.price.$errors)"
+              v-model.number="formDataValidate.priceAdult.$model"
+              :error-messages="getErrorMessage(formDataValidate.priceAdult.$errors)"
               label="大人(高校生以上）(〜64歳)"
               type="number"
               min="0"
               suffix="円"
             />
             <v-text-field
-              :error-messages="getErrorMessage(formDataValidate.price.$errors)"
+              v-model.number="formDataValidate.priceJuniorHighSchool.$model"
+              :error-messages="getErrorMessage(formDataValidate.priceJuniorHighSchool.$errors)"
               label="中学生"
               type="number"
               min="0"
               suffix="円"
             />
             <v-text-field
-              :error-messages="getErrorMessage(formDataValidate.price.$errors)"
+              v-model.number="formDataValidate.priceElementarySchool.$model"
+              :error-messages="getErrorMessage(formDataValidate.priceElementarySchool.$errors)"
               label="小学生"
               type="number"
               min="0"
               suffix="円"
             />
             <v-text-field
-              :error-messages="getErrorMessage(formDataValidate.price.$errors)"
+              v-model.number="formDataValidate.pricePreschool.$model"
+              :error-messages="getErrorMessage(formDataValidate.pricePreschool.$errors)"
               label="未就学児 (3歳〜）"
               type="number"
               min="0"
               suffix="円"
             />
             <v-text-field
-              :error-messages="getErrorMessage(formDataValidate.price.$errors)"
+              v-model.number="formDataValidate.priceSenior.$model"
+              :error-messages="getErrorMessage(formDataValidate.priceSenior.$errors)"
               label="シニア (65歳〜）"
               type="number"
               min="0"
@@ -307,21 +452,32 @@ const endTimeDataValidate = useVuelidate(
           />
           <v-select
             label="公開状況"
+            variant="plain"
           />
           <p class="text-subtitle-2 text-grey py-2">
             販売開始日時
           </p>
           <div class="d-flex flex-column flex-md-row justify-center">
             <v-text-field
+              v-model="startTimeDataValidate.date.$model"
+              :error-messages="
+                getErrorMessage(startTimeDataValidate.date.$errors)
+              "
               type="date"
               variant="outlined"
               density="compact"
               class="mr-md-2"
+              @update:model-value="onChangeStartAt"
             />
             <v-text-field
+              v-model="startTimeDataValidate.time.$model"
+              :error-messages="
+                getErrorMessage(startTimeDataValidate.time.$errors)
+              "
               type="time"
               variant="outlined"
               density="compact"
+              @update:model-value="onChangeStartAt"
             />
           </div>
           <p class="text-subtitle-2 text-grey py-2">
@@ -329,17 +485,42 @@ const endTimeDataValidate = useVuelidate(
           </p>
           <div class="d-flex flex-column flex-md-row justify-center">
             <v-text-field
+              v-model="endTimeDataValidate.date.$model"
+              :error-messages="
+                getErrorMessage(endTimeDataValidate.date.$errors)
+              "
               type="date"
               variant="outlined"
               density="compact"
               class="mr-md-2"
+              @update:model-value="onChangeEndAt"
             />
             <v-text-field
+              v-model="endTimeDataValidate.time.$model"
+              :error-messages="
+                getErrorMessage(notSameTimeValidate.endAt.$errors)
+              "
               type="time"
               variant="outlined"
               density="compact"
+              @update:model-value="onChangeEndAt"
             />
           </div>
+        </v-card-text>
+        <v-card-title>詳細情報</v-card-title>
+        <v-card-text>
+          <v-select
+            v-model="formDataValidate.experienceTypeId.$model"
+            :error-messages="
+              getErrorMessage(formDataValidate.experienceTypeId.$errors)
+            "
+            label="カテゴリ"
+            :items="experienceTypes"
+            item-title="name"
+            item-value="id"
+            no-data-text="カテゴリを選択してください。"
+            clearable
+          />
         </v-card-text>
       </v-card>
     </v-col>
