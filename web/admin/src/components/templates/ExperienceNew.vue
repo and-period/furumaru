@@ -120,7 +120,7 @@ const publicStatus = [
   { title: '非公開', value: false },
 ]
 
-const soloStatus = [
+const soldStatus = [
   { title: '販売中', value: true },
   { title: '在庫なし', value: false },
 ]
@@ -214,6 +214,23 @@ const notSameTimeValidate = useVuelidate(
   () => NotSameTimeDataValidationRules(props.formData.startAt, '販売開始日時'),
   formDataValue,
 )
+
+const onSubmit = async (): Promise<void> => {
+  const formDataValid = await formDataValidate.value.$validate()
+  const startTimeDataValid = await startTimeDataValidate.value.$validate()
+  const endTimeDataValid = await endTimeDataValidate.value.$validate()
+  const notSameTimeValid = await notSameTimeValidate.value.$validate()
+  if (
+    !formDataValid
+    || !startTimeDataValid
+    || !endTimeDataValid
+    || !notSameTimeValid
+  ) {
+    return
+  }
+
+  emit('submit')
+}
 </script>
 
 <template>
@@ -444,15 +461,18 @@ const notSameTimeValidate = useVuelidate(
         <v-card-title>販売設定</v-card-title>
         <v-card-text>
           <v-select
+            v-model="formDataValue.public"
             label="販売状況"
+            :items="publicStatus"
             item-title="title"
             item-value="value"
-            variant="plain"
-            readonly
           />
           <v-select
+            v-model="formDataValue.soldOut"
             label="公開状況"
-            variant="plain"
+            :items="soldStatus"
+            item-title="title"
+            item-value="value"
           />
           <p class="text-subtitle-2 text-grey py-2">
             販売開始日時

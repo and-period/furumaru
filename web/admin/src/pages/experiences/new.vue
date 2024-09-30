@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import { useAlert, useSearchAddress } from '~/lib/hooks'
 import {
   useAuthStore,
+  useCommonStore,
   useExperienceStore,
   useExperienceTypeStore,
   useProducerStore,
@@ -14,6 +15,7 @@ import type {
 } from '~/types/api'
 
 const router = useRouter()
+const commonStore = useCommonStore()
 const authStore = useAuthStore()
 const producerStore = useProducerStore()
 const experienceStore = useExperienceStore()
@@ -71,6 +73,35 @@ const fetchExperienceTypes = async (): Promise<void> => {
       show(err.message)
     }
     console.log(err)
+  }
+}
+
+const handleSubmit = async (): Promise<void> => {
+  const req = {
+    ...formData.value,
+    coordinatorId: auth.value?.adminId || '',
+  }
+  try {
+    loading.value = true
+    await experienceStore.createExperiece(req)
+    commonStore.addSnackbar({
+      message: `体験の登録が完了しました。`,
+      color: 'info',
+    })
+    router.push('/experiences')
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      show(err.message)
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+    console.log(err)
+  }
+  finally {
+    loading.value = false
   }
 }
 
@@ -140,5 +171,6 @@ const isLoading = (): boolean => {
     :experience-types="experienceTypes"
     @click:search-address="handleSearchAddress"
     @update:files="handleImageUpload"
+    @submit="handleSubmit"
   />
 </template>

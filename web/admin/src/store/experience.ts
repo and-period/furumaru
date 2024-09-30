@@ -1,6 +1,6 @@
 import type { AxiosResponse } from "axios";
 import { apiClient } from "~/plugins/api-client";
-import type { Experience, ExperienceResponse, ExperiencesResponse, GetUploadUrlRequest, Producer, UploadUrlResponse } from "~/types/api";
+import type { CreateExperienceRequest, Experience, ExperienceResponse, ExperiencesResponse, GetUploadUrlRequest, Producer, UploadUrlResponse } from "~/types/api";
 import { fileUpload } from "./helper";
 
 export const useExperienceStore = defineStore('experience', {
@@ -31,7 +31,18 @@ export const useExperienceStore = defineStore('experience', {
         return this.errorHandler(err)
       }
     },
-
+    async createExperiece(payload: CreateExperienceRequest) {
+      try {
+        const res = await apiClient.experienceApi().v1CreateExperience(payload)
+        return res.data
+      }
+      catch (err) {
+        return this.errorHandler(err, {
+          400: '必須項目が不足しているか、入力内容に誤りがあります。',
+          403: '登録する権限がありません。管理者にお問い合わせください',
+        })
+      }
+    },
     /**
      * 体験メディアファイルをアップロードする非同期関数
      * @param payload
