@@ -80,6 +80,8 @@ const handleSubmit = async (): Promise<void> => {
   const req = {
     ...formData.value,
     coordinatorId: auth.value?.adminId || '',
+    businessOpenTime: formData.value.businessOpenTime.replace(':', ''),
+    businessCloseTime: formData.value.businessCloseTime.replace(':', ''),
   }
   try {
     loading.value = true
