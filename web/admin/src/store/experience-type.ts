@@ -1,5 +1,5 @@
-import { apiClient } from "~/plugins/api-client";
-import type { ExperienceType } from "~/types/api";
+import { apiClient } from '~/plugins/api-client'
+import type { ExperienceType } from '~/types/api'
 
 export const useExperienceTypeStore = defineStore('experienceType', {
   state: () => ({
