@@ -1,4 +1,4 @@
-import type { ValidationArgs } from "@vuelidate/core";
+import type { ValidationArgs } from '@vuelidate/core'
 import { maxLength, maxLengthArray, maxValue, minValue, required } from '~/lib/validations'
 
 export const CreateExperienceValidationRules: ValidationArgs = {
