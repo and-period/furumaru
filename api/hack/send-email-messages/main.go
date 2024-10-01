@@ -37,7 +37,7 @@ type app struct {
 func main() {
 	startedAt := jst.Now()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Minute)
 	defer cancel()
 
 	app, err := setup(ctx)
@@ -162,27 +162,26 @@ func (a *app) run(ctx context.Context) error {
 		email := builder.substitutions["メールアドレス"]
 		res := "OK"
 
-		defer func() {
-			out := fmt.Sprintf("index=%d: 氏名=%s, 姓=%s, メールアドレス=%s, 結果=%s\n", i, name, sei, email, res)
-			if _, err := fmt.Fprint(writer, out); err != nil {
-				a.logger.Error("failed to write output", zap.Int("index", i), zap.String("name", name), zap.Error(err))
-			}
-		}()
+		a.logger.Debug("Sending email", zap.Int("index", i), zap.String("name", name), zap.String("email", email))
 
 		if email == "" {
 			res = "Skip"
 			a.logger.Error("email is empty", zap.Int("index", i), zap.String("name", name))
-			continue
+		} else {
+			retryFn := func() error {
+				return a.send(ctx, builder)
+			}
+			retry := backoff.NewExponentialBackoff(3)
+			err := backoff.Retry(ctx, retry, retryFn, backoff.WithRetryablel(a.isRetryable))
+			if err != nil {
+				res = "NG"
+				a.logger.Error("failed to retry", zap.Int("index", i), zap.String("name", name), zap.Error(err))
+			}
 		}
 
-		retryFn := func() error {
-			return a.send(ctx, builder)
-		}
-		retry := backoff.NewExponentialBackoff(3)
-		err := backoff.Retry(ctx, retry, retryFn, backoff.WithRetryablel(a.isRetryable))
-		if err != nil {
-			res = "NG"
-			a.logger.Error("failed to retry", zap.Int("index", i), zap.String("name", name), zap.Error(err))
+		out := fmt.Sprintf("index=%d: 氏名=%s, 姓=%s, メールアドレス=%s, 結果=%s\n", i, name, sei, email, res)
+		if _, err := fmt.Fprint(writer, out); err != nil {
+			a.logger.Error("failed to write output", zap.Int("index", i), zap.String("name", name), zap.Error(err))
 		}
 	}
 	a.logger.Info("Finish to send emails")
