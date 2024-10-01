@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios'
 import { fileUpload } from './helper'
 import { apiClient } from '~/plugins/api-client'
-import type { CreateExperienceRequest, Experience, ExperienceResponse, ExperiencesResponse, GetUploadUrlRequest, Producer, UploadUrlResponse } from "~/types/api";
+import type { CreateExperienceRequest, Experience, ExperiencesResponse, GetUploadUrlRequest, UploadUrlResponse } from '~/types/api'
 
 export const useExperienceStore = defineStore('experience', {
   state: () => ({
