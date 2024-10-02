@@ -6,17 +6,17 @@ require (
 	firebase.google.com/go/v4 v4.14.1
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/aws/aws-sdk-go-v2 v1.31.0
-	github.com/aws/aws-sdk-go-v2/config v1.27.37
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.35
-	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.15.6
-	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.45.1
-	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.35.1
-	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.60.1
-	github.com/aws/aws-sdk-go-v2/service/medialive v1.61.1
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.63.1
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.33.1
-	github.com/aws/aws-sdk-go-v2/service/sfn v1.32.1
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.35.1
+	github.com/aws/aws-sdk-go-v2/config v1.27.39
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.37
+	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.15.8
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.45.3
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.35.3
+	github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.60.3
+	github.com/aws/aws-sdk-go-v2/service/medialive v1.61.3
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.63.3
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.33.3
+	github.com/aws/aws-sdk-go-v2/service/sfn v1.32.3
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.35.3
 	github.com/casbin/casbin/v2 v2.100.0
 	github.com/dlclark/regexp2 v1.11.4
 	github.com/getsentry/sentry-go v0.29.0
@@ -50,9 +50,9 @@ require (
 	go.uber.org/mock v0.4.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.8.0
-	google.golang.org/api v0.198.0
+	google.golang.org/api v0.199.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240903143218-8af14fe29dc1
-	google.golang.org/grpc v1.66.2
+	google.golang.org/grpc v1.67.0
 	google.golang.org/protobuf v1.34.2
 	googlemaps.github.io/maps v1.7.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -63,7 +63,7 @@ require (
 )
 
 require (
-	cloud.google.com/go/auth v0.9.4 // indirect
+	cloud.google.com/go/auth v0.9.5 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.6.1 // indirect
 	github.com/bytedance/sonic/loader v0.2.0 // indirect
@@ -75,7 +75,7 @@ require (
 
 require (
 	cloud.google.com/go v0.115.1 // indirect
-	cloud.google.com/go/compute/metadata v0.5.1 // indirect
+	cloud.google.com/go/compute/metadata v0.5.2 // indirect
 	cloud.google.com/go/firestore v1.17.0 // indirect
 	cloud.google.com/go/iam v1.2.1 // indirect
 	cloud.google.com/go/longrunning v0.6.1 // indirect
@@ -88,16 +88,16 @@ require (
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.18 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.1 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.3.18 // indirect
-	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.23.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.23.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.11.5 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.3.20 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.9.19 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.11.20 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.17.18 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ivs v1.39.1
-	github.com/aws/aws-sdk-go-v2/service/sso v1.23.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.27.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.31.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ivs v1.39.3
+	github.com/aws/aws-sdk-go-v2/service/sso v1.23.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.27.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.31.3 // indirect
 	github.com/aws/smithy-go v1.21.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bytedance/sonic v1.12.3 // indirect
@@ -132,7 +132,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.59.1 // indirect
+	github.com/prometheus/common v0.60.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/sendgrid/rest v2.6.9+incompatible // indirect
