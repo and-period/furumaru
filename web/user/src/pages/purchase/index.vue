@@ -67,11 +67,12 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="container mx-auto px-4 xl:px-0">
+  <div class="container mx-auto px-4 xl:px-0 my-10">
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
       {{ ct('cartTitle') }}
     </div>
 
+    <!--
     <div class="my-10 border border-orange bg-white px-6 py-7 text-orange">
       <p>{{ ct('cartCountLabel') }}{{ shoppingCart.carts.length }}</p>
 
@@ -80,6 +81,7 @@ useSeoMeta({
         <li>{{ ct('secondNotice') }}</li>
       </ul>
     </div>
+    -->
 
     <div class="mt-10 flex flex-col gap-y-10">
       <the-marche-cart-item

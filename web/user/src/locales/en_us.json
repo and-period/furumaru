@@ -138,7 +138,7 @@
       "coordinatorLabel": "Coordinator: ",
       "totalPriceLabel": "Total (tax included)",
       "shippingFeeNotice": "Note: Shipping fees will be added at checkout.",
-      "checkoutButtonText": "Proceed to Checkout for this Origin",
+      "checkoutButtonText": "Proceed to Checkout",
       "productNameLabel": "product",
       "productPriceLabel": "Price (tax included)",
       "quantityLabel": "Quantity",
