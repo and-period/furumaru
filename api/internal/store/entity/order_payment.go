@@ -35,15 +35,16 @@ type PaymentMethodType int32
 
 const (
 	PaymentMethodTypeUnknown      PaymentMethodType = 0
-	PaymentMethodTypeCash         PaymentMethodType = 1 // 代引支払い
-	PaymentMethodTypeCreditCard   PaymentMethodType = 2 // クレジットカード決済
-	PaymentMethodTypeKonbini      PaymentMethodType = 3 // コンビニ決済
-	PaymentMethodTypeBankTransfer PaymentMethodType = 4 // 銀行振込決済
-	PaymentMethodTypePayPay       PaymentMethodType = 5 // QR決済（PayPay）
-	PaymentMethodTypeLinePay      PaymentMethodType = 6 // QR決済（LINE Pay）
-	PaymentMethodTypeMerpay       PaymentMethodType = 7 // QR決済（メルペイ）
-	PaymentMethodTypeRakutenPay   PaymentMethodType = 8 // QR決済（楽天ペイ）
-	PaymentMethodTypeAUPay        PaymentMethodType = 9 // QR決済（au PAY）
+	PaymentMethodTypeCash         PaymentMethodType = 1  // 代引支払い
+	PaymentMethodTypeCreditCard   PaymentMethodType = 2  // クレジットカード決済
+	PaymentMethodTypeKonbini      PaymentMethodType = 3  // コンビニ決済
+	PaymentMethodTypeBankTransfer PaymentMethodType = 4  // 銀行振込決済
+	PaymentMethodTypePayPay       PaymentMethodType = 5  // QR決済（PayPay）
+	PaymentMethodTypeLinePay      PaymentMethodType = 6  // QR決済（LINE Pay）
+	PaymentMethodTypeMerpay       PaymentMethodType = 7  // QR決済（メルペイ）
+	PaymentMethodTypeRakutenPay   PaymentMethodType = 8  // QR決済（楽天ペイ）
+	PaymentMethodTypeAUPay        PaymentMethodType = 9  // QR決済（au PAY）
+	PaymentMethodTypeNone         PaymentMethodType = 10 // 未決済
 )
 
 // 注文キャンセル種別
@@ -253,6 +254,12 @@ func (p *OrderPayment) IsCanceled() bool {
 func (p *OrderPayment) SetTransactionID(transactionID string, now time.Time) {
 	p.TransactionID = transactionID
 	p.OrderedAt = now
+	if p.Total > 0 {
+		return
+	}
+	// 金額が0円の場合は支払い処理が不要なため、トランザクションIDを詰めると同時に支払い完了とする
+	p.Status = PaymentStatusCaptured
+	p.PaidAt, p.CapturedAt = now, now
 }
 
 func (ps OrderPayments) AddressRevisionIDs() []int64 {
