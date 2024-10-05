@@ -414,7 +414,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	return redirectURL, nil
 }
 
-//nolint:maintidx,nestif
+//nolint:nestif
 func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams) (string, error) {
 	var (
 		customer       *uentity.User
