@@ -192,6 +192,11 @@ func TestPaymentMethodType_String(t *testing.T) {
 			expect:     "QR決済（au PAY）",
 		},
 		{
+			name:       "none",
+			methodType: PaymentMethodTypeNone,
+			expect:     "決済なし",
+		},
+		{
 			name:       "unknown",
 			methodType: PaymentMethodTypeUnknown,
 			expect:     "",

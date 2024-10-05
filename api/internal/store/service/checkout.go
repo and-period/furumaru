@@ -200,6 +200,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 }
 
+//nolint:maintidx,nestif
 func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (string, error) {
 	var (
 		customer        *uentity.User
@@ -383,7 +384,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		}
 		redirectURL = params.payload.CallbackURL
 		// 支払い完了通知
-		defer s.waitGroup.Add(1)
+		s.waitGroup.Add(1)
 		go func() {
 			defer s.waitGroup.Done()
 			in := &messenger.NotifyOrderAuthorizedInput{
@@ -413,6 +414,7 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 	return redirectURL, nil
 }
 
+//nolint:maintidx,nestif
 func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams) (string, error) {
 	var (
 		customer       *uentity.User
@@ -555,7 +557,7 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		}
 		redirectURL = params.payload.CallbackURL
 		// 支払い完了通知
-		defer s.waitGroup.Add(1)
+		s.waitGroup.Add(1)
 		go func() {
 			defer s.waitGroup.Done()
 			in := &messenger.NotifyOrderAuthorizedInput{

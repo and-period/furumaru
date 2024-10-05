@@ -44,7 +44,7 @@ const (
 	PaymentMethodTypeMerpay       PaymentMethodType = 7  // QR決済（メルペイ）
 	PaymentMethodTypeRakutenPay   PaymentMethodType = 8  // QR決済（楽天ペイ）
 	PaymentMethodTypeAUPay        PaymentMethodType = 9  // QR決済（au PAY）
-	PaymentMethodTypeNone         PaymentMethodType = 10 // 未決済
+	PaymentMethodTypeNone         PaymentMethodType = 10 // 決済なし
 )
 
 // 注文キャンセル種別
@@ -172,6 +172,8 @@ func (t PaymentMethodType) String() string {
 		return "QR決済（楽天ペイ）"
 	case PaymentMethodTypeAUPay:
 		return "QR決済（au PAY）"
+	case PaymentMethodTypeNone:
+		return "決済なし"
 	default:
 		return ""
 	}
