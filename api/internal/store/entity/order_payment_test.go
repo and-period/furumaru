@@ -192,6 +192,11 @@ func TestPaymentMethodType_String(t *testing.T) {
 			expect:     "QR決済（au PAY）",
 		},
 		{
+			name:       "none",
+			methodType: PaymentMethodTypeNone,
+			expect:     "決済なし",
+		},
+		{
 			name:       "unknown",
 			methodType: PaymentMethodTypeUnknown,
 			expect:     "",
@@ -1072,13 +1077,29 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 		expect        *OrderPayment
 	}{
 		{
-			name:          "success",
+			name: "success with payment",
+			payment: &OrderPayment{
+				Total: 1000,
+			},
+			transactionID: "transaction-id",
+			now:           now,
+			expect: &OrderPayment{
+				Total:         1000,
+				TransactionID: "transaction-id",
+				OrderedAt:     now,
+			},
+		},
+		{
+			name:          "success without payment",
 			payment:       &OrderPayment{},
 			transactionID: "transaction-id",
 			now:           now,
 			expect: &OrderPayment{
 				TransactionID: "transaction-id",
+				Status:        PaymentStatusCaptured,
 				OrderedAt:     now,
+				PaidAt:        now,
+				CapturedAt:    now,
 			},
 		},
 	}
@@ -1087,7 +1108,7 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			tt.payment.SetTransactionID(tt.transactionID, tt.now)
-			assert.Equal(t, tt.expect, tt.expect)
+			assert.Equal(t, tt.expect, tt.payment)
 		})
 	}
 }
