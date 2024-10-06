@@ -375,8 +375,8 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		redirectURL = pay.RedirectURL
 	} else {
 		// 金額が0円の場合、即時決済
-		order.OrderPayment.MethodType = entity.PaymentMethodTypeNone
-		order.OrderPayment.Status = entity.PaymentStatusCaptured // 支払い不要なため、即時承認
+		order.Status = entity.OrderStatusCompleted
+		order.CompletedAt = s.now()
 		// 注文履歴レコードの登録
 		order.OrderPayment.SetTransactionID(order.ID, s.now())
 		if err := s.db.Order.Create(ctx, order); err != nil {
@@ -548,8 +548,8 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		redirectURL = pay.RedirectURL
 	} else {
 		// 金額が0円の場合、即時決済
-		order.OrderPayment.MethodType = entity.PaymentMethodTypeNone
-		order.OrderPayment.Status = entity.PaymentStatusCaptured // 支払い不要なため、即時承認
+		order.Status = entity.OrderStatusCompleted
+		order.CompletedAt = s.now()
 		// 注文履歴レコードの登録
 		order.OrderPayment.SetTransactionID(order.ID, s.now())
 		if err := s.db.Order.Create(ctx, order); err != nil {
