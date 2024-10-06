@@ -1096,6 +1096,7 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 			now:           now,
 			expect: &OrderPayment{
 				TransactionID: "transaction-id",
+				MethodType:    PaymentMethodTypeNone,
 				Status:        PaymentStatusCaptured,
 				OrderedAt:     now,
 				PaidAt:        now,
