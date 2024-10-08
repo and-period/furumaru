@@ -95,10 +95,15 @@ const priceFormatter = (price: number) => {
 }
 
 const handleClickSearchAddressButton = async () => {
-  const res = await searchAddressByPostalCode(formData.value.postalCode)
-  formData.value.prefectureCode = res.prefectureCode
-  formData.value.city = res.city
-  formData.value.addressLine1 = res.town
+  try {
+    const res = await searchAddressByPostalCode(formData.value.postalCode)
+    formData.value.prefectureCode = res.prefectureCode
+    formData.value.city = res.city
+    formData.value.addressLine1 = res.town
+  }
+  catch (_) {
+    postalCodeErrorMessage.value = gt('addressNotFoundErrorMessage')
+  }
 }
 
 const handleClickBackCartButton = () => {

@@ -51,6 +51,7 @@ const formData = ref<CreateAddressRequest>({
 })
 
 const promotionCodeFormValue = ref<string>('')
+const postalCodeErrorMessage = ref<string>('')
 const invalidPromotion = ref<boolean>(false)
 const validPromotion = ref<boolean>(false)
 
@@ -94,10 +95,15 @@ const priceFormatter = (price: number) => {
 }
 
 const handleClickSearchAddressButton = async () => {
-  const res = await searchAddressByPostalCode(formData.value.postalCode)
-  formData.value.prefectureCode = res.prefectureCode
-  formData.value.city = res.city
-  formData.value.addressLine1 = res.town
+  try {
+    const res = await searchAddressByPostalCode(formData.value.postalCode)
+    formData.value.prefectureCode = res.prefectureCode
+    formData.value.city = res.city
+    formData.value.addressLine1 = res.town
+  }
+  catch (_) {
+    postalCodeErrorMessage.value = at('addressNotFoundErrorMessage')
+  }
 }
 
 const handleClickBackCartButton = () => {
@@ -305,6 +311,7 @@ useSeoMeta({
               <the-new-address-form
                 v-model:form-data="formData"
                 form-id="new-address-form"
+                :postal-code-error-message="postalCodeErrorMessage"
                 @click:search-address-button="handleClickSearchAddressButton"
                 @submit="handleSubmitNewAddressForm"
               />
@@ -316,6 +323,7 @@ useSeoMeta({
             <the-new-address-form
               v-model:form-data="formData"
               form-id="new-address-form"
+              :postal-code-error-message="postalCodeErrorMessage"
               @click:search-address-button="handleClickSearchAddressButton"
               @submit="handleSubmitNewAddressForm"
             />
