@@ -14,6 +14,7 @@ paymentMethodType:
   - 7
   - 8
   - 9
+  - 10
   x-enum-varnames:
   - UNKNOWN
   - CASH
@@ -25,6 +26,7 @@ paymentMethodType:
   - MERPAY
   - RAKUTEN_PAY
   - AU_PAY
+  - NONE
   x-enum-descriptions:
   - 不明
   - 代引支払い
@@ -36,6 +38,7 @@ paymentMethodType:
   - QR決済（メルペイ）
   - QR決済（楽天ペイ）
   - QR決済（au PAY）
+  - 決済無し（0円決済）
 paymentStatus:
   type: integer
   format: int32
