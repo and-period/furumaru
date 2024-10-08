@@ -489,7 +489,7 @@ useSeoMeta({
                     </template>
                     <template v-else>
                       <img
-                        :src="item.product.thumbnailUrl"
+                        :src="item.product.thumbnail.url"
                         :alt="`${item.product.name}の画像`"
                         class="block aspect-square h-[56px] w-[56px]"
                       >
