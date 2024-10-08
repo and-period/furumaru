@@ -366,27 +366,42 @@ useSeoMeta({
                   class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
                 >
                   <template v-if="item.product">
-                    <nuxt-img
-                      v-if="item.product.thumbnail"
-                      provider="cloudFront"
-                      :src="item.product.thumbnail.url"
-                      :alt="itemThumbnailAlt(item.product.name)"
-                      width="56px"
-                      height="56px"
-                      class="block aspect-square h-[56px] w-[56px]"
-                    />
-                    <div class="col-span-3 pl-[24px] md:pl-0">
-                      <div>{{ item.product.name }}</div>
-                      <div
-                        class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                    <template v-if="item.product.thumbnail">
+                      <template
+                        v-if="item.product.thumbnail.url.endsWith('.mp4')"
                       >
-                        {{ at("quantityLabel") }}{{ item.quantity }}
+                        <video
+                          width="56px"
+                          height="56px"
+                          :src="item.product.thumbnail.url"
+                          class="block aspect-square h-[56px] w-[56px]"
+                        />
+                      </template>
+                      <template v-else>
+                        <nuxt-img
+                          provider="cloudFront"
+                          :src="item.product.thumbnail.url"
+                          :alt="itemThumbnailAlt(item.product.name)"
+                          width="56px"
+                          height="56px"
+                          class="block aspect-square h-[56px] w-[56px]"
+                        />
+                      </template>
+                      <div class="col-span-3 pl-[24px] md:pl-0">
+                        <div>{{ item.product.name }}</div>
+                        <div
+                          class="mt-4 md:mt-0 md:items-center md:justify-self-end md:text-right"
+                        >
+                          {{ at("quantityLabel") }}{{ item.quantity }}
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="flex items-center justify-self-end text-right">
-                      {{ priceFormatter(item.product.price) }}
-                    </div>
+                      <div
+                        class="flex items-center justify-self-end text-right"
+                      >
+                        {{ priceFormatter(item.product.price) }}
+                      </div>
+                    </template>
                   </template>
                 </div>
               </div>

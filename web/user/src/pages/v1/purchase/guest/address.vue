@@ -402,15 +402,28 @@ useSeoMeta({
                 class="grid grid-cols-5 py-2 text-[12px] tracking-[1.2px]"
               >
                 <template v-if="item.product">
-                  <nuxt-img
-                    v-if="item.product.thumbnail"
-                    width="56px"
-                    height="56px"
-                    provider="cloudFront"
-                    :src="item.product.thumbnail.url"
-                    :alt="itemThumbnailAlt(item.product.name)"
-                    class="block aspect-square h-[56px] w-[56px]"
-                  />
+                  <template v-if="item.product.thumbnail">
+                    <template
+                      v-if="item.product.thumbnail.url.endsWith('.mp4')"
+                    >
+                      <video
+                        width="56px"
+                        height="56px"
+                        :src="item.product.thumbnail.url"
+                        class="block aspect-square h-[56px] w-[56px]"
+                      />
+                    </template>
+                    <template v-else>
+                      <nuxt-img
+                        width="56px"
+                        height="56px"
+                        provider="cloudFront"
+                        :src="item.product.thumbnail.url"
+                        :alt="itemThumbnailAlt(item.product.name)"
+                        class="block aspect-square h-[56px] w-[56px]"
+                      />
+                    </template>
+                  </template>
                   <div class="col-span-3 pl-[24px] md:pl-0">
                     <div>{{ item.product.name }}</div>
                     <div

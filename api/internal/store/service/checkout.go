@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/and-period/furumaru/api/internal/exception"
+	"github.com/and-period/furumaru/api/internal/messenger"
 	"github.com/and-period/furumaru/api/internal/store"
 	"github.com/and-period/furumaru/api/internal/store/database"
 	"github.com/and-period/furumaru/api/internal/store/entity"
@@ -199,6 +200,7 @@ func (s *service) checkout(ctx context.Context, params *checkoutParams) (string,
 	}
 }
 
+//nolint:maintidx,nestif
 func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (string, error) {
 	var (
 		customer        *uentity.User
@@ -322,51 +324,76 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
 	}
 	// 決済トランザクションの発行
-	sparams := &komoju.CreateSessionParams{
-		OrderID:      order.ID,
-		Amount:       order.OrderPayment.Total,
-		CallbackURL:  params.payload.CallbackURL,
-		PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
-		Customer: &komoju.CreateSessionCustomer{
-			ID:    customer.ID,
-			Name:  billingAddress.Name(),
-			Email: customer.Email(),
-		},
-		BillingAddress: &komoju.CreateSessionAddress{
-			ZipCode:      billingAddress.PostalCode,
-			Prefecture:   billingAddress.Prefecture,
-			City:         billingAddress.City,
-			AddressLine1: billingAddress.AddressLine1,
-			AddressLine2: billingAddress.AddressLine2,
-		},
-		ShippingAddress: &komoju.CreateSessionAddress{
-			ZipCode:      shippingAddress.PostalCode,
-			Prefecture:   shippingAddress.Prefecture,
-			City:         shippingAddress.City,
-			AddressLine1: shippingAddress.AddressLine1,
-			AddressLine2: shippingAddress.AddressLine2,
-		},
-	}
-	session, err := s.komoju.Session.Create(ctx, sparams)
-	if err != nil {
-		return "", internalError(err)
-	}
-	order.OrderPayment.SetTransactionID(session.ID, s.now())
-	// 注文履歴レコードの登録
-	if err := s.db.Order.Create(ctx, order); err != nil {
-		return "", internalError(err)
-	}
-	// 決済依頼処理
-	cparams := &checkoutDetailParams{
-		customer: customer,
-	}
-	pay, err := params.payFn(ctx, session.ID, cparams)
-	if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
-		// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
-		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), nil
-	}
-	if err != nil {
-		return "", internalError(err)
+	var redirectURL string
+	if order.OrderPayment.Total > 0 {
+		sparams := &komoju.CreateSessionParams{
+			OrderID:      order.ID,
+			Amount:       order.OrderPayment.Total,
+			CallbackURL:  params.payload.CallbackURL,
+			PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
+			Customer: &komoju.CreateSessionCustomer{
+				ID:    customer.ID,
+				Name:  billingAddress.Name(),
+				Email: customer.Email(),
+			},
+			BillingAddress: &komoju.CreateSessionAddress{
+				ZipCode:      billingAddress.PostalCode,
+				Prefecture:   billingAddress.Prefecture,
+				City:         billingAddress.City,
+				AddressLine1: billingAddress.AddressLine1,
+				AddressLine2: billingAddress.AddressLine2,
+			},
+			ShippingAddress: &komoju.CreateSessionAddress{
+				ZipCode:      shippingAddress.PostalCode,
+				Prefecture:   shippingAddress.Prefecture,
+				City:         shippingAddress.City,
+				AddressLine1: shippingAddress.AddressLine1,
+				AddressLine2: shippingAddress.AddressLine2,
+			},
+		}
+		session, err := s.komoju.Session.Create(ctx, sparams)
+		if err != nil {
+			return "", internalError(err)
+		}
+		order.OrderPayment.SetTransactionID(session.ID, s.now())
+		// 注文履歴レコードの登録
+		if err := s.db.Order.Create(ctx, order); err != nil {
+			return "", internalError(err)
+		}
+		// 決済依頼処理
+		cparams := &checkoutDetailParams{
+			customer: customer,
+		}
+		pay, err := params.payFn(ctx, session.ID, cparams)
+		if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
+			// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
+			return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), nil
+		}
+		if err != nil {
+			return "", internalError(err)
+		}
+		redirectURL = pay.RedirectURL
+	} else {
+		// 金額が0円の場合、即時決済
+		order.Status = entity.OrderStatusCompleted
+		order.CompletedAt = s.now()
+		// 注文履歴レコードの登録
+		order.OrderPayment.SetTransactionID(order.ID, s.now())
+		if err := s.db.Order.Create(ctx, order); err != nil {
+			return "", internalError(err)
+		}
+		redirectURL = params.payload.CallbackURL
+		// 支払い完了通知
+		s.waitGroup.Add(1)
+		go func() {
+			defer s.waitGroup.Done()
+			in := &messenger.NotifyOrderAuthorizedInput{
+				OrderID: order.ID,
+			}
+			if err := s.messenger.NotifyOrderAuthorized(context.Background(), in); err != nil {
+				s.logger.Error("Failed to notify order authorized", zap.Error(err))
+			}
+		}()
 	}
 	s.waitGroup.Add(2)
 	// 買い物かごの削除
@@ -384,9 +411,10 @@ func (s *service) checkoutProduct(ctx context.Context, params *checkoutParams) (
 		defer s.waitGroup.Done()
 		s.decreaseProductInventories(context.Background(), order.OrderItems)
 	}()
-	return pay.RedirectURL, nil
+	return redirectURL, nil
 }
 
+//nolint:nestif
 func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams) (string, error) {
 	var (
 		customer       *uentity.User
@@ -476,46 +504,71 @@ func (s *service) checkoutExperience(ctx context.Context, params *checkoutParams
 		return "", fmt.Errorf("service: unmatch total: %w", exception.ErrInvalidArgument)
 	}
 	// 決済トランザクションの発行
-	sparams := &komoju.CreateSessionParams{
-		OrderID:      order.ID,
-		Amount:       order.OrderPayment.Total,
-		CallbackURL:  params.payload.CallbackURL,
-		PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
-		Customer: &komoju.CreateSessionCustomer{
-			ID:    customer.ID,
-			Name:  billingAddress.Name(),
-			Email: customer.Email(),
-		},
-		BillingAddress: &komoju.CreateSessionAddress{
-			ZipCode:      billingAddress.PostalCode,
-			Prefecture:   billingAddress.Prefecture,
-			City:         billingAddress.City,
-			AddressLine1: billingAddress.AddressLine1,
-			AddressLine2: billingAddress.AddressLine2,
-		},
+	var redirectURL string
+	if order.OrderPayment.Total > 0 {
+		sparams := &komoju.CreateSessionParams{
+			OrderID:      order.ID,
+			Amount:       order.OrderPayment.Total,
+			CallbackURL:  params.payload.CallbackURL,
+			PaymentTypes: entity.NewKomojuPaymentTypes(params.paymentMethodType),
+			Customer: &komoju.CreateSessionCustomer{
+				ID:    customer.ID,
+				Name:  billingAddress.Name(),
+				Email: customer.Email(),
+			},
+			BillingAddress: &komoju.CreateSessionAddress{
+				ZipCode:      billingAddress.PostalCode,
+				Prefecture:   billingAddress.Prefecture,
+				City:         billingAddress.City,
+				AddressLine1: billingAddress.AddressLine1,
+				AddressLine2: billingAddress.AddressLine2,
+			},
+		}
+		session, err := s.komoju.Session.Create(ctx, sparams)
+		if err != nil {
+			return "", internalError(err)
+		}
+		order.OrderPayment.SetTransactionID(session.ID, s.now())
+		// 注文履歴レコードの登録
+		if err := s.db.Order.Create(ctx, order); err != nil {
+			return "", internalError(err)
+		}
+		// 決済依頼処理
+		cparams := &checkoutDetailParams{
+			customer: customer,
+		}
+		pay, err := params.payFn(ctx, session.ID, cparams)
+		if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
+			// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
+			return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), nil
+		}
+		if err != nil {
+			return "", internalError(err)
+		}
+		redirectURL = pay.RedirectURL
+	} else {
+		// 金額が0円の場合、即時決済
+		order.Status = entity.OrderStatusCompleted
+		order.CompletedAt = s.now()
+		// 注文履歴レコードの登録
+		order.OrderPayment.SetTransactionID(order.ID, s.now())
+		if err := s.db.Order.Create(ctx, order); err != nil {
+			return "", internalError(err)
+		}
+		redirectURL = params.payload.CallbackURL
+		// 支払い完了通知
+		s.waitGroup.Add(1)
+		go func() {
+			defer s.waitGroup.Done()
+			in := &messenger.NotifyOrderAuthorizedInput{
+				OrderID: order.ID,
+			}
+			if err := s.messenger.NotifyOrderAuthorized(context.Background(), in); err != nil {
+				s.logger.Error("Failed to notify order authorized", zap.Error(err))
+			}
+		}()
 	}
-	session, err := s.komoju.Session.Create(ctx, sparams)
-	if err != nil {
-		return "", internalError(err)
-	}
-	order.OrderPayment.SetTransactionID(session.ID, s.now())
-	// 注文履歴レコードの登録
-	if err := s.db.Order.Create(ctx, order); err != nil {
-		return "", internalError(err)
-	}
-	// 決済依頼処理
-	cparams := &checkoutDetailParams{
-		customer: customer,
-	}
-	pay, err := params.payFn(ctx, session.ID, cparams)
-	if komoju.IsSessionFailed(err) && session.ReturnURL != "" {
-		// 支払い状態取得エンドポイントから状態取得ができるよう、session_idを付与する
-		return fmt.Sprintf("%s?session_id=%s", session.ReturnURL, session.ID), nil
-	}
-	if err != nil {
-		return "", internalError(err)
-	}
-	return pay.RedirectURL, nil
+	return redirectURL, nil
 }
 
 func (s *service) getShippingByCoordinatorID(ctx context.Context, coordinatorID string) (*entity.Shipping, error) {

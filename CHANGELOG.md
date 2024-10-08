@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.11.45](https://github.com/and-period/furumaru/compare/v1.11.44...v1.11.45) - 2024-10-02
+- build(deps): bump the dependencies group across 1 directory with 60 updates by @dependabot in https://github.com/and-period/furumaru/pull/2417
+- 大嶋さんからの指摘を修正 by @hamachans in https://github.com/and-period/furumaru/pull/2426
+
+## [v1.11.44](https://github.com/and-period/furumaru/compare/v1.11.43...v1.11.44) - 2024-09-29
+- Fix: fixed purhcase ui by @hamachans in https://github.com/and-period/furumaru/pull/2420
+
 ## [v1.11.43](https://github.com/and-period/furumaru/compare/v1.11.42...v1.11.43) - 2024-09-23
 - fix: topのボタン文言修正 by @sea-kai in https://github.com/and-period/furumaru/pull/2415
 
