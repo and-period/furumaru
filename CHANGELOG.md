@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.11.46](https://github.com/and-period/furumaru/compare/v1.11.45...v1.11.46) - 2024-10-08
+- feat(store): 0円決済の対応 by @taba2424 in https://github.com/and-period/furumaru/pull/2427
+- fix(store): 0円決済時のステータスを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2429
+- 未ログイン時の購入フローでログインを挟まずにゲスト購入に流れるように変更 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2430
+- 住所入力フォームの郵便番号のエラーハンドリングを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2419
+
 ## [v1.11.45](https://github.com/and-period/furumaru/compare/v1.11.44...v1.11.45) - 2024-10-02
 - build(deps): bump the dependencies group across 1 directory with 60 updates by @dependabot in https://github.com/and-period/furumaru/pull/2417
 - 大嶋さんからの指摘を修正 by @hamachans in https://github.com/and-period/furumaru/pull/2426
