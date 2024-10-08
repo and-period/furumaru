@@ -23,9 +23,12 @@ const handleClickBuyButton = (coordinatorId: string) => {
     router.push(`/v1/purchase/address?coordinatorId=${coordinatorId}`)
   }
   else {
-    router.push(
-      `/v1/purchase/auth?required=true&coordinatorId=${coordinatorId}`,
-    )
+    router.push({
+      path: '/v1/purchase/guest/address',
+      query: {
+        coordinatorId,
+      },
+    })
   }
 }
 
@@ -44,9 +47,8 @@ const handleClickCartBuyButton = (
   }
   else {
     router.push({
-      path: '/v1/purchase/auth',
+      path: '/v1/purchase/guest/address',
       query: {
-        required: true,
         coordinatorId,
         cartNumber,
       },
@@ -69,7 +71,7 @@ useSeoMeta({
 <template>
   <div class="container mx-auto px-4 xl:px-0 my-10">
     <div class="text-center text-[20px] font-bold tracking-[2px] text-main">
-      {{ ct('cartTitle') }}
+      {{ ct("cartTitle") }}
     </div>
 
     <!--
