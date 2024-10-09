@@ -4257,7 +4257,11 @@ export const PaymentMethodType = {
     /**
     * QR決済（au PAY）
     */
-    AU_PAY: 9
+    AU_PAY: 9,
+    /**
+    * 決済無し（0円決済）
+    */
+    NONE: 10
 } as const;
 
 export type PaymentMethodType = typeof PaymentMethodType[keyof typeof PaymentMethodType];

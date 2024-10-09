@@ -1340,11 +1340,8 @@ func TestCheckoutProduct(t *testing.T) {
 		{
 			name: "failed to get user",
 			setup: func(ctx context.Context, mocks *mocks) {
-				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(nil, assert.AnError)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil).Times(2)
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -1376,11 +1373,8 @@ func TestCheckoutProduct(t *testing.T) {
 		{
 			name: "failed to get address",
 			setup: func(ctx context.Context, mocks *mocks) {
-				cartmocks(mocks, cart.SessionID, cart, nil)
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(nil, assert.AnError).Times(2)
-				mocks.db.Shipping.EXPECT().GetByCoordinatorID(gomock.Any(), "coordinator-id").Return(shipping, nil)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -2223,12 +2217,10 @@ func TestCheckoutExperience(t *testing.T) {
 			expectErr: exception.ErrInvalidArgument,
 		},
 		{
-			name: "failed to get promotion",
+			name: "failed to get user",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(nil, assert.AnError)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(address, nil)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
-				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{
@@ -2268,8 +2260,6 @@ func TestCheckoutExperience(t *testing.T) {
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.user.EXPECT().GetUser(gomock.Any(), customerIn).Return(customer, nil)
 				mocks.user.EXPECT().GetAddress(gomock.Any(), addressIn).Return(nil, assert.AnError)
-				mocks.db.Promotion.EXPECT().GetByCode(gomock.Any(), "code1234").Return(promotion, nil)
-				mocks.db.Experience.EXPECT().Get(gomock.Any(), "experience-id").Return(experience, nil)
 			},
 			params: &checkoutParams{
 				payload: &store.CheckoutDetail{

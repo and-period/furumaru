@@ -540,6 +540,10 @@ type CheckoutAUPayInput struct {
 	CheckoutDetail
 }
 
+type CheckoutFreeInput struct {
+	CheckoutDetail
+}
+
 type CheckoutDetail struct {
 	CheckoutProductDetail    `validate:"-"`
 	CheckoutExperienceDetail `validate:"-"`
