@@ -174,6 +174,7 @@ const doCheckout = async () => {
       boxNumber: cartNumber.value ?? 0,
     })
     console.log('debug', 'doCheckout', url)
+    addressStore.$reset()
     window.location.href = url
   }
   catch (error) {

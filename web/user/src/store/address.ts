@@ -8,6 +8,12 @@ import type {
 } from '~/types/api'
 
 export const useAddressStore = defineStore('address', {
+  persist: {
+    storage: persistedState.cookiesWithOptions({
+      sameSite: 'strict',
+    }),
+  },
+
   state: () => {
     return {
       total: 0,
