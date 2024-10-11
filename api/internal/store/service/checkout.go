@@ -559,7 +559,8 @@ func (s *service) executeFreeOrder(
 			s.logger.Error("Failed to notify order authorized", zap.Error(err))
 		}
 	}
-	return params.payload.CallbackURL, afterFn, nil
+	redirectURL := fmt.Sprintf("%s?session_id=%s", params.payload.CallbackURL, order.ID)
+	return redirectURL, afterFn, nil
 }
 
 func (s *service) getShippingByCoordinatorID(ctx context.Context, coordinatorID string) (*entity.Shipping, error) {

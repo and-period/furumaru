@@ -1308,7 +1308,7 @@ func TestCheckoutProduct(t *testing.T) {
 					return res, nil
 				},
 			},
-			expect:    "http://example.com/callback",
+			expect:    "http://example.com/callback?session_id=order-id",
 			expectErr: nil,
 		},
 		{
@@ -2187,7 +2187,7 @@ func TestCheckoutExperience(t *testing.T) {
 					return res, nil
 				},
 			},
-			expect:    "http://example.com/callback",
+			expect:    "http://example.com/callback?session_id=order-id",
 			expectErr: nil,
 		},
 		{

@@ -193,6 +193,10 @@ func (a *app) inject(ctx context.Context) error {
 	}
 
 	// KOMOJUの設定
+	captureMode := komoju.CaptureModeManual
+	if a.CheckoutAutoCaptured {
+		captureMode = komoju.CaptureModeAuto
+	}
 	kpaymentParams := &kpayment.Params{
 		Host:         a.KomojuHost,
 		ClientID:     params.komojuClientID,
@@ -202,6 +206,7 @@ func (a *app) inject(ctx context.Context) error {
 		Host:         a.KomojuHost,
 		ClientID:     params.komojuClientID,
 		ClientSecret: params.komojuClientPassword,
+		CaptureMode:  captureMode,
 	}
 	komojuOpts := []komoju.Option{
 		komoju.WithLogger(params.logger),
@@ -438,15 +443,14 @@ func (a *app) newStoreService(
 		return nil, err
 	}
 	params := &storesrv.Params{
-		WaitGroup:           p.waitGroup,
-		Database:            storedb.NewDatabase(mysql),
-		Cache:               p.cache,
-		User:                user,
-		Messenger:           messenger,
-		Media:               media,
-		PostalCode:          p.postalCode,
-		Komoju:              p.komoju,
-		CheckoutRedirectURL: a.CheckoutRedirectURL,
+		WaitGroup:  p.waitGroup,
+		Database:   storedb.NewDatabase(mysql),
+		Cache:      p.cache,
+		User:       user,
+		Messenger:  messenger,
+		Media:      media,
+		PostalCode: p.postalCode,
+		Komoju:     p.komoju,
 	}
 	return storesrv.NewService(params, storesrv.WithLogger(p.logger)), nil
 }
