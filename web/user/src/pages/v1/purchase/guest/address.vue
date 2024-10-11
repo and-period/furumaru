@@ -23,6 +23,7 @@ const itemThumbnailAlt = (itemName: string) => {
 
 const addressStore = useAddressStore()
 const { searchAddressByPostalCode } = addressStore
+const { guestAddress, email } = storeToRefs(addressStore)
 const shoppingCartStore = useShoppingCartStore()
 const { calcCartResponseItem } = storeToRefs(shoppingCartStore)
 const { calcCartItemByCoordinatorId, verifyGuestPromotionCode }
@@ -34,22 +35,38 @@ const calcCartResponseItemState = ref<{
   errorMessage: string
 }>({ isLoading: true, hasError: false, errorMessage: '' })
 
-const formData = ref<GuestCheckoutAddress>({
-  lastname: '',
-  firstname: '',
-  lastnameKana: '',
-  firstnameKana: '',
-  postalCode: '',
-  prefectureCode: 0,
-  city: '',
-  addressLine1: '',
-  addressLine2: '',
-  phoneNumber: '',
-})
+const initFormData = (): GuestCheckoutAddress => {
+  if (guestAddress.value) {
+    return guestAddress.value
+  }
+  else {
+    return {
+      lastname: '',
+      firstname: '',
+      lastnameKana: '',
+      firstnameKana: '',
+      postalCode: '',
+      prefectureCode: 0,
+      city: '',
+      addressLine1: '',
+      addressLine2: '',
+      phoneNumber: '',
+    }
+  }
+}
 
-const formEmailData = ref({
-  email: '',
-})
+const initEmailData = (): { email: string } => {
+  if (email.value) {
+    return { email: email.value }
+  }
+  else {
+    return { email: '' }
+  }
+}
+
+const formData = ref<GuestCheckoutAddress>(initFormData())
+
+const formEmailData = ref(initEmailData())
 
 const promotionCodeFormValue = ref<string>('')
 const invalidPromotion = ref<boolean>(false)
