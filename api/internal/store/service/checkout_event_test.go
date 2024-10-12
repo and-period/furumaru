@@ -17,7 +17,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 	t.Parallel()
 	now := time.Now()
 	params := &database.UpdateOrderPaymentParams{
-		Status:    entity.PaymentStatusAuthorized,
+		Status:    entity.PaymentStatusCaptured,
 		PaymentID: "payment-id",
 		IssuedAt:  now,
 	}
@@ -31,7 +31,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 		expect error
 	}{
 		{
-			name: "success authorized",
+			name: "success captured",
 			setup: func(ctx context.Context, mocks *mocks) {
 				mocks.db.Order.EXPECT().UpdatePayment(ctx, "order-id", params).Return(nil)
 				mocks.messenger.EXPECT().NotifyOrderAuthorized(ctx, in).Return(nil)
@@ -39,7 +39,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
 				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
+				Status:    entity.PaymentStatusCaptured,
 				IssuedAt:  now,
 			},
 			expect: nil,
@@ -76,7 +76,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
 				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
+				Status:    entity.PaymentStatusCaptured,
 				IssuedAt:  now,
 			},
 			expect: exception.ErrInternal,
@@ -89,7 +89,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
 				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
+				Status:    entity.PaymentStatusCaptured,
 				IssuedAt:  now,
 			},
 			expect: nil,
@@ -103,7 +103,7 @@ func TestNotifyPaymentCompleted(t *testing.T) {
 			input: &store.NotifyPaymentCompletedInput{
 				OrderID:   "order-id",
 				PaymentID: "payment-id",
-				Status:    entity.PaymentStatusAuthorized,
+				Status:    entity.PaymentStatusCaptured,
 				IssuedAt:  now,
 			},
 			expect: exception.ErrInternal,

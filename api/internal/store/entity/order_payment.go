@@ -256,13 +256,6 @@ func (p *OrderPayment) IsCanceled() bool {
 func (p *OrderPayment) SetTransactionID(transactionID string, now time.Time) {
 	p.TransactionID = transactionID
 	p.OrderedAt = now
-	if p.Total > 0 {
-		return
-	}
-	// 金額が0円の場合は支払い処理が不要なため、トランザクションIDを詰めると同時に支払い完了とする
-	p.MethodType = PaymentMethodTypeNone
-	p.Status = PaymentStatusCaptured
-	p.PaidAt, p.CapturedAt = now, now
 }
 
 func (ps OrderPayments) AddressRevisionIDs() []int64 {

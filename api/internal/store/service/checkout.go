@@ -519,7 +519,7 @@ func (s *service) executePaymentOrder(
 	if err != nil {
 		return "", nil, internalError(err)
 	}
-	order.OrderPayment.SetTransactionID(session.ID, s.now())
+	order.SetTransaction(session.ID, s.now())
 	// 注文履歴レコードの登録
 	if err := s.db.Order.Create(ctx, order); err != nil {
 		return "", nil, internalError(err)
@@ -542,11 +542,8 @@ func (s *service) executePaymentOrder(
 func (s *service) executeFreeOrder(
 	ctx context.Context, order *entity.Order, params *checkoutParams,
 ) (string, func(context.Context), error) {
-	// 金額が0円の場合、即時決済
-	order.Status = entity.OrderStatusCompleted
-	order.CompletedAt = s.now()
 	// 注文履歴レコードの登録
-	order.OrderPayment.SetTransactionID(order.ID, s.now())
+	order.SetTransaction("", s.now())
 	if err := s.db.Order.Create(ctx, order); err != nil {
 		return "", nil, internalError(err)
 	}
