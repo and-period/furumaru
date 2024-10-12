@@ -1077,7 +1077,7 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 		expect        *OrderPayment
 	}{
 		{
-			name: "success with payment",
+			name: "success",
 			payment: &OrderPayment{
 				Total: 1000,
 			},
@@ -1087,20 +1087,6 @@ func TestOrderPayment_SetTransactionID(t *testing.T) {
 				Total:         1000,
 				TransactionID: "transaction-id",
 				OrderedAt:     now,
-			},
-		},
-		{
-			name:          "success without payment",
-			payment:       &OrderPayment{},
-			transactionID: "transaction-id",
-			now:           now,
-			expect: &OrderPayment{
-				TransactionID: "transaction-id",
-				MethodType:    PaymentMethodTypeNone,
-				Status:        PaymentStatusCaptured,
-				OrderedAt:     now,
-				PaidAt:        now,
-				CapturedAt:    now,
 			},
 		},
 	}

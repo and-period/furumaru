@@ -29,7 +29,8 @@ func (s *service) NotifyPaymentCompleted(ctx context.Context, in *store.NotifyPa
 	if err != nil {
 		return internalError(err)
 	}
-	if in.Status != entity.PaymentStatusAuthorized {
+	// 即時決済にも対応できるよう、支払い完了タイミングで通知を投げるように
+	if in.Status != entity.PaymentStatusCaptured {
 		return nil
 	}
 	notifyIn := &messenger.NotifyOrderAuthorizedInput{

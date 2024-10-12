@@ -246,6 +246,19 @@ func (o *Order) SetFulfillmentStatus(fulfillmentID string, status FulfillmentSta
 	}
 }
 
+func (o *Order) SetTransaction(transactionID string, now time.Time) {
+	if o.Total > 0 {
+		o.OrderPayment.SetTransactionID(transactionID, now)
+		return
+	}
+	// 金額が0円の場合は支払い処理が不要なため、トランザクションIDを詰めると同時に支払い完了とする
+	o.Status = OrderStatusPreparing
+	o.OrderPayment.SetTransactionID(o.ID, now) // 支払い状態を取得できるよう、なにかしらの値を詰める
+	o.OrderPayment.MethodType = PaymentMethodTypeNone
+	o.OrderPayment.Status = PaymentStatusCaptured
+	o.OrderPayment.PaidAt, o.OrderPayment.CapturedAt = now, now
+}
+
 func (o *Order) Completed() bool {
 	if o == nil {
 		return false
