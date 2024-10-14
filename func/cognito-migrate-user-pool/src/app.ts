@@ -60,6 +60,7 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
 
   event.response.userAttributes = attributes;
   event.response.messageAction = 'SUPPRESS';
+  event.response.forceAliasCreation = true;
 
   console.log('return event', JSON.stringify(event));
   return event;
