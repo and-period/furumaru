@@ -37,7 +37,6 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
     } catch (err: any) {
       throw new Error(`failed to initiate auth. err=${err.message}`);
     }
-    event.response.finalUserStatus = 'CONFIRMED';
     console.log('success to initiate auth', JSON.stringify(auth));
   }
 
@@ -50,6 +49,7 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
   console.log('success to get user', JSON.stringify(user));
 
   event.response.userAttributes = toUserAttributes(user);
+  event.response.finalUserStatus = 'CONFIRMED';
   event.response.messageAction = 'SUPPRESS';
 
   console.log('return event', JSON.stringify(event));
