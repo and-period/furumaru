@@ -50,7 +50,6 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
       } catch (err: any) {
         throw new Error(`failed to initiate auth. err=${err.message}`);
       }
-      event.response.finalUserStatus = 'CONFIRMED';
       console.log('success to initiate auth', JSON.stringify(auth));
       break;
     // パスワードを忘れた場合のフロー実行時のユーザー移行
