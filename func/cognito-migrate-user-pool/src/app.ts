@@ -54,7 +54,7 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
       break;
     // パスワードを忘れた場合のフロー実行時のユーザー移行
     case 'UserMigration_ForgotPassword':
-      event.userName = attributes.username;
+      event.userName = attributes.email;
       break;
   }
 
