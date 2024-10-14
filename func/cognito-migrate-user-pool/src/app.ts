@@ -8,6 +8,7 @@ import {
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   InitiateAuthCommandOutput,
+  UserStatusType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoUserPoolTriggerEvent } from 'aws-lambda/trigger/cognito-user-pool-trigger';
 
@@ -58,6 +59,17 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
       break;
   }
 
+  let userStatus: 'CONFIRMED' | 'RESET_REQUIRED' | undefined;
+  switch (user.UserStatus) {
+    case UserStatusType.CONFIRMED:
+      userStatus = 'CONFIRMED';
+      break;
+    case UserStatusType.FORCE_CHANGE_PASSWORD:
+      userStatus = 'RESET_REQUIRED';
+      break;
+  }
+
+  event.response.finalUserStatus = userStatus;
   event.response.userAttributes = attributes;
   event.response.messageAction = 'SUPPRESS';
 
