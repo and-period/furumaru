@@ -38,6 +38,8 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
   }
   console.log('success to get user', JSON.stringify(user));
 
+  const attributes = toUserAttributes(user);
+
   switch (event.triggerSource) {
     // サインイン時のユーザーの移行
     case 'UserMigration_Authentication':
@@ -52,11 +54,11 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
       break;
     // パスワードを忘れた場合のフロー実行時のユーザー移行
     case 'UserMigration_ForgotPassword':
-      event.userName = user.Username || '';
+      event.userName = attributes.username;
       break;
   }
 
-  event.response.userAttributes = toUserAttributes(user);
+  event.response.userAttributes = attributes;
   event.response.messageAction = 'SUPPRESS';
 
   console.log('return event', JSON.stringify(event));
