@@ -30,17 +30,6 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
     throw new Error('bad trigger source');
   }
 
-  if (event.triggerSource === 'UserMigration_Authentication') {
-    let auth: InitiateAuthCommandOutput;
-    try {
-      auth = await initiateAuth(event.userName, event.request.password);
-    } catch (err: any) {
-      throw new Error(`failed to initiate auth. err=${err.message}`);
-    }
-    event.response.finalUserStatus = 'CONFIRMED';
-    console.log('success to initiate auth', JSON.stringify(auth));
-  }
-
   let user: AdminGetUserCommandOutput;
   try {
     user = await getUser(event.userName);
@@ -48,6 +37,24 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
     throw new Error(`failed to get user. err=${err.message}`);
   }
   console.log('success to get user', JSON.stringify(user));
+
+  switch (event.triggerSource) {
+    // サインイン時のユーザーの移行
+    case 'UserMigration_Authentication':
+      let auth: InitiateAuthCommandOutput;
+      try {
+        auth = await initiateAuth(event.userName, event.request.password);
+      } catch (err: any) {
+        throw new Error(`failed to initiate auth. err=${err.message}`);
+      }
+      event.response.finalUserStatus = 'CONFIRMED';
+      console.log('success to initiate auth', JSON.stringify(auth));
+      break;
+    // パスワードを忘れた場合のフロー実行時のユーザー移行
+    case 'UserMigration_ForgotPassword':
+      event.userName = user.Username || '';
+      break;
+  }
 
   event.response.userAttributes = toUserAttributes(user);
   event.response.messageAction = 'SUPPRESS';
