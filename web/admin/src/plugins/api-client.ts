@@ -1,6 +1,31 @@
 import type { AxiosInstance } from 'axios'
 import { client } from './axios'
-import { AddressApi, AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, OtherApi, PaymentSystemApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, UserApi } from '~/types/api'
+import {
+  AddressApi,
+  AdministratorApi,
+  AuthApi,
+  BroadcastApi,
+  CategoryApi,
+  Configuration,
+  ContactApi,
+  CoordinatorApi,
+  GuestApi,
+  LiveApi,
+  MessageApi,
+  NotificationApi,
+  OrderApi,
+  OtherApi,
+  PaymentSystemApi,
+  ProducerApi,
+  ProductApi,
+  ProductTagApi,
+  ProductTypeApi,
+  PromotionApi,
+  ScheduleApi,
+  ShippingApi,
+  UserApi,
+  VideoApi,
+} from '~/types/api'
 
 let apiClient: ApiClient
 
@@ -102,6 +127,10 @@ export class ApiClient {
   guestApi() {
     return new GuestApi(this.config, this.basePath, this.instance)
   }
+
+  videoApi() {
+    return new VideoApi(this.config, this.basePath, this.instance)
+  }
 }
 
 export default defineNuxtPlugin(() => {
@@ -110,7 +139,7 @@ export default defineNuxtPlugin(() => {
 
   apiClient = new ApiClient(baseUrl)
 
-  return { provide: { } }
+  return { provide: {} }
 })
 
 export { apiClient }
