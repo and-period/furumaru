@@ -50,17 +50,15 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
         throw new Error(`failed to initiate auth. err=${err.message}`);
       }
       event.response.finalUserStatus = 'CONFIRMED';
-      event.response.messageAction = 'SUPPRESS';
       console.log('success to initiate auth', JSON.stringify(auth));
       break;
     // パスワードを忘れた場合のフロー実行時のユーザー移行
     case 'UserMigration_ForgotPassword':
-      event.userName = attributes.email;
-      event.response.finalUserStatus = 'CONFIRMED';
       event.response.desiredDeliveryMediums = ['EMAIL'];
       break;
   }
 
+  event.response.messageAction = 'SUPPRESS';
   event.response.userAttributes = attributes;
 
   console.log('return event', JSON.stringify(event));
@@ -100,6 +98,9 @@ function toUserAttributes(user: AdminGetUserCommandOutput): { [key: string]: str
       case 'phone_number':
         attributes.phone_number = attr.Value || '';
         attributes.phone_number_verified = 'true';
+        break;
+      case 'sub':
+        attributes.sub = attr.Value || '';
         break;
     }
   });
