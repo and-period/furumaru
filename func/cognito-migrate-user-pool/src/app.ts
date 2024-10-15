@@ -54,6 +54,7 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
       break;
     // パスワードを忘れた場合のフロー実行時のユーザー移行
     case 'UserMigration_ForgotPassword':
+      delete attributes.username; // パスワードリセット時はusernameは不要
       event.response.desiredDeliveryMediums = ['EMAIL'];
       break;
   }
@@ -98,9 +99,6 @@ function toUserAttributes(user: AdminGetUserCommandOutput): { [key: string]: str
       case 'phone_number':
         attributes.phone_number = attr.Value || '';
         attributes.phone_number_verified = 'true';
-        break;
-      case 'sub':
-        attributes.sub = attr.Value || '';
         break;
     }
   });
