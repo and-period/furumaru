@@ -56,6 +56,7 @@ export const lambdaHandler = async (event: CognitoUserPoolTriggerEvent): Promise
     // パスワードを忘れた場合のフロー実行時のユーザー移行
     case 'UserMigration_ForgotPassword':
       event.userName = attributes.email;
+      event.response.finalUserStatus = 'CONFIRMED';
       event.response.desiredDeliveryMediums = ['EMAIL'];
       break;
   }
