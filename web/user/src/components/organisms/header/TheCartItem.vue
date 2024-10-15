@@ -49,26 +49,32 @@ const handleClickRemoveButton = (id: string) => {
 <template>
   <div class="bg-base p-4">
     <p class="mb-6 mt-2 text-center">
-      {{ ht('cartTitle') }} #{{ cartNumber }}
+      {{ ht("cartTitle") }} #{{ cartNumber }}
     </p>
 
     <dl class="flex flex-col gap-y-1 text-sm">
       <div class="flex">
-        <dt>{{ ht('marcheLabel') }}：</dt>
+        <dt>{{ ht("marcheLabel") }}：</dt>
         <dd>{{ marcheName }}</dd>
       </div>
       <div class="flex">
-        <dt>{{ ht('boxTypeLabel') }}：</dt>
+        <dt>{{ ht("boxTypeLabel") }}：</dt>
         <dd>{{ boxType }}</dd>
       </div>
+      <!-- 購入の検証のため一旦コメントアウト
       <div class="flex">
         <dt>{{ ht('boxSizeLabel') }}{{ boxSize }}：</dt>
         <dd>{{ useRate }}%{{ ht('boxUsedText') }}</dd>
       </div>
+      -->
     </dl>
 
     <div class="mt-4">
-      <div class="flex items-center gap-x-2">
+      <!-- 購入の検証のため一旦コメントアウト -->
+      <div
+        v-if="false"
+        class="flex items-center gap-x-2"
+      >
         <the-mandarin-orange-icon v-if="boxSizeIs60" />
         <the-apple-icon v-if="boxSizeIs80" />
         <the-melon-icon v-if="boxSizeIs100" />
@@ -114,7 +120,7 @@ const handleClickRemoveButton = (id: string) => {
         class="w-full bg-main py-1 text-white"
         @click="handleClick"
       >
-        {{ ht('viewMyCartText') }}
+        {{ ht("viewMyCartText") }}
       </button>
     </div>
   </div>
