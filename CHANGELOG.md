@@ -1,5 +1,28 @@
 # Changelog
 
+## [v2.0.0](https://github.com/and-period/furumaru/compare/v1.11.46...v2.0.0) - 2024-10-15
+- refactor(store): 決済周りのロジックを整理 by @taba2424 in https://github.com/and-period/furumaru/pull/2431
+- feat(store): 即時決済機能を有効に by @taba2424 in https://github.com/and-period/furumaru/pull/2436
+- fix: ゲストの購入手続き時に住所情報がリロードしても欠落しないように修正 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2435
+- fix(store): 即時決済対応周りの処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2437
+- fix(func): 移行前のユーザーがパスワードリセットした際の処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2438
+- Revert "fix(func): 移行前のユーザーがパスワードリセットした際の処理を修正" by @taba2424 in https://github.com/and-period/furumaru/pull/2439
+- fix(func): 移行前のユーザーがパスワードリセットした際の処理を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2440
+- fix(func): パスワードリセット時に詰めるusernameを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2441
+- fix(func): パスワードリセット時に詰めるusernameを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2442
+- fix(func): Cognitoのマイグレーション時に詰めるステータスを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2443
+- Revert "fix(func): Cognitoのマイグレーション時に詰めるステータスを修正" by @taba2424 in https://github.com/and-period/furumaru/pull/2444
+- fix(func): forceAliasCreationをtrueにしてみる by @taba2424 in https://github.com/and-period/furumaru/pull/2445
+- Fix: fixed ui by @hamachans in https://github.com/and-period/furumaru/pull/2446
+- build(deps): bump the dependencies group across 1 directory with 41 updates by @dependabot in https://github.com/and-period/furumaru/pull/2433
+- build(deps): bump the dependencies group across 1 directory with 232 updates by @dependabot in https://github.com/and-period/furumaru/pull/2434
+- fix(func): desiredDeliveryMediumsの設定 by @taba2424 in https://github.com/and-period/furumaru/pull/2447
+- fix(func): desiredDeliveryMediumsの設定 by @taba2424 in https://github.com/and-period/furumaru/pull/2448
+- fix(func): finalUserStatusの設定 by @taba2424 in https://github.com/and-period/furumaru/pull/2449
+- fix(func): usernameを書き換えない by @taba2424 in https://github.com/and-period/furumaru/pull/2450
+- fix(func): subを追加 by @taba2424 in https://github.com/and-period/furumaru/pull/2451
+- fix(func): usernameを削除 by @taba2424 in https://github.com/and-period/furumaru/pull/2452
+
 ## [v1.11.46](https://github.com/and-period/furumaru/compare/v1.11.45...v1.11.46) - 2024-10-08
 - feat(store): 0円決済の対応 by @taba2424 in https://github.com/and-period/furumaru/pull/2427
 - fix(store): 0円決済時のステータスを修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2429
