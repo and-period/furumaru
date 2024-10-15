@@ -61,13 +61,16 @@ const handleClickRemoveButton = (id: string) => {
         <dt>{{ ht('boxTypeLabel') }}：</dt>
         <dd>{{ boxType }}</dd>
       </div>
+      <!-- 購入の検証のため一旦コメントアウト
       <div class="flex">
         <dt>{{ ht('boxSizeLabel') }}{{ boxSize }}：</dt>
         <dd>{{ useRate }}%{{ ht('boxUsedText') }}</dd>
       </div>
+      -->
     </dl>
 
     <div class="mt-4">
+      <!-- 購入の検証のため一旦コメントアウト
       <div class="flex items-center gap-x-2">
         <the-mandarin-orange-icon v-if="boxSizeIs60" />
         <the-apple-icon v-if="boxSizeIs80" />
@@ -91,6 +94,7 @@ const handleClickRemoveButton = (id: string) => {
           />
         </div>
       </div>
+      -->
 
       <hr class="my-2 border-dashed border-main">
 

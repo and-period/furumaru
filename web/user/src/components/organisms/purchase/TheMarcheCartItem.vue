@@ -243,6 +243,7 @@ const handelClickRemoveItemButton = (id: string) => {
                 </div>
               </div>
 
+            <!-- 購入の検証のため一旦コメントアウト
               <div class="flex flex-col gap-2 text-center">
                 <div class="rounded-3xl bg-base py-[3px] text-[12px]">
                   {{ ct("boxSizeLabel") }}
@@ -260,6 +261,7 @@ const handelClickRemoveItemButton = (id: string) => {
                   {{ cart.useRate }}
                 </div>
               </div>
+            -->
             </div>
           </div>
 
