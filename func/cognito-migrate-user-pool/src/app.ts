@@ -99,6 +99,9 @@ function toUserAttributes(user: AdminGetUserCommandOutput): { [key: string]: str
         attributes.phone_number = attr.Value || '';
         attributes.phone_number_verified = 'true';
         break;
+      case 'sub':
+        attributes.sub = attr.Value || '';
+        break;
     }
   });
   return attributes;
