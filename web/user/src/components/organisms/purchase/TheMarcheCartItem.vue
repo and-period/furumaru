@@ -1,54 +1,54 @@
 <script setup lang="ts">
-import type { Coordinator } from "~/types/api";
-import type { CartItem, ShoppingCart } from "~/types/store";
-import type { I18n } from "~/types/locales";
+import type { Coordinator } from '~/types/api'
+import type { CartItem, ShoppingCart } from '~/types/store'
+import type { I18n } from '~/types/locales'
 
 interface Props {
-  cartNumber: number;
-  coordinator: Coordinator;
-  cart: ShoppingCart;
-  items: CartItem[];
+  cartNumber: number
+  coordinator: Coordinator
+  cart: ShoppingCart
+  items: CartItem[]
 }
 
 interface Emits {
-  (e: "click:buyButton", coordinatorId: string): void;
-  (e: "click:cartBuyButton", coordinatorId: string, cartNumber: number): void;
-  (e: "click:removeItemFromCart", cartNumber: number, id: string): void;
+  (e: 'click:buyButton', coordinatorId: string): void
+  (e: 'click:cartBuyButton', coordinatorId: string, cartNumber: number): void
+  (e: 'click:removeItemFromCart', cartNumber: number, id: string): void
 }
 
-const i18n = useI18n();
+const i18n = useI18n()
 
-const ct = (str: keyof I18n["purchase"]["cart"]) => {
-  return i18n.t(`purchase.cart.${str}`);
-};
+const ct = (str: keyof I18n['purchase']['cart']) => {
+  return i18n.t(`purchase.cart.${str}`)
+}
 
-const props = defineProps<Props>();
-const emits = defineEmits<Emits>();
+const props = defineProps<Props>()
+const emits = defineEmits<Emits>()
 
 const totalPrice = computed<number>(() => {
   return props.items
-    .map((item) => item.product.price * item.quantity)
-    .reduce((sum, price) => sum + price);
-});
+    .map(item => item.product.price * item.quantity)
+    .reduce((sum, price) => sum + price)
+})
 
 const priceStringFormatter = (price: number): string => {
-  return new Intl.NumberFormat("ja-JP", {
-    style: "currency",
-    currency: "JPY",
-  }).format(price);
-};
+  return new Intl.NumberFormat('ja-JP', {
+    style: 'currency',
+    currency: 'JPY',
+  }).format(price)
+}
 
 const handleBuyButton = () => {
-  emits("click:buyButton", props.coordinator.id);
-};
+  emits('click:buyButton', props.coordinator.id)
+}
 
 const handleCartBuyButton = () => {
-  emits("click:cartBuyButton", props.coordinator.id, props.cartNumber);
-};
+  emits('click:cartBuyButton', props.coordinator.id, props.cartNumber)
+}
 
 const handelClickRemoveItemButton = (id: string) => {
-  emits("click:removeItemFromCart", props.cartNumber, id);
-};
+  emits('click:removeItemFromCart', props.cartNumber, id)
+}
 </script>
 
 <template>
@@ -76,7 +76,7 @@ const handelClickRemoveItemButton = (id: string) => {
         </div>
       </div>
 
-      <hr class="my-5 border-main" />
+      <hr class="my-5 border-main">
 
       <div>{{ ct("shippingFeeNotice") }}</div>
 
@@ -221,7 +221,7 @@ const handelClickRemoveItemButton = (id: string) => {
                 {{ priceStringFormatter(totalPrice) }}
               </div>
             </div>
-            <hr class="my-4 border-main" />
+            <hr class="my-4 border-main">
             <div class="text-[12px]">
               {{ ct("shippingFeeNotice") }}
             </div>
@@ -262,7 +262,8 @@ const handelClickRemoveItemButton = (id: string) => {
                   {{ cart.useRate }}
                 </div>
               </div>
-            --></div>
+            -->
+            </div>
           </div>
 
           <div class="flex flex-col gap-7">
@@ -275,7 +276,7 @@ const handelClickRemoveItemButton = (id: string) => {
                   {{ priceStringFormatter(totalPrice) }}
                 </div>
               </div>
-              <hr class="my-4 border-main" />
+              <hr class="my-4 border-main">
               <div>{{ ct("shippingFeeNotice") }}</div>
             </div>
 
