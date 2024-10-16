@@ -1,6 +1,7 @@
 import type { AxiosInstance } from 'axios'
 import { client } from './axios'
-import { AddressApi, AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, OtherApi, PaymentSystemApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, UserApi } from '~/types/api'
+import { AddressApi, AdministratorApi, AuthApi, BroadcastApi, CategoryApi, Configuration, ContactApi, CoordinatorApi, ExperienceApi, ExperienceTypeApi, GuestApi, LiveApi, MessageApi, NotificationApi, OrderApi, OtherApi, PaymentSystemApi, ProducerApi, ProductApi, ProductTagApi, ProductTypeApi, PromotionApi, ScheduleApi, ShippingApi, UserApi } from '~/types/api'
+import ExperienceList from '~/components/templates/ExperienceList.vue'
 
 let apiClient: ApiClient
 
@@ -41,6 +42,14 @@ export class ApiClient {
 
   coordinatorApi() {
     return new CoordinatorApi(this.config, this.basePath, this.instance)
+  }
+
+  experienceApi() {
+    return new ExperienceApi(this.config, this.basePath, this.instance)
+  }
+
+  experienceTypeApi() {
+    return new ExperienceTypeApi(this.config, this.basePath, this.instance)
   }
 
   liveApi() {
