@@ -1,5 +1,8 @@
 # Changelog
 
+## [v2.0.1](https://github.com/and-period/furumaru/compare/v2.0.0...v2.0.1) - 2024-10-16
+- setup: clarityのJSコードを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2455
+
 ## [v2.0.0](https://github.com/and-period/furumaru/compare/v1.11.46...v2.0.0) - 2024-10-15
 - refactor(store): 決済周りのロジックを整理 by @taba2424 in https://github.com/and-period/furumaru/pull/2431
 - feat(store): 即時決済機能を有効に by @taba2424 in https://github.com/and-period/furumaru/pull/2436
