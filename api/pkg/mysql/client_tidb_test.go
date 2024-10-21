@@ -37,7 +37,7 @@ func TestNewTiDBDSN(t *testing.T) {
 				allowNativePasswords: true,
 				maxAllowedPacket:     4194304, // 4MiB
 			},
-			expect: "root:12345678@tcp(127.0.0.1:3306)/test?allowNativePasswords=false&parseTime=true&tls=tidb&maxAllowedPacket=4194304",
+			expect: "root:12345678@tcp(127.0.0.1:3306)/test?parseTime=true&tls=tidb&maxAllowedPacket=4194304",
 		},
 		{
 			name: "success with options",
@@ -59,7 +59,7 @@ func TestNewTiDBDSN(t *testing.T) {
 				allowNativePasswords: false,
 				maxAllowedPacket:     8388608, // 8MiB
 			},
-			expect: "root:12345678@tcp(127.0.0.1:3306)/test?allowNativePasswords=false&loc=Asia%2FTokyo&parseTime=true&tls=tidb&maxAllowedPacket=8388608",
+			expect: "root:12345678@tcp(127.0.0.1:3306)/test?loc=Asia%2FTokyo&parseTime=true&tls=tidb&maxAllowedPacket=8388608",
 		},
 	}
 

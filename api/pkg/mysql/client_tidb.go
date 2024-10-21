@@ -48,16 +48,17 @@ func newTiDBClient(params *Params, opts *options) (*gorm.DB, error) {
 
 func newTiDBDSN(params *Params, opts *options) string {
 	dsn := &dmysql.Config{
-		User:              params.Username,
-		Passwd:            params.Password,
-		Net:               "tcp",
-		Addr:              fmt.Sprintf("%s:%s", params.Host, params.Port),
-		DBName:            params.Database,
-		Loc:               opts.location,
-		MaxAllowedPacket:  opts.maxAllowedPacket,
-		ParseTime:         true,
-		CheckConnLiveness: true,
-		TLSConfig:         "tidb",
+		User:                 params.Username,
+		Passwd:               params.Password,
+		Net:                  "tcp",
+		Addr:                 fmt.Sprintf("%s:%s", params.Host, params.Port),
+		DBName:               params.Database,
+		Loc:                  opts.location,
+		MaxAllowedPacket:     opts.maxAllowedPacket,
+		ParseTime:            true,
+		CheckConnLiveness:    true,
+		AllowNativePasswords: true,
+		TLSConfig:            "tidb",
 	}
 	return dsn.FormatDSN()
 }
