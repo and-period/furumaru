@@ -47,6 +47,11 @@ type app struct {
 	DBTimeZone               string  `default:"Asia/Tokyo"     envconfig:"DB_TIMEZONE"`
 	DBEnabledTLS             bool    `default:"false"          envconfig:"DB_ENABLED_TLS"`
 	DBSecretName             string  `default:""               envconfig:"DB_SECRET_NAME"`
+	TiDBHost                 string  `default:"127.0.0.1"      envconfig:"TIDB_HOST"`
+	TiDBPort                 string  `default:"4000"           envconfig:"TIDB_PORT"`
+	TiDBUsername             string  `default:""               envconfig:"TIDB_USERNAME"`
+	TiDBPassword             string  `default:""               envconfig:"TIDB_PASSWORD"`
+	TiDBSecretName           string  `default:""               envconfig:"TIDB_SECRET_NAME"`
 	GinMode                  string  `default:"release"        envconfig:"GIN_MODE"`
 	NewRelicLicense          string  `default:""               envconfig:"NEW_RELIC_LICENSE"`
 	NewRelicSecretName       string  `default:""               envconfig:"NEW_RELIC_SECRET_NAME"`

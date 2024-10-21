@@ -67,6 +67,10 @@ type params struct {
 	dbPort               string
 	dbUsername           string
 	dbPassword           string
+	tidbHost             string
+	tidbPort             string
+	tidbUsername         string
+	tidbPassword         string
 	slackToken           string
 	slackChannelID       string
 	newRelicLicense      string
@@ -275,7 +279,7 @@ func (a *app) inject(ctx context.Context) error {
 func (a *app) getSecret(ctx context.Context, p *params) error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		// データベース認証情報の取得
+		// データベース（MySQL）認証情報の取得
 		if a.DBSecretName == "" {
 			p.dbHost = a.DBHost
 			p.dbPort = a.DBPort
@@ -291,6 +295,25 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		p.dbPort = secrets["port"]
 		p.dbUsername = secrets["username"]
 		p.dbPassword = secrets["password"]
+		return nil
+	})
+	eg.Go(func() error {
+		// データベース（TiDB）認証情報の取得
+		if a.TiDBSecretName == "" {
+			p.tidbHost = a.TiDBHost
+			p.tidbPort = a.TiDBPort
+			p.tidbUsername = a.TiDBUsername
+			p.tidbPassword = a.TiDBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.TiDBSecretName)
+		if err != nil {
+			return err
+		}
+		p.tidbHost = secrets["host"]
+		p.tidbPort = secrets["port"]
+		p.tidbUsername = secrets["username"]
+		p.tidbPassword = secrets["password"]
 		return nil
 	})
 	eg.Go(func() error {
@@ -380,6 +403,32 @@ func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	return cli, nil
 }
 
+func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
+		Host:     p.tidbHost,
+		Port:     p.tidbPort,
+		Database: dbname,
+		Username: p.tidbUsername,
+		Password: p.tidbPassword,
+	}
+	location, err := time.LoadLocation(a.DBTimeZone)
+	if err != nil {
+		return nil, err
+	}
+	cli, err := mysql.NewTiDBClient(
+		params,
+		mysql.WithNow(p.now),
+		mysql.WithLocation(location),
+	)
+	if err != nil {
+		return nil, err
+	}
+	if err := cli.DB.Use(telemetry.NewNrTracer(dbname, p.tidbHost, string(newrelic.DatastoreMySQL))); err != nil {
+		return nil, err
+	}
+	return cli, nil
+}
+
 func (a *app) newMediaService(p *params) (media.Service, error) {
 	mysql, err := a.newDatabase("media", p)
 	if err != nil {
@@ -421,7 +470,7 @@ func (a *app) newMessengerService(p *params) (messenger.Service, error) {
 }
 
 func (a *app) newUserService(p *params, media media.Service, messenger messenger.Service) (user.Service, error) {
-	mysql, err := a.newDatabase("users", p)
+	mysql, err := a.newTiDB("users", p)
 	if err != nil {
 		return nil, err
 	}
