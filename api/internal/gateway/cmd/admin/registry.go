@@ -429,10 +429,11 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 	})
 	eg.Go(func() error {
 		// Google API認証情報の取得
-		if a.GoogleClientSecret == "" {
+		if a.GoogleSecretName == "" {
 			p.googleClientID = a.GoogleClientID
 			p.googleClientSecret = a.GoogleClientSecret
 			p.googleMapsPlatformAPIKey = a.GoogleMapsPlatformAPIKey
+			return nil
 		}
 		secrets, err := p.secret.Get(ectx, a.GoogleSecretName)
 		if err != nil {
