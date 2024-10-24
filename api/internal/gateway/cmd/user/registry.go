@@ -22,7 +22,7 @@ import (
 	ksession "github.com/and-period/furumaru/api/internal/store/komoju/session"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
+	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/cognito"
 	"github.com/and-period/furumaru/api/pkg/dynamodb"
@@ -419,6 +419,7 @@ func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
 		params,
 		mysql.WithNow(p.now),
 		mysql.WithLocation(location),
+		mysql.WithLogger(p.logger), // TODO: 動作検証が終わり次第削除
 	)
 	if err != nil {
 		return nil, err
