@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.0.2](https://github.com/and-period/furumaru/compare/v2.0.1...v2.0.2) - 2024-10-24
+- feat(user): DBクライアントの詰め替え by @taba2424 in https://github.com/and-period/furumaru/pull/2457
+- fix(user): cognito idの管理方法を修正 by @taba2424 in https://github.com/and-period/furumaru/pull/2459
+- fix(user): TiDB用のDBクライアントを作成 by @taba2424 in https://github.com/and-period/furumaru/pull/2463
+- fix(user): バッチ処理のDBクライアントを差し替え by @taba2424 in https://github.com/and-period/furumaru/pull/2464
+
 ## [v2.0.1](https://github.com/and-period/furumaru/compare/v2.0.0...v2.0.1) - 2024-10-16
 - setup: clarityのJSコードを追加 by @wf-yamaday in https://github.com/and-period/furumaru/pull/2455
 
