@@ -11,7 +11,7 @@ import (
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
 	"github.com/and-period/furumaru/api/internal/messenger/worker"
 	"github.com/and-period/furumaru/api/internal/user"
-	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
+	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/firebase/messaging"
 	"github.com/and-period/furumaru/api/pkg/jst"

@@ -15,7 +15,7 @@ import (
 	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
-	userdb "github.com/and-period/furumaru/api/internal/user/database/mysql"
+	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
 	usersrv "github.com/and-period/furumaru/api/internal/user/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
