@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/and-period/furumaru/api/internal/media/broadcast/scheduler"
-	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	"github.com/and-period/furumaru/api/internal/store"
 	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
@@ -25,15 +25,19 @@ import (
 )
 
 type params struct {
-	logger     *zap.Logger
-	waitGroup  *sync.WaitGroup
-	secret     secret.Client
-	now        func() time.Time
-	dbHost     string
-	dbPort     string
-	dbUsername string
-	dbPassword string
-	sentryDsn  string
+	logger       *zap.Logger
+	waitGroup    *sync.WaitGroup
+	secret       secret.Client
+	now          func() time.Time
+	dbHost       string
+	dbPort       string
+	dbUsername   string
+	dbPassword   string
+	tidbHost     string
+	tidbPort     string
+	tidbUsername string
+	tidbPassword string
+	sentryDsn    string
 }
 
 func (a *app) inject(ctx context.Context) error {
@@ -90,7 +94,7 @@ func (a *app) inject(ctx context.Context) error {
 	storageClient := storage.NewBucket(awscfg, storageParams)
 
 	// Databaseの設定
-	dbClient, err := a.newDatabase("media", params)
+	dbClient, err := a.newTiDB("media", params)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create database client: %w", err)
 	}
@@ -149,6 +153,25 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		return nil
 	})
 	eg.Go(func() error {
+		// データベース（TiDB）認証情報の取得
+		if a.TiDBSecretName == "" {
+			p.tidbHost = a.TiDBHost
+			p.tidbPort = a.TiDBPort
+			p.tidbUsername = a.TiDBUsername
+			p.tidbPassword = a.TiDBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.TiDBSecretName)
+		if err != nil {
+			return err
+		}
+		p.tidbHost = secrets["host"]
+		p.tidbPort = secrets["port"]
+		p.tidbUsername = secrets["username"]
+		p.tidbPassword = secrets["password"]
+		return nil
+	})
+	eg.Go(func() error {
 		// Sentry認証情報の取得
 		if a.SentrySecretName == "" {
 			p.sentryDsn = a.SentryDsn
@@ -177,10 +200,29 @@ func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return mysql.NewClient(
+	return mysql.NewTiDBClient(
 		params,
 		mysql.WithNow(p.now),
 		mysql.WithTLS(a.DBEnabledTLS),
+		mysql.WithLocation(location),
+	)
+}
+
+func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
+		Host:     p.tidbHost,
+		Port:     p.tidbPort,
+		Database: dbname,
+		Username: p.tidbUsername,
+		Password: p.tidbPassword,
+	}
+	location, err := time.LoadLocation(a.DBTimeZone)
+	if err != nil {
+		return nil, err
+	}
+	return mysql.NewTiDBClient(
+		params,
+		mysql.WithNow(p.now),
 		mysql.WithLocation(location),
 	)
 }
