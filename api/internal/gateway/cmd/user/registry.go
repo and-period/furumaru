@@ -10,7 +10,7 @@ import (
 
 	v1 "github.com/and-period/furumaru/api/internal/gateway/user/v1/handler"
 	"github.com/and-period/furumaru/api/internal/media"
-	mediadb "github.com/and-period/furumaru/api/internal/media/database/mysql"
+	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	mediasrv "github.com/and-period/furumaru/api/internal/media/service"
 	"github.com/and-period/furumaru/api/internal/messenger"
 	messengerdb "github.com/and-period/furumaru/api/internal/messenger/database/mysql"
@@ -431,7 +431,7 @@ func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
 }
 
 func (a *app) newMediaService(p *params) (media.Service, error) {
-	mysql, err := a.newDatabase("media", p)
+	mysql, err := a.newTiDB("media", p)
 	if err != nil {
 		return nil, err
 	}
