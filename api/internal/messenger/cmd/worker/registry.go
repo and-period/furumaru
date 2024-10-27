@@ -83,7 +83,7 @@ func (a *app) inject(ctx context.Context) error {
 	params.logger = logger
 
 	// Databaseの設定
-	dbClient, err := a.newDatabase("messengers", params)
+	dbClient, err := a.newTiDB("messengers", params)
 	if err != nil {
 		return fmt.Errorf("cmd: failed to create database client: %w", err)
 	}
