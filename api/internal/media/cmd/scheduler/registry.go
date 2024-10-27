@@ -9,7 +9,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/media/broadcast/scheduler"
 	mediadb "github.com/and-period/furumaru/api/internal/media/database/tidb"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/tidb"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/pkg/jst"
 	"github.com/and-period/furumaru/api/pkg/log"
@@ -29,10 +29,6 @@ type params struct {
 	waitGroup    *sync.WaitGroup
 	secret       secret.Client
 	now          func() time.Time
-	dbHost       string
-	dbPort       string
-	dbUsername   string
-	dbPassword   string
 	tidbHost     string
 	tidbPort     string
 	tidbUsername string
@@ -134,25 +130,6 @@ func (a *app) inject(ctx context.Context) error {
 func (a *app) getSecret(ctx context.Context, p *params) error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		// データベース認証情報の取得
-		if a.DBSecretName == "" {
-			p.dbHost = a.DBHost
-			p.dbPort = a.DBPort
-			p.dbUsername = a.DBUsername
-			p.dbPassword = a.DBPassword
-			return nil
-		}
-		secrets, err := p.secret.Get(ectx, a.DBSecretName)
-		if err != nil {
-			return err
-		}
-		p.dbHost = secrets["host"]
-		p.dbPort = secrets["port"]
-		p.dbUsername = secrets["username"]
-		p.dbPassword = secrets["password"]
-		return nil
-	})
-	eg.Go(func() error {
 		// データベース（TiDB）認証情報の取得
 		if a.TiDBSecretName == "" {
 			p.tidbHost = a.TiDBHost
@@ -187,27 +164,6 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 	return eg.Wait()
 }
 
-func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
-	params := &mysql.Params{
-		Socket:   a.DBSocket,
-		Host:     p.dbHost,
-		Port:     p.dbPort,
-		Database: dbname,
-		Username: p.dbUsername,
-		Password: p.dbPassword,
-	}
-	location, err := time.LoadLocation(a.DBTimeZone)
-	if err != nil {
-		return nil, err
-	}
-	return mysql.NewTiDBClient(
-		params,
-		mysql.WithNow(p.now),
-		mysql.WithTLS(a.DBEnabledTLS),
-		mysql.WithLocation(location),
-	)
-}
-
 func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
 	params := &mysql.Params{
 		Host:     p.tidbHost,
@@ -228,7 +184,7 @@ func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
 }
 
 func (a *app) newStoreService(p *params) (store.Service, error) {
-	mysql, err := a.newDatabase("stores", p)
+	mysql, err := a.newTiDB("stores", p)
 	if err != nil {
 		return nil, err
 	}

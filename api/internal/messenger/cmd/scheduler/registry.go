@@ -12,7 +12,7 @@ import (
 	"github.com/and-period/furumaru/api/internal/messenger/scheduler"
 	messengersrv "github.com/and-period/furumaru/api/internal/messenger/service"
 	"github.com/and-period/furumaru/api/internal/store"
-	storedb "github.com/and-period/furumaru/api/internal/store/database/mysql"
+	storedb "github.com/and-period/furumaru/api/internal/store/database/tidb"
 	storesrv "github.com/and-period/furumaru/api/internal/store/service"
 	"github.com/and-period/furumaru/api/internal/user"
 	userdb "github.com/and-period/furumaru/api/internal/user/database/tidb"
@@ -31,19 +31,23 @@ import (
 )
 
 type params struct {
-	logger      *zap.Logger
-	waitGroup   *sync.WaitGroup
-	aws         aws.Config
-	secret      secret.Client
-	producer    sqs.Producer
-	adminWebURL *url.URL
-	userWebURL  *url.URL
-	now         func() time.Time
-	dbHost      string
-	dbPort      string
-	dbUsername  string
-	dbPassword  string
-	sentryDsn   string
+	logger       *zap.Logger
+	waitGroup    *sync.WaitGroup
+	aws          aws.Config
+	secret       secret.Client
+	producer     sqs.Producer
+	adminWebURL  *url.URL
+	userWebURL   *url.URL
+	now          func() time.Time
+	dbHost       string
+	dbPort       string
+	dbUsername   string
+	dbPassword   string
+	tidbHost     string
+	tidbPort     string
+	tidbUsername string
+	tidbPassword string
+	sentryDsn    string
 }
 
 func (a *app) inject(ctx context.Context) error {
@@ -123,7 +127,7 @@ func (a *app) inject(ctx context.Context) error {
 func (a *app) getSecret(ctx context.Context, p *params) error {
 	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		// データベース認証情報の取得
+		// データベース（MySQL）認証情報の取得
 		if a.DBSecretName == "" {
 			p.dbHost = a.DBHost
 			p.dbPort = a.DBPort
@@ -139,6 +143,25 @@ func (a *app) getSecret(ctx context.Context, p *params) error {
 		p.dbPort = secrets["port"]
 		p.dbUsername = secrets["username"]
 		p.dbPassword = secrets["password"]
+		return nil
+	})
+	eg.Go(func() error {
+		// データベース（TiDB）認証情報の取得
+		if a.TiDBSecretName == "" {
+			p.tidbHost = a.TiDBHost
+			p.tidbPort = a.TiDBPort
+			p.tidbUsername = a.TiDBUsername
+			p.tidbPassword = a.TiDBPassword
+			return nil
+		}
+		secrets, err := p.secret.Get(ectx, a.TiDBSecretName)
+		if err != nil {
+			return err
+		}
+		p.tidbHost = secrets["host"]
+		p.tidbPort = secrets["port"]
+		p.tidbUsername = secrets["username"]
+		p.tidbPassword = secrets["password"]
 		return nil
 	})
 	eg.Go(func() error {
@@ -185,6 +208,33 @@ func (a *app) newDatabase(dbname string, p *params) (*mysql.Client, error) {
 	return cli, nil
 }
 
+func (a *app) newTiDB(dbname string, p *params) (*mysql.Client, error) {
+	params := &mysql.Params{
+		Host:     p.tidbHost,
+		Port:     p.tidbPort,
+		Database: dbname,
+		Username: p.tidbUsername,
+		Password: p.tidbPassword,
+	}
+	location, err := time.LoadLocation(a.DBTimeZone)
+	if err != nil {
+		return nil, err
+	}
+	cli, err := mysql.NewTiDBClient(
+		params,
+		mysql.WithNow(p.now),
+		mysql.WithLocation(location),
+		mysql.WithLogger(p.logger), // TODO: 動作検証が終わり次第削除
+	)
+	if err != nil {
+		return nil, err
+	}
+	if err := cli.DB.Use(telemetry.NewNrTracer(dbname, p.tidbHost, string(newrelic.DatastoreMySQL))); err != nil {
+		return nil, err
+	}
+	return cli, nil
+}
+
 func (a *app) newMessengerService(p *params) (messenger.Service, error) {
 	mysql, err := a.newDatabase("messengers", p)
 	if err != nil {
@@ -211,7 +261,7 @@ func (a *app) newMessengerService(p *params) (messenger.Service, error) {
 }
 
 func (a *app) newUserService(p *params) (user.Service, error) {
-	mysql, err := a.newDatabase("users", p)
+	mysql, err := a.newTiDB("users", p)
 	if err != nil {
 		return nil, err
 	}
@@ -223,7 +273,7 @@ func (a *app) newUserService(p *params) (user.Service, error) {
 }
 
 func (a *app) newStoreService(p *params) (store.Service, error) {
-	mysql, err := a.newDatabase("stores", p)
+	mysql, err := a.newTiDB("stores", p)
 	if err != nil {
 		return nil, err
 	}
